@@ -4,18 +4,17 @@
 import React from "react";
 import { connect } from "react-redux";
 import { ListAlt, AddCircleOutline } from "@material-ui/icons";
-import { formatMessage, MainMenuContribution, withModulesManager } from "@openimis/fe-core";
+import { FormattedMessage, MainMenuContribution, withModulesManager } from "@openimis/fe-core";
 import {
   WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY,
   MODULE_NAME,
 } from "../constants";
+import { ROUTE_WORKFORCE_ORGANIZATIONS } from "../routes";
 
 function WorkforceMainMenu(props) {
-  const ROUTE_WORKFORCE_ORGANIZATIONS = "workforce/organizations";
   const entries = [
     {
-      // text: formatMessage(props.intl, MODULE_NAME, "menu.workforce.organizations"),
-      text: "Workforce Organizations",
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations" />,
       icon: <ListAlt />,
       route: `/${ROUTE_WORKFORCE_ORGANIZATIONS}`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
