@@ -1,26 +1,17 @@
-/* eslint-disable react/destructuring-assignment */
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { injectIntl } from "react-intl";
-import { withTheme, withStyles } from "@material-ui/core/styles";
-import { Fab } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import {
-  historyPush, withModulesManager, withHistory, withTooltip, formatMessage, decodeId,
-} from "@openimis/fe-core";
+import React from "react";
+import { makeStyles } from "@material-ui/styles";
 import OrganizationSearcher from "../components/OrganizationSearcher";
 
-import { MODULE_NAME } from "../constants";
-
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   page: theme.page,
-  fab: theme.fab,
-});
+}));
 
 const WorkforceOrganizationsPage = () => {
+  const classes = useStyles();
+
   return (
-    <div>
-      Workforce
+    <div className={classes.page}>
+      <OrganizationSearcher />
     </div>
   );
 };

@@ -3,7 +3,7 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import { ListAlt, AddCircleOutline } from "@material-ui/icons";
+import { ListAlt } from "@material-ui/icons";
 import { FormattedMessage, MainMenuContribution, withModulesManager } from "@openimis/fe-core";
 import {
   WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY,
