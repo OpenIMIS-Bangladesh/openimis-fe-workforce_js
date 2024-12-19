@@ -26,5 +26,6 @@
     "location.locationType.W": "Thana",
     "location.locationType.V": "Post Office",
     "menu.workforce": "Workforce",
-    "menu.workforce.organizations": "Workforce Organizations"
+    "menu.workforce.organizations": "Workforce Organizations",
+    "workforce.addNewTooltip": "Add Workforce Organizations"
 }

@@ -1,6 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/jsx-props-no-spreading */
-
 import React from "react";
 import { connect } from "react-redux";
 import { ListAlt } from "@material-ui/icons";
