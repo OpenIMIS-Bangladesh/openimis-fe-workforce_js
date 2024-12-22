@@ -19,10 +19,7 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../constants";
 import { fetchOrganizationsSummary } from "../actions";
-import { isEmptyObject } from "../utils/utils";
-import EditIcon from '@material-ui/icons/Edit';
 import OrganizationFilter from "./OrganizationFilter";
-import { MODULE_NAME, RIGHT_TICKET_EDIT } from '../constants';
 
 
 const styles = (theme) => ({
@@ -133,7 +130,7 @@ class OrganizationSearcher extends Component {
 
     ];
 
-    if (this.props.rights.includes(RIGHT_TICKET_EDIT)) {
+    // if (this.props.rights.includes(RIGHT_ORGANIZATION_EDIT)) {
          formatters.push((workforce) => (
            <Tooltip title={formatMessage(this.props.intl, MODULE_NAME, 'editButtonTooltip')}>
              <IconButton
@@ -152,7 +149,7 @@ class OrganizationSearcher extends Component {
              </IconButton>
            </Tooltip>
          ));
-       }
+       // }
     return formatters;
   };
 
