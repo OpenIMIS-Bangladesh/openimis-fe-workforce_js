@@ -9,7 +9,7 @@ import {
 
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../constants";
 import OrganizationSearcher from "../components/OrganizationSearcher";
-import { ROUTE_WORKFORCE_ORGANIZATIONS_CREATE, ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION } from "../routes";
+import { ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION } from "../routes";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -18,7 +18,7 @@ const styles = (theme) => ({
 
 class WorkforceOrganizationsPage extends Component {
   onDoubleClick = (organization, newTab = false) => {
-    const routeParams = [ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION, [decodeId(organization.id)]];
+    const routeParams = ['workforce.route.organizations.organization', [decodeId(organization.id)]];
     if (organization?.isHistory) {
       routeParams[1].push(organization.version);
     }
@@ -26,7 +26,7 @@ class WorkforceOrganizationsPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, ROUTE_WORKFORCE_ORGANIZATIONS_CREATE);
+    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.organizations.organization');
   };
 
   render() {
