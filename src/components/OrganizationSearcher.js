@@ -132,7 +132,7 @@ class OrganizationSearcher extends Component {
 
     // if (this.props.rights.includes(RIGHT_ORGANIZATION_EDIT)) {
          formatters.push((workforce) => (
-           <Tooltip title={formatMessage(this.props.intl, MODULE_NAME, 'editButtonTooltip')}>
+           <Tooltip title="Edit">
              <IconButton
                disabled={workforce?.isHistory}
                onClick={() => {
