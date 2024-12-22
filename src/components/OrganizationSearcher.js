@@ -20,8 +20,10 @@ import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../constants";
 import { fetchOrganizationsSummary } from "../actions";
 import { isEmptyObject } from "../utils/utils";
-
+import EditIcon from '@material-ui/icons/Edit';
 import OrganizationFilter from "./OrganizationFilter";
+import { MODULE_NAME, RIGHT_TICKET_EDIT } from '../constants';
+
 
 const styles = (theme) => ({
   paper: {
@@ -98,55 +100,59 @@ class OrganizationSearcher extends Component {
   };
 
   headers = () => [
-    "tickets.code",
-    "tickets.title",
-    "tickets.beneficary",
-    "tickets.priority",
-    "tickets.status",
-    "tickets.category",
-    this.isShowHistory() ? "tickets.version" : "",
+    "workforce.organization.name.en",
+    "workforce.organization.name.bn",
+    "workforce.organization.address",
+    "workforce.organization.phone",
+    "workforce.representative.details",
+    this.isShowHistory() ? 'workforce.version' : '',
+
+  
   ];
 
   sorts = () => [
-    ["code", true],
-    ["title", true],
-    ["reporter_id", true],
-    ["priority", true],
-    ["status", true],
-    ["category", true],
-    ["version", true],
+    
   ];
 
   itemFormatters = () => {
     const formatters = [
-      (ticket) => ticket.id,
-      (ticket) => ticket.nameBn,
-      (ticket) => ticket.priority,
-      (ticket) => ticket.status,
-      (ticket) => ticket.category,
-      (ticket) => (this.isShowHistory() ? ticket?.version : null),
+      (workforce) => workforce.nameEn,
+      (workforce) => workforce.nameBn,
+      (workforce) => workforce.address,
+      (workforce) => workforce.phoneNumber,
+      (workforce) => {
+        const nameBn = workforce.representative?.nameBn || "N/A";
+        const nameEn = workforce.representative?.nameEn || "N/A";
+        const location = workforce.representative?.location || "N/A";
+        const address = workforce.representative?.address || "N/A";
+        const phone = workforce.representative?.phone || "N/A";
+        const email = workforce.representative?.email || "N/A";
+        return `BN: ${nameBn}, EN: ${nameEn}, Location: ${location}, Address: ${address}, Phone: ${phone}, Email: ${email}`;
+      },
+      (workforce) => (this.isShowHistory() ? workforce?.version : null),
+
     ];
 
-    // if (this.props.rights.includes(RIGHT_TICKET_EDIT)) {
-    //   formatters.push((ticket) => (
-    //     <Tooltip title={formatMessage(this.props.intl, MODULE_NAME, "editButtonTooltip")}>
-    //       <IconButton
-    //         disabled={ticket?.isHistory}
-    //         onClick={() => {
-    //           historyPush(
-    //             this.props.modulesManager,
-    //             this.props.history,
-    //             "grievanceSocialProtection.route.ticket",
-    //             [decodeId(ticket.id)],
-    //             false,
-    //           );
-    //         }}
-    //       >
-    //         <EditIcon />
-    //       </IconButton>
-    //     </Tooltip>
-    //   ));
-    // }
+    if (this.props.rights.includes(RIGHT_TICKET_EDIT)) {
+         formatters.push((workforce) => (
+           <Tooltip title={formatMessage(this.props.intl, MODULE_NAME, 'editButtonTooltip')}>
+             <IconButton
+               disabled={workforce?.isHistory}
+               onClick={() => {
+                 historyPush(
+                   this.props.modulesManager,
+                   this.props.history,
+                   'workforce/organizations/edit',
+                   [decodeId(workforce.id)],
+                   false,
+                 );
+               }}
+             >
+               <EditIcon />
+             </IconButton>
+           </Tooltip>
+         ));
+       }
     return formatters;
   };
 

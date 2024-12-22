@@ -27,5 +27,17 @@
     "location.locationType.V": "Post Office",
     "menu.workforce": "Workforce",
     "menu.workforce.organizations": "Workforce Organizations",
-    "workforce.addNewTooltip": "Add Workforce Organizations"
+    "workforce.addNewTooltip": "Add Workforce Organizations",
+    "workforce.organization.name.en": "Name En",
+    "workforce.organization.name.bn": "Name Bn",
+    "workforce.organization.location": "Location",
+    "workforce.organization.address": "Address",
+    "workforce.organization.phone": "Phone",
+    "workforce.representative.details": "Representative Details",
+    "workforce.representative.name.en": "Representative Name En",
+    "workforce.representative.name.bn": "Representative Name Bn",
+    "workforce.representative.location": "Representative Location",
+    "workforce.representative.address": "Representative Address",
+    "workforce.representative.phone": "Representative Phone",
+    "workforce.representative.email": "Representative Email"
 }
