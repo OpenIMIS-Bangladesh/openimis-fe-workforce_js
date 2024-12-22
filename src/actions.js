@@ -5,7 +5,7 @@ import {
 
 export function fetchOrganizationsSummary(mm, filters) {
   const projections = [
-    "id", "nameBn", "nameBn", "workforceRepresentative { id,nameBn,nameEn,position,email,nid}",
+    "id", "nameEn", "nameBn", "phoneNumber", "email", "workforceRepresentative { id,nameBn,nameEn,position,email,nid}",
     "location{name,type,parent{name,type,parent{name,type,parent{name,type}}}}",
     "address",
   ];
