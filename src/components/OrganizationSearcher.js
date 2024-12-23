@@ -118,13 +118,11 @@ class OrganizationSearcher extends Component {
       (workforce) => workforce.address,
       (workforce) => workforce.phoneNumber,
       (workforce) => {
-        const nameBn = workforce.representative?.nameBn || "N/A";
-        const nameEn = workforce.representative?.nameEn || "N/A";
-        const location = workforce.representative?.location || "N/A";
-        const address = workforce.representative?.address || "N/A";
-        const phone = workforce.representative?.phone || "N/A";
-        const email = workforce.representative?.email || "N/A";
-        return `BN: ${nameBn}, EN: ${nameEn}, Location: ${location}, Address: ${address}, Phone: ${phone}, Email: ${email}`;
+        const nameEn = workforce.workforceRepresentative?.nameEn || "N/A";
+        const nameBn = workforce.workforceRepresentative?.nameBn || "N/A";
+        const address = workforce.workforceRepresentative?.address || "N/A";
+        const phone = workforce.workforceRepresentative?.phoneNumber || "N/A";
+        return `Name En: ${nameEn}\n, Name Bn: ${nameBn}\n, Address: ${address}\n, Phone: ${phone}\n`;
       },
       (workforce) => (this.isShowHistory() ? workforce?.version : null),
 
