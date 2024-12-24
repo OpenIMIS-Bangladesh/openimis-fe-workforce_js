@@ -27,7 +27,8 @@ const styles = (theme) => ({
   paperDivider: theme.paper.divider,
 });
 
-const WORKFORCE_ORGANIZATION_FILTER_CONTRIBUTION_KEY = "workforce.organization.Filter";
+const WORKFORCE_ORGANIZATION_FILTER_CONTRIBUTION_KEY =
+  "workforce.organization.Filter";
 
 class OrganizationFilter extends Component {
   // debouncedOnChangeFilter = _debounce(
@@ -63,153 +64,95 @@ class OrganizationFilter extends Component {
   };
 
   render() {
-    const {
-      classes, filters, onChangeFilters,
-    } = this.props;
+    const { classes, filters, onChangeFilters } = this.props;
     return (
       <Grid container className={classes.form}>
-        {/*<ControlledField*/}
-        {/*  module={MODULE_NAME}*/}
-        {/*  id="ticketFilter.ticketCode"*/}
-        {/*  field={(*/}
-        {/*    <Grid item xs={3} className={classes.item}>*/}
-        {/*      <TextInput*/}
-        {/*        module={MODULE_NAME}*/}
-        {/*        label="ticket.ticketCode"*/}
-        {/*        name="code"*/}
-        {/*        value={this._filterValue("code")}*/}
-        {/*        onChange={(v) => this.debouncedOnChangeFilter([*/}
-        {/*          {*/}
-        {/*            id: "code",*/}
-        {/*            value: v,*/}
-        {/*            filter: `code_Icontains: "${v}"`,*/}
-        {/*          },*/}
-        {/*        ])}*/}
-        {/*      />*/}
-        {/*    </Grid>*/}
-        {/*  )}*/}
-        {/*/>*/}
-        {/*<ControlledField*/}
-        {/*  module={MODULE_NAME}*/}
-        {/*  id="ticketFilter.ticketTitle"*/}
-        {/*  field={(*/}
-        {/*    <Grid item xs={3} className={classes.item}>*/}
-        {/*      <TextInput*/}
-        {/*        module={MODULE_NAME}*/}
-        {/*        label="ticket.ticketTitle"*/}
-        {/*        name="title"*/}
-        {/*        value={this._filterValue("title")}*/}
-        {/*        onChange={(v) => this.debouncedOnChangeFilter([*/}
-        {/*          {*/}
-        {/*            id: "title",*/}
-        {/*            value: v,*/}
-        {/*            filter: `title_Icontains: "${v}"`,*/}
-        {/*          },*/}
-        {/*        ])}*/}
-        {/*      />*/}
-        {/*    </Grid>*/}
-        {/*  )}*/}
-        {/*/>*/}
-        {/*<ControlledField*/}
-        {/*  module={MODULE_NAME}*/}
-        {/*  id="ticket.reporter"*/}
-        {/*  field={(*/}
-        {/*    <Grid item xs={3} className={classes.item}>*/}
-        {/*      <PublishedComponent*/}
-        {/*        pubRef="individual.IndividualPicker"*/}
-        {/*        withNull*/}
-        {/*        label="Individual"*/}
-        {/*        value={this._filterValue("reporterId")}*/}
-        {/*        onChange={(v) => this._onChangeReporter(*/}
-        {/*          "reporterId",*/}
-        {/*          v || null,*/}
-        {/*        )}*/}
-        {/*      />*/}
-        {/*    </Grid>*/}
-        {/*  )}*/}
-        {/*/>*/}
-        {/*<ControlledField*/}
-        {/*  module={MODULE_NAME}*/}
-        {/*  id="ticketFilter.priority"*/}
-        {/*  field={(*/}
-        {/*    <Grid item xs={3} className={classes.item}>*/}
-        {/*      <PublishedComponent*/}
-        {/*        pubRef="grievanceSocialProtection.TicketPriorityPicker"*/}
-        {/*        withNull*/}
-        {/*        label="ticket.ticketPriority"*/}
-        {/*        value={this._filterValue("priority")}*/}
-        {/*        onChange={(v) => this.debouncedOnChangeFilter([*/}
-        {/*          {*/}
-        {/*            id: "priority",*/}
-        {/*            value: v,*/}
-        {/*            filter: `priority_Icontains: "${v}"`,*/}
-        {/*          },*/}
-        {/*        ])}*/}
-        {/*      />*/}
-        {/*    </Grid>*/}
-        {/*  )}*/}
-        {/*/>*/}
-        {/*<ControlledField*/}
-        {/*  module={MODULE_NAME}*/}
-        {/*  id="ticket.status"*/}
-        {/*  field={(*/}
-        {/*    <Grid item xs={3} className={classes.item}>*/}
-        {/*      <PublishedComponent*/}
-        {/*        pubRef="grievanceSocialProtection.TicketStatusPicker"*/}
-        {/*        label="ticket.ticketStatus"*/}
-        {/*        value={this._filterValue("status")}*/}
-        {/*        withNull*/}
-        {/*        onChange={(v) => this.debouncedOnChangeFilter([*/}
-        {/*          {*/}
-        {/*            id: "status",*/}
-        {/*            value: v,*/}
-        {/*            filter: `status_Icontains: ${v}`,*/}
-        {/*          },*/}
-        {/*        ])}*/}
-        {/*      />*/}
-        {/*    </Grid>*/}
-        {/*  )}*/}
-        {/*/>*/}
-        {/*<ControlledField*/}
-        {/*  module={MODULE_NAME}*/}
-        {/*  id="ticket.category"*/}
-        {/*  field={(*/}
-        {/*    <Grid item xs={3} className={classes.item}>*/}
-        {/*      <PublishedComponent*/}
-        {/*        pubRef="grievanceSocialProtection.DropDownCategoryPicker"*/}
-        {/*        withNull*/}
-        {/*        value={this._filterValue("category")}*/}
-        {/*        onChange={(v) => this.debouncedOnChangeFilter([*/}
-        {/*          {*/}
-        {/*            id: "category",*/}
-        {/*            value: v,*/}
-        {/*            filter: `category_Icontains: "${v}"`,*/}
-        {/*          },*/}
-        {/*        ])}*/}
-        {/*      />*/}
-        {/*    </Grid>*/}
-        {/*  )}*/}
-        {/*/>*/}
-        {/*<Grid>*/}
-        {/*  <ControlledField*/}
-        {/*    module={MODULE_NAME}*/}
-        {/*    id="OrganizationFilter.showHistory"*/}
-        {/*    field={(*/}
-        {/*      <Grid item xs={2} className={classes.item}>*/}
-        {/*        <FormControlLabel*/}
-        {/*          control={(*/}
-        {/*            <Checkbox*/}
-        {/*              color="primary"*/}
-        {/*              checked={!!this._filterValue("showHistory")}*/}
-        {/*              onChange={(event) => this._onChangeCheckbox("showHistory", event.target.checked)}*/}
-        {/*            />*/}
-        {/*          )}*/}
-        {/*          label={"showHistory"}*/}
-        {/*        />*/}
-        {/*      </Grid>*/}
-        {/*    )}*/}
-        {/*  />*/}
-        {/*</Grid>*/}
+        <ControlledField
+          module={MODULE_NAME}
+          id="workforce.organization.name.en"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.organization.name.en"
+                name="nameEn"
+                value={this._filterValue("nameEn")}
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="workforce.organization.name.bn"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.organization.name.bn"
+                name="nameBn"
+                value={this._filterValue("nameBn")}
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="workforce.organization.address"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.organization.address"
+                name="address"
+                value={this._filterValue("address")}
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="workforce.organization.phone"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.organization.phone"
+                name="phoneNumber"
+                value={this._filterValue("phoneNumber")}
+              />
+            </Grid>
+          }
+        />
+        {/* <Grid>
+          <ControlledField
+            module={MODULE_NAME}
+            id="TicketFilter.showHistory"
+            field={
+              <Grid item xs={2} className={classes.item}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      color="primary"
+                      checked={!!this._filterValue("showHistory")}
+                      onChange={(event) =>
+                        this._onChangeCheckbox(
+                          "showHistory",
+                          event.target.checked
+                        )
+                      }
+                    />
+                  }
+                  label={formatMessage(
+                    this.props.intl,
+                    MODULE_NAME,
+                    "showHistory"
+                  )}
+                />
+              </Grid>
+            }
+          />
+        </Grid> */}
+
         <Contributions
           filters={filters}
           onChangeFilters={onChangeFilters}
@@ -220,4 +163,6 @@ class OrganizationFilter extends Component {
   }
 }
 
-export default withModulesManager(withTheme(withStyles(styles)(OrganizationFilter)));
+export default withModulesManager(
+  withTheme(withStyles(styles)(OrganizationFilter))
+);

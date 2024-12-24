@@ -103,8 +103,6 @@ class OrganizationSearcher extends Component {
     "workforce.organization.phone",
     "workforce.representative.details",
     this.isShowHistory() ? 'workforce.version' : '',
-
-  
   ];
 
   sorts = () => [
