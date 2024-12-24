@@ -183,7 +183,7 @@ class OrganizationSearcher extends Component {
           fetchedItems={fetchedOrganizations}
           errorItems={errorOrganizations}
           // tableTitle={formatMessageWithValues(intl, MODULE_NAME, "ticketSummaries", { count })}
-          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations" />}
+          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations" values={count} />}
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
           fetch={this.fetch}
