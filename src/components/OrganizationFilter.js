@@ -31,13 +31,15 @@ const WORKFORCE_ORGANIZATION_FILTER_CONTRIBUTION_KEY =
   "workforce.organization.Filter";
 
 class OrganizationFilter extends Component {
-  // debouncedOnChangeFilter = _debounce(
-  //   this.props.onChangeFilters,
-  //   this.props.modulesManager.getConf("fe-grievance_social_protection", "debounceTime", 800),
-  // );
+  debouncedOnChangeFilter = _debounce(
+    this.props.onChangeFilters,
+    800,
+  );
 
   _filterValue = (k) => {
+    console.log(k)
     const { filters } = this.props;
+    console.log(filters)
     return !!filters && !!filters[k] ? filters[k].value : null;
   };
 
@@ -77,6 +79,13 @@ class OrganizationFilter extends Component {
                 label="workforce.organization.name.en"
                 name="nameEn"
                 value={this._filterValue("nameEn")}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'nameEn',
+                    value: v,
+                    filter: `nameEn_Icontains: "${v}"`,
+                  },
+                ])}
               />
             </Grid>
           }
@@ -91,6 +100,13 @@ class OrganizationFilter extends Component {
                 label="workforce.organization.name.bn"
                 name="nameBn"
                 value={this._filterValue("nameBn")}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'nameBn',
+                    value: v,
+                    filter: `nameBn_Icontains: "${v}"`,
+                  },
+                ])}
               />
             </Grid>
           }
@@ -105,6 +121,13 @@ class OrganizationFilter extends Component {
                 label="workforce.organization.address"
                 name="address"
                 value={this._filterValue("address")}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'address',
+                    value: v,
+                    filter: `address_Icontains: "${v}"`,
+                  },
+                ])}
               />
             </Grid>
           }
@@ -119,6 +142,13 @@ class OrganizationFilter extends Component {
                 label="workforce.organization.phone"
                 name="phoneNumber"
                 value={this._filterValue("phoneNumber")}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'phoneNumber',
+                    value: v,
+                    filter: `phoneNumber_Icontains: "${v}"`,
+                  },
+                ])}
               />
             </Grid>
           }
@@ -164,5 +194,5 @@ class OrganizationFilter extends Component {
 }
 
 export default withModulesManager(
-  withTheme(withStyles(styles)(OrganizationFilter))
+  withTheme(withStyles(styles)(OrganizationFilter)),
 );

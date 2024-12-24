@@ -62,7 +62,7 @@ function reducer(
         errorTickets: null,
       };
     case 'WORKFORCE_ORGANIZATIONS_RESP':
-      console.log(parseData(action.payload.data.workforceOrganizations))
+      // console.log(parseData(action.payload.data.workforceOrganizations))
       return {
         ...state,
         fetchingTickets: false,
