@@ -9,6 +9,7 @@ import {
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/WorkforceOrganizationPage";
+import ParentPicker from "./pickers/ParentPicker";
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
@@ -16,6 +17,8 @@ const DEFAULT_CONFIG = {
 
  refs: [
     { key: 'workforce.route.organizations.organization', ref: ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION },
+    { key: 'workforceOrganization.ParentPicker', ref: ParentPicker },
+    { key: 'workforceOrganization.ParentPicker', ref: ParentPicker },
   ],
 
   'core.Router': [
