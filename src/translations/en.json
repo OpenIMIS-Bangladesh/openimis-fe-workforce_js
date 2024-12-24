@@ -33,11 +33,19 @@
     "workforce.organization.location": "Location",
     "workforce.organization.address": "Address",
     "workforce.organization.phone": "Phone",
+    "workforce.organization.email":"Organization Email",
+    "workforce.organization.website":"Organization website",
+    "workforce.organization.parent":"Parent",
     "workforce.representative.details": "Representative Details",
     "workforce.representative.name.en": "Representative Name En",
     "workforce.representative.name.bn": "Representative Name Bn",
     "workforce.representative.location": "Representative Location",
     "workforce.representative.address": "Representative Address",
     "workforce.representative.phone": "Representative Phone",
-    "workforce.representative.email": "Representative Email"
+    "workforce.representative.email": "Representative Email",
+    "workforce.representative.nid": "Representative Nid",
+    "workforce.representative.passport": "Representative passport",
+    "workforce.representative.position": "Representative position",
+    "workforce.representative.birthDate": "Representative birthDate"
+
 }

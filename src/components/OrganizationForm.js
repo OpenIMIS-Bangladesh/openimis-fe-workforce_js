@@ -149,7 +149,7 @@ class OrganizationForm extends Component {
             edited={ticket}
             reset={reset}
             update={update}
-            title="ticket.title.bar"
+            title="workforce"
             // titleParams={{ label: ticketLabel(this.state.ticket) }}
             titleParams={{ label: "Label" }}
             back={back}
