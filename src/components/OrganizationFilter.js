@@ -37,9 +37,7 @@ class OrganizationFilter extends Component {
   );
 
   _filterValue = (k) => {
-    console.log(k)
     const { filters } = this.props;
-    console.log(filters)
     return !!filters && !!filters[k] ? filters[k].value : null;
   };
 
