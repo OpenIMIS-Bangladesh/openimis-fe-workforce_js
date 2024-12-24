@@ -13,11 +13,11 @@ export const ACTION_TYPE = {
 
 function reducer(
   state = {
-    fetchingTickets: false,
-    errorTickets: null,
-    fetchedTickets: false,
-    tickets: [],
-    ticketsPageInfo: { totalCount: 0 },
+    fetchingOrganizations: false,
+    errorOrganizations: null,
+    fetchedOrganizations: false,
+    organizations: [],
+    organizationsPageInfo: { totalCount: 0 },
 
     fetchingTicket: false,
     errorTicket: null,
@@ -55,21 +55,21 @@ function reducer(
     case 'WORKFORCE_ORGANIZATIONS_REQ':
       return {
         ...state,
-        fetchingTickets: true,
-        fetchedTickets: false,
-        tickets: [],
-        ticketsPageInfo: { totalCount: 0 },
-        errorTickets: null,
+        fetchingOrganizations: true,
+        fetchedOrganizations: false,
+        organizations: [],
+        organizationsPageInfo: { totalCount: 0 },
+        errorOrganizations: null,
       };
     case 'WORKFORCE_ORGANIZATIONS_RESP':
       // console.log(parseData(action.payload.data.workforceOrganizations))
       return {
         ...state,
-        fetchingTickets: false,
-        fetchedTickets: true,
-        tickets: parseData(action.payload.data.workforceOrganizations),
-        ticketsPageInfo: pageInfo(action.payload.data.workforceOrganizations),
-        errorTickets: formatGraphQLError(action.payload),
+        fetchingOrganizations: false,
+        fetchedOrganizations: true,
+        organizations: parseData(action.payload.data.workforceOrganizations),
+        organizationsPageInfo: pageInfo(action.payload.data.workforceOrganizations),
+        errorOrganizations: formatGraphQLError(action.payload),
       };
     case 'WORKFORCE_ORGANIZATIONS_ERR':
       return {
@@ -90,7 +90,7 @@ function reducer(
         ...state,
         fetchingTicket: false,
         fetchedTicket: true,
-        ticket: parseData(action.payload.data.tickets).map((ticket) => ({
+        ticket: parseData(action.payload.data.workforceOrganizations).map((ticket) => ({
           ...ticket,
           id: decodeId(ticket.id),
         }))?.[0],
@@ -184,26 +184,26 @@ function reducer(
     case 'TICKET_INSUREE_TICKETS_REQ':
       return {
         ...state,
-        fetchingTickets: true,
-        fetchedTickets: false,
+        fetchingOrganizations: true,
+        fetchedOrganizations: false,
         tickets: null,
         policy: null,
-        errorTickets: null,
+        errorOrganizations: null,
       };
     case 'TICKET_INSUREE_TICKETS_RESP':
       return {
         ...state,
-        fetchingTickets: false,
-        fetchedTickets: true,
+        fetchingOrganizations: false,
+        fetchedOrganizations: true,
         tickets: parseData(action.payload.data.ticketsByInsuree),
-        ticketsPageInfo: pageInfo(action.payload.data.ticketsByInsuree),
-        errorTickets: formatGraphQLError(action.payload),
+        organizationsPageInfo: pageInfo(action.payload.data.ticketsByInsuree),
+        errorOrganizations: formatGraphQLError(action.payload),
       };
     case 'TICKET_INSUREE_TICKETS_ERR':
       return {
         ...state,
-        fetchingTickets: false,
-        errorTickets: formatServerError(action.payload),
+        fetchingOrganizations: false,
+        errorOrganizations: formatServerError(action.payload),
       };
     case REQUEST(ACTION_TYPE.GET_GRIEVANCE_CONFIGURATION):
       return {
