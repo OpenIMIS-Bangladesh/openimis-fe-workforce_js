@@ -19,11 +19,11 @@ function reducer(
     organizations: [],
     organizationsPageInfo: { totalCount: 0 },
 
-    fetchingTicket: false,
-    errorTicket: null,
-    fetchedTicket: false,
-    ticket: null,
-    ticketPageInfo: { totalCount: 0 },
+    fetchingOrganization: false,
+    errorOrganization: null,
+    fetchedOrganization: false,
+    Organization: null,
+    OrganizationPageInfo: { totalCount: 0 },
 
     fetchingCategory: false,
     fetchedCategory: false,
@@ -31,10 +31,10 @@ function reducer(
     category: [],
     categoryPageInfo: { totalCount: 0 },
 
-    fetchingTicketAttachments: false,
-    fetchedTicketAttachments: false,
-    errorTicketAttachments: null,
-    ticketAttachments: null,
+    fetchingOrganizationAttachments: false,
+    fetchedOrganizationAttachments: false,
+    errorOrganizationAttachments: null,
+    OrganizationAttachments: null,
 
     fetchingGrievanceConfig: false,
     fetchedGrievanceConfig: false,
@@ -44,10 +44,10 @@ function reducer(
     submittingMutation: false,
     mutation: {},
 
-    fetchingTicketComments: false,
-    fetchedTicketComments: false,
-    errorTicketComments: null,
-    ticketComments: null,
+    fetchingOrganizationComments: false,
+    fetchedOrganizationComments: false,
+    errorOrganizationComments: null,
+    OrganizationComments: null,
   },
   action,
 ) {
@@ -80,60 +80,60 @@ function reducer(
     case 'TICKET_TICKET_REQ':
       return {
         ...state,
-        fetchingTicket: true,
-        fetchedTicket: false,
-        ticket: null,
-        errorTicket: null,
+        fetchingOrganization: true,
+        fetchedOrganization: false,
+        Organization: null,
+        errorOrganization: null,
       };
     case 'TICKET_TICKET_RESP':
       return {
         ...state,
-        fetchingTicket: false,
-        fetchedTicket: true,
-        ticket: parseData(action.payload.data.workforceOrganizations).map((ticket) => ({
-          ...ticket,
-          id: decodeId(ticket.id),
+        fetchingOrganization: false,
+        fetchedOrganization: true,
+        Organization: parseData(action.payload.data.workforceOrganizations).map((Organization) => ({
+          ...Organization,
+          id: decodeId(Organization.id),
         }))?.[0],
-        errorTicket: formatGraphQLError(action.payload),
+        errorOrganization: formatGraphQLError(action.payload),
       };
     case CLEAR(ACTION_TYPE.CLEAR_TICKET):
       return {
         ...state,
-        fetchingTicket: false,
-        fetchedTicket: false,
-        ticket: null,
-        errorTicket: null,
-        fetchingTicketComments: false,
-        fetchedTicketComments: false,
-        ticketComments: [],
-        ticketCommentsPageInfo: { totalCount: 0 },
-        errorTicketComments: null,
+        fetchingOrganization: false,
+        fetchedOrganization: false,
+        Organization: null,
+        errorOrganization: null,
+        fetchingOrganizationComments: false,
+        fetchedOrganizationComments: false,
+        OrganizationComments: [],
+        OrganizationCommentsPageInfo: { totalCount: 0 },
+        errorOrganizationComments: null,
       };
     case 'COMMENT_COMMENTS_REQ':
       return {
         ...state,
-        fetchingTicketComments: false,
-        fetchedTicketComments: false,
-        ticketComments: state.ticketComments || [],
-        ticketCommentsPageInfo: { totalCount: 0 },
-        errorTicketComments: null,
+        fetchingOrganizationComments: false,
+        fetchedOrganizationComments: false,
+        OrganizationComments: state.OrganizationComments || [],
+        OrganizationCommentsPageInfo: { totalCount: 0 },
+        errorOrganizationComments: null,
       };
     case 'COMMENT_COMMENTS_RESP':
       return {
         ...state,
-        fetchingTicketComments: false,
-        fetchedTicketComments: true,
-        ticketComments: parseData(action.payload.data.comments).map(
+        fetchingOrganizationComments: false,
+        fetchedOrganizationComments: true,
+        OrganizationComments: parseData(action.payload.data.comments).map(
           (comment) => ({ ...comment, id: decodeId(comment.id) }),
         ),
-        ticketCommentsPageInfo: pageInfo(action.payload.data.comments),
-        errorTicketComments: formatGraphQLError(action.payload),
+        OrganizationCommentsPageInfo: pageInfo(action.payload.data.comments),
+        errorOrganizationComments: formatGraphQLError(action.payload),
       };
     case 'COMMENT_COMMENTS_ERR':
       return {
         ...state,
-        fetchingTicketComments: false,
-        ticketComments: [],
+        fetchingOrganizationComments: false,
+        OrganizationComments: [],
         error: formatServerError(action.payload),
       };
     case 'CATEGORY_CATEGORY_REQ':
@@ -162,24 +162,24 @@ function reducer(
     case 'TICKET_TICKET_ATTACHMENTS_REQ':
       return {
         ...state,
-        fetchingTicketAttachments: true,
-        fetchedTicketAttachments: false,
-        ticketAttachments: null,
-        errorTicketAttachments: null,
+        fetchingOrganizationAttachments: true,
+        fetchedOrganizationAttachments: false,
+        OrganizationAttachments: null,
+        errorOrganizationAttachments: null,
       };
     case 'TICKET_TICKET_ATTACHMENTS_RESP':
       return {
         ...state,
-        fetchingTicketAttachments: false,
-        fetchedTicketAttachments: true,
-        ticketAttachments: parseData(action.payload.data.ticketAttachments),
-        errorTicketAttachments: formatGraphQLError(action.payload),
+        fetchingOrganizationAttachments: false,
+        fetchedOrganizationAttachments: true,
+        OrganizationAttachments: parseData(action.payload.data.OrganizationAttachments),
+        errorOrganizationAttachments: formatGraphQLError(action.payload),
       };
     case 'TICKET_TICKET_ATTACHMENTS_ERR':
       return {
         ...state,
-        fetchingTicketAttachments: false,
-        errorTicketAttachments: formatServerError(action.payload),
+        fetchingOrganizationAttachments: false,
+        errorOrganizationAttachments: formatServerError(action.payload),
       };
     case 'TICKET_INSUREE_TICKETS_REQ':
       return {
@@ -237,12 +237,12 @@ function reducer(
       return dispatchMutationResp(state, 'resolveGrievanceByComment', action);
     case SUCCESS(ACTION_TYPE.REOPEN_TICKET):
       return dispatchMutationResp(state, 'reopenTicket', action);
-    case 'TICKET_MUTATION_REQ':
+    case 'ORG_MUTATION_REQ':
       return dispatchMutationReq(state, action);
-    case 'TICKET_MUTATION_ERR':
+    case 'ORG_MUTATION_ERR':
       return dispatchMutationErr(state, action);
-    case 'TICKET_CREATE_TICKET_RESP':
-      return dispatchMutationResp(state, 'createTicket', action);
+    case 'ORG_CREATE_ORG_RESP':
+      return dispatchMutationResp(state, 'createOrganization', action);
     case 'TICKET_UPDATE_TICKET_RESP':
       return dispatchMutationResp(state, 'updateTicket', action);
     case 'TICKET_DELETE_TICKET_RESP':
