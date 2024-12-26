@@ -19,7 +19,7 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../constants";
 import { fetchOrganizationsSummary } from "../actions";
-import OrganizationFilter from "./OrganizationFilter";
+import OrganizationUnitFilter from "./OrganizationUnitFilter";
 
 
 const styles = (theme) => ({
@@ -41,7 +41,7 @@ const styles = (theme) => ({
   },
 });
 
-class OrganizationSearcher extends Component {
+class OrganizationUnitSearcher extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -99,9 +99,9 @@ class OrganizationSearcher extends Component {
   headers = () => [
     "workforce.organization.name.en",
     "workforce.organization.name.bn",
-    "workforce.organization.address",
-    "workforce.organization.phone",
-    "workforce.representative.details",
+    "workforce.organization.unit.level",
+    "workforce.organization.unit.phone",
+    "workforce.organization.unit.email",
     this.isShowHistory() ? 'workforce.version' : '',
   ];
 
@@ -111,22 +111,14 @@ class OrganizationSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      (workforce) => workforce.nameEn,
-      (workforce) => workforce.nameBn,
-      (workforce) => workforce.address,
-      (workforce) => workforce.phoneNumber,
-      (workforce) => {
-        const nameEn = workforce.workforceRepresentative?.nameEn || "N/A";
-        const nameBn = workforce.workforceRepresentative?.nameBn || "N/A";
-        const address = workforce.workforceRepresentative?.address || "N/A";
-        const phone = workforce.workforceRepresentative?.phoneNumber || "N/A";
-        return `Name En: ${nameEn}\n, Name Bn: ${nameBn}\n, Address: ${address}\n, Phone: ${phone}\n`;
-      },
+      (organizationunit) => organizationunit.nameEn,
+      (organizationunit) => organizationunit.nameBn,
+      (organizationunit) => organizationunit.level,
+      (organizationunit) => organizationunit.phoneNumber,
+      (organizationunit) => organizationunit.email,
       (workforce) => (this.isShowHistory() ? workforce?.version : null),
 
     ];
-
-    // if (this.props.rights.includes(RIGHT_ORGANIZATION_EDIT)) {
          formatters.push((workforce) => (
            <Tooltip title="Edit">
              <IconButton
@@ -135,7 +127,7 @@ class OrganizationSearcher extends Component {
                  historyPush(
                    this.props.modulesManager,
                    this.props.history,
-                   'workforce.route.organizations.organization',
+                   'workforce/organizations/unit/edit',
                    [decodeId(workforce.id)],
                    false,
                  );
@@ -163,7 +155,7 @@ class OrganizationSearcher extends Component {
     const count = organizationsPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
-      <OrganizationFilter
+      <OrganizationUnitFilter
         filters={filters}
         onChangeFilters={onChangeFilters}
         setShowHistoryFilter={(showHistoryFilter) => this.setState({ showHistoryFilter })}
@@ -183,7 +175,7 @@ class OrganizationSearcher extends Component {
           fetchedItems={fetchedOrganizations}
           errorItems={errorOrganizations}
           // tableTitle={formatMessageWithValues(intl, MODULE_NAME, "ticketSummaries", { count })}
-          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations" values={count} />}
+          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.unit" />}
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
           fetch={this.fetch}
@@ -227,6 +219,6 @@ const mapDispatchToProps = (dispatch) => bindActionCreators(
 
 export default withModulesManager(
   withHistory(
-    connect(mapStateToProps, mapDispatchToProps)(withTheme(withStyles(styles)(OrganizationSearcher))),
+    connect(mapStateToProps, mapDispatchToProps)(withTheme(withStyles(styles)(OrganizationUnitSearcher))),
   ),
 );

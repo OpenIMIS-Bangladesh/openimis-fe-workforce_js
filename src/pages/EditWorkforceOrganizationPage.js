@@ -1,405 +1,304 @@
-import React, { Component, useRef } from 'react';
-import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
-import PrintIcon from '@material-ui/icons/Print';
-import { withTheme, withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, { useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Grid,
   Paper,
   Typography,
   Divider,
   IconButton,
-  Button,
-} from '@material-ui/core';
+} from "@material-ui/core";
+import { Save } from "@material-ui/icons";
 import {
-  journalize,
   TextInput,
+  journalize,
   PublishedComponent,
   FormattedMessage,
-} from '@openimis/fe-core';
-import _ from 'lodash';
-import { Save } from '@material-ui/icons';
-import { updateOrganization, fetchOrganization } from '../actions';
-import { EMPTY_STRING, MODULE_NAME } from '../constants';
-// import TicketPrintTemplate from '../components/TicketPrintTemplate';
+} from "@openimis/fe-core";
+import { updateOrganization } from "../actions";
+import { EMPTY_STRING, MODULE_NAME } from "../constants";
+import { makeStyles } from "@material-ui/core/styles";
+import WorkforceForm from "../components/WorkforceForm";
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   paper: theme.paper.paper,
   tableTitle: theme.table.title,
   item: theme.paper.item,
   fullHeight: {
-    height: '100%',
+    height: "100%",
   },
-});
+}));
 
-class EditWorkforceOrganizationPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      stateEdited: props.ticket,
-      comments: props.comments,
-      reporter: {},
-      grievanceConfig: {},
+const EditWorkforceOrganizationPage = (props) => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
+
+  // Redux state
+  const submittingMutation = useSelector(
+    (state) => state.grievanceSocialProtection.submittingMutation
+  );
+  const mutation = useSelector(
+    (state) => state.grievanceSocialProtection.mutation
+  );
+  const grievanceConfig = useSelector(
+    (state) => state.grievanceSocialProtection.grievanceConfig
+  );
+
+  // Local state
+  const [stateEdited, setStateEdited] = useState({});
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    if (props.organization) {
+      setStateEdited(props.organization);
+    }
+  }, [props.organization]);
+
+  // Effects
+  useEffect(() => {
+    if (!submittingMutation) {
+      dispatch(journalize(mutation));
+    }
+  }, [submittingMutation, mutation, dispatch]);
+
+  // Handlers
+  const save = useCallback(() => {
+    const representativeData = {
+      type: "organization",
+      nameBn: stateEdited.repNameBn,
+      nameEn: stateEdited.repName,
+      location: stateEdited.repLocation,
+      address: stateEdited.repAddress,
+      phoneNumber: stateEdited.repPhone,
+      email: stateEdited.repEmail,
+      nid: stateEdited.nid,
+      passportNo: stateEdited.passport,
+      birthDate: stateEdited.birthDate,
+      position: stateEdited.position,
     };
-  }
 
-  componentDidMount() {
-    if (this.props.edited_id) {
-      this.setState({ grievanceConfig: this.props.grievanceConfig });
-      this.setState({ stateEdited: this.props.ticket });
-      if (this.props.ticket.reporter) {
-        this.setState({ reporter: JSON.parse(JSON.parse(this.props.ticket.reporter || '{}'), '{}') });
-      }
-    }
-  }
+    console.log("Saving Representative Data:", representativeData);
 
-  // eslint-disable-next-line no-unused-vars
-  componentDidUpdate(prevPops, prevState, snapshort) {
-    if (prevPops.submittingMutation && !this.props.submittingMutation) {
-      this.props.journalize(this.props.mutation);
-    }
-  }
-
-  save = () => {
-    this.props.updateOrganization(
-      this.state.stateEdited,
-      `updated ticket ${this.state.stateEdited.code}`,
+    dispatch(
+      updateOrganization(
+        representativeData,
+        grievanceConfig,
+        `Updated Representative ${representativeData.nameEn}`
+      )
     );
-  };
 
-  updateAttribute = (k, v) => {
-    this.setState((state) => ({
-      stateEdited: { ...state.stateEdited, [k]: v },
+    setIsSaved(true);
+  }, [stateEdited, grievanceConfig, dispatch]);
+
+  const updateAttribute = useCallback((key, value) => {
+    setStateEdited((prev) => ({
+      ...prev,
+      [key]: value,
     }));
-  };
+    setIsSaved(false);
+  }, []);
 
-  extractFieldFromJsonExt = (reporter, field) => {
-    if (reporter) {
-      if (reporter.jsonExt) {
-        return reporter.jsonExt[field] || '';
-      }
-      return '';
-    }
-    return '';
-  };
+  const isSaveDisabled = !(
+    stateEdited.title &&
+    stateEdited.address &&
+    stateEdited.phone &&
+    stateEdited.email &&
+    stateEdited.website &&
+    stateEdited.parent &&
+    stateEdited.location
+  );
 
-  doesTicketChange = () => {
-    const { ticket } = this.props;
-    const { stateEdited } = this.state;
-    return !_.isEqual(ticket, stateEdited);
-  };
-
-  render() {
-    const {
-      classes,
-      titleone = ' Ticket.ComplainantInformation',
-      titletwo = ' Ticket.DescriptionOfEvents',
-      titlethree = ' Ticket.Resolution',
-      titleParams = { label: EMPTY_STRING },
-      grievanceConfig,
-    } = this.props;
-
-    const propsReadOnly = this.props.readOnly;
-
-    const {
-      stateEdited, reporter, comments,
-    } = this.state;
-
-    return (
-      <div className={classes.page}>
-        <Grid container>
-          <Grid item xs={12}>
-            {stateEdited.reporter && (
-            <Paper className={classes.paper}>
-              <Grid container className={classes.tableTitle}>
-                <Grid item xs={8} className={classes.tableTitle}>
-                  <Typography>
-                    <FormattedMessage module={MODULE_NAME} id={titleone} values={titleParams} />
-                  </Typography>
-                </Grid>
-              </Grid>
-              <Grid container className={classes.item}>
-                {stateEdited.reporterTypeName === 'individual' && (
-                <Grid item xs={3} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="individual.IndividualPicker"
-                    value={reporter}
-                    onChange={(v) => this.updateAttribute('reporter', v)}
-                    label="Complainant"
-                    readOnly
+  return (
+    <div className={classes.page}>
+      <Grid container>
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <Grid container className={classes.tableTitle}>
+              <Grid item xs={12} className={classes.tableTitle}>
+                <Typography>
+                  <FormattedMessage
+                    module={MODULE_NAME}
+                    id="Organization"
+                    values={{ label: EMPTY_STRING }}
                   />
-                </Grid>
-                )}
+                </Typography>
               </Grid>
-              <Divider />
-              <Grid container className={classes.item}>
-                {stateEdited.reporterTypeName === 'individual' && (
-                <>
-                  <Grid item xs={4} className={classes.item}>
-                    <TextInput
-                      module={MODULE_NAME}
-                      label="ticket.name"
-                      value={reporter && reporter.individual
-                        ? `${reporter.individual.firstName} ${reporter.individual.lastName} ${reporter.individual.dob}`
-                        : reporter
-                          ? `${reporter.firstName} ${reporter.lastName} ${reporter.dob}`
-                          : EMPTY_STRING}
-                      onChange={(v) => this.updateAttribute('name', v)}
-                      required={false}
-                      readOnly
-                    />
-                  </Grid>
-                  <Grid item xs={4} className={classes.item}>
-                    <TextInput
-                      module={MODULE_NAME}
-                      label="ticket.phone"
-                      value={!!stateEdited && !!stateEdited.reporter
-                        ? this.extractFieldFromJsonExt(reporter, 'phone')
-                        : EMPTY_STRING}
-                      onChange={(v) => this.updateAttribute('phone', v)}
-                      required={false}
-                      readOnly
-                    />
-                  </Grid>
-                  <Grid item xs={4} className={classes.item}>
-                    <TextInput
-                      module={MODULE_NAME}
-                      label="ticket.email"
-                      value={!!stateEdited && !!stateEdited.reporter
-                        ? this.extractFieldFromJsonExt(reporter, 'email')
-                        : EMPTY_STRING}
-                      onChange={(v) => this.updateAttribute('email', v)}
-                      required={false}
-                      readOnly
-                    />
-                  </Grid>
-                </>
-                )}
-                {stateEdited.reporterTypeName === 'beneficiary' && (
-                <>
-                  <Grid item xs={4} className={classes.item}>
-                    <TextInput
-                      module={MODULE_NAME}
-                      label="ticket.nationalId"
-                      value={reporter?.jsonExt?.national_id ?? ''}
-                      required={false}
-                      readOnly
-                    />
-                  </Grid>
-                  <Grid item xs={4} className={classes.item}>
-                    <TextInput
-                      module={MODULE_NAME}
-                      label="ticket.email"
-                      value={!!stateEdited && !!stateEdited.reporter
-                        ? this.extractFieldFromJsonExt(reporter, 'email')
-                        : EMPTY_STRING}
-                      onChange={(v) => this.updateAttribute('email', v)}
-                      required={false}
-                      readOnly
-                    />
-                  </Grid>
-                </>
-                )}
+            </Grid>
+            <Divider />
+            <Grid container className={classes.item}>
+              <Grid item xs={6} className={classes.item}>
+                <TextInput
+                  label="workforce.organization.name.en"
+                  value={stateEdited.title || ""}
+                  onChange={(v) => updateAttribute("title", v)}
+                  required
+                  readOnly={isSaved}
+                />
               </Grid>
-            </Paper>
-            )}
-          </Grid>
-        </Grid>
 
-        <Grid container>
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <Grid container className={classes.tableTitle} alignItems="center">
-                <Grid item xs={8} className={classes.tableTitle}>
-                  <Typography>
+              <Grid item xs={6} className={classes.item}>
+                <TextInput
+                  label="workforce.organization.name.bn"
+                  value={stateEdited.titleBn || ""}
+                  onChange={(v) => updateAttribute("titleBn", v)}
+                  required
+                  readOnly={isSaved}
+                />
+              </Grid>
+
+              <Grid item xs={6} className={classes.item}>
+                <PublishedComponent
+                  pubRef="workforceOrganization.ParentPicker"
+                  value={stateEdited.parent || null}
+                  onChange={(option) => updateAttribute("parent", option)}
+                  required
+                  readOnly={isSaved}
+                />
+              </Grid>
+
+              <Grid item xs={6} className={classes.item}>
+                <TextInput
+                  label="workforce.organization.phone"
+                  value={stateEdited.phone || ""}
+                  onChange={(v) => updateAttribute("phone", v)}
+                  required
+                  type={"number"}
+                  readOnly={isSaved}
+                />
+              </Grid>
+
+              <Grid item xs={6} className={classes.item}>
+                <TextInput
+                  label="workforce.organization.email"
+                  value={stateEdited.email || ""}
+                  onChange={(v) => updateAttribute("email", v)}
+                  required
+                  readOnly={isSaved}
+                />
+              </Grid>
+
+              <Grid item xs={6} className={classes.item}>
+                <TextInput
+                  label="workforce.organization.website"
+                  value={stateEdited.website || ""}
+                  onChange={(v) => updateAttribute("website", v)}
+                  required
+                  readOnly={isSaved}
+                />
+              </Grid>
+
+              <Grid item xs={12} className={classes.item}>
+                <PublishedComponent
+                  pubRef="location.DetailedLocation"
+                  withNull={true}
+                  value={stateEdited.location || null}
+                  onChange={(location) => updateAttribute("location", location)}
+                  readOnly={isSaved}
+                  required
+                  split={true}
+                  filterLabels={false}
+                />
+              </Grid>
+
+              <Grid item xs={6} className={classes.item}>
+                <TextInput
+                  label="workforce.organization.address"
+                  value={stateEdited.address || ""}
+                  onChange={(v) => updateAttribute("address", v)}
+                  required
+                  readOnly={isSaved}
+                />
+              </Grid>
+
+              <Grid item xs={12} className={classes.item}>
+                <WorkforceForm
+                  title={
                     <FormattedMessage
-                      module={MODULE_NAME}
-                      id={titletwo}
-                      values={titleParams}
+                      id="workforce.representative.info"
+                      defaultMessage="Workforce Representative Info"
                     />
-                  </Typography>
-                </Grid>
-                <Grid item xs={4} style={{ textAlign: 'right' }}>
-                  <ReactToPrint content={() => this.componentRef}>
-                    <PrintContextConsumer>
-                      {({ handlePrint }) => (
-                        <IconButton
-                          variant="contained"
-                          component="label"
-                          onClick={handlePrint}
-                        >
-                          <PrintIcon />
-                        </IconButton>
-                      )}
-                    </PrintContextConsumer>
-                  </ReactToPrint>
-                </Grid>
+                  }
+                  stateEdited={stateEdited}
+                  isSaved={isSaved}
+                  updateAttribute={updateAttribute}
+                  fields={[
+                    {
+                      key: "repName",
+                      label: "workforce.representative.name.en",
+                      type: "text",
+                      required: true,
+                    },
+                    {
+                      key: "repNameBn",
+                      label: "workforce.representative.name.bn",
+                      type: "text",
+                      required: true,
+                    },
+                    {
+                      key: "position",
+                      label: "workforce.representative.position",
+                      type: "text",
+                      required: true,
+                    },
+                    {
+                      key: "repPhone",
+                      label: "workforce.representative.phone",
+                      type: "number",
+                      required: true,
+                    },
+                    {
+                      key: "repEmail",
+                      label: "workforce.representative.email",
+                      type: "text",
+                      required: true,
+                    },
+                    {
+                      key: "nid",
+                      label: "workforce.representative.nid",
+                      type: "number",
+                      required: true,
+                    },
+                    {
+                      key: "passport",
+                      label: "workforce.representative.passport",
+                      type: "text",
+                      required: false,
+                    },
+                    
+                    {
+                      key: "repLocation",
+                      label: "workforce.representative.location",
+                      type: "location",
+                      required: true,
+                    },
+                    {
+                      key: "repAddress",
+                      label: "workforce.representative.address",
+                      type: "text",
+                      required: true,
+                    },
+                  ]}
+                />
               </Grid>
-              <Divider />
-              <Grid container className={classes.item}>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="ticket.title"
-                    value={stateEdited.title}
-                    onChange={(v) => this.updateAttribute('title', v)}
-                    required
-                    readOnly={propsReadOnly}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="core.DatePicker"
-                    label="ticket.dateOfIncident"
-                    value={stateEdited.dateOfIncident}
-                    required={false}
-                    onChange={(v) => this.updateAttribute('dateOfIncident', v)}
-                    readOnly={propsReadOnly}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="grievanceSocialProtection.DropDownCategoryPicker"
-                    value={stateEdited.category}
-                    onChange={(v) => this.updateAttribute('category', v)}
-                    required
-                    readOnly={propsReadOnly}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="grievanceSocialProtection.FlagPicker"
-                    value={stateEdited.flags}
-                    onChange={(v) => this.updateAttribute('flags', v)}
-                    required
-                    readOnly={propsReadOnly}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="grievanceSocialProtection.ChannelPicker"
-                    value={stateEdited.channel}
-                    onChange={(v) => this.updateAttribute('channel', v)}
-                    required
-                    readOnly={propsReadOnly}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="grievanceSocialProtection.TicketPriorityPicker"
-                    value={stateEdited.priority}
-                    onChange={(v) => this.updateAttribute('priority', v)}
-                    required={false}
-                    readOnly={propsReadOnly}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="admin.UserPicker"
-                    value={stateEdited.attendingStaff}
-                    module="core"
-                    onChange={(v) => this.updateAttribute('attendingStaff', v)}
-                    readOnly={propsReadOnly}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="grievanceSocialProtection.TicketStatusPicker"
-                    value={stateEdited.status}
-                    onChange={(v) => this.updateAttribute('status', v)}
-                    required={false}
-                    readOnly={propsReadOnly}
-                  />
-                </Grid>
-                <Grid item xs={12} className={classes.item}>
-                  <TextInput
-                    label="ticket.description"
-                    value={stateEdited.description}
-                    onChange={(v) => this.updateAttribute('description', v)}
-                    required={false}
-                    readOnly={propsReadOnly}
-                  />
-                </Grid>
+
+              <Grid item xs={11} className={classes.item} />
+              <Grid item xs={1} className={classes.item}>
+                <IconButton
+                  variant="contained"
+                  component="label"
+                  color="primary"
+                  onClick={save}
+                  disabled={isSaveDisabled || isSaved}
+                >
+                  <Save />
+                </IconButton>
               </Grid>
-            </Paper>
-          </Grid>
+            </Grid>
+            <Divider />
+          </Paper>
         </Grid>
+      </Grid>
+    </div>
+  );
+};
 
-        <Grid container>
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <Grid container className={classes.tableTitle}>
-                <Grid item xs={12} className={classes.tableTitle}>
-                  <Typography>
-                    <FormattedMessage
-                      module={MODULE_NAME}
-                      id={titlethree}
-                      values={titleParams}
-                    />
-                  </Typography>
-                </Grid>
-              </Grid>
-              <Divider />
-              <Grid container className={classes.item}>
-                <Grid item xs={4} className={classes.item}>
-                  <TextInput
-                    label="ticket.resolution"
-                    value={stateEdited.resolution}
-                    onChange={(v) => this.updateAttribute('resolution', v)}
-                    required={false}
-                    readOnly={propsReadOnly}
-                  />
-                </Grid>
-                <Grid item xs={11} className={classes.item} />
-                <Grid item xs={1} className={classes.item}>
-                  <IconButton
-                    variant="contained"
-                    component="label"
-                    color="primary"
-                    onClick={this.save}
-                    disabled={propsReadOnly || !this.doesTicketChange()}
-                  >
-                    <Save />
-                  </IconButton>
-                </Grid>
-              </Grid>
-            </Paper>
-          </Grid>
-        </Grid>
-        <div style={{ display: 'none' }}>
-          {/*<TicketPrintTemplate*/}
-          {/*  ref={(el) => (this.componentRef = el)}*/}
-          {/*  ticket={stateEdited}*/}
-          {/*  reporter={reporter}*/}
-          {/*  comments={comments}*/}
-          {/*/>*/}
-        </div>
-      </div>
-    );
-  }
-}
-
-// eslint-disable-next-line no-unused-vars
-const mapStateToProps = (state, props) => ({
-  submittingMutation: state.workforce.submittingMutation,
-  mutation: state.workforce.mutation,
-  fetchingTicket: state.workforce.fetchingTicket,
-  errorTicket: state.workforce.errorTicket,
-  fetchedTicket: state.workforce.fetchedTicket,
-  ticket: state.workforce.ticket,
-  grievanceConfig: state.workforce.grievanceConfig,
-  comments: state.workforce.ticketComments,
-});
-
-const mapDispatchToProps = (dispatch) => bindActionCreators(
-  {
-    fetchOrganization, updateOrganization, journalize,
-  },
-  dispatch,
-);
-
-export default withTheme(
-  withStyles(styles)(
-    connect(mapStateToProps, mapDispatchToProps)(EditWorkforceOrganizationPage),
-  ),
-);
+export default EditWorkforceOrganizationPage;

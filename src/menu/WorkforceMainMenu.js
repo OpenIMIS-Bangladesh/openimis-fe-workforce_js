@@ -7,6 +7,7 @@ import {
   MODULE_NAME,
 } from "../constants";
 import { ROUTE_WORKFORCE_ORGANIZATIONS } from "../routes";
+import { ROUTE_WORKFORCE_ORGANIZATIONS_UNITS } from "../routes";
 
 function WorkforceMainMenu(props) {
   const entries = [
@@ -14,6 +15,12 @@ function WorkforceMainMenu(props) {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations" />,
       icon: <ListAlt />,
       route: `/${ROUTE_WORKFORCE_ORGANIZATIONS}`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.unit" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_ORGANIZATIONS_UNITS}`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
   ];

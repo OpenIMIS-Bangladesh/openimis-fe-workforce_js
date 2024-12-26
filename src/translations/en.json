@@ -28,8 +28,8 @@
     "menu.workforce": "Workforce",
     "menu.workforce.organizations": "Workforce Organizations",
     "workforce.addNewTooltip": "Add Workforce Organizations",
-    "workforce.organization.name.en": "Name En",
-    "workforce.organization.name.bn": "Name Bn",
+    "workforce.organization.name.en": "Organization Name En",
+    "workforce.organization.name.bn": "Organization Name Bn",
     "workforce.organization.location": "Location",
     "workforce.organization.address": "Address",
     "workforce.organization.phone": "Phone",
@@ -46,6 +46,11 @@
     "workforce.representative.nid": "Representative Nid",
     "workforce.representative.passport": "Representative passport",
     "workforce.representative.position": "Representative position",
-    "workforce.representative.birthDate": "Representative birthDate"
+    "workforce.representative.birthDate": "Representative birthDate",
+    "menu.workforce.organizations.unit": "Workforce Organizations Unit",
+    "workforce.unit.addNewTooltip": "Add Workforce Organizations Unit",
+    "workforce.organization.unit.email":"Organization Unit Email",
+    "workforce.organization.unit.phone":"Organization Unit Phone",
+    "workforce.organization.unit.level":"Organization Unit Level"
 
 }
