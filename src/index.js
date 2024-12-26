@@ -6,9 +6,13 @@ import reducer from './reducer';
 import {
   ROUTE_WORKFORCE_ORGANIZATIONS,
   ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION,
+  ROUTE_WORKFORCE_ORGANIZATIONS_UNITS,
+  ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/WorkforceOrganizationPage";
+import WorkforceOranigzationsUnitPage from "./pages/WorkforceOranigzationsUnitPage";
+import WorkforceOrganizationUnitPage from "./pages/WorkforceOrganizationUnitPage";
 import ParentPicker from "./pickers/ParentPicker";
 
 const DEFAULT_CONFIG = {
@@ -17,6 +21,7 @@ const DEFAULT_CONFIG = {
 
  refs: [
     { key: 'workforce.route.organizations.organization', ref: ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION },
+    { key: 'workforce.route.organizations.organization.units.unit', ref: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT },
     { key: 'workforceOrganization.ParentPicker', ref: ParentPicker },
     { key: 'workforceOrganization.ParentPicker', ref: ParentPicker },
   ],
@@ -24,6 +29,8 @@ const DEFAULT_CONFIG = {
   'core.Router': [
     { path: ROUTE_WORKFORCE_ORGANIZATIONS, component: WorkforceOrganizationsPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION, component: WorkforceOrganizationPage },
+    { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS, component: WorkforceOranigzationsUnitPage },
+    { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT, component: WorkforceOrganizationUnitPage },
   ],
   "core.MainMenu": [WorkforceMainMenu],
 };
