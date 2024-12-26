@@ -18,10 +18,6 @@ import { createOrganization } from "../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../constants";
 import { makeStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../components/WorkforceForm";
-import {
-  generateOrganizationMutation,
-  generateRepresentativeMutation,
-} from "../helper/helperFunction";
 // import ParentPicker from "../components/ParentPicker";
 // import DetailedLocation from "../components/DetailedLocation";
 
