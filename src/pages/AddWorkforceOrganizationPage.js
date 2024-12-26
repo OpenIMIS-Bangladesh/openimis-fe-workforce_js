@@ -73,11 +73,9 @@ const AddWorkforceOrganizationPage = (props) => {
       position: stateEdited.position,
     };
 
-    console.log("Saving Representative Data:", representativeData);
-
     // Call the createOrganization function
     dispatch(
-      createOrganization(
+      createRepresentative(
         representativeData,
         grievanceConfig,
         `Created Representative ${representativeData.nameEn}`

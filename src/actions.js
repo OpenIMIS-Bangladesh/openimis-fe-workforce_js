@@ -15,7 +15,7 @@ export function formatRepresentativeGQL(representative) {
     ${representative.passportNo ? `passportNo: "${formatGQLString(representative.passportNo)}"` : ""}
     ${representative.birthDate ? `birthDate: "${formatGQLString(representative.birthDate)}"` : ""}
     ${representative.position ? `position: "${formatGQLString(representative.position)}"` : ""}
-    ${`type: "${formatGQLString("organization")}"`}
+    ${representative.type ? `type: "${formatGQLString(representative.type)}"` : ""}
   `;
 }
 
@@ -35,12 +35,7 @@ export function fetchOrganizationsSummary(mm, filters) {
 }
 
 
-export function createOrganization(ticket, grievanceConfig, clientMutationLabel) {
-  // const resolutionTimeMap = {};
-  // grievanceConfig.grievanceDefaultResolutionsByCategory.forEach((item) => {
-  //   resolutionTimeMap[item.category] = item.resolutionTime;
-  // });
-  // ticket.resolution = resolutionTimeMap[ticket.category];
+export function createRepresentative(ticket, grievanceConfig, clientMutationLabel) {
   const mutation = formatMutation("createWorkforceRepresentative", formatRepresentativeGQL(ticket), clientMutationLabel);
   const requestedDateTime = new Date();
   return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_CREATE_ORG_RESP", "ORG_MUTATION_ERR"], {
@@ -78,16 +73,14 @@ export function updateOrganization(ticket, clientMutationLabel) {
 
 export function fetchOrganization(mm, filters) {
   const projections = [
-    "id", "title", "code", "description", "status",
-    "priority", "dueDate", "reporter", "reporterId",
-    "reporterType", "reporterTypeName", "category", "flags", "channel",
-    "resolution", "title", "dateOfIncident", "dateCreated",
-    "attendingStaff {id, username}", "version", "isHistory,", "jsonExt",
+    "id", "nameEn", "nameBn", "phoneNumber", "email", "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
+    "location{name,type,parent{name,type,parent{name,type,parent{name,type}}}}",
+    "address",
   ];
   const payload = formatPageQueryWithCount(
-    "tickets",
+    "workforceOrganizations",
     filters,
     projections,
   );
-  return graphql(payload, "TICKET_TICKET");
+  return graphql(payload, "WORKFORCE_ORGANIZATION");
 }
