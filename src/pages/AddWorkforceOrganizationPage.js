@@ -18,6 +18,10 @@ import { createOrganization } from "../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../constants";
 import { makeStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../components/WorkforceForm";
+import {
+  generateOrganizationMutation,
+  generateRepresentativeMutation,
+} from "../helper/helperFunction";
 // import ParentPicker from "../components/ParentPicker";
 // import DetailedLocation from "../components/DetailedLocation";
 
@@ -56,18 +60,34 @@ const AddWorkforceOrganizationPage = (props) => {
     }
   }, [submittingMutation, mutation, dispatch]);
 
-  
-
   // Handlers
   const save = useCallback(() => {
-    console.log("Saved Data:", stateEdited);
+    // Extract representative information
+    const representativeData = {
+      type: "organization",
+      nameBn: stateEdited.repNameBn,
+      nameEn: stateEdited.repName,
+      location: stateEdited.repLocation,
+      address: stateEdited.repAddress,
+      phoneNumber: stateEdited.repPhone,
+      email: stateEdited.repEmail,
+      nid: stateEdited.nid,
+      passportNo: stateEdited.passport,
+      birthDate: stateEdited.birthDate,
+      position: stateEdited.position,
+    };
+
+    console.log("Saving Representative Data:", representativeData);
+
+    // Call the createOrganization function
     dispatch(
       createOrganization(
-        stateEdited,
+        representativeData,
         grievanceConfig,
-        `Created Ticket ${stateEdited.title}`
+        `Created Representative ${representativeData.nameEn}`
       )
     );
+
     setIsSaved(true);
   }, [stateEdited, grievanceConfig, dispatch]);
 
@@ -149,7 +169,7 @@ const AddWorkforceOrganizationPage = (props) => {
                   value={stateEdited.phone || ""}
                   onChange={(v) => updateAttribute("phone", v)}
                   required
-                  type={'number'}
+                  type={"number"}
                   readOnly={isSaved}
                 />
               </Grid>
@@ -272,8 +292,7 @@ const AddWorkforceOrganizationPage = (props) => {
                       label: "workforce.representative.address",
                       type: "text",
                       required: true,
-                    }
-                    
+                    },
                   ]}
                 />
               </Grid>
