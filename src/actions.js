@@ -45,19 +45,19 @@ export function createRepresentative(ticket, grievanceConfig, clientMutationLabe
   });
 }
 
-// export function createOrganization(representative, grievanceConfig, clientMutationLabel) {
-//   const mutation = formatMutation(
-//     "createWorkforceRepresentative",
-//     formatRepresentativeGQL(representative),
-//     clientMutationLabel
-//   );
-//   const requestedDateTime = new Date();
-//   return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_CREATE_ORG_RESP", "ORG_MUTATION_ERR"], {
-//     clientMutationId: mutation.clientMutationId,
-//     clientMutationLabel,
-//     requestedDateTime,
-//   });
-// }
+export function createOrganization(representative, grievanceConfig, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceRepresentative",
+    formatRepresentativeGQL(representative),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_CREATE_ORG_RESP", "ORG_MUTATION_ERR"], {
+    clientMutationId: mutation.clientMutationId,
+    clientMutationLabel,
+    requestedDateTime,
+  });
+}
 
 
 export function updateOrganization(ticket, clientMutationLabel) {
