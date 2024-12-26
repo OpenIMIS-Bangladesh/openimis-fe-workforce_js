@@ -4,18 +4,18 @@ import {
 } from "@openimis/fe-core";
 
 export function formatRepresentativeGQL(representative) {
-  console.log({representative})
   return `
-    ${representative.nameEn ? `nameEn: "${formatGQLString(representative.nameEn)}"` : ''}
-    ${representative.nameBn ? `nameBn: "${formatGQLString(representative.nameBn)}"` : ''}
-    ${representative.location ? `location: "${formatGQLString(representative.location)}"` : ''}
-    ${representative.address ? `address: "${formatGQLString(representative.address)}"` : ''}
-    ${representative.phoneNumber ? `phoneNumber: "${formatGQLString(representative.phoneNumber)}"` : ''}
-    ${representative.email ? `email: "${formatGQLString(representative.email)}"` : ''}
-    ${representative.nid ? `nid: "${formatGQLString(representative.nid)}"` : ''}
-    ${representative.passportNo ? `passportNo: "${formatGQLString(representative.passportNo)}"` : ''}
-    ${representative.birthDate ? `birthDate: "${formatGQLString(representative.birthDate)}"` : ''}
-    ${representative.position ? `position: "${formatGQLString(representative.position)}"` : ''}
+    ${representative.nameEn ? `nameEn: "${formatGQLString(representative.nameEn)}"` : ""}
+    ${representative.nameBn ? `nameBn: "${formatGQLString(representative.nameBn)}"` : ""}
+    ${representative.location.id ? `location: "${decodeId(representative.location.id)}"` : ""}
+    ${representative.address ? `address: "${formatGQLString(representative.address)}"` : ""}
+    ${representative.phoneNumber ? `phoneNumber: "${formatGQLString(representative.phoneNumber)}"` : ""}
+    ${representative.email ? `email: "${formatGQLString(representative.email)}"` : ""}
+    ${representative.nid ? `nid: "${formatGQLString(representative.nid)}"` : ""}
+    ${representative.passportNo ? `passportNo: "${formatGQLString(representative.passportNo)}"` : ""}
+    ${representative.birthDate ? `birthDate: "${formatGQLString(representative.birthDate)}"` : ""}
+    ${representative.position ? `position: "${formatGQLString(representative.position)}"` : ""}
+    ${`type: "${formatGQLString("organization")}"`}
   `;
 }
 

@@ -105,6 +105,15 @@ const WorkforceForm = ({
                       filterLabels={false}
                     />
                   )}
+                  {field.type === "hidden" && (
+                    <input
+                      value={stateEdited[field.value] || ""}
+                      onChange={(v) => updateAttribute(field.key, v)}
+                      required={field.required}
+                      readOnly={isSaved}
+                      type={field.type || "hidden"}
+                    />
+                  )}
                 </Grid>
               ))}
 
