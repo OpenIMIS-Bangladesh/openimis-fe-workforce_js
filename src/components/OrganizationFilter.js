@@ -151,6 +151,90 @@ class OrganizationFilter extends Component {
             </Grid>
           }
         />
+        <ControlledField
+          module={MODULE_NAME}
+          id="workforce.representative.name.en"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.representative.name.en"
+                name="workforceRepresentative__nameEn"
+                value={this._filterValue("workforceRepresentative__nameEn")}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'workforceRepresentative__nameEn',
+                    value: v,
+                    filter: `workforceRepresentative__nameEn_Icontains: "${v}"`,
+                  },
+                ])}
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="workforce.representative.name.bn"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.representative.name.bn"
+                name="workforceRepresentative__nameBn"
+                value={this._filterValue("workforceRepresentative__nameBn")}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'workforceRepresentative__nameBn',
+                    value: v,
+                    filter: `workforceRepresentative__nameBn_Icontains: "${v}"`,
+                  },
+                ])}
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="workforce.representative.address"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.representative.address"
+                name="workforceRepresentative__address"
+                value={this._filterValue("workforceRepresentative__address")}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'workforceRepresentative__address',
+                    value: v,
+                    filter: `workforceRepresentative__address_Icontains: "${v}"`,
+                  },
+                ])}
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="workforce.representative.phone"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.representative.phone"
+                name="workforceRepresentative__phone"
+                value={this._filterValue("workforceRepresentative__phone")}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'workforceRepresentative__phone',
+                    value: v,
+                    filter: `workforceRepresentative__phone_Icontains: "${v}"`,
+                  },
+                ])}
+              />
+            </Grid>
+          }
+        />
         {/* <Grid>
           <ControlledField
             module={MODULE_NAME}
