@@ -135,7 +135,7 @@ class OrganizationSearcher extends Component {
                  historyPush(
                    this.props.modulesManager,
                    this.props.history,
-                   'workforce/organizations/edit',
+                   'workforce.route.organizations.organization',
                    [decodeId(workforce.id)],
                    false,
                  );

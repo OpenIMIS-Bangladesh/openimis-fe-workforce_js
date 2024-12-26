@@ -6,6 +6,7 @@ import reducer from './reducer';
 import {
   ROUTE_WORKFORCE_ORGANIZATIONS,
   ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION,
+  ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION_EDIT,
   ROUTE_WORKFORCE_ORGANIZATIONS_UNITS,
   ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT
 } from "./routes";
@@ -31,6 +32,7 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION, component: WorkforceOrganizationPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS, component: WorkforceOranigzationsUnitPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT, component: WorkforceOrganizationUnitPage },
+    { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION}/:ticket_uuid`, component: WorkforceOrganizationPage },
   ],
   "core.MainMenu": [WorkforceMainMenu],
 };
