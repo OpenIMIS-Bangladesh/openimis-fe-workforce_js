@@ -106,7 +106,7 @@ function reducer(
         errorRepresentatives: null,
       };
     case "WORKFORCE_REPRESENTATIVES_RESP":
-      console.log(parseData(action.payload.data.workforceRepresentatives))
+      console.log('fahim',parseData(action.payload.data.workforceRepresentatives))
       return {
         ...state,
         fetchingRepresentatives: false,

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import {
   Grid,
   Paper,
@@ -16,49 +16,38 @@ import {
 } from "@openimis/fe-core";
 import { createOrganization, createRepresentative } from "../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../constants";
-import { makeStyles } from "@material-ui/core/styles";
+import { withTheme,withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../components/WorkforceForm";
-// import ParentPicker from "../components/ParentPicker";
-// import DetailedLocation from "../components/DetailedLocation";
 
-const useStyles = makeStyles((theme) => ({
+const styles = (theme) => ({
   paper: theme.paper.paper,
   tableTitle: theme.table.title,
   item: theme.paper.item,
   fullHeight: {
     height: "100%",
   },
-}));
+});
 
-const AddWorkforceOrganizationPage = (props) => {
-  const classes = useStyles();
-  const dispatch = useDispatch();
+class AddWorkforceOrganizationPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      stateEdited: {},
+      isSaved: false,
+    };
+  }
 
-  // Redux state
-  const submittingMutation = useSelector(
-    (state) => state.grievanceSocialProtection.submittingMutation
-  );
-  const mutation = useSelector(
-    (state) => state.grievanceSocialProtection.mutation
-  );
-  const grievanceConfig = useSelector(
-    (state) => state.grievanceSocialProtection.grievanceConfig
-  );
-
-  // Local state
-  const [stateEdited, setStateEdited] = useState({});
-  const [isSaved, setIsSaved] = useState(false);
-
-  // Effects
-  useEffect(() => {
-    if (!submittingMutation) {
+  componentDidUpdate(prevProps) {
+    const { submittingMutation, mutation, dispatch } = this.props;
+    if (!submittingMutation && prevProps.submittingMutation !== submittingMutation) {
       dispatch(journalize(mutation));
     }
-  }, [submittingMutation, mutation, dispatch]);
+  }
 
-  // Handlers
-  const save = useCallback(() => {
-    // Extract representative information
+  save = () => {
+    const { stateEdited } = this.state;
+    const { grievanceConfig, dispatch } = this.props;
+
     const representativeData = {
       type: "organization",
       nameBn: stateEdited.repNameBn,
@@ -73,7 +62,6 @@ const AddWorkforceOrganizationPage = (props) => {
       position: stateEdited.position,
     };
 
-    // Call the createOrganization function
     dispatch(
       createRepresentative(
         representativeData,
@@ -82,234 +70,231 @@ const AddWorkforceOrganizationPage = (props) => {
       )
     );
 
-    setIsSaved(true);
-  }, [stateEdited, grievanceConfig, dispatch]);
+    this.setState({ isSaved: true });
+  };
 
-  const updateAttribute = useCallback((key, value) => {
-    setStateEdited((prev) => ({
-      ...prev,
-      [key]: value,
+  updateAttribute = (key, value) => {
+    this.setState((prevState) => ({
+      stateEdited: {
+        ...prevState.stateEdited,
+        [key]: value,
+      },
+      isSaved: false,
     }));
-    setIsSaved(false);
-  }, []);
+  };
 
-  const isSaveDisabled = !(
-    stateEdited.title &&
-    stateEdited.address &&
-    stateEdited.phone &&
-    stateEdited.email &&
-    stateEdited.website &&
-    stateEdited.parent &&
-    stateEdited.location
-  );
+  render() {
+    const { classes } = this.props;
+    const { stateEdited, isSaved } = this.state;
 
-  return (
-    <div className={classes.page}>
-      <Grid container>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <Grid container className={classes.tableTitle}>
-              <Grid item xs={12} className={classes.tableTitle}>
-                <Typography>
-                  <FormattedMessage
-                    module={MODULE_NAME}
-                    id="Organization"
-                    values={{ label: EMPTY_STRING }}
+    const isSaveDisabled = !(
+      stateEdited.title &&
+      stateEdited.address &&
+      stateEdited.phone &&
+      stateEdited.email &&
+      stateEdited.website &&
+      stateEdited.parent &&
+      stateEdited.location
+    );
+
+    return (
+      <div className={classes.page}>
+        <Grid container>
+          <Grid item xs={12}>
+            <Paper className={classes.paper}>
+              <Grid container className={classes.tableTitle}>
+                <Grid item xs={12} className={classes.tableTitle}>
+                  <Typography>
+                    <FormattedMessage
+                      module={MODULE_NAME}
+                      id="Organization"
+                      values={{ label: EMPTY_STRING }}
+                    />
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Divider />
+              <Grid container className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.organization.name.en"
+                    value={stateEdited.title || ""}
+                    onChange={(v) => this.updateAttribute("title", v)}
+                    required
+                    readOnly={isSaved}
                   />
-                </Typography>
-              </Grid>
-            </Grid>
-            <Divider />
-            <Grid container className={classes.item}>
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.organization.name.en"
-                  value={stateEdited.title || ""}
-                  onChange={(v) => updateAttribute("title", v)}
-                  required
-                  readOnly={isSaved}
-                />
-              </Grid>
+                </Grid>
 
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.organization.name.bn"
-                  value={stateEdited.titleBn || ""}
-                  onChange={(v) => updateAttribute("titleBn", v)}
-                  required
-                  readOnly={isSaved}
-                />
-              </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.organization.name.bn"
+                    value={stateEdited.titleBn || ""}
+                    onChange={(v) => this.updateAttribute("titleBn", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
 
-              <Grid item xs={6} className={classes.item}>
-                {/* <ParentPicker
-                  value={stateEdited.parent || null}
-                  onChange={(option) => updateAttribute("parent", option)}
-                  required
-                  readOnly={isSaved}
-                /> */}
-                <PublishedComponent
-                  pubRef="workforceOrganization.ParentPicker"
-                  value={stateEdited.parent || null}
-                  onChange={(option) => updateAttribute("parent", option)}
-                  required
-                  readOnly={isSaved}
-                />
-              </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="workforceOrganization.ParentPicker"
+                    value={stateEdited.parent || null}
+                    onChange={(option) => this.updateAttribute("parent", option)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
 
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.organization.phone"
-                  value={stateEdited.phone || ""}
-                  onChange={(v) => updateAttribute("phone", v)}
-                  required
-                  type={"number"}
-                  readOnly={isSaved}
-                />
-              </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.organization.phone"
+                    value={stateEdited.phone || ""}
+                    onChange={(v) => this.updateAttribute("phone", v)}
+                    required
+                    type={"number"}
+                    readOnly={isSaved}
+                  />
+                </Grid>
 
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.organization.email"
-                  value={stateEdited.email || ""}
-                  onChange={(v) => updateAttribute("email", v)}
-                  required
-                  readOnly={isSaved}
-                />
-              </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.organization.email"
+                    value={stateEdited.email || ""}
+                    onChange={(v) => this.updateAttribute("email", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
 
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.organization.website"
-                  value={stateEdited.website || ""}
-                  onChange={(v) => updateAttribute("website", v)}
-                  required
-                  readOnly={isSaved}
-                />
-              </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.organization.website"
+                    value={stateEdited.website || ""}
+                    onChange={(v) => this.updateAttribute("website", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
 
-              <Grid item xs={12} className={classes.item}>
-                {/* <DetailedLocation
-                  value={stateEdited.location || null}
-                  onChange={(location) => updateAttribute("location", location)}
-                  readOnly={isSaved}
-                  required
-                /> */}
-                <PublishedComponent
-                  pubRef="location.DetailedLocation"
-                  withNull={true}
-                  // value={value?.currentVillage ?? null}
-                  value={stateEdited.location || null}
-                  onChange={(location) => updateAttribute("location", location)}
-                  readOnly={isSaved}
-                  required
-                  split={true}
-                  // readOnly={false}
-                  // onChange={onChangeLocation}
-                  filterLabels={false}
-                />
-              </Grid>
+                <Grid item xs={12} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="location.DetailedLocation"
+                    withNull={true}
+                    value={stateEdited.location || null}
+                    onChange={(location) => this.updateAttribute("location", location)}
+                    readOnly={isSaved}
+                    required
+                    split={true}
+                  />
+                </Grid>
 
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.organization.address"
-                  value={stateEdited.address || ""}
-                  onChange={(v) => updateAttribute("address", v)}
-                  required
-                  readOnly={isSaved}
-                />
-              </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.organization.address"
+                    value={stateEdited.address || ""}
+                    onChange={(v) => this.updateAttribute("address", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
 
-              <Grid item xs={12} className={classes.item}>
-                <WorkforceForm
-                  title="Workforce Representative Info"
-                  stateEdited={stateEdited}
-                  isSaved={isSaved}
-                  updateAttribute={updateAttribute}
-                  fields={[
-                    {
-                      key: "repName",
-                      label: "workforce.representative.name.en",
-                      type: "text",
-                      required: true,
-                    },
-                    {
-                      key: "repNameBn",
-                      label: "workforce.representative.name.bn",
-                      type: "text",
-                      required: true,
-                    },
-                    {
-                      key: "position",
-                      label: "workforce.representative.position",
-                      type: "text",
-                      required: true,
-                    },
-                    {
-                      key: "repPhone",
-                      label: "workforce.representative.phone",
-                      type: "number",
-                      required: true,
-                    },
-                    {
-                      key: "repEmail",
-                      label: "workforce.representative.email",
-                      type: "text",
-                      required: true,
-                    },
-                    {
-                      key: "nid",
-                      label: "workforce.representative.nid",
-                      type: "number",
-                      required: true,
-                    },
-                    {
-                      key: "passport",
-                      label: "workforce.representative.passport",
-                      type: "text",
-                      required: false,
-                    },
-                    {
-                      key: "birthDate",
-                      label: "workforce.representative.birthDate",
-                      type: "date",
-                      required: false,
-                    },
-                    {
-                      key: "repLocation",
-                      label: "workforce.representative.location",
-                      type: "location",
-                      required: true,
-                    },
-                    {
-                      key: "repAddress",
-                      label: "workforce.representative.address",
-                      type: "text",
-                      required: true,
-                    },
-                  ]}
-                />
-              </Grid>
+                <Grid item xs={12} className={classes.item}>
+                  <WorkforceForm
+                    title="Workforce Representative Info"
+                    stateEdited={stateEdited}
+                    isSaved={isSaved}
+                    updateAttribute={this.updateAttribute}
+                    fields={[
+                      {
+                        key: "repName",
+                        label: "workforce.representative.name.en",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "repNameBn",
+                        label: "workforce.representative.name.bn",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "position",
+                        label: "workforce.representative.position",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "repPhone",
+                        label: "workforce.representative.phone",
+                        type: "number",
+                        required: true,
+                      },
+                      {
+                        key: "repEmail",
+                        label: "workforce.representative.email",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "nid",
+                        label: "workforce.representative.nid",
+                        type: "number",
+                        required: true,
+                      },
+                      {
+                        key: "passport",
+                        label: "workforce.representative.passport",
+                        type: "text",
+                        required: false,
+                      },
+                      {
+                        key: "birthDate",
+                        label: "workforce.representative.birthDate",
+                        type: "date",
+                        required: false,
+                      },
+                      {
+                        key: "repLocation",
+                        label: "workforce.representative.location",
+                        type: "location",
+                        required: true,
+                      },
+                      {
+                        key: "repAddress",
+                        label: "workforce.representative.address",
+                        type: "text",
+                        required: true,
+                      },
+                    ]}
+                  />
+                </Grid>
 
-              <Grid item xs={11} className={classes.item} />
-              <Grid item xs={1} className={classes.item}>
-                <IconButton
-                  variant="contained"
-                  component="label"
-                  color="primary"
-                  onClick={save}
-                  disabled={isSaveDisabled || isSaved}
-                >
-                  <Save />
-                </IconButton>
+                <Grid item xs={11} className={classes.item} />
+                <Grid item xs={1} className={classes.item}>
+                  <IconButton
+                    variant="contained"
+                    component="label"
+                    color="primary"
+                    onClick={this.save}
+                    disabled={isSaveDisabled || isSaved}
+                  >
+                    <Save />
+                  </IconButton>
+                </Grid>
               </Grid>
-            </Grid>
-            <Divider />
-          </Paper>
+              <Divider />
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
-    </div>
-  );
-};
+      </div>
+    );
+  }
+}
 
-export default AddWorkforceOrganizationPage;
+const mapStateToProps = (state) => ({
+  submittingMutation: state.grievanceSocialProtection.submittingMutation,
+  mutation: state.grievanceSocialProtection.mutation,
+  grievanceConfig: state.grievanceSocialProtection.grievanceConfig,
+});
+
+export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceOrganizationPage));
