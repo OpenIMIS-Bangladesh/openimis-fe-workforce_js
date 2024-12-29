@@ -6,6 +6,7 @@ import {
 import {
   CLEAR, ERROR, REQUEST, SUCCESS,
 } from "./utils/action-type";
+import { fetchRepresentativeByClientMutationId } from "./actions";
 
 export const ACTION_TYPE = {};
 
@@ -130,8 +131,25 @@ function reducer(
       return dispatchMutationResp(state, "resolveGrievanceByComment", action);
     case SUCCESS(ACTION_TYPE.REOPEN_TICKET):
       return dispatchMutationResp(state, "reopenTicket", action);
-    case "ORG_MUTATION_REQ":
-      return dispatchMutationReq(state, action);
+    case "ORG_MUTATION_REQ":{
+      const mutation= dispatchMutationReq(state, action);
+      const ClientMutationId = mutation?.mutation?.clientMutationId
+      console.log({mutation})
+      const representative =fetchRepresentativeByClientMutationId(ClientMutationId, [
+        {
+          id: "clientMutationId",
+          ClientMutationId,
+          filter: `${"clientMutationId"}: ${ClientMutationId}`,
+        },
+      ])
+      console.log({representative})
+      return dispatchMutationReq(state, action)
+    }
+    case "WORKFORCE_REPRESENTATIVES_RESP":{
+      const representative = parseData(action.payload.data)
+      console.log(representative)
+    }
+      
     case "ORG_MUTATION_ERR":
       return dispatchMutationErr(state, action);
     case "ORG_CREATE_ORG_RESP":
