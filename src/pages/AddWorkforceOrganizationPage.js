@@ -13,10 +13,16 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
+  formatMutation,
 } from "@openimis/fe-core";
-import { createOrganization, createRepresentative } from "../actions";
+import {
+  createOrganization,
+  createRepresentative,
+  fetchRepresentativeByClientMutationId,
+  formatRepresentativeGQL,
+} from "../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../constants";
-import { withTheme,withStyles } from "@material-ui/core/styles";
+import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../components/WorkforceForm";
 
 const styles = (theme) => ({
@@ -62,13 +68,17 @@ class AddWorkforceOrganizationPage extends Component {
       position: stateEdited.position,
     };
 
+    const representativeMutation = formatMutation("createWorkforceRepresentative", formatRepresentativeGQL(representativeData), `Created Representative ${representativeData.nameEn}`);
+    const representativeClientMutationId = representativeMutation.clientMutationId;
+
     dispatch(
       createRepresentative(
-        representativeData,
-        grievanceConfig,
-        `Created Representative ${representativeData.nameEn}`
-      )
+        representativeMutation,
+        `Created Representative ${representativeData.nameEn}`,
+      ),
     );
+
+    dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
 
     this.setState({ isSaved: true });
   };
@@ -87,15 +97,17 @@ class AddWorkforceOrganizationPage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
 
-    const isSaveDisabled = !(
-      stateEdited.title &&
-      stateEdited.address &&
-      stateEdited.phone &&
-      stateEdited.email &&
-      stateEdited.website &&
-      stateEdited.parent &&
-      stateEdited.location
-    );
+    // const isSaveDisabled = !(
+    //   stateEdited.title &&
+    //   stateEdited.address &&
+    //   stateEdited.phone &&
+    //   stateEdited.email &&
+    //   stateEdited.website &&
+    //   stateEdited.parent &&
+    //   stateEdited.location
+    // );
+
+    const isSaveDisabled = false;
 
     return (
       <div className={classes.page}>
@@ -292,9 +304,9 @@ class AddWorkforceOrganizationPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  submittingMutation: state.grievanceSocialProtection.submittingMutation,
-  mutation: state.grievanceSocialProtection.mutation,
-  grievanceConfig: state.grievanceSocialProtection.grievanceConfig,
+  submittingMutation: state.workforce.submittingMutation,
+  mutation: state.workforce.mutation,
+  grievanceConfig: state.workforce.grievanceConfig,
 });
 
 export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceOrganizationPage));

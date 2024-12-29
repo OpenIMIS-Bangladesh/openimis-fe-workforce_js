@@ -29,6 +29,8 @@ function reducer(
     representatives: [],
     representativesPageInfo: { totalCount: 0 },
 
+    fetchedRepresentativeByClientMutationId: null,
+
     fetchingCategory: false,
     fetchedCategory: false,
     errorCategory: null,
@@ -106,7 +108,7 @@ function reducer(
         errorRepresentatives: null,
       };
     case "WORKFORCE_REPRESENTATIVES_RESP":
-      console.log('fahim',parseData(action.payload.data.workforceRepresentatives))
+      console.log("fahim", parseData(action.payload.data.workforceRepresentatives));
       return {
         ...state,
         fetchingRepresentatives: false,
@@ -120,6 +122,14 @@ function reducer(
         ...state,
         fetching: false,
         error: formatServerError(action.payload),
+      };
+
+    case "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID_RESP":
+      console.log(action.payload.data)
+      console.log(action.payload.data.workforceRepresentatives)
+      return {
+        ...state,
+        fetchedRepresentativeByClientMutationId: parseData(action.payload.data.workforceRepresentatives),
       };
     case CLEAR(ACTION_TYPE.CLEAR_TICKET):
       return {
