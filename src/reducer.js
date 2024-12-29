@@ -6,7 +6,6 @@ import {
 import {
   CLEAR, ERROR, REQUEST, SUCCESS,
 } from "./utils/action-type";
-import { fetchRepresentativeByClientMutationId } from "./actions";
 
 export const ACTION_TYPE = {};
 
@@ -23,6 +22,12 @@ function reducer(
     fetchedOrganization: false,
     organization: null,
     organizationPageInfo: { totalCount: 0 },
+
+    fetchingRepresentatives: false,
+    errorRepresentatives: null,
+    fetchedRepresentatives: false,
+    representatives: [],
+    representativesPageInfo: { totalCount: 0 },
 
     fetchingCategory: false,
     fetchedCategory: false,
@@ -91,6 +96,31 @@ function reducer(
         }))?.[0],
         errorOrganization: formatGraphQLError(action.payload),
       };
+    case "WORKFORCE_REPRESENTATIVES_REQ":
+      return {
+        ...state,
+        fetchingRepresentatives: true,
+        fetchedRepresentatives: false,
+        representatives: [],
+        representativesPageInfo: { totalCount: 0 },
+        errorRepresentatives: null,
+      };
+    case "WORKFORCE_REPRESENTATIVES_RESP":
+      console.log(parseData(action.payload.data.workforceRepresentatives))
+      return {
+        ...state,
+        fetchingRepresentatives: false,
+        fetchedRepresentatives: true,
+        representatives: parseData(action.payload.data.workforceRepresentatives),
+        representativesPageInfo: pageInfo(action.payload.data.workforceRepresentatives),
+        errorRepresentatives: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_REPRESENTATIVES_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
     case CLEAR(ACTION_TYPE.CLEAR_TICKET):
       return {
         ...state,
@@ -131,25 +161,9 @@ function reducer(
       return dispatchMutationResp(state, "resolveGrievanceByComment", action);
     case SUCCESS(ACTION_TYPE.REOPEN_TICKET):
       return dispatchMutationResp(state, "reopenTicket", action);
-    case "ORG_MUTATION_REQ":{
-      const mutation= dispatchMutationReq(state, action);
-      const ClientMutationId = mutation?.mutation?.clientMutationId
-      console.log({mutation})
-      const representative =fetchRepresentativeByClientMutationId(ClientMutationId, [
-        {
-          id: "clientMutationId",
-          ClientMutationId,
-          filter: `${"clientMutationId"}: ${ClientMutationId}`,
-        },
-      ])
-      console.log({representative})
-      return dispatchMutationReq(state, action)
+    case "ORG_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
     }
-    case "WORKFORCE_REPRESENTATIVES_RESP":{
-      const representative = parseData(action.payload.data)
-      console.log(representative)
-    }
-      
     case "ORG_MUTATION_ERR":
       return dispatchMutationErr(state, action);
     case "ORG_CREATE_ORG_RESP":
