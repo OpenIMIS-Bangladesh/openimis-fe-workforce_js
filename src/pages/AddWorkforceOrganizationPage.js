@@ -14,7 +14,7 @@ import {
   PublishedComponent,
   FormattedMessage,
 } from "@openimis/fe-core";
-import { createOrganization } from "../actions";
+import { createOrganization, createRepresentative } from "../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../constants";
 import { makeStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../components/WorkforceForm";

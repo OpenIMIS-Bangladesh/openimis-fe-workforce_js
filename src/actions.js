@@ -84,3 +84,13 @@ export function fetchOrganization(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_ORGANIZATION");
 }
+
+export function fetchRepresentativeByClientMutationId(mm, filters) {
+  const projections = ["id"];
+  const payload = formatPageQueryWithCount(
+    "workforceRepresentatives",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_REPRESENTATIVES");
+}
