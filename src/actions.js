@@ -46,8 +46,7 @@ export function fetchOrganizationUnitsSummary(mm, filters) {
 }
 
 
-export function createRepresentative(ticket, grievanceConfig, clientMutationLabel) {
-  const mutation = formatMutation("createWorkforceRepresentative", formatRepresentativeGQL(ticket), clientMutationLabel);
+export function createRepresentative(mutation, clientMutationLabel) {
   const requestedDateTime = new Date();
   return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_CREATE_ORG_RESP", "ORG_MUTATION_ERR"], {
     clientMutationId: mutation.clientMutationId,
@@ -60,7 +59,7 @@ export function createOrganization(representative, grievanceConfig, clientMutati
   const mutation = formatMutation(
     "createWorkforceRepresentative",
     formatRepresentativeGQL(representative),
-    clientMutationLabel
+    clientMutationLabel,
   );
   const requestedDateTime = new Date();
   return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_CREATE_ORG_RESP", "ORG_MUTATION_ERR"], {
@@ -96,12 +95,18 @@ export function fetchOrganization(mm, filters) {
   return graphql(payload, "WORKFORCE_ORGANIZATION");
 }
 
-export function fetchRepresentativeByClientMutationId(mm, filters) {
-  const projections = ["id"];
-  const payload = formatPageQueryWithCount(
-    "workforceRepresentatives",
-    filters,
-    projections,
-  );
-  return graphql(payload, "WORKFORCE_REPRESENTATIVES");
+export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
+  const payload = `{
+  workforceRepresentatives(
+    clientMutationId: "${clientMutationId}"
+  ) {
+    edges {
+      node {
+        id
+      }
+    }
+  }
+}
+`;
+  return graphql(payload, "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID");
 }
