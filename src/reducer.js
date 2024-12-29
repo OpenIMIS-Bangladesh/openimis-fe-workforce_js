@@ -28,6 +28,12 @@ function reducer(
     fetchedRepresentatives: false,
     representatives: [],
     representativesPageInfo: { totalCount: 0 },
+    
+    fetchingOrganizationUnits: false,
+    errorOrganizationUnits: null,
+    fetcheOrganizationUnits: false,
+    organizationUnits: [],
+    organizationUnitsPageInfo: { totalCount: 0 },
 
     fetchingCategory: false,
     fetchedCategory: false,
@@ -116,6 +122,31 @@ function reducer(
         errorRepresentatives: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_REPRESENTATIVES_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+    case "WORKFORCE_ORGANIZATION_UNITS_REQ":
+      return {
+        ...state,
+        fetchingOrganizationUnits: true,
+        fetchedOrganizationUnits: false,
+        organizationUnits: [],
+        organizationUnitsPageInfo: { totalCount: 0 },
+        errorOrganizationUnits: null,
+      };
+    case "WORKFORCE_ORGANIZATION_UNITS_RESP":
+      console.log(parseData(action.payload.data.workforceOrganizationUnits))
+      return {
+        ...state,
+        fetchingOrganizationUnits: false,
+        fetchedOrganizationUnits: true,
+        organizationUnits: parseData(action.payload.data.workforceOrganizationUnits),
+        organizationUnitsPageInfo: pageInfo(action.payload.data.workforceOrganizationUnits),
+        errorOrganizationUnits: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_ORGANIZATION_UNITS_ERR":
       return {
         ...state,
         fetching: false,

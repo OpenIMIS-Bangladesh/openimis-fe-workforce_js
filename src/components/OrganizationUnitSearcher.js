@@ -18,7 +18,7 @@ import {
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../constants";
-import { fetchOrganizationsSummary } from "../actions";
+import { fetchOrganizationUnitsSummary } from "../actions";
 import OrganizationUnitFilter from "./OrganizationUnitFilter";
 
 
@@ -69,7 +69,7 @@ class OrganizationUnitSearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchOrganizationsSummary(
+    this.props.fetchOrganizationUnitsSummary(
       this.props.modulesManager,
       prms,
     );
@@ -113,7 +113,7 @@ class OrganizationUnitSearcher extends Component {
     const formatters = [
       (organizationunit) => organizationunit.nameEn,
       (organizationunit) => organizationunit.nameBn,
-      (organizationunit) => organizationunit.level,
+      (organizationunit) => organizationunit.unitLevel,
       (organizationunit) => organizationunit.phoneNumber,
       (organizationunit) => organizationunit.email,
       (workforce) => (this.isShowHistory() ? workforce?.version : null),
@@ -148,11 +148,11 @@ class OrganizationUnitSearcher extends Component {
   render() {
     const {
       intl,
-      organizations, organizationsPageInfo, fetchingOrganizations, fetchedOrganizations, errorOrganizations,
+      organizationUnits, organizationUnitsPageInfo, fetchingOrganizationUnits, fetchedOrganizationUnits, errorOrganizationUnits,
       filterPaneContributionsKey, cacheFiltersKey, onDoubleClick,
     } = this.props;
 
-    const count = organizationsPageInfo.totalCount;
+    const count = organizationUnitsPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <OrganizationUnitFilter
@@ -169,11 +169,11 @@ class OrganizationUnitSearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={organizations}
-          itemsPageInfo={organizationsPageInfo}
-          fetchingItems={fetchingOrganizations}
-          fetchedItems={fetchedOrganizations}
-          errorItems={errorOrganizations}
+          items={organizationUnits}
+          itemsPageInfo={organizationUnitsPageInfo}
+          fetchingItems={fetchingOrganizationUnits}
+          fetchedItems={fetchedOrganizationUnits}
+          errorItems={errorOrganizationUnits}
           // tableTitle={formatMessageWithValues(intl, MODULE_NAME, "ticketSummaries", { count })}
           tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.unit" />}
           rowsPerPageOptions={this.rowsPerPageOptions}
@@ -199,11 +199,11 @@ const mapStateToProps = (state) => (
   // console.log(state),
   {
     rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-    organizations: state.workforce.organizations,
-    organizationsPageInfo: state.workforce.organizationsPageInfo,
-    fetchingOrganizations: state.workforce.fetchingOrganizations,
-    fetchedOrganizations: state.workforce.fetchedOrganizations,
-    errorOrganizations: state.workforce.errorOrganizations,
+    organizationUnits: state.workforce.organizationUnits,
+    organizationUnitsPageInfo: state.workforce.organizationUnitsPageInfo,
+    fetchingOrganizationUnits: state.workforce.fetchingOrganizationUnits,
+    fetchedOrganizationUnits: state.workforce.fetchedOrganizationUnits,
+    errorOrganizationUnits: state.workforce.errorOrganizationUnits,
     submittingMutation: state.workforce.submittingMutation,
     mutation: state.workforce.mutation,
     confirmed: state.core.confirmed,
@@ -212,7 +212,7 @@ const mapStateToProps = (state) => (
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(
   {
-    fetchOrganizationsSummary, journalize, coreConfirm,
+    fetchOrganizationUnitsSummary, journalize, coreConfirm,
   },
   dispatch,
 );

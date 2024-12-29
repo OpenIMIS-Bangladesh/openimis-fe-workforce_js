@@ -33,6 +33,17 @@ export function fetchOrganizationsSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_ORGANIZATIONS");
 }
+export function fetchOrganizationUnitsSummary(mm, filters) {
+  const projections = [
+    "id", "nameEn", "nameBn", "unitLevel", "phoneNumber", "email"
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceOrganizationUnits",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATION_UNITS");
+}
 
 
 export function createRepresentative(ticket, grievanceConfig, clientMutationLabel) {

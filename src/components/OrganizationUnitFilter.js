@@ -118,12 +118,12 @@ class OrganizationUnitFilter extends Component {
                 module={MODULE_NAME}
                 label="workforce.organization.unit.level"
                 name="unit.level"
-                value={this._filterValue("unit__level")}
+                value={this._filterValue("unitLevel")}
                 onChange={(v) => this.debouncedOnChangeFilter([
                   {
-                    id: 'unit__level',
+                    id: 'unitLevel',
                     value: v,
-                    filter: `unit__level_Icontains: "${v}"`,
+                    filter: `unitLevel: "${v}"`,
                   },
                 ])}
               />
@@ -139,12 +139,12 @@ class OrganizationUnitFilter extends Component {
                 module={MODULE_NAME}
                 label="workforce.organization.unit.phone"
                 name="address"
-                value={this._filterValue("address")}
+                value={this._filterValue("phoneNumber")}
                 onChange={(v) => this.debouncedOnChangeFilter([
                   {
-                    id: 'address',
+                    id: 'phoneNumber',
                     value: v,
-                    filter: `address_Icontains: "${v}"`,
+                    filter: `phoneNumber_Icontains: "${v}"`,
                   },
                 ])}
               />
