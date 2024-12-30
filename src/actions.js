@@ -19,7 +19,7 @@ export function formatRepresentativeGQL(representative) {
   `;
 }
 
-export function formatOrganizationGQL(organization){
+export function formatOrganizationGQL(organization) {
   return `
     ${organization.nameEn ? `nameEn: "${formatGQLString(organization.nameEn)}"` : ""}
     ${organization.nameBn ? `nameBn: "${formatGQLString(organization.nameBn)}"` : ""}
@@ -46,9 +46,10 @@ export function fetchOrganizationsSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_ORGANIZATIONS");
 }
+
 export function fetchOrganizationUnitsSummary(mm, filters) {
   const projections = [
-    "id", "nameEn", "nameBn", "unitLevel", "phoneNumber", "email"
+    "id", "nameEn", "nameBn", "unitLevel", "phoneNumber", "email",
   ];
   const payload = formatPageQueryWithCount(
     "workforceOrganizationUnits",
@@ -110,9 +111,9 @@ export function updateOrganization(ticket, clientMutationLabel) {
 
 export function fetchOrganization(mm, filters) {
   const projections = [
-    "id", "nameEn", "nameBn", "phoneNumber", "email", "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
-    "location{name,type,parent{name,type,parent{name,type,parent{name,type}}}}",
-    "address",
+    "id", "nameEn", "nameBn", "phoneNumber", "email", "website", "parent{id}",
+    "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, location{id}, address}",
+    "location{id,name,type}", "address",
   ];
   const payload = formatPageQueryWithCount(
     "workforceOrganizations",

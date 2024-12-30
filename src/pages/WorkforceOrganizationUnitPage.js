@@ -50,7 +50,7 @@ class WorkforceOrganizationPage extends Component {
 
   render() {
     const {
-      classes, modulesManager, history, rights, ticketUuid, overview, ticket, ticketVersion,
+      classes, modulesManager, history, rights, organizationUuid, overview, organization, ticketVersion,
     } = this.props;
     // const readOnly = ticket?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
@@ -59,7 +59,7 @@ class WorkforceOrganizationPage extends Component {
       <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
         <OrganizationForm
           overview={overview}
-          ticketUuid={ticketUuid}
+          organizationUuid={organizationUuid}
           ticketVersion={ticketVersion}
           readOnly={readOnly}
           back={() => historyPush(modulesManager, history, "grievanceSocialProtection.route.tickets")}
@@ -73,9 +73,9 @@ class WorkforceOrganizationPage extends Component {
 
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  ticketUuid: props.match.params.ticket_uuid,
+  organizationUuid: props.match.params.organization_uuid,
   ticketVersion: props.match.params.version,
-  ticket: state.workforce.ticket,
+  organization: state.workforce.organization,
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({ createOrganization, updateOrganization }, dispatch);
