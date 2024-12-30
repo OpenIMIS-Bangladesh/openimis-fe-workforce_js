@@ -23,7 +23,8 @@ const DEFAULT_CONFIG = {
   refs: [
     { key: "workforce.route.organizations.organization", ref: ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION },
 
-    { key: "workforce.route.organizations.organization.units.unit", ref: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT },
+    { key: "workforce.route.organizations.units.unit", ref: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT },
+    { key: "workforce.route.organizations.units", ref: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS },
 
     { key: "workforceOrganization.ParentPicker", ref: ParentPicker },
   ],
@@ -35,6 +36,8 @@ const DEFAULT_CONFIG = {
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS, component: WorkforceOrganizationUnitsPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT, component: WorkforceOrganizationUnitPage },
+    { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT}/:ticket_uuid`, component: WorkforceOrganizationUnitPage },
+
   ],
 
   "core.MainMenu": [WorkforceMainMenu],

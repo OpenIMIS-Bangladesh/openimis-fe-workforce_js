@@ -13,7 +13,7 @@ import { ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION } from "../routes";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab,
+  fab: theme.fab,ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION
 });
 
 class WorkforceOrganizationsPage extends Component {

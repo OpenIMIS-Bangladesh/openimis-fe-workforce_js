@@ -9,16 +9,16 @@ import {
 
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../constants";
 import OrganizationUnitSearcher from "../components/OrganizationUnitSearcher";
-import { ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION } from "../routes";
+import { ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT } from "../routes";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab,
+  fab: theme.fab,ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT
 });
 
-class WorkforceOrganizationsUnitPage extends Component {
+class WorkforceOrganizationsUnitsPage extends Component {
   onDoubleClick = (organization, newTab = false) => {
-    const routeParams = ['workforce.route.organizations.organization', [decodeId(organization.id)]];
+    const routeParams = ['workforce.route.organizations.units.unit', [decodeId(organization.id)]];
     if (organization?.isHistory) {
       routeParams[1].push(organization.version);
     }
@@ -26,7 +26,7 @@ class WorkforceOrganizationsUnitPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, 'workforce/organizations/units/unit');
+    historyPush(this.props.modulesManager, this.props.history, '"workforce.route.organizations.units.unit');
   };
 
   render() {
@@ -59,6 +59,6 @@ const mapStateToProps = (state) => ({
 
 export default withModulesManager(
   withHistory(
-    connect(mapStateToProps)(withTheme(withStyles(styles)(WorkforceOrganizationsUnitPage))),
+    connect(mapStateToProps)(withTheme(withStyles(styles)(WorkforceOrganizationsUnitsPage))),
   ),
 );

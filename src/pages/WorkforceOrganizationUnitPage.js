@@ -6,7 +6,7 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import {
   formatMessageWithValues, withModulesManager, withHistory, historyPush,
 } from "@openimis/fe-core";
-import OrganizationForm from "../components/OrganizationForm";
+import OrganizationUnitForm from "../components/OrganizationUnitForm";
 import { updateOrganization, createOrganization } from "../actions";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../constants";
 
@@ -15,7 +15,7 @@ const styles = (theme) => ({
   lockedPage: theme.page.locked,
 });
 
-class WorkforceOrganizationPage extends Component {
+class WorkforceOrganizationUnitPage extends Component {
   add = () => {
     historyPush(this.props.modulesManager, this.props.history, "grievance.route.ticket");
   };
@@ -57,12 +57,12 @@ class WorkforceOrganizationPage extends Component {
     // if (!(rights.includes(RIGHT_ORGANIZATION_CREATE) || rights.includes(RIGHT_ORGANIZATION_EDIT))) return null;
     return (
       <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
-        <OrganizationForm
+        <OrganizationUnitForm
           overview={overview}
           ticketUuid={ticketUuid}
           ticketVersion={ticketVersion}
           readOnly={readOnly}
-          back={() => historyPush(modulesManager, history, "grievanceSocialProtection.route.tickets")}
+          back={() => historyPush(modulesManager, history, "workforce.route.organizations.units")}
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
           save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
         />
@@ -81,5 +81,5 @@ const mapStateToProps = (state, props) => ({
 const mapDispatchToProps = (dispatch) => bindActionCreators({ createOrganization, updateOrganization }, dispatch);
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
-  withTheme(withStyles(styles)(WorkforceOrganizationPage))),
+  withTheme(withStyles(styles)(WorkforceOrganizationUnitPage))),
 ));
