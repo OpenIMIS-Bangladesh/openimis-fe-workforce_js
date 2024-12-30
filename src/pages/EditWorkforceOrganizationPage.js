@@ -16,7 +16,7 @@ import {
 } from "@openimis/fe-core";
 import { updateOrganization } from "../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../constants";
-import { withTheme,withStyles } from "@material-ui/core/styles";
+import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../components/WorkforceForm";
 
 const styles = (theme) => ({
@@ -42,10 +42,7 @@ class EditWorkforceOrganizationPage extends Component {
       this.setState({ stateEdited: this.props.organization });
     }
 
-    if (
-      prevProps.submittingMutation &&
-      !this.props.submittingMutation
-    ) {
+    if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.dispatch(journalize(this.props.mutation));
     }
   }
@@ -93,6 +90,8 @@ class EditWorkforceOrganizationPage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
 
+    console.log({stateEdited})
+
     const isSaveDisabled = !(
       stateEdited.title &&
       stateEdited.address &&
@@ -124,7 +123,7 @@ class EditWorkforceOrganizationPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.organization.name.en"
-                    value={stateEdited.title || ""}
+                    value={stateEdited.nameEn}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
                     readOnly={isSaved}
@@ -134,7 +133,7 @@ class EditWorkforceOrganizationPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.organization.name.bn"
-                    value={stateEdited.titleBn || ""}
+                    value={stateEdited.nameBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     required
                     readOnly={isSaved}
@@ -145,7 +144,9 @@ class EditWorkforceOrganizationPage extends Component {
                   <PublishedComponent
                     pubRef="workforceOrganization.OrganizationParentPicker"
                     value={stateEdited.parent || null}
-                    onChange={(option) => this.updateAttribute("parent", option)}
+                    onChange={(option) =>
+                      this.updateAttribute("parent", option)
+                    }
                     required
                     readOnly={isSaved}
                   />
@@ -154,7 +155,7 @@ class EditWorkforceOrganizationPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.organization.phone"
-                    value={stateEdited.phone || ""}
+                    value={stateEdited.phoneNumber || ""}
                     onChange={(v) => this.updateAttribute("phone", v)}
                     required
                     type={"number"}
@@ -187,7 +188,9 @@ class EditWorkforceOrganizationPage extends Component {
                     pubRef="location.DetailedLocation"
                     withNull={true}
                     value={stateEdited.location || null}
-                    onChange={(location) => this.updateAttribute("location", location)}
+                    onChange={(location) =>
+                      this.updateAttribute("location", location)
+                    }
                     readOnly={isSaved}
                     required
                     split={true}
@@ -298,9 +301,12 @@ class EditWorkforceOrganizationPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  submittingMutation: state.grievanceSocialProtection.submittingMutation,
-  mutation: state.grievanceSocialProtection.mutation,
-  grievanceConfig: state.grievanceSocialProtection.grievanceConfig,
+  // submittingMutation: state.grievanceSocialProtection.submittingMutation,
+  // mutation: state.grievanceSocialProtection.mutation,
+  // grievanceConfig: state.grievanceSocialProtection.grievanceConfig,
+  organization: state.workforce.organization,
 });
 
-export default connect(mapStateToProps)(withTheme(withStyles(styles)(EditWorkforceOrganizationPage)));
+export default connect(mapStateToProps)(
+  withTheme(withStyles(styles)(EditWorkforceOrganizationPage))
+);

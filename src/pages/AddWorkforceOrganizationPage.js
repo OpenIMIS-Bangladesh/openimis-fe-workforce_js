@@ -199,7 +199,9 @@ class AddWorkforceOrganizationPage extends Component {
                     value={stateEdited.email || ""}
                     onChange={(v) => this.updateAttribute("email", v)}
                     required
+                    type={'email'}
                     readOnly={isSaved}
+                    
                   />
                 </Grid>
 
@@ -269,7 +271,7 @@ class AddWorkforceOrganizationPage extends Component {
                       {
                         key: "repEmail",
                         label: "workforce.representative.email",
-                        type: "text",
+                        type: "email",
                         required: true,
                       },
                       {
