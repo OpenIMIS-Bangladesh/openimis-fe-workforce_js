@@ -16,7 +16,7 @@ import {
 } from "@openimis/fe-core";
 import { updateOrganization } from "../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../constants";
-import { withStyles } from "@material-ui/core/styles";
+import { withTheme,withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../components/WorkforceForm";
 
 const styles = (theme) => ({
@@ -303,4 +303,4 @@ const mapStateToProps = (state) => ({
   grievanceConfig: state.grievanceSocialProtection.grievanceConfig,
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(EditWorkforceOrganizationPage));
+export default connect(mapStateToProps)(withTheme(withStyles(styles)(EditWorkforceOrganizationPage)));

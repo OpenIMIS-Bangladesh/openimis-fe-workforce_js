@@ -19,6 +19,19 @@ export function formatRepresentativeGQL(representative) {
   `;
 }
 
+export function formatOrganizationGQL(organization){
+  return `
+    ${organization.nameEn ? `nameEn: "${formatGQLString(organization.nameEn)}"` : ""}
+    ${organization.nameBn ? `nameBn: "${formatGQLString(organization.nameBn)}"` : ""}
+    ${organization.location.id ? `location: "${decodeId(organization.location.id)}"` : ""}
+    ${organization.workforceRepresentativeId ? `workforceRepresentativeId: "${decodeId(organization.workforceRepresentativeId)}"` : ""}
+    ${organization.address ? `address: "${formatGQLString(organization.address)}"` : ""}
+    ${organization.phoneNumber ? `phoneNumber: "${formatGQLString(organization.phoneNumber)}"` : ""}
+    ${organization.email ? `email: "${formatGQLString(organization.email)}"` : ""}
+    ${organization.website ? `website: "${formatGQLString(organization.website)}"` : ""}
+  `;
+}
+
 
 export function fetchOrganizationsSummary(mm, filters) {
   const projections = [
@@ -55,9 +68,23 @@ export function createRepresentative(mutation, clientMutationLabel) {
   });
 }
 
+export function createWorkforceOrganization(representative, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceOrganization",
+    formatOrganizationGQL(representative),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_CREATE_ORG_RESP", "ORG_MUTATION_ERR"], {
+    clientMutationId: mutation.clientMutationId,
+    clientMutationLabel,
+    requestedDateTime,
+  });
+}
+
 export function createOrganization(representative, grievanceConfig, clientMutationLabel) {
   const mutation = formatMutation(
-    "createWorkforceRepresentative",
+    "createWorkforce",
     formatRepresentativeGQL(representative),
     clientMutationLabel,
   );
