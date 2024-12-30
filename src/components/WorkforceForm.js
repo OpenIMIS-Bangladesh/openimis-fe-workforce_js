@@ -78,6 +78,16 @@ const WorkforceForm = ({
                       type={field.type || "text"}
                     />
                   )}
+                  {field.type === "email" && (
+                    <TextInput
+                      label={field.label}
+                      value={stateEdited[field.key] || ""}
+                      onChange={(v) => updateAttribute(field.key, v)}
+                      required={field.required}
+                      readOnly={isSaved}
+                      type={"email"}
+                    />
+                  )}
 
                   {field.type === "date" && (
                     <PublishedComponent

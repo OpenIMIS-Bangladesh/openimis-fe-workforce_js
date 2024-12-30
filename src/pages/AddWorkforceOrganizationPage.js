@@ -18,6 +18,7 @@ import {
 import {
   createOrganization,
   createRepresentative,
+  createWorkforceOrganization,
   fetchRepresentativeByClientMutationId,
   formatRepresentativeGQL,
 } from "../actions";
@@ -50,7 +51,7 @@ class AddWorkforceOrganizationPage extends Component {
     }
   }
 
-  save = () => {
+  save = async() => {
     const { stateEdited } = this.state;
     const { grievanceConfig, dispatch } = this.props;
 
@@ -68,17 +69,41 @@ class AddWorkforceOrganizationPage extends Component {
       position: stateEdited.position,
     };
 
-    const representativeMutation = formatMutation("createWorkforceRepresentative", formatRepresentativeGQL(representativeData), `Created Representative ${representativeData.nameEn}`);
+    
+    const representativeMutation =await formatMutation("createWorkforceRepresentative", formatRepresentativeGQL(representativeData), `Created Representative ${representativeData.nameEn}`);
     const representativeClientMutationId = representativeMutation.clientMutationId;
-
-    dispatch(
+    
+   await dispatch(
       createRepresentative(
         representativeMutation,
         `Created Representative ${representativeData.nameEn}`,
       ),
     );
+    
 
-    dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
+   await dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
+
+   const representativeId = this.props.representativeId[0].id
+
+    const organizationData = {
+      nameBn: stateEdited.titleBn,
+      nameEn: stateEdited.title,
+      location: stateEdited.location,
+      address: stateEdited.address,
+      phoneNumber: stateEdited.phone,
+      email: stateEdited.email,
+      website:stateEdited.website,
+      // workforceRepresentativeId:this.state.workforce.fetchedRepresentativeByClientMutationId,
+      workforceRepresentativeId:representativeId
+    }
+    console.log({organizationData})
+
+    await dispatch(
+      createWorkforceOrganization(
+        organizationData,
+        `Created Organization ${organizationData.nameEn}`,
+      ),
+    );
 
     this.setState({ isSaved: true });
   };
@@ -149,7 +174,7 @@ class AddWorkforceOrganizationPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="workforceOrganization.ParentPicker"
+                    pubRef="workforceOrganization.OrganizationParentPicker"
                     value={stateEdited.parent || null}
                     onChange={(option) => this.updateAttribute("parent", option)}
                     required
@@ -174,7 +199,9 @@ class AddWorkforceOrganizationPage extends Component {
                     value={stateEdited.email || ""}
                     onChange={(v) => this.updateAttribute("email", v)}
                     required
+                    type={'email'}
                     readOnly={isSaved}
+                    
                   />
                 </Grid>
 
@@ -244,7 +271,7 @@ class AddWorkforceOrganizationPage extends Component {
                       {
                         key: "repEmail",
                         label: "workforce.representative.email",
-                        type: "text",
+                        type: "email",
                         required: true,
                       },
                       {
@@ -306,6 +333,7 @@ class AddWorkforceOrganizationPage extends Component {
 const mapStateToProps = (state) => ({
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
+  representativeId:state.workforce.fetchedRepresentativeByClientMutationId,
   grievanceConfig: state.workforce.grievanceConfig,
 });
 

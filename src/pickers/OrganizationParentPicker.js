@@ -5,7 +5,7 @@ import {
   useGraphqlQuery,
 } from "@openimis/fe-core";
 
-const ParentPicker = ({
+const OrganizationParentPicker = ({
   onChange,
   readOnly,
   required,
@@ -53,4 +53,4 @@ const ParentPicker = ({
   );
 };
 
-export default ParentPicker;
+export default OrganizationParentPicker;

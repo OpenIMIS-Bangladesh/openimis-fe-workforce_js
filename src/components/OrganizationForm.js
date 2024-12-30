@@ -19,15 +19,15 @@ class OrganizationForm extends Component {
     this.state = {
       lockNew: false,
       reset: 0,
-      ticketUuid: null,
+      organizationUuid: null,
       ticket: this._newTicket(),
     };
   }
 
   componentDidMount() {
     // this.props.fetchGrievanceConfiguration();
-    if (this.props.ticketUuid) {
-      this.setState((state, props) => ({ ticketUuid: props.ticketUuid }));
+    if (this.props.organizationUuid) {
+      this.setState((state, props) => ({ organizationUuid: props.organizationUuid }));
     }
   }
 
@@ -47,30 +47,30 @@ class OrganizationForm extends Component {
         { label: "Label" },
       );
     }
-    if (prevProps.fetchedTicket !== this.props.fetchedTicket
-      && !!this.props.fetchedTicket
+    if (prevProps.fetchedOrganization !== this.props.fetchedOrganization
+      && !!this.props.fetchedOrganization
       && !!this.props.ticket) {
       this.setState((state, props) => ({
         ticket: { ...props.ticket },
-        ticketUuid: props.ticket.id,
+        organizationUuid: props.ticket.id,
         lockNew: false,
       }));
-    } else if (prevState.ticketUuid !== this.state.ticketUuid) {
-      const filters = [`id: "${this.state.ticketUuid}"`];
+    } else if (prevState.organizationUuid !== this.state.organizationUuid) {
+      const filters = [`id: "${this.state.organizationUuid}"`];
       if (this.props.ticketVersion) filters.push(`ticketVersion: ${this.props.ticketVersion}`);
       this.props.fetchOrganization(
         this.props.modulesManager,
         filters,
       );
-    } else if (prevProps.ticketUuid && !this.props.ticketUuid) {
-      this.setState({ ticket: this._newTicket(), lockNew: false, ticketUuid: null });
+    } else if (prevProps.organizationUuid && !this.props.organizationUuid) {
+      this.setState({ ticket: this._newTicket(), lockNew: false, organizationUuid: null });
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
       if (this.props?.ticket?.id) {
         this.props.fetchOrganization(
           this.props.modulesManager,
-          [`id: "${this.state.ticketUuid}"`],
+          [`id: "${this.state.organizationUuid}"`],
         );
       }
     }
@@ -114,9 +114,9 @@ class OrganizationForm extends Component {
 
   render() {
     const {
-      fetchingTicket,
-      fetchedTicket,
-      errorTicket,
+      fetchingOrganization,
+      fetchedOrganization,
+      errorOrganization,
       save, back,
     } = this.props;
 
@@ -125,7 +125,7 @@ class OrganizationForm extends Component {
       reset,
       update,
       overview,
-      ticketUuid,
+      organizationUuid,
       ticket,
     } = this.state;
 
@@ -139,15 +139,15 @@ class OrganizationForm extends Component {
       },
     ];
 
-    console.log({ticketUuid})
+    console.log({organizationUuid})
 
     return (
       <>
-        <ProgressOrError progress={fetchingTicket} error={errorTicket} />
-        {(!!fetchedTicket || !ticketUuid) && (
+        <ProgressOrError progress={fetchingOrganization} error={errorOrganization} />
+        {(!!fetchedOrganization || !organizationUuid) && (
           <Form
             module={MODULE_NAME}
-            edited_id={ticketUuid}
+            edited_id={organizationUuid}
             edited={ticket}
             reset={reset}
             update={update}
@@ -157,10 +157,10 @@ class OrganizationForm extends Component {
             back={back}
             save={save ? this._save : null}
             canSave={this.canSave}
-            reload={(ticketUuid || readOnly) && this.reload}
+            reload={(organizationUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={ticketUuid ? [EditWorkforceOrganizationPage] : [AddWorkforceOrganizationPage]}
+            Panels={organizationUuid ? [EditWorkforceOrganizationPage] : [AddWorkforceOrganizationPage]}
             onEditedChanged={this.onEditedChanged}
             // actions={actions}
           />
@@ -173,10 +173,10 @@ class OrganizationForm extends Component {
 // eslint-disable-next-line no-unused-vars
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  fetchingTicket: state.workforce.fetchingTicket,
-  errorTicket: state.workforce.errorTicket,
-  fetchedTicket: state.workforce.fetchedTicket,
-  ticket: state.workforce.ticket,
+  fetchingOrganization: state.workforce.fetchingOrganization,
+  errorOrganization: state.workforce.errorOrganization,
+  fetchedOrganization: state.workforce.fetchedOrganization,
+  organization: state.workforce.organization,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   grievanceConfig: state.workforce.grievanceConfig,

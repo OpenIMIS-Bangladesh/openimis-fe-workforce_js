@@ -14,7 +14,7 @@ import WorkforceOrganizationsPage from "./pages/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/WorkforceOrganizationPage";
 import WorkforceOrganizationUnitsPage from "./pages/WorkforceOrganizationUnitsPage";
 import WorkforceOrganizationUnitPage from "./pages/WorkforceOrganizationUnitPage";
-import ParentPicker from "./pickers/ParentPicker";
+import OrganizationParentPicker from "./pickers/OrganizationParentPicker";
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
@@ -26,13 +26,13 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.organizations.units.unit", ref: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT },
     { key: "workforce.route.organizations.units", ref: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS },
 
-    { key: "workforceOrganization.ParentPicker", ref: ParentPicker },
+    { key: "workforceOrganization.OrganizationParentPicker", ref: OrganizationParentPicker },
   ],
 
   "core.Router": [
     { path: ROUTE_WORKFORCE_ORGANIZATIONS, component: WorkforceOrganizationsPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION, component: WorkforceOrganizationPage },
-    { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION}/:ticket_uuid`, component: WorkforceOrganizationPage },
+    { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION}/:organization_uuid`, component: WorkforceOrganizationPage },
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS, component: WorkforceOrganizationUnitsPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT, component: WorkforceOrganizationUnitPage },

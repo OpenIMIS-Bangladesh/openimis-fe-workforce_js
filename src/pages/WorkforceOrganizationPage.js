@@ -7,7 +7,7 @@ import {
   formatMessageWithValues, withModulesManager, withHistory, historyPush,
 } from "@openimis/fe-core";
 import OrganizationForm from "../components/OrganizationForm";
-import { updateOrganization, createOrganization } from "../actions";
+import { updateOrganization, createWorkforceOrganization } from "../actions";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../constants";
 
 const styles = (theme) => ({
@@ -20,28 +20,28 @@ class WorkforceOrganizationPage extends Component {
     historyPush(this.props.modulesManager, this.props.history, "grievance.route.ticket");
   };
 
-  save = (ticket) => {
-    if (!ticket.id) {
-      this.props.createOrganization(
+  save = (organization) => {
+    if (!organization.id) {
+      this.props.createWorkforceOrganization(
         this.props.modulesManager,
-        ticket,
+        organization,
         // formatMessageWithValues(
         //   this.props.intl,
-        //   "ticket",
-        //   "createTicket.mutationLabel",
-        //   { label: ticket.code ? ticket.code : "" },
+        //   "organization",
+        //   "createorganization.mutationLabel",
+        //   { label: organization.code ? organization.code : "" },
         // ),
         "Create",
       );
     } else {
       this.props.updateOrganization(
         this.props.modulesManager,
-        ticket,
+        organization,
         // formatMessageWithValues(
         //   this.props.intl,
-        //   "ticket",
-        //   "updateTicket.mutationLabel",
-        //   { label: ticket.code ? ticket.code : "" },
+        //   "organization",
+        //   "updateorganization.mutationLabel",
+        //   { label: organization.code ? organization.code : "" },
         // ),
         "Update",
       );
@@ -50,17 +50,17 @@ class WorkforceOrganizationPage extends Component {
 
   render() {
     const {
-      classes, modulesManager, history, rights, ticketUuid, overview, ticket, ticketVersion,
+      classes, modulesManager, history, rights, organizationUuid, overview, organization, organizationVersion,
     } = this.props;
-    // const readOnly = ticket?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
+    // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
     // if (!(rights.includes(RIGHT_ORGANIZATION_CREATE) || rights.includes(RIGHT_ORGANIZATION_EDIT))) return null;
     return (
       <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
         <OrganizationForm
           overview={overview}
-          ticketUuid={ticketUuid}
-          ticketVersion={ticketVersion}
+          organizationUuid={organizationUuid}
+          organizationVersion={organizationVersion}
           readOnly={readOnly}
           back={() => historyPush(modulesManager, history, "grievanceSocialProtection.route.tickets")}
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
@@ -73,12 +73,12 @@ class WorkforceOrganizationPage extends Component {
 
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  ticketUuid: props.match.params.ticket_uuid,
-  ticketVersion: props.match.params.version,
-  ticket: state.workforce.ticket,
+  organizationUuid: props.match.params.organization_uuid,
+  organizationVersion: props.match.params.version,
+  organization: state.workforce.organization,
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ createOrganization, updateOrganization }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ createWorkforceOrganization, updateOrganization }, dispatch);
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
   withTheme(withStyles(styles)(WorkforceOrganizationPage))),
