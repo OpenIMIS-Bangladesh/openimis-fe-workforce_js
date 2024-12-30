@@ -13,6 +13,7 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
+  decodeId
 } from "@openimis/fe-core";
 import { updateOrganization } from "../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../constants";
@@ -187,7 +188,7 @@ class EditWorkforceOrganizationPage extends Component {
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
-                    value={stateEdited.location || null}
+                    value={decodeId(stateEdited.location.id)|| null}
                     onChange={(location) =>
                       this.updateAttribute("location", location)
                     }
@@ -210,12 +211,7 @@ class EditWorkforceOrganizationPage extends Component {
 
                 <Grid item xs={12} className={classes.item}>
                   <WorkforceForm
-                    title={
-                      <FormattedMessage
-                        id="workforce.representative.info"
-                        defaultMessage="Workforce Representative Info"
-                      />
-                    }
+                    title={"Workforce Representative Info"}
                     stateEdited={stateEdited}
                     isSaved={isSaved}
                     updateAttribute={this.updateAttribute}
@@ -225,42 +221,56 @@ class EditWorkforceOrganizationPage extends Component {
                         label: "workforce.representative.name.en",
                         type: "text",
                         required: true,
+                        value:stateEdited.workforceRepresentative.nameEn
                       },
                       {
                         key: "repNameBn",
                         label: "workforce.representative.name.bn",
                         type: "text",
                         required: true,
+                        value:stateEdited.workforceRepresentative.nameBn
                       },
                       {
                         key: "position",
                         label: "workforce.representative.position",
                         type: "text",
                         required: true,
+                        value:stateEdited.workforceRepresentative.position
                       },
                       {
                         key: "repPhone",
                         label: "workforce.representative.phone",
                         type: "number",
                         required: true,
+                        value:stateEdited.workforceRepresentative.phoneNumber
                       },
                       {
                         key: "repEmail",
                         label: "workforce.representative.email",
                         type: "text",
                         required: true,
+                        value:stateEdited.workforceRepresentative.email
                       },
                       {
                         key: "nid",
                         label: "workforce.representative.nid",
                         type: "number",
                         required: true,
+                        value:stateEdited.workforceRepresentative.nid
+                      },
+                      {
+                        key: "birthDate",
+                        label: "workforce.representative.birthDate",
+                        type: "date",
+                        required: false,
+                        value:stateEdited.workforceRepresentative.birthDate
                       },
                       {
                         key: "passport",
                         label: "workforce.representative.passport",
                         type: "text",
                         required: false,
+                        value:stateEdited.workforceRepresentative.passportNo
                       },
                       {
                         key: "repLocation",
@@ -273,6 +283,7 @@ class EditWorkforceOrganizationPage extends Component {
                         label: "workforce.representative.address",
                         type: "text",
                         required: true,
+                        value:stateEdited.workforceRepresentative.address
                       },
                     ]}
                   />

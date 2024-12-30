@@ -61,7 +61,7 @@ const WorkforceForm = ({
                   {field.type === "text" && (
                     <TextInput
                       label={field.label}
-                      value={stateEdited[field.key] || ""}
+                      value={field.value ||stateEdited[field.key] || ""}
                       onChange={(v) => updateAttribute(field.key, v)}
                       required={field.required}
                       readOnly={isSaved}
@@ -71,7 +71,7 @@ const WorkforceForm = ({
                   {field.type === "number" && (
                     <TextInput
                       label={field.label}
-                      value={stateEdited[field.key] || ""}
+                      value={field.value ||stateEdited[field.key] || ""}
                       onChange={(v) => updateAttribute(field.key, v)}
                       required={field.required}
                       readOnly={isSaved}
@@ -81,7 +81,7 @@ const WorkforceForm = ({
                   {field.type === "email" && (
                     <TextInput
                       label={field.label}
-                      value={stateEdited[field.key] || ""}
+                      value={field.value ||stateEdited[field.key] || ""}
                       onChange={(v) => updateAttribute(field.key, v)}
                       required={field.required}
                       readOnly={isSaved}
@@ -93,7 +93,7 @@ const WorkforceForm = ({
                     <PublishedComponent
                       pubRef="core.DatePicker"
                       label={field.label}
-                      value={stateEdited[field.key] || ""}
+                      value={field.value||stateEdited[field.key] || ""}
                       onChange={(v) => updateAttribute(field.key, v)}
                       readOnly={isSaved}
                       required={field.required}
@@ -105,7 +105,7 @@ const WorkforceForm = ({
                       pubRef="location.DetailedLocation"
                       withNull={true}
                       split={true}
-                      value={stateEdited.repLocation || null}
+                      value={field.value ||stateEdited.repLocation || null}
                       onChange={(location) =>
                         updateAttribute("repLocation", location)
                       }
