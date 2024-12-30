@@ -143,7 +143,7 @@ class EditWorkforceOrganizationPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="workforceOrganization.ParentPicker"
+                    pubRef="workforceOrganization.OrganizationParentPicker"
                     value={stateEdited.parent || null}
                     onChange={(option) => this.updateAttribute("parent", option)}
                     required
