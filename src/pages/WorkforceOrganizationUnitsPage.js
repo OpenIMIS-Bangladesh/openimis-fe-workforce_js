@@ -26,7 +26,7 @@ class WorkforceOrganizationsUnitsPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, '"workforce.route.organizations.units.unit');
+    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.organizations.units.unit');
   };
 
   render() {
