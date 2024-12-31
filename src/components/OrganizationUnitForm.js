@@ -10,7 +10,7 @@ import {
   fetchOrganization,
 } from "../actions";
 import EditWorkforceOrganizationPage from "../pages/EditWorkforceOrganizationPage";
-import AddWorkforceOrganizationPage from "../pages/AddWorkforceOrganizationPage";
+import AddWorkforceOrganizationUnitPage from "../pages/AddWorkforceOrganizationUnitPage";
 import { MODULE_NAME } from "../constants";
 
 class OrganizationUnitForm extends Component {
@@ -151,7 +151,7 @@ class OrganizationUnitForm extends Component {
             edited={ticket}
             reset={reset}
             update={update}
-            title="workforce"
+            title="Workforce Organizations Unit"
             // titleParams={{ label: ticketLabel(this.state.ticket) }}
             titleParams={{ label: "Label" }}
             back={back}
@@ -160,7 +160,7 @@ class OrganizationUnitForm extends Component {
             reload={(ticketUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={ticketUuid ? [EditWorkforceOrganizationPage] : [AddWorkforceOrganizationPage]}
+            Panels={ticketUuid ? [EditWorkforceOrganizationPage] : [AddWorkforceOrganizationUnitPage]}
             onEditedChanged={this.onEditedChanged}
             // actions={actions}
           />

@@ -31,6 +31,16 @@ export function formatOrganizationGQL(organization) {
     ${organization.website ? `website: "${formatGQLString(organization.website)}"` : ""}
   `;
 }
+export function formatUnitGQL(unit) {
+  return `
+    ${unit.nameEn ? `nameEn: "${formatGQLString(unit.nameEn)}"` : ""}
+    ${unit.nameBn ? `nameBn: "${formatGQLString(unit.nameBn)}"` : ""}
+    ${unit.phoneNumber ? `phoneNumber: "${formatGQLString(unit.phoneNumber)}"` : ""}
+    ${unit.email ? `email: "${formatGQLString(unit.email)}"` : ""}
+    ${unit.email ? `level: "${formatGQLString(unit.level)}"` : ""}
+    ${unit.email ? `parent: "${formatGQLString(unit.parent)}"` : ""}
+  `;
+}
 
 
 export function fetchOrganizationsSummary(mm, filters) {
@@ -73,6 +83,19 @@ export function createWorkforceOrganization(representative, clientMutationLabel)
   const mutation = formatMutation(
     "createWorkforceOrganization",
     formatOrganizationGQL(representative),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_CREATE_ORG_RESP", "ORG_MUTATION_ERR"], {
+    clientMutationId: mutation.clientMutationId,
+    clientMutationLabel,
+    requestedDateTime,
+  });
+}
+export function createWorkforceUnit(unit, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceUnit",
+    formatUnitGQL(unit),
     clientMutationLabel,
   );
   const requestedDateTime = new Date();
