@@ -15,11 +15,11 @@ import {
   FormattedMessage,
   formatMutation,
 } from "@openimis/fe-core";
-import {
-  formatUnitGQL,
-} from "../../actions";
+
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
+import { formatUnitGQL } from "../../utils/format_gql";
+import { createWorkforceUnit } from "../../actions";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -46,7 +46,7 @@ class AddWorkforceOrganizationUnitPage extends Component {
     }
   }
 
-  save = async() => {
+  save = async () => {
     const { stateEdited } = this.state;
 
     const unitData = {
@@ -55,20 +55,20 @@ class AddWorkforceOrganizationUnitPage extends Component {
       nameEn: stateEdited.title,
       phoneNumber: stateEdited.phone,
       email: stateEdited.email,
-      level:stateEdited.level,
-      parent:stateEdited.parent,
+      level: stateEdited.level,
+      parent: stateEdited.parent,
     };
 
-    
-    const unitMutation =await formatMutation("createWorkforceUnit", formatUnitGQL(unitData), `Created Unit ${unitData.nameEn}`);
-    
-   await dispatch(
-    createWorkforceUnit(
+
+    const unitMutation = await formatMutation("createWorkforceUnit", formatUnitGQL(unitData), `Created Unit ${unitData.nameEn}`);
+
+    await dispatch(
+      createWorkforceUnit(
         unitMutation,
         `Created Unit ${unitData.nameEn}`,
       ),
     );
-   
+
     this.setState({ isSaved: true });
   };
 
@@ -153,9 +153,9 @@ class AddWorkforceOrganizationUnitPage extends Component {
                     value={stateEdited.email || ""}
                     onChange={(v) => this.updateAttribute("email", v)}
                     required
-                    type={'email'}
+                    type={"email"}
                     readOnly={isSaved}
-                    
+
                   />
                 </Grid>
 
@@ -194,7 +194,7 @@ class AddWorkforceOrganizationUnitPage extends Component {
 const mapStateToProps = (state) => ({
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
-  unitId:state.workforce.fetchedRepresentativeByClientMutationId,
+  unitId: state.workforce.fetchedRepresentativeByClientMutationId,
   grievanceConfig: state.workforce.grievanceConfig,
 });
 

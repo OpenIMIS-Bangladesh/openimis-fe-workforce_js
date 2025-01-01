@@ -4,6 +4,7 @@ import {
 
 export function formatRepresentativeGQL(representative) {
   return `
+    ${representative.id ? `id: "${formatGQLString(representative.id)}"` : ""}
     ${representative.nameEn ? `nameEn: "${formatGQLString(representative.nameEn)}"` : ""}
     ${representative.nameBn ? `nameBn: "${formatGQLString(representative.nameBn)}"` : ""}
     ${representative.location.id ? `location: "${decodeId(representative.location.id)}"` : ""}
@@ -20,6 +21,7 @@ export function formatRepresentativeGQL(representative) {
 
 export function formatOrganizationGQL(organization) {
   return `
+    ${organization.id ? `id: "${formatGQLString(organization.id)}"` : ""}
     ${organization.nameEn ? `nameEn: "${formatGQLString(organization.nameEn)}"` : ""}
     ${organization.nameBn ? `nameBn: "${formatGQLString(organization.nameBn)}"` : ""}
     ${organization.location.id ? `location: "${decodeId(organization.location.id)}"` : ""}
