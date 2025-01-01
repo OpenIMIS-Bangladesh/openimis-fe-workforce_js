@@ -16,10 +16,9 @@ import {
   formatMutation,
 } from "@openimis/fe-core";
 import {
-  createUnit,
   formatUnitGQL,
-} from "../actions";
-import { EMPTY_STRING, MODULE_NAME } from "../constants";
+} from "../../actions";
+import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 
 const styles = (theme) => ({

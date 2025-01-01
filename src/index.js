@@ -10,10 +10,10 @@ import {
   ROUTE_WORKFORCE_ORGANIZATIONS_UNITS,
   ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT,
 } from "./routes";
-import WorkforceOrganizationsPage from "./pages/WorkforceOranigzationsPage";
-import WorkforceOrganizationPage from "./pages/WorkforceOrganizationPage";
-import WorkforceOrganizationUnitsPage from "./pages/WorkforceOrganizationUnitsPage";
-import WorkforceOrganizationUnitPage from "./pages/WorkforceOrganizationUnitPage";
+import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
+import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
+import WorkforceOrganizationUnitsPage from "./pages/organization-unit/WorkforceOrganizationUnitsPage";
+import WorkforceOrganizationUnitPage from "./pages/organization-unit/WorkforceOrganizationUnitPage";
 import OrganizationParentPicker from "./pickers/OrganizationParentPicker";
 
 const DEFAULT_CONFIG = {

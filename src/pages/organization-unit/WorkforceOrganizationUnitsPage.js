@@ -7,18 +7,18 @@ import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
 } from "@openimis/fe-core";
 
-import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../constants";
-import OrganizationSearcher from "../components/OrganizationSearcher";
-import { ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION } from "../routes";
+import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../../constants";
+import OrganizationUnitSearcher from "../../components/organization-unit/OrganizationUnitSearcher";
+import { ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT } from "../../routes";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab,ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION
+  fab: theme.fab,ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT
 });
 
-class WorkforceOrganizationsPage extends Component {
+class WorkforceOrganizationsUnitsPage extends Component {
   onDoubleClick = (organization, newTab = false) => {
-    const routeParams = ['workforce.route.organizations.organization', [decodeId(organization.id)]];
+    const routeParams = ['workforce.route.organizations.units.unit', [decodeId(organization.id)]];
     if (organization?.isHistory) {
       routeParams[1].push(organization.version);
     }
@@ -26,7 +26,7 @@ class WorkforceOrganizationsPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.organizations.organization');
+    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.organizations.units.unit');
   };
 
   render() {
@@ -34,7 +34,7 @@ class WorkforceOrganizationsPage extends Component {
 
     return (
       <div className={classes.page}>
-        <OrganizationSearcher
+        <OrganizationUnitSearcher
           cacheFiltersKey="ticketPageFiltersCache"
           onDoubleClick={this.onDoubleClick}
         />
@@ -46,7 +46,7 @@ class WorkforceOrganizationsPage extends Component {
               <AddIcon />
             </Fab>
           </div>,
-          <FormattedMessage module={MODULE_NAME} id={"workforce.addNewTooltip"} />,
+          <FormattedMessage module={MODULE_NAME} id={"workforce.unit.addNewTooltip"} />,
         )}
       </div>
     );
@@ -59,6 +59,6 @@ const mapStateToProps = (state) => ({
 
 export default withModulesManager(
   withHistory(
-    connect(mapStateToProps)(withTheme(withStyles(styles)(WorkforceOrganizationsPage))),
+    connect(mapStateToProps)(withTheme(withStyles(styles)(WorkforceOrganizationsUnitsPage))),
   ),
 );

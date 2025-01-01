@@ -13,7 +13,7 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
-import { EMPTY_STRING } from "../constants";
+import { EMPTY_STRING } from "../../constants";
 
 // import TextInput from "./TextInput"; // Replace with your actual TextInput component
 // import PublishedComponent from "./PublishedComponent"; // Replace with your actual PublishedComponent

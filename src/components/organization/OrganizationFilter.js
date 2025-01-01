@@ -13,7 +13,7 @@ import {
   decodeId,
   formatMessage,
 } from "@openimis/fe-core";
-import { MODULE_NAME } from "../constants";
+import { MODULE_NAME } from "../../constants";
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,

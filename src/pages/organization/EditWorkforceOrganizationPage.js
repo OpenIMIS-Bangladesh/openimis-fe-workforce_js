@@ -13,18 +13,12 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
-  formatMutation,
+  decodeId
 } from "@openimis/fe-core";
-import {
-  createOrganization,
-  createRepresentative,
-  createWorkforceOrganization,
-  fetchRepresentativeByClientMutationId,
-  formatRepresentativeGQL,
-} from "../actions";
-import { EMPTY_STRING, MODULE_NAME } from "../constants";
+import { updateOrganization } from "../../actions";
+import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import WorkforceForm from "../components/WorkforceForm";
+import WorkforceForm from "../../components/form/WorkforceForm";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -35,25 +29,38 @@ const styles = (theme) => ({
   },
 });
 
-class AddWorkforceOrganizationPage extends Component {
+class EditWorkforceOrganizationPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stateEdited: {},
+      stateEdited: props.organization || {},
       isSaved: false,
     };
   }
 
   componentDidUpdate(prevProps) {
-    const { submittingMutation, mutation, dispatch } = this.props;
-    if (!submittingMutation && prevProps.submittingMutation !== submittingMutation) {
-      dispatch(journalize(mutation));
+    if (prevProps.organization !== this.props.organization) {
+      this.setState({ stateEdited: this.props.organization });
+    }
+
+    if (prevProps.submittingMutation && !this.props.submittingMutation) {
+      this.props.dispatch(journalize(this.props.mutation));
     }
   }
 
-  save = async() => {
-    const { stateEdited } = this.state;
+  updateAttribute = (key, value) => {
+    this.setState((prevState) => ({
+      stateEdited: {
+        ...prevState.stateEdited,
+        [key]: value,
+      },
+      isSaved: false,
+    }));
+  };
+
+  save = () => {
     const { grievanceConfig, dispatch } = this.props;
+    const { stateEdited } = this.state;
 
     const representativeData = {
       type: "organization",
@@ -69,70 +76,32 @@ class AddWorkforceOrganizationPage extends Component {
       position: stateEdited.position,
     };
 
-    
-    const representativeMutation =await formatMutation("createWorkforceRepresentative", formatRepresentativeGQL(representativeData), `Created Representative ${representativeData.nameEn}`);
-    const representativeClientMutationId = representativeMutation.clientMutationId;
-    
-   await dispatch(
-      createRepresentative(
-        representativeMutation,
-        `Created Representative ${representativeData.nameEn}`,
-      ),
-    );
-    
-
-   await dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
-
-   const representativeId = this.props.representativeId[0].id
-
-    const organizationData = {
-      nameBn: stateEdited.titleBn,
-      nameEn: stateEdited.title,
-      location: stateEdited.location,
-      address: stateEdited.address,
-      phoneNumber: stateEdited.phone,
-      email: stateEdited.email,
-      website:stateEdited.website,
-      // workforceRepresentativeId:this.state.workforce.fetchedRepresentativeByClientMutationId,
-      workforceRepresentativeId:representativeId
-    }
-    console.log({organizationData})
-
-    await dispatch(
-      createWorkforceOrganization(
-        organizationData,
-        `Created Organization ${organizationData.nameEn}`,
-      ),
+    dispatch(
+      updateOrganization(
+        representativeData,
+        grievanceConfig,
+        `Updated Representative ${representativeData.nameEn}`
+      )
     );
 
     this.setState({ isSaved: true });
-  };
-
-  updateAttribute = (key, value) => {
-    this.setState((prevState) => ({
-      stateEdited: {
-        ...prevState.stateEdited,
-        [key]: value,
-      },
-      isSaved: false,
-    }));
   };
 
   render() {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
 
-    // const isSaveDisabled = !(
-    //   stateEdited.title &&
-    //   stateEdited.address &&
-    //   stateEdited.phone &&
-    //   stateEdited.email &&
-    //   stateEdited.website &&
-    //   stateEdited.parent &&
-    //   stateEdited.location
-    // );
+    console.log({stateEdited})
 
-    const isSaveDisabled = false;
+    const isSaveDisabled = !(
+      stateEdited.title &&
+      stateEdited.address &&
+      stateEdited.phone &&
+      stateEdited.email &&
+      stateEdited.website &&
+      stateEdited.parent &&
+      stateEdited.location
+    );
 
     return (
       <div className={classes.page}>
@@ -155,7 +124,7 @@ class AddWorkforceOrganizationPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.organization.name.en"
-                    value={stateEdited.title || ""}
+                    value={stateEdited.nameEn}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
                     readOnly={isSaved}
@@ -165,7 +134,7 @@ class AddWorkforceOrganizationPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.organization.name.bn"
-                    value={stateEdited.titleBn || ""}
+                    value={stateEdited.nameBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     required
                     readOnly={isSaved}
@@ -176,7 +145,9 @@ class AddWorkforceOrganizationPage extends Component {
                   <PublishedComponent
                     pubRef="workforceOrganization.OrganizationParentPicker"
                     value={stateEdited.parent || null}
-                    onChange={(option) => this.updateAttribute("parent", option)}
+                    onChange={(option) =>
+                      this.updateAttribute("parent", option)
+                    }
                     required
                     readOnly={isSaved}
                   />
@@ -185,7 +156,7 @@ class AddWorkforceOrganizationPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.organization.phone"
-                    value={stateEdited.phone || ""}
+                    value={stateEdited.phoneNumber || ""}
                     onChange={(v) => this.updateAttribute("phone", v)}
                     required
                     type={"number"}
@@ -199,9 +170,7 @@ class AddWorkforceOrganizationPage extends Component {
                     value={stateEdited.email || ""}
                     onChange={(v) => this.updateAttribute("email", v)}
                     required
-                    type={'email'}
                     readOnly={isSaved}
-                    
                   />
                 </Grid>
 
@@ -219,11 +188,14 @@ class AddWorkforceOrganizationPage extends Component {
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
-                    value={stateEdited.location || null}
-                    onChange={(location) => this.updateAttribute("location", location)}
+                    value={decodeId(stateEdited.location.id)|| null}
+                    onChange={(location) =>
+                      this.updateAttribute("location", location)
+                    }
                     readOnly={isSaved}
                     required
                     split={true}
+                    filterLabels={false}
                   />
                 </Grid>
 
@@ -239,7 +211,7 @@ class AddWorkforceOrganizationPage extends Component {
 
                 <Grid item xs={12} className={classes.item}>
                   <WorkforceForm
-                    title="Workforce Representative Info"
+                    title={"Workforce Representative Info"}
                     stateEdited={stateEdited}
                     isSaved={isSaved}
                     updateAttribute={this.updateAttribute}
@@ -249,48 +221,56 @@ class AddWorkforceOrganizationPage extends Component {
                         label: "workforce.representative.name.en",
                         type: "text",
                         required: true,
+                        value:stateEdited.workforceRepresentative.nameEn
                       },
                       {
                         key: "repNameBn",
                         label: "workforce.representative.name.bn",
                         type: "text",
                         required: true,
+                        value:stateEdited.workforceRepresentative.nameBn
                       },
                       {
                         key: "position",
                         label: "workforce.representative.position",
                         type: "text",
                         required: true,
+                        value:stateEdited.workforceRepresentative.position
                       },
                       {
                         key: "repPhone",
                         label: "workforce.representative.phone",
                         type: "number",
                         required: true,
+                        value:stateEdited.workforceRepresentative.phoneNumber
                       },
                       {
                         key: "repEmail",
                         label: "workforce.representative.email",
-                        type: "email",
+                        type: "text",
                         required: true,
+                        value:stateEdited.workforceRepresentative.email
                       },
                       {
                         key: "nid",
                         label: "workforce.representative.nid",
                         type: "number",
                         required: true,
-                      },
-                      {
-                        key: "passport",
-                        label: "workforce.representative.passport",
-                        type: "text",
-                        required: false,
+                        value:stateEdited.workforceRepresentative.nid
                       },
                       {
                         key: "birthDate",
                         label: "workforce.representative.birthDate",
                         type: "date",
                         required: false,
+                        value:stateEdited.workforceRepresentative.birthDate
+                      },
+                      {
+                        key: "passport",
+                        label: "workforce.representative.passport",
+                        type: "text",
+                        required: false,
+                        value:stateEdited.workforceRepresentative.passportNo
                       },
                       {
                         key: "repLocation",
@@ -303,6 +283,7 @@ class AddWorkforceOrganizationPage extends Component {
                         label: "workforce.representative.address",
                         type: "text",
                         required: true,
+                        value:stateEdited.workforceRepresentative.address
                       },
                     ]}
                   />
@@ -331,10 +312,12 @@ class AddWorkforceOrganizationPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  submittingMutation: state.workforce.submittingMutation,
-  mutation: state.workforce.mutation,
-  representativeId:state.workforce.fetchedRepresentativeByClientMutationId,
-  grievanceConfig: state.workforce.grievanceConfig,
+  // submittingMutation: state.grievanceSocialProtection.submittingMutation,
+  // mutation: state.grievanceSocialProtection.mutation,
+  // grievanceConfig: state.grievanceSocialProtection.grievanceConfig,
+  organization: state.workforce.organization,
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceOrganizationPage));
+export default connect(mapStateToProps)(
+  withTheme(withStyles(styles)(EditWorkforceOrganizationPage))
+);

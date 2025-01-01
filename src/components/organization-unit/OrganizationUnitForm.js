@@ -8,10 +8,10 @@ import {
 import { bindActionCreators } from "redux";
 import {
   fetchOrganization,
-} from "../actions";
-import EditWorkforceOrganizationPage from "../pages/EditWorkforceOrganizationPage";
-import AddWorkforceOrganizationUnitPage from "../pages/AddWorkforceOrganizationUnitPage";
-import { MODULE_NAME } from "../constants";
+} from "../../actions";
+import EditWorkforceOrganizationPage from "../../pages/organization/EditWorkforceOrganizationPage";
+import AddWorkforceOrganizationUnitPage from "../../pages/organization-unit/AddWorkforceOrganizationUnitPage";
+import { MODULE_NAME } from "../../constants";
 
 class OrganizationUnitForm extends Component {
   constructor(props) {
