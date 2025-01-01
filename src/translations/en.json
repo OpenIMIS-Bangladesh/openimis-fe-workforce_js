@@ -25,17 +25,22 @@
     "location.locationType.D": "Upazilla",
     "location.locationType.W": "Thana",
     "location.locationType.V": "Post Office",
+
     "menu.workforce": "Workforce",
     "menu.workforce.organizations": "Workforce Organizations",
-    "workforce.addNewTooltip": "Add Workforce Organizations",
+    "menu.workforce.organizations.unit": "Workforce Organizations Unit",
+
+    "workforce.organization.addNewTooltip": "Add Workforce Organizations",
     "workforce.organization.name.en": "Organization Name En",
     "workforce.organization.name.bn": "Organization Name Bn",
     "workforce.organization.location": "Location",
     "workforce.organization.address": "Address",
     "workforce.organization.phone": "Phone",
-    "workforce.organization.email":"Organization Email",
-    "workforce.organization.website":"Organization website",
-    "workforce.organization.parent":"Parent",
+    "workforce.organization.email": "Organization Email",
+    "workforce.organization.website": "Organization website",
+    "workforce.organization.parent": "Parent",
+    "workforce.organization.picker": "Organization",
+
     "workforce.representative.details": "Representative Details",
     "workforce.representative.name.en": "Representative Name En",
     "workforce.representative.name.bn": "Representative Name Bn",
@@ -47,10 +52,11 @@
     "workforce.representative.passport": "Representative passport",
     "workforce.representative.position": "Representative position",
     "workforce.representative.birthDate": "Representative birthDate",
-    "menu.workforce.organizations.unit": "Workforce Organizations Unit",
-    "workforce.unit.addNewTooltip": "Add Workforce Organizations Unit",
-    "workforce.organization.unit.email":"Organization Unit Email",
-    "workforce.organization.unit.phone":"Organization Unit Phone",
-    "workforce.organization.unit.level":"Organization Unit Level"
 
+    "workforce.unit.addNewTooltip": "Add Workforce Organizations Unit",
+    "workforce.organization.unit.name.en": "Organization Unit Name En",
+    "workforce.organization.unit.name.bn": "Organization Unit Name Bn",
+    "workforce.organization.unit.email": "Organization Unit Email",
+    "workforce.organization.unit.phone": "Organization Unit Phone",
+    "workforce.organization.unit.level": "Organization Unit Level"
 }

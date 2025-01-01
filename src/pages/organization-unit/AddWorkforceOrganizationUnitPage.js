@@ -108,9 +108,22 @@ class AddWorkforceOrganizationUnitPage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
+
+                <Grid item xs={12} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="workforceOrganization.OrganizationPicker"
+                    value={stateEdited.organization || null}
+                    label={<FormattedMessage module="workforce" id="workforce.organization.picker" />}
+                    onChange={(option) => this.updateAttribute("organization", option)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
+
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.name.en"
+                    label="workforce.organization.unit.name.en"
                     value={stateEdited.title || ""}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
@@ -120,7 +133,7 @@ class AddWorkforceOrganizationUnitPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.name.bn"
+                    label="workforce.organization.unit.name.bn"
                     value={stateEdited.titleBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     required
@@ -128,15 +141,6 @@ class AddWorkforceOrganizationUnitPage extends Component {
                   />
                 </Grid>
 
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="workforceOrganization.OrganizationPicker"
-                    value={stateEdited.parent || null}
-                    onChange={(option) => this.updateAttribute("parent", option)}
-                    required
-                    readOnly={isSaved}
-                  />
-                </Grid>
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
