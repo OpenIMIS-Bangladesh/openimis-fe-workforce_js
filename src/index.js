@@ -13,7 +13,7 @@ import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzati
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
 import WorkforceOrganizationUnitsPage from "./pages/organization-unit/WorkforceOrganizationUnitsPage";
 import WorkforceOrganizationUnitPage from "./pages/organization-unit/WorkforceOrganizationUnitPage";
-import OrganizationParentPicker from "./pickers/OrganizationParentPicker";
+import OrganizationPicker from "./pickers/OrganizationPicker";
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
@@ -25,7 +25,7 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.organizations.units.unit", ref: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT },
     { key: "workforce.route.organizations.units", ref: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS },
 
-    { key: "workforceOrganization.OrganizationParentPicker", ref: OrganizationParentPicker },
+    { key: "workforceOrganization.OrganizationPicker", ref: OrganizationPicker },
   ],
 
   "core.Router": [
