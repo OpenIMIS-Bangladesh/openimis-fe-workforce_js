@@ -7,7 +7,7 @@ import {
   formatMessageWithValues, withModulesManager, withHistory, historyPush,
 } from "@openimis/fe-core";
 import OrganizationUnitForm from "../../components/organization-unit/OrganizationUnitForm";
-import { updateOrganization, createOrganization } from "../../actions";
+import { updateOrganization, createWorkforceOrganization } from "../../actions";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../constants";
 
 const styles = (theme) => ({
@@ -22,7 +22,7 @@ class WorkforceOrganizationUnitPage extends Component {
 
   save = (ticket) => {
     if (!ticket.id) {
-      this.props.createOrganization(
+      this.props.createWorkforceOrganization(
         this.props.modulesManager,
         ticket,
         // formatMessageWithValues(
@@ -78,7 +78,10 @@ const mapStateToProps = (state, props) => ({
   organization: state.workforce.organization,
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({ createOrganization, updateOrganization }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  createWorkforceOrganization,
+  updateOrganization,
+}, dispatch);
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
   withTheme(withStyles(styles)(WorkforceOrganizationUnitPage))),

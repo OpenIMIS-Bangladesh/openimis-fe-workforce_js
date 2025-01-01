@@ -24,24 +24,12 @@ class WorkforceOrganizationPage extends Component {
       this.props.createWorkforceOrganization(
         this.props.modulesManager,
         organization,
-        // formatMessageWithValues(
-        //   this.props.intl,
-        //   "organization",
-        //   "createorganization.mutationLabel",
-        //   { label: organization.code ? organization.code : "" },
-        // ),
         "Create",
       );
     } else {
       this.props.updateOrganization(
         this.props.modulesManager,
         organization,
-        // formatMessageWithValues(
-        //   this.props.intl,
-        //   "organization",
-        //   "updateorganization.mutationLabel",
-        //   { label: organization.code ? organization.code : "" },
-        // ),
         "Update",
       );
     }

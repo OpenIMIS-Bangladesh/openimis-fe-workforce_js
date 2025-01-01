@@ -16,15 +16,14 @@ import {
   formatMutation,
 } from "@openimis/fe-core";
 import {
-  createOrganization,
   createRepresentative,
   createWorkforceOrganization,
   fetchRepresentativeByClientMutationId,
-  formatRepresentativeGQL,
 } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
+import { formatRepresentativeGQL } from "../../utils/format_gql";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -51,7 +50,7 @@ class AddWorkforceOrganizationPage extends Component {
     }
   }
 
-  save = async() => {
+  save = async () => {
     const { stateEdited } = this.state;
     const { grievanceConfig, dispatch } = this.props;
 
@@ -69,21 +68,21 @@ class AddWorkforceOrganizationPage extends Component {
       position: stateEdited.position,
     };
 
-    
-    const representativeMutation =await formatMutation("createWorkforceRepresentative", formatRepresentativeGQL(representativeData), `Created Representative ${representativeData.nameEn}`);
+
+    const representativeMutation = await formatMutation("createWorkforceRepresentative", formatRepresentativeGQL(representativeData), `Created Representative ${representativeData.nameEn}`);
     const representativeClientMutationId = representativeMutation.clientMutationId;
-    
-   await dispatch(
+
+    await dispatch(
       createRepresentative(
         representativeMutation,
         `Created Representative ${representativeData.nameEn}`,
       ),
     );
-    
 
-   await dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
 
-   const representativeId = this.props.representativeId[0].id
+    await dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
+
+    const representativeId = this.props.representativeId[0].id;
 
     const organizationData = {
       nameBn: stateEdited.titleBn,
@@ -92,11 +91,11 @@ class AddWorkforceOrganizationPage extends Component {
       address: stateEdited.address,
       phoneNumber: stateEdited.phone,
       email: stateEdited.email,
-      website:stateEdited.website,
+      website: stateEdited.website,
       // workforceRepresentativeId:this.state.workforce.fetchedRepresentativeByClientMutationId,
-      workforceRepresentativeId:representativeId
-    }
-    console.log({organizationData})
+      workforceRepresentativeId: representativeId,
+    };
+    console.log({ organizationData });
 
     await dispatch(
       createWorkforceOrganization(
@@ -199,9 +198,9 @@ class AddWorkforceOrganizationPage extends Component {
                     value={stateEdited.email || ""}
                     onChange={(v) => this.updateAttribute("email", v)}
                     required
-                    type={'email'}
+                    type={"email"}
                     readOnly={isSaved}
-                    
+
                   />
                 </Grid>
 
@@ -333,7 +332,7 @@ class AddWorkforceOrganizationPage extends Component {
 const mapStateToProps = (state) => ({
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
-  representativeId:state.workforce.fetchedRepresentativeByClientMutationId,
+  representativeId: state.workforce.fetchedRepresentativeByClientMutationId,
   grievanceConfig: state.workforce.grievanceConfig,
 });
 
