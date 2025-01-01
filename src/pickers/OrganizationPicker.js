@@ -6,20 +6,20 @@ import {
 } from "@openimis/fe-core";
 
 const OrganizationPicker = ({
-  onChange,
-  readOnly,
-  required,
-  withLabel = true,
-  withPlaceholder,
-  value,
-  label,
-  filterOptions,
-  filterSelectedOptions,
-  placeholder,
-  multiple,
-}) => {
+                              onChange,
+                              readOnly,
+                              required,
+                              withLabel = true,
+                              withPlaceholder,
+                              value,
+                              label,
+                              placeholder,
+                              filterOptions,
+                              filterSelectedOptions,
+                              multiple,
+                            }) => {
   const [searchString, setSearchString] = useState(null);
-  const { formatMessage } = useTranslations("ticket");
+  const { formatMessage } = useTranslations("workforce");
 
   const { isLoading, data, error } = useGraphqlQuery(
     `query ChannelPicker {
@@ -28,14 +28,14 @@ const OrganizationPicker = ({
           }
       }`,
     { searchString, first: 20 },
-    { skip: true }
+    { skip: true },
   );
 
   return (
     <Autocomplete
       multiple={multiple}
       required={required}
-      placeholder={placeholder ?? formatMessage("workforce.organization.parent")}
+      placeholder={placeholder ?? ""}
       label={label ?? formatMessage("workforce.organization.parent")}
       error={error}
       withLabel={withLabel}
