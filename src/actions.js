@@ -136,7 +136,8 @@ export function fetchOrganization(mm, filters) {
   const projections = [
     "id", "nameEn", "nameBn", "phoneNumber", "email", "website", "parent{id}",
     "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, location{id}, address}",
-    "location{id,name,type}", "address",
+    "address",
+    "location" + mm.getProjection("location.Location.FlatProjection")
   ];
   const payload = formatPageQueryWithCount(
     "workforceOrganizations",
