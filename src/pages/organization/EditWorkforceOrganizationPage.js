@@ -91,8 +91,6 @@ class EditWorkforceOrganizationPage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
 
-    console.log({ stateEdited });
-
     const isSaveDisabled = !(
       stateEdited.title &&
       stateEdited.address &&

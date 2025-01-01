@@ -100,12 +100,7 @@ const WorkforceForm = ({
                     />
                   )}
 
-                  {
-                    field.type == 'location' ? console.log(field) : ''
-                  }
-
                   {field.type === "location" && (
-
                     <PublishedComponent
                       pubRef="location.DetailedLocation"
                       withNull={true}

@@ -139,8 +139,6 @@ class OrganizationForm extends Component {
       },
     ];
 
-    console.log({organizationUuid})
-
     return (
       <>
         <ProgressOrError progress={fetchingOrganization} error={errorOrganization} />
