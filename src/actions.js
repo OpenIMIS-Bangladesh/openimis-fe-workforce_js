@@ -31,6 +31,7 @@ export function formatOrganizationGQL(organization) {
     ${organization.website ? `website: "${formatGQLString(organization.website)}"` : ""}
   `;
 }
+
 export function formatUnitGQL(unit) {
   return `
     ${unit.nameEn ? `nameEn: "${formatGQLString(unit.nameEn)}"` : ""}
@@ -92,6 +93,7 @@ export function createWorkforceOrganization(representative, clientMutationLabel)
     requestedDateTime,
   });
 }
+
 export function createWorkforceUnit(unit, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceUnit",
@@ -133,11 +135,12 @@ export function updateOrganization(ticket, clientMutationLabel) {
 }
 
 export function fetchOrganization(mm, filters) {
+  const location_projection = "location" + mm.getProjection("location.Location.FlatProjection");
   const projections = [
     "id", "nameEn", "nameBn", "phoneNumber", "email", "website", "parent{id}",
-    "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, location{id}, address}",
+    "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " + location_projection + "}",
     "address",
-    "location" + mm.getProjection("location.Location.FlatProjection")
+    location_projection,
   ];
   const payload = formatPageQueryWithCount(
     "workforceOrganizations",

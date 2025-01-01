@@ -28,13 +28,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const WorkforceForm = ({
-  title,
-  stateEdited,
-  isSaved,
-  updateAttribute,
-  save,
-  fields,
-}) => {
+                         title,
+                         stateEdited,
+                         isSaved,
+                         updateAttribute,
+                         save,
+                         fields,
+                       }) => {
   const classes = useStyles();
 
   return (
@@ -57,11 +57,11 @@ const WorkforceForm = ({
 
             <Grid container spacing={2} className={classes.item}>
               {fields.map((field, index) => (
-                <Grid item xs={field.type === "location"?12:6} key={index} className={classes.item}>
+                <Grid item xs={field.type === "location" ? 12 : 6} key={index} className={classes.item}>
                   {field.type === "text" && (
                     <TextInput
                       label={field.label}
-                      value={field.value ||stateEdited[field.key] || ""}
+                      value={field.value || stateEdited[field.key] || ""}
                       onChange={(v) => updateAttribute(field.key, v)}
                       required={field.required}
                       readOnly={isSaved}
@@ -71,7 +71,7 @@ const WorkforceForm = ({
                   {field.type === "number" && (
                     <TextInput
                       label={field.label}
-                      value={field.value ||stateEdited[field.key] || ""}
+                      value={field.value || stateEdited[field.key] || ""}
                       onChange={(v) => updateAttribute(field.key, v)}
                       required={field.required}
                       readOnly={isSaved}
@@ -81,7 +81,7 @@ const WorkforceForm = ({
                   {field.type === "email" && (
                     <TextInput
                       label={field.label}
-                      value={field.value ||stateEdited[field.key] || ""}
+                      value={field.value || stateEdited[field.key] || ""}
                       onChange={(v) => updateAttribute(field.key, v)}
                       required={field.required}
                       readOnly={isSaved}
@@ -93,19 +93,24 @@ const WorkforceForm = ({
                     <PublishedComponent
                       pubRef="core.DatePicker"
                       label={field.label}
-                      value={field.value||stateEdited[field.key] || ""}
+                      value={field.value || stateEdited[field.key] || ""}
                       onChange={(v) => updateAttribute(field.key, v)}
                       readOnly={isSaved}
                       required={field.required}
                     />
                   )}
 
+                  {
+                    field.type == 'location' ? console.log(field) : ''
+                  }
+
                   {field.type === "location" && (
+
                     <PublishedComponent
                       pubRef="location.DetailedLocation"
                       withNull={true}
                       split={true}
-                      value={field.value ||stateEdited.repLocation || null}
+                      value={field.value}
                       onChange={(location) =>
                         updateAttribute("repLocation", location)
                       }

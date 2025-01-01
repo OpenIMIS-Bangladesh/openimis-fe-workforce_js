@@ -13,7 +13,7 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
-  decodeId
+  decodeId,
 } from "@openimis/fe-core";
 import { updateOrganization } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
@@ -80,8 +80,8 @@ class EditWorkforceOrganizationPage extends Component {
       updateOrganization(
         representativeData,
         grievanceConfig,
-        `Updated Representative ${representativeData.nameEn}`
-      )
+        `Updated Representative ${representativeData.nameEn}`,
+      ),
     );
 
     this.setState({ isSaved: true });
@@ -91,7 +91,7 @@ class EditWorkforceOrganizationPage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
 
-    console.log({stateEdited})
+    console.log({ stateEdited });
 
     const isSaveDisabled = !(
       stateEdited.title &&
@@ -188,7 +188,7 @@ class EditWorkforceOrganizationPage extends Component {
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
-                    value={decodeId(stateEdited.location.id)|| null}
+                    value={stateEdited.location}
                     onChange={(location) =>
                       this.updateAttribute("location", location)
                     }
@@ -221,69 +221,70 @@ class EditWorkforceOrganizationPage extends Component {
                         label: "workforce.representative.name.en",
                         type: "text",
                         required: true,
-                        value:stateEdited.workforceRepresentative.nameEn
+                        value: stateEdited.workforceRepresentative.nameEn,
                       },
                       {
                         key: "repNameBn",
                         label: "workforce.representative.name.bn",
                         type: "text",
                         required: true,
-                        value:stateEdited.workforceRepresentative.nameBn
+                        value: stateEdited.workforceRepresentative.nameBn,
                       },
                       {
                         key: "position",
                         label: "workforce.representative.position",
                         type: "text",
                         required: true,
-                        value:stateEdited.workforceRepresentative.position
+                        value: stateEdited.workforceRepresentative.position,
                       },
                       {
                         key: "repPhone",
                         label: "workforce.representative.phone",
                         type: "number",
                         required: true,
-                        value:stateEdited.workforceRepresentative.phoneNumber
+                        value: stateEdited.workforceRepresentative.phoneNumber,
                       },
                       {
                         key: "repEmail",
                         label: "workforce.representative.email",
                         type: "text",
                         required: true,
-                        value:stateEdited.workforceRepresentative.email
+                        value: stateEdited.workforceRepresentative.email,
                       },
                       {
                         key: "nid",
                         label: "workforce.representative.nid",
                         type: "number",
                         required: true,
-                        value:stateEdited.workforceRepresentative.nid
+                        value: stateEdited.workforceRepresentative.nid,
                       },
                       {
                         key: "birthDate",
                         label: "workforce.representative.birthDate",
                         type: "date",
                         required: false,
-                        value:stateEdited.workforceRepresentative.birthDate
+                        value: stateEdited.workforceRepresentative.birthDate,
                       },
                       {
                         key: "passport",
                         label: "workforce.representative.passport",
                         type: "text",
                         required: false,
-                        value:stateEdited.workforceRepresentative.passportNo
+                        value: stateEdited.workforceRepresentative.passportNo,
                       },
                       {
                         key: "repLocation",
                         label: "workforce.representative.location",
                         type: "location",
                         required: true,
+                        value: stateEdited.workforceRepresentative.location,
                       },
                       {
                         key: "repAddress",
                         label: "workforce.representative.address",
                         type: "text",
                         required: true,
-                        value:stateEdited.workforceRepresentative.address
+                        value: stateEdited.workforceRepresentative.address,
                       },
                     ]}
                   />
@@ -319,5 +320,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(
-  withTheme(withStyles(styles)(EditWorkforceOrganizationPage))
+  withTheme(withStyles(styles)(EditWorkforceOrganizationPage)),
 );
