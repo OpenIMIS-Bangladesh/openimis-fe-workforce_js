@@ -48,6 +48,8 @@ class AddWorkforceOrganizationUnitPage extends Component {
 
   save = async () => {
     const { stateEdited } = this.state;
+    const { dispatch } = this.props;
+
 
     const unitData = {
       type: "unit",
@@ -128,7 +130,7 @@ class AddWorkforceOrganizationUnitPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="workforceOrganization.OrganizationParentPicker"
+                    pubRef="workforceOrganization.OrganizationPicker"
                     value={stateEdited.parent || null}
                     onChange={(option) => this.updateAttribute("parent", option)}
                     required
@@ -194,8 +196,6 @@ class AddWorkforceOrganizationUnitPage extends Component {
 const mapStateToProps = (state) => ({
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
-  unitId: state.workforce.fetchedRepresentativeByClientMutationId,
-  grievanceConfig: state.workforce.grievanceConfig,
 });
 
 export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceOrganizationUnitPage));

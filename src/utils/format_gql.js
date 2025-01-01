@@ -39,7 +39,7 @@ export function formatUnitGQL(unit) {
     ${unit.nameBn ? `nameBn: "${formatGQLString(unit.nameBn)}"` : ""}
     ${unit.phoneNumber ? `phoneNumber: "${formatGQLString(unit.phoneNumber)}"` : ""}
     ${unit.email ? `email: "${formatGQLString(unit.email)}"` : ""}
-    ${unit.email ? `level: "${formatGQLString(unit.level)}"` : ""}
-    ${unit.email ? `parent: "${formatGQLString(unit.parent)}"` : ""}
+    ${unit.level ? `level: "${formatGQLString(unit.level)}"` : ""}
+    // ${unit.parent ? `parent: "${formatGQLString(unit.parent)}"` : ""}
   `;
 }
