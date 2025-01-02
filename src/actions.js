@@ -73,7 +73,7 @@ export function createWorkforceUnit(unit, clientMutationLabel) {
 export function updateOrganization(ticket, clientMutationLabel) {
   const mutation = formatMutation("updateTicket", formatUpdateTicketGQL(ticket), clientMutationLabel);
   const requestedDateTime = new Date();
-  return graphql(mutation.payload, ["TICKET_MUTATION_REQ", "TICKET_UPDATE_TICKET_RESP", "TICKET_MUTATION_ERR"], {
+  return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_UPDATE_ORG_RESP", "ORG_MUTATION_ERR"], {
     clientMutationId: mutation.clientMutationId,
     clientMutationLabel,
     requestedDateTime,

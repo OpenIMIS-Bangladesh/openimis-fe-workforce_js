@@ -14,11 +14,13 @@ import {
   PublishedComponent,
   FormattedMessage,
   decodeId,
+  formatMutation
 } from "@openimis/fe-core";
 import { updateOrganization } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
+import { formatRepresentativeGQL } from "../../utils/format_gql";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -37,6 +39,7 @@ class EditWorkforceOrganizationPage extends Component {
       isSaved: false,
     };
   }
+
 
   componentDidUpdate(prevProps) {
     if (prevProps.organization !== this.props.organization) {
@@ -58,9 +61,11 @@ class EditWorkforceOrganizationPage extends Component {
     }));
   };
 
-  save = () => {
+  save =async () => {
     const { grievanceConfig, dispatch } = this.props;
     const { stateEdited } = this.state;
+
+    
 
     const representativeData = {
       type: "organization",
@@ -74,17 +79,26 @@ class EditWorkforceOrganizationPage extends Component {
       passportNo: stateEdited.passport,
       birthDate: stateEdited.birthDate,
       position: stateEdited.position,
+      id:stateEdited.workforceRepresentative.id
     };
 
-    dispatch(
-      updateOrganization(
-        representativeData,
-        grievanceConfig,
-        `Updated Representative ${representativeData.nameEn}`,
-      ),
-    );
+    const representativeMutation = await formatMutation("updateWorkforceRepresentative", formatRepresentativeGQL(representativeData), `Created Representative ${representativeData.nameEn}`);
+    // const representativeClientMutationId = representativeMutation.clientMutationId;
+    
+    console.log({representativeMutation})
+
+  // console.log({stateEdited})
+
+    // dispatch(
+    //   updateOrganization(
+    //     representativeData,
+    //     grievanceConfig,
+    //     `Updated Representative ${representativeData.nameEn}`,
+    //   ),
+    // );
 
     this.setState({ isSaved: true });
+    console.log({representativeMutation})
   };
 
   render() {
@@ -92,14 +106,16 @@ class EditWorkforceOrganizationPage extends Component {
     const { stateEdited, isSaved } = this.state;
 
     const isSaveDisabled = !(
-      stateEdited.title &&
-      stateEdited.address &&
-      stateEdited.phone &&
-      stateEdited.email &&
-      stateEdited.website &&
-      stateEdited.parent &&
-      stateEdited.location
+      // stateEdited.title &&
+      // stateEdited.address &&
+      // stateEdited.phone &&
+      // stateEdited.email &&
+      // stateEdited.website &&
+      stateEdited.parent 
+      // stateEdited.location
     );
+
+    console.log({stateEdited})
 
     return (
       <div className={classes.page}>

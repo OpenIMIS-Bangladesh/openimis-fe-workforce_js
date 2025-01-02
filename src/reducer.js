@@ -209,8 +209,8 @@ function reducer(
       return dispatchMutationErr(state, action);
     case "ORG_CREATE_ORG_RESP":
       return dispatchMutationResp(state, "createOrganization", action);
-    case "TICKET_UPDATE_TICKET_RESP":
-      return dispatchMutationResp(state, "updateTicket", action);
+    case "ORG_UPDATE_ORG_RESP":
+      return dispatchMutationResp(state, "updateOrganization", action);
     case "TICKET_DELETE_TICKET_RESP":
       return dispatchMutationResp(state, "deleteTicket", action);
     case "TICKET_ATTACHMENT_MUTATION_REQ":
