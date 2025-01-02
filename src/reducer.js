@@ -187,6 +187,9 @@ function reducer(
         ...state,
         fetchedRepresentativeByClientMutationId: parseData(action.payload.data.workforceRepresentatives),
       };
+
+    case "ORG_UNIT_CREATE_RESP":
+      return dispatchMutationResp(state, action);
     case CLEAR(ACTION_TYPE.CLEAR_TICKET):
       return {
         ...state,
@@ -236,14 +239,6 @@ function reducer(
       return dispatchMutationResp(state, "createOrganization", action);
     case "ORG_UPDATE_ORG_RESP":
       return dispatchMutationResp(state, "updateOrganization", action);
-    case "TICKET_DELETE_TICKET_RESP":
-      return dispatchMutationResp(state, "deleteTicket", action);
-    case "TICKET_ATTACHMENT_MUTATION_REQ":
-      return dispatchMutationReq(state, action);
-    case "TICKET_ATTACHMENT_MUTATION_ERR":
-      return dispatchMutationErr(state, action);
-    case "TICKET_CREATE_TICKET_ATTACHMENT_RESP":
-      return dispatchMutationResp(state, "createTicketAttachment", action);
     default:
       return state;
   }
