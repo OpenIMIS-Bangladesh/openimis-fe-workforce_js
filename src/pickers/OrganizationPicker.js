@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   useTranslations,
   Autocomplete,
-  useGraphqlQuery,
 } from "@openimis/fe-core";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchOrganizationsPick } from "../actions";
+
 
 const OrganizationPicker = ({
+                              modulesManager,
                               onChange,
                               readOnly,
                               required,
@@ -21,15 +24,16 @@ const OrganizationPicker = ({
   const [searchString, setSearchString] = useState(null);
   const { formatMessage } = useTranslations("workforce");
 
-  const { isLoading, data, error } = useGraphqlQuery(
-    `query ChannelPicker {
-          grievanceConfig{
-            grievanceFlags
-          }
-      }`,
-    { searchString, first: 20 },
-    { skip: true },
-  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    return dispatch(fetchOrganizationsPick(modulesManager, []));
+  }, []);
+
+
+  const isLoading = useSelector((state) => state.workforce[`fetchingOrganizationsPick`]);
+  const data = useSelector((state) => state.workforce[`organizationsPick`] ?? []);
+  const error = useSelector((state) => state.workforce["errorOrganizationsPick"]);
 
   return (
     <Autocomplete
@@ -41,10 +45,10 @@ const OrganizationPicker = ({
       withLabel={withLabel}
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
-      options={data?.grievanceConfig?.grievanceFlags.map((flag) => flag) ?? []}
+      options={data}
       isLoading={isLoading}
       value={value}
-      getOptionLabel={(option) => `${option}`}
+      getOptionLabel={(option) => `${option.nameEn}`}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}

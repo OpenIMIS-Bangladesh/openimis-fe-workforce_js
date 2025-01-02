@@ -19,6 +19,19 @@ export function fetchOrganizationsSummary(mm, filters) {
   return graphql(payload, "WORKFORCE_ORGANIZATIONS");
 }
 
+export function fetchOrganizationsPick(filters) {
+  const projections = [
+    "id", "nameEn", "nameBn"
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceOrganizations",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATIONS_PICKER");
+}
+
+
 export function fetchOrganizationUnitsSummary(mm, filters) {
   const projections = [
     "id", "nameEn", "nameBn", "unitLevel", "phoneNumber", "email",
