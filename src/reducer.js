@@ -17,6 +17,12 @@ function reducer(
     organizations: [],
     organizationsPageInfo: { totalCount: 0 },
 
+    fetchingOrganizationsPick: false,
+    errorOrganizationsPick: null,
+    fetchedOrganizationsPick: false,
+    organizationsPick: [],
+    organizationsPageInfoPick: { totalCount: 0 },
+
     fetchingOrganization: false,
     errorOrganization: null,
     fetchedOrganization: false,
@@ -28,7 +34,7 @@ function reducer(
     fetchedRepresentatives: false,
     representatives: [],
     representativesPageInfo: { totalCount: 0 },
-    
+
     fetchedRepresentativeByClientMutationId: null,
 
     fetchingOrganizationUnits: false,
@@ -70,7 +76,6 @@ function reducer(
         errorOrganizations: null,
       };
     case "WORKFORCE_ORGANIZATIONS_RESP":
-      // console.log(parseData(action.payload.data.workforceOrganizations))
       return {
         ...state,
         fetchingOrganizations: false,
@@ -84,6 +89,30 @@ function reducer(
         ...state,
         fetching: false,
         error: formatServerError(action.payload),
+      };
+    case "WORKFORCE_ORGANIZATIONS_PICKER_REQ":
+      return {
+        ...state,
+        fetchingOrganizationsPick: true,
+        fetchedOrganizationsPick: false,
+        organizationsPick: [],
+        organizationsPageInfoPick: { totalCount: 0 },
+        errorOrganizationsPick: null,
+      };
+    case "WORKFORCE_ORGANIZATIONS_PICKER_RESP":
+      return {
+        ...state,
+        fetchingOrganizationsPick: false,
+        fetchedOrganizationsPick: true,
+        organizationsPick: parseData(action.payload.data.workforceOrganizations),
+        organizationsPageInfoPick: pageInfo(action.payload.data.workforceOrganizations),
+        errorOrganizationsPick: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_ORGANIZATIONS_PICKER_ERR":
+      return {
+        ...state,
+        fetching: false,
+        errorOrganizationsPick: formatServerError(action.payload),
       };
     case "WORKFORCE_ORGANIZATION_REQ":
       return {
@@ -114,7 +143,6 @@ function reducer(
         errorRepresentatives: null,
       };
     case "WORKFORCE_REPRESENTATIVES_RESP":
-      console.log("fahim", parseData(action.payload.data.workforceRepresentatives));
       return {
         ...state,
         fetchingRepresentatives: false,
@@ -139,7 +167,6 @@ function reducer(
         errorOrganizationUnits: null,
       };
     case "WORKFORCE_ORGANIZATION_UNITS_RESP":
-      console.log(parseData(action.payload.data.workforceOrganizationUnits))
       return {
         ...state,
         fetchingOrganizationUnits: false,
@@ -156,8 +183,6 @@ function reducer(
       };
 
     case "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID_RESP":
-      console.log(action.payload.data)
-      console.log(action.payload.data.workforceRepresentatives)
       return {
         ...state,
         fetchedRepresentativeByClientMutationId: parseData(action.payload.data.workforceRepresentatives),
