@@ -9,7 +9,7 @@ import { bindActionCreators } from "redux";
 import {
   fetchOrganization,
 } from "../../actions";
-import EditWorkforceOrganizationPage from "../../pages/organization/EditWorkforceOrganizationPage";
+import EditWorkforceOrganizationUnitPage from "../../pages/organization-unit/EditWorkforceOrganizationUnitPage";
 import AddWorkforceOrganizationUnitPage from "../../pages/organization-unit/AddWorkforceOrganizationUnitPage";
 import { MODULE_NAME } from "../../constants";
 
@@ -160,7 +160,7 @@ class OrganizationUnitForm extends Component {
             reload={(ticketUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={ticketUuid ? [EditWorkforceOrganizationPage] : [AddWorkforceOrganizationUnitPage]}
+            Panels={ticketUuid ? [EditWorkforceOrganizationUnitPage] : [AddWorkforceOrganizationUnitPage]}
             onEditedChanged={this.onEditedChanged}
             // actions={actions}
           />
