@@ -73,7 +73,7 @@ class WorkforceOrganizationUnitPage extends Component {
 
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  organizationUuid: props.match.params.organization_uuid,
+  organizationUnitUuid: props.match.params.organization_unit_uuid,
   ticketVersion: props.match.params.version,
   organization: state.workforce.organization,
 });

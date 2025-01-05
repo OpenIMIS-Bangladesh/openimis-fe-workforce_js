@@ -116,19 +116,19 @@ class OrganizationUnitSearcher extends Component {
       (organizationunit) => organizationunit.unitLevel,
       (organizationunit) => organizationunit.phoneNumber,
       (organizationunit) => organizationunit.email,
-      (workforce) => (this.isShowHistory() ? workforce?.version : null),
+      (organizationunit) => (this.isShowHistory() ? organizationunit?.version : null),
 
     ];
-         formatters.push((workforce) => (
+         formatters.push((organizationunit) => (
            <Tooltip title="Edit">
              <IconButton
-               disabled={workforce?.isHistory}
+               disabled={organizationunit?.isHistory}
                onClick={() => {
                  historyPush(
                    this.props.modulesManager,
                    this.props.history,
-                   'workforce/organizations/unit/edit',
-                   [decodeId(workforce.id)],
+                   'workforce.route.organizations.units.unit',
+                   [decodeId(organizationunit.id)],
                    false,
                  );
                }}

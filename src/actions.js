@@ -104,7 +104,6 @@ export function updateWorkforceOrganization(representative, clientMutationLabel)
 //   });
 // }
 
-export function createWorkforceUnit(unit, clientMutationLabel) {
 export function createWorkforceOrganizationUnit(unit, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceOrganizationUnit",
@@ -116,6 +115,21 @@ export function createWorkforceOrganizationUnit(unit, clientMutationLabel) {
     clientMutationId: mutation.clientMutationId,
     clientMutationLabel,
     requestedDateTime,
+  });
+}
+
+export function updateWorkforceOrganizationUnit(unit, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceOrganizationUnit",
+    formatUnitGQL(unit),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(mutation.payload, ["ORG_UNIT_MUTATION_REQ", "ORG_UNIT_CREATE_RESP", "ORG_MUTATION_ERR"], {
+    clientMutationId: mutation.clientMutationId,
+    clientMutationLabel,
+    requestedDateTime,
+    id: unit.id
   });
 }
 
