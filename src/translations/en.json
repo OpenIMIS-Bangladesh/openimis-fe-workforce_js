@@ -58,5 +58,11 @@
     "workforce.organization.unit.name.bn": "Organization Unit Name Bn",
     "workforce.organization.unit.email": "Organization Unit Email",
     "workforce.organization.unit.phone": "Organization Unit Phone",
-    "workforce.organization.unit.level": "Organization Unit Level"
+    "workforce.organization.unit.level": "Organization Unit Level",
+
+    "workforce.organization.unit.designation.addNewTooltip": "Add Organizations Unit Designation",
+    "workforce.organization.unit.designation.name.en": "Designation Name En",
+    "workforce.organization.unit.designation.name.bn": "Designation Name Bn",
+    "workforce.organization.unit.designation.level": "Designation Level",
+    "workforce.organization.unit.designation.sequence": "Designation Sequence"
 }
