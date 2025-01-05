@@ -161,6 +161,18 @@ export function fetchOrganization(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_ORGANIZATION");
 }
+export function fetchOrganizationUnit(mm, filters) {
+  const projections = [
+    "id", "nameEn", "nameBn", "phoneNumber", "email", "unitLevel", "parent{id,nameBn,nameEn}",
+    " organization{id,nameBn,nameEn}",
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceOrganizationUnits",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATION_UNIT");
+}
 
 export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
   const payload = `{
