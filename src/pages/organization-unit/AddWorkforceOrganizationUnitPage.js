@@ -13,13 +13,11 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
-  formatMutation,
 } from "@openimis/fe-core";
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { formatUnitGQL } from "../../utils/format_gql";
-import { createWorkforceUnit } from "../../actions";
+import { createWorkforceOrganizationUnit } from "../../actions";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -52,22 +50,19 @@ class AddWorkforceOrganizationUnitPage extends Component {
 
 
     const unitData = {
-      type: "unit",
       nameBn: stateEdited.titleBn,
       nameEn: stateEdited.title,
       phoneNumber: stateEdited.phone,
       email: stateEdited.email,
       level: stateEdited.level,
       parent: stateEdited.parent,
+      organization: stateEdited.organization,
     };
 
-
-    const unitMutation = await formatMutation("createWorkforceUnit", formatUnitGQL(unitData), `Created Unit ${unitData.nameEn}`);
-
     await dispatch(
-      createWorkforceUnit(
-        unitMutation,
-        `Created Unit ${unitData.nameEn}`,
+      createWorkforceOrganizationUnit(
+        unitData,
+        `Created Organization Unit ${unitData.nameEn}`,
       ),
     );
 
@@ -88,7 +83,10 @@ class AddWorkforceOrganizationUnitPage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
 
-    const isSaveDisabled = false;
+    const isSaveDisabled = !(
+      stateEdited.title &&
+      stateEdited.organization
+    );
 
     return (
       <div className={classes.page}>
@@ -171,6 +169,7 @@ class AddWorkforceOrganizationUnitPage extends Component {
                     value={stateEdited.level || ""}
                     onChange={(v) => this.updateAttribute("level", v)}
                     required
+                    type={"number"}
                     readOnly={isSaved}
                   />
                 </Grid>

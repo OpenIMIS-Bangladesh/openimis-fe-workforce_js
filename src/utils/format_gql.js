@@ -4,8 +4,6 @@ import {
 
 export function formatRepresentativeGQL(representative) {
   console.log(representative.id)
-
-  
   return `
     ${representative.id ? `id: "${formatGQLString(representative.id)}"` : ""}
     ${representative.nameEn ? `nameEn: "${formatGQLString(representative.nameEn)}"` : ""}
@@ -65,38 +63,40 @@ export function formatOrganizationGQL(organization) {
 
 export function formatUpdateTicketGQL(ticket) {
   // eslint-disable-next-line no-param-reassign
-  if (ticket.reporter) ticket.reporter = JSON.parse(JSON.parse(ticket.reporter || '{}'), '{}');
+  if (ticket.reporter) ticket.reporter = JSON.parse(JSON.parse(ticket.reporter || "{}"), "{}");
   return `
-    ${ticket.id !== undefined && ticket.id !== null ? `id: "${ticket.id}"` : ''}
-    ${!!ticket.category && !!ticket.category ? `category: "${ticket.category}"` : ''}
-    ${!!ticket.title && !!ticket.title ? `title: "${ticket.title}"` : ''}
-    ${!!ticket.description && !!ticket.description ? `description: "${ticket.description}"` : ''}
-    ${!!ticket.attendingStaff && !!ticket.attendingStaff ? `attendingStaffId: "${decodeId(ticket.attendingStaff.id)}"` : ''}
+    ${ticket.id !== undefined && ticket.id !== null ? `id: "${ticket.id}"` : ""}
+    ${!!ticket.category && !!ticket.category ? `category: "${ticket.category}"` : ""}
+    ${!!ticket.title && !!ticket.title ? `title: "${ticket.title}"` : ""}
+    ${!!ticket.description && !!ticket.description ? `description: "${ticket.description}"` : ""}
+    ${!!ticket.attendingStaff && !!ticket.attendingStaff ? `attendingStaffId: "${decodeId(ticket.attendingStaff.id)}"` : ""}
     ${ticket.reporter
     ? (isBase64Encoded(ticket.reporter.id)
       ? `reporterId: "${decodeId(ticket.reporter.id)}"`
       : `reporterId: "${ticket.reporter.id}"`)
-    : ''}
-    ${!!ticket.reporter && !!ticket.reporter ? 'reporterType: "Individual"' : ''}
-    ${ticket.nameOfComplainant ? `nameOfComplainant: "${formatGQLString(ticket.nameOfComplainant)}"` : ''}
-    ${ticket.resolution ? `resolution: "${formatGQLString(ticket.resolution)}"` : ''}
-    ${ticket.status ? `status: ${formatGQLString(ticket.status)}` : ''}
-    ${ticket.priority ? `priority: "${formatGQLString(ticket.priority)}"` : ''}
-    ${ticket.dueDate ? `dueDate: "${formatGQLString(ticket.dueDate)}"` : ''}
-    ${ticket.dateSubmitted ? `dateSubmitted: "${formatGQLString(ticket.dateSubmitted)}"` : ''}
-    ${ticket.dateOfIncident ? `dateOfIncident: "${formatGQLString(ticket.dateOfIncident)}"` : ''}
-    ${!!ticket.channel && !!ticket.channel ? `channel: "${ticket.channel}"` : ''}
-    ${!!ticket.flags && !!ticket.flags ? `flags: "${ticket.flags}"` : ''}
+    : ""}
+    ${!!ticket.reporter && !!ticket.reporter ? "reporterType: \"Individual\"" : ""}
+    ${ticket.nameOfComplainant ? `nameOfComplainant: "${formatGQLString(ticket.nameOfComplainant)}"` : ""}
+    ${ticket.resolution ? `resolution: "${formatGQLString(ticket.resolution)}"` : ""}
+    ${ticket.status ? `status: ${formatGQLString(ticket.status)}` : ""}
+    ${ticket.priority ? `priority: "${formatGQLString(ticket.priority)}"` : ""}
+    ${ticket.dueDate ? `dueDate: "${formatGQLString(ticket.dueDate)}"` : ""}
+    ${ticket.dateSubmitted ? `dateSubmitted: "${formatGQLString(ticket.dateSubmitted)}"` : ""}
+    ${ticket.dateOfIncident ? `dateOfIncident: "${formatGQLString(ticket.dateOfIncident)}"` : ""}
+    ${!!ticket.channel && !!ticket.channel ? `channel: "${ticket.channel}"` : ""}
+    ${!!ticket.flags && !!ticket.flags ? `flags: "${ticket.flags}"` : ""}
   `;
 }
 
 export function formatUnitGQL(unit) {
   return `
+    ${unit.id ? `id: "${formatGQLString(unit.id)}"` : ""}
     ${unit.nameEn ? `nameEn: "${formatGQLString(unit.nameEn)}"` : ""}
     ${unit.nameBn ? `nameBn: "${formatGQLString(unit.nameBn)}"` : ""}
     ${unit.phoneNumber ? `phoneNumber: "${formatGQLString(unit.phoneNumber)}"` : ""}
     ${unit.email ? `email: "${formatGQLString(unit.email)}"` : ""}
-    ${unit.level ? `level: "${formatGQLString(unit.level)}"` : ""}
-    // ${unit.parent ? `parent: "${formatGQLString(unit.parent)}"` : ""}
+    ${unit.level ? `unitLevel: "${formatGQLString(unit.level)}"` : ""}
+    ${unit.parent ? `parent: "${formatGQLString(unit.parent)}"` : ""}
+    ${unit.organization?.id ? `organization: "${decodeId(unit.organization.id)}"` : ""}
   `;
 }
