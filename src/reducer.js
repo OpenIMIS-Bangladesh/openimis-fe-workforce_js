@@ -21,7 +21,11 @@ function reducer(
     errorOrganizationsPick: null,
     fetchedOrganizationsPick: false,
     organizationsPick: [],
-    organizationsPageInfoPick: { totalCount: 0 },
+
+    fetchingOrganizationUnitsPick: false,
+    errorOrganizationUnitsPick: null,
+    fetchedOrganizationUnitsPick: false,
+    organizationUnitsPick: [],
 
     fetchingOrganization: false,
     errorOrganization: null,
@@ -96,7 +100,6 @@ function reducer(
         fetchingOrganizationsPick: true,
         fetchedOrganizationsPick: false,
         organizationsPick: [],
-        organizationsPageInfoPick: { totalCount: 0 },
         errorOrganizationsPick: null,
       };
     case "WORKFORCE_ORGANIZATIONS_PICKER_RESP":
@@ -105,8 +108,23 @@ function reducer(
         fetchingOrganizationsPick: false,
         fetchedOrganizationsPick: true,
         organizationsPick: parseData(action.payload.data.workforceOrganizations),
-        organizationsPageInfoPick: pageInfo(action.payload.data.workforceOrganizations),
         errorOrganizationsPick: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_ORGANIZATION_UNITS_PICKER_REQ":
+      return {
+        ...state,
+        fetchingOrganizationUnitsPick: true,
+        fetchedOrganizationUnitsPick: false,
+        organizationUnitsPick: [],
+        errorOrganizationUnitsPick: null,
+      };
+    case "WORKFORCE_ORGANIZATION_UNITS_PICKER_RESP":
+      return {
+        ...state,
+        fetchingOrganizationUnitsPick: false,
+        fetchedOrganizationUnitsPick: true,
+        organizationUnitsPick: parseData(action.payload.data.workforceOrganizationUnits),
+        errorOrganizationUnitsPick: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATIONS_PICKER_ERR":
       return {

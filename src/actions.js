@@ -31,6 +31,18 @@ export function fetchOrganizationsPick(filters) {
   return graphql(payload, "WORKFORCE_ORGANIZATIONS_PICKER");
 }
 
+export function fetchOrganizationUnitsPick(filters) {
+  const projections = [
+    "id", "nameEn", "nameBn"
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceOrganizationUnits",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATION_UNITS_PICKER");
+}
+
 
 export function fetchOrganizationUnitsSummary(mm, filters) {
   const projections = [
