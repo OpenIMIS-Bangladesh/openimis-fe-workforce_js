@@ -105,17 +105,6 @@ export function updateWorkforceOrganization(representative, clientMutationLabel)
   });
 }
 
-// export function updateOrganization(ticket, clientMutationLabel) {
-//   const mutation = formatMutation("updateTicket", formatUpdateTicketGQL(ticket), clientMutationLabel);
-//   const requestedDateTime = new Date();
-//   return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_UPDATE_ORG_RESP", "ORG_MUTATION_ERR"], {
-//     clientMutationId: mutation.clientMutationId,
-//     clientMutationLabel,
-//     requestedDateTime,
-//     id: ticket.id,
-//   });
-// }
-
 export function createWorkforceOrganizationUnit(unit, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceOrganizationUnit",

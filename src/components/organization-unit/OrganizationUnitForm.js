@@ -38,15 +38,6 @@ class OrganizationUnitForm extends Component {
 
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevState.ticket.ticketCode !== this.state.ticket.ticketCode) {
-      document.title = formatMessageWithValues(
-        this.props.intl,
-        MODULE_NAME,
-        "ticket.title.bar",
-        // { label: ticketLabel(this.state.ticket) },
-        { label: "Label" },
-      );
-    }
     if (prevProps.fetchedTicket !== this.props.fetchedTicket
       && !!this.props.fetchedTicket
       && !!this.props.ticket) {
@@ -58,7 +49,7 @@ class OrganizationUnitForm extends Component {
     } else if (prevState.ticketUuid !== this.state.ticketUuid) {
       const filters = [`id: "${this.state.ticketUuid}"`];
       if (this.props.ticketVersion) filters.push(`ticketVersion: ${this.props.ticketVersion}`);
-      this.props.fetchOrganization(
+      this.props.fetchOrganizationUnit(
         this.props.modulesManager,
         filters,
       );

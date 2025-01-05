@@ -19,8 +19,6 @@ import {updateWorkforceOrganizationUnit} from "../../actions";
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { formatUnitGQL } from "../../utils/format_gql";
-
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -199,7 +197,7 @@ class EditWorkforceOrganizationUnitPage extends Component {
 
 const mapStateToProps = (state) => ({
 
-  organizationUnit: state.workforce.organizationUnits,
+  organizationUnit: state.workforce.organizationUnit,
 
 });
 
