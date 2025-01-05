@@ -54,6 +54,16 @@ export function createRepresentative(mutation, clientMutationLabel) {
   });
 }
 
+export function updateRepresentative(mutation, clientMutationLabel) {
+  const requestedDateTime = new Date();
+  return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_UPDATE_ORG_RESP", "ORG_MUTATION_ERR"], {
+    clientMutationId: mutation.clientMutationId,
+    clientMutationLabel,
+    requestedDateTime,
+    id: mutation.id
+  });
+}
+
 export function createWorkforceOrganization(representative, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceOrganization",
@@ -67,6 +77,32 @@ export function createWorkforceOrganization(representative, clientMutationLabel)
     requestedDateTime,
   });
 }
+
+export function updateWorkforceOrganization(representative, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceOrganization",
+    formatOrganizationGQL(representative),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_UPDATE_ORG_RESP", "ORG_MUTATION_ERR"], {
+    clientMutationId: mutation.clientMutationId,
+    clientMutationLabel,
+    requestedDateTime,
+    id: representative.id
+  });
+}
+
+// export function updateOrganization(ticket, clientMutationLabel) {
+//   const mutation = formatMutation("updateTicket", formatUpdateTicketGQL(ticket), clientMutationLabel);
+//   const requestedDateTime = new Date();
+//   return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_UPDATE_ORG_RESP", "ORG_MUTATION_ERR"], {
+//     clientMutationId: mutation.clientMutationId,
+//     clientMutationLabel,
+//     requestedDateTime,
+//     id: ticket.id,
+//   });
+// }
 
 export function createWorkforceUnit(unit, clientMutationLabel) {
   const mutation = formatMutation(

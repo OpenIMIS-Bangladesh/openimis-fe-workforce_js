@@ -4,6 +4,8 @@ import {
 
 export function formatRepresentativeGQL(representative) {
   console.log(representative.id)
+
+  
   return `
     ${representative.id ? `id: "${formatGQLString(representative.id)}"` : ""}
     ${representative.nameEn ? `nameEn: "${formatGQLString(representative.nameEn)}"` : ""}

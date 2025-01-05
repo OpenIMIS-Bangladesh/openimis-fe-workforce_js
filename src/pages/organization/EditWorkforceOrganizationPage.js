@@ -14,9 +14,14 @@ import {
   PublishedComponent,
   FormattedMessage,
   decodeId,
-  formatMutation
+  formatMutation,
 } from "@openimis/fe-core";
-import { updateOrganization } from "../../actions";
+import {
+  fetchRepresentativeByClientMutationId,
+  updateOrganization,
+  updateRepresentative,
+  updateWorkforceOrganization,
+} from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
@@ -40,7 +45,6 @@ class EditWorkforceOrganizationPage extends Component {
     };
   }
 
-
   componentDidUpdate(prevProps) {
     if (prevProps.organization !== this.props.organization) {
       this.setState({ stateEdited: this.props.organization });
@@ -61,33 +65,83 @@ class EditWorkforceOrganizationPage extends Component {
     }));
   };
 
-  save =async () => {
+  save = async () => {
     const { grievanceConfig, dispatch } = this.props;
     const { stateEdited } = this.state;
 
-    
-
     const representativeData = {
       type: "organization",
-      nameBn: stateEdited.repNameBn,
-      nameEn: stateEdited.repName,
-      location: stateEdited.repLocation,
-      address: stateEdited.repAddress,
-      phoneNumber: stateEdited.repPhone,
-      email: stateEdited.repEmail,
-      nid: stateEdited.nid,
-      passportNo: stateEdited.passport,
-      birthDate: stateEdited.birthDate,
-      position: stateEdited.position,
-      id:stateEdited.workforceRepresentative.id
+      nameBn:
+        stateEdited?.repNameBn || stateEdited?.workforceRepresentative?.nameBn,
+      nameEn:
+        stateEdited?.repName || stateEdited?.workforceRepresentative?.nameEn,
+      location:
+        stateEdited?.repLocation ||
+        stateEdited?.workforceRepresentative?.location,
+      address:
+        stateEdited?.repAddress ||
+        stateEdited?.workforceRepresentative?.address,
+      phoneNumber:
+        stateEdited?.repPhone ||
+        stateEdited?.workforceRepresentative?.phoneNumber,
+      email:
+        stateEdited?.repEmail || stateEdited?.workforceRepresentative?.email,
+      nid: stateEdited?.nid || stateEdited?.workforceRepresentative?.nid,
+      passportNo:
+        stateEdited?.passport ||
+        stateEdited?.workforceRepresentative?.passportNo,
+      birthDate:
+        stateEdited?.birthDate ||
+        stateEdited?.workforceRepresentative?.birthDate,
+      position:
+        stateEdited?.position || stateEdited?.workforceRepresentative?.position,
+      id: stateEdited.workforceRepresentative.id,
     };
 
-    const representativeMutation = await formatMutation("updateWorkforceRepresentative", formatRepresentativeGQL(representativeData), `Created Representative ${representativeData.nameEn}`);
-    // const representativeClientMutationId = representativeMutation.clientMutationId;
-    
-    console.log({representativeMutation})
+    const representativeMutation = await formatMutation(
+      "updateWorkforceRepresentative",
+      formatRepresentativeGQL(representativeData),
+      `Created Representative ${representativeData.nameEn}`
+    );
+    const representativeClientMutationId =
+      representativeMutation.clientMutationId;
 
-  // console.log({stateEdited})
+    await dispatch(
+      updateRepresentative(
+        representativeMutation,
+        `Created Representative ${representativeData.nameEn}`
+      )
+    );
+
+    await dispatch(
+      fetchRepresentativeByClientMutationId(
+        this.props.modulesManger,
+        representativeClientMutationId
+      )
+    );
+
+    // const representativeId = this.props.representativeId[0].id;
+    console.log({ representativeMutation });
+
+    const organizationData = {
+      nameBn: stateEdited?.titleBn || stateEdited.nameBn,
+      nameEn: stateEdited?.title || stateEdited.nameEn,
+      location: stateEdited?.location || stateEdited.location,
+      address: stateEdited?.address || stateEdited.address,
+      phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
+      email: stateEdited?.email || stateEdited.email,
+      website: stateEdited?.website || stateEdited.website,
+      // workforceRepresentativeId:this.state.workforce.fetchedRepresentativeByClientMutationId,
+      workforceRepresentativeId: stateEdited.workforceRepresentative.id,
+      id:stateEdited.id
+    };
+
+    await dispatch(
+      updateWorkforceOrganization(
+        organizationData,
+        `Created Organization ${organizationData.nameEn}`
+      )
+    );
 
     // dispatch(
     //   updateOrganization(
@@ -98,24 +152,25 @@ class EditWorkforceOrganizationPage extends Component {
     // );
 
     this.setState({ isSaved: true });
-    console.log({representativeMutation})
+    console.log({ representativeMutation });
   };
 
   render() {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
 
-    const isSaveDisabled = !(
-      // stateEdited.title &&
-      // stateEdited.address &&
-      // stateEdited.phone &&
-      // stateEdited.email &&
-      // stateEdited.website &&
-      stateEdited.parent 
-      // stateEdited.location
-    );
+    // const isSaveDisabled = !(
+    //   // stateEdited.title &&
+    //   // stateEdited.address &&
+    //   // stateEdited.phone &&
+    //   // stateEdited.email &&
+    //   // stateEdited.website &&
+    //   stateEdited.parent
+    //   // stateEdited.location
+    // );
+    const isSaveDisabled = false;
 
-    console.log({stateEdited})
+    console.log({ stateEdited });
 
     return (
       <div className={classes.page}>
@@ -334,5 +389,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(
-  withTheme(withStyles(styles)(EditWorkforceOrganizationPage)),
+  withTheme(withStyles(styles)(EditWorkforceOrganizationPage))
 );
