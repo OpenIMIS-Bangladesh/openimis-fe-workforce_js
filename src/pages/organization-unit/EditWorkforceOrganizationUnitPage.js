@@ -67,7 +67,7 @@ class EditWorkforceOrganizationUnitPage extends Component {
        nameEn: stateEdited?.title || stateEdited.nameEn,
        phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
        email: stateEdited?.email || stateEdited.email,
-       level: stateEdited?.level || stateEdited.level,
+       level: stateEdited?.unitLevel || stateEdited.unitLevel,
        id:stateEdited.id
      };
  
@@ -166,7 +166,7 @@ class EditWorkforceOrganizationUnitPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.organization.unit.level"
-                    value={stateEdited.level || ""}
+                    value={stateEdited.unitLevel || ""}
                     onChange={(v) => this.updateAttribute("level", v)}
                     required
                     readOnly={isSaved}
