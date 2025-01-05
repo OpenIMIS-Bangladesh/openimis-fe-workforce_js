@@ -64,11 +64,12 @@ class EditWorkforceOrganizationUnitPage extends Component {
   save = async () => {
      const { stateEdited } = this.state; 
      const organizationUnitData = {
+       organization: stateEdited?.organization,
        nameBn: stateEdited?.titleBn || stateEdited.nameBn,
        nameEn: stateEdited?.title || stateEdited.nameEn,
        phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
        email: stateEdited?.email || stateEdited.email,
-       unitLevel: stateEdited?.unitLevel || stateEdited.unitLevel,
+       level: stateEdited?.level || stateEdited.level,
        id:stateEdited.id
      };
  
@@ -124,7 +125,7 @@ class EditWorkforceOrganizationUnitPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.organization.unit.name.en"
-                    value={stateEdited.title || ""}
+                    value={stateEdited.nameEn}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
                     readOnly={isSaved}
@@ -134,7 +135,7 @@ class EditWorkforceOrganizationUnitPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.organization.unit.name.bn"
-                    value={stateEdited.titleBn || ""}
+                    value={stateEdited.nameBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     required
                     readOnly={isSaved}
@@ -144,7 +145,7 @@ class EditWorkforceOrganizationUnitPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.organization.unit.phone"
-                    value={stateEdited.phone || ""}
+                    value={stateEdited.phoneNumber || ""}
                     onChange={(v) => this.updateAttribute("phone", v)}
                     required
                     type={"number"}
