@@ -31,6 +31,18 @@ export function fetchOrganizationsPick(filters) {
   return graphql(payload, "WORKFORCE_ORGANIZATIONS_PICKER");
 }
 
+export function fetchOrganizationUnitsPick(filters) {
+  const projections = [
+    "id", "nameEn", "nameBn"
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceOrganizationUnits",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATION_UNITS_PICKER");
+}
+
 
 export function fetchOrganizationUnitsSummary(mm, filters) {
   const projections = [
@@ -119,6 +131,21 @@ export function createWorkforceOrganizationUnit(unit, clientMutationLabel) {
   });
 }
 
+export function updateWorkforceOrganizationUnit(unit, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceOrganizationUnit",
+    formatUnitGQL(unit),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(mutation.payload, ["ORG_UNIT_MUTATION_REQ", "ORG_UNIT_CREATE_RESP", "ORG_MUTATION_ERR"], {
+    clientMutationId: mutation.clientMutationId,
+    clientMutationLabel,
+    requestedDateTime,
+    id: unit.id
+  });
+}
+
 
 export function updateOrganization(ticket, clientMutationLabel) {
   const mutation = formatMutation("updateTicket", formatUpdateTicketGQL(ticket), clientMutationLabel);
@@ -145,6 +172,18 @@ export function fetchOrganization(mm, filters) {
     projections,
   );
   return graphql(payload, "WORKFORCE_ORGANIZATION");
+}
+export function fetchOrganizationUnit(mm, filters) {
+  const projections = [
+    "id", "nameEn", "nameBn", "phoneNumber", "email", "unitLevel", "parent{id,nameBn,nameEn}",
+    " organization{id,nameBn,nameEn}",
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceOrganizationUnits",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATION_UNIT");
 }
 
 export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {

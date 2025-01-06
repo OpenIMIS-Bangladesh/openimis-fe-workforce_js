@@ -25,24 +25,12 @@ class WorkforceOrganizationUnitPage extends Component {
       this.props.createWorkforceOrganization(
         this.props.modulesManager,
         ticket,
-        // formatMessageWithValues(
-        //   this.props.intl,
-        //   "ticket",
-        //   "createTicket.mutationLabel",
-        //   { label: ticket.code ? ticket.code : "" },
-        // ),
         "Create",
       );
     } else {
       this.props.updateOrganization(
         this.props.modulesManager,
         ticket,
-        // formatMessageWithValues(
-        //   this.props.intl,
-        //   "ticket",
-        //   "updateTicket.mutationLabel",
-        //   { label: ticket.code ? ticket.code : "" },
-        // ),
         "Update",
       );
     }
@@ -50,7 +38,7 @@ class WorkforceOrganizationUnitPage extends Component {
 
   render() {
     const {
-      classes, modulesManager, history, rights, organizationUuid, overview, organization, ticketVersion,
+      classes, modulesManager, history, rights, organizationUnitUuid, overview, organization, ticketVersion,
     } = this.props;
     // const readOnly = ticket?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
@@ -59,7 +47,7 @@ class WorkforceOrganizationUnitPage extends Component {
       <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
         <OrganizationUnitForm
           overview={overview}
-          organizationUuid={organizationUuid}
+          organizationUnitUuid={organizationUnitUuid}
           ticketVersion={ticketVersion}
           readOnly={readOnly}
           back={() => historyPush(modulesManager, history, "workforce.route.organizations.units")}
@@ -73,9 +61,7 @@ class WorkforceOrganizationUnitPage extends Component {
 
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  organizationUuid: props.match.params.organization_uuid,
-  ticketVersion: props.match.params.version,
-  organization: state.workforce.organization,
+  organizationUnitUuid: props.match.params.organization_unit_uuid,
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({

@@ -21,7 +21,11 @@ function reducer(
     errorOrganizationsPick: null,
     fetchedOrganizationsPick: false,
     organizationsPick: [],
-    organizationsPageInfoPick: { totalCount: 0 },
+
+    fetchingOrganizationUnitsPick: false,
+    errorOrganizationUnitsPick: null,
+    fetchedOrganizationUnitsPick: false,
+    organizationUnitsPick: [],
 
     fetchingOrganization: false,
     errorOrganization: null,
@@ -39,20 +43,16 @@ function reducer(
 
     fetchingOrganizationUnits: false,
     errorOrganizationUnits: null,
-    fetcheOrganizationUnits: false,
+    fetchedOrganizationUnits: false,
     organizationUnits: [],
     organizationUnitsPageInfo: { totalCount: 0 },
 
-    fetchingCategory: false,
-    fetchedCategory: false,
-    errorCategory: null,
-    category: [],
-    categoryPageInfo: { totalCount: 0 },
+    fetchingOrganizationUnit: false,
+    errorOrganizationUnit: null,
+    fetchedOrganizationUnit: false,
+    organizationUnit: null,
+    organizationUnitPageInfo: { totalCount: 0 },
 
-    fetchingOrganizationAttachments: false,
-    fetchedOrganizationAttachments: false,
-    errorOrganizationAttachments: null,
-    OrganizationAttachments: null,
 
     fetchingGrievanceConfig: false,
     fetchedGrievanceConfig: false,
@@ -96,7 +96,6 @@ function reducer(
         fetchingOrganizationsPick: true,
         fetchedOrganizationsPick: false,
         organizationsPick: [],
-        organizationsPageInfoPick: { totalCount: 0 },
         errorOrganizationsPick: null,
       };
     case "WORKFORCE_ORGANIZATIONS_PICKER_RESP":
@@ -105,8 +104,23 @@ function reducer(
         fetchingOrganizationsPick: false,
         fetchedOrganizationsPick: true,
         organizationsPick: parseData(action.payload.data.workforceOrganizations),
-        organizationsPageInfoPick: pageInfo(action.payload.data.workforceOrganizations),
         errorOrganizationsPick: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_ORGANIZATION_UNITS_PICKER_REQ":
+      return {
+        ...state,
+        fetchingOrganizationUnitsPick: true,
+        fetchedOrganizationUnitsPick: false,
+        organizationUnitsPick: [],
+        errorOrganizationUnitsPick: null,
+      };
+    case "WORKFORCE_ORGANIZATION_UNITS_PICKER_RESP":
+      return {
+        ...state,
+        fetchingOrganizationUnitsPick: false,
+        fetchedOrganizationUnitsPick: true,
+        organizationUnitsPick: parseData(action.payload.data.workforceOrganizationUnits),
+        errorOrganizationUnitsPick: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATIONS_PICKER_ERR":
       return {
@@ -132,6 +146,25 @@ function reducer(
           id: decodeId(Organization.id),
         }))?.[0],
         errorOrganization: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_ORGANIZATION_UNIT_REQ":
+      return {
+        ...state,
+        fetchingOrganizationUnit: true,
+        fetchedOrganizationUnit: false,
+        organizationUnit: null,
+        errorOrganizationUnit: null,
+      };
+    case "WORKFORCE_ORGANIZATION_UNIT_RESP":
+      return {
+        ...state,
+        fetchingOrganizationUnit: false,
+        fetchedOrganizationUnit: true,
+        organizationUnit: parseData(action.payload.data.workforceOrganizationUnits).map((OrganizationUnit) => ({
+          ...OrganizationUnit,
+          id: decodeId(OrganizationUnit.id),
+        }))?.[0],
+        errorOrganizationUnit: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_REPRESENTATIVES_REQ":
       return {

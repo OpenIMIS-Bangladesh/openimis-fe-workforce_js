@@ -7,9 +7,9 @@ import {
 } from "@openimis/fe-core";
 import { bindActionCreators } from "redux";
 import {
-  fetchOrganization,
+  fetchOrganizationUnit,
 } from "../../actions";
-import EditWorkforceOrganizationPage from "../../pages/organization/EditWorkforceOrganizationPage";
+import EditWorkforceOrganizationUnitPage from "../../pages/organization-unit/EditWorkforceOrganizationUnitPage";
 import AddWorkforceOrganizationUnitPage from "../../pages/organization-unit/AddWorkforceOrganizationUnitPage";
 import { MODULE_NAME } from "../../constants";
 
@@ -19,58 +19,44 @@ class OrganizationUnitForm extends Component {
     this.state = {
       lockNew: false,
       reset: 0,
-      ticketUuid: null,
+      organizationUnitUuid: null,
       ticket: this._newTicket(),
     };
   }
 
   componentDidMount() {
-    // this.props.fetchGrievanceConfiguration();
-    if (this.props.ticketUuid) {
-      this.setState((state, props) => ({ ticketUuid: props.ticketUuid }));
+    if (this.props.organizationUnitUuid) {
+      this.setState((state, props) => ({ organizationUnitUuid: props.organizationUnitUuid }));
     }
   }
 
-  // eslint-disable-next-line react/sort-comp
   componentWillUnmount() {
     // this.props.clearTicket();
   }
 
-  // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevState.ticket.ticketCode !== this.state.ticket.ticketCode) {
-      document.title = formatMessageWithValues(
-        this.props.intl,
-        MODULE_NAME,
-        "ticket.title.bar",
-        // { label: ticketLabel(this.state.ticket) },
-        { label: "Label" },
-      );
-    }
-    if (prevProps.fetchedTicket !== this.props.fetchedTicket
-      && !!this.props.fetchedTicket
-      && !!this.props.ticket) {
+    if (prevProps.fetchedOrganizationUnit !== this.props.fetchedOrganizationUnit
+      && !!this.props.fetchedOrganizationUnit
+      && !!this.props.organizationUnit) {
       this.setState((state, props) => ({
-        ticket: { ...props.ticket },
-        ticketUuid: props.ticket.id,
+        organizationUnit: { ...props.organizationUnit },
+        organizationUnitUuid: props.organizationUnit.id,
         lockNew: false,
       }));
-    } else if (prevState.ticketUuid !== this.state.ticketUuid) {
-      const filters = [`id: "${this.state.ticketUuid}"`];
-      if (this.props.ticketVersion) filters.push(`ticketVersion: ${this.props.ticketVersion}`);
-      this.props.fetchOrganization(
+    } else if (prevState.organizationUnitUuid !== this.state.organizationUnitUuid) {
+      const filters = [`id: "${this.state.organizationUnitUuid}"`];
+      // if (this.props.ticketVersion) filters.push(`ticketVersion: ${this.props.ticketVersion}`);
+      this.props.fetchOrganizationUnit(
         this.props.modulesManager,
         filters,
       );
-    } else if (prevProps.ticketUuid && !this.props.ticketUuid) {
-      this.setState({ ticket: this._newTicket(), lockNew: false, ticketUuid: null });
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
-      if (this.props?.ticket?.id) {
-        this.props.fetchOrganization(
+      if (this.props?.organizationUnit?.id) {
+        this.props.fetchOrganizationUnit(
           this.props.modulesManager,
-          [`id: "${this.state.ticketUuid}"`],
+          [`id: "${this.state.organizationUnitUuid}"`],
         );
       }
     }
@@ -82,15 +68,13 @@ class OrganizationUnitForm extends Component {
   }
 
   reload = () => {
-    this.props.fetchComments(
-      this.state.ticket,
-    );
+    // this.props.fetchComments(
+    //   this.state.ticket,
+    // );
   };
 
   canSave = () => {
-    if (!this.state.ticket.reporter) return false;
-    if (!this.state.ticket.category) return false;
-    return true;
+
   };
 
   _save = (ticket) => {
@@ -115,7 +99,7 @@ class OrganizationUnitForm extends Component {
   render() {
     const {
       fetchingTicket,
-      fetchedTicket,
+      fetchedOrganizationUnit,
       errorTicket,
       save, back,
     } = this.props;
@@ -125,7 +109,7 @@ class OrganizationUnitForm extends Component {
       reset,
       update,
       overview,
-      ticketUuid,
+      organizationUnitUuid,
       ticket,
     } = this.state;
 
@@ -139,15 +123,15 @@ class OrganizationUnitForm extends Component {
       },
     ];
 
-    console.log({ticketUuid})
+    console.log({ organizationUnitUuid });
 
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
-        {(!!fetchedTicket || !ticketUuid) && (
+        {(!!fetchedOrganizationUnit || !organizationUnitUuid) && (
           <Form
             module={MODULE_NAME}
-            edited_id={ticketUuid}
+            edited_id={organizationUnitUuid}
             edited={ticket}
             reset={reset}
             update={update}
@@ -157,10 +141,10 @@ class OrganizationUnitForm extends Component {
             back={back}
             save={save ? this._save : null}
             canSave={this.canSave}
-            reload={(ticketUuid || readOnly) && this.reload}
+            reload={(organizationUnitUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={ticketUuid ? [EditWorkforceOrganizationPage] : [AddWorkforceOrganizationUnitPage]}
+            Panels={organizationUnitUuid ? [EditWorkforceOrganizationUnitPage] : [AddWorkforceOrganizationUnitPage]}
             onEditedChanged={this.onEditedChanged}
             // actions={actions}
           />
@@ -175,7 +159,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   fetchingTicket: state.workforce.fetchingTicket,
   errorTicket: state.workforce.errorTicket,
-  fetchedTicket: state.workforce.fetchedTicket,
+  fetchedOrganizationUnit: state.workforce.fetchedOrganizationUnit,
   ticket: state.workforce.ticket,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
@@ -183,7 +167,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchOrganization,
+  fetchOrganizationUnit,
   journalize,
 }, dispatch);
 

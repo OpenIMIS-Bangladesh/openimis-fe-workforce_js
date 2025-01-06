@@ -38,15 +38,6 @@ class OrganizationForm extends Component {
 
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevState.ticket.ticketCode !== this.state.ticket.ticketCode) {
-      document.title = formatMessageWithValues(
-        this.props.intl,
-        MODULE_NAME,
-        "ticket.title.bar",
-        // { label: ticketLabel(this.state.ticket) },
-        { label: "Label" },
-      );
-    }
     if (prevProps.fetchedOrganization !== this.props.fetchedOrganization
       && !!this.props.fetchedOrganization
       && !!this.props.ticket) {

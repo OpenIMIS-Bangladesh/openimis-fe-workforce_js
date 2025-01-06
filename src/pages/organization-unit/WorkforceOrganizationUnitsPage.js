@@ -46,7 +46,7 @@ class WorkforceOrganizationsUnitsPage extends Component {
               <AddIcon />
             </Fab>
           </div>,
-          <FormattedMessage module={MODULE_NAME} id={"workforce.unit.addNewTooltip"} />,
+          <FormattedMessage module={MODULE_NAME} id={"workforce.organization.unit.addNewTooltip"} />,
         )}
       </div>
     );

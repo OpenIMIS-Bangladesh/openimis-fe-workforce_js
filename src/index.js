@@ -35,7 +35,7 @@ const DEFAULT_CONFIG = {
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS, component: WorkforceOrganizationUnitsPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT, component: WorkforceOrganizationUnitPage },
-    { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT}/:ticket_uuid`, component: WorkforceOrganizationUnitPage },
+    { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT}/:organization_unit_uuid`, component: WorkforceOrganizationUnitPage },
 
   ],
 
