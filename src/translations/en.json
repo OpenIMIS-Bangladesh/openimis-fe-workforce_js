@@ -27,8 +27,9 @@
     "location.locationType.V": "Post Office",
 
     "menu.workforce": "Workforce",
-    "menu.workforce.organizations": "Workforce Organizations",
-    "menu.workforce.organizations.unit": "Workforce Organizations Unit",
+    "menu.workforce.organizations": "Organizations",
+    "menu.workforce.organizations.unit": "Organizations Unit",
+    "menu.workforce.organizations.unit.designation": "Organizations Unit Designation",
 
     "workforce.organization.addNewTooltip": "Add Workforce Organizations",
     "workforce.organization.name.en": "Organization Name En",
