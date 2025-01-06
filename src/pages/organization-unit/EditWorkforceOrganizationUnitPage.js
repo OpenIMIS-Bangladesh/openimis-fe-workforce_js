@@ -19,6 +19,7 @@ import {updateWorkforceOrganizationUnit} from "../../actions";
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
+import { number } from "prop-types";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -168,8 +169,9 @@ class EditWorkforceOrganizationUnitPage extends Component {
                   <TextInput
                     label="workforce.organization.unit.level"
                     value={stateEdited.unitLevel || ""}
-                    onChange={(v) => this.updateAttribute("level", v)}
+                    onChange={(v) => this.updateAttribute("unitLevel", v)}
                     required
+                    type={"number"}
                     readOnly={isSaved}
                   />
                 </Grid>
