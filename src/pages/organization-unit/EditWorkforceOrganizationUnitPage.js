@@ -59,7 +59,8 @@ class EditWorkforceOrganizationUnitPage extends Component {
     }));
   };
 
-  save = async () => {
+  save = () => {
+    const { grievanceConfig, dispatch } = this.props;
      const { stateEdited } = this.state; 
      const organizationUnitData = {
        organization: stateEdited?.organization,
@@ -71,13 +72,14 @@ class EditWorkforceOrganizationUnitPage extends Component {
        id:stateEdited.id
      };
  
-     await dispatch(
+     dispatch(
       updateWorkforceOrganizationUnit(
          organizationUnitData,
          `Update Organization Unit ${organizationUnitData.nameEn}`
        )
      );
- 
+     console.log({ organizationUnitData });
+
      this.setState({ isSaved: true });
    };
  
@@ -87,7 +89,6 @@ class EditWorkforceOrganizationUnitPage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false
-    console.log({ stateEdited });
 
     return (
       <div className={classes.page}>

@@ -137,7 +137,7 @@ export function createWorkforceOrganizationUnit(unit, clientMutationLabel) {
 
 export function updateWorkforceOrganizationUnit(unit, clientMutationLabel) {
   const mutation = formatMutation(
-    "createWorkforceOrganizationUnit",
+    "updateWorkforceOrganizationUnit",
     formatUnitGQL(unit),
     clientMutationLabel,
   );
