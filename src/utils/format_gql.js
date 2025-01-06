@@ -3,7 +3,7 @@ import {
 } from "@openimis/fe-core";
 
 export function formatRepresentativeGQL(representative) {
-  console.log(representative.id)
+  console.log(representative.id);
   return `
     ${representative.id ? `id: "${formatGQLString(representative.id)}"` : ""}
     ${representative.nameEn ? `nameEn: "${formatGQLString(representative.nameEn)}"` : ""}
@@ -22,8 +22,9 @@ export function formatRepresentativeGQL(representative) {
 
 
 export function formatOrganizationGQL(organization) {
+
   return `
-    ${organization.id ? `id: "${decodeId(organization.id)}"` : ""}
+    ${organization.id ? `id: "${organization.id}"` : ""}
     ${organization.nameEn ? `nameEn: "${formatGQLString(organization.nameEn)}"` : ""}
     ${organization.nameBn ? `nameBn: "${formatGQLString(organization.nameBn)}"` : ""}
     ${organization.location.id ? `location: "${decodeId(organization.location.id)}"` : ""}

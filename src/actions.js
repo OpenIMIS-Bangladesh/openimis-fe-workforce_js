@@ -21,7 +21,7 @@ export function fetchOrganizationsSummary(mm, filters) {
 
 export function fetchOrganizationsPick(filters) {
   const projections = [
-    "id", "nameEn", "nameBn"
+    "id", "nameEn", "nameBn",
   ];
   const payload = formatPageQueryWithCount(
     "workforceOrganizations",
@@ -33,7 +33,7 @@ export function fetchOrganizationsPick(filters) {
 
 export function fetchOrganizationUnitsPick(filters) {
   const projections = [
-    "id", "nameEn", "nameBn"
+    "id", "nameEn", "nameBn",
   ];
   const payload = formatPageQueryWithCount(
     "workforceOrganizationUnits",
@@ -66,13 +66,17 @@ export function createRepresentative(mutation, clientMutationLabel) {
   });
 }
 
-export function updateRepresentative(mutation, clientMutationLabel) {
+export function updateRepresentative(representativeData, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWorkforceRepresentative",
+    formatRepresentativeGQL(representativeData),
+    clientMutationLabel,
+  );
   const requestedDateTime = new Date();
   return graphql(mutation.payload, ["ORG_MUTATION_REQ", "ORG_UPDATE_ORG_RESP", "ORG_MUTATION_ERR"], {
     clientMutationId: mutation.clientMutationId,
     clientMutationLabel,
     requestedDateTime,
-    id: mutation.id
   });
 }
 
@@ -101,7 +105,7 @@ export function updateWorkforceOrganization(representative, clientMutationLabel)
     clientMutationId: mutation.clientMutationId,
     clientMutationLabel,
     requestedDateTime,
-    id: representative.id
+    id: representative.id,
   });
 }
 
@@ -142,7 +146,7 @@ export function updateWorkforceOrganizationUnit(unit, clientMutationLabel) {
     clientMutationId: mutation.clientMutationId,
     clientMutationLabel,
     requestedDateTime,
-    id: unit.id
+    id: unit.id,
   });
 }
 
@@ -173,6 +177,7 @@ export function fetchOrganization(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_ORGANIZATION");
 }
+
 export function fetchOrganizationUnit(mm, filters) {
   const projections = [
     "id", "nameEn", "nameBn", "phoneNumber", "email", "unitLevel", "parent{id,nameBn,nameEn}",

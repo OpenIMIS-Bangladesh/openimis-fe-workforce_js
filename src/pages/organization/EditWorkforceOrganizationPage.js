@@ -14,6 +14,7 @@ import {
   PublishedComponent,
   FormattedMessage,
   decodeId,
+  encodeId,
   formatMutation,
 } from "@openimis/fe-core";
 import {
@@ -65,7 +66,7 @@ class EditWorkforceOrganizationPage extends Component {
     }));
   };
 
-  save = async () => {
+  save = () => {
     const { grievanceConfig, dispatch } = this.props;
     const { stateEdited } = this.state;
 
@@ -107,41 +108,22 @@ class EditWorkforceOrganizationPage extends Component {
       email: stateEdited?.email || stateEdited.email,
       website: stateEdited?.website || stateEdited.website,
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
-      id:stateEdited.id
+      id: stateEdited.id,
     };
 
-    const representativeMutation = await formatMutation(
-      "updateWorkforceRepresentative",
-      formatRepresentativeGQL(representativeData),
-      `Created Representative ${representativeData.nameEn}`
-    );
-    // const representativeClientMutationId =
-    //   representativeMutation.clientMutationId;
-
-    await dispatch(
+    dispatch(
       updateRepresentative(
-        representativeMutation,
-        `Created Representative ${representativeData.nameEn}`
-      )
+        representativeData,
+        `Update Representative ${representativeData.nameEn}`,
+      ),
     );
 
-    // const representativeId = this.props.representativeId[0].id;
-    // console.log({ representativeMutation });
-
-    await dispatch(
+    dispatch(
       updateWorkforceOrganization(
         organizationData,
-        `Created Organization ${organizationData.nameEn}`
-      )
+        `Update Organization ${organizationData.nameEn}`,
+      ),
     );
-
-    // dispatch(
-    //   updateOrganization(
-    //     representativeData,
-    //     grievanceConfig,
-    //     `Updated Representative ${representativeData.nameEn}`,
-    //   ),
-    // );
 
     console.log({ organizationData });
     this.setState({ isSaved: true });
@@ -381,5 +363,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(
-  withTheme(withStyles(styles)(EditWorkforceOrganizationPage))
+  withTheme(withStyles(styles)(EditWorkforceOrganizationPage)),
 );
