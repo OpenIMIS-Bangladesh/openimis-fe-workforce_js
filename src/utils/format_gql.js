@@ -64,13 +64,14 @@ export function formatUpdateTicketGQL(ticket) {
 }
 
 export function formatUnitGQL(unit) {
+  console.log(unit)
   return `
     ${unit.id ? `id: "${formatGQLString(unit.id)}"` : ""}
     ${unit.nameEn ? `nameEn: "${formatGQLString(unit.nameEn)}"` : ""}
     ${unit.nameBn ? `nameBn: "${formatGQLString(unit.nameBn)}"` : ""}
     ${unit.phoneNumber ? `phoneNumber: "${formatGQLString(unit.phoneNumber)}"` : ""}
     ${unit.email ? `email: "${formatGQLString(unit.email)}"` : ""}
-    ${unit.level ? `unitLevel: "${formatGQLString(unit.level)}"` : ""}
+    ${unit.level ? `unitLevel: "${unit.level}"` : ""}
     ${unit.parent ? `parent: "${formatGQLString(unit.parent)}"` : ""}
     ${unit.organization?.id ? `organization: "${decodeId(unit.organization.id)}"` : ""}
   `;
