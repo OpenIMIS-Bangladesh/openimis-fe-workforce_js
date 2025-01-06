@@ -95,7 +95,7 @@ class EditWorkforceOrganizationPage extends Component {
         stateEdited?.workforceRepresentative?.birthDate,
       position:
         stateEdited?.position || stateEdited?.workforceRepresentative?.position,
-      id: stateEdited.workforceRepresentative.id,
+      id: decodeId(stateEdited.workforceRepresentative.id),
     };
 
     const representativeMutation = await formatMutation(
@@ -113,15 +113,8 @@ class EditWorkforceOrganizationPage extends Component {
       )
     );
 
-    await dispatch(
-      fetchRepresentativeByClientMutationId(
-        this.props.modulesManger,
-        representativeClientMutationId
-      )
-    );
-
     // const representativeId = this.props.representativeId[0].id;
-    console.log({ representativeMutation });
+    // console.log({ representativeMutation });
 
     const organizationData = {
       nameBn: stateEdited?.titleBn || stateEdited.nameBn,

@@ -104,7 +104,7 @@ export function updateWorkforceOrganization(representative, clientMutationLabel)
 //   });
 // }
 
-export function createWorkforceUnit(unit, clientMutationLabel) {
+
 export function createWorkforceOrganizationUnit(unit, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceOrganizationUnit",
