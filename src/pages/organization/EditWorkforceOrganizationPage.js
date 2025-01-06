@@ -98,13 +98,25 @@ class EditWorkforceOrganizationPage extends Component {
       id: decodeId(stateEdited.workforceRepresentative.id),
     };
 
+    const organizationData = {
+      nameBn: stateEdited?.titleBn || stateEdited.nameBn,
+      nameEn: stateEdited?.title || stateEdited.nameEn,
+      location: stateEdited?.location || stateEdited.location,
+      address: stateEdited?.address || stateEdited.address,
+      phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
+      email: stateEdited?.email || stateEdited.email,
+      website: stateEdited?.website || stateEdited.website,
+      workforceRepresentativeId: stateEdited.workforceRepresentative.id,
+      id:stateEdited.id
+    };
+
     const representativeMutation = await formatMutation(
       "updateWorkforceRepresentative",
       formatRepresentativeGQL(representativeData),
       `Created Representative ${representativeData.nameEn}`
     );
-    const representativeClientMutationId =
-      representativeMutation.clientMutationId;
+    // const representativeClientMutationId =
+    //   representativeMutation.clientMutationId;
 
     await dispatch(
       updateRepresentative(
@@ -115,19 +127,6 @@ class EditWorkforceOrganizationPage extends Component {
 
     // const representativeId = this.props.representativeId[0].id;
     // console.log({ representativeMutation });
-
-    const organizationData = {
-      nameBn: stateEdited?.titleBn || stateEdited.nameBn,
-      nameEn: stateEdited?.title || stateEdited.nameEn,
-      location: stateEdited?.location || stateEdited.location,
-      address: stateEdited?.address || stateEdited.address,
-      phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
-      email: stateEdited?.email || stateEdited.email,
-      website: stateEdited?.website || stateEdited.website,
-      // workforceRepresentativeId:this.state.workforce.fetchedRepresentativeByClientMutationId,
-      workforceRepresentativeId: stateEdited.workforceRepresentative.id,
-      id:stateEdited.id
-    };
 
     await dispatch(
       updateWorkforceOrganization(
@@ -144,8 +143,8 @@ class EditWorkforceOrganizationPage extends Component {
     //   ),
     // );
 
+    console.log({ organizationData });
     this.setState({ isSaved: true });
-    console.log({ representativeMutation });
   };
 
   render() {
