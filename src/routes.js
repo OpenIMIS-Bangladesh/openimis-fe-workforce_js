@@ -4,3 +4,6 @@ export const ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS = "workforce/organizations/un
 export const ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS_DESIGNATION = "workforce/organizations/unit/designations/designation";
 export const ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION = "workforce/organizations/organization";
 export const ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT = "workforce/organizations/units/unit";
+export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES = "workforce/organizations/employees";
+export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE = "workforce/organizations/employees/employee";
+

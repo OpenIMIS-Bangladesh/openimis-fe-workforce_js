@@ -232,6 +232,30 @@ function reducer(
         fetching: false,
         error: formatServerError(action.payload),
       };
+    case "WORKFORCE_ORGANIZATION_EMPLOYEES_REQ":
+      return {
+        ...state,
+        fetchingOrganizationEmployees: true,
+        fetchedOrganizationEmployees: false,
+        organizationEmployees: [],
+        organizationEmployeesPageInfo: { totalCount: 0 },
+        errorOrganizationEmployees: null,
+      };
+    case "WORKFORCE_ORGANIZATION_EMPLOYEES_RESP":
+      return {
+        ...state,
+        fetchingOrganizationEmployees: false,
+        fetchedOrganizationEmployeess: true,
+        organizationEmployees: parseData(action.payload.data.workforceOrganizationEmployees),
+        organizationEmployeesPageInfo: pageInfo(action.payload.data.workforceOrganizationEmployees),
+        errorOrganizationEmployees: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_ORGANIZATION_EMPLOYEES_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
 
     case "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID_RESP":
       return {

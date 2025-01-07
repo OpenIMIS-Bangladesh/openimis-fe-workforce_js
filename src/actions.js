@@ -55,6 +55,17 @@ export function fetchOrganizationUnitsSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_ORGANIZATION_UNITS");
 }
+export function fetchOrganizationEmployeesSummary(mm, filters) {
+  const projections = [
+    "id", "nameEn", "nameBn", "address", "phoneNumber", "email","status"
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceOrganizationEmployees",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEE");
+}
 
 
 export function createRepresentative(mutation, clientMutationLabel) {
