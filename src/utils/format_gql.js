@@ -72,7 +72,7 @@ export function formatUnitGQL(unit) {
     ${unit.phoneNumber ? `phoneNumber: "${formatGQLString(unit.phoneNumber)}"` : ""}
     ${unit.email ? `email: "${formatGQLString(unit.email)}"` : ""}
     ${unit.level ? `unitLevel: "${unit.level}"` : ""}
-    ${unit.parent ? `parent: "${formatGQLString(unit.parent)}"` : ""}
+    ${(unit.parent && unit.parent.id) ? `parent: "${decodeId(unit.parent.id)}"` : ""}
     ${unit.organization?.id ? `organization: "${decodeId(unit.organization.id)}"` : ""}
   `;
 }

@@ -31,7 +31,7 @@ export function fetchOrganizationsPick(filters) {
   return graphql(payload, "WORKFORCE_ORGANIZATIONS_PICKER");
 }
 
-export function fetchOrganizationUnitsPick(filters) {
+export function fetchOrganizationUnitsPick(mm, filters) {
   const projections = [
     "id", "nameEn", "nameBn",
   ];
