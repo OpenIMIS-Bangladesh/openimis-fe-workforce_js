@@ -24,6 +24,7 @@ import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
+import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -174,12 +175,23 @@ class AddUnitDesignationPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="workforceOrganization.OrganizationPicker"
-                    value={stateEdited.parent || null}
-                    onChange={(option) => this.updateAttribute("parent", option)}
+                    value={stateEdited.organization || null}
+                    label={<FormattedMessage module="workforce" id="workforce.organization.picker" />}
+                    onChange={(option) => this.updateAttribute("organization", option)}
                     required
                     readOnly={isSaved}
                   />
                 </Grid>
+
+                <Grid item xs={6} className={classes.item}>
+                <OrganizationUnitPicker
+                    value={stateEdited.parent || null}
+                    onChange={(option) => this.updateAttribute("parent", option)}
+                    readOnly={isSaved}
+                    label={<FormattedMessage module="workforce" id="workforce.organization.unit.picker" />}
+                  />
+                </Grid>
+                
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput

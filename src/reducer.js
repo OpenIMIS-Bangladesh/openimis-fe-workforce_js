@@ -93,6 +93,15 @@ function reducer(
         organizationsPageInfo: { totalCount: 0 },
         errorOrganizations: null,
       };
+      case "WORKFORCE_UNIT_DESIGNATIONS_REQ":
+        return {
+          ...state,
+          fetchingUnitDesignations: true,
+          fetchedUnitDesignations: false,
+          unitDesignations: [],
+          unitDesignationsPageInfo: { totalCount: 0 },
+          errorUnitDesignations: null,
+        };
     case "WORKFORCE_ORGANIZATIONS_RESP":
       return {
         ...state,
@@ -102,7 +111,22 @@ function reducer(
         organizationsPageInfo: pageInfo(action.payload.data.workforceOrganizations),
         errorOrganizations: formatGraphQLError(action.payload),
       };
+      case "WORKFORCE_UNIT_DESIGNATIONS_RESP":
+      return {
+        ...state,
+        fetchingOrganizations: false,
+        fetchedOrganizations: true,
+        organizations: parseData(action.payload.data.workforceOrganizations),
+        organizationsPageInfo: pageInfo(action.payload.data.workforceOrganizations),
+        errorOrganizations: formatGraphQLError(action.payload),
+      };
     case "WORKFORCE_ORGANIZATIONS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+      case "WORKFORCE_UNIT_DESIGNATIONS_ERR":
       return {
         ...state,
         fetching: false,
@@ -154,6 +178,14 @@ function reducer(
         organization: null,
         errorOrganization: null,
       };
+      case "WORKFORCE_UNIT_DESIGNATION_REQ":
+      return {
+        ...state,
+        fetchingUnitDesignation: true,
+        fetchedUnitDesignation: false,
+        unitDesignation: null,
+        errorUnitDesignation: null,
+      };
     case "WORKFORCE_ORGANIZATION_RESP":
       return {
         ...state,
@@ -164,6 +196,17 @@ function reducer(
           id: decodeId(Organization.id),
         }))?.[0],
         errorOrganization: formatGraphQLError(action.payload),
+      };
+      case "WORKFORCE_UNIT_DESIGNATION_RESP":
+      return {
+        ...state,
+        fetchingUnitDesignation: false,
+        fetchedUnitDesignation: true,
+        unitDesignation: parseData(action.payload.data.workforceOrganizations).map((Organization) => ({
+          ...Organization,
+          id: decodeId(Organization.id),
+        }))?.[0],
+        errorUnitDesignation: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATION_UNIT_REQ":
       return {
