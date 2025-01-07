@@ -30,6 +30,7 @@
     "menu.workforce.organizations": "Organizations",
     "menu.workforce.organizations.unit": "Organizations Unit",
     "menu.workforce.organizations.unit.designation": "Organizations Unit Designation",
+    "menu.workforce.organizations.employee": "Organizations Employee",
 
     "workforce.organization.addNewTooltip": "Add Workforce Organizations",
     "workforce.organization.name.en": "Organization Name En",
@@ -67,5 +68,20 @@
     "workforce.organization.unit.designation.name.en": "Designation Name En",
     "workforce.organization.unit.designation.name.bn": "Designation Name Bn",
     "workforce.organization.unit.designation.level": "Designation Level",
-    "workforce.organization.unit.designation.sequence": "Designation Sequence"
+    "workforce.organization.unit.designation.sequence": "Designation Sequence",
+
+    "workforce.organization.employee.addNewTooltip": "Add Organizations Employee",
+    "workforce.organization.employee.name.en": "Organization Employee Name En",
+    "workforce.organization.employee.name.bn": "Organization Employee Name Bn",
+    "workforce.organization.employee.location": "Organization Employee Location",
+    "workforce.organization.employee.address": "Organization Employee Address",
+    "workforce.organization.employee.phone": "Organization Employee Phone",
+    "workforce.organization.employee.email": "Organization Employee Email",
+    "workforce.organization.employee.gender": "Organization Employee Gender",
+    "workforce.organization.employee.birthdate": "Organization Employee Birthdate",
+    "workforce.organization.employee.nid": "Organization Employee NID",
+    "workforce.organization.employee.birth_certificate_no": "Organization Employee Birth Certificate No",
+    "workforce.organization.employee.passport_no": "Organization Employee Passport No",
+    "workforce.organization.employee.joining_date": "Organization Employee Joining Date",
+    "workforce.organization.employee.status": "Organization Employee Status"
 }
