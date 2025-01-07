@@ -12,6 +12,8 @@ import {
 import EditWorkforceOrganizationPage from "../../pages/organization/EditWorkforceOrganizationPage";
 import AddWorkforceOrganizationPage from "../../pages/organization/AddWorkforceOrganizationPage";
 import { MODULE_NAME } from "../../constants";
+import AddUnitDesignationPage from "../../pages/organization-unit-designation/AddUnitDesignationPage";
+import EditUnitDesignationPage from "../../pages/organization-unit-designation/EditUnitDesignationPage";
 
 class UnitDesignationForm extends Component {
   constructor(props) {
@@ -38,8 +40,8 @@ class UnitDesignationForm extends Component {
 
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedOrganization !== this.props.fetchedOrganization
-      && !!this.props.fetchedOrganization
+    if (prevProps.fetchedUnitDesignation !== this.props.fetchedUnitDesignation
+      && !!this.props.fetchedUnitDesignation
       && !!this.props.ticket) {
       this.setState((state, props) => ({
         ticket: { ...props.ticket },
@@ -105,9 +107,9 @@ class UnitDesignationForm extends Component {
 
   render() {
     const {
-      fetchingOrganization,
-      fetchedOrganization,
-      errorOrganization,
+      fetchingUnitDesignations,
+      fetchedUnitDesignation,
+      errorUnitDesignations,
       save, back,
     } = this.props;
 
@@ -132,8 +134,8 @@ class UnitDesignationForm extends Component {
 
     return (
       <>
-        <ProgressOrError progress={fetchingOrganization} error={errorOrganization} />
-        {(!!fetchedOrganization || !organizationUuid) && (
+        <ProgressOrError progress={fetchingUnitDesignations} error={errorUnitDesignations} />
+        {(!!fetchedUnitDesignation || !organizationUuid) && (
           <Form
             module={MODULE_NAME}
             edited_id={organizationUuid}
@@ -149,7 +151,7 @@ class UnitDesignationForm extends Component {
             reload={(organizationUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={organizationUuid ? [EditWorkforceOrganizationPage] : [AddWorkforceOrganizationPage]}
+            Panels={organizationUuid ? [EditUnitDesignationPage] : [AddUnitDesignationPage]}
             onEditedChanged={this.onEditedChanged}
             // actions={actions}
           />
@@ -162,10 +164,10 @@ class UnitDesignationForm extends Component {
 // eslint-disable-next-line no-unused-vars
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  fetchingOrganization: state.workforce.fetchingOrganization,
-  errorOrganization: state.workforce.errorOrganization,
-  fetchedOrganization: state.workforce.fetchedOrganization,
-  organization: state.workforce.organization,
+  fetchingUnitDesignations: state.workforce.fetchingUnitDesignations,
+  errorUnitDesignations: state.workforce.errorUnitDesignations,
+  fetchedUnitDesignation: state.workforce.fetchedUnitDesignation,
+  unitDesignation: state.workforce.unitDesignation,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   grievanceConfig: state.workforce.grievanceConfig,

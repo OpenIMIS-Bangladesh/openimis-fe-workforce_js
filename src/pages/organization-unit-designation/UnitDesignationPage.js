@@ -38,7 +38,7 @@ class UnitDesignationPage extends Component {
 
   render() {
     const {
-      classes, modulesManager, history, rights, organizationUuid, overview, organization, organizationVersion,
+      classes, modulesManager, history, rights, organizationUuid, overview, unitDesignation, organizationVersion,
     } = this.props;
     // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
@@ -63,7 +63,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   organizationUuid: props.match.params.organization_uuid,
   organizationVersion: props.match.params.version,
-  organization: state.workforce.organization,
+  unitDesignation: state.workforce.unitDesignation,
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({

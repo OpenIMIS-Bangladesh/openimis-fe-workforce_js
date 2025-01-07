@@ -143,7 +143,7 @@ class AddUnitDesignationPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Organization"
+                      id="Unit Designations"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>
@@ -153,7 +153,7 @@ class AddUnitDesignationPage extends Component {
               <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.name.en"
+                    label="workforce.organization.unit.designation.name.bn"
                     value={stateEdited.title || ""}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
@@ -163,7 +163,7 @@ class AddUnitDesignationPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.name.bn"
+                    label="workforce.organization.unit.designation.name.bn"
                     value={stateEdited.titleBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     required
@@ -183,9 +183,9 @@ class AddUnitDesignationPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.phone"
-                    value={stateEdited.phone || ""}
-                    onChange={(v) => this.updateAttribute("phone", v)}
+                    label="workforce.organization.unit.designation.level"
+                    value={stateEdited.level || ""}
+                    onChange={(v) => this.updateAttribute("level", v)}
                     required
                     type={"number"}
                     readOnly={isSaved}
@@ -193,6 +193,17 @@ class AddUnitDesignationPage extends Component {
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.organization.unit.designation.sequence"
+                    value={stateEdited.sequence || ""}
+                    onChange={(v) => this.updateAttribute("sequence", v)}
+                    required
+                    type={"number"}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
+                {/* <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.organization.email"
                     value={stateEdited.email || ""}
@@ -234,78 +245,7 @@ class AddUnitDesignationPage extends Component {
                     required
                     readOnly={isSaved}
                   />
-                </Grid>
-
-                <Grid item xs={12} className={classes.item}>
-                  <WorkforceForm
-                    title="Workforce Representative Info"
-                    stateEdited={stateEdited}
-                    isSaved={isSaved}
-                    updateAttribute={this.updateAttribute}
-                    fields={[
-                      {
-                        key: "repName",
-                        label: "workforce.representative.name.en",
-                        type: "text",
-                        required: true,
-                      },
-                      {
-                        key: "repNameBn",
-                        label: "workforce.representative.name.bn",
-                        type: "text",
-                        required: true,
-                      },
-                      {
-                        key: "position",
-                        label: "workforce.representative.position",
-                        type: "text",
-                        required: true,
-                      },
-                      {
-                        key: "repPhone",
-                        label: "workforce.representative.phone",
-                        type: "number",
-                        required: true,
-                      },
-                      {
-                        key: "repEmail",
-                        label: "workforce.representative.email",
-                        type: "email",
-                        required: true,
-                      },
-                      {
-                        key: "nid",
-                        label: "workforce.representative.nid",
-                        type: "number",
-                        required: true,
-                      },
-                      {
-                        key: "passport",
-                        label: "workforce.representative.passport",
-                        type: "text",
-                        required: false,
-                      },
-                      {
-                        key: "birthDate",
-                        label: "workforce.representative.birthDate",
-                        type: "date",
-                        required: false,
-                      },
-                      {
-                        key: "repLocation",
-                        label: "workforce.representative.location",
-                        type: "location",
-                        required: true,
-                      },
-                      {
-                        key: "repAddress",
-                        label: "workforce.representative.address",
-                        type: "text",
-                        required: true,
-                      },
-                    ]}
-                  />
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>

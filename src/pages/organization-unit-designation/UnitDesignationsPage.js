@@ -18,10 +18,10 @@ const styles = (theme) => ({
 });
 
 class UnitDesignationsPage extends Component {
-  onDoubleClick = (organization, newTab = false) => {
-    const routeParams = ['workforce.route.organizations.organization', [decodeId(organization.id)]];
-    if (organization?.isHistory) {
-      routeParams[1].push(organization.version);
+  onDoubleClick = (unitDesignation, newTab = false) => {
+    const routeParams = ['workforce.route.organizations.organization', [decodeId(unitDesignation.id)]];
+    if (unitDesignation?.isHistory) {
+      routeParams[1].push(unitDesignation.version);
     }
     historyPush(this.props.modulesManager, this.props.history, ...routeParams, newTab);
   };

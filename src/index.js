@@ -1,8 +1,6 @@
 import messages_en from "./translations/en.json";
 import WorkforceMainMenu from "./menu/WorkforceMainMenu";
 import reducer from "./reducer";
-
-
 import {
   ROUTE_WORKFORCE_ORGANIZATIONS,
   ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION,
@@ -16,7 +14,7 @@ import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizatio
 import WorkforceOrganizationUnitsPage from "./pages/organization-unit/WorkforceOrganizationUnitsPage";
 import WorkforceOrganizationUnitPage from "./pages/organization-unit/WorkforceOrganizationUnitPage";
 import OrganizationPicker from "./pickers/OrganizationPicker";
-import UnitDesignationPage from "./pages/organization-unit-designation/UnitDesignationsPage";
+import UnitDesignationPage from "./pages/organization-unit-designation/UnitDesignationPage";
 import UnitDesignationsPage from "./pages/organization-unit-designation/UnitDesignationsPage";
 
 const DEFAULT_CONFIG = {

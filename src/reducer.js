@@ -45,12 +45,6 @@ function reducer(
     fetchedUnitDesignations: false,
     unitDesignations: [],
     unitDesignationsPageInfo: { totalCount: 0 },
-
-    fetchingUnitDesignationsPick: false,
-    errorUnitDesignationsPick: null,
-    fetchedUnitDesignationsPick: false,
-    unitDesignationsPick: [],
-
     
     fetchingUnitDesignation: false,
     errorUnitDesignation: null,

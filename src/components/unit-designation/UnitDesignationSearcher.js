@@ -156,11 +156,11 @@ class UnitDesignationSearcher extends Component {
   render() {
     const {
       intl,
-      organizations, organizationsPageInfo, fetchingOrganizations, fetchedOrganizations, errorOrganizations,
+      unitDesignations, unitDesignationsPageInfo, fetchingUnitDesignations, fetchedUnitDesignations, errorUnitDesignations,
       filterPaneContributionsKey, cacheFiltersKey, onDoubleClick,
     } = this.props;
 
-    const count = organizationsPageInfo.totalCount;
+    const count = unitDesignationsPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <UnitDesignationFilter
@@ -177,11 +177,11 @@ class UnitDesignationSearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={organizations}
-          itemsPageInfo={organizationsPageInfo}
-          fetchingItems={fetchingOrganizations}
-          fetchedItems={fetchedOrganizations}
-          errorItems={errorOrganizations}
+          items={unitDesignations}
+          itemsPageInfo={unitDesignationsPageInfo}
+          fetchingItems={fetchingUnitDesignations}
+          fetchedItems={fetchedUnitDesignations}
+          errorItems={errorUnitDesignations}
           // tableTitle={formatMessageWithValues(intl, MODULE_NAME, "ticketSummaries", { count })}
           tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations" values={count} />}
           rowsPerPageOptions={this.rowsPerPageOptions}
@@ -207,11 +207,11 @@ const mapStateToProps = (state) => (
   // console.log(state),
   {
     rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-    organizations: state.workforce.organizations,
-    organizationsPageInfo: state.workforce.organizationsPageInfo,
-    fetchingOrganizations: state.workforce.fetchingOrganizations,
-    fetchedOrganizations: state.workforce.fetchedOrganizations,
-    errorOrganizations: state.workforce.errorOrganizations,
+    unitDesignations: state.workforce.unitDesignations,
+    unitDesignationsPageInfo: state.workforce.unitDesignationsPageInfo,
+    fetchingUnitDesignations: state.workforce.fetchingUnitDesignations,
+    fetchedUnitDesignations: state.workforce.fetchedUnitDesignations,
+    errorUnitDesignations: state.workforce.errorUnitDesignations,
     submittingMutation: state.workforce.submittingMutation,
     mutation: state.workforce.mutation,
     confirmed: state.core.confirmed,
