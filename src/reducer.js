@@ -11,6 +11,7 @@ export const ACTION_TYPE = {};
 
 function reducer(
   state = {
+    ///organizations states
     fetchingOrganizations: false,
     errorOrganizations: null,
     fetchedOrganizations: false,
@@ -22,17 +23,14 @@ function reducer(
     fetchedOrganizationsPick: false,
     organizationsPick: [],
 
-    fetchingOrganizationUnitsPick: false,
-    errorOrganizationUnitsPick: null,
-    fetchedOrganizationUnitsPick: false,
-    organizationUnitsPick: [],
-
+    
     fetchingOrganization: false,
     errorOrganization: null,
     fetchedOrganization: false,
     organization: null,
     organizationPageInfo: { totalCount: 0 },
 
+    ///representative states
     fetchingRepresentatives: false,
     errorRepresentatives: null,
     fetchedRepresentatives: false,
@@ -40,6 +38,32 @@ function reducer(
     representativesPageInfo: { totalCount: 0 },
 
     fetchedRepresentativeByClientMutationId: null,
+
+    ///Unit Designations states
+    fetchingUnitDesignations: false,
+    errorUnitDesignations: null,
+    fetchedUnitDesignations: false,
+    unitDesignations: [],
+    unitDesignationsPageInfo: { totalCount: 0 },
+
+    fetchingUnitDesignationsPick: false,
+    errorUnitDesignationsPick: null,
+    fetchedUnitDesignationsPick: false,
+    unitDesignationsPick: [],
+
+    
+    fetchingUnitDesignation: false,
+    errorUnitDesignation: null,
+    fetchedUnitDesignation: false,
+    unitDesignation: null,
+    unitDesignationPageInfo: { totalCount: 0 },
+
+    ///organization unit states
+    fetchingOrganizationUnitsPick: false,
+    errorOrganizationUnitsPick: null,
+    fetchedOrganizationUnitsPick: false,
+    organizationUnitsPick: [],
+    
 
     fetchingOrganizationUnits: false,
     errorOrganizationUnits: null,
