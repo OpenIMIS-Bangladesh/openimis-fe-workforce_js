@@ -20,15 +20,16 @@ const OrganizationUnitPicker = ({
                               filterOptions,
                               filterSelectedOptions,
                               multiple,
+
                             }) => {
   const [searchString, setSearchString] = useState(null);
   const { formatMessage } = useTranslations("workforce");
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    return dispatch(fetchOrganizationUnitsPick(modulesManager, []));
-  }, []);
+  // useEffect(() => {
+  //   return dispatch(fetchOrganizationUnitsPick(modulesManager, []));
+  // }, []);
 
 
   const isLoading = useSelector((state) => state.workforce[`fetchingOrganizationUnitsPick`]);
@@ -40,7 +41,7 @@ const OrganizationUnitPicker = ({
       multiple={multiple}
       required={required}
       placeholder={placeholder ?? ""}
-      label={label ?? formatMessage("workforce.organization.parent")}
+      label={label ?? formatMessage("workforce.organization.unit.parent")}
       error={error}
       withLabel={withLabel}
       withPlaceholder={withPlaceholder}

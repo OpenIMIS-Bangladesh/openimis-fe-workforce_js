@@ -13,11 +13,14 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
+  decodeId,
+  formatGQLString,
 } from "@openimis/fe-core";
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { createWorkforceOrganizationUnit } from "../../actions";
+import { createWorkforceOrganizationUnit, fetchOrganizationUnitsPick } from "../../actions";
+import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -79,6 +82,14 @@ class AddWorkforceOrganizationUnitPage extends Component {
     }));
   };
 
+  onUpdateOrganization = (key, value) => {
+    const { dispatch } = this.props;
+    this.updateAttribute(key, value);
+    const organizationId = (value && value.id) ? decodeId(value.id) : "00000000-0000-0000-0000-000000000000";
+    const filters = [`organization_Id: "${formatGQLString(organizationId)}"`];
+    return dispatch(fetchOrganizationUnitsPick(this.props.modulesManager, filters));
+  };
+
   render() {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
@@ -107,13 +118,21 @@ class AddWorkforceOrganizationUnitPage extends Component {
               <Divider />
               <Grid container className={classes.item}>
 
-                <Grid item xs={12} className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="workforceOrganization.OrganizationPicker"
                     value={stateEdited.organization || null}
                     label={<FormattedMessage module="workforce" id="workforce.organization.picker" />}
-                    onChange={(option) => this.updateAttribute("organization", option)}
+                    onChange={(option) => this.onUpdateOrganization("organization", option)}
                     required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
+                  <OrganizationUnitPicker
+                    value={stateEdited.parent || null}
+                    onChange={(option) => this.updateAttribute("parent", option)}
                     readOnly={isSaved}
                   />
                 </Grid>
