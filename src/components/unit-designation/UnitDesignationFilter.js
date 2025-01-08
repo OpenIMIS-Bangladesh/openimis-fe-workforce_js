@@ -27,8 +27,8 @@ const styles = (theme) => ({
   paperDivider: theme.paper.divider,
 });
 
-const WORKFORCE_ORGANIZATION_FILTER_CONTRIBUTION_KEY =
-  "workforce.organization.Filter";
+const WORKFORCE_UNIT_DESIGNATION_FILTER_CONTRIBUTION_KEY =
+  "workforce.unit.designation.Filter";
 
 class UnitDesignationFilter extends Component {
   debouncedOnChangeFilter = _debounce(
@@ -67,210 +67,126 @@ class UnitDesignationFilter extends Component {
     const { classes, filters, onChangeFilters } = this.props;
     return (
       <Grid container className={classes.form}>
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.organization.name.en"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
+              <ControlledField
                 module={MODULE_NAME}
-                label="workforce.organization.name.en"
-                name="nameEn"
-                value={this._filterValue("nameEn")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'nameEn',
-                    value: v,
-                    filter: `nameEn_Icontains: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.organization.name.bn"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.organization.name.bn"
-                name="nameBn"
-                value={this._filterValue("nameBn")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'nameBn',
-                    value: v,
-                    filter: `nameBn_Icontains: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.organization.address"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.organization.address"
-                name="address"
-                value={this._filterValue("address")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'address',
-                    value: v,
-                    filter: `address_Icontains: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.organization.phone"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.organization.phone"
-                name="phoneNumber"
-                value={this._filterValue("phoneNumber")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'phoneNumber',
-                    value: v,
-                    filter: `phoneNumber_Icontains: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.representative.name.en"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.representative.name.en"
-                name="workforceRepresentative__nameEn"
-                value={this._filterValue("workforceRepresentative__nameEn")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'workforceRepresentative__nameEn',
-                    value: v,
-                    filter: `workforceRepresentative__nameEn_Icontains: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.representative.name.bn"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.representative.name.bn"
-                name="workforceRepresentative__nameBn"
-                value={this._filterValue("workforceRepresentative__nameBn")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'workforceRepresentative__nameBn',
-                    value: v,
-                    filter: `workforceRepresentative__nameBn_Icontains: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.representative.address"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.representative.address"
-                name="workforceRepresentative__address"
-                value={this._filterValue("workforceRepresentative__address")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'workforceRepresentative__address',
-                    value: v,
-                    filter: `workforceRepresentative__address_Icontains: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.representative.phone"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.representative.phone"
-                name="workforceRepresentative__phone"
-                value={this._filterValue("workforceRepresentative__phone")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'workforceRepresentative__phone',
-                    value: v,
-                    filter: `workforceRepresentative__phone_Icontains: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        />
-        {/* <Grid>
-          <ControlledField
-            module={MODULE_NAME}
-            id="TicketFilter.showHistory"
-            field={
-              <Grid item xs={2} className={classes.item}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      color="primary"
-                      checked={!!this._filterValue("showHistory")}
-                      onChange={(event) =>
-                        this._onChangeCheckbox(
-                          "showHistory",
-                          event.target.checked
-                        )
-                      }
+                id="workforce.organization.unit.designation.name.en"
+                field={
+                  <Grid item xs={3} className={classes.item}>
+                    <TextInput
+                      module={MODULE_NAME}
+                      label="workforce.organization.unit.designation.name.en"
+                      name="nameEn"
+                      value={this._filterValue("nameEn")}
+                      onChange={(v) => this.debouncedOnChangeFilter([
+                        {
+                          id: 'nameEn',
+                          value: v,
+                          filter: `nameEn_Icontains: "${v}"`,
+                        },
+                      ])}
                     />
+                  </Grid>
+                }
+              />
+              <ControlledField
+                module={MODULE_NAME}
+                id="workforce.organization.unit.designation.name.bn"
+                field={
+                  <Grid item xs={3} className={classes.item}>
+                    <TextInput
+                      module={MODULE_NAME}
+                      label="workforce.organization.unit.designation.name.bn"
+                      name="nameBn"
+                      value={this._filterValue("nameBn")}
+                      onChange={(v) => this.debouncedOnChangeFilter([
+                        {
+                          id: 'nameBn',
+                          value: v,
+                          filter: `nameBn_Icontains: "${v}"`,
+                        },
+                      ])}
+                    />
+                  </Grid>
+                }
+              />
+              <ControlledField
+                module={MODULE_NAME}
+                id="workforce.organization.unit.designation.level"
+                field={
+                  <Grid item xs={3} className={classes.item}>
+                    <TextInput
+                      module={MODULE_NAME}
+                      label="workforce.organization.unit.designation.level"
+                      name="designationLevel"
+                      value={this._filterValue("designationLevel")}
+                      onChange={(v) => this.debouncedOnChangeFilter([
+                        {
+                          id: 'unitLevel',
+                          value: v,
+                          filter: `unitLevel: "${v}"`,
+                        },
+                      ])}
+                    />
+                  </Grid>
+                }
+              />
+              <ControlledField
+                module={MODULE_NAME}
+                id="workforce.organization.unit.designation.sequence"
+                field={
+                  <Grid item xs={3} className={classes.item}>
+                    <TextInput
+                      module={MODULE_NAME}
+                      label="workforce.organization.unit.designation.sequence"
+                      name="designationSequence"
+                      value={this._filterValue("designationSequence")}
+                      onChange={(v) => this.debouncedOnChangeFilter([
+                        {
+                          id: 'phoneNumber',
+                          value: v,
+                          filter: `phoneNumber_Icontains: "${v}"`,
+                        },
+                      ])}
+                    />
+                  </Grid>
+                }
+              />
+              {/* <Grid>
+                <ControlledField
+                  module={MODULE_NAME}
+                  id="TicketFilter.showHistory"
+                  field={
+                    <Grid item xs={2} className={classes.item}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            color="primary"
+                            checked={!!this._filterValue("showHistory")}
+                            onChange={(event) =>
+                              this._onChangeCheckbox(
+                                "showHistory",
+                                event.target.checked
+                              )
+                            }
+                          />
+                        }
+                        label={formatMessage(
+                          this.props.intl,
+                          MODULE_NAME,
+                          "showHistory"
+                        )}
+                      />
+                    </Grid>
                   }
-                  label={formatMessage(
-                    this.props.intl,
-                    MODULE_NAME,
-                    "showHistory"
-                  )}
                 />
-              </Grid>
-            }
-          />
-        </Grid> */}
-
-        <Contributions
-          filters={filters}
-          onChangeFilters={onChangeFilters}
-          contributionKey={WORKFORCE_ORGANIZATION_FILTER_CONTRIBUTION_KEY}
-        />
-      </Grid>
+              </Grid> */}
+      
+              <Contributions
+                filters={filters}
+                onChangeFilters={onChangeFilters}
+                contributionKey={WORKFORCE_UNIT_DESIGNATION_FILTER_CONTRIBUTION_KEY}
+              />
+            </Grid>
     );
   }
 }

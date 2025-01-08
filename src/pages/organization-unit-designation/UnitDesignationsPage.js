@@ -19,7 +19,7 @@ const styles = (theme) => ({
 
 class UnitDesignationsPage extends Component {
   onDoubleClick = (unitDesignation, newTab = false) => {
-    const routeParams = ['workforce.route.organizations.organization', [decodeId(unitDesignation.id)]];
+    const routeParams = ['workforce.route.unit.designations.designation', [decodeId(unitDesignation.id)]];
     if (unitDesignation?.isHistory) {
       routeParams[1].push(unitDesignation.version);
     }

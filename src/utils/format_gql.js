@@ -76,3 +76,15 @@ export function formatUnitGQL(unit) {
     ${unit.organization?.id ? `organization: "${decodeId(unit.organization.id)}"` : ""}
   `;
 }
+
+export function formatUnitDesignationGQL(unitDesignation) {
+  return `
+    ${unitDesignation.organization ? `organization: "${decodeId(unitDesignation.organization.id)}"` : ""}
+    ${unitDesignation.unit ? `unit: "${decodeId(unitDesignation.unit.id)}"` : ""}
+    ${unitDesignation.nameEn ? `nameEn: "${formatGQLString(unitDesignation.nameEn)}"` : ""}
+    ${unitDesignation.nameBn ? `nameBn: "${formatGQLString(unitDesignation.nameBn)}"` : ""}
+    ${unitDesignation.status !== undefined ? `status: ${unitDesignation.status}` : ""}
+    ${unitDesignation.designationLevel !== undefined ? `designationLevel: ${unitDesignation.designationLevel}` : ""}
+    ${unitDesignation.designationSequence !== undefined ? `designationSequence: ${unitDesignation.designationSequence}` : ""}
+  `;
+}

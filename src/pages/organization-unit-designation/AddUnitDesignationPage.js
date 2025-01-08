@@ -17,6 +17,7 @@ import {
 } from "@openimis/fe-core";
 import {
   createRepresentative,
+  createUnitDesignation,
   createWorkforceOrganization,
   fetchRepresentativeByClientMutationId,
 } from "../../actions";
@@ -55,53 +56,20 @@ class AddUnitDesignationPage extends Component {
     const { stateEdited } = this.state;
     const { grievanceConfig, dispatch } = this.props;
 
-    const representativeData = {
-      type: "organization",
-      nameBn: stateEdited.repNameBn,
-      nameEn: stateEdited.repName,
-      location: stateEdited.repLocation,
-      address: stateEdited.repAddress,
-      phoneNumber: stateEdited.repPhone,
-      email: stateEdited.repEmail,
-      nid: stateEdited.nid,
-      passportNo: stateEdited.passport,
-      birthDate: stateEdited.birthDate,
-      position: stateEdited.position,
-    };
-
-
-    const representativeMutation = await formatMutation("createWorkforceRepresentative", formatRepresentativeGQL(representativeData), `Created Representative ${representativeData.nameEn}`);
-    const representativeClientMutationId = representativeMutation.clientMutationId;
-
-    await dispatch(
-      createRepresentative(
-        representativeMutation,
-        `Created Representative ${representativeData.nameEn}`,
-      ),
-    );
-
-
-    await dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
-
-    const representativeId = this.props.representativeId[0].id;
-
-    const organizationData = {
+    const unitDesignationData = {
       nameBn: stateEdited.titleBn,
       nameEn: stateEdited.title,
-      location: stateEdited.location,
-      address: stateEdited.address,
-      phoneNumber: stateEdited.phone,
-      email: stateEdited.email,
-      website: stateEdited.website,
-      // workforceRepresentativeId:this.state.workforce.fetchedRepresentativeByClientMutationId,
-      workforceRepresentativeId: representativeId,
+      organization: stateEdited.organization,
+      unit: stateEdited.unit,
+      designationLevel: stateEdited.level,
+      designationSequence: stateEdited.sequence,
     };
-    console.log({ organizationData });
+    console.log({ unitDesignationData });
 
     await dispatch(
-      createWorkforceOrganization(
-        organizationData,
-        `Created Organization ${organizationData.nameEn}`,
+      createUnitDesignation(
+        unitDesignationData,
+        `Created unit designation ${unitDesignationData.nameEn}`,
       ),
     );
 
@@ -154,7 +122,7 @@ class AddUnitDesignationPage extends Component {
               <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.unit.designation.name.bn"
+                    label="workforce.organization.unit.designation.name.en"
                     value={stateEdited.title || ""}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
@@ -186,7 +154,7 @@ class AddUnitDesignationPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                 <OrganizationUnitPicker
                     value={stateEdited.parent || null}
-                    onChange={(option) => this.updateAttribute("parent", option)}
+                    onChange={(option) => this.updateAttribute("unit", option)}
                     readOnly={isSaved}
                     label={<FormattedMessage module="workforce" id="workforce.organization.unit.picker" />}
                   />

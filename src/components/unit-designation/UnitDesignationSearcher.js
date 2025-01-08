@@ -18,7 +18,7 @@ import {
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../../constants";
-import { fetchOrganizationsSummary } from "../../actions";
+import { fetchUnitDesignationSummary } from "../../actions";
 import UnitDesignationFilter from "../unit-designation/UnitDesignationFilter";
 
 
@@ -69,7 +69,7 @@ class UnitDesignationSearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchOrganizationsSummary(
+    this.props.fetchUnitDesignationSummary(
       this.props.modulesManager,
       prms,
     );
@@ -97,12 +97,10 @@ class UnitDesignationSearcher extends Component {
   };
 
   headers = () => [
-    "workforce.organization.name.en",
-    "workforce.organization.name.bn",
-    "workforce.organization.address",
-    "workforce.organization.phone",
-    "workforce.representative.details",
-    this.isShowHistory() ? 'workforce.version' : '',
+    "workforce.organization.unit.designation.name.en",
+    "workforce.organization.unit.designation.name.bn",
+    "workforce.organization.unit.designation.level",
+    "workforce.organization.unit.designation.sequence",
   ];
 
   sorts = () => [
@@ -111,18 +109,10 @@ class UnitDesignationSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      (workforce) => workforce.nameEn,
-      (workforce) => workforce.nameBn,
-      (workforce) => workforce.address,
-      (workforce) => workforce.phoneNumber,
-      (workforce) => {
-        const nameEn = workforce.workforceRepresentative?.nameEn || "N/A";
-        const nameBn = workforce.workforceRepresentative?.nameBn || "N/A";
-        const address = workforce.workforceRepresentative?.address || "N/A";
-        const phone = workforce.workforceRepresentative?.phoneNumber || "N/A";
-        return `Name En: ${nameEn}\n, Name Bn: ${nameBn}\n, Address: ${address}\n, Phone: ${phone}\n`;
-      },
-      (workforce) => (this.isShowHistory() ? workforce?.version : null),
+      (unitdesignation) => unitdesignation.nameEn,
+      (unitdesignation) => unitdesignation.nameBn,
+      (unitdesignation) => unitdesignation.designationLevel,
+      (unitdesignation) => unitdesignation.designationSequence,
 
     ];
 
@@ -220,7 +210,7 @@ const mapStateToProps = (state) => (
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(
   {
-    fetchOrganizationsSummary, journalize, coreConfirm,
+    fetchUnitDesignationSummary, journalize, coreConfirm,
   },
   dispatch,
 );

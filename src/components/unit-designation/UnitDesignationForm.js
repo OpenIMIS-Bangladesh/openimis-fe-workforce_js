@@ -7,7 +7,7 @@ import {
 } from "@openimis/fe-core";
 import { bindActionCreators } from "redux";
 import {
-  fetchOrganization,
+  fetchUnitDesignation,
 } from "../../actions";
 import EditWorkforceOrganizationPage from "../../pages/organization/EditWorkforceOrganizationPage";
 import AddWorkforceOrganizationPage from "../../pages/organization/AddWorkforceOrganizationPage";
@@ -51,7 +51,7 @@ class UnitDesignationForm extends Component {
     } else if (prevState.organizationUuid !== this.state.organizationUuid) {
       const filters = [`id: "${this.state.organizationUuid}"`];
       if (this.props.ticketVersion) filters.push(`ticketVersion: ${this.props.ticketVersion}`);
-      this.props.fetchOrganization(
+      this.props.fetchUnitDesignation(
         this.props.modulesManager,
         filters,
       );
@@ -61,7 +61,7 @@ class UnitDesignationForm extends Component {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
       if (this.props?.ticket?.id) {
-        this.props.fetchOrganization(
+        this.props.fetchUnitDesignation(
           this.props.modulesManager,
           [`id: "${this.state.organizationUuid}"`],
         );
@@ -174,7 +174,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchOrganization,
+  fetchUnitDesignation,
   journalize,
 }, dispatch);
 
