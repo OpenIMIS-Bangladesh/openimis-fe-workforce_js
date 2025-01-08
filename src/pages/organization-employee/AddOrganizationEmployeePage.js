@@ -19,6 +19,7 @@ import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { createWorkforceOrganizationUnit } from "../../actions";
 
+
 const styles = (theme) => ({
   paper: theme.paper.paper,
   tableTitle: theme.table.title,
@@ -49,20 +50,27 @@ class AddWorkforceEmployeePage extends Component {
     const { dispatch } = this.props;
 
 
-    const unitData = {
+    const workforceEmployeeData = {
       nameBn: stateEdited.titleBn,
       nameEn: stateEdited.title,
       phoneNumber: stateEdited.phone,
       email: stateEdited.email,
-      level: stateEdited.level,
-      parent: stateEdited.parent,
-      organization: stateEdited.organization,
+      birthdate: stateEdited.birthdate,
+      gender: stateEdited.gender,
+      first_joining_date: stateEdited.first_joining_date,
+      birthCertificateNo: stateEdited.birthCertificateNo,
+      nid: stateEdited.nid,
+      passportNo: stateEdited.passportNo,
+      address: stateEdited.address,
+      location: stateEdited.location,
+      status: "1",
+      organizationEmployee: stateEdited.organizationEmployee,
     };
 
     await dispatch(
       createWorkforceOrganizationUnit(
-        unitData,
-        `Created Organization Unit ${unitData.nameEn}`,
+        workforceEmployeeData,
+        `Created Organization Employee ${workforceEmployeeData.nameEn}`,
       ),
     );
 
@@ -85,7 +93,7 @@ class AddWorkforceEmployeePage extends Component {
 
     const isSaveDisabled = !(
       stateEdited.title &&
-      stateEdited.organization
+      stateEdited.organizationEmployee
     );
 
     return (
