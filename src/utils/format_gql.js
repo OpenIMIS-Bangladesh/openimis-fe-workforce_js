@@ -76,6 +76,18 @@ export function formatUnitGQL(unit) {
     ${unit.organization?.id ? `organization: "${decodeId(unit.organization.id)}"` : ""}
   `;
 }
+export function formatOrganizationEmployeeGQL(employee) {
+  return `
+    ${employee.id ? `id: "${formatGQLString(employee.id)}"` : ""}
+    ${employee.nameEn ? `nameEn: "${formatGQLString(employee.nameEn)}"` : ""}
+    ${employee.nameBn ? `nameBn: "${formatGQLString(employee.nameBn)}"` : ""}
+    ${employee.phoneNumber ? `phoneNumber: "${formatGQLString(employee.phoneNumber)}"` : ""}
+    ${employee.email ? `email: "${formatGQLString(employee.email)}"` : ""}
+    ${employee.level ? `unitLevel: "${employee.level}"` : ""}
+    ${(employee.parent && employee.parent.id) ? `parent: "${decodeId(employee.parent.id)}"` : ""}
+    ${employee.organization?.id ? `organization: "${decodeId(employee.organization.id)}"` : ""}
+  `;
+}
 
 export function formatUnitDesignationGQL(unitDesignation) {
   return `

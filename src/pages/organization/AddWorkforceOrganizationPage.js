@@ -120,17 +120,6 @@ class AddWorkforceOrganizationPage extends Component {
   render() {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
-
-    // const isSaveDisabled = !(
-    //   stateEdited.title &&
-    //   stateEdited.address &&
-    //   stateEdited.phone &&
-    //   stateEdited.email &&
-    //   stateEdited.website &&
-    //   stateEdited.parent &&
-    //   stateEdited.location
-    // );
-
     const isSaveDisabled = false;
 
     return (

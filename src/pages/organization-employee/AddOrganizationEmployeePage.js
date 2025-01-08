@@ -90,11 +90,7 @@ class AddWorkforceEmployeePage extends Component {
   render() {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
-
-    const isSaveDisabled = !(
-      stateEdited.title &&
-      stateEdited.organizationEmployee
-    );
+    const isSaveDisabled = false;
 
     return (
       <div className={classes.page}>

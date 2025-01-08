@@ -226,6 +226,43 @@ export function updateWorkforceOrganizationUnit(unit, clientMutationLabel) {
   );
 }
 
+export function createOrganizationEmployee(employee, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createOrganizationEmployee",
+    formatOrganizationEmployeeGQL(employee),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["WORKFORCE_ORGANIZATION_EMPLOYEES_REQ", "WORKFORCE_ORGANIZATION_EMPLOYEES_RESP", "WORKFORCE_ORGANIZATION_EMPLOYEES_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function updateOrganizationEMployee(employee, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateOrganizationEMployee",
+    formatOrganizationEmployeeGQL(employee),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["WORKFORCE_ORGANIZATION_EMPLOYEES_REQ", "WORKFORCE_ORGANIZATION_EMPLOYEES_RESP", "WORKFORCE_ORGANIZATION_EMPLOYEES_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      id: employee.id,
+    },
+  );
+}
+
 ////unit designation update /////////
 export function createUnitDesignation(unitDesignation, clientMutationLabel) {
   const mutation = formatMutation(

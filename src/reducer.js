@@ -39,6 +39,14 @@ function reducer(
 
     fetchedRepresentativeByClientMutationId: null,
 
+    ///organizations employee states
+    fetchingOrganizationEmployees: false,
+    errorOrganizationEmployees: null,
+    fetchedOrganizationEmployees: false,
+    organizationEmployees: [],
+    organizationEmployeesPageInfo: { totalCount: 0 },
+  
+
     ///Unit Designations states
     fetchingUnitDesignations: false,
     errorUnitDesignations: null,
