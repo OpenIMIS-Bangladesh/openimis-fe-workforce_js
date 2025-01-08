@@ -97,6 +97,8 @@ class UnitDesignationSearcher extends Component {
   };
 
   headers = () => [
+    "workforce.organization.name.en",
+    "workforce.organization.unit.name.en",
     "workforce.organization.unit.designation.name.en",
     "workforce.organization.unit.designation.name.bn",
     "workforce.organization.unit.designation.level",
@@ -109,6 +111,8 @@ class UnitDesignationSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
+      (unitdesignation) => unitdesignation.organization.nameEn,
+      (unitdesignation) => unitdesignation.unit.nameEn,
       (unitdesignation) => unitdesignation.nameEn,
       (unitdesignation) => unitdesignation.nameBn,
       (unitdesignation) => unitdesignation.designationLevel,

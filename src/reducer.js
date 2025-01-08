@@ -23,7 +23,7 @@ function reducer(
     fetchedOrganizationsPick: false,
     organizationsPick: [],
 
-    
+
     fetchingOrganization: false,
     errorOrganization: null,
     fetchedOrganization: false,
@@ -45,7 +45,7 @@ function reducer(
     fetchedUnitDesignations: false,
     unitDesignations: [],
     unitDesignationsPageInfo: { totalCount: 0 },
-    
+
     fetchingUnitDesignation: false,
     errorUnitDesignation: null,
     fetchedUnitDesignation: false,
@@ -57,7 +57,7 @@ function reducer(
     errorOrganizationUnitsPick: null,
     fetchedOrganizationUnitsPick: false,
     organizationUnitsPick: [],
-    
+
 
     fetchingOrganizationUnits: false,
     errorOrganizationUnits: null,
@@ -93,15 +93,6 @@ function reducer(
         organizationsPageInfo: { totalCount: 0 },
         errorOrganizations: null,
       };
-      case "WORKFORCE_UNIT_DESIGNATIONS_REQ":
-        return {
-          ...state,
-          fetchingUnitDesignations: true,
-          fetchedUnitDesignations: false,
-          unitDesignations: [],
-          unitDesignationsPageInfo: { totalCount: 0 },
-          errorUnitDesignations: null,
-        };
     case "WORKFORCE_ORGANIZATIONS_RESP":
       return {
         ...state,
@@ -111,22 +102,31 @@ function reducer(
         organizationsPageInfo: pageInfo(action.payload.data.workforceOrganizations),
         errorOrganizations: formatGraphQLError(action.payload),
       };
-      case "WORKFORCE_UNIT_DESIGNATIONS_RESP":
+    case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATIONS_REQ":
       return {
         ...state,
-        fetchingOrganizations: false,
-        fetchedOrganizations: true,
-        organizations: parseData(action.payload.data.workforceOrganizations),
-        organizationsPageInfo: pageInfo(action.payload.data.workforceOrganizations),
-        errorOrganizations: formatGraphQLError(action.payload),
+        fetchingUnitDesignations: true,
+        fetchedUnitDesignations: false,
+        unitDesignations: [],
+        unitDesignationsPageInfo: { totalCount: 0 },
+        errorUnitDesignations: null,
       };
-    case "WORKFORCE_ORGANIZATIONS_ERR":
+    case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATIONS_RESP":
+      return {
+        ...state,
+        fetchingUnitDesignations: false,
+        fetchedUnitDesignations: true,
+        unitDesignations: parseData(action.payload.data.workforceOrganizationUnitDesignations),
+        unitDesignationsPageInfo: pageInfo(action.payload.data.workforceOrganizationUnitDesignations),
+        errorUnitDesignations: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATIONS_ERR":
       return {
         ...state,
         fetching: false,
         error: formatServerError(action.payload),
       };
-      case "WORKFORCE_UNIT_DESIGNATIONS_ERR":
+    case "WORKFORCE_ORGANIZATIONS_ERR":
       return {
         ...state,
         fetching: false,
@@ -178,7 +178,7 @@ function reducer(
         organization: null,
         errorOrganization: null,
       };
-      case "WORKFORCE_UNIT_DESIGNATION_REQ":
+    case "WORKFORCE_UNIT_DESIGNATION_REQ":
       return {
         ...state,
         fetchingUnitDesignation: true,
@@ -197,7 +197,7 @@ function reducer(
         }))?.[0],
         errorOrganization: formatGraphQLError(action.payload),
       };
-      case "WORKFORCE_UNIT_DESIGNATION_RESP":
+    case "WORKFORCE_UNIT_DESIGNATION_RESP":
       return {
         ...state,
         fetchingUnitDesignation: false,
@@ -357,13 +357,13 @@ function reducer(
       return dispatchMutationResp(state, "createOrganization", action);
     case "ORG_UPDATE_ORG_RESP":
       return dispatchMutationResp(state, "updateOrganization", action);
-      case "UNIT_DESIGNATION_MUTATION_REQ": {
-        return dispatchMutationReq(state, action);
-      }
-      case "UNIT_DESIGNATION_MUTATION_ERR":
-        return dispatchMutationErr(state, action);
-      case "UNIT_DESIGNATION_CREATE_UNIT_DESIGNATION_RESP":
-        return dispatchMutationResp(state, "createOrganization", action);
+    case "UNIT_DESIGNATION_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "UNIT_DESIGNATION_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "UNIT_DESIGNATION_CREATE_UNIT_DESIGNATION_RESP":
+      return dispatchMutationResp(state, "createOrganization", action);
     default:
       return state;
   }
