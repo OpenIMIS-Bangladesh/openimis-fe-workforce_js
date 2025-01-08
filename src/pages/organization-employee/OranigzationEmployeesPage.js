@@ -18,7 +18,7 @@ const styles = (theme) => ({
 
 class OranigzationEmployeesPage extends Component {
   onDoubleClick = (organization, newTab = false) => {
-    const routeParams = ['workforce.route.organizations.organization', [decodeId(organization.id)]];
+    const routeParams = ['workforce.route.organizations.employees.employee', [decodeId(organization.id)]];
     if (organization?.isHistory) {
       routeParams[1].push(organization.version);
     }
@@ -26,7 +26,7 @@ class OranigzationEmployeesPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.organizations.organization');
+    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.organizations.employees.employee');
   };
 
   render() {
