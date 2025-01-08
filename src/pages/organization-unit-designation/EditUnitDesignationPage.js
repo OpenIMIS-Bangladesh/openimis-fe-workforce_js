@@ -111,7 +111,7 @@ class EditUnitDesignationPage extends Component {
               <Divider />
               <Grid container className={classes.item}>
 
-                <Grid item xs={12} className={classes.item}>
+              <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="workforceOrganization.OrganizationPicker"
                     value={stateEdited.organization || null}
@@ -122,10 +122,19 @@ class EditUnitDesignationPage extends Component {
                   />
                 </Grid>
 
+                <Grid item xs={6} className={classes.item}>
+                <OrganizationUnitPicker
+                    value={stateEdited.unit || null}
+                    onChange={(option) => this.updateAttribute("unit", option)}
+                    readOnly={isSaved}
+                    label={<FormattedMessage module="workforce" id="workforce.organization.unit.picker" />}
+                  />
+                </Grid>
+
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.unit.name.en"
+                    label="workforce.organization.unit.designation.name.en"
                     value={stateEdited.nameEn}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
@@ -135,7 +144,7 @@ class EditUnitDesignationPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.unit.name.bn"
+                    label="workforce.organization.unit.designation.name.bn"
                     value={stateEdited.nameBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     required
@@ -145,9 +154,9 @@ class EditUnitDesignationPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.unit.phone"
-                    value={stateEdited.phoneNumber || ""}
-                    onChange={(v) => this.updateAttribute("phone", v)}
+                    label="workforce.organization.unit.designation.sequence"
+                    value={stateEdited.designationSequence || ""}
+                    onChange={(v) => this.updateAttribute("sequence", v)}
                     required
                     type={"number"}
                     readOnly={isSaved}
@@ -156,21 +165,9 @@ class EditUnitDesignationPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.unit.email"
-                    value={stateEdited.email || ""}
-                    onChange={(v) => this.updateAttribute("email", v)}
-                    required
-                    type={"email"}
-                    readOnly={isSaved}
-
-                  />
-                </Grid>
-
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.organization.unit.level"
-                    value={stateEdited.unitLevel || ""}
-                    onChange={(v) => this.updateAttribute("unitLevel", v)}
+                    label="workforce.organization.unit.designation.level"
+                    value={stateEdited.designationLevel || ""}
+                    onChange={(v) => this.updateAttribute("level", v)}
                     required
                     type={"number"}
                     readOnly={isSaved}
