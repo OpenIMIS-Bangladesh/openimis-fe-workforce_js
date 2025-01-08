@@ -5,8 +5,8 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import {
   withModulesManager, withHistory, historyPush,
 } from "@openimis/fe-core";
-import OrganizationForm from "../../components/organization/OrganizationForm";
-import { updateOrganization, createWorkforceOrganization, updateWorkforceOrganization } from "../../actions";
+import OrganizationEmployeeForm from "../../components/organization-employee/OrganizationEmployeeForm";
+import { createWorkforceOrganization, updateWorkforceOrganization } from "../../actions";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../constants";
 
 const styles = (theme) => ({
@@ -14,7 +14,7 @@ const styles = (theme) => ({
   lockedPage: theme.page.locked,
 });
 
-class WorkforceOrganizationPage extends Component {
+class OrganizationEmployeePage extends Component {
   add = () => {
     historyPush(this.props.modulesManager, this.props.history, "grievance.route.ticket");
   };
@@ -37,19 +37,19 @@ class WorkforceOrganizationPage extends Component {
 
   render() {
     const {
-      classes, modulesManager, history, rights, organizationUuid, overview, organization, organizationVersion,
+      classes, modulesManager, history, rights, organizationEmployeeUuid, overview, organizationVersion,
     } = this.props;
     // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
     // if (!(rights.includes(RIGHT_ORGANIZATION_CREATE) || rights.includes(RIGHT_ORGANIZATION_EDIT))) return null;
     return (
       <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
-        <OrganizationForm
+        <OrganizationEmployeeForm
           overview={overview}
-          organizationUuid={organizationUuid}
+          organizationEmployeeUuid={organizationEmployeeUuid}
           organizationVersion={organizationVersion}
           readOnly={readOnly}
-          back={() => historyPush(modulesManager, history, "grievanceSocialProtection.route.tickets")}
+          back={() => historyPush(modulesManager, history, "workforce.route.organizations.employees")}
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
           save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
         />
@@ -71,5 +71,5 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 }, dispatch);
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
-  withTheme(withStyles(styles)(WorkforceOrganizationPage))),
+  withTheme(withStyles(styles)(OrganizationEmployeePage))),
 ));

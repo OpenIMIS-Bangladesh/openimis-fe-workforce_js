@@ -18,7 +18,7 @@ import {
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../../constants";
-import { fetchOrganizationEmployeesSummary } from "../../actions";
+import { fetchOrganizationUnitsSummary } from "../../actions";
 import OrganizationUnitFilter from "./OrganizationUnitFilter";
 
 
@@ -69,7 +69,7 @@ class OrganizationUnitSearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchOrganizationEmployeesSummary(
+    this.props.fetchOrganizationUnitsSummary(
       this.props.modulesManager,
       prms,
     );
@@ -212,7 +212,7 @@ const mapStateToProps = (state) => (
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(
   {
-    fetchOrganizationEmployeesSummary, journalize, coreConfirm,
+    fetchOrganizationUnitsSummary, journalize, coreConfirm,
   },
   dispatch,
 );
