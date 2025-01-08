@@ -169,7 +169,7 @@ class AddWorkforceEmployeePage extends Component {
                     pubRef="core.DatePicker"
                     label={"workforce.organization.employee.birthdate"}
                     value={stateEdited.birthDate || ""}
-                    onChange={(v) => updateAttribute("birthDate", v)}
+                    onChange={(v) => this.updateAttribute("birthDate", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
@@ -179,7 +179,7 @@ class AddWorkforceEmployeePage extends Component {
                     pubRef="core.DatePicker"
                     label={"workforce.organization.employee.joining_date"}
                     value={stateEdited.first_joining_date || ""}
-                    onChange={(v) => updateAttribute("first_joining_date", v)}
+                    onChange={(v) => this.updateAttribute("first_joining_date", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
