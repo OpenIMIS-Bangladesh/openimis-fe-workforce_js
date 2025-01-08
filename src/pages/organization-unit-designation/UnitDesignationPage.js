@@ -38,7 +38,7 @@ class UnitDesignationPage extends Component {
 
   render() {
     const {
-      classes, modulesManager, history, rights, organizationUuid, overview, unitDesignation, organizationVersion,
+      classes, modulesManager, history, rights, unitDesignationUuid, overview, unitDesignation, organizationVersion,
     } = this.props;
     // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
@@ -47,7 +47,7 @@ class UnitDesignationPage extends Component {
       <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
         <UnitDesignationForm
           overview={overview}
-          organizationUuid={organizationUuid}
+          unitDesignationUuid={unitDesignationUuid}
           organizationVersion={organizationVersion}
           readOnly={readOnly}
           back={() => historyPush(modulesManager, history, "grievanceSocialProtection.route.tickets")}
@@ -61,7 +61,7 @@ class UnitDesignationPage extends Component {
 
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  organizationUuid: props.match.params.organization_uuid,
+  unitDesignationUuid: props.match.params.organization_unit_designation_uuid,
   organizationVersion: props.match.params.version,
   unitDesignation: state.workforce.unitDesignation,
 });

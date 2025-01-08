@@ -129,7 +129,7 @@ class UnitDesignationSearcher extends Component {
                  historyPush(
                    this.props.modulesManager,
                    this.props.history,
-                   'workforce.route.organizations.organization',
+                   'workforce.route.unit.designations.designation',
                    [decodeId(workforce.id)],
                    false,
                  );
@@ -155,6 +155,7 @@ class UnitDesignationSearcher extends Component {
     } = this.props;
 
     const count = unitDesignationsPageInfo.totalCount;
+    console.log({unitDesignations})
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <UnitDesignationFilter

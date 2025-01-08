@@ -21,15 +21,15 @@ class UnitDesignationForm extends Component {
     this.state = {
       lockNew: false,
       reset: 0,
-      organizationUuid: null,
+      unitDesignationUuid: null,
       ticket: this._newTicket(),
     };
   }
 
   componentDidMount() {
     // this.props.fetchGrievanceConfiguration();
-    if (this.props.organizationUuid) {
-      this.setState((state, props) => ({ organizationUuid: props.organizationUuid }));
+    if (this.props.unitDesignationUuid) {
+      this.setState((state, props) => ({ unitDesignationUuid: props.unitDesignationUuid }));
     }
   }
 
@@ -45,25 +45,25 @@ class UnitDesignationForm extends Component {
       && !!this.props.ticket) {
       this.setState((state, props) => ({
         ticket: { ...props.ticket },
-        organizationUuid: props.ticket.id,
+        unitDesignationUuid: props.ticket.id,
         lockNew: false,
       }));
-    } else if (prevState.organizationUuid !== this.state.organizationUuid) {
-      const filters = [`id: "${this.state.organizationUuid}"`];
+    } else if (prevState.unitDesignationUuid !== this.state.unitDesignationUuid) {
+      const filters = [`id: "${this.state.unitDesignationUuid}"`];
       if (this.props.ticketVersion) filters.push(`ticketVersion: ${this.props.ticketVersion}`);
       this.props.fetchUnitDesignation(
         this.props.modulesManager,
         filters,
       );
-    } else if (prevProps.organizationUuid && !this.props.organizationUuid) {
-      this.setState({ ticket: this._newTicket(), lockNew: false, organizationUuid: null });
+    } else if (prevProps.unitDesignationUuid && !this.props.unitDesignationUuid) {
+      this.setState({ ticket: this._newTicket(), lockNew: false, unitDesignationUuid: null });
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
       if (this.props?.ticket?.id) {
         this.props.fetchUnitDesignation(
           this.props.modulesManager,
-          [`id: "${this.state.organizationUuid}"`],
+          [`id: "${this.state.unitDesignationUuid}"`],
         );
       }
     }
@@ -118,7 +118,7 @@ class UnitDesignationForm extends Component {
       reset,
       update,
       overview,
-      organizationUuid,
+      unitDesignationUuid,
       ticket,
     } = this.state;
 
@@ -135,10 +135,10 @@ class UnitDesignationForm extends Component {
     return (
       <>
         <ProgressOrError progress={fetchingUnitDesignations} error={errorUnitDesignations} />
-        {(!!fetchedUnitDesignation || !organizationUuid) && (
+        {(!!fetchedUnitDesignation || !unitDesignationUuid) && (
           <Form
             module={MODULE_NAME}
-            edited_id={organizationUuid}
+            edited_id={unitDesignationUuid}
             edited={ticket}
             reset={reset}
             update={update}
@@ -148,10 +148,10 @@ class UnitDesignationForm extends Component {
             back={back}
             save={save ? this._save : null}
             canSave={this.canSave}
-            reload={(organizationUuid || readOnly) && this.reload}
+            reload={(unitDesignationUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={organizationUuid ? [EditUnitDesignationPage] : [AddUnitDesignationPage]}
+            Panels={unitDesignationUuid ? [EditUnitDesignationPage] : [AddUnitDesignationPage]}
             onEditedChanged={this.onEditedChanged}
             // actions={actions}
           />
