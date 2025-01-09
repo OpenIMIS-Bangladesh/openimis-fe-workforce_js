@@ -55,7 +55,7 @@ class AddWorkforceEmployeePage extends Component {
       nameEn: stateEdited.title,
       phoneNumber: stateEdited.phone,
       email: stateEdited.email,
-      birthdate: stateEdited.birthdate,
+      birthDate: stateEdited.birthDate,
       gender: stateEdited.gender,
       firstJoiningDate: stateEdited.firstJoiningDate,
       birthCertificateNo: stateEdited.birthCertificateNo,

@@ -83,9 +83,15 @@ export function formatOrganizationEmployeeGQL(employee) {
     ${employee.nameBn ? `nameBn: "${formatGQLString(employee.nameBn)}"` : ""}
     ${employee.phoneNumber ? `phoneNumber: "${formatGQLString(employee.phoneNumber)}"` : ""}
     ${employee.email ? `email: "${formatGQLString(employee.email)}"` : ""}
-    ${employee.level ? `unitLevel: "${employee.level}"` : ""}
-    ${(employee.parent && employee.parent.id) ? `parent: "${decodeId(employee.parent.id)}"` : ""}
-    ${employee.organization?.id ? `organization: "${decodeId(employee.organization.id)}"` : ""}
+    ${employee.birthDate ? `birthDate: "${employee.birthDate}"` : ""}
+    ${employee.gender ? `gender: "${employee.gender}"` : ""}
+    ${employee.firstJoiningDate ? `firstJoiningDate: "${employee.firstJoiningDate}"` : ""}
+    ${employee.birthCertificateNo ? `birthCertificateNo: "${employee.birthCertificateNo}"` : ""}
+    ${employee.nid ? `nid: "${employee.nid}"` : ""}
+    ${employee.passportNo ? `passportNo: "${employee.passportNo}"` : ""}
+    ${employee.address ? `address: "${employee.address}"` : ""}
+    ${employee.location ? `location: "${employee.location}"` : ""}
+    ${employee.status ? `status: "${employee.status}"` : ""}
   `;
 }
 
