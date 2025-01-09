@@ -20,7 +20,7 @@ class OrganizationEmployeePage extends Component {
   };
 
   save = (employee) => {
-    if (!organization.id) {
+    if (!employee.id) {
       this.props.createOrganizationEmployee(
         this.props.modulesManager,
         employee,

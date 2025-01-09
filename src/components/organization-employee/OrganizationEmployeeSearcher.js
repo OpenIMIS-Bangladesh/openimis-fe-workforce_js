@@ -19,7 +19,7 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../../constants";
 import { fetchOrganizationEmployeesSummary } from "../../actions";
-import OrganizationUnitFilter from "./OrganizationEmployeeFilter";
+import OrganizationEmployeeFilter from "./OrganizationEmployeeFilter";
 
 
 const styles = (theme) => ({
@@ -45,7 +45,6 @@ class OrganizationEmployeeSearcher extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // open: false,
       chfid: null,
       confirmedAction: null,
       reset: 0,
@@ -141,7 +140,6 @@ class OrganizationEmployeeSearcher extends Component {
              </IconButton>
            </Tooltip>
          ));
-       // }
     return formatters;
   };
 
@@ -152,14 +150,14 @@ class OrganizationEmployeeSearcher extends Component {
   render() {
     const {
       intl,
-      organizationUnits, organizationUnitsPageInfo, fetchingOrganizationUnits, fetchedOrganizationUnits, errorOrganizationUnits,
+      organizationEmployees, organizationEmployeesPageInfo, fetchingOrganizationEmployees, fetchedOrganizationEmployees, errorOrganizationEmployees,
       filterPaneContributionsKey, cacheFiltersKey, onDoubleClick,
     } = this.props;
 
-    const count = organizationUnitsPageInfo.totalCount;
+    const count = organizationEmployeesPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
-      <OrganizationUnitFilter
+      <OrganizationEmployeeFilter
         filters={filters}
         onChangeFilters={onChangeFilters}
         setShowHistoryFilter={(showHistoryFilter) => this.setState({ showHistoryFilter })}
@@ -173,12 +171,11 @@ class OrganizationEmployeeSearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={organizationUnits}
-          itemsPageInfo={organizationUnitsPageInfo}
-          fetchingItems={fetchingOrganizationUnits}
-          fetchedItems={fetchedOrganizationUnits}
-          errorItems={errorOrganizationUnits}
-          // tableTitle={formatMessageWithValues(intl, MODULE_NAME, "ticketSummaries", { count })}
+          items={organizationEmployees}
+          itemsPageInfo={organizationEmployeesPageInfo}
+          fetchingItems={fetchingOrganizationEmployees}
+          fetchedItems={fetchedOrganizationEmployees}
+          errorItems={errorOrganizationEmployees}
           tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.employee" />}
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
@@ -200,14 +197,13 @@ class OrganizationEmployeeSearcher extends Component {
 }
 
 const mapStateToProps = (state) => (
-  // console.log(state),
   {
     rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-    organizationUnits: state.workforce.organizationUnits,
-    organizationUnitsPageInfo: state.workforce.organizationUnitsPageInfo,
-    fetchingOrganizationUnits: state.workforce.fetchingOrganizationUnits,
-    fetchedOrganizationUnits: state.workforce.fetchedOrganizationUnits,
-    errorOrganizationUnits: state.workforce.errorOrganizationUnits,
+    organizationEmployees: state.workforce.organizationEmployees,
+    organizationEmployeesPageInfo: state.workforce.organizationEmployeesPageInfo,
+    fetchingOrganizationEmployees: state.workforce.fetchingOrganizationEmployees,
+    fetchedOrganizationEmployees: state.workforce.fetchedOrganizationEmployees,
+    errorOrganizationEmployees: state.workforce.errorOrganizationEmployees,
     submittingMutation: state.workforce.submittingMutation,
     mutation: state.workforce.mutation,
     confirmed: state.core.confirmed,

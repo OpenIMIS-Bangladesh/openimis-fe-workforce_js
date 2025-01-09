@@ -31,21 +31,19 @@ class OrganizationEmployeeForm extends Component {
   }
 
   componentWillUnmount() {
-    // this.props.clearTicket();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.fetchedOrganizationEmployees !== this.props.fetchedOrganizationEmployees
       && !!this.props.fetchedOrganizationEmployees
-      && !!this.props.organizationUnit) {
+      && !!this.props.organizationEmployee) {
       this.setState((state, props) => ({
-        organizationUnit: { ...props.organizationUnit },
-        organizationEmployeeUuid: props.organizationUnit.id,
+        organizationEmployee: { ...props.organizationEmployee },
+        organizationEmployeeUuid: props.organizationEmployee.id,
         lockNew: false,
       }));
     } else if (prevState.organizationEmployeeUuid !== this.state.organizationEmployeeUuid) {
       const filters = [`id: "${this.state.organizationEmployeeUuid}"`];
-      // if (this.props.ticketVersion) filters.push(`ticketVersion: ${this.props.ticketVersion}`);
       this.props.fetchOrganizationUnit(
         this.props.modulesManager,
         filters,
@@ -53,7 +51,7 @@ class OrganizationEmployeeForm extends Component {
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
-      if (this.props?.organizationUnit?.id) {
+      if (this.props?.organizationEmployee?.id) {
         this.props.fetchOrganizationUnit(
           this.props.modulesManager,
           [`id: "${this.state.organizationEmployeeUuid}"`],
@@ -62,15 +60,12 @@ class OrganizationEmployeeForm extends Component {
     }
   }
 
-  // eslint-disable-next-line react/sort-comp
   _newTicket() {
     return {};
   }
 
   reload = () => {
-    // this.props.fetchComments(
-    //   this.state.ticket,
-    // );
+
   };
 
   canSave = () => {
@@ -118,7 +113,6 @@ class OrganizationEmployeeForm extends Component {
       {
         doIt: this.reopenTicket,
         icon: <LockOpenIcon />,
-        // onlyIfDirty: ticket.status !== TICKET_STATUSES.CLOSED,
         disabled: ticket.isHistory,
       },
     ];
@@ -136,7 +130,6 @@ class OrganizationEmployeeForm extends Component {
             reset={reset}
             update={update}
             title="Organizations Employee"
-            // titleParams={{ label: ticketLabel(this.state.ticket) }}
             titleParams={{ label: "Label" }}
             back={back}
             save={save ? this._save : null}
@@ -146,7 +139,6 @@ class OrganizationEmployeeForm extends Component {
             overview={overview}
             Panels={organizationEmployeeUuid ? [EditOrganizationEmployeePage] : [AddOrganizationEmployeePage]}
             onEditedChanged={this.onEditedChanged}
-            // actions={actions}
           />
         )}
       </>

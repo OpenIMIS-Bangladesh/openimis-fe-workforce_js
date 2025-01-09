@@ -95,7 +95,13 @@ export function fetchOrganizationEmployeesSummary(mm, filters) {
     "phoneNumber",
     "email",
     "status",
-  ];
+    "gender",
+    "firstJoiningDate",
+    "birthCertificateNo",
+    "nid",
+    "passportNo",
+    "location",
+  ]; 
   const payload = formatPageQueryWithCount(
     "workforceOrganizationEmployees",
     filters,

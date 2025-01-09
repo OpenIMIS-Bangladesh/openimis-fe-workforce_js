@@ -9,18 +9,18 @@ import {
 
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../../constants";
 import OrganizationEmployeeSearcher from "../../components/organization-employee/OrganizationEmployeeSearcher";
-import { ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION } from "../../routes";
+import { ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE } from "../../routes";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab,ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION
+  fab: theme.fab,ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE
 });
 
 class OranigzationEmployeesPage extends Component {
-  onDoubleClick = (organization, newTab = false) => {
-    const routeParams = ['workforce.route.organizations.employees.employee', [decodeId(organization.id)]];
-    if (organization?.isHistory) {
-      routeParams[1].push(organization.version);
+  onDoubleClick = (employee, newTab = false) => {
+    const routeParams = ['workforce.route.organizations.employees.employee', [decodeId(employee.id)]];
+    if (employee?.isHistory) {
+      routeParams[1].push(employee.version);
     }
     historyPush(this.props.modulesManager, this.props.history, ...routeParams, newTab);
   };
