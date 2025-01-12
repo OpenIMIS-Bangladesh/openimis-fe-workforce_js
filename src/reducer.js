@@ -199,9 +199,9 @@ function reducer(
         ...state,
         fetchingUnitDesignation: false,
         fetchedUnitDesignation: true,
-        unitDesignation: parseData(action.payload.data.workforceOrganizationUnitDesignations).map((Organization) => ({
-          ...Organization,
-          id: decodeId(Organization.id),
+        unitDesignation: parseData(action.payload.data.workforceOrganizationUnitDesignations).map((unitDesignation) => ({
+          ...unitDesignation,
+          id: decodeId(unitDesignation.id),
         }))?.[0],
         errorUnitDesignation: formatGraphQLError(action.payload),
       };
