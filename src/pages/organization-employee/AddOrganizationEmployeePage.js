@@ -207,14 +207,7 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={12} className={classes.item}>
-                  <TextInput
-                    label="workforce.organization.employee.address"
-                    value={stateEdited.address || ""}
-                    onChange={(v) => this.updateAttribute("address", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
+
                 <Grid item xs={12} className={classes.item}>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
@@ -226,7 +219,14 @@ class AddWorkforceEmployeePage extends Component {
                     split={true}
                   />
                 </Grid>
-
+                <Grid item xs={12} className={classes.item}>
+                  <TextInput
+                    label="workforce.organization.employee.address"
+                    value={stateEdited.address || ""}
+                    onChange={(v) => this.updateAttribute("address", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
                   <IconButton

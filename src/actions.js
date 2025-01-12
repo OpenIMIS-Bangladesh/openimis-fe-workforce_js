@@ -87,6 +87,8 @@ export function fetchUnitDesignationSummary(mm, filters) {
 }
 
 export function fetchOrganizationEmployeesSummary(mm, filters) {
+  const location_projection =
+    "location" + mm.getProjection("location.Location.FlatProjection");
   const projections = [
     "id",
     "nameEn",
@@ -100,7 +102,7 @@ export function fetchOrganizationEmployeesSummary(mm, filters) {
     "birthCertificateNo",
     "nid",
     "passportNo",
-    "location",
+    location_projection
   ]; 
   const payload = formatPageQueryWithCount(
     "workforceOrganizationEmployees",
