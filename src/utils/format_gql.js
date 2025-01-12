@@ -90,7 +90,7 @@ export function formatOrganizationEmployeeGQL(employee) {
     ${employee.nid ? `nid: "${employee.nid}"` : ""}
     ${employee.passportNo ? `passportNo: "${employee.passportNo}"` : ""}
     ${employee.address ? `address: "${employee.address}"` : ""}
-    ${employee.location ? `location: "${employee.location}"` : ""}
+    ${decodeId(employee.location.id) ? `location: "${decodeId(employee.location.id)}"` : ""}
     ${employee.status ? `status: "${employee.status}"` : ""}
   `;
 }

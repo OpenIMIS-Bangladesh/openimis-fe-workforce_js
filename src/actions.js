@@ -110,6 +110,31 @@ export function fetchOrganizationEmployeesSummary(mm, filters) {
     filters,
     projections,
   );
+  return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEES");
+}
+export function fetchOrganizationEmployee(mm, filters) {
+  const location_projection =
+    "location" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "nameEn",
+    "nameBn",
+    "address",
+    "phoneNumber",
+    "email",
+    "status",
+    "gender",
+    "firstJoiningDate",
+    "birthCertificateNo",
+    "nid",
+    "passportNo",
+    location_projection
+  ]; 
+  const payload = formatPageQueryWithCount(
+    "workforceOrganizationEmployees",
+    filters,
+    projections,
+  );
   return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEE");
 }
 
@@ -237,7 +262,7 @@ export function updateWorkforceOrganizationUnit(unit, clientMutationLabel) {
 
 export function createOrganizationEmployee(employee, clientMutationLabel) {
   const mutation = formatMutation(
-    "createOrganizationEmployee",
+    "createWorkforceOrganizationEmployee",
     formatOrganizationEmployeeGQL(employee),
     clientMutationLabel,
   );
@@ -255,7 +280,7 @@ export function createOrganizationEmployee(employee, clientMutationLabel) {
 
 export function updateOrganizationEMployee(employee, clientMutationLabel) {
   const mutation = formatMutation(
-    "updateOrganizationEMployee",
+    "updateWorkforceOrganizationEmployee",
     formatOrganizationEmployeeGQL(employee),
     clientMutationLabel,
   );

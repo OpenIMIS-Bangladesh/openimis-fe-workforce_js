@@ -67,9 +67,11 @@ class EditOrganizationEmployeePage extends Component {
       phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
       email: stateEdited?.email || stateEdited.email,
       gender: stateEdited?.gender || stateEdited.gender,
-      birthdate: stateEdited?.birthdate || stateEdited.birthdate,
-      birthCertificateNo: stateEdited?.birthCertificateNo || stateEdited.birthCertificateNo,
-      firstJoiningDate: stateEdited?.firstJoiningDate || stateEdited.firstJoiningDate,
+      birthDate: stateEdited?.birthDate || stateEdited.birthDate,
+      birthCertificateNo:
+        stateEdited?.birthCertificateNo || stateEdited.birthCertificateNo,
+      firstJoiningDate:
+        stateEdited?.firstJoiningDate || stateEdited.firstJoiningDate,
       passportNo: stateEdited?.passportNo || stateEdited.passportNo,
       address: stateEdited?.address || stateEdited.address,
       location: stateEdited?.location || stateEdited.location,
@@ -193,7 +195,7 @@ class EditOrganizationEmployeePage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.organization.employee.nid"
-                    value={stateEdited.birthDate || ""}
+                    value={stateEdited.nid || ""}
                     onChange={(v) => this.updateAttribute("nid", v)}
                     type={"number"}
                     required
