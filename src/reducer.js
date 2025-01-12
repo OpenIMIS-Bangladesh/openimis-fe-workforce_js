@@ -48,8 +48,6 @@ function reducer(
     organizationEmployees: [],
     organizationEmployeesPageInfo: { totalCount: 0 },
 
-<<<<<<< Updated upstream
-=======
     fetchingOrganizationEmployee: false,
     errorOrganizationEmployee: null,
     fetchedOrganizationEmployee: false,
@@ -57,7 +55,6 @@ function reducer(
     organizationEmployeePageInfo: { totalCount: 0 },
 
 
->>>>>>> Stashed changes
     ///Unit Designations states
     fetchingUnitDesignations: false,
     errorUnitDesignations: null,
