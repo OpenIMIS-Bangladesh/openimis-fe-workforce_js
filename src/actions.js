@@ -9,6 +9,7 @@ import {
   formatQuery,
 } from "@openimis/fe-core";
 import {
+  formatOrganizationEmployeeGQL,
   formatOrganizationGQL,
   formatRepresentativeGQL,
   formatUnitDesignationGQL,
