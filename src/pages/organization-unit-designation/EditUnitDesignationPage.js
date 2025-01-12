@@ -15,7 +15,7 @@ import {
   FormattedMessage,
   formatMutation,
 } from "@openimis/fe-core";
-import {updateWorkforceOrganizationUnit} from "../../actions";
+import { updateWorkforceOrganizationUnit } from "../../actions";
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
@@ -40,7 +40,7 @@ class EditUnitDesignationPage extends Component {
     };
 
   }
-  
+
   componentDidUpdate(prevProps) {
     if (prevProps.unitDesignation !== this.props.unitDesignation) {
       this.setState({ stateEdited: this.props.unitDesignation });
@@ -63,35 +63,34 @@ class EditUnitDesignationPage extends Component {
 
   save = () => {
     const { grievanceConfig, dispatch } = this.props;
-     const { stateEdited } = this.state; 
-     const organizationUnitData = {
-       organization: stateEdited?.organization,
-       nameBn: stateEdited?.titleBn || stateEdited.nameBn,
-       nameEn: stateEdited?.title || stateEdited.nameEn,
-       phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
-       email: stateEdited?.email || stateEdited.email,
-       level: stateEdited?.unitLevel || stateEdited.unitLevel,
-       id:stateEdited.id
-     };
- 
-     dispatch(
-      updateWorkforceOrganizationUnit(
-         organizationUnitData,
-         `Update Organization Unit ${organizationUnitData.nameEn}`
-       )
-     );
-     console.log({ organizationUnitData });
+    const { stateEdited } = this.state;
+    const organizationUnitData = {
+      organization: stateEdited?.organization,
+      nameBn: stateEdited?.titleBn || stateEdited.nameBn,
+      nameEn: stateEdited?.title || stateEdited.nameEn,
+      phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
+      email: stateEdited?.email || stateEdited.email,
+      level: stateEdited?.unitLevel || stateEdited.unitLevel,
+      id: stateEdited.id,
+    };
 
-     this.setState({ isSaved: true });
-   };
- 
+    dispatch(
+      updateWorkforceOrganizationUnit(
+        organizationUnitData,
+        `Update Organization Unit ${organizationUnitData.nameEn}`,
+      ),
+    );
+    console.log({ organizationUnitData });
+
+    this.setState({ isSaved: true });
+  };
+
 
   render() {
 
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
-    const isSaveDisabled = false
-    console.log({stateEdited})
+    const isSaveDisabled = false;
 
     return (
       <div className={classes.page}>
@@ -112,7 +111,7 @@ class EditUnitDesignationPage extends Component {
               <Divider />
               <Grid container className={classes.item}>
 
-              <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="workforceOrganization.OrganizationPicker"
                     value={stateEdited.organization || null}
@@ -124,7 +123,7 @@ class EditUnitDesignationPage extends Component {
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
-                <OrganizationUnitPicker
+                  <OrganizationUnitPicker
                     value={stateEdited.unit || null}
                     onChange={(option) => this.updateAttribute("unit", option)}
                     readOnly={isSaved}
@@ -198,21 +197,10 @@ class EditUnitDesignationPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-
+  // submittingMutation: state.grievanceSocialProtection.submittingMutation,
+  // mutation: state.grievanceSocialProtection.mutation,
+  // grievanceConfig: state.grievanceSocialProtection.grievanceConfig,
   unitDesignation: state.workforce.unitDesignation,
-
 });
 
 export default connect(mapStateToProps)(withStyles(styles)(EditUnitDesignationPage));
-
-
-// const mapStateToProps = (state) => ({
-//   // submittingMutation: state.grievanceSocialProtection.submittingMutation,
-//   // mutation: state.grievanceSocialProtection.mutation,
-//   // grievanceConfig: state.grievanceSocialProtection.grievanceConfig,
-//   unitDesignation: state.workforce.unitDesignation,
-// });
-
-// export default connect(mapStateToProps)(
-//   withTheme(withStyles(styles)(EditUnitDesignationPage)),
-// );

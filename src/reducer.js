@@ -185,7 +185,7 @@ function reducer(
         organization: null,
         errorOrganization: null,
       };
-    case "WORKFORCE_UNIT_DESIGNATION_REQ":
+    case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATION_REQ":
       return {
         ...state,
         fetchingUnitDesignation: true,
@@ -193,12 +193,13 @@ function reducer(
         unitDesignation: null,
         errorUnitDesignation: null,
       };
-    case "WORKFORCE_UNIT_DESIGNATION_RESP":
+    case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATION_RESP":
+      console.log(action.payload.data.workforceOrganizationUnitDesignations)
       return {
         ...state,
         fetchingUnitDesignation: false,
         fetchedUnitDesignation: true,
-        unitDesignation: parseData(action.payload.data.workforceOrganizations).map((Organization) => ({
+        unitDesignation: parseData(action.payload.data.workforceOrganizationUnitDesignations).map((Organization) => ({
           ...Organization,
           id: decodeId(Organization.id),
         }))?.[0],

@@ -371,7 +371,7 @@ export function fetchUnitDesignation(mm, filters) {
     filters,
     projections,
   );
-  return graphql(payload, "WORKFORCE_ORGANIZATION_UNIT");
+  return graphql(payload, "WORKFORCE_ORGANIZATION_UNIT_DESIGNATION");
 }
 
 export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
