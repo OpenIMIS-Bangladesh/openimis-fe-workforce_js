@@ -48,6 +48,13 @@ function reducer(
     organizationEmployees: [],
     organizationEmployeesPageInfo: { totalCount: 0 },
 
+    fetchingOrganizationEmployee: false,
+    errorOrganizationEmployee: null,
+    fetchedOrganizationEmployee: false,
+    organizationEmployee: null,
+    organizationEmployeePageInfo: { totalCount: 0 },
+
+
     ///Unit Designations states
     fetchingUnitDesignations: false,
     errorUnitDesignations: null,
@@ -333,6 +340,25 @@ function reducer(
         fetching: false,
         error: formatServerError(action.payload),
       };
+      case "WORKFORCE_ORGANIZATION_EMPLOYEE_REQ":
+        return {
+          ...state,
+        fetchingOrganizationEmployee: true,
+        fetchedOrganizationEmployee: false,
+        organizationEmployee: null,
+        errorOrganizationEmployee: null,
+        };
+      case "WORKFORCE_ORGANIZATION_EMPLOYEE_RESP":
+        return {
+          ...state,
+          fetchingOrganizationEmployee: false,
+          fetchedOrganizationEmployee: true,
+          organizationEmployee: parseData(action.payload.data.workforceOrganizationEmployees).map((organizationEmployee) => ({
+            ...organizationEmployee,
+            id: decodeId(organizationEmployee.id),
+          }))?.[0],
+          errorOrganizationEmployee: formatGraphQLError(action.payload),
+        };
 
     case "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID_RESP":
       return {

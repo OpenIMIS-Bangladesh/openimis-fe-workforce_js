@@ -111,12 +111,12 @@ class OrganizationEmployeeFilter extends Component {
         />
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.organization.unit.phone"
+          id="workforce.organization.employee.phone"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.organization.unit.phone"
+                label="workforce.organization.employee.phone"
                 name="address"
                 value={this._filterValue("phoneNumber")}
                 onChange={(v) => this.debouncedOnChangeFilter([

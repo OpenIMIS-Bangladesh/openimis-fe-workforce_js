@@ -7,7 +7,7 @@ import {
 } from "@openimis/fe-core";
 import { bindActionCreators } from "redux";
 import {
-  fetchOrganizationUnit,
+  fetchOrganizationEmployee,
 } from "../../actions";
 import EditOrganizationEmployeePage from "../../pages/organization-employee/EditOrganizationEmployeePage";
 import AddOrganizationEmployeePage from "../../pages/organization-employee/AddOrganizationEmployeePage";
@@ -34,8 +34,8 @@ class OrganizationEmployeeForm extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedOrganizationEmployees !== this.props.fetchedOrganizationEmployees
-      && !!this.props.fetchedOrganizationEmployees
+    if (prevProps.fetchedOrganizationEmployee !== this.props.fetchedOrganizationEmployee
+      && !!this.props.fetchedOrganizationEmployee
       && !!this.props.organizationEmployee) {
       this.setState((state, props) => ({
         organizationEmployee: { ...props.organizationEmployee },
@@ -44,7 +44,7 @@ class OrganizationEmployeeForm extends Component {
       }));
     } else if (prevState.organizationEmployeeUuid !== this.state.organizationEmployeeUuid) {
       const filters = [`id: "${this.state.organizationEmployeeUuid}"`];
-      this.props.fetchOrganizationUnit(
+      this.props.fetchOrganizationEmployee(
         this.props.modulesManager,
         filters,
       );
@@ -52,7 +52,7 @@ class OrganizationEmployeeForm extends Component {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
       if (this.props?.organizationEmployee?.id) {
-        this.props.fetchOrganizationUnit(
+        this.props.fetchOrganizationEmployee(
           this.props.modulesManager,
           [`id: "${this.state.organizationEmployeeUuid}"`],
         );
@@ -94,7 +94,7 @@ class OrganizationEmployeeForm extends Component {
   render() {
     const {
       fetchingTicket,
-      fetchedOrganizationEmployees,
+      fetchedOrganizationEmployee,
       errorTicket,
       save, back,
     } = this.props;
@@ -122,7 +122,7 @@ class OrganizationEmployeeForm extends Component {
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
-        {(!!fetchedOrganizationEmployees || !organizationEmployeeUuid) && (
+        {(!!fetchedOrganizationEmployee || !organizationEmployeeUuid) && (
           <Form
             module={MODULE_NAME}
             edited_id={organizationEmployeeUuid}
@@ -151,7 +151,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   fetchingTicket: state.workforce.fetchingTicket,
   errorTicket: state.workforce.errorTicket,
-  fetchedOrganizationEmployees: state.workforce.fetchedOrganizationEmployees,
+  fetchedOrganizationEmployee: state.workforce.fetchedOrganizationEmployee,
   ticket: state.workforce.ticket,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
@@ -159,7 +159,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchOrganizationUnit,
+  fetchOrganizationEmployee,
   journalize,
 }, dispatch);
 

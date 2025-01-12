@@ -63,7 +63,7 @@ class AddWorkforceEmployeePage extends Component {
       passportNo: stateEdited.passportNo,
       address: stateEdited.address,
       location: stateEdited.location,
-      status: "1",
+      status: "True",
       organizationEmployee: stateEdited.organizationEmployee,
     };
 
