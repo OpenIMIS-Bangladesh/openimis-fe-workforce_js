@@ -294,6 +294,29 @@ export function createUnitDesignation(unitDesignation, clientMutationLabel) {
   );
 }
 
+export function updateUnitDesignation(unitDesignation, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWorkforceOrganizationUnitDesignation",
+    formatUnitDesignationGQL(unitDesignation),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "UNIT_DESIGNATION_MUTATION_REQ",
+      "UNIT_DESIGNATION_UPDATE_UNIT_DESIGNATION_RESP",
+      "UNIT_DESIGNATION_MUTATION_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      id:unitDesignation.id,
+    },
+  );
+}
+
 export function updateOrganization(ticket, clientMutationLabel) {
   const mutation = formatMutation(
     "updateTicket",

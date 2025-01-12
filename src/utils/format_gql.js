@@ -97,6 +97,7 @@ export function formatOrganizationEmployeeGQL(employee) {
 
 export function formatUnitDesignationGQL(unitDesignation) {
   return `
+    ${unitDesignation.id ? `id: "${formatGQLString(unitDesignation.id)}"` : ""}
     ${unitDesignation.organization ? `organization: "${decodeId(unitDesignation.organization.id)}"` : ""}
     ${unitDesignation.unit ? `unit: "${decodeId(unitDesignation.unit.id)}"` : ""}
     ${unitDesignation.nameEn ? `nameEn: "${formatGQLString(unitDesignation.nameEn)}"` : ""}

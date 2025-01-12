@@ -1,11 +1,14 @@
 import {
-  parseData, pageInfo, formatServerError, formatGraphQLError,
-  dispatchMutationReq, dispatchMutationResp, dispatchMutationErr,
+  parseData,
+  pageInfo,
+  formatServerError,
+  formatGraphQLError,
+  dispatchMutationReq,
+  dispatchMutationResp,
+  dispatchMutationErr,
   decodeId,
 } from "@openimis/fe-core";
-import {
-  CLEAR, ERROR, REQUEST, SUCCESS,
-} from "./utils/action-type";
+import { CLEAR, ERROR, REQUEST, SUCCESS } from "./utils/action-type";
 
 export const ACTION_TYPE = {};
 
@@ -22,7 +25,6 @@ function reducer(
     errorOrganizationsPick: null,
     fetchedOrganizationsPick: false,
     organizationsPick: [],
-
 
     fetchingOrganization: false,
     errorOrganization: null,
@@ -46,7 +48,6 @@ function reducer(
     organizationEmployees: [],
     organizationEmployeesPageInfo: { totalCount: 0 },
 
-
     ///Unit Designations states
     fetchingUnitDesignations: false,
     errorUnitDesignations: null,
@@ -65,7 +66,6 @@ function reducer(
     fetchedOrganizationUnitsPick: false,
     organizationUnitsPick: [],
 
-
     fetchingOrganizationUnits: false,
     errorOrganizationUnits: null,
     fetchedOrganizationUnits: false,
@@ -78,7 +78,6 @@ function reducer(
     organizationUnit: null,
     organizationUnitPageInfo: { totalCount: 0 },
 
-
     fetchingGrievanceConfig: false,
     fetchedGrievanceConfig: false,
     errorGrievanceConfig: null,
@@ -86,9 +85,8 @@ function reducer(
 
     submittingMutation: false,
     mutation: {},
-
   },
-  action,
+  action
 ) {
   switch (action.type) {
     case "WORKFORCE_ORGANIZATIONS_REQ":
@@ -106,7 +104,9 @@ function reducer(
         fetchingOrganizations: false,
         fetchedOrganizations: true,
         organizations: parseData(action.payload.data.workforceOrganizations),
-        organizationsPageInfo: pageInfo(action.payload.data.workforceOrganizations),
+        organizationsPageInfo: pageInfo(
+          action.payload.data.workforceOrganizations
+        ),
         errorOrganizations: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATIONS_REQ":
@@ -123,8 +123,12 @@ function reducer(
         ...state,
         fetchingUnitDesignations: false,
         fetchedUnitDesignations: true,
-        unitDesignations: parseData(action.payload.data.workforceOrganizationUnitDesignations),
-        unitDesignationsPageInfo: pageInfo(action.payload.data.workforceOrganizationUnitDesignations),
+        unitDesignations: parseData(
+          action.payload.data.workforceOrganizationUnitDesignations
+        ),
+        unitDesignationsPageInfo: pageInfo(
+          action.payload.data.workforceOrganizationUnitDesignations
+        ),
         errorUnitDesignations: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATIONS_ERR":
@@ -152,7 +156,9 @@ function reducer(
         ...state,
         fetchingOrganizationsPick: false,
         fetchedOrganizationsPick: true,
-        organizationsPick: parseData(action.payload.data.workforceOrganizations),
+        organizationsPick: parseData(
+          action.payload.data.workforceOrganizations
+        ),
         errorOrganizationsPick: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATION_UNITS_PICKER_REQ":
@@ -168,7 +174,9 @@ function reducer(
         ...state,
         fetchingOrganizationUnitsPick: false,
         fetchedOrganizationUnitsPick: true,
-        organizationUnitsPick: parseData(action.payload.data.workforceOrganizationUnits),
+        organizationUnitsPick: parseData(
+          action.payload.data.workforceOrganizationUnits
+        ),
         errorOrganizationUnitsPick: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATIONS_PICKER_ERR":
@@ -194,12 +202,14 @@ function reducer(
         errorUnitDesignation: null,
       };
     case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATION_RESP":
-      console.log(action.payload.data.workforceOrganizationUnitDesignations)
+      console.log(action.payload.data.workforceOrganizationUnitDesignations);
       return {
         ...state,
         fetchingUnitDesignation: false,
         fetchedUnitDesignation: true,
-        unitDesignation: parseData(action.payload.data.workforceOrganizationUnitDesignations).map((unitDesignation) => ({
+        unitDesignation: parseData(
+          action.payload.data.workforceOrganizationUnitDesignations
+        ).map((unitDesignation) => ({
           ...unitDesignation,
           id: decodeId(unitDesignation.id),
         }))?.[0],
@@ -210,10 +220,12 @@ function reducer(
         ...state,
         fetchingOrganization: false,
         fetchedOrganization: true,
-        organization: parseData(action.payload.data.workforceOrganizations).map((Organization) => ({
-          ...Organization,
-          id: decodeId(Organization.id),
-        }))?.[0],
+        organization: parseData(action.payload.data.workforceOrganizations).map(
+          (Organization) => ({
+            ...Organization,
+            id: decodeId(Organization.id),
+          })
+        )?.[0],
         errorOrganization: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATION_UNIT_REQ":
@@ -229,7 +241,9 @@ function reducer(
         ...state,
         fetchingOrganizationUnit: false,
         fetchedOrganizationUnit: true,
-        organizationUnit: parseData(action.payload.data.workforceOrganizationUnits).map((OrganizationUnit) => ({
+        organizationUnit: parseData(
+          action.payload.data.workforceOrganizationUnits
+        ).map((OrganizationUnit) => ({
           ...OrganizationUnit,
           id: decodeId(OrganizationUnit.id),
         }))?.[0],
@@ -249,8 +263,12 @@ function reducer(
         ...state,
         fetchingRepresentatives: false,
         fetchedRepresentatives: true,
-        representatives: parseData(action.payload.data.workforceRepresentatives),
-        representativesPageInfo: pageInfo(action.payload.data.workforceRepresentatives),
+        representatives: parseData(
+          action.payload.data.workforceRepresentatives
+        ),
+        representativesPageInfo: pageInfo(
+          action.payload.data.workforceRepresentatives
+        ),
         errorRepresentatives: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_REPRESENTATIVES_ERR":
@@ -273,8 +291,12 @@ function reducer(
         ...state,
         fetchingOrganizationUnits: false,
         fetchedOrganizationUnits: true,
-        organizationUnits: parseData(action.payload.data.workforceOrganizationUnits),
-        organizationUnitsPageInfo: pageInfo(action.payload.data.workforceOrganizationUnits),
+        organizationUnits: parseData(
+          action.payload.data.workforceOrganizationUnits
+        ),
+        organizationUnitsPageInfo: pageInfo(
+          action.payload.data.workforceOrganizationUnits
+        ),
         errorOrganizationUnits: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATION_UNITS_ERR":
@@ -297,8 +319,12 @@ function reducer(
         ...state,
         fetchingOrganizationEmployees: false,
         fetchedOrganizationEmployeess: true,
-        organizationEmployees: parseData(action.payload.data.workforceOrganizationEmployees),
-        organizationEmployeesPageInfo: pageInfo(action.payload.data.workforceOrganizationEmployees),
+        organizationEmployees: parseData(
+          action.payload.data.workforceOrganizationEmployees
+        ),
+        organizationEmployeesPageInfo: pageInfo(
+          action.payload.data.workforceOrganizationEmployees
+        ),
         errorOrganizationEmployees: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATION_EMPLOYEES_ERR":
@@ -311,7 +337,9 @@ function reducer(
     case "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID_RESP":
       return {
         ...state,
-        fetchedRepresentativeByClientMutationId: parseData(action.payload.data.workforceRepresentatives),
+        fetchedRepresentativeByClientMutationId: parseData(
+          action.payload.data.workforceRepresentatives
+        ),
       };
 
     case "ORG_UNIT_CREATE_RESP":
@@ -371,6 +399,8 @@ function reducer(
     case "UNIT_DESIGNATION_MUTATION_ERR":
       return dispatchMutationErr(state, action);
     case "UNIT_DESIGNATION_CREATE_UNIT_DESIGNATION_RESP":
+      return dispatchMutationResp(state, "createOrganization", action);
+    case "UNIT_DESIGNATION_UPDATE_UNIT_DESIGNATION_RESP":
       return dispatchMutationResp(state, "createOrganization", action);
     default:
       return state;

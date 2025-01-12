@@ -15,7 +15,7 @@ import {
   FormattedMessage,
   formatMutation,
 } from "@openimis/fe-core";
-import { updateWorkforceOrganizationUnit } from "../../actions";
+import { updateUnitDesignation, updateWorkforceOrganizationUnit } from "../../actions";
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
@@ -64,23 +64,23 @@ class EditUnitDesignationPage extends Component {
   save = () => {
     const { grievanceConfig, dispatch } = this.props;
     const { stateEdited } = this.state;
-    const organizationUnitData = {
+    const organizationUnitDesignationData = {
       organization: stateEdited?.organization,
-      nameBn: stateEdited?.titleBn || stateEdited.nameBn,
-      nameEn: stateEdited?.title || stateEdited.nameEn,
-      phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
-      email: stateEdited?.email || stateEdited.email,
-      level: stateEdited?.unitLevel || stateEdited.unitLevel,
+      unit: stateEdited?.unit,
+      nameBn: stateEdited?.titleBn || stateEdited?.nameBn,
+      nameEn: stateEdited?.title || stateEdited?.nameEn,
+      designationSequence: stateEdited?.designationSequence || stateEdited?.sequence,
+      designationLevel: stateEdited?.designationLevel || stateEdited?.level,
       id: stateEdited.id,
     };
 
     dispatch(
-      updateWorkforceOrganizationUnit(
-        organizationUnitData,
-        `Update Organization Unit ${organizationUnitData.nameEn}`,
+      updateUnitDesignation(
+        organizationUnitDesignationData,
+        `Update Organization Unit Designaiton ${organizationUnitDesignationData.nameEn}`,
       ),
     );
-    console.log({ organizationUnitData });
+    console.log({ organizationUnitDesignationData });
 
     this.setState({ isSaved: true });
   };
@@ -91,6 +91,7 @@ class EditUnitDesignationPage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
+    console.log({stateEdited})
 
     return (
       <div className={classes.page}>
