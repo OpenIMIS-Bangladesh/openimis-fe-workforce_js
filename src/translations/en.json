@@ -31,6 +31,7 @@
     "menu.workforce.organizations.unit": "Organizations Unit",
     "menu.workforce.organizations.unit.designation": "Organizations Unit Designation",
     "menu.workforce.organizations.employee": "Organizations Employee",
+    "menu.workforce.organizations.employee.designation": "Organizations-Employee-Designation",
 
     "workforce.organization.addNewTooltip": "Add Workforce Organizations",
     "workforce.organization.name.en": "Organization Name En",

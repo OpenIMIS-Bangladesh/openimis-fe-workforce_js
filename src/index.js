@@ -10,6 +10,7 @@ import {
   ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS_DESIGNATION,
   ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES,
   ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE,
+  ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION,
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -20,6 +21,7 @@ import UnitDesignationPage from "./pages/organization-unit-designation/UnitDesig
 import UnitDesignationsPage from "./pages/organization-unit-designation/UnitDesignationsPage";
 import OranigzationEmployeesPage from "./pages/organization-employee/OranigzationEmployeesPage";
 import OrganizationEmployeePage from "./pages/organization-employee/OrganizationEmployeePage";
+import WorkforceEmployeeDesignationPage from "./pages/organization-employee-designation/WorkforceEmployeeDesignationPage";
 
 
 const DEFAULT_CONFIG = {
@@ -59,6 +61,8 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES, component: OranigzationEmployeesPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE, component: OrganizationEmployeePage },
     { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE}/:organization_employee_uuid`, component: OrganizationEmployeePage },
+
+    { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, component: WorkforceEmployeeDesignationPage },
 
 
   ],

@@ -6,7 +6,7 @@ import {
   WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY,
   MODULE_NAME,
 } from "../constants";
-import { ROUTE_WORKFORCE_ORGANIZATIONS, ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS,ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES } from "../routes";
+import { ROUTE_WORKFORCE_ORGANIZATIONS, ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS,ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES, ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION } from "../routes";
 import { ROUTE_WORKFORCE_ORGANIZATIONS_UNITS } from "../routes";
 
 function WorkforceMainMenu(props) {
@@ -33,6 +33,12 @@ function WorkforceMainMenu(props) {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.employee" />,
       icon: <ListAlt />,
       route: `/${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES}`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.employee.designation" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION}`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
   ];
