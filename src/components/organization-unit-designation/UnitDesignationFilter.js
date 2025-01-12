@@ -1,5 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable no-underscore-dangle */
 import React, { Component } from "react";
 import _debounce from "lodash/debounce";
 import { withTheme, withStyles } from "@material-ui/core/styles";

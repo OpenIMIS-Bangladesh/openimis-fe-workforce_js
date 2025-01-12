@@ -10,7 +10,7 @@ import {
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../../constants";
 import OrganizationSearcher from "../../components/organization/OrganizationSearcher";
 import { ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION } from "../../routes";
-import UnitDesignationSearcher from "../../components/unit-designation/UnitDesignationSearcher";
+import UnitDesignationSearcher from "../../components/organization-unit-designation/UnitDesignationSearcher";
 
 const styles = (theme) => ({
   page: theme.page,

@@ -20,6 +20,7 @@ import {updateWorkforceOrganizationUnit} from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { number } from "prop-types";
+import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,

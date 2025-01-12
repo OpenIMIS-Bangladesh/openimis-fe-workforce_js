@@ -19,7 +19,7 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../../constants";
 import { fetchUnitDesignationSummary } from "../../actions";
-import UnitDesignationFilter from "../unit-designation/UnitDesignationFilter";
+import UnitDesignationFilter from ".//UnitDesignationFilter";
 
 
 const styles = (theme) => ({

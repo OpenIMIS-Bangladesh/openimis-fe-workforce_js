@@ -8,7 +8,7 @@ import {
 import OrganizationForm from "../../components/organization/OrganizationForm";
 import { updateOrganization, createWorkforceOrganization, updateWorkforceOrganization } from "../../actions";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../constants";
-import UnitDesignationForm from "../../components/unit-designation/UnitDesignationForm";
+import UnitDesignationForm from "../../components/organization-unit-designation/UnitDesignationForm";
 
 const styles = (theme) => ({
   page: theme.page,
