@@ -17,7 +17,7 @@ import {
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { createWorkforceOrganizationUnit } from "../../actions";
+import { createOrganizationEmployee, createWorkforceOrganizationUnit } from "../../actions";
 
 
 const styles = (theme) => ({
@@ -68,7 +68,7 @@ class AddWorkforceEmployeePage extends Component {
     };
 
     await dispatch(
-      createWorkforceOrganizationUnit(
+      createOrganizationEmployee(
         workforceEmployeeData,
         `Created Organization Employee ${workforceEmployeeData.nameEn}`,
       ),
