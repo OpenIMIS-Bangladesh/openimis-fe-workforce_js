@@ -140,7 +140,6 @@ class AddWorkforceOfficePage extends Component {
                     label="workforce.office.name.bn"
                     value={stateEdited.titleBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
-                    required
                     readOnly={isSaved}
                   />
                 </Grid>
@@ -173,7 +172,6 @@ class AddWorkforceOfficePage extends Component {
                     label="workforce.office.website"
                     value={stateEdited.website || ""}
                     onChange={(v) => this.updateAttribute("website", v)}
-                    required
                     readOnly={isSaved}
                   />
                 </Grid>
