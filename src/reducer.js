@@ -90,6 +90,13 @@ function reducer(
     errorGrievanceConfig: null,
     grievanceConfig: null,
 
+    ///employee designation states
+    fetchingEmployeeDesignationData:false,
+    fetchedEmployeeDesignationData:false,
+    errorEmployeeDesignationData:null,
+    employeeDesignationData:[],
+    employeeDesignationDataPageInfo:{totalCount: 0},
+
     submittingMutation: false,
     mutation: {},
   },
