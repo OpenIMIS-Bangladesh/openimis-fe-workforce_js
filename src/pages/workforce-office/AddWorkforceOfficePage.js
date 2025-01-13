@@ -99,7 +99,7 @@ class AddWorkforceOfficePage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Organizations Office"
+                      id="Workforce Office"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>
@@ -178,7 +178,16 @@ class AddWorkforceOfficePage extends Component {
                   />
                 </Grid>
 
-                <Grid item xs={12} className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.office.address"
+                    value={stateEdited.address || ""}
+                    onChange={(v) => this.updateAttribute("address", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
@@ -189,14 +198,7 @@ class AddWorkforceOfficePage extends Component {
                     split={true}
                   />
                 </Grid>
-                <Grid item xs={12} className={classes.item}>
-                  <TextInput
-                    label="workforce.office.address"
-                    value={stateEdited.address || ""}
-                    onChange={(v) => this.updateAttribute("address", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
+                
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
                   <IconButton

@@ -129,7 +129,7 @@ class WorkforceOfficeForm extends Component {
             edited={ticket}
             reset={reset}
             update={update}
-            title="Organizations Office"
+            title="Workforce Office"
             titleParams={{ label: "Label" }}
             back={back}
             save={save ? this._save : null}
