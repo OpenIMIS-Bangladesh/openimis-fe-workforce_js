@@ -11,6 +11,8 @@ import {
   ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES,
   ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE,
   ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION,
+  ROUTE_WORKFORCE_OFFICES,
+  ROUTE_WORKFORCE_OFFICES_OFFICE,
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -22,6 +24,9 @@ import UnitDesignationsPage from "./pages/organization-unit-designation/UnitDesi
 import OranigzationEmployeesPage from "./pages/organization-employee/OranigzationEmployeesPage";
 import OrganizationEmployeePage from "./pages/organization-employee/OrganizationEmployeePage";
 import WorkforceEmployeeDesignationPage from "./pages/organization-employee-designation/WorkforceEmployeeDesignationPage";
+import OranigzationOfficesPage from "./pages/workforce-office/WorkforceOfficesPage";
+import OranigzationOfficePage from "./pages/workforce-office/WorkforceOfficePage";
+
 
 
 const DEFAULT_CONFIG = {
@@ -39,6 +44,9 @@ const DEFAULT_CONFIG = {
 
     { key: "workforce.route.organizations.employees.employee", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE },
     { key: "workforce.route.organizations.employees", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES },
+
+    { key: "workforce.route.offices.office", ref: ROUTE_WORKFORCE_OFFICES_OFFICE },
+    { key: "workforce.route.offices", ref: ROUTE_WORKFORCE_OFFICES },
 
 
 
@@ -61,6 +69,11 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES, component: OranigzationEmployeesPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE, component: OrganizationEmployeePage },
     { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE}/:organization_employee_uuid`, component: OrganizationEmployeePage },
+
+    { path: ROUTE_WORKFORCE_OFFICES, component: OranigzationOfficesPage },
+    { path: ROUTE_WORKFORCE_OFFICES_OFFICE, component: OranigzationOfficePage },
+    { path: `${ROUTE_WORKFORCE_OFFICES_OFFICE}/:workforce_office_uuid`, component: OranigzationOfficePage },
+
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, component: WorkforceEmployeeDesignationPage },
 

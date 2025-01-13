@@ -14,6 +14,7 @@ import {
   formatRepresentativeGQL,
   formatUnitDesignationGQL,
   formatUnitGQL,
+  formatWorkforceOfficeGQL,
 } from "./utils/format_gql";
 
 export function fetchOrganizationsSummary(mm, filters) {
@@ -132,6 +133,49 @@ export function fetchOrganizationEmployee(mm, filters) {
   ]; 
   const payload = formatPageQueryWithCount(
     "workforceOrganizationEmployees",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEE");
+}
+
+export function fetchWorkforceOfficesSummary(mm, filters) {
+  const location_projection =
+    "location" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "nameEn",
+    "nameBn",
+    "address",
+    "phoneNumber",
+    "email",
+    "status",
+    "website",
+    location_projection
+  ]; 
+  const payload = formatPageQueryWithCount(
+    "workforceOffices",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEES");
+}
+export function fetchWorkforceOffice(mm, filters) {
+  const location_projection =
+    "location" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "nameEn",
+    "nameBn",
+    "address",
+    "phoneNumber",
+    "email",
+    "status",
+    "website",
+    location_projection
+  ]; 
+  const payload = formatPageQueryWithCount(
+    "workforceOffices",
     filters,
     projections,
   );
@@ -297,6 +341,42 @@ export function updateOrganizationEMployee(employee, clientMutationLabel) {
   );
 }
 
+export function createWorkforceOffice(office, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceOffice",
+    formatWorkforceOfficeGQL(office),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["WORKFORCE_OFFICES_REQ", "WORKFORCE_OFFICES_RESP", "WORKFORCE_OFFICES_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function updateWorkforceOffice(office, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWorkforceOffice",
+    formatWorkforceOfficeGQL(office),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["WORKFORCE_OFFICES_REQ", "WORKFORCE_OFFICES_RESP", "WORKFORCE_OFFICES_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      id: employee.id,
+    },
+  );
+}
 ////unit designation update /////////
 export function createUnitDesignation(unitDesignation, clientMutationLabel) {
   const mutation = formatMutation(

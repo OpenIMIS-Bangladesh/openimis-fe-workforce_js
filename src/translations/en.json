@@ -33,6 +33,8 @@
     "menu.workforce.organizations.employee": "Organizations Employee",
     "menu.workforce.organizations.employee.designation": "Organizations-Employee-Designation",
 
+    "menu.workforce.office": "Offices",
+
     "workforce.organization.addNewTooltip": "Add Workforce Organizations",
     "workforce.organization.name.en": "Organization Name En",
     "workforce.organization.name.bn": "Organization Name Bn",
@@ -84,5 +86,18 @@
     "workforce.organization.employee.birth_certificate_no": "Organization Employee Birth Certificate No",
     "workforce.organization.employee.passport_no": "Organization Employee Passport No",
     "workforce.organization.employee.joining_date": "Organization Employee Joining Date",
-    "workforce.organization.employee.status": "Organization Employee Status"
+    "workforce.organization.employee.status": "Organization Employee Status",
+
+    "workforce.office.addNewTooltip": "Add Workforce Office",
+    "workforce.office.employer": "Workforce Office Employer",
+    "workforce.office.name.en": "Workforce Office Name En",
+    "workforce.office.name.bn": "Workforce Office Name Bn",
+    "workforce.office.location": "Workforce Office Location",
+    "workforce.office.address": "Workforce Office Address",
+    "workforce.office.phone": "Workforce Office Phone",
+    "workforce.office.email": "Workforce Office Email",
+    "workforce.office.website": "Workforce Office Website",
+    "workforce.office.parent": "Workforce Office Parent",
+    "workforce.office.status": "Workforce Office Status",
+    "workforce.office.representative": "Workforce Office Representative"
 }

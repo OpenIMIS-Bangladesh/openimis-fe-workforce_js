@@ -67,6 +67,19 @@ export function formatOrganizationEmployeeGQL(employee) {
     ${employee.relatedUserId ? `relatedUserId: "${employee.relatedUserId}"` : ""}
   `;
 }
+export function formatWorkforceOfficeGQL(office) {
+  return `
+    ${office.id ? `id: "${formatGQLString(office.id)}"` : ""}
+    ${office.nameEn ? `nameEn: "${formatGQLString(office.nameEn)}"` : ""}
+    ${office.nameBn ? `nameBn: "${formatGQLString(office.nameBn)}"` : ""}
+    ${office.phoneNumber ? `phoneNumber: "${formatGQLString(office.phoneNumber)}"` : ""}
+    ${office.email ? `email: "${formatGQLString(office.email)}"` : ""}
+    ${office.website ? `passportNo: "${office.website}"` : ""}
+    ${office.address ? `address: "${office.address}"` : ""}
+    ${decodeId(office.location.id) ? `location: "${decodeId(office.location.id)}"` : ""}
+    ${office.status ? `status: "${office.status}"` : ""}
+  `;
+}
 
 export function formatUnitDesignationGQL(unitDesignation) {
   return `
