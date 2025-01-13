@@ -7,5 +7,8 @@ export const ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT = "workforce/organizations
 export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES = "workforce/organizations/employees";
 export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE = "workforce/organizations/employees/employee";
 export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION = "workforce/organizations/employees/designation";
+export const ROUTE_WORKFORCE_OFFICES = "workforce/offices";
+export const ROUTE_WORKFORCE_OFFICES_OFFICE = "workforce/offices/office";
+
 // export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION_EMPLOYEE = "workforce/organizations/employees/employee";
 

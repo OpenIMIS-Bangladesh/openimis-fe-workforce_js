@@ -54,6 +54,19 @@ function reducer(
     organizationEmployee: null,
     organizationEmployeePageInfo: { totalCount: 0 },
 
+    ///workforce office states
+    fetchingWorkforceOffices: false,
+    errorWorkforceOffices: null,
+    fetchedWorkforceOffices: false,
+    workforceOffices: [],
+    workforceOfficesPageInfo: { totalCount: 0 },
+
+    fetchingWorkforceOffice: false,
+    errorWorkforceOffice: null,
+    fetchedWorkforceOffice: false,
+    workforceOffice: null,
+    workforceOfficesPageInfo: { totalCount: 0 },
+
 
     ///Unit Designations states
     fetchingUnitDesignations: false,
@@ -366,6 +379,55 @@ function reducer(
           }))?.[0],
           errorOrganizationEmployee: formatGraphQLError(action.payload),
         };
+
+        case "WORKFORCE_OFFICES_REQ":
+          return {
+            ...state,
+            fetchingWorkforceOffices: true,
+            fetchedWorkforceOffices: false,
+            workforceOffices: [],
+            workforceOfficesPageInfo: { totalCount: 0 },
+            errorWorkforceOffices: null,
+          };
+        case "WORKFORCE_OFFICES_RESP":
+          return {
+            ...state,
+            fetchingWorkforceOffices: false,
+            fetchedWorkforceOffices: true,
+            workforceOffices: parseData(
+              action.payload.data.workforceOffices
+            ),
+            workforceOfficesPageInfo: pageInfo(
+              action.payload.data.workforceOffices
+            ),
+            errorWorkforceOffices: formatGraphQLError(action.payload),
+          };
+          case "WORKFORCE_OFFICES_ERR":
+            return {
+              ...state,
+              fetching: false,
+              error: formatServerError(action.payload),
+            };
+
+          case "WORKFORCE_OFFICE_REQ":
+            return {
+              ...state,
+            fetchingWorkforceOffice: true,
+            fetchedWorkforceOffice: false,
+            workforceOffice: null,
+            errorWorkforceOffice: null,
+            };
+          case "WORKFORCE_OFFICE_RESP":
+            return {
+              ...state,
+              fetchingWorkforceOffice: false,
+              fetchedWorkforceOffice: true,
+              WorkforceOffice: parseData(action.payload.data.workforceOffices).map((WorkforceOffice) => ({
+                ...WorkforceOffice,
+                id: decodeId(WorkforceOffice.id),
+              }))?.[0],
+              errorWorkforceOffice: formatGraphQLError(action.payload),
+            };
 
     case "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID_RESP":
       return {
