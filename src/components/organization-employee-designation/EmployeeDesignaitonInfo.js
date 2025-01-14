@@ -12,10 +12,11 @@ import {
   IconButton,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { makeStyles } from "@material-ui/core/styles";
+import { withTheme, withStyles, makeStyles } from "@material-ui/core/styles";
 import {
   PublishedComponent,
   FormattedMessage,
+  withModulesManager
 } from "@openimis/fe-core";
 import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 
@@ -142,4 +143,7 @@ const EmployeeDesignationInfo = ({ userData, tableData }) => {
   );
 };
 
-export default EmployeeDesignationInfo;
+// export default EmployeeDesignationInfo;
+export default withModulesManager(
+  withTheme(withStyles(styles)(EmployeeDesignationInfo))
+);

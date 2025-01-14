@@ -67,7 +67,6 @@ function reducer(
     workforceOffice: null,
     workforceOfficesPageInfo: { totalCount: 0 },
 
-
     ///Unit Designations states
     fetchingUnitDesignations: false,
     errorUnitDesignations: null,
@@ -104,11 +103,11 @@ function reducer(
     grievanceConfig: null,
 
     ///employee designation states
-    fetchingEmployeeDesignationData:false,
-    fetchedEmployeeDesignationData:false,
-    errorEmployeeDesignationData:null,
-    employeeDesignationData:[],
-    employeeDesignationDataPageInfo:{totalCount: 0},
+    fetchingEmployeeDesignationData: false,
+    fetchedEmployeeDesignationData: false,
+    errorEmployeeDesignationData: null,
+    employeeDesignationData: [],
+    employeeDesignationDataPageInfo: { totalCount: 0 },
 
     submittingMutation: false,
     mutation: {},
@@ -360,74 +359,106 @@ function reducer(
         fetching: false,
         error: formatServerError(action.payload),
       };
-      case "WORKFORCE_ORGANIZATION_EMPLOYEE_REQ":
-        return {
-          ...state,
+    case "WORKFORCE_ORGANIZATION_EMPLOYEE_REQ":
+      return {
+        ...state,
         fetchingOrganizationEmployee: true,
         fetchedOrganizationEmployee: false,
         organizationEmployee: null,
         errorOrganizationEmployee: null,
-        };
-      case "WORKFORCE_ORGANIZATION_EMPLOYEE_RESP":
-        return {
-          ...state,
-          fetchingOrganizationEmployee: false,
-          fetchedOrganizationEmployee: true,
-          organizationEmployee: parseData(action.payload.data.workforceOrganizationEmployees).map((organizationEmployee) => ({
-            ...organizationEmployee,
-            id: decodeId(organizationEmployee.id),
-          }))?.[0],
-          errorOrganizationEmployee: formatGraphQLError(action.payload),
-        };
+      };
+    case "WORKFORCE_ORGANIZATION_EMPLOYEE_RESP":
+      return {
+        ...state,
+        fetchingOrganizationEmployee: false,
+        fetchedOrganizationEmployee: true,
+        organizationEmployee: parseData(
+          action.payload.data.workforceOrganizationEmployees
+        ).map((organizationEmployee) => ({
+          ...organizationEmployee,
+          id: decodeId(organizationEmployee.id),
+        }))?.[0],
+        errorOrganizationEmployee: formatGraphQLError(action.payload),
+      };
 
-        case "WORKFORCE_OFFICES_REQ":
-          return {
-            ...state,
-            fetchingWorkforceOffices: true,
-            fetchedWorkforceOffices: false,
-            workforceOffices: [],
-            workforceOfficesPageInfo: { totalCount: 0 },
-            errorWorkforceOffices: null,
-          };
-        case "WORKFORCE_OFFICES_RESP":
-          return {
-            ...state,
-            fetchingWorkforceOffices: false,
-            fetchedWorkforceOffices: true,
-            workforceOffices: parseData(
-              action.payload.data.workforceOffices
-            ),
-            workforceOfficesPageInfo: pageInfo(
-              action.payload.data.workforceOffices
-            ),
-            errorWorkforceOffices: formatGraphQLError(action.payload),
-          };
-          case "WORKFORCE_OFFICES_ERR":
-            return {
-              ...state,
-              fetching: false,
-              error: formatServerError(action.payload),
-            };
+    ////workforce organization employee designation////
+    case "WORKFORCE_ORGANIZATIONS_EMPLOYEE_DESIGNATION_REQ":
+      return {
+        ...state,
+        fetchingEmployeeDesignationData: true,
+        fetchedEmployeeDesignationData: false,
+        errorEmployeeDesignationData: null,
+        employeeDesignationData: [],
+        employeeDesignationDataPageInfo: { totalCount: 0 },
+      };
+    case "WORKFORCE_ORGANIZATIONS_EMPLOYEE_DESIGNATION_RESP":
+      return {
+        ...state,
+        fetchingEmployeeDesignationData: false,
+        fetchedEmployeeDesignationData: true,
+        employeeDesignationData: parseData(
+          action.payload.data.workforceEmployeeDesignation
+        ),
+        employeeDesignationDataPageInfo: pageInfo(
+          action.payload.data.workforceEmployeeDesignation
+        ),
+        errorEmployeeDesignationData: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_ORGANIZATIONS_EMPLOYEE_DESIGNATION_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
 
-          case "WORKFORCE_OFFICE_REQ":
-            return {
-              ...state,
-            fetchingWorkforceOffice: true,
-            fetchedWorkforceOffice: false,
-            workforceOffice: null,
-            errorWorkforceOffice: null,
-            };
-          case "WORKFORCE_OFFICE_RESP":
-            return {
-              ...state,
-              fetchingWorkforceOffice: false,
-              fetchedWorkforceOffice: true,
-              WorkforceOffice: parseData(action.payload.data.workforceOffices).map((WorkforceOffice) => ({
-                ...WorkforceOffice,
-                id: decodeId(WorkforceOffice.id),
-              }))?.[0],
-              errorWorkforceOffice: formatGraphQLError(action.payload),
-            };
+    case "WORKFORCE_OFFICES_REQ":
+      return {
+        ...state,
+        fetchingWorkforceOffices: true,
+        fetchedWorkforceOffices: false,
+        workforceOffices: [],
+        workforceOfficesPageInfo: { totalCount: 0 },
+        errorWorkforceOffices: null,
+      };
+    case "WORKFORCE_OFFICES_RESP":
+      return {
+        ...state,
+        fetchingWorkforceOffices: false,
+        fetchedWorkforceOffices: true,
+        workforceOffices: parseData(action.payload.data.workforceOffices),
+        workforceOfficesPageInfo: pageInfo(
+          action.payload.data.workforceOffices
+        ),
+        errorWorkforceOffices: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_OFFICES_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
+    case "WORKFORCE_OFFICE_REQ":
+      return {
+        ...state,
+        fetchingWorkforceOffice: true,
+        fetchedWorkforceOffice: false,
+        workforceOffice: null,
+        errorWorkforceOffice: null,
+      };
+    case "WORKFORCE_OFFICE_RESP":
+      return {
+        ...state,
+        fetchingWorkforceOffice: false,
+        fetchedWorkforceOffice: true,
+        WorkforceOffice: parseData(action.payload.data.workforceOffices).map(
+          (WorkforceOffice) => ({
+            ...WorkforceOffice,
+            id: decodeId(WorkforceOffice.id),
+          })
+        )?.[0],
+        errorWorkforceOffice: formatGraphQLError(action.payload),
+      };
 
     case "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID_RESP":
       return {
