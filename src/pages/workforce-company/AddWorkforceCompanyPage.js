@@ -17,7 +17,7 @@ import {
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { createOrganizationEmployee } from "../../actions";
+import { createWorkforceCompany } from "../../actions";
 
 
 const styles = (theme) => ({
@@ -29,7 +29,7 @@ const styles = (theme) => ({
   },
 });
 
-class AddWorkforceOfficePage extends Component {
+class AddWorkforceCompanyPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -50,7 +50,7 @@ class AddWorkforceOfficePage extends Component {
     const { dispatch } = this.props;
 
 
-    const workforceOfficeData = {
+    const workforceCompanyData = {
       employer: stateEdited.employer,
       representative: stateEdited.representative,
       nameBn: stateEdited.titleBn,
@@ -61,13 +61,13 @@ class AddWorkforceOfficePage extends Component {
       address: stateEdited.address,
       location: stateEdited.location,
       status: "True",
-      workforceOffice: stateEdited.workforceOffice,
+      workforceCompany: stateEdited.workforceCompany,
     };
 
     await dispatch(
-      createOrganizationEmployee(
-        workforceOfficeData,
-        `Created Workforce Office ${workforceOfficeData.nameEn}`,
+      createWorkforceCompany(
+        workforceCompanyData,
+        `Created Workforce Company ${workforceCompanyData.nameEn}`,
       ),
     );
 
@@ -99,7 +99,7 @@ class AddWorkforceOfficePage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Workforce Office"
+                      id="Workforce Company"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>
@@ -109,7 +109,7 @@ class AddWorkforceOfficePage extends Component {
               <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.employer"
+                    label="workforce.company.employer"
                     value={stateEdited.employer || ""}
                     onChange={(v) => this.updateAttribute("employer", v)}
                     required
@@ -118,7 +118,7 @@ class AddWorkforceOfficePage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.representative"
+                    label="workforce.company.representative"
                     value={stateEdited.representative || ""}
                     onChange={(v) => this.updateAttribute("representative", v)}
                     required
@@ -127,7 +127,7 @@ class AddWorkforceOfficePage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.name.en"
+                    label="workforce.company.name.en"
                     value={stateEdited.title || ""}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
@@ -137,7 +137,7 @@ class AddWorkforceOfficePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.name.bn"
+                    label="workforce.company.name.bn"
                     value={stateEdited.titleBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     readOnly={isSaved}
@@ -147,7 +147,7 @@ class AddWorkforceOfficePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.phone"
+                    label="workforce.company.phone"
                     value={stateEdited.phone || ""}
                     onChange={(v) => this.updateAttribute("phone", v)}
                     type={"number"}
@@ -157,7 +157,7 @@ class AddWorkforceOfficePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.email"
+                    label="workforce.company.email"
                     value={stateEdited.email || ""}
                     onChange={(v) => this.updateAttribute("email", v)}
                     type={"email"}
@@ -169,7 +169,7 @@ class AddWorkforceOfficePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.website"
+                    label="workforce.company.website"
                     value={stateEdited.website || ""}
                     onChange={(v) => this.updateAttribute("website", v)}
                     readOnly={isSaved}
@@ -178,7 +178,7 @@ class AddWorkforceOfficePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.address"
+                    label="workforce.company.address"
                     value={stateEdited.address || ""}
                     onChange={(v) => this.updateAttribute("address", v)}
                     readOnly={isSaved}
@@ -224,4 +224,4 @@ const mapStateToProps = (state) => ({
   mutation: state.workforce.mutation,
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceOfficePage));
+export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceCompanyPage));

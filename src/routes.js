@@ -9,6 +9,8 @@ export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE = "workforce/organ
 export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION = "workforce/organizations/employees/designation";
 export const ROUTE_WORKFORCE_OFFICES = "workforce/offices";
 export const ROUTE_WORKFORCE_OFFICES_OFFICE = "workforce/offices/office";
+export const ROUTE_WORKFORCE_COMPANIES = "workforce/companies";
+export const ROUTE_WORKFORCE_COMPANIES_COMPANY = "workforce/companies/company";
 
 // export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION_EMPLOYEE = "workforce/organizations/employees/employee";
 

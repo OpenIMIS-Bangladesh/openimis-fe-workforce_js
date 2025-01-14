@@ -13,6 +13,8 @@ import {
   ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION,
   ROUTE_WORKFORCE_OFFICES,
   ROUTE_WORKFORCE_OFFICES_OFFICE,
+  ROUTE_WORKFORCE_COMPANIES_COMPANY,
+  ROUTE_WORKFORCE_COMPANIES
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -26,6 +28,8 @@ import OrganizationEmployeePage from "./pages/organization-employee/Organization
 import WorkforceEmployeeDesignationPage from "./pages/organization-employee-designation/WorkforceEmployeeDesignationPage";
 import OranigzationOfficesPage from "./pages/workforce-office/WorkforceOfficesPage";
 import OranigzationOfficePage from "./pages/workforce-office/WorkforceOfficePage";
+import OranigzationCompaniesPage from "./pages/workforce-company/WorkforceCompaniesPage";
+import OranigzationCompanyPage from "./pages/workforce-company/WorkforceCompanyPage";
 
 
 
@@ -47,6 +51,9 @@ const DEFAULT_CONFIG = {
 
     { key: "workforce.route.offices.office", ref: ROUTE_WORKFORCE_OFFICES_OFFICE },
     { key: "workforce.route.offices", ref: ROUTE_WORKFORCE_OFFICES },
+
+    { key: "workforce.route.companies.company", ref: ROUTE_WORKFORCE_COMPANIES_COMPANY },
+    { key: "workforce.route.companies", ref: ROUTE_WORKFORCE_COMPANIES },
 
 
 
@@ -73,6 +80,10 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_OFFICES, component: OranigzationOfficesPage },
     { path: ROUTE_WORKFORCE_OFFICES_OFFICE, component: OranigzationOfficePage },
     { path: `${ROUTE_WORKFORCE_OFFICES_OFFICE}/:workforce_office_uuid`, component: OranigzationOfficePage },
+
+    { path: ROUTE_WORKFORCE_COMPANIES, component: OranigzationCompaniesPage },
+    { path: ROUTE_WORKFORCE_COMPANIES_COMPANY, component: OranigzationCompanyPage },
+    { path: `${ROUTE_WORKFORCE_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },
 
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, component: WorkforceEmployeeDesignationPage },
