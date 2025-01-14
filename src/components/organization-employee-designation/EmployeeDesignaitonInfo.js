@@ -145,5 +145,5 @@ const EmployeeDesignationInfo = ({ userData, tableData }) => {
 
 // export default EmployeeDesignationInfo;
 export default withModulesManager(
-  withTheme(withStyles(styles)(EmployeeDesignationInfo))
+  withTheme(EmployeeDesignationInfo)
 );
