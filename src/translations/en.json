@@ -34,6 +34,7 @@
     "menu.workforce.organizations.employee.designation": "Organizations-Employee-Designation",
     "menu.workforce.office": "Offices",
     "menu.workforce.company": "Companies",
+    "menu.workforce.factory": "Factories",
 
     "workforce.organization.addNewTooltip": "Add Workforce Organizations",
     "workforce.organization.name.en": "Organization Name En",
