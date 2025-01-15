@@ -32,8 +32,8 @@
     "menu.workforce.organizations.unit.designation": "Organizations Unit Designation",
     "menu.workforce.organizations.employee": "Organizations Employee",
     "menu.workforce.organizations.employee.designation": "Organizations-Employee-Designation",
-
     "menu.workforce.office": "Offices",
+    "menu.workforce.company": "Companies",
 
     "workforce.organization.addNewTooltip": "Add Workforce Organizations",
     "workforce.organization.name.en": "Organization Name En",
@@ -99,5 +99,24 @@
     "workforce.office.website": "Workforce Office Website",
     "workforce.office.parent": "Workforce Office Parent",
     "workforce.office.status": "Workforce Office Status",
-    "workforce.office.representative": "Workforce Office Representative"
+    "workforce.office.representative": "Workforce Office Representative",
+
+    "workforce.company.addNewTooltip": "Add Workforce Company",
+    "workforce.company.name.en": "Workforce Company Name En",
+    "workforce.company.name.bn": "Workforce Company Name Bn",
+    "workforce.company.location": "Workforce Company Location",
+    "workforce.company.address": "Workforce Company Address",
+    "workforce.company.phone": "Workforce Company Phone",
+    "workforce.company.email": "Workforce Company Email",
+    "workforce.company.website": "Workforce Company Website",
+    "workforce.company.licence_type": "Workforce Company Licence Type",
+    "workforce.company.licence_number": "Workforce Company Licence Number",
+    "workforce.company.business_sector": "Workforce Company Business Sector",
+    "workforce.company.foundation_date": "Workforce Company Foundation Date",
+    "workforce.company.association_name": "Workforce Company Association Name",
+    "workforce.company.association_membership_number": "Workforce Company Association Membership Number",
+    "workforce.company.establishment_Name": "Workforce Company Establishment Name",
+    "workforce.company.establishment_date": "Workforce Company Establishment Date",
+    "workforce.company.status": "Workforce Company Status",
+    "workforce.company.representative": "Workforce Representative"
 }

@@ -80,6 +80,26 @@ export function formatWorkforceOfficeGQL(office) {
     ${office.status ? `status: "${office.status}"` : ""}
   `;
 }
+export function formatWorkforceCompanyGQL(company) {
+  return `
+    ${company.id ? `id: "${formatGQLString(company.id)}"` : ""}
+    ${company.nameEn ? `nameEn: "${formatGQLString(company.nameEn)}"` : ""}
+    ${company.nameBn ? `nameBn: "${formatGQLString(company.nameBn)}"` : ""}
+    ${company.phoneNumber ? `phoneNumber: "${formatGQLString(company.phoneNumber)}"` : ""}
+    ${company.email ? `email: "${formatGQLString(company.email)}"` : ""}
+    ${company.website ? `passportNo: "${company.website}"` : ""}
+    ${company.address ? `address: "${company.address}"` : ""}
+    ${decodeId(company.location.id) ? `location: "${decodeId(company.location.id)}"` : ""}
+    ${company.establishmentDate ? `establishmentDate: "${company.establishmentDate}"` : ""}
+    ${company.associationMembershipNumber ? `associationMembershipNumber: "${company.associationMembershipNumber}"` : ""}
+    ${company.licenceType ? `licenceType: "${company.licenceType}"` : ""}
+    ${company.licenceNumber ? `licenceNumber: "${company.licenceNumber}"` : ""}
+    ${company.foundationDate ? `foundationDate: "${company.foundationDate}"` : ""}
+    ${company.businessSector ? `businessSector: "${company.businessSector}"` : ""}
+    ${company.establishmentName ? `establishmentName: "${company.establishmentName}"` : ""}
+    ${company.status ? `status: "${company.status}"` : ""}
+  `;
+}
 
 export function formatUnitDesignationGQL(unitDesignation) {
   return `
