@@ -92,6 +92,8 @@ class AddWorkforceEmployeePage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
+
+    console.log({stateEdited})
     return (
       <div className={classes.page}>
         <Grid container>
@@ -153,7 +155,7 @@ class AddWorkforceEmployeePage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <EmployeeGenderPicker
-                    value={stateEdited.gender}
+                    value={stateEdited?.gender?.id}
                     label={<FormattedMessage id="workforce.organization.employee.gender" module="workforce" />}
                     onChange={(v) => this.updateAttribute("gender", v)}
                     readOnly={isSaved}
