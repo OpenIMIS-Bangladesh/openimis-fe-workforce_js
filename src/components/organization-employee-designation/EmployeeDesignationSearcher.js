@@ -19,10 +19,7 @@ import {
   decodeId,
   FormattedMessage,
 } from "@openimis/fe-core";
-// import { SearchIcon } from "@material-ui/icons";
 import { YoutubeSearchedFor as ResetFilterIcon, Search as DefaultSearchIcon } from "@material-ui/icons";
-// import SearchIcon from '@material-ui/icons/Search';
-// import SearchIcon from '@material-ui/icons/ResetFilterIcon';
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,

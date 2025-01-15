@@ -16,8 +16,9 @@ import {
 } from "@openimis/fe-core";
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
-import { withTheme, withStyles } from "@material-ui/core/styles";
-import { createOrganizationEmployee, createWorkforceOrganizationUnit } from "../../actions";
+import { withStyles } from "@material-ui/core/styles";
+import { createOrganizationEmployee } from "../../actions";
+import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 
 
 const styles = (theme) => ({
@@ -91,7 +92,6 @@ class AddWorkforceEmployeePage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
-
     return (
       <div className={classes.page}>
         <Grid container>
@@ -151,17 +151,15 @@ class AddWorkforceEmployeePage extends Component {
 
                   />
                 </Grid>
-
                 <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.organization.employee.gender"
-                    value={stateEdited.gender || ""}
+                  <EmployeeGenderPicker
+                    label={<FormattedMessage id="workforce.organization.employee.gender" module="workforce" />}
                     onChange={(v) => this.updateAttribute("gender", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
-                   <PublishedComponent
+                  <PublishedComponent
                     pubRef="core.DatePicker"
                     label={"workforce.organization.employee.birthdate"}
                     value={stateEdited.birthDate || ""}
@@ -169,9 +167,9 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                
+
                 <Grid item xs={6} className={classes.item}>
-                   <PublishedComponent
+                  <PublishedComponent
                     pubRef="core.DatePicker"
                     label={"workforce.organization.employee.joining_date"}
                     value={stateEdited.firstJoiningDate || ""}

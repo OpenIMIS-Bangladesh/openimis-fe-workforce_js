@@ -117,8 +117,6 @@ class OrganizationEmployeeForm extends Component {
       },
     ];
 
-    console.log({ organizationEmployeeUuid });
-
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
