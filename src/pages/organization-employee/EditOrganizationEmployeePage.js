@@ -19,6 +19,7 @@ import { updateOrganizationEMployee } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { number } from "prop-types";
+import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -66,7 +67,7 @@ class EditOrganizationEmployeePage extends Component {
       nameEn: stateEdited?.title || stateEdited.nameEn,
       phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
       email: stateEdited?.email || stateEdited.email,
-      gender: stateEdited?.gender || stateEdited.gender,
+      gender: stateEdited?.gender?.id || stateEdited.gender.id,
       birthDate: stateEdited?.birthDate || stateEdited.birthDate,
       birthCertificateNo:
         stateEdited?.birthCertificateNo || stateEdited.birthCertificateNo,
@@ -84,7 +85,6 @@ class EditOrganizationEmployeePage extends Component {
         `Update Organization Employee ${organizationEmployeeData.nameEn}`
       )
     );
-    console.log({ organizationEmployeeData });
 
     this.setState({ isSaved: true });
   };
@@ -153,9 +153,9 @@ class EditOrganizationEmployeePage extends Component {
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.organization.employee.gender"
+                  <EmployeeGenderPicker
                     value={stateEdited.gender || ""}
+                    label={<FormattedMessage id="workforce.organization.employee.gender" module="workforce" />}
                     onChange={(v) => this.updateAttribute("gender", v)}
                     readOnly={isSaved}
                   />

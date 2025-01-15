@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTranslations, Autocomplete } from "@openimis/fe-core";
+import { WORKFORCE_GENDER } from "../constants";
 
 const EmployeeGenderPicker = ({
                                 modulesManager,
@@ -18,21 +19,6 @@ const EmployeeGenderPicker = ({
   const [searchString, setSearchString] = useState(null);
   const { formatMessage } = useTranslations("workforce");
 
-  const data = [
-    {
-      name: "Male",
-      id: "M",
-    },
-    {
-      name: "Female",
-      id: "F",
-    },
-    {
-      name: "Other",
-      id: "O",
-    },
-  ];
-
   return (
     <Autocomplete
       multiple={false}
@@ -44,7 +30,7 @@ const EmployeeGenderPicker = ({
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
       isLoading={true}
-      options={data}
+      options={WORKFORCE_GENDER}
       value={value}
       getOptionLabel={(option) => `${option.name}`}
       onChange={(option) => onChange(option, option ? `${option}` : null)}

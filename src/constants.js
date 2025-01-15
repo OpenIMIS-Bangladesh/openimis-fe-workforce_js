@@ -3,6 +3,21 @@ export const MODULE_NAME = "workforce";
 export const EMPTY_STRING = "";
 export const WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY = "workforce.MainMenu";
 
+export const WORKFORCE_GENDER = [
+  {
+    name: "Male",
+    id: "M",
+  },
+  {
+    name: "Female",
+    id: "F",
+  },
+  {
+    name: "Other",
+    id: "O",
+  },
+];
+
 export const WORKFORCE_STATUS = {
   ACTIVE: "active",
   INACTIVE: "inactive",
