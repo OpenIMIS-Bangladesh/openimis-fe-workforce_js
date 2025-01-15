@@ -212,28 +212,28 @@ class AddWorkforceCompanyPage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
+            
                 <Grid item xs={6} className={classes.item}>
-                    <PublishedComponent
-                    pubRef="core.DatePicker"
-                    label={"workforce.company.association_name"}
+                  <TextInput
+                    label="workforce.company.association_name"
                     value={stateEdited.associationName || ""}
                     onChange={(v) => this.updateAttribute("associationName", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
+
                 <Grid item xs={6} className={classes.item}>
-                    <PublishedComponent
-                    pubRef="core.DatePicker"
-                    label={"workforce.company.association_membership_number"}
+                  <TextInput
+                    label="workforce.company.association_membership_number"
                     value={stateEdited.associationMembershipNumber || ""}
                     onChange={(v) => this.updateAttribute("associationMembershipNumber", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
+                
                 <Grid item xs={6} className={classes.item}>
-                    <PublishedComponent
-                    pubRef="core.DatePicker"
-                    label={"workforce.company.establishment_Name"}
+                  <TextInput
+                    label="workforce.company.establishment_Name"
                     value={stateEdited.establishmentName || ""}
                     onChange={(v) => this.updateAttribute("establishmentName", v)}
                     readOnly={isSaved}
