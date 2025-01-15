@@ -15,7 +15,7 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
+import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withStyles } from "@material-ui/core/styles";
 import { createOrganizationEmployee } from "../../actions";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
@@ -64,7 +64,7 @@ class AddWorkforceEmployeePage extends Component {
       passportNo: stateEdited.passportNo,
       address: stateEdited.address,
       location: stateEdited.location,
-      status: true,
+      status: WORKFORCE_STATUS.ACTIVE,
       organizationEmployee: stateEdited.organizationEmployee,
     };
 
