@@ -153,6 +153,7 @@ class AddWorkforceEmployeePage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <EmployeeGenderPicker
+                    value={stateEdited.gender}
                     label={<FormattedMessage id="workforce.organization.employee.gender" module="workforce" />}
                     onChange={(v) => this.updateAttribute("gender", v)}
                     readOnly={isSaved}

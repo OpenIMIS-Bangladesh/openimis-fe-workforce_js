@@ -39,6 +39,7 @@ const EmployeeGenderPicker = ({
       required={required}
       placeholder={placeholder ?? ""}
       label={label ?? formatMessage("workforce.organization.employee.gender")}
+     
       withLabel={withLabel}
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
