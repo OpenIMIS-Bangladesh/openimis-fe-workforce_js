@@ -16,7 +16,7 @@ import { withTheme, withStyles, makeStyles } from "@material-ui/core/styles";
 import {
   PublishedComponent,
   FormattedMessage,
-  withModulesManager
+  withModulesManager,
 } from "@openimis/fe-core";
 import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 
@@ -28,8 +28,14 @@ const useStyles = makeStyles((theme) => ({
   },
   userCard: {
     ...theme.paper.paper,
+    padding: theme.spacing(0),
+    
+  },
+  userCard2: {
+    ...theme.paper.paper,
     padding: theme.spacing(1),
     textAlign: "left",
+    margin:'0px'
   },
   tableContainer: {
     padding: theme.spacing(1),
@@ -47,19 +53,22 @@ const useStyles = makeStyles((theme) => ({
 
 const EmployeeDesignationInfo = ({ userData, tableData }) => {
   const classes = useStyles();
-    console.log({classes})
+  console.log({ classes });
   return (
     <Grid container spacing={0} className={classes.root}>
       {/* Employee Info Section */}
       {userData && (
         <Grid item xs={4}>
           <Paper className={classes.userCard}>
-            <Typography className={classes.tableHeader}>Employee Info</Typography>
-            <br />
-            <Typography>Name: {userData.name}</Typography>
-            <Typography>Email: {userData.email}</Typography>
-            <Typography>Phone: {userData.phone}</Typography>
-            <Typography>NID: {userData.userId}</Typography>
+            <Typography className={classes.tableHeader}>
+              Employee Info
+            </Typography>
+            <Paper className={classes.userCard2}>
+              <Typography>Name: {userData.name}</Typography>
+              <Typography>Email: {userData.email}</Typography>
+              <Typography>Phone: {userData.phone}</Typography>
+              <Typography>NID: {userData.userId}</Typography>
+            </Paper>
           </Paper>
         </Grid>
       )}
@@ -69,7 +78,7 @@ const EmployeeDesignationInfo = ({ userData, tableData }) => {
         <Grid item xs={8}>
           <Paper className={classes.paper}>
             <TableContainer>
-              <Table size={'small'}>
+              <Table size={"small"}>
                 <TableHead className={classes.tableHeader}>
                   <TableRow>
                     <TableCell>Organization</TableCell>
@@ -144,6 +153,4 @@ const EmployeeDesignationInfo = ({ userData, tableData }) => {
 };
 
 // export default EmployeeDesignationInfo;
-export default withModulesManager(
-  withTheme(EmployeeDesignationInfo)
-);
+export default withModulesManager(withTheme(EmployeeDesignationInfo));
