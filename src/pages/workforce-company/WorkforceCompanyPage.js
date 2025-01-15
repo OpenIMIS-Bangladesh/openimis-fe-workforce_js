@@ -19,17 +19,17 @@ class WorkforceCompanyPage extends Component {
     historyPush(this.props.modulesManager, this.props.history, "grievance.route.ticket");
   };
 
-  save = (office) => {
-    if (!office.id) {
+  save = (company) => {
+    if (!company.id) {
       this.props.createWorkforceCompany(
         this.props.modulesManager,
-        office,
+        company,
         "Create",
       );
-    } else {
+    } else { 
       this.props.updateWorkforceCompany(
         this.props.modulesManager,
-        office,
+        company,
         "Update",
       );
     }
@@ -62,7 +62,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   workforceCompanyUuid: props.match.params.workforce_company_uuid,
   organizationVersion: props.match.params.version,
-  office: state.workforce.office,
+  company: state.workforce.company,
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({

@@ -18,7 +18,7 @@ import {
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../../constants";
-import { fetchWorkforceOfficesSummary } from "../../actions";
+import { fetchWorkforceCompaniesSummary } from "../../actions";
 import WorkforceCompanyFilter from "./WorkforceCompanyFilter";
 
 
@@ -68,7 +68,7 @@ class WorkforceCompanySearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchWorkforceOfficesSummary(
+    this.props.fetchWorkforceCompaniesSummary(
       this.props.modulesManager,
       prms,
     );
@@ -102,7 +102,6 @@ class WorkforceCompanySearcher extends Component {
     "workforce.company.email",
     "workforce.company.address",
     "workforce.company.website",
-    "workforce.company.status",
     this.isShowHistory() ? 'workforce.version' : '',
   ];
 
@@ -117,8 +116,7 @@ class WorkforceCompanySearcher extends Component {
       (workforcecompany) => workforcecompany.phoneNumber,
       (workforcecompany) => workforcecompany.email,
       (workforcecompany) => workforcecompany.address,
-      (workforcecompany) => workforcecompany.sebsite,
-      (workforcecompany) => workforcecompany.status,
+      (workforcecompany) => workforcecompany.website,
       (workforcecompany) => (this.isShowHistory() ? workforcecompany?.version : null),
 
     ];
@@ -150,11 +148,11 @@ class WorkforceCompanySearcher extends Component {
   render() {
     const {
       intl,
-      workforceOffices, workforceOfficesPageInfo, fetchingWorkforceOffices, fetchedWorkforceOffices, errorWorkforceOffices,
+      workforceCompanies, workforceCompaniesPageInfo, fetchingWorkforceCompanies, fetchedWorkforceCompanies, errorWorkforceCompanies,
       filterPaneContributionsKey, cacheFiltersKey, onDoubleClick,
     } = this.props;
 
-    const count = workforceOfficesPageInfo.totalCount;
+    const count = workforceCompaniesPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <WorkforceCompanyFilter
@@ -171,11 +169,11 @@ class WorkforceCompanySearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={workforceOffices}
-          itemsPageInfo={workforceOfficesPageInfo}
-          fetchingItems={fetchingWorkforceOffices}
-          fetchedItems={fetchedWorkforceOffices}
-          errorItems={errorWorkforceOffices}
+          items={workforceCompanies}
+          itemsPageInfo={workforceCompaniesPageInfo}
+          fetchingItems={fetchingWorkforceCompanies}
+          fetchedItems={fetchedWorkforceCompanies}
+          errorItems={errorWorkforceCompanies}
           tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.company" />}
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
@@ -199,11 +197,11 @@ class WorkforceCompanySearcher extends Component {
 const mapStateToProps = (state) => (
   {
     rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-    workforceOffices: state.workforce.workforceOffices,
-    workforceOfficesPageInfo: state.workforce.workforceOfficesPageInfo,
-    fetchingWorkforceOffices: state.workforce.fetchingWorkforceOffices,
-    fetchedWorkforceOffices: state.workforce.fetchedWorkforceOffices,
-    errorWorkforceOffices: state.workforce.errorWorkforceOffices,
+    workforceCompanies: state.workforce.workforceCompanies,
+    workforceCompaniesPageInfo: state.workforce.workforceCompaniesPageInfo,
+    fetchingWorkforceCompanies: state.workforce.fetchingWorkforceCompanies,
+    fetchedWorkforceCompanies: state.workforce.fetchedWorkforceCompanies,
+    errorWorkforceCompanies: state.workforce.errorWorkforceCompanies,
     submittingMutation: state.workforce.submittingMutation,
     mutation: state.workforce.mutation,
     confirmed: state.core.confirmed,
@@ -212,7 +210,7 @@ const mapStateToProps = (state) => (
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(
   {
-    fetchWorkforceOfficesSummary, journalize, coreConfirm,
+    fetchWorkforceCompaniesSummary, journalize, coreConfirm,
   },
   dispatch,
 );

@@ -51,8 +51,6 @@ class AddWorkforceCompanyPage extends Component {
 
 
     const workforceCompanyData = {
-      employer: stateEdited.employer,
-      representative: stateEdited.representative,
       nameBn: stateEdited.titleBn,
       nameEn: stateEdited.title,
       phoneNumber: stateEdited.phone,
@@ -60,6 +58,15 @@ class AddWorkforceCompanyPage extends Component {
       website: stateEdited.website,
       address: stateEdited.address,
       location: stateEdited.location,
+      establishmentDate: stateEdited.establishmentDate,
+      associationName: stateEdited.associationName,
+      associationMembershipNumber: stateEdited.associationMembershipNumber,
+      licenceType: stateEdited.licenceType,
+      licenceNumber: stateEdited.licenceNumber,
+      foundationDate: stateEdited.foundationDate,
+      businessSector: stateEdited.businessSector,
+      establishmentName: stateEdited.establishmentName,
+      workforceRepresentativeId: stateEdited.workforceRepresentativeId,
       status: "True",
       workforceCompany: stateEdited.workforceCompany,
     };
@@ -107,20 +114,12 @@ class AddWorkforceCompanyPage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.company.employer"
-                    value={stateEdited.employer || ""}
-                    onChange={(v) => this.updateAttribute("employer", v)}
-                    required
-                    readOnly={isSaved}
-                  />
-                </Grid>
+              
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.company.representative"
                     value={stateEdited.representative || ""}
-                    onChange={(v) => this.updateAttribute("representative", v)}
+                    onChange={(v) => this.updateAttribute("workforceRepresentative", v)}
                     required
                     readOnly={isSaved}
                   />
@@ -148,8 +147,8 @@ class AddWorkforceCompanyPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.company.phone"
-                    value={stateEdited.phone || ""}
-                    onChange={(v) => this.updateAttribute("phone", v)}
+                    value={stateEdited.phoneNumber || ""}
+                    onChange={(v) => this.updateAttribute("phoneNumber", v)}
                     type={"number"}
                     readOnly={isSaved}
                   />
@@ -172,6 +171,81 @@ class AddWorkforceCompanyPage extends Component {
                     label="workforce.company.website"
                     value={stateEdited.website || ""}
                     onChange={(v) => this.updateAttribute("website", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.company.licence_type"
+                    value={stateEdited.licenceType || ""}
+                    onChange={(v) => this.updateAttribute("licenceType", v)}
+                    readOnly={isSaved}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.company.licence_number"
+                    value={stateEdited.licenceNumber || ""}
+                    onChange={(v) => this.updateAttribute("licenceNumber", v)}
+                    readOnly={isSaved}
+                    
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.company.business_sector"
+                    value={stateEdited.businessSector || ""}
+                    onChange={(v) => this.updateAttribute("businessSector", v)}
+                    readOnly={isSaved}
+                    required
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
+                    <PublishedComponent
+                    pubRef="core.DatePicker"
+                    label={"workforce.company.foundation_date"}
+                    value={stateEdited.foundationDate || ""}
+                    onChange={(v) => this.updateAttribute("foundationDate", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                    <PublishedComponent
+                    pubRef="core.DatePicker"
+                    label={"workforce.company.association_name"}
+                    value={stateEdited.associationName || ""}
+                    onChange={(v) => this.updateAttribute("associationName", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                    <PublishedComponent
+                    pubRef="core.DatePicker"
+                    label={"workforce.company.association_membership_number"}
+                    value={stateEdited.associationMembershipNumber || ""}
+                    onChange={(v) => this.updateAttribute("associationMembershipNumber", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                    <PublishedComponent
+                    pubRef="core.DatePicker"
+                    label={"workforce.company.establishment_Name"}
+                    value={stateEdited.establishmentName || ""}
+                    onChange={(v) => this.updateAttribute("establishmentName", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
+                    <PublishedComponent
+                    pubRef="core.DatePicker"
+                    label={"workforce.company.establishment_date"}
+                    value={stateEdited.establishmentDate || ""}
+                    onChange={(v) => this.updateAttribute("establishmentDate", v)}
                     readOnly={isSaved}
                   />
                 </Grid>

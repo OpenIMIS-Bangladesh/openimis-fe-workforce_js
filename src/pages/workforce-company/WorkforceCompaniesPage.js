@@ -9,18 +9,18 @@ import {
 
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../../constants";
 import OrganizationCompanySearcher from "../../components/workforce-company/WorkforceCompanySearcher";
-import { ROUTE_WORKFORCE_OFFICES_OFFICE } from "../../routes";
+import { ROUTE_WORKFORCE_COMPANIES_COMPANY } from "../../routes";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab,ROUTE_WORKFORCE_OFFICES_OFFICE
+  fab: theme.fab,ROUTE_WORKFORCE_COMPANIES_COMPANY
 });
 
 class OranigzationCompaniesPage extends Component {
-  onDoubleClick = (office, newTab = false) => {
-    const routeParams = ['workforce.route.companies.company', [decodeId(office.id)]];
-    if (office?.isHistory) {
-      routeParams[1].push(office.version);
+  onDoubleClick = (company, newTab = false) => {
+    const routeParams = ['workforce.route.companies.company', [decodeId(company.id)]];
+    if (company?.isHistory) {
+      routeParams[1].push(company.version);
     }
     historyPush(this.props.modulesManager, this.props.history, ...routeParams, newTab);
   };
