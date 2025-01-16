@@ -27,8 +27,8 @@ const styles = (theme) => ({
   paperDivider: theme.paper.divider,
 });
 
-const WORKFORCE_OFFICE_FILTER_CONTRIBUTION_KEY =
-  "workforce.OFFICE.Filter";
+const WORKFORCE_FACTORY_FILTER_CONTRIBUTION_KEY =
+  "workforce.factory.Filter";
 
 class WorkforceFactoryFilter extends Component {
   debouncedOnChangeFilter = _debounce(
@@ -69,12 +69,12 @@ class WorkforceFactoryFilter extends Component {
       <Grid container className={classes.form}>
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.office.name.en"
+          id="workforce.factory.name.en"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.office.name.en"
+                label="workforce.factory.name.en"
                 name="nameEn"
                 value={this._filterValue("nameEn")}
                 onChange={(v) => this.debouncedOnChangeFilter([
@@ -90,12 +90,12 @@ class WorkforceFactoryFilter extends Component {
         />
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.office.name.bn"
+          id="workforce.factory.name.bn"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.office.name.bn"
+                label="workforce.factory.name.bn"
                 name="nameBn"
                 value={this._filterValue("nameBn")}
                 onChange={(v) => this.debouncedOnChangeFilter([
@@ -111,12 +111,12 @@ class WorkforceFactoryFilter extends Component {
         />
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.office.phone"
+          id="workforce.factory.phone"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.office.phone"
+                label="workforce.factory.phone"
                 name="address"
                 value={this._filterValue("phoneNumber")}
                 onChange={(v) => this.debouncedOnChangeFilter([
@@ -132,12 +132,12 @@ class WorkforceFactoryFilter extends Component {
         />
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.office.status"
+          id="workforce.factory.status"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.office.status"
+                label="workforce.factory.status"
                 name="status"
                 value={this._filterValue("status")}
                 onChange={(v) => this.debouncedOnChangeFilter([
@@ -154,7 +154,7 @@ class WorkforceFactoryFilter extends Component {
         <Contributions
           filters={filters}
           onChangeFilters={onChangeFilters}
-          contributionKey={WORKFORCE_OFFICE_FILTER_CONTRIBUTION_KEY}
+          contributionKey={WORKFORCE_FACTORY_FILTER_CONTRIBUTION_KEY}
         />
       </Grid>
     );

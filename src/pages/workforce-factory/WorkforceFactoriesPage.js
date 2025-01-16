@@ -9,24 +9,24 @@ import {
 
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../../constants";
 import OrganizationFactorySearcher from "../../components/workforce-factory/WorkforceFactorySearcher";
-import { ROUTE_WORKFORCE_OFFICES_OFFICE } from "../../routes";
+import { ROUTE_WORKFORCE_FACTORIES_FACTORY } from "../../routes";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab,ROUTE_WORKFORCE_OFFICES_OFFICE
+  fab: theme.fab,ROUTE_WORKFORCE_FACTORIES_FACTORY
 });
 
 class OranigzationFactoriesPage extends Component {
-  onDoubleClick = (office, newTab = false) => {
-    const routeParams = ['workforce.route.offices.office', [decodeId(office.id)]];
-    if (office?.isHistory) {
-      routeParams[1].push(office.version);
+  onDoubleClick = (factory, newTab = false) => {
+    const routeParams = ['workforce.route.factories.factory', [decodeId(factory.id)]];
+    if (factory?.isHistory) {
+      routeParams[1].push(factory.version);
     }
     historyPush(this.props.modulesManager, this.props.history, ...routeParams, newTab);
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.offices.office');
+    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.factories.factory');
   };
 
   render() {
@@ -46,7 +46,7 @@ class OranigzationFactoriesPage extends Component {
               <AddIcon />
             </Fab>
           </div>,
-          <FormattedMessage module={MODULE_NAME} id={"workforce.office.addNewTooltip"} />,
+          <FormattedMessage module={MODULE_NAME} id={"workforce.factory.addNewTooltip"} />,
         )}
       </div>
     );

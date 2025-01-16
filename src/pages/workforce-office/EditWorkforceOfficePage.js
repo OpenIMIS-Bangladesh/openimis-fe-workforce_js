@@ -16,7 +16,7 @@ import {
   formatMutation,
 } from "@openimis/fe-core";
 import {
-  updateOrganizationEMployee,
+  updateWorkforceOffice,
   updateRepresentative,
 } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
@@ -37,14 +37,14 @@ class EditWorkforceOfficePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stateEdited: props.organizationEmployee || {},
+      stateEdited: props.workforceOffice || {},
       isSaved: false,
     };
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.organizationEmployee !== this.props.organizationEmployee) {
-      this.setState({ stateEdited: this.props.organizationEmployee });
+    if (prevProps.workforceOffice !== this.props.workforceOffice) {
+      this.setState({ stateEdited: this.props.workforceOffice });
     }
 
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
@@ -122,9 +122,9 @@ class EditWorkforceOfficePage extends Component {
     );
 
     dispatch(
-      updateOrganizationEMployee(
+      updateWorkforceOffice(
         workforceOfficeData,
-        `Update Organization Employee ${workforceOfficeData.nameEn}`
+        `Update Workforce Office ${workforceOfficeData.nameEn}`
       )
     );
     console.log({ workforceOfficeData });
@@ -370,7 +370,7 @@ class EditWorkforceOfficePage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  organizationEmployee: state.workforce.organizationEmployee,
+  workforceOffice: state.workforce.workforceOffice,
 });
 
 export default connect(mapStateToProps)(

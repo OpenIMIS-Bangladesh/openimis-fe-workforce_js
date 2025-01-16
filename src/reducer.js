@@ -67,6 +67,19 @@ function reducer(
     workforceOffice: null,
     workforceOfficePageInfo: { totalCount: 0 },
 
+    ///workforce factory states
+    fetchingWorkforceFactories: false,
+    errorWorkforceFactories: null,
+    fetchedWorkforceFactories: false,
+    workforceFactories: [],
+    workforceFactoriesPageInfo: { totalCount: 0 },
+
+    fetchingWorkforceFactory: false,
+    errorWorkforceFactory: null,
+    fetchedWorkforceFactory: false,
+    workforceFactory: null,
+    workforceFactoryPageInfo: { totalCount: 0 },
+
     ///workforce company states
     fetchingWorkforceCompanies: false,
     errorWorkforceCompanies: null,
@@ -472,6 +485,57 @@ function reducer(
         errorWorkforceOffice: formatGraphQLError(action.payload),
       };
     // end workforce office
+
+    // start workforce factory
+    case "WORKFORCE_FACTORIES_REQ":
+      return {
+        ...state,
+        fetchingWorkforceFactories: true,
+        fetchedWorkforceFactories: false,
+        workforceFactories: [],
+        workforceFactoriesPageInfo: { totalCount: 0 },
+        errorWorkforceFactories: null,
+      };
+    case "WORKFORCE_FACTORIES_RESP":
+      return {
+        ...state,
+        fetchingWorkforceFactories: false,
+        fetchedWorkforceFactories: true,
+        workforceFactories: parseData(action.payload.data.workforceEmployerFactories),
+        workforceFactoriesPageInfo: pageInfo(
+          action.payload.data.workforceEmployerFactories,
+        ),
+        errorWorkforceFactories: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_FACTORIES_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
+    case "WORKFORCE_FACTORY_REQ":
+      return {
+        ...state,
+        fetchingWorkforceFactory: true,
+        fetchedWorkforceFactory: false,
+        workforceFactory: null,
+        errorWorkforceFactory: null,
+      };
+    case "WORKFORCE_FACTORY_RESP":
+      return {
+        ...state,
+        fetchingWorkforceFactory: false,
+        fetchedWorkforceFactory: true,
+        WorkforceFactory: parseData(action.payload.data.workforceEmployerFactories).map(
+          (WorkforceFactory) => ({
+            ...WorkforceFactory,
+            id: decodeId(WorkforceFactory.id),
+          }),
+        )?.[0],
+        errorWorkforceFactory: formatGraphQLError(action.payload),
+      };
+    // end workforce factory
 
     // start workforce company
     case "WORKFORCE_COMPANIES_REQ":

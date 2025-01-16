@@ -22,7 +22,7 @@ import {
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { createOrganizationEmployee } from "../../actions";
+import { createWorkforceOffice } from "../../actions";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 
@@ -112,7 +112,7 @@ class AddWorkforceOfficePage extends Component {
     };
 
     await dispatch(
-      createOrganizationEmployee(
+      createWorkforceOffice(
         workforceOfficeData,
         `Created Workforce Office ${workforceOfficeData.nameEn}`
       )
