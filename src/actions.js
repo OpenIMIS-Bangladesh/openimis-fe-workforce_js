@@ -16,6 +16,7 @@ import {
   formatUnitGQL,
   formatWorkforceOfficeGQL,
   formatWorkforceCompanyGQL,
+  formatWorkforceFactoryGQL
 } from "./utils/format_gql";
 
 export function fetchOrganizationsSummary(mm, filters) {
@@ -185,6 +186,52 @@ export function fetchWorkforceOffice(mm, filters) {
     projections,
   );
   return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEE");
+}
+
+export function fetchWorkforceFactoriesSummary(mm, filters) {
+  const location_projection =
+    "location" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "nameEn",
+    "nameBn",
+    "address",
+    "phoneNumber",
+    "email",
+    "status",
+    "website",
+    "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
+    location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployerFactories",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATION_FACTORIES");
+}
+
+export function fetchWorkforceFactory(mm, filters) {
+  const location_projection =
+    "location" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "nameEn",
+    "nameBn",
+    "address",
+    "phoneNumber",
+    "email",
+    "status",
+    "website",
+    "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
+    location_projection
+  ]; 
+  const payload = formatPageQueryWithCount(
+    "workforceEmployerFactories",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATION_FACTORY");
 }
 
 export function fetchWorkforceCompaniesSummary(mm, filters) {
@@ -459,6 +506,43 @@ export function createWorkforceCompany(company, clientMutationLabel) {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
       requestedDateTime,
+    },
+  );
+}
+
+export function createWorkforceFactory(factory, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceFactory",
+    formatWorkforceFactoryGQL(factory),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["WORKFORCE_FACTORIES_REQ", "WORKFORCE_FACTORIES_RESP", "WORKFORCE_FACTORIES_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function updateWorkforceFactory(factory, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWorkforceFactory",
+    formatWorkforceFactoryGQL(factory),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["WORKFORCE_FACTORIES_REQ", "WORKFORCE_FACTORIES_RESP", "WORKFORCE_FACTORIES_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      id: factory.id,
     },
   );
 }

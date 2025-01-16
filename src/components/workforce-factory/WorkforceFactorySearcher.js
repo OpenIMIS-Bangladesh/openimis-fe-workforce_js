@@ -18,8 +18,8 @@ import {
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../../constants";
-import { fetchWorkforceOfficesSummary } from "../../actions";
-import WorkforceOfficeFilter from "./WorkforceFactoryFilter";
+import { fetchWorkforceFactoriesSummary } from "../../actions";
+import WorkforceFactoryFilter from "./WorkforceFactoryFilter";
 
 
 const styles = (theme) => ({
@@ -68,7 +68,7 @@ class WorkforceFactorySearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchWorkforceOfficesSummary(
+    this.props.fetchWorkforceFactoriesSummary(
       this.props.modulesManager,
       prms,
     );
@@ -130,7 +130,7 @@ class WorkforceFactorySearcher extends Component {
                  historyPush(
                    this.props.modulesManager,
                    this.props.history,
-                   'workforce.route.offices.factory',
+                   'workforce.route.factories.factory',
                    [decodeId(workforcefactory.id)],
                    false,
                  );
@@ -150,14 +150,14 @@ class WorkforceFactorySearcher extends Component {
   render() {
     const {
       intl,
-      workforceOffices, workforceOfficesPageInfo, fetchingWorkforceOffices, fetchedWorkforceOffices, errorWorkforceOffices,
+      workforceFactories, workforceFactoriesPageInfo, fetchingWorkforceFactories, fetchedWorkforceFactories, errorWorkforceFactories,
       filterPaneContributionsKey, cacheFiltersKey, onDoubleClick,
     } = this.props;
 
-    const count = workforceOfficesPageInfo.totalCount;
+    const count = workforceFactoriesPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
-      <WorkforceOfficeFilter
+      <WorkforceFactoryFilter
         filters={filters}
         onChangeFilters={onChangeFilters}
         setShowHistoryFilter={(showHistoryFilter) => this.setState({ showHistoryFilter })}
@@ -171,11 +171,11 @@ class WorkforceFactorySearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={workforceOffices}
-          itemsPageInfo={workforceOfficesPageInfo}
-          fetchingItems={fetchingWorkforceOffices}
-          fetchedItems={fetchedWorkforceOffices}
-          errorItems={errorWorkforceOffices}
+          items={workforceFactories}
+          itemsPageInfo={workforceFactoriesPageInfo}
+          fetchingItems={fetchingWorkforceFactories}
+          fetchedItems={fetchedWorkforceFactories}
+          errorItems={errorWorkforceFactories}
           tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.factory" />}
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
@@ -199,11 +199,11 @@ class WorkforceFactorySearcher extends Component {
 const mapStateToProps = (state) => (
   {
     rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-    workforceOffices: state.workforce.workforceOffices,
-    workforceOfficesPageInfo: state.workforce.workforceOfficesPageInfo,
-    fetchingWorkforceOffices: state.workforce.fetchingWorkforceOffices,
-    fetchedWorkforceOffices: state.workforce.fetchedWorkforceOffices,
-    errorWorkforceOffices: state.workforce.errorWorkforceOffices,
+    workforceFactories: state.workforce.workforceFactories,
+    workforceFactoriesPageInfo: state.workforce.workforceFactoriesPageInfo,
+    fetchingWorkforceFactories: state.workforce.fetchingWorkforceFactories,
+    fetchedWorkforceFactories: state.workforce.fetchedWorkforceFactories,
+    errorWorkforceFactories: state.workforce.errorWorkforceFactories,
     submittingMutation: state.workforce.submittingMutation,
     mutation: state.workforce.mutation,
     confirmed: state.core.confirmed,
@@ -212,7 +212,7 @@ const mapStateToProps = (state) => (
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(
   {
-    fetchWorkforceOfficesSummary, journalize, coreConfirm,
+    fetchWorkforceFactoriesSummary, journalize, coreConfirm,
   },
   dispatch,
 );

@@ -9,16 +9,22 @@ import {
 } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
 import {
+  createRepresentative,
+  fetchRepresentativeByClientMutationId,
+} from "../../actions";
+import {
   TextInput,
   journalize,
   PublishedComponent,
   FormattedMessage,
+  formatMutation,
 } from "@openimis/fe-core";
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { createOrganizationEmployee } from "../../actions";
-
+import { createWorkforceFactory } from "../../actions";
+import WorkforceForm from "../../components/form/WorkforceForm";
+import { formatRepresentativeGQL } from "../../utils/format_gql";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -29,7 +35,7 @@ const styles = (theme) => ({
   },
 });
 
-class AddWorkforceOfficePage extends Component {
+class AddWorkforceFactoryPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -40,7 +46,10 @@ class AddWorkforceOfficePage extends Component {
 
   componentDidUpdate(prevProps) {
     const { submittingMutation, mutation, dispatch } = this.props;
-    if (!submittingMutation && prevProps.submittingMutation !== submittingMutation) {
+    if (
+      !submittingMutation &&
+      prevProps.submittingMutation !== submittingMutation
+    ) {
       dispatch(journalize(mutation));
     }
   }
@@ -49,10 +58,45 @@ class AddWorkforceOfficePage extends Component {
     const { stateEdited } = this.state;
     const { dispatch } = this.props;
 
+    const representativeData = {
+      type: "organization",
+      nameBn: stateEdited.repNameBn,
+      nameEn: stateEdited.repName,
+      location: stateEdited.repLocation,
+      address: stateEdited.repAddress,
+      phoneNumber: stateEdited.repPhone,
+      email: stateEdited.repEmail,
+      nid: stateEdited.nid,
+      passportNo: stateEdited.passport,
+      birthDate: stateEdited.birthDate,
+      position: stateEdited.position,
+    };
 
-    const workforceOfficeData = {
-      employer: stateEdited.employer,
-      representative: stateEdited.representative,
+    const representativeMutation = await formatMutation(
+      "createWorkforceRepresentative",
+      formatRepresentativeGQL(representativeData),
+      `Created Representative ${representativeData.nameEn}`
+    );
+    const representativeClientMutationId =
+      representativeMutation.clientMutationId;
+
+    await dispatch(
+      createRepresentative(
+        representativeMutation,
+        `Created Representative ${representativeData.nameEn}`
+      )
+    );
+
+    await dispatch(
+      fetchRepresentativeByClientMutationId(
+        this.props.modulesManger,
+        representativeClientMutationId
+      )
+    );
+
+    const representativeId = this.props.representativeId[0].id;
+
+    const workforceFactoryData = {
       nameBn: stateEdited.titleBn,
       nameEn: stateEdited.title,
       phoneNumber: stateEdited.phone,
@@ -61,14 +105,15 @@ class AddWorkforceOfficePage extends Component {
       address: stateEdited.address,
       location: stateEdited.location,
       status: "True",
-      workforceOffice: stateEdited.workforceOffice,
+      workforceRepresentativeId: representativeId,
+      workforceFactory: stateEdited.workforceFactory,
     };
 
     await dispatch(
-      createOrganizationEmployee(
-        workforceOfficeData,
-        `Created Workforce Office ${workforceOfficeData.nameEn}`,
-      ),
+      createWorkforceFactory(
+        workforceFactoryData,
+        `Created Workforce Factory ${workforceFactoryData.nameEn}`
+      )
     );
 
     this.setState({ isSaved: true });
@@ -99,7 +144,7 @@ class AddWorkforceOfficePage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Workforce Office"
+                      id="Workforce Factory"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>
@@ -109,25 +154,7 @@ class AddWorkforceOfficePage extends Component {
               <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.employer"
-                    value={stateEdited.employer || ""}
-                    onChange={(v) => this.updateAttribute("employer", v)}
-                    required
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.office.representative"
-                    value={stateEdited.representative || ""}
-                    onChange={(v) => this.updateAttribute("representative", v)}
-                    required
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.office.name.en"
+                    label="workforce.factory.name.en"
                     value={stateEdited.title || ""}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
@@ -137,17 +164,16 @@ class AddWorkforceOfficePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.name.bn"
+                    label="workforce.factory.name.bn"
                     value={stateEdited.titleBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
 
-
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.phone"
+                    label="workforce.factory.phone"
                     value={stateEdited.phone || ""}
                     onChange={(v) => this.updateAttribute("phone", v)}
                     type={"number"}
@@ -157,19 +183,17 @@ class AddWorkforceOfficePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.email"
+                    label="workforce.factory.email"
                     value={stateEdited.email || ""}
                     onChange={(v) => this.updateAttribute("email", v)}
                     type={"email"}
                     readOnly={isSaved}
-
                   />
                 </Grid>
 
-
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.website"
+                    label="workforce.factory.website"
                     value={stateEdited.website || ""}
                     onChange={(v) => this.updateAttribute("website", v)}
                     readOnly={isSaved}
@@ -178,7 +202,7 @@ class AddWorkforceOfficePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.office.address"
+                    label="workforce.factory.address"
                     value={stateEdited.address || ""}
                     onChange={(v) => this.updateAttribute("address", v)}
                     readOnly={isSaved}
@@ -190,13 +214,85 @@ class AddWorkforceOfficePage extends Component {
                     pubRef="location.DetailedLocation"
                     withNull={true}
                     value={stateEdited.location || null}
-                    onChange={(location) => this.updateAttribute("location", location)}
+                    onChange={(location) =>
+                      this.updateAttribute("location", location)
+                    }
                     readOnly={isSaved}
                     required
                     split={true}
                   />
                 </Grid>
-                
+
+                <Grid item xs={12} className={classes.item}>
+                  <WorkforceForm
+                    title="Workforce Representative Info"
+                    stateEdited={stateEdited}
+                    isSaved={isSaved}
+                    updateAttribute={this.updateAttribute}
+                    fields={[
+                      {
+                        key: "repName",
+                        label: "workforce.representative.name.en",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "repNameBn",
+                        label: "workforce.representative.name.bn",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "position",
+                        label: "workforce.representative.position",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "repPhone",
+                        label: "workforce.representative.phone",
+                        type: "number",
+                        required: true,
+                      },
+                      {
+                        key: "repEmail",
+                        label: "workforce.representative.email",
+                        type: "email",
+                        required: true,
+                      },
+                      {
+                        key: "nid",
+                        label: "workforce.representative.nid",
+                        type: "number",
+                        required: true,
+                      },
+                      {
+                        key: "passport",
+                        label: "workforce.representative.passport",
+                        type: "text",
+                        required: false,
+                      },
+                      {
+                        key: "birthDate",
+                        label: "workforce.representative.birthDate",
+                        type: "date",
+                        required: false,
+                      },
+                      {
+                        key: "repLocation",
+                        label: "workforce.representative.location",
+                        type: "location",
+                        required: true,
+                      },
+                      {
+                        key: "repAddress",
+                        label: "workforce.representative.address",
+                        type: "text",
+                        required: true,
+                      },
+                    ]}
+                  />
+                </Grid>
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
                   <IconButton
@@ -222,6 +318,9 @@ class AddWorkforceOfficePage extends Component {
 const mapStateToProps = (state) => ({
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
+  representativeId: state.workforce.fetchedRepresentativeByClientMutationId,
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceOfficePage));
+export default connect(mapStateToProps)(
+  withStyles(styles)(AddWorkforceFactoryPage)
+);

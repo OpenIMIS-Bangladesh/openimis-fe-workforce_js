@@ -119,5 +119,16 @@
     "workforce.company.establishment_Name": "Workforce Company Establishment Name",
     "workforce.company.establishment_date": "Workforce Company Establishment Date",
     "workforce.company.status": "Workforce Company Status",
-    "workforce.company.representative": "Workforce Representative"
+    "workforce.company.representative": "Workforce Representative",
+
+    "workforce.factory.addNewTooltip": "Add Workforce Facory",
+    "workforce.factory.name.en": "Workforce Facory Name En",
+    "workforce.factory.name.bn": "Workforce Facory Name Bn",
+    "workforce.factory.location": "Workforce Facory Location",
+    "workforce.factory.address": "Workforce Facory Address",
+    "workforce.factory.phone": "Workforce Facory Phone",
+    "workforce.factory.email": "Workforce Facory Email",
+    "workforce.factory.website": "Workforce Facory Website",
+    "workforce.factory.status": "Workforce Facory Status",
+    "workforce.factory.representative": "Workforce Facory Representative"
 }

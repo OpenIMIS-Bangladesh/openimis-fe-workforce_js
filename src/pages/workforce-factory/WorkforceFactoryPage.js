@@ -5,8 +5,8 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import {
   withModulesManager, withHistory, historyPush,
 } from "@openimis/fe-core";
-import WorkforceFactoryForm from "../../components/workforce-office/WorkforceFactoryForm";
-import { createWorkforceOffice, updateWorkforceOffice } from "../../actions";
+import WorkforceFactoryForm from "../../components/workforce-factory/WorkforceFactoryForm";
+import { createWorkforceFactory, updateWorkforceFactory } from "../../actions";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../constants";
 
 const styles = (theme) => ({
@@ -19,17 +19,17 @@ class WorkforceFactoryPage extends Component {
     historyPush(this.props.modulesManager, this.props.history, "grievance.route.ticket");
   };
 
-  save = (office) => {
-    if (!office.id) {
-      this.props.createWorkforceOffice(
+  save = (factory) => {
+    if (!factory.id) {
+      this.props.createWorkforceFactory(
         this.props.modulesManager,
-        office,
+        factory,
         "Create",
       );
     } else {
-      this.props.updateWorkforceOffice(
+      this.props.updateWorkforceFactory(
         this.props.modulesManager,
-        office,
+        factory,
         "Update",
       );
     }
@@ -37,7 +37,7 @@ class WorkforceFactoryPage extends Component {
 
   render() {
     const {
-      classes, modulesManager, history, rights, workforceOfficeUuid, overview, organizationVersion,
+      classes, modulesManager, history, rights, workforceFactoryUuid, overview, organizationVersion,
     } = this.props;
     // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
@@ -46,10 +46,10 @@ class WorkforceFactoryPage extends Component {
       <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
         <WorkforceFactoryForm
           overview={overview}
-          workforceOfficeUuid={workforceOfficeUuid}
+          workforceFactoryUuid={workforceFactoryUuid}
           organizationVersion={organizationVersion}
           readOnly={readOnly}
-          back={() => historyPush(modulesManager, history, "workforce.route.offices")}
+          back={() => historyPush(modulesManager, history, "workforce.route.factories")}
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
           save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
         />
@@ -60,14 +60,14 @@ class WorkforceFactoryPage extends Component {
 
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  workforceOfficeUuid: props.match.params.workforce_office_uuid,
+  workforceFactoryUuid: props.match.params.workforce_factory_uuid,
   organizationVersion: props.match.params.version,
-  office: state.workforce.office,
+  factory: state.workforce.factory,
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  createWorkforceOffice,
-  updateWorkforceOffice,
+  createWorkforceFactory,
+  updateWorkforceFactory,
 }, dispatch);
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(

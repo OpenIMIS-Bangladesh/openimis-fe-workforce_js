@@ -82,6 +82,21 @@ export function formatWorkforceOfficeGQL(office) {
 
   `;
 }
+export function formatWorkforceFactoryGQL(factory) {
+  return `
+    ${factory.id ? `id: "${formatGQLString(factory.id)}"` : ""}
+    ${factory.nameEn ? `nameEn: "${formatGQLString(factory.nameEn)}"` : ""}
+    ${factory.nameBn ? `nameBn: "${formatGQLString(factory.nameBn)}"` : ""}
+    ${factory.phoneNumber ? `phoneNumber: "${formatGQLString(factory.phoneNumber)}"` : ""}
+    ${factory.email ? `email: "${formatGQLString(factory.email)}"` : ""}
+    ${factory.website ? `passportNo: "${factory.website}"` : ""}
+    ${factory.address ? `address: "${factory.address}"` : ""}
+    ${decodeId(office.location.id) ? `location: "${decodeId(factory.location.id)}"` : ""}
+    ${factory.status ? `status: "${office.status}"` : ""}
+    ${factory.workforceRepresentativeId ? `workforceRepresentativeId: "${decodeId(factory.workforceRepresentativeId)}"` : ""}
+
+  `;
+}
 export function formatWorkforceCompanyGQL(company) {
   return `
     ${company.id ? `id: "${formatGQLString(company.id)}"` : ""}

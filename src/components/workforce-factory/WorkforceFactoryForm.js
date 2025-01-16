@@ -7,10 +7,10 @@ import {
 } from "@openimis/fe-core";
 import { bindActionCreators } from "redux";
 import {
-  fetchWorkforceOffice,
+  fetchWorkforceFactory,
 } from "../../actions";
-import EditWorkforceOfficePage from "../../pages/workforce-office/EditWorkforceOfficePage";
-import AddWorkforceOfficePage from "../../pages/workforce-office/AddWorkforceOfficePage";
+import EditWorkforceFactoryPage from "../../pages/workforce-factory/EditWorkforceFactoryPage";
+import AddWorkforceFactoryPage from "../../pages/workforce-factory/AddWorkforceFactoryPage";
 import { MODULE_NAME } from "../../constants";
 
 class WorkforceFactoryForm extends Component {
@@ -19,14 +19,14 @@ class WorkforceFactoryForm extends Component {
     this.state = {
       lockNew: false,
       reset: 0,
-      workforceOfficeUuid: null,
+      workforceFactoryUuid: null,
       ticket: this._newTicket(),
     };
   }
 
   componentDidMount() {
-    if (this.props.workforceOfficeUuid) {
-      this.setState((state, props) => ({ workforceOfficeUuid: props.workforceOfficeUuid }));
+    if (this.props.workforceFactoryUuid) {
+      this.setState((state, props) => ({ workforceFactoryUuid: props.workforceFactoryUuid }));
     }
   }
 
@@ -34,27 +34,27 @@ class WorkforceFactoryForm extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedWorkforceOffice !== this.props.fetchedWorkforceOffice
-      && !!this.props.fetchedWorkforceOffice
-      && !!this.props.workforceOffice) {
+    if (prevProps.fetchedWorkforcefactory !== this.props.fetchedWorkforcefactory
+      && !!this.props.fetchedWorkforcefactory
+      && !!this.props.workforceFactory) {
       this.setState((state, props) => ({
-        workforceOffice: { ...props.workforceOffice },
-        workforceOfficeUuid: props.workforceOffice.id,
+        workforceFactory: { ...props.workforceFactory },
+        workforceFactoryUuid: props.workforceFactory.id,
         lockNew: false,
       }));
-    } else if (prevState.workforceOfficeUuid !== this.state.workforceOfficeUuid) {
-      const filters = [`id: "${this.state.workforceOfficeUuid}"`];
-      this.props.fetchWorkforceOffice(
+    } else if (prevState.workforceFactoryUuid !== this.state.workforceFactoryUuid) {
+      const filters = [`id: "${this.state.workforceFactoryUuid}"`];
+      this.props.fetchWorkforceFactory(
         this.props.modulesManager,
         filters,
       );
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
-      if (this.props?.workforceOffice?.id) {
-        this.props.fetchWorkforceOffice(
+      if (this.props?.workforceFactory?.id) {
+        this.props.fetchWorkforceFactory(
           this.props.modulesManager,
-          [`id: "${this.state.workforceOfficeUuid}"`],
+          [`id: "${this.state.workforceFactoryUuid}"`],
         );
       }
     }
@@ -94,7 +94,7 @@ class WorkforceFactoryForm extends Component {
   render() {
     const {
       fetchingTicket,
-      fetchedWorkforceOffice,
+      fetchedWorkforcefactory,
       errorTicket,
       save, back,
     } = this.props;
@@ -104,7 +104,7 @@ class WorkforceFactoryForm extends Component {
       reset,
       update,
       overview,
-      workforceOfficeUuid,
+      workforceFactoryUuid,
       ticket,
     } = this.state;
 
@@ -117,27 +117,27 @@ class WorkforceFactoryForm extends Component {
       },
     ];
 
-    console.log({ workforceOfficeUuid });
+    console.log({ workforceFactoryUuid });
 
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
-        {(!!fetchedWorkforceOffice || !workforceOfficeUuid) && (
+        {(!!fetchedWorkforcefactory || !workforceFactoryUuid) && (
           <Form
             module={MODULE_NAME}
-            edited_id={workforceOfficeUuid}
+            edited_id={workforceFactoryUuid}
             edited={ticket}
             reset={reset}
             update={update}
-            title="Workforce Office"
+            title="Workforce Factory"
             titleParams={{ label: "Label" }}
             back={back}
             save={save ? this._save : null}
             canSave={this.canSave}
-            reload={(workforceOfficeUuid || readOnly) && this.reload}
+            reload={(workforceFactoryUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={workforceOfficeUuid ? [EditWorkforceOfficePage] : [AddWorkforceOfficePage]}
+            Panels={workforceFactoryUuid ? [EditWorkforceFactoryPage] : [AddWorkforceFactoryPage]}
             onEditedChanged={this.onEditedChanged}
           />
         )}
@@ -151,7 +151,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   fetchingTicket: state.workforce.fetchingTicket,
   errorTicket: state.workforce.errorTicket,
-  fetchedWorkforceOffice: state.workforce.fetchedWorkforceOffice,
+  fetchedWorkforcefactory: state.workforce.fetchedWorkforcefactory,
   ticket: state.workforce.ticket,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
@@ -159,7 +159,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchWorkforceOffice,
+  fetchWorkforceFactory,
   journalize,
 }, dispatch);
 
