@@ -15,10 +15,7 @@ import {
   FormattedMessage,
   formatMutation,
 } from "@openimis/fe-core";
-import {
-  updateWorkforceOffice,
-  updateRepresentative,
-} from "../../actions";
+import { updateWorkforceOffice, updateRepresentative } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { number } from "prop-types";
@@ -147,7 +144,7 @@ class EditWorkforceOfficePage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Organizations Employee"
+                      id="Workforce Office"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>
@@ -157,8 +154,8 @@ class EditWorkforceOfficePage extends Component {
               <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.employee.name.en"
-                    value={stateEdited.nameEn}
+                    label="workforce.office.name.en"
+                    value={stateEdited.title || ""}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
                     readOnly={isSaved}
@@ -167,18 +164,17 @@ class EditWorkforceOfficePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.employee.name.bn"
-                    value={stateEdited.nameBn || ""}
+                    label="workforce.office.name.bn"
+                    value={stateEdited.titleBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
-                    required
                     readOnly={isSaved}
                   />
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.employee.phone"
-                    value={stateEdited.phoneNumber || ""}
+                    label="workforce.office.phone"
+                    value={stateEdited.phone || ""}
                     onChange={(v) => this.updateAttribute("phone", v)}
                     type={"number"}
                     readOnly={isSaved}
@@ -187,7 +183,7 @@ class EditWorkforceOfficePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.employee.email"
+                    label="workforce.office.email"
                     value={stateEdited.email || ""}
                     onChange={(v) => this.updateAttribute("email", v)}
                     type={"email"}
@@ -197,72 +193,23 @@ class EditWorkforceOfficePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.employee.gender"
-                    value={stateEdited.gender || ""}
-                    onChange={(v) => this.updateAttribute("gender", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="core.DatePicker"
-                    label={"workforce.organization.employee.birthdate"}
-                    value={stateEdited.birthDate || ""}
-                    onChange={(v) => this.updateAttribute("birthDate", v)}
+                    label="workforce.office.website"
+                    value={stateEdited.website || ""}
+                    onChange={(v) => this.updateAttribute("website", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="core.DatePicker"
-                    label={"workforce.organization.employee.joining_date"}
-                    value={stateEdited.firstJoiningDate || ""}
-                    onChange={(v) =>
-                      this.updateAttribute("firstJoiningDate", v)
-                    }
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.employee.birth_certificate_no"
-                    value={stateEdited.birthCertificateNo || ""}
-                    onChange={(v) =>
-                      this.updateAttribute("birthCertificateNo", v)
-                    }
-                    type={"number"}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.organization.employee.nid"
-                    value={stateEdited.nid || ""}
-                    onChange={(v) => this.updateAttribute("nid", v)}
-                    type={"number"}
-                    required
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.organization.employee.passport_no"
-                    value={stateEdited.passportNo || ""}
-                    onChange={(v) => this.updateAttribute("passportNo", v)}
-                    type={"number"}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={12} className={classes.item}>
-                  <TextInput
-                    label="workforce.organization.employee.address"
+                    label="workforce.office.address"
                     value={stateEdited.address || ""}
                     onChange={(v) => this.updateAttribute("address", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={12} className={classes.item}>
+
+                <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}

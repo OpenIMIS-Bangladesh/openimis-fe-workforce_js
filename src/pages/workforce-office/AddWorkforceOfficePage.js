@@ -18,11 +18,11 @@ import {
 import {
   createRepresentative,
   fetchRepresentativeByClientMutationId,
+  createWorkforceOffice,
 } from "../../actions";
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { createWorkforceOffice } from "../../actions";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 
@@ -154,24 +154,6 @@ class AddWorkforceOfficePage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.office.employer"
-                    value={stateEdited.employer || ""}
-                    onChange={(v) => this.updateAttribute("employer", v)}
-                    required
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.office.representative"
-                    value={stateEdited.representative || ""}
-                    onChange={(v) => this.updateAttribute("representative", v)}
-                    required
-                    readOnly={isSaved}
-                  />
-                </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.office.name.en"

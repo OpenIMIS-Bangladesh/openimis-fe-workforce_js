@@ -11,6 +11,7 @@ import { Save } from "@material-ui/icons";
 import {
   createRepresentative,
   fetchRepresentativeByClientMutationId,
+  createWorkforceFactory,
 } from "../../actions";
 import {
   TextInput,
@@ -22,7 +23,6 @@ import {
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { createWorkforceFactory } from "../../actions";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 
