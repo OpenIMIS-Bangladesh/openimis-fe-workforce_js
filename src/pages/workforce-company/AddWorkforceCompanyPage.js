@@ -13,12 +13,18 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
+  formatMutation,
 } from "@openimis/fe-core";
+import {
+  createRepresentative,
+  fetchRepresentativeByClientMutationId,
+} from "../../actions";
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { createWorkforceCompany } from "../../actions";
-
+import WorkforceForm from "../../components/form/WorkforceForm";
+import { formatRepresentativeGQL } from "../../utils/format_gql";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -40,7 +46,10 @@ class AddWorkforceCompanyPage extends Component {
 
   componentDidUpdate(prevProps) {
     const { submittingMutation, mutation, dispatch } = this.props;
-    if (!submittingMutation && prevProps.submittingMutation !== submittingMutation) {
+    if (
+      !submittingMutation &&
+      prevProps.submittingMutation !== submittingMutation
+    ) {
       dispatch(journalize(mutation));
     }
   }
@@ -49,6 +58,43 @@ class AddWorkforceCompanyPage extends Component {
     const { stateEdited } = this.state;
     const { dispatch } = this.props;
 
+    const representativeData = {
+      type: "organization",
+      nameBn: stateEdited.repNameBn,
+      nameEn: stateEdited.repName,
+      location: stateEdited.repLocation,
+      address: stateEdited.repAddress,
+      phoneNumber: stateEdited.repPhone,
+      email: stateEdited.repEmail,
+      nid: stateEdited.nid,
+      passportNo: stateEdited.passport,
+      birthDate: stateEdited.birthDate,
+      position: stateEdited.position,
+    };
+
+    const representativeMutation = await formatMutation(
+      "createWorkforceRepresentative",
+      formatRepresentativeGQL(representativeData),
+      `Created Representative ${representativeData.nameEn}`
+    );
+    const representativeClientMutationId =
+      representativeMutation.clientMutationId;
+
+    await dispatch(
+      createRepresentative(
+        representativeMutation,
+        `Created Representative ${representativeData.nameEn}`
+      )
+    );
+
+    await dispatch(
+      fetchRepresentativeByClientMutationId(
+        this.props.modulesManger,
+        representativeClientMutationId
+      )
+    );
+
+    const representativeId = this.props.representativeId[0].id;
 
     const workforceCompanyData = {
       nameBn: stateEdited.titleBn,
@@ -66,16 +112,16 @@ class AddWorkforceCompanyPage extends Component {
       foundationDate: stateEdited.foundationDate,
       businessSector: stateEdited.businessSector,
       establishmentName: stateEdited.establishmentName,
-      workforceRepresentativeId: stateEdited.workforceRepresentativeId,
       status: "True",
+      workforceRepresentativeId: representativeId,
       workforceCompany: stateEdited.workforceCompany,
     };
 
     await dispatch(
       createWorkforceCompany(
         workforceCompanyData,
-        `Created Workforce Company ${workforceCompanyData.nameEn}`,
-      ),
+        `Created Workforce Company ${workforceCompanyData.nameEn}`
+      )
     );
 
     this.setState({ isSaved: true });
@@ -114,16 +160,6 @@ class AddWorkforceCompanyPage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-              
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.company.representative"
-                    value={stateEdited.representative || ""}
-                    onChange={(v) => this.updateAttribute("workforceRepresentative", v)}
-                    required
-                    readOnly={isSaved}
-                  />
-                </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.company.name.en"
@@ -143,7 +179,6 @@ class AddWorkforceCompanyPage extends Component {
                   />
                 </Grid>
 
-
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.company.phone"
@@ -161,10 +196,8 @@ class AddWorkforceCompanyPage extends Component {
                     onChange={(v) => this.updateAttribute("email", v)}
                     type={"email"}
                     readOnly={isSaved}
-
                   />
                 </Grid>
-
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
@@ -190,7 +223,6 @@ class AddWorkforceCompanyPage extends Component {
                     value={stateEdited.licenceNumber || ""}
                     onChange={(v) => this.updateAttribute("licenceNumber", v)}
                     readOnly={isSaved}
-                    
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
@@ -204,7 +236,7 @@ class AddWorkforceCompanyPage extends Component {
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
-                    <PublishedComponent
+                  <PublishedComponent
                     pubRef="core.DatePicker"
                     label={"workforce.company.foundation_date"}
                     value={stateEdited.foundationDate || ""}
@@ -212,7 +244,7 @@ class AddWorkforceCompanyPage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-            
+
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.company.association_name"
@@ -226,26 +258,32 @@ class AddWorkforceCompanyPage extends Component {
                   <TextInput
                     label="workforce.company.association_membership_number"
                     value={stateEdited.associationMembershipNumber || ""}
-                    onChange={(v) => this.updateAttribute("associationMembershipNumber", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.company.establishment_Name"
-                    value={stateEdited.establishmentName || ""}
-                    onChange={(v) => this.updateAttribute("establishmentName", v)}
+                    onChange={(v) =>
+                      this.updateAttribute("associationMembershipNumber", v)
+                    }
                     readOnly={isSaved}
                   />
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
-                    <PublishedComponent
+                  <TextInput
+                    label="workforce.company.establishment_Name"
+                    value={stateEdited.establishmentName || ""}
+                    onChange={(v) =>
+                      this.updateAttribute("establishmentName", v)
+                    }
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
+                  <PublishedComponent
                     pubRef="core.DatePicker"
                     label={"workforce.company.establishment_date"}
                     value={stateEdited.establishmentDate || ""}
-                    onChange={(v) => this.updateAttribute("establishmentDate", v)}
+                    onChange={(v) =>
+                      this.updateAttribute("establishmentDate", v)
+                    }
                     readOnly={isSaved}
                   />
                 </Grid>
@@ -264,13 +302,86 @@ class AddWorkforceCompanyPage extends Component {
                     pubRef="location.DetailedLocation"
                     withNull={true}
                     value={stateEdited.location || null}
-                    onChange={(location) => this.updateAttribute("location", location)}
+                    onChange={(location) =>
+                      this.updateAttribute("location", location)
+                    }
                     readOnly={isSaved}
                     required
                     split={true}
                   />
                 </Grid>
-                
+
+                <Grid item xs={12} className={classes.item}>
+                  <WorkforceForm
+                    title="Workforce Representative Info"
+                    stateEdited={stateEdited}
+                    isSaved={isSaved}
+                    updateAttribute={this.updateAttribute}
+                    fields={[
+                      {
+                        key: "repName",
+                        label: "workforce.representative.name.en",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "repNameBn",
+                        label: "workforce.representative.name.bn",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "position",
+                        label: "workforce.representative.position",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "repPhone",
+                        label: "workforce.representative.phone",
+                        type: "number",
+                        required: true,
+                      },
+                      {
+                        key: "repEmail",
+                        label: "workforce.representative.email",
+                        type: "email",
+                        required: true,
+                      },
+                      {
+                        key: "nid",
+                        label: "workforce.representative.nid",
+                        type: "number",
+                        required: true,
+                      },
+                      {
+                        key: "passport",
+                        label: "workforce.representative.passport",
+                        type: "text",
+                        required: false,
+                      },
+                      {
+                        key: "birthDate",
+                        label: "workforce.representative.birthDate",
+                        type: "date",
+                        required: true,
+                      },
+                      {
+                        key: "repLocation",
+                        label: "workforce.representative.location",
+                        type: "location",
+                        required: true,
+                      },
+                      {
+                        key: "repAddress",
+                        label: "workforce.representative.address",
+                        type: "text",
+                        required: true,
+                      },
+                    ]}
+                  />
+                </Grid>
+
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
                   <IconButton
@@ -295,7 +406,10 @@ class AddWorkforceCompanyPage extends Component {
 
 const mapStateToProps = (state) => ({
   submittingMutation: state.workforce.submittingMutation,
+  representativeId: state.workforce.fetchedRepresentativeByClientMutationId,
   mutation: state.workforce.mutation,
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceCompanyPage));
+export default connect(mapStateToProps)(
+  withStyles(styles)(AddWorkforceCompanyPage)
+);

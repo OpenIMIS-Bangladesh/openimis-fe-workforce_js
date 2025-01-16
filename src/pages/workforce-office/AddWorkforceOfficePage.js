@@ -13,12 +13,18 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
+  formatMutation,
 } from "@openimis/fe-core";
+import {
+  createRepresentative,
+  fetchRepresentativeByClientMutationId,
+} from "../../actions";
 
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { createOrganizationEmployee } from "../../actions";
-
+import WorkforceForm from "../../components/form/WorkforceForm";
+import { formatRepresentativeGQL } from "../../utils/format_gql";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -40,7 +46,10 @@ class AddWorkforceOfficePage extends Component {
 
   componentDidUpdate(prevProps) {
     const { submittingMutation, mutation, dispatch } = this.props;
-    if (!submittingMutation && prevProps.submittingMutation !== submittingMutation) {
+    if (
+      !submittingMutation &&
+      prevProps.submittingMutation !== submittingMutation
+    ) {
       dispatch(journalize(mutation));
     }
   }
@@ -49,6 +58,43 @@ class AddWorkforceOfficePage extends Component {
     const { stateEdited } = this.state;
     const { dispatch } = this.props;
 
+    const representativeData = {
+      type: "organization",
+      nameBn: stateEdited.repNameBn,
+      nameEn: stateEdited.repName,
+      location: stateEdited.repLocation,
+      address: stateEdited.repAddress,
+      phoneNumber: stateEdited.repPhone,
+      email: stateEdited.repEmail,
+      nid: stateEdited.nid,
+      passportNo: stateEdited.passport,
+      birthDate: stateEdited.birthDate,
+      position: stateEdited.position,
+    };
+
+    const representativeMutation = await formatMutation(
+      "createWorkforceRepresentative",
+      formatRepresentativeGQL(representativeData),
+      `Created Representative ${representativeData.nameEn}`
+    );
+    const representativeClientMutationId =
+      representativeMutation.clientMutationId;
+
+    await dispatch(
+      createRepresentative(
+        representativeMutation,
+        `Created Representative ${representativeData.nameEn}`
+      )
+    );
+
+    await dispatch(
+      fetchRepresentativeByClientMutationId(
+        this.props.modulesManger,
+        representativeClientMutationId
+      )
+    );
+
+    const representativeId = this.props.representativeId[0].id;
 
     const workforceOfficeData = {
       employer: stateEdited.employer,
@@ -61,14 +107,15 @@ class AddWorkforceOfficePage extends Component {
       address: stateEdited.address,
       location: stateEdited.location,
       status: "True",
+      workforceRepresentativeId: representativeId,
       workforceOffice: stateEdited.workforceOffice,
     };
 
     await dispatch(
       createOrganizationEmployee(
         workforceOfficeData,
-        `Created Workforce Office ${workforceOfficeData.nameEn}`,
-      ),
+        `Created Workforce Office ${workforceOfficeData.nameEn}`
+      )
     );
 
     this.setState({ isSaved: true });
@@ -144,7 +191,6 @@ class AddWorkforceOfficePage extends Component {
                   />
                 </Grid>
 
-
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.office.phone"
@@ -162,10 +208,8 @@ class AddWorkforceOfficePage extends Component {
                     onChange={(v) => this.updateAttribute("email", v)}
                     type={"email"}
                     readOnly={isSaved}
-
                   />
                 </Grid>
-
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
@@ -190,13 +234,86 @@ class AddWorkforceOfficePage extends Component {
                     pubRef="location.DetailedLocation"
                     withNull={true}
                     value={stateEdited.location || null}
-                    onChange={(location) => this.updateAttribute("location", location)}
+                    onChange={(location) =>
+                      this.updateAttribute("location", location)
+                    }
                     readOnly={isSaved}
                     required
                     split={true}
                   />
                 </Grid>
-                
+
+                <Grid item xs={12} className={classes.item}>
+                  <WorkforceForm
+                    title="Workforce Representative Info"
+                    stateEdited={stateEdited}
+                    isSaved={isSaved}
+                    updateAttribute={this.updateAttribute}
+                    fields={[
+                      {
+                        key: "repName",
+                        label: "workforce.representative.name.en",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "repNameBn",
+                        label: "workforce.representative.name.bn",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "position",
+                        label: "workforce.representative.position",
+                        type: "text",
+                        required: true,
+                      },
+                      {
+                        key: "repPhone",
+                        label: "workforce.representative.phone",
+                        type: "number",
+                        required: true,
+                      },
+                      {
+                        key: "repEmail",
+                        label: "workforce.representative.email",
+                        type: "email",
+                        required: true,
+                      },
+                      {
+                        key: "nid",
+                        label: "workforce.representative.nid",
+                        type: "number",
+                        required: true,
+                      },
+                      {
+                        key: "passport",
+                        label: "workforce.representative.passport",
+                        type: "text",
+                        required: false,
+                      },
+                      {
+                        key: "birthDate",
+                        label: "workforce.representative.birthDate",
+                        type: "date",
+                        required: false,
+                      },
+                      {
+                        key: "repLocation",
+                        label: "workforce.representative.location",
+                        type: "location",
+                        required: true,
+                      },
+                      {
+                        key: "repAddress",
+                        label: "workforce.representative.address",
+                        type: "text",
+                        required: true,
+                      },
+                    ]}
+                  />
+                </Grid>
+
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
                   <IconButton
@@ -221,7 +338,10 @@ class AddWorkforceOfficePage extends Component {
 
 const mapStateToProps = (state) => ({
   submittingMutation: state.workforce.submittingMutation,
+  representativeId: state.workforce.fetchedRepresentativeByClientMutationId,
   mutation: state.workforce.mutation,
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceOfficePage));
+export default connect(mapStateToProps)(
+  withStyles(styles)(AddWorkforceOfficePage)
+);

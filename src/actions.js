@@ -153,10 +153,11 @@ export function fetchWorkforceOfficesSummary(mm, filters) {
     "email",
     "status",
     "website",
+    "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
     location_projection,
   ];
   const payload = formatPageQueryWithCount(
-    "workforceOffices",
+    "workforceEmployerOffices",
     filters,
     projections,
   );
@@ -175,10 +176,11 @@ export function fetchWorkforceOffice(mm, filters) {
     "email",
     "status",
     "website",
-    location_projection,
-  ];
+    "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
+    location_projection
+  ]; 
   const payload = formatPageQueryWithCount(
-    "workforceOffices",
+    "workforceEmployerOffices",
     filters,
     projections,
   );
@@ -205,6 +207,7 @@ export function fetchWorkforceCompaniesSummary(mm, filters) {
     "businessSector",
     "foundationDate",
     "establishmentName",
+    "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
     location_projection,
   ];
   const payload = formatPageQueryWithCount(
@@ -235,7 +238,7 @@ export function fetchWorkforceCompany(mm, filters) {
     "businessSector",
     "foundationDate",
     "establishmentName",
-
+    "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
     location_projection,
   ];
   const payload = formatPageQueryWithCount(

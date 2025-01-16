@@ -78,6 +78,8 @@ export function formatWorkforceOfficeGQL(office) {
     ${office.address ? `address: "${office.address}"` : ""}
     ${decodeId(office.location.id) ? `location: "${decodeId(office.location.id)}"` : ""}
     ${office.status ? `status: "${office.status}"` : ""}
+    ${office.workforceRepresentativeId ? `workforceRepresentativeId: "${decodeId(office.workforceRepresentativeId)}"` : ""}
+
   `;
 }
 export function formatWorkforceCompanyGQL(company) {
@@ -98,6 +100,8 @@ export function formatWorkforceCompanyGQL(company) {
     ${company.businessSector ? `businessSector: "${company.businessSector}"` : ""}
     ${company.establishmentName ? `establishmentName: "${company.establishmentName}"` : ""}
     ${company.status ? `status: "${company.status}"` : ""}
+    ${company.workforceRepresentativeId ? `workforceRepresentativeId: "${decodeId(company.workforceRepresentativeId)}"` : ""}
+
   `;
 }
 
