@@ -20,6 +20,7 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import { YoutubeSearchedFor as ResetFilterIcon, Search as DefaultSearchIcon } from "@material-ui/icons";
+import { fetchEmployeeDesignation } from "../../actions";
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
@@ -63,6 +64,8 @@ const EmployeeDesignationSearcher = ({ filters, onChangeFilters }) => {
   const handleSearch = () => {
     // Replace this with the actual query logic
     console.log("Searching with:", { email, userId });
+    const params = [{email:"mahmud@tappware.com"}, {designations_Status:"active"}]
+    fetchEmployeeDesignation()
     // Example: Call a GraphQL query or API endpoint
   };
 
@@ -110,8 +113,8 @@ const EmployeeDesignationSearcher = ({ filters, onChangeFilters }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={email || ""}
+                  onChange={(value) => setEmail(value)}
                   required={true}
                   readOnly={false}
                   type="email"
@@ -121,7 +124,7 @@ const EmployeeDesignationSearcher = ({ filters, onChangeFilters }) => {
                 <TextInput
                   label="User ID"
                   value={userId}
-                  onChange={(e) => setUserId(e.target.value)}
+                  onChange={(value) => setUserId(value)}
                   required={true}
                   readOnly={false}
                   type="number"

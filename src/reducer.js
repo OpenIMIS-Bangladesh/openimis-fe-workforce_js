@@ -119,7 +119,7 @@ function reducer(
     fetchingEmployeeDesignationData: false,
     fetchedEmployeeDesignationData: false,
     errorEmployeeDesignationData: null,
-    employeeDesignationData: [],
+    employeeDesignationData: null,
     employeeDesignationDataPageInfo: { totalCount: 0 },
 
     submittingMutation: false,
@@ -401,7 +401,7 @@ function reducer(
         fetchingEmployeeDesignationData: true,
         fetchedEmployeeDesignationData: false,
         errorEmployeeDesignationData: null,
-        employeeDesignationData: [],
+        employeeDesignationData: null,
         employeeDesignationDataPageInfo: { totalCount: 0 },
       };
     case "WORKFORCE_ORGANIZATIONS_EMPLOYEE_DESIGNATION_RESP":
@@ -409,13 +409,16 @@ function reducer(
         ...state,
         fetchingEmployeeDesignationData: false,
         fetchedEmployeeDesignationData: true,
-        employeeDesignationData: parseData(
-          action.payload.data.workforceEmployeeDesignation
-        ),
+        employeeDesignationData:parseData(action.payload.data.workforceOrganizationsEmployeeDesignation).map(
+          (employeeDesignation) => ({
+            ...employeeDesignation,
+            id: decodeId(employeeDesignation.id),
+          })
+        )?.[0],
+        errorEmployeeDesignationData: formatGraphQLError(action.payload),
         employeeDesignationDataPageInfo: pageInfo(
           action.payload.data.workforceEmployeeDesignation
         ),
-        errorEmployeeDesignationData: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATIONS_EMPLOYEE_DESIGNATION_ERR":
       return {

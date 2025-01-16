@@ -603,6 +603,27 @@ export function fetchUnitDesignation(mm, filters) {
   return graphql(payload, "WORKFORCE_ORGANIZATION_UNIT_DESIGNATION");
 }
 
+///fetching employee designation details
+
+export function fetchEmployeeDesignation(mm, filters) {
+  const projections = [
+    "id",
+    "designations {id,designation{id,nameBn, nameEn,unit{nameBn,nameEn},organization{nameBn,nameEn}}}",
+    "nameBn",
+    "email",
+    "nid",
+    "relatedUser {id,loginName}",
+    "phoneNumber",
+    "organization{id,nameBn,nameEn}",
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceOrganizationEmployeeDesignation",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATIONS_EMPLOYEE_DESIGNATION");
+}
+
 export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
   const payload = `{
   workforceRepresentatives(
