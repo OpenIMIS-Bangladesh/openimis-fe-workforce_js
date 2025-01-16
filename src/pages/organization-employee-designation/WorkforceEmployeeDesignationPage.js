@@ -1,42 +1,46 @@
-import React, { Component } from 'react'
-import EmployeeDesignationSearcher from '../../components/organization-employee-designation/EmployeeDesignationSearcher'
-import EmployeeDesignaitonInfo from '../../components/organization-employee-designation/EmployeeDesignaitonInfo'
+import React, { Component } from "react";
+import { withModulesManager } from "@openimis/fe-core";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import EmployeeDesignationSearcher
+  from "../../components/organization-employee-designation/EmployeeDesignationSearcher";
+import EmployeeDesignaitonInfo from "../../components/organization-employee-designation/EmployeeDesignaitonInfo";
+import AssignDesignation from "../../components/organization-employee-designation/AssignDesignation";
 
-export default class WorkforceEmployeeDesignationPage extends Component {
-  
+class WorkforceEmployeeDesignationPage extends Component {
+
   render() {
+    const {
+      employeeDesignationData,
+    } = this.props;
+
     const userData = {
-      name: "নকশন ইসলানা আগার",
-      email: "azadhb@gmail.com",
-      phone: "01718157611",
-      userId: "1000000008034",
+      name: employeeDesignationData?.nameBn || "",
+      email: employeeDesignationData?.email || "",
+      phone: employeeDesignationData?.phoneNumber || "",
+      nid: employeeDesignationData?.nid || "",
     };
 
-    const tableData = [
-      {
-        division: "মন্ত্রণালয়",
-        branch: "রক্ষণ শাখা",
-        position: "উপসচিব",
-        remarks: "",
-      },
-      {
-        division: "মন্ত্রণালয়",
-        branch: "অর্থ শাখা",
-        position: "উপসচিব (অতিরিক্ত)",
-        remarks: "",
-      },
-      {
-        division: "মন্ত্রণালয়",
-        branch: "আইন শাখা",
-        position: "উপসচিব (অতিরিক্ত)",
-        remarks: "",
-      },
-    ];
+    const tableData = employeeDesignationData?.designations || [];
+
     return (
+
       <div>
         <EmployeeDesignationSearcher />
-        <EmployeeDesignaitonInfo userData={userData} tableData={tableData}/>
+        <EmployeeDesignaitonInfo userData={userData} tableData={tableData} />
+        <AssignDesignation userData={userData} />
       </div>
-    )
+
+    );
   }
 }
+
+const mapStateToProps = (state) => ({
+  employeeDesignationData: state.workforce.employeeDesignationData,
+});
+
+const mapDispatchToProps = (dispatch) => {
+
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withModulesManager(WorkforceEmployeeDesignationPage));

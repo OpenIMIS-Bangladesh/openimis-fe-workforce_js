@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     ...theme.paper.paper,
     padding: theme.spacing(0),
-    justifyContent:'space-around'
+    justifyContent: "space-around",
   },
   userCard: {
     ...theme.paper.paper,
@@ -53,102 +53,67 @@ const useStyles = makeStyles((theme) => ({
 
 const EmployeeDesignationInfo = ({ userData, tableData }) => {
   const classes = useStyles();
-  console.log({ classes });
+
   return (
     <Paper className={classes.paper}>
       <Grid container spacing={0} className={classes.root}>
         {/* Employee Info Section */}
-        {userData && (
-          <Grid item xs={4}>
-            <Paper className={classes.userCard}>
-              <Typography className={classes.tableHeader}>
-                Employee Info
-              </Typography>
-              <Paper className={classes.userCard2}>
-                <Typography>Name: {userData.name}</Typography>
-                <Typography>Email: {userData.email}</Typography>
-                <Typography>Phone: {userData.phone}</Typography>
-                <Typography>NID: {userData.userId}</Typography>
+        {userData && userData.name && (
+          <>
+            <Grid item xs={4}>
+              <Paper className={classes.userCard}>
+                <Typography className={classes.tableHeader}>
+                  Employee Info
+                </Typography>
+                <Paper className={classes.userCard2}>
+                  <Typography>Name: {userData.name}</Typography>
+                  <Typography>Email: {userData.email}</Typography>
+                  <Typography>Phone: {userData.phone}</Typography>
+                  <Typography>NID: {userData.nid}</Typography>
+                </Paper>
               </Paper>
-            </Paper>
-          </Grid>
-        )}
-
-        {/* Table Section */}
-        {tableData && tableData.length > 0 && (
-          <Grid item xs={8}>
-            <Paper className={classes.paper}>
-              <TableContainer>
-                <Table size={"small"}>
-                  <TableHead className={classes.tableHeader}>
-                    <TableRow>
-                      <TableCell>Organization</TableCell>
-                      <TableCell>Unit</TableCell>
-                      <TableCell>Designation</TableCell>
-                      <TableCell>Release Date</TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {tableData.map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{row.division}</TableCell>
-                        <TableCell>{row.branch}</TableCell>
-                        <TableCell>{row.position}</TableCell>
-                        <TableCell>
-                          <PublishedComponent
-                            pubRef="core.DatePicker"
-                            label={"Release Date"}
-                            readOnly={false}
-                            required={false}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <IconButton className={classes.deleteButton}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
+            </Grid>
+            <Grid item xs={8}>
+              <Paper className={classes.paper}>
+                <TableContainer>
+                  <Table size={"small"}>
+                    <TableHead className={classes.tableHeader}>
+                      <TableRow>
+                        <TableCell>Organization</TableCell>
+                        <TableCell>Unit</TableCell>
+                        <TableCell>Designation</TableCell>
+                        <TableCell>Release Date</TableCell>
+                        <TableCell></TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
-          </Grid>
+                    </TableHead>
+                    <TableBody>
+                      {tableData.map((row, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{row?.designation?.organization?.nameBn}</TableCell>
+                          <TableCell>{row?.designation?.unit?.nameBn}</TableCell>
+                          <TableCell>{row?.designation?.nameBn}</TableCell>
+                          <TableCell>
+                            <PublishedComponent
+                              pubRef="core.DatePicker"
+                              label={"Release Date"}
+                              readOnly={false}
+                              required={false}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <IconButton className={classes.deleteButton}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </Grid>
+          </>
         )}
-
-        {/* Assign Section */}
-        <Grid item xs={12}>
-          <Grid container className={classes.userCard} spacing={2}>
-            <Grid item xs={12}>
-              <Typography className={classes.tableHeader}>Assign</Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <PublishedComponent
-                pubRef="workforceOrganization.OrganizationPicker"
-                label={
-                  <FormattedMessage
-                    module="workforce"
-                    id="workforce.organization.picker"
-                  />
-                }
-                required
-                readOnly={false}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <OrganizationUnitPicker
-                readOnly={false}
-                label={
-                  <FormattedMessage
-                    module="workforce"
-                    id="workforce.organization.unit.picker"
-                  />
-                }
-              />
-            </Grid>
-          </Grid>
-        </Grid>
       </Grid>
     </Paper>
   );
