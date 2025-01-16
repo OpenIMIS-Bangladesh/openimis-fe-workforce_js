@@ -8,11 +8,29 @@ import EmployeeDesignaitonInfo from "../../components/organization-employee-desi
 import AssignDesignation from "../../components/organization-employee-designation/AssignDesignation";
 
 class WorkforceEmployeeDesignationPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      stateEdited: {},
+      isSaved: false,
+    };
+  }
+
+  updateAttribute = (key, value) => {
+    this.setState((prevState) => ({
+      stateEdited: {
+        ...prevState.stateEdited,
+        [key]: value,
+      },
+      isSaved: false,
+    }));
+  };
 
   render() {
     const {
       employeeDesignationData,
     } = this.props;
+    const { stateEdited, isSaved } = this.state;
 
     const userData = {
       name: employeeDesignationData?.nameBn || "",
@@ -22,13 +40,16 @@ class WorkforceEmployeeDesignationPage extends Component {
     };
 
     const tableData = employeeDesignationData?.designations || [];
+    console.log({tableData})
+
+    console.log({stateEdited})
 
     return (
 
       <div>
         <EmployeeDesignationSearcher />
         <EmployeeDesignaitonInfo userData={userData} tableData={tableData} />
-        <AssignDesignation userData={userData} />
+        <AssignDesignation userData={userData} stateEdited={stateEdited} updateAttribute={this.updateAttribute}/>
       </div>
 
     );

@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AssignDesignation = ({ userData, tableData }) => {
+const AssignDesignation = ({ userData, stateEdited,updateAttribute }) => {
   const classes = useStyles();
   return (
     <Paper className={classes.paper}>
@@ -71,6 +71,8 @@ const AssignDesignation = ({ userData, tableData }) => {
                     id="workforce.organization.picker"
                   />
                 }
+                value={stateEdited.organization || null}
+                onChange={(v)=>updateAttribute('organization',v)}
                 required
                 readOnly={false}
               />
@@ -78,6 +80,8 @@ const AssignDesignation = ({ userData, tableData }) => {
             <Grid item xs={4}>
               <OrganizationUnitPicker
                 readOnly={false}
+                value={stateEdited.unit || null}
+                onChange={(v)=>updateAttribute('unit',v)}
                 label={
                   <FormattedMessage
                     module="workforce"
