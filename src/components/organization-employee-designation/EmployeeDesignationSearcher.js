@@ -10,6 +10,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { withTheme, withStyles, makeStyles } from "@material-ui/core/styles";
+import { useDispatch, useSelector } from "react-redux";
 import {
   withModulesManager,
   Contributions,
@@ -18,9 +19,11 @@ import {
   PublishedComponent,
   decodeId,
   FormattedMessage,
+  useModulesManager,
 } from "@openimis/fe-core";
 import { YoutubeSearchedFor as ResetFilterIcon, Search as DefaultSearchIcon } from "@material-ui/icons";
-import { fetchEmployeeDesignation } from "../../actions";
+import { fetchEmployeeDesignations } from "../../actions";
+import { WORKFORCE_STATUS } from "../../constants";
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
@@ -38,12 +41,12 @@ const useStyles = makeStyles((theme) => ({
   paper: theme.paper.paper,
   tableTitle: {
     ...theme.table.title,
-    padding: theme.spacing(0.5,1), // Reduced vertical padding
+    padding: theme.spacing(0.5, 1), // Reduced vertical padding
   },
-  headerButton:{
+  headerButton: {
     ...theme.table.title,
-    padding: theme.spacing(0), 
-    textAlign:'right'
+    padding: theme.spacing(0),
+    textAlign: "right",
   },
   item: theme.paper.item,
   fullHeight: {
@@ -57,16 +60,17 @@ const useStyles = makeStyles((theme) => ({
 
 const EmployeeDesignationSearcher = ({ filters, onChangeFilters }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
 
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
 
   const handleSearch = () => {
-    // Replace this with the actual query logic
-    console.log("Searching with:", { email, userId });
-    const params = [{email:"mahmud@tappware.com"}, {designations_Status:"active"}]
-    fetchEmployeeDesignation()
-    // Example: Call a GraphQL query or API endpoint
+    const prms = [];
+    prms.push(`email: "${email}"`);
+    prms.push(`designations_Status: "${WORKFORCE_STATUS.ACTIVE}"`);
+    dispatch(fetchEmployeeDesignations(modulesManager, prms));
   };
 
   const handleReset = () => {
@@ -140,5 +144,5 @@ const EmployeeDesignationSearcher = ({ filters, onChangeFilters }) => {
 
 // export default EmployeeDesignationSearcher
 export default withModulesManager(
-  withTheme(withStyles(styles)(EmployeeDesignationSearcher))
+  withTheme(withStyles(styles)(EmployeeDesignationSearcher)),
 );

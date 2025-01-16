@@ -79,7 +79,7 @@ export function fetchUnitDesignationSummary(mm, filters) {
   const projections = [
     "id", "nameEn", "nameBn", "designationLevel", "designationSequence",
     "organization{nameEn,nameBn}",
-    "unit{nameEn,nameBn}"
+    "unit{nameEn,nameBn}",
   ];
   const payload = formatPageQueryWithCount(
     "workforceOrganizationUnitDesignations",
@@ -105,8 +105,8 @@ export function fetchOrganizationEmployeesSummary(mm, filters) {
     "birthCertificateNo",
     "nid",
     "passportNo",
-    location_projection
-  ]; 
+    location_projection,
+  ];
   const payload = formatPageQueryWithCount(
     "workforceOrganizationEmployees",
     filters,
@@ -114,6 +114,7 @@ export function fetchOrganizationEmployeesSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEES");
 }
+
 export function fetchOrganizationEmployee(mm, filters) {
   const location_projection =
     "location" + mm.getProjection("location.Location.FlatProjection");
@@ -130,8 +131,8 @@ export function fetchOrganizationEmployee(mm, filters) {
     "birthCertificateNo",
     "nid",
     "passportNo",
-    location_projection
-  ]; 
+    location_projection,
+  ];
   const payload = formatPageQueryWithCount(
     "workforceOrganizationEmployees",
     filters,
@@ -152,8 +153,8 @@ export function fetchWorkforceOfficesSummary(mm, filters) {
     "email",
     "status",
     "website",
-    location_projection
-  ]; 
+    location_projection,
+  ];
   const payload = formatPageQueryWithCount(
     "workforceOffices",
     filters,
@@ -161,6 +162,7 @@ export function fetchWorkforceOfficesSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEES");
 }
+
 export function fetchWorkforceOffice(mm, filters) {
   const location_projection =
     "location" + mm.getProjection("location.Location.FlatProjection");
@@ -173,8 +175,8 @@ export function fetchWorkforceOffice(mm, filters) {
     "email",
     "status",
     "website",
-    location_projection
-  ]; 
+    location_projection,
+  ];
   const payload = formatPageQueryWithCount(
     "workforceOffices",
     filters,
@@ -203,8 +205,8 @@ export function fetchWorkforceCompaniesSummary(mm, filters) {
     "businessSector",
     "foundationDate",
     "establishmentName",
-    location_projection
-  ]; 
+    location_projection,
+  ];
   const payload = formatPageQueryWithCount(
     "workforceEmployers",
     filters,
@@ -212,6 +214,7 @@ export function fetchWorkforceCompaniesSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_COMPANIES");
 }
+
 export function fetchWorkforceCompany(mm, filters) {
   const location_projection =
     "location" + mm.getProjection("location.Location.FlatProjection");
@@ -233,8 +236,8 @@ export function fetchWorkforceCompany(mm, filters) {
     "foundationDate",
     "establishmentName",
 
-    location_projection
-  ]; 
+    location_projection,
+  ];
   const payload = formatPageQueryWithCount(
     "workforceEmployers",
     filters,
@@ -475,6 +478,7 @@ export function updateWorkforceCompany(company, clientMutationLabel) {
     },
   );
 }
+
 ////unit designation update /////////
 export function createUnitDesignation(unitDesignation, clientMutationLabel) {
   const mutation = formatMutation(
@@ -516,7 +520,7 @@ export function updateUnitDesignation(unitDesignation, clientMutationLabel) {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
       requestedDateTime,
-      id:unitDesignation.id,
+      id: unitDesignation.id,
     },
   );
 }
@@ -605,23 +609,22 @@ export function fetchUnitDesignation(mm, filters) {
 
 ///fetching employee designation details
 
-export function fetchEmployeeDesignation(mm, filters) {
+export function fetchEmployeeDesignations(mm, filters) {
   const projections = [
     "id",
-    "designations {id,designation{id,nameBn, nameEn,unit{nameBn,nameEn},organization{nameBn,nameEn}}}",
     "nameBn",
     "email",
     "nid",
-    "relatedUser {id,loginName}",
     "phoneNumber",
-    "organization{id,nameBn,nameEn}",
+    "designations {id,designation{id,nameBn, nameEn,unit{nameBn,nameEn},organization{nameBn,nameEn}}}",
+    "relatedUser {id,loginName}",
   ];
   const payload = formatPageQueryWithCount(
-    "workforceOrganizationEmployeeDesignation",
+    "workforceOrganizationEmployees",
     filters,
     projections,
   );
-  return graphql(payload, "WORKFORCE_ORGANIZATIONS_EMPLOYEE_DESIGNATION");
+  return graphql(payload, "WORKFORCE_ORGANIZATIONS_EMPLOYEE_DESIGNATIONS");
 }
 
 export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
