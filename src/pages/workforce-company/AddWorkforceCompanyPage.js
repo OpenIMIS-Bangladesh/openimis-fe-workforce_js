@@ -20,8 +20,8 @@ import {
   fetchRepresentativeByClientMutationId,
 } from "../../actions";
 
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
-import { withTheme, withStyles } from "@material-ui/core/styles";
+import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
+import { withStyles } from "@material-ui/core/styles";
 import { createWorkforceCompany } from "../../actions";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
@@ -59,7 +59,7 @@ class AddWorkforceCompanyPage extends Component {
     const { dispatch } = this.props;
 
     const representativeData = {
-      type: "organization",
+      type: "company",
       nameBn: stateEdited.repNameBn,
       nameEn: stateEdited.repName,
       location: stateEdited.repLocation,
@@ -75,7 +75,7 @@ class AddWorkforceCompanyPage extends Component {
     const representativeMutation = await formatMutation(
       "createWorkforceRepresentative",
       formatRepresentativeGQL(representativeData),
-      `Created Representative ${representativeData.nameEn}`
+      `Created Representative ${representativeData.nameEn}`,
     );
     const representativeClientMutationId =
       representativeMutation.clientMutationId;
@@ -83,15 +83,15 @@ class AddWorkforceCompanyPage extends Component {
     await dispatch(
       createRepresentative(
         representativeMutation,
-        `Created Representative ${representativeData.nameEn}`
-      )
+        `Created Representative ${representativeData.nameEn}`,
+      ),
     );
 
     await dispatch(
       fetchRepresentativeByClientMutationId(
         this.props.modulesManger,
-        representativeClientMutationId
-      )
+        representativeClientMutationId,
+      ),
     );
 
     const representativeId = this.props.representativeId[0].id;
@@ -112,7 +112,7 @@ class AddWorkforceCompanyPage extends Component {
       foundationDate: stateEdited.foundationDate,
       businessSector: stateEdited.businessSector,
       establishmentName: stateEdited.establishmentName,
-      status: "True",
+      status: WORKFORCE_STATUS.ACTIVE,
       workforceRepresentativeId: representativeId,
       workforceCompany: stateEdited.workforceCompany,
     };
@@ -120,8 +120,8 @@ class AddWorkforceCompanyPage extends Component {
     await dispatch(
       createWorkforceCompany(
         workforceCompanyData,
-        `Created Workforce Company ${workforceCompanyData.nameEn}`
-      )
+        `Created Workforce Company ${workforceCompanyData.nameEn}`,
+      ),
     );
 
     this.setState({ isSaved: true });
@@ -411,5 +411,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(
-  withStyles(styles)(AddWorkforceCompanyPage)
+  withStyles(styles)(AddWorkforceCompanyPage),
 );
