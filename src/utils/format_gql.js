@@ -92,7 +92,7 @@ export function formatWorkforceFactoryGQL(factory) {
     ${factory.email ? `email: "${formatGQLString(factory.email)}"` : ""}
     ${factory.website ? `passportNo: "${factory.website}"` : ""}
     ${factory.address ? `address: "${factory.address}"` : ""}
-    ${decodeId(office.location.id) ? `location: "${decodeId(factory.location.id)}"` : ""}
+    ${decodeId(factory.location.id) ? `location: "${decodeId(factory.location.id)}"` : ""}
     ${factory.status ? `status: "${office.status}"` : ""}
     ${factory.workforceRepresentativeId ? `workforceRepresentativeId: "${decodeId(factory.workforceRepresentativeId)}"` : ""}
 

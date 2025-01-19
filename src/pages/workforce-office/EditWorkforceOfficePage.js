@@ -99,15 +99,10 @@ class EditWorkforceOfficePage extends Component {
       email: stateEdited?.email || stateEdited.email,
       gender: stateEdited?.gender || stateEdited.gender,
       birthDate: stateEdited?.birthDate || stateEdited.birthDate,
-      birthCertificateNo:
-        stateEdited?.birthCertificateNo || stateEdited.birthCertificateNo,
-      firstJoiningDate:
-        stateEdited?.firstJoiningDate || stateEdited.firstJoiningDate,
-      passportNo: stateEdited?.passportNo || stateEdited.passportNo,
+      website: stateEdited?.website || stateEdited.website,
       address: stateEdited?.address || stateEdited.address,
       location: stateEdited?.location || stateEdited.location,
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
-
       id: stateEdited.id,
     };
 
