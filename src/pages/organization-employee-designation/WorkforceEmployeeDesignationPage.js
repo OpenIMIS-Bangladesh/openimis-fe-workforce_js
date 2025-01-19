@@ -42,13 +42,13 @@ class WorkforceEmployeeDesignationPage extends Component {
     const tableData = employeeDesignationData?.designations || [];
     console.log({tableData})
 
-    console.log({stateEdited})
+    console.log({employeeDesignationData})
 
     return (
 
       <div>
         <EmployeeDesignationSearcher />
-        <EmployeeDesignaitonInfo userData={userData} tableData={tableData} />
+        <EmployeeDesignaitonInfo employeeDesignationData={employeeDesignationData} userData={userData} tableData={tableData} />
         <AssignDesignation userData={userData} stateEdited={stateEdited} updateAttribute={this.updateAttribute}/>
       </div>
 

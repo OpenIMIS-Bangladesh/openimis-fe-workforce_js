@@ -69,7 +69,7 @@ const EmployeeDesignationSearcher = ({ filters, onChangeFilters }) => {
   const handleSearch = () => {
     const prms = [];
     prms.push(`email: "${email}"`);
-    prms.push(`designations_Status: "${WORKFORCE_STATUS.ACTIVE}"`);
+    // prms.push(`designations_Status: "${WORKFORCE_STATUS.ACTIVE}"`);
     dispatch(fetchEmployeeDesignations(modulesManager, prms));
   };
 

@@ -1,6 +1,7 @@
 import {
   formatGQLString, decodeId,
 } from "@openimis/fe-core";
+import { WORKFORCE_STATUS } from "../constants";
 
 export function formatRepresentativeGQL(representative) {
   return `
@@ -130,5 +131,17 @@ export function formatUnitDesignationGQL(unitDesignation) {
     ${unitDesignation.status !== undefined ? `status: ${unitDesignation.status}` : ""}
     ${unitDesignation.designationLevel !== undefined ? `designationLevel: ${unitDesignation.designationLevel}` : ""}
     ${unitDesignation.designationSequence !== undefined ? `designationSequence: ${unitDesignation.designationSequence}` : ""}
+  `;
+}
+
+///employee designation gql///
+export function formatEmployeeDesignationGQL(employeeDesignation) {
+
+  return `
+    ${employeeDesignation.id ? `id: "${formatGQLString(employeeDesignation.id)}"` : ""}
+    ${employeeDesignation.designationId ? `designationId: "${formatGQLString(employeeDesignation.designationId)}"` : ""}
+    ${employeeDesignation.employeeId ? `employeeId: "${formatGQLString(employeeDesignation.employeeId)}"` : ""}
+    ${employeeDesignation.status ? `status: ${WORKFORCE_STATUS.INACTIVE}` : ""}
+    ${employeeDesignation.releaseDate ? `releaseDate: "${formatGQLString(employeeDesignation.releaseDate)}"` : ""}
   `;
 }

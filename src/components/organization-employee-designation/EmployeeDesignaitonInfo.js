@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Paper,
@@ -17,8 +17,11 @@ import {
   PublishedComponent,
   FormattedMessage,
   withModulesManager,
+  decodeId
 } from "@openimis/fe-core";
 import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
+import { useDispatch } from "react-redux";
+import { updateWorkforceOrganizationEmployeeDesignation } from "../../actions";
 
 const useStyles = makeStyles((theme) => ({
   paper: theme.paper.paper,
@@ -51,9 +54,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDesignationInfo = ({ userData, tableData }) => {
+const EmployeeDesignationInfo = ({
+  userData,
+  tableData,
+  employeeDesignationData,
+}) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const [releaseDate, setReleaseDate] = useState(null);
 
+  const handleRelease = (row) => {
+    const updateReleaseDate = {
+      releaseDate: releaseDate,
+      id:decodeId(row.id),
+      designationId: decodeId(row?.designation?.id),
+      employeeId: employeeDesignationData?.id,
+      status: "inactive",
+    };
+    dispatch(updateWorkforceOrganizationEmployeeDesignation(updateReleaseDate, `Created Organization ${employeeDesignationData.nameBn}`));
+  };
+
+  console.log({ releaseDate });
   return (
     <Paper className={classes.paper}>
       <Grid container spacing={0} className={classes.root}>
@@ -89,19 +110,27 @@ const EmployeeDesignationInfo = ({ userData, tableData }) => {
                     <TableBody>
                       {tableData.map((row, index) => (
                         <TableRow key={index}>
-                          <TableCell>{row?.designation?.organization?.nameBn}</TableCell>
-                          <TableCell>{row?.designation?.unit?.nameBn}</TableCell>
+                          <TableCell>
+                            {row?.designation?.organization?.nameBn}
+                          </TableCell>
+                          <TableCell>
+                            {row?.designation?.unit?.nameBn}
+                          </TableCell>
                           <TableCell>{row?.designation?.nameBn}</TableCell>
                           <TableCell>
                             <PublishedComponent
                               pubRef="core.DatePicker"
                               label={"Release Date"}
+                              onChange={(v) => setReleaseDate(v)}
                               readOnly={false}
                               required={false}
                             />
                           </TableCell>
                           <TableCell>
-                            <IconButton className={classes.deleteButton}>
+                            <IconButton
+                              className={classes.deleteButton}
+                              onClick={() => handleRelease(row)}
+                            >
                               <DeleteIcon />
                             </IconButton>
                           </TableCell>
