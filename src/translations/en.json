@@ -121,14 +121,14 @@
     "workforce.company.status": "Workforce Company Status",
     "workforce.company.representative": "Workforce Representative",
 
-    "workforce.factory.addNewTooltip": "Add Workforce Facory",
-    "workforce.factory.name.en": "Workforce Facory Name En",
-    "workforce.factory.name.bn": "Workforce Facory Name Bn",
-    "workforce.factory.location": "Workforce Facory Location",
-    "workforce.factory.address": "Workforce Facory Address",
-    "workforce.factory.phone": "Workforce Facory Phone",
-    "workforce.factory.email": "Workforce Facory Email",
-    "workforce.factory.website": "Workforce Facory Website",
-    "workforce.factory.status": "Workforce Facory Status",
-    "workforce.factory.representative": "Workforce Facory Representative"
+    "workforce.factory.addNewTooltip": "Add Workforce Factory",
+    "workforce.factory.name.en": "Workforce Factory Name En",
+    "workforce.factory.name.bn": "Workforce Factory Name Bn",
+    "workforce.factory.location": "Workforce Factory Location",
+    "workforce.factory.address": "Workforce Factory Address",
+    "workforce.factory.phone": "Workforce Factory Phone",
+    "workforce.factory.email": "Workforce Factory Email",
+    "workforce.factory.website": "Workforce Factory Website",
+    "workforce.factory.status": "Workforce Factory Status",
+    "workforce.factory.representative": "Workforce Factory Representative"
 }
