@@ -8,25 +8,25 @@ import {
 } from "@openimis/fe-core";
 
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../../constants";
-import OrganizationOfficeSearcher from "../../components/workforce-office/WorkforceOfficeSearcher";
-import { ROUTE_WORKFORCE_OFFICES_OFFICE } from "../../routes";
+import WorkforceEmployeeSearcher from "../../components/workforce-employee/WorkforceEmployeeSearcher";
+import { ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE } from "../../routes";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab,ROUTE_WORKFORCE_OFFICES_OFFICE
+  fab: theme.fab,ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE
 });
 
-class WorkforceOfficesPage extends Component {
-  onDoubleClick = (office, newTab = false) => {
-    const routeParams = ['workforce.route.offices.office', [decodeId(office.id)]];
-    if (office?.isHistory) {
-      routeParams[1].push(office.version);
+class WorkforceEmployeesPage extends Component {
+  onDoubleClick = (employee, newTab = false) => {
+    const routeParams = ['workforce.route.employees.employee', [decodeId(employee.id)]];
+    if (employee?.isHistory) {
+      routeParams[1].push(employee.version);
     }
     historyPush(this.props.modulesManager, this.props.history, ...routeParams, newTab);
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.offices.office');
+    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.employees.employee');
   };
 
   render() {
@@ -34,7 +34,7 @@ class WorkforceOfficesPage extends Component {
 
     return (
       <div className={classes.page}>
-        <OrganizationOfficeSearcher
+        <WorkforceEmployeeSearcher
           cacheFiltersKey="ticketPageFiltersCache"
           onDoubleClick={this.onDoubleClick}
         />
@@ -46,7 +46,7 @@ class WorkforceOfficesPage extends Component {
               <AddIcon />
             </Fab>
           </div>,
-          <FormattedMessage module={MODULE_NAME} id={"workforce.office.addNewTooltip"} />,
+          <FormattedMessage module={MODULE_NAME} id={"workforce.employee.addNewTooltip"} />,
         )}
       </div>
     );
@@ -59,6 +59,6 @@ const mapStateToProps = (state) => ({
 
 export default withModulesManager(
   withHistory(
-    connect(mapStateToProps)(withTheme(withStyles(styles)(WorkforceOfficesPage))),
+    connect(mapStateToProps)(withTheme(withStyles(styles)(WorkforceEmployeesPage))),
   ),
 );

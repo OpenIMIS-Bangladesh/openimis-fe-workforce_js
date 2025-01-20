@@ -16,7 +16,9 @@ import {
   ROUTE_WORKFORCE_COMPANIES_COMPANY,
   ROUTE_WORKFORCE_COMPANIES,
   ROUTE_WORKFORCE_FACTORIES,
-  ROUTE_WORKFORCE_FACTORIES_FACTORY
+  ROUTE_WORKFORCE_FACTORIES_FACTORY,
+  ROUTE_WORKFORCE_EMPLOYEES,
+  ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -34,6 +36,9 @@ import OranigzationCompaniesPage from "./pages/workforce-company/WorkforceCompan
 import OranigzationCompanyPage from "./pages/workforce-company/WorkforceCompanyPage";
 import OranigzationFactoriesPage from "./pages/workforce-factory/WorkforceFactoriesPage";
 import OranigzationFactoryPage from "./pages/workforce-factory/WorkforceFactoryPage";
+import WorkforceEmployeesPage from "./pages/workforce-employee/WorkforceEmployeesPage";
+import WorkforceEmployeePage from "./pages/workforce-employee/WorkforceEmployeePage";
+
 
 
 
@@ -61,6 +66,9 @@ const DEFAULT_CONFIG = {
 
     { key: "workforce.route.factories.factory", ref: ROUTE_WORKFORCE_FACTORIES_FACTORY },
     { key: "workforce.route.factories", ref: ROUTE_WORKFORCE_FACTORIES },
+
+    { key: "workforce.route.employees.employee", ref: ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE },
+    { key: "workforce.route.employees", ref: ROUTE_WORKFORCE_EMPLOYEES },
 
 
 
@@ -95,6 +103,10 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_FACTORIES, component: OranigzationFactoriesPage },
     { path: ROUTE_WORKFORCE_FACTORIES_FACTORY, component: OranigzationFactoryPage },
     { path: `${ROUTE_WORKFORCE_FACTORIES_FACTORY}/:workforce_factory_uuid`, component: OranigzationFactoryPage },
+
+    { path: ROUTE_WORKFORCE_EMPLOYEES, component: WorkforceEmployeesPage },
+    { path: ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE, component: WorkforceEmployeePage },
+    { path: `${ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE}/:workforce_employee_uuid`, component: WorkforceEmployeePage },
 
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, component: WorkforceEmployeeDesignationPage },
