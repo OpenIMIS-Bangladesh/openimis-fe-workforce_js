@@ -141,7 +141,7 @@ export function formatEmployeeDesignationGQL(employeeDesignation) {
     ${employeeDesignation.id ? `id: "${formatGQLString(employeeDesignation.id)}"` : ""}
     ${employeeDesignation.designationId ? `designationId: "${formatGQLString(employeeDesignation.designationId)}"` : ""}
     ${employeeDesignation.employeeId ? `employeeId: "${formatGQLString(employeeDesignation.employeeId)}"` : ""}
-    ${employeeDesignation.status ? `status: ${WORKFORCE_STATUS.INACTIVE}` : ""}
+    ${employeeDesignation.status ? `status: "${WORKFORCE_STATUS.INACTIVE}"` : ""}
     ${employeeDesignation.releaseDate ? `releaseDate: "${formatGQLString(employeeDesignation.releaseDate)}"` : ""}
   `;
 }
