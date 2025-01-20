@@ -740,7 +740,7 @@ export function fetchEmployeeDesignations(mm, filters) {
     "email",
     "nid",
     "phoneNumber",
-    "designations {id,designation{id,nameBn, nameEn,unit{nameBn,nameEn},organization{nameBn,nameEn}}}",
+    "designations {id,status,designation{id,nameBn, nameEn,unit{nameBn,nameEn},organization{nameBn,nameEn}}}",
     "relatedUser {id,loginName}",
   ];
   const payload = formatPageQueryWithCount(

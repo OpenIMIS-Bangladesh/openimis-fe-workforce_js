@@ -71,7 +71,7 @@ const EmployeeDesignationInfo = ({
       employeeId: employeeDesignationData?.id,
       status: "inactive",
     };
-    dispatch(updateWorkforceOrganizationEmployeeDesignation(updateReleaseDate, `Created Organization ${employeeDesignationData.nameBn}`));
+    dispatch(updateWorkforceOrganizationEmployeeDesignation(updateReleaseDate, `updated Organization Employee designation ${employeeDesignationData.nameBn}`));
   };
 
   console.log({ releaseDate });
