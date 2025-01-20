@@ -22,6 +22,7 @@ import {
 import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 import { useDispatch } from "react-redux";
 import { updateWorkforceOrganizationEmployeeDesignation } from "../../actions";
+import { WORKFORCE_STATUS } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   paper: theme.paper.paper,
@@ -109,7 +110,8 @@ const EmployeeDesignationInfo = ({
                     </TableHead>
                     <TableBody>
                       {tableData.map((row, index) => (
-                        <TableRow key={index}>
+                        row?.status === WORKFORCE_STATUS.ACTIVE && (
+                          <TableRow key={index}>
                           <TableCell>
                             {row?.designation?.organization?.nameBn}
                           </TableCell>
@@ -135,6 +137,7 @@ const EmployeeDesignationInfo = ({
                             </IconButton>
                           </TableCell>
                         </TableRow>
+                        )
                       ))}
                     </TableBody>
                   </Table>
