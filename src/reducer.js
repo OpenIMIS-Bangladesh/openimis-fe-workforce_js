@@ -93,6 +93,19 @@ function reducer(
     workforceCompany: null,
     workforceCompanyPageInfo: { totalCount: 0 },
 
+    ///workforce employee states
+    fetchingWorkforceEmployees: false,
+    errorWorkforceEmployees: null,
+    fetchedWorkforceEmployees: false,
+    workforceEmployees: [],
+    workforceEmployeesPageInfo: { totalCount: 0 },
+
+    fetchingWorkforceEmployee: false,
+    errorWorkforceEmployee: null,
+    fetchedWorkforceEmployee: false,
+    workforceEmployee: null,
+    workforceEmployeePageInfo: { totalCount: 0 },
+
     ///Unit Designations states
     fetchingUnitDesignations: false,
     errorUnitDesignations: null,
@@ -592,6 +605,59 @@ function reducer(
       };
 
     // end workforce company
+
+    //start workforce employee
+    case "WORKFORCE_WORKFORCE_EMPLOYEES_REQ":
+      return {
+        ...state,
+        fetchingWorkforceEmployees: true,
+        fetchedWorkforceEmployees: false,
+        workforceEmployees: [],
+        workforceEmployeesPageInfo: { totalCount: 0 },
+        errorWorkforceEmployees: null,
+      };
+    case "WORKFORCE_WORKFORCE_EMPLOYEES_RESP":
+      return {
+        ...state,
+        fetchingWorkforceEmployees: false,
+        fetchedWorkforceEmployeess: true,
+        workforceEmployees: parseData(
+          action.payload.data.workforceEmployees
+        ),
+        workforceEmployeesPageInfo: pageInfo(
+          action.payload.data.workforceEmployees
+        ),
+        errorWorkforceEmployees: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_WORKFORCE_EMPLOYEES_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+    case "WORKFORCE_WORKFORCE_EMPLOYEE_REQ":
+      return {
+        ...state,
+        fetchingWorkforceEmployee: true,
+        fetchedWorkforceEmployee: false,
+        workforceEmployee: null,
+        errorWorkforceEmployee: null,
+      };
+    case "WORKFORCE_WORKFORCE_EMPLOYEE_RESP":
+      return {
+        ...state,
+        fetchingWorkforceEmployee: false,
+        fetchedWorkforceEmployee: true,
+        workforceEmployee: parseData(
+          action.payload.data.workforceEmployees
+        ).map((workforceEmployee) => ({
+          ...workforceEmployee,
+          id: decodeId(workforceEmployee.id),
+        }))?.[0],
+        errorWorkforceEmployee: formatGraphQLError(action.payload),
+      };
+
+    //end workforce employee
 
     case "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID_RESP":
       return {

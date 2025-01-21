@@ -117,7 +117,7 @@ class WorkforceOfficeSearcher extends Component {
       (workforceoffice) => workforceoffice.phoneNumber,
       (workforceoffice) => workforceoffice.email,
       (workforceoffice) => workforceoffice.address,
-      (workforceoffice) => workforceoffice.sebsite,
+      (workforceoffice) => workforceoffice.website,
       (workforceoffice) => workforceoffice.status,
       (workforceoffice) => (this.isShowHistory() ? workforceoffice?.version : null),
 

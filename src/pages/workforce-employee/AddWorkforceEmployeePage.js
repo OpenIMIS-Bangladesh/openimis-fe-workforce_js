@@ -15,16 +15,9 @@ import {
   FormattedMessage,
   formatMutation,
 } from "@openimis/fe-core";
-import {
-  createRepresentative,
-  fetchRepresentativeByClientMutationId,
-  createWorkforceOffice,
-} from "../../actions";
-
+import {createOrganizationEmployee} from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import WorkforceForm from "../../components/form/WorkforceForm";
-import { formatRepresentativeGQL } from "../../utils/format_gql";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 
 const styles = (theme) => ({
@@ -106,7 +99,6 @@ class AddWorkforceEmployeePage extends Component {
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
 
-    console.log({ stateEdited });
     return (
       <div className={classes.page}>
         <Grid container>
@@ -353,7 +345,6 @@ class AddWorkforceEmployeePage extends Component {
 
 const mapStateToProps = (state) => ({
   submittingMutation: state.workforce.submittingMutation,
-  representativeId: state.workforce.fetchedRepresentativeByClientMutationId,
   mutation: state.workforce.mutation,
 });
 

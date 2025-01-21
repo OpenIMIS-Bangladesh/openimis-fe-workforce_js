@@ -18,7 +18,7 @@ import {
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../../constants";
-import { fetchWorkforceOfficesSummary } from "../../actions";
+import { fetchWorkforceEmployeesSummary } from "../../actions";
 import WorkforceEmployeeFilter from "./WorkforceEmployeeFilter";
 
 
@@ -68,7 +68,7 @@ class WorkforceEmployeeSearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchWorkforceOfficesSummary(
+    this.props.fetchWorkforceEmployeesSummary(
       this.props.modulesManager,
       prms,
     );
@@ -100,7 +100,6 @@ class WorkforceEmployeeSearcher extends Component {
     "workforce.employee.name.bn",
     "workforce.employee.phone",
     "workforce.employee.email",
-    "workforce.employee.address",
     "workforce.employee.website",
     "workforce.employee.status",
     this.isShowHistory() ? 'workforce.version' : '',
@@ -116,8 +115,7 @@ class WorkforceEmployeeSearcher extends Component {
       (workforceemployee) => workforceemployee.nameBn,
       (workforceemployee) => workforceemployee.phoneNumber,
       (workforceemployee) => workforceemployee.email,
-      (workforceemployee) => workforceemployee.address,
-      (workforceemployee) => workforceemployee.sebsite,
+      (workforceemployee) => workforceemployee.website,
       (workforceemployee) => workforceemployee.status,
       (workforceemployee) => (this.isShowHistory() ? workforceemployee?.version : null),
 
@@ -150,11 +148,11 @@ class WorkforceEmployeeSearcher extends Component {
   render() {
     const {
       intl,
-      workforceOffices, workforceOfficesPageInfo, fetchingWorkforceOffices, fetchedWorkforceOffices, errorWorkforceOffices,
+      workforceEmployees, workforceEmployeesPageInfo, fetchingWorkforceEmployees, fetchedWorkforceEmployees, errorWorkforceEmployees,
       filterPaneContributionsKey, cacheFiltersKey, onDoubleClick,
     } = this.props;
 
-    const count = workforceOfficesPageInfo.totalCount;
+    const count = workforceEmployeesPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <WorkforceEmployeeFilter
@@ -171,11 +169,11 @@ class WorkforceEmployeeSearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={workforceOffices}
-          itemsPageInfo={workforceOfficesPageInfo}
-          fetchingItems={fetchingWorkforceOffices}
-          fetchedItems={fetchedWorkforceOffices}
-          errorItems={errorWorkforceOffices}
+          items={workforceEmployees}
+          itemsPageInfo={workforceEmployeesPageInfo}
+          fetchingItems={fetchingWorkforceEmployees}
+          fetchedItems={fetchedWorkforceEmployees}
+          errorItems={errorWorkforceEmployees}
           tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.employee" />}
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
@@ -199,11 +197,11 @@ class WorkforceEmployeeSearcher extends Component {
 const mapStateToProps = (state) => (
   {
     rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-    workforceOffices: state.workforce.workforceOffices,
-    workforceOfficesPageInfo: state.workforce.workforceOfficesPageInfo,
-    fetchingWorkforceOffices: state.workforce.fetchingWorkforceOffices,
-    fetchedWorkforceOffices: state.workforce.fetchedWorkforceOffices,
-    errorWorkforceOffices: state.workforce.errorWorkforceOffices,
+    workforceEmployees: state.workforce.workforceEmployees,
+    workforceEmployeesPageInfo: state.workforce.workforceEmployeesPageInfo,
+    fetchingWorkforceEmployees: state.workforce.fetchingWorkforceEmployees,
+    fetchedWorkforceEmployees: state.workforce.fetchedWorkforceEmployees,
+    errorWorkforceEmployees: state.workforce.errorWorkforceEmployees,
     submittingMutation: state.workforce.submittingMutation,
     mutation: state.workforce.mutation,
     confirmed: state.core.confirmed,
@@ -212,7 +210,7 @@ const mapStateToProps = (state) => (
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(
   {
-    fetchWorkforceOfficesSummary, journalize, coreConfirm,
+    fetchWorkforceEmployeesSummary, journalize, coreConfirm,
   },
   dispatch,
 );

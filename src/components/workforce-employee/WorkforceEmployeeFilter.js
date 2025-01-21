@@ -27,14 +27,10 @@ const styles = (theme) => ({
   paperDivider: theme.paper.divider,
 });
 
-const WORKFORCE_OFFICE_FILTER_CONTRIBUTION_KEY =
-  "workforce.OFFICE.Filter";
+const WORKFORCE_EMPLOYEE_FILTER_CONTRIBUTION_KEY = "workforce.employee.Filter";
 
 class WorkforceEmployeeFilter extends Component {
-  debouncedOnChangeFilter = _debounce(
-    this.props.onChangeFilters,
-    800,
-  );
+  debouncedOnChangeFilter = _debounce(this.props.onChangeFilters, 800);
 
   _filterValue = (k) => {
     const { filters } = this.props;
@@ -77,13 +73,15 @@ class WorkforceEmployeeFilter extends Component {
                 label="workforce.employee.name.en"
                 name="nameEn"
                 value={this._filterValue("nameEn")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'nameEn',
-                    value: v,
-                    filter: `nameEn_Icontains: "${v}"`,
-                  },
-                ])}
+                onChange={(v) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "nameEn",
+                      value: v,
+                      filter: `nameEn_Icontains: "${v}"`,
+                    },
+                  ])
+                }
               />
             </Grid>
           }
@@ -98,13 +96,15 @@ class WorkforceEmployeeFilter extends Component {
                 label="workforce.employee.name.bn"
                 name="nameBn"
                 value={this._filterValue("nameBn")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'nameBn',
-                    value: v,
-                    filter: `nameBn_Icontains: "${v}"`,
-                  },
-                ])}
+                onChange={(v) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "nameBn",
+                      value: v,
+                      filter: `nameBn_Icontains: "${v}"`,
+                    },
+                  ])
+                }
               />
             </Grid>
           }
@@ -119,13 +119,15 @@ class WorkforceEmployeeFilter extends Component {
                 label="workforce.employee.phone"
                 name="address"
                 value={this._filterValue("phoneNumber")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'phoneNumber',
-                    value: v,
-                    filter: `phoneNumber_Icontains: "${v}"`,
-                  },
-                ])}
+                onChange={(v) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "phoneNumber",
+                      value: v,
+                      filter: `phoneNumber_Icontains: "${v}"`,
+                    },
+                  ])
+                }
               />
             </Grid>
           }
@@ -140,13 +142,15 @@ class WorkforceEmployeeFilter extends Component {
                 label="workforce.employee.status"
                 name="status"
                 value={this._filterValue("status")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'status',
-                    value: v,
-                    filter: `status: "${v}"`,
-                  },
-                ])}
+                onChange={(v) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "status",
+                      value: v,
+                      filter: `status: "${v}"`,
+                    },
+                  ])
+                }
               />
             </Grid>
           }
@@ -154,7 +158,7 @@ class WorkforceEmployeeFilter extends Component {
         <Contributions
           filters={filters}
           onChangeFilters={onChangeFilters}
-          contributionKey={WORKFORCE_OFFICE_FILTER_CONTRIBUTION_KEY}
+          contributionKey={WORKFORCE_EMPLOYEE_FILTER_CONTRIBUTION_KEY}
         />
       </Grid>
     );
@@ -162,5 +166,5 @@ class WorkforceEmployeeFilter extends Component {
 }
 
 export default withModulesManager(
-  withTheme(withStyles(styles)(WorkforceEmployeeFilter)),
+  withTheme(withStyles(styles)(WorkforceEmployeeFilter))
 );
