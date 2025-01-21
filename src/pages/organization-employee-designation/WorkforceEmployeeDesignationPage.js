@@ -29,6 +29,7 @@ class WorkforceEmployeeDesignationPage extends Component {
   render() {
     const {
       employeeDesignationData,
+      unitWiseDesignationData
     } = this.props;
     const { stateEdited, isSaved } = this.state;
 
@@ -43,13 +44,14 @@ class WorkforceEmployeeDesignationPage extends Component {
     console.log({tableData})
 
     console.log({employeeDesignationData})
+    // console.log({unitWiseDesignationData})
 
     return (
 
       <div>
         <EmployeeDesignationSearcher />
         <EmployeeDesignaitonInfo employeeDesignationData={employeeDesignationData} userData={userData} tableData={tableData} />
-        <AssignDesignation userData={userData} stateEdited={stateEdited} updateAttribute={this.updateAttribute}/>
+        <AssignDesignation userData={userData} stateEdited={stateEdited} updateAttribute={this.updateAttribute} tableData={tableData}/>
       </div>
 
     );
@@ -58,6 +60,7 @@ class WorkforceEmployeeDesignationPage extends Component {
 
 const mapStateToProps = (state) => ({
   employeeDesignationData: state.workforce.employeeDesignationData,
+  unitWiseDesignationData: state.workforce.unitWiseDesignationData,
 });
 
 const mapDispatchToProps = (dispatch) => {

@@ -834,3 +834,17 @@ export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
 `;
   return graphql(payload, "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID");
 }
+
+export function fetchWorkforceUnitsWithEmployeeDesignation (mm, filters){
+  const projections = [
+    "id",
+    "nameBn",
+    "unitDesignations {id,nameBn,nameEn}",
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceOrganizationUnits",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATIONS_UNITWISE_DESIGNATIONS");
+}

@@ -134,6 +134,11 @@ function reducer(
     errorEmployeeDesignationData: null,
     employeeDesignationData: null,
 
+    fetchingUnitWiseDesignationData: false,
+    fetchedUnitWiseDesignationData: false,
+    errorUnitWiseDesignationData: null,
+    unitWiseDesignationData: null,
+
     submittingMutation: false,
     mutation: {},
   },
@@ -429,6 +434,35 @@ function reducer(
         errorEmployeeDesignationData: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATIONS_EMPLOYEE_DESIGNATIONS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
+
+    case "WORKFORCE_ORGANIZATIONS_UNITWISE_DESIGNATIONS_REQ":
+      return {
+        ...state,
+        fetchingUnitWiseDesignationData: true,
+        fetchedUnitWiseDesignationData: false,
+        errorUnitWiseDesignationData: null,
+        unitWiseDesignationData: null,
+      };
+    case "WORKFORCE_ORGANIZATIONS_UNITWISE_DESIGNATIONS_RESP":
+      return {
+        ...state,
+        fetchingUnitWiseDesignationData: false,
+        fetchedUnitWiseDesignationData: true,
+        unitWiseDesignationData: parseData(
+          action.payload.data.workforceOrganizationUnits
+        ).map((unitWiseDesignation) => ({
+          ...unitWiseDesignation,
+          id: decodeId(unitWiseDesignation.id),
+        }))?.[0],
+        // errorUnitWiseDesignationData: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_ORGANIZATIONS_UNITWISE_DESIGNATIONS_ERR":
       return {
         ...state,
         fetching: false,

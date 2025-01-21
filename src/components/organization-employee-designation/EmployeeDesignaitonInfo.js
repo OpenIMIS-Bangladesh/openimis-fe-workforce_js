@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   Paper,
@@ -57,12 +57,19 @@ const useStyles = makeStyles((theme) => ({
 
 const EmployeeDesignationInfo = ({
   userData,
-  tableData,
   employeeDesignationData,
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [releaseDate, setReleaseDate] = useState(null);
+  const [tableData, setTableData] = useState([]);
+
+  useEffect(() => {
+    // Assign data only when employeeDesignationData changes
+    if (employeeDesignationData?.designations) {
+      setTableData(employeeDesignationData.designations);
+    }
+  }, [employeeDesignationData]);
 
   const handleRelease = (row) => {
     const updateReleaseDate = {
@@ -73,6 +80,12 @@ const EmployeeDesignationInfo = ({
       status: "inactive",
     };
     dispatch(updateWorkforceOrganizationEmployeeDesignation(updateReleaseDate, `updated Organization Employee designation ${employeeDesignationData.nameBn}`));
+
+    setTableData((prevData) =>
+      prevData.map((item) =>
+        item.id === row.id ? { ...item, status: "inactive" } : item
+      )
+    );
   };
 
   console.log({ releaseDate });
