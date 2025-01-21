@@ -117,7 +117,7 @@ class WorkforceFactorySearcher extends Component {
       (workforcefactory) => workforcefactory.phoneNumber,
       (workforcefactory) => workforcefactory.email,
       (workforcefactory) => workforcefactory.address,
-      (workforcefactory) => workforcefactory.sebsite,
+      (workforcefactory) => workforcefactory.website,
       (workforcefactory) => workforcefactory.status,
       (workforcefactory) => (this.isShowHistory() ? workforcefactory?.version : null),
 

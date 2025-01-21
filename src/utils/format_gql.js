@@ -130,12 +130,19 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee.email ? `email: "${formatGQLString(employee.email)}"` : ""}
     ${employee.birthDate ? `birthDate: "${employee.birthDate}"` : ""}
     ${employee.gender ? `gender: "${employee.gender}"` : ""}
-    ${employee.firstJoiningDate ? `firstJoiningDate: "${employee.firstJoiningDate}"` : ""}
     ${employee.birthCertificateNo ? `birthCertificateNo: "${employee.birthCertificateNo}"` : ""}
     ${employee.nid ? `nid: "${employee.nid}"` : ""}
     ${employee.passportNo ? `passportNo: "${employee.passportNo}"` : ""}
-    ${employee.address ? `address: "${employee.address}"` : ""}
-    ${decodeId(employee.location.id) ? `locationId: "${decodeId(employee.location.id)}"` : ""}
+    ${employee.permanentAddress ? `permanentAddress: "${employee.permanentAddress}"` : ""}
+    ${employee.presentAddress ? `presentAddress: "${employee.presentAddress}"` : ""}
+    ${employee.position ? `position: "${employee.position}"` : ""}
+    ${employee.monthlyEarning ? `monthlyEarning: "${employee.monthlyEarning}"` : ""}
+    ${employee.referenceSalary ? `referenceSalary: "${employee.referenceSalary}"` : ""}
+    ${employee.fathersName ? `fathersName: "${employee.fathersName}"` : ""}
+    ${employee.mothersName ? `mothersName: "${employee.mothersName}"` : ""}
+    ${employee.maritalStatus ? `maritalStatus: "${employee.maritalStatus}"` : ""}
+    ${decodeId(employee.presentLocation.id) ? `locationId: "${decodeId(employee.presentLocation.id)}"` : ""}
+    ${decodeId(employee.permanentLocation.id) ? `locationId: "${decodeId(employee.permanentLocation.id)}"` : ""}
     ${employee.status ? `status: "${employee.status}"` : ""}
     ${employee.relatedUserId ? `relatedUserId: "${employee.relatedUserId}"` : ""}
   `;

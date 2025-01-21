@@ -301,6 +301,75 @@ export function fetchWorkforceCompany(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_COMPANY");
 }
+export function fetchWorkforceEmployeesSummary(mm, filters) {
+  const present_location_projection =
+    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "nameEn",
+    "nameBn",
+    "phoneNumber",
+    "email",
+    "status",
+    "gender",
+    "birthCertificateNo",
+    "nid",
+    "passportNo",
+    "permanentAddress",
+    "presentAddress",
+    "position",
+    "monthlyEarning",
+    "referenceSalary",
+    "fathersName",
+    "mothersName",
+    "maritalStatus",
+    present_location_projection,
+    permanent_location_projection
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployerEmployees",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEES");
+}
+
+export function fetchWorkforceEmployee(mm, filters) {
+  const present_location_projection =
+  "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+  "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "nameEn",
+    "nameBn",
+    "phoneNumber",
+    "email",
+    "status",
+    "gender",
+    "birthCertificateNo",
+    "nid",
+    "passportNo",
+    "permanentAddress",
+    "presentAddress",
+    "position",
+    "monthlyEarning",
+    "referenceSalary",
+    "fathersName",
+    "mothersName",
+    "maritalStatus",
+    present_location_projection,
+    permanent_location_projection
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployerEmployees",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEE");
+}
 
 export function createRepresentative(mutation, clientMutationLabel) {
   const requestedDateTime = new Date();
@@ -591,9 +660,9 @@ export function createWorkforceEmployee(employee, clientMutationLabel) {
   return graphql(
     mutation.payload,
     [
-      "WORKFORCE_FACTORIES_REQ",
-      "WORKFORCE_FACTORIES_RESP",
-      "WORKFORCE_FACTORIES_ERR",
+      "WORKFORCE_WORKFORCE_EMPLOYEES_REQ",
+      "WORKFORCE_WORKFORCE_EMPLOYEES_RESP",
+      "WORKFORCE_WORKFORCE_EMPLOYEES_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,
@@ -613,9 +682,9 @@ export function updateWorkforceEmployee(employee, clientMutationLabel) {
   return graphql(
     mutation.payload,
     [
-      "WORKFORCE_FACTORIES_REQ",
-      "WORKFORCE_FACTORIES_RESP",
-      "WORKFORCE_FACTORIES_ERR",
+      "WORKFORCE_WORKFORCE_EMPLOYEES_REQ",
+      "WORKFORCE_WORKFORCE_EMPLOYEES_RESP",
+      "WORKFORCE_WORKFORCE_EMPLOYEES_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,

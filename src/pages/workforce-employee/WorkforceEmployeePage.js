@@ -6,7 +6,7 @@ import {
   withModulesManager, withHistory, historyPush,
 } from "@openimis/fe-core";
 import WorkforceEmployeeForm from "../../components/workforce-employee/WorkforceEmployeeForm";
-import { createWorkforceOffice, updateWorkforceOffice } from "../../actions";
+import { createWorkforceEmployee, updateWorkforceEmployee } from "../../actions";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../constants";
 
 const styles = (theme) => ({
@@ -19,17 +19,17 @@ class WorkforceEmployeePage extends Component {
     historyPush(this.props.modulesManager, this.props.history, "grievance.route.ticket");
   };
 
-  save = (office) => {
-    if (!office.id) {
-      this.props.createWorkforceOffice(
+  save = (employee) => {
+    if (!employee.id) {
+      this.props.createWorkforceEmployee(
         this.props.modulesManager,
-        office,
+        employee,
         "Create",
       );
     } else {
-      this.props.updateWorkforceOffice(
+      this.props.updateWorkforceEmployee(
         this.props.modulesManager,
-        office,
+        employee,
         "Update",
       );
     }
@@ -62,12 +62,12 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   workforceEmployeeUuid: props.match.params.workforce_employee_uuid,
   organizationVersion: props.match.params.version,
-  office: state.workforce.office,
+  employee: state.workforce.employee,
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  createWorkforceOffice,
-  updateWorkforceOffice,
+  createWorkforceEmployee,
+  updateWorkforceEmployee,
 }, dispatch);
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
