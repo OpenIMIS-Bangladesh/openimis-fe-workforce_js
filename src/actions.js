@@ -302,18 +302,18 @@ export function fetchWorkforceCompany(mm, filters) {
   return graphql(payload, "WORKFORCE_COMPANY");
 }
 export function fetchWorkforceEmployeesSummary(mm, filters) {
-  const location_projection =
-    "location" + mm.getProjection("location.Location.FlatProjection");
+  const present_location_projection =
+    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
   const projections = [
     "id",
     "nameEn",
     "nameBn",
-    "address",
     "phoneNumber",
     "email",
     "status",
     "gender",
-    "firstJoiningDate",
     "birthCertificateNo",
     "nid",
     "passportNo",
@@ -324,10 +324,12 @@ export function fetchWorkforceEmployeesSummary(mm, filters) {
     "referenceSalary",
     "fathersName",
     "mothersName",
-    location_projection,
+    "maritalStatus",
+    present_location_projection,
+    permanent_location_projection
   ];
   const payload = formatPageQueryWithCount(
-    "workforceEmployees",
+    "workforceEmployerEmployees",
     filters,
     projections
   );
@@ -335,18 +337,18 @@ export function fetchWorkforceEmployeesSummary(mm, filters) {
 }
 
 export function fetchWorkforceEmployee(mm, filters) {
-  const location_projection =
-    "location" + mm.getProjection("location.Location.FlatProjection");
+  const present_location_projection =
+  "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+  "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
   const projections = [
     "id",
     "nameEn",
     "nameBn",
-    "address",
     "phoneNumber",
     "email",
     "status",
     "gender",
-    "firstJoiningDate",
     "birthCertificateNo",
     "nid",
     "passportNo",
@@ -357,10 +359,12 @@ export function fetchWorkforceEmployee(mm, filters) {
     "referenceSalary",
     "fathersName",
     "mothersName",
-    location_projection,
+    "maritalStatus",
+    present_location_projection,
+    permanent_location_projection
   ];
   const payload = formatPageQueryWithCount(
-    "workforceEmployees",
+    "workforceEmployerEmployees",
     filters,
     projections
   );

@@ -622,10 +622,10 @@ function reducer(
         fetchingWorkforceEmployees: false,
         fetchedWorkforceEmployeess: true,
         workforceEmployees: parseData(
-          action.payload.data.workforceEmployees
+          action.payload.data.workforceEmployerEmployees
         ),
         workforceEmployeesPageInfo: pageInfo(
-          action.payload.data.workforceEmployees
+          action.payload.data.workforceEmployerEmployees
         ),
         errorWorkforceEmployees: formatGraphQLError(action.payload),
       };
@@ -649,7 +649,7 @@ function reducer(
         fetchingWorkforceEmployee: false,
         fetchedWorkforceEmployee: true,
         workforceEmployee: parseData(
-          action.payload.data.workforceEmployees
+          action.payload.data.workforceEmployerEmployees
         ).map((workforceEmployee) => ({
           ...workforceEmployee,
           id: decodeId(workforceEmployee.id),

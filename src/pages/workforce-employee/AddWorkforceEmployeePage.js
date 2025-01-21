@@ -69,7 +69,9 @@ class AddWorkforceEmployeePage extends Component {
       referenceSalary: stateEdited.referenceSalary,
       fathersName: stateEdited.fathersName,
       mothersName: stateEdited.mothersName,
-      location: stateEdited.location,
+      presentLocation: stateEdited.presentLocation,
+      permanentLocation: stateEdited.permanentLocation,
+      maritalStatus: stateEdited.maritalStatus,
       status: WORKFORCE_STATUS.ACTIVE,
       organizationEmployee: stateEdited.organizationEmployee,
     };
@@ -184,6 +186,26 @@ class AddWorkforceEmployeePage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
+                    label="workforce.employee.nid"
+                    value={stateEdited.nid || ""}
+                    onChange={(v) => this.updateAttribute("nid", v)}
+                    type={"number"}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="core.DatePicker"
+                    label={"workforce.employee.birthdate"}
+                    value={stateEdited.birthDate || ""}
+                    onChange={(v) => this.updateAttribute("birthDate", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+              
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
                     label="workforce.employee.name.en"
                     value={stateEdited.title || ""}
                     onChange={(v) => this.updateAttribute("title", v)}
@@ -205,6 +227,14 @@ class AddWorkforceEmployeePage extends Component {
                     label="workforce.employee.position"
                     value={stateEdited.position || ""}
                     onChange={(v) => this.updateAttribute("position", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.employee_type"
+                    value={stateEdited.employeeType || ""}
+                    onChange={(v) => this.updateAttribute("employeeType", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
@@ -236,16 +266,6 @@ class AddWorkforceEmployeePage extends Component {
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="core.DatePicker"
-                    label={"workforce.employee.birthdate"}
-                    value={stateEdited.birthDate || ""}
-                    onChange={(v) => this.updateAttribute("birthDate", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-
-                <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.birth_certificate_no"
                     value={stateEdited.birthCertificateNo || ""}
@@ -256,16 +276,7 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.employee.nid"
-                    value={stateEdited.nid || ""}
-                    onChange={(v) => this.updateAttribute("nid", v)}
-                    type={"number"}
-                    required
-                    readOnly={isSaved}
-                  />
-                </Grid>
+              
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.passport_no"
@@ -291,20 +302,15 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-
-                <Grid item xs={12} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="location.DetailedLocation"
-                    withNull={true}
-                    value={stateEdited.location || null}
-                    onChange={(location) =>
-                      this.updateAttribute("location", location)
-                    }
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.marital_status"
+                    value={stateEdited.maritalStatus || ""}
+                    onChange={(v) => this.updateAttribute("maritalStatus", v)}
                     readOnly={isSaved}
-                    required
-                    split={true}
                   />
                 </Grid>
+                
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.present_address"
@@ -321,6 +327,35 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <p>Present Location</p>
+                  <PublishedComponent
+                    pubRef="location.DetailedLocation"
+                    withNull={true}
+                    value={stateEdited.presentLocation || null}
+                    onChange={(presentLocation) =>
+                      this.updateAttribute("presentLocation", presentLocation)
+                    }
+                    readOnly={isSaved}
+                    required
+                    split={true}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <p>Permanent Location</p>
+                  <PublishedComponent
+                    pubRef="location.DetailedLocation"
+                    withNull={true}
+                    value={stateEdited.permanentLocation || null}
+                    onChange={(permanentLocation) =>
+                      this.updateAttribute("permanentLocation", permanentLocation)
+                    }
+                    readOnly={isSaved}
+                    required
+                    split={true}
+                  />
+                </Grid>
+            
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
                   <IconButton
