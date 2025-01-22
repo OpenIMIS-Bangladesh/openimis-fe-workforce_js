@@ -93,6 +93,11 @@ function reducer(
     workforceCompany: null,
     workforceCompanyPageInfo: { totalCount: 0 },
 
+    fetchingWorkforceCompaniesPick: false,
+    errorWorkforceCompaniesPick: null,
+    fetchedWorkforceCompaniesPick: false,
+    workforceCompaniesPick: [],
+
     ///workforce employee states
     fetchingWorkforceEmployees: false,
     errorWorkforceEmployees: null,

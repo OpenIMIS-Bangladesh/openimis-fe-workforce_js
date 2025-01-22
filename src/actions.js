@@ -272,6 +272,16 @@ export function fetchWorkforceCompaniesSummary(mm, filters) {
   return graphql(payload, "WORKFORCE_COMPANIES");
 }
 
+export function fetchCompaniesPick(filters) {
+  const projections = ["id", "nameEn", "nameBn"];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployers",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_COMPANIES_PICKER");
+}
+
 export function fetchWorkforceCompany(mm, filters) {
   const location_projection =
     "location" + mm.getProjection("location.Location.FlatProjection");

@@ -121,8 +121,8 @@ class AddWorkforceEmployeePage extends Component {
               <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="workforceOrganization.OrganizationPicker"
-                    value={stateEdited.organization || null}
+                    pubRef="workforceOrganization.CompanyPicker"
+                    value={stateEdited.company || null}
                     label={
                       <FormattedMessage
                         module="workforce"

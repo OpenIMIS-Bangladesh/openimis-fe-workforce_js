@@ -25,6 +25,7 @@ import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizatio
 import WorkforceOrganizationUnitsPage from "./pages/organization-unit/WorkforceOrganizationUnitsPage";
 import WorkforceOrganizationUnitPage from "./pages/organization-unit/WorkforceOrganizationUnitPage";
 import OrganizationPicker from "./pickers/OrganizationPicker";
+import CompanyPicker from "./pickers/CompanyPicker";
 import UnitDesignationPage from "./pages/organization-unit-designation/UnitDesignationPage";
 import UnitDesignationsPage from "./pages/organization-unit-designation/UnitDesignationsPage";
 import OranigzationEmployeesPage from "./pages/organization-employee/OranigzationEmployeesPage";
@@ -73,6 +74,7 @@ const DEFAULT_CONFIG = {
 
 
     { key: "workforceOrganization.OrganizationPicker", ref: OrganizationPicker },
+    { key: "workforceOrganization.CompanyPicker", ref: CompanyPicker },
   ],
 
   "core.Router": [
