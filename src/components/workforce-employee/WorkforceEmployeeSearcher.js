@@ -100,7 +100,6 @@ class WorkforceEmployeeSearcher extends Component {
     "workforce.employee.name.bn",
     "workforce.employee.phone",
     "workforce.employee.email",
-    "workforce.employee.website",
     "workforce.employee.status",
     this.isShowHistory() ? 'workforce.version' : '',
   ];
@@ -115,7 +114,6 @@ class WorkforceEmployeeSearcher extends Component {
       (workforceemployee) => workforceemployee.nameBn,
       (workforceemployee) => workforceemployee.phoneNumber,
       (workforceemployee) => workforceemployee.email,
-      (workforceemployee) => workforceemployee.website,
       (workforceemployee) => workforceemployee.status,
       (workforceemployee) => (this.isShowHistory() ? workforceemployee?.version : null),
 
