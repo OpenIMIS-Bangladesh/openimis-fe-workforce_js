@@ -894,14 +894,14 @@ export function updateWorkforceOrganizationEmployeeAssignDesignation(
   clientMutationLabel
 ) {
   const mutation = formatMutation(
-    "updateWorkforceOrganizationEmployeeAssignDesignation",
+    "createWorkforceOrganizationEmployeeDesignation",
     formatEmployeeAssignDesignationGQL(employeeAssignDesignation),
     clientMutationLabel
   );
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
-    ["EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_REQ", "EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_ERR", "EMPLOYEE_ASSIGN_DESIGNATION_UPDATE_RELEASE_RESP"],
+    ["EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_REQ", "EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_ERR", "EMPLOYEE_DESIGNATION_UPDATE_ASSIGN_RESP"],
     {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,

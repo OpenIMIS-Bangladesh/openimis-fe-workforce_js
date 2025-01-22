@@ -109,7 +109,7 @@ const AssignDesignation = ({
 
   const handleAssign = (row) => {
     const assignData = {
-      designationId: row.id,
+      designationId: decodeId(row.id),
       employeeId: employeeDesignationData.id,
       joiningDate: assignDate,
       status: WORKFORCE_STATUS.ACTIVE,

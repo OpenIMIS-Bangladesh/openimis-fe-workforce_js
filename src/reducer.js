@@ -772,8 +772,8 @@ function reducer(
     }
     case "EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_ERR":
       return dispatchMutationErr(state, action);
-    case "EMPLOYEE_ASSIGN_DESIGNATION_UPDATE_RELEASE_RESP":
-      return dispatchMutationResp(state,"updateWorkforceOrganizationEmployeeAssignDesignation", action);
+    case "EMPLOYEE_DESIGNATION_UPDATE_ASSIGN_RESP":
+      return dispatchMutationResp(state,"createWorkforceOrganizationEmployeeDesignation", action);
     default:
       return state;
   }
