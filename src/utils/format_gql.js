@@ -172,3 +172,13 @@ export function formatEmployeeDesignationGQL(employeeDesignation) {
     ${employeeDesignation.releaseDate ? `releaseDate: "${formatGQLString(employeeDesignation.releaseDate)}"` : ""}
   `;
 }
+
+export function formatEmployeeAssignDesignationGQL(employeeAssignDesignation) {
+
+  return `
+    ${employeeAssignDesignation.designationId ? `designationId: "${formatGQLString(employeeAssignDesignation.designationId)}"` : ""}
+    ${employeeAssignDesignation.employeeId ? `employeeId: "${formatGQLString(employeeAssignDesignation.employeeId)}"` : ""}
+    ${employeeAssignDesignation.status ? `status: "${WORKFORCE_STATUS.ACTIVE}"` : ""}
+    ${employeeAssignDesignation.releaseDate ? `releaseDate: "${formatGQLString(employeeAssignDesignation.joiningDate)}"` : ""}
+  `;
+}

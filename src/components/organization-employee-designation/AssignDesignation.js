@@ -12,20 +12,23 @@ import {
   IconButton,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { YoutubeSearchedFor as ResetFilterIcon, Search as DefaultSearchIcon } from "@material-ui/icons";
-import AddBoxIcon from '@material-ui/icons/AddBox';
+import {
+  YoutubeSearchedFor as ResetFilterIcon,
+  Search as DefaultSearchIcon,
+} from "@material-ui/icons";
+import AddBoxIcon from "@material-ui/icons/AddBox";
 import { withTheme, withStyles, makeStyles } from "@material-ui/core/styles";
 import {
   PublishedComponent,
   FormattedMessage,
   withModulesManager,
   useModulesManager,
-  decodeId
+  decodeId,
 } from "@openimis/fe-core";
 import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 import { WORKFORCE_STATUS } from "../../constants";
-import { fetchWorkforceUnitsWithEmployeeDesignation } from "../../actions";
-import { useSelector,useDispatch } from "react-redux";
+import { fetchWorkforceUnitsWithEmployeeDesignation, updateWorkforceOrganizationEmployeeAssignDesignation } from "../../actions";
+import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   paper: theme.paper.paper,
@@ -33,6 +36,23 @@ const useStyles = makeStyles((theme) => ({
     ...theme.paper.paper,
     padding: theme.spacing(0),
     justifyContent: "space-around",
+  },
+  table: {
+    borderCollapse: "collapse", // Ensure the borders look seamless
+  },
+  tableRow: {
+    "&:hover": {
+      backgroundColor: theme.palette.action.hover, // Optional: Highlight on hover
+    },
+    height: "20px", // Allow rows to shrink
+    maxHeight: "20px", // Allow rows to shrink
+    minHeight: 0,
+  },
+  tableCell: {
+    border: "1px solid #bab5b5", // Light border for each cell
+    padding: "0px 10px", // Remove all padding for maximum compactness
+    lineHeight: 0.5, // Reduce line height
+    fontSize: "0.8rem", // Optional: Adjust font size for better compactness
   },
   userCard: {
     ...theme.paper.paper,
@@ -50,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
   tableHeader: {
     ...theme.table.title,
     padding: theme.spacing(0.5, 1),
-    fontSize: "18px",
+    fontSize: "16px", // Reduce header font size slightly
     fontWeight: "bold",
   },
   deleteButton: {
@@ -58,27 +78,51 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AssignDesignation = ({ userData, stateEdited, updateAttribute,tableData }) => {
+const AssignDesignation = ({
+  userData,
+  stateEdited,
+  updateAttribute,
+  tableData,
+}) => {
   const classes = useStyles();
-    const modulesManager = useModulesManager();
+  const modulesManager = useModulesManager();
   const dispatch = useDispatch();
-  const [unitDesignation,setUnitDesignation] = useState()
+  const [assignDate, setAssignDate] = useState();
 
+  const employeeDesignationData = useSelector(
+    (state) => state.workforce[`employeeDesignationData`]
+  );
 
-  const handleAssign = async(v) =>{
+  const fetchUnitWiseDesignations = async (v) => {
     const prms = [];
     prms.push(`organization_Id: "${decodeId(v.id)}"`);
     prms.push(`orderBy:["unit_level", "unit_designations__designation_level"]`);
 
-    await dispatch(fetchWorkforceUnitsWithEmployeeDesignation(modulesManager,prms))
-    console.log({v})
-  }
-  const unitWiseDesignations = useSelector((state) => state.workforce[`unitWiseDesignationData`])
+    await dispatch(
+      fetchWorkforceUnitsWithEmployeeDesignation(modulesManager, prms)
+    );
+    console.log({ v });
+  };
+  const unitWiseDesignations = useSelector(
+    (state) => state.workforce[`unitWiseDesignationData`]
+  );
 
-  
+  const handleAssign = (row) => {
+    const assignData = {
+      designationId: row.id,
+      employeeId: employeeDesignationData.id,
+      joiningDate: assignDate,
+      status: WORKFORCE_STATUS.ACTIVE,
+    };
+    dispatch(
+      updateWorkforceOrganizationEmployeeAssignDesignation(
+        assignData,
+        `updated Organization Employee designation ${row.nameEn}`
+      )
+    );
+  };
 
-
-  console.log({unitWiseDesignations})
+  console.log({ unitWiseDesignations });
   return (
     <Paper className={classes.paper}>
       <Grid container spacing={0} className={classes.root}>
@@ -98,61 +142,70 @@ const AssignDesignation = ({ userData, stateEdited, updateAttribute,tableData })
                   />
                 }
                 value={stateEdited.organization || null}
-                onChange={(v) => handleAssign(v)}
+                onChange={(v) => fetchUnitWiseDesignations(v)}
                 required
                 readOnly={false}
               />
             </Grid>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
+            {unitWiseDesignations?.map((unit) => (
+              <Grid item xs={12} key={unit.id}>
+                {/* <Paper className={classes.paper}> */}
                 <TableContainer>
                   <Table size={"small"}>
                     <TableHead className={classes.tableHeader}>
                       <TableRow>
-                        <TableCell>Organization</TableCell>
-                        <TableCell>Unit</TableCell>
-                        <TableCell>Designation</TableCell>
-                        <TableCell>Release Date</TableCell>
-                        <TableCell></TableCell>
+                        <TableCell colSpan={4}>
+                          <b>{unit.nameBn}</b>
+                        </TableCell>
+                        {/* <TableCell>Unit</TableCell>
+                          <TableCell>Designation</TableCell>
+                          <TableCell>Release Date</TableCell>
+                          <TableCell></TableCell> */}
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {tableData.map(
-                        (row, index) =>
-                          row?.status === WORKFORCE_STATUS.INACTIVE && (
-                            <TableRow key={index}>
-                              <TableCell>
-                                {row?.designation?.organization?.nameBn}
-                              </TableCell>
-                              <TableCell>
-                                {row?.designation?.unit?.nameBn}
-                              </TableCell>
-                              <TableCell>{row?.designation?.nameBn}</TableCell>
-                              <TableCell>
-                                <PublishedComponent
-                                  pubRef="core.DatePicker"
-                                  label={"Release Date"}
-                                  onChange={(v) => setReleaseDate(v)}
-                                  readOnly={false}
-                                  required={false}
-                                />
-                              </TableCell>
-                              <TableCell>
-                                <IconButton
-                                  className={classes.deleteButton}
-                                  onClick={() => handleRelease(row)}
-                                >
-                                  <AddBoxIcon />
-                                </IconButton>
-                              </TableCell>
-                            </TableRow>
-                          )
-                      )}
+                      {unit?.unitDesignations.map((row, index) => (
+                        <TableRow key={index} className={classes.tableRow}>
+                          {/* Name in English */}
+                          <TableCell
+                            className={classes.tableCell}
+                            style={{ width: "50%" }}
+                          >
+                            {row?.nameEn}
+                          </TableCell>
+                          {/* Release Date Picker */}
+                          <TableCell
+                            className={classes.tableCell}
+                            style={{ width: "30%" }}
+                          >
+                            <PublishedComponent
+                              pubRef="core.DatePicker"
+                              label={"Assign Date"}
+                              onChange={(v) => setAssignDate(v)}
+                              readOnly={false}
+                              required={false}
+                            />
+                          </TableCell>
+                          {/* Action Button */}
+                          <TableCell
+                            className={classes.tableCell}
+                            style={{ width: "20%" }}
+                          >
+                            <IconButton
+                              className={classes.deleteButton}
+                              onClick={() => handleAssign(row)}
+                            >
+                              <AddBoxIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </Paper>
-            </Grid>
+                {/* </Paper> */}
+              </Grid>
+            ))}
           </Grid>
         </Grid>
       </Grid>

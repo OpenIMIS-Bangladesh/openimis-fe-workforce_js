@@ -18,7 +18,8 @@ import {
   formatWorkforceCompanyGQL,
   formatWorkforceFactoryGQL,
   formatEmployeeDesignationGQL,
-  formatWorkforceEmployeeGQL
+  formatWorkforceEmployeeGQL,
+  formatEmployeeAssignDesignationGQL
 } from "./utils/format_gql";
 
 export function fetchOrganizationsSummary(mm, filters) {
@@ -884,6 +885,28 @@ export function updateWorkforceOrganizationEmployeeDesignation(
       clientMutationLabel,
       requestedDateTime,
       id: employeeDesignation.id,
+    }
+  );
+}
+
+export function updateWorkforceOrganizationEmployeeAssignDesignation(
+  employeeAssignDesignation,
+  clientMutationLabel
+) {
+  const mutation = formatMutation(
+    "updateWorkforceOrganizationEmployeeAssignDesignation",
+    formatEmployeeAssignDesignationGQL(employeeAssignDesignation),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_REQ", "EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_ERR", "EMPLOYEE_ASSIGN_DESIGNATION_UPDATE_RELEASE_RESP"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      id: employeeAssignDesignation.id,
     }
   );
 }

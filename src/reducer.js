@@ -469,10 +469,7 @@ function reducer(
         fetchedUnitWiseDesignationData: true,
         unitWiseDesignationData: parseData(
           action.payload.data.workforceOrganizationUnits
-        ).map((unitWiseDesignation) => ({
-          ...unitWiseDesignation,
-          id: decodeId(unitWiseDesignation.id),
-        }))?.[0],
+        ),
         // errorUnitWiseDesignationData: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATIONS_UNITWISE_DESIGNATIONS_ERR":
@@ -769,6 +766,14 @@ function reducer(
       return dispatchMutationErr(state, action);
     case "EMPLOYEE_DESIGNATION_UPDATE_RELEASE_RESP":
       return dispatchMutationResp(state, "updateOrganization", action);
+
+    case "EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "EMPLOYEE_ASSIGN_DESIGNATION_UPDATE_RELEASE_RESP":
+      return dispatchMutationResp(state,"updateWorkforceOrganizationEmployeeAssignDesignation", action);
     default:
       return state;
   }
