@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations, Autocomplete } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCompaniesPick } from "../actions";
@@ -35,6 +35,10 @@ const CompanyPicker = ({
   const error = useSelector(
     (state) => state.workforce["errorWorkforceCompaniesPick"]
   );
+  const selectedOption = useMemo(
+      () => data.find((option) => option.id === value) || null,
+      [value]
+    )
 
   return (
     <Autocomplete
@@ -48,7 +52,7 @@ const CompanyPicker = ({
       readOnly={readOnly}
       options={data}
       isLoading={isLoading}
-      value={value}
+      value={selectedOption}
       getOptionLabel={(option) => `${option.nameEn}`}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}

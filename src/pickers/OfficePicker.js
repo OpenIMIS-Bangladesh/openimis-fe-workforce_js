@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations, Autocomplete } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchOfficesPick } from "../actions";
@@ -35,6 +35,11 @@ const OfficePicker = ({
   const error = useSelector(
     (state) => state.workforce["errorWorkforceOfficesPick"]
   );
+
+   const selectedOption = useMemo(
+      () => data.find((option) => option.id === value) || null,
+      [value]
+    )
   
   return (
     <Autocomplete
@@ -48,7 +53,7 @@ const OfficePicker = ({
       readOnly={readOnly}
       options={data}
       isLoading={isLoading}
-      value={value}
+      value={selectedOption}
       getOptionLabel={(option) => `${option.nameEn}`}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}

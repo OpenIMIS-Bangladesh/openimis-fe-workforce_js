@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations, Autocomplete } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchFactoriesPick } from "../actions";
@@ -36,6 +36,11 @@ const FactoryPicker = ({
     (state) => state.workforce["errorWorkforceFactoriesPick"]
   );
 
+   const selectedOption = useMemo(
+      () => data.find((option) => option.id === value) || null,
+      [value]
+    )
+
   return (
     <Autocomplete
       multiple={multiple}
@@ -48,7 +53,7 @@ const FactoryPicker = ({
       readOnly={readOnly}
       options={data}
       isLoading={isLoading}
-      value={value}
+      value={selectedOption}
       getOptionLabel={(option) => `${option.nameEn}`}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
