@@ -66,6 +66,11 @@ function reducer(
     fetchedWorkforceOffice: false,
     workforceOffice: null,
     workforceOfficePageInfo: { totalCount: 0 },
+    
+    fetchingWorkforceOfficesPick: false,
+    errorWorkforceOfficesPick: null,
+    fetchedWorkforceOfficesPick: false,
+    workforceOfficesPick: [],
 
     ///workforce factory states
     fetchingWorkforceFactories: false,
@@ -79,6 +84,11 @@ function reducer(
     fetchedWorkforceFactory: false,
     workforceFactory: null,
     workforceFactoryPageInfo: { totalCount: 0 },
+  
+    fetchingWorkforceFactoriesPick: false,
+    errorWorkforceFactoriesPick: null,
+    fetchedWorkforceFactoriesPick: false,
+    workforceFactoriesPick: [],
 
     ///workforce company states
     fetchingWorkforceCompanies: false,
@@ -484,7 +494,7 @@ function reducer(
         error: formatServerError(action.payload),
       };
 
-    // start workforce company
+    // start workforce office
     case "WORKFORCE_OFFICES_REQ":
       return {
         ...state,
@@ -535,6 +545,26 @@ function reducer(
         }))?.[0],
         errorWorkforceOffice: formatGraphQLError(action.payload),
       };
+
+      case "WORKFORCE_OFFICES_PICKER_REQ":
+        return {
+          ...state,
+          fetchingWorkforceOfficesPick: true,
+          fetchedWorkforceOfficesPick: false,
+          workforceOfficesPick: [],
+          errorWorkforceOfficesPick: null,
+        };
+      case "WORKFORCE_OFFICES_PICKER_RESP":
+        return {
+          ...state,
+          fetchingWorkforceOfficesPick: false,
+          fetchedWorkforceOfficesPick: true,
+          workforceOfficesPick: parseData(
+            action.payload.data.workforceEmployerOffices
+          ),
+          errorWorkforceOfficesPick: formatGraphQLError(action.payload),
+        };
+       
     // end workforce office
 
     // start workforce factory
@@ -588,6 +618,27 @@ function reducer(
         }))?.[0],
         errorWorkforceFactory: formatGraphQLError(action.payload),
       };
+
+      
+      case "WORKFORCE_OFFICES_PICKER_REQ":
+        return {
+          ...state,
+          fetchingWorkforceFactoriesPick: true,
+          fetchedWorkforceFactoriesPick: false,
+          workforceFactoriesPick: [],
+          errorWorkforceFactoriesPick: null,
+        };
+      case "WORKFORCE_OFFICES_PICKER_RESP":
+        return {
+          ...state,
+          fetchingWorkforceFactoriesPick: false,
+          fetchedWorkforceFactoriesPick: true,
+          workforceFactoriesPick: parseData(
+            action.payload.data.workforceEmployerFactories
+          ),
+          errorWorkforceFactoriesPick: formatGraphQLError(action.payload),
+        };
+       
     // end workforce factory
 
     // start workforce company
@@ -639,6 +690,25 @@ function reducer(
         )?.[0],
         errorWorkforceCompany: formatGraphQLError(action.payload),
       };
+
+      case "WORKFORCE_COMPANIES_PICKER_REQ":
+        return {
+          ...state,
+          fetchingWorkforceCompaniesPick: true,
+          fetchedWorkforceCompaniesPick: false,
+          workforceCompaniesPick: [],
+          errorWorkforceCompaniesPick: null,
+        };
+      case "WORKFORCE_COMPANIES_PICKER_RESP":
+        return {
+          ...state,
+          fetchingWorkforceCompaniesPick: false,
+          fetchedWorkforceCompaniesPick: true,
+          workforceCompaniesPick: parseData(
+            action.payload.data.workforceEmployers
+          ),
+          errorWorkforceCompaniesPick: formatGraphQLError(action.payload),
+        };
 
     // end workforce company
 

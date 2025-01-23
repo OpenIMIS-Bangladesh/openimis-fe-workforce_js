@@ -281,6 +281,25 @@ export function fetchCompaniesPick(filters) {
   );
   return graphql(payload, "WORKFORCE_COMPANIES_PICKER");
 }
+export function fetchOfficesPick(filters) {
+  const projections = ["id", "nameEn", "nameBn"];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployerOffices",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_OFFICES_PICKER");
+}
+
+export function fetchFactoriesPick(filters) {
+  const projections = ["id", "nameEn", "nameBn"];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployerFactories",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_FACTORIES_PICKER");
+}
 
 export function fetchWorkforceCompany(mm, filters) {
   const location_projection =

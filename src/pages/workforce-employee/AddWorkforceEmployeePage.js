@@ -19,6 +19,9 @@ import {createOrganizationEmployee} from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
+import CompanyPicker from "../../pickers/CompanyPicker";
+import OfficePicker from "../../pickers/OfficePicker";
+import FactoryPicker from "../../pickers/FactoryPicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -119,58 +122,49 @@ class AddWorkforceEmployeePage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
+
                 <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="workforceOrganization.CompanyPicker"
-                    value={stateEdited.company || null}
+                  <CompanyPicker
+                    value={stateEdited?.company?.id}
                     label={
                       <FormattedMessage
-                        module="workforce"
                         id="workforce.employee.workforce_employer"
+                        module="workforce"
                       />
                     }
-                    onChange={(option) =>
-                      this.onUpdateOrganization("organization", option)
-                    }
-                    required
+                    onChange={(v) => this.updateAttribute("company", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="workforceOrganization.OrganizationPicker"
-                    value={stateEdited.organization || null}
+                  <OfficePicker
+                    value={stateEdited?.office?.id}
                     label={
                       <FormattedMessage
-                        module="workforce"
                         id="workforce.employee.workforce_office"
+                        module="workforce"
                       />
                     }
-                    onChange={(option) =>
-                      this.onUpdateOrganization("organization", option)
-                    }
-                    required
+                    onChange={(v) => this.updateAttribute("office", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
+
                 <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="workforceOrganization.OrganizationPicker"
-                    value={stateEdited.organization || null}
+                  <FactoryPicker
+                    value={stateEdited?.factory?.id}
                     label={
                       <FormattedMessage
-                        module="workforce"
                         id="workforce.employee.workforce_factory"
+                        module="workforce"
                       />
                     }
-                    onChange={(option) =>
-                      this.onUpdateOrganization("organization", option)
-                    }
-                    required
+                    onChange={(v) => this.updateAttribute("factory", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
+               
                 <Grid item xs={6} className={classes.item}>
                   <EmployeeGenderPicker
                     value={stateEdited?.gender?.id}
