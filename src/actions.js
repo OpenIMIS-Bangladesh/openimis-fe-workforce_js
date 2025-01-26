@@ -693,9 +693,9 @@ export function createWorkforceEmployee(employee, clientMutationLabel) {
   return graphql(
     mutation.payload,
     [
-      "WORKFORCE_WORKFORCE_EMPLOYEES_REQ",
-      "WORKFORCE_WORKFORCE_EMPLOYEES_RESP",
-      "WORKFORCE_WORKFORCE_EMPLOYEES_ERR",
+      "WORKFORCE_EMPLOYEES_REQ",
+      "WORKFORCE_EMPLOYEES_RESP",
+      "WORKFORCE_EMPLOYEES_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,
@@ -715,9 +715,9 @@ export function updateWorkforceEmployee(employee, clientMutationLabel) {
   return graphql(
     mutation.payload,
     [
-      "WORKFORCE_WORKFORCE_EMPLOYEES_REQ",
-      "WORKFORCE_WORKFORCE_EMPLOYEES_RESP",
-      "WORKFORCE_WORKFORCE_EMPLOYEES_ERR",
+      "WORKFORCE_EMPLOYEES_REQ",
+      "WORKFORCE_EMPLOYEES_RESP",
+      "WORKFORCE_EMPLOYEES_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,
