@@ -143,8 +143,8 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee.fathersName ? `fathersName: "${employee.fathersName}"` : ""}
     ${employee.mothersName ? `mothersName: "${employee.mothersName}"` : ""}
     ${employee.maritalStatus ? `maritalStatus: "${employee.maritalStatus}"` : ""}
-    ${decodeId(employee.presentLocation.id) ? `locationId: "${decodeId(employee.presentLocation.id)}"` : ""}
-    ${decodeId(employee.permanentLocation.id) ? `locationId: "${decodeId(employee.permanentLocation.id)}"` : ""}
+    ${decodeId(employee.presentLocationId.id) ? `presentLocationId: "${decodeId(employee.presentLocationId.id)}"` : ""}
+    ${decodeId(employee.permanentLocationId.id) ? `permanentLocationId: "${decodeId(employee.permanentLocationId.id)}"` : ""}
     ${employee.status ? `status: "${employee.status}"` : ""}
     ${employee.relatedUserId ? `relatedUserId: "${employee.relatedUserId}"` : ""}
   `;
