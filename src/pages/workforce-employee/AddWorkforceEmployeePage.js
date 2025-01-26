@@ -17,7 +17,7 @@ import {
   decodeId
 } from "@openimis/fe-core";
 import {createWorkforceEmployee} from "../../actions";
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
+import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import CompanyPicker from "../../pickers/CompanyPicker";
@@ -56,6 +56,7 @@ class AddWorkforceEmployeePage extends Component {
     const { stateEdited } = this.state;
     const { dispatch } = this.props;
 
+    console.log('hello')
     const workforceEmployeeData = {
       nameBn: stateEdited.titleBn,
       nameEn: stateEdited.title,
@@ -64,8 +65,8 @@ class AddWorkforceEmployeePage extends Component {
       birthDate: stateEdited.birthDate,
       gender: stateEdited.gender.id,
       company: stateEdited.company.id,
-      office: stateEdited.office.id,
-      factory: stateEdited.factory.id,
+      // office: stateEdited.office.id,
+      // factory: stateEdited.factory.id,
       birthCertificateNo: stateEdited.birthCertificateNo,
       nid: stateEdited.nid,
       passportNo: stateEdited.passportNo,
@@ -84,10 +85,12 @@ class AddWorkforceEmployeePage extends Component {
       workforceEmployee: stateEdited.workforceEmployee,
     };
 
+    console.log({workforceEmployeeData})
+
     await dispatch(
       createWorkforceEmployee(
         workforceEmployeeData,
-        `Created Workforce Employee ${workforceEmployeeData.nameEn}`
+        `Created Workforce Employee ${stateEdited.title}`
       )
     );
 
@@ -108,6 +111,8 @@ class AddWorkforceEmployeePage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
+
+    console.log({stateEdited})
 
     return (
       <div className={classes.page}>
@@ -362,7 +367,7 @@ class AddWorkforceEmployeePage extends Component {
                     variant="contained"
                     component="label"
                     color="primary"
-                    onClick={this.save}
+                    onClick={()=>this.save()}
                     disabled={isSaveDisabled || isSaved}
                   >
                     <Save />

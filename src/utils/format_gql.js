@@ -108,7 +108,7 @@ export function formatWorkforceCompanyGQL(company) {
     ${decodeId(company.location.id) ? `locationId: "${decodeId(company.location.id)}"` : ""}
     ${company.address ? `address: "${company.address}"` : ""}
     ${company.phoneNumber ? `phoneNumber: "${formatGQLString(company.phoneNumber)}"` : ""}
-    
+    ${company.website ? `website: "${company.website}"` : ""}
     ${company.establishmentDate ? `establishmentDate: "${company.establishmentDate}"` : ""}
     ${company.establishmentName ? `establishmentName: "${company.establishmentName}"` : ""}
     ${company.email ? `email: "${formatGQLString(company.email)}"` : ""}
@@ -123,12 +123,9 @@ export function formatWorkforceCompanyGQL(company) {
   `;
 }
 
-export function formatWorkforceEmployeeGQL(employee) {    
+export function formatWorkforceEmployeeGQL(employee) {
   return `
     ${employee.id ? `id: "${formatGQLString(employee.id)}"` : ""}
-    ${employee.workforceEmployerId ? `workforceEmployerId: "${formatGQLString(employee.workforceEmployerId)}"` : ""}
-    ${employee.workforceFactoryId ? `workforceFactoryId: "${formatGQLString(employee.workforceFactoryId)}"` : ""}
-    ${employee.workforceOfficeId ? `workforceOfficeId: "${formatGQLString(employee.workforceOfficeId)}"` : ""}
     ${employee.nameEn ? `nameEn: "${formatGQLString(employee.nameEn)}"` : ""}
     ${employee.nameBn ? `nameBn: "${formatGQLString(employee.nameBn)}"` : ""}
     ${employee.phoneNumber ? `phoneNumber: "${formatGQLString(employee.phoneNumber)}"` : ""}
@@ -146,7 +143,6 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee.fathersName ? `fathersName: "${employee.fathersName}"` : ""}
     ${employee.mothersName ? `mothersName: "${employee.mothersName}"` : ""}
     ${employee.maritalStatus ? `maritalStatus: "${employee.maritalStatus}"` : ""}
-    ${employee.employeeType ? `employeeType: "${employee.employeeType}"` : ""}
     ${decodeId(employee.presentLocation.id) ? `locationId: "${decodeId(employee.presentLocation.id)}"` : ""}
     ${decodeId(employee.permanentLocation.id) ? `locationId: "${decodeId(employee.permanentLocation.id)}"` : ""}
     ${employee.status ? `status: "${employee.status}"` : ""}
