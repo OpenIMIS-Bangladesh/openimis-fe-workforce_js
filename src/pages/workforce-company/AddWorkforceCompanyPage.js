@@ -80,6 +80,8 @@ class AddWorkforceCompanyPage extends Component {
     const representativeClientMutationId =
       representativeMutation.clientMutationId;
 
+      console.log({representativeClientMutationId})
+
     await dispatch(
       createRepresentative(
         representativeMutation,
@@ -95,6 +97,7 @@ class AddWorkforceCompanyPage extends Component {
     );
 
     const representativeId = this.props.representativeId[0].id;
+    console.log({representativeId})
 
     const workforceCompanyData = {
       nameBn: stateEdited.titleBn,

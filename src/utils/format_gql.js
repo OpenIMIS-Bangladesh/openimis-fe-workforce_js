@@ -99,22 +99,24 @@ export function formatWorkforceFactoryGQL(factory) {
   `;
 }
 export function formatWorkforceCompanyGQL(company) {
+  const employerId = Date.now()+''
   return `
     ${company.id ? `id: "${formatGQLString(company.id)}"` : ""}
-    ${company.nameEn ? `nameEn: "${formatGQLString(company.nameEn)}"` : ""}
+    ${ `employerId: "id ${formatGQLString(employerId)}"`}
     ${company.nameBn ? `nameBn: "${formatGQLString(company.nameBn)}"` : ""}
-    ${company.phoneNumber ? `phoneNumber: "${formatGQLString(company.phoneNumber)}"` : ""}
-    ${company.email ? `email: "${formatGQLString(company.email)}"` : ""}
-    ${company.website ? `passportNo: "${company.website}"` : ""}
+    ${company.nameEn ? `nameEn: "${formatGQLString(company.nameEn)}"` : ""}
+    ${decodeId(company.location.id) ? `locationId: "${decodeId(company.location.id)}"` : ""}
     ${company.address ? `address: "${company.address}"` : ""}
-    ${decodeId(company.location.id) ? `location: "${decodeId(company.location.id)}"` : ""}
+    ${company.phoneNumber ? `phoneNumber: "${formatGQLString(company.phoneNumber)}"` : ""}
+    
     ${company.establishmentDate ? `establishmentDate: "${company.establishmentDate}"` : ""}
+    ${company.establishmentName ? `establishmentName: "${company.establishmentName}"` : ""}
+    ${company.email ? `email: "${formatGQLString(company.email)}"` : ""}
     ${company.associationMembershipNumber ? `associationMembershipNumber: "${company.associationMembershipNumber}"` : ""}
     ${company.licenceType ? `licenceType: "${company.licenceType}"` : ""}
     ${company.licenceNumber ? `licenceNumber: "${company.licenceNumber}"` : ""}
     ${company.foundationDate ? `foundationDate: "${company.foundationDate}"` : ""}
     ${company.businessSector ? `businessSector: "${company.businessSector}"` : ""}
-    ${company.establishmentName ? `establishmentName: "${company.establishmentName}"` : ""}
     ${company.status ? `status: "${company.status}"` : ""}
     ${company.workforceRepresentativeId ? `workforceRepresentativeId: "${decodeId(company.workforceRepresentativeId)}"` : ""}
 

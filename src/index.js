@@ -18,7 +18,8 @@ import {
   ROUTE_WORKFORCE_FACTORIES,
   ROUTE_WORKFORCE_FACTORIES_FACTORY,
   ROUTE_WORKFORCE_EMPLOYEES,
-  ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE
+  ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE,
+  ROUTE_WORKFORCE_APPROVE_COMPANIES
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -105,6 +106,9 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_COMPANIES, component: OranigzationCompaniesPage },
     { path: ROUTE_WORKFORCE_COMPANIES_COMPANY, component: OranigzationCompanyPage },
     { path: `${ROUTE_WORKFORCE_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },
+
+    { path: ROUTE_WORKFORCE_APPROVE_COMPANIES, component: OranigzationCompaniesPage },
+
 
     { path: ROUTE_WORKFORCE_FACTORIES, component: OranigzationFactoriesPage },
     { path: ROUTE_WORKFORCE_FACTORIES_FACTORY, component: OranigzationFactoryPage },

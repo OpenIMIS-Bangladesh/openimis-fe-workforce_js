@@ -6,7 +6,7 @@ import {
   WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY,
   MODULE_NAME,
 } from "../constants";
-import { ROUTE_WORKFORCE_ORGANIZATIONS, ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS,ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES, ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION } from "../routes";
+import { ROUTE_WORKFORCE_ORGANIZATIONS, ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS,ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES, ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, ROUTE_WORKFORCE_APPROVE_COMPANIES } from "../routes";
 import { ROUTE_WORKFORCE_ORGANIZATIONS_UNITS,ROUTE_WORKFORCE_OFFICES,ROUTE_WORKFORCE_COMPANIES,ROUTE_WORKFORCE_FACTORIES,ROUTE_WORKFORCE_EMPLOYEES } from "../routes";
 
 function WorkforceMainMenu(props) {
@@ -45,6 +45,12 @@ function WorkforceMainMenu(props) {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.company" />,
       icon: <ListAlt />,
       route: `/${ROUTE_WORKFORCE_COMPANIES}`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.approve.company" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_APPROVE_COMPANIES}`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
     {

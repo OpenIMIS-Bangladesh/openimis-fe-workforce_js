@@ -402,10 +402,11 @@ export function fetchWorkforceEmployee(mm, filters) {
 }
 
 export function createRepresentative(mutation, clientMutationLabel) {
+  console.log({mutation})
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
-    ["ORG_MUTATION_REQ", "ORG_CREATE_ORG_RESP", "ORG_MUTATION_ERR"],
+    ["REP_MUTATION_REQ", "REP_CREATE_REP_RESP", "REP_MUTATION_ERR"],
     {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
@@ -619,6 +620,8 @@ export function createWorkforceCompany(company, clientMutationLabel) {
     formatWorkforceCompanyGQL(company),
     clientMutationLabel
   );
+
+  console.log({mutation})
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
