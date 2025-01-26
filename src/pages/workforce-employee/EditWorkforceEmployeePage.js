@@ -77,6 +77,7 @@ class EditWorkforceEmployeePage extends Component {
       factory: stateEdited?.factory.id || stateEdited.factory.id,
       birthDate: stateEdited?.birthDate || stateEdited.birthDate,
       website: stateEdited?.website || stateEdited.website,
+      employeeType: stateEdited?.employeeType || stateEdited.employeeType,
       permanentAddress:
         stateEdited?.permanentAddress || stateEdited.permanentAddress,
       presentAddress:
@@ -130,7 +131,7 @@ class EditWorkforceEmployeePage extends Component {
               <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
                   <CompanyPicker
-                    value={stateEdited?.company?.id}
+                    value={stateEdited?.company}
                     label={
                       <FormattedMessage
                         id="workforce.employee.workforce_employer"
@@ -206,8 +207,8 @@ class EditWorkforceEmployeePage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.name.en"
-                    value={stateEdited.title || ""}
-                    onChange={(v) => this.updateAttribute("title", v)}
+                    value={stateEdited.nameEn || ""}
+                    onChange={(v) => this.updateAttribute("nameEn", v)}
                     required
                     readOnly={isSaved}
                   />
@@ -215,8 +216,8 @@ class EditWorkforceEmployeePage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.name.bn"
-                    value={stateEdited.titleBn || ""}
-                    onChange={(v) => this.updateAttribute("titleBn", v)}
+                    value={stateEdited.nameBn || ""}
+                    onChange={(v) => this.updateAttribute("nameBn", v)}
                     required
                     readOnly={isSaved}
                   />

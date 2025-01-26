@@ -23,7 +23,6 @@ const EmployeeGenderPicker = ({
     () => WORKFORCE_GENDER.find((option) => option.id === value) || null,
     [value]
   )
-  console.log({selectedOption})
 
   return (
     <Autocomplete

@@ -14,8 +14,9 @@ import {
   PublishedComponent,
   FormattedMessage,
   formatMutation,
+  decodeId
 } from "@openimis/fe-core";
-import {createOrganizationEmployee} from "../../actions";
+import {createWorkforceEmployee} from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
@@ -78,12 +79,13 @@ class AddWorkforceEmployeePage extends Component {
       presentLocation: stateEdited.presentLocation,
       permanentLocation: stateEdited.permanentLocation,
       maritalStatus: stateEdited.maritalStatus,
+      employeeType: stateEdited.employeeType,
       status: WORKFORCE_STATUS.ACTIVE,
-      organizationEmployee: stateEdited.organizationEmployee,
+      workforceEmployee: stateEdited.workforceEmployee,
     };
 
     await dispatch(
-      createOrganizationEmployee(
+      createWorkforceEmployee(
         workforceEmployeeData,
         `Created Workforce Employee ${workforceEmployeeData.nameEn}`
       )
@@ -135,6 +137,7 @@ class AddWorkforceEmployeePage extends Component {
                         module="workforce"
                       />
                     }
+                    required
                     onChange={(v) => this.updateAttribute("company", v)}
                     readOnly={isSaved}
                   />

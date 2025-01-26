@@ -150,6 +150,7 @@ class WorkforceEmployeeSearcher extends Component {
       filterPaneContributionsKey, cacheFiltersKey, onDoubleClick,
     } = this.props;
 
+  console.log({workforceEmployees});
     const count = workforceEmployeesPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (

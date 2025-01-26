@@ -713,7 +713,7 @@ function reducer(
     // end workforce company
 
     //start workforce employee
-    case "WORKFORCE_WORKFORCE_EMPLOYEES_REQ":
+    case "WORKFORCE_EMPLOYEES_REQ":
       return {
         ...state,
         fetchingWorkforceEmployees: true,
@@ -722,7 +722,7 @@ function reducer(
         workforceEmployeesPageInfo: { totalCount: 0 },
         errorWorkforceEmployees: null,
       };
-    case "WORKFORCE_WORKFORCE_EMPLOYEES_RESP":
+    case "WORKFORCE_EMPLOYEES_RESP":
       return {
         ...state,
         fetchingWorkforceEmployees: false,
@@ -735,13 +735,13 @@ function reducer(
         ),
         errorWorkforceEmployees: formatGraphQLError(action.payload),
       };
-    case "WORKFORCE_WORKFORCE_EMPLOYEES_ERR":
+    case "WORKFORCE_EMPLOYEES_ERR":
       return {
         ...state,
         fetching: false,
         error: formatServerError(action.payload),
       };
-    case "WORKFORCE_WORKFORCE_EMPLOYEE_REQ":
+    case "WORKFORCE_EMPLOYEE_REQ":
       return {
         ...state,
         fetchingWorkforceEmployee: true,
@@ -749,7 +749,7 @@ function reducer(
         workforceEmployee: null,
         errorWorkforceEmployee: null,
       };
-    case "WORKFORCE_WORKFORCE_EMPLOYEE_RESP":
+    case "WORKFORCE_EMPLOYEE_RESP":
       return {
         ...state,
         fetchingWorkforceEmployee: false,
