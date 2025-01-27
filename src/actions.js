@@ -746,7 +746,7 @@ export function updateWorkforceCompany(company, clientMutationLabel) {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
       requestedDateTime,
-      id: company.id,
+      id: company?.id,
     }
   );
 }

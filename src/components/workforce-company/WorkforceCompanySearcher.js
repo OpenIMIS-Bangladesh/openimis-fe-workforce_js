@@ -17,10 +17,11 @@ import {
   decodeId,
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
-import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../../constants";
-import { fetchWorkforceCompaniesSummary } from "../../actions";
+import { Tab as TabIcon, Delete as DeleteIcon } from "@material-ui/icons";
+import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
+import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, WORKFORCE_STATUS } from "../../constants";
+import { fetchWorkforceCompaniesSummary, updateWorkforceCompany } from "../../actions";
 import WorkforceCompanyFilter from "./WorkforceCompanyFilter";
-
 
 const styles = (theme) => ({
   paper: {
@@ -39,6 +40,7 @@ const styles = (theme) => ({
   item: {
     padding: theme.spacing(1),
   },
+  horizontalButtonContainer: theme.buttonContainer.horizontal,
 });
 
 class WorkforceCompanySearcher extends Component {
@@ -55,7 +57,6 @@ class WorkforceCompanySearcher extends Component {
     this.defaultPageSize = 10;
   }
 
-
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
@@ -68,10 +69,7 @@ class WorkforceCompanySearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchWorkforceCompaniesSummary(
-      this.props.modulesManager,
-      prms,
-    );
+    this.props.fetchWorkforceCompaniesSummary(this.props.modulesManager, prms);
   };
 
   rowIdentifier = (r) => r.uuid;
@@ -102,12 +100,27 @@ class WorkforceCompanySearcher extends Component {
     "workforce.company.email",
     "workforce.company.address",
     "workforce.company.website",
-    this.isShowHistory() ? 'workforce.version' : '',
+    this.isShowHistory() ? "workforce.version" : "",
   ];
 
-  sorts = () => [
-    
-  ];
+  sorts = () => [];
+
+  requestApproval = (workforcecompany) => {
+    const {  dispatch } = this.props;
+    console.log({ workforcecompany });
+
+    const workforceCompanyData = {
+      id:decodeId(workforcecompany.id),
+      status:WORKFORCE_STATUS.PENDING,
+      workforceRepresentativeId :workforcecompany?.workforceRepresentative?.id
+    }
+    dispatch(
+      updateWorkforceCompany(
+        workforceCompanyData,
+        `Update Workforce Company ${workforcecompany.nameEn}`
+      )
+    );
+  };
 
   itemFormatters = () => {
     const formatters = [
@@ -117,27 +130,34 @@ class WorkforceCompanySearcher extends Component {
       (workforcecompany) => workforcecompany.email,
       (workforcecompany) => workforcecompany.address,
       (workforcecompany) => workforcecompany.website,
-      (workforcecompany) => (this.isShowHistory() ? workforcecompany?.version : null),
-
+      (workforcecompany) =>
+        this.isShowHistory() ? workforcecompany?.version : null,
     ];
-         formatters.push((workforcecompany) => (
-           <Tooltip title="Edit">
-             <IconButton
-               disabled={workforcecompany?.isHistory}
-               onClick={() => {
-                 historyPush(
-                   this.props.modulesManager,
-                   this.props.history,
-                   'workforce.route.companies.company',
-                   [decodeId(workforcecompany.id)],
-                   false,
-                 );
-               }}
-             >
-               <EditIcon />
-             </IconButton>
-           </Tooltip>
-         ));
+    formatters.push((workforcecompany) => (
+      <div className={this.props.classes.horizontalButtonContainer}>
+        <Tooltip title="Edit">
+          <IconButton
+            disabled={workforcecompany?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.companies.company",
+                [decodeId(workforcecompany.id)],
+                false
+              );
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={"view"}>
+          <IconButton onClick={() => this.requestApproval(workforcecompany)}>
+            <PlaylistAddCheckIcon />
+          </IconButton>
+        </Tooltip>
+      </div>
+    ));
     return formatters;
   };
 
@@ -148,8 +168,14 @@ class WorkforceCompanySearcher extends Component {
   render() {
     const {
       intl,
-      workforceCompanies, workforceCompaniesPageInfo, fetchingWorkforceCompanies, fetchedWorkforceCompanies, errorWorkforceCompanies,
-      filterPaneContributionsKey, cacheFiltersKey, onDoubleClick,
+      workforceCompanies,
+      workforceCompaniesPageInfo,
+      fetchingWorkforceCompanies,
+      fetchedWorkforceCompanies,
+      errorWorkforceCompanies,
+      filterPaneContributionsKey,
+      cacheFiltersKey,
+      onDoubleClick,
     } = this.props;
 
     const count = workforceCompaniesPageInfo.totalCount;
@@ -158,7 +184,9 @@ class WorkforceCompanySearcher extends Component {
       <WorkforceCompanyFilter
         filters={filters}
         onChangeFilters={onChangeFilters}
-        setShowHistoryFilter={(showHistoryFilter) => this.setState({ showHistoryFilter })}
+        setShowHistoryFilter={(showHistoryFilter) =>
+          this.setState({ showHistoryFilter })
+        }
       />
     );
 
@@ -174,7 +202,12 @@ class WorkforceCompanySearcher extends Component {
           fetchingItems={fetchingWorkforceCompanies}
           fetchedItems={fetchedWorkforceCompanies}
           errorItems={errorWorkforceCompanies}
-          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.company" />}
+          tableTitle={
+            <FormattedMessage
+              module={MODULE_NAME}
+              id="menu.workforce.company"
+            />
+          }
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
           fetch={this.fetch}
@@ -194,29 +227,36 @@ class WorkforceCompanySearcher extends Component {
   }
 }
 
-const mapStateToProps = (state) => (
-  {
-    rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-    workforceCompanies: state.workforce.workforceCompanies,
-    workforceCompaniesPageInfo: state.workforce.workforceCompaniesPageInfo,
-    fetchingWorkforceCompanies: state.workforce.fetchingWorkforceCompanies,
-    fetchedWorkforceCompanies: state.workforce.fetchedWorkforceCompanies,
-    errorWorkforceCompanies: state.workforce.errorWorkforceCompanies,
-    submittingMutation: state.workforce.submittingMutation,
-    mutation: state.workforce.mutation,
-    confirmed: state.core.confirmed,
-  }
-);
+const mapStateToProps = (state) => ({
+  rights:
+    !!state.core && !!state.core.user && !!state.core.user.i_user
+      ? state.core.user.i_user.rights
+      : [],
+  workforceCompanies: state.workforce.workforceCompanies,
+  workforceCompaniesPageInfo: state.workforce.workforceCompaniesPageInfo,
+  fetchingWorkforceCompanies: state.workforce.fetchingWorkforceCompanies,
+  fetchedWorkforceCompanies: state.workforce.fetchedWorkforceCompanies,
+  errorWorkforceCompanies: state.workforce.errorWorkforceCompanies,
+  submittingMutation: state.workforce.submittingMutation,
+  mutation: state.workforce.mutation,
+  confirmed: state.core.confirmed,
+});
 
-const mapDispatchToProps = (dispatch) => bindActionCreators(
-  {
-    fetchWorkforceCompaniesSummary, journalize, coreConfirm,
-  },
-  dispatch,
-);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      fetchWorkforceCompaniesSummary,
+      journalize,
+      coreConfirm,
+    },
+    dispatch
+  );
 
 export default withModulesManager(
   withHistory(
-    connect(mapStateToProps, mapDispatchToProps)(withTheme(withStyles(styles)(WorkforceCompanySearcher))),
-  ),
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(withTheme(withStyles(styles)(WorkforceCompanySearcher)))
+  )
 );
