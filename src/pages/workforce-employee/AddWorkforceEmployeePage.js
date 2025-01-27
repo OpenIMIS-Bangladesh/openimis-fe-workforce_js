@@ -14,9 +14,9 @@ import {
   PublishedComponent,
   FormattedMessage,
   formatMutation,
-  decodeId
+  decodeId,
 } from "@openimis/fe-core";
-import {createWorkforceEmployee} from "../../actions";
+import { createWorkforceEmployee } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
@@ -56,36 +56,39 @@ class AddWorkforceEmployeePage extends Component {
     const { stateEdited } = this.state;
     const { dispatch } = this.props;
 
-    console.log('hello')
+    console.log("hello");
     const workforceEmployeeData = {
-      nameBn: stateEdited.titleBn,
-      nameEn: stateEdited.title,
-      phoneNumber: stateEdited.phone,
-      email: stateEdited.email,
-      birthDate: stateEdited.birthDate,
-      gender: stateEdited.gender.id,
-      company: stateEdited.company.id,
-      // office: stateEdited.office.id,
-      // factory: stateEdited.factory.id,
-      birthCertificateNo: stateEdited.birthCertificateNo,
-      nid: stateEdited.nid,
-      passportNo: stateEdited.passportNo,
-      permanentAddress: stateEdited.permanentAddress,
-      presentAddress: stateEdited.presentAddress,
-      position: stateEdited.position,
-      monthlyEarning: stateEdited.monthlyEarning,
-      referenceSalary: stateEdited.referenceSalary,
-      fathersName: stateEdited.fathersName,
-      mothersName: stateEdited.mothersName,
-      presentLocation: stateEdited.presentLocation,
-      permanentLocation: stateEdited.permanentLocation,
-      maritalStatus: stateEdited.maritalStatus,
-      employeeType: stateEdited.employeeType,
-      status: WORKFORCE_STATUS.ACTIVE,
+      nameBn: stateEdited?.titleBn || stateEdited.titleBn,
+      nameEn: stateEdited?.title || stateEdited.title,
+      phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
+      email: stateEdited?.email || stateEdited.email,
+      gender: stateEdited?.gender || stateEdited.gender,
+      company: stateEdited?.company.id || stateEdited.company.id,
+      office: stateEdited?.office.id || stateEdited.office.id,
+      factory: stateEdited?.factory.id || stateEdited.factory.id,
+      birthDate: stateEdited?.birthDate || stateEdited.birthDate,
+      website: stateEdited?.website || stateEdited.website,
+      employeeType: stateEdited?.employeeType || stateEdited.employeeType,
+      permanentAddress:
+        stateEdited?.permanentAddress || stateEdited.permanentAddress,
+      presentAddress:
+        stateEdited?.presentAddress || stateEdited?.presentAddress,
+      position: stateEdited?.position || stateEdited?.position,
+      monthlyEarning:
+        stateEdited?.monthlyEarning || stateEdited?.monthlyEarning,
+      referenceSalary:
+        stateEdited?.referenceSalary || stateEdited?.referenceSalary,
+      fathersName: stateEdited?.fathersName || stateEdited?.fathersName,
+      mothersName: stateEdited?.mothersName || stateEdited?.mothersName,
+      maritalStatus: stateEdited?.maritalStatus || stateEdited?.maritalStatus,
+      presentLocation:
+        stateEdited?.presentLocation || stateEdited.presentLocation,
+      permanentLocation:
+        stateEdited?.permanentLocation || stateEdited.permanentLocation,
       workforceEmployee: stateEdited.workforceEmployee,
     };
 
-    console.log({workforceEmployeeData})
+    console.log({ workforceEmployeeData });
 
     await dispatch(
       createWorkforceEmployee(
@@ -112,8 +115,6 @@ class AddWorkforceEmployeePage extends Component {
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
 
-    console.log({stateEdited})
-
     return (
       <div className={classes.page}>
         <Grid container>
@@ -132,7 +133,6 @@ class AddWorkforceEmployeePage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-
                 <Grid item xs={6} className={classes.item}>
                   <CompanyPicker
                     value={stateEdited?.company?.id}
@@ -175,7 +175,7 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-               
+
                 <Grid item xs={6} className={classes.item}>
                   <EmployeeGenderPicker
                     value={stateEdited?.gender?.id}
@@ -208,7 +208,7 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-              
+
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.name.en"
@@ -281,7 +281,7 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-              
+
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.passport_no"
@@ -315,7 +315,7 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                
+
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.present_address"
@@ -328,7 +328,9 @@ class AddWorkforceEmployeePage extends Component {
                   <TextInput
                     label="workforce.employee.permanent_address"
                     value={stateEdited.permanentAddress || ""}
-                    onChange={(v) => this.updateAttribute("permanentAddress", v)}
+                    onChange={(v) =>
+                      this.updateAttribute("permanentAddress", v)
+                    }
                     readOnly={isSaved}
                   />
                 </Grid>
@@ -353,21 +355,24 @@ class AddWorkforceEmployeePage extends Component {
                     withNull={true}
                     value={stateEdited.permanentLocation || null}
                     onChange={(permanentLocation) =>
-                      this.updateAttribute("permanentLocation", permanentLocation)
+                      this.updateAttribute(
+                        "permanentLocation",
+                        permanentLocation
+                      )
                     }
                     readOnly={isSaved}
                     required
                     split={true}
                   />
                 </Grid>
-            
+
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
                   <IconButton
                     variant="contained"
                     component="label"
                     color="primary"
-                    onClick={()=>this.save()}
+                    onClick={() => this.save()}
                     disabled={isSaveDisabled || isSaved}
                   >
                     <Save />

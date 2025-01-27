@@ -67,9 +67,9 @@ class EditWorkforceEmployeePage extends Component {
     const { stateEdited } = this.state;
 
     const workforceEmployeeData = {
-      nameBn: stateEdited?.titleBn || stateEdited.nameBn,
-      nameEn: stateEdited?.title || stateEdited.nameEn,
-      phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
+      nameBn: stateEdited?.titleBn || stateEdited.titleBn,
+      nameEn: stateEdited?.title || stateEdited.title,
+      phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
       email: stateEdited?.email || stateEdited.email,
       gender: stateEdited?.gender || stateEdited.gender,
       company: stateEdited?.company.id || stateEdited.company.id,
