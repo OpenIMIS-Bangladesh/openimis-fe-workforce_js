@@ -261,6 +261,8 @@ export function fetchWorkforceCompaniesSummary(mm, filters) {
     "businessSector",
     "foundationDate",
     "establishmentName",
+    "officeCount",
+    "factoryCount",
     "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
     location_projection,
   ];
