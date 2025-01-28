@@ -13,7 +13,6 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
-  formatMutation,
 } from "@openimis/fe-core";
 import { updateWorkforceCompany, updateRepresentative } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
@@ -60,7 +59,7 @@ class EditWorkforceCompanyPage extends Component {
   };
 
   save = () => {
-    const { grievanceConfig, dispatch } = this.props;
+    const { dispatch } = this.props;
     const { stateEdited } = this.state;
 
     const representativeData = {
@@ -115,21 +114,21 @@ class EditWorkforceCompanyPage extends Component {
         stateEdited?.establishmentName || stateEdited.establishmentName,
       establishment_date:
         stateEdited?.establishment_date || stateEdited.establishment_date,
-        workforceRepresentativeId: stateEdited.workforceRepresentative.id,
+      workforceRepresentativeId: stateEdited.workforceRepresentative.id,
       id: stateEdited.id,
     };
 
     dispatch(
       updateRepresentative(
         representativeData,
-        `Update Representative ${representativeData.nameEn}`
-      )
+        `Update Representative ${representativeData.nameEn}`,
+      ),
     );
     dispatch(
       updateWorkforceCompany(
         workforceCompanyData,
-        `Update Workforce Company ${workforceCompanyData.nameEn}`
-      )
+        `Update Workforce Company ${workforceCompanyData.nameEn}`,
+      ),
     );
     console.log({ workforceCompanyData });
 
@@ -297,7 +296,7 @@ class EditWorkforceCompanyPage extends Component {
                   />
                 </Grid>
 
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={12} className={classes.item}>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
@@ -409,5 +408,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(
-  withStyles(styles)(EditWorkforceCompanyPage)
+  withStyles(styles)(EditWorkforceCompanyPage),
 );
