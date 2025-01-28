@@ -103,10 +103,11 @@ export function formatWorkforceFactoryGQL(factory) {
 }
 
 export function formatWorkforceCompanyGQL(company) {
-  const employerId = Date.now() + "";
+  const DummyEmployerId = Date.now() + "";
   return `
     ${company?.id ? `id: "${formatGQLString(company?.id)}"` : ""}
-    ${company?.id ? "" : `employerId: "id ${formatGQLString(employerId)}"`}
+    ${company?.employerId ? `employerId: "id ${formatGQLString(company?.employerId)}"` : `employerId: "id ${formatGQLString(DummyEmployerId)}"`}
+    ${company?.employerIdLima ? `employerIdLima: "id ${formatGQLString(company?.employerIdLima)}"` : ""}
     ${company?.nameBn ? `nameBn: "${formatGQLString(company.nameBn)}"` : ""}
     ${company?.nameEn ? `nameEn: "${formatGQLString(company.nameEn)}"` : ""}
     ${decodeId(company?.location.id) ? `locationId: "${decodeId(company.location.id)}"` : ""}
@@ -117,7 +118,7 @@ export function formatWorkforceCompanyGQL(company) {
     ${company?.establishmentName ? `establishmentName: "${company.establishmentName}"` : ""}
     ${company?.email ? `email: "${formatGQLString(company.email)}"` : ""}
     ${company?.associationMembershipNumber ? `associationMembershipNumber: "${company.associationMembershipNumber}"` : ""}
-    ${company?.licenceType ? `licenceType: "${company.licenceType}"` : ""}
+    ${company?.licenceType ? `licenceType: "${company?.licenceType}"` : ""}
     ${company?.licenceNumber ? `licenceNumber: "${company.licenceNumber}"` : ""}
     ${company?.foundationDate ? `foundationDate: "${company.foundationDate}"` : ""}
     ${company?.businessSector ? `businessSector: "${company.businessSector}"` : ""}

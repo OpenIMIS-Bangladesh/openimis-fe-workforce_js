@@ -11,9 +11,11 @@ import {
   TextInput,
   PublishedComponent,
   decodeId,
+  FormattedMessage,
   formatMessage,
 } from "@openimis/fe-core";
 import { MODULE_NAME } from "../../constants";
+import CompanyStatusPicker from "../../pickers/CompanyStatusPicker";
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
@@ -135,7 +137,7 @@ class WorkforceCOmpanyFilter extends Component {
           id="workforce.company.status"
           field={
             <Grid item xs={3} className={classes.item}>
-              <TextInput
+              {/* <TextInput
                 module={MODULE_NAME}
                 label="workforce.company.status"
                 name="status"
@@ -147,7 +149,24 @@ class WorkforceCOmpanyFilter extends Component {
                     filter: `status: "${v}"`,
                   },
                 ])}
-              />
+              /> */}
+              <CompanyStatusPicker
+                    value={this._filterValue("status")}
+                    label={
+                      <FormattedMessage
+                        id="workforce.company.status"
+                        module="workforce"
+                      />
+                    }
+                    onChange={(v) => this.debouncedOnChangeFilter([
+                      {
+                        id: 'status',
+                        value: v,
+                        filter: `status: "${v}"`,
+                      },
+                    ])}
+                    readOnly={false}
+                  />
             </Grid>
           }
         />

@@ -96,6 +96,7 @@ class WorkforceCompanySearcher extends Component {
     "workforce.company.email",
     "workforce.company.address",
     "workforce.company.website",
+    "workforce.company.count",
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
@@ -103,16 +104,16 @@ class WorkforceCompanySearcher extends Component {
 
   requestApproval = (workforceCompany) => {
     const { dispatch } = this.props;
-
+    console.log({workforceCompany})
     const workforceCompanyData = {
       id: decodeId(workforceCompany.id),
       status: WORKFORCE_STATUS.PENDING,
     };
 
-    this.props.updateStatusOfWorkforceCompany(
-      workforceCompanyData,
-      `Update Workforce Company ${workforceCompany.nameEn}`,
-    );
+    // this.props.updateStatusOfWorkforceCompany(
+    //   workforceCompanyData,
+    //   `Update Workforce Company ${workforceCompany.nameEn}`,
+    // );
   };
 
   itemFormatters = () => {
@@ -123,6 +124,7 @@ class WorkforceCompanySearcher extends Component {
       (workforcecompany) => workforcecompany.email,
       (workforcecompany) => workforcecompany.address,
       (workforcecompany) => workforcecompany.website,
+      (workforcecompany) => workforcecompany.factoryCount,
       (workforcecompany) =>
         this.isShowHistory() ? workforcecompany?.version : null,
     ];
@@ -145,7 +147,7 @@ class WorkforceCompanySearcher extends Component {
           </IconButton>
         </Tooltip>
         <Tooltip title={"view"}>
-          <IconButton onClick={() => this.requestApproval(workforcecompany)}>
+          <IconButton onClick={() => this.requestApproval(workforcecompany)} disabled={workforcecompany.factoryCount === 0?true:false}>
             <PlaylistAddCheckIcon />
           </IconButton>
         </Tooltip>
