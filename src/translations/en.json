@@ -162,5 +162,8 @@
     "workforce.employee.reference_salary": "Workforce Employee Reference Salary",
     "workforce.employee.present_address": "Workforce Employee Present Address",
     "workforce.employee.permanent_address": "Workforce Employee Permanent Address",
-    "workforce.employee.status": "Workforce Employee Status"
+    "workforce.employee.status": "Workforce Employee Status",
+
+    "workforce.representative.sameAsRepresentative": "Same as Company Representative"
+
 }
