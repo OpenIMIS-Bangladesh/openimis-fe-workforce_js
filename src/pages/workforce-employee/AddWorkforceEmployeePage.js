@@ -157,6 +157,7 @@ class AddWorkforceEmployeePage extends Component {
                         module="workforce"
                       />
                     }
+                    required
                     onChange={(v) => this.updateAttribute("office", v)}
                     readOnly={isSaved}
                   />
@@ -171,6 +172,7 @@ class AddWorkforceEmployeePage extends Component {
                         module="workforce"
                       />
                     }
+                    required
                     onChange={(v) => this.updateAttribute("factory", v)}
                     readOnly={isSaved}
                   />

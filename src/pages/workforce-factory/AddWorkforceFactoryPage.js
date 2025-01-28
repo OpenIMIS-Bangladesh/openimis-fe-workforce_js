@@ -25,6 +25,8 @@ import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
+import CompanyPicker from "../../pickers/CompanyPicker";
+
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -105,6 +107,7 @@ class AddWorkforceFactoryPage extends Component {
       address: stateEdited.address,
       location: stateEdited.location,
       status: "True",
+      company: stateEdited?.company.id || stateEdited.company.id,
       workforceRepresentativeId: representativeId,
       workforceFactory: stateEdited.workforceFactory,
     };
@@ -152,6 +155,20 @@ class AddWorkforceFactoryPage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
+              <Grid item xs={6} className={classes.item}>
+                  <CompanyPicker
+                    value={stateEdited?.company?.id}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.workforce_employer"
+                        module="workforce"
+                      />
+                    }
+                    required
+                    onChange={(v) => this.updateAttribute("company", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.factory.name.en"
