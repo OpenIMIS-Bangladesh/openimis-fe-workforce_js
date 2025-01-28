@@ -4,26 +4,17 @@ import {
   Paper,
   Typography,
   Divider,
-  IconButton,
-  Box,
   Button,
-  TextField,
 } from "@material-ui/core";
 import { withTheme, withStyles, makeStyles } from "@material-ui/core/styles";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   withModulesManager,
-  Contributions,
-  ControlledField,
   TextInput,
-  PublishedComponent,
-  decodeId,
-  FormattedMessage,
   useModulesManager,
 } from "@openimis/fe-core";
 import { YoutubeSearchedFor as ResetFilterIcon, Search as DefaultSearchIcon } from "@material-ui/icons";
 import { fetchEmployeeDesignations } from "../../actions";
-import { WORKFORCE_STATUS } from "../../constants";
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,

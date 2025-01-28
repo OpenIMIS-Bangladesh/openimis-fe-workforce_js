@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import { injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import {
-  formatMessageWithValues, withModulesManager, withHistory, historyPush,
+  withModulesManager, withHistory, historyPush,
 } from "@openimis/fe-core";
 import OrganizationUnitForm from "../../components/organization-unit/OrganizationUnitForm";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../constants";
-import {createWorkforceOrganizationUnit,updateWorkforceOrganizationUnit} from "../../actions";
+import { createWorkforceOrganizationUnit, updateWorkforceOrganizationUnit } from "../../actions";
 
 
 const styles = (theme) => ({

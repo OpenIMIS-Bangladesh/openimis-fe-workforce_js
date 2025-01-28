@@ -17,7 +17,6 @@ import {
 import { updateWorkforceFactory, updateRepresentative } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { number } from "prop-types";
 import WorkforceForm from "../../components/form/WorkforceForm";
 
 const styles = (theme) => ({

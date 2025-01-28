@@ -18,7 +18,6 @@ import {
 import { updateOrganizationEMployee } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { number } from "prop-types";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 
 const styles = (theme) => ({
