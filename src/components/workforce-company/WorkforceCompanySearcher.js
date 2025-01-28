@@ -5,22 +5,18 @@ import { IconButton, Tooltip } from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
 import {
   coreConfirm,
-  formatMessageWithValues,
   journalize,
   Searcher,
   withHistory,
   withModulesManager,
-  PublishedComponent,
   FormattedMessage,
-  formatMessage,
   historyPush,
   decodeId,
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
-import { Tab as TabIcon, Delete as DeleteIcon } from "@material-ui/icons";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
-import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, WORKFORCE_STATUS } from "../../constants";
-import { fetchWorkforceCompaniesSummary, updateWorkforceCompany } from "../../actions";
+import { MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
+import { fetchWorkforceCompaniesSummary, updateStatusOfWorkforceCompany } from "../../actions";
 import WorkforceCompanyFilter from "./WorkforceCompanyFilter";
 
 const styles = (theme) => ({
@@ -105,20 +101,17 @@ class WorkforceCompanySearcher extends Component {
 
   sorts = () => [];
 
-  requestApproval = (workforcecompany) => {
-    const {  dispatch } = this.props;
-    console.log({ workforcecompany });
+  requestApproval = (workforceCompany) => {
+    const { dispatch } = this.props;
 
     const workforceCompanyData = {
-      id:decodeId(workforcecompany.id),
-      status:WORKFORCE_STATUS.PENDING,
-      workforceRepresentativeId :workforcecompany?.workforceRepresentative?.id
-    }
-    dispatch(
-      updateWorkforceCompany(
-        workforceCompanyData,
-        `Update Workforce Company ${workforcecompany.nameEn}`
-      )
+      id: decodeId(workforceCompany.id),
+      status: WORKFORCE_STATUS.PENDING,
+    };
+
+    this.props.updateStatusOfWorkforceCompany(
+      workforceCompanyData,
+      `Update Workforce Company ${workforceCompany.nameEn}`,
     );
   };
 
@@ -144,7 +137,7 @@ class WorkforceCompanySearcher extends Component {
                 this.props.history,
                 "workforce.route.companies.company",
                 [decodeId(workforcecompany.id)],
-                false
+                false,
               );
             }}
           >
@@ -246,17 +239,18 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       fetchWorkforceCompaniesSummary,
+      updateStatusOfWorkforceCompany,
       journalize,
       coreConfirm,
     },
-    dispatch
+    dispatch,
   );
 
 export default withModulesManager(
   withHistory(
     connect(
       mapStateToProps,
-      mapDispatchToProps
-    )(withTheme(withStyles(styles)(WorkforceCompanySearcher)))
-  )
+      mapDispatchToProps,
+    )(withTheme(withStyles(styles)(WorkforceCompanySearcher))),
+  ),
 );

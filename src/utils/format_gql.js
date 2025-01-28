@@ -37,7 +37,7 @@ export function formatOrganizationGQL(organization) {
 }
 
 export function formatUnitGQL(unit) {
-  console.log(unit)
+  console.log(unit);
   return `
     ${unit.id ? `id: "${formatGQLString(unit.id)}"` : ""}
     ${unit.nameEn ? `nameEn: "${formatGQLString(unit.nameEn)}"` : ""}
@@ -49,6 +49,7 @@ export function formatUnitGQL(unit) {
     ${unit.organization?.id ? `organizationId: "${decodeId(unit.organization.id)}"` : ""}
   `;
 }
+
 export function formatOrganizationEmployeeGQL(employee) {
   return `
     ${employee.id ? `id: "${formatGQLString(employee.id)}"` : ""}
@@ -68,6 +69,7 @@ export function formatOrganizationEmployeeGQL(employee) {
     ${employee.relatedUserId ? `relatedUserId: "${employee.relatedUserId}"` : ""}
   `;
 }
+
 export function formatWorkforceOfficeGQL(office) {
   return `
     ${office.id ? `id: "${formatGQLString(office.id)}"` : ""}
@@ -83,6 +85,7 @@ export function formatWorkforceOfficeGQL(office) {
 
   `;
 }
+
 export function formatWorkforceFactoryGQL(factory) {
   return `
     ${factory.id ? `id: "${formatGQLString(factory.id)}"` : ""}
@@ -98,11 +101,12 @@ export function formatWorkforceFactoryGQL(factory) {
 
   `;
 }
+
 export function formatWorkforceCompanyGQL(company) {
-  const employerId = Date.now()+''
+  const employerId = Date.now() + "";
   return `
     ${company?.id ? `id: "${formatGQLString(company?.id)}"` : ""}
-    ${ company?.id? "" :`employerId: "id ${formatGQLString(employerId)}"`}
+    ${company?.id ? "" : `employerId: "id ${formatGQLString(employerId)}"`}
     ${company?.nameBn ? `nameBn: "${formatGQLString(company.nameBn)}"` : ""}
     ${company?.nameEn ? `nameEn: "${formatGQLString(company.nameEn)}"` : ""}
     ${decodeId(company?.location.id) ? `locationId: "${decodeId(company.location.id)}"` : ""}
@@ -182,5 +186,12 @@ export function formatEmployeeAssignDesignationGQL(employeeAssignDesignation) {
     ${employeeAssignDesignation.employeeId ? `employeeId: "${formatGQLString(employeeAssignDesignation.employeeId)}"` : ""}
     ${employeeAssignDesignation.status ? `status: "${WORKFORCE_STATUS.ACTIVE}"` : ""}
     ${employeeAssignDesignation.releaseDate ? `releaseDate: "${formatGQLString(employeeAssignDesignation.joiningDate)}"` : ""}
+  `;
+}
+
+export function formatWorkforceCompanyStatusGql(company) {
+  return `
+    ${company?.id ? `id: "${formatGQLString(company?.id)}"` : ""}
+    ${company?.status ? `status: "${company.status}"` : ""}
   `;
 }
