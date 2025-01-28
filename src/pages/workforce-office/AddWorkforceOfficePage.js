@@ -7,6 +7,7 @@ import {
   Divider,
   IconButton,
   FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
 import {
@@ -15,7 +16,6 @@ import {
   PublishedComponent,
   FormattedMessage,
   formatMutation,
-  Checkbox
 } from "@openimis/fe-core";
 import {
   createRepresentative,
@@ -44,6 +44,7 @@ class AddWorkforceOfficePage extends Component {
     this.state = {
       stateEdited: {},
       isSaved: false,
+      isSameRepresentative: true,
     };
   }
 
@@ -78,7 +79,7 @@ class AddWorkforceOfficePage extends Component {
     const representativeMutation = await formatMutation(
       "createWorkforceRepresentative",
       formatRepresentativeGQL(representativeData),
-      `Created Representative ${representativeData.nameEn}`
+      `Created Representative ${representativeData.nameEn}`,
     );
     const representativeClientMutationId =
       representativeMutation.clientMutationId;
@@ -86,15 +87,15 @@ class AddWorkforceOfficePage extends Component {
     await dispatch(
       createRepresentative(
         representativeMutation,
-        `Created Representative ${representativeData.nameEn}`
-      )
+        `Created Representative ${representativeData.nameEn}`,
+      ),
     );
 
     await dispatch(
       fetchRepresentativeByClientMutationId(
         this.props.modulesManger,
-        representativeClientMutationId
-      )
+        representativeClientMutationId,
+      ),
     );
 
     const representativeId = this.props.representativeId[0].id;
@@ -118,8 +119,8 @@ class AddWorkforceOfficePage extends Component {
     await dispatch(
       createWorkforceOffice(
         workforceOfficeData,
-        `Created Workforce Office ${workforceOfficeData.nameEn}`
-      )
+        `Created Workforce Office ${workforceOfficeData.nameEn}`,
+      ),
     );
 
     this.setState({ isSaved: true });
@@ -137,7 +138,7 @@ class AddWorkforceOfficePage extends Component {
 
   render() {
     const { classes } = this.props;
-    const { stateEdited, isSaved } = this.state;
+    const { stateEdited, isSaved, isSameRepresentative } = this.state;
     const isSaveDisabled = false;
 
     return (
@@ -177,12 +178,14 @@ class AddWorkforceOfficePage extends Component {
                     control={
                       <Checkbox
                         color="primary"
-                        checked={address}
-                        disabled={readOnly}
-                        onChange={(e) => setAddress((prevState) => !prevState)}
+                        checked={isSameRepresentative}
+                        disabled={false}
+                        onChange={(e) => {
+                          this.setState({ isSameRepresentative: !isSameRepresentative });
+                        }}
                       />
                     }
-                    label={formatMessage("workforce.representative.sameAsRepresentative")}
+                    label={<FormattedMessage id="workforce.representative.sameAsRepresentative" module="workforce" />}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
@@ -242,7 +245,7 @@ class AddWorkforceOfficePage extends Component {
                   />
                 </Grid>
 
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={12} className={classes.item}>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
@@ -255,77 +258,81 @@ class AddWorkforceOfficePage extends Component {
                     split={true}
                   />
                 </Grid>
-
-                <Grid item xs={12} className={classes.item}>
-                  <WorkforceForm
-                    title="Workforce Representative Info"
-                    stateEdited={stateEdited}
-                    isSaved={isSaved}
-                    updateAttribute={this.updateAttribute}
-                    fields={[
-                      {
-                        key: "repName",
-                        label: "workforce.representative.name.en",
-                        type: "text",
-                        required: true,
-                      },
-                      {
-                        key: "repNameBn",
-                        label: "workforce.representative.name.bn",
-                        type: "text",
-                        required: true,
-                      },
-                      {
-                        key: "position",
-                        label: "workforce.representative.position",
-                        type: "text",
-                        required: true,
-                      },
-                      {
-                        key: "repPhone",
-                        label: "workforce.representative.phone",
-                        type: "number",
-                        required: true,
-                      },
-                      {
-                        key: "repEmail",
-                        label: "workforce.representative.email",
-                        type: "email",
-                        required: true,
-                      },
-                      {
-                        key: "nid",
-                        label: "workforce.representative.nid",
-                        type: "number",
-                        required: true,
-                      },
-                      {
-                        key: "passport",
-                        label: "workforce.representative.passport",
-                        type: "text",
-                        required: false,
-                      },
-                      {
-                        key: "birthDate",
-                        label: "workforce.representative.birthDate",
-                        type: "date",
-                        required: false,
-                      },
-                      {
-                        key: "repLocation",
-                        label: "workforce.representative.location",
-                        type: "location",
-                        required: true,
-                      },
-                      {
-                        key: "repAddress",
-                        label: "workforce.representative.address",
-                        type: "text",
-                        required: true,
-                      },
-                    ]}
-                  />
-                </Grid>
+                <>
+                  {!isSameRepresentative && (
+                    <Grid item xs={12} className={classes.item}>
+                      <WorkforceForm
+                        title="Workforce Representative Info"
+                        stateEdited={stateEdited}
+                        isSaved={isSaved}
+                        updateAttribute={this.updateAttribute}
+                        fields={[
+                          {
+                            key: "repName",
+                            label: "workforce.representative.name.en",
+                            type: "text",
+                            required: true,
+                          },
+                          {
+                            key: "repNameBn",
+                            label: "workforce.representative.name.bn",
+                            type: "text",
+                            required: true,
+                          },
+                          {
+                            key: "position",
+                            label: "workforce.representative.position",
+                            type: "text",
+                            required: true,
+                          },
+                          {
+                            key: "repPhone",
+                            label: "workforce.representative.phone",
+                            type: "number",
+                            required: true,
+                          },
+                          {
+                            key: "repEmail",
+                            label: "workforce.representative.email",
+                            type: "email",
+                            required: true,
+                          },
+                          {
+                            key: "nid",
+                            label: "workforce.representative.nid",
+                            type: "number",
+                            required: true,
+                          },
+                          {
+                            key: "passport",
+                            label: "workforce.representative.passport",
+                            type: "text",
+                            required: false,
+                          },
+                          {
+                            key: "birthDate",
+                            label: "workforce.representative.birthDate",
+                            type: "date",
+                            required: false,
+                          },
+                          {
+                            key: "repLocation",
+                            label: "workforce.representative.location",
+                            type: "location",
+                            required: true,
+                          },
+                          {
+                            key: "repAddress",
+                            label: "workforce.representative.address",
+                            type: "text",
+                            required: true,
+                          },
+                        ]}
+                      />
+                    </Grid>
+                  )
+                  }
+                </>
 
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
@@ -356,5 +363,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(
-  withStyles(styles)(AddWorkforceOfficePage)
+  withStyles(styles)(AddWorkforceOfficePage),
 );
