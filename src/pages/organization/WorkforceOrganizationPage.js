@@ -49,7 +49,7 @@ class WorkforceOrganizationPage extends Component {
           organizationUuid={organizationUuid}
           organizationVersion={organizationVersion}
           readOnly={readOnly}
-          back={() => historyPush(modulesManager, history, "grievanceSocialProtection.route.tickets")}
+          back={() => historyPush(modulesManager, history, "workforce.route.organizations")}
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
           save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
         />

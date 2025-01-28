@@ -178,7 +178,7 @@ class UnitDesignationSearcher extends Component {
           fetchedItems={fetchedUnitDesignations}
           errorItems={errorUnitDesignations}
           // tableTitle={formatMessageWithValues(intl, MODULE_NAME, "ticketSummaries", { count })}
-          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations" values={count} />}
+          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.unit.designation" values={count} />}
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
           fetch={this.fetch}

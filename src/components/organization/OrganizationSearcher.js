@@ -145,6 +145,7 @@ class OrganizationSearcher extends Component {
              </IconButton>
            </Tooltip>
          ));
+
        // }
     return formatters;
   };
