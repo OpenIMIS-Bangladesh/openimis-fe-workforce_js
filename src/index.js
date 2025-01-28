@@ -51,12 +51,13 @@ const DEFAULT_CONFIG = {
   reducers: [{ key: "workforce", reducer }],
 
   refs: [
+    { key: "workforce.route.organizations", ref: ROUTE_WORKFORCE_ORGANIZATIONS },
     { key: "workforce.route.organizations.organization", ref: ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION },
-    // { key: "workforce.route.organizations.organization", ref: ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION },
 
     { key: "workforce.route.organizations.units.unit", ref: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT },
     { key: "workforce.route.organizations.units", ref: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS },
 
+    { key: "workforce.route.unit.designations", ref: ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS },
     { key: "workforce.route.unit.designations.designation", ref: ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS_DESIGNATION },
 
     { key: "workforce.route.organizations.employees.employee", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE },
