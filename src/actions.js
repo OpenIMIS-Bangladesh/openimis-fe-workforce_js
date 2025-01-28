@@ -246,6 +246,8 @@ export function fetchWorkforceCompaniesSummary(mm, filters) {
     "location" + mm.getProjection("location.Location.FlatProjection");
   const projections = [
     "id",
+    "employerId",
+    "employerIdLima",
     "nameEn",
     "nameBn",
     "address",
@@ -309,6 +311,8 @@ export function fetchWorkforceCompany(mm, filters) {
     "location" + mm.getProjection("location.Location.FlatProjection");
   const projections = [
     "id",
+    "employerId",
+    "employerIdLima",
     "nameEn",
     "nameBn",
     "address",
