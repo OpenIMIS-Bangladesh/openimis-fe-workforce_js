@@ -6,6 +6,7 @@ import {
   Typography,
   Divider,
   IconButton,
+  FormControlLabel,
 } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
 import {
@@ -14,6 +15,7 @@ import {
   PublishedComponent,
   FormattedMessage,
   formatMutation,
+  Checkbox
 } from "@openimis/fe-core";
 import {
   createRepresentative,
@@ -26,7 +28,6 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 import CompanyPicker from "../../pickers/CompanyPicker";
-
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -157,7 +158,7 @@ class AddWorkforceOfficePage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-              <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
                   <CompanyPicker
                     value={stateEdited?.company?.id}
                     label={
@@ -169,6 +170,19 @@ class AddWorkforceOfficePage extends Component {
                     required
                     onChange={(v) => this.updateAttribute("company", v)}
                     readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={address}
+                        disabled={readOnly}
+                        onChange={(e) => setAddress((prevState) => !prevState)}
+                      />
+                    }
+                    label={formatMessage("workforce.representative.sameAsRepresentative")}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
