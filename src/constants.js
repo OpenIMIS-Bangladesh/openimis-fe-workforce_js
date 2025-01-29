@@ -18,6 +18,12 @@ export const WORKFORCE_GENDER = [
   },
 ];
 
+export const WORKFORCE_COMPANY_STATUS = [
+  "Draft",
+  "Pending",
+  "Approve",
+];
+
 export const WORKFORCE_STATUS = {
   ACTIVE: "active",
   INACTIVE: "inactive",

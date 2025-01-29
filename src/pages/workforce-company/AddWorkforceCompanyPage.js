@@ -118,6 +118,7 @@ class AddWorkforceCompanyPage extends Component {
       status: WORKFORCE_STATUS.ACTIVE,
       workforceRepresentativeId: representativeId,
       workforceCompany: stateEdited.workforceCompany,
+      employerIdLima:stateEdited.employerIdLima
     };
 
     await dispatch(
@@ -163,6 +164,15 @@ class AddWorkforceCompanyPage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.company.employerIdLima"
+                    value={stateEdited.employerIdLima || ""}
+                    onChange={(v) => this.updateAttribute("employerIdLima", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.company.name.en"

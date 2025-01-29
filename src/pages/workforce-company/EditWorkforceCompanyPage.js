@@ -13,6 +13,7 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
+  decodeId
 } from "@openimis/fe-core";
 import { updateWorkforceCompany, updateRepresentative } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
@@ -115,6 +116,10 @@ class EditWorkforceCompanyPage extends Component {
         stateEdited?.establishment_date || stateEdited.establishment_date,
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
       id: stateEdited.id,
+      employerId:stateEdited?.employerId,
+      employerIdLima:stateEdited?.employerIdLima,
+      licenceType: stateEdited?.licenceType,
+      businessSector:stateEdited?.businessSector
     };
 
     dispatch(
@@ -139,6 +144,8 @@ class EditWorkforceCompanyPage extends Component {
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
 
+    console.log({stateEdited})
+
     return (
       <div className={classes.page}>
         <Grid container>
@@ -157,6 +164,25 @@ class EditWorkforceCompanyPage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.company.employerId"
+                    value={stateEdited.employerId || ""}
+                    onChange={(v) => this.updateAttribute("employerId", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.company.employerIdLima"
+                    value={stateEdited.employerIdLima || ""}
+                    onChange={(v) => this.updateAttribute("employerIdLima", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.company.name.en"
@@ -321,60 +347,70 @@ class EditWorkforceCompanyPage extends Component {
                         label: "workforce.representative.name.en",
                         type: "text",
                         required: true,
+                        value: stateEdited.workforceRepresentative.nameEn,
                       },
                       {
                         key: "repNameBn",
                         label: "workforce.representative.name.bn",
                         type: "text",
                         required: true,
+                        value: stateEdited.workforceRepresentative.nameBn,
                       },
                       {
                         key: "position",
                         label: "workforce.representative.position",
                         type: "text",
                         required: true,
+                        value: stateEdited.workforceRepresentative.position,
                       },
                       {
                         key: "repPhone",
                         label: "workforce.representative.phone",
                         type: "number",
                         required: true,
+                        value: stateEdited.workforceRepresentative.phoneNumber,
                       },
                       {
                         key: "repEmail",
                         label: "workforce.representative.email",
-                        type: "email",
+                        type: "text",
                         required: true,
+                        value: stateEdited.workforceRepresentative.email,
                       },
                       {
                         key: "nid",
                         label: "workforce.representative.nid",
                         type: "number",
                         required: true,
-                      },
-                      {
-                        key: "passport",
-                        label: "workforce.representative.passport",
-                        type: "text",
-                        required: false,
+                        value: stateEdited.workforceRepresentative.nid,
                       },
                       {
                         key: "birthDate",
                         label: "workforce.representative.birthDate",
                         type: "date",
                         required: false,
+                        value: stateEdited.workforceRepresentative.birthDate,
+                      },
+                      {
+                        key: "passport",
+                        label: "workforce.representative.passport",
+                        type: "text",
+                        required: false,
+                        value: stateEdited.workforceRepresentative.passportNo,
                       },
                       {
                         key: "repLocation",
                         label: "workforce.representative.location",
                         type: "location",
                         required: true,
+                        value: stateEdited.workforceRepresentative.location,
                       },
                       {
                         key: "repAddress",
                         label: "workforce.representative.address",
                         type: "text",
                         required: true,
+                        value: stateEdited.workforceRepresentative.address,
                       },
                     ]}
                   />
