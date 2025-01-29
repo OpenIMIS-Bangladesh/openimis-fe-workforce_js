@@ -568,7 +568,7 @@ function reducer(
     // end workforce office
 
     // start workforce factory
-    case "WORKFORCE_FACTORIES_REQ":
+    case "WORKFORCE_ORGANIZATION_FACTORIES_REQ":
       return {
         ...state,
         fetchingWorkforceFactories: true,
@@ -577,7 +577,7 @@ function reducer(
         workforceFactoriesPageInfo: { totalCount: 0 },
         errorWorkforceFactories: null,
       };
-    case "WORKFORCE_FACTORIES_RESP":
+    case "WORKFORCE_ORGANIZATION_FACTORIES_RESP":
       return {
         ...state,
         fetchingWorkforceFactories: false,
@@ -590,7 +590,7 @@ function reducer(
         ),
         errorWorkforceFactories: formatGraphQLError(action.payload),
       };
-    case "WORKFORCE_FACTORIES_ERR":
+    case "WORKFORCE_ORGANIZATION_FACTORIES_ERR":
       return {
         ...state,
         fetching: false,

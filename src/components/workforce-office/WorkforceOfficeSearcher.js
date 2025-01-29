@@ -5,14 +5,11 @@ import { IconButton, Tooltip } from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
 import {
   coreConfirm,
-  formatMessageWithValues,
   journalize,
   Searcher,
   withHistory,
   withModulesManager,
-  PublishedComponent,
   FormattedMessage,
-  formatMessage,
   historyPush,
   decodeId,
 } from "@openimis/fe-core";

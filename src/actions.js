@@ -169,7 +169,7 @@ export function fetchWorkforceOfficesSummary(mm, filters) {
     filters,
     projections,
   );
-  return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEES");
+  return graphql(payload, "WORKFORCE_OFFICES");
 }
 
 export function fetchWorkforceOffice(mm, filters) {
@@ -192,7 +192,7 @@ export function fetchWorkforceOffice(mm, filters) {
     filters,
     projections,
   );
-  return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEE");
+  return graphql(payload, "WORKFORCE_OFFICE");
 }
 
 export function fetchWorkforceFactoriesSummary(mm, filters) {
