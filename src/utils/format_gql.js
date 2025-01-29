@@ -106,7 +106,7 @@ export function formatWorkforceCompanyGQL(company) {
   const DummyEmployerId = Date.now() + "";
   return `
     ${company?.id ? `id: "${formatGQLString(company?.id)}"` : ""}
-    ${company?.employerId ? `employerId: "id ${formatGQLString(company?.employerId)}"` : `employerId: "id ${formatGQLString(DummyEmployerId)}"`}
+    ${company?.employerId ? `employerId: "${formatGQLString(company?.employerId)}"` : `employerId: "id ${formatGQLString(DummyEmployerId)}"`}
     ${company?.employerIdLima ? `employerIdLima: "id ${formatGQLString(company?.employerIdLima)}"` : ""}
     ${company?.nameBn ? `nameBn: "${formatGQLString(company.nameBn)}"` : ""}
     ${company?.nameEn ? `nameEn: "${formatGQLString(company.nameEn)}"` : ""}

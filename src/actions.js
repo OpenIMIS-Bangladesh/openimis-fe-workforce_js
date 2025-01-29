@@ -770,9 +770,9 @@ export function updateStatusOfWorkforceCompany(company, clientMutationLabel) {
   return graphql(
     mutation.payload,
     [
-      "WORKFORCE_COMPANIES_REQ",
-      "WORKFORCE_COMPANIES_RESP",
-      "WORKFORCE_COMPANIES_ERR",
+      "COMPANY_STATUS_MUTATION_REQ",
+      "COMPANY_STATUS_UPDATE_RESP",
+      "COMPANY_STATUS_MUTATION_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,

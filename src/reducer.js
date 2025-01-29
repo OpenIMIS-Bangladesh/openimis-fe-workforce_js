@@ -825,6 +825,16 @@ function reducer(
     case "ORG_UPDATE_ORG_RESP":
       return dispatchMutationResp(state, "updateOrganization", action);
 
+    case "COMPANY_STATUS_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "COMPANY_STATUS_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "COMPANY_STATUS_CREATE_RESP":
+      return dispatchMutationResp(state, "createOrganization", action);
+    case "COMPANY_STATUS_UPDATE_RESP":
+      return dispatchMutationResp(state, "updateOrganization", action);
+
     case "REP_MUTATION_REQ": {
       return dispatchMutationReq(state, action);
     }

@@ -110,10 +110,10 @@ class WorkforceCompanySearcher extends Component {
       status: WORKFORCE_STATUS.PENDING,
     };
 
-    // this.props.updateStatusOfWorkforceCompany(
-    //   workforceCompanyData,
-    //   `Update Workforce Company ${workforceCompany.nameEn}`,
-    // );
+    this.props.updateStatusOfWorkforceCompany(
+      workforceCompanyData,
+      `Update Workforce Company ${workforceCompany.nameEn}`,
+    );
   };
 
   itemFormatters = () => {
