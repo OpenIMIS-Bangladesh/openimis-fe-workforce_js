@@ -580,7 +580,7 @@ export function updateOrganizationEMployee(employee, clientMutationLabel) {
 
 export function createWorkforceOffice(office, clientMutationLabel) {
   const mutation = formatMutation(
-    "createWorkforceOffice",
+    "createWorkforceEmployerOffice",
     formatWorkforceOfficeGQL(office),
     clientMutationLabel,
   );
@@ -649,7 +649,7 @@ export function createWorkforceCompany(company, clientMutationLabel) {
 
 export function createWorkforceFactory(factory, clientMutationLabel) {
   const mutation = formatMutation(
-    "createWorkforceFactory",
+    "createWorkforceEmployerFactory",
     formatWorkforceFactoryGQL(factory),
     clientMutationLabel,
   );

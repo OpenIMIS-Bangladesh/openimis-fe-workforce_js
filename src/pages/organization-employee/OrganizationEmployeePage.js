@@ -6,7 +6,7 @@ import {
   withModulesManager, withHistory, historyPush,
 } from "@openimis/fe-core";
 import OrganizationEmployeeForm from "../../components/organization-employee/OrganizationEmployeeForm";
-import { createOrganizationEmployee, updateOrganizationEMployee } from "../../actions";
+import { createOrganizationEmployee, updateOrganizationEmployee } from "../../actions";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../constants";
 
 const styles = (theme) => ({
@@ -27,7 +27,7 @@ class OrganizationEmployeePage extends Component {
         "Create",
       );
     } else {
-      this.props.updateOrganizationEMployee(
+      this.props.updateOrganizationEmployee(
         this.props.modulesManager,
         employee,
         "Update",
@@ -67,7 +67,7 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   createOrganizationEmployee,
-  updateOrganizationEMployee,
+  updateOrganizationEmployee,
 }, dispatch);
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(

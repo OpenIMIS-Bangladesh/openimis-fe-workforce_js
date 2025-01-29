@@ -15,7 +15,7 @@ import {
   FormattedMessage,
   formatMutation,
 } from "@openimis/fe-core";
-import { updateOrganizationEMployee } from "../../actions";
+import { updateOrganizationEmployee } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
@@ -79,7 +79,7 @@ class EditOrganizationEmployeePage extends Component {
     };
 
     dispatch(
-      updateOrganizationEMployee(
+      updateOrganizationEmployee(
         organizationEmployeeData,
         `Update Organization Employee ${organizationEmployeeData.nameEn}`
       )

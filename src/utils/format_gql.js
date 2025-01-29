@@ -73,14 +73,16 @@ export function formatOrganizationEmployeeGQL(employee) {
 export function formatWorkforceOfficeGQL(office) {
   return `
     ${office.id ? `id: "${formatGQLString(office.id)}"` : ""}
+    ${office.company ? `workforceEmployerId: "${formatGQLString(office.company)}"` : ""}
     ${office.nameEn ? `nameEn: "${formatGQLString(office.nameEn)}"` : ""}
     ${office.nameBn ? `nameBn: "${formatGQLString(office.nameBn)}"` : ""}
     ${office.phoneNumber ? `phoneNumber: "${formatGQLString(office.phoneNumber)}"` : ""}
     ${office.email ? `email: "${formatGQLString(office.email)}"` : ""}
-    ${office.website ? `passportNo: "${office.website}"` : ""}
+    ${office.website ? `website: "${office.website}"` : ""}
     ${office.address ? `address: "${office.address}"` : ""}
-    ${decodeId(office.location.id) ? `location: "${decodeId(office.location.id)}"` : ""}
+    ${decodeId(office.location.id) ? `locationId: "${decodeId(office.location.id)}"` : ""}
     ${office.status ? `status: "${office.status}"` : ""}
+    ${office.isSameCompanyRepresentative ? `isSameCompanyRepresentative: "${office.isSameCompanyRepresentative}"` : ""}
     ${office.workforceRepresentativeId ? `workforceRepresentativeId: "${decodeId(office.workforceRepresentativeId)}"` : ""}
 
   `;
@@ -88,17 +90,18 @@ export function formatWorkforceOfficeGQL(office) {
 
 export function formatWorkforceFactoryGQL(factory) {
   return `
-    ${factory.id ? `id: "${formatGQLString(factory.id)}"` : ""}
+    ${factory?.id ? `id: "${formatGQLString(factory.id)}"` : ""}
+    ${factory.company ? `workforceEmployerId: "${formatGQLString(factory.company)}"` : ""}
     ${factory.nameEn ? `nameEn: "${formatGQLString(factory.nameEn)}"` : ""}
     ${factory.nameBn ? `nameBn: "${formatGQLString(factory.nameBn)}"` : ""}
     ${factory.phoneNumber ? `phoneNumber: "${formatGQLString(factory.phoneNumber)}"` : ""}
     ${factory.email ? `email: "${formatGQLString(factory.email)}"` : ""}
-    ${factory.website ? `passportNo: "${factory.website}"` : ""}
+    ${factory.website ? `website: "${factory.website}"` : ""}
     ${factory.address ? `address: "${factory.address}"` : ""}
-    ${decodeId(factory.location.id) ? `location: "${decodeId(factory.location.id)}"` : ""}
-    ${factory.status ? `status: "${office.status}"` : ""}
+    ${factory.location.id ? `locationId: "${decodeId(factory.location.id)}"` : ""}
+    ${factory.status ? `status: "${factory.status}"` : ""}
     ${factory.workforceRepresentativeId ? `workforceRepresentativeId: "${decodeId(factory.workforceRepresentativeId)}"` : ""}
-
+    ${factory.isSameCompanyRepresentative ? `isSameCompanyRepresentative: "${factory.isSameCompanyRepresentative}"` : ""}
   `;
 }
 

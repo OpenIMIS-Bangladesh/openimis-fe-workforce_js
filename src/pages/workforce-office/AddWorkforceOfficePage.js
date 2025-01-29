@@ -23,7 +23,7 @@ import {
   createWorkforceOffice,
 } from "../../actions";
 
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
+import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
@@ -62,44 +62,47 @@ class AddWorkforceOfficePage extends Component {
     const { stateEdited } = this.state;
     const { dispatch } = this.props;
 
-    const representativeData = {
-      type: "organization",
-      nameBn: stateEdited.repNameBn,
-      nameEn: stateEdited.repName,
-      location: stateEdited.repLocation,
-      address: stateEdited.repAddress,
-      phoneNumber: stateEdited.repPhone,
-      email: stateEdited.repEmail,
-      nid: stateEdited.nid,
-      passportNo: stateEdited.passport,
-      birthDate: stateEdited.birthDate,
-      position: stateEdited.position,
-    };
+    let representativeId = EMPTY_STRING;
 
-    const representativeMutation = await formatMutation(
-      "createWorkforceRepresentative",
-      formatRepresentativeGQL(representativeData),
-      `Created Representative ${representativeData.nameEn}`,
-    );
-    const representativeClientMutationId =
-      representativeMutation.clientMutationId;
+    if (!this.state.isSameRepresentative) {
+      const representativeData = {
+        type: "organization",
+        nameBn: stateEdited.repNameBn,
+        nameEn: stateEdited.repName,
+        location: stateEdited.repLocation,
+        address: stateEdited.repAddress,
+        phoneNumber: stateEdited.repPhone,
+        email: stateEdited.repEmail,
+        nid: stateEdited.nid,
+        passportNo: stateEdited.passport,
+        birthDate: stateEdited.birthDate,
+        position: stateEdited.position,
+      };
 
-    await dispatch(
-      createRepresentative(
-        representativeMutation,
+      const representativeMutation = await formatMutation(
+        "createWorkforceRepresentative",
+        formatRepresentativeGQL(representativeData),
         `Created Representative ${representativeData.nameEn}`,
-      ),
-    );
+      );
+      const representativeClientMutationId =
+        representativeMutation.clientMutationId;
 
-    await dispatch(
-      fetchRepresentativeByClientMutationId(
-        this.props.modulesManger,
-        representativeClientMutationId,
-      ),
-    );
+      await dispatch(
+        createRepresentative(
+          representativeMutation,
+          `Created Representative ${representativeData.nameEn}`,
+        ),
+      );
 
-    const representativeId = this.props.representativeId[0].id;
+      await dispatch(
+        fetchRepresentativeByClientMutationId(
+          this.props.modulesManger,
+          representativeClientMutationId,
+        ),
+      );
 
+      representativeId = this.props.representativeId[0].id;
+    }
     const workforceOfficeData = {
       employer: stateEdited.employer,
       representative: stateEdited.representative,
@@ -110,8 +113,8 @@ class AddWorkforceOfficePage extends Component {
       website: stateEdited.website,
       address: stateEdited.address,
       location: stateEdited.location,
-      status: "True",
-      company: stateEdited?.company.id || stateEdited.company.id,
+      status: WORKFORCE_STATUS.DRAFT,
+      isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
       workforceRepresentativeId: representativeId,
       workforceOffice: stateEdited.workforceOffice,
     };

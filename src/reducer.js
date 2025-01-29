@@ -706,7 +706,12 @@ function reducer(
           fetchedWorkforceCompaniesPick: true,
           workforceCompaniesPick: parseData(
             action.payload.data.workforceEmployers
-          ),
+          ).map(
+          (workforceCompany) => ({
+            ...workforceCompany,
+            id: decodeId(workforceCompany.id),
+          })
+        ),
           errorWorkforceCompaniesPick: formatGraphQLError(action.payload),
         };
 
