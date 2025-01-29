@@ -555,7 +555,7 @@ export function createOrganizationEmployee(employee, clientMutationLabel) {
   );
 }
 
-export function updateOrganizationEMployee(employee, clientMutationLabel) {
+export function updateOrganizationEmployee(employee, clientMutationLabel) {
   const mutation = formatMutation(
     "updateWorkforceOrganizationEmployee",
     formatOrganizationEmployeeGQL(employee),
