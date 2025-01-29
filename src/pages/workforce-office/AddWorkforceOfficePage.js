@@ -104,7 +104,7 @@ class AddWorkforceOfficePage extends Component {
       representativeId = this.props.representativeId[0].id;
     }
     const workforceOfficeData = {
-      employer: stateEdited.employer,
+      company: stateEdited?.company.id || stateEdited.company.id,
       representative: stateEdited.representative,
       nameBn: stateEdited.titleBn,
       nameEn: stateEdited.title,
