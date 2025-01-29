@@ -185,7 +185,7 @@ export function fetchWorkforceOffice(mm, filters) {
     "status",
     "website",
     "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
-    location_projection,
+    location_projection + "}",
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployerOffices",
