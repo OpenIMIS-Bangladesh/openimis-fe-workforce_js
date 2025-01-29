@@ -537,11 +537,11 @@ function reducer(
         ...state,
         fetchingWorkforceOffice: false,
         fetchedWorkforceOffice: true,
-        WorkforceOffice: parseData(
+        workforceOffice: parseData(
           action.payload.data.workforceEmployerOffices,
-        ).map((WorkforceOffice) => ({
-          ...WorkforceOffice,
-          id: decodeId(WorkforceOffice.id),
+        ).map((workforceOffice) => ({
+          ...workforceOffice,
+          id: decodeId(workforceOffice.id),
         }))?.[0],
         errorWorkforceOffice: formatGraphQLError(action.payload),
       };
