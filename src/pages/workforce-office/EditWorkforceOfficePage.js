@@ -92,9 +92,9 @@ class EditWorkforceOfficePage extends Component {
     };
 
     const workforceOfficeData = {
-      nameBn: stateEdited?.titleBn || stateEdited.nameBn,
-      nameEn: stateEdited?.title || stateEdited.nameEn,
-      phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
+      nameBn: stateEdited?.titleBn || stateEdited.titleBn,
+      nameEn: stateEdited?.title || stateEdited.title,
+      phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
       email: stateEdited?.email || stateEdited.email,
       gender: stateEdited?.gender || stateEdited.gender,
       birthDate: stateEdited?.birthDate || stateEdited.birthDate,
@@ -127,6 +127,7 @@ class EditWorkforceOfficePage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
+    console.log({stateEdited})
 
     console.log({stateEdited})
 
@@ -170,8 +171,8 @@ class EditWorkforceOfficePage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.office.phone"
-                    value={stateEdited.phone || ""}
-                    onChange={(v) => this.updateAttribute("phone", v)}
+                    value={stateEdited.phoneNumber || ""}
+                    onChange={(v) => this.updateAttribute("phoneNumber", v)}
                     type={"number"}
                     readOnly={isSaved}
                   />

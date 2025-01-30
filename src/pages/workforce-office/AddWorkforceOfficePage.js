@@ -132,7 +132,7 @@ class AddWorkforceOfficePage extends Component {
       representative: stateEdited.representative,
       nameBn: stateEdited.titleBn,
       nameEn: stateEdited.title,
-      phoneNumber: stateEdited.phone,
+      phoneNumber: stateEdited.phoneNumber,
       email: stateEdited.email,
       website: stateEdited.website,
       address: stateEdited.address,
@@ -239,8 +239,8 @@ class AddWorkforceOfficePage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.office.phone"
-                    value={stateEdited.phone || ""}
-                    onChange={(v) => this.updateAttribute("phone", v)}
+                    value={stateEdited.phoneNumber || ""}
+                    onChange={(v) => this.updateAttribute("phoneNumber", v)}
                     type={"number"}
                     readOnly={isSaved}
                   />
