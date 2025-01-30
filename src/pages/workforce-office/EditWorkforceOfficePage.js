@@ -128,6 +128,8 @@ class EditWorkforceOfficePage extends Component {
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
 
+    console.log({stateEdited})
+
     return (
       <div className={classes.page}>
         <Grid container>

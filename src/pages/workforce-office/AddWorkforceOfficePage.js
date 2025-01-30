@@ -101,7 +101,31 @@ class AddWorkforceOfficePage extends Component {
         ),
       );
 
-      representativeId = this.props.representativeId[0].id;
+      const representativeId = this.props.representativeId[0].id;
+
+      const workforceOfficeData = {
+        company: stateEdited?.company.id || stateEdited.company.id,
+        representative: stateEdited.representative,
+        nameBn: stateEdited.titleBn,
+        nameEn: stateEdited.title,
+        phoneNumber: stateEdited.phone,
+        email: stateEdited.email,
+        website: stateEdited.website,
+        address: stateEdited.address,
+        location: stateEdited.location,
+        status: WORKFORCE_STATUS.DRAFT,
+        isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
+        workforceRepresentativeId: representativeId,
+        workforceOffice: stateEdited.workforceOffice,
+      }
+
+      await dispatch(
+        createWorkforceOffice(
+          workforceOfficeData,
+          `Created Workforce Office ${workforceOfficeData.nameEn}`,
+        ),
+      );
+      
     }
     const workforceOfficeData = {
       company: stateEdited?.company.id || stateEdited.company.id,
@@ -143,6 +167,8 @@ class AddWorkforceOfficePage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved, isSameRepresentative } = this.state;
     const isSaveDisabled = false;
+
+    console.log({isSameRepresentative})
 
     return (
       <div className={classes.page}>
