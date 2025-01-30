@@ -610,7 +610,7 @@ function reducer(
         ...state,
         fetchingWorkforceFactory: false,
         fetchedWorkforceFactory: true,
-        WorkforceFactory: parseData(
+        workforceFactory: parseData(
           action.payload.data.workforceEmployerFactories,
         ).map((WorkforceFactory) => ({
           ...WorkforceFactory,
