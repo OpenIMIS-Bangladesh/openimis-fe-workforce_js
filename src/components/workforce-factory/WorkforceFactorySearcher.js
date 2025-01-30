@@ -120,8 +120,9 @@ class WorkforceFactorySearcher extends Component {
       (workforcefactory) => workforcefactory.website,
       (workforcefactory) => workforcefactory.status,
       (workforcefactory) => (this.isShowHistory() ? workforcefactory?.version : null),
-
+      (workforcefactory) => console.log({workforcefactory})
     ];
+    
          formatters.push((workforcefactory) => (
            <Tooltip title="Edit">
              <IconButton

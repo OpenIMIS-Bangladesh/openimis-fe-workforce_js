@@ -238,7 +238,7 @@ export function fetchWorkforceFactory(mm, filters) {
     filters,
     projections,
   );
-  return graphql(payload, "WORKFORCE_ORGANIZATION_FACTORY");
+  return graphql(payload, "WORKFORCE_FACTORY");
 }
 
 export function fetchWorkforceCompaniesSummary(mm, filters) {
@@ -679,9 +679,9 @@ export function updateWorkforceFactory(factory, clientMutationLabel) {
   return graphql(
     mutation.payload,
     [
-      "WORKFORCE_FACTORIES_REQ",
-      "WORKFORCE_FACTORIES_RESP",
-      "WORKFORCE_FACTORIES_ERR",
+      "WORKFORCE_FACTORY_REQ",
+      "WORKFORCE_FACTORY_RESP",
+      "WORKFORCE_FACTORY_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,

@@ -103,7 +103,30 @@ class AddWorkforceFactoryPage extends Component {
         ),
       );
 
-      representativeId = this.props.representativeId[0].id;
+      const representativeId = this.props.representativeId[0].id;
+
+      const workforceFactoryData = {
+        company: stateEdited?.company.id || stateEdited.company.id,
+        nameBn: stateEdited.titleBn,
+        nameEn: stateEdited.title,
+        phoneNumber: stateEdited.phone,
+        email: stateEdited.email,
+        website: stateEdited.website,
+        address: stateEdited.address,
+        location: stateEdited.location,
+        status: WORKFORCE_STATUS.DRAFT,
+        isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
+        workforceRepresentativeId: representativeId,
+        workforceFactory: stateEdited.workforceFactory,
+      };
+
+      await dispatch(
+        createWorkforceFactory(
+          workforceFactoryData,
+          `Created Workforce Factory ${workforceFactoryData.nameEn}`,
+        ),
+      );
+
     }
 
     const workforceFactoryData = {
@@ -127,6 +150,7 @@ class AddWorkforceFactoryPage extends Component {
         `Created Workforce Factory ${workforceFactoryData.nameEn}`,
       ),
     );
+
 
     this.setState({ isSaved: true });
   };

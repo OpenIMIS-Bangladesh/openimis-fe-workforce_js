@@ -13,6 +13,7 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
+  decodeId
 } from "@openimis/fe-core";
 import { updateWorkforceFactory, updateRepresentative } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
@@ -62,44 +63,42 @@ class EditWorkforceOfficePage extends Component {
     const { stateEdited } = this.state;
 
     const representativeData = {
-      type: "organization",
-      nameBn:
-        stateEdited?.repNameBn || stateEdited?.workforceRepresentative?.nameBn,
-      nameEn:
-        stateEdited?.repName || stateEdited?.workforceRepresentative?.nameEn,
-      location:
-        stateEdited?.repLocation ||
-        stateEdited?.workforceRepresentative?.location,
-      address:
-        stateEdited?.repAddress ||
-        stateEdited?.workforceRepresentative?.address,
-      phoneNumber:
-        stateEdited?.repPhone ||
-        stateEdited?.workforceRepresentative?.phoneNumber,
-      email:
-        stateEdited?.repEmail || stateEdited?.workforceRepresentative?.email,
-      nid: stateEdited?.nid || stateEdited?.workforceRepresentative?.nid,
-      passportNo:
-        stateEdited?.passport ||
-        stateEdited?.workforceRepresentative?.passportNo,
-      birthDate:
-        stateEdited?.birthDate ||
-        stateEdited?.workforceRepresentative?.birthDate,
-      position:
-        stateEdited?.position || stateEdited?.workforceRepresentative?.position,
-      id: decodeId(stateEdited.workforceRepresentative.id),
-    };
+          type: "organization",
+          nameBn:
+            stateEdited?.repNameBn || stateEdited?.workforceRepresentative?.nameBn,
+          nameEn:
+            stateEdited?.repName || stateEdited?.workforceRepresentative?.nameEn,
+          location:
+            stateEdited?.repLocation ||
+            stateEdited?.workforceRepresentative?.location,
+          address:
+            stateEdited?.repAddress ||
+            stateEdited?.workforceRepresentative?.address,
+          phoneNumber:
+            stateEdited?.repPhone ||
+            stateEdited?.workforceRepresentative?.phoneNumber,
+          email:
+            stateEdited?.repEmail || stateEdited?.workforceRepresentative?.email,
+          nid: stateEdited?.nid || stateEdited?.workforceRepresentative?.nid,
+          passportNo:
+            stateEdited?.passport ||
+            stateEdited?.workforceRepresentative?.passportNo,
+          birthDate:
+            stateEdited?.birthDate ||
+            stateEdited?.workforceRepresentative?.birthDate,
+          position:
+            stateEdited?.position || stateEdited?.workforceRepresentative?.position,
+          id: decodeId(stateEdited.workforceRepresentative.id),
+        };
 
     const workforceFactoryData = {
       nameBn: stateEdited?.titleBn || stateEdited.nameBn,
       nameEn: stateEdited?.title || stateEdited.nameEn,
-      phoneNumber: stateEdited?.phone || stateEdited.phoneNumber,
+      phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
       email: stateEdited?.email || stateEdited.email,
-      gender: stateEdited?.gender || stateEdited.gender,
-      birthDate: stateEdited?.birthDate || stateEdited.birthDate,
       address: stateEdited?.address || stateEdited.address,
-      location: stateEdited?.location || stateEdited.location,
       website: stateEdited?.website || stateEdited.website,
+      location: stateEdited?.location || stateEdited.location,
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
       id: stateEdited.id,
     };
@@ -148,7 +147,7 @@ class EditWorkforceOfficePage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.factory.name.en"
-                    value={stateEdited.title || ""}
+                    value={stateEdited.nameEn || ""}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
                     readOnly={isSaved}
@@ -158,7 +157,7 @@ class EditWorkforceOfficePage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.factory.name.bn"
-                    value={stateEdited.titleBn || ""}
+                    value={stateEdited.nameBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     readOnly={isSaved}
                   />
@@ -167,8 +166,8 @@ class EditWorkforceOfficePage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.factory.phone"
-                    value={stateEdited.phone || ""}
-                    onChange={(v) => this.updateAttribute("phone", v)}
+                    value={stateEdited.phoneNumber || ""}
+                    onChange={(v) => this.updateAttribute("phoneNumber", v)}
                     type={"number"}
                     readOnly={isSaved}
                   />
@@ -228,60 +227,70 @@ class EditWorkforceOfficePage extends Component {
                         label: "workforce.representative.name.en",
                         type: "text",
                         required: true,
+                        value: stateEdited.workforceRepresentative.nameEn,
                       },
                       {
                         key: "repNameBn",
                         label: "workforce.representative.name.bn",
                         type: "text",
                         required: true,
+                        value: stateEdited.workforceRepresentative.nameBn,
                       },
                       {
                         key: "position",
                         label: "workforce.representative.position",
                         type: "text",
                         required: true,
+                        value: stateEdited.workforceRepresentative.position,
                       },
                       {
                         key: "repPhone",
                         label: "workforce.representative.phone",
                         type: "number",
                         required: true,
+                        value: stateEdited.workforceRepresentative.phoneNumber,
                       },
                       {
                         key: "repEmail",
                         label: "workforce.representative.email",
-                        type: "email",
+                        type: "text",
                         required: true,
+                        value: stateEdited.workforceRepresentative.email,
                       },
                       {
                         key: "nid",
                         label: "workforce.representative.nid",
                         type: "number",
                         required: true,
-                      },
-                      {
-                        key: "passport",
-                        label: "workforce.representative.passport",
-                        type: "text",
-                        required: false,
+                        value: stateEdited.workforceRepresentative.nid,
                       },
                       {
                         key: "birthDate",
                         label: "workforce.representative.birthDate",
                         type: "date",
                         required: false,
+                        value: stateEdited.workforceRepresentative.birthDate,
+                      },
+                      {
+                        key: "passport",
+                        label: "workforce.representative.passport",
+                        type: "text",
+                        required: false,
+                        value: stateEdited.workforceRepresentative.passportNo,
                       },
                       {
                         key: "repLocation",
                         label: "workforce.representative.location",
                         type: "location",
                         required: true,
+                        value: stateEdited.workforceRepresentative.location,
                       },
                       {
                         key: "repAddress",
                         label: "workforce.representative.address",
                         type: "text",
                         required: true,
+                        value: stateEdited.workforceRepresentative.address,
                       },
                     ]}
                   />

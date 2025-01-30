@@ -19,7 +19,7 @@ class WorkforceFactoryForm extends Component {
       lockNew: false,
       reset: 0,
       workforceFactoryUuid: null,
-      ticket: this._newTicket(),
+      workforceFactory: this._newTicket(),
     };
   }
 
@@ -33,8 +33,8 @@ class WorkforceFactoryForm extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedWorkforcefactory !== this.props.fetchedWorkforcefactory
-      && !!this.props.fetchedWorkforcefactory
+    if (prevProps.fetchedWorkforceFactory !== this.props.fetchedWorkforceFactory
+      && !!this.props.fetchedWorkforceFactory
       && !!this.props.workforceFactory) {
       this.setState((state, props) => ({
         workforceFactory: { ...props.workforceFactory },
@@ -71,30 +71,30 @@ class WorkforceFactoryForm extends Component {
 
   };
 
-  _save = (ticket) => {
+  _save = (workforceFactory) => {
     this.setState(
-      { lockNew: !ticket.uuid },
-      () => this.props.save(ticket),
+      { lockNew: !workforceFactory.uuid },
+      () => this.props.save(workforceFactory),
     );
   };
 
-  onEditedChanged = (ticket) => {
-    this.setState({ ticket });
+  onEditedChanged = (workforceFactory) => {
+    this.setState({ workforceFactory });
   };
 
   reopenTicket = () => {
-    const { intl, ticket } = this.props;
+    const { intl, workforceFactory } = this.props;
     this.props.reopenTicket(
-      ticket.id,
+      workforceFactory.id,
       formatMessage(intl, MODULE_NAME, "reopenTicket.mutation.label"),
     );
   };
 
   render() {
     const {
-      fetchingTicket,
-      fetchedWorkforcefactory,
-      errorTicket,
+      fetchingWorkforceFactory,
+      fetchedWorkforceFactory,
+      errorWorkforceFactory,
       save, back,
     } = this.props;
 
@@ -104,28 +104,26 @@ class WorkforceFactoryForm extends Component {
       update,
       overview,
       workforceFactoryUuid,
-      ticket,
+      workforceFactory,
     } = this.state;
 
-    const readOnly = lockNew || !!ticket.validityTo || this.props.readOnly;
+    const readOnly = lockNew || !!workforceFactory.validityTo || this.props.readOnly;
     const actions = [
       {
         doIt: this.reopenTicket,
         icon: <LockOpenIcon />,
-        disabled: ticket.isHistory,
+        disabled: workforceFactory.isHistory,
       },
     ];
 
-    console.log({ workforceFactoryUuid });
-
     return (
       <>
-        <ProgressOrError progress={fetchingTicket} error={errorTicket} />
-        {(!!fetchedWorkforcefactory || !workforceFactoryUuid) && (
+        <ProgressOrError progress={fetchingWorkforceFactory} error={errorWorkforceFactory} />
+        {(!!fetchedWorkforceFactory || !workforceFactoryUuid) && (
           <Form
             module={MODULE_NAME}
             edited_id={workforceFactoryUuid}
-            edited={ticket}
+            edited={workforceFactory}
             reset={reset}
             update={update}
             title="Workforce Factory"
@@ -148,10 +146,10 @@ class WorkforceFactoryForm extends Component {
 // eslint-disable-next-line no-unused-vars
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  fetchingTicket: state.workforce.fetchingTicket,
-  errorTicket: state.workforce.errorTicket,
-  fetchedWorkforcefactory: state.workforce.fetchedWorkforcefactory,
-  ticket: state.workforce.ticket,
+  fetchingWorkforceFactory: state.workforce.fetchingWorkforceFactory,
+  errorWorkforceFactory: state.workforce.errorWorkforceFactory,
+  fetchedWorkforceFactory: state.workforce.fetchedWorkforceFactory,
+  workforceFactory: state.workforce.workforceFactory,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   grievanceConfig: state.workforce.grievanceConfig,

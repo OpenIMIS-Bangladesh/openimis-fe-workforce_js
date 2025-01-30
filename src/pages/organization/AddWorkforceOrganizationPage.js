@@ -45,7 +45,10 @@ class AddWorkforceOrganizationPage extends Component {
 
   componentDidUpdate(prevProps) {
     const { submittingMutation, mutation, dispatch } = this.props;
-    if (!submittingMutation && prevProps.submittingMutation !== submittingMutation) {
+    if (
+      !submittingMutation &&
+      prevProps.submittingMutation !== submittingMutation
+    ) {
       dispatch(journalize(mutation));
     }
   }
@@ -68,19 +71,27 @@ class AddWorkforceOrganizationPage extends Component {
       position: stateEdited.position,
     };
 
-
-    const representativeMutation = await formatMutation("createWorkforceRepresentative", formatRepresentativeGQL(representativeData), `Created Representative ${representativeData.nameEn}`);
-    const representativeClientMutationId = representativeMutation.clientMutationId;
+    const representativeMutation = await formatMutation(
+      "createWorkforceRepresentative",
+      formatRepresentativeGQL(representativeData),
+      `Created Representative ${representativeData.nameEn}` 
+    );
+    const representativeClientMutationId =
+      representativeMutation.clientMutationId;
 
     await dispatch(
       createRepresentative(
         representativeMutation,
-        `Created Representative ${representativeData.nameEn}`,
-      ),
+        `Created Representative ${representativeData.nameEn}`
+      )
     );
 
-
-    await dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
+    await dispatch(
+      fetchRepresentativeByClientMutationId(
+        this.props.modulesManger,
+        representativeClientMutationId
+      )
+    );
 
     const representativeId = this.props.representativeId[0].id;
 
@@ -100,8 +111,8 @@ class AddWorkforceOrganizationPage extends Component {
     await dispatch(
       createWorkforceOrganization(
         organizationData,
-        `Created Organization ${organizationData.nameEn}`,
-      ),
+        `Created Organization ${organizationData.nameEn}`
+      )
     );
 
     this.setState({ isSaved: true });
@@ -164,7 +175,9 @@ class AddWorkforceOrganizationPage extends Component {
                   <PublishedComponent
                     pubRef="workforceOrganization.OrganizationPicker"
                     value={stateEdited.parent || null}
-                    onChange={(option) => this.updateAttribute("parent", option)}
+                    onChange={(option) =>
+                      this.updateAttribute("parent", option)
+                    }
                     required
                     readOnly={isSaved}
                   />
@@ -189,7 +202,6 @@ class AddWorkforceOrganizationPage extends Component {
                     required
                     type={"email"}
                     readOnly={isSaved}
-
                   />
                 </Grid>
 
@@ -208,7 +220,9 @@ class AddWorkforceOrganizationPage extends Component {
                     pubRef="location.DetailedLocation"
                     withNull={true}
                     value={stateEdited.location || null}
-                    onChange={(location) => this.updateAttribute("location", location)}
+                    onChange={(location) =>
+                      this.updateAttribute("location", location)
+                    }
                     readOnly={isSaved}
                     required
                     split={true}
@@ -325,4 +339,6 @@ const mapStateToProps = (state) => ({
   grievanceConfig: state.workforce.grievanceConfig,
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceOrganizationPage));
+export default connect(mapStateToProps)(
+  withStyles(styles)(AddWorkforceOrganizationPage)
+);
