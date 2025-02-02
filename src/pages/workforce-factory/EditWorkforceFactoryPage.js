@@ -100,6 +100,7 @@ class EditWorkforceOfficePage extends Component {
       website: stateEdited?.website || stateEdited.website,
       location: stateEdited?.location || stateEdited.location,
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
+      company:decodeId(stateEdited.workforceEmployer.id),
       id: stateEdited.id,
     };
 
@@ -125,6 +126,7 @@ class EditWorkforceOfficePage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
+    console.log({stateEdited})
 
     return (
       <div className={classes.page}>

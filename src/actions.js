@@ -230,6 +230,7 @@ export function fetchWorkforceFactory(mm, filters) {
     "email",
     "status",
     "website",
+    "workforceEmployer{id}",
     "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
     location_projection + "}",
   ];
