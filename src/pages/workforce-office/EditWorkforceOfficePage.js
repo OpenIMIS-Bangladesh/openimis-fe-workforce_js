@@ -100,8 +100,8 @@ class EditWorkforceOfficePage extends Component {
       };
 
       const workforceOfficeData = {
-        nameBn: stateEdited?.titleBn || stateEdited.titleBn,
-        nameEn: stateEdited?.title || stateEdited.title,
+        nameBn: stateEdited?.titleBn || stateEdited.nameBn,
+        nameEn: stateEdited?.title || stateEdited.nameEn,
         phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
         email: stateEdited?.email || stateEdited.email,
         gender: stateEdited?.gender || stateEdited.gender,
@@ -113,6 +113,7 @@ class EditWorkforceOfficePage extends Component {
           ? "1"
           : "0",
         workforceRepresentativeId: stateEdited.workforceRepresentative.id,
+        company: decodeId(stateEdited.workforceEmployer.id),
         id: stateEdited.id,
       };
 
@@ -132,7 +133,7 @@ class EditWorkforceOfficePage extends Component {
       console.log({ workforceOfficeData });
     }
     const workforceOfficeData = {
-      nameBn: stateEdited?.titleBn ||stateEdited.nameBn,
+      nameBn: stateEdited?.titleBn || stateEdited.nameBn,
       nameEn: stateEdited?.title || stateEdited.nameEn,
       phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
       email: stateEdited?.email || stateEdited.email,
@@ -302,60 +303,73 @@ class EditWorkforceOfficePage extends Component {
                             label: "workforce.representative.name.en",
                             type: "text",
                             required: true,
+                            value: stateEdited.workforceRepresentative.nameEn,
                           },
                           {
                             key: "repNameBn",
                             label: "workforce.representative.name.bn",
                             type: "text",
                             required: true,
+                            value: stateEdited.workforceRepresentative.nameBn,
                           },
                           {
                             key: "position",
                             label: "workforce.representative.position",
                             type: "text",
                             required: true,
+                            value: stateEdited.workforceRepresentative.position,
                           },
                           {
                             key: "repPhone",
                             label: "workforce.representative.phone",
                             type: "number",
                             required: true,
+                            value:
+                              stateEdited.workforceRepresentative.phoneNumber,
                           },
                           {
                             key: "repEmail",
                             label: "workforce.representative.email",
-                            type: "email",
+                            type: "text",
                             required: true,
+                            value: stateEdited.workforceRepresentative.email,
                           },
                           {
                             key: "nid",
                             label: "workforce.representative.nid",
                             type: "number",
                             required: true,
-                          },
-                          {
-                            key: "passport",
-                            label: "workforce.representative.passport",
-                            type: "text",
-                            required: false,
+                            value: stateEdited.workforceRepresentative.nid,
                           },
                           {
                             key: "birthDate",
                             label: "workforce.representative.birthDate",
                             type: "date",
                             required: false,
+                            value:
+                              stateEdited.workforceRepresentative.birthDate,
+                          },
+                          {
+                            key: "passport",
+                            label: "workforce.representative.passport",
+                            type: "text",
+                            required: false,
+                            value:
+                              stateEdited.workforceRepresentative.passportNo,
                           },
                           {
                             key: "repLocation",
                             label: "workforce.representative.location",
                             type: "location",
                             required: true,
+                            value: stateEdited.workforceRepresentative.location,
                           },
                           {
                             key: "repAddress",
                             label: "workforce.representative.address",
                             type: "text",
                             required: true,
+                            value: stateEdited.workforceRepresentative.address,
                           },
                         ]}
                       />
