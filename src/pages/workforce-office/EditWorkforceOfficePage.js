@@ -6,6 +6,7 @@ import {
   Typography,
   Divider,
   IconButton,
+  Checkbox,FormControlLabel
 } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
 import {
@@ -19,6 +20,7 @@ import { updateWorkforceOffice, updateRepresentative } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
+import CompanyPicker from "../../pickers/CompanyPicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -35,6 +37,8 @@ class EditWorkforceOfficePage extends Component {
     this.state = {
       stateEdited: props.workforceOffice || {},
       isSaved: false,
+      isSameRepresentative: true,
+
     };
   }
 
@@ -62,6 +66,7 @@ class EditWorkforceOfficePage extends Component {
     const { grievanceConfig, dispatch } = this.props;
     const { stateEdited } = this.state;
 
+    if (!this.state.isSameRepresentative) {
     const representativeData = {
       type: "organization",
       nameBn:
@@ -101,6 +106,7 @@ class EditWorkforceOfficePage extends Component {
       website: stateEdited?.website || stateEdited.website,
       address: stateEdited?.address || stateEdited.address,
       location: stateEdited?.location || stateEdited.location,
+      isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
       id: stateEdited.id,
     };
@@ -119,13 +125,13 @@ class EditWorkforceOfficePage extends Component {
       )
     );
     console.log({ workforceOfficeData });
-
+  }
     this.setState({ isSaved: true });
   };
 
   render() {
     const { classes } = this.props;
-    const { stateEdited, isSaved } = this.state;
+    const { stateEdited, isSaved, isSameRepresentative } = this.state;
     const isSaveDisabled = false;
     console.log({stateEdited})
 
@@ -149,6 +155,35 @@ class EditWorkforceOfficePage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
+              <Grid item xs={6} className={classes.item}>
+                  <CompanyPicker
+                    value={stateEdited?.company?.id}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.workforce_employer"
+                        module="workforce"
+                      />
+                    }
+                    required
+                    onChange={(v) => this.updateAttribute("company", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={isSameRepresentative}
+                        disabled={false}
+                        onChange={(e) => {
+                          this.setState({ isSameRepresentative: !isSameRepresentative });
+                        }}
+                      />
+                    }
+                    label={<FormattedMessage id="workforce.representative.sameAsRepresentative" module="workforce" />}
+                  />
+                </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.office.name.en"
@@ -220,76 +255,81 @@ class EditWorkforceOfficePage extends Component {
                   />
                 </Grid>
 
-                <Grid item xs={12} className={classes.item}>
-                  <WorkforceForm
-                    title="Workforce Representative Info"
-                    stateEdited={stateEdited}
-                    isSaved={isSaved}
-                    updateAttribute={this.updateAttribute}
-                    fields={[
-                      {
-                        key: "repName",
-                        label: "workforce.representative.name.en",
-                        type: "text",
-                        required: true,
-                      },
-                      {
-                        key: "repNameBn",
-                        label: "workforce.representative.name.bn",
-                        type: "text",
-                        required: true,
-                      },
-                      {
-                        key: "position",
-                        label: "workforce.representative.position",
-                        type: "text",
-                        required: true,
-                      },
-                      {
-                        key: "repPhone",
-                        label: "workforce.representative.phone",
-                        type: "number",
-                        required: true,
-                      },
-                      {
-                        key: "repEmail",
-                        label: "workforce.representative.email",
-                        type: "email",
-                        required: true,
-                      },
-                      {
-                        key: "nid",
-                        label: "workforce.representative.nid",
-                        type: "number",
-                        required: true,
-                      },
-                      {
-                        key: "passport",
-                        label: "workforce.representative.passport",
-                        type: "text",
-                        required: false,
-                      },
-                      {
-                        key: "birthDate",
-                        label: "workforce.representative.birthDate",
-                        type: "date",
-                        required: false,
-                      },
-                      {
-                        key: "repLocation",
-                        label: "workforce.representative.location",
-                        type: "location",
-                        required: true,
-                      },
-                      {
-                        key: "repAddress",
-                        label: "workforce.representative.address",
-                        type: "text",
-                        required: true,
-                      },
-                    ]}
-                  />
-                </Grid>
+                <>
+                  {!isSameRepresentative && (
+                    <Grid item xs={12} className={classes.item}>
+                      <WorkforceForm
+                        title="Workforce Representative Info"
+                        stateEdited={stateEdited}
+                        isSaved={isSaved}
+                        updateAttribute={this.updateAttribute}
+                        fields={[
+                          {
+                            key: "repName",
+                            label: "workforce.representative.name.en",
+                            type: "text",
+                            required: true,
+                          },
+                          {
+                            key: "repNameBn",
+                            label: "workforce.representative.name.bn",
+                            type: "text",
+                            required: true,
+                          },
+                          {
+                            key: "position",
+                            label: "workforce.representative.position",
+                            type: "text",
+                            required: true,
+                          },
+                          {
+                            key: "repPhone",
+                            label: "workforce.representative.phone",
+                            type: "number",
+                            required: true,
+                          },
+                          {
+                            key: "repEmail",
+                            label: "workforce.representative.email",
+                            type: "email",
+                            required: true,
+                          },
+                          {
+                            key: "nid",
+                            label: "workforce.representative.nid",
+                            type: "number",
+                            required: true,
+                          },
+                          {
+                            key: "passport",
+                            label: "workforce.representative.passport",
+                            type: "text",
+                            required: false,
+                          },
+                          {
+                            key: "birthDate",
+                            label: "workforce.representative.birthDate",
+                            type: "date",
+                            required: false,
+                          },
+                          {
+                            key: "repLocation",
+                            label: "workforce.representative.location",
+                            type: "location",
+                            required: true,
+                          },
+                          {
+                            key: "repAddress",
+                            label: "workforce.representative.address",
+                            type: "text",
+                            required: true,
+                          },
+                        ]}
+                      />
+                    </Grid>
+                  )
+                  }
+                </>
 
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>

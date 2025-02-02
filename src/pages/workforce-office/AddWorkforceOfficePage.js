@@ -127,28 +127,6 @@ class AddWorkforceOfficePage extends Component {
       );
       
     }
-    const workforceOfficeData = {
-      company: stateEdited?.company.id || stateEdited.company.id,
-      representative: stateEdited.representative,
-      nameBn: stateEdited.titleBn,
-      nameEn: stateEdited.title,
-      phoneNumber: stateEdited.phoneNumber,
-      email: stateEdited.email,
-      website: stateEdited.website,
-      address: stateEdited.address,
-      location: stateEdited.location,
-      status: WORKFORCE_STATUS.DRAFT,
-      isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
-      workforceRepresentativeId: representativeId,
-      workforceOffice: stateEdited.workforceOffice,
-    };
-
-    await dispatch(
-      createWorkforceOffice(
-        workforceOfficeData,
-        `Created Workforce Office ${workforceOfficeData.nameEn}`,
-      ),
-    );
 
     this.setState({ isSaved: true });
   };
