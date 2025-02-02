@@ -671,7 +671,7 @@ export function createWorkforceFactory(factory, clientMutationLabel) {
 
 export function updateWorkforceFactory(factory, clientMutationLabel) {
   const mutation = formatMutation(
-    "updateWorkforceFactory",
+    "updateWorkforceEmployerFactory",
     formatWorkforceFactoryGQL(factory),
     clientMutationLabel,
   );
