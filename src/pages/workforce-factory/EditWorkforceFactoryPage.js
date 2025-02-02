@@ -6,19 +6,31 @@ import {
   Typography,
   Divider,
   IconButton,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
+import {
+  createRepresentative,
+  fetchRepresentativeByClientMutationId,
+  createWorkforceFactory,
+  updateRepresentative,
+  updateWorkforceFactory,
+} from "../../actions";
 import {
   TextInput,
   journalize,
   PublishedComponent,
   FormattedMessage,
-  decodeId
+  formatMutation,
+  decodeId 
 } from "@openimis/fe-core";
-import { updateWorkforceFactory, updateRepresentative } from "../../actions";
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
+
+import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
+import { formatRepresentativeGQL } from "../../utils/format_gql";
+import CompanyPicker from "../../pickers/CompanyPicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -35,6 +47,7 @@ class EditWorkforceFactoryPage extends Component {
     this.state = {
       stateEdited: props.workforceFactory || {},
       isSaved: false,
+      isSameRepresentative: true,
     };
   }
 
@@ -58,39 +71,71 @@ class EditWorkforceFactoryPage extends Component {
     }));
   };
 
-  save = () => {
-    const { grievanceConfig, dispatch } = this.props;
+  save = async () => {
     const { stateEdited } = this.state;
+    const { dispatch } = this.props;
 
-    const representativeData = {
-          type: "organization",
-          nameBn:
-            stateEdited?.repNameBn || stateEdited?.workforceRepresentative?.nameBn,
-          nameEn:
-            stateEdited?.repName || stateEdited?.workforceRepresentative?.nameEn,
-          location:
-            stateEdited?.repLocation ||
-            stateEdited?.workforceRepresentative?.location,
-          address:
-            stateEdited?.repAddress ||
-            stateEdited?.workforceRepresentative?.address,
-          phoneNumber:
-            stateEdited?.repPhone ||
-            stateEdited?.workforceRepresentative?.phoneNumber,
-          email:
-            stateEdited?.repEmail || stateEdited?.workforceRepresentative?.email,
-          nid: stateEdited?.nid || stateEdited?.workforceRepresentative?.nid,
-          passportNo:
-            stateEdited?.passport ||
-            stateEdited?.workforceRepresentative?.passportNo,
-          birthDate:
-            stateEdited?.birthDate ||
-            stateEdited?.workforceRepresentative?.birthDate,
-          position:
-            stateEdited?.position || stateEdited?.workforceRepresentative?.position,
-          id: decodeId(stateEdited.workforceRepresentative.id),
-        };
+    let representativeId = EMPTY_STRING;
 
+    if (!this.state.isSameRepresentative) {
+      const representativeData = {
+        type: "organization",
+        nameBn:
+          stateEdited?.repNameBn ||
+          stateEdited?.workforceRepresentative?.nameBn,
+        nameEn:
+          stateEdited?.repName || stateEdited?.workforceRepresentative?.nameEn,
+        location:
+          stateEdited?.repLocation ||
+          stateEdited?.workforceRepresentative?.location,
+        address:
+          stateEdited?.repAddress ||
+          stateEdited?.workforceRepresentative?.address,
+        phoneNumber:
+          stateEdited?.repPhone ||
+          stateEdited?.workforceRepresentative?.phoneNumber,
+        email:
+          stateEdited?.repEmail || stateEdited?.workforceRepresentative?.email,
+        nid: stateEdited?.nid || stateEdited?.workforceRepresentative?.nid,
+        passportNo:
+          stateEdited?.passport ||
+          stateEdited?.workforceRepresentative?.passportNo,
+        birthDate:
+          stateEdited?.birthDate ||
+          stateEdited?.workforceRepresentative?.birthDate,
+        position:
+          stateEdited?.position ||
+          stateEdited?.workforceRepresentative?.position,
+        id: decodeId(stateEdited.workforceRepresentative.id),
+      };
+
+      dispatch(
+        updateRepresentative(
+          representativeData,
+          `Update Representative ${representativeData.nameEn}`
+        )
+      );
+
+      const workforceFactoryData = {
+        nameBn: stateEdited?.titleBn || stateEdited.nameBn,
+        nameEn: stateEdited?.title || stateEdited.nameEn,
+        phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
+        email: stateEdited?.email || stateEdited.email,
+        address: stateEdited?.address || stateEdited.address,
+        website: stateEdited?.website || stateEdited.website,
+        location: stateEdited?.location || stateEdited.location,
+        workforceRepresentativeId: stateEdited.workforceRepresentative.id,
+        company: stateEdited.workforceEmployer.id,
+        id: stateEdited.id,
+      };
+
+      await dispatch(
+        updateWorkforceFactory(
+          workforceFactoryData,
+          `Update Workforce Factory ${workforceFactoryData.nameEn}`
+        )
+      );
+    }
     const workforceFactoryData = {
       nameBn: stateEdited?.titleBn || stateEdited.nameBn,
       nameEn: stateEdited?.title || stateEdited.nameEn,
@@ -100,35 +145,25 @@ class EditWorkforceFactoryPage extends Component {
       website: stateEdited?.website || stateEdited.website,
       location: stateEdited?.location || stateEdited.location,
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
-      company:stateEdited.workforceEmployer.id,
+      company: stateEdited.workforceEmployer.id,
       id: stateEdited.id,
     };
 
-    console.log({workforceFactoryData})
-
-    dispatch(
-      updateRepresentative(
-        representativeData,
-        `Update Representative ${representativeData.nameEn}`
-      )
-    );
-
-    dispatch(
+    await dispatch(
       updateWorkforceFactory(
         workforceFactoryData,
         `Update Workforce Factory ${workforceFactoryData.nameEn}`
       )
     );
-    console.log({ workforceFactoryData });
 
     this.setState({ isSaved: true });
   };
 
   render() {
     const { classes } = this.props;
-    const { stateEdited, isSaved } = this.state;
+    const { stateEdited, isSaved, isSameRepresentative } = this.state;
     const isSaveDisabled = false;
-    console.log({stateEdited})
+    console.log({ stateEdited });
 
     return (
       <div className={classes.page}>
@@ -149,9 +184,45 @@ class EditWorkforceFactoryPage extends Component {
               <Divider />
               <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
+                  <CompanyPicker
+                    value={decodeId(stateEdited?.workforceEmployer?.id)}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.workforce_employer"
+                        module="workforce"
+                      />
+                    }
+                    required
+                    onChange={(v) => this.updateAttribute("workforceEmployer", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        checked={isSameRepresentative}
+                        disabled={false}
+                        onChange={(e) => {
+                          this.setState({
+                            isSameRepresentative: !isSameRepresentative,
+                          });
+                        }}
+                      />
+                    }
+                    label={
+                      <FormattedMessage
+                        id="workforce.representative.sameAsRepresentative"
+                        module="workforce"
+                      />
+                    }
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.factory.name.en"
-                    value={stateEdited.nameEn || ""}
+                    value={stateEdited.nameEn || stateEdited.title || ""}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
                     readOnly={isSaved}
@@ -161,7 +232,7 @@ class EditWorkforceFactoryPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.factory.name.bn"
-                    value={stateEdited.nameBn || ""}
+                    value={stateEdited.nameBn || stateEdited.titleBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     readOnly={isSaved}
                   />
@@ -205,7 +276,7 @@ class EditWorkforceFactoryPage extends Component {
                   />
                 </Grid>
 
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={12} className={classes.item}>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
@@ -219,86 +290,93 @@ class EditWorkforceFactoryPage extends Component {
                   />
                 </Grid>
 
-                <Grid item xs={12} className={classes.item}>
-                  <WorkforceForm
-                    title="Workforce Representative Info"
-                    stateEdited={stateEdited}
-                    isSaved={isSaved}
-                    updateAttribute={this.updateAttribute}
-                    fields={[
-                      {
-                        key: "repName",
-                        label: "workforce.representative.name.en",
-                        type: "text",
-                        required: true,
-                        value: stateEdited.workforceRepresentative.nameEn,
-                      },
-                      {
-                        key: "repNameBn",
-                        label: "workforce.representative.name.bn",
-                        type: "text",
-                        required: true,
-                        value: stateEdited.workforceRepresentative.nameBn,
-                      },
-                      {
-                        key: "position",
-                        label: "workforce.representative.position",
-                        type: "text",
-                        required: true,
-                        value: stateEdited.workforceRepresentative.position,
-                      },
-                      {
-                        key: "repPhone",
-                        label: "workforce.representative.phone",
-                        type: "number",
-                        required: true,
-                        value: stateEdited.workforceRepresentative.phoneNumber,
-                      },
-                      {
-                        key: "repEmail",
-                        label: "workforce.representative.email",
-                        type: "text",
-                        required: true,
-                        value: stateEdited.workforceRepresentative.email,
-                      },
-                      {
-                        key: "nid",
-                        label: "workforce.representative.nid",
-                        type: "number",
-                        required: true,
-                        value: stateEdited.workforceRepresentative.nid,
-                      },
-                      {
-                        key: "birthDate",
-                        label: "workforce.representative.birthDate",
-                        type: "date",
-                        required: false,
-                        value: stateEdited.workforceRepresentative.birthDate,
-                      },
-                      {
-                        key: "passport",
-                        label: "workforce.representative.passport",
-                        type: "text",
-                        required: false,
-                        value: stateEdited.workforceRepresentative.passportNo,
-                      },
-                      {
-                        key: "repLocation",
-                        label: "workforce.representative.location",
-                        type: "location",
-                        required: true,
-                        value: stateEdited.workforceRepresentative.location,
-                      },
-                      {
-                        key: "repAddress",
-                        label: "workforce.representative.address",
-                        type: "text",
-                        required: true,
-                        value: stateEdited.workforceRepresentative.address,
-                      },
-                    ]}
-                  />
-                </Grid>
+                <>
+                  {!isSameRepresentative && (
+                    <Grid item xs={12} className={classes.item}>
+                      <WorkforceForm
+                        title="Workforce Representative Info"
+                        stateEdited={stateEdited}
+                        isSaved={isSaved}
+                        updateAttribute={this.updateAttribute}
+                        fields={[
+                          {
+                            key: "repName",
+                            label: "workforce.representative.name.en",
+                            type: "text",
+                            required: true,
+                            value: stateEdited.workforceRepresentative.nameEn,
+                          },
+                          {
+                            key: "repNameBn",
+                            label: "workforce.representative.name.bn",
+                            type: "text",
+                            required: true,
+                            value: stateEdited.workforceRepresentative.nameBn,
+                          },
+                          {
+                            key: "position",
+                            label: "workforce.representative.position",
+                            type: "text",
+                            required: true,
+                            value: stateEdited.workforceRepresentative.position,
+                          },
+                          {
+                            key: "repPhone",
+                            label: "workforce.representative.phone",
+                            type: "number",
+                            required: true,
+                            value:
+                              stateEdited.workforceRepresentative.phoneNumber,
+                          },
+                          {
+                            key: "repEmail",
+                            label: "workforce.representative.email",
+                            type: "text",
+                            required: true,
+                            value: stateEdited.workforceRepresentative.email,
+                          },
+                          {
+                            key: "nid",
+                            label: "workforce.representative.nid",
+                            type: "number",
+                            required: true,
+                            value: stateEdited.workforceRepresentative.nid,
+                          },
+                          {
+                            key: "birthDate",
+                            label: "workforce.representative.birthDate",
+                            type: "date",
+                            required: false,
+                            value:
+                              stateEdited.workforceRepresentative.birthDate,
+                          },
+                          {
+                            key: "passport",
+                            label: "workforce.representative.passport",
+                            type: "text",
+                            required: false,
+                            value:
+                              stateEdited.workforceRepresentative.passportNo,
+                          },
+                          {
+                            key: "repLocation",
+                            label: "workforce.representative.location",
+                            type: "location",
+                            required: true,
+                            value: stateEdited.workforceRepresentative.location,
+                          },
+                          {
+                            key: "repAddress",
+                            label: "workforce.representative.address",
+                            type: "text",
+                            required: true,
+                            value: stateEdited.workforceRepresentative.address,
+                          },
+                        ]}
+                      />
+                    </Grid>
+                  )}
+                </>
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
                   <IconButton
