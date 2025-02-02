@@ -29,7 +29,7 @@ const styles = (theme) => ({
   },
 });
 
-class EditWorkforceOfficePage extends Component {
+class EditWorkforceFactoryPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -100,9 +100,11 @@ class EditWorkforceOfficePage extends Component {
       website: stateEdited?.website || stateEdited.website,
       location: stateEdited?.location || stateEdited.location,
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
-      company:decodeId(stateEdited.workforceEmployer.id),
+      company:stateEdited.workforceEmployer.id,
       id: stateEdited.id,
     };
+
+    console.log({workforceFactoryData})
 
     dispatch(
       updateRepresentative(
@@ -324,5 +326,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(
-  withStyles(styles)(EditWorkforceOfficePage)
+  withStyles(styles)(EditWorkforceFactoryPage)
 );
