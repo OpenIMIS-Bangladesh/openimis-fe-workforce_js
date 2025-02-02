@@ -115,7 +115,7 @@ class AddWorkforceCompanyPage extends Component {
       foundationDate: stateEdited.foundationDate,
       businessSector: stateEdited.businessSector,
       establishmentName: stateEdited.establishmentName,
-      status: WORKFORCE_STATUS.ACTIVE,
+      status: WORKFORCE_STATUS.DRAFT,
       workforceRepresentativeId: representativeId,
       workforceCompany: stateEdited.workforceCompany,
       employerIdLima:stateEdited.employerIdLima

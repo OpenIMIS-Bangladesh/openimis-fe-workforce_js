@@ -6,7 +6,8 @@ import {
   Typography,
   Divider,
   IconButton,
-  Checkbox,FormControlLabel
+  Checkbox,
+  FormControlLabel,
 } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
 import {
@@ -15,6 +16,7 @@ import {
   PublishedComponent,
   FormattedMessage,
   formatMutation,
+  decodeId,
 } from "@openimis/fe-core";
 import { updateWorkforceOffice, updateRepresentative } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
@@ -38,7 +40,6 @@ class EditWorkforceOfficePage extends Component {
       stateEdited: props.workforceOffice || {},
       isSaved: false,
       isSameRepresentative: true,
-
     };
   }
 
@@ -67,38 +68,72 @@ class EditWorkforceOfficePage extends Component {
     const { stateEdited } = this.state;
 
     if (!this.state.isSameRepresentative) {
-    const representativeData = {
-      type: "organization",
-      nameBn:
-        stateEdited?.repNameBn || stateEdited?.workforceRepresentative?.nameBn,
-      nameEn:
-        stateEdited?.repName || stateEdited?.workforceRepresentative?.nameEn,
-      location:
-        stateEdited?.repLocation ||
-        stateEdited?.workforceRepresentative?.location,
-      address:
-        stateEdited?.repAddress ||
-        stateEdited?.workforceRepresentative?.address,
-      phoneNumber:
-        stateEdited?.repPhone ||
-        stateEdited?.workforceRepresentative?.phoneNumber,
-      email:
-        stateEdited?.repEmail || stateEdited?.workforceRepresentative?.email,
-      nid: stateEdited?.nid || stateEdited?.workforceRepresentative?.nid,
-      passportNo:
-        stateEdited?.passport ||
-        stateEdited?.workforceRepresentative?.passportNo,
-      birthDate:
-        stateEdited?.birthDate ||
-        stateEdited?.workforceRepresentative?.birthDate,
-      position:
-        stateEdited?.position || stateEdited?.workforceRepresentative?.position,
-      id: decodeId(stateEdited.workforceRepresentative.id),
-    };
+      const representativeData = {
+        type: "organization",
+        nameBn:
+          stateEdited?.repNameBn ||
+          stateEdited?.workforceRepresentative?.nameBn,
+        nameEn:
+          stateEdited?.repName || stateEdited?.workforceRepresentative?.nameEn,
+        location:
+          stateEdited?.repLocation ||
+          stateEdited?.workforceRepresentative?.location,
+        address:
+          stateEdited?.repAddress ||
+          stateEdited?.workforceRepresentative?.address,
+        phoneNumber:
+          stateEdited?.repPhone ||
+          stateEdited?.workforceRepresentative?.phoneNumber,
+        email:
+          stateEdited?.repEmail || stateEdited?.workforceRepresentative?.email,
+        nid: stateEdited?.nid || stateEdited?.workforceRepresentative?.nid,
+        passportNo:
+          stateEdited?.passport ||
+          stateEdited?.workforceRepresentative?.passportNo,
+        birthDate:
+          stateEdited?.birthDate ||
+          stateEdited?.workforceRepresentative?.birthDate,
+        position:
+          stateEdited?.position ||
+          stateEdited?.workforceRepresentative?.position,
+        id: decodeId(stateEdited.workforceRepresentative.id),
+      };
 
+      const workforceOfficeData = {
+        nameBn: stateEdited?.titleBn || stateEdited.titleBn,
+        nameEn: stateEdited?.title || stateEdited.title,
+        phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
+        email: stateEdited?.email || stateEdited.email,
+        gender: stateEdited?.gender || stateEdited.gender,
+        birthDate: stateEdited?.birthDate || stateEdited.birthDate,
+        website: stateEdited?.website || stateEdited.website,
+        address: stateEdited?.address || stateEdited.address,
+        location: stateEdited?.location || stateEdited.location,
+        isSameCompanyRepresentative: this.state.isSameRepresentative
+          ? "1"
+          : "0",
+        workforceRepresentativeId: stateEdited.workforceRepresentative.id,
+        id: stateEdited.id,
+      };
+
+      dispatch(
+        updateRepresentative(
+          representativeData,
+          `Update Representative ${representativeData.nameEn}`
+        )
+      );
+
+      dispatch(
+        updateWorkforceOffice(
+          workforceOfficeData,
+          `Update Workforce Office ${workforceOfficeData.nameEn}`
+        )
+      );
+      console.log({ workforceOfficeData });
+    }
     const workforceOfficeData = {
-      nameBn: stateEdited?.titleBn || stateEdited.titleBn,
-      nameEn: stateEdited?.title || stateEdited.title,
+      nameBn: stateEdited?.titleBn ||stateEdited.nameBn,
+      nameEn: stateEdited?.title || stateEdited.nameEn,
       phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
       email: stateEdited?.email || stateEdited.email,
       gender: stateEdited?.gender || stateEdited.gender,
@@ -108,15 +143,9 @@ class EditWorkforceOfficePage extends Component {
       location: stateEdited?.location || stateEdited.location,
       isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
+      company: decodeId(stateEdited.workforceEmployer.id),
       id: stateEdited.id,
     };
-
-    dispatch(
-      updateRepresentative(
-        representativeData,
-        `Update Representative ${representativeData.nameEn}`
-      )
-    );
 
     dispatch(
       updateWorkforceOffice(
@@ -124,8 +153,6 @@ class EditWorkforceOfficePage extends Component {
         `Update Workforce Office ${workforceOfficeData.nameEn}`
       )
     );
-    console.log({ workforceOfficeData });
-  }
     this.setState({ isSaved: true });
   };
 
@@ -133,9 +160,8 @@ class EditWorkforceOfficePage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved, isSameRepresentative } = this.state;
     const isSaveDisabled = false;
-    console.log({stateEdited})
 
-    console.log({stateEdited})
+    console.log({ stateEdited });
 
     return (
       <div className={classes.page}>
@@ -155,9 +181,9 @@ class EditWorkforceOfficePage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-              <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
                   <CompanyPicker
-                    value={stateEdited?.company?.id}
+                    value={decodeId(stateEdited?.workforceEmployer?.id)}
                     label={
                       <FormattedMessage
                         id="workforce.employee.workforce_employer"
@@ -177,17 +203,24 @@ class EditWorkforceOfficePage extends Component {
                         checked={isSameRepresentative}
                         disabled={false}
                         onChange={(e) => {
-                          this.setState({ isSameRepresentative: !isSameRepresentative });
+                          this.setState({
+                            isSameRepresentative: !isSameRepresentative,
+                          });
                         }}
                       />
                     }
-                    label={<FormattedMessage id="workforce.representative.sameAsRepresentative" module="workforce" />}
+                    label={
+                      <FormattedMessage
+                        id="workforce.representative.sameAsRepresentative"
+                        module="workforce"
+                      />
+                    }
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.office.name.en"
-                    value={stateEdited.title || ""}
+                    value={stateEdited.nameEn || stateEdited.title || ""}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
                     readOnly={isSaved}
@@ -197,7 +230,7 @@ class EditWorkforceOfficePage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.office.name.bn"
-                    value={stateEdited.titleBn || ""}
+                    value={stateEdited.nameBn || stateEdited.titleBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     readOnly={isSaved}
                   />
@@ -327,8 +360,7 @@ class EditWorkforceOfficePage extends Component {
                         ]}
                       />
                     </Grid>
-                  )
-                  }
+                  )}
                 </>
 
                 <Grid item xs={11} className={classes.item} />

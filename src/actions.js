@@ -183,7 +183,9 @@ export function fetchWorkforceOffice(mm, filters) {
     "phoneNumber",
     "email",
     "status",
+    location_projection,
     "website",
+    "workforceEmployer{id}",
     "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
     location_projection + "}",
   ];
@@ -604,7 +606,7 @@ export function createWorkforceOffice(office, clientMutationLabel) {
 
 export function updateWorkforceOffice(office, clientMutationLabel) {
   const mutation = formatMutation(
-    "updateWorkforceOffice",
+    "updateWorkforceEmployerOffice",
     formatWorkforceOfficeGQL(office),
     clientMutationLabel,
   );
@@ -620,7 +622,6 @@ export function updateWorkforceOffice(office, clientMutationLabel) {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
       requestedDateTime,
-      id: employee.id,
     },
   );
 }
