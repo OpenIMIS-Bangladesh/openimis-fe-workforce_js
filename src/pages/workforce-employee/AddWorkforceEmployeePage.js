@@ -72,15 +72,16 @@ class AddWorkforceEmployeePage extends Component {
       permanentAddress:
         stateEdited?.permanentAddress || stateEdited.permanentAddress,
       presentAddress:
-        stateEdited?.presentAddress || stateEdited?.presentAddress,
-      position: stateEdited?.position || stateEdited?.position,
+        stateEdited?.presentAddress || stateEdited.presentAddress,
+      position: stateEdited?.position || stateEdited.position,
       monthlyEarning:
-        stateEdited?.monthlyEarning || stateEdited?.monthlyEarning,
+        stateEdited?.monthlyEarning || stateEdited.monthlyEarning,
       referenceSalary:
-        stateEdited?.referenceSalary || stateEdited?.referenceSalary,
-      fathersName: stateEdited?.fathersName || stateEdited?.fathersName,
-      mothersName: stateEdited?.mothersName || stateEdited?.mothersName,
-      maritalStatus: stateEdited?.maritalStatus || stateEdited?.maritalStatus,
+        stateEdited?.referenceSalary || stateEdited.referenceSalary,
+      fathersName: stateEdited?.fathersName || stateEdited.fathersName,
+      mothersName: stateEdited?.mothersName || stateEdited.mothersName,
+      nid: stateEdited?.nid || stateEdited.nid,
+      maritalStatus: stateEdited?.maritalStatus || stateEdited.maritalStatus,
       presentLocation:
         stateEdited?.presentLocation || stateEdited.presentLocation,
       permanentLocation:
