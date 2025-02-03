@@ -145,7 +145,7 @@ class EditWorkforceFactoryPage extends Component {
       website: stateEdited?.website || stateEdited.website,
       location: stateEdited?.location || stateEdited.location,
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
-      company: stateEdited.workforceEmployer.id,
+      company: decodeId(stateEdited.workforceEmployer.id),
       id: stateEdited.id,
     };
 
