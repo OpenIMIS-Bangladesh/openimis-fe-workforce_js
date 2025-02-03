@@ -999,7 +999,7 @@ export function fetchWorkforceUnitsWithEmployeeDesignation(mm, filters) {
   const projections = [
     "id",
     "nameBn",
-    "unitDesignations {id,nameBn,nameEn}",
+    "unitDesignations {id,nameBn,nameEn,activeEmployeeDesignation{id,status,joiningDate,employee{id,nameEn,nameBn,email,phoneNumber}}}",
   ];
   const payload = formatPageQueryWithCount(
     "workforceOrganizationUnits",
