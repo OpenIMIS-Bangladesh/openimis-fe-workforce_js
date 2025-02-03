@@ -37,6 +37,7 @@
     "menu.workforce.approve.company": "Approve Companies",
     "menu.workforce.factory": "Factories",
     "menu.workforce.employee": "Employees",
+    "menu.workforce.employee.factory": "Employee Factories",
 
     "workforce.organization.addNewTooltip": "Add Workforce Organizations",
     "workforce.organization.name.en": "Organization Name En",

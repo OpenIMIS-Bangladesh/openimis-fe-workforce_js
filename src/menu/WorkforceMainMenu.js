@@ -7,7 +7,7 @@ import {
   MODULE_NAME,
 } from "../constants";
 import { ROUTE_WORKFORCE_ORGANIZATIONS, ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS,ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES, ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, ROUTE_WORKFORCE_APPROVE_COMPANIES } from "../routes";
-import { ROUTE_WORKFORCE_ORGANIZATIONS_UNITS,ROUTE_WORKFORCE_OFFICES,ROUTE_WORKFORCE_COMPANIES,ROUTE_WORKFORCE_FACTORIES,ROUTE_WORKFORCE_EMPLOYEES } from "../routes";
+import { ROUTE_WORKFORCE_ORGANIZATIONS_UNITS,ROUTE_WORKFORCE_OFFICES,ROUTE_WORKFORCE_COMPANIES,ROUTE_WORKFORCE_FACTORIES,ROUTE_WORKFORCE_EMPLOYEES,ROUTE_WORKFORCE_EMPLOYEE_FACTORIES } from "../routes";
 
 function WorkforceMainMenu(props) {
   const entries = [
@@ -69,6 +69,12 @@ function WorkforceMainMenu(props) {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.employee" />,
       icon: <ListAlt />,
       route: `/${ROUTE_WORKFORCE_EMPLOYEES}`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.employee.factory" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_EMPLOYEE_FACTORIES}`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
   ];
