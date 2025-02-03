@@ -19,6 +19,7 @@ import {
   ROUTE_WORKFORCE_EMPLOYEES,
   ROUTE_WORKFORCE_EMPLOYEE_FACTORIES,
 } from "../routes";
+import { RIGHT_WORKFORCE_EMPLOYER_APPROVE } from "../permission-rights";
 
 function WorkforceMainMenu(props) {
   const entries = [
@@ -62,7 +63,7 @@ function WorkforceMainMenu(props) {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.approve.company" />,
       icon: <ListAlt />,
       route: `/${ROUTE_WORKFORCE_APPROVE_COMPANIES}`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+      filter: (rights) => rights.includes(RIGHT_WORKFORCE_EMPLOYER_APPROVE),
     },
     {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.office" />,
