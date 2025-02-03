@@ -7,19 +7,19 @@ import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
 } from "@openimis/fe-core";
 
-import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../../constants";
+import { MODULE_NAME } from "../../constants";
 import OrganizationSearcher from "../../components/organization/OrganizationSearcher";
 import { ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION } from "../../routes";
 import UnitDesignationSearcher from "../../components/organization-unit-designation/UnitDesignationSearcher";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab,ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION
+  fab: theme.fab, ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION,
 });
 
 class UnitDesignationsPage extends Component {
   onDoubleClick = (unitDesignation, newTab = false) => {
-    const routeParams = ['workforce.route.unit.designations.designation', [decodeId(unitDesignation.id)]];
+    const routeParams = ["workforce.route.unit.designations.designation", [decodeId(unitDesignation.id)]];
     if (unitDesignation?.isHistory) {
       routeParams[1].push(unitDesignation.version);
     }
@@ -27,7 +27,7 @@ class UnitDesignationsPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.unit.designations.designation');
+    historyPush(this.props.modulesManager, this.props.history, "workforce.route.unit.designations.designation");
   };
 
   render() {

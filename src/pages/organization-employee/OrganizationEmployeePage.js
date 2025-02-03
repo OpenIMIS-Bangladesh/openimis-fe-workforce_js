@@ -7,7 +7,7 @@ import {
 } from "@openimis/fe-core";
 import OrganizationEmployeeForm from "../../components/organization-employee/OrganizationEmployeeForm";
 import { createOrganizationEmployee, updateOrganizationEmployee } from "../../actions";
-import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../constants";
+import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../permission-rights";
 
 const styles = (theme) => ({
   page: theme.page,

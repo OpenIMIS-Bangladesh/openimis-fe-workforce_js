@@ -17,7 +17,7 @@ import {
   decodeId,
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
-import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../../constants";
+import { MODULE_NAME } from "../../constants";
 import { fetchOrganizationEmployeesSummary } from "../../actions";
 import OrganizationEmployeeFilter from "./OrganizationEmployeeFilter";
 
@@ -103,12 +103,10 @@ class OrganizationEmployeeSearcher extends Component {
     "workforce.organization.employee.address",
     "workforce.organization.employee.gender",
     "workforce.organization.employee.status",
-    this.isShowHistory() ? 'workforce.version' : '',
+    this.isShowHistory() ? "workforce.version" : "",
   ];
 
-  sorts = () => [
-    
-  ];
+  sorts = () => [];
 
   itemFormatters = () => {
     const formatters = [
@@ -122,24 +120,24 @@ class OrganizationEmployeeSearcher extends Component {
       (organizationemployee) => (this.isShowHistory() ? organizationemployee?.version : null),
 
     ];
-         formatters.push((organizationemployee) => (
-           <Tooltip title="Edit">
-             <IconButton
-               disabled={organizationemployee?.isHistory}
-               onClick={() => {
-                 historyPush(
-                   this.props.modulesManager,
-                   this.props.history,
-                   'workforce.route.organizations.employees.employee',
-                   [decodeId(organizationemployee.id)],
-                   false,
-                 );
-               }}
-             >
-               <EditIcon />
-             </IconButton>
-           </Tooltip>
-         ));
+    formatters.push((organizationemployee) => (
+      <Tooltip title="Edit">
+        <IconButton
+          disabled={organizationemployee?.isHistory}
+          onClick={() => {
+            historyPush(
+              this.props.modulesManager,
+              this.props.history,
+              "workforce.route.organizations.employees.employee",
+              [decodeId(organizationemployee.id)],
+              false,
+            );
+          }}
+        >
+          <EditIcon />
+        </IconButton>
+      </Tooltip>
+    ));
     return formatters;
   };
 
@@ -150,8 +148,14 @@ class OrganizationEmployeeSearcher extends Component {
   render() {
     const {
       intl,
-      organizationEmployees, organizationEmployeesPageInfo, fetchingOrganizationEmployees, fetchedOrganizationEmployees, errorOrganizationEmployees,
-      filterPaneContributionsKey, cacheFiltersKey, onDoubleClick,
+      organizationEmployees,
+      organizationEmployeesPageInfo,
+      fetchingOrganizationEmployees,
+      fetchedOrganizationEmployees,
+      errorOrganizationEmployees,
+      filterPaneContributionsKey,
+      cacheFiltersKey,
+      onDoubleClick,
     } = this.props;
 
     const count = organizationEmployeesPageInfo.totalCount;

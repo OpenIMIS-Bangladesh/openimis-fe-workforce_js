@@ -6,7 +6,7 @@ import {
   withModulesManager, withHistory, historyPush,
 } from "@openimis/fe-core";
 import OrganizationUnitForm from "../../components/organization-unit/OrganizationUnitForm";
-import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../constants";
+import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../permission-rights";
 import { createWorkforceOrganizationUnit, updateWorkforceOrganizationUnit } from "../../actions";
 
 

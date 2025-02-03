@@ -7,18 +7,18 @@ import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
 } from "@openimis/fe-core";
 
-import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../../constants";
+import { MODULE_NAME } from "../../constants";
 import OrganizationSearcher from "../../components/organization/OrganizationSearcher";
 import { ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION } from "../../routes";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab,ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION
+  fab: theme.fab, ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION,
 });
 
 class WorkforceOrganizationsPage extends Component {
   onDoubleClick = (organization, newTab = false) => {
-    const routeParams = ['workforce.route.organizations.organization', [decodeId(organization.id)]];
+    const routeParams = ["workforce.route.organizations.organization", [decodeId(organization.id)]];
     if (organization?.isHistory) {
       routeParams[1].push(organization.version);
     }
@@ -26,7 +26,7 @@ class WorkforceOrganizationsPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.organizations.organization');
+    historyPush(this.props.modulesManager, this.props.history, "workforce.route.organizations.organization");
   };
 
   render() {

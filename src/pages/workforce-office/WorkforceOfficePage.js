@@ -7,7 +7,7 @@ import {
 } from "@openimis/fe-core";
 import WorkforceOfficeForm from "../../components/workforce-office/WorkforceOfficeForm";
 import { createWorkforceOffice, updateWorkforceOffice } from "../../actions";
-import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../constants";
+import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../permission-rights";
 
 const styles = (theme) => ({
   page: theme.page,

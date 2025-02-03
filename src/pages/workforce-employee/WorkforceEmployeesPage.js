@@ -7,18 +7,18 @@ import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
 } from "@openimis/fe-core";
 
-import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../../constants";
+import { MODULE_NAME } from "../../constants";
 import WorkforceEmployeeSearcher from "../../components/workforce-employee/WorkforceEmployeeSearcher";
 import { ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE } from "../../routes";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab,ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE
+  fab: theme.fab, ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE,
 });
 
 class WorkforceEmployeesPage extends Component {
   onDoubleClick = (employee, newTab = false) => {
-    const routeParams = ['workforce.route.employees.employee', [decodeId(employee.id)]];
+    const routeParams = ["workforce.route.employees.employee", [decodeId(employee.id)]];
     if (employee?.isHistory) {
       routeParams[1].push(employee.version);
     }
@@ -26,7 +26,7 @@ class WorkforceEmployeesPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.employees.employee');
+    historyPush(this.props.modulesManager, this.props.history, "workforce.route.employees.employee");
   };
 
   render() {

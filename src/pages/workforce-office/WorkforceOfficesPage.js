@@ -7,7 +7,8 @@ import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
 } from "@openimis/fe-core";
 
-import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../../constants";
+import { MODULE_NAME } from "../../constants";
+
 import OrganizationOfficeSearcher from "../../components/workforce-office/WorkforceOfficeSearcher";
 import { ROUTE_WORKFORCE_OFFICES_OFFICE } from "../../routes";
 

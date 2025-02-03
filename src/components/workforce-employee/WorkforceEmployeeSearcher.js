@@ -17,7 +17,7 @@ import {
   decodeId,
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
-import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT } from "../../constants";
+import { MODULE_NAME } from "../../constants";
 import { fetchWorkforceEmployeesSummary } from "../../actions";
 import WorkforceEmployeeFilter from "./WorkforceEmployeeFilter";
 

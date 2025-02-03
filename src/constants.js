@@ -49,7 +49,3 @@ export const WORKFORCE_STATUS = {
   REASSIGNED: "reassigned",
   RESIGNED: "resigned",
 };
-
-export const RIGHT_ORGANIZATION_CREATE = 801003;
-export const RIGHT_ORGANIZATION_EDIT = 801004;
-export const RIGHT_ORGANIZATION_DELETE = 801005;

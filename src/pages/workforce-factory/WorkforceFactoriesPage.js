@@ -7,18 +7,18 @@ import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
 } from "@openimis/fe-core";
 
-import { MODULE_NAME, RIGHT_ORGANIZATION_EDIT, RIGHT_ORGANIZATION_CREATE } from "../../constants";
+import { MODULE_NAME } from "../../constants";
 import OrganizationFactorySearcher from "../../components/workforce-factory/WorkforceFactorySearcher";
 import { ROUTE_WORKFORCE_FACTORIES_FACTORY } from "../../routes";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab,ROUTE_WORKFORCE_FACTORIES_FACTORY
+  fab: theme.fab, ROUTE_WORKFORCE_FACTORIES_FACTORY,
 });
 
 class OranigzationFactoriesPage extends Component {
   onDoubleClick = (factory, newTab = false) => {
-    const routeParams = ['workforce.route.factories.factory', [decodeId(factory.id)]];
+    const routeParams = ["workforce.route.factories.factory", [decodeId(factory.id)]];
     if (factory?.isHistory) {
       routeParams[1].push(factory.version);
     }
@@ -26,7 +26,7 @@ class OranigzationFactoriesPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, 'workforce.route.factories.factory');
+    historyPush(this.props.modulesManager, this.props.history, "workforce.route.factories.factory");
   };
 
   render() {

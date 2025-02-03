@@ -6,8 +6,8 @@ import {
   withModulesManager, withHistory, historyPush,
 } from "@openimis/fe-core";
 import OrganizationForm from "../../components/organization/OrganizationForm";
-import { updateOrganization, createWorkforceOrganization, updateWorkforceOrganization } from "../../actions";
-import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../constants";
+import { createWorkforceOrganization, updateWorkforceOrganization } from "../../actions";
+import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../permission-rights";
 
 const styles = (theme) => ({
   page: theme.page,
