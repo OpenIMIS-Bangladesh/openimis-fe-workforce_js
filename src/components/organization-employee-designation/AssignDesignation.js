@@ -27,7 +27,10 @@ import {
 } from "@openimis/fe-core";
 import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 import { WORKFORCE_STATUS } from "../../constants";
-import { fetchWorkforceUnitsWithEmployeeDesignation, updateWorkforceOrganizationEmployeeAssignDesignation } from "../../actions";
+import {
+  fetchWorkforceUnitsWithEmployeeDesignation,
+  updateWorkforceOrganizationEmployeeAssignDesignation,
+} from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,8 +47,8 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: theme.palette.action.hover, // Optional: Highlight on hover
     },
-    height: "20px", // Allow rows to shrink
-    maxHeight: "20px", // Allow rows to shrink
+    height: "40px",
+    maxHeight: "20px",
     minHeight: 0,
   },
   tableCell: {
@@ -73,24 +76,25 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "16px", // Reduce header font size slightly
     fontWeight: "bold",
   },
-  deleteButton: {
+  assignButton: {
     color: theme.palette.success.main,
   },
 }));
 
 const AssignDesignation = ({
-  userData,
-  stateEdited,
-  updateAttribute,
-  tableData,
-}) => {
+                             userData,
+                             stateEdited,
+                             updateAttribute,
+                             tableData,
+                           }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const dispatch = useDispatch();
   const [assignDate, setAssignDate] = useState();
+  const [disabledAssignButton, setDisabledAssignButton] = useState(false);  // Track button disabled state
 
   const employeeDesignationData = useSelector(
-    (state) => state.workforce[`employeeDesignationData`]
+    (state) => state.workforce[`employeeDesignationData`],
   );
 
   const fetchUnitWiseDesignations = async (v) => {
@@ -99,15 +103,16 @@ const AssignDesignation = ({
     prms.push(`orderBy:["unit_level", "unit_designations__designation_level"]`);
 
     await dispatch(
-      fetchWorkforceUnitsWithEmployeeDesignation(modulesManager, prms)
+      fetchWorkforceUnitsWithEmployeeDesignation(modulesManager, prms),
     );
-    console.log({ v });
   };
   const unitWiseDesignations = useSelector(
-    (state) => state.workforce[`unitWiseDesignationData`]
+    (state) => state.workforce[`unitWiseDesignationData`],
   );
 
   const handleAssign = (row) => {
+    setDisabledAssignButton(true);
+
     const assignData = {
       designationId: decodeId(row.id),
       employeeId: employeeDesignationData.id,
@@ -117,12 +122,11 @@ const AssignDesignation = ({
     dispatch(
       updateWorkforceOrganizationEmployeeAssignDesignation(
         assignData,
-        `updated Organization Employee designation ${row.nameEn}`
-      )
+        `updated Organization Employee designation ${row.nameEn}`,
+      ),
     );
   };
 
-  console.log({ unitWiseDesignations });
   return (
     <Paper className={classes.paper}>
       <Grid container spacing={0} className={classes.root}>
@@ -157,47 +161,46 @@ const AssignDesignation = ({
                         <TableCell colSpan={4}>
                           <b>{unit.nameBn}</b>
                         </TableCell>
-                        {/* <TableCell>Unit</TableCell>
-                          <TableCell>Designation</TableCell>
-                          <TableCell>Release Date</TableCell>
-                          <TableCell></TableCell> */}
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {unit?.unitDesignations.map((row, index) => (
                         <TableRow key={index} className={classes.tableRow}>
-                          {/* Name in English */}
-                          <TableCell
-                            className={classes.tableCell}
-                            style={{ width: "50%" }}
-                          >
+                          <TableCell className={classes.tableCell} style={{ width: "50%" }}>
                             {row?.nameEn}
                           </TableCell>
-                          {/* Release Date Picker */}
-                          <TableCell
-                            className={classes.tableCell}
-                            style={{ width: "30%" }}
-                          >
-                            <PublishedComponent
-                              pubRef="core.DatePicker"
-                              label={"Assign Date"}
-                              onChange={(v) => setAssignDate(v)}
-                              readOnly={false}
-                              required={false}
-                            />
-                          </TableCell>
-                          {/* Action Button */}
-                          <TableCell
-                            className={classes.tableCell}
-                            style={{ width: "20%" }}
-                          >
-                            <IconButton
-                              className={classes.deleteButton}
-                              onClick={() => handleAssign(row)}
+
+                          {row?.activeEmployeeDesignation && row?.activeEmployeeDesignation.length > 0 ? (
+                            <TableCell
+                              className={classes.tableCell}
+                              colSpan={2}
+                              style={{ textAlign: "center" }}
                             >
-                              <AddBoxIcon />
-                            </IconButton>
-                          </TableCell>
+                              {row?.activeEmployeeDesignation[0]?.employee.nameEn} {row?.activeEmployeeDesignation[0]?.employee.email}
+                            </TableCell>
+                          ) : (
+                            <>
+                              <TableCell className={classes.tableCell} style={{ width: "30%" }}>
+                                <PublishedComponent
+                                  pubRef="core.DatePicker"
+                                  label={"Assign Date"}
+                                  onChange={(v) => setAssignDate(v)}
+                                  readOnly={false}
+                                  required={false}
+                                />
+                              </TableCell>
+
+                              <TableCell className={classes.tableCell} style={{ width: "20%" }}>
+                                <IconButton
+                                  disabled={disabledAssignButton}
+                                  className={classes.assignButton}
+                                  onClick={() => handleAssign(row)}
+                                >
+                                  <AddBoxIcon />
+                                </IconButton>
+                              </TableCell>
+                            </>
+                          )}
                         </TableRow>
                       ))}
                     </TableBody>
