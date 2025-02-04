@@ -28,39 +28,36 @@ class WorkforceEmployeeFactoryPage extends Component {
 
   render() {
     const {
-      employeeDesignationData,
-      unitWiseDesignationData
+      employeeFactoryData,
     } = this.props;
     const { stateEdited, isSaved } = this.state;
 
     const userData = {
-      name: employeeDesignationData?.nameBn || "",
-      email: employeeDesignationData?.email || "",
-      phone: employeeDesignationData?.phoneNumber || "",
-      nid: employeeDesignationData?.nid || "",
+      name: employeeFactoryData?.nameBn || "",
+      email: employeeFactoryData?.email || "",
+      phone: employeeFactoryData?.phoneNumber || "",
+      nid: employeeFactoryData?.nid || "",
     };
 
-    const tableData = employeeDesignationData?.designations || [];
+    const tableData = employeeFactoryData?.nid || [];
     console.log({tableData})
 
-    console.log({employeeDesignationData})
-    // console.log({unitWiseDesignationData})
+    console.log({employeeFactoryData})
 
     return (
 
       <div>
         <EmployeeFactorySearcher />
-        <EmployeeFactoryInfo employeeDesignationData={employeeDesignationData} userData={userData} tableData={tableData} />
+        <EmployeeFactoryInfo employeeFactoryData={employeeFactoryData} userData={userData} tableData={tableData} />
         <AssignFactory userData={userData} stateEdited={stateEdited} updateAttribute={this.updateAttribute} tableData={tableData}/>
       </div>
 
     );
-  }
+  }  
 }
 
 const mapStateToProps = (state) => ({
-  employeeDesignationData: state.workforce.employeeDesignationData,
-  unitWiseDesignationData: state.workforce.unitWiseDesignationData,
+  employeeFactoryData: state.workforce.employeeFactoryData,
 });
 
 const mapDispatchToProps = (dispatch) => {

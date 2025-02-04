@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  Grid,
-  Paper,
-  Typography,
-  Divider,
-  Button,
-} from "@material-ui/core";
+import { Grid, Paper, Typography, Divider, Button } from "@material-ui/core";
 import { withTheme, withStyles, makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 import {
@@ -13,8 +7,11 @@ import {
   TextInput,
   useModulesManager,
 } from "@openimis/fe-core";
-import { YoutubeSearchedFor as ResetFilterIcon, Search as DefaultSearchIcon } from "@material-ui/icons";
-import { fetchEmployeeDesignations } from "../../actions";
+import {
+  YoutubeSearchedFor as ResetFilterIcon,
+  Search as DefaultSearchIcon,
+} from "@material-ui/icons";
+import { fetchWorkforceEmployee } from "../../actions";
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
@@ -54,18 +51,18 @@ const EmployeeFactorySearcher = ({ filters, onChangeFilters }) => {
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
 
-  const [email, setEmail] = useState("");
+  const [nid, setNid] = useState("");
   const [userId, setUserId] = useState("");
 
   const handleSearch = () => {
     const prms = [];
-    prms.push(`email: "${email}"`);
+    prms.push(`nid: "${nid}"`);
     // prms.push(`designations_Status: "${WORKFORCE_STATUS.ACTIVE}"`);
-    dispatch(fetchEmployeeDesignations(modulesManager, prms));
+    dispatch(fetchWorkforceEmployee(modulesManager, prms));
   };
 
   const handleReset = () => {
-    setEmail("");
+    setNid("");
     setUserId("");
     console.log("Filters reset");
   };
@@ -107,22 +104,10 @@ const EmployeeFactorySearcher = ({ filters, onChangeFilters }) => {
             <Grid container spacing={2} className={classes.item}>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
-                  label="Email"
-                  value={email || ""}
-                  onChange={(value) => setEmail(value)}
+                  label="workforce.employee.factory.nid"
+                  onChange={(value) => setNid(value)}
                   required={true}
                   readOnly={false}
-                  type="email"
-                />
-              </Grid>
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="User ID"
-                  value={userId}
-                  onChange={(value) => setUserId(value)}
-                  required={true}
-                  readOnly={false}
-                  type="number"
                 />
               </Grid>
             </Grid>
@@ -135,5 +120,5 @@ const EmployeeFactorySearcher = ({ filters, onChangeFilters }) => {
 
 // export default EmployeeFactorySearcher
 export default withModulesManager(
-  withTheme(withStyles(styles)(EmployeeFactorySearcher)),
+  withTheme(withStyles(styles)(EmployeeFactorySearcher))
 );

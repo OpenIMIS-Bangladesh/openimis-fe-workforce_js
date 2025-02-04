@@ -27,8 +27,12 @@ import {
 } from "@openimis/fe-core";
 import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 import { WORKFORCE_STATUS } from "../../constants";
-import { fetchWorkforceUnitsWithEmployeeDesignation, updateWorkforceOrganizationEmployeeAssignDesignation } from "../../actions";
+import {
+  fetchWorkforceUnitsWithEmployeeDesignation,
+  updateWorkforceOrganizationEmployeeAssignDesignation,
+} from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
+import FactoryPicker from "../../pickers/FactoryPicker";
 
 const useStyles = makeStyles((theme) => ({
   paper: theme.paper.paper,
@@ -132,19 +136,16 @@ const AssignFactory = ({
             <Grid item xs={12}>
               <Typography className={classes.tableHeader}>Assign</Typography>
             </Grid>
-            <Grid item xs={4}>
-              <PublishedComponent
-                pubRef="workforceOrganization.OrganizationPicker"
+            <Grid item xs={6} className={classes.item}>
+              <FactoryPicker
                 label={
                   <FormattedMessage
+                    id="workforce.employee.workforce_factory"
                     module="workforce"
-                    id="workforce.organization.picker"
                   />
                 }
-                value={stateEdited.organization || null}
-                onChange={(v) => fetchUnitWiseDesignations(v)}
+                value={stateEdited.name || null}
                 required
-                readOnly={false}
               />
             </Grid>
             {unitWiseDesignations?.map((unit) => (

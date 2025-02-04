@@ -165,6 +165,8 @@
     "workforce.employee.permanent_address": "Workforce Employee Permanent Address",
     "workforce.employee.status": "Workforce Employee Status",
 
-    "workforce.representative.sameAsRepresentative": "Same as Company Representative"
+    "workforce.representative.sameAsRepresentative": "Same as Company Representative",
+
+    "workforce.employee.factory.nid": "Workforce Employee NID"
 
 }
