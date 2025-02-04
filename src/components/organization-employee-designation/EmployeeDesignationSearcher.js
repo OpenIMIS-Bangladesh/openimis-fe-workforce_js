@@ -49,20 +49,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDesignationSearcher = ({ filters, onChangeFilters }) => {
+const EmployeeDesignationSearcher = ({ handleSearch, onEmailChange }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const modulesManager = useModulesManager();
+  // const modulesManager = useModulesManager();
 
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
 
-  const handleSearch = () => {
-    const prms = [];
-    prms.push(`email: "${email}"`);
-    // prms.push(`designations_Status: "${WORKFORCE_STATUS.ACTIVE}"`);
-    dispatch(fetchEmployeeDesignations(modulesManager, prms));
-  };
+  // const handleSearch = () => {
+  //   const prms = [];
+  //   prms.push(`email: "${email}"`);
+  //   // prms.push(`designations_Status: "${WORKFORCE_STATUS.ACTIVE}"`);
+  //   dispatch(fetchEmployeeDesignations(modulesManager, prms));
+  // };
 
   const handleReset = () => {
     setEmail("");
@@ -95,7 +95,7 @@ const EmployeeDesignationSearcher = ({ filters, onChangeFilters }) => {
                 <Button
                   size="large"
                   className={classes.largeButton}
-                  onClick={handleSearch}
+                  onClick={()=>handleSearch()}
                   startIcon={<DefaultSearchIcon />}
                 >
                   Search
@@ -109,7 +109,7 @@ const EmployeeDesignationSearcher = ({ filters, onChangeFilters }) => {
                 <TextInput
                   label="Email"
                   value={email || ""}
-                  onChange={(value) => setEmail(value)}
+                  onChange={(value) => onEmailChange(value)}
                   required={true}
                   readOnly={false}
                   type="email"

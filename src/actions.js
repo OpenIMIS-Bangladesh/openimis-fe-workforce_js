@@ -917,7 +917,7 @@ export function fetchUnitDesignation(mm, filters) {
 
 ///fetching employee designation details
 
-export function fetchEmployeeDesignations(mm, filters) {
+export function fetchEmployeeDesignations(filters) {
   const projections = [
     "id",
     "nameBn",

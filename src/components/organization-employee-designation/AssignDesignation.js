@@ -86,6 +86,7 @@ const AssignDesignation = ({
                              stateEdited,
                              updateAttribute,
                              tableData,
+                             handleSearch
                            }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
@@ -110,7 +111,7 @@ const AssignDesignation = ({
     (state) => state.workforce[`unitWiseDesignationData`],
   );
 
-  const handleAssign = (row) => {
+  const handleAssign = async(row) => {
     setDisabledAssignButton(true);
 
     const assignData = {
@@ -119,13 +120,17 @@ const AssignDesignation = ({
       joiningDate: assignDate,
       status: WORKFORCE_STATUS.ACTIVE,
     };
-    dispatch(
+    await dispatch(
       updateWorkforceOrganizationEmployeeAssignDesignation(
         assignData,
         `updated Organization Employee designation ${row.nameEn}`,
       ),
     );
+
+    handleSearch()
   };
+
+  console.log({unitWiseDesignations})
 
   return (
     <Paper className={classes.paper}>
