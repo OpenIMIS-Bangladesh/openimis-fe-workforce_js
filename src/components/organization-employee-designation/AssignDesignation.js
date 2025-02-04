@@ -190,7 +190,7 @@ const AssignDesignation = ({
                                   pubRef="core.DatePicker"
                                   label={"Assign Date"}
                                   onChange={(v) => setAssignDate(v)}
-                                  readOnly={false}
+                                  readOnly={disabledAssignButton?true:false}
                                   required={false}
                                 />
                               </TableCell>
