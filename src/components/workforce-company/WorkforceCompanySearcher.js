@@ -14,12 +14,15 @@ import {
   decodeId,
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
+import { Tab as TabIcon, Delete as DeleteIcon } from "@material-ui/icons";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import { MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
-import { fetchWorkforceCompaniesSummary, updateStatusOfWorkforceCompany } from "../../actions";
+import {
+  fetchWorkforceCompaniesSummary,
+  updateStatusOfWorkforceCompany,
+} from "../../actions";
 import WorkforceCompanyFilter from "./WorkforceCompanyFilter";
 import { withRouter } from "react-router-dom"; // Import withRouter
-
 
 const styles = (theme) => ({
   paper: {
@@ -60,7 +63,6 @@ class WorkforceCompanySearcher extends Component {
   // }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState({ reset: prevState.reset + 1 });
@@ -111,7 +113,7 @@ class WorkforceCompanySearcher extends Component {
 
   requestApproval = (workforceCompany) => {
     const { dispatch } = this.props;
-    console.log({workforceCompany})
+    console.log({ workforceCompany });
     const workforceCompanyData = {
       id: decodeId(workforceCompany.id),
       status: WORKFORCE_STATUS.PENDING,
@@ -119,7 +121,7 @@ class WorkforceCompanySearcher extends Component {
 
     this.props.updateStatusOfWorkforceCompany(
       workforceCompanyData,
-      `Update Workforce Company ${workforceCompany.nameEn}`,
+      `Update Workforce Company ${workforceCompany.nameEn}`
     );
   };
 
@@ -146,18 +148,34 @@ class WorkforceCompanySearcher extends Component {
                 this.props.history,
                 "workforce.route.companies.company",
                 [decodeId(workforcecompany.id)],
-                false,
+                false
               );
             }}
           >
             <EditIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title={"view"}>
-          <IconButton onClick={() => this.requestApproval(workforcecompany)} disabled={workforcecompany.factoryCount === 0?true:false}>
+        <Tooltip title={"Approve"}>
+          <IconButton
+            onClick={() => this.requestApproval(workforcecompany)}
+            disabled={workforcecompany.factoryCount === 0 ? true : false}
+          >
             <PlaylistAddCheckIcon />
           </IconButton>
         </Tooltip>
+        {this.props.history.location.pathname ===
+          "/workforce/approve/companies" && (
+          <Tooltip title={"view"}>
+            <IconButton onClick={() => onDoubleClick(p, true)}>
+              <TabIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+        {/* <Tooltip title={"view"}>
+          <IconButton onClick={() => onDoubleClick(p, true)}>
+            <TabIcon />
+          </IconButton>
+        </Tooltip> */}
       </div>
     ));
     return formatters;
@@ -186,7 +204,7 @@ class WorkforceCompanySearcher extends Component {
     const pendingCompanies = workforceCompanies.filter(
       (company) => company.status === "pending"
     );
-    console.log({pendingCompanies})
+    console.log({ pendingCompanies });
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <WorkforceCompanyFilter
@@ -205,7 +223,12 @@ class WorkforceCompanySearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={this.props.history.location.pathname === "/workforce/approve/companies"? pendingCompanies : workforceCompanies}
+          items={
+            this.props.history.location.pathname ===
+            "/workforce/approve/companies"
+              ? pendingCompanies
+              : workforceCompanies
+          }
           itemsPageInfo={workforceCompaniesPageInfo}
           fetchingItems={fetchingWorkforceCompanies}
           fetchedItems={fetchedWorkforceCompanies}
@@ -258,14 +281,14 @@ const mapDispatchToProps = (dispatch) =>
       journalize,
       coreConfirm,
     },
-    dispatch,
+    dispatch
   );
 
 export default withModulesManager(
   withHistory(
     connect(
       mapStateToProps,
-      mapDispatchToProps,
-    )(withTheme(withStyles(styles)(WorkforceCompanySearcher))),
-  ),
+      mapDispatchToProps
+    )(withTheme(withStyles(styles)(WorkforceCompanySearcher)))
+  )
 );
