@@ -114,10 +114,16 @@ class WorkforceCompanySearcher extends Component {
   requestApproval = (workforceCompany) => {
     const { dispatch } = this.props;
     console.log({ workforceCompany });
-    const workforceCompanyData = {
+
+
+    const workforceCompanyData =this.props.history.location.pathname ===
+          "/workforce/approve/companies"? {
+      id: decodeId(workforceCompany.id),
+      status: WORKFORCE_STATUS.APPROVED,
+    } :{
       id: decodeId(workforceCompany.id),
       status: WORKFORCE_STATUS.PENDING,
-    };
+    } ;
 
     this.props.updateStatusOfWorkforceCompany(
       workforceCompanyData,
@@ -166,7 +172,18 @@ class WorkforceCompanySearcher extends Component {
         {this.props.history.location.pathname ===
           "/workforce/approve/companies" && (
           <Tooltip title={"view"}>
-            <IconButton onClick={() => onDoubleClick(p, true)}>
+            <IconButton
+              disabled={workforcecompany?.isHistory}
+              onClick={() => {
+                historyPush(
+                  this.props.modulesManager,
+                  this.props.history,
+                  "workforce.route.approve.companies.company",
+                  [decodeId(workforcecompany.id)],
+                  false
+                );
+              }}
+            >
               <TabIcon />
             </IconButton>
           </Tooltip>

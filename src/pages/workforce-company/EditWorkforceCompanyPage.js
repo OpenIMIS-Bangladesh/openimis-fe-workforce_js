@@ -13,7 +13,7 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
-  decodeId
+  decodeId,
 } from "@openimis/fe-core";
 import { updateWorkforceCompany, updateRepresentative } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
@@ -116,23 +116,23 @@ class EditWorkforceCompanyPage extends Component {
         stateEdited?.establishment_date || stateEdited.establishment_date,
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
       id: stateEdited.id,
-      employerId:stateEdited?.employerId,
-      employerIdLima:stateEdited?.employerIdLima,
+      employerId: stateEdited?.employerId,
+      employerIdLima: stateEdited?.employerIdLima,
       licenceType: stateEdited?.licenceType,
-      businessSector:stateEdited?.businessSector
+      businessSector: stateEdited?.businessSector,
     };
 
     dispatch(
       updateRepresentative(
         representativeData,
-        `Update Representative ${representativeData.nameEn}`,
-      ),
+        `Update Representative ${representativeData.nameEn}`
+      )
     );
     dispatch(
       updateWorkforceCompany(
         workforceCompanyData,
-        `Update Workforce Company ${workforceCompanyData.nameEn}`,
-      ),
+        `Update Workforce Company ${workforceCompanyData.nameEn}`
+      )
     );
     console.log({ workforceCompanyData });
 
@@ -144,7 +144,9 @@ class EditWorkforceCompanyPage extends Component {
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
 
-    console.log({stateEdited})
+    const path = this.props.history.location.pathname.includes("approve")
+
+    console.log({ path });
 
     return (
       <div className={classes.page}>
@@ -418,15 +420,17 @@ class EditWorkforceCompanyPage extends Component {
 
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
-                  <IconButton
-                    variant="contained"
-                    component="label"
-                    color="primary"
-                    onClick={this.save}
-                    disabled={isSaveDisabled || isSaved}
-                  >
-                    <Save />
-                  </IconButton>
+                  {!path && (
+                    <IconButton
+                      variant="contained"
+                      component="label"
+                      color="primary"
+                      onClick={this.save}
+                      disabled={isSaveDisabled || isSaved}
+                    >
+                      <Save />
+                    </IconButton>
+                  )}
                 </Grid>
               </Grid>
               <Divider />
@@ -443,5 +447,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(
-  withStyles(styles)(EditWorkforceCompanyPage),
+  withStyles(styles)(EditWorkforceCompanyPage)
 );
