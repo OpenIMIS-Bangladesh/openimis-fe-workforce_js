@@ -18,6 +18,8 @@ import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
 import { MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { fetchWorkforceCompaniesSummary, updateStatusOfWorkforceCompany } from "../../actions";
 import WorkforceCompanyFilter from "./WorkforceCompanyFilter";
+import { withRouter } from "react-router-dom"; // Import withRouter
+
 
 const styles = (theme) => ({
   paper: {
@@ -53,7 +55,12 @@ class WorkforceCompanySearcher extends Component {
     this.defaultPageSize = 10;
   }
 
+  // componentDidMount() {
+  //   console.log("Current URL Path:", this.props.location.pathname);
+  // }
+
   componentDidUpdate(prevProps, prevState, snapshot) {
+    
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState({ reset: prevState.reset + 1 });
@@ -175,6 +182,12 @@ class WorkforceCompanySearcher extends Component {
 
     const count = workforceCompaniesPageInfo.totalCount;
 
+    console.log("Current URL Path:", this.props.history.location.pathname);
+    const pendingCompanies = workforceCompanies.filter(
+      (company) => company.status === "pending"
+    );
+    console.log({pendingCompanies})
+
     const filterPane = ({ filters, onChangeFilters }) => (
       <WorkforceCompanyFilter
         filters={filters}
@@ -192,7 +205,7 @@ class WorkforceCompanySearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={workforceCompanies}
+          items={this.props.history.location.pathname === "/workforce/approve/companies"? pendingCompanies : workforceCompanies}
           itemsPageInfo={workforceCompaniesPageInfo}
           fetchingItems={fetchingWorkforceCompanies}
           fetchedItems={fetchedWorkforceCompanies}
