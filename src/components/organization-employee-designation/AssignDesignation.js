@@ -86,7 +86,9 @@ const AssignDesignation = ({
                              stateEdited,
                              updateAttribute,
                              tableData,
-                             handleSearch
+                             handleSearch,
+                             unitWiseDesignations,
+                             fetchUnitWiseDesignations
                            }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
@@ -98,18 +100,18 @@ const AssignDesignation = ({
     (state) => state.workforce[`employeeDesignationData`],
   );
 
-  const fetchUnitWiseDesignations = async (v) => {
-    const prms = [];
-    prms.push(`organization_Id: "${decodeId(v.id)}"`);
-    prms.push(`orderBy:["unit_level", "unit_designations__designation_level"]`);
+  // const fetchUnitWiseDesignations = async (v) => {
+  //   const prms = [];
+  //   prms.push(`organization_Id: "${decodeId(v.id)}"`);
+  //   prms.push(`orderBy:["unit_level", "unit_designations__designation_level"]`);
 
-    await dispatch(
-      fetchWorkforceUnitsWithEmployeeDesignation(modulesManager, prms),
-    );
-  };
-  const unitWiseDesignations = useSelector(
-    (state) => state.workforce[`unitWiseDesignationData`],
-  );
+  //   await dispatch(
+  //     fetchWorkforceUnitsWithEmployeeDesignation(modulesManager, prms),
+  //   );
+  // };
+  // const unitWiseDesignations = useSelector(
+  //   (state) => state.workforce[`unitWiseDesignationData`],
+  // );
 
   const handleAssign = async(row) => {
     setDisabledAssignButton(true);

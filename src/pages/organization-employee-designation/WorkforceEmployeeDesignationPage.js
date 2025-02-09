@@ -1,11 +1,14 @@
 import React, { Component } from "react";
-import { withModulesManager } from "@openimis/fe-core";
+import { withModulesManager,decodeId } from "@openimis/fe-core";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import EmployeeDesignationSearcher from "../../components/organization-employee-designation/EmployeeDesignationSearcher";
 import EmployeeDesignaitonInfo from "../../components/organization-employee-designation/EmployeeDesignaitonInfo";
 import AssignDesignation from "../../components/organization-employee-designation/AssignDesignation";
-import { fetchEmployeeDesignations } from "../../actions";
+import {
+  fetchEmployeeDesignations,
+  fetchWorkforceUnitsWithEmployeeDesignation,
+} from "../../actions";
 
 class WorkforceEmployeeDesignationPage extends Component {
   constructor(props) {
@@ -32,17 +35,44 @@ class WorkforceEmployeeDesignationPage extends Component {
     if (email) {
       prms.push(`email: "${email}"`);
     }
-    
-   this.props.fetchEmployeeDesignations(prms);
+
+    this.props.fetchEmployeeDesignations(prms);
   };
 
   handleEmailChange = (email) => {
     this.setState({ email });
   };
 
+  fetchUnitWiseDesignations = async (v) => {
+    const prms = [];
+    prms.push(`organization_Id: "${decodeId(v?.id)}"`);
+    prms.push(`orderBy:["unit_level", "unit_designations__designation_level"]`);
+    await this.props.fetchWorkforceUnitsWithEmployeeDesignation(prms);
+
+    this.setState({ selectedOrganization: v });
+  };
+
+  handleReleaseDateChange = (date) => {
+    this.setState({ releaseDate: date });
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.employeeDesignationData !== this.props.employeeDesignationData &&
+      this.props.employeeDesignationData?.organization
+    ) {
+      this.fetchUnitWiseDesignations(this.props.employeeDesignationData.organization);
+    }
+
+    if (prevState.releaseDate !== this.state.releaseDate && this.state.selectedOrganization) {
+      this.fetchUnitWiseDesignations(this.state.selectedOrganization);
+    }
+  }
+
+
   render() {
     const { employeeDesignationData, unitWiseDesignationData } = this.props;
-    const { stateEdited, isSaved,email } = this.state;
+    const { stateEdited, isSaved, email,releaseDate,selectedOrganization } = this.state;
 
     const userData = {
       name: employeeDesignationData?.nameBn || "",
@@ -55,9 +85,27 @@ class WorkforceEmployeeDesignationPage extends Component {
 
     return (
       <div>
-        <EmployeeDesignationSearcher handleSearch={this.handleSearch} onEmailChange={this.handleEmailChange}/>
-        <EmployeeDesignaitonInfo employeeDesignationData={employeeDesignationData} userData={userData} tableData={tableData} />
-        <AssignDesignation userData={userData} stateEdited={stateEdited} updateAttribute={this.updateAttribute} tableData={tableData} handleSearch={this.handleSearch}/>
+        <EmployeeDesignationSearcher
+          handleSearch={this.handleSearch}
+          onEmailChange={this.handleEmailChange}
+        />
+        <EmployeeDesignaitonInfo
+          employeeDesignationData={employeeDesignationData}
+          userData={userData}
+          tableData={tableData}
+          fetchUnitWiseDesignations={this.fetchUnitWiseDesignations}
+          onReleaseDateChange={this.handleReleaseDateChange} 
+        />
+        <AssignDesignation
+          userData={userData}
+          stateEdited={stateEdited}
+          updateAttribute={this.updateAttribute}
+          tableData={tableData}
+          handleSearch={this.handleSearch}
+          unitWiseDesignations={unitWiseDesignationData}
+          fetchUnitWiseDesignations={this.fetchUnitWiseDesignations}
+          onValueChange = {this.handleValueChange}
+        />
       </div>
     );
   }
@@ -72,11 +120,16 @@ const mapStateToProps = (state) => ({
 //   // fetchEmployeeDesignations: bindActionCreators(fetchEmployeeDesignations, dispatch),
 // });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators(
-  {
-    fetchEmployeeDesignations
-  },
-  dispatch,
-);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      fetchEmployeeDesignations,
+      fetchWorkforceUnitsWithEmployeeDesignation, // Add the function here
+    },
+    dispatch
+  );
 
-export default connect(mapStateToProps, mapDispatchToProps)(withModulesManager(WorkforceEmployeeDesignationPage));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withModulesManager(WorkforceEmployeeDesignationPage));

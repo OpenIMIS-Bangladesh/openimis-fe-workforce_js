@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 const EmployeeDesignationInfo = ({
   userData,
   employeeDesignationData,
+  onReleaseDateChange, 
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -86,6 +87,8 @@ const EmployeeDesignationInfo = ({
         item.id === row.id ? { ...item, status: "inactive" } : item
       )
     );
+
+    onReleaseDateChange(releaseDate);
   };
 
   console.log({ releaseDate });

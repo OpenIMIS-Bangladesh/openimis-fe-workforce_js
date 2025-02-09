@@ -995,7 +995,7 @@ export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
   return graphql(payload, "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID");
 }
 
-export function fetchWorkforceUnitsWithEmployeeDesignation(mm, filters) {
+export function fetchWorkforceUnitsWithEmployeeDesignation( filters) {
   const projections = [
     "id",
     "nameBn",
