@@ -134,8 +134,11 @@ export function formatWorkforceCompanyGQL(company) {
 export function formatWorkforceEmployeeGQL(employee) {
   return `
     ${employee.id ? `id: "${formatGQLString(employee.id)}"` : ""}
-    ${employee.nameEn ? `nameEn: "${formatGQLString(employee.nameEn)}"` : ""}
-    ${employee.nameBn ? `nameBn: "${formatGQLString(employee.nameBn)}"` : ""}
+    ${employee.firstNameBn ? `firstNameBn: "${formatGQLString(employee.firstNameBn)}"` : ""}
+    ${employee.lastNameBn ? `lastNameBn: "${formatGQLString(employee.lastNameBn)}"` : ""}
+    ${employee.firstNameEn ? `firstNameEn: "${formatGQLString(employee.firstNameEn)}"` : ""}
+    ${employee.lastNameEn ? `lastNameEn: "${formatGQLString(employee.lastNameEn)}"` : ""}
+    ${employee.otherName ? `otherName: "${formatGQLString(employee.otherName)}"` : ""}
     ${employee.phoneNumber ? `phoneNumber: "${formatGQLString(employee.phoneNumber)}"` : ""}
     ${employee.email ? `email: "${formatGQLString(employee.email)}"` : ""}
     ${employee.birthDate ? `birthDate: "${employee.birthDate}"` : ""}
@@ -148,9 +151,15 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee.position ? `position: "${employee.position}"` : ""}
     ${employee.monthlyEarning ? `monthlyEarning: "${employee.monthlyEarning}"` : ""}
     ${employee.referenceSalary ? `referenceSalary: "${employee.referenceSalary}"` : ""}
-    ${employee.fathersName ? `fathersName: "${employee.fathersName}"` : ""}
-    ${employee.mothersName ? `mothersName: "${employee.mothersName}"` : ""}
+    ${employee.fatherNameBn ? `fatherNameBn: "${employee.fatherNameBn}"` : ""}
+    ${employee.fatherNameEn ? `fatherNameEn: "${employee.fatherNameEn}"` : ""}
+    ${employee.motherNameBn ? `motherNameBn: "${employee.motherNameBn}"` : ""}
+    ${employee.motherNameEn ? `motherNameEn: "${employee.motherNameEn}"` : ""}
+    ${employee.spouseNameBn ? `spouseNameBn: "${employee.spouseNameBn}"` : ""}
+    ${employee.spouseNameEn ? `spouseNameEn: "${employee.spouseNameEn}"` : ""}
     ${employee.maritalStatus ? `maritalStatus: "${employee.maritalStatus}"` : ""}
+    ${employee.citizenship ? `citizenship: "${employee.citizenship}"` : ""}
+    ${employee.privacyLaw ? `privacyLaw: "${employee.privacyLaw}"` : ""}
     ${decodeId(employee.presentLocationId.id) ? `presentLocationId: "${decodeId(employee.presentLocationId.id)}"` : ""}
     ${decodeId(employee.permanentLocationId.id) ? `permanentLocationId: "${decodeId(employee.permanentLocationId.id)}"` : ""}
     ${employee.status ? `status: "${employee.status}"` : ""}

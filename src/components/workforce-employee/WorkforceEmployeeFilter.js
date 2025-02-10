@@ -65,18 +65,18 @@ class WorkforceEmployeeFilter extends Component {
       <Grid container className={classes.form}>
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.employee.name.en"
+          id="workforce.employee.first.name.en"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.employee.name.en"
-                name="nameEn"
-                value={this._filterValue("nameEn")}
+                label="workforce.employee.first.name.en"
+                name="firstNameEn"
+                value={this._filterValue("firstNameEn")}
                 onChange={(v) =>
                   this.debouncedOnChangeFilter([
                     {
-                      id: "nameEn",
+                      id: "firstNameEn",
                       value: v,
                       filter: `nameEn_Icontains: "${v}"`,
                     },
@@ -88,20 +88,20 @@ class WorkforceEmployeeFilter extends Component {
         />
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.employee.name.bn"
+          id="workforce.employee.first.name.bn"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.employee.name.bn"
-                name="nameBn"
-                value={this._filterValue("nameBn")}
+                label="workforce.employee.first.name.bn"
+                name="firstNameBn"
+                value={this._filterValue("firstNameBn")}
                 onChange={(v) =>
                   this.debouncedOnChangeFilter([
                     {
-                      id: "nameBn",
+                      id: "firstNameBn",
                       value: v,
-                      filter: `nameBn_Icontains: "${v}"`,
+                      filter: `firstNameBn_Icontains: "${v}"`,
                     },
                   ])
                 }

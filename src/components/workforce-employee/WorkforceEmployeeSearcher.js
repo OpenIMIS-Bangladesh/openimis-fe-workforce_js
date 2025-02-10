@@ -96,8 +96,8 @@ class WorkforceEmployeeSearcher extends Component {
   };
 
   headers = () => [
-    "workforce.employee.name.en",
-    "workforce.employee.name.bn",
+    "workforce.employee.first.name.en",
+    "workforce.employee.first.name.bn",
     "workforce.employee.phone",
     "workforce.employee.email",
     "workforce.employee.status",
@@ -110,8 +110,8 @@ class WorkforceEmployeeSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      (workforceemployee) => workforceemployee.nameEn,
-      (workforceemployee) => workforceemployee.nameBn,
+      (workforceemployee) => workforceemployee.firstNameEn,
+      (workforceemployee) => workforceemployee.firstNameBn,
       (workforceemployee) => workforceemployee.phoneNumber,
       (workforceemployee) => workforceemployee.email,
       (workforceemployee) => workforceemployee.status,
