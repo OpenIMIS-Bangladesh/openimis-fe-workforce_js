@@ -14,8 +14,14 @@ import {
   decodeId,
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
-import { Tab as TabIcon, Delete as DeleteIcon } from "@material-ui/icons";
+import {
+  Tab as TabIcon,
+  Delete as DeleteIcon,
+  Send as SendIcon,
+  Check as CheckIcon,
+} from "@material-ui/icons";
 import PlaylistAddCheckIcon from "@material-ui/icons/PlaylistAddCheck";
+// import SendIcon from '@material-ui/icons/Send';
 import { MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import {
   fetchWorkforceCompaniesSummary,
@@ -115,15 +121,16 @@ class WorkforceCompanySearcher extends Component {
     const { dispatch } = this.props;
     console.log({ workforceCompany });
 
-
-    const workforceCompanyData =this.props.history.location.pathname ===
-          "/workforce/approve/companies"? {
-      id: decodeId(workforceCompany.id),
-      status: WORKFORCE_STATUS.APPROVED,
-    } :{
-      id: decodeId(workforceCompany.id),
-      status: WORKFORCE_STATUS.PENDING,
-    } ;
+    const workforceCompanyData =
+      this.props.history.location.pathname === "/workforce/approve/companies"
+        ? {
+            id: decodeId(workforceCompany.id),
+            status: WORKFORCE_STATUS.APPROVED,
+          }
+        : {
+            id: decodeId(workforceCompany.id),
+            status: WORKFORCE_STATUS.PENDING,
+          };
 
     this.props.updateStatusOfWorkforceCompany(
       workforceCompanyData,
@@ -161,14 +168,27 @@ class WorkforceCompanySearcher extends Component {
             <EditIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title={"Approve"}>
-          <IconButton
-            onClick={() => this.requestApproval(workforcecompany)}
-            disabled={workforcecompany.factoryCount === 0 ? true : false}
-          >
-            <PlaylistAddCheckIcon />
-          </IconButton>
-        </Tooltip>
+        {this.props.history.location.pathname ===
+        "/workforce/approve/companies" ? (
+          <Tooltip title={"Approve"}>
+            <IconButton
+              onClick={() => this.requestApproval(workforcecompany)}
+              disabled={workforcecompany.factoryCount === 0 ? true : false}
+            >
+              <CheckIcon />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Tooltip title={"Approve"}>
+            <IconButton
+              onClick={() => this.requestApproval(workforcecompany)}
+              disabled={workforcecompany.factoryCount === 0 ? true : false}
+            >
+              <SendIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+
         {this.props.history.location.pathname ===
           "/workforce/approve/companies" && (
           <Tooltip title={"view"}>
