@@ -159,7 +159,7 @@ class WorkforceCompanySearcher extends Component {
               historyPush(
                 this.props.modulesManager,
                 this.props.history,
-                "workforce.route.companies.company",
+                this.props.history.location.pathname ==="/workforce/approve/companies"?"workforce.route.approve.edit.companies.company" :"workforce.route.companies.company",
                 [decodeId(workforcecompany.id)],
                 false
               );
@@ -237,7 +237,6 @@ class WorkforceCompanySearcher extends Component {
 
     const count = workforceCompaniesPageInfo.totalCount;
 
-    console.log("Current URL Path:", this.props.history.location.pathname);
     const pendingCompanies = workforceCompanies.filter(
       (company) => company.status === "pending"
     );

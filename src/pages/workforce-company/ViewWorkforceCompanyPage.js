@@ -29,7 +29,7 @@ const styles = (theme) => ({
   },
 });
 
-class EditWorkforceCompanyPage extends Component {
+class ViewWorkforceCompanyPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -144,9 +144,9 @@ class EditWorkforceCompanyPage extends Component {
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
 
-    const path = this.props.history.location.pathname.includes("approve")
+    // const path = this.props.history.location.pathname.includes("approve")
 
-    console.log({ path });
+    // console.log({ path });
 
     return (
       <div className={classes.page}>
@@ -421,7 +421,7 @@ class EditWorkforceCompanyPage extends Component {
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
                   
-                    <IconButton
+                    {/* <IconButton
                       variant="contained"
                       component="label"
                       color="primary"
@@ -429,7 +429,7 @@ class EditWorkforceCompanyPage extends Component {
                       disabled={isSaveDisabled || isSaved}
                     >
                       <Save />
-                    </IconButton>
+                    </IconButton> */}
                 
                 </Grid>
               </Grid>
@@ -447,5 +447,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(
-  withStyles(styles)(EditWorkforceCompanyPage)
+  withStyles(styles)(ViewWorkforceCompanyPage)
 );

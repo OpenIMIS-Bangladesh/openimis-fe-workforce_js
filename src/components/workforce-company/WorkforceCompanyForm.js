@@ -11,6 +11,7 @@ import {
 import EditWorkforceCompanyPage from "../../pages/workforce-company/EditWorkforceCompanyPage";
 import AddWorkforceCompanyPage from "../../pages/workforce-company/AddWorkforceCompanyPage";
 import { MODULE_NAME } from "../../constants";
+import ViewWorkforceCompanyPage from "../../pages/workforce-company/ViewWorkforceCompanyPage";
 
 class WorkforceCompanyForm extends Component {
   constructor(props) {
@@ -95,7 +96,7 @@ class WorkforceCompanyForm extends Component {
       fetchingTicket,
       fetchedWorkforceCompany,
       errorTicket,
-      save, back,
+      save, back,path
     } = this.props;
 
     const {
@@ -116,7 +117,7 @@ class WorkforceCompanyForm extends Component {
       },
     ];
 
-    console.log({ workforceCompanyUuid });
+    console.log( "Hello",workforceCompanyUuid && !path);
 
     return (
       <>
@@ -136,7 +137,7 @@ class WorkforceCompanyForm extends Component {
             reload={(workforceCompanyUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={workforceCompanyUuid ? [EditWorkforceCompanyPage] : [AddWorkforceCompanyPage]}
+            Panels={(workforceCompanyUuid && !path) ? [ViewWorkforceCompanyPage] :(workforceCompanyUuid && path) ?[EditWorkforceCompanyPage] : [AddWorkforceCompanyPage]}
             onEditedChanged={this.onEditedChanged}
           />
         )}
