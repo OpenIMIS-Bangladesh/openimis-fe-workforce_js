@@ -66,8 +66,11 @@ class EditWorkforceEmployeePage extends Component {
     const { stateEdited } = this.state;
 
     const workforceEmployeeData = {
-      nameBn: stateEdited?.titleBn || stateEdited.titleBn,
-      nameEn: stateEdited?.title || stateEdited.title,
+      firstNameBn: stateEdited?.firstNameBn || stateEdited.firstNameBn,
+      lastNameBn: stateEdited?.lastNameBn || stateEdited.lastNameBn,
+      otherName: stateEdited?.otherName || stateEdited.otherName,
+      firstNameEn: stateEdited?.firstNameEn || stateEdited.firstNameEn,
+      lastNameEn: stateEdited?.lastNameEn || stateEdited.lastNameEn,
       phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
       email: stateEdited?.email || stateEdited.email,
       gender: stateEdited?.gender || stateEdited.gender,
@@ -79,16 +82,20 @@ class EditWorkforceEmployeePage extends Component {
       employeeType: stateEdited?.employeeType || stateEdited.employeeType,
       permanentAddress:
         stateEdited?.permanentAddress || stateEdited.permanentAddress,
-      presentAddress:
-        stateEdited?.presentAddress || stateEdited.presentAddress,
+      presentAddress: stateEdited?.presentAddress || stateEdited.presentAddress,
       position: stateEdited?.position || stateEdited.position,
-      monthlyEarning:
-        stateEdited?.monthlyEarning || stateEdited.monthlyEarning,
+      monthlyEarning: stateEdited?.monthlyEarning || stateEdited.monthlyEarning,
       referenceSalary:
         stateEdited?.referenceSalary || stateEdited.referenceSalary,
-      fathersName: stateEdited?.fathersName || stateEdited.fathersName,
-      mothersName: stateEdited?.mothersName || stateEdited.mothersName,
+      fatherNameBn: stateEdited?.fatherNameBn || stateEdited.fatherNameBn,
+      fatherNameEn: stateEdited?.fatherNameEn || stateEdited.fatherNameEn,
+      motherNameBn: stateEdited?.motherNameBn || stateEdited.motherNameBn,
+      motherNameEn: stateEdited?.motherNameEn || stateEdited.motherNameEn,
+      spouseNameBn: stateEdited?.spouseNameBn || stateEdited.spouseNameBn,
+      spouseNameEn: stateEdited?.spouseNameEn || stateEdited.spouseNameEn,
       nid: stateEdited?.nid || stateEdited.nid,
+      citizenship: stateEdited?.citizenship || stateEdited.citizenship,
+      privacyLaw: stateEdited?.privacyLaw || stateEdited.privacyLaw,
       maritalStatus: stateEdited?.maritalStatus || stateEdited.maritalStatus,
       presentLocation:
         stateEdited?.presentLocation || stateEdited.presentLocation,
@@ -206,9 +213,36 @@ class EditWorkforceEmployeePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.name.en"
-                    value={stateEdited.nameEn || ""}
-                    onChange={(v) => this.updateAttribute("nameEn", v)}
+                    label="workforce.employee.first.name.en"
+                    value={stateEdited.firstNameEn || ""}
+                    onChange={(v) => this.updateAttribute("firstNameEn", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.first.name.bn"
+                    value={stateEdited.firstNameBn || ""}
+                    onChange={(v) => this.updateAttribute("firstNameBn", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.last.name.en"
+                    value={stateEdited.lastNameEn || ""}
+                    onChange={(v) => this.updateAttribute("lastNameEn", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.last.name.bn"
+                    value={stateEdited.lastNameEn || ""}
+                    onChange={(v) => this.updateAttribute("lastNameEn", v)}
                     required
                     readOnly={isSaved}
                   />
@@ -216,8 +250,17 @@ class EditWorkforceEmployeePage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.name.bn"
-                    value={stateEdited.nameBn || ""}
-                    onChange={(v) => this.updateAttribute("nameBn", v)}
+                    value={stateEdited.firstNameBn || ""}
+                    onChange={(v) => this.updateAttribute("firstNameBn", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.other.name"
+                    value={stateEdited.otherName || ""}
+                    onChange={(v) => this.updateAttribute("otherName", v)}
                     required
                     readOnly={isSaved}
                   />
@@ -240,17 +283,49 @@ class EditWorkforceEmployeePage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.fathers_name"
-                    value={stateEdited.fathersName || ""}
-                    onChange={(v) => this.updateAttribute("fathersName", v)}
+                    label="workforce.employee.fathers_name.en"
+                    value={stateEdited.fatherNameEn || ""}
+                    onChange={(v) => this.updateAttribute("fatherNameEn", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.mothers_name"
-                    value={stateEdited.mothersName || ""}
-                    onChange={(v) => this.updateAttribute("mothersName", v)}
+                    label="workforce.employee.fathers_name.bn"
+                    value={stateEdited.fatherNameBn || ""}
+                    onChange={(v) => this.updateAttribute("fatherNameBn", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.mothers_name.en"
+                    value={stateEdited.mothersNameEn || ""}
+                    onChange={(v) => this.updateAttribute("mothersNameEn", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.mothers_name.bn"
+                    value={stateEdited.mothersNameBn || ""}
+                    onChange={(v) => this.updateAttribute("mothersNameBn", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.spouse.name.en"
+                    value={stateEdited.spouseNameEn || ""}
+                    onChange={(v) => this.updateAttribute("spouseNameEn", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.spouse.name.bn"
+                    value={stateEdited.spouseNameBn || ""}
+                    onChange={(v) => this.updateAttribute("spouseNameBn", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
@@ -265,6 +340,22 @@ class EditWorkforceEmployeePage extends Component {
                   />
                 </Grid>
 
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.citizenship"
+                    value={stateEdited.citizenship || ""}
+                    onChange={(v) => this.updateAttribute("citizenship", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.privacyLaw"
+                    value={stateEdited.privacyLaw || ""}
+                    onChange={(v) => this.updateAttribute("privacyLaw", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.birth_certificate_no"
