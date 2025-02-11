@@ -7,6 +7,7 @@ import {
 import { bindActionCreators } from "redux";
 import {
   fetchWorkforceCompany,
+  fetchWorkforceCompanyWithFactoriesAndOffices,
 } from "../../actions";
 import EditWorkforceCompanyPage from "../../pages/workforce-company/EditWorkforceCompanyPage";
 import AddWorkforceCompanyPage from "../../pages/workforce-company/AddWorkforceCompanyPage";
@@ -44,18 +45,32 @@ class WorkforceCompanyForm extends Component {
       }));
     } else if (prevState.workforceCompanyUuid !== this.state.workforceCompanyUuid) {
       const filters = [`id: "${this.state.workforceCompanyUuid}"`];
-      this.props.fetchWorkforceCompany(
-        this.props.modulesManager,
-        filters,
-      );
+      if (this.props.workforceCompanyUuid && !this.props.path) {
+        this.props.fetchWorkforceCompanyWithFactoriesAndOffices(
+          this.props.modulesManager,
+          filters,
+        );
+      } else {
+        this.props.fetchWorkforceCompany(
+          this.props.modulesManager,
+          filters,
+        );
+      }
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
       if (this.props?.workforceCompany?.id) {
-        this.props.fetchWorkforceCompany(
-          this.props.modulesManager,
-          [`id: "${this.state.workforceCompanyUuid}"`],
-        );
+        if (this.props.workforceCompanyUuid && !this.props.path) {
+          this.props.fetchWorkforceCompanyWithFactoriesAndOffices(
+            this.props.modulesManager,
+            [`id: "${this.state.workforceCompanyUuid}"`],
+          );
+        } else {
+          this.props.fetchWorkforceCompany(
+            this.props.modulesManager,
+            [`id: "${this.state.workforceCompanyUuid}"`],
+          );
+        }
       }
     }
   }
@@ -96,7 +111,7 @@ class WorkforceCompanyForm extends Component {
       fetchingTicket,
       fetchedWorkforceCompany,
       errorTicket,
-      save, back,path
+      save, back, path,
     } = this.props;
 
     const {
@@ -117,7 +132,7 @@ class WorkforceCompanyForm extends Component {
       },
     ];
 
-    console.log( "Hello",workforceCompanyUuid && !path);
+    console.log("Hello", workforceCompanyUuid && !path);
 
     return (
       <>
@@ -137,7 +152,7 @@ class WorkforceCompanyForm extends Component {
             reload={(workforceCompanyUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={(workforceCompanyUuid && !path) ? [ViewWorkforceCompanyPage] :(workforceCompanyUuid && path) ?[EditWorkforceCompanyPage] : [AddWorkforceCompanyPage]}
+            Panels={(workforceCompanyUuid && !path) ? [ViewWorkforceCompanyPage] : (workforceCompanyUuid && path) ? [EditWorkforceCompanyPage] : [AddWorkforceCompanyPage]}
             onEditedChanged={this.onEditedChanged}
           />
         )}
@@ -160,6 +175,7 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchWorkforceCompany,
+  fetchWorkforceCompanyWithFactoriesAndOffices,
   journalize,
 }, dispatch);
 

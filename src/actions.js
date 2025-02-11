@@ -344,6 +344,41 @@ export function fetchWorkforceCompany(mm, filters) {
   return graphql(payload, "WORKFORCE_COMPANY");
 }
 
+export function fetchWorkforceCompanyWithFactoriesAndOffices(mm, filters) {
+  const location_projection =
+    "location" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "employerId",
+    "employerIdLima",
+    "nameEn",
+    "nameBn",
+    "address",
+    "phoneNumber",
+    "email",
+    "status",
+    "establishmentDate",
+    "associationName",
+    "associationMembershipNumber",
+    "licenceType",
+    "licenceNumber",
+    "website",
+    "businessSector",
+    "foundationDate",
+    "establishmentName",
+    location_projection,
+    "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " + location_projection + "}",
+    "factories {id,nameBn,nameEn,address,phoneNumber,email,website,status, " + location_projection + "}",
+    "offices {id,nameBn,nameEn,address,phoneNumber,email,website,status, " + location_projection + "}",
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployers",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_COMPANY");
+}
+
 export function fetchWorkforceEmployeesSummary(mm, filters) {
   const present_location_projection =
     "presentLocation" + mm.getProjection("location.Location.FlatProjection");
@@ -1013,7 +1048,7 @@ export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
   return graphql(payload, "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID");
 }
 
-export function fetchWorkforceUnitsWithEmployeeDesignation( filters) {
+export function fetchWorkforceUnitsWithEmployeeDesignation(filters) {
   const projections = [
     "id",
     "nameBn",
