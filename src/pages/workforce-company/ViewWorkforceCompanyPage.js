@@ -146,7 +146,7 @@ class ViewWorkforceCompanyPage extends Component {
 
     // const path = this.props.history.location.pathname.includes("approve")
 
-    // console.log({ path });
+    console.log({ stateEdited });
 
     return (
       <div className={classes.page}>
@@ -338,6 +338,72 @@ class ViewWorkforceCompanyPage extends Component {
                 </Grid>
 
                 <Grid item xs={12} className={classes.item}>
+                  <Typography>
+                    <b> Factories</b>
+                  </Typography>
+                </Grid>
+                <Grid container className={classes.item}>
+                  {stateEdited?.factories.map((factory) => (
+                    <>
+                      <Grid item xs={6} className={classes.item}>
+                        <TextInput
+                          label="Factory Name En"
+                          value={factory.nameEn || ""}
+                          // onChange={(v) => this.updateAttribute("nameEn", v)}
+                          // required
+                          // readOnly={isSaved}
+                        />
+                      </Grid>
+                      <Grid item xs={6} className={classes.item}>
+                        <TextInput
+                          label="Factory Name Bn"
+                          value={factory.nameBn || ""}
+                          // onChange={(v) => this.updateAttribute("nameEn", v)}
+                          // required
+                          // readOnly={isSaved}
+                        />
+                      </Grid>
+                      <Grid item xs={6} className={classes.item}>
+                        <TextInput
+                          label="Factory Address"
+                          value={factory.address || ""}
+                          // onChange={(v) => this.updateAttribute("nameEn", v)}
+                          // required
+                          // readOnly={isSaved}
+                        />
+                      </Grid>
+                      <Grid item xs={6} className={classes.item}>
+                        <TextInput
+                          label="Factory phoneNumber"
+                          value={factory.phoneNumber || ""}
+                          // onChange={(v) => this.updateAttribute("nameEn", v)}
+                          // required
+                          // readOnly={isSaved}
+                        />
+                      </Grid>
+                      <Grid item xs={6} className={classes.item}>
+                        <TextInput
+                          label="Factory email"
+                          value={factory.email || ""}
+                          // onChange={(v) => this.updateAttribute("nameEn", v)}
+                          // required
+                          // readOnly={isSaved}
+                        />
+                      </Grid>
+                      <Grid item xs={6} className={classes.item}>
+                        <TextInput
+                          label="Factory website"
+                          value={factory.website || ""}
+                          // onChange={(v) => this.updateAttribute("nameEn", v)}
+                          // required
+                          // readOnly={isSaved}
+                        />
+                      </Grid>
+                    </>
+                  ))}
+                </Grid>
+
+                <Grid item xs={12} className={classes.item}>
                   <WorkforceForm
                     title="Workforce Representative Info"
                     stateEdited={stateEdited}
@@ -420,8 +486,7 @@ class ViewWorkforceCompanyPage extends Component {
 
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
-                  
-                    {/* <IconButton
+                  {/* <IconButton
                       variant="contained"
                       component="label"
                       color="primary"
@@ -430,7 +495,6 @@ class ViewWorkforceCompanyPage extends Component {
                     >
                       <Save />
                     </IconButton> */}
-                
                 </Grid>
               </Grid>
               <Divider />

@@ -45,7 +45,7 @@ class WorkforceCompanyForm extends Component {
       }));
     } else if (prevState.workforceCompanyUuid !== this.state.workforceCompanyUuid) {
       const filters = [`id: "${this.state.workforceCompanyUuid}"`];
-      if (this.props.workforceCompanyUuid && !this.props.path) {
+      if (this.props.workforceCompanyUuid && !this.props.isApproveEdit) {
         this.props.fetchWorkforceCompanyWithFactoriesAndOffices(
           this.props.modulesManager,
           filters,
@@ -60,7 +60,7 @@ class WorkforceCompanyForm extends Component {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
       if (this.props?.workforceCompany?.id) {
-        if (this.props.workforceCompanyUuid && !this.props.path) {
+        if (this.props.workforceCompanyUuid && !this.props.isApproveEdit) {
           this.props.fetchWorkforceCompanyWithFactoriesAndOffices(
             this.props.modulesManager,
             [`id: "${this.state.workforceCompanyUuid}"`],
@@ -111,7 +111,7 @@ class WorkforceCompanyForm extends Component {
       fetchingTicket,
       fetchedWorkforceCompany,
       errorTicket,
-      save, back, path,
+      save, back, isApproveEdit,
     } = this.props;
 
     const {
@@ -132,7 +132,7 @@ class WorkforceCompanyForm extends Component {
       },
     ];
 
-    console.log("Hello", workforceCompanyUuid && !path);
+    console.log("Hello", workforceCompanyUuid && !isApproveEdit);
 
     return (
       <>
@@ -152,7 +152,7 @@ class WorkforceCompanyForm extends Component {
             reload={(workforceCompanyUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={(workforceCompanyUuid && !path) ? [ViewWorkforceCompanyPage] : (workforceCompanyUuid && path) ? [EditWorkforceCompanyPage] : [AddWorkforceCompanyPage]}
+            Panels={(workforceCompanyUuid && !isApproveEdit) ? [ViewWorkforceCompanyPage] : (workforceCompanyUuid && isApproveEdit) ? [EditWorkforceCompanyPage] : [AddWorkforceCompanyPage]}
             onEditedChanged={this.onEditedChanged}
           />
         )}
