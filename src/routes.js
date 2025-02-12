@@ -14,6 +14,7 @@ export const ROUTE_WORKFORCE_APPROVE_COMPANIES = "workforce/approve/companies";
 export const ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY = "workforce/approve/companies/company";
 export const ROUTE_WORKFORCE_APPROVE_EDIT_COMPANIES_COMPANY = "workforce/approve/edit/companies/company";
 export const ROUTE_WORKFORCE_COMPANIES_COMPANY = "workforce/companies/company";
+export const ROUTE_WORKFORCE_EDIT_COMPANIES_COMPANY = "workforce/edit/companies/company";
 export const ROUTE_WORKFORCE_FACTORIES = "workforce/factories";
 export const ROUTE_WORKFORCE_FACTORIES_FACTORY = "workforce/factories/factory";
 export const ROUTE_WORKFORCE_EMPLOYEES = "workforce/employees";

@@ -22,7 +22,8 @@ import {
   ROUTE_WORKFORCE_APPROVE_COMPANIES,
   ROUTE_WORKFORCE_EMPLOYEE_FACTORIES,
   ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY,
-  ROUTE_WORKFORCE_APPROVE_EDIT_COMPANIES_COMPANY
+  ROUTE_WORKFORCE_APPROVE_EDIT_COMPANIES_COMPANY,
+  ROUTE_WORKFORCE_EDIT_COMPANIES_COMPANY
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -71,6 +72,7 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.offices", ref: ROUTE_WORKFORCE_OFFICES },
 
     { key: "workforce.route.companies.company", ref: ROUTE_WORKFORCE_COMPANIES_COMPANY },
+    { key: "workforce.route.edit.companies.company", ref: ROUTE_WORKFORCE_EDIT_COMPANIES_COMPANY },
     { key: "workforce.route.approve.edit.companies.company", ref: ROUTE_WORKFORCE_APPROVE_EDIT_COMPANIES_COMPANY },
     { key: "workforce.route.approve.companies.company", ref: ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY },
     { key: "workforce.route.companies", ref: ROUTE_WORKFORCE_COMPANIES },
@@ -116,6 +118,7 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_COMPANIES, component: OranigzationCompaniesPage },
     { path: ROUTE_WORKFORCE_COMPANIES_COMPANY, component: OranigzationCompanyPage },
     { path: `${ROUTE_WORKFORCE_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },
+    { path: `${ROUTE_WORKFORCE_EDIT_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },
 
     { path: `${ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },
     { path: `${ROUTE_WORKFORCE_APPROVE_EDIT_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },

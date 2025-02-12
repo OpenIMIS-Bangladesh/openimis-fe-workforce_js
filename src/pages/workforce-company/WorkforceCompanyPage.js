@@ -57,7 +57,7 @@ class WorkforceCompanyPage extends Component {
     // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
     const path = this.props.history.location.pathname;
-    const isApproveEdit = path.includes("approve") && path.includes("edit");
+    const isEdit =  path.includes("edit");
 
     // if (!(rights.includes(RIGHT_ORGANIZATION_CREATE) || rights.includes(RIGHT_ORGANIZATION_EDIT))) return null;
     return (
@@ -74,7 +74,7 @@ class WorkforceCompanyPage extends Component {
           }
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
           save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
-          isApproveEdit={isApproveEdit}
+          isEdit={isEdit}
         />
       </div>
     );

@@ -426,12 +426,12 @@ class ViewWorkforceCompanyPage extends Component {
                     </Typography>
                   </Grid>
                   <Grid container className={classes.item}>
-                    {stateEdited?.factories.length === 0 ? (
+                    {stateEdited?.factories?.length === 0 ? (
                       <Grid item xs={12} className={classes.item}>
                         <Typography> No Factories available</Typography>
                       </Grid>
                     ) : (
-                      stateEdited?.factories.map((factory) => (
+                      stateEdited?.factories?.map((factory) => (
                         <>
                           <Grid item xs={6} className={classes.item}>
                             <TextInput
@@ -511,12 +511,12 @@ class ViewWorkforceCompanyPage extends Component {
                     </Typography>
                   </Grid>
                   <Grid container className={classes.item}>
-                    {stateEdited?.offices.length === 0 ? (
+                    {stateEdited?.offices?.length === 0 ? (
                       <Grid item xs={12} className={classes.item}>
                         <Typography> No Offices available</Typography>
                       </Grid>
                     ) : (
-                      stateEdited?.offices.map((office) => (
+                      stateEdited?.offices?.map((office) => (
                         <>
                           <Grid item xs={6} className={classes.item}>
                             <TextInput

@@ -159,7 +159,7 @@ class WorkforceCompanySearcher extends Component {
               historyPush(
                 this.props.modulesManager,
                 this.props.history,
-                this.props.history.location.pathname ==="/workforce/approve/companies"?"workforce.route.approve.edit.companies.company" :"workforce.route.companies.company",
+                this.props.history.location.pathname ==="/workforce/approve/companies"?"workforce.route.approve.edit.companies.company" :"workforce.route.edit.companies.company",
                 [decodeId(workforcecompany.id)],
                 false
               );
@@ -189,8 +189,7 @@ class WorkforceCompanySearcher extends Component {
           </Tooltip>
         )}
 
-        {this.props.history.location.pathname ===
-          "/workforce/approve/companies" && (
+
           <Tooltip title={"view"}>
             <IconButton
               disabled={workforcecompany?.isHistory}
@@ -198,7 +197,7 @@ class WorkforceCompanySearcher extends Component {
                 historyPush(
                   this.props.modulesManager,
                   this.props.history,
-                  "workforce.route.approve.companies.company",
+                  this.props.history.location.pathname ==="/workforce/approve/companies"?"workforce.route.approve.companies.company" :"workforce.route.companies.company",
                   [decodeId(workforcecompany.id)],
                   false
                 );
@@ -207,7 +206,7 @@ class WorkforceCompanySearcher extends Component {
               <TabIcon />
             </IconButton>
           </Tooltip>
-        )}
+
         {/* <Tooltip title={"view"}>
           <IconButton onClick={() => onDoubleClick(p, true)}>
             <TabIcon />
