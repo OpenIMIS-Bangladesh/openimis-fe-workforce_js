@@ -158,7 +158,7 @@ class EditWorkforceCompanyPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Organizations Employee"
+                      id="Organizations Company"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>

@@ -76,6 +76,7 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.approve.edit.companies.company", ref: ROUTE_WORKFORCE_APPROVE_EDIT_COMPANIES_COMPANY },
     { key: "workforce.route.approve.companies.company", ref: ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY },
     { key: "workforce.route.companies", ref: ROUTE_WORKFORCE_COMPANIES },
+    { key: "workforce.route.approve.companies", ref: ROUTE_WORKFORCE_APPROVE_COMPANIES },
 
     { key: "workforce.route.factories.factory", ref: ROUTE_WORKFORCE_FACTORIES_FACTORY },
     { key: "workforce.route.factories", ref: ROUTE_WORKFORCE_FACTORIES },
@@ -121,6 +122,7 @@ const DEFAULT_CONFIG = {
     { path: `${ROUTE_WORKFORCE_EDIT_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },
 
     { path: `${ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },
+    { path: ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY, component: OranigzationCompanyPage },
     { path: `${ROUTE_WORKFORCE_APPROVE_EDIT_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },
     { path: ROUTE_WORKFORCE_APPROVE_COMPANIES, component: OranigzationCompaniesPage },
 

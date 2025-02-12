@@ -26,7 +26,10 @@ class OranigzationCompaniesPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, "workforce.route.companies.company");
+    const path =  this.props.history.location.pathname
+    const isApprove = path.includes("approve")
+    console.log({isApprove})
+    historyPush(this.props.modulesManager, this.props.history,isApprove? "workforce.route.approve.companies.company": "workforce.route.companies.company");
   };
 
   render() {

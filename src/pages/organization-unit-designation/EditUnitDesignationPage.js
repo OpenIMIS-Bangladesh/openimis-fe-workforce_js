@@ -102,7 +102,7 @@ class EditUnitDesignationPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Organization Unit"
+                      id="Unit Designation"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>

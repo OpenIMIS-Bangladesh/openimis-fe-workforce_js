@@ -58,6 +58,7 @@ class WorkforceCompanyPage extends Component {
     const readOnly = false;
     const path = this.props.history.location.pathname;
     const isEdit =  path.includes("edit");
+    const isApprove =  path.includes("approve");
 
     // if (!(rights.includes(RIGHT_ORGANIZATION_CREATE) || rights.includes(RIGHT_ORGANIZATION_EDIT))) return null;
     return (
@@ -70,7 +71,7 @@ class WorkforceCompanyPage extends Component {
           organizationVersion={organizationVersion}
           readOnly={readOnly}
           back={() =>
-            historyPush(modulesManager, history, "workforce.route.companies")
+            historyPush(modulesManager, history,isApprove?"workforce.route.approve.companies": "workforce.route.companies")
           }
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
           save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
