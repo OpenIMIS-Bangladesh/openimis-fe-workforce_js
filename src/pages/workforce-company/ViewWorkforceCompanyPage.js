@@ -158,7 +158,7 @@ class ViewWorkforceCompanyPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Organizations Employee"
+                      id="Organizations Company details"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>
@@ -338,72 +338,6 @@ class ViewWorkforceCompanyPage extends Component {
                 </Grid>
 
                 <Grid item xs={12} className={classes.item}>
-                  <Typography>
-                    <b> Factories</b>
-                  </Typography>
-                </Grid>
-                <Grid container className={classes.item}>
-                  {stateEdited?.factories.map((factory) => (
-                    <>
-                      <Grid item xs={6} className={classes.item}>
-                        <TextInput
-                          label="Factory Name En"
-                          value={factory.nameEn || ""}
-                          // onChange={(v) => this.updateAttribute("nameEn", v)}
-                          // required
-                          // readOnly={isSaved}
-                        />
-                      </Grid>
-                      <Grid item xs={6} className={classes.item}>
-                        <TextInput
-                          label="Factory Name Bn"
-                          value={factory.nameBn || ""}
-                          // onChange={(v) => this.updateAttribute("nameEn", v)}
-                          // required
-                          // readOnly={isSaved}
-                        />
-                      </Grid>
-                      <Grid item xs={6} className={classes.item}>
-                        <TextInput
-                          label="Factory Address"
-                          value={factory.address || ""}
-                          // onChange={(v) => this.updateAttribute("nameEn", v)}
-                          // required
-                          // readOnly={isSaved}
-                        />
-                      </Grid>
-                      <Grid item xs={6} className={classes.item}>
-                        <TextInput
-                          label="Factory phoneNumber"
-                          value={factory.phoneNumber || ""}
-                          // onChange={(v) => this.updateAttribute("nameEn", v)}
-                          // required
-                          // readOnly={isSaved}
-                        />
-                      </Grid>
-                      <Grid item xs={6} className={classes.item}>
-                        <TextInput
-                          label="Factory email"
-                          value={factory.email || ""}
-                          // onChange={(v) => this.updateAttribute("nameEn", v)}
-                          // required
-                          // readOnly={isSaved}
-                        />
-                      </Grid>
-                      <Grid item xs={6} className={classes.item}>
-                        <TextInput
-                          label="Factory website"
-                          value={factory.website || ""}
-                          // onChange={(v) => this.updateAttribute("nameEn", v)}
-                          // required
-                          // readOnly={isSaved}
-                        />
-                      </Grid>
-                    </>
-                  ))}
-                </Grid>
-
-                <Grid item xs={12} className={classes.item}>
                   <WorkforceForm
                     title="Workforce Representative Info"
                     stateEdited={stateEdited}
@@ -483,6 +417,176 @@ class ViewWorkforceCompanyPage extends Component {
                     ]}
                   />
                 </Grid>
+
+                <Paper className={classes.paper}>
+                  {/* <Divider /> */}
+                  <Grid item xs={12} className={classes.item}>
+                    <Typography>
+                      <b> Factories</b>
+                    </Typography>
+                  </Grid>
+                  <Grid container className={classes.item}>
+                    {stateEdited?.factories.length === 0 ? (
+                      <Grid item xs={12} className={classes.item}>
+                        <Typography> No Factories available</Typography>
+                      </Grid>
+                    ) : (
+                      stateEdited?.factories.map((factory) => (
+                        <>
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              label="Factory Name En"
+                              value={factory.nameEn || ""}
+                              // onChange={(v) => this.updateAttribute("nameEn", v)}
+                              // required
+                              // readOnly={isSaved}
+                            />
+                          </Grid>
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              label="Factory Name Bn"
+                              value={factory.nameBn || ""}
+                              // onChange={(v) => this.updateAttribute("nameEn", v)}
+                              // required
+                              // readOnly={isSaved}
+                            />
+                          </Grid>
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              label="Factory Address"
+                              value={factory.address || ""}
+                              // onChange={(v) => this.updateAttribute("nameEn", v)}
+                              // required
+                              // readOnly={isSaved}
+                            />
+                          </Grid>
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              label="Factory phoneNumber"
+                              value={factory.phoneNumber || ""}
+                              // onChange={(v) => this.updateAttribute("nameEn", v)}
+                              // required
+                              // readOnly={isSaved}
+                            />
+                          </Grid>
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              label="Factory email"
+                              value={factory.email || ""}
+                              // onChange={(v) => this.updateAttribute("nameEn", v)}
+                              // required
+                              // readOnly={isSaved}
+                            />
+                          </Grid>
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              label="Factory website"
+                              value={factory.website || ""}
+                              // onChange={(v) => this.updateAttribute("nameEn", v)}
+                              // required
+                              // readOnly={isSaved}
+                            />
+                          </Grid>
+                          <Grid item xs={12} className={classes.item}>
+                            <PublishedComponent
+                              pubRef="location.DetailedLocation"
+                              withNull={true}
+                              value={factory.location || null}
+                              readOnly={isSaved}
+                              required
+                              split={true}
+                            />
+                          </Grid>
+                        </>
+                      ))
+                    )}
+                  </Grid>
+                </Paper>
+
+                <Paper className={classes.paper}>
+                  {/* <Divider /> */}
+                  <Grid item xs={12} className={classes.item}>
+                    <Typography>
+                      <b> Offices</b>
+                    </Typography>
+                  </Grid>
+                  <Grid container className={classes.item}>
+                    {stateEdited?.offices.length === 0 ? (
+                      <Grid item xs={12} className={classes.item}>
+                        <Typography> No Offices available</Typography>
+                      </Grid>
+                    ) : (
+                      stateEdited?.offices.map((office) => (
+                        <>
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              label="Office Name En"
+                              value={office.nameEn || ""}
+                              // onChange={(v) => this.updateAttribute("nameEn", v)}
+                              // required
+                              // readOnly={isSaved}
+                            />
+                          </Grid>
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              label="Office Name Bn"
+                              value={office.nameBn || ""}
+                              // onChange={(v) => this.updateAttribute("nameEn", v)}
+                              // required
+                              // readOnly={isSaved}
+                            />
+                          </Grid>
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              label="Office Address"
+                              value={office.address || ""}
+                              // onChange={(v) => this.updateAttribute("nameEn", v)}
+                              // required
+                              // readOnly={isSaved}
+                            />
+                          </Grid>
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              label="Office phoneNumber"
+                              value={office.phoneNumber || ""}
+                              // onChange={(v) => this.updateAttribute("nameEn", v)}
+                              // required
+                              // readOnly={isSaved}
+                            />
+                          </Grid>
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              label="Office email"
+                              value={office.email || ""}
+                              // onChange={(v) => this.updateAttribute("nameEn", v)}
+                              // required
+                              // readOnly={isSaved}
+                            />
+                          </Grid>
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              label="Office website"
+                              value={office.website || ""}
+                              // onChange={(v) => this.updateAttribute("nameEn", v)}
+                              // required
+                              // readOnly={isSaved}
+                            />
+                          </Grid>
+                          <Grid item xs={12} className={classes.item}>
+                            <PublishedComponent
+                              pubRef="location.DetailedLocation"
+                              withNull={true}
+                              value={office.location || null}
+                              readOnly={isSaved}
+                              required
+                              split={true}
+                            />
+                          </Grid>
+                        </>
+                      ))
+                    )}
+                  </Grid>
+                </Paper>
 
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
