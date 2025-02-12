@@ -53,7 +53,6 @@ class AddWorkforceEmployeePage extends Component {
     const { stateEdited } = this.state;
     const { dispatch } = this.props;
 
-    console.log("hello");
     const workforceEmployeeData = {
       firstNameBn: stateEdited?.firstNameBn || stateEdited.firstNameBn,
       lastNameBn: stateEdited?.lastNameBn || stateEdited.lastNameBn,
