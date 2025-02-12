@@ -132,8 +132,10 @@ export function formatWorkforceCompanyGQL(company) {
 }
 
 export function formatWorkforceEmployeeGQL(employee) {
+  const isUpdate = !!employee?.id;
+
   return `
-    ${employee.id ? `id: "${formatGQLString(employee.id)}"` : ""}
+    ${isUpdate ? `id: "${formatGQLString(employee.id)}"` : ""}
     ${employee.firstNameBn ? `firstNameBn: "${formatGQLString(employee.firstNameBn)}"` : ""}
     ${employee.lastNameBn ? `lastNameBn: "${formatGQLString(employee.lastNameBn)}"` : ""}
     ${employee.firstNameEn ? `firstNameEn: "${formatGQLString(employee.firstNameEn)}"` : ""}

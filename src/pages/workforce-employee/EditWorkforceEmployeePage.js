@@ -19,9 +19,6 @@ import { updateWorkforceEmployee } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
-import CompanyPicker from "../../pickers/CompanyPicker";
-import OfficePicker from "../../pickers/OfficePicker";
-import FactoryPicker from "../../pickers/FactoryPicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -74,9 +71,6 @@ class EditWorkforceEmployeePage extends Component {
       phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
       email: stateEdited?.email || stateEdited.email,
       gender: stateEdited?.gender || stateEdited.gender,
-      company: stateEdited?.company.id || stateEdited.company.id,
-      office: stateEdited?.office.id || stateEdited.office.id,
-      factory: stateEdited?.factory.id || stateEdited.factory.id,
       birthDate: stateEdited?.birthDate || stateEdited.birthDate,
       website: stateEdited?.website || stateEdited.website,
       employeeType: stateEdited?.employeeType || stateEdited.employeeType,
@@ -136,48 +130,6 @@ class EditWorkforceEmployeePage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-                <Grid item xs={6} className={classes.item}>
-                  <CompanyPicker
-                    value={stateEdited?.company}
-                    label={
-                      <FormattedMessage
-                        id="workforce.employee.workforce_employer"
-                        module="workforce"
-                      />
-                    }
-                    onChange={(v) => this.updateAttribute("company", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-
-                <Grid item xs={6} className={classes.item}>
-                  <OfficePicker
-                    value={stateEdited?.office?.id}
-                    label={
-                      <FormattedMessage
-                        id="workforce.employee.workforce_office"
-                        module="workforce"
-                      />
-                    }
-                    onChange={(v) => this.updateAttribute("office", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-
-                <Grid item xs={6} className={classes.item}>
-                  <FactoryPicker
-                    value={stateEdited?.factory?.id}
-                    label={
-                      <FormattedMessage
-                        id="workforce.employee.workforce_factory"
-                        module="workforce"
-                      />
-                    }
-                    onChange={(v) => this.updateAttribute("factory", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-
                 <Grid item xs={6} className={classes.item}>
                   <EmployeeGenderPicker
                     value={stateEdited?.gender?.id}
@@ -410,7 +362,7 @@ class EditWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={12} className={classes.item}>
                   <TextInput
                     label="workforce.employee.permanent_address"
                     value={stateEdited.permanentAddress || ""}
