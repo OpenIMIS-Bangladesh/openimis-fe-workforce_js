@@ -83,12 +83,12 @@ function WorkforceMainMenu(props) {
       route: `/${ROUTE_WORKFORCE_EMPLOYEES}`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.employee.factory" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_EMPLOYEE_FACTORIES}`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
-    },
+    // {
+    //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.employee.factory" />,
+    //   icon: <ListAlt />,
+    //   route: `/${ROUTE_WORKFORCE_EMPLOYEE_FACTORIES}`,
+    //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    // },
   ];
   entries.push(
     ...props.modulesManager

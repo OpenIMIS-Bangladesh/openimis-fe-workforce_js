@@ -132,10 +132,8 @@ export function formatWorkforceCompanyGQL(company) {
 }
 
 export function formatWorkforceEmployeeGQL(employee) {
-  const isUpdate = !!employee?.id;
-
   return `
-    ${isUpdate ? `id: "${formatGQLString(employee.id)}"` : ""}
+    ${employee?.id ? `id: "${formatGQLString(employee.id)}"` : ""}
     ${employee.firstNameBn ? `firstNameBn: "${formatGQLString(employee.firstNameBn)}"` : ""}
     ${employee.lastNameBn ? `lastNameBn: "${formatGQLString(employee.lastNameBn)}"` : ""}
     ${employee.firstNameEn ? `firstNameEn: "${formatGQLString(employee.firstNameEn)}"` : ""}
@@ -162,10 +160,10 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee.maritalStatus ? `maritalStatus: "${employee.maritalStatus}"` : ""}
     ${employee.citizenship ? `citizenship: "${employee.citizenship}"` : ""}
     ${employee.privacyLaw ? `privacyLaw: "${employee.privacyLaw}"` : ""}
-    ${decodeId(employee.presentLocationId.id) ? `presentLocationId: "${decodeId(employee.presentLocationId.id)}"` : ""}
-    ${decodeId(employee.permanentLocationId.id) ? `permanentLocationId: "${decodeId(employee.permanentLocationId.id)}"` : ""}
+    ${employee.presentLocation.id ? `presentLocationId: "${decodeId(employee.presentLocation.id)}"` : ""}
+    ${employee.permanentLocation.id ? `permanentLocationId: "${decodeId(employee.permanentLocation.id)}"` : ""}
     ${employee.status ? `status: "${employee.status}"` : ""}
-    ${employee.relatedUserId ? `relatedUserId: "${employee.relatedUserId}"` : ""}
+    ${employee?.relatedUserId ? `relatedUserId: "${employee.relatedUserId}"` : ""}
   `;
 }
 

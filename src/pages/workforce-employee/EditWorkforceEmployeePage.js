@@ -282,6 +282,16 @@ class EditWorkforceEmployeePage extends Component {
                   />
                 </Grid>
 
+                 <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.employee.phone"
+                      value={stateEdited.phoneNumber || ""}
+                      onChange={(v) => this.updateAttribute("phoneNumber", v)}
+                      type={"number"}
+                      readOnly={isSaved}
+                    />
+                </Grid>
+
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.email"
@@ -362,7 +372,7 @@ class EditWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={12} className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.permanent_address"
                     value={stateEdited.permanentAddress || ""}
