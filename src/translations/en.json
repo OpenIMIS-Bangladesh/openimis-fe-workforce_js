@@ -47,6 +47,7 @@
     "workforce.organization.phone": "Phone",
     "workforce.organization.email": "Organization Email",
     "workforce.organization.website": "Organization website",
+    "workforce.organization.type.picker": "Organization Type",
     "workforce.organization.parent": "Parent",
     "workforce.organization.picker": "Organization",
     "workforce.organization.unit.picker": "Unit",

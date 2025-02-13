@@ -27,6 +27,7 @@ import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
+import OrganizationTypePicker from "../../pickers/OrganizationTypePicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -71,7 +72,6 @@ class EditWorkforceOrganizationPage extends Component {
     const { stateEdited } = this.state;
 
     const representativeData = {
-      type: "organization",
       nameBn:
         stateEdited?.repNameBn || stateEdited?.workforceRepresentative?.nameBn,
       nameEn:
@@ -100,6 +100,7 @@ class EditWorkforceOrganizationPage extends Component {
     };
 
     const organizationData = {
+      type:stateEdited.type,
       nameBn: stateEdited?.titleBn || stateEdited.nameBn,
       nameEn: stateEdited?.title || stateEdited.nameEn,
       location: stateEdited?.location || stateEdited.location,
@@ -248,6 +249,20 @@ class EditWorkforceOrganizationPage extends Component {
                     value={stateEdited.address || ""}
                     onChange={(v) => this.updateAttribute("address", v)}
                     required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
+                  <OrganizationTypePicker
+                    value={stateEdited?.type}
+                    label={
+                      <FormattedMessage
+                        id="workforce.organization.type.picker"
+                        module="workforce"
+                      />
+                    }
+                    onChange={(v) => this.updateAttribute("type", v)}
                     readOnly={isSaved}
                   />
                 </Grid>

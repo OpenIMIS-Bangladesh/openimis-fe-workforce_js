@@ -24,6 +24,7 @@ import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
+import OrganizationTypePicker from "../../pickers/OrganizationTypePicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -58,7 +59,6 @@ class AddWorkforceOrganizationPage extends Component {
     const { grievanceConfig, dispatch } = this.props;
 
     const representativeData = {
-      type: "organization",
       nameBn: stateEdited.repNameBn,
       nameEn: stateEdited.repName,
       location: stateEdited.repLocation,
@@ -74,7 +74,7 @@ class AddWorkforceOrganizationPage extends Component {
     const representativeMutation = await formatMutation(
       "createWorkforceRepresentative",
       formatRepresentativeGQL(representativeData),
-      `Created Representative ${representativeData.nameEn}` 
+      `Created Representative ${representativeData.nameEn}`
     );
     const representativeClientMutationId =
       representativeMutation.clientMutationId;
@@ -96,6 +96,7 @@ class AddWorkforceOrganizationPage extends Component {
     const representativeId = this.props.representativeId[0].id;
 
     const organizationData = {
+      type:stateEdited.type,
       nameBn: stateEdited.titleBn,
       nameEn: stateEdited.title,
       location: stateEdited.location,
@@ -235,6 +236,19 @@ class AddWorkforceOrganizationPage extends Component {
                     value={stateEdited.address || ""}
                     onChange={(v) => this.updateAttribute("address", v)}
                     required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <OrganizationTypePicker
+                    value={stateEdited?.type}
+                    label={
+                      <FormattedMessage
+                        id="workforce.organization.type.picker"
+                        module="workforce"
+                      />
+                    }
+                    onChange={(v) => this.updateAttribute("type", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
