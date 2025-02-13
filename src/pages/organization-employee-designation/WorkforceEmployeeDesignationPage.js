@@ -30,10 +30,14 @@ class WorkforceEmployeeDesignationPage extends Component {
   };
 
   handleSearch = () => {
-    const { email } = this.state;
+    const { email,nid } = this.state;
     const prms = [];
     if (email) {
       prms.push(`email: "${email}"`);
+    }
+    if (nid) {
+      prms.push(`nid: "${nid}"`);
+      
     }
 
     this.props.fetchEmployeeDesignations(prms);
@@ -41,6 +45,9 @@ class WorkforceEmployeeDesignationPage extends Component {
 
   handleEmailChange = (email) => {
     this.setState({ email });
+  };
+  handleNidChange = (nid) => {
+    this.setState({ nid });
   };
 
   fetchUnitWiseDesignations = async (v) => {
@@ -72,7 +79,7 @@ class WorkforceEmployeeDesignationPage extends Component {
 
   render() {
     const { employeeDesignationData, unitWiseDesignationData } = this.props;
-    const { stateEdited, isSaved, email,releaseDate,selectedOrganization } = this.state;
+    const { stateEdited, isSaved, email,nid,releaseDate,selectedOrganization } = this.state;
 
     const userData = {
       name: employeeDesignationData?.nameBn || "",
@@ -88,6 +95,7 @@ class WorkforceEmployeeDesignationPage extends Component {
         <EmployeeDesignationSearcher
           handleSearch={this.handleSearch}
           onEmailChange={this.handleEmailChange}
+          onNidChange={this.handleNidChange}
         />
         <EmployeeDesignaitonInfo
           employeeDesignationData={employeeDesignationData}

@@ -49,13 +49,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDesignationSearcher = ({ handleSearch, onEmailChange }) => {
+const EmployeeDesignationSearcher = ({ handleSearch, onEmailChange,onNidChange }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   // const modulesManager = useModulesManager();
 
   const [email, setEmail] = useState("");
-  const [userId, setUserId] = useState("");
+  const [nid, setNid] = useState("");
 
   // const handleSearch = () => {
   //   const prms = [];
@@ -66,7 +66,7 @@ const EmployeeDesignationSearcher = ({ handleSearch, onEmailChange }) => {
 
   const handleReset = () => {
     setEmail("");
-    setUserId("");
+    setNid("");
     console.log("Filters reset");
   };
 
@@ -117,9 +117,9 @@ const EmployeeDesignationSearcher = ({ handleSearch, onEmailChange }) => {
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
-                  label="User ID"
-                  value={userId}
-                  onChange={(value) => setUserId(value)}
+                  label="User NID"
+                  value={nid}
+                  onChange={(value) => onNidChange(value)}
                   required={true}
                   readOnly={false}
                   type="number"
