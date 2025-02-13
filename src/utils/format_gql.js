@@ -24,6 +24,7 @@ export function formatRepresentativeGQL(representative) {
 export function formatOrganizationGQL(organization) {
 
   return `
+    ${organization.type ? `type: "${formatGQLString(organization.type)}"` : ""}
     ${organization.id ? `id: "${organization.id}"` : ""}
     ${organization.nameEn ? `nameEn: "${formatGQLString(organization.nameEn)}"` : ""}
     ${organization.nameBn ? `nameBn: "${formatGQLString(organization.nameBn)}"` : ""}

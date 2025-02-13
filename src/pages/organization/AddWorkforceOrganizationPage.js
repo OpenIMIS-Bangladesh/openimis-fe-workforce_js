@@ -25,6 +25,7 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 import OrganizationTypePicker from "../../pickers/OrganizationTypePicker";
+import FileUploader from "../../pickers/FileUploader";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -96,7 +97,7 @@ class AddWorkforceOrganizationPage extends Component {
     const representativeId = this.props.representativeId[0].id;
 
     const organizationData = {
-      type:stateEdited.type,
+      type: stateEdited.type,
       nameBn: stateEdited.titleBn,
       nameEn: stateEdited.title,
       location: stateEdited.location,
@@ -129,11 +130,16 @@ class AddWorkforceOrganizationPage extends Component {
     }));
   };
 
+  handleFileUpload = (uploadedFiles) => {
+    this.setState({ uploadedFiles });
+  };
+
   render() {
     const { classes } = this.props;
-    const { stateEdited, isSaved } = this.state;
+    const { stateEdited, isSaved, uploadedFiles } = this.state;
     const isSaveDisabled = false;
 
+    console.log({ uploadedFiles });
     return (
       <div className={classes.page}>
         <Grid container>
@@ -251,6 +257,10 @@ class AddWorkforceOrganizationPage extends Component {
                     onChange={(v) => this.updateAttribute("type", v)}
                     readOnly={isSaved}
                   />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
+                  <FileUploader onUpload={this.handleFileUpload} />
                 </Grid>
 
                 <Grid item xs={12} className={classes.item}>
