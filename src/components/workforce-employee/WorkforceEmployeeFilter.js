@@ -111,6 +111,29 @@ class WorkforceEmployeeFilter extends Component {
         />
         <ControlledField
           module={MODULE_NAME}
+          id="workforce.employee.nid"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.employee.nid"
+                name="address"
+                value={this._filterValue("nid")}
+                onChange={(v) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "nid",
+                      value: v,
+                      filter: `nid_Icontains: "${v}"`,
+                    },
+                  ])
+                }
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module={MODULE_NAME}
           id="workforce.employee.phone"
           field={
             <Grid item xs={3} className={classes.item}>
