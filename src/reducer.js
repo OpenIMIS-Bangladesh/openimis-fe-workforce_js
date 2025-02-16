@@ -21,16 +21,16 @@ function reducer(
     organizations: [],
     organizationsPageInfo: { totalCount: 0 },
 
-    fetchingOrganizationsPick: false,
-    errorOrganizationsPick: null,
-    fetchedOrganizationsPick: false,
-    organizationsPick: [],
-
     fetchingOrganization: false,
     errorOrganization: null,
     fetchedOrganization: false,
     organization: null,
     organizationPageInfo: { totalCount: 0 },
+
+    fetchingOrganizationsPick: false,
+    errorOrganizationsPick: null,
+    fetchedOrganizationsPick: false,
+    organizationsPick: [],
 
     ///representative states
     fetchingRepresentatives: false,
@@ -167,6 +167,19 @@ function reducer(
     errorUnitWiseDesignationData: null,
     unitWiseDesignationData: null,
 
+    ///organizations states
+    fetchingBanks: false,
+    errorBanks: null,
+    fetchedBanks: false,
+    banks: [],
+    banksPageInfo: { totalCount: 0 },
+
+    fetchingBank: false,
+    errorBank: null,
+    fetchedBank: false,
+    bank: null,
+    bankPageInfo: { totalCount: 0 },
+
     submittingMutation: false,
     mutation: {},
   },
@@ -193,6 +206,13 @@ function reducer(
         ),
         errorOrganizations: formatGraphQLError(action.payload),
       };
+    case "WORKFORCE_ORGANIZATIONS_ERR":
+        return {
+          ...state,
+          fetching: false,
+          error: formatServerError(action.payload),
+        };
+
     case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATIONS_REQ":
       return {
         ...state,
@@ -221,12 +241,8 @@ function reducer(
         fetching: false,
         error: formatServerError(action.payload),
       };
-    case "WORKFORCE_ORGANIZATIONS_ERR":
-      return {
-        ...state,
-        fetching: false,
-        error: formatServerError(action.payload),
-      };
+    
+      
     case "WORKFORCE_ORGANIZATIONS_PICKER_REQ":
       return {
         ...state,
@@ -777,6 +793,34 @@ function reducer(
           action.payload.data.workforceRepresentatives,
         ),
       };
+
+      case "WORKFORCE_Banks_REQ":
+        return {
+          ...state,
+          fetchingBanks: true,
+          fetchedBanks: false,
+          banks: [],
+          banksPageInfo: { totalCount: 0 },
+          errorBanks: null,
+        };
+      case "WORKFORCE_Banks_RESP":
+        return {
+          ...state,
+          fetchingBanks: false,
+          fetchedBanks: true,
+          banks: parseData(action.payload.data.workforceOrganizations),
+          banksPageInfo: pageInfo(
+            action.payload.data.workforceOrganizations,
+          ),
+          errorBanks: formatGraphQLError(action.payload),
+        };
+      case "WORKFORCE_Banks_ERR":
+          return {
+            ...state,
+            fetching: false,
+            error: formatServerError(action.payload),
+          };
+  
 
     case "ORG_UNIT_CREATE_RESP":
       return dispatchMutationResp(state, action);

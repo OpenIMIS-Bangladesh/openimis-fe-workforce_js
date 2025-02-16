@@ -21,6 +21,9 @@ export const ROUTE_WORKFORCE_EMPLOYEES = "workforce/employees";
 export const ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE = "workforce/employees/employee";
 export const ROUTE_WORKFORCE_EMPLOYEE_FACTORIES = "workforce/employee/factories";
 
+export const ROUTE_WORKFORCE_BANKS = "workforce/banks";
+export const ROUTE_WORKFORCE_BANKS_BANK = "workforce/banks/bank"
+
 
 
 // export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION_EMPLOYEE = "workforce/organizations/employees/employee";

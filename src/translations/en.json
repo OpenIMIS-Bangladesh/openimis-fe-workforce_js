@@ -37,6 +37,7 @@
     "menu.workforce.approve.company": "Approve Companies",
     "menu.workforce.factory": "Factories",
     "menu.workforce.employee": "Employees",
+    "menu.workforce.banks": "Banks",
     "menu.workforce.employee.factory": "Employee Factories",
 
     "workforce.organization.addNewTooltip": "Add Workforce Organizations",
@@ -174,6 +175,11 @@
     "workforce.employee.status": "Workforce Employee Status",
     "workforce.employee.citizenship": "Workforce Employee Citizenship",
     "workforce.employee.privacyLaw": "Workforce Employee Privacy Law",
+
+    "workforce.banks.name": "Bank Name",
+    "workforce.banks.address": "Bank Headquarter Address",
+    "workforce.banks.location": "Bank Headquarter location",
+    "workforce.banks.status": "Bank Headquarter status",
 
     "workforce.representative.sameAsRepresentative": "Same as Company Representative",
 
