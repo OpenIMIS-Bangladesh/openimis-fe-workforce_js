@@ -137,19 +137,6 @@ class AddWorkforceEmployeePage extends Component {
               <Divider />
               <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
-                  <EmployeeGenderPicker
-                    value={stateEdited?.gender?.id}
-                    label={
-                      <FormattedMessage
-                        id="workforce.employee.gender"
-                        module="workforce"
-                      />
-                    }
-                    onChange={(v) => this.updateAttribute("gender", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.nid"
                     value={stateEdited.nid || ""}
@@ -168,7 +155,19 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-
+                <Grid item xs={6} className={classes.item}>
+                  <EmployeeGenderPicker
+                    value={stateEdited?.gender?.id}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.gender"
+                        module="workforce"
+                      />
+                    }
+                    onChange={(v) => this.updateAttribute("gender", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.first.name.en"
