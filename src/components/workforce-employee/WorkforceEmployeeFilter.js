@@ -124,7 +124,7 @@ class WorkforceEmployeeFilter extends Component {
                     {
                       id: "nid",
                       value: v,
-                      filter: `nid_Icontains: "${v}"`,
+                      filter: `nid: "${v}"`,
                     },
                   ])
                 }
@@ -147,30 +147,7 @@ class WorkforceEmployeeFilter extends Component {
                     {
                       id: "phoneNumber",
                       value: v,
-                      filter: `phoneNumber_Icontains: "${v}"`,
-                    },
-                  ])
-                }
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.employee.status"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.employee.status"
-                name="status"
-                value={this._filterValue("status")}
-                onChange={(v) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "status",
-                      value: v,
-                      filter: `status: "${v}"`,
+                      filter: `phoneNumber: "${v}"`,
                     },
                   ])
                 }

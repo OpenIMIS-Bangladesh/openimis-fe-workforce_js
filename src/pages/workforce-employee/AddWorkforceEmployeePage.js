@@ -61,7 +61,7 @@ class AddWorkforceEmployeePage extends Component {
       lastNameEn: stateEdited?.lastNameEn || stateEdited.lastNameEn,
       phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
       email: stateEdited?.email || stateEdited.email,
-      gender: stateEdited?.gender || stateEdited.gender,
+      gender: stateEdited?.gender.id || stateEdited.gender.id,
       birthDate: stateEdited?.birthDate || stateEdited.birthDate,
       website: stateEdited?.website || stateEdited.website,
       employeeType: stateEdited?.employeeType || stateEdited.employeeType,
@@ -80,6 +80,9 @@ class AddWorkforceEmployeePage extends Component {
       motherNameEn: stateEdited?.motherNameEn || stateEdited.motherNameEn,
       spouseNameBn: stateEdited?.spouseNameBn || stateEdited.spouseNameBn,
       spouseNameEn: stateEdited?.spouseNameEn || stateEdited.spouseNameEn,
+      insuranceNumber: stateEdited?.insuranceNumber || stateEdited.insuranceNumber,
+      birthCertificateNo: stateEdited?.birthCertificateNo || stateEdited.birthCertificateNo,
+      passportNo: stateEdited?.passportNo || stateEdited.passportNo,
       nid: stateEdited?.nid || stateEdited.nid,
       citizenship: stateEdited?.citizenship || stateEdited.citizenship,
       privacyLaw: stateEdited?.privacyLaw || stateEdited.privacyLaw,
@@ -257,16 +260,16 @@ class AddWorkforceEmployeePage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.mothers_name.en"
-                    value={stateEdited.mothersNameEn || ""}
-                    onChange={(v) => this.updateAttribute("mothersNameEn", v)}
+                    value={stateEdited.motherNameEn || ""}
+                    onChange={(v) => this.updateAttribute("motherNameEn", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.mothers_name.bn"
-                    value={stateEdited.mothersNameBn || ""}
-                    onChange={(v) => this.updateAttribute("mothersNameBn", v)}
+                    value={stateEdited.motherNameBn || ""}
+                    onChange={(v) => this.updateAttribute("motherNameBn", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
@@ -334,6 +337,17 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.insurance_number"
+                    value={stateEdited.insuranceNumber || ""}
+                    onChange={(v) =>
+                      this.updateAttribute("insuranceNumber", v)
+                    }
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
@@ -377,7 +391,7 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={12} className={classes.item}>
                   <TextInput
                     label="workforce.employee.permanent_address"
                     value={stateEdited.permanentAddress || ""}

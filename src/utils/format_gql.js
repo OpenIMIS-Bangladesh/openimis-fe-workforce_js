@@ -146,6 +146,7 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee.gender ? `gender: "${employee.gender}"` : ""}
     ${employee.birthCertificateNo ? `birthCertificateNo: "${employee.birthCertificateNo}"` : ""}
     ${employee.nid ? `nid: "${employee.nid}"` : ""}
+    ${employee.insuranceNumber ? `insuranceNumber: "${employee.insuranceNumber}"` : ""}
     ${employee.passportNo ? `passportNo: "${employee.passportNo}"` : ""}
     ${employee.permanentAddress ? `permanentAddress: "${employee.permanentAddress}"` : ""}
     ${employee.presentAddress ? `presentAddress: "${employee.presentAddress}"` : ""}
@@ -161,6 +162,7 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee.maritalStatus ? `maritalStatus: "${employee.maritalStatus}"` : ""}
     ${employee.citizenship ? `citizenship: "${employee.citizenship}"` : ""}
     ${employee.privacyLaw ? `privacyLaw: "${employee.privacyLaw}"` : ""}
+    ${employee.employeeType ? `employeeType: "${employee.employeeType}"` : ""}
     ${employee.presentLocation.id ? `presentLocationId: "${decodeId(employee.presentLocation.id)}"` : ""}
     ${employee.permanentLocation.id ? `permanentLocationId: "${decodeId(employee.permanentLocation.id)}"` : ""}
     ${employee.status ? `status: "${employee.status}"` : ""}
