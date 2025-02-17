@@ -87,6 +87,7 @@ class EditWorkforceEmployeePage extends Component {
       motherNameEn: stateEdited?.motherNameEn || stateEdited.motherNameEn,
       spouseNameBn: stateEdited?.spouseNameBn || stateEdited.spouseNameBn,
       spouseNameEn: stateEdited?.spouseNameEn || stateEdited.spouseNameEn,
+      insuranceNumber: stateEdited?.insuranceNumber || stateEdited.insuranceNumber,
       nid: stateEdited?.nid || stateEdited.nid,
       citizenship: stateEdited?.citizenship || stateEdited.citizenship,
       privacyLaw: stateEdited?.privacyLaw || stateEdited.privacyLaw,
@@ -329,6 +330,17 @@ class EditWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.insurance_number"
+                    value={stateEdited.insuranceNumber || ""}
+                    onChange={(v) =>
+                      this.updateAttribute("insuranceNumber", v)
+                    }
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
@@ -372,7 +384,7 @@ class EditWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={12} className={classes.item}>
                   <TextInput
                     label="workforce.employee.permanent_address"
                     value={stateEdited.permanentAddress || ""}

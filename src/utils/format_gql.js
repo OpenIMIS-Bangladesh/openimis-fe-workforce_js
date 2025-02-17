@@ -146,6 +146,7 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee.gender ? `gender: "${employee.gender}"` : ""}
     ${employee.birthCertificateNo ? `birthCertificateNo: "${employee.birthCertificateNo}"` : ""}
     ${employee.nid ? `nid: "${employee.nid}"` : ""}
+    ${employee.insuranceNumber ? `insuranceNumber: "${employee.insuranceNumber}"` : ""}
     ${employee.passportNo ? `passportNo: "${employee.passportNo}"` : ""}
     ${employee.permanentAddress ? `permanentAddress: "${employee.permanentAddress}"` : ""}
     ${employee.presentAddress ? `presentAddress: "${employee.presentAddress}"` : ""}
