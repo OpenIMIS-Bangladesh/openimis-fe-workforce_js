@@ -150,7 +150,7 @@ class AddWorkforceBankPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Organization"
+                      id="Banks"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>

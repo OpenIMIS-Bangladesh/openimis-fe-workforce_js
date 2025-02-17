@@ -1032,6 +1032,54 @@ export function updateWorkforceOrganizationEmployeeAssignDesignation(
   );
 }
 
+///workforce bank  actions////
+export function fetchBanksSummary(mm, filters) {
+  const location_projection =
+    "location" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "name",
+    "headquarterAddress",
+    "locationId",
+    "status",
+    location_projection
+    // "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
+    // "location{name,type,parent{name,type,parent{name,type,parent{name,type}}}}",
+    // "address",
+  ];
+  const payload = formatPageQueryWithCount(
+    "banks",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_Banks");
+}
+
+export function fetchBanksBranchSummary(mm, filters) {
+  const location_projection =
+    "location" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "name",
+    "parentId",
+    "headquarterAddress",
+    "status",
+    "branchName",
+    "routingNumber",
+    "contactNumber",
+    location_projection
+    // "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
+    // "location{name,type,parent{name,type,parent{name,type,parent{name,type}}}}",
+    // "address",
+  ];
+  const payload = formatPageQueryWithCount(
+    "banks",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_Banks");
+}
+
 export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
   const payload = `{
   workforceRepresentatives(

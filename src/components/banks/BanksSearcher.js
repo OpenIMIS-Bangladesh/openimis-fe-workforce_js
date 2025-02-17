@@ -1,7 +1,15 @@
 import React, { Component, Fragment } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { IconButton, Tooltip } from "@material-ui/core";
+// import { IconButton, Tooltip } from "@material-ui/core";
+import {
+  Grid,
+  Paper,
+  Typography,
+  Divider,
+  IconButton,
+  Tooltip
+} from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
 import {
   coreConfirm,
@@ -172,19 +180,18 @@ class BanksSearcher extends Component {
     );
 
     return (
-      <>
+      <Grid container spacing={2}>
+      <Grid item xs={6}>
         <Searcher
           module={MODULE_NAME}
           cacheFiltersKey={cacheFiltersKey}
-          FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
           items={organizations}
           itemsPageInfo={organizationsPageInfo}
           fetchingItems={fetchingOrganizations}
           fetchedItems={fetchedOrganizations}
           errorItems={errorOrganizations}
-          // tableTitle={formatMessageWithValues(intl, MODULE_NAME, "ticketSummaries", { count })}
-          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations" values={count} />}
+          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.banks" values={count} />}
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
           fetch={this.fetch}
@@ -199,7 +206,35 @@ class BanksSearcher extends Component {
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
         />
-      </>
+      </Grid>
+
+      <Grid item xs={6}>
+        <Searcher
+          module={MODULE_NAME}
+          cacheFiltersKey={cacheFiltersKey}
+          filterPaneContributionsKey={filterPaneContributionsKey}
+          items={organizations}
+          itemsPageInfo={organizationsPageInfo}
+          fetchingItems={fetchingOrganizations}
+          fetchedItems={fetchedOrganizations}
+          errorItems={errorOrganizations}
+          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.banks" values={count} />}
+          rowsPerPageOptions={this.rowsPerPageOptions}
+          defaultPageSize={this.defaultPageSize}
+          fetch={this.fetch}
+          rowIdentifier={this.rowIdentifier}
+          filtersToQueryParams={this.filtersToQueryParams}
+          defaultOrderBy="-dateCreated"
+          headers={this.headers}
+          itemFormatters={this.itemFormatters}
+          sorts={this.sorts}
+          rowDisabled={this.rowDisabled}
+          rowLocked={this.rowLocked}
+          onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
+          reset={this.state.reset}
+        />
+      </Grid>
+    </Grid>
     );
   }
 }

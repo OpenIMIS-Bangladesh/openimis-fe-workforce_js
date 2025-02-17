@@ -919,6 +919,16 @@ function reducer(
       return dispatchMutationErr(state, action);
     case "EMPLOYEE_DESIGNATION_UPDATE_ASSIGN_RESP":
       return dispatchMutationResp(state, "createWorkforceOrganizationEmployeeDesignation", action);
+
+    case "BANK_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "BANK_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "BANK_CREATE_BANK_RESP":
+      return dispatchMutationResp(state, "createBank", action);
+    case "BANK_UPDATE_BANK_RESP":
+      return dispatchMutationResp(state, "updateBank", action);
     default:
       return state;
   }
