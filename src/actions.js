@@ -413,6 +413,8 @@ export function fetchWorkforceEmployeesSummary(mm, filters) {
     "citizenship",
     "privacyLaw",
     "insuranceNumber",
+    "birthDate",
+    "employeeType",
     present_location_projection,
     permanent_location_projection,
   ];
@@ -458,6 +460,8 @@ export function fetchWorkforceEmployee(mm, filters) {
     "citizenship",
     "privacyLaw",
     "insuranceNumber",
+    "birthDate",
+    "employeeType",
     present_location_projection,
     permanent_location_projection,
   ];
