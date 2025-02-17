@@ -1083,7 +1083,7 @@ export function fetchBanksBranchSummary(mm, filters) {
     filters,
     projections,
   );
-  return graphql(payload, "WORKFORCE_Banks");
+  return graphql(payload, "WORKFORCE_BANK");
 }
 
 export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
