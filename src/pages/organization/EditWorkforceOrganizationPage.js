@@ -109,6 +109,7 @@ class EditWorkforceOrganizationPage extends Component {
       email: stateEdited?.email || stateEdited.email,
       website: stateEdited?.website || stateEdited.website,
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
+      parent:stateEdited?.parent.id,
       id: stateEdited.id,
     };
 
@@ -189,7 +190,7 @@ class EditWorkforceOrganizationPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="workforceOrganization.OrganizationPicker"
-                    value={stateEdited.parent || null}
+                    value={stateEdited.parent|| null}
                     onChange={(option) =>
                       this.updateAttribute("parent", option)
                     }

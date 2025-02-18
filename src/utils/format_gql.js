@@ -29,6 +29,7 @@ export function formatOrganizationGQL(organization) {
     ${organization.nameEn ? `nameEn: "${formatGQLString(organization.nameEn)}"` : ""}
     ${organization.nameBn ? `nameBn: "${formatGQLString(organization.nameBn)}"` : ""}
     ${organization.location.id ? `locationId: "${decodeId(organization.location.id)}"` : ""}
+    ${organization.parent ? `parentId: "${decodeId(organization.parent)}"` : ""}
     ${organization.workforceRepresentativeId ? `workforceRepresentativeId: "${decodeId(organization.workforceRepresentativeId)}"` : ""}
     ${organization.address ? `address: "${formatGQLString(organization.address)}"` : ""}
     ${organization.phoneNumber ? `phoneNumber: "${formatGQLString(organization.phoneNumber)}"` : ""}

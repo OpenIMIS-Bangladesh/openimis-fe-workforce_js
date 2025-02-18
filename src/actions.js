@@ -32,6 +32,7 @@ export function fetchOrganizationsSummary(mm, filters) {
     "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
     "location{name,type,parent{name,type,parent{name,type,parent{name,type}}}}",
     "address",
+    "type"
   ];
   const payload = formatPageQueryWithCount(
     "workforceOrganizations",
@@ -921,7 +922,7 @@ export function fetchOrganization(mm, filters) {
     "phoneNumber",
     "email",
     "website",
-    "parent{id}",
+    "parent{id,nameEn,nameBn}",
     "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
     location_projection +
     "}",

@@ -105,6 +105,7 @@ class AddWorkforceOrganizationPage extends Component {
       phoneNumber: stateEdited.phone,
       email: stateEdited.email,
       website: stateEdited.website,
+      parent:stateEdited.parent.id,
       // workforceRepresentativeId:this.state.workforce.fetchedRepresentativeByClientMutationId,
       workforceRepresentativeId: representativeId,
     };
