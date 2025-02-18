@@ -213,14 +213,14 @@ class EditWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.employee.employee_type"
-                    value={stateEdited.employeeType || ""}
-                    onChange={(v) => this.updateAttribute("employeeType", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
+                {/*<Grid item xs={6} className={classes.item}>*/}
+                {/*  <TextInput*/}
+                {/*    label="workforce.employee.employee_type"*/}
+                {/*    value={stateEdited.employeeType || ""}*/}
+                {/*    onChange={(v) => this.updateAttribute("employeeType", v)}*/}
+                {/*    readOnly={isSaved}*/}
+                {/*  />*/}
+                {/*</Grid>*/}
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.fathers_name.en"
@@ -381,7 +381,7 @@ class EditWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={12} className={classes.item}>
                   <p>Present Location</p>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
@@ -395,7 +395,7 @@ class EditWorkforceEmployeePage extends Component {
                     split={true}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={12} className={classes.item}>
                   <p>Permanent Location</p>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
