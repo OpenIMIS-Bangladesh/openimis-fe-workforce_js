@@ -127,6 +127,7 @@ class EditWorkforceOrganizationPage extends Component {
     );
 
     console.log({ organizationData });
+    console.log({ representativeData });
     this.setState({ isSaved: true });
   };
 

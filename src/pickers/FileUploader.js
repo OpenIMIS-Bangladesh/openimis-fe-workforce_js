@@ -1,96 +1,107 @@
-import React, { useState } from "react";
-import { Button, Typography, LinearProgress, Paper } from "@material-ui/core";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import React, { useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
 import { makeStyles } from "@material-ui/core/styles";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Close";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import Box from "@material-ui/core/Box";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: theme.spacing(3),
-    border: "2px dashed #3f51b5",
-    backgroundColor: "#f5f5f5",
-    cursor: "pointer",
+  dropzone: {
+    border: "2px dashed #005f67",
+    backgroundColor: "#eefbff",
+    padding: theme.spacing(1),
     textAlign: "center",
-    marginBottom: theme.spacing(2),
+    cursor: "pointer",
+    borderRadius: 8,
+    transition: "0.3s",
+    "&:hover": {
+      backgroundColor: "#ddf5ff",
+    },
   },
-  input: {
-    display: "none",
-  },
-  uploadButton: {
-    marginTop: theme.spacing(2),
+  uploadIcon: {
+    color: "#005f67",
+    fontSize: 25,
   },
   fileList: {
-    marginTop: theme.spacing(2),
-    textAlign: "left",
+    backgroundColor: "#DBEEF0",
+    marginTop: theme.spacing(1),
+    padding: theme.spacing(0.2),
+  },
+  fileItem: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: theme.spacing(0.2),
+    borderBottom: "1px solid #005f67", 
+    borderRadius: 5,
+    backgroundColor: "#DBEEF0",
+    marginTop: theme.spacing(0.5),
+  },
+  fileName: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    maxWidth: "80%",
+    fontSize: "0.85rem",
+  },
+  button: {
+    marginTop: 6,
+    padding: "2px 6px",
+    fontSize: "0.65rem",
+  },
+  deleteIcon: {
+    fontSize: "1rem",
+    color:'black'
   },
 }));
 
-const FileUploader = ({ onUpload }) => {
+const FileUploader = () => {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
-  const [uploadProgress, setUploadProgress] = useState(0);
 
-  const handleFileChange = (event) => {
-    const newFiles = Array.from(event.target.files);
-    setFiles(newFiles);
-    setUploadProgress(0);
-    if (onUpload) {
-      onUpload(newFiles);
-    }
+  const onDrop = useCallback((acceptedFiles) => {
+    setFiles([...files, ...acceptedFiles]);
+  }, [files]);
+
+  const removeFile = (fileName) => {
+    setFiles(files.filter((file) => file.name !== fileName));
   };
 
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const newFiles = Array.from(event.dataTransfer.files);
-    setFiles(newFiles);
-    setUploadProgress(0);
-    if (onUpload) {
-      onUpload(newFiles);
-    }
-  };
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    multiple: true,
+    accept: "*",
+  });
 
   return (
     <div>
-      <Paper
-        className={classes.root}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={handleDrop}
-      >
-        <CloudUploadIcon color="primary" fontSize="large" />
-        <Typography variant="h6" gutterBottom>
-          Drag & Drop files here or click to upload
-        </Typography>
-        <input
-          accept="image/*,application/pdf"
-          className={classes.input}
-          id="file-upload"
-          multiple
-          type="file"
-          onChange={handleFileChange}
-        />
-        <label htmlFor="file-upload">
-          <Button
-            variant="contained"
-            color="primary"
-            component="span"
-            className={classes.uploadButton}
-          >
-            Select Files
-          </Button>
-        </label>
+      <Paper {...getRootProps()} className={classes.dropzone}>
+        <input {...getInputProps()} />
+        <CloudUploadIcon className={classes.uploadIcon} />
+        <Typography variant="body2">Drag & Drop or Click to Upload</Typography>
+        <Button variant="contained" color="primary" className={classes.button}>
+          Select Files
+        </Button>
       </Paper>
+
+      {/* Show uploaded files */}
       {files.length > 0 && (
-        <div className={classes.fileList}>
-          {files.map((file, index) => (
-            <Typography key={index} variant="body1">
-              {file.name}
-            </Typography>
+        <Paper className={classes.fileList}>
+          {files.map((file) => (
+            <Box key={file.name} className={classes.fileItem}>
+              <Typography variant="body2" className={classes.fileName}>
+                {file.name}
+              </Typography>
+              <IconButton onClick={() => removeFile(file.name)} size="small">
+                <DeleteIcon color="secondary" className={classes.deleteIcon} />
+              </IconButton>
+            </Box>
           ))}
-          <LinearProgress variant="determinate" value={uploadProgress} />
-        </div>
+        </Paper>
       )}
     </div>
   );
