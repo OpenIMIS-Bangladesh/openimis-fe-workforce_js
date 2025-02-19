@@ -32,6 +32,11 @@ function reducer(
     fetchedOrganizationsPick: false,
     organizationsPick: [],
 
+    fetchingBanksPick: false,
+    errorBanksPick: null,
+    fetchedBanksPick: false,
+    banksPick: [],
+
     ///representative states
     fetchingRepresentatives: false,
     errorRepresentatives: null,
@@ -282,6 +287,39 @@ function reducer(
         ),
         errorOrganizationsPick: formatGraphQLError(action.payload),
       };
+    case "WORKFORCE_ORGANIZATIONS_PICKER_ERR":
+        return {
+          ...state,
+          fetching: false,
+          errorOrganizationsPick: formatServerError(action.payload),
+        };
+  
+    case "WORKFORCE_BANKS_PICKER_REQ":
+      return {
+        ...state,
+        fetchingBanksPick: true,
+        fetchedBanksPick: false,
+        banksPick: [],
+        errorBanksPick: null,
+      };
+    case "WORKFORCE_BANKS_PICKER_RESP":
+      return {
+        ...state,
+        fetchingBanksPick: false,
+        fetchedBanksPick: true,
+        banksPick: parseData(
+          action.payload.data.Banks
+        ),
+        errorBanksPick: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_BANKS_PICKER_ERR":
+        return {
+          ...state,
+          fetching: false,
+          errorBanksPick: formatServerError(action.payload),
+        };
+  
+    
     case "WORKFORCE_ORGANIZATION_UNITS_PICKER_REQ":
       return {
         ...state,
@@ -300,12 +338,7 @@ function reducer(
         ),
         errorOrganizationUnitsPick: formatGraphQLError(action.payload),
       };
-    case "WORKFORCE_ORGANIZATIONS_PICKER_ERR":
-      return {
-        ...state,
-        fetching: false,
-        errorOrganizationsPick: formatServerError(action.payload),
-      };
+
 
     case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATION_REQ":
       return {

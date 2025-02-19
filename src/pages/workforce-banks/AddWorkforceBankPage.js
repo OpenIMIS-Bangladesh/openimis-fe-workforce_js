@@ -159,6 +159,24 @@ class AddWorkforceBankPage extends Component {
               <Divider />
               <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="workforceOrganization.BanksPicker"
+                    value={stateEdited.Bank || null}
+                    label={
+                      <FormattedMessage
+                        module="workforce"
+                        id="workforce.bank.picker"
+                      />
+                    }
+                    onChange={(option) =>
+                      this.updateAttribute("bank", option)
+                    }
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.banks.name"
                     value={stateEdited.name || ""}
@@ -177,7 +195,6 @@ class AddWorkforceBankPage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                
 
                 <Grid item xs={12} className={classes.item}>
                   <PublishedComponent
@@ -219,7 +236,6 @@ const mapStateToProps = (state) => ({
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   representativeId: state.workforce.fetchedRepresentativeByClientMutationId,
-  grievanceConfig: state.workforce.grievanceConfig,
 });
 
 export default connect(mapStateToProps)(

@@ -106,9 +106,9 @@ class BanksForm extends Component {
 
   render() {
     const {
-      fetchingOrganization,
-      fetchedOrganization,
-      errorOrganization,
+      fetchingBank,
+      fetchedBank,
+      errorBank,
       save, back,
     } = this.props;
 
@@ -133,8 +133,8 @@ class BanksForm extends Component {
 
     return (
       <>
-        <ProgressOrError progress={fetchingOrganization} error={errorOrganization} />
-        {(!!fetchedOrganization || !organizationUuid) && (
+        <ProgressOrError progress={fetchingBank} error={errorBank} />
+        {(!!fetchedBank || !organizationUuid) && (
           <Form
             module={MODULE_NAME}
             edited_id={organizationUuid}

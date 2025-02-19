@@ -51,6 +51,7 @@ import WorkforceEmployeePage from "./pages/workforce-employee/WorkforceEmployeeP
 import WorkforceEmployeeFactoryPage from "./pages/workforce-employee-factory/WorkforceEmployeeFactoryPage";
 import WorkforceBanksPage from "./pages/workforce-banks/WorkforceBanksPage";
 import WorkforceBankPage from "./pages/workforce-banks/WorkforceBankPage";
+import BanksPicker from "./pickers/BanksPicker";
 
 
 
@@ -97,6 +98,7 @@ const DEFAULT_CONFIG = {
 
 
     { key: "workforceOrganization.OrganizationPicker", ref: OrganizationPicker },
+    { key: "workforceOrganization.BanksPicker", ref: BanksPicker },
     { key: "workforceOrganization.CompanyPicker", ref: CompanyPicker },
     { key: "workforceOrganization.OfficePicker", ref: OfficePicker },
     { key: "workforceOrganization.FactoryPicker", ref: FactoryPicker },

@@ -63,7 +63,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   organizationUuid: props.match.params.organization_uuid,
   organizationVersion: props.match.params.version,
-  organization: state.workforce.organization,
+  bank: state.workforce.bank,
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
