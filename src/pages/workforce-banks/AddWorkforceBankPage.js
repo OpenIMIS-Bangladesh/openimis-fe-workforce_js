@@ -82,7 +82,7 @@ class AddWorkforceBankPage extends Component {
 
       await dispatch(
         createBank(
-          bankData,
+          bankBranchData,
           `Created Branch ${bankBranchData.nameEn}`
         )
       );
@@ -142,7 +142,6 @@ class AddWorkforceBankPage extends Component {
                       />
                     }
                     onChange={(option) => this.updateAttribute("bank", option)}
-                    required
                     readOnly={isSaved}
                   />
                 </Grid>
