@@ -98,7 +98,7 @@ const DEFAULT_CONFIG = {
 
 
     { key: "workforceOrganization.OrganizationPicker", ref: OrganizationPicker },
-    { key: "workforceOrganization.BanksPicker", ref: BanksPicker },
+    { key: "workforce.BanksPicker", ref: BanksPicker },
     { key: "workforceOrganization.CompanyPicker", ref: CompanyPicker },
     { key: "workforceOrganization.OfficePicker", ref: OfficePicker },
     { key: "workforceOrganization.FactoryPicker", ref: FactoryPicker },

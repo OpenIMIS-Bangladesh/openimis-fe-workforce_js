@@ -20,6 +20,7 @@ import {
   formatEmployeeDesignationGQL,
   formatWorkforceEmployeeGQL,
   formatEmployeeAssignDesignationGQL, formatWorkforceCompanyStatusGql,
+  formatBankGQL,
 } from "./utils/format_gql";
 
 export function fetchOrganizationsSummary(mm, filters) {
@@ -53,7 +54,7 @@ export function fetchOrganizationsPick(filters) {
 }
 /// bank picker ///
 export function fetchBanksPick(filters) {
-  const projections = ["id", "name"];
+  const projections = ["id", "nameEn"];
   const payload = formatPageQueryWithCount(
     "banks",
     filters,
@@ -517,12 +518,12 @@ export function updateRepresentative(representativeData, clientMutationLabel) {
 }
 
 export function createWorkforceOrganization(
-  representative,
+  organization,
   clientMutationLabel,
 ) {
   const mutation = formatMutation(
     "createWorkforceOrganization",
-    formatOrganizationGQL(representative),
+    formatOrganizationGQL(organization),
     clientMutationLabel,
   );
   const requestedDateTime = new Date();
@@ -1095,6 +1096,27 @@ export function fetchBanksBranchSummary(mm, filters) {
     projections,
   );
   return graphql(payload, "WORKFORCE_BANK");
+}
+
+export function createBank(
+  bank,
+  clientMutationLabel,
+) {
+  const mutation = formatMutation(
+    "createBank",
+    formatBankGQL(bank),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["BANK_MUTATION_REQ", "BANK_CREATE_BANK_RESP", "BANK_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
 }
 
 export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {

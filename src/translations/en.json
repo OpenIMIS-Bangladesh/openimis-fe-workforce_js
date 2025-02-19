@@ -178,10 +178,15 @@
     "workforce.employee.privacyLaw": "Workforce Employee Privacy Law",
     "workforce.employee.insurance_number": "Workforce Employee Insurance Number",
 
-    "workforce.banks.name": "Bank Name",
-    "workforce.banks.address": "Bank Headquarter Address",
+    "workforce.banks.nameEn": "Bank Name En",
+    "workforce.banks.nameBn": "Bank Name Bn",
+    "workforce.banks.branch.nameEn": "Branch Name En",
+    "workforce.banks.branch.nameBn": "Branch Name Bn",
+    "workforce.banks.address": "Bank  Address",
     "workforce.banks.location": "Bank Headquarter location",
     "workforce.banks.status": "Bank Headquarter status",
+    "workforce.banks.routingNumber": "Bank Routing Number",
+    "workforce.banks.contactNumber": "Bank Contact Number",
 
     "workforce.representative.sameAsRepresentative": "Same as Company Representative",
 

@@ -308,7 +308,7 @@ function reducer(
         fetchingBanksPick: false,
         fetchedBanksPick: true,
         banksPick: parseData(
-          action.payload.data.Banks
+          action.payload.data.banks
         ),
         errorBanksPick: formatGraphQLError(action.payload),
       };
@@ -924,6 +924,16 @@ function reducer(
     case "ORG_CREATE_ORG_RESP":
       return dispatchMutationResp(state, "createOrganization", action);
     case "ORG_UPDATE_ORG_RESP":
+      return dispatchMutationResp(state, "updateOrganization", action);
+    
+    case "BANK_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "BANK_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "BANK_CREATE_BANK_RESP":
+      return dispatchMutationResp(state, "createOrganization", action);
+    case "BANK_UPDATE_BANK_RESP":
       return dispatchMutationResp(state, "updateOrganization", action);
 
     case "COMPANY_STATUS_MUTATION_REQ": {

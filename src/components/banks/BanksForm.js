@@ -39,8 +39,8 @@ class BanksForm extends Component {
 
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedOrganization !== this.props.fetchedOrganization
-      && !!this.props.fetchedOrganization
+    if (prevProps.fetchedBank !== this.props.fetchedBank
+      && !!this.props.fetchedBank
       && !!this.props.ticket) {
       this.setState((state, props) => ({
         ticket: { ...props.ticket },
@@ -165,7 +165,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   fetchingOrganization: state.workforce.fetchingOrganization,
   errorOrganization: state.workforce.errorOrganization,
-  fetchedOrganization: state.workforce.organization,
+  fetchedBank: state.workforce.organization,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   grievanceConfig: state.workforce.grievanceConfig,

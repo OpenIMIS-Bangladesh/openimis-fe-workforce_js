@@ -13,19 +13,12 @@ import {
   journalize,
   PublishedComponent,
   FormattedMessage,
-  formatMutation,
 } from "@openimis/fe-core";
 import {
-  createRepresentative,
-  createWorkforceOrganization,
-  fetchRepresentativeByClientMutationId,
+  createBank,
 } from "../../actions";
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
-import { withTheme, withStyles } from "@material-ui/core/styles";
-import WorkforceForm from "../../components/form/WorkforceForm";
-import { formatRepresentativeGQL } from "../../utils/format_gql";
-import OrganizationTypePicker from "../../pickers/OrganizationTypePicker";
-import FileUploader from "../../pickers/FileUploader";
+import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
+import {  withStyles } from "@material-ui/core/styles";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -59,63 +52,43 @@ class AddWorkforceBankPage extends Component {
     const { stateEdited } = this.state;
     const { grievanceConfig, dispatch } = this.props;
 
-    const representativeData = {
-      nameBn: stateEdited.repNameBn,
-      nameEn: stateEdited.repName,
-      location: stateEdited.repLocation,
-      address: stateEdited.repAddress,
-      phoneNumber: stateEdited.repPhone,
-      email: stateEdited.repEmail,
-      nid: stateEdited.nid,
-      passportNo: stateEdited.passport,
-      birthDate: stateEdited.birthDate,
-      position: stateEdited.position,
-    };
+    if (!stateEdited.bank) {
+      const bankData = {
+        nameEn: stateEdited.nameEn,
+        nameBn: stateEdited.nameBn,
+        headquarterAddress: stateEdited.address,
+        locationId: stateEdited.location,
+        status: WORKFORCE_STATUS.ACTIVE,
+      };
 
-    const representativeMutation = await formatMutation(
-      "createWorkforceRepresentative",
-      formatRepresentativeGQL(representativeData),
-      `Created Representative ${representativeData.nameEn}`
-    );
-    const representativeClientMutationId =
-      representativeMutation.clientMutationId;
+      await dispatch(
+        createBank(
+          bankData,
+          `Created Bank ${bankData.nameEn}`
+        )
+      );
 
-    await dispatch(
-      createRepresentative(
-        representativeMutation,
-        `Created Representative ${representativeData.nameEn}`
-      )
-    );
+    }else{
+      const bankBranchData = {
+        nameEn:stateEdited.nameEn,
+        nameBn:stateEdited.nameBn,
+        parentId:stateEdited?.bank?.id,
+        routingNumber:stateEdited.routingNumber,
+        contactNumber:stateEdited.contactNumber,
+        address:stateEdited.address,
+        locationId: stateEdited.location,
+        status:WORKFORCE_STATUS.ACTIVE
+      }
 
-    await dispatch(
-      fetchRepresentativeByClientMutationId(
-        this.props.modulesManger,
-        representativeClientMutationId
-      )
-    );
+      await dispatch(
+        createBank(
+          bankData,
+          `Created Branch ${bankBranchData.nameEn}`
+        )
+      );
+    }
 
-    const representativeId = this.props.representativeId[0].id;
 
-    const organizationData = {
-      type: stateEdited.type,
-      nameBn: stateEdited.titleBn,
-      nameEn: stateEdited.title,
-      location: stateEdited.location,
-      address: stateEdited.address,
-      phoneNumber: stateEdited.phone,
-      email: stateEdited.email,
-      website: stateEdited.website,
-      // workforceRepresentativeId:this.state.workforce.fetchedRepresentativeByClientMutationId,
-      workforceRepresentativeId: representativeId,
-    };
-    console.log({ organizationData });
-
-    await dispatch(
-      createWorkforceOrganization(
-        organizationData,
-        `Created Organization ${organizationData.nameEn}`
-      )
-    );
 
     this.setState({ isSaved: true });
   };
@@ -139,7 +112,7 @@ class AddWorkforceBankPage extends Component {
     const { stateEdited, isSaved, uploadedFiles } = this.state;
     const isSaveDisabled = false;
 
-    console.log({ uploadedFiles });
+    console.log({ stateEdited });
     return (
       <div className={classes.page}>
         <Grid container>
@@ -160,17 +133,15 @@ class AddWorkforceBankPage extends Component {
               <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="workforceOrganization.BanksPicker"
-                    value={stateEdited.Bank || null}
+                    pubRef="workforce.BanksPicker"
+                    value={stateEdited.bank || null}
                     label={
                       <FormattedMessage
                         module="workforce"
                         id="workforce.bank.picker"
                       />
                     }
-                    onChange={(option) =>
-                      this.updateAttribute("bank", option)
-                    }
+                    onChange={(option) => this.updateAttribute("bank", option)}
                     required
                     readOnly={isSaved}
                   />
@@ -178,13 +149,54 @@ class AddWorkforceBankPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.banks.name"
+                    label={
+                      stateEdited.bank
+                        ? "workforce.banks.branch.nameEn"
+                        : "workforce.banks.nameEn"
+                    }
                     value={stateEdited.name || ""}
-                    onChange={(v) => this.updateAttribute("name", v)}
+                    onChange={(v) => this.updateAttribute("nameEn", v)}
                     required
                     readOnly={isSaved}
                   />
                 </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label={
+                      stateEdited.bank
+                        ? "workforce.banks.branch.nameBn"
+                        : "workforce.banks.nameBn"
+                    }
+                    value={stateEdited.name || ""}
+                    onChange={(v) => this.updateAttribute("nameBn", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
+                {stateEdited.bank && (
+                  <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.banks.routingNumber"
+                      value={stateEdited.name || ""}
+                      onChange={(v) => this.updateAttribute("routingNumber", v)}
+                      required
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+                )}
+
+                {stateEdited.bank && (
+                  <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.banks.contactNumber"
+                      value={stateEdited.name || ""}
+                      onChange={(v) => this.updateAttribute("contactNumber", v)}
+                      required
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+                )}
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
