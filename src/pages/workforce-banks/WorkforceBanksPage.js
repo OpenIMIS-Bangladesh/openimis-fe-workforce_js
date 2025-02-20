@@ -37,7 +37,7 @@ class WorkforceBanksPage extends Component {
       <div className={classes.page}>
         <BanksSearcher
           cacheFiltersKey="ticketPageFiltersCache"
-          // onDoubleClick={this.onDoubleClick}
+          onDoubleClick={this.onDoubleClick}
         />
         {/*{rights.includes(RIGHT_ORGANIZATION_CREATE)*/}
         {/*  && withTooltip(*/}

@@ -8,7 +8,7 @@ import {
   Typography,
   Divider,
   IconButton,
-  Tooltip
+  Tooltip,
 } from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
 import {
@@ -23,10 +23,12 @@ import {
   decodeId,
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
+import {
+  Tab as TabIcon,
+} from "@material-ui/icons";
 import { MODULE_NAME } from "../../constants";
 import { fetchBanksSummary } from "../../actions";
 import OrganizationFilter from "./BankFilter";
-
 
 const styles = (theme) => ({
   paper: {
@@ -45,6 +47,7 @@ const styles = (theme) => ({
   item: {
     padding: theme.spacing(1),
   },
+  horizontalButtonContainer: theme.buttonContainer.horizontal,
 });
 
 class BanksSearcher extends Component {
@@ -63,7 +66,6 @@ class BanksSearcher extends Component {
     this.defaultPageSize = 10;
   }
 
-
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
@@ -76,10 +78,7 @@ class BanksSearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchBanksSummary(
-      this.props.modulesManager,
-      prms,
-    );
+    this.props.fetchBanksSummary(this.props.modulesManager, prms);
   };
 
   rowIdentifier = (r) => r.uuid;
@@ -106,49 +105,55 @@ class BanksSearcher extends Component {
   bankHeaders = () => [
     "workforce.banks.nameEn",
     "workforce.banks.address",
-    this.isShowHistory() ? 'workforce.version' : '',
+    this.isShowHistory() ? "workforce.version" : "",
   ];
   branchHeaders = () => [
     "workforce.banks.branch.nameEn",
     "workforce.banks.address",
     "workforce.banks.routingNumber",
     "workforce.banks.contactNumber",
-    this.isShowHistory() ? 'workforce.version' : '',
+    this.isShowHistory() ? "workforce.version" : "",
   ];
 
-  sorts = () => [
-    
-  ];
+  sorts = () => [];
 
   bankItemFormatters = () => {
     const formatters = [
       (workforce) => workforce.nameEn,
       (workforce) => workforce.headquarterAddress,
       (workforce) => (this.isShowHistory() ? workforce?.version : null),
-
     ];
 
     // if (this.props.rights.includes(RIGHT_ORGANIZATION_EDIT)) {
-         formatters.push((workforce) => (
-           <Tooltip title="Edit">
-             <IconButton
-               disabled={workforce?.isHistory}
-               onClick={() => {
-                 historyPush(
-                   this.props.modulesManager,
-                   this.props.history,
-                   'workforce.route.banks.bank',
-                   [decodeId(workforce.id)],
-                   false,
-                 );
-               }}
-             >
-               <EditIcon />
-             </IconButton>
-           </Tooltip>
-         ));
+    formatters.push((workforce) => (
+      <div className={this.props.classes.horizontalButtonContainer}>
+        <Tooltip title="Edit">
+          <IconButton
+            disabled={workforce?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.banks.bank",
+                [decodeId(workforce.id)],
+                false
+              );
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={"view branches"}>
+          <IconButton
+            onClick={() =>this.onShowBranchClick(workforce.id) }
+          >
+            <TabIcon />
+          </IconButton>
+        </Tooltip>
+      </div>
+    ));
 
-       // }
+    // }
     return formatters;
   };
 
@@ -159,27 +164,26 @@ class BanksSearcher extends Component {
       (workforce) => workforce.routingNumber,
       (workforce) => workforce.contactNumber,
       (workforce) => (this.isShowHistory() ? workforce?.version : null),
-
     ];
 
-         formatters.push((workforce) => (
-           <Tooltip title="Edit">
-             <IconButton
-               disabled={workforce?.isHistory}
-               onClick={() => {
-                 historyPush(
-                   this.props.modulesManager,
-                   this.props.history,
-                   'workforce.route.banks.bank',
-                   [decodeId(workforce.id)],
-                   false,
-                 );
-               }}
-             >
-               <EditIcon />
-             </IconButton>
-           </Tooltip>
-         ));
+    formatters.push((workforce) => (
+      <Tooltip title="Edit">
+        <IconButton
+          disabled={workforce?.isHistory}
+          onClick={() => {
+            historyPush(
+              this.props.modulesManager,
+              this.props.history,
+              "workforce.route.banks.bank",
+              [decodeId(workforce.id)],
+              false
+            );
+          }}
+        >
+          <EditIcon />
+        </IconButton>
+      </Tooltip>
+    ));
     return formatters;
   };
 
@@ -187,105 +191,125 @@ class BanksSearcher extends Component {
 
   rowLocked = (selection, i) => !!i.clientMutationId;
 
-  onDoubleClick = (bank, newTab = false) => {
-    this.setState({ selectedBankId: bank.id });
-    console.log({bank})
-
+  onShowBranchClick = (bankId) => {
+    this.setState({ selectedBankId: bankId });
+    console.log({ bankId });
   };
-  
 
   render() {
     const {
       intl,
-      banks, banksPageInfo, fetchingBanks, fetchedBanks,
-      filterPaneContributionsKey, cacheFiltersKey, 
+      banks,
+      banksPageInfo,
+      fetchingBanks,
+      fetchedBanks,
+      filterPaneContributionsKey,
+      cacheFiltersKey,
+      onDoubleClick
     } = this.props;
 
     const { selectedBankId } = this.state;
 
     const count = banksPageInfo.totalCount;
-    const bankData = banks.filter(item => !item.parent)
-    const branchData = banks.filter(item => item.parent)
-    const filteredBranchData  = branchData.filter(branch => branch.parent?.id === selectedBankId);
+    const bankData = banks.filter((item) => !item.parent);
+    const branchData = banks.filter((item) => item.parent);
+    const filteredBranchData = branchData.filter(
+      (branch) => branch.parent?.id === selectedBankId
+    );
 
-
-    console.log({banks})
+    console.log({ banks });
+    console.log({filteredBranchData})
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <OrganizationFilter
         filters={filters}
         onChangeFilters={onChangeFilters}
-        setShowHistoryFilter={(showHistoryFilter) => this.setState({ showHistoryFilter })}
+        setShowHistoryFilter={(showHistoryFilter) =>
+          this.setState({ showHistoryFilter })
+        }
       />
     );
 
     return (
       <Grid container spacing={2}>
-      <Grid item xs={4}>
-        <Searcher
-          module={MODULE_NAME}
-          cacheFiltersKey={cacheFiltersKey}
-          filterPaneContributionsKey={filterPaneContributionsKey}
-          items={bankData}
-          itemsPageInfo={banksPageInfo}
-          fetchingItems={fetchingBanks}
-          fetchedItems={fetchedBanks}
-          // errorItems={errorOrganizations}
-          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.banks" values={count} />}
-          rowsPerPageOptions={this.rowsPerPageOptions}
-          defaultPageSize={this.defaultPageSize}
-          fetch={this.fetch}
-          rowIdentifier={this.rowIdentifier}
-          filtersToQueryParams={this.filtersToQueryParams}
-          defaultOrderBy="-dateCreated"
-          headers={this.bankHeaders}
-          itemFormatters={this.bankItemFormatters}
-          sorts={this.sorts}
-          rowDisabled={this.rowDisabled}
-          rowLocked={this.rowLocked}
-          
-          onDoubleClick={(i) => !i.clientMutationId && this.onDoubleClick(i)}
-          reset={this.state.reset}
-        />
+        <Grid item xs={5}>
+          <Searcher
+            module={MODULE_NAME}
+            cacheFiltersKey={cacheFiltersKey}
+            filterPaneContributionsKey={filterPaneContributionsKey}
+            items={bankData}
+            itemsPageInfo={banksPageInfo}
+            fetchingItems={fetchingBanks}
+            fetchedItems={fetchedBanks}
+            // errorItems={errorOrganizations}
+            tableTitle={
+              <FormattedMessage
+                module={MODULE_NAME}
+                id="menu.workforce.banks"
+                values={count}
+              />
+            }
+            rowsPerPageOptions={this.rowsPerPageOptions}
+            defaultPageSize={this.defaultPageSize}
+            fetch={this.fetch}
+            rowIdentifier={this.rowIdentifier}
+            filtersToQueryParams={this.filtersToQueryParams}
+            defaultOrderBy="-dateCreated"
+            headers={this.bankHeaders}
+            itemFormatters={this.bankItemFormatters}
+            sorts={this.sorts}
+            rowDisabled={this.rowDisabled}
+            rowLocked={this.rowLocked}
+            onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
+            reset={this.state.reset}
+          />
+        </Grid>
+        {selectedBankId && (
+          <Grid item xs={7}>
+            <Searcher
+              module={MODULE_NAME}
+              cacheFiltersKey={cacheFiltersKey}
+              filterPaneContributionsKey={filterPaneContributionsKey}
+              items={filteredBranchData}
+              itemsPageInfo={banksPageInfo}
+              fetchingItems={fetchingBanks}
+              fetchedItems={fetchedBanks}
+              // errorItems={errorOrganizations}
+              tableTitle={
+                <FormattedMessage
+                  module={MODULE_NAME}
+                  id="menu.workforce.branch"
+                  values={count}
+                />
+              }
+              rowsPerPageOptions={this.rowsPerPageOptions}
+              defaultPageSize={this.defaultPageSize}
+              fetch={this.fetch}
+              rowIdentifier={this.rowIdentifier}
+              filtersToQueryParams={this.filtersToQueryParams}
+              defaultOrderBy="-dateCreated"
+              headers={this.branchHeaders}
+              itemFormatters={this.branchItemFormatters}
+              sorts={this.sorts}
+              rowDisabled={this.rowDisabled}
+              rowLocked={this.rowLocked}
+              onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
+              reset={this.state.reset}
+            />
+          </Grid>
+        )}
       </Grid>
-      {selectedBankId && (
-
-      <Grid item xs={8}>
-        <Searcher
-          module={MODULE_NAME}
-          cacheFiltersKey={cacheFiltersKey}
-          filterPaneContributionsKey={filterPaneContributionsKey}
-          items={filteredBranchData}
-          itemsPageInfo={banksPageInfo}
-          fetchingItems={fetchingBanks}
-          fetchedItems={fetchedBanks}
-          // errorItems={errorOrganizations}
-          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.branch" values={count} />}
-          rowsPerPageOptions={this.rowsPerPageOptions}
-          defaultPageSize={this.defaultPageSize}
-          fetch={this.fetch}
-          rowIdentifier={this.rowIdentifier}
-          filtersToQueryParams={this.filtersToQueryParams}
-          defaultOrderBy="-dateCreated"
-          headers={this.branchHeaders}
-          itemFormatters={this.branchItemFormatters}
-          sorts={this.sorts}
-          rowDisabled={this.rowDisabled}
-          rowLocked={this.rowLocked}
-          onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
-          reset={this.state.reset}
-        />
-      </Grid>
-      )}
-    </Grid>
     );
   }
 }
 
-const mapStateToProps = (state) => (
+const mapStateToProps = (state) =>
   // console.log(state),
-  {
-    rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
+  ({
+    rights:
+      !!state.core && !!state.core.user && !!state.core.user.i_user
+        ? state.core.user.i_user.rights
+        : [],
     banks: state.workforce.banks,
     banksPageInfo: state.workforce.banksPageInfo,
     fetchingBanks: state.workforce.fetchingBanks,
@@ -293,18 +317,23 @@ const mapStateToProps = (state) => (
     submittingMutation: state.workforce.submittingMutation,
     mutation: state.workforce.mutation,
     confirmed: state.core.confirmed,
-  }
-);
+  });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators(
-  {
-    fetchBanksSummary, journalize, coreConfirm,
-  },
-  dispatch,
-);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      fetchBanksSummary,
+      journalize,
+      coreConfirm,
+    },
+    dispatch
+  );
 
 export default withModulesManager(
   withHistory(
-    connect(mapStateToProps, mapDispatchToProps)(withTheme(withStyles(styles)(BanksSearcher))),
-  ),
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(withTheme(withStyles(styles)(BanksSearcher)))
+  )
 );
