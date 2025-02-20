@@ -1056,14 +1056,14 @@ export function fetchBanksSummary(mm, filters) {
     "location" + mm.getProjection("location.Location.FlatProjection");
   const projections = [
     "id",
-    "name",
+    "nameEn",
+    "nameBn",
     "headquarterAddress",
-    "locationId",
+    "routingNumber",
+    "contactNumber",
+    "parent{id}",
     "status",
     location_projection
-    // "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
-    // "location{name,type,parent{name,type,parent{name,type,parent{name,type}}}}",
-    // "address",
   ];
   const payload = formatPageQueryWithCount(
     "banks",
@@ -1071,6 +1071,28 @@ export function fetchBanksSummary(mm, filters) {
     projections,
   );
   return graphql(payload, "WORKFORCE_BANKS");
+}
+
+export function fetchBank(mm, filters) {
+  const location_projection =
+    "location" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "nameEn",
+    "nameBn",
+    "headquarterAddress",
+    "routingNumber",
+    "contactNumber",
+    "parent{id}",
+    "status",
+    location_projection
+  ];
+  const payload = formatPageQueryWithCount(
+    "banks",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_BANK");
 }
 
 export function fetchBanksBranchSummary(mm, filters) {
@@ -1107,10 +1129,34 @@ export function createBank(
     formatBankGQL(bank),
     clientMutationLabel,
   );
+
+  console.log({mutation})
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
     ["BANK_MUTATION_REQ", "BANK_CREATE_BANK_RESP", "BANK_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+export function updateBank(
+  bank,
+  clientMutationLabel,
+) {
+  const mutation = formatMutation(
+    "updateBank",
+    formatBankGQL(bank),
+    clientMutationLabel,
+  );
+
+  console.log({mutation})
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["BANK_MUTATION_REQ", "BANK_UPDATE_BANK_RESP", "BANK_MUTATION_ERR"],
     {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,

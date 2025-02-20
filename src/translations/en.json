@@ -38,6 +38,7 @@
     "menu.workforce.factory": "Factories",
     "menu.workforce.employee": "Employees",
     "menu.workforce.banks": "Banks",
+    "menu.workforce.branch": "Branches",
     "menu.workforce.employee.factory": "Employee Factories",
 
     "workforce.organization.addNewTooltip": "Add Workforce Organizations",

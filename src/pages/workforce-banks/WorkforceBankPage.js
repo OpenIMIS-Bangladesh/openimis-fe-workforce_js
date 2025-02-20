@@ -38,7 +38,7 @@ class WorkforceBankPage extends Component {
 
   render() {
     const {
-      classes, modulesManager, history, rights, organizationUuid, overview, organization, organizationVersion,
+      classes, modulesManager, history, rights, bankUuid, overview, organization, organizationVersion,
     } = this.props;
     // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
@@ -47,10 +47,10 @@ class WorkforceBankPage extends Component {
       <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
         <BanksForm
           overview={overview}
-          organizationUuid={organizationUuid}
+          bankUuid={bankUuid}
           organizationVersion={organizationVersion}
           readOnly={readOnly}
-          back={() => historyPush(modulesManager, history, "workforce.route.organizations")}
+          back={() => historyPush(modulesManager, history, "workforce.route.banks")}
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
           save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
         />
@@ -61,7 +61,7 @@ class WorkforceBankPage extends Component {
 
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  organizationUuid: props.match.params.organization_uuid,
+  bankUuid: props.match.params.bank_uuid,
   organizationVersion: props.match.params.version,
   bank: state.workforce.bank,
 });

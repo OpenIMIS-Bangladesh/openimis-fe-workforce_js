@@ -150,7 +150,7 @@ const DEFAULT_CONFIG = {
 
     { path: ROUTE_WORKFORCE_BANKS, component: WorkforceBanksPage },
     { path: ROUTE_WORKFORCE_BANKS_BANK, component: WorkforceBankPage},
-    // { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION}/:organization_uuid`, component: WorkforceOrganizationPage },
+    { path: `${ROUTE_WORKFORCE_BANKS_BANK}/:bank_uuid`, component: WorkforceBankPage },
 
 
   ],

@@ -6,7 +6,7 @@ import {
 } from "@openimis/fe-core";
 import { bindActionCreators } from "redux";
 import {
-  fetchOrganization,
+  fetchBank,
 } from "../../actions";
 import EditWorkforceOrganizationPage from "../../pages/organization/EditWorkforceOrganizationPage";
 import AddWorkforceOrganizationPage from "../../pages/organization/AddWorkforceOrganizationPage";
@@ -20,15 +20,15 @@ class BanksForm extends Component {
     this.state = {
       lockNew: false,
       reset: 0,
-      organizationUuid: null,
+      bankUuid: null,
       ticket: this._newTicket(),
     };
   }
 
   componentDidMount() {
     // this.props.fetchGrievanceConfiguration();
-    if (this.props.organizationUuid) {
-      this.setState((state, props) => ({ organizationUuid: props.organizationUuid }));
+    if (this.props.bankUuid) {
+      this.setState((state, props) => ({ bankUuid: props.bankUuid }));
     }
   }
 
@@ -44,25 +44,25 @@ class BanksForm extends Component {
       && !!this.props.ticket) {
       this.setState((state, props) => ({
         ticket: { ...props.ticket },
-        organizationUuid: props.ticket.id,
+        bankUuid: props.ticket.id,
         lockNew: false,
       }));
-    } else if (prevState.organizationUuid !== this.state.organizationUuid) {
-      const filters = [`id: "${this.state.organizationUuid}"`];
+    } else if (prevState.bankUuid !== this.state.bankUuid) {
+      const filters = [`id: "${this.state.bankUuid}"`];
       if (this.props.ticketVersion) filters.push(`ticketVersion: ${this.props.ticketVersion}`);
-      this.props.fetchOrganization(
+      this.props.fetchBank(
         this.props.modulesManager,
         filters,
       );
-    } else if (prevProps.organizationUuid && !this.props.organizationUuid) {
-      this.setState({ ticket: this._newTicket(), lockNew: false, organizationUuid: null });
+    } else if (prevProps.bankUuid && !this.props.bankUuid) {
+      this.setState({ ticket: this._newTicket(), lockNew: false, bankUuid: null });
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
       if (this.props?.ticket?.id) {
-        this.props.fetchOrganization(
+        this.props.fetchBank(
           this.props.modulesManager,
-          [`id: "${this.state.organizationUuid}"`],
+          [`id: "${this.state.bankUuid}"`],
         );
       }
     }
@@ -117,7 +117,7 @@ class BanksForm extends Component {
       reset,
       update,
       overview,
-      organizationUuid,
+      bankUuid,
       ticket,
     } = this.state;
 
@@ -134,10 +134,10 @@ class BanksForm extends Component {
     return (
       <>
         <ProgressOrError progress={fetchingBank} error={errorBank} />
-        {(!!fetchedBank || !organizationUuid) && (
+        {(!!fetchedBank || !bankUuid) && (
           <Form
             module={MODULE_NAME}
-            edited_id={organizationUuid}
+            edited_id={bankUuid}
             edited={ticket}
             reset={reset}
             update={update}
@@ -147,10 +147,10 @@ class BanksForm extends Component {
             back={back}
             save={save ? this._save : null}
             canSave={this.canSave}
-            reload={(organizationUuid || readOnly) && this.reload}
+            reload={(bankUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={organizationUuid ? [EditWorkforceBankPage] : [AddWorkforceBankPage]}
+            Panels={bankUuid ? [EditWorkforceBankPage] : [AddWorkforceBankPage]}
             onEditedChanged={this.onEditedChanged}
             // actions={actions}
           />
@@ -163,16 +163,15 @@ class BanksForm extends Component {
 // eslint-disable-next-line no-unused-vars
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  fetchingOrganization: state.workforce.fetchingOrganization,
-  errorOrganization: state.workforce.errorOrganization,
-  fetchedBank: state.workforce.organization,
+  fetchingBank: state.workforce.fetchingBank,
+  fetchedBank: state.workforce.fetchedBank,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   grievanceConfig: state.workforce.grievanceConfig,
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchOrganization,
+  fetchBank,
   journalize,
 }, dispatch);
 

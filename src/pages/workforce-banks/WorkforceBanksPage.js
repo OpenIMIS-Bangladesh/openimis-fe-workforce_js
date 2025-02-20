@@ -18,10 +18,10 @@ const styles = (theme) => ({
 });
 
 class WorkforceBanksPage extends Component {
-  onDoubleClick = (organization, newTab = false) => {
-    const routeParams = ["workforce.route.organizations.organization", [decodeId(organization.id)]];
-    if (organization?.isHistory) {
-      routeParams[1].push(organization.version);
+  onDoubleClick = (bank, newTab = false) => {
+    const routeParams = ["workforce.route.banks.bank", [decodeId(bank.id)]];
+    if (bank?.isHistory) {
+      routeParams[1].push(bank.version);
     }
     historyPush(this.props.modulesManager, this.props.history, ...routeParams, newTab);
   };
@@ -37,7 +37,7 @@ class WorkforceBanksPage extends Component {
       <div className={classes.page}>
         <BanksSearcher
           cacheFiltersKey="ticketPageFiltersCache"
-          onDoubleClick={this.onDoubleClick}
+          // onDoubleClick={this.onDoubleClick}
         />
         {/*{rights.includes(RIGHT_ORGANIZATION_CREATE)*/}
         {/*  && withTooltip(*/}
@@ -57,6 +57,11 @@ class WorkforceBanksPage extends Component {
 const mapStateToProps = (state) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
 });
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  createWorkforceOrganization,
+  updateWorkforceOrganization,
+}, dispatch);
 
 export default withModulesManager(
   withHistory(
