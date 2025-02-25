@@ -14,21 +14,12 @@ import {
   PublishedComponent,
   FormattedMessage,
   decodeId,
-  encodeId,
-  formatMutation,
 } from "@openimis/fe-core";
 import {
-  fetchRepresentativeByClientMutationId,
   updateBank,
-  updateOrganization,
-  updateRepresentative,
-  updateWorkforceOrganization,
 } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import WorkforceForm from "../../components/form/WorkforceForm";
-import { formatRepresentativeGQL } from "../../utils/format_gql";
-import OrganizationTypePicker from "../../pickers/OrganizationTypePicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,

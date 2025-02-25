@@ -141,7 +141,7 @@ class BanksForm extends Component {
             edited={ticket}
             reset={reset}
             update={update}
-            title="workforce"
+            title={bankUuid ?"Edit Bank":"Add Bank"}
             // titleParams={{ label: ticketLabel(this.state.ticket) }}
             titleParams={{ label: "Label" }}
             back={back}
