@@ -63,6 +63,7 @@ export function formatBankGQL(bank) {
     ${bank?.address ? `headquarterAddress: "${formatGQLString(bank.address)}"` : ""}
     ${bank?.status ? `status: "${formatGQLString(bank.status)}"` : ""}
     ${bank?.parentId ? `parentId: "${decodeId(bank.parentId)}"` : ""}
+    ${bank?.type ? `type: "${formatGQLString(bank.type)}"` : ""}
   `;
 }
 

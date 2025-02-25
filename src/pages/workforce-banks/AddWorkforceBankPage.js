@@ -56,7 +56,7 @@ class AddWorkforceBankPage extends Component {
       const bankData = {
         nameEn: stateEdited.nameEn,
         nameBn: stateEdited.nameBn,
-        headquarterAddress: stateEdited.address,
+        address: stateEdited.headquarterAddress,
         locationId: stateEdited.location,
         status: WORKFORCE_STATUS.ACTIVE,
         type:"bank"
@@ -76,7 +76,7 @@ class AddWorkforceBankPage extends Component {
         parentId:stateEdited?.bank?.id,
         routingNumber:stateEdited.routingNumber,
         contactNumber:stateEdited.contactNumber,
-        address:stateEdited.address,
+        address: stateEdited.headquarterAddress,
         locationId: stateEdited.location,
         status:WORKFORCE_STATUS.ACTIVE,
         type:"branch"
@@ -203,7 +203,7 @@ class AddWorkforceBankPage extends Component {
                   <TextInput
                     label="workforce.banks.address"
                     value={stateEdited.address || ""}
-                    onChange={(v) => this.updateAttribute("address", v)}
+                    onChange={(v) => this.updateAttribute("headquarterAddress", v)}
                     required
                     readOnly={isSaved}
                   />
