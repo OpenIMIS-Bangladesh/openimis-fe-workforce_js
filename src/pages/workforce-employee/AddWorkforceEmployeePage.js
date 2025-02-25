@@ -20,6 +20,9 @@ import { createWorkforceEmployee } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
+import CompanyPicker from "../../pickers/CompanyPicker";
+import FactoryPicker from "../../pickers/FactoryPicker";
+
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -54,6 +57,8 @@ class AddWorkforceEmployeePage extends Component {
     const { dispatch } = this.props;
 
     const workforceEmployeeData = {
+      company: stateEdited?.company.id || stateEdited.company.id,
+      factory: stateEdited?.factory.id || stateEdited.factory.id,
       firstNameBn: stateEdited?.firstNameBn || stateEdited.firstNameBn,
       lastNameBn: stateEdited?.lastNameBn || stateEdited.lastNameBn,
       otherName: stateEdited?.otherName || stateEdited.otherName,
@@ -155,6 +160,34 @@ class AddWorkforceEmployeePage extends Component {
                     label={"workforce.employee.birthdate"}
                     value={stateEdited.birthDate || ""}
                     onChange={(v) => this.updateAttribute("birthDate", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <CompanyPicker
+                    value={stateEdited?.company?.id}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.workforce_employer"
+                        module="workforce"
+                      />
+                    }
+                    required
+                    onChange={(v) => this.updateAttribute("company", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <FactoryPicker
+                    value={stateEdited?.factory?.id}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.workforce_factory"
+                        module="workforce"
+                      />
+                    }
+                    required
+                    onChange={(v) => this.updateAttribute("factory", v)}
                     readOnly={isSaved}
                   />
                 </Grid>

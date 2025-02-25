@@ -150,6 +150,8 @@ export function formatWorkforceCompanyGQL(company) {
 export function formatWorkforceEmployeeGQL(employee) {
   return `
     ${employee?.id ? `id: "${formatGQLString(employee.id)}"` : ""}
+    ${employee.company ? `workforceEmployerId: "${employee.company}"` : ""}
+    ${employee.factory ? `workforceFactoryId: "${employee.factory}"` : ""}
     ${employee.firstNameBn ? `firstNameBn: "${formatGQLString(employee.firstNameBn)}"` : ""}
     ${employee.lastNameBn ? `lastNameBn: "${formatGQLString(employee.lastNameBn)}"` : ""}
     ${employee.firstNameEn ? `firstNameEn: "${formatGQLString(employee.firstNameEn)}"` : ""}
