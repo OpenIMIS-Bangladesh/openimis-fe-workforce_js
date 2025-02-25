@@ -158,6 +158,7 @@
     "workforce.employee.email": "Workforce Employee Email",
     "workforce.employee.gender": "Workforce Employee Gender",
     "workforce.employee.birthdate": "Workforce Employee Birthdate",
+    "workforce.employee.joindate": "Workforce Employee Joining Date",
     "workforce.employee.nid": "Workforce Employee NID",
     "workforce.employee.employee_type": "Workforce Employee Type",
     "workforce.employee.birth_certificate_no": "Workforce Employee Birth Certificate No",

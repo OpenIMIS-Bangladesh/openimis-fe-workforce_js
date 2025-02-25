@@ -161,6 +161,7 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee.phoneNumber ? `phoneNumber: "${formatGQLString(employee.phoneNumber)}"` : ""}
     ${employee.email ? `email: "${formatGQLString(employee.email)}"` : ""}
     ${employee.birthDate ? `birthDate: "${employee.birthDate}"` : ""}
+    ${employee.joinDate ? `joinDate: "${employee.joinDate}"` : ""}
     ${employee.gender ? `gender: "${employee.gender}"` : ""}
     ${employee.birthCertificateNo ? `birthCertificateNo: "${employee.birthCertificateNo}"` : ""}
     ${employee.nid ? `nid: "${employee.nid}"` : ""}

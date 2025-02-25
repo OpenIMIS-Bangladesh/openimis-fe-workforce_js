@@ -76,6 +76,7 @@ class EditWorkforceEmployeePage extends Component {
       email: stateEdited?.email || stateEdited.email,
       gender: stateEdited?.gender?.id || stateEdited.gender.id,
       birthDate: stateEdited?.birthDate || stateEdited.birthDate,
+      joinDate: stateEdited?.joinDate || stateEdited.joinDate,
       website: stateEdited?.website || stateEdited.website,
       employeeType: stateEdited?.employeeType || stateEdited.employeeType,
       permanentAddress:
@@ -183,6 +184,31 @@ class EditWorkforceEmployeePage extends Component {
                     onChange={(v) => this.updateAttribute("factory", v)}
                     readOnly={isSaved}
                   />
+                </Grid>
+                 <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.employee.monthly_earning"
+                      value={stateEdited.monthlyEarning || ""}
+                      onChange={(v) => this.updateAttribute("monthlyEarning", v)}
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+                  <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.employee.reference_salary"
+                      value={stateEdited.referenceSalary || ""}
+                      onChange={(v) => this.updateAttribute("referenceSalary", v)}
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+                  <Grid item xs={6} className={classes.item}>
+                    <PublishedComponent
+                      pubRef="core.DatePicker"
+                      label={"workforce.employee.joindate"}
+                      value={stateEdited.joinDate || ""}
+                      onChange={(v) => this.updateAttribute("joinDate", v)}
+                      readOnly={isSaved}
+                    />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <EmployeeGenderPicker
@@ -367,22 +393,6 @@ class EditWorkforceEmployeePage extends Component {
                     value={stateEdited.passportNo || ""}
                     onChange={(v) => this.updateAttribute("passportNo", v)}
                     type={"number"}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.employee.monthly_earning"
-                    value={stateEdited.monthlyEarning || ""}
-                    onChange={(v) => this.updateAttribute("monthlyEarning", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.employee.reference_salary"
-                    value={stateEdited.referenceSalary || ""}
-                    onChange={(v) => this.updateAttribute("referenceSalary", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
