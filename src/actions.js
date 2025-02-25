@@ -48,7 +48,7 @@ export function fetchOrganizationsPick(filters) {
   return graphql(payload, "WORKFORCE_ORGANIZATIONS_PICKER");
 }
 /// bank picker ///
-export function fetchBanksPick(filters) {
+export function fetchBanksPick(mm,filters) {
   const projections = ["id", "nameEn"];
   const payload = formatPageQueryWithCount(
     "banks",
@@ -1050,6 +1050,7 @@ export function fetchBank(mm, filters) {
     "contactNumber",
     "parent{id}",
     "status",
+    "type",
     location_projection
   ];
   const payload = formatPageQueryWithCount(
