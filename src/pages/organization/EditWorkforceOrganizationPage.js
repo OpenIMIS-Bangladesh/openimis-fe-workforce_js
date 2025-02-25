@@ -18,8 +18,6 @@ import {
   formatMutation,
 } from "@openimis/fe-core";
 import {
-  fetchRepresentativeByClientMutationId,
-  updateOrganization,
   updateRepresentative,
   updateWorkforceOrganization,
 } from "../../actions";
