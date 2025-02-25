@@ -131,10 +131,11 @@ class EditWorkforceBankPage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
+                {stateEdited.parent !== null && (
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="workforce.BanksPicker"
-                    value={stateEdited.parent.id || stateEdited.bank.id || null}
+                    value={stateEdited?.parent.id || stateEdited?.bank?.id || null}
                     label={
                       <FormattedMessage
                         module="workforce"
@@ -145,6 +146,7 @@ class EditWorkforceBankPage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
+                )}
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
@@ -173,7 +175,7 @@ class EditWorkforceBankPage extends Component {
                   />
                 </Grid>
 
-                {stateEdited.bank && (
+                {stateEdited.bank || stateEdited.parent !== null && (
                   <Grid item xs={6} className={classes.item}>
                     <TextInput
                       label="workforce.banks.routingNumber"
@@ -185,7 +187,7 @@ class EditWorkforceBankPage extends Component {
                   </Grid>
                 )}
 
-                {stateEdited.bank && (
+                {stateEdited.bank ||stateEdited.parent !== null && (
                   <Grid item xs={6} className={classes.item}>
                     <TextInput
                       label="workforce.banks.contactNumber"
