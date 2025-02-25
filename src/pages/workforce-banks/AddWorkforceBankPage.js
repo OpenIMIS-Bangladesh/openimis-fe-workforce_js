@@ -59,6 +59,7 @@ class AddWorkforceBankPage extends Component {
         headquarterAddress: stateEdited.address,
         locationId: stateEdited.location,
         status: WORKFORCE_STATUS.ACTIVE,
+        type:"bank"
       };
 
       await dispatch(
@@ -77,7 +78,8 @@ class AddWorkforceBankPage extends Component {
         contactNumber:stateEdited.contactNumber,
         address:stateEdited.address,
         locationId: stateEdited.location,
-        status:WORKFORCE_STATUS.ACTIVE
+        status:WORKFORCE_STATUS.ACTIVE,
+        type:"branch"
       }
 
       await dispatch(

@@ -71,6 +71,7 @@ class EditWorkforceBankPage extends Component {
         address: stateEdited.headquarterAddress,
         locationId: stateEdited.location,
         status: WORKFORCE_STATUS.ACTIVE,
+        type:'bank'
       };
       console.log({bankData})
 
@@ -86,6 +87,7 @@ class EditWorkforceBankPage extends Component {
         address:stateEdited?.headquarterAddress,
         locationId: stateEdited.location,
         status: WORKFORCE_STATUS.ACTIVE,
+        type:'branch'
       };
 
       console.log({bankBranchData})
@@ -122,7 +124,7 @@ class EditWorkforceBankPage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-                {stateEdited.parent !== null && (
+                {stateEdited.type !== "bank" && (
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="workforce.BanksPicker"
@@ -166,7 +168,7 @@ class EditWorkforceBankPage extends Component {
                   />
                 </Grid>
 
-                {stateEdited.bank || stateEdited.parent !== null && (
+                {stateEdited.type !== "bank" && (
                   <Grid item xs={6} className={classes.item}>
                     <TextInput
                       label="workforce.banks.routingNumber"
@@ -178,7 +180,7 @@ class EditWorkforceBankPage extends Component {
                   </Grid>
                 )}
 
-                {stateEdited.bank ||stateEdited.parent !== null && (
+                {stateEdited.type !== "bank" && (
                   <Grid item xs={6} className={classes.item}>
                     <TextInput
                       label="workforce.banks.contactNumber"

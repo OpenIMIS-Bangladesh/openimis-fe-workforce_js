@@ -23,7 +23,7 @@ const BanksPicker = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    return dispatch(fetchBanksPick(modulesManager, []));
+    return dispatch(fetchBanksPick(modulesManager, [`type:"bank"`]));
   }, []);
 
   const isLoading = useSelector(
