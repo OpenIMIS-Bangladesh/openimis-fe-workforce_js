@@ -23,9 +23,7 @@ import {
   decodeId,
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
-import {
-  Tab as TabIcon,
-} from "@material-ui/icons";
+import { Tab as TabIcon } from "@material-ui/icons";
 import { MODULE_NAME } from "../../constants";
 import { fetchBanksSummary } from "../../actions";
 import OrganizationFilter from "./BankFilter";
@@ -48,6 +46,14 @@ const styles = (theme) => ({
     padding: theme.spacing(1),
   },
   horizontalButtonContainer: theme.buttonContainer.horizontal,
+  bankRow: {
+    padding: theme.spacing(1),
+    transition: "background-color 0.3s ease",
+  },
+  selectedRow: {
+    backgroundColor: theme.palette.primary.light,
+    color: theme.palette.primary.contrastText,
+  },
 });
 
 class BanksSearcher extends Component {
@@ -118,43 +124,47 @@ class BanksSearcher extends Component {
   sorts = () => [];
 
   bankItemFormatters = () => {
-    const formatters = [
-      (workforce) => workforce.nameEn,
-      (workforce) => workforce.headquarterAddress,
-      (workforce) => (this.isShowHistory() ? workforce?.version : null),
+    const { selectedBankId } = this.state;
+    const { classes } = this.props;
+
+    return [
+      (bank) => (
+        <div
+          className={`${classes.bankRow} ${
+            selectedBankId === bank.id ? classes.selectedRow : ""
+          }`}
+        >
+          {bank.nameEn}
+        </div>
+      ),
+      (bank) => bank.headquarterAddress,
+      (bank) => (this.isShowHistory() ? bank?.version : null),
+      (bank) => (
+        <div className={this.props.classes.horizontalButtonContainer}>
+          <Tooltip title="Edit">
+            <IconButton
+              disabled={bank?.isHistory}
+              onClick={() => {
+                historyPush(
+                  this.props.modulesManager,
+                  this.props.history,
+                  "workforce.route.banks.bank",
+                  [decodeId(bank.id)],
+                  false
+                );
+              }}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={"View branches"}>
+            <IconButton onClick={() => this.onShowBranchClick(bank.id)}>
+              <TabIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+      ),
     ];
-
-    // if (this.props.rights.includes(RIGHT_ORGANIZATION_EDIT)) {
-    formatters.push((workforce) => (
-      <div className={this.props.classes.horizontalButtonContainer}>
-        <Tooltip title="Edit">
-          <IconButton
-            disabled={workforce?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.banks.bank",
-                [decodeId(workforce.id)],
-                false
-              );
-            }}
-          >
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title={"view branches"}>
-          <IconButton
-            onClick={() =>this.onShowBranchClick(workforce.id) }
-          >
-            <TabIcon />
-          </IconButton>
-        </Tooltip>
-      </div>
-    ));
-
-    // }
-    return formatters;
   };
 
   branchItemFormatters = () => {
@@ -205,7 +215,7 @@ class BanksSearcher extends Component {
       fetchedBanks,
       filterPaneContributionsKey,
       cacheFiltersKey,
-      onDoubleClick
+      onDoubleClick,
     } = this.props;
 
     const { selectedBankId } = this.state;
@@ -217,18 +227,10 @@ class BanksSearcher extends Component {
       (branch) => branch.parent?.id === selectedBankId
     );
 
-    console.log({ banks });
-    console.log({filteredBranchData})
+    const selectedBank = bankData.find((bank) => bank.id === selectedBankId);
 
-    const filterPane = ({ filters, onChangeFilters }) => (
-      <OrganizationFilter
-        filters={filters}
-        onChangeFilters={onChangeFilters}
-        setShowHistoryFilter={(showHistoryFilter) =>
-          this.setState({ showHistoryFilter })
-        }
-      />
-    );
+    console.log({ banks });
+    console.log({ filteredBranchData });
 
     return (
       <Grid container spacing={2}>
@@ -276,11 +278,9 @@ class BanksSearcher extends Component {
               fetchedItems={fetchedBanks}
               // errorItems={errorOrganizations}
               tableTitle={
-                <FormattedMessage
-                  module={MODULE_NAME}
-                  id="menu.workforce.branch"
-                  values={count}
-                />
+                <Typography variant="h6">
+                  Branches of {selectedBank?.nameEn || "Selected Bank"}
+                </Typography>
               }
               rowsPerPageOptions={this.rowsPerPageOptions}
               defaultPageSize={this.defaultPageSize}
