@@ -54,6 +54,7 @@
     "workforce.organization.picker": "Organization",
     "workforce.bank.picker": "Bank",
     "workforce.organization.unit.picker": "Unit",
+    "workforce.employee.relation.picker": "Relation type",
 
     "workforce.representative.details": "Representative Details",
     "workforce.representative.name.en": "Representative Name En",
@@ -193,6 +194,22 @@
     "workforce.banks.status": "Bank Headquarter status",
     "workforce.banks.routingNumber": "Bank Routing Number",
     "workforce.banks.contactNumber": "Bank Contact Number",
+
+    "workforce.employee.dependent.name.en": "First name en",
+    "workforce.employee.dependent.name.bn": "First name bn",
+    "workforce.employee.dependent.father.name": "Father name",
+    "workforce.employee.dependent.mother.name": "Mother name",
+    "workforce.employee.dependent.last.name.en": "Last name en",
+    "workforce.employee.dependent.last.name.bn": "Last name bn",
+    "workforce.employee.dependent.nid": "NID Number",
+    "workforce.employee.dependent.birth.certificate": "Birth Certificate Number",
+    "workforce.employee.dependent.birthDate": "Date of Birth",
+    "workforce.employee.dependent.deathDate": "Date of Death",
+    "workforce.employee.dependent.phone": "Phone Number",
+    "workforce.employee.dependent.email": "Email",
+    "workforce.employee.dependent.occupation": "Occupation/Profession",
+    "workforce.employee.dependent.present.location": "Present Location",
+    "workforce.employee.dependent.permanent.location": "Permanent Location",
 
     "workforce.representative.sameAsRepresentative": "Same as Company Representative"
 
