@@ -72,7 +72,6 @@ class AddWorkforceEmployeePage extends Component {
       birthDate: stateEdited?.birthDate || stateEdited.birthDate,
       joinDate: stateEdited?.joinDate || stateEdited.joinDate,
       deathDate: stateEdited?.deathDate || stateEdited.deathDate,
-      website: stateEdited?.website || stateEdited.website,
       employeeType: stateEdited?.employeeType || stateEdited.employeeType,
       lifeStatus: stateEdited?.lifeStatus || stateEdited.lifeStatus,
       permanentAddress:
