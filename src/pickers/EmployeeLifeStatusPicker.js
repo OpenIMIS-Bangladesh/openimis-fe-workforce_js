@@ -19,7 +19,7 @@ const EmployeeLifeStatusPicker = ({
   const { formatMessage } = useTranslations("workforce");
 
   // Adjust the options to match the EMPLOYEE_LIFE_STATUS format
-  const EMPLOYEE_LIFE_STATUS = ["Live", "Deceased"];
+  const EMPLOYEE_LIFE_STATUS = ["Alive", "Deceased"];
 
   // Find the selected option
   const selectedOption = useMemo(
