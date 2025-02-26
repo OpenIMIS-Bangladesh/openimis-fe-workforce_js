@@ -25,7 +25,11 @@ import {
   ROUTE_WORKFORCE_APPROVE_EDIT_COMPANIES_COMPANY,
   ROUTE_WORKFORCE_EDIT_COMPANIES_COMPANY,
   ROUTE_WORKFORCE_BANKS,
-  ROUTE_WORKFORCE_BANKS_BANK
+  ROUTE_WORKFORCE_BANKS_BANK,
+  ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCIDENT_INFO,
+  ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCOUNT_INFO,
+  ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_SERVICES,
+  ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_DEPENDENT
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -71,6 +75,10 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.unit.designations.designation", ref: ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS_DESIGNATION },
 
     { key: "workforce.route.organizations.employees.employee", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE },
+    { key: "workforce.route.organizations.employees.employee.accident.info", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCIDENT_INFO },
+    { key: "workforce.route.organizations.employees.employee.account.info", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCOUNT_INFO },
+    { key: "workforce.route.organizations.employees.employee.services", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_SERVICES },
+    { key: "workforce.route.organizations.employees.employee.dependent", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_DEPENDENT },
     { key: "workforce.route.organizations.employees", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES },
 
     { key: "workforce.route.offices.office", ref: ROUTE_WORKFORCE_OFFICES_OFFICE },

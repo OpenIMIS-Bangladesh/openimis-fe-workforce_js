@@ -169,7 +169,7 @@ class OrganizationEmployeeSearcher extends Component {
               historyPush(
                 this.props.modulesManager,
                 this.props.history,
-                "workforce.route.organizations.employees.employee",
+                "workforce.route.organizations.employees.employee.account.info",
                 [decodeId(organizationemployee.id)],
                 false
               );
@@ -187,7 +187,7 @@ class OrganizationEmployeeSearcher extends Component {
               historyPush(
                 this.props.modulesManager,
                 this.props.history,
-                "workforce.route.organizations.employees.employee",
+               "workforce.route.organizations.employees.employee.accident.info",
                 [decodeId(organizationemployee.id)],
                 false
               );
@@ -205,7 +205,7 @@ class OrganizationEmployeeSearcher extends Component {
               historyPush(
                 this.props.modulesManager,
                 this.props.history,
-                "workforce.route.organizations.employees.employee",
+                "workforce.route.organizations.employees.employee.services",
                 [decodeId(organizationemployee.id)],
                 false
               );
@@ -223,7 +223,7 @@ class OrganizationEmployeeSearcher extends Component {
               historyPush(
                 this.props.modulesManager,
                 this.props.history,
-                "workforce.route.organizations.employees.employee",
+                "workforce.route.organizations.employees.employee.dependent",
                 [decodeId(organizationemployee.id)],
                 false
               );
