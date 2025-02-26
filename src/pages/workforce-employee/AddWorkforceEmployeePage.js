@@ -23,6 +23,7 @@ import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import CompanyPicker from "../../pickers/CompanyPicker";
 import FactoryPicker from "../../pickers/FactoryPicker";
 import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
+import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
 
 
 const styles = (theme) => ({
@@ -423,29 +424,16 @@ class AddWorkforceEmployeePage extends Component {
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.employee.marital_status"
+                  <EmployeeMaritalStatusPicker
                     value={stateEdited.maritalStatus || ""}
-                    onChange={(v) => this.updateAttribute("maritalStatus", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.employee.present_address"
-                    value={stateEdited.presentAddress || ""}
-                    onChange={(v) => this.updateAttribute("presentAddress", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={12} className={classes.item}>
-                  <TextInput
-                    label="workforce.employee.permanent_address"
-                    value={stateEdited.permanentAddress || ""}
-                    onChange={(v) =>
-                      this.updateAttribute("permanentAddress", v)
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.marital_status"
+                        module="workforce"
+                      />
                     }
+                    required
+                    onChange={(v) => this.updateAttribute("maritalStatus", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
@@ -464,6 +452,14 @@ class AddWorkforceEmployeePage extends Component {
                   />
                 </Grid>
                 <Grid item xs={12} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.present_address"
+                    value={stateEdited.presentAddress || ""}
+                    onChange={(v) => this.updateAttribute("presentAddress", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={12} className={classes.item}>
                   <p>Permanent Location</p>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
@@ -478,6 +474,16 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                     required
                     split={true}
+                  />
+                </Grid>
+                <Grid item xs={12} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.permanent_address"
+                    value={stateEdited.permanentAddress || ""}
+                    onChange={(v) =>
+                      this.updateAttribute("permanentAddress", v)
+                    }
+                    readOnly={isSaved}
                   />
                 </Grid>
 
