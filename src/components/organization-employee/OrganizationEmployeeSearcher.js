@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { IconButton, Tooltip } from "@material-ui/core";
+import { IconButton, Tooltip, Button } from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
 import {
   coreConfirm,
@@ -17,10 +17,10 @@ import {
   decodeId,
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
+import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import { MODULE_NAME } from "../../constants";
 import { fetchOrganizationEmployeesSummary } from "../../actions";
 import OrganizationEmployeeFilter from "./OrganizationEmployeeFilter";
-
 
 const styles = (theme) => ({
   paper: {
@@ -39,6 +39,30 @@ const styles = (theme) => ({
   item: {
     padding: theme.spacing(1),
   },
+  horizontalButtonContainer: {
+    ...theme.buttonContainer.horizontal,
+    display: "flex",
+    alignItems: "center",
+    gap: theme.spacing(1),
+  },
+  compactButton: {
+    maxHeight: "30px",
+    minWidth: "80px",
+    padding: "1px 4px",
+    borderRadius: "6px",
+    backgroundColor: "#006273",
+    color: "white",
+    fontSize: "0.7rem",
+    textTransform: "none",
+    marginRight: "2px",
+    "&:hover": {
+      backgroundColor: "#004a5e",
+    },
+  },
+  buttonContainer: {
+    display: "flex",
+    gap: theme.spacing(1),
+  },
 });
 
 class OrganizationEmployeeSearcher extends Component {
@@ -55,7 +79,6 @@ class OrganizationEmployeeSearcher extends Component {
     this.defaultPageSize = 10;
   }
 
-
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
@@ -70,7 +93,7 @@ class OrganizationEmployeeSearcher extends Component {
     this.setState({ displayVersion: showHistoryFilter });
     this.props.fetchOrganizationEmployeesSummary(
       this.props.modulesManager,
-      prms,
+      prms
     );
   };
 
@@ -117,26 +140,99 @@ class OrganizationEmployeeSearcher extends Component {
       (organizationemployee) => organizationemployee.address,
       (organizationemployee) => organizationemployee.gender,
       (organizationemployee) => organizationemployee.status,
-      (organizationemployee) => (this.isShowHistory() ? organizationemployee?.version : null),
-
+      (organizationemployee) =>
+        this.isShowHistory() ? organizationemployee?.version : null,
     ];
     formatters.push((organizationemployee) => (
-      <Tooltip title="Edit">
-        <IconButton
-          disabled={organizationemployee?.isHistory}
-          onClick={() => {
-            historyPush(
-              this.props.modulesManager,
-              this.props.history,
-              "workforce.route.organizations.employees.employee",
-              [decodeId(organizationemployee.id)],
-              false,
-            );
-          }}
-        >
-          <EditIcon />
-        </IconButton>
-      </Tooltip>
+      <div className={this.props.classes.horizontalButtonContainer}>
+        <Tooltip title="Edit">
+          <IconButton
+            disabled={organizationemployee?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.organizations.employees.employee",
+                [decodeId(organizationemployee.id)],
+                false
+              );
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Account info">
+          <IconButton
+            disabled={organizationemployee?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.organizations.employees.employee",
+                [decodeId(organizationemployee.id)],
+                false
+              );
+            }}
+          >
+            <AccountBoxIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Services">
+          <Button
+            className={this.props.classes.compactButton}
+            disabled={organizationemployee?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.organizations.employees.employee",
+                [decodeId(organizationemployee.id)],
+                false
+              );
+            }}
+          >
+            Accident info
+          </Button>
+        </Tooltip>
+
+        <Tooltip title="Services">
+          <Button
+            className={this.props.classes.compactButton}
+            disabled={organizationemployee?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.organizations.employees.employee",
+                [decodeId(organizationemployee.id)],
+                false
+              );
+            }}
+          >
+            Services
+          </Button>
+        </Tooltip>
+
+        <Tooltip title="Dependent">
+          <Button
+            className={this.props.classes.compactButton}
+            disabled={organizationemployee?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.organizations.employees.employee",
+                [decodeId(organizationemployee.id)],
+                false
+              );
+            }}
+          >
+            Dependent
+          </Button>
+        </Tooltip>
+      </div>
     ));
     return formatters;
   };
@@ -164,7 +260,9 @@ class OrganizationEmployeeSearcher extends Component {
       <OrganizationEmployeeFilter
         filters={filters}
         onChangeFilters={onChangeFilters}
-        setShowHistoryFilter={(showHistoryFilter) => this.setState({ showHistoryFilter })}
+        setShowHistoryFilter={(showHistoryFilter) =>
+          this.setState({ showHistoryFilter })
+        }
       />
     );
 
@@ -180,7 +278,12 @@ class OrganizationEmployeeSearcher extends Component {
           fetchingItems={fetchingOrganizationEmployees}
           fetchedItems={fetchedOrganizationEmployees}
           errorItems={errorOrganizationEmployees}
-          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.employee" />}
+          tableTitle={
+            <FormattedMessage
+              module={MODULE_NAME}
+              id="menu.workforce.organizations.employee"
+            />
+          }
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
           fetch={this.fetch}
@@ -200,29 +303,36 @@ class OrganizationEmployeeSearcher extends Component {
   }
 }
 
-const mapStateToProps = (state) => (
-  {
-    rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-    organizationEmployees: state.workforce.organizationEmployees,
-    organizationEmployeesPageInfo: state.workforce.organizationEmployeesPageInfo,
-    fetchingOrganizationEmployees: state.workforce.fetchingOrganizationEmployees,
-    fetchedOrganizationEmployees: state.workforce.fetchedOrganizationEmployees,
-    errorOrganizationEmployees: state.workforce.errorOrganizationEmployees,
-    submittingMutation: state.workforce.submittingMutation,
-    mutation: state.workforce.mutation,
-    confirmed: state.core.confirmed,
-  }
-);
+const mapStateToProps = (state) => ({
+  rights:
+    !!state.core && !!state.core.user && !!state.core.user.i_user
+      ? state.core.user.i_user.rights
+      : [],
+  organizationEmployees: state.workforce.organizationEmployees,
+  organizationEmployeesPageInfo: state.workforce.organizationEmployeesPageInfo,
+  fetchingOrganizationEmployees: state.workforce.fetchingOrganizationEmployees,
+  fetchedOrganizationEmployees: state.workforce.fetchedOrganizationEmployees,
+  errorOrganizationEmployees: state.workforce.errorOrganizationEmployees,
+  submittingMutation: state.workforce.submittingMutation,
+  mutation: state.workforce.mutation,
+  confirmed: state.core.confirmed,
+});
 
-const mapDispatchToProps = (dispatch) => bindActionCreators(
-  {
-    fetchOrganizationEmployeesSummary, journalize, coreConfirm,
-  },
-  dispatch,
-);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      fetchOrganizationEmployeesSummary,
+      journalize,
+      coreConfirm,
+    },
+    dispatch
+  );
 
 export default withModulesManager(
   withHistory(
-    connect(mapStateToProps, mapDispatchToProps)(withTheme(withStyles(styles)(OrganizationEmployeeSearcher))),
-  ),
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(withTheme(withStyles(styles)(OrganizationEmployeeSearcher)))
+  )
 );
