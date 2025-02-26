@@ -56,6 +56,7 @@ import WorkforceEmployeeFactoryPage from "./pages/workforce-employee-factory/Wor
 import WorkforceBanksPage from "./pages/workforce-banks/WorkforceBanksPage";
 import WorkforceBankPage from "./pages/workforce-banks/WorkforceBankPage";
 import BanksPicker from "./pickers/BanksPicker";
+import DependentsPage from "./pages/organization-employee/dependent/DependentsPage";
 
 
 
@@ -127,6 +128,7 @@ const DEFAULT_CONFIG = {
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES, component: OranigzationEmployeesPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE, component: OrganizationEmployeePage },
+    { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_DEPENDENT}/:dependent_uuid`, component: DependentsPage },
     { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE}/:organization_employee_uuid`, component: OrganizationEmployeePage },
 
     { path: ROUTE_WORKFORCE_OFFICES, component: OranigzationOfficesPage },

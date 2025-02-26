@@ -129,6 +129,31 @@ export function fetchOrganizationEmployeesSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEES");
 }
+export function fetchDependentsSummary(mm, filters) {
+  const location_projection =
+    "location" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "nameEn",
+    "nameBn",
+    "address",
+    "phoneNumber",
+    "email",
+    "status",
+    "gender",
+    "firstJoiningDate",
+    "birthCertificateNo",
+    "nid",
+    "passportNo",
+    location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceOrganizationEmployees",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEES");
+}
 
 export function fetchOrganizationEmployee(mm, filters) {
   const location_projection =
