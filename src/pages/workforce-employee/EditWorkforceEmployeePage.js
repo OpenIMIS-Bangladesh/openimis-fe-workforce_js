@@ -204,8 +204,8 @@ class EditWorkforceEmployeePage extends Component {
                     pubRef="core.DatePicker"
                     label={"workforce.employee.deathdate"}
                     value={stateEdited.deathDate || ""}
+                    readOnly={stateEdited.lifeStatus ==="Deceased" ? false:true}
                     onChange={(v) => this.updateAttribute("deathDate", v)}
-                    readOnly={isSaved}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
