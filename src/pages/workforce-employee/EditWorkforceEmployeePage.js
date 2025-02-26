@@ -77,15 +77,15 @@ class EditWorkforceEmployeePage extends Component {
       gender: stateEdited?.gender?.id || stateEdited.gender.id,
       birthDate: stateEdited?.birthDate || stateEdited.birthDate,
       joinDate: stateEdited?.joinDate || stateEdited.joinDate,
+      deathDate: stateEdited?.deathDate || stateEdited.deathDate,
       website: stateEdited?.website || stateEdited.website,
       employeeType: stateEdited?.employeeType || stateEdited.employeeType,
+      lifeStatus: stateEdited?.lifeStatus || stateEdited.lifeStatus,
       permanentAddress:
         stateEdited?.permanentAddress || stateEdited.permanentAddress,
       presentAddress: stateEdited?.presentAddress || stateEdited.presentAddress,
       position: stateEdited?.position || stateEdited.position,
       monthlyEarning: stateEdited?.monthlyEarning || stateEdited.monthlyEarning,
-      referenceSalary:
-        stateEdited?.referenceSalary || stateEdited.referenceSalary,
       fatherNameBn: stateEdited?.fatherNameBn || stateEdited.fatherNameBn,
       fatherNameEn: stateEdited?.fatherNameEn || stateEdited.fatherNameEn,
       motherNameBn: stateEdited?.motherNameBn || stateEdited.motherNameBn,
@@ -185,19 +185,42 @@ class EditWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <EmployeeLifeStatusPicker
+                    value={stateEdited.lifeStatus || ""}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.lifeStatus"
+                        module="workforce"
+                      />
+                    }
+                    required
+                    onChange={(v) => this.updateAttribute("lifeStatus", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="core.DatePicker"
+                    label={"workforce.employee.deathdate"}
+                    value={stateEdited.deathDate || ""}
+                    onChange={(v) => this.updateAttribute("deathDate", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <EmployeeGenderPicker
+                    value={stateEdited.gender || ""}
+                    label={<FormattedMessage id="workforce.employee.gender" module="workforce" />}
+                    onChange={(v) => this.updateAttribute("gender", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
                  <Grid item xs={6} className={classes.item}>
                     <TextInput
                       label="workforce.employee.monthly_earning"
                       value={stateEdited.monthlyEarning || ""}
                       onChange={(v) => this.updateAttribute("monthlyEarning", v)}
-                      readOnly={isSaved}
-                    />
-                  </Grid>
-                  <Grid item xs={6} className={classes.item}>
-                    <TextInput
-                      label="workforce.employee.reference_salary"
-                      value={stateEdited.referenceSalary || ""}
-                      onChange={(v) => this.updateAttribute("referenceSalary", v)}
                       readOnly={isSaved}
                     />
                   </Grid>
@@ -210,14 +233,7 @@ class EditWorkforceEmployeePage extends Component {
                       readOnly={isSaved}
                     />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <EmployeeGenderPicker
-                    value={stateEdited.gender || ""}
-                    label={<FormattedMessage id="workforce.employee.gender" module="workforce" />}
-                    onChange={(v) => this.updateAttribute("gender", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
+               
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.first.name.en"
@@ -413,7 +429,7 @@ class EditWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={12} className={classes.item}>
                   <TextInput
                     label="workforce.employee.permanent_address"
                     value={stateEdited.permanentAddress || ""}

@@ -409,7 +409,6 @@ export function fetchWorkforceEmployeesSummary(mm, filters) {
     "presentAddress",
     "position",
     "monthlyEarning",
-    "referenceSalary",
     "fatherNameBn",
     "fatherNameEn",
     "motherNameBn",
@@ -423,6 +422,8 @@ export function fetchWorkforceEmployeesSummary(mm, filters) {
     "birthDate",
     "joinDate",
     "employeeType",
+    "lifeStatus",
+    "deathDate",
     present_location_projection,
     permanent_location_projection,
   ];
@@ -457,7 +458,6 @@ export function fetchWorkforceEmployee(mm, filters) {
     "presentAddress",
     "position",
     "monthlyEarning",
-    "referenceSalary",
     "fatherNameBn",
     "fatherNameEn",
     "motherNameBn",
@@ -471,6 +471,8 @@ export function fetchWorkforceEmployee(mm, filters) {
     "birthDate",
     "joinDate",
     "employeeType",
+    "lifeStatus",
+    "deathDate",
     present_location_projection,
     permanent_location_projection,
   ];
