@@ -92,10 +92,7 @@ class DependentSearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchDependentsSummary(
-      this.props.modulesManager,
-      prms
-    );
+    this.props.fetchDependentsSummary(this.props.modulesManager, prms);
   };
 
   rowIdentifier = (r) => r.uuid;
@@ -120,13 +117,11 @@ class DependentSearcher extends Component {
   };
 
   headers = () => [
-    "workforce.organization.employee.name.en",
-    "workforce.organization.employee.name.bn",
-    "workforce.organization.employee.phone",
-    "workforce.organization.employee.email",
-    "workforce.organization.employee.address",
-    "workforce.organization.employee.gender",
-    "workforce.organization.employee.status",
+    "workforce.employee.first.name.en",
+    "workforce.employee.first.name.bn",
+    "workforce.employee.nid",
+    "workforce.employee.phone",
+    "workforce.employee.email",
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
@@ -134,106 +129,31 @@ class DependentSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      (organizationemployee) => organizationemployee.nameEn,
-      (organizationemployee) => organizationemployee.nameBn,
-      (organizationemployee) => organizationemployee.phoneNumber,
-      (organizationemployee) => organizationemployee.email,
-      (organizationemployee) => organizationemployee.address,
-      (organizationemployee) => organizationemployee.gender,
-      (organizationemployee) => organizationemployee.status,
-      (organizationemployee) =>
-        this.isShowHistory() ? organizationemployee?.version : null,
+      (workforceemployee) => workforceemployee.firstNameEn,
+      (workforceemployee) => workforceemployee.firstNameBn,
+      (workforceemployee) => workforceemployee.nid,
+      (workforceemployee) => workforceemployee.phoneNumber,
+      (workforceemployee) => workforceemployee.email,
+      (workforceemployee) =>
+        this.isShowHistory() ? workforceemployee?.version : null,
     ];
-    formatters.push((organizationemployee) => (
-      <div className={this.props.classes.horizontalButtonContainer}>
-        <Tooltip title="Edit">
-          <IconButton
-            disabled={organizationemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.organizations.employees.employee",
-                [decodeId(organizationemployee.id)],
-                false
-              );
-            }}
-          >
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Account info">
-          <IconButton
-            disabled={organizationemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.organizations.employees.employee.account.info",
-                [decodeId(organizationemployee.id)],
-                false
-              );
-            }}
-          >
-            <AccountBoxIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Services">
-          <Button
-            className={this.props.classes.compactButton}
-            disabled={organizationemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-               "workforce.route.organizations.employees.employee.accident.info",
-                [decodeId(organizationemployee.id)],
-                false
-              );
-            }}
-          >
-            Accident info
-          </Button>
-        </Tooltip>
-
-        <Tooltip title="Services">
-          <Button
-            className={this.props.classes.compactButton}
-            disabled={organizationemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.organizations.employees.employee.services",
-                [decodeId(organizationemployee.id)],
-                false
-              );
-            }}
-          >
-            Services
-          </Button>
-        </Tooltip>
-
-        <Tooltip title="Dependent">
-          <Button
-            className={this.props.classes.compactButton}
-            disabled={organizationemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.organizations.employees.employee.dependent",
-                [decodeId(organizationemployee.id)],
-                false
-              );
-            }}
-          >
-            Dependent
-          </Button>
-        </Tooltip>
-      </div>
+    formatters.push((workforceemployee) => (
+      <Tooltip title="Edit">
+        <IconButton
+          disabled={workforceemployee?.isHistory}
+          onClick={() => {
+            historyPush(
+              this.props.modulesManager,
+              this.props.history,
+              "workforce.route.employees.dependents.dependent",
+              [decodeId(workforceemployee.id)],
+              false
+            );
+          }}
+        >
+          <EditIcon />
+        </IconButton>
+      </Tooltip>
     ));
     return formatters;
   };
@@ -245,17 +165,17 @@ class DependentSearcher extends Component {
   render() {
     const {
       intl,
-      organizationEmployees,
-      organizationEmployeesPageInfo,
-      fetchingOrganizationEmployees,
-      fetchedOrganizationEmployees,
-      errorOrganizationEmployees,
+      employeeDependents,
+      employeeDependentsPageInfo,
+      fetchingEmployeeDependents,
+      fetchedEmployeeDependents,
+      errorEmployeeDependents,
       filterPaneContributionsKey,
       cacheFiltersKey,
       onDoubleClick,
     } = this.props;
 
-    const count = organizationEmployeesPageInfo.totalCount;
+    const count = employeeDependentsPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <DependentFilter
@@ -274,15 +194,15 @@ class DependentSearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={organizationEmployees}
-          itemsPageInfo={organizationEmployeesPageInfo}
-          fetchingItems={fetchingOrganizationEmployees}
-          fetchedItems={fetchedOrganizationEmployees}
-          errorItems={errorOrganizationEmployees}
+          items={employeeDependents}
+          itemsPageInfo={employeeDependentsPageInfo}
+          fetchingItems={fetchingEmployeeDependents}
+          fetchedItems={fetchedEmployeeDependents}
+          errorItems={errorEmployeeDependents}
           tableTitle={
             <FormattedMessage
               module={MODULE_NAME}
-              id= "menu.workforce.employee.dependent"
+              id="menu.workforce.employee.dependent"
             />
           }
           rowsPerPageOptions={this.rowsPerPageOptions}
@@ -309,11 +229,11 @@ const mapStateToProps = (state) => ({
     !!state.core && !!state.core.user && !!state.core.user.i_user
       ? state.core.user.i_user.rights
       : [],
-  organizationEmployees: state.workforce.organizationEmployees,
-  organizationEmployeesPageInfo: state.workforce.organizationEmployeesPageInfo,
-  fetchingOrganizationEmployees: state.workforce.fetchingOrganizationEmployees,
-  fetchedOrganizationEmployees: state.workforce.fetchedOrganizationEmployees,
-  errorOrganizationEmployees: state.workforce.errorOrganizationEmployees,
+  employeeDependents: state.workforce.employeeDependents,
+  employeeDependentsPageInfo: state.workforce.employeeDependentsPageInfo,
+  fetchingEmployeeDependents: state.workforce.fetchingEmployeeDependents,
+  fetchedEmployeeDependents: state.workforce.fetchedEmployeeDependents,
+  errorEmployeeDependents: state.workforce.errorEmployeeDependents,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   confirmed: state.core.confirmed,

@@ -543,10 +543,10 @@ function reducer(
         fetchingEmployeeDependents: false,
         fetchedEmployeeDependents: true,
         employeeDependents: parseData(
-          action.payload.data.workforceOrganizationEmployees
+          action.payload.data.workforceEmployeeDependent
         ),
         employeeDependentsPageInfo: pageInfo(
-          action.payload.data.workforceOrganizationEmployees
+          action.payload.data.workforceEmployeeDependent
         ),
         errorEmployeeDependents: formatGraphQLError(action.payload),
       };

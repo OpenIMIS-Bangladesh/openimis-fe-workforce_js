@@ -156,34 +156,6 @@ export function fetchOrganizationEmployee(mm, filters) {
   return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEE");
 }
 
-
-
-export function fetchDependent(mm, filters) {
-  const location_projection =
-    "location" + mm.getProjection("location.Location.FlatProjection");
-  const projections = [
-    "id",
-    "nameEn",
-    "nameBn",
-    "address",
-    "phoneNumber",
-    "email",
-    "status",
-    "gender",
-    "firstJoiningDate",
-    "birthCertificateNo",
-    "nid",
-    "passportNo",
-    location_projection,
-  ];
-  const payload = formatPageQueryWithCount(
-    "workforceOrganizationEmployees",
-    filters,
-    projections,
-  );
-  return graphql(payload, "WORKFORCE_EMPLOYEE_DEPENDENT");
-}
-
 export function fetchWorkforceOfficesSummary(mm, filters) {
   const location_projection =
     "location" + mm.getProjection("location.Location.FlatProjection");
@@ -483,17 +455,17 @@ export function fetchDependentsSummary(mm, filters) {
     "relationType",
     "relationWithWorker",
     "status",
-    "permanentAddress",
-    "presentAddress",
+    // "permanentAddress",
+    // "presentAddress",
     present_location_projection,
     permanent_location_projection,
   ];
   const payload = formatPageQueryWithCount(
-    "WorkforceEmployeeDependent",
+    "workforceEmployeeDependent",
     filters,
     projections,
   );
-  return graphql(payload, "WORKFORCE_EMPLOYEES");
+  return graphql(payload, "WORKFORCE_EMPLOYEES_DEPENDENTS");
 }
 
 export function fetchWorkforceEmployee(mm, filters) {
@@ -542,6 +514,39 @@ export function fetchWorkforceEmployee(mm, filters) {
     projections,
   );
   return graphql(payload, "WORKFORCE_EMPLOYEE");
+}
+
+export function fetchDependent(mm, filters) {
+  const present_location_projection =
+    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "firstNameBn",
+    "lastNameBn",
+    "firstNameEn",
+    "lastNameEn",
+    "phoneNumber",
+    "email",
+    "maritalStatus",
+    "gender",
+    "occupation",
+    "birthDate",
+    "nid",
+    "lifeStatus",
+    "relationType",
+    "relationWithWorker",
+    "status",
+    present_location_projection,
+    permanent_location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployeeDependent",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEE_DEPENDENT");
 }
 
 export function createRepresentative(mutation, clientMutationLabel) {
@@ -858,6 +863,7 @@ export function updateWorkforceEmployee(employee, clientMutationLabel) {
     },
   );
 }
+
 export function createEmployeeDependent(employee, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceEmployeeDependent",
@@ -868,9 +874,9 @@ export function createEmployeeDependent(employee, clientMutationLabel) {
   return graphql(
     mutation.payload,
     [
-      "WORKFORCE_EMPLOYEES_DEPENDENTS_REQ",
-      "WORKFORCE_EMPLOYEES_DEPENDENTS_RESP",
-      "WORKFORCE_EMPLOYEES_DEPENDENTS_ERR",
+      "EMPLOYEE_DEPENDENT_MUTATION_REQ",
+      "EMPLOYEE_DEPENDENT_CREATE_EMPLOYEE_DEPENDENT_RESP",
+      "EMPLOYEE_DEPENDENT_MUTATION_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,
@@ -890,9 +896,9 @@ export function updateEmployeeDependent(employee, clientMutationLabel) {
   return graphql(
     mutation.payload,
     [
-      "WORKFORCE_EMPLOYEES_DEPENDENTS_REQ",
-      "WORKFORCE_EMPLOYEES_DEPENDENTS_RESP",
-      "WORKFORCE_EMPLOYEES_DEPENDENTS_ERR",
+      "EMPLOYEE_DEPENDENT_MUTATION_REQ",
+      "EMPLOYEE_DEPENDENT_UPDATE_EMPLOYEE_DEPENDENT_RESP",
+      "EMPLOYEE_DEPENDENT_MUTATION_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,

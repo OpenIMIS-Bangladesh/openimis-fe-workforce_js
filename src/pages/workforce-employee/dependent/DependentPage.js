@@ -5,9 +5,10 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import {
   withModulesManager, withHistory, historyPush,
 } from "@openimis/fe-core";
-import OrganizationEmployeeForm from "../../../components/organization-employee/OrganizationEmployeeForm";
+// import OrganizationEmployeeForm from "../../../components/organization-employee/OrganizationEmployeeForm";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../../permission-rights";
 import { createEmployeeDependent, updateEmployeeDependent } from "../../../actions";
+import DependentForm from "../../../components/workforce-employee/dependent/DependentForm";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -37,16 +38,16 @@ class DependentPage extends Component {
 
   render() {
     const {
-      classes, modulesManager, history, rights, organizationEmployeeUuid, overview, organizationVersion,
+      classes, modulesManager, history, rights, dependentUuid, overview, organizationVersion,
     } = this.props;
     // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
     // if (!(rights.includes(RIGHT_ORGANIZATION_CREATE) || rights.includes(RIGHT_ORGANIZATION_EDIT))) return null;
     return (
       <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
-        <OrganizationEmployeeForm
+        <DependentForm
           overview={overview}
-          organizationEmployeeUuid={organizationEmployeeUuid}
+          dependentUuid={dependentUuid}
           organizationVersion={organizationVersion}
           readOnly={readOnly}
           back={() => historyPush(modulesManager, history, "workforce.route.organizations.employees")}
@@ -60,7 +61,7 @@ class DependentPage extends Component {
 
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  organizationEmployeeUuid: props.match.params.organization_employee_uuid,
+  dependentUuid: props.match.params.dependent_uuid,
   organizationVersion: props.match.params.version,
   employee: state.workforce.employee,
 });

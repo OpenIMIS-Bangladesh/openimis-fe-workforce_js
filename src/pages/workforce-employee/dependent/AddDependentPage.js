@@ -15,10 +15,14 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 
-import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
+import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../../constants";
 import { withStyles } from "@material-ui/core/styles";
-import { createOrganizationEmployee } from "../../actions";
-import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
+import { createEmployeeDependent } from "../../../actions";
+import EmployeeGenderPicker from "../../../pickers/EmployeeGenderPicker";
+import CompanyPicker from "../../../pickers/CompanyPicker";
+import FactoryPicker from "../../../pickers/FactoryPicker";
+import EmployeeLifeStatusPicker from "../../../pickers/EmployeeLifeStatusPicker";
+import EmployeeMaritalStatusPicker from "../../../pickers/EmployeeMaritalStatusPicker";
 
 
 const styles = (theme) => ({
@@ -69,7 +73,7 @@ class AddDependentPage extends Component {
     };
 
     await dispatch(
-      createOrganizationEmployee(
+      createEmployeeDependent(
         workforceEmployeeData,
         `Created Organization Employee ${workforceEmployeeData.nameEn}`,
       ),

@@ -15,10 +15,14 @@ import {
   FormattedMessage,
   formatMutation,
 } from "@openimis/fe-core";
-import { updateOrganizationEmployee } from "../../actions";
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
+import { updateEmployeeDependent } from "../../../actions";
+import { EMPTY_STRING, MODULE_NAME } from "../../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
+import EmployeeGenderPicker from "../../../pickers/EmployeeGenderPicker";
+import CompanyPicker from "../../../pickers/CompanyPicker";
+import FactoryPicker from "../../../pickers/FactoryPicker";
+import EmployeeLifeStatusPicker from "../../../pickers/EmployeeLifeStatusPicker";
+import EmployeeMaritalStatusPicker from "../../../pickers/EmployeeMaritalStatusPicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -33,14 +37,14 @@ class EditDependentPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stateEdited: props.organizationEmployee || {},
+      stateEdited: props.employeeDependent || {},
       isSaved: false,
     };
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.organizationEmployee !== this.props.organizationEmployee) {
-      this.setState({ stateEdited: this.props.organizationEmployee });
+    if (prevProps.employeeDependent !== this.props.employeeDependent) {
+      this.setState({ stateEdited: this.props.employeeDependent });
     }
 
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
@@ -79,7 +83,7 @@ class EditDependentPage extends Component {
     };
 
     dispatch(
-      updateOrganizationEmployee(
+      updateEmployeeDependent(
         organizationEmployeeData,
         `Update Organization Employee ${organizationEmployeeData.nameEn}`
       )
@@ -103,7 +107,7 @@ class EditDependentPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Organizations Employee"
+                      id="Workforce Employee"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>
@@ -113,37 +117,223 @@ class EditDependentPage extends Component {
               <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.employee.name.en"
-                    value={stateEdited.nameEn}
-                    onChange={(v) => this.updateAttribute("title", v)}
-                    required
-                    readOnly={isSaved}
-                  />
-                </Grid>
-
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.organization.employee.name.bn"
-                    value={stateEdited.nameBn || ""}
-                    onChange={(v) => this.updateAttribute("titleBn", v)}
-                    required
-                    readOnly={isSaved}
-                  />
-                </Grid>
-
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.organization.employee.phone"
-                    value={stateEdited.phoneNumber || ""}
-                    onChange={(v) => this.updateAttribute("phone", v)}
+                    label="workforce.employee.nid"
+                    value={stateEdited.nid || ""}
+                    onChange={(v) => this.updateAttribute("nid", v)}
                     type={"number"}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="core.DatePicker"
+                    label={"workforce.employee.birthdate"}
+                    value={stateEdited.birthDate || ""}
+                    onChange={(v) => this.updateAttribute("birthDate", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <CompanyPicker
+                    value={stateEdited?.company?.id}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.workforce_employer"
+                        module="workforce"
+                      />
+                    }
+                    required
+                    onChange={(v) => this.updateAttribute("company", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <FactoryPicker
+                    value={stateEdited?.factory?.id}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.workforce_factory"
+                        module="workforce"
+                      />
+                    }
+                    required
+                    onChange={(v) => this.updateAttribute("factory", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <EmployeeLifeStatusPicker
+                    value={stateEdited.lifeStatus || ""}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.lifeStatus"
+                        module="workforce"
+                      />
+                    }
+                    required
+                    onChange={(v) => this.updateAttribute("lifeStatus", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="core.DatePicker"
+                    label={"workforce.employee.deathdate"}
+                    value={stateEdited.deathDate || ""}
+                    readOnly={stateEdited.lifeStatus ==="Deceased" ? false:true}
+                    onChange={(v) => this.updateAttribute("deathDate", v)}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <EmployeeGenderPicker
+                    value={stateEdited.gender || ""}
+                    label={<FormattedMessage id="workforce.employee.gender" module="workforce" />}
+                    onChange={(v) => this.updateAttribute("gender", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                 <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.employee.monthly_earning"
+                      value={stateEdited.monthlyEarning || ""}
+                      onChange={(v) => this.updateAttribute("monthlyEarning", v)}
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+                  <Grid item xs={6} className={classes.item}>
+                    <PublishedComponent
+                      pubRef="core.DatePicker"
+                      label={"workforce.employee.joindate"}
+                      value={stateEdited.joinDate || ""}
+                      onChange={(v) => this.updateAttribute("joinDate", v)}
+                      readOnly={isSaved}
+                    />
+                </Grid>
+               
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.first.name.en"
+                    value={stateEdited.firstNameEn || ""}
+                    onChange={(v) => this.updateAttribute("firstNameEn", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.first.name.bn"
+                    value={stateEdited.firstNameBn || ""}
+                    onChange={(v) => this.updateAttribute("firstNameBn", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.last.name.en"
+                    value={stateEdited.lastNameEn || ""}
+                    onChange={(v) => this.updateAttribute("lastNameEn", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.last.name.bn"
+                    value={stateEdited.lastNameBn || ""}
+                    onChange={(v) => this.updateAttribute("lastNameBn", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.other.name"
+                    value={stateEdited.otherName || ""}
+                    onChange={(v) => this.updateAttribute("otherName", v)}
+                    required
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.position"
+                    value={stateEdited.position || ""}
+                    onChange={(v) => this.updateAttribute("position", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                {/*<Grid item xs={6} className={classes.item}>*/}
+                {/*  <TextInput*/}
+                {/*    label="workforce.employee.employee_type"*/}
+                {/*    value={stateEdited.employeeType || ""}*/}
+                {/*    onChange={(v) => this.updateAttribute("employeeType", v)}*/}
+                {/*    readOnly={isSaved}*/}
+                {/*  />*/}
+                {/*</Grid>*/}
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.fathers_name.en"
+                    value={stateEdited.fatherNameEn || ""}
+                    onChange={(v) => this.updateAttribute("fatherNameEn", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.fathers_name.bn"
+                    value={stateEdited.fatherNameBn || ""}
+                    onChange={(v) => this.updateAttribute("fatherNameBn", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.mothers_name.en"
+                    value={stateEdited.motherNameEn || ""}
+                    onChange={(v) => this.updateAttribute("motherNameEn", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.mothers_name.bn"
+                    value={stateEdited.motherNameBn || ""}
+                    onChange={(v) => this.updateAttribute("motherNameBn", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.spouse.name.en"
+                    value={stateEdited.spouseNameEn || ""}
+                    onChange={(v) => this.updateAttribute("spouseNameEn", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.spouse.name.bn"
+                    value={stateEdited.spouseNameBn || ""}
+                    onChange={(v) => this.updateAttribute("spouseNameBn", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
 
+                 <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.employee.phone"
+                      value={stateEdited.phoneNumber || ""}
+                      onChange={(v) => this.updateAttribute("phoneNumber", v)}
+                      type={"number"}
+                      readOnly={isSaved}
+                    />
+                </Grid>
+
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.employee.email"
+                    label="workforce.employee.email"
                     value={stateEdited.email || ""}
                     onChange={(v) => this.updateAttribute("email", v)}
                     type={"email"}
@@ -152,37 +342,24 @@ class EditDependentPage extends Component {
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
-                  <EmployeeGenderPicker
-                    value={stateEdited.gender || ""}
-                    label={<FormattedMessage id="workforce.organization.employee.gender" module="workforce" />}
-                    onChange={(v) => this.updateAttribute("gender", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="core.DatePicker"
-                    label={"workforce.organization.employee.birthdate"}
-                    value={stateEdited.birthDate || ""}
-                    onChange={(v) => this.updateAttribute("birthDate", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="core.DatePicker"
-                    label={"workforce.organization.employee.joining_date"}
-                    value={stateEdited.firstJoiningDate || ""}
-                    onChange={(v) =>
-                      this.updateAttribute("firstJoiningDate", v)
-                    }
+                  <TextInput
+                    label="workforce.employee.citizenship"
+                    value={stateEdited.citizenship || ""}
+                    onChange={(v) => this.updateAttribute("citizenship", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.employee.birth_certificate_no"
+                    label="workforce.employee.privacyLaw"
+                    value={stateEdited.privacyLaw || ""}
+                    onChange={(v) => this.updateAttribute("privacyLaw", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.birth_certificate_no"
                     value={stateEdited.birthCertificateNo || ""}
                     onChange={(v) =>
                       this.updateAttribute("birthCertificateNo", v)
@@ -193,38 +370,77 @@ class EditDependentPage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.employee.nid"
-                    value={stateEdited.nid || ""}
-                    onChange={(v) => this.updateAttribute("nid", v)}
-                    type={"number"}
+                    label="workforce.employee.insurance_number"
+                    value={stateEdited.insuranceNumber || ""}
+                    onChange={(v) =>
+                      this.updateAttribute("insuranceNumber", v)
+                    }
                     required
                     readOnly={isSaved}
                   />
                 </Grid>
+
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.employee.passport_no"
+                    label="workforce.employee.passport_no"
                     value={stateEdited.passportNo || ""}
                     onChange={(v) => this.updateAttribute("passportNo", v)}
                     type={"number"}
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={12} className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.organization.employee.address"
-                    value={stateEdited.address || ""}
-                    onChange={(v) => this.updateAttribute("address", v)}
+                    label="workforce.employee.marital_status"
+                    value={stateEdited.maritalStatus || ""}
+                    onChange={(v) => this.updateAttribute("maritalStatus", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.present_address"
+                    value={stateEdited.presentAddress || ""}
+                    onChange={(v) => this.updateAttribute("presentAddress", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
                 <Grid item xs={12} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.permanent_address"
+                    value={stateEdited.permanentAddress || ""}
+                    onChange={(v) =>
+                      this.updateAttribute("permanentAddress", v)
+                    }
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={12} className={classes.item}>
+                  <p>Present Location</p>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
-                    value={stateEdited.location || null}
-                    onChange={(location) =>
-                      this.updateAttribute("location", location)
+                    value={stateEdited.presentLocation || null}
+                    onChange={(presentLocation) =>
+                      this.updateAttribute("presentLocation", presentLocation)
+                    }
+                    readOnly={isSaved}
+                    required
+                    split={true}
+                  />
+                </Grid>
+                <Grid item xs={12} className={classes.item}>
+                  <p>Permanent Location</p>
+                  <PublishedComponent
+                    pubRef="location.DetailedLocation"
+                    withNull={true}
+                    value={stateEdited.permanentLocation || null}
+                    onChange={(permanentLocation) =>
+                      this.updateAttribute(
+                        "permanentLocation",
+                        permanentLocation
+                      )
                     }
                     readOnly={isSaved}
                     required
@@ -255,7 +471,7 @@ class EditDependentPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  organizationEmployee: state.workforce.organizationEmployee,
+  employeeDependent: state.workforce.employeeDependent,
 });
 
 export default connect(mapStateToProps)(

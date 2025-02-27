@@ -6,13 +6,13 @@ import {
 } from "@openimis/fe-core";
 import { bindActionCreators } from "redux";
 import {
-  fetchOrganizationEmployee,
-} from "../../actions";
-import EditOrganizationEmployeePage from "../../pages/organization-employee/EditOrganizationEmployeePage";
-import AddOrganizationEmployeePage from "../../pages/organization-employee/AddOrganizationEmployeePage";
-import { MODULE_NAME } from "../../constants";
+  fetchDependent,
+} from "../../../actions";
+import { MODULE_NAME } from "../../../constants";
 import EditDependentPage from "../../../pages/workforce-employee/dependent/EditDependentPage";
 import AddDependentPage from "../../../pages/workforce-employee/dependent/AddDependentPage";
+// import EditDependentPage from "../../../pages/workforce-employee/dependent/EditDependentPage";
+// import AddDependentPage from "../../../pages/workforce-employee/dependent/AddDependentPage";
 
 class DependentForm extends Component {
   constructor(props) {
@@ -20,14 +20,14 @@ class DependentForm extends Component {
     this.state = {
       lockNew: false,
       reset: 0,
-      organizationEmployeeUuid: null,
+      dependentUuid: null,
       ticket: this._newTicket(),
     };
   }
 
   componentDidMount() {
-    if (this.props.organizationEmployeeUuid) {
-      this.setState((state, props) => ({ organizationEmployeeUuid: props.organizationEmployeeUuid }));
+    if (this.props.dependentUuid) {
+      this.setState((state, props) => ({ dependentUuid: props.dependentUuid }));
     }
   }
 
@@ -35,17 +35,17 @@ class DependentForm extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedOrganizationEmployee !== this.props.fetchedOrganizationEmployee
-      && !!this.props.fetchedOrganizationEmployee
+    if (prevProps.fetchedEmployeeDependent !== this.props.fetchedEmployeeDependent
+      && !!this.props.fetchedEmployeeDependent
       && !!this.props.organizationEmployee) {
       this.setState((state, props) => ({
         organizationEmployee: { ...props.organizationEmployee },
-        organizationEmployeeUuid: props.organizationEmployee.id,
+        dependentUuid: props.organizationEmployee.id,
         lockNew: false,
       }));
-    } else if (prevState.organizationEmployeeUuid !== this.state.organizationEmployeeUuid) {
-      const filters = [`id: "${this.state.organizationEmployeeUuid}"`];
-      this.props.fetchOrganizationEmployee(
+    } else if (prevState.dependentUuid !== this.state.dependentUuid) {
+      const filters = [`id: "${this.state.dependentUuid}"`];
+      this.props.fetchDependent(
         this.props.modulesManager,
         filters,
       );
@@ -53,9 +53,9 @@ class DependentForm extends Component {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
       if (this.props?.organizationEmployee?.id) {
-        this.props.fetchOrganizationEmployee(
+        this.props.fetchDependent(
           this.props.modulesManager,
-          [`id: "${this.state.organizationEmployeeUuid}"`],
+          [`id: "${this.state.dependentUuid}"`],
         );
       }
     }
@@ -95,7 +95,7 @@ class DependentForm extends Component {
   render() {
     const {
       fetchingTicket,
-      fetchedOrganizationEmployee,
+      fetchedEmployeeDependent,
       errorTicket,
       save, back,
     } = this.props;
@@ -105,7 +105,7 @@ class DependentForm extends Component {
       reset,
       update,
       overview,
-      organizationEmployeeUuid,
+      dependentUuid,
       ticket,
     } = this.state;
 
@@ -121,10 +121,10 @@ class DependentForm extends Component {
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
-        {(!!fetchedOrganizationEmployee || !organizationEmployeeUuid) && (
+        {(!!fetchedEmployeeDependent || !dependentUuid) && (
           <Form
             module={MODULE_NAME}
-            edited_id={organizationEmployeeUuid}
+            edited_id={dependentUuid}
             edited={ticket}
             reset={reset}
             update={update}
@@ -133,10 +133,10 @@ class DependentForm extends Component {
             back={back}
             save={save ? this._save : null}
             canSave={this.canSave}
-            reload={(organizationEmployeeUuid || readOnly) && this.reload}
+            reload={(dependentUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={organizationEmployeeUuid ? [EditDependentPage] : [AddDependentPage]}
+            Panels={dependentUuid ? [EditDependentPage] : [AddDependentPage]}
             onEditedChanged={this.onEditedChanged}
           />
         )}
@@ -150,7 +150,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   fetchingTicket: state.workforce.fetchingTicket,
   errorTicket: state.workforce.errorTicket,
-  fetchedOrganizationEmployee: state.workforce.fetchedOrganizationEmployee,
+  fetchedEmployeeDependent: state.workforce.fetchedEmployeeDependent,
   ticket: state.workforce.ticket,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
@@ -158,7 +158,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchOrganizationEmployee,
+  fetchDependent,
   journalize,
 }, dispatch);
 

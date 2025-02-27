@@ -158,6 +158,7 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE, component: WorkforceEmployeePage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE}/:workforce_employee_uuid`, component: WorkforceEmployeePage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS}/:dependent_uuid`, component: DependentsPage },
+    { path: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT, component: DependentPage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT}/:dependent_uuid`, component: DependentPage },
 
 
