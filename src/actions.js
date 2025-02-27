@@ -858,6 +858,50 @@ export function updateWorkforceEmployee(employee, clientMutationLabel) {
     },
   );
 }
+export function createEmployeeDependent(employee, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceEmployeeDependent",
+    formatWorkforceEmployeeGQL(employee),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_EMPLOYEES_DEPENDENTS_REQ",
+      "WORKFORCE_EMPLOYEES_DEPENDENTS_RESP",
+      "WORKFORCE_EMPLOYEES_DEPENDENTS_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function updateEmployeeDependent(employee, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWorkforceEmployeeDependent",
+    formatWorkforceEmployeeGQL(employee),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_EMPLOYEES_DEPENDENTS_REQ",
+      "WORKFORCE_EMPLOYEES_DEPENDENTS_RESP",
+      "WORKFORCE_EMPLOYEES_DEPENDENTS_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      id: employee.id,
+    },
+  );
+}
 
 export function updateWorkforceCompany(company, clientMutationLabel) {
   const mutation = formatMutation(

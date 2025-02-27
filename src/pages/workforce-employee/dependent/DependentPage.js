@@ -5,9 +5,9 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import {
   withModulesManager, withHistory, historyPush,
 } from "@openimis/fe-core";
-import OrganizationEmployeeForm from "../../components/organization-employee/OrganizationEmployeeForm";
-import { createOrganizationEmployee, updateOrganizationEmployee } from "../../actions";
-import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../permission-rights";
+import OrganizationEmployeeForm from "../../../components/organization-employee/OrganizationEmployeeForm";
+import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../../permission-rights";
+import { createEmployeeDependent, updateEmployeeDependent } from "../../../actions";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -21,13 +21,13 @@ class DependentPage extends Component {
 
   save = (employee) => {
     if (!employee.id) {
-      this.props.createOrganizationEmployee(
+      this.props.createEmployeeDependent(
         this.props.modulesManager,
         employee,
         "Create",
       );
     } else {
-      this.props.updateOrganizationEmployee(
+      this.props.updateEmployeeDependent(
         this.props.modulesManager,
         employee,
         "Update",
@@ -66,8 +66,8 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  createOrganizationEmployee,
-  updateOrganizationEmployee,
+  createEmployeeDependent,
+  updateEmployeeDependent,
 }, dispatch);
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(

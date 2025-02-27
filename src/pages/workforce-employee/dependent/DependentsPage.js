@@ -25,7 +25,7 @@ class DependentsPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, "workforce.route.organizations.employees.employee");
+    historyPush(this.props.modulesManager, this.props.history, "workforce.route.employees.dependents.dependent");
   };
 
   render() {

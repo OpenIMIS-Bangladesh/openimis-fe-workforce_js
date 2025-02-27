@@ -108,7 +108,7 @@ class EditWorkforceOrganizationPage extends Component {
       email: stateEdited?.email || stateEdited.email,
       website: stateEdited?.website || stateEdited.website,
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
-      parent:stateEdited?.parent.id,
+      parent:stateEdited?.parent?.id || null,
       id: stateEdited.id,
     };
 

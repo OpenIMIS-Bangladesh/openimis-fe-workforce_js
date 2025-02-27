@@ -71,6 +71,7 @@ class AddWorkforceOrganizationPage extends Component {
       birthDate: stateEdited.birthDate,
       position: stateEdited.position,
     };
+    console.log({representativeData})
 
     const representativeMutation = await formatMutation(
       "createWorkforceRepresentative",
@@ -105,7 +106,7 @@ class AddWorkforceOrganizationPage extends Component {
       phoneNumber: stateEdited.phone,
       email: stateEdited.email,
       website: stateEdited.website,
-      parent:stateEdited.parent.id,
+      parent:stateEdited?.parent?.id || null,
       // workforceRepresentativeId:this.state.workforce.fetchedRepresentativeByClientMutationId,
       workforceRepresentativeId: representativeId,
     };
