@@ -17,7 +17,7 @@ const styles = (theme) => ({
 
 class DependentsPage extends Component {
   onDoubleClick = (employee, newTab = false) => {
-    const routeParams = ["workforce.route.organizations.employees.employee", [decodeId(employee.id)]];
+    const routeParams = ["workforce.route.employees.dependents.dependent", [decodeId(employee.id)]];
     if (employee?.isHistory) {
       routeParams[1].push(employee.version);
     }

@@ -210,6 +210,7 @@
     "workforce.employee.dependent.occupation": "Occupation/Profession",
     "workforce.employee.dependent.present.location": "Present Location",
     "workforce.employee.dependent.permanent.location": "Permanent Location",
+    "menu.workforce.employee.dependent":"Workforce employee Dependent",
 
     "workforce.representative.sameAsRepresentative": "Same as Company Representative"
 

@@ -282,7 +282,7 @@ class DependentSearcher extends Component {
           tableTitle={
             <FormattedMessage
               module={MODULE_NAME}
-              id="menu.workforce.organizations.employee"
+              id= "menu.workforce.employee.dependent"
             />
           }
           rowsPerPageOptions={this.rowsPerPageOptions}
