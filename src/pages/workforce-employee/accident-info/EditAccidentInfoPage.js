@@ -16,14 +16,10 @@ import {
   formatMutation,
   decodeId
 } from "@openimis/fe-core";
-import { updateWorkforceEmployee } from "../../actions";
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
+import { updateWorkforceEmployee } from "../../../actions";
+import { EMPTY_STRING, MODULE_NAME } from "../../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
-import CompanyPicker from "../../pickers/CompanyPicker";
-import FactoryPicker from "../../pickers/FactoryPicker";
-import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
-import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
+
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -67,7 +63,7 @@ class EditAccidentInfoPage extends Component {
     const { grievanceConfig, dispatch } = this.props;
     const { stateEdited } = this.state;
 
-    const workforceEmployeeData = {
+    const accidentInfoData = {
       firstNameBn: stateEdited?.firstNameBn || stateEdited.firstNameBn,
       lastNameBn: stateEdited?.lastNameBn || stateEdited.lastNameBn,
       otherName: stateEdited?.otherName || stateEdited.otherName,
@@ -77,8 +73,8 @@ class EditAccidentInfoPage extends Component {
 
     dispatch(
       updateWorkforceEmployee(
-        workforceEmployeeData,
-        `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+        accidentInfoData,
+        `Update Workforce Employee ${accidentInfoData.nameEn}`
       )
     );
     this.setState({ isSaved: true });

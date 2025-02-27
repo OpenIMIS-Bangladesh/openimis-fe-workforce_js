@@ -7,7 +7,7 @@ import {
 } from "@openimis/fe-core";
 import AccidentInfoForm from "../../../components/workforce-employee/accident-info/AccidentInfoForm";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../../permission-rights";
-import { createEmployeeDependent, updateEmployeeDependent } from "../../../actions";
+import { createAccidentInfo, updateAccidentInfo } from "../../../actions";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -19,17 +19,17 @@ class AccidentInfoPage extends Component {
     historyPush(this.props.modulesManager, this.props.history, "grievance.route.ticket");
   };
 
-  save = (employee) => {
-    if (!employee.id) {
-      this.props.createEmployeeDependent(
+  save = (accidentinfo) => {
+    if (!accidentinfo.id) {
+      this.props.createAccidentInfo(
         this.props.modulesManager,
-        employee,
+        accidentinfo,
         "Create",
       );
     } else {
-      this.props.updateEmployeeDependent(
+      this.props.updateAccidentInfo(
         this.props.modulesManager,
-        employee,
+        accidentinfo,
         "Update",
       );
     }
@@ -37,16 +37,14 @@ class AccidentInfoPage extends Component {
 
   render() {
     const {
-      classes, modulesManager, history, rights, organizationEmployeeUuid, overview, organizationVersion,
+      classes, modulesManager, history, rights, workforceEmployeeUuid, overview, organizationVersion,
     } = this.props;
-    // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
-    // if (!(rights.includes(RIGHT_ORGANIZATION_CREATE) || rights.includes(RIGHT_ORGANIZATION_EDIT))) return null;
     return (
       <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
         <AccidentInfoForm
           overview={overview}
-          organizationEmployeeUuid={organizationEmployeeUuid}
+          workforceEmployeeUuid={workforceEmployeeUuid}
           organizationVersion={organizationVersion}
           readOnly={readOnly}
           back={() => historyPush(modulesManager, history, "workforce.route.organizations.employees")}
@@ -60,14 +58,14 @@ class AccidentInfoPage extends Component {
 
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  organizationEmployeeUuid: props.match.params.organization_employee_uuid,
+  workforceEmployeeUuid: props.match.params.workforce_employee_uuid,
   organizationVersion: props.match.params.version,
-  employee: state.workforce.employee,
+  accidentinfo: state.workforce.accidentinfo,
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  createEmployeeDependent,
-  updateEmployeeDependent,
+  createAccidentInfo,
+  updateAccidentInfo,
 }, dispatch);
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(

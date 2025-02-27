@@ -14,9 +14,6 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import { MODULE_NAME } from "../../../constants";
-import EmployeeLifeStatusPicker from "../../../pickers/EmployeeLifeStatusPicker";
-import RelationPicker from "../../../pickers/RelationPicker";
-// import { FormattedMessage } from "../../../../../openimis-fe-core_js/src";
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
@@ -86,94 +83,6 @@ class DependentFilter extends Component {
                     },
                   ])
                 }
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.organization.employee.name.bn"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              {/* <TextInput
-                module={MODULE_NAME}
-                label="workforce.organization.employee.name.bn"
-                name="nameBn"
-                value={this._filterValue("nameBn")}
-                onChange={(v) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "nameBn",
-                      value: v,
-                      filter: `nameBn_Icontains: "${v}"`,
-                    },
-                  ])
-                }
-              /> */}
-               <RelationPicker
-                module={MODULE_NAME}
-                value={this._filterValue("relation")}
-                label={
-                  <FormattedMessage
-                    id="workforce.employee.relation.picker"
-                    module="workforce"
-                  />
-                }
-                onChange={(v) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "relation",
-                      value: v,
-                      filter: `relation_Icontains: "${v}"`,
-                    },
-                  ])
-                }
-                // onChange={(v) => this.updateAttribute("lifeStatus", v)}
-                // readOnly={isSaved}
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.organization.employee.phone"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              {/* <TextInput
-                module={MODULE_NAME}
-                label="workforce.organization.employee.phone"
-                name="address"
-                value={this._filterValue("phoneNumber")}
-                onChange={(v) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "phoneNumber",
-                      value: v,
-                      filter: `phoneNumber_Icontains: "${v}"`,
-                    },
-                  ])
-                }
-              /> */}
-              <EmployeeLifeStatusPicker
-                module={MODULE_NAME}
-                value={this._filterValue("lifeStatus")}
-                label={
-                  <FormattedMessage
-                    id="workforce.employee.lifeStatus"
-                    module="workforce"
-                  />
-                }
-                onChange={(v) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "lifeStatus",
-                      value: v,
-                      filter: `lifeStatus_Icontains: "${v}"`,
-                    },
-                  ])
-                }
-                // onChange={(v) => this.updateAttribute("lifeStatus", v)}
-                // readOnly={isSaved}
               />
             </Grid>
           }

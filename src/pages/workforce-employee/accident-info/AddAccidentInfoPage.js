@@ -16,14 +16,9 @@ import {
   formatMutation,
   decodeId,
 } from "@openimis/fe-core";
-import { createWorkforceEmployee } from "../../actions";
-import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
+import { createAccidentInfo } from "../../../actions";
+import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
-import CompanyPicker from "../../pickers/CompanyPicker";
-import FactoryPicker from "../../pickers/FactoryPicker";
-import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
-import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
 
 
 const styles = (theme) => ({
@@ -58,7 +53,7 @@ class AddAccidentInfoPage extends Component {
     const { stateEdited } = this.state;
     const { dispatch } = this.props;
 
-    const workforceEmployeeData = {
+    const accidentInfoData = {
       firstNameBn: stateEdited?.firstNameBn || stateEdited.firstNameBn,
       lastNameBn: stateEdited?.lastNameBn || stateEdited.lastNameBn,
       otherName: stateEdited?.otherName || stateEdited.otherName,
@@ -66,12 +61,12 @@ class AddAccidentInfoPage extends Component {
       workforceEmployee: stateEdited.workforceEmployee,
     };
 
-    console.log({ workforceEmployeeData });
+    console.log({ accidentInfoData });
 
     await dispatch(
-      createWorkforceEmployee(
-        workforceEmployeeData,
-        `Created Workforce Employee ${stateEdited.title}`
+      createAccidentInfo(
+        accidentInfoData,
+        `Created Accident Info ${stateEdited.title}`
       )
     );
 

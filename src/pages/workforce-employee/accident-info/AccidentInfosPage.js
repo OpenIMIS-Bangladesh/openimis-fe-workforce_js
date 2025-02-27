@@ -6,13 +6,13 @@ import AddIcon from "@material-ui/icons/Add";
 import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
 } from "@openimis/fe-core";
-import { ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE } from "../../../routes";
+import { ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO } from "../../../routes";
 import AccidentInfoSearcher from "../../../components/workforce-employee/accident-info/AccidentInfoSearcher";
 import { MODULE_NAME } from "../../../constants";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab, ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE,
+  fab: theme.fab, ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO,
 });
 
 class AccidentInfosPage extends Component {
