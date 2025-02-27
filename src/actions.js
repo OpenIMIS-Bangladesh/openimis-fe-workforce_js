@@ -156,31 +156,7 @@ export function fetchOrganizationEmployee(mm, filters) {
   return graphql(payload, "WORKFORCE_ORGANIZATION_EMPLOYEE");
 }
 
-export function fetchDependentsSummary(mm, filters) {
-  const location_projection =
-    "location" + mm.getProjection("location.Location.FlatProjection");
-  const projections = [
-    "id",
-    "nameEn",
-    "nameBn",
-    "address",
-    "phoneNumber",
-    "email",
-    "status",
-    "gender",
-    "firstJoiningDate",
-    "birthCertificateNo",
-    "nid",
-    "passportNo",
-    location_projection,
-  ];
-  const payload = formatPageQueryWithCount(
-    "workforceOrganizationEmployees",
-    filters,
-    projections,
-  );
-  return graphql(payload, "WORKFORCE_EMPLOYEES_DEPENDENTS");
-}
+
 
 export function fetchDependent(mm, filters) {
   const location_projection =
@@ -480,6 +456,40 @@ export function fetchWorkforceEmployeesSummary(mm, filters) {
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployerEmployees",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEES");
+}
+export function fetchDependentsSummary(mm, filters) {
+  const present_location_projection =
+    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "firstNameBn",
+    "lastNameBn",
+    "firstNameEn",
+    "lastNameEn",
+    "phoneNumber",
+    "email",
+    "maritalStatus",
+    "gender",
+    "occupation",
+    "birthDate",
+    "nid",
+    "lifeStatus",
+    "relationType",
+    "relationWithWorker",
+    "status",
+    "permanentAddress",
+    "presentAddress",
+    present_location_projection,
+    permanent_location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "WorkforceEmployeeDependent",
     filters,
     projections,
   );

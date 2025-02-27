@@ -11,6 +11,8 @@ import {
 import EditOrganizationEmployeePage from "../../pages/organization-employee/EditOrganizationEmployeePage";
 import AddOrganizationEmployeePage from "../../pages/organization-employee/AddOrganizationEmployeePage";
 import { MODULE_NAME } from "../../constants";
+import EditDependentPage from "../../../pages/workforce-employee/dependent/EditDependentPage";
+import AddDependentPage from "../../../pages/workforce-employee/dependent/AddDependentPage";
 
 class DependentForm extends Component {
   constructor(props) {
@@ -134,7 +136,7 @@ class DependentForm extends Component {
             reload={(organizationEmployeeUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={organizationEmployeeUuid ? [EditOrganizationEmployeePage] : [AddOrganizationEmployeePage]}
+            Panels={organizationEmployeeUuid ? [EditDependentPage] : [AddDependentPage]}
             onEditedChanged={this.onEditedChanged}
           />
         )}

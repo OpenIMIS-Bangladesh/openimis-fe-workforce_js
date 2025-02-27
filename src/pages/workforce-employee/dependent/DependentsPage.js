@@ -7,7 +7,7 @@ import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
 } from "@openimis/fe-core";
 import { ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE } from "../../../routes";
-import DependentSearcher from "../../../components/organization-employee/dependent/DependentSearcher";
+import DependentSearcher from "../../../components/workforce-employee/dependent/DependentSearcher";
 import { MODULE_NAME } from "../../../constants";
 
 const styles = (theme) => ({

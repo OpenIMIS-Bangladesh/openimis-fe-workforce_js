@@ -25,7 +25,6 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 import OrganizationTypePicker from "../../pickers/OrganizationTypePicker";
-import FileUploader from "../../pickers/FileUploader";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -60,6 +59,7 @@ class AddWorkforceOrganizationPage extends Component {
     const { grievanceConfig, dispatch } = this.props;
 
     const representativeData = {
+      type: stateEdited.type,
       nameBn: stateEdited.repNameBn,
       nameEn: stateEdited.repName,
       location: stateEdited.repLocation,
@@ -260,9 +260,9 @@ class AddWorkforceOrganizationPage extends Component {
                   />
                 </Grid>
 
-                <Grid item xs={6} className={classes.item}>
+                {/* <Grid item xs={6} className={classes.item}>
                   <FileUploader onUpload={this.handleFileUpload} />
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs={12} className={classes.item}>
                   <WorkforceForm

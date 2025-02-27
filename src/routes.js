@@ -8,7 +8,6 @@ export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES = "workforce/organizations/
 export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE = "workforce/organizations/employees/employee";
 export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCOUNT_INFO = "workforce/organizations/employees/employee/account-info";
 export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCIDENT_INFO = "workforce/organizations/employees/employee/accident-info";
-export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_DEPENDENT = "workforce/organizations/employees/employee/dependent";
 export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_SERVICES = "workforce/organizations/employees/employee/services";
 export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION = "workforce/organizations/employees/designation";
 export const ROUTE_WORKFORCE_OFFICES = "workforce/offices";
@@ -23,6 +22,8 @@ export const ROUTE_WORKFORCE_FACTORIES = "workforce/factories";
 export const ROUTE_WORKFORCE_FACTORIES_FACTORY = "workforce/factories/factory";
 export const ROUTE_WORKFORCE_EMPLOYEES = "workforce/employees";
 export const ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE = "workforce/employees/employee";
+export const ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS = "workforce/employees/dependents";
+export const ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT = "workforce/employees/dependents/dependent";
 export const ROUTE_WORKFORCE_EMPLOYEE_FACTORIES = "workforce/employee/factories";
 
 export const ROUTE_WORKFORCE_BANKS = "workforce/banks";

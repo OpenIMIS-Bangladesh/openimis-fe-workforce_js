@@ -172,7 +172,7 @@ class WorkforceEmployeeSearcher extends Component {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Services">
+        <Tooltip title="Account info">
           <Button
             className={this.props.classes.compactButton}
             disabled={workforceemployee?.isHistory}
@@ -216,7 +216,7 @@ class WorkforceEmployeeSearcher extends Component {
               historyPush(
                 this.props.modulesManager,
                 this.props.history,
-                "workforce.route.organizations.employees.employee.dependent",
+                "workforce.route.employees.dependents",
                 [decodeId(workforceemployee.id)],
                 false
               );

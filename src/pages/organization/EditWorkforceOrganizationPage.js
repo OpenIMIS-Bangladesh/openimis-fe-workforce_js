@@ -95,6 +95,7 @@ class EditWorkforceOrganizationPage extends Component {
       position:
         stateEdited?.position || stateEdited?.workforceRepresentative?.position,
       id: decodeId(stateEdited.workforceRepresentative.id),
+      type:stateEdited.type,
     };
 
     const organizationData = {

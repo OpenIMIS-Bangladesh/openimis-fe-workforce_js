@@ -14,6 +14,7 @@ import {
   PublishedComponent,
   FormattedMessage,
   formatMutation,
+  decodeId
 } from "@openimis/fe-core";
 import { updateWorkforceEmployee } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
@@ -68,7 +69,7 @@ class EditWorkforceEmployeePage extends Component {
 
     const workforceEmployeeData = {
       company: stateEdited?.company.id || stateEdited.company.id,
-      factory: stateEdited?.factory.id || stateEdited.factory.id,
+      factory: decodeId(stateEdited?.factory.id) || decodeId(stateEdited.factory.id),
       firstNameBn: stateEdited?.firstNameBn || stateEdited.firstNameBn,
       lastNameBn: stateEdited?.lastNameBn || stateEdited.lastNameBn,
       otherName: stateEdited?.otherName || stateEdited.otherName,

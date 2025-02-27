@@ -29,7 +29,7 @@ import {
   ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCIDENT_INFO,
   ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCOUNT_INFO,
   ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_SERVICES,
-  ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_DEPENDENT
+  ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -56,7 +56,8 @@ import WorkforceEmployeeFactoryPage from "./pages/workforce-employee-factory/Wor
 import WorkforceBanksPage from "./pages/workforce-banks/WorkforceBanksPage";
 import WorkforceBankPage from "./pages/workforce-banks/WorkforceBankPage";
 import BanksPicker from "./pickers/BanksPicker";
-import DependentsPage from "./pages/organization-employee/dependent/DependentsPage";
+import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
+// import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
 
@@ -79,7 +80,7 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.organizations.employees.employee.accident.info", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCIDENT_INFO },
     { key: "workforce.route.organizations.employees.employee.account.info", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCOUNT_INFO },
     { key: "workforce.route.organizations.employees.employee.services", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_SERVICES },
-    { key: "workforce.route.organizations.employees.employee.dependent", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_DEPENDENT },
+    // { key: "workforce.route.organizations.employees.employee.dependent", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_DEPENDENT },
     { key: "workforce.route.organizations.employees", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES },
 
     { key: "workforce.route.offices.office", ref: ROUTE_WORKFORCE_OFFICES_OFFICE },
@@ -97,6 +98,7 @@ const DEFAULT_CONFIG = {
 
     { key: "workforce.route.employees.employee", ref: ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE },
     { key: "workforce.route.employees", ref: ROUTE_WORKFORCE_EMPLOYEES },
+    { key: "workforce.route.employees.dependents", ref: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS },
     
     { key: "workforce.route.employee.factories", ref: ROUTE_WORKFORCE_EMPLOYEE_FACTORIES },
 
@@ -128,7 +130,6 @@ const DEFAULT_CONFIG = {
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES, component: OranigzationEmployeesPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE, component: OrganizationEmployeePage },
-    { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_DEPENDENT}/:dependent_uuid`, component: DependentsPage },
     { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE}/:organization_employee_uuid`, component: OrganizationEmployeePage },
 
     { path: ROUTE_WORKFORCE_OFFICES, component: OranigzationOfficesPage },
@@ -153,6 +154,7 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_EMPLOYEES, component: WorkforceEmployeesPage },
     { path: ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE, component: WorkforceEmployeePage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE}/:workforce_employee_uuid`, component: WorkforceEmployeePage },
+    { path: `${ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS}/:dependent_uuid`, component: DependentsPage },
 
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, component: WorkforceEmployeeDesignationPage },
