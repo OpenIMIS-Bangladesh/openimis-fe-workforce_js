@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { IconButton, Tooltip } from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
+import AccountBoxIcon from "@material-ui/icons/AccountBox";
+import { IconButton, Tooltip, Button } from "@material-ui/core";
 import {
   coreConfirm,
   formatMessageWithValues,
@@ -21,7 +22,6 @@ import { MODULE_NAME } from "../../constants";
 import { fetchWorkforceEmployeesSummary } from "../../actions";
 import WorkforceEmployeeFilter from "./WorkforceEmployeeFilter";
 
-
 const styles = (theme) => ({
   paper: {
     ...theme.paper.paper,
@@ -39,6 +39,30 @@ const styles = (theme) => ({
   item: {
     padding: theme.spacing(1),
   },
+  horizontalButtonContainer: {
+    ...theme.buttonContainer.horizontal,
+    display: "flex",
+    alignItems: "center",
+    gap: theme.spacing(1),
+  },
+  compactButton: {
+    maxHeight: "30px",
+    minWidth: "80px",
+    padding: "1px 4px",
+    borderRadius: "6px",
+    backgroundColor: "#006273",
+    color: "white",
+    fontSize: "0.7rem",
+    textTransform: "none",
+    marginRight: "2px",
+    "&:hover": {
+      backgroundColor: "#004a5e",
+    },
+  },
+  buttonContainer: {
+    display: "flex",
+    gap: theme.spacing(1),
+  },
 });
 
 class WorkforceEmployeeSearcher extends Component {
@@ -55,7 +79,6 @@ class WorkforceEmployeeSearcher extends Component {
     this.defaultPageSize = 10;
   }
 
-
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
@@ -68,10 +91,7 @@ class WorkforceEmployeeSearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchWorkforceEmployeesSummary(
-      this.props.modulesManager,
-      prms,
-    );
+    this.props.fetchWorkforceEmployeesSummary(this.props.modulesManager, prms);
   };
 
   rowIdentifier = (r) => r.uuid;
@@ -101,12 +121,10 @@ class WorkforceEmployeeSearcher extends Component {
     "workforce.employee.nid",
     "workforce.employee.phone",
     "workforce.employee.email",
-    this.isShowHistory() ? 'workforce.version' : '',
+    this.isShowHistory() ? "workforce.version" : "",
   ];
 
-  sorts = () => [
-    
-  ];
+  sorts = () => [];
 
   itemFormatters = () => {
     const formatters = [
@@ -115,27 +133,100 @@ class WorkforceEmployeeSearcher extends Component {
       (workforceemployee) => workforceemployee.nid,
       (workforceemployee) => workforceemployee.phoneNumber,
       (workforceemployee) => workforceemployee.email,
-      (workforceemployee) => (this.isShowHistory() ? workforceemployee?.version : null),
-
+      (workforceemployee) =>
+        this.isShowHistory() ? workforceemployee?.version : null,
     ];
-         formatters.push((workforceemployee) => (
-           <Tooltip title="Edit">
-             <IconButton
-               disabled={workforceemployee?.isHistory}
-               onClick={() => {
-                 historyPush(
-                   this.props.modulesManager,
-                   this.props.history,
-                   'workforce.route.employees.employee',
-                   [decodeId(workforceemployee.id)],
-                   false,
-                 );
-               }}
-             >
-               <EditIcon />
-             </IconButton>
-           </Tooltip>
-         ));
+    formatters.push((workforceemployee) => (
+      <div className={this.props.classes.horizontalButtonContainer}>
+        <Tooltip title="Edit">
+          <IconButton
+            disabled={workforceemployee?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.employees.employee",
+                [decodeId(workforceemployee.id)],
+                false
+              );
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Account info">
+          <IconButton
+            disabled={workforceemployee?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.organizations.employees.employee.account.info",
+                [decodeId(workforceemployee.id)],
+                false
+              );
+            }}
+          >
+            <AccountBoxIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Services">
+          <Button
+            className={this.props.classes.compactButton}
+            disabled={workforceemployee?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.organizations.employees.employee.accident.info",
+                [decodeId(workforceemployee.id)],
+                false
+              );
+            }}
+          >
+            Accident info
+          </Button>
+        </Tooltip>
+
+        <Tooltip title="Services">
+          <Button
+            className={this.props.classes.compactButton}
+            disabled={workforceemployee?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.organizations.employees.employee.services",
+                [decodeId(workforceemployee.id)],
+                false
+              );
+            }}
+          >
+            Services
+          </Button>
+        </Tooltip>
+
+        <Tooltip title="Dependent">
+          <Button
+            className={this.props.classes.compactButton}
+            disabled={workforceemployee?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.organizations.employees.employee.dependent",
+                [decodeId(workforceemployee.id)],
+                false
+              );
+            }}
+          >
+            Dependent
+          </Button>
+        </Tooltip>
+      </div>
+    ));
     return formatters;
   };
 
@@ -146,18 +237,26 @@ class WorkforceEmployeeSearcher extends Component {
   render() {
     const {
       intl,
-      workforceEmployees, workforceEmployeesPageInfo, fetchingWorkforceEmployees, fetchedWorkforceEmployees, errorWorkforceEmployees,
-      filterPaneContributionsKey, cacheFiltersKey, onDoubleClick,
+      workforceEmployees,
+      workforceEmployeesPageInfo,
+      fetchingWorkforceEmployees,
+      fetchedWorkforceEmployees,
+      errorWorkforceEmployees,
+      filterPaneContributionsKey,
+      cacheFiltersKey,
+      onDoubleClick,
     } = this.props;
 
-  console.log({workforceEmployees});
+    console.log({ workforceEmployees });
     const count = workforceEmployeesPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <WorkforceEmployeeFilter
         filters={filters}
         onChangeFilters={onChangeFilters}
-        setShowHistoryFilter={(showHistoryFilter) => this.setState({ showHistoryFilter })}
+        setShowHistoryFilter={(showHistoryFilter) =>
+          this.setState({ showHistoryFilter })
+        }
       />
     );
 
@@ -173,7 +272,12 @@ class WorkforceEmployeeSearcher extends Component {
           fetchingItems={fetchingWorkforceEmployees}
           fetchedItems={fetchedWorkforceEmployees}
           errorItems={errorWorkforceEmployees}
-          tableTitle={<FormattedMessage module={MODULE_NAME} id="menu.workforce.employee" />}
+          tableTitle={
+            <FormattedMessage
+              module={MODULE_NAME}
+              id="menu.workforce.employee"
+            />
+          }
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
           fetch={this.fetch}
@@ -193,29 +297,36 @@ class WorkforceEmployeeSearcher extends Component {
   }
 }
 
-const mapStateToProps = (state) => (
-  {
-    rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-    workforceEmployees: state.workforce.workforceEmployees,
-    workforceEmployeesPageInfo: state.workforce.workforceEmployeesPageInfo,
-    fetchingWorkforceEmployees: state.workforce.fetchingWorkforceEmployees,
-    fetchedWorkforceEmployees: state.workforce.fetchedWorkforceEmployees,
-    errorWorkforceEmployees: state.workforce.errorWorkforceEmployees,
-    submittingMutation: state.workforce.submittingMutation,
-    mutation: state.workforce.mutation,
-    confirmed: state.core.confirmed,
-  }
-);
+const mapStateToProps = (state) => ({
+  rights:
+    !!state.core && !!state.core.user && !!state.core.user.i_user
+      ? state.core.user.i_user.rights
+      : [],
+  workforceEmployees: state.workforce.workforceEmployees,
+  workforceEmployeesPageInfo: state.workforce.workforceEmployeesPageInfo,
+  fetchingWorkforceEmployees: state.workforce.fetchingWorkforceEmployees,
+  fetchedWorkforceEmployees: state.workforce.fetchedWorkforceEmployees,
+  errorWorkforceEmployees: state.workforce.errorWorkforceEmployees,
+  submittingMutation: state.workforce.submittingMutation,
+  mutation: state.workforce.mutation,
+  confirmed: state.core.confirmed,
+});
 
-const mapDispatchToProps = (dispatch) => bindActionCreators(
-  {
-    fetchWorkforceEmployeesSummary, journalize, coreConfirm,
-  },
-  dispatch,
-);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      fetchWorkforceEmployeesSummary,
+      journalize,
+      coreConfirm,
+    },
+    dispatch
+  );
 
 export default withModulesManager(
   withHistory(
-    connect(mapStateToProps, mapDispatchToProps)(withTheme(withStyles(styles)(WorkforceEmployeeSearcher))),
-  ),
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(withTheme(withStyles(styles)(WorkforceEmployeeSearcher)))
+  )
 );
