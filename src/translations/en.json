@@ -212,6 +212,9 @@
     "workforce.employee.dependent.present.location": "Present Location",
     "workforce.employee.dependent.permanent.location": "Permanent Location",
     "menu.workforce.employee.dependent":"Workforce employee Dependent",
+    "menu.workforce.employee.accident.info":"Accident Info",
+    "workforce.employee.accident.info.addNewTooltip": "Add Accident Info",
+
 
     "workforce.representative.sameAsRepresentative": "Same as Company Representative"
 
