@@ -16,6 +16,7 @@ import {
   formatWorkforceEmployeeGQL,
   formatEmployeeAssignDesignationGQL, formatWorkforceCompanyStatusGql,
   formatBankGQL,
+  formatEmployeeDependentGQL,
 } from "./utils/format_gql";
 
 export function fetchOrganizationsSummary(mm, filters) {
@@ -889,7 +890,7 @@ export function createEmployeeDependent(employee, clientMutationLabel) {
 export function updateEmployeeDependent(employee, clientMutationLabel) {
   const mutation = formatMutation(
     "updateWorkforceEmployeeDependent",
-    formatWorkforceEmployeeGQL(employee),
+    formatEmployeeDependentGQL(employee),
     clientMutationLabel,
   );
   const requestedDateTime = new Date();

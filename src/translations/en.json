@@ -157,6 +157,7 @@
     "workforce.employee.address": "Address",
     "workforce.employee.phone": "Phone",
     "workforce.employee.email": "Email",
+    "workforce.employee.occupation": "Occupation",
     "workforce.employee.gender": "Gender",
     "workforce.employee.birthdate": "Birthdate",
     "workforce.employee.joindate": "Joining Date",

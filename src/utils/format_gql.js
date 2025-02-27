@@ -189,6 +189,36 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee?.relatedUserId ? `relatedUserId: "${employee.relatedUserId}"` : ""}
   `;
 }
+export function formatEmployeeDependentGQL(employee) {
+  return `
+    ${employee?.id ? `id: "${formatGQLString(employee.id)}"` : ""}
+    ${employee.firstNameBn ? `firstNameBn: "${formatGQLString(employee.firstNameBn)}"` : ""}
+    ${employee.lastNameBn ? `lastNameBn: "${formatGQLString(employee.lastNameBn)}"` : ""}
+    ${employee.firstNameEn ? `firstNameEn: "${formatGQLString(employee.firstNameEn)}"` : ""}
+    ${employee.lastNameEn ? `lastNameEn: "${formatGQLString(employee.lastNameEn)}"` : ""}
+    ${employee.phoneNumber ? `phoneNumber: "${formatGQLString(employee.phoneNumber)}"` : ""}
+    ${employee.email ? `email: "${formatGQLString(employee.email)}"` : ""}
+    ${employee.birthDate ? `birthDate: "${employee.birthDate}"` : ""}
+    ${employee.deathDate ? `deathDate: "${employee.deathDate}"` : ""}
+    ${employee.gender ? `gender: "${employee.gender}"` : ""}
+    ${employee.birthCertificateNo ? `birthCertificateNo: "${employee.birthCertificateNo}"` : ""}
+    ${employee.nid ? `nid: "${employee.nid}"` : ""}
+    ${employee.permanentAddress ? `permanentAddress: "${employee.permanentAddress}"` : ""}
+    ${employee.presentAddress ? `presentAddress: "${employee.presentAddress}"` : ""}
+    ${employee.fatherNameBn ? `fatherNameBn: "${employee.fatherNameBn}"` : ""}
+    ${employee.fatherNameEn ? `fatherNameEn: "${employee.fatherNameEn}"` : ""}
+    ${employee.motherNameBn ? `motherNameBn: "${employee.motherNameBn}"` : ""}
+    ${employee.motherNameEn ? `motherNameEn: "${employee.motherNameEn}"` : ""}
+    ${employee.maritalStatus ? `maritalStatus: "${employee.maritalStatus}"` : ""}
+    ${employee.occupation ? `occupation: "${employee.occupation}"` : ""}
+    ${employee.relationType ? `relationType: "${employee.relationType}"` : ""}
+    ${employee.relationWithWorker ? `relationWithWorker: "${employee.relationWithWorker}"` : ""}
+    ${employee.presentLocation.id ? `presentLocationId: "${decodeId(employee.presentLocation.id)}"` : ""}
+    ${employee.permanentLocation.id ? `permanentLocationId: "${decodeId(employee.permanentLocation.id)}"` : ""}
+    ${employee.status ? `status: "${employee.status}"` : ""}
+    ${employee.lifeStatus ? `lifeStatus: "${employee.lifeStatus}"` : ""}
+  `;
+}
 
 export function formatUnitDesignationGQL(unitDesignation) {
   return `
