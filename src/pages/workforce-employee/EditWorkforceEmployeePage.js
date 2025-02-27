@@ -21,6 +21,8 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import CompanyPicker from "../../pickers/CompanyPicker";
 import FactoryPicker from "../../pickers/FactoryPicker";
+import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
+import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
