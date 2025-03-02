@@ -102,7 +102,7 @@ class AddWorkforceCompanyPage extends Component {
     const workforceCompanyData = {
       nameBn: stateEdited.titleBn,
       nameEn: stateEdited.title,
-      phoneNumber: stateEdited.phone,
+      phoneNumber: stateEdited.phoneNumber,
       email: stateEdited.email,
       website: stateEdited.website,
       address: stateEdited.address,

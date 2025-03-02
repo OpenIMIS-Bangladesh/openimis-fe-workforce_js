@@ -32,7 +32,9 @@ import {
   ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS,
   ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT,
   ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS,
-  ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO
+  ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO,
+  ROUTE_WORKFORCE_EMPLOYEES_SERVICES,
+  ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -63,6 +65,8 @@ import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage"
 import DependentPage from "./pages/workforce-employee/dependent/DependentPage";
 import AccidentInfosPage from "./pages/workforce-employee/accident-info/AccidentInfosPage";
 import AccidentInfoPage from "./pages/workforce-employee/accident-info/AccidentInfoPage";
+import ServicesPage from "./pages/workforce-employee/services/ServicesPage";
+import ServicePage from "./pages/workforce-employee/services/ServicePage";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -103,11 +107,13 @@ const DEFAULT_CONFIG = {
 
     { key: "workforce.route.employees.employee", ref: ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE },
     { key: "workforce.route.employees", ref: ROUTE_WORKFORCE_EMPLOYEES },
-    { key: "workforce.route.employees.dependents", ref: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS },
     { key: "workforce.route.employees.accident.infos", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS },
     { key: "workforce.route.employees.accident.info", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO },
-
+    
+    { key: "workforce.route.employees.dependents", ref: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS },
     { key: "workforce.route.employees.dependents.dependent", ref: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT },
+    { key: "workforce.route.employees.services", ref: ROUTE_WORKFORCE_EMPLOYEES_SERVICES },
+    { key: "workforce.route.employees.services.service", ref: ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE },
     
     { key: "workforce.route.employee.factories", ref: ROUTE_WORKFORCE_EMPLOYEE_FACTORIES },
 
@@ -166,6 +172,10 @@ const DEFAULT_CONFIG = {
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS}/:dependent_uuid`, component: DependentsPage },
     { path: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT, component: DependentPage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT}/:dependent_uuid`, component: DependentPage },
+
+    { path: `${ROUTE_WORKFORCE_EMPLOYEES_SERVICES}/:dependent_uuid`, component: ServicesPage },
+    { path: ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE, component: ServicePage },
+    { path: `${ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE}/:dependent_uuid`, component: ServicePage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS}/:workforce_employee_uuid`, component: AccidentInfosPage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO}/:workforce_employee_uuid`, component: AccidentInfoPage },
 

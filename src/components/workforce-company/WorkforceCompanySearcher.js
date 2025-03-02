@@ -136,6 +136,9 @@ class WorkforceCompanySearcher extends Component {
       workforceCompanyData,
       `Update Workforce Company ${workforceCompany.nameEn}`
     );
+
+    this.setState({ isDisable: true });
+
   };
 
   itemFormatters = () => {
@@ -173,7 +176,7 @@ class WorkforceCompanySearcher extends Component {
           <Tooltip title={"Approve"}>
             <IconButton
               onClick={() => this.requestApproval(workforcecompany)}
-              disabled={workforcecompany.factoryCount === 0 ? true : false}
+              disabled={workforcecompany.status === WORKFORCE_STATUS.APPROVED  ? true : false}
             >
               <CheckIcon />
             </IconButton>
@@ -182,7 +185,7 @@ class WorkforceCompanySearcher extends Component {
           <Tooltip title={"Approve"}>
             <IconButton
               onClick={() => this.requestApproval(workforcecompany)}
-              disabled={workforcecompany.factoryCount === 0 ? true : false}
+              disabled={workforcecompany.factoryCount === 0  ? true : false}
             >
               <SendIcon />
             </IconButton>
@@ -233,6 +236,8 @@ class WorkforceCompanySearcher extends Component {
       cacheFiltersKey,
       onDoubleClick,
     } = this.props;
+
+    const {isDisable} = this.state
 
     const count = workforceCompaniesPageInfo.totalCount;
 

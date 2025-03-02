@@ -60,12 +60,7 @@ function WorkforceMainMenu(props) {
       route: `/${ROUTE_WORKFORCE_COMPANIES}`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.approve.company" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_APPROVE_COMPANIES}`,
-      filter: (rights) => rights.includes(RIGHT_WORKFORCE_EMPLOYER_APPROVE),
-    },
+    
     {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.office" />,
       icon: <ListAlt />,
@@ -77,6 +72,12 @@ function WorkforceMainMenu(props) {
       icon: <ListAlt />,
       route: `/${ROUTE_WORKFORCE_FACTORIES}`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.approve.company" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_APPROVE_COMPANIES}`,
+      filter: (rights) => rights.includes(RIGHT_WORKFORCE_EMPLOYER_APPROVE),
     },
     {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.employee" />,
