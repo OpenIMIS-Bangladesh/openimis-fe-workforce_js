@@ -468,6 +468,49 @@ export function fetchDependentsSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_EMPLOYEES_DEPENDENTS");
 }
+export function fetchAccidentInfosSummary(mm, filters) {
+  const present_location_projection =
+    "accidentLocation" + mm.getProjection("location.Location.accidentLocation");
+  const projections = [
+    "id",
+    "injuryType",
+    "accidentDate",
+    "accidentTime",
+    "accidentType",
+    "dutyStatus",
+    "inOutsideFactory",
+    "description",
+    accidentLocation,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployeeAccident",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEES_AACIDENTS");
+}
+export function fetchAccidentInfo(mm, filters) {
+  const present_location_projection =
+  "accidentLocation" + mm.getProjection("location.Location.accidentLocation");
+const projections = [
+  "id",
+  "injuryType",
+  "accidentDate",
+  "accidentTime",
+  "accidentType",
+  "dutyStatus",
+  "inOutsideFactory",
+  "deathDate",
+  "description",
+  accidentLocation,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployeeAccident",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEES_AACIDENTS");
+}
 
 export function fetchWorkforceEmployee(mm, filters) {
   const present_location_projection =
@@ -866,17 +909,17 @@ export function updateWorkforceEmployee(employee, clientMutationLabel) {
 }
 export function createAccidentInfo(employee, clientMutationLabel) {
   const mutation = formatMutation(
-    "createWorkforceEmployerEmployee",
-    formatWorkforceEmployeeGQL(employee),
+    "createWorkforceEmployeeAccident",
+    formatWorkforceEmployeeAccidentInfoGQL(employee),
     clientMutationLabel,
   );
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
     [
-      "WORKFORCE_EMPLOYEES_REQ",
-      "WORKFORCE_EMPLOYEES_RESP",
-      "WORKFORCE_EMPLOYEES_ERR",
+      "WORKFORCE_EMPLOYEES_ACCIDENT_REQ",
+      "WORKFORCE_EMPLOYEES_ACCIDENT_RESP",
+      "WORKFORCE_EMPLOYEES_ACCIDENT_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,
@@ -888,17 +931,17 @@ export function createAccidentInfo(employee, clientMutationLabel) {
 
 export function updateAccidentInfo(employee, clientMutationLabel) {
   const mutation = formatMutation(
-    "updateWorkforceEmployerEmployee",
-    formatWorkforceEmployeeGQL(employee),
+    "updateWorkforceEmployeeAccident",
+    formatWorkforceEmployeeAccidentInfoGQL(employee),
     clientMutationLabel,
   );
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
     [
-      "WORKFORCE_EMPLOYEES_REQ",
-      "WORKFORCE_EMPLOYEES_RESP",
-      "WORKFORCE_EMPLOYEES_ERR",
+      "WORKFORCE_EMPLOYEES_ACCIDENT_REQ",
+      "WORKFORCE_EMPLOYEES_ACCIDENT_RESP",
+      "WORKFORCE_EMPLOYEES_ACCIDENT_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,

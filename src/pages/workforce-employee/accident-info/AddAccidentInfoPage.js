@@ -19,6 +19,7 @@ import {
 import { createAccidentInfo } from "../../../actions";
 import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
+import EmployeeInjuryTypePicker from "../../pickers/EmployeeInjuryTypePicker";
 
 
 const styles = (theme) => ({
@@ -54,10 +55,13 @@ class AddAccidentInfoPage extends Component {
     const { dispatch } = this.props;
 
     const accidentInfoData = {
-      firstNameBn: stateEdited?.firstNameBn || stateEdited.firstNameBn,
-      lastNameBn: stateEdited?.lastNameBn || stateEdited.lastNameBn,
-      otherName: stateEdited?.otherName || stateEdited.otherName,
-      firstNameEn: stateEdited?.firstNameEn || stateEdited.firstNameEn,
+      accidentDate: stateEdited?.accidentDate || stateEdited.accidentDate,
+      injuryType: stateEdited?.injuryType || stateEdited.injuryType,
+      accidentTime: stateEdited?.accidentTime || stateEdited.accidentTime,
+      accidentType: stateEdited?.accidentType || stateEdited.accidentType,
+      dutyStatus: stateEdited?.dutyStatus || stateEdited.dutyStatus,
+      description: stateEdited?.description || stateEdited.description,
+      inOutsideFactory: stateEdited?.inOutsideFactory || stateEdited.inOutsideFactory,
       workforceEmployee: stateEdited.workforceEmployee,
     };
 
@@ -106,7 +110,29 @@ class AddAccidentInfoPage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-              
+              <Grid item xs={6} className={classes.item}>
+                  <EmployeeInjuryTypePicker
+                    value={stateEdited.lifeStatus || ""}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.accident.info.injuryType"
+                        module="workforce"
+                      />
+                    }
+                    required
+                    onChange={(v) => this.updateAttribute("injuryType", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="core.DatePicker"
+                    label={"workforce.employee.accident.info.dateOfAccient"}
+                    value={stateEdited.accidentDate || ""}
+                    onChange={(v) => this.updateAttribute("accidentDate", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
 
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>

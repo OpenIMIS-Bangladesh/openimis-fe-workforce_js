@@ -220,6 +220,17 @@ export function formatEmployeeDependentGQL(employee) {
   `;
 }
 
+export function formatWorkforceEmployeeAccidentInfoGQL(employee) {
+  return `
+    ${employee.injuryType ? `injuryType: "${formatGQLString(employee.injuryType)}"` : ""}
+    ${employee.accidentDate ? `accidentDate: "${formatGQLString(employee.accidentDate)}"` : ""}
+    ${employee.accidentTime ? `accidentTime: "${employee.accidentTime}"` : ""}
+    ${employee.accidentType ? `accidentType: "${employee.accidentType}"` : ""}
+    ${employee.dutyStatus ? `dutyStatus: "${employee.dutyStatus}"` : ""}
+    ${employee.inOutsideFactory ? `inOutsideFactory: "${employee.inOutsideFactory}"` : ""}
+    ${employee.description ? `description: "${employee.description}"` : ""}
+  `;
+}
 export function formatUnitDesignationGQL(unitDesignation) {
   return `
     ${unitDesignation.id ? `id: "${formatGQLString(unitDesignation.id)}"` : ""}

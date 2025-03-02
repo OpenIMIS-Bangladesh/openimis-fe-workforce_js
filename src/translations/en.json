@@ -214,6 +214,15 @@
     "menu.workforce.employee.dependent":"Workforce Employee Dependent",
     "menu.workforce.employee.accident.info":"Accident Info",
     "workforce.employee.accident.info.addNewTooltip": "Add Accident Info",
+    "workforce.employee.accident.info.injuryType": "Injury Type",
+    "workforce.employee.accident.info.dateOfAccient": "Date Of Accident",
+    "workforce.employee.accident.info.timeOfAccient": "Time Of Accident",
+    "workforce.employee.accident.info.typeOfAccient": "Type Of Accident",
+    "workforce.employee.accident.info.dutyStatus": "Duty Status",
+    "workforce.employee.accident.info.insideOutsideFactory": "Inside/Outside Factory",
+    "workforce.employee.accident.info.reJoiningDate": "Re-Joining Date",
+    "workforce.employee.accident.info.briefDescription": "Brief Description",
+
 
 
     "workforce.representative.sameAsRepresentative": "Same as Company Representative"

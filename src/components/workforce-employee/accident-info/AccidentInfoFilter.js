@@ -27,10 +27,10 @@ const styles = (theme) => ({
   paperDivider: theme.paper.divider,
 });
 
-const WORKFORCE_ORGANIZATION_EMPLOYEE_FILTER_CONTRIBUTION_KEY =
-  "workforce.organization.employee.Filter";
+const WORKFORCE_EMPLOYEE_AACIDENT_INFO_FILTER_CONTRIBUTION_KEY =
+  "workforce.employee.accident.info.Filter";
 
-class DependentFilter extends Component {
+class AccidentInfoFilter extends Component {
   debouncedOnChangeFilter = _debounce(this.props.onChangeFilters, 800);
 
   _filterValue = (k) => {
@@ -66,12 +66,58 @@ class DependentFilter extends Component {
       <Grid container className={classes.form}>
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.organization.name.employee.en"
+          id="workforce.employee.accident.info.injuryType"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.organization.employee.name.en"
+                label="workforce.employee.accident.info.injuryType"
+                name="nameEn"
+                value={this._filterValue("nameEn")}
+                onChange={(v) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "nameEn",
+                      value: v,
+                      filter: `nameEn_Icontains: "${v}"`,
+                    },
+                  ])
+                }
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="workforce.employee.accident.info.typeOfAccient"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.employee.accident.info.typeOfAccient"
+                name="nameEn"
+                value={this._filterValue("nameEn")}
+                onChange={(v) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "nameEn",
+                      value: v,
+                      filter: `nameEn_Icontains: "${v}"`,
+                    },
+                  ])
+                }
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="workforce.employee.accident.info.insideOutsideFactory"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.employee.accident.info.insideOutsideFactory"
                 name="nameEn"
                 value={this._filterValue("nameEn")}
                 onChange={(v) =>
@@ -92,7 +138,7 @@ class DependentFilter extends Component {
           filters={filters}
           onChangeFilters={onChangeFilters}
           contributionKey={
-            WORKFORCE_ORGANIZATION_EMPLOYEE_FILTER_CONTRIBUTION_KEY
+          WORKFORCE_EMPLOYEE_AACIDENT_INFO_FILTER_CONTRIBUTION_KEY
           }
         />
       </Grid>
@@ -101,5 +147,5 @@ class DependentFilter extends Component {
 }
 
 export default withModulesManager(
-  withTheme(withStyles(styles)(DependentFilter))
+  withTheme(withStyles(styles)(AccidentInfoFilter))
 );
