@@ -127,7 +127,7 @@ class EditDependentPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Workforce Employee"
+                      id="Employee Dependent"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>

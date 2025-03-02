@@ -128,7 +128,7 @@ class DependentForm extends Component {
             edited={ticket}
             reset={reset}
             update={update}
-            title="Organizations Employee"
+            title="Employee Dependent"
             titleParams={{ label: "Label" }}
             back={back}
             save={save ? this._save : null}
