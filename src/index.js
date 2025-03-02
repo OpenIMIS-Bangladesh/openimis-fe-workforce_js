@@ -105,7 +105,7 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.employees", ref: ROUTE_WORKFORCE_EMPLOYEES },
     { key: "workforce.route.employees.dependents", ref: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS },
     { key: "workforce.route.employees.accident.infos", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS },
-    { key: "workforce.route.employees.accident.info", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO },
+    { key: "workforce.route.employees.accident.infos.info", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO },
 
     { key: "workforce.route.employees.dependents.dependent", ref: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT },
     

@@ -19,9 +19,8 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import { MODULE_NAME } from "../../../constants";
-import { fetchDependentsSummary } from "../../../actions";
-// import OrganizationEmployeeFilter from "./OrganizationEmployeeFilter";
-import DependentFilter from "./AccidentInfoFilter";
+import { fetchAccidentInfosSummary } from "../../../actions";
+import AccidentInfoFilter from "./AccidentInfoFilter";
 
 const styles = (theme) => ({
   paper: {
@@ -66,7 +65,7 @@ const styles = (theme) => ({
   },
 });
 
-class DependentSearcher extends Component {
+class AccidentInfoSearcher extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -92,7 +91,7 @@ class DependentSearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchDependentsSummary(
+    this.props.fetchAccidentInfosSummary(
       this.props.modulesManager,
       prms
     );
@@ -120,13 +119,12 @@ class DependentSearcher extends Component {
   };
 
   headers = () => [
-    "workforce.organization.employee.name.en",
-    "workforce.organization.employee.name.bn",
-    "workforce.organization.employee.phone",
-    "workforce.organization.employee.email",
-    "workforce.organization.employee.address",
-    "workforce.organization.employee.gender",
-    "workforce.organization.employee.status",
+    "workforce.employee.accident.info.injuryType",
+    "workforce.employee.accident.info.dateOfAccient",
+    "workforce.employee.accident.info.typeOfAccient",
+    "workforce.employee.accident.info.dutyStatus",
+    "workforce.employee.accident.info.insideOutsideFactory",
+    // "workforce.employee.accident.info.reJoiningDate",
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
@@ -134,14 +132,11 @@ class DependentSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      (organizationemployee) => organizationemployee.nameEn,
-      (organizationemployee) => organizationemployee.nameBn,
-      (organizationemployee) => organizationemployee.phoneNumber,
-      (organizationemployee) => organizationemployee.email,
-      (organizationemployee) => organizationemployee.address,
-      (organizationemployee) => organizationemployee.gender,
-      (organizationemployee) => organizationemployee.status,
-      (organizationemployee) =>
+      (organizationemployee) => organizationemployee.injuryType,
+      (organizationemployee) => organizationemployee.dateOfAccient,
+      (organizationemployee) => organizationemployee.typeOfAccient,
+      (organizationemployee) => organizationemployee.dutyStatus,
+      (organizationemployee) => organizationemployee.inOutsideFactory,
         this.isShowHistory() ? organizationemployee?.version : null,
     ];
     formatters.push((organizationemployee) => (
@@ -153,7 +148,7 @@ class DependentSearcher extends Component {
               historyPush(
                 this.props.modulesManager,
                 this.props.history,
-                "workforce.route.organizations.employees.employee",
+                "workforce.route.employees.accident.infos.info",
                 [decodeId(organizationemployee.id)],
                 false
               );
@@ -245,20 +240,20 @@ class DependentSearcher extends Component {
   render() {
     const {
       intl,
-      organizationEmployees,
-      organizationEmployeesPageInfo,
-      fetchingOrganizationEmployees,
-      fetchedOrganizationEmployees,
-      errorOrganizationEmployees,
+      employeeAccidents,
+      employeeAccidentsPageInfo,
+      fetchingEmployeeAccidents,
+      fetchedEmployeeAccidents,
+      errorEmployeeAccidents,
       filterPaneContributionsKey,
       cacheFiltersKey,
       onDoubleClick,
     } = this.props;
 
-    const count = organizationEmployeesPageInfo.totalCount;
+    const count = employeeAccidentsPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
-      <DependentFilter
+      <AccidentInfoFilter
         filters={filters}
         onChangeFilters={onChangeFilters}
         setShowHistoryFilter={(showHistoryFilter) =>
@@ -274,11 +269,11 @@ class DependentSearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={organizationEmployees}
-          itemsPageInfo={organizationEmployeesPageInfo}
-          fetchingItems={fetchingOrganizationEmployees}
-          fetchedItems={fetchedOrganizationEmployees}
-          errorItems={errorOrganizationEmployees}
+          items={employeeAccidents}
+          itemsPageInfo={employeeAccidentsPageInfo}
+          fetchingItems={fetchingEmployeeAccidents}
+          fetchedItems={fetchedEmployeeAccidents}
+          errorItems={errorEmployeeAccidents}
           tableTitle={
             <FormattedMessage
               module={MODULE_NAME}
@@ -309,11 +304,11 @@ const mapStateToProps = (state) => ({
     !!state.core && !!state.core.user && !!state.core.user.i_user
       ? state.core.user.i_user.rights
       : [],
-  organizationEmployees: state.workforce.organizationEmployees,
-  organizationEmployeesPageInfo: state.workforce.organizationEmployeesPageInfo,
-  fetchingOrganizationEmployees: state.workforce.fetchingOrganizationEmployees,
-  fetchedOrganizationEmployees: state.workforce.fetchedOrganizationEmployees,
-  errorOrganizationEmployees: state.workforce.errorOrganizationEmployees,
+  employeeAccidents: state.workforce.employeeAccidents,
+  employeeAccidentsPageInfo: state.workforce.employeeAccidentsPageInfo,
+  fetchingEmployeeAccidents: state.workforce.fetchingEmployeeAccidents,
+  fetchedEmployeeAccidents: state.workforce.fetchedEmployeeAccidents,
+  errorEmployeeAccidents: state.workforce.errorEmployeeAccidents,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   confirmed: state.core.confirmed,
@@ -322,7 +317,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      fetchDependentsSummary,
+      fetchAccidentInfosSummary,
       journalize,
       coreConfirm,
     },
@@ -334,6 +329,6 @@ export default withModulesManager(
     connect(
       mapStateToProps,
       mapDispatchToProps
-    )(withTheme(withStyles(styles)(DependentSearcher)))
+    )(withTheme(withStyles(styles)(AccidentInfoSearcher)))
   )
 );

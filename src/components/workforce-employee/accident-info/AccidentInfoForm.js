@@ -6,13 +6,13 @@ import {
 } from "@openimis/fe-core";
 import { bindActionCreators } from "redux";
 import {
-  fetchOrganizationEmployee,
+  fetchAccidentInfo,
 } from "../../../actions";
 import { MODULE_NAME } from "../../../constants";
-import EditDependentPage from "../../../pages/workforce-employee/dependent/EditDependentPage";
+import EditAccidentInfoPage from "../../../pages/workforce-employee/accident-info/EditAccidentInfoPage";
 import AddAccidentInfoPage from "../../../pages/workforce-employee/accident-info/AddAccidentInfoPage";
 
-class DependentForm extends Component {
+class AccidentInfoForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,8 +33,8 @@ class DependentForm extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedOrganizationEmployee !== this.props.fetchedOrganizationEmployee
-      && !!this.props.fetchedOrganizationEmployee
+    if (prevProps.fetchedEmployeeAccident !== this.props.fetchedEmployeeAccident
+      && !!this.props.fetchedEmployeeAccident
       && !!this.props.organizationEmployee) {
       this.setState((state, props) => ({
         organizationEmployee: { ...props.organizationEmployee },
@@ -43,7 +43,7 @@ class DependentForm extends Component {
       }));
     } else if (prevState.workforceEmployeeUuid !== this.state.workforceEmployeeUuid) {
       const filters = [`id: "${this.state.workforceEmployeeUuid}"`];
-      this.props.fetchOrganizationEmployee(
+      this.props.fetchAccidentInfo(
         this.props.modulesManager,
         filters,
       );
@@ -51,7 +51,7 @@ class DependentForm extends Component {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
       if (this.props?.organizationEmployee?.id) {
-        this.props.fetchOrganizationEmployee(
+        this.props.fetchAccidentInfo(
           this.props.modulesManager,
           [`id: "${this.state.workforceEmployeeUuid}"`],
         );
@@ -93,7 +93,7 @@ class DependentForm extends Component {
   render() {
     const {
       fetchingTicket,
-      fetchedOrganizationEmployee,
+      fetchedEmployeeAccident,
       errorTicket,
       save, back,
     } = this.props;
@@ -119,7 +119,7 @@ class DependentForm extends Component {
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
-        {(!!fetchedOrganizationEmployee || !workforceEmployeeUuid) && (
+        {(!!fetchedEmployeeAccident || !workforceEmployeeUuid) && (
           <Form
             module={MODULE_NAME}
             edited_id={workforceEmployeeUuid}
@@ -134,7 +134,7 @@ class DependentForm extends Component {
             reload={(workforceEmployeeUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={workforceEmployeeUuid ? [EditDependentPage] : [AddDependentPage]}
+            Panels={workforceEmployeeUuid ? [EditAccidentInfoPage] : [AddAccidentInfoPage]}
             onEditedChanged={this.onEditedChanged}
           />
         )}
@@ -148,7 +148,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   fetchingTicket: state.workforce.fetchingTicket,
   errorTicket: state.workforce.errorTicket,
-  fetchedOrganizationEmployee: state.workforce.fetchedOrganizationEmployee,
+  fetchedEmployeeAccident: state.workforce.fetchedEmployeeAccident,
   ticket: state.workforce.ticket,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
@@ -156,10 +156,10 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchOrganizationEmployee,
+  fetchAccidentInfo,
   journalize,
 }, dispatch);
 
 export default withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
-  DependentForm,
+  AccidentInfoForm,
 ));

@@ -200,6 +200,19 @@ function reducer(
 
     submittingMutation: false,
     mutation: {},
+
+    ////employee accident states
+    fetchingEmployeeAccidents: false,
+    errorEmployeeAccidents: null,
+    fetchedEmployeeAccidents: false,
+    employeeAccidents: [],
+    employeeAccidentsPageInfo: { totalCount: 0 },
+
+    fetchingEmployeeAccident: false,
+    errorEmployeeAccidents: null,
+    fetchedEmployeeAccident: false,
+    employeeAccident: null,
+    employeeAccidentPageInfo: { totalCount: 0 },
   },
   action
 ) {
@@ -556,6 +569,60 @@ function reducer(
         fetching: false,
         error: formatServerError(action.payload),
       };
+
+
+       //employee accident //
+    case "WORKFORCE_EMPLOYEE_ACCIDENT_REQ":
+      return {
+        ...state,
+        fetchingEmployeeAccident: true,
+        fetchedEmployeeAccident: false,
+        employeeAccident: null,
+        errorEmployeeAccident: null,
+      };
+    case "WORKFORCE_EMPLOYEE_ACCIDENT_RESP":
+      return {
+        ...state,
+        fetchingEmployeeAccident: false,
+        fetchedEmployeeAccident: true,
+        employeeAccident: parseData(
+          action.payload.data.workforceEmployeeAccident
+        ).map((organizationEmployee) => ({
+          ...organizationEmployee,
+          id: decodeId(organizationEmployee.id),
+        }))?.[0],
+        errorEmployeeAccident: formatGraphQLError(action.payload),
+      };
+
+    case "WORKFORCE_EMPLOYEES_ACCIDENTS_REQ":
+      return {
+        ...state,
+        fetchingEmployeeAccidents: true,
+        fetchedEmployeeAccidents: false,
+        employeeAccidents: [],
+        employeeAccidentsPageInfo: { totalCount: 0 },
+        errorEmployeeAccidents: null,
+      };
+    case "WORKFORCE_EMPLOYEES_ACCIDENTS_RESP":
+      return {
+        ...state,
+        fetchingEmployeeAccidents: false,
+        fetchedEmployeeAccidents: true,
+        employeeAccidents: parseData(
+          action.payload.data.workforceEmployeeAccident
+        ),
+        employeeAccidentsPageInfo: pageInfo(
+          action.payload.data.workforceEmployeeAccident
+        ),
+        errorEmployeeAccidents: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_EMPLOYEES_ACCIDENTS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+   
    
     ////workforce organization employee designation////
     case "WORKFORCE_ORGANIZATIONS_EMPLOYEE_DESIGNATIONS_REQ":
