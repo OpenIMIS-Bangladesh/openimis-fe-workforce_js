@@ -19,7 +19,7 @@ import {
 import { createAccidentInfo } from "../../../actions";
 import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import EmployeeInjuryTypePicker from "../../pickers/EmployeeInjuryTypePicker";
+import EmployeeInjuryTypePicker from "../../../pickers/EmployeeInjuryTypePicker";
 
 
 const styles = (theme) => ({
