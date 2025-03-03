@@ -469,8 +469,7 @@ export function fetchDependentsSummary(mm, filters) {
   return graphql(payload, "WORKFORCE_EMPLOYEES_DEPENDENTS");
 }
 export function fetchAccidentInfosSummary(mm, filters) {
-  const present_location_projection =
-    "accidentLocation" + mm.getProjection("location.Location.accidentLocation");
+ 
   const projections = [
     "id",
     "injuryType",
@@ -480,7 +479,6 @@ export function fetchAccidentInfosSummary(mm, filters) {
     "dutyStatus",
     "inOutsideFactory",
     "description",
-    accidentLocation,
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployeeAccident",
@@ -490,8 +488,7 @@ export function fetchAccidentInfosSummary(mm, filters) {
   return graphql(payload, "WORKFORCE_EMPLOYEES_AACIDENTS");
 }
 export function fetchAccidentInfo(mm, filters) {
-  const present_location_projection =
-  "accidentLocation" + mm.getProjection("location.Location.accidentLocation");
+ 
 const projections = [
   "id",
   "injuryType",
@@ -502,7 +499,6 @@ const projections = [
   "inOutsideFactory",
   "deathDate",
   "description",
-  accidentLocation,
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployeeAccident",
