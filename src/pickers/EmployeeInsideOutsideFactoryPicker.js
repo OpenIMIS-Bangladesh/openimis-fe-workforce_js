@@ -19,7 +19,7 @@ const EmployeeInsideOutsideFactoryPicker = ({
   const { formatMessage } = useTranslations("workforce");
 
   // Adjust the options to match the EMPLOYEE_INSIDE_OUTSIDE_FACTORY format
-  const EMPLOYEE_INSIDE_OUTSIDE_FACTORY = ["In Side Factory", "Out Side Factory"];
+  const EMPLOYEE_INSIDE_OUTSIDE_FACTORY = ["Inside Factory", "Outside Factory"];
 
   // Find the selected option
   const selectedOption = useMemo(
