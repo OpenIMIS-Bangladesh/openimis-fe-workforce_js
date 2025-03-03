@@ -14,12 +14,11 @@ import {
   PublishedComponent,
   FormattedMessage,
   formatMutation,
-  decodeId
+  decodeId,
 } from "@openimis/fe-core";
 import { updateWorkforceEmployee } from "../../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -64,10 +63,15 @@ class EditAccidentInfoPage extends Component {
     const { stateEdited } = this.state;
 
     const accidentInfoData = {
-      firstNameBn: stateEdited?.firstNameBn || stateEdited.firstNameBn,
-      lastNameBn: stateEdited?.lastNameBn || stateEdited.lastNameBn,
-      otherName: stateEdited?.otherName || stateEdited.otherName,
-      firstNameEn: stateEdited?.firstNameEn || stateEdited.firstNameEn,
+      accidentDate: stateEdited?.accidentDate || stateEdited.accidentDate,
+      injuryType: stateEdited?.injuryType || stateEdited.injuryType,
+      accidentTime: stateEdited?.accidentTime || stateEdited.accidentTime,
+      accidentType: stateEdited?.accidentType || stateEdited.accidentType,
+      dutyStatus: stateEdited?.dutyStatus || stateEdited.dutyStatus,
+      description: stateEdited?.description || stateEdited.description,
+      inOutsideFactory:
+        stateEdited?.inOutsideFactory || stateEdited.inOutsideFactory,
+      reJoiningDate: stateEdited?.reJoiningDate || stateEdited.reJoiningDate,
       id: stateEdited.id,
     };
 
@@ -95,49 +99,96 @@ class EditAccidentInfoPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Workforce Employee"
+                      id="Workforce Employee Accident Info"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>
                 </Grid>
-              </Grid>
-              <Divider />
-              <Grid container className={classes.item}>
                 <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.employee.nid"
-                    value={stateEdited.nid || ""}
-                    onChange={(v) => this.updateAttribute("nid", v)}
-                    type={"number"}
+                  <EmployeeInjuryTypePicker
+                    value={stateEdited.lifeStatus || ""}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.accident.info.injuryType"
+                        module="workforce"
+                      />
+                    }
                     required
+                    onChange={(v) => this.updateAttribute("injuryType", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="core.DatePicker"
-                    label={"workforce.employee.birthdate"}
-                    value={stateEdited.birthDate || ""}
-                    onChange={(v) => this.updateAttribute("birthDate", v)}
+                    label={"workforce.employee.accident.info.dateOfAccient"}
+                    value={stateEdited.accidentDate || ""}
+                    onChange={(v) => this.updateAttribute("accidentDate", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
-                  <CompanyPicker
-                    value={stateEdited?.company?.id}
+                  <PublishedComponent
+                    pubRef="core.DatePicker"
+                    label={"workforce.employee.accident.info.timeOfAccient"}
+                    value={stateEdited.timeOfAccient || ""}
+                    onChange={(v) => this.updateAttribute("timeOfAccient", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <EmployeeAccidentTypePicker
+                    value={stateEdited.accidentType || ""}
                     label={
                       <FormattedMessage
-                        id="workforce.employee.workforce_employer"
+                        id="workforce.employee.accident.info.typeOfAccient"
                         module="workforce"
                       />
                     }
                     required
-                    onChange={(v) => this.updateAttribute("company", v)}
+                    onChange={(v) => this.updateAttribute("accidentType", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
-               
-
+                <Grid item xs={6} className={classes.item}>
+                  <EmployeeDutyStatusPicker
+                    value={stateEdited.dutyStatus || ""}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.accident.info.dutyStatus"
+                        module="workforce"
+                      />
+                    }
+                    required
+                    onChange={(v) => this.updateAttribute("dutyStatus", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <EmployeeInsideOutsideFactoryPicker
+                    value={stateEdited.inOutsideFactory || ""}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.accident.info.insideOutsideFactory"
+                        module="workforce"
+                      />
+                    }
+                    required
+                    onChange={(v) =>
+                      this.updateAttribute("inOutsideFactory", v)
+                    }
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="core.DatePicker"
+                    label={"workforce.employee.accident.info.reJoiningDate"}
+                    value={stateEdited.reJoiningDate || ""}
+                    onChange={(v) => this.updateAttribute("reJoiningDate", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
                   <IconButton

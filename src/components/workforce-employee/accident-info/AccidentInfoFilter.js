@@ -14,6 +14,9 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import { MODULE_NAME } from "../../../constants";
+import EmployeeInjuryTypePicker from "../../../pickers/EmployeeInjuryTypePicker";
+import EmployeeAccidentTypePicker from "../../../pickers/EmployeeAccidentTypePicker";
+import EmployeeInsideOutsideFactoryPicker from "../../../pickers/EmployeeInsideOutsideFactoryPicker";
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
@@ -69,44 +72,48 @@ class AccidentInfoFilter extends Component {
           id="workforce.employee.accident.info.injuryType"
           field={
             <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.employee.accident.info.injuryType"
-                name="nameEn"
-                value={this._filterValue("nameEn")}
-                onChange={(v) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "nameEn",
-                      value: v,
-                      filter: `nameEn_Icontains: "${v}"`,
-                    },
-                  ])
-                }
-              />
+              <EmployeeInjuryTypePicker
+                    value={this._filterValue("injuryType")}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.accident.info.injuryType"
+                        module="workforce"
+                      />
+                    }
+                    onChange={(v) => this.debouncedOnChangeFilter([
+                      {
+                        id: 'injuryType',
+                        value: v,
+                        filter: `injuryType: "${v}"`,
+                      },
+                    ])}
+                    readOnly={false}
+                  />
             </Grid>
           }
         />
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.employee.accident.info.typeOfAccient"
+          id="workforce.employee.accident.info.typeOfAccident"
           field={
             <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.employee.accident.info.typeOfAccient"
-                name="nameEn"
-                value={this._filterValue("nameEn")}
-                onChange={(v) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "nameEn",
-                      value: v,
-                      filter: `nameEn_Icontains: "${v}"`,
-                    },
-                  ])
-                }
-              />
+              <EmployeeAccidentTypePicker
+                    value={this._filterValue("accidentType")}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.accident.info.typeOfAccident"
+                        module="workforce"
+                      />
+                    }
+                    onChange={(v) => this.debouncedOnChangeFilter([
+                      {
+                        id: 'accidentType',
+                        value: v,
+                        filter: `accidentType: "${v}"`,
+                      },
+                    ])}
+                    readOnly={false}
+                  />
             </Grid>
           }
         />
@@ -115,25 +122,26 @@ class AccidentInfoFilter extends Component {
           id="workforce.employee.accident.info.insideOutsideFactory"
           field={
             <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.employee.accident.info.insideOutsideFactory"
-                name="nameEn"
-                value={this._filterValue("nameEn")}
-                onChange={(v) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "nameEn",
-                      value: v,
-                      filter: `nameEn_Icontains: "${v}"`,
-                    },
-                  ])
-                }
-              />
+              <EmployeeInsideOutsideFactoryPicker
+                    value={this._filterValue("inOutsideFactory")}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.accident.info.insideOutsideFactory"
+                        module="workforce"
+                      />
+                    }
+                    onChange={(v) => this.debouncedOnChangeFilter([
+                      {
+                        id: 'inOutsideFactory',
+                        value: v,
+                        filter: `inOutsideFactory: "${v}"`,
+                      },
+                    ])}
+                    readOnly={false}
+                  />
             </Grid>
           }
         />
-
         <Contributions
           filters={filters}
           onChangeFilters={onChangeFilters}

@@ -120,8 +120,8 @@ class AccidentInfoSearcher extends Component {
 
   headers = () => [
     "workforce.employee.accident.info.injuryType",
-    "workforce.employee.accident.info.dateOfAccient",
-    "workforce.employee.accident.info.typeOfAccient",
+    "workforce.employee.accident.info.dateOfAccident",
+    "workforce.employee.accident.info.typeOfAccident",
     "workforce.employee.accident.info.dutyStatus",
     "workforce.employee.accident.info.insideOutsideFactory",
     // "workforce.employee.accident.info.reJoiningDate",
@@ -133,14 +133,13 @@ class AccidentInfoSearcher extends Component {
   itemFormatters = () => {
     const formatters = [
       (organizationemployee) => organizationemployee.injuryType,
-      (organizationemployee) => organizationemployee.dateOfAccient,
-      (organizationemployee) => organizationemployee.typeOfAccient,
+      (organizationemployee) => organizationemployee.accidentDate,
+      (organizationemployee) => organizationemployee.accidentType,
       (organizationemployee) => organizationemployee.dutyStatus,
       (organizationemployee) => organizationemployee.inOutsideFactory,
         this.isShowHistory() ? organizationemployee?.version : null,
     ];
     formatters.push((organizationemployee) => (
-      <div className={this.props.classes.horizontalButtonContainer}>
         <Tooltip title="Edit">
           <IconButton
             disabled={organizationemployee?.isHistory}
@@ -156,79 +155,7 @@ class AccidentInfoSearcher extends Component {
           >
             <EditIcon />
           </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Account info">
-          <IconButton
-            disabled={organizationemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.organizations.employees.employee.account.info",
-                [decodeId(organizationemployee.id)],
-                false
-              );
-            }}
-          >
-            <AccountBoxIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Services">
-          <Button
-            className={this.props.classes.compactButton}
-            disabled={organizationemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-               "workforce.route.organizations.employees.employee.accident.info",
-                [decodeId(organizationemployee.id)],
-                false
-              );
-            }}
-          >
-            Accident info
-          </Button>
-        </Tooltip>
-
-        <Tooltip title="Services">
-          <Button
-            className={this.props.classes.compactButton}
-            disabled={organizationemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.organizations.employees.employee.services",
-                [decodeId(organizationemployee.id)],
-                false
-              );
-            }}
-          >
-            Services
-          </Button>
-        </Tooltip>
-
-        <Tooltip title="Dependent">
-          <Button
-            className={this.props.classes.compactButton}
-            disabled={organizationemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.organizations.employees.employee.dependent",
-                [decodeId(organizationemployee.id)],
-                false
-              );
-            }}
-          >
-            Dependent
-          </Button>
-        </Tooltip>
-      </div>
+        </Tooltip>  
     ));
     return formatters;
   };
