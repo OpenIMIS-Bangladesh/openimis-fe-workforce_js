@@ -485,7 +485,7 @@ export function fetchAccidentInfosSummary(mm, filters) {
     filters,
     projections,
   );
-  return graphql(payload, "WORKFORCE_EMPLOYEES_AACIDENTS");
+  return graphql(payload, "WORKFORCE_EMPLOYEES_ACCIDENTS");
 }
 export function fetchAccidentInfo(mm, filters) {
  
@@ -505,7 +505,7 @@ const projections = [
     filters,
     projections,
   );
-  return graphql(payload, "WORKFORCE_EMPLOYEES_AACIDENTS");
+  return graphql(payload, "WORKFORCE_EMPLOYEES_ACCIDENTS");
 }
 
 export function fetchWorkforceEmployee(mm, filters) {

@@ -186,7 +186,7 @@ class WorkforceEmployeeSearcher extends Component {
               );
             }}
           >
-            Accident info
+            Accident Info
           </Button>
         </Tooltip>
 
