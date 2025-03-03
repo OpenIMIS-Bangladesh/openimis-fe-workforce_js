@@ -468,6 +468,29 @@ export function fetchDependentsSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_EMPLOYEES_DEPENDENTS");
 }
+export function fetchServicesSummary(mm, filters) {
+  
+  const projections = [
+    "id",
+    "workforceCompany{id}",
+    "workforceFactory{id}",
+    "workforceOffice{id}",
+    "position",
+    "joinDate",
+    "resignationDate",
+    "resignationReason",
+    "monthlySalary",
+    "status",
+    "workforceEmployee{id,firstNameEn,firstNameBn,lastNameEn,lastNameBn}",
+    
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployeeDesignation",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEES_SERVICES");
+}
 export function fetchAccidentInfosSummary(mm, filters) {
   const present_location_projection =
     "accidentLocation" + mm.getProjection("location.Location.accidentLocation");
@@ -591,6 +614,28 @@ export function fetchDependent(mm, filters) {
     projections,
   );
   return graphql(payload, "WORKFORCE_EMPLOYEE_DEPENDENT");
+}
+export function fetchService(mm, filters) {
+  const projections = [
+    "id",
+    "workforceCompany{id}",
+    "workforceFactory{id}",
+    "workforceOffice{id}",
+    "position",
+    "joinDate",
+    "resignationDate",
+    "resignationReason",
+    "monthlySalary",
+    "status",
+    "workforceEmployee{id,firstNameEn,firstNameBn,lastNameEn,lastNameBn}",
+    
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployeeDesignation",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEES_SERVICE");
 }
 
 export function createRepresentative(mutation, clientMutationLabel) {
@@ -986,6 +1031,51 @@ export function updateEmployeeDependent(employee, clientMutationLabel) {
       "EMPLOYEE_DEPENDENT_MUTATION_REQ",
       "EMPLOYEE_DEPENDENT_UPDATE_EMPLOYEE_DEPENDENT_RESP",
       "EMPLOYEE_DEPENDENT_MUTATION_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      id: employee.id,
+    },
+  );
+}
+
+export function createEmployeeService(employee, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceEmployeeService",
+    formatWorkforceEmployeeGQL(employee),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "EMPLOYEE_SERVICE_MUTATION_REQ",
+      "EMPLOYEE_SERVICE_CREATE_EMPLOYEE_SERVICE_RESP",
+      "EMPLOYEE_SERVICE_MUTATION_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function updateEmployeeService(employee, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWorkforceEmployeeService",
+    formatEmployeeDependentGQL(employee),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "EMPLOYEE_SERVICE_MUTATION_REQ",
+      "EMPLOYEE_SERVICE_UPDATE_EMPLOYEE_SERVICE_RESP",
+      "EMPLOYEE_SERVICE_MUTATION_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,

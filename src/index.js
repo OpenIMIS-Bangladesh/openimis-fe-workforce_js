@@ -177,7 +177,7 @@ const DEFAULT_CONFIG = {
 
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_SERVICES}/:dependent_uuid`, component: ServicesPage },
     { path: ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE, component: ServicePage },
-    { path: `${ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE}/:dependent_uuid`, component: ServicePage },
+    { path: `${ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE}/:service_uuid`, component: ServicePage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS}/:workforce_employee_uuid`, component: AccidentInfosPage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO}/:workforce_employee_uuid`, component: AccidentInfoPage },
 

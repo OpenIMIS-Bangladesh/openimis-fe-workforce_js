@@ -26,7 +26,7 @@ class ServicesPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, "workforce.route.employees.dependents.dependent");
+    historyPush(this.props.modulesManager, this.props.history, "workforce.route.employees.services.service");
   };
 
   render() {

@@ -7,7 +7,7 @@ import {
 } from "@openimis/fe-core";
 // import OrganizationEmployeeForm from "../../../components/organization-employee/OrganizationEmployeeForm";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../../permission-rights";
-import { createEmployeeDependent, updateEmployeeDependent } from "../../../actions";
+import { createEmployeeDependent, createEmployeeService, updateEmployeeDependent, updateEmployeeService } from "../../../actions";
 import DependentForm from "../../../components/workforce-employee/dependent/DependentForm";
 import ServicesForm from "../../../components/workforce-employee/services/ServicesForm";
 
@@ -39,7 +39,7 @@ class ServicePage extends Component {
 
   render() {
     const {
-      classes, modulesManager, history, rights, dependentUuid, overview, organizationVersion,
+      classes, modulesManager, history, rights, serviceUuid, overview, organizationVersion,
     } = this.props;
     // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
@@ -48,10 +48,10 @@ class ServicePage extends Component {
       <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
         <ServicesForm
           overview={overview}
-          dependentUuid={dependentUuid}
+          serviceUuid={serviceUuid}
           organizationVersion={organizationVersion}
           readOnly={readOnly}
-          back={() => historyPush(modulesManager, history, "workforce.route.organizations.employees")}
+          back={() => historyPush(modulesManager, history, "workforce.route.employees.services")}
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
           save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
         />
@@ -62,14 +62,14 @@ class ServicePage extends Component {
 
 const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  dependentUuid: props.match.params.dependent_uuid,
+  serviceUuid: props.match.params.service_uuid,
   organizationVersion: props.match.params.version,
-  employee: state.workforce.employee,
+  employeeService: state.workforce.employeeService,
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  createEmployeeDependent,
-  updateEmployeeDependent,
+  createEmployeeService,
+  updateEmployeeService,
 }, dispatch);
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(

@@ -72,6 +72,19 @@ function reducer(
     employeeDependent: null,
     employeeDependentPageInfo: { totalCount: 0 },
 
+    ////employee services states
+    fetchingEmployeeServices: false,
+    errorEmployeeServices: null,
+    fetchedEmployeeServices: false,
+    employeeServices: [],
+    employeeServicesPageInfo: { totalCount: 0 },
+
+    fetchingEmployeeService: false,
+    errorEmployeeService: null,
+    fetchedEmployeeService: false,
+    employeeService: null,
+    employeeServicePageInfo: { totalCount: 0 },
+
     ///workforce office states
     fetchingWorkforceOffices: false,
     errorWorkforceOffices: null,
@@ -564,6 +577,58 @@ function reducer(
         errorEmployeeDependents: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_EMPLOYEES_DEPENDENTS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
+    ///employee services
+    case "WORKFORCE_EMPLOYEE_SERVICE_REQ":
+      return {
+        ...state,
+        fetchingEmployeeService: true,
+        fetchedEmployeeService: false,
+        employeeService: null,
+        errorEmployeeService: null,
+      };
+    case "WORKFORCE_EMPLOYEE_SERVICE_RESP":
+      return {
+        ...state,
+        fetchingEmployeeService: false,
+        fetchedEmployeeService: true,
+        employeeService: parseData(
+          action.payload.data.workforceEmployeeService
+        ).map((organizationEmployee) => ({
+          ...organizationEmployee,
+          id: decodeId(organizationEmployee.id),
+        }))?.[0],
+        errorEmployeeService: formatGraphQLError(action.payload),
+      };
+
+    case "WORKFORCE_EMPLOYEES_SERVICES_REQ":
+      return {
+        ...state,
+        fetchingEmployeeServices: true,
+        fetchedEmployeeServices: false,
+        employeeServices: [],
+        employeeServicesPageInfo: { totalCount: 0 },
+        errorEmployeeServices: null,
+      };
+    case "WORKFORCE_EMPLOYEES_SERVICES_RESP":
+      return {
+        ...state,
+        fetchingEmployeeServices: false,
+        fetchedEmployeeServices: true,
+        employeeServices: parseData(
+          action.payload.data.workforceEmployeeDesignation
+        ),
+        employeeServicesPageInfo: pageInfo(
+          action.payload.data.workforceEmployeeDesignation
+        ),
+        errorEmployeeServices: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_EMPLOYEES_SERVICES_ERR":
       return {
         ...state,
         fetching: false,
@@ -1128,6 +1193,15 @@ function reducer(
     case "EMPLOYEE_DEPENDENT_CREATE_EMPLOYEE_DEPENDENT_RESP":
       return dispatchMutationResp(state, "createBank", action);
     case "EMPLOYEE_DEPENDENT_UPDATE_EMPLOYEE_DEPENDENT_RESP":
+      return dispatchMutationResp(state, "updateBank", action);
+
+    case "EMPLOYEE_SERVICE_MUTATION_REQ": 
+      return dispatchMutationReq(state, action);
+    case "EMPLOYEE_SERVICE_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "EMPLOYEE_SERVICE_CREATE_EMPLOYEE_SERVICE_RESP":
+      return dispatchMutationResp(state, "createBank", action);
+    case "EMPLOYEE_SERVICE_UPDATE_EMPLOYEE_SERVICE_RESP":
       return dispatchMutationResp(state, "updateBank", action);
     default:
       return state;

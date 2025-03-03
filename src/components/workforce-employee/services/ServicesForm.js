@@ -2,19 +2,15 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import {
-  Form, formatMessageWithValues, journalize, ProgressOrError, withModulesManager, formatMessage,
+  Form, journalize, ProgressOrError, withModulesManager, formatMessage,
 } from "@openimis/fe-core";
 import { bindActionCreators } from "redux";
 import {
-  fetchDependent,
+  fetchService
 } from "../../../actions";
 import { MODULE_NAME } from "../../../constants";
-import EditDependentPage from "../../../pages/workforce-employee/dependent/EditDependentPage";
-import AddDependentPage from "../../../pages/workforce-employee/dependent/AddDependentPage";
 import EditServicesPage from "../../../pages/workforce-employee/services/EditServicesPage";
 import AddServicesPage from "../../../pages/workforce-employee/services/AddServicesPage";
-// import EditDependentPage from "../../../pages/workforce-employee/dependent/EditDependentPage";
-// import AddDependentPage from "../../../pages/workforce-employee/dependent/AddDependentPage";
 
 class ServicesForm extends Component {
   constructor(props) {
@@ -22,14 +18,14 @@ class ServicesForm extends Component {
     this.state = {
       lockNew: false,
       reset: 0,
-      dependentUuid: null,
+      serviceUuid: null,
       ticket: this._newTicket(),
     };
   }
 
   componentDidMount() {
-    if (this.props.dependentUuid) {
-      this.setState((state, props) => ({ dependentUuid: props.dependentUuid }));
+    if (this.props.serviceUuid) {
+      this.setState((state, props) => ({ serviceUuid: props.serviceUuid }));
     }
   }
 
@@ -37,27 +33,27 @@ class ServicesForm extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedEmployeeDependent !== this.props.fetchedEmployeeDependent
-      && !!this.props.fetchedEmployeeDependent
-      && !!this.props.organizationEmployee) {
+    if (prevProps.fetchedEmployeeService !== this.props.fetchedEmployeeService
+      && !!this.props.fetchedEmployeeService
+      && !!this.props.employeeService) {
       this.setState((state, props) => ({
-        organizationEmployee: { ...props.organizationEmployee },
-        dependentUuid: props.organizationEmployee.id,
+        employeeService: { ...props.employeeService },
+        serviceUuid: props.employeeService.id,
         lockNew: false,
       }));
-    } else if (prevState.dependentUuid !== this.state.dependentUuid) {
-      const filters = [`id: "${this.state.dependentUuid}"`];
-      this.props.fetchDependent(
+    } else if (prevState.serviceUuid !== this.state.serviceUuid) {
+      const filters = [`id: "${this.state.serviceUuid}"`];
+      this.props.fetchService(
         this.props.modulesManager,
         filters,
       );
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
-      if (this.props?.organizationEmployee?.id) {
-        this.props.fetchDependent(
+      if (this.props?.employeeService?.id) {
+        this.props.fetchService(
           this.props.modulesManager,
-          [`id: "${this.state.dependentUuid}"`],
+          [`id: "${this.state.serviceUuid}"`],
         );
       }
     }
@@ -97,7 +93,7 @@ class ServicesForm extends Component {
   render() {
     const {
       fetchingTicket,
-      fetchedEmployeeDependent,
+      fetchedEmployeeService,
       errorTicket,
       save, back,
     } = this.props;
@@ -107,7 +103,7 @@ class ServicesForm extends Component {
       reset,
       update,
       overview,
-      dependentUuid,
+      serviceUuid,
       ticket,
     } = this.state;
 
@@ -123,22 +119,22 @@ class ServicesForm extends Component {
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
-        {(!!fetchedEmployeeDependent || !dependentUuid) && (
+        {(!!fetchedEmployeeService || !serviceUuid) && (
           <Form
             module={MODULE_NAME}
-            edited_id={dependentUuid}
+            edited_id={serviceUuid}
             edited={ticket}
             reset={reset}
             update={update}
-            title="Organizations Employee"
+            title="Employee Service"
             titleParams={{ label: "Label" }}
             back={back}
             save={save ? this._save : null}
             canSave={this.canSave}
-            reload={(dependentUuid || readOnly) && this.reload}
+            reload={(serviceUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={dependentUuid ? [EditServicesPage] : [AddServicesPage]}
+            Panels={serviceUuid ? [EditServicesPage] : [AddServicesPage]}
             onEditedChanged={this.onEditedChanged}
           />
         )}
@@ -152,7 +148,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   fetchingTicket: state.workforce.fetchingTicket,
   errorTicket: state.workforce.errorTicket,
-  fetchedEmployeeDependent: state.workforce.fetchedEmployeeDependent,
+  fetchedEmployeeService: state.workforce.fetchedEmployeeService,
   ticket: state.workforce.ticket,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
@@ -160,7 +156,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchDependent,
+  fetchService,
   journalize,
 }, dispatch);
 

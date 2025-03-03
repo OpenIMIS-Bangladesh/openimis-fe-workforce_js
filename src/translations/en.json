@@ -223,6 +223,15 @@
     "workforce.employee.accident.info.reJoiningDate": "Re-Joining Date",
     "workforce.employee.accident.info.briefDescription": "Brief Description",
 
+    "workforce.employee.services.employee.id": "Employee ID",
+    "workforce.employee.services.employee.name": "Employee Name",
+    "workforce.employee.services.company.name": "Company Name",
+    "workforce.employee.services.join.date": "Joining Date",
+    "workforce.employee.services.resignation.date": "Resignation Date",
+    "workforce.employee.services.monthly.salary": "Monthly Salary",
+    "workforce.employee.services.monthly.positon": "Postion",
+    "workforce.employee.services.resignation.reason": "Resignation Reason",
+
 
 
     "workforce.representative.sameAsRepresentative": "Same as Company Representative"

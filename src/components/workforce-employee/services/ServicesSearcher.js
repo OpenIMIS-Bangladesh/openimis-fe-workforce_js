@@ -19,7 +19,7 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import { MODULE_NAME } from "../../../constants";
-import { fetchDependentsSummary } from "../../../actions";
+import { fetchServicesSummary } from "../../../actions";
 // import OrganizationEmployeeFilter from "./OrganizationEmployeeFilter";
 import DependentFilter from "./ServicesFilter";
 
@@ -92,7 +92,7 @@ class ServicesSearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchDependentsSummary(this.props.modulesManager, prms);
+    this.props.fetchServicesSummary(this.props.modulesManager, prms);
   };
 
   rowIdentifier = (r) => r.uuid;
@@ -119,9 +119,11 @@ class ServicesSearcher extends Component {
   headers = () => [
     "workforce.employee.first.name.en",
     "workforce.employee.first.name.bn",
-    "workforce.employee.nid",
-    "workforce.employee.phone",
-    "workforce.employee.email",
+    "workforce.employee.last.name.en",
+    "workforce.employee.last.name.bn",
+    "workforce.employee.position",
+    "workforce.employee.services.resignation.date",
+    "workforce.employee.status",
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
@@ -129,24 +131,26 @@ class ServicesSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      (workforceemployee) => workforceemployee.firstNameEn,
-      (workforceemployee) => workforceemployee.firstNameBn,
-      (workforceemployee) => workforceemployee.nid,
-      (workforceemployee) => workforceemployee.phoneNumber,
-      (workforceemployee) => workforceemployee.email,
-      (workforceemployee) =>
-        this.isShowHistory() ? workforceemployee?.version : null,
+      (workforceEmployeeServices) => workforceEmployeeServices.workforceEmployee.firstNameEn,
+      (workforceEmployeeServices) => workforceEmployeeServices.workforceEmployee.firstNameBn,
+      (workforceEmployeeServices) => workforceEmployeeServices.workforceEmployee.lastNameEn,
+      (workforceEmployeeServices) => workforceEmployeeServices.workforceEmployee.lastNameBn,
+      (workforceEmployeeServices) => workforceEmployeeServices.position,
+      (workforceEmployeeServices) => workforceEmployeeServices.resignationDate,
+      (workforceEmployeeServices) => workforceEmployeeServices.status,
+      (workforceEmployeeServices) =>
+        this.isShowHistory() ? workforceEmployeeServices?.version : null,
     ];
-    formatters.push((workforceemployee) => (
+    formatters.push((workforceEmployeeServices) => (
       <Tooltip title="Edit">
         <IconButton
-          disabled={workforceemployee?.isHistory}
+          disabled={workforceEmployeeServices?.isHistory}
           onClick={() => {
             historyPush(
               this.props.modulesManager,
               this.props.history,
               "workforce.route.employees.services.service",
-              [decodeId(workforceemployee.id)],
+              [decodeId(workforceEmployeeServices.id)],
               false
             );
           }}
@@ -165,17 +169,17 @@ class ServicesSearcher extends Component {
   render() {
     const {
       intl,
-      employeeDependents,
-      employeeDependentsPageInfo,
-      fetchingEmployeeDependents,
-      fetchedEmployeeDependents,
-      errorEmployeeDependents,
+      employeeServices,
+      employeeServicesPageInfo,
+      fetchingEmployeeServices,
+      fetchedEmployeeServices,
+      errorEmployeeServices,
       filterPaneContributionsKey,
       cacheFiltersKey,
       onDoubleClick,
     } = this.props;
 
-    const count = employeeDependentsPageInfo.totalCount;
+    const count = employeeServicesPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <DependentFilter
@@ -187,6 +191,8 @@ class ServicesSearcher extends Component {
       />
     );
 
+    console.log({employeeServices})
+
     return (
       <>
         <Searcher
@@ -194,11 +200,11 @@ class ServicesSearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={employeeDependents}
-          itemsPageInfo={employeeDependentsPageInfo}
-          fetchingItems={fetchingEmployeeDependents}
-          fetchedItems={fetchedEmployeeDependents}
-          errorItems={errorEmployeeDependents}
+          items={employeeServices}
+          itemsPageInfo={employeeServicesPageInfo}
+          fetchingItems={fetchingEmployeeServices}
+          fetchedItems={fetchedEmployeeServices}
+          errorItems={errorEmployeeServices}
           tableTitle={
             <FormattedMessage
               module={MODULE_NAME}
@@ -229,11 +235,11 @@ const mapStateToProps = (state) => ({
     !!state.core && !!state.core.user && !!state.core.user.i_user
       ? state.core.user.i_user.rights
       : [],
-  employeeDependents: state.workforce.employeeDependents,
-  employeeDependentsPageInfo: state.workforce.employeeDependentsPageInfo,
-  fetchingEmployeeDependents: state.workforce.fetchingEmployeeDependents,
-  fetchedEmployeeDependents: state.workforce.fetchedEmployeeDependents,
-  errorEmployeeDependents: state.workforce.errorEmployeeDependents,
+  employeeServices: state.workforce.employeeServices,
+  employeeServicesPageInfo: state.workforce.employeeServicesPageInfo,
+  fetchingEmployeeServices: state.workforce.fetchingEmployeeServices,
+  fetchedEmployeeServices: state.workforce.fetchedEmployeeServices,
+  errorEmployeeServices: state.workforce.errorEmployeeServices,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   confirmed: state.core.confirmed,
@@ -242,7 +248,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      fetchDependentsSummary,
+      fetchServicesSummary,
       journalize,
       coreConfirm,
     },
