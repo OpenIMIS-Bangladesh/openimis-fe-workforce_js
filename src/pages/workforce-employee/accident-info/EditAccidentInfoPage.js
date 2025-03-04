@@ -16,7 +16,7 @@ import {
   formatMutation,
   decodeId,
 } from "@openimis/fe-core";
-import { updateWorkforceEmployee } from "../../../actions";
+import { updateAccidentInfo } from "../../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 
@@ -33,14 +33,14 @@ class EditAccidentInfoPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stateEdited: props.workforceEmployee || {},
+      stateEdited: props.employeeAccident || {},
       isSaved: false,
     };
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.workforceEmployee !== this.props.workforceEmployee) {
-      this.setState({ stateEdited: this.props.workforceEmployee });
+    if (prevProps.employeeAccident !== this.props.employeeAccident) {
+      this.setState({ stateEdited: this.props.employeeAccident });
     }
 
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
@@ -76,9 +76,9 @@ class EditAccidentInfoPage extends Component {
     };
 
     dispatch(
-      updateWorkforceEmployee(
+      updateAccidentInfo(
         accidentInfoData,
-        `Update Workforce Employee ${accidentInfoData.nameEn}`
+        `Update Accident Info ${accidentInfoData.nameEn}`
       )
     );
     this.setState({ isSaved: true });
@@ -99,7 +99,7 @@ class EditAccidentInfoPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Workforce Employee Accident Info"
+                      id="Accident Info"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>
@@ -121,18 +121,18 @@ class EditAccidentInfoPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="core.DatePicker"
-                    label={"workforce.employee.accident.info.dateOfAccient"}
+                    label={"workforce.employee.accident.info.dateOfAccident"}
                     value={stateEdited.accidentDate || ""}
                     onChange={(v) => this.updateAttribute("accidentDate", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+               <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="core.DatePicker"
-                    label={"workforce.employee.accident.info.timeOfAccient"}
-                    value={stateEdited.timeOfAccient || ""}
-                    onChange={(v) => this.updateAttribute("timeOfAccient", v)}
+                    label={"workforce.employee.accident.info.timeOfAccident"}
+                    value={stateEdited.accidentTime || ""}
+                    onChange={(v) => this.updateAttribute("accidentTime", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
@@ -141,7 +141,7 @@ class EditAccidentInfoPage extends Component {
                     value={stateEdited.accidentType || ""}
                     label={
                       <FormattedMessage
-                        id="workforce.employee.accident.info.typeOfAccient"
+                        id="workforce.employee.accident.info.typeOfAccident"
                         module="workforce"
                       />
                     }
@@ -212,7 +212,7 @@ class EditAccidentInfoPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  workforceEmployee: state.workforce.workforceEmployee,
+  employeeAccident: state.workforce.employeeAccident,
 });
 
 export default connect(mapStateToProps)(

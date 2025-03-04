@@ -106,7 +106,7 @@ class AddAccidentInfoPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Workforce Employee Accident Info"
+                      id="Accident Info"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>
@@ -131,7 +131,7 @@ class AddAccidentInfoPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="core.DatePicker"
-                    label={"workforce.employee.accident.info.dateOfAccient"}
+                    label={"workforce.employee.accident.info.dateOfAccident"}
                     value={stateEdited.accidentDate || ""}
                     onChange={(v) => this.updateAttribute("accidentDate", v)}
                     readOnly={isSaved}
@@ -140,9 +140,9 @@ class AddAccidentInfoPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="core.DatePicker"
-                    label={"workforce.employee.accident.info.timeOfAccient"}
-                    value={stateEdited.timeOfAccient || ""}
-                    onChange={(v) => this.updateAttribute("timeOfAccient", v)}
+                    label={"workforce.employee.accident.info.timeOfAccident"}
+                    value={stateEdited.accidentTime || ""}
+                    onChange={(v) => this.updateAttribute("accidentTime", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
@@ -151,7 +151,7 @@ class AddAccidentInfoPage extends Component {
                     value={stateEdited.accidentType || ""}
                     label={
                       <FormattedMessage
-                        id="workforce.employee.accident.info.typeOfAccient"
+                        id="workforce.employee.accident.info.typeOfAccident"
                         module="workforce"
                       />
                     }
