@@ -34,7 +34,8 @@ import {
   ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS,
   ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO,
   ROUTE_WORKFORCE_EMPLOYEES_SERVICES,
-  ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE
+  ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE,
+  ROUTE_WORKFORCE_REGISTRATION
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -67,6 +68,7 @@ import AccidentInfosPage from "./pages/workforce-employee/accident-info/Accident
 import AccidentInfoPage from "./pages/workforce-employee/accident-info/AccidentInfoPage";
 import ServicesPage from "./pages/workforce-employee/services/ServicesPage";
 import ServicePage from "./pages/workforce-employee/services/ServicePage";
+import RegistrationPage from "./pages/registration/RegistrationPage";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -109,6 +111,9 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.employees", ref: ROUTE_WORKFORCE_EMPLOYEES },
     { key: "workforce.route.employees.accident.infos", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS },
     { key: "workforce.route.employees.accident.info", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO },
+
+    { key: "workforce.route.registration", ref: ROUTE_WORKFORCE_REGISTRATION },
+
     
     { key: "workforce.route.employees.dependents", ref: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS },
     { key: "workforce.route.employees.accident.infos.info", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO },
@@ -188,6 +193,9 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_BANKS, component: WorkforceBanksPage },
     { path: ROUTE_WORKFORCE_BANKS_BANK, component: WorkforceBankPage},
     { path: `${ROUTE_WORKFORCE_BANKS_BANK}/:bank_uuid`, component: WorkforceBankPage },
+
+    { path: ROUTE_WORKFORCE_REGISTRATION, component: RegistrationPage },
+
 
 
   ],

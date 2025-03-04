@@ -37,6 +37,7 @@
     "menu.workforce.approve.company": "Approve Companies",
     "menu.workforce.factory": "Factories",
     "menu.workforce.employee": "Employees",
+    "menu.workforce.registration": "Registration",
     "menu.workforce.banks": "Banks",
     "menu.workforce.branch": "Branches",
     "menu.workforce.employee.factory": "Employee Factories",
@@ -231,6 +232,10 @@
     "workforce.employee.services.monthly.salary": "Monthly Salary",
     "workforce.employee.services.monthly.positon": "Postion",
     "workforce.employee.services.resignation.reason": "Resignation Reason",
+
+    "registration.nid":"National ID (NID)",
+    "registration.mobile":"Mobile Number",
+    "registration.name":"Name",
 
 
 
