@@ -598,10 +598,10 @@ function reducer(
         fetchingEmployeeService: false,
         fetchedEmployeeService: true,
         employeeService: parseData(
-          action.payload.data.workforceEmployeeService
-        ).map((organizationEmployee) => ({
-          ...organizationEmployee,
-          id: decodeId(organizationEmployee.id),
+          action.payload.data.workforceEmployeeDesignation
+        ).map((employeeService) => ({
+          ...employeeService,
+          id: decodeId(employeeService.id),
         }))?.[0],
         errorEmployeeService: formatGraphQLError(action.payload),
       };

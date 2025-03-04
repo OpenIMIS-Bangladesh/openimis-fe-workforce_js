@@ -7,8 +7,7 @@ import {
 } from "@openimis/fe-core";
 // import OrganizationEmployeeForm from "../../../components/organization-employee/OrganizationEmployeeForm";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../../permission-rights";
-import { createEmployeeDependent, createEmployeeService, updateEmployeeDependent, updateEmployeeService } from "../../../actions";
-import DependentForm from "../../../components/workforce-employee/dependent/DependentForm";
+import { createEmployeeService, updateEmployeeService } from "../../../actions";
 import ServicesForm from "../../../components/workforce-employee/services/ServicesForm";
 
 const styles = (theme) => ({
