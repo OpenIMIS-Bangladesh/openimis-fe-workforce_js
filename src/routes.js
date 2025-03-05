@@ -34,6 +34,7 @@ export const ROUTE_WORKFORCE_BANKS = "workforce/banks";
 export const ROUTE_WORKFORCE_BANKS_BANK = "workforce/banks/bank"
 
 export const ROUTE_WORKFORCE_REGISTRATION = "workforce/registration"
+export const ROUTE_WORKFORCE_APPLICATION = "workforce/application"
 
 
 

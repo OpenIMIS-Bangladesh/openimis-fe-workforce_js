@@ -1,0 +1,92 @@
+import React, { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography } from "@material-ui/core";
+import FileUploader from "../../pickers/FileUploader";  
+import EmployeeDetailsForm from "./EmployeeDetailsForm";
+import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
+import EmployeeLocationForm from "./EmployeeLocationForm";
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    // height: "100vh",
+  },
+  paper: {
+    padding: theme.spacing(2),
+    width: 700,
+  },
+  buttonContainer: {
+    marginTop: theme.spacing(2),
+    display: "flex",
+    justifyContent: "space-between",
+  },
+}));
+
+const steps = ["Labour Details", "Upload Documents","Location"];
+
+const MultiStepApplyForm = () => {
+  const classes = useStyles();
+  const [activeStep, setActiveStep] = useState(0);
+  const [formData, setFormData] = useState({
+    companyName: "",
+    factoryName: "",
+    nameEn: "",
+    nameBn: "",
+    fatherName: "",
+    motherName: "",
+    mobile: "",
+    email: "",
+    lifeStatus: "",
+    gender: "",
+    monthlyEarning: "",
+    spouseName: "",
+  });
+
+  const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
+  const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
+
+  console.log({formData})
+
+  return (
+    <div className={classes.container}>
+      <Paper className={classes.paper} elevation={3}>
+        <Stepper activeStep={activeStep} alternativeLabel>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        {activeStep === 0 ? (
+          <EmployeeDetailsForm formData={formData} setFormData={setFormData} />
+        ) :activeStep === 1? (
+          <Box mt={3}>
+            {/* <Typography variant="h6">Upload NID and Birth Certificate</Typography>
+          <FileUploader /> */}
+          <EmployeeDetailsForm2 formData={formData} setFormData={setFormData} />
+          </Box>
+        ):(
+            <Box mt={3}>
+              {/* <Typography variant="h6">Upload NID and Birth Certificate</Typography>
+            <FileUploader /> */}
+            <EmployeeLocationForm formData={formData} setFormData={setFormData} />
+            </Box>
+          )}
+        <div className={classes.buttonContainer}>
+          {activeStep > 0 && <Button onClick={handleBack}>Back</Button>}
+          {activeStep < steps.length - 1 ? (
+            <Button variant="contained" color="primary" onClick={handleNext}>
+              Next
+            </Button>
+          ) : (
+            <Button variant="contained" color="secondary">Submit</Button>
+          )}
+        </div>
+      </Paper>
+    </div>
+  );
+};
+
+export default MultiStepApplyForm;

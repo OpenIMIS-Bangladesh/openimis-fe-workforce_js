@@ -1,0 +1,120 @@
+import React from "react";
+import {
+  Grid,
+  Box,
+  Paper,
+  Typography,
+  Divider,
+  IconButton,
+} from "@material-ui/core";
+// import { TextInput } from "@openimis/fe-core";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  useTranslations,
+  useModulesManager,
+  TextInput,
+  useHistory,
+  FormattedMessage,
+  PublishedComponent,
+} from "@openimis/fe-core";
+import { Save } from "@material-ui/icons";
+import { EMPTY_STRING, MODULE_NAME } from "../../constants";
+import CompanyPicker from "../../pickers/CompanyPicker";
+import FactoryPicker from "../../pickers/FactoryPicker";
+import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
+import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
+import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
+import FileUploader from "../../pickers/FileUploader";
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    // height: "100vh",
+  },
+  paper: {
+    padding: theme.spacing(2),
+  },
+  buttonContainer: {
+    marginTop: theme.spacing(2),
+    display: "flex",
+    justifyContent: "space-between",
+  },
+}));
+
+const EmployeeLocationForm = ({ formData, setFormData }) => {
+  const classes = useStyles();
+  const history = useHistory();
+  const modulesManager = useModulesManager();
+  const { formatMessage } = useTranslations(
+    "core.RegistrationPage",
+    modulesManager
+  );
+
+  const handleChange = (key, value) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+  };
+  return (
+    <Box mt={1}>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <Grid container className={classes.item} spacing={2}>
+            <Grid item xs={12} className={classes.item}>
+                <p>Present Location</p>
+                <PublishedComponent
+                  pubRef="location.DetailedLocation"
+                  withNull={true}
+                  value={formData.presentLocation || null}
+                  onChange={(presentLocation) =>
+                    setFormData({ presentLocation: presentLocation })
+                  }
+                  readOnly={false}
+                  required
+                  split={true}
+                />
+              </Grid>
+              <Grid item xs={12} className={classes.item}>
+                <TextInput
+                  label="workforce.employee.present_address"
+                  value={formData.presentAddress || ""}
+                  onChange={(v) => handleChange( "presentAddress", v )}
+                  readOnly={false}
+                />
+              </Grid>
+              <Grid item xs={12} className={classes.item}>
+                <p>Permanent Location</p>
+                <PublishedComponent
+                  pubRef="location.DetailedLocation"
+                  withNull={true}
+                  value={formData.permanentLocation || null}
+                  onChange={(permanentLocation) =>
+                    handleChange(
+                      "permanentLocation", permanentLocation
+                    )
+                  }
+                  readOnly={false}
+                  required
+                  split={true}
+                />
+              </Grid>
+              <Grid item xs={12} className={classes.item}>
+                <TextInput
+                  label="workforce.employee.permanent_address"
+                  value={formData.permanentAddress || ""}
+                  onChange={(v) => handleChange( "permanentAddress", v )}
+                  readOnly={false}
+                />
+              </Grid>
+              
+            </Grid>
+            <Divider />
+          </Paper>
+        </Grid>
+      </Grid>
+    </Box>
+  );
+};
+
+export default EmployeeLocationForm;
