@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeLocationForm = ({ formData, setFormData }) => {
+const EmployeeLocationForm = ({ handleChange,formData, setFormData }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -52,9 +52,9 @@ const EmployeeLocationForm = ({ formData, setFormData }) => {
     modulesManager
   );
 
-  const handleChange = (key, value) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
-  };
+//   const handleChange = (key, value) => {
+//     setFormData((prev) => ({ ...prev, [key]: value }));
+//   };
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
@@ -68,7 +68,7 @@ const EmployeeLocationForm = ({ formData, setFormData }) => {
                   withNull={true}
                   value={formData.presentLocation || null}
                   onChange={(presentLocation) =>
-                    setFormData({ presentLocation: presentLocation })
+                    handleChange( "presentLocation", presentLocation )
                   }
                   readOnly={false}
                   required

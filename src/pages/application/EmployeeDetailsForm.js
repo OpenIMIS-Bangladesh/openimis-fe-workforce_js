@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDetailsForm = ({ formData, setFormData }) => {
+const EmployeeDetailsForm = ({handleChange, formData, setFormData }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -51,9 +51,9 @@ const EmployeeDetailsForm = ({ formData, setFormData }) => {
     modulesManager
   );
 
-  const handleChange = (key, value) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
-  };
+//   const handleChange = (key, value) => {
+//     setFormData((prev) => ({ ...prev, [key]: value }));
+//   };
 
   return (
     <Box mt={1}>

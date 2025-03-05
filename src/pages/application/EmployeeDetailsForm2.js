@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDetailsForm2 = ({ formData, setFormData }) => {
+const EmployeeDetailsForm2 = ({handleChange, formData, setFormData }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -52,9 +52,9 @@ const EmployeeDetailsForm2 = ({ formData, setFormData }) => {
     modulesManager
   );
 
-  const handleChange = (key, value) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
-  };
+//   const handleChange = (key, value) => {
+//     setFormData((prev) => ({ ...prev, [key]: value }));
+//   };
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
@@ -98,7 +98,7 @@ const EmployeeDetailsForm2 = ({ formData, setFormData }) => {
                     />
                   }
                   required
-                  onChange={(v) => setFormData( "company", v )}
+                  onChange={(v) => handleChange( "company", v )}
                   readOnly={false}
                 />
               </Grid>
