@@ -19,7 +19,10 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import { MODULE_NAME } from "../../../constants";
-import { fetchDependentsSummary } from "../../../actions";
+import {
+  fetchDependentsSummary,
+  fetchWorkforceEmployee,
+} from "../../../actions";
 // import OrganizationEmployeeFilter from "./OrganizationEmployeeFilter";
 import DependentFilter from "./DependentFilter";
 
@@ -74,10 +77,17 @@ class DependentSearcher extends Component {
       confirmedAction: null,
       reset: 0,
       showHistoryFilter: false,
+      workforceEmployeeUuid: null,
       displayVersion: false,
     };
     this.rowsPerPageOptions = [10, 20, 50, 100];
     this.defaultPageSize = 10;
+  }
+
+  componentDidMount() {
+    if (this.props.workforceEmployeeUuid) {
+      this.setState((state, props) => ({ workforceEmployeeUuid: props.workforceEmployeeUuid }));
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -87,12 +97,39 @@ class DependentSearcher extends Component {
     } else if (!prevProps.confirmed && this.props.confirmed) {
       this.state.confirmedAction();
     }
+
+    if (
+      prevProps.fetchedWorkforceEmployee !==
+        this.props.fetchedWorkforceEmployee &&
+      !!this.props.fetchedWorkforceEmployee &&
+      !!this.props.workforceEmployee
+    ) {
+      this.setState((state, props) => ({
+        workforceEmployee: { ...props.workforceEmployee },
+        workforceEmployeeUuid: props.workforceEmployee.id,
+        lockNew: false,
+      }));
+    } else if (prevState.workforceEmployeeUuid !== this.state.workforceEmployeeUuid) {
+      const filters = [`id: "${this.state.workforceEmployeeUuid}"`];
+      this.props.fetchWorkforceEmployee(this.props.modulesManager, filters);
+    } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
+      this.props.journalize(this.props.mutation);
+      this.setState((state) => ({ reset: state.reset + 1 }));
+      if (this.props?.workforceEmployee?.id) {
+        this.props.fetchWorkforceEmployee(this.props.modulesManager, [
+          `id: "${this.state.workforceEmployeeUuid}"`,
+        ]);
+      }
+    }
   }
 
   fetch = (prms) => {
-    const { showHistoryFilter } = this.state;
+    const { showHistoryFilter, workforceEmployeeUuid } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
     this.props.fetchDependentsSummary(this.props.modulesManager, prms);
+    this.props.fetchWorkforceEmployee(this.props.modulesManager, [
+      `id: "${this.state.workforceEmployeeUuid}"`,
+    ]);
   };
 
   rowIdentifier = (r) => r.uuid;
@@ -169,11 +206,15 @@ class DependentSearcher extends Component {
       employeeDependentsPageInfo,
       fetchingEmployeeDependents,
       fetchedEmployeeDependents,
+      fetchedWorkforceEmployee,
       errorEmployeeDependents,
       filterPaneContributionsKey,
       cacheFiltersKey,
       onDoubleClick,
     } = this.props;
+
+    const { lockNew, reset, update, overview, workforceEmployeeUuid, ticket } =
+      this.state;
 
     const count = employeeDependentsPageInfo.totalCount;
 
@@ -187,38 +228,42 @@ class DependentSearcher extends Component {
       />
     );
 
+    console.log({ employeeDependents });
+
     return (
       <>
-        <Searcher
-          module={MODULE_NAME}
-          cacheFiltersKey={cacheFiltersKey}
-          FilterPane={filterPane}
-          filterPaneContributionsKey={filterPaneContributionsKey}
-          items={employeeDependents}
-          itemsPageInfo={employeeDependentsPageInfo}
-          fetchingItems={fetchingEmployeeDependents}
-          fetchedItems={fetchedEmployeeDependents}
-          errorItems={errorEmployeeDependents}
-          tableTitle={
-            <FormattedMessage
-              module={MODULE_NAME}
-              id="menu.workforce.employee.dependent"
-            />
-          }
-          rowsPerPageOptions={this.rowsPerPageOptions}
-          defaultPageSize={this.defaultPageSize}
-          fetch={this.fetch}
-          rowIdentifier={this.rowIdentifier}
-          filtersToQueryParams={this.filtersToQueryParams}
-          defaultOrderBy="-dateCreated"
-          headers={this.headers}
-          itemFormatters={this.itemFormatters}
-          sorts={this.sorts}
-          rowDisabled={this.rowDisabled}
-          rowLocked={this.rowLocked}
-          onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
-          reset={this.state.reset}
-        />
+        {(!!fetchedWorkforceEmployee || !workforceEmployeeUuid) && (
+          <Searcher
+            module={MODULE_NAME}
+            cacheFiltersKey={cacheFiltersKey}
+            FilterPane={filterPane}
+            filterPaneContributionsKey={filterPaneContributionsKey}
+            items={employeeDependents}
+            itemsPageInfo={employeeDependentsPageInfo}
+            fetchingItems={fetchingEmployeeDependents}
+            fetchedItems={fetchedEmployeeDependents}
+            errorItems={errorEmployeeDependents}
+            tableTitle={
+              <FormattedMessage
+                module={MODULE_NAME}
+                id="menu.workforce.employee.dependent"
+              />
+            }
+            rowsPerPageOptions={this.rowsPerPageOptions}
+            defaultPageSize={this.defaultPageSize}
+            fetch={this.fetch}
+            rowIdentifier={this.rowIdentifier}
+            filtersToQueryParams={this.filtersToQueryParams}
+            defaultOrderBy="-dateCreated"
+            headers={this.headers}
+            itemFormatters={this.itemFormatters}
+            sorts={this.sorts}
+            rowDisabled={this.rowDisabled}
+            rowLocked={this.rowLocked}
+            onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
+            reset={this.state.reset}
+          />
+        )}
       </>
     );
   }
@@ -233,6 +278,8 @@ const mapStateToProps = (state) => ({
   employeeDependentsPageInfo: state.workforce.employeeDependentsPageInfo,
   fetchingEmployeeDependents: state.workforce.fetchingEmployeeDependents,
   fetchedEmployeeDependents: state.workforce.fetchedEmployeeDependents,
+  fetchedWorkforceEmployee: state.workforce.fetchedWorkforceEmployee,
+  workforceEmployee: state.workforce.workforceEmployee,
   errorEmployeeDependents: state.workforce.errorEmployeeDependents,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
@@ -243,6 +290,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       fetchDependentsSummary,
+      fetchWorkforceEmployee,
       journalize,
       coreConfirm,
     },

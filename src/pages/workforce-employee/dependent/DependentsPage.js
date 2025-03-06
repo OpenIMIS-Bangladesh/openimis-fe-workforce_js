@@ -29,13 +29,14 @@ class DependentsPage extends Component {
   };
 
   render() {
-    const { intl, classes, rights } = this.props;
+    const { intl, classes, rights,workforceEmployeeUuid } = this.props;
 
     return (
       <div className={classes.page}>
         <DependentSearcher
           cacheFiltersKey="ticketPageFiltersCache"
           onDoubleClick={this.onDoubleClick}
+          workforceEmployeeUuid={workforceEmployeeUuid}
         />
         {/*{rights.includes(RIGHT_ORGANIZATION_CREATE)*/}
         {/*  && withTooltip(*/}
@@ -54,6 +55,7 @@ class DependentsPage extends Component {
 
 const mapStateToProps = (state) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
+  workforceEmployeeUuid: props.match.params.workforce_employee_uuid,
 });
 
 export default withModulesManager(
