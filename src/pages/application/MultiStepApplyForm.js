@@ -30,19 +30,43 @@ const MultiStepApplyForm = () => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
-    companyName: "",
-    factoryName: "",
-    nameEn: "",
-    nameBn: "",
-    fatherName: "",
-    motherName: "",
-    mobile: "",
+    firstNameEn: "",
+    firstNameBn: "",
+    lastNameEn: "",
+    lastNameBn: "",
+    otherName: "",
+    position: "",
+    fatherNameEn: "",
+    fatherNameBn: "",
+    motherNameEn: "",
+    motherNameBn: "",
+    spouseNameEn: "",
+    spouseNameBn: "",
+    phoneNumber: "",
     email: "",
+    citizenship: "",
+    birthDate: "",
+    deathDate: "",
+    joinDate: "",
+    nid: "",
+    birthCertificateNo: "",
+    company: null,
+    factory: null,
     lifeStatus: "",
     gender: "",
+    maritalStatus: "",
     monthlyEarning: "",
-    spouseName: "",
+    uploadedNidFile: null,  // Store uploaded files
+    uploadedBirthCertificateFile: null,
+    permanentAddress:"",
+    permanentLocation:null,
+    presentAddress:"",
+    presentLocation:null
   });
+  
+  const handleChange = (key, value) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -60,18 +84,18 @@ const MultiStepApplyForm = () => {
           ))}
         </Stepper>
         {activeStep === 0 ? (
-          <EmployeeDetailsForm formData={formData} setFormData={setFormData} />
+          <EmployeeDetailsForm handleChange={handleChange} formData={formData} setFormData={setFormData} />
         ) :activeStep === 1? (
           <Box mt={3}>
             {/* <Typography variant="h6">Upload NID and Birth Certificate</Typography>
           <FileUploader /> */}
-          <EmployeeDetailsForm2 formData={formData} setFormData={setFormData} />
+          <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} setFormData={setFormData} />
           </Box>
         ):(
             <Box mt={3}>
               {/* <Typography variant="h6">Upload NID and Birth Certificate</Typography>
             <FileUploader /> */}
-            <EmployeeLocationForm formData={formData} setFormData={setFormData} />
+            <EmployeeLocationForm handleChange={handleChange} formData={formData} setFormData={setFormData} />
             </Box>
           )}
         <div className={classes.buttonContainer}>
