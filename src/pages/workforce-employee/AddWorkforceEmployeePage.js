@@ -212,7 +212,7 @@ class AddWorkforceEmployeePage extends Component {
                     pubRef="core.DatePicker"
                     label={"workforce.employee.deathdate"}
                     value={stateEdited.deathDate || ""}
-                    readOnly={stateEdited.lifeStatus ==="Deceased" ? false:true}
+                    readOnly={stateEdited.lifeStatus !== "Deceased"}
                     onChange={(v) => this.updateAttribute("deathDate", v)}
                     // readOnly={isSaved}
                   />
