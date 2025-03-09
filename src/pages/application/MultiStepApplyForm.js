@@ -5,6 +5,8 @@ import FileUploader from "../../pickers/FileUploader";
 import EmployeeDetailsForm from "./EmployeeDetailsForm";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 import EmployeeLocationForm from "./EmployeeLocationForm";
+import EmployeeDependentForm from "./EmployeeDependentForm";
+import EmployeeAccidentInfoForm from "./EmployeeAccidentInfoForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -24,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const steps = ["Labour Details", "Upload Documents","Location"];
+const steps = ["Labour Details", "Upload Documents","Location","Dependent","Accident Info"];
 
 const MultiStepApplyForm = () => {
   const classes = useStyles();
@@ -87,15 +89,23 @@ const MultiStepApplyForm = () => {
           <EmployeeDetailsForm handleChange={handleChange} formData={formData} setFormData={setFormData} />
         ) :activeStep === 1? (
           <Box mt={3}>
-            {/* <Typography variant="h6">Upload NID and Birth Certificate</Typography>
-          <FileUploader /> */}
+          
           <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} setFormData={setFormData} />
           </Box>
-        ):(
+        ):activeStep === 2?(
             <Box mt={3}>
-              {/* <Typography variant="h6">Upload NID and Birth Certificate</Typography>
-            <FileUploader /> */}
+             
             <EmployeeLocationForm handleChange={handleChange} formData={formData} setFormData={setFormData} />
+            </Box>
+          ):activeStep === 3?(
+            <Box mt={3}>
+            
+            <EmployeeDependentForm handleChange={handleChange} formData={formData} setFormData={setFormData} />
+            </Box>
+          ):(
+            <Box mt={3}>
+            
+            <EmployeeAccidentInfoForm handleChange={handleChange} formData={formData} setFormData={setFormData} />
             </Box>
           )}
         <div className={classes.buttonContainer}>
