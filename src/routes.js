@@ -28,6 +28,8 @@ export const ROUTE_WORKFORCE_EMPLOYEES_SERVICES = "workforce/employees/services"
 export const ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE = "workforce/employees/services/service";
 export const ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS = "workforce/employees/accident/infos";
 export const ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO = "workforce/employees/accident/infos/info";
+export const ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS = "workforce/employees/account/infos";
+export const ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS_INFO = "workforce/employees/account/infos/info";
 export const ROUTE_WORKFORCE_EMPLOYEE_FACTORIES = "workforce/employee/factories";
 
 export const ROUTE_WORKFORCE_BANKS = "workforce/banks";
