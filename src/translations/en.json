@@ -225,6 +225,17 @@
     "workforce.employee.accident.info.reJoiningDate": "Re-Joining Date",
     "workforce.employee.accident.info.briefDescription": "Brief Description",
 
+    "workforce.employee.account.info.addNewTooltip": "Add Account Info",
+    "menu.workforce.employee.account.info":"Account Info",
+    "workforce.employee.account.info.accountOwnerName": "Account Owner Name",
+    "workforce.employee.account.info.onbehalfOf": "On Behalf Of",
+    "workforce.employee.account.info.reference": "Reference",
+    "workforce.employee.account.info.bankName": "Bank Name",
+    "workforce.employee.account.info.branchName": "Branch Name",
+    "workforce.employee.account.info.routingNumber": "Routing Number",
+    "workforce.employee.account.info.accountHolderName": "Account Holder Name",
+    "workforce.employee.account.info.status": "Status",
+
     "workforce.employee.services.employee.id": "Employee ID",
     "workforce.employee.services.employee.name": "Employee Name",
     "workforce.employee.services.company.name": "Company Name",

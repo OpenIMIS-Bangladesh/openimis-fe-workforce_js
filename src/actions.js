@@ -530,6 +530,54 @@ const projections = [
   );
   return graphql(payload, "WORKFORCE_EMPLOYEES_ACCIDENT");
 }
+export function fetchAccountInfosSummary(mm, filters) {
+  const present_location_projection =
+  "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+const permanent_location_projection =
+  "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+ 
+  const projections = [
+    "id",
+    "beneficiaryType",
+    "beneficiaryId",
+    "onBehalfOf",
+    "accountHolderName",
+    "accountNumber",
+    "status",
+    present_location_projection,
+    permanent_location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployeeAccountInfo",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEES_ACCOUNTS");
+}
+export function fetchAccountInfo(mm, filters) {
+  const present_location_projection =
+  "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+const permanent_location_projection =
+  "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+ 
+const projections = [
+    "id",
+    "beneficiaryType",
+    "beneficiaryId",
+    "onBehalfOf",
+    "accountHolderName",
+    "accountNumber",
+    "status",
+    present_location_projection,
+    permanent_location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployeeAccountInfo",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEES_ACCOUNT");
+}
 
 export function fetchWorkforceEmployee(mm, filters) {
   const present_location_projection =
