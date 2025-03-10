@@ -23,10 +23,6 @@ import {
   WORKFORCE_STATUS,
 } from "../../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import EmployeeInjuryTypePicker from "../../../pickers/EmployeeInjuryTypePicker";
-import EmployeeAccidentTypePicker from "../../../pickers/EmployeeAccidentTypePicker";
-import EmployeeDutyStatusPicker from "../../../pickers/EmployeeDutyStatusPicker";
-import EmployeeInsideOutsideFactoryPicker from "../../../pickers/EmployeeInsideOutsideFactoryPicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
