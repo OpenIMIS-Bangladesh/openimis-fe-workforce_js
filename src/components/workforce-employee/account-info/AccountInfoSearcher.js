@@ -174,17 +174,17 @@ class AccountInfoSearcher extends Component {
   render() {
     const {
       intl,
-      employeeAccidents,
-      employeeAccidentsPageInfo,
-      fetchingEmployeeAccidents,
-      fetchedEmployeeAccidents,
-      errorEmployeeAccidents,
+      employeeAccounts,
+      employeeAccountsPageInfo,
+      fetchingEmployeeAccounts,
+      fetchedEmployeeAccounts,
+      errorEmployeeAccounts,
       filterPaneContributionsKey,
       cacheFiltersKey,
       onDoubleClick,
     } = this.props;
 
-    const count = employeeAccidentsPageInfo.totalCount;
+    const count = employeeAccountsPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <AccountInfoFilter
@@ -203,11 +203,11 @@ class AccountInfoSearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={employeeAccidents}
-          itemsPageInfo={employeeAccidentsPageInfo}
-          fetchingItems={fetchingEmployeeAccidents}
-          fetchedItems={fetchedEmployeeAccidents}
-          errorItems={errorEmployeeAccidents}
+          items={employeeAccounts}
+          itemsPageInfo={employeeAccountsPageInfo}
+          fetchingItems={fetchingEmployeeAccounts}
+          fetchedItems={fetchedEmployeeAccounts}
+          errorItems={errorEmployeeAccounts}
           tableTitle={
             <FormattedMessage
               module={MODULE_NAME}
@@ -238,11 +238,11 @@ const mapStateToProps = (state) => ({
     !!state.core && !!state.core.user && !!state.core.user.i_user
       ? state.core.user.i_user.rights
       : [],
-  employeeAccidents: state.workforce.employeeAccidents,
-  employeeAccidentsPageInfo: state.workforce.employeeAccidentsPageInfo,
-  fetchingEmployeeAccidents: state.workforce.fetchingEmployeeAccidents,
-  fetchedEmployeeAccidents: state.workforce.fetchedEmployeeAccidents,
-  errorEmployeeAccidents: state.workforce.errorEmployeeAccidents,
+  employeeAccounts: state.workforce.employeeAccounts,
+  employeeAccountsPageInfo: state.workforce.employeeAccountsPageInfo,
+  fetchingEmployeeAccounts: state.workforce.fetchingEmployeeAccounts,
+  fetchedEmployeeAccounts: state.workforce.fetchedEmployeeAccounts,
+  errorEmployeeAccounts: state.workforce.errorEmployeeAccounts,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   confirmed: state.core.confirmed,

@@ -17,7 +17,7 @@ const styles = (theme) => ({
 
 class AccountInfosPage extends Component {
   onDoubleClick = (employee, newTab = false) => {
-    const routeParams = ["workforce.route.employees.account.info", [decodeId(employee.id)]];
+    const routeParams = ["workforce.route.employees.account.infos.info", [decodeId(employee.id)]];
     if (employee?.isHistory) {
       routeParams[1].push(employee.version);
     }
@@ -25,7 +25,7 @@ class AccountInfosPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, "workforce.route.employees.account.info");
+    historyPush(this.props.modulesManager, this.props.history, "workforce.route.employees.account.infos.info");
   };
 
   render() {

@@ -16,14 +16,17 @@ import {
   formatMutation,
   decodeId,
 } from "@openimis/fe-core";
-import { createAccidentInfo } from "../../../actions";
-import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../../constants";
+import { createAccountInfo } from "../../../actions";
+import {
+  EMPTY_STRING,
+  MODULE_NAME,
+  WORKFORCE_STATUS,
+} from "../../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import EmployeeInjuryTypePicker from "../../../pickers/EmployeeInjuryTypePicker";
 import EmployeeAccidentTypePicker from "../../../pickers/EmployeeAccidentTypePicker";
 import EmployeeDutyStatusPicker from "../../../pickers/EmployeeDutyStatusPicker";
 import EmployeeInsideOutsideFactoryPicker from "../../../pickers/EmployeeInsideOutsideFactoryPicker";
-
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -57,21 +60,18 @@ class AddAccidentInfoPage extends Component {
     const { stateEdited } = this.state;
     const { dispatch } = this.props;
 
-    const accidentInfoData = {
-      accidentDate: stateEdited?.accidentDate || stateEdited.accidentDate,
-      injuryType: stateEdited?.injuryType || stateEdited.injuryType,
-      accidentTime: stateEdited?.accidentTime || stateEdited.accidentTime,
-      accidentType: stateEdited?.accidentType || stateEdited.accidentType,
-      dutyStatus: stateEdited?.dutyStatus || stateEdited.dutyStatus,
-      description: stateEdited?.description || stateEdited.description,
-      inOutsideFactory: stateEdited?.inOutsideFactory || stateEdited.inOutsideFactory,
-      reJoiningDate: stateEdited?.reJoiningDate || stateEdited.reJoiningDate,
+    const accountInfoData = {
+      bank: stateEdited?.bank || stateEdited.bank,
+      accountHolderName: stateEdited?.accountHolderName || stateEdited.accountHolderName,
+      routingNumber: stateEdited?.routingNumber || stateEdited.routingNumber,
+      accountNumber: stateEdited?.accountNumber || stateEdited.accountNumber,
+      status: stateEdited?.status || stateEdited.status,
       workforceEmployee: stateEdited.workforceEmployee,
     };
 
     await dispatch(
-      createAccidentInfo(
-        accidentInfoData,
+      createAccountInfo(
+        accountInfoData,
         `Created Account Info ${stateEdited.title}`
       )
     );
@@ -112,90 +112,70 @@ class AddAccidentInfoPage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-              <Grid item xs={6} className={classes.item}>
-                  <EmployeeInjuryTypePicker
-                    value={stateEdited.lifeStatus || ""}
+                <Grid item xs={6} className={classes.item}>
+                  <BanksPicker
+                    value={stateEdited.bank || ""}
                     label={
                       <FormattedMessage
-                        id="workforce.employee.accident.info.injuryType"
+                        id="workforce.employee.account.info.bankName"
                         module="workforce"
                       />
                     }
                     required
-                    onChange={(v) => this.updateAttribute("injuryType", v)}
+                    onChange={(v) => this.updateAttribute("bank", v)}
                     readOnly={isSaved}
                   />
-                </Grid>       
+                </Grid>             
                 <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="core.DatePicker"
-                    label={"workforce.employee.accident.info.dateOfAccident"}
-                    value={stateEdited.accidentDate || ""}
-                    onChange={(v) => this.updateAttribute("accidentDate", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="core.DatePicker"
-                    label={"workforce.employee.accident.info.timeOfAccident"}
-                    value={stateEdited.accidentTime || ""}
-                    onChange={(v) => this.updateAttribute("accidentTime", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <EmployeeAccidentTypePicker
-                    value={stateEdited.accidentType || ""}
+                  <BanksPicker
+                    value={stateEdited.bank || ""}
                     label={
                       <FormattedMessage
-                        id="workforce.employee.accident.info.typeOfAccident"
+                        id="workforce.employee.account.info.branchName"
                         module="workforce"
                       />
                     }
                     required
-                    onChange={(v) => this.updateAttribute("accidentType", v)}
+                    onChange={(v) => this.updateAttribute("bank", v)}
                     readOnly={isSaved}
                   />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <EmployeeDutyStatusPicker
-                    value={stateEdited.dutyStatus || ""}
-                    label={
-                      <FormattedMessage
-                        id="workforce.employee.accident.info.dutyStatus"
-                        module="workforce"
-                      />
-                    }
-                    required
-                    onChange={(v) => this.updateAttribute("dutyStatus", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>      
-                <Grid item xs={6} className={classes.item}>
-                  <EmployeeInsideOutsideFactoryPicker
-                    value={stateEdited.inOutsideFactory || ""}
-                    label={
-                      <FormattedMessage
-                        id="workforce.employee.accident.info.insideOutsideFactory"
-                        module="workforce"
-                      />
-                    }
-                    required
-                    onChange={(v) => this.updateAttribute("inOutsideFactory", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="core.DatePicker"
-                    label={"workforce.employee.accident.info.reJoiningDate"}
-                    value={stateEdited.reJoiningDate || ""}
-                    onChange={(v) => this.updateAttribute("reJoiningDate", v)}
-                    readOnly={isSaved}
-                  />
-                </Grid>      
-                <Grid item xs={11} className={classes.item} />
+                </Grid>  
+                 <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.employee.account.info.accountHolderName"
+                      value={stateEdited.accountHolderName || ""}
+                      onChange={(v) => this.updateAttribute("accountHolderName", v)}
+                      required
+                      readOnly={isSaved}
+                    />
+                 </Grid>           
+                 <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.employee.account.info.routingNumber"
+                      value={stateEdited.routingNumber || ""}
+                      onChange={(v) => this.updateAttribute("routingNumber", v)}
+                      required
+                      readOnly={isSaved}
+                    />
+                 </Grid>           
+                 <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.employee.account.info.accountNumber"
+                      value={stateEdited.accountNumber || ""}
+                      onChange={(v) => this.updateAttribute("accountNumber", v)}
+                      required
+                      readOnly={isSaved}
+                    />
+                 </Grid>           
+                 <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.employee.account.info.status"
+                      value={stateEdited.status || ""}
+                      onChange={(v) => this.updateAttribute("status", v)}
+                      required
+                      readOnly={isSaved}
+                    />
+                 </Grid>           
                 <Grid item xs={1} className={classes.item}>
                   <IconButton
                     variant="contained"
