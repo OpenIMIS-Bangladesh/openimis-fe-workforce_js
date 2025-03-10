@@ -19,17 +19,17 @@ class AccoutInfoPage extends Component {
     historyPush(this.props.modulesManager, this.props.history, "grievance.route.ticket");
   };
 
-  save = (accidentinfo) => {
-    if (!accidentinfo.id) {
+  save = (accountinfo) => {
+    if (!accountinfo.id) {
       this.props.createAccidentInfo(
         this.props.modulesManager,
-        accidentinfo,
+        accountinfo,
         "Create",
       );
     } else {
       this.props.updateAccidentInfo(
         this.props.modulesManager,
-        accidentinfo,
+        accountinfo,
         "Update",
       );
     }
@@ -60,7 +60,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   workforceEmployeeUuid: props.match.params.workforce_employee_uuid,
   organizationVersion: props.match.params.version,
-  accidentinfo: state.workforce.accidentinfo,
+  accountinfo: state.workforce.accountinfo,
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({

@@ -231,6 +231,17 @@ export function formatWorkforceEmployeeAccidentInfoGQL(employee) {
     ${employee.description ? `description: "${employee.description}"` : ""}
   `;
 }
+export function formatWorkforceEmployeeAccountInfoGQL(employee) {
+  return `
+    ${employee.beneficiaryType ? `beneficiaryType: "${formatGQLString(employee.beneficiaryType)}"` : ""}
+    ${employee.beneficiaryId ? `beneficiaryId: "${formatGQLString(employee.beneficiaryId)}"` : ""}
+    ${employee.onBehalfOf ? `onBehalfOf: "${formatGQLString(employee.onBehalfOf)}"` : ""}
+    ${employee.accountHolderName ? `accountHolderName: "${employee.accountHolderName}"` : ""}
+    ${employee.accountNumber ? `accountNumber: "${employee.accountNumber}"` : ""}
+    ${employee.status ? `status: "${employee.status}"` : ""}
+ 
+  `;
+}
 export function formatUnitDesignationGQL(unitDesignation) {
   return `
     ${unitDesignation.id ? `id: "${formatGQLString(unitDesignation.id)}"` : ""}

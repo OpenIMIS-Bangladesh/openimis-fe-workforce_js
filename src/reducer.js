@@ -226,6 +226,19 @@ function reducer(
     fetchedEmployeeAccident: false,
     employeeAccident: null,
     employeeAccidentPageInfo: { totalCount: 0 },
+
+    ////employee Account states
+    fetchingEmployeeAccounts: false,
+    errorEmployeeAccounts: null,
+    fetchedEmployeeAccounts: false,
+    employeeAccounts: [],
+    employeeAccountsPageInfo: { totalCount: 0 },
+
+    fetchingEmployeeAccount: false,
+    errorEmployeeAccounts: null,
+    fetchedEmployeeAccount: false,
+    employeeAccount: null,
+    employeeAccountPageInfo: { totalCount: 0 },
   },
   action
 ) {
@@ -682,6 +695,58 @@ function reducer(
         errorEmployeeAccidents: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_EMPLOYEES_ACCIDENTS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+   
+       //employee account //
+    case "WORKFORCE_EMPLOYEE_ACCOUNT_REQ":
+      return {
+        ...state,
+        fetchingEmployeeAccount: true,
+        fetchedEmployeeAccount: false,
+        employeeAccount: null,
+        errorEmployeeAccount: null,
+      };
+    case "WORKFORCE_EMPLOYEE_ACCOUNT_RESP":
+      return {
+        ...state,
+        fetchingEmployeeAccount: false,
+        fetchedEmployeeAccount: true,
+        employeeAccount: parseData(
+          action.payload.data.workforceEmployeeAccount
+        ).map((organizationEmployee) => ({
+          ...organizationEmployee,
+          id: decodeId(organizationEmployee.id),
+        }))?.[0],
+        errorEmployeeAccount: formatGraphQLError(action.payload),
+      };
+
+    case "WORKFORCE_EMPLOYEES_ACCOUNTS_REQ":
+      return {
+        ...state,
+        fetchingEmployeeAccounts: true,
+        fetchedEmployeeAccounts: false,
+        employeeAccounts: [],
+        employeeAccountsPageInfo: { totalCount: 0 },
+        errorEmployeeAccounts: null,
+      };
+    case "WORKFORCE_EMPLOYEES_ACCOUNTS_RESP":
+      return {
+        ...state,
+        fetchingEmployeeAccounts: false,
+        fetchedEmployeeAccounts: true,
+        employeeAccounts: parseData(
+          action.payload.data.workforceEmployeeAccount
+        ),
+        employeeAccountsPageInfo: pageInfo(
+          action.payload.data.workforceEmployeeAccount
+        ),
+        errorEmployeeAccounts: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_EMPLOYEES_ACCOUNTS_ERR":
       return {
         ...state,
         fetching: false,

@@ -6,7 +6,7 @@ import {
 } from "@openimis/fe-core";
 import { bindActionCreators } from "redux";
 import {
-  fetchAccidentInfo,
+  fetchAccountInfo,
 } from "../../../actions";
 import { MODULE_NAME } from "../../../constants";
 import EditAccountInfoPage from "../../../pages/workforce-employee/account-info/EditAccountInfoPage";
@@ -33,8 +33,8 @@ class AccountInfoForm extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedEmployeeAccident !== this.props.fetchedEmployeeAccident
-      && !!this.props.fetchedEmployeeAccident
+    if (prevProps.fetchedEmployeeAccount !== this.props.fetchedEmployeeAccount
+      && !!this.props.fetchedEmployeeAccount
       && !!this.props.organizationEmployee) {
       this.setState((state, props) => ({
         organizationEmployee: { ...props.organizationEmployee },
@@ -43,7 +43,7 @@ class AccountInfoForm extends Component {
       }));
     } else if (prevState.workforceEmployeeUuid !== this.state.workforceEmployeeUuid) {
       const filters = [`id: "${this.state.workforceEmployeeUuid}"`];
-      this.props.fetchAccidentInfo(
+      this.props.fetchAccountInfo(
         this.props.modulesManager,
         filters,
       );
@@ -51,7 +51,7 @@ class AccountInfoForm extends Component {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
       if (this.props?.organizationEmployee?.id) {
-        this.props.fetchAccidentInfo(
+        this.props.fetchAccountInfo(
           this.props.modulesManager,
           [`id: "${this.state.workforceEmployeeUuid}"`],
         );
@@ -93,7 +93,7 @@ class AccountInfoForm extends Component {
   render() {
     const {
       fetchingTicket,
-      fetchedEmployeeAccident,
+      fetchedEmployeeAccount,
       errorTicket,
       save, back,
     } = this.props;
@@ -119,7 +119,7 @@ class AccountInfoForm extends Component {
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
-        {(!!fetchedEmployeeAccident || !workforceEmployeeUuid) && (
+        {(!!fetchedEmployeeAccount || !workforceEmployeeUuid) && (
           <Form
             module={MODULE_NAME}
             edited_id={workforceEmployeeUuid}
@@ -148,7 +148,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   fetchingTicket: state.workforce.fetchingTicket,
   errorTicket: state.workforce.errorTicket,
-  fetchedEmployeeAccident: state.workforce.fetchedEmployeeAccident,
+  fetchedEmployeeAccount: state.workforce.fetchedEmployeeAccount,
   ticket: state.workforce.ticket,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
@@ -156,7 +156,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchAccidentInfo,
+  fetchAccountInfo,
   journalize,
 }, dispatch);
 

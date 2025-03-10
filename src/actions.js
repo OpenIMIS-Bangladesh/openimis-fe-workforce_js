@@ -14,9 +14,12 @@ import {
   formatWorkforceFactoryGQL,
   formatEmployeeDesignationGQL,
   formatWorkforceEmployeeGQL,
-  formatEmployeeAssignDesignationGQL, formatWorkforceCompanyStatusGql,
+  formatEmployeeAssignDesignationGQL, 
+  formatWorkforceCompanyStatusGql,
   formatBankGQL,
   formatEmployeeDependentGQL,
+  formatWorkforceEmployeeAccountInfoGQL,
+  formatWorkforceEmployeeAccidentInfoGQL
 } from "./utils/format_gql";
 
 export function fetchOrganizationsSummary(mm, filters) {
@@ -1031,6 +1034,49 @@ export function updateAccidentInfo(employee, clientMutationLabel) {
       "WORKFORCE_EMPLOYEES_ACCIDENT_REQ",
       "WORKFORCE_EMPLOYEES_ACCIDENT_RESP",
       "WORKFORCE_EMPLOYEES_ACCIDENT_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      id: employee.id,
+    },
+  );
+}
+export function createAccountInfo(employee, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceEmployeeAccountInfo",
+    formatWorkforceEmployeeAccountInfoGQL(employee),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_EMPLOYEES_ACCOUNT_REQ",
+      "WORKFORCE_EMPLOYEES_ACCOUNT_RESP",
+      "WORKFORCE_EMPLOYEES_ACCOUNT_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function updateAccountInfo(employee, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWorkforceEmployeeAccountInfo",
+    formatWorkforceEmployeeAccountInfoGQL(employee),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [ "WORKFORCE_EMPLOYEES_ACCOUNT_REQ",
+      "WORKFORCE_EMPLOYEES_ACCOUNT_RESP",
+      "WORKFORCE_EMPLOYEES_ACCOUNT_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,

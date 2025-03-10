@@ -17,7 +17,7 @@ const styles = (theme) => ({
 
 class AccidentInfosPage extends Component {
   onDoubleClick = (employee, newTab = false) => {
-    const routeParams = ["workforce.route.employees.accident.info", [decodeId(employee.id)]];
+    const routeParams = ["workforce.route.employees.accident.infos.info", [decodeId(employee.id)]];
     if (employee?.isHistory) {
       routeParams[1].push(employee.version);
     }
@@ -25,7 +25,7 @@ class AccidentInfosPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, "workforce.route.employees.accident.info");
+    historyPush(this.props.modulesManager, this.props.history, "workforce.route.employees.accident.infos.info");
   };
 
   render() {

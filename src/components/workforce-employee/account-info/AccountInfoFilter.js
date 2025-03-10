@@ -14,8 +14,6 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import { MODULE_NAME } from "../../../constants";
-import EmployeeInjuryTypePicker from "../../../pickers/EmployeeInjuryTypePicker";
-import EmployeeAccidentTypePicker from "../../../pickers/EmployeeAccidentTypePicker";
 import BanksPicker from "../../../pickers/BanksPicker";
 
 const styles = (theme) => ({
