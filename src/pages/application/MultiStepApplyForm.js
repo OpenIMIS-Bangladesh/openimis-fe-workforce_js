@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const steps = ["Labour Details", "Upload Documents","Location","Dependent","Accident Info"];
+// const steps = ["Labour Details", "Upload Documents","Location","Dependent","Accident Info"];
+const steps = ["শ্রমিকের বিবরণ", "নথি আপলোড করুন","ঠিকানা","নির্ভরশীল","দুর্ঘটনার তথ্য"];
 
 const MultiStepApplyForm = () => {
   const classes = useStyles();
@@ -112,7 +113,7 @@ const MultiStepApplyForm = () => {
           {activeStep > 0 && <Button onClick={handleBack}>Back</Button>}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
-              Next
+             Save & Next
             </Button>
           ) : (
             <Button variant="contained" color="secondary">Submit</Button>

@@ -1,4 +1,5 @@
 import messages_en from "./translations/en.json";
+import messages_bn from "./translations/bn.json";
 import WorkforceMainMenu from "./menu/WorkforceMainMenu";
 import reducer from "./reducer";
 import {
@@ -80,7 +81,7 @@ import MultiStepApplyForm from "./pages/application/MultiStepApplyForm";
 
 
 const DEFAULT_CONFIG = {
-  "translations": [{ key: "en", messages: messages_en }],
+  "translations": [{ key: "en", messages: messages_bn },{ key: "fr", messages: messages_bn }],
   reducers: [{ key: "workforce", reducer }],
 
   refs: [

@@ -16,6 +16,8 @@ import {
   TextInput,
   PublishedComponent,
   FormattedMessage,
+  useTranslations,
+  useModulesManager
 } from "@openimis/fe-core";
 import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
@@ -36,7 +38,13 @@ const useStyles = makeStyles((theme) => ({
 const EmployeeDependentForm = () => {
   const classes = useStyles();
   const [dependents, setDependents] = useState([{}]);
-  const [expanded, setExpanded] = useState(0);
+  const [expanded, setExpanded] = useState(0);  
+  const modulesManager = useModulesManager();
+  
+  const { formatMessage } = useTranslations(
+      "core.RegistrationPage",
+      modulesManager
+    );
 
   const handleChange = (index, key, value) => {
     const updatedDependents = [...dependents];
@@ -57,16 +65,21 @@ const EmployeeDependentForm = () => {
     }
   };
 
+  const isFirstDependentValid =
+    dependents[0]?.nid && dependents[0]?.firstNameEn;
+
   return (
     <Box mt={1}>
       {dependents.map((formData, index) => (
         <Accordion
           key={index}
           expanded={expanded === index}
-          onChange={() => setExpanded(index)}
+          onChange={(_, isExpanded) => setExpanded(isExpanded ? index : false)}
         >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Dependent {index + 1}</Typography>
+            <Typography>
+              {formData.firstNameEn ? formData.firstNameEn : `Dependent ${index + 1}`}
+            </Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Paper className={classes.paper}>
@@ -257,7 +270,7 @@ const EmployeeDependentForm = () => {
                     readOnly={false}
                   />
                 </Grid>
-                <Grid item xs={12} className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.permanent_address"
                     value={formData.permanentAddress || ""}
@@ -266,7 +279,7 @@ const EmployeeDependentForm = () => {
                   />
                 </Grid>
                 <Grid item xs={12} className={classes.item}>
-                  <p>Present Location</p>
+                  <p>{formatMessage("workforce.employee.present_location")}</p>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
@@ -280,7 +293,7 @@ const EmployeeDependentForm = () => {
                   />
                 </Grid>
                 <Grid item xs={12} className={classes.item}>
-                  <p>Permanent Location</p>
+                  <p>{formatMessage("workforce.employee.permanent_location")}</p>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
@@ -303,7 +316,11 @@ const EmployeeDependentForm = () => {
                 <Grid item xs={12} className={classes.buttonContainer}>
                   <Button
                     variant="contained"
-                    color="secondary"
+                    style={{
+                      backgroundColor: dependents.length === 1 ? "#B0B0B0" : "#d32f2f",
+                      color: "white",
+                    }}
+                  
                     onClick={() => removeDependent(index)}
                     disabled={dependents.length === 1}
                   >
@@ -315,7 +332,12 @@ const EmployeeDependentForm = () => {
           </AccordionDetails>
         </Accordion>
       ))}
-      <Button variant="contained" color="primary" onClick={addDependent}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={addDependent}
+        disabled={!isFirstDependentValid}
+      >
         Add Dependent
       </Button>
     </Box>

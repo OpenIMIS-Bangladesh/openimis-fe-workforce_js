@@ -62,7 +62,7 @@ const EmployeeLocationForm = ({ handleChange,formData, setFormData }) => {
           <Paper className={classes.paper}>
             <Grid container className={classes.item} spacing={2}>
             <Grid item xs={12} className={classes.item}>
-                <p>Present Location</p>
+                <p>{formatMessage("workforce.employee.present_location")}</p>
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
@@ -84,7 +84,7 @@ const EmployeeLocationForm = ({ handleChange,formData, setFormData }) => {
                 />
               </Grid>
               <Grid item xs={12} className={classes.item}>
-                <p>Permanent Location</p>
+                <p>{formatMessage("workforce.employee.permanent_location")}</p>
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
