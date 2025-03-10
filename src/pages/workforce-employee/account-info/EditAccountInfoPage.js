@@ -16,7 +16,7 @@ import {
   formatMutation,
   decodeId,
 } from "@openimis/fe-core";
-import { updateAccoutInfo } from "../../../actions";
+import { updateAccountInfo } from "../../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 
@@ -72,7 +72,7 @@ class EditAccidentInfoPage extends Component {
     };
 
     dispatch(
-      updateAccoutInfo(
+      updateAccountInfo(
         accountInfoData,
         `Update Account Info ${accountInfoData.nameEn}`
       )
