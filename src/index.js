@@ -81,7 +81,7 @@ import MultiStepApplyForm from "./pages/application/MultiStepApplyForm";
 
 
 const DEFAULT_CONFIG = {
-  "translations": [{ key: "en", messages: messages_bn },{ key: "fr", messages: messages_bn }],
+  "translations": [{ key: "en", messages: messages_en },{ key: "fr", messages: messages_bn }],
   reducers: [{ key: "workforce", reducer }],
 
   refs: [
