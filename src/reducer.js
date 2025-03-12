@@ -1250,6 +1250,16 @@ function reducer(
     case "BANK_UPDATE_BANK_RESP":
       return dispatchMutationResp(state, "updateBank", action);
 
+    case "APPLICATION_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "APPLICATION_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "APPLICATION_CREATE_APPLICATION_RESP":
+      return dispatchMutationResp(state, "createApplication", action);
+    case "APPLICATION_UPDATE_APPLICATION_RESP":
+      return dispatchMutationResp(state, "updateApplication", action);
+
     case "EMPLOYEE_DEPENDENT_MUTATION_REQ": {
       return dispatchMutationReq(state, action);
     }

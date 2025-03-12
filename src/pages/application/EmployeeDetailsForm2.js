@@ -82,11 +82,11 @@ const EmployeeDetailsForm2 = ({handleChange, formData, setFormData }) => {
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <Typography>Upload NID </Typography>
-                <FileUploader />
+                <FileUploader fieldKey="uploadedNidFile" onFileChange={handleChange}/>
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <Typography>Upload Birth Certificate </Typography>
-                <FileUploader />
+                <FileUploader fieldKey="uploadedBirthCertificateFile" onFileChange={handleChange}/>
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <CompanyPicker

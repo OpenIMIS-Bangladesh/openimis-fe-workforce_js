@@ -189,6 +189,45 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee?.relatedUserId ? `relatedUserId: "${employee.relatedUserId}"` : ""}
   `;
 }
+
+export function formatApplicationeGQL(application) {
+  return `
+    ${application?.id ? `id: "${formatGQLString(application.id)}"` : ""}
+    ${application.company ? `employeeDesignationInfo: "${application.company}"` : ""}
+    ${application.factory ? `workforceFactoryId: "${decodeId(application.factory)}"` : ""}
+    ${application.firstNameBn ? `firstNameBn: "${formatGQLString(application.firstNameBn)}"` : ""}
+    ${application.lastNameBn ? `lastNameBn: "${formatGQLString(application.lastNameBn)}"` : ""}
+    ${application.firstNameEn ? `firstNameEn: "${formatGQLString(application.firstNameEn)}"` : ""}
+    ${application.lastNameEn ? `lastNameEn: "${formatGQLString(application.lastNameEn)}"` : ""}
+    ${application.otherName ? `otherName: "${formatGQLString(application.otherName)}"` : ""}
+    ${application.phoneNumber ? `phoneNumber: "${formatGQLString(application.phoneNumber)}"` : ""}
+    ${application.email ? `email: "${formatGQLString(application.email)}"` : ""}
+    ${application.birthDate ? `birthDate: "${application.birthDate}"` : ""}
+    ${application.joinDate ? `joinDate: "${application.joinDate}"` : ""}
+    ${application.reJoiningDate ? `reJoiningDate: "${application.reJoiningDate}"` : ""}
+    ${application.deathDate ? `deathDate: "${application.deathDate}"` : ""}
+    ${application.gender ? `gender: "${application.gender}"` : ""}
+    ${application.birthCertificateNo ? `birthCertificateNo: "${formatGQLString(application.birthCertificateNo)}"` : ""}
+    ${application.nid ? `nid: "${formatGQLString(application.nid)}"` : ""}
+    ${application.permanentAddress ? `permanentAddress: "${formatGQLString(application.permanentAddress)}"` : ""}
+    ${application.presentAddress ? `presentAddress: "${formatGQLString(application.presentAddress)}"` : ""}
+    ${application.position ? `position: "${formatGQLString(application.position)}"` : ""}
+    ${application.monthlyEarning ? `monthlyEarning: "${formatGQLString(application.monthlyEarning)}"` : ""}
+    ${application.fatherNameBn ? `fatherNameBn: "${formatGQLString(application.fatherNameBn)}"` : ""}
+    ${application.fatherNameEn ? `fatherNameEn: "${formatGQLString(application.fatherNameEn)}"` : ""}
+    ${application.motherNameBn ? `motherNameBn: "${formatGQLString(application.motherNameBn)}"` : ""}
+    ${application.motherNameEn ? `motherNameEn: "${formatGQLString(application.motherNameEn)}"` : ""}
+    ${application.spouseNameBn ? `spouseNameBn: "${formatGQLString(application.spouseNameBn)}"` : ""}
+    ${application.spouseNameEn ? `spouseNameEn: "${formatGQLString(application.spouseNameEn)}"` : ""}
+    ${application.maritalStatus ? `maritalStatus: "${formatGQLString(application.maritalStatus)}"` : ""}
+    ${application.citizenship ? `citizenship: "${formatGQLString(application.citizenship)}"` : ""}
+    ${application.presentLocation.id ? `presentLocationId: "${decodeId(application.presentLocation.id)}"` : ""}
+    ${application.permanentLocation.id ? `permanentLocationId: "${decodeId(application.permanentLocation.id)}"` : ""}
+    ${application.status ? `status: "${WORKFORCE_STATUS.ACTIVE}"` : ""}
+    ${application.lifeStatus ? `lifeStatus: "${formatGQLString(application.lifeStatus)}"` : ""}
+  `;
+}
+
 export function formatEmployeeDependentGQL(employee) {
   return `
     ${employee?.id ? `id: "${formatGQLString(employee.id)}"` : ""}

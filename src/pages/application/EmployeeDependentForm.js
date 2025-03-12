@@ -17,7 +17,7 @@ import {
   PublishedComponent,
   FormattedMessage,
   useTranslations,
-  useModulesManager
+  useModulesManager,
 } from "@openimis/fe-core";
 import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
@@ -35,16 +35,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDependentForm = () => {
+const EmployeeDependentForm = ({
+  dependents,
+  handleDependentChange,
+  addDependent,
+  removeDependent,
+}) => {
   const classes = useStyles();
   const [dependents, setDependents] = useState([{}]);
-  const [expanded, setExpanded] = useState(0);  
+  const [expanded, setExpanded] = useState(0);
   const modulesManager = useModulesManager();
-  
+
   const { formatMessage } = useTranslations(
-      "core.RegistrationPage",
-      modulesManager
-    );
+    "core.RegistrationPage",
+    modulesManager
+  );
 
   const handleChange = (index, key, value) => {
     const updatedDependents = [...dependents];
@@ -293,7 +298,9 @@ const EmployeeDependentForm = () => {
                   />
                 </Grid>
                 <Grid item xs={12} className={classes.item}>
-                  <p>{formatMessage("workforce.employee.permanent_location")}</p>
+                  <p>
+                    {formatMessage("workforce.employee.permanent_location")}
+                  </p>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
@@ -317,10 +324,10 @@ const EmployeeDependentForm = () => {
                   <Button
                     variant="contained"
                     style={{
-                      backgroundColor: dependents.length === 1 ? "#B0B0B0" : "#d32f2f",
+                      backgroundColor:
+                        dependents.length === 1 ? "#B0B0B0" : "#d32f2f",
                       color: "white",
                     }}
-                  
                     onClick={() => removeDependent(index)}
                     disabled={dependents.length === 1}
                   >
@@ -345,5 +352,3 @@ const EmployeeDependentForm = () => {
 };
 
 export default EmployeeDependentForm;
-
-
