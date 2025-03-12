@@ -39,6 +39,7 @@
     "menu.workforce.employee": "Employees",
     "menu.workforce.registration": "Registration",
     "menu.workforce.application": "Application",
+    "menu.workforce.application.process": "Application Process",
     "menu.workforce.banks": "Banks",
     "menu.workforce.branch": "Branches",
     "menu.workforce.employee.factory": "Employee Factories",
@@ -189,6 +190,7 @@
     "workforce.employee.insurance_number": "Insurance Number",
     "workforce.employee.lifeStatus": "Life Status",
 
+    "workforce.employee.application.addNewTooltip": "Add Employee Application",
     "workforce.employee.application.workforce_employer": "কর্মশক্তি নিয়োগকর্তা/কোম্পানী",
     "workforce.employee.application.workforce_office": "কর্মশক্তি অফিস",
     "workforce.employee.application.workforce_factory": "কর্মশক্তি কারখানা",
