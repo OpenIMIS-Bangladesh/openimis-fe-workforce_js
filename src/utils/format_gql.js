@@ -193,8 +193,8 @@ export function formatWorkforceEmployeeGQL(employee) {
 export function formatApplicationeGQL(application) {
   return `
     ${application?.id ? `id: "${formatGQLString(application.id)}"` : ""}
-    ${application.company ? `employeeDesignationInfo: "${application.company}"` : ""}
-    ${application.factory ? `workforceFactoryId: "${decodeId(application.factory)}"` : ""}
+    ${application.company ? `employeeDesignationInfo: "${application.company.id}"` : ""}
+   
     ${application.firstNameBn ? `firstNameBn: "${formatGQLString(application.firstNameBn)}"` : ""}
     ${application.lastNameBn ? `lastNameBn: "${formatGQLString(application.lastNameBn)}"` : ""}
     ${application.firstNameEn ? `firstNameEn: "${formatGQLString(application.firstNameEn)}"` : ""}
@@ -204,7 +204,6 @@ export function formatApplicationeGQL(application) {
     ${application.email ? `email: "${formatGQLString(application.email)}"` : ""}
     ${application.birthDate ? `birthDate: "${application.birthDate}"` : ""}
     ${application.joinDate ? `joinDate: "${application.joinDate}"` : ""}
-    ${application.reJoiningDate ? `reJoiningDate: "${application.reJoiningDate}"` : ""}
     ${application.deathDate ? `deathDate: "${application.deathDate}"` : ""}
     ${application.gender ? `gender: "${application.gender}"` : ""}
     ${application.birthCertificateNo ? `birthCertificateNo: "${formatGQLString(application.birthCertificateNo)}"` : ""}
