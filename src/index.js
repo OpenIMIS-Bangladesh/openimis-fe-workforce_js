@@ -38,7 +38,8 @@ import {
   ROUTE_WORKFORCE_EMPLOYEES_SERVICES,
   ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE,
   ROUTE_WORKFORCE_REGISTRATION,
-  ROUTE_WORKFORCE_APPLICATION
+  ROUTE_WORKFORCE_APPLICATION,
+  ROUTE_WORKFORCE_APPLICATION_PROCESS,
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -75,6 +76,7 @@ import ServicesPage from "./pages/workforce-employee/services/ServicesPage";
 import ServicePage from "./pages/workforce-employee/services/ServicePage";
 import RegistrationPage from "./pages/registration/RegistrationPage";
 import MultiStepApplyForm from "./pages/application/MultiStepApplyForm";
+import ApplicationProcessPage from "./pages/application-process/ApplicationProcessPage";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -118,6 +120,7 @@ const DEFAULT_CONFIG = {
 
     { key: "workforce.route.registration", ref: ROUTE_WORKFORCE_REGISTRATION },
     { key: "workforce.route.application", ref: ROUTE_WORKFORCE_APPLICATION },
+    { key: "workforce.route.application.process", ref: ROUTE_WORKFORCE_APPLICATION_PROCESS },
 
     { key: "workforce.route.employees.accident.infos", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS },
     { key: "workforce.route.employees.accident.infos.info", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO },
@@ -211,6 +214,7 @@ const DEFAULT_CONFIG = {
 
     { path: ROUTE_WORKFORCE_REGISTRATION, component: RegistrationPage },
     { path: ROUTE_WORKFORCE_APPLICATION, component: MultiStepApplyForm },
+    { path: ROUTE_WORKFORCE_APPLICATION_PROCESS, component: ApplicationProcessPage },
 
 
 
