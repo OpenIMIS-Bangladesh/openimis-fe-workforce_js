@@ -19,7 +19,8 @@ import {
   formatBankGQL,
   formatEmployeeDependentGQL,
   formatWorkforceEmployeeAccountInfoGQL,
-  formatWorkforceEmployeeAccidentInfoGQL
+  formatWorkforceEmployeeAccidentInfoGQL,
+  formatApplicationeGQL
 } from "./utils/format_gql";
 
 export function fetchOrganizationsSummary(mm, filters) {
@@ -1518,7 +1519,7 @@ export function createApplication(
 ) {
   const mutation = formatMutation(
     "createWorkforceApplication",
-    formatApplicationGQL(application),
+    formatApplicationeGQL(application),
     clientMutationLabel,
   );
 

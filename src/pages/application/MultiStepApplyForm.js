@@ -89,6 +89,7 @@ const MultiStepApplyForm = () => {
     dutyStatus: "",
     inOutsideFactory: "",
     reJoiningDate: "",
+    dependents: [{}],
   });
 
   const handleChange = (key, value) => {
@@ -124,7 +125,7 @@ const MultiStepApplyForm = () => {
   };
 
   const handleSubmit = () => {
-    console.log({ formData });
+    console.log("Submitting formData:", formData); // Log the formData when submit is clicked
     dispatch(
       createApplication(
         formData,
@@ -132,6 +133,7 @@ const MultiStepApplyForm = () => {
       )
     );
   };
+
 
   return (
     <div className={classes.container}>
@@ -197,7 +199,7 @@ const MultiStepApplyForm = () => {
             <Button
               variant="contained"
               color="primary"
-              onClick={()=>console.log('hello')}
+              onClick={handleSubmit} // Ensure the function is being called
             >
               Submit
             </Button>
