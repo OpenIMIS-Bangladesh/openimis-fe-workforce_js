@@ -583,6 +583,124 @@ const projections = [
   return graphql(payload, "WORKFORCE_EMPLOYEES_ACCOUNT");
 }
 
+export function fetchApplicationsSummary(mm, filters) {
+  const present_location_projection =
+  "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+const permanent_location_projection =
+  "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+ 
+  const projections = [
+    "id",
+    "employeeId",
+    "employeeIdLima",
+    "insuranceNumber",
+    "employeeType",
+    "globalId",
+    "lastNameBn",
+    "firstNameEn",
+    "lastNameEn",
+    "firstNameBn",
+    "otherName",
+    "fatherNameBn",
+    "fatherNameEn",
+    "motherNameBn",
+    "motherNameEn",
+    "spouseNameBn",
+    "spouseNameEn",
+    "citizenship",
+    "privacyLaw",
+    "maritalStatus",
+    "gender",
+    "photoPath",
+    "photoDate",
+    "position",
+    "monthlyEarning",
+    "referenceSalary",
+    "permanentAddress",
+    "presentAddress",
+    "phoneNumber",
+    "email",
+    "status",
+    "birthCertificateNo",
+    "nid",
+    "passportNo",
+    "registrationDate",
+    "lifeStatus",
+    "disabilityStatus",
+    "deathDate",
+    "employeeDesignationInfo",
+    "employeeDocumentInfo",
+    "employeeBankInfo",
+    "employeeDependentInfo",
+    "employeeAccidentInfo",
+    present_location_projection,
+    permanent_location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceApplication",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_APPLICATIONS");
+}
+export function fetchApplication(mm, filters) {
+ 
+const projections = [
+  "id",
+  "employeeId",
+  "employeeIdLima",
+  "insuranceNumber",
+  "employeeType",
+  "globalId",
+  "lastNameBn",
+  "firstNameEn",
+  "lastNameEn",
+  "firstNameBn",
+  "otherName",
+  "fatherNameBn",
+  "fatherNameEn",
+  "motherNameBn",
+  "motherNameEn",
+  "spouseNameBn",
+  "spouseNameEn",
+  "citizenship",
+  "privacyLaw",
+  "maritalStatus",
+  "gender",
+  "photoPath",
+  "photoDate",
+  "position",
+  "monthlyEarning",
+  "referenceSalary",
+  "permanentAddress",
+  "presentAddress",
+  "phoneNumber",
+  "email",
+  "status",
+  "birthCertificateNo",
+  "nid",
+  "passportNo",
+  "registrationDate",
+  "lifeStatus",
+  "disabilityStatus",
+  "deathDate",
+  "employeeDesignationInfo",
+  "employeeDocumentInfo",
+  "employeeBankInfo",
+  "employeeDependentInfo",
+  "employeeAccidentInfo",
+  "birthDate",
+  present_location_projection,
+  permanent_location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceApplication",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_APPLICATION");
+}
+
 export function fetchWorkforceEmployee(mm, filters) {
   const present_location_projection =
     "presentLocation" + mm.getProjection("location.Location.FlatProjection");
