@@ -224,15 +224,13 @@
     "workforce.employee.application.reference_salary": "Reference Salary",
     "workforce.employee.application.present_address": "বর্তমান ঠিকানা",
     "workforce.employee.application.permanent_address": "স্থায়ী ঠিকানা",
-    "workforce.employee.application.status": "Status",
+    "workforce.employee.application.status": "অবস্থা",
     "workforce.employee.application.citizenship": "নাগরিকত্",
     "workforce.employee.application.privacyLaw": "গোপনীয়তা আইন",
     "workforce.employee.application.insurance_number": "বীমা নম্বর",
     "workforce.employee.application.lifeStatus": "জীবন অবস্থা",
     "workforce.employee.application.factory.nid": "NID",
     "workforce.employee.application.process": "আবেদন প্রক্রিয়া",
-
-
 
     "workforce.banks.nameEn": "Bank Name En",
     "workforce.banks.nameBn": "Bank Name Bn",
