@@ -21,51 +21,48 @@ const BranchPicker = ({
   const { formatMessage } = useTranslations("workforce");
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (bankId) {
-      dispatch(fetchBanksPick(modulesManager, [], bankId)); // Fetch branches for selected bank
-    }
-  }, [bankId]); // Fetch only when bankId changes
-
-  const isLoading = useSelector(
-    (state) => state.workforce[`fetchingBranchesPick`]
-  );
-  const allBranches = useSelector(
-    (state) => state.workforce[`branchesPick`] ?? []
-  );
-  const error = useSelector(
-    (state) => state.workforce["errorBranchesPick"]
-  );
-
-  // Filter branches based on selected bank
-  const filteredBranches = useMemo(() => {
-    return allBranches.filter(branch => branch.bankId === bankId);
-  }, [allBranches, bankId]);
-
-  const selectedOption = useMemo(
-    () => filteredBranches.find((option) => option.id === value) || null,
-    [value, filteredBranches]
-  );
-
-  return (
-    <Autocomplete
-      multiple={multiple}
-      required={required}
-      placeholder={placeholder ?? ""}
-      label={label ?? formatMessage("workforce.branch.picker")}
-      error={error}
-      withLabel={withLabel}
-      withPlaceholder={withPlaceholder}
-      readOnly={readOnly}
-      options={filteredBranches}
-      isLoading={isLoading}
-      value={selectedOption}
-      getOptionLabel={(option) => `${option.nameEn}`}
-      onChange={(option) => onChange(option, option ? `${option}` : null)}
-      filterOptions={filterOptions}
-      filterSelectedOptions={filterSelectedOptions}
-    />
-  );
-};
+   const [searchString, setSearchString] = useState(null);
+  
+    useEffect(() => {
+      return dispatch(fetchBanksPick(modulesManager, [`type:"branch"`]));
+    }, []);
+  
+    const isLoading = useSelector(
+      (state) => state.workforce[`fetchingBanksPick`]
+    );
+    const data = useSelector(
+      (state) => state.workforce[`banksPick`] ?? []
+    );
+    const error = useSelector(
+      (state) => state.workforce["errorBanksPick"]
+    );
+  
+    const selectedOption = useMemo(
+          () => data.find((option) => option.id === value) || null,
+          [value]
+        )
+    console.log({selectedOption})
+  
+    return (
+      <Autocomplete
+        multiple={multiple}
+        required={required}
+        placeholder={placeholder ?? ""}
+        label={label ?? formatMessage("workforce.bank.picker")}
+        error={error}
+        withLabel={withLabel}
+        withPlaceholder={withPlaceholder}
+        readOnly={readOnly}
+        options={data}
+        isLoading={isLoading}
+        value={selectedOption}
+        getOptionLabel={(option) => `${option.nameEn}`}
+        onChange={(option) => onChange(option, option ? `${option}` : null)}
+        filterOptions={filterOptions}
+        filterSelectedOptions={filterSelectedOptions}
+        onInputChange={setSearchString}
+      />
+    );
+  };
 
 export default BranchPicker;

@@ -36,12 +36,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const steps = ["Labour Details", "Upload Documents","Location","Dependent","Accident Info"];
+const steps = ["Labour Details", "Upload Documents","Location","Dependent","Account info","Accident Info"];
 // const steps = [
 //   "শ্রমিকের বিবরণ",
 //   "নথি আপলোড করুন",
 //   "ঠিকানা",
 //   "নির্ভরশীল",
+//   ""
 //   "দুর্ঘটনার তথ্য",
 // ];
 
