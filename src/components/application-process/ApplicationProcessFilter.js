@@ -102,7 +102,7 @@ class ApplicationProcessFilter extends Component {
                   {
                     id: 'phoneNumber',
                     value: v,
-                    filter: `phoneNumber_Icontains: "${v}"`,
+                    filter: `phoneNumber: "${v}"`,
                   },
                 ])}
               />

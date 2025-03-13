@@ -93,12 +93,13 @@ class ApplicationProcessSearcher extends Component {
   };
 
   headers = () => [
-    "workforce.employee.application.first.name.en",
-    "workforce.employee.application.last.name.en",
+    // "workforce.employee.application.first.name.en",
+    // "workforce.employee.application.last.name.en",
     "workforce.employee.application.first.name.bn",
     "workforce.employee.application.last.name.bn",
-    "workforce.employee.application.birthdate",
     "workforce.employee.application.nid",
+    "workforce.employee.application.phone",
+    "workforce.employee.application.status",
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
@@ -106,34 +107,35 @@ class ApplicationProcessSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      (application) => application.firstNameEn,
-      (application) => application.lastNameEn,
+      // (application) => application.firstNameEn,
+      // (application) => application.lastNameEn,
       (application) => application.firstNameBn,
       (application) => application.lastNameBn,
-      (application) => application.birthDate,
       (application) => application.nid,
+      (application) => application.phoneNumber,
+      (application) => application.status,
       (application) =>
         this.isShowHistory() ? application?.version : null,
     ];
-    formatters.push((application) => (
-        <Tooltip title="Edit">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.organizations.employees.employee",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
+    // formatters.push((application) => (
+    //     <Tooltip title="Edit">
+    //       <IconButton
+    //         disabled={application?.isHistory}
+    //         onClick={() => {
+    //           historyPush(
+    //             this.props.modulesManager,
+    //             this.props.history,
+    //             "workforce.route.organizations.employees.employee",
+    //             [decodeId(application.id)],
+    //             false
+    //           );
+    //         }}
+    //       >
+    //         <EditIcon />
+    //       </IconButton>
+    //     </Tooltip>
 
-    ));
+    // ));
     return formatters;
   };
 
