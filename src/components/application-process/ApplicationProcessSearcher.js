@@ -16,7 +16,7 @@ import {
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME } from "../../constants";
-import { fetchOrganizationEmployeesSummary } from "../../actions";
+import { fetchApplicationsSummary } from "../../actions";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 
 const styles = (theme) => ({
@@ -39,7 +39,7 @@ const styles = (theme) => ({
   
 });
 
-class OrganizationEmployeeSearcher extends Component {
+class ApplicationProcessSearcher extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -65,7 +65,7 @@ class OrganizationEmployeeSearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchOrganizationEmployeesSummary(
+    this.props.fetchApplicationsSummary(
       this.props.modulesManager,
       prms
     );
@@ -93,13 +93,13 @@ class OrganizationEmployeeSearcher extends Component {
   };
 
   headers = () => [
-    "workforce.organization.employee.name.en",
-    "workforce.organization.employee.name.bn",
-    "workforce.organization.employee.phone",
-    "workforce.organization.employee.email",
-    "workforce.organization.employee.address",
-    "workforce.organization.employee.gender",
-    "workforce.organization.employee.status",
+    // "workforce.employee.application.first.name.en",
+    // "workforce.employee.application.last.name.en",
+    "workforce.employee.application.first.name.bn",
+    "workforce.employee.application.last.name.bn",
+    "workforce.employee.application.nid",
+    "workforce.employee.application.phone",
+    "workforce.employee.application.status",
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
@@ -107,35 +107,35 @@ class OrganizationEmployeeSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      (application) => application.nameEn,
-      (application) => application.nameBn,
+      // (application) => application.firstNameEn,
+      // (application) => application.lastNameEn,
+      (application) => application.firstNameBn,
+      (application) => application.lastNameBn,
+      (application) => application.nid,
       (application) => application.phoneNumber,
-      (application) => application.email,
-      (application) => application.address,
-      (application) => application.gender,
       (application) => application.status,
       (application) =>
         this.isShowHistory() ? application?.version : null,
     ];
-    formatters.push((application) => (
-        <Tooltip title="Edit">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.organizations.employees.employee",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
+    // formatters.push((application) => (
+    //     <Tooltip title="Edit">
+    //       <IconButton
+    //         disabled={application?.isHistory}
+    //         onClick={() => {
+    //           historyPush(
+    //             this.props.modulesManager,
+    //             this.props.history,
+    //             "workforce.route.organizations.employees.employee",
+    //             [decodeId(application.id)],
+    //             false
+    //           );
+    //         }}
+    //       >
+    //         <EditIcon />
+    //       </IconButton>
+    //     </Tooltip>
 
-    ));
+    // ));
     return formatters;
   };
 
@@ -146,17 +146,17 @@ class OrganizationEmployeeSearcher extends Component {
   render() {
     const {
       intl,
-      organizationEmployees,
-      organizationEmployeesPageInfo,
-      fetchingOrganizationEmployees,
-      fetchedOrganizationEmployees,
-      errorOrganizationEmployees,
+      applications,
+      applicationsPageInfo,
+      fetchingApplications,
+      fetchedApplications,
+      errorApplications,
       filterPaneContributionsKey,
       cacheFiltersKey,
       onDoubleClick,
     } = this.props;
 
-    const count = organizationEmployeesPageInfo.totalCount;
+    const count = applicationsPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <ApplicationProcessFilter
@@ -175,15 +175,15 @@ class OrganizationEmployeeSearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={organizationEmployees}
-          itemsPageInfo={organizationEmployeesPageInfo}
-          fetchingItems={fetchingOrganizationEmployees}
-          fetchedItems={fetchedOrganizationEmployees}
-          errorItems={errorOrganizationEmployees}
+          items={applications}
+          itemsPageInfo={applicationsPageInfo}
+          fetchingItems={fetchingApplications}
+          fetchedItems={fetchedApplications}
+          errorItems={errorApplications}
           tableTitle={
             <FormattedMessage
               module={MODULE_NAME}
-              id="menu.workforce.application.process"
+              id="workforce.employee.application.process"
             />
           }
           rowsPerPageOptions={this.rowsPerPageOptions}
@@ -210,11 +210,11 @@ const mapStateToProps = (state) => ({
     !!state.core && !!state.core.user && !!state.core.user.i_user
       ? state.core.user.i_user.rights
       : [],
-  organizationEmployees: state.workforce.organizationEmployees,
-  organizationEmployeesPageInfo: state.workforce.organizationEmployeesPageInfo,
-  fetchingOrganizationEmployees: state.workforce.fetchingOrganizationEmployees,
-  fetchedOrganizationEmployees: state.workforce.fetchedOrganizationEmployees,
-  errorOrganizationEmployees: state.workforce.errorOrganizationEmployees,
+  applications: state.workforce.applications,
+  applicationsPageInfo: state.workforce.applicationsPageInfo,
+  fetchingApplications: state.workforce.fetchingApplications,
+  fetchedApplications: state.workforce.fetchedApplications,
+  errorApplications: state.workforce.errorApplications,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   confirmed: state.core.confirmed,
@@ -223,7 +223,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      fetchOrganizationEmployeesSummary,
+      fetchApplicationsSummary,
       journalize,
       coreConfirm,
     },
@@ -235,6 +235,6 @@ export default withModulesManager(
     connect(
       mapStateToProps,
       mapDispatchToProps
-    )(withTheme(withStyles(styles)(OrganizationEmployeeSearcher)))
+    )(withTheme(withStyles(styles)(ApplicationProcessSearcher)))
   )
 );

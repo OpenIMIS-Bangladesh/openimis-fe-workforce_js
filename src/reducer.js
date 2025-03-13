@@ -239,6 +239,19 @@ function reducer(
     fetchedEmployeeAccount: false,
     employeeAccount: null,
     employeeAccountPageInfo: { totalCount: 0 },
+
+    ////Application states
+    fetchingApplications: false,
+    errorApplications: null,
+    fetchedApplications: false,
+    applications: [],
+    applicationsPageInfo: { totalCount: 0 },
+
+    fetchingApplication: false,
+    errorApplication: null,
+    fetchedApplication: false,
+    application: null,
+    applicationPageInfo: { totalCount: 0 },
   },
   action
 ) {
@@ -1135,6 +1148,54 @@ function reducer(
               })
             )?.[0],
             errorBank: formatGraphQLError(action.payload),
+          };
+  
+            /// Application actions////
+    case "WORKFORCE_APPLICATIONS_REQ":
+      return {
+        ...state,
+        fetchingApplications: true,
+        fetchedApplications: false,
+        applications: [],
+        applicationsPageInfo: { totalCount: 0 },
+        errorApplications: null,
+      };
+    case "WORKFORCE_APPLICATIONS_RESP":
+      return {
+        ...state,
+        fetchingApplications: false,
+        fetchedApplications: true,
+        applications: parseData(action.payload.data.workforceApplication),
+        applicationsPageInfo: pageInfo(action.payload.data.workforceApplication),
+        errorApplications: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_APPLICATIONS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+    
+    case "WORKFORCE_APPLICATION_REQ":
+        return {
+          ...state,
+          fetchingApplication: true,
+          fetchedApplication: false,
+          application: null,
+          errorApplication: null,
+        };
+    case "WORKFORCE_APPLICATION_RESP":
+          return {
+            ...state,
+            fetchingApplication: false,
+            fetchedApplication: true,
+            application: parseData(action.payload.data.workforceApplication).map(
+              (application) => ({
+                ...application,
+                id: decodeId(application.id),
+              })
+            )?.[0],
+            errorApplication: formatGraphQLError(action.payload),
           };
   
 

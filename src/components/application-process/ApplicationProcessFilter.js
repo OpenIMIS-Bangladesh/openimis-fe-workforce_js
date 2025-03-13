@@ -27,8 +27,8 @@ const styles = (theme) => ({
   paperDivider: theme.paper.divider,
 });
 
-const WORKFORCE_ORGANIZATION_EMPLOYEE_FILTER_CONTRIBUTION_KEY =
-  "workforce.organization.employee.Filter";
+const APPLICATION_PROCESS_FILTER_CONTRIBUTION_KEY =
+  "application.process.Filter";
 
 class ApplicationProcessFilter extends Component {
   debouncedOnChangeFilter = _debounce(
@@ -69,19 +69,19 @@ class ApplicationProcessFilter extends Component {
       <Grid container className={classes.form}>
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.organization.name.employee.en"
+          id="workforce.employee.application.nid"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.organization.employee.name.en"
-                name="nameEn"
-                value={this._filterValue("nameEn")}
+                label="workforce.employee.application.nid"
+                name="nid"
+                value={this._filterValue("nid")}
                 onChange={(v) => this.debouncedOnChangeFilter([
                   {
-                    id: 'nameEn',
+                    id: 'nid',
                     value: v,
-                    filter: `nameEn_Icontains: "${v}"`,
+                    filter: `nid: "${v}"`,
                   },
                 ])}
               />
@@ -90,40 +90,19 @@ class ApplicationProcessFilter extends Component {
         />
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.organization.employee.name.bn"
+          id="workforce.employee.application.phone"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.organization.employee.name.bn"
-                name="nameBn"
-                value={this._filterValue("nameBn")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'nameBn',
-                    value: v,
-                    filter: `nameBn_Icontains: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.organization.employee.phone"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.organization.employee.phone"
+                label="workforce.employee.application.phone"
                 name="address"
                 value={this._filterValue("phoneNumber")}
                 onChange={(v) => this.debouncedOnChangeFilter([
                   {
                     id: 'phoneNumber',
                     value: v,
-                    filter: `phoneNumber_Icontains: "${v}"`,
+                    filter: `phoneNumber: "${v}"`,
                   },
                 ])}
               />
@@ -132,12 +111,12 @@ class ApplicationProcessFilter extends Component {
         />
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.organization.employee.status"
+          id="workforce.employee.application.status"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.organization.employee.status"
+                label="workforce.employee.application.status"
                 name="status"
                 value={this._filterValue("status")}
                 onChange={(v) => this.debouncedOnChangeFilter([
@@ -154,7 +133,7 @@ class ApplicationProcessFilter extends Component {
         <Contributions
           filters={filters}
           onChangeFilters={onChangeFilters}
-          contributionKey={WORKFORCE_ORGANIZATION_EMPLOYEE_FILTER_CONTRIBUTION_KEY}
+          contributionKey={APPLICATION_PROCESS_FILTER_CONTRIBUTION_KEY}
         />
       </Grid>
     );
