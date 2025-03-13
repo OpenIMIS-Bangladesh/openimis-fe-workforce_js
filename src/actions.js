@@ -313,7 +313,7 @@ export function fetchOfficesPick(filters) {
 }
 
 export function fetchFactoriesPick(filters) {
-  const projections = ["id", "nameEn", "nameBn"];
+  const projections = ["id", "nameEn", "nameBn","workforceEmployer{id}"];
   const payload = formatPageQueryWithCount(
     "workforceEmployerFactories",
     filters,

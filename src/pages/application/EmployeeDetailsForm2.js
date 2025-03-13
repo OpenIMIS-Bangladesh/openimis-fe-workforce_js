@@ -55,6 +55,7 @@ const EmployeeDetailsForm2 = ({handleChange, formData, setFormData }) => {
 //   const handleChange = (key, value) => {
 //     setFormData((prev) => ({ ...prev, [key]: value }));
 //   };
+console.log({formData})
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
@@ -113,6 +114,7 @@ const EmployeeDetailsForm2 = ({handleChange, formData, setFormData }) => {
                     />
                   }
                   required
+                  companyId={formData?.company?.id} 
                   onChange={(v) => handleChange( "factory", v )}
                   readOnly={false}
                 />

@@ -36,14 +36,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const steps = ["Labour Details", "Upload Documents","Location","Dependent","Accident Info"];
-const steps = [
-  "শ্রমিকের বিবরণ",
-  "নথি আপলোড করুন",
-  "ঠিকানা",
-  "নির্ভরশীল",
-  "দুর্ঘটনার তথ্য",
-];
+const steps = ["Labour Details", "Upload Documents","Location","Dependent","Accident Info"];
+// const steps = [
+//   "শ্রমিকের বিবরণ",
+//   "নথি আপলোড করুন",
+//   "ঠিকানা",
+//   "নির্ভরশীল",
+//   "দুর্ঘটনার তথ্য",
+// ];
 
 const MultiStepApplyForm = () => {
   const classes = useStyles();

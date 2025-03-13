@@ -203,7 +203,7 @@ export function formatApplicationeGQL(application) {
     ${application.phoneNumber ? `phoneNumber: "${formatGQLString(application.phoneNumber)}"` : ""}
     ${application.email ? `email: "${formatGQLString(application.email)}"` : ""}
     ${application.birthDate ? `birthDate: "${application.birthDate}"` : ""}
-    ${application.joinDate ? `joinDate: "${application.joinDate}"` : ""}
+   
     ${application.deathDate ? `deathDate: "${application.deathDate}"` : ""}
     ${application.gender ? `gender: "${application.gender}"` : ""}
     ${application.birthCertificateNo ? `birthCertificateNo: "${formatGQLString(application.birthCertificateNo)}"` : ""}
