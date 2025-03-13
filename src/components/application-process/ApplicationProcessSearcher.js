@@ -183,7 +183,7 @@ class ApplicationProcessSearcher extends Component {
           tableTitle={
             <FormattedMessage
               module={MODULE_NAME}
-              id="menu.workforce.application.process"
+              id="workforce.employee.application.process"
             />
           }
           rowsPerPageOptions={this.rowsPerPageOptions}

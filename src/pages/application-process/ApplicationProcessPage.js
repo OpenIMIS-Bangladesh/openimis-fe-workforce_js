@@ -17,10 +17,10 @@ const styles = (theme) => ({
 });
 
 class ApplicationProcessPage extends Component {
-  onDoubleClick = (employee, newTab = false) => {
-    const routeParams = ["workforce.route.application", [decodeId(employee.id)]];
-    if (employee?.isHistory) {
-      routeParams[1].push(employee.version);
+  onDoubleClick = (application, newTab = false) => {
+    const routeParams = ["workforce.route.application", [decodeId(application.id)]];
+    if (application?.isHistory) {
+      routeParams[1].push(application.version);
     }
     historyPush(this.props.modulesManager, this.props.history, ...routeParams, newTab);
   };

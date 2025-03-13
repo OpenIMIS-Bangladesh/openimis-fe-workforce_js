@@ -190,7 +190,7 @@
     "workforce.employee.insurance_number": "Insurance Number",
     "workforce.employee.lifeStatus": "Life Status",
 
-    "workforce.employee.application.addNewTooltip": "Add Employee Application",
+    "workforce.employee.application.addNewTooltip": "আবেদন করুন",
     "workforce.employee.application.workforce_employer": "কর্মশক্তি নিয়োগকর্তা/কোম্পানী",
     "workforce.employee.application.workforce_office": "কর্মশক্তি অফিস",
     "workforce.employee.application.workforce_factory": "কর্মশক্তি কারখানা",
@@ -230,6 +230,8 @@
     "workforce.employee.application.insurance_number": "বীমা নম্বর",
     "workforce.employee.application.lifeStatus": "জীবন অবস্থা",
     "workforce.employee.application.factory.nid": "NID",
+    "workforce.employee.application.process": "আবেদন প্রক্রিয়া",
+
 
 
     "workforce.banks.nameEn": "Bank Name En",
