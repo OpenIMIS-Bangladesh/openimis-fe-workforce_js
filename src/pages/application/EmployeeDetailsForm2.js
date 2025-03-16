@@ -121,32 +121,6 @@ console.log({formData})
               </Grid>
 
               <Grid item xs={6} className={classes.item}>
-                <EmployeeLifeStatusPicker
-                  value={formData.lifeStatus || ""}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.lifeStatus"
-                      module="workforce"
-                    />
-                  }
-                  required
-                  onChange={(v) => handleChange( "lifeStatus", v )}
-                  readOnly={false}
-                />
-              </Grid>
-
-              <Grid item xs={6} className={classes.item}>
-                <PublishedComponent
-                  pubRef="core.DatePicker"
-                  label={"workforce.employee.deathdate"}
-                  value={formData.deathDate || ""}
-                  readOnly={formData.lifeStatus === "Deceased" ? false : true}
-                  onChange={(v) => handleChange( "deathDate", v )}
-                  // readOnly={false}
-                />
-              </Grid>
-
-              <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.monthly_earning"
                   value={formData.monthlyEarning || ""}

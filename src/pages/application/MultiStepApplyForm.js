@@ -17,6 +17,7 @@ import EmployeeLocationForm from "./EmployeeLocationForm";
 import EmployeeDependentForm from "./EmployeeDependentForm";
 import EmployeeAccidentInfoForm from "./EmployeeAccidentInfoForm";
 import { createApplication } from "../../actions";
+import EmployeeAccountInfoForm from "./EmployeeAccountInfoForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,20 +32,12 @@ const useStyles = makeStyles((theme) => ({
   buttonContainer: {
     marginTop: theme.spacing(2),
     display: "flex",
-    justifyContent: "flex-end", // Align buttons to the right
-    gap: theme.spacing(1), // Add spacing between buttons
+    justifyContent: "flex-end",
+    gap: theme.spacing(1),
   },
 }));
 
-const steps = ["Labour Details", "Upload Documents","Location","Dependent","Account info","Accident Info"];
-// const steps = [
-//   "শ্রমিকের বিবরণ",
-//   "নথি আপলোড করুন",
-//   "ঠিকানা",
-//   "নির্ভরশীল",
-//   ""
-//   "দুর্ঘটনার তথ্য",
-// ];
+const steps = ["Labour Details", "Upload Documents", "Location", "Dependent", "Account info", "Accident Info"];
 
 const MultiStepApplyForm = () => {
   const classes = useStyles();
@@ -91,16 +84,28 @@ const MultiStepApplyForm = () => {
     inOutsideFactory: "",
     reJoiningDate: "",
     dependents: [{}],
+    employeeBankInfo: {},
+    employeeAccidentInfo:{},
   });
 
-  const handleChange = (key, value) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
+  const handleChange = (key, value, parent = null) => {
+    setFormData((prev) => {
+      if (parent) {
+        return {
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            [key]: value,
+          },
+        };
+      }
+      return { ...prev, [key]: value };
+    });
   };
 
   const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
-  // Function to update dependents
   const handleDependentChange = (index, key, value) => {
     setFormData((prev) => {
       const updatedDependents = [...prev.dependents];
@@ -109,7 +114,6 @@ const MultiStepApplyForm = () => {
     });
   };
 
-  // Function to add a new dependent
   const addDependent = () => {
     setFormData((prev) => ({
       ...prev,
@@ -117,7 +121,6 @@ const MultiStepApplyForm = () => {
     }));
   };
 
-  // Function to remove a dependent
   const removeDependent = (index) => {
     setFormData((prev) => {
       const updatedDependents = prev.dependents.filter((_, i) => i !== index);
@@ -126,7 +129,7 @@ const MultiStepApplyForm = () => {
   };
 
   const handleSubmit = () => {
-    console.log("Submitting formData:", formData); // Log the formData when submit is clicked
+    console.log("Submitting formData:", formData);
     dispatch(
       createApplication(
         formData,
@@ -135,6 +138,7 @@ const MultiStepApplyForm = () => {
     );
   };
 
+  console.log({formData})
 
   return (
     <div className={classes.container}>
@@ -147,26 +151,14 @@ const MultiStepApplyForm = () => {
           ))}
         </Stepper>
         {activeStep === 0 ? (
-          <EmployeeDetailsForm
-            handleChange={handleChange}
-            formData={formData}
-            setFormData={setFormData}
-          />
+          <EmployeeDetailsForm handleChange={handleChange} formData={formData} />
         ) : activeStep === 1 ? (
           <Box mt={3}>
-            <EmployeeDetailsForm2
-              handleChange={handleChange}
-              formData={formData}
-              setFormData={setFormData}
-            />
+            <EmployeeLocationForm handleChange={handleChange} formData={formData} />
           </Box>
         ) : activeStep === 2 ? (
           <Box mt={3}>
-            <EmployeeLocationForm
-              handleChange={handleChange}
-              formData={formData}
-              setFormData={setFormData}
-            />
+            <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} />
           </Box>
         ) : activeStep === 3 ? (
           <Box mt={3}>
@@ -177,31 +169,25 @@ const MultiStepApplyForm = () => {
               removeDependent={removeDependent}
             />
           </Box>
+        ) : activeStep === 4 ? (
+          <Box mt={3}>
+            <EmployeeAccountInfoForm handleChange={(key, value) => handleChange(key, value, "employeeBankInfo")} formData={formData.employeeBankInfo} />
+          </Box>
         ) : (
           <Box mt={3}>
-            <EmployeeAccidentInfoForm
-              handleChange={handleChange}
-              formData={formData}
-              setFormData={setFormData}
-            />
+            <EmployeeAccidentInfoForm handleChange={(key, value) => handleChange(key, value, "employeeAccidentInfo")}  formData={formData} />
           </Box>
         )}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
-            <Button onClick={handleBack} variant="outlined">
-              Back
-            </Button>
+            <Button onClick={handleBack} variant="outlined">Back</Button>
           )}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
               Save & Next
             </Button>
           ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit} // Ensure the function is being called
-            >
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
               Submit
             </Button>
           )}

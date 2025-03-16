@@ -149,17 +149,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
                 />
               </Grid>
               <Grid item xs={11} className={classes.item} />
-              {/* <Grid item xs={1} className={classes.item}>
-                <IconButton
-                  variant="contained"
-                  component="label"
-                  color="primary"
-                  onClick={this.save}
-                  disabled={ falseisabled ||  false}
-                >
-                  <Save />
-                </IconButton>
-              </Grid> */}
+
             </Grid>
           </Paper>
         </Grid>

@@ -54,7 +54,7 @@ export function fetchOrganizationsPick(filters) {
 }
 /// bank picker ///
 export function fetchBanksPick(mm,filters) {
-  const projections = ["id", "nameEn"];
+  const projections = ["id", "nameEn","parent{id}"];
   const payload = formatPageQueryWithCount(
     "banks",
     filters,
