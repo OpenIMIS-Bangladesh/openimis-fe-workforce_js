@@ -1640,12 +1640,35 @@ export function createApplication(
     formatApplicationeGQL(application),
     clientMutationLabel,
   );
-
+  
   console.log({mutation})
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
     ["APPLICATION_MUTATION_REQ", "APPLICATION_CREATE_APPLICATION_RESP", "APPLICATION_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function updateApplication(
+  application,
+  clientMutationLabel,
+) {
+  const mutation = formatMutation(
+    "updateWorkforceApplication",
+    formatApplicationeGQL(application),
+    clientMutationLabel,
+  );
+
+  console.log({mutation})
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["APPLICATION_MUTATION_REQ", "APPLICATION_UPDATE_APPLICATION_RESP", "APPLICATION_MUTATION_ERR"],
     {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,

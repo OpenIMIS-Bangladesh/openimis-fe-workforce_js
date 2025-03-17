@@ -16,7 +16,7 @@ import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 import EmployeeLocationForm from "./EmployeeLocationForm";
 import EmployeeDependentForm from "./EmployeeDependentForm";
 import EmployeeAccidentInfoForm from "./EmployeeAccidentInfoForm";
-import { createApplication } from "../../actions";
+import { createApplication, updateApplication } from "../../actions";
 import EmployeeAccountInfoForm from "./EmployeeAccountInfoForm";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,7 +37,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const steps = ["Labour Details", "Upload Documents", "Location", "Dependent", "Account info", "Accident Info"];
+const steps = [
+  "Labour Details",
+  "Location",
+  "Upload Documents",
+  "Dependent",
+  "Account info",
+  "Accident Info",
+];
 
 const MultiStepApplyForm = () => {
   const classes = useStyles();
@@ -76,16 +83,9 @@ const MultiStepApplyForm = () => {
     permanentLocation: null,
     presentLocation: null,
     presentAddress: "",
-    injuryType: "",
-    accidentDate: "",
-    accidentTime: "",
-    accidentType: "",
-    dutyStatus: "",
-    inOutsideFactory: "",
-    reJoiningDate: "",
-    dependents: [{}],
+    dependents: [],
     employeeBankInfo: {},
-    employeeAccidentInfo:{},
+    employeeAccidentInfo: {},
   });
 
   const handleChange = (key, value, parent = null) => {
@@ -103,7 +103,27 @@ const MultiStepApplyForm = () => {
     });
   };
 
-  const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
+  const handleNext = () => {
+    console.log({activeStep})
+    if (activeStep > 1) {
+      console.log("Update Submitting formData:", formData);
+      dispatch(
+        updateApplication(
+          formData,
+          `update workforce application ${formData.firstNameEn}`
+        )
+      );
+    } else {
+      console.log("Create Submitting formData:", formData);
+      dispatch(
+        createApplication(
+          formData,
+          `Created workforce application ${formData.firstNameEn}`
+        )
+      );
+    }
+    setActiveStep((prevStep) => prevStep + 1);
+  };
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
   const handleDependentChange = (index, key, value) => {
@@ -138,7 +158,7 @@ const MultiStepApplyForm = () => {
     );
   };
 
-  console.log({formData})
+  console.log({ formData });
 
   return (
     <div className={classes.container}>
@@ -151,14 +171,23 @@ const MultiStepApplyForm = () => {
           ))}
         </Stepper>
         {activeStep === 0 ? (
-          <EmployeeDetailsForm handleChange={handleChange} formData={formData} />
+          <EmployeeDetailsForm
+            handleChange={handleChange}
+            formData={formData}
+          />
         ) : activeStep === 1 ? (
           <Box mt={3}>
-            <EmployeeLocationForm handleChange={handleChange} formData={formData} />
+            <EmployeeLocationForm
+              handleChange={handleChange}
+              formData={formData}
+            />
           </Box>
         ) : activeStep === 2 ? (
           <Box mt={3}>
-            <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} />
+            <EmployeeDetailsForm2
+              handleChange={handleChange}
+              formData={formData}
+            />
           </Box>
         ) : activeStep === 3 ? (
           <Box mt={3}>
@@ -171,16 +200,28 @@ const MultiStepApplyForm = () => {
           </Box>
         ) : activeStep === 4 ? (
           <Box mt={3}>
-            <EmployeeAccountInfoForm handleChange={(key, value) => handleChange(key, value, "employeeBankInfo")} formData={formData.employeeBankInfo} />
+            <EmployeeAccountInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeBankInfo")
+              }
+              formData={formData.employeeBankInfo}
+            />
           </Box>
         ) : (
           <Box mt={3}>
-            <EmployeeAccidentInfoForm handleChange={(key, value) => handleChange(key, value, "employeeAccidentInfo")}  formData={formData} />
+            <EmployeeAccidentInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeAccidentInfo")
+              }
+              formData={formData}
+            />
           </Box>
         )}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
-            <Button onClick={handleBack} variant="outlined">Back</Button>
+            <Button onClick={handleBack} variant="outlined">
+              Back
+            </Button>
           )}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
