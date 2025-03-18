@@ -83,7 +83,7 @@ const MultiStepApplyForm = () => {
     permanentLocation: null,
     presentLocation: null,
     presentAddress: "",
-    dependents: [],
+    dependents: [{}],
     employeeBankInfo: {},
     employeeAccidentInfo: {},
   });
@@ -105,23 +105,23 @@ const MultiStepApplyForm = () => {
 
   const handleNext = () => {
     console.log({activeStep})
-    if (activeStep > 1) {
-      console.log("Update Submitting formData:", formData);
-      dispatch(
-        updateApplication(
-          formData,
-          `update workforce application ${formData.firstNameEn}`
-        )
-      );
-    } else {
-      console.log("Create Submitting formData:", formData);
-      dispatch(
-        createApplication(
-          formData,
-          `Created workforce application ${formData.firstNameEn}`
-        )
-      );
-    }
+    // if (activeStep > 1) {
+    //   console.log("Update Submitting formData:", formData);
+    //   dispatch(
+    //     updateApplication(
+    //       formData,
+    //       `update workforce application ${formData.firstNameEn}`
+    //     )
+    //   );
+    // } else {
+    //   console.log("Create Submitting formData:", formData);
+    //   dispatch(
+    //     createApplication(
+    //       formData,
+    //       `Created workforce application ${formData.firstNameEn}`
+    //     )
+    //   );
+    // }
     setActiveStep((prevStep) => prevStep + 1);
   };
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);

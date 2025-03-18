@@ -194,7 +194,6 @@ export function formatWorkforceEmployeeGQL(employee) {
 export function formatApplicationeGQL(application) {
   return `
     ${application?.id ? `id: "${formatGQLString(application?.id)}"` : ""}
-    ${application.company ? `employeeDesignationInfo: "${formatGQLString(application.company)}"` : ""}
    
     ${application.firstNameBn ? `firstNameBn: "${formatGQLString(application.firstNameBn)}"` : ""}
     ${application.lastNameBn ? `lastNameBn: "${formatGQLString(application.lastNameBn)}"` : ""}

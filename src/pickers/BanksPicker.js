@@ -26,6 +26,10 @@ const BanksPicker = ({
     return dispatch(fetchBanksPick(modulesManager, [`type:"bank"`]));
   }, []);
 
+  const fetchBanks = () => {
+    dispatch(fetchBanksPick(modulesManager, [`type:"bank"`]));
+  };
+
   const isLoading = useSelector(
     (state) => state.workforce[`fetchingBanksPick`]
   );
@@ -60,6 +64,7 @@ const BanksPicker = ({
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}
       onInputChange={setSearchString}
+      onOpen={fetchBanks}
     />
   );
 };

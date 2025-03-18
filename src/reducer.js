@@ -37,6 +37,11 @@ function reducer(
     fetchedBanksPick: false,
     banksPick: [],
 
+    fetchingBranchPick: false,
+    errorBranchPick: null,
+    fetchedBranchPick: false,
+    branchPick: [],
+
     ///representative states
     fetchingRepresentatives: false,
     errorRepresentatives: null,
@@ -382,6 +387,31 @@ function reducer(
           ...state,
           fetching: false,
           errorBanksPick: formatServerError(action.payload),
+        };
+  
+    case "WORKFORCE_BRANCH_PICKER_REQ":
+      return {
+        ...state,
+        fetchingBranchPick: true,
+        fetchedBranchPick: false,
+        branchPick: [],
+        errorBranchPick: null,
+      };
+    case "WORKFORCE_BRANCH_PICKER_RESP":
+      return {
+        ...state,
+        fetchinBranchPick: false,
+        fetcheBranchPick: true,
+        branchPick: parseData(
+          action.payload.data.banks
+        ),
+        erroBranchPick: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_BRANCH_PICKER_ERR":
+        return {
+          ...state,
+          fetching: false,
+          errorBranchPick: formatServerError(action.payload),
         };
   
     

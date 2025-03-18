@@ -63,6 +63,16 @@ export function fetchBanksPick(mm,filters) {
   return graphql(payload, "WORKFORCE_BANKS_PICKER");
 }
 
+export function fetchBranchPick(mm,filters) {
+  const projections = ["id", "nameEn","parent{id}"];
+  const payload = formatPageQueryWithCount(
+    "banks",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_BRANCH_PICKER");
+}
+
 export function fetchOrganizationUnitsPick(mm, filters) {
   const projections = ["id", "nameEn", "nameBn"];
   const payload = formatPageQueryWithCount(
