@@ -53,7 +53,8 @@ import UnitDesignationPage from "./pages/organization-unit-designation/UnitDesig
 import UnitDesignationsPage from "./pages/organization-unit-designation/UnitDesignationsPage";
 import OranigzationEmployeesPage from "./pages/organization-employee/OranigzationEmployeesPage";
 import OrganizationEmployeePage from "./pages/organization-employee/OrganizationEmployeePage";
-import WorkforceEmployeeDesignationPage from "./pages/organization-employee-designation/WorkforceEmployeeDesignationPage";
+import WorkforceEmployeeDesignationPage
+  from "./pages/organization-employee-designation/WorkforceEmployeeDesignationPage";
 import OranigzationOfficesPage from "./pages/workforce-office/WorkforceOfficesPage";
 import OranigzationOfficePage from "./pages/workforce-office/WorkforceOfficePage";
 import OranigzationCompaniesPage from "./pages/workforce-company/WorkforceCompaniesPage";
@@ -77,13 +78,12 @@ import ServicePage from "./pages/workforce-employee/services/ServicePage";
 import RegistrationPage from "./pages/registration/RegistrationPage";
 import MultiStepApplyForm from "./pages/application/MultiStepApplyForm";
 import ApplicationProcessPage from "./pages/application-process/ApplicationProcessPage";
+import RegistrationButton from "./pages/registration/RegistrationButton";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
-
-
 const DEFAULT_CONFIG = {
-  "translations": [{ key: "en", messages: messages_en },{ key: "fr", messages: messages_bn }],
+  "translations": [{ key: "en", messages: messages_en }, { key: "fr", messages: messages_bn }],
   reducers: [{ key: "workforce", reducer }],
 
   refs: [
@@ -97,8 +97,14 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.unit.designations.designation", ref: ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS_DESIGNATION },
 
     { key: "workforce.route.organizations.employees.employee", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE },
-    { key: "workforce.route.organizations.employees.employee.account.info", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCOUNT_INFO },
-    { key: "workforce.route.organizations.employees.employee.services", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_SERVICES },
+    {
+      key: "workforce.route.organizations.employees.employee.account.info",
+      ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCOUNT_INFO,
+    },
+    {
+      key: "workforce.route.organizations.employees.employee.services",
+      ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_SERVICES,
+    },
     // { key: "workforce.route.organizations.employees.employee.dependent", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_DEPENDENT },
     { key: "workforce.route.organizations.employees", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES },
 
@@ -133,13 +139,11 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.employees.dependents.dependent", ref: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT },
     { key: "workforce.route.employees.services", ref: ROUTE_WORKFORCE_EMPLOYEES_SERVICES },
     { key: "workforce.route.employees.services.service", ref: ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE },
-    
+
     { key: "workforce.route.employee.factories", ref: ROUTE_WORKFORCE_EMPLOYEE_FACTORIES },
 
-    { key: "workforce.route.banks", ref: ROUTE_WORKFORCE_BANKS},
+    { key: "workforce.route.banks", ref: ROUTE_WORKFORCE_BANKS },
     { key: "workforce.route.banks.bank", ref: ROUTE_WORKFORCE_BANKS_BANK },
-
-
 
 
     { key: "workforceOrganization.OrganizationPicker", ref: OrganizationPicker },
@@ -156,15 +160,24 @@ const DEFAULT_CONFIG = {
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS, component: WorkforceOrganizationUnitsPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT, component: WorkforceOrganizationUnitPage },
-    { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT}/:organization_unit_uuid`, component: WorkforceOrganizationUnitPage },
+    {
+      path: `${ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT}/:organization_unit_uuid`,
+      component: WorkforceOrganizationUnitPage,
+    },
 
     { path: ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS, component: UnitDesignationsPage },
     { path: ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS_DESIGNATION, component: UnitDesignationPage },
-    { path: `${ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS_DESIGNATION}/:organization_unit_designation_uuid`, component: UnitDesignationPage },
+    {
+      path: `${ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS_DESIGNATION}/:organization_unit_designation_uuid`,
+      component: UnitDesignationPage,
+    },
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES, component: OranigzationEmployeesPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE, component: OrganizationEmployeePage },
-    { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE}/:organization_employee_uuid`, component: OrganizationEmployeePage },
+    {
+      path: `${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE}/:organization_employee_uuid`,
+      component: OrganizationEmployeePage,
+    },
 
     { path: ROUTE_WORKFORCE_OFFICES, component: OranigzationOfficesPage },
     { path: ROUTE_WORKFORCE_OFFICES_OFFICE, component: OranigzationOfficePage },
@@ -175,9 +188,15 @@ const DEFAULT_CONFIG = {
     { path: `${ROUTE_WORKFORCE_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },
     { path: `${ROUTE_WORKFORCE_EDIT_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },
 
-    { path: `${ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },
+    {
+      path: `${ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY}/:workforce_company_uuid`,
+      component: OranigzationCompanyPage,
+    },
     { path: ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY, component: OranigzationCompanyPage },
-    { path: `${ROUTE_WORKFORCE_APPROVE_EDIT_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OranigzationCompanyPage },
+    {
+      path: `${ROUTE_WORKFORCE_APPROVE_EDIT_COMPANIES_COMPANY}/:workforce_company_uuid`,
+      component: OranigzationCompanyPage,
+    },
     { path: ROUTE_WORKFORCE_APPROVE_COMPANIES, component: OranigzationCompaniesPage },
 
 
@@ -209,18 +228,20 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_EMPLOYEE_FACTORIES, component: WorkforceEmployeeFactoryPage },
 
     { path: ROUTE_WORKFORCE_BANKS, component: WorkforceBanksPage },
-    { path: ROUTE_WORKFORCE_BANKS_BANK, component: WorkforceBankPage},
+    { path: ROUTE_WORKFORCE_BANKS_BANK, component: WorkforceBankPage },
     { path: `${ROUTE_WORKFORCE_BANKS_BANK}/:bank_uuid`, component: WorkforceBankPage },
 
-    { path: ROUTE_WORKFORCE_REGISTRATION, component: RegistrationPage },
     { path: ROUTE_WORKFORCE_APPLICATION, component: MultiStepApplyForm },
     { path: ROUTE_WORKFORCE_APPLICATION_PROCESS, component: ApplicationProcessPage },
+  ],
 
-
-
+  "core.UnauthenticatedRouter": [
+    { path: ROUTE_WORKFORCE_REGISTRATION, component: RegistrationPage },
   ],
 
   "core.MainMenu": [WorkforceMainMenu],
+  
+  "core.LoginPage": RegistrationButton,
 };
 
 export const WorkforceModule = (cfg) => {
