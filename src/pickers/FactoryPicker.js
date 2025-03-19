@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useTranslations, Autocomplete } from "@openimis/fe-core";
+import { useTranslations, Autocomplete,decodeId } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchFactoriesPick } from "../actions";
 
@@ -16,6 +16,7 @@ const FactoryPicker = ({
   filterOptions,
   filterSelectedOptions,
   multiple,
+  companyId
 }) => {
   const [searchString, setSearchString] = useState(null);
   const { formatMessage } = useTranslations("workforce");
@@ -36,8 +37,13 @@ const FactoryPicker = ({
     (state) => state.workforce["errorWorkforceFactoriesPick"]
   );
 
+  const filteredFactories = useMemo(() => {
+    return data.filter(factory => decodeId(factory.workforceEmployer.id) === companyId);
+  }, [data, companyId]);
+
+  console.log({data})
    const selectedOption = useMemo(
-      () => data.find((option) => option.id === value) || null,
+      () => filteredFactories.find((option) => option.id === value) || null,
       [value]
     )
 
@@ -51,7 +57,7 @@ const FactoryPicker = ({
       withLabel={withLabel}
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
-      options={data}
+      options={filteredFactories}
       isLoading={isLoading}
       value={selectedOption}
       getOptionLabel={(option) => `${option.nameEn}`}

@@ -6,18 +6,18 @@ import AddIcon from "@material-ui/icons/Add";
 import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
 } from "@openimis/fe-core";
-import { ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE } from "../../../routes";
-import DependentSearcher from "../../../components/workforce-employee/dependent/DependentSearcher";
+import { ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO } from "../../../routes";
+import AccountInfoSearcher from "../../../components/workforce-employee/account-info/AccountInfoSearcher";
 import { MODULE_NAME } from "../../../constants";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab, ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE,
+  fab: theme.fab, ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO,
 });
 
-class DependentsPage extends Component {
+class AccountInfosPage extends Component {
   onDoubleClick = (employee, newTab = false) => {
-    const routeParams = ["workforce.route.employees.dependents.dependent", [decodeId(employee.id)]];
+    const routeParams = ["workforce.route.employees.account.infos.info", [decodeId(employee.id)]];
     if (employee?.isHistory) {
       routeParams[1].push(employee.version);
     }
@@ -25,18 +25,17 @@ class DependentsPage extends Component {
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, "workforce.route.employees.dependents.dependent");
+    historyPush(this.props.modulesManager, this.props.history, "workforce.route.employees.account.infos.info");
   };
 
   render() {
-    const { intl, classes, rights,workforceEmployeeUuid } = this.props;
+    const { intl, classes, rights } = this.props;
 
     return (
       <div className={classes.page}>
-        <DependentSearcher
+        <AccountInfoSearcher
           cacheFiltersKey="ticketPageFiltersCache"
           onDoubleClick={this.onDoubleClick}
-          workforceEmployeeUuid={workforceEmployeeUuid}
         />
         {/*{rights.includes(RIGHT_ORGANIZATION_CREATE)*/}
         {/*  && withTooltip(*/}
@@ -46,7 +45,7 @@ class DependentsPage extends Component {
               <AddIcon />
             </Fab>
           </div>,
-          <FormattedMessage module={MODULE_NAME} id={"workforce.organization.employee.addNewTooltip"} />,
+          <FormattedMessage module={MODULE_NAME} id={"workforce.employee.account.info.addNewTooltip"} />,
         )}
       </div>
     );
@@ -55,11 +54,10 @@ class DependentsPage extends Component {
 
 const mapStateToProps = (state) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  workforceEmployeeUuid: props.match.params.workforce_employee_uuid,
 });
 
 export default withModulesManager(
   withHistory(
-    connect(mapStateToProps)(withTheme(withStyles(styles)(DependentsPage))),
+    connect(mapStateToProps)(withTheme(withStyles(styles)(AccountInfosPage))),
   ),
 );

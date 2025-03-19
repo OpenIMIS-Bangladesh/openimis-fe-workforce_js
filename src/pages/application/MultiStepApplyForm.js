@@ -1,17 +1,29 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Stepper, Step, StepLabel, Paper, Box, Typography } from "@material-ui/core";
-import FileUploader from "../../pickers/FileUploader";  
+import {
+  Button,
+  Stepper,
+  Step,
+  StepLabel,
+  Paper,
+  Box,
+  Typography,
+} from "@material-ui/core";
+import { useSelector, useDispatch } from "react-redux";
+import FileUploader from "../../pickers/FileUploader";
 import EmployeeDetailsForm from "./EmployeeDetailsForm";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 import EmployeeLocationForm from "./EmployeeLocationForm";
+import EmployeeDependentForm from "./EmployeeDependentForm";
+import EmployeeAccidentInfoForm from "./EmployeeAccidentInfoForm";
+import { createApplication, updateApplication } from "../../actions";
+import EmployeeAccountInfoForm from "./EmployeeAccountInfoForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    // height: "100vh",
   },
   paper: {
     padding: theme.spacing(2),
@@ -20,14 +32,23 @@ const useStyles = makeStyles((theme) => ({
   buttonContainer: {
     marginTop: theme.spacing(2),
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
+    gap: theme.spacing(1),
   },
 }));
 
-const steps = ["Labour Details", "Upload Documents","Location"];
+const steps = [
+  "Labour Details",
+  "Location",
+  "Upload Documents",
+  "Dependent",
+  "Account info",
+  "Accident Info",
+];
 
 const MultiStepApplyForm = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
     firstNameEn: "",
@@ -56,22 +77,88 @@ const MultiStepApplyForm = () => {
     gender: "",
     maritalStatus: "",
     monthlyEarning: "",
-    uploadedNidFile: null,  // Store uploaded files
-    uploadedBirthCertificateFile: null,
-    permanentAddress:"",
-    permanentLocation:null,
-    presentAddress:"",
-    presentLocation:null
+    uploadedNidFile: [],
+    uploadedBirthCertificateFile: [],
+    permanentAddress: "",
+    permanentLocation: null,
+    presentLocation: null,
+    presentAddress: "",
+    dependents: [{}],
+    employeeBankInfo: {},
+    employeeAccidentInfo: {},
   });
-  
-  const handleChange = (key, value) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
+
+  const handleChange = (key, value, parent = null) => {
+    setFormData((prev) => {
+      if (parent) {
+        return {
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            [key]: value,
+          },
+        };
+      }
+      return { ...prev, [key]: value };
+    });
   };
 
-  const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
+  const handleNext = () => {
+    console.log({activeStep})
+    // if (activeStep > 1) {
+    //   console.log("Update Submitting formData:", formData);
+    //   dispatch(
+    //     updateApplication(
+    //       formData,
+    //       `update workforce application ${formData.firstNameEn}`
+    //     )
+    //   );
+    // } else {
+    //   console.log("Create Submitting formData:", formData);
+    //   dispatch(
+    //     createApplication(
+    //       formData,
+    //       `Created workforce application ${formData.firstNameEn}`
+    //     )
+    //   );
+    // }
+    setActiveStep((prevStep) => prevStep + 1);
+  };
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
-  console.log({formData})
+  const handleDependentChange = (index, key, value) => {
+    setFormData((prev) => {
+      const updatedDependents = [...prev.dependents];
+      updatedDependents[index] = { ...updatedDependents[index], [key]: value };
+      return { ...prev, dependents: updatedDependents };
+    });
+  };
+
+  const addDependent = () => {
+    setFormData((prev) => ({
+      ...prev,
+      dependents: [...prev.dependents, {}],
+    }));
+  };
+
+  const removeDependent = (index) => {
+    setFormData((prev) => {
+      const updatedDependents = prev.dependents.filter((_, i) => i !== index);
+      return { ...prev, dependents: updatedDependents };
+    });
+  };
+
+  const handleSubmit = () => {
+    console.log("Submitting formData:", formData);
+    dispatch(
+      createApplication(
+        formData,
+        `Created workforce application ${formData.firstNameEn}`
+      )
+    );
+  };
+
+  console.log({ formData });
 
   return (
     <div className={classes.container}>
@@ -84,28 +171,66 @@ const MultiStepApplyForm = () => {
           ))}
         </Stepper>
         {activeStep === 0 ? (
-          <EmployeeDetailsForm handleChange={handleChange} formData={formData} setFormData={setFormData} />
-        ) :activeStep === 1? (
+          <EmployeeDetailsForm
+            handleChange={handleChange}
+            formData={formData}
+          />
+        ) : activeStep === 1 ? (
           <Box mt={3}>
-            {/* <Typography variant="h6">Upload NID and Birth Certificate</Typography>
-          <FileUploader /> */}
-          <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} setFormData={setFormData} />
+            <EmployeeLocationForm
+              handleChange={handleChange}
+              formData={formData}
+            />
           </Box>
-        ):(
-            <Box mt={3}>
-              {/* <Typography variant="h6">Upload NID and Birth Certificate</Typography>
-            <FileUploader /> */}
-            <EmployeeLocationForm handleChange={handleChange} formData={formData} setFormData={setFormData} />
-            </Box>
-          )}
+        ) : activeStep === 2 ? (
+          <Box mt={3}>
+            <EmployeeDetailsForm2
+              handleChange={handleChange}
+              formData={formData}
+            />
+          </Box>
+        ) : activeStep === 3 ? (
+          <Box mt={3}>
+            <EmployeeDependentForm
+              dependents={formData.dependents}
+              handleDependentChange={handleDependentChange}
+              addDependent={addDependent}
+              removeDependent={removeDependent}
+            />
+          </Box>
+        ) : activeStep === 4 ? (
+          <Box mt={3}>
+            <EmployeeAccountInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeBankInfo")
+              }
+              formData={formData.employeeBankInfo}
+            />
+          </Box>
+        ) : (
+          <Box mt={3}>
+            <EmployeeAccidentInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeAccidentInfo")
+              }
+              formData={formData}
+            />
+          </Box>
+        )}
         <div className={classes.buttonContainer}>
-          {activeStep > 0 && <Button onClick={handleBack}>Back</Button>}
+          {activeStep > 0 && (
+            <Button onClick={handleBack} variant="outlined">
+              Back
+            </Button>
+          )}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
-              Next
+              Save & Next
             </Button>
           ) : (
-            <Button variant="contained" color="secondary">Submit</Button>
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
+              Submit
+            </Button>
           )}
         </div>
       </Paper>

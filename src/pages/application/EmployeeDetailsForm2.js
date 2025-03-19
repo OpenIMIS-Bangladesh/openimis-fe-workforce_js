@@ -55,6 +55,7 @@ const EmployeeDetailsForm2 = ({handleChange, formData, setFormData }) => {
 //   const handleChange = (key, value) => {
 //     setFormData((prev) => ({ ...prev, [key]: value }));
 //   };
+console.log({formData})
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
@@ -82,11 +83,11 @@ const EmployeeDetailsForm2 = ({handleChange, formData, setFormData }) => {
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <Typography>Upload NID </Typography>
-                <FileUploader />
+                <FileUploader fieldKey="uploadedNidFile" onFileChange={handleChange}/>
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <Typography>Upload Birth Certificate </Typography>
-                <FileUploader />
+                <FileUploader fieldKey="uploadedBirthCertificateFile" onFileChange={handleChange}/>
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <CompanyPicker
@@ -113,34 +114,9 @@ const EmployeeDetailsForm2 = ({handleChange, formData, setFormData }) => {
                     />
                   }
                   required
+                  companyId={formData?.company?.id} 
                   onChange={(v) => handleChange( "factory", v )}
                   readOnly={false}
-                />
-              </Grid>
-
-              <Grid item xs={6} className={classes.item}>
-                <EmployeeLifeStatusPicker
-                  value={formData.lifeStatus || ""}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.lifeStatus"
-                      module="workforce"
-                    />
-                  }
-                  required
-                  onChange={(v) => handleChange( "lifeStatus", v )}
-                  readOnly={false}
-                />
-              </Grid>
-
-              <Grid item xs={6} className={classes.item}>
-                <PublishedComponent
-                  pubRef="core.DatePicker"
-                  label={"workforce.employee.deathdate"}
-                  value={formData.deathDate || ""}
-                  readOnly={formData.lifeStatus === "Deceased" ? false : true}
-                  onChange={(v) => handleChange( "deathDate", v )}
-                  // readOnly={false}
                 />
               </Grid>
 

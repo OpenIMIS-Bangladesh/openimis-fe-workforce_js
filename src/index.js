@@ -1,4 +1,5 @@
 import messages_en from "./translations/en.json";
+import messages_bn from "./translations/bn.json";
 import WorkforceMainMenu from "./menu/WorkforceMainMenu";
 import reducer from "./reducer";
 import {
@@ -26,17 +27,19 @@ import {
   ROUTE_WORKFORCE_EDIT_COMPANIES_COMPANY,
   ROUTE_WORKFORCE_BANKS,
   ROUTE_WORKFORCE_BANKS_BANK,
-  ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCIDENT_INFO,
   ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCOUNT_INFO,
   ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_SERVICES,
   ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS,
   ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT,
   ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS,
   ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO,
+  ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS,
+  ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS_INFO,
   ROUTE_WORKFORCE_EMPLOYEES_SERVICES,
   ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE,
   ROUTE_WORKFORCE_REGISTRATION,
-  ROUTE_WORKFORCE_APPLICATION
+  ROUTE_WORKFORCE_APPLICATION,
+  ROUTE_WORKFORCE_APPLICATION_PROCESS,
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -67,17 +70,20 @@ import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage"
 import DependentPage from "./pages/workforce-employee/dependent/DependentPage";
 import AccidentInfosPage from "./pages/workforce-employee/accident-info/AccidentInfosPage";
 import AccidentInfoPage from "./pages/workforce-employee/accident-info/AccidentInfoPage";
+import AccountInfosPage from "./pages/workforce-employee/account-info/AccountInfosPage";
+import AccountInfoPage from "./pages/workforce-employee/account-info/AccountInfoPage";
 import ServicesPage from "./pages/workforce-employee/services/ServicesPage";
 import ServicePage from "./pages/workforce-employee/services/ServicePage";
 import RegistrationPage from "./pages/registration/RegistrationPage";
 import MultiStepApplyForm from "./pages/application/MultiStepApplyForm";
+import ApplicationProcessPage from "./pages/application-process/ApplicationProcessPage";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
 
 
 const DEFAULT_CONFIG = {
-  "translations": [{ key: "en", messages: messages_en }],
+  "translations": [{ key: "en", messages: messages_en },{ key: "fr", messages: messages_bn }],
   reducers: [{ key: "workforce", reducer }],
 
   refs: [
@@ -111,15 +117,18 @@ const DEFAULT_CONFIG = {
 
     { key: "workforce.route.employees.employee", ref: ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE },
     { key: "workforce.route.employees", ref: ROUTE_WORKFORCE_EMPLOYEES },
-    { key: "workforce.route.employees.accident.infos", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS },
-    { key: "workforce.route.employees.accident.info", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO },
 
     { key: "workforce.route.registration", ref: ROUTE_WORKFORCE_REGISTRATION },
     { key: "workforce.route.application", ref: ROUTE_WORKFORCE_APPLICATION },
+    { key: "workforce.route.application.process", ref: ROUTE_WORKFORCE_APPLICATION_PROCESS },
 
-    
-    { key: "workforce.route.employees.dependents", ref: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS },
+    { key: "workforce.route.employees.accident.infos", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS },
     { key: "workforce.route.employees.accident.infos.info", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO },
+
+    { key: "workforce.route.employees.account.infos", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS },
+    { key: "workforce.route.employees.account.infos.info", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS_INFO },
+
+    { key: "workforce.route.employees.dependents", ref: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS },
 
     { key: "workforce.route.employees.dependents.dependent", ref: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT },
     { key: "workforce.route.employees.services", ref: ROUTE_WORKFORCE_EMPLOYEES_SERVICES },
@@ -179,15 +188,21 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_EMPLOYEES, component: WorkforceEmployeesPage },
     { path: ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE, component: WorkforceEmployeePage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE}/:workforce_employee_uuid`, component: WorkforceEmployeePage },
-    { path: `${ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS}/:dependent_uuid`, component: DependentsPage },
+    { path: `${ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS}/:workforce_employee_uuid`, component: DependentsPage },
     { path: ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT, component: DependentPage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS_DEPENDENT}/:dependent_uuid`, component: DependentPage },
 
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_SERVICES}/:dependent_uuid`, component: ServicesPage },
     { path: ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE, component: ServicePage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_SERVICES_SERVICE}/:service_uuid`, component: ServicePage },
+
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS}/:workforce_employee_uuid`, component: AccidentInfosPage },
+    { path: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO, component: AccidentInfoPage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO}/:workforce_employee_uuid`, component: AccidentInfoPage },
+
+    { path: `${ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS}/:workforce_employee_uuid`, component: AccountInfosPage },
+    { path: ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS_INFO, component: AccountInfoPage },
+    { path: `${ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS_INFO}/:workforce_employee_uuid`, component: AccountInfoPage },
 
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, component: WorkforceEmployeeDesignationPage },
@@ -199,6 +214,7 @@ const DEFAULT_CONFIG = {
 
     { path: ROUTE_WORKFORCE_REGISTRATION, component: RegistrationPage },
     { path: ROUTE_WORKFORCE_APPLICATION, component: MultiStepApplyForm },
+    { path: ROUTE_WORKFORCE_APPLICATION_PROCESS, component: ApplicationProcessPage },
 
 
 

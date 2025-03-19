@@ -59,16 +59,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FileUploader = () => {
+const FileUploader = ({ fieldKey, onFileChange }) => {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
 
   const onDrop = useCallback((acceptedFiles) => {
-    setFiles([...files, ...acceptedFiles]);
-  }, [files]);
+    const newFiles = [...files, ...acceptedFiles];
+    setFiles(newFiles);
+    onFileChange(fieldKey, newFiles); // Call handleChange with updated files
+  }, [files, fieldKey, onFileChange]);
 
   const removeFile = (fileName) => {
-    setFiles(files.filter((file) => file.name !== fileName));
+    const updatedFiles = files.filter((file) => file.name !== fileName);
+    setFiles(updatedFiles);
+    onFileChange(fieldKey, updatedFiles); // Call handleChange after file removal
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -88,7 +92,6 @@ const FileUploader = () => {
         </Button>
       </Paper>
 
-      {/* Show uploaded files */}
       {files.length > 0 && (
         <Paper className={classes.fileList}>
           {files.map((file) => (
@@ -108,3 +111,4 @@ const FileUploader = () => {
 };
 
 export default FileUploader;
+

@@ -14,9 +14,13 @@ import {
   formatWorkforceFactoryGQL,
   formatEmployeeDesignationGQL,
   formatWorkforceEmployeeGQL,
-  formatEmployeeAssignDesignationGQL, formatWorkforceCompanyStatusGql,
+  formatEmployeeAssignDesignationGQL, 
+  formatWorkforceCompanyStatusGql,
   formatBankGQL,
   formatEmployeeDependentGQL,
+  formatWorkforceEmployeeAccountInfoGQL,
+  formatWorkforceEmployeeAccidentInfoGQL,
+  formatApplicationeGQL
 } from "./utils/format_gql";
 
 export function fetchOrganizationsSummary(mm, filters) {
@@ -50,13 +54,23 @@ export function fetchOrganizationsPick(filters) {
 }
 /// bank picker ///
 export function fetchBanksPick(mm,filters) {
-  const projections = ["id", "nameEn"];
+  const projections = ["id", "nameEn","parent{id}"];
   const payload = formatPageQueryWithCount(
     "banks",
     filters,
     projections,
   );
   return graphql(payload, "WORKFORCE_BANKS_PICKER");
+}
+
+export function fetchBranchPick(mm,filters) {
+  const projections = ["id", "nameEn","parent{id}"];
+  const payload = formatPageQueryWithCount(
+    "banks",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_BRANCH_PICKER");
 }
 
 export function fetchOrganizationUnitsPick(mm, filters) {
@@ -309,7 +323,7 @@ export function fetchOfficesPick(filters) {
 }
 
 export function fetchFactoriesPick(filters) {
-  const projections = ["id", "nameEn", "nameBn"];
+  const projections = ["id", "nameEn", "nameBn","workforceEmployer{id}"];
   const payload = formatPageQueryWithCount(
     "workforceEmployerFactories",
     filters,
@@ -529,6 +543,172 @@ const projections = [
     projections,
   );
   return graphql(payload, "WORKFORCE_EMPLOYEES_ACCIDENT");
+}
+export function fetchAccountInfosSummary(mm, filters) {
+  const present_location_projection =
+  "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+const permanent_location_projection =
+  "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+ 
+  const projections = [
+    "id",
+    "beneficiaryType",
+    "beneficiaryId",
+    "onBehalfOf",
+    "accountHolderName",
+    "accountNumber",
+    "status",
+    present_location_projection,
+    permanent_location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployeeAccountInfo",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEES_ACCOUNTS");
+}
+export function fetchAccountInfo(mm, filters) {
+  const present_location_projection =
+  "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+const permanent_location_projection =
+  "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+ 
+const projections = [
+    "id",
+    "beneficiaryType",
+    "beneficiaryId",
+    "onBehalfOf",
+    "accountHolderName",
+    "accountNumber",
+    "status",
+    present_location_projection,
+    permanent_location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployeeAccountInfo",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEES_ACCOUNT");
+}
+
+export function fetchApplicationsSummary(mm, filters) {
+  const present_location_projection =
+  "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+const permanent_location_projection =
+  "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+ 
+  const projections = [
+    "id",
+    "employeeId",
+    "employeeIdLima",
+    "insuranceNumber",
+    "employeeType",
+    "globalId",
+    "lastNameBn",
+    "firstNameEn",
+    "lastNameEn",
+    "firstNameBn",
+    "otherName",
+    "fatherNameBn",
+    "fatherNameEn",
+    "motherNameBn",
+    "motherNameEn",
+    "spouseNameBn",
+    "spouseNameEn",
+    "citizenship",
+    "privacyLaw",
+    "maritalStatus",
+    "gender",
+    "photoPath",
+    "photoDate",
+    "position",
+    "monthlyEarning",
+    "referenceSalary",
+    "permanentAddress",
+    "presentAddress",
+    "phoneNumber",
+    "email",
+    "status",
+    "birthCertificateNo",
+    "nid",
+    "passportNo",
+    "registrationDate",
+    "lifeStatus",
+    "disabilityStatus",
+    "deathDate",
+    "employeeDesignationInfo",
+    "employeeDocumentInfo",
+    "employeeBankInfo",
+    "employeeDependentInfo",
+    "employeeAccidentInfo",
+    present_location_projection,
+    permanent_location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceApplication",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_APPLICATIONS");
+}
+export function fetchApplication(mm, filters) {
+ 
+const projections = [
+  "id",
+  "employeeId",
+  "employeeIdLima",
+  "insuranceNumber",
+  "employeeType",
+  "globalId",
+  "lastNameBn",
+  "firstNameEn",
+  "lastNameEn",
+  "firstNameBn",
+  "otherName",
+  "fatherNameBn",
+  "fatherNameEn",
+  "motherNameBn",
+  "motherNameEn",
+  "spouseNameBn",
+  "spouseNameEn",
+  "citizenship",
+  "privacyLaw",
+  "maritalStatus",
+  "gender",
+  "photoPath",
+  "photoDate",
+  "position",
+  "monthlyEarning",
+  "referenceSalary",
+  "permanentAddress",
+  "presentAddress",
+  "phoneNumber",
+  "email",
+  "status",
+  "birthCertificateNo",
+  "nid",
+  "passportNo",
+  "registrationDate",
+  "lifeStatus",
+  "disabilityStatus",
+  "deathDate",
+  "employeeDesignationInfo",
+  "employeeDocumentInfo",
+  "employeeBankInfo",
+  "employeeDependentInfo",
+  "employeeAccidentInfo",
+  "birthDate",
+  present_location_projection,
+  permanent_location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceApplication",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_APPLICATION");
 }
 
 export function fetchWorkforceEmployee(mm, filters) {
@@ -992,6 +1172,49 @@ export function updateAccidentInfo(employee, clientMutationLabel) {
     },
   );
 }
+export function createAccountInfo(employee, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceEmployeeAccountInfo",
+    formatWorkforceEmployeeAccountInfoGQL(employee),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_EMPLOYEES_ACCOUNT_REQ",
+      "WORKFORCE_EMPLOYEES_ACCOUNT_RESP",
+      "WORKFORCE_EMPLOYEES_ACCOUNT_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function updateAccountInfo(employee, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWorkforceEmployeeAccountInfo",
+    formatWorkforceEmployeeAccountInfoGQL(employee),
+    clientMutationLabel,
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [ "WORKFORCE_EMPLOYEES_ACCOUNT_REQ",
+      "WORKFORCE_EMPLOYEES_ACCOUNT_RESP",
+      "WORKFORCE_EMPLOYEES_ACCOUNT_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      id: employee.id,
+    },
+  );
+}
 export function createEmployeeDependent(employee, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceEmployeeDependent",
@@ -1410,6 +1633,52 @@ export function updateBank(
   return graphql(
     mutation.payload,
     ["BANK_MUTATION_REQ", "BANK_UPDATE_BANK_RESP", "BANK_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function createApplication(
+  application,
+  clientMutationLabel,
+) {
+  const mutation = formatMutation(
+    "createWorkforceApplication",
+    formatApplicationeGQL(application),
+    clientMutationLabel,
+  );
+  
+  console.log({mutation})
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["APPLICATION_MUTATION_REQ", "APPLICATION_CREATE_APPLICATION_RESP", "APPLICATION_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function updateApplication(
+  application,
+  clientMutationLabel,
+) {
+  const mutation = formatMutation(
+    "updateWorkforceApplication",
+    formatApplicationeGQL(application),
+    clientMutationLabel,
+  );
+
+  console.log({mutation})
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["APPLICATION_MUTATION_REQ", "APPLICATION_UPDATE_APPLICATION_RESP", "APPLICATION_MUTATION_ERR"],
     {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,

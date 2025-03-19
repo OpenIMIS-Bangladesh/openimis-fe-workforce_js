@@ -37,6 +37,11 @@ function reducer(
     fetchedBanksPick: false,
     banksPick: [],
 
+    fetchingBranchPick: false,
+    errorBranchPick: null,
+    fetchedBranchPick: false,
+    branchPick: [],
+
     ///representative states
     fetchingRepresentatives: false,
     errorRepresentatives: null,
@@ -226,6 +231,32 @@ function reducer(
     fetchedEmployeeAccident: false,
     employeeAccident: null,
     employeeAccidentPageInfo: { totalCount: 0 },
+
+    ////employee Account states
+    fetchingEmployeeAccounts: false,
+    errorEmployeeAccounts: null,
+    fetchedEmployeeAccounts: false,
+    employeeAccounts: [],
+    employeeAccountsPageInfo: { totalCount: 0 },
+
+    fetchingEmployeeAccount: false,
+    errorEmployeeAccounts: null,
+    fetchedEmployeeAccount: false,
+    employeeAccount: null,
+    employeeAccountPageInfo: { totalCount: 0 },
+
+    ////Application states
+    fetchingApplications: false,
+    errorApplications: null,
+    fetchedApplications: false,
+    applications: [],
+    applicationsPageInfo: { totalCount: 0 },
+
+    fetchingApplication: false,
+    errorApplication: null,
+    fetchedApplication: false,
+    application: null,
+    applicationPageInfo: { totalCount: 0 },
   },
   action
 ) {
@@ -356,6 +387,31 @@ function reducer(
           ...state,
           fetching: false,
           errorBanksPick: formatServerError(action.payload),
+        };
+  
+    case "WORKFORCE_BRANCH_PICKER_REQ":
+      return {
+        ...state,
+        fetchingBranchPick: true,
+        fetchedBranchPick: false,
+        branchPick: [],
+        errorBranchPick: null,
+      };
+    case "WORKFORCE_BRANCH_PICKER_RESP":
+      return {
+        ...state,
+        fetchinBranchPick: false,
+        fetcheBranchPick: true,
+        branchPick: parseData(
+          action.payload.data.banks
+        ),
+        erroBranchPick: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_BRANCH_PICKER_ERR":
+        return {
+          ...state,
+          fetching: false,
+          errorBranchPick: formatServerError(action.payload),
         };
   
     
@@ -682,6 +738,58 @@ function reducer(
         errorEmployeeAccidents: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_EMPLOYEES_ACCIDENTS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+   
+       //employee account //
+    case "WORKFORCE_EMPLOYEE_ACCOUNT_REQ":
+      return {
+        ...state,
+        fetchingEmployeeAccount: true,
+        fetchedEmployeeAccount: false,
+        employeeAccount: null,
+        errorEmployeeAccount: null,
+      };
+    case "WORKFORCE_EMPLOYEE_ACCOUNT_RESP":
+      return {
+        ...state,
+        fetchingEmployeeAccount: false,
+        fetchedEmployeeAccount: true,
+        employeeAccount: parseData(
+          action.payload.data.workforceEmployeeAccount
+        ).map((organizationEmployee) => ({
+          ...organizationEmployee,
+          id: decodeId(organizationEmployee.id),
+        }))?.[0],
+        errorEmployeeAccount: formatGraphQLError(action.payload),
+      };
+
+    case "WORKFORCE_EMPLOYEES_ACCOUNTS_REQ":
+      return {
+        ...state,
+        fetchingEmployeeAccounts: true,
+        fetchedEmployeeAccounts: false,
+        employeeAccounts: [],
+        employeeAccountsPageInfo: { totalCount: 0 },
+        errorEmployeeAccounts: null,
+      };
+    case "WORKFORCE_EMPLOYEES_ACCOUNTS_RESP":
+      return {
+        ...state,
+        fetchingEmployeeAccounts: false,
+        fetchedEmployeeAccounts: true,
+        employeeAccounts: parseData(
+          action.payload.data.workforceEmployeeAccount
+        ),
+        employeeAccountsPageInfo: pageInfo(
+          action.payload.data.workforceEmployeeAccount
+        ),
+        errorEmployeeAccounts: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_EMPLOYEES_ACCOUNTS_ERR":
       return {
         ...state,
         fetching: false,
@@ -1072,6 +1180,54 @@ function reducer(
             errorBank: formatGraphQLError(action.payload),
           };
   
+            /// Application actions////
+    case "WORKFORCE_APPLICATIONS_REQ":
+      return {
+        ...state,
+        fetchingApplications: true,
+        fetchedApplications: false,
+        applications: [],
+        applicationsPageInfo: { totalCount: 0 },
+        errorApplications: null,
+      };
+    case "WORKFORCE_APPLICATIONS_RESP":
+      return {
+        ...state,
+        fetchingApplications: false,
+        fetchedApplications: true,
+        applications: parseData(action.payload.data.workforceApplication),
+        applicationsPageInfo: pageInfo(action.payload.data.workforceApplication),
+        errorApplications: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_APPLICATIONS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+    
+    case "WORKFORCE_APPLICATION_REQ":
+        return {
+          ...state,
+          fetchingApplication: true,
+          fetchedApplication: false,
+          application: null,
+          errorApplication: null,
+        };
+    case "WORKFORCE_APPLICATION_RESP":
+          return {
+            ...state,
+            fetchingApplication: false,
+            fetchedApplication: true,
+            application: parseData(action.payload.data.workforceApplication).map(
+              (application) => ({
+                ...application,
+                id: decodeId(application.id),
+              })
+            )?.[0],
+            errorApplication: formatGraphQLError(action.payload),
+          };
+  
 
     case "ORG_UNIT_CREATE_RESP":
       return dispatchMutationResp(state, action);
@@ -1184,6 +1340,16 @@ function reducer(
       return dispatchMutationResp(state, "createBank", action);
     case "BANK_UPDATE_BANK_RESP":
       return dispatchMutationResp(state, "updateBank", action);
+
+    case "APPLICATION_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "APPLICATION_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "APPLICATION_CREATE_APPLICATION_RESP":
+      return dispatchMutationResp(state, "createApplication", action);
+    case "APPLICATION_UPDATE_APPLICATION_RESP":
+      return dispatchMutationResp(state, "updateApplication", action);
 
     case "EMPLOYEE_DEPENDENT_MUTATION_REQ": {
       return dispatchMutationReq(state, action);

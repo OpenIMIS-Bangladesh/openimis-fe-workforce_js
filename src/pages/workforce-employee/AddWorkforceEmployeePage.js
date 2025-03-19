@@ -189,6 +189,7 @@ class AddWorkforceEmployeePage extends Component {
                       />
                     }
                     required
+                    companyId={stateEdited?.company?.id}
                     onChange={(v) => this.updateAttribute("factory", v)}
                     readOnly={isSaved}
                   />
