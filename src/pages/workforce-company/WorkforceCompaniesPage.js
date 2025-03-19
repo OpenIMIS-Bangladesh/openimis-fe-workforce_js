@@ -16,7 +16,7 @@ const styles = (theme) => ({
   fab: theme.fab, ROUTE_WORKFORCE_COMPANIES_COMPANY,
 });
 
-class OranigzationCompaniesPage extends Component {
+class OrganizationCompaniesPage extends Component {
   onDoubleClick = (company, newTab = false) => {
     const routeParams = ["workforce.route.companies.company", [decodeId(company.id)]];
     if (company?.isHistory) {
@@ -62,6 +62,6 @@ const mapStateToProps = (state) => ({
 
 export default withModulesManager(
   withHistory(
-    connect(mapStateToProps)(withTheme(withStyles(styles)(OranigzationCompaniesPage))),
+    connect(mapStateToProps)(withTheme(withStyles(styles)(OrganizationCompaniesPage))),
   ),
 );
