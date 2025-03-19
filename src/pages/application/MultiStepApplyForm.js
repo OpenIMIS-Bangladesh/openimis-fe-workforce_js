@@ -106,62 +106,62 @@ const MultiStepApplyForm = () => {
 
   const handleNext = () => {
     console.log({ activeStep });
-    if (activeStep === 2 || activeStep === 1) {
-      const workforceEmployeeData = {
-        // company: formData?.company.id || formData.company.id,
-        // factory:
-        //   decodeId(formData?.factory.id) || decodeId(formData.factory.id),
-        firstNameBn: formData?.firstNameBn || formData.firstNameBn,
-        lastNameBn: formData?.lastNameBn || formData.lastNameBn,
-        otherName: formData?.otherName || formData.otherName,
-        firstNameEn: formData?.firstNameEn || formData.firstNameEn,
-        lastNameEn: formData?.lastNameEn || formData.lastNameEn,
-        phoneNumber: formData?.phoneNumber || formData.phoneNumber,
-        email: formData?.email || formData.email,
-        gender: formData?.gender?.id || formData.gender.id,
-        birthDate: formData?.birthDate || formData.birthDate,
-        deathDate: formData?.deathDate || formData.deathDate,
-        lifeStatus: formData?.lifeStatus || formData.lifeStatus,
-        permanentAddress:
-          formData?.permanentAddress || formData.permanentAddress,
-        presentAddress: formData?.presentAddress || formData.presentAddress,
-        position: formData?.position || formData.position,
-        monthlyEarning: formData?.monthlyEarning || formData.monthlyEarning,
-        fatherNameBn: formData?.fatherNameBn || formData.fatherNameBn,
-        fatherNameEn: formData?.fatherNameEn || formData.fatherNameEn,
-        motherNameBn: formData?.motherNameBn || formData.motherNameBn,
-        motherNameEn: formData?.motherNameEn || formData.motherNameEn,
-        spouseNameBn: formData?.spouseNameBn || formData.spouseNameBn,
-        spouseNameEn: formData?.spouseNameEn || formData.spouseNameEn,
-        citizenship: formData?.citizenship || formData.citizenship,
-        maritalStatus: formData?.maritalStatus || formData.maritalStatus,
-        presentLocation: formData?.presentLocation || formData.presentLocation,
-        permanentLocation:
-          formData?.permanentLocation || formData.permanentLocation,
-        id: formData?.id,
-      };
-      console.log("Update Submitting formData:", formData);
-      dispatch(
-        updateWorkforceEmployee(
-          workforceEmployeeData,
-          `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-        )
-      );
-      // dispatch(
-      //   updateApplication(
-      //     formData,
-      //     `update workforce application ${formData.firstNameEn}`
-      //   )
-      // );
-    } else {
-      console.log("Create Submitting formData:", formData);
-      dispatch(
-        createApplication(
-          formData,
-          `Created workforce application ${formData.firstNameEn}`
-        )
-      );
-    }
+    // if (activeStep === 2 || activeStep === 1) {
+    //   const workforceEmployeeData = {
+    //     // company: formData?.company.id || formData.company.id,
+    //     // factory:
+    //     //   decodeId(formData?.factory.id) || decodeId(formData.factory.id),
+    //     firstNameBn: formData?.firstNameBn || formData.firstNameBn,
+    //     lastNameBn: formData?.lastNameBn || formData.lastNameBn,
+    //     otherName: formData?.otherName || formData.otherName,
+    //     firstNameEn: formData?.firstNameEn || formData.firstNameEn,
+    //     lastNameEn: formData?.lastNameEn || formData.lastNameEn,
+    //     phoneNumber: formData?.phoneNumber || formData.phoneNumber,
+    //     email: formData?.email || formData.email,
+    //     gender: formData?.gender?.id || formData.gender.id,
+    //     birthDate: formData?.birthDate || formData.birthDate,
+    //     deathDate: formData?.deathDate || formData.deathDate,
+    //     lifeStatus: formData?.lifeStatus || formData.lifeStatus,
+    //     permanentAddress:
+    //       formData?.permanentAddress || formData.permanentAddress,
+    //     presentAddress: formData?.presentAddress || formData.presentAddress,
+    //     position: formData?.position || formData.position,
+    //     monthlyEarning: formData?.monthlyEarning || formData.monthlyEarning,
+    //     fatherNameBn: formData?.fatherNameBn || formData.fatherNameBn,
+    //     fatherNameEn: formData?.fatherNameEn || formData.fatherNameEn,
+    //     motherNameBn: formData?.motherNameBn || formData.motherNameBn,
+    //     motherNameEn: formData?.motherNameEn || formData.motherNameEn,
+    //     spouseNameBn: formData?.spouseNameBn || formData.spouseNameBn,
+    //     spouseNameEn: formData?.spouseNameEn || formData.spouseNameEn,
+    //     citizenship: formData?.citizenship || formData.citizenship,
+    //     maritalStatus: formData?.maritalStatus || formData.maritalStatus,
+    //     presentLocation: formData?.presentLocation || formData.presentLocation,
+    //     permanentLocation:
+    //       formData?.permanentLocation || formData.permanentLocation,
+    //     id: formData?.id,
+    //   };
+    //   console.log("Update Submitting formData:", formData);
+    //   dispatch(
+    //     updateWorkforceEmployee(
+    //       workforceEmployeeData,
+    //       `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+    //     )
+    //   );
+    //   // dispatch(
+    //   //   updateApplication(
+    //   //     formData,
+    //   //     `update workforce application ${formData.firstNameEn}`
+    //   //   )
+    //   // );
+    // } else {
+    //   console.log("Create Submitting formData:", formData);
+    //   dispatch(
+    //     createApplication(
+    //       formData,
+    //       `Created workforce application ${formData.firstNameEn}`
+    //     )
+    //   );
+    // }
     setActiveStep((prevStep) => prevStep + 1);
   };
 
