@@ -201,15 +201,14 @@ const MultiStepApplyForm = ({ modulesManager }) => {
   };
 
   const fetchEmployeeWithUser = () => {
-    dispatch(fetchWorkforceEmployee(modulesManager, [`relatedUser_Uuid: "${reduxState.core.user.id}"`]));
+    dispatch(fetchWorkforceEmployee(modulesManager, [`relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`]));
   };
 
   useEffect(() => {
-    if (reduxState.core.user.id) {
+    if (reduxState.core.user.username) {
       fetchEmployeeWithUser();
     }
-    console.log(reduxState.workforce);
-  }, [reduxState.core.user.id]);
+  }, [reduxState.core.user.username]);
 
   return (
     <div className={classes.container}>
