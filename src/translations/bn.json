@@ -106,5 +106,13 @@
     "menu.workforce.application.process": "Application Process",
     "menu.workforce.banks": "Banks",
     "menu.workforce.branch": "Branches",
-    "menu.workforce.employee.factory": "Employee Factories"
+    "menu.workforce.employee.factory": "Employee Factories",
+
+    "workforce.employee.accident.info.application.injuryType": "ক্ষতি ধরন",
+    "workforce.employee.accident.info.application.dateOfAccident": "দুর্ঘটনার তারিখ",
+    "workforce.employee.accident.info.application.timeOfAccident": "দুর্ঘটনার সময়",
+    "workforce.employee.accident.info.application.typeOfAccident": "দুর্ঘটনার ধরন",
+    "workforce.employee.accident.info.application.dutyStatus": "ডিউটি ​​স্ট্যাটাস/কর্তব্যের অবস্থা",
+    "workforce.employee.accident.info.application.insideOutsideFactory": "কারখানার ভিতরে/বাইরে",
+    "workforce.employee.accident.info.application.reJoiningDate": "পুনঃযোগদানের তারিখ"
 }
