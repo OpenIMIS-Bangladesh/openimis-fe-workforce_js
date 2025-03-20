@@ -1602,11 +1602,11 @@ export function createApplication(
   application,
   clientMutationLabel,
 ) {
-  const mutation = formatMutation(
-    "createWorkforceApplication",
-    formatApplicationeGQL(application),
-    clientMutationLabel,
-  );
+  // const mutation = formatMutation(
+  //   "createWorkforceApplication",
+  //   formatApplicationeGQL(application),
+  //   clientMutationLabel,
+  // );
   
   console.log({mutation})
   const requestedDateTime = new Date();
@@ -1658,6 +1658,21 @@ export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
 }
 `;
   return graphql(payload, "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID");
+}
+export function fetchApplicationId(mm, clientMutationId) {
+  const payload = `{
+  workforceApplication(
+    clientMutationId: "${clientMutationId}"
+  ) {
+    edges {
+      node {
+        id
+      }
+    }
+  }
+}
+`;
+  return graphql(payload, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID");
 }
 
 export function fetchWorkforceUnitsWithEmployeeDesignation(filters) {
