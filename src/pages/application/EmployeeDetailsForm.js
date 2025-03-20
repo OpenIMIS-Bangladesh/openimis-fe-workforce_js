@@ -7,7 +7,6 @@ import {
   Divider,
   IconButton,
 } from "@material-ui/core";
-// import { TextInput } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   useTranslations,
@@ -17,10 +16,8 @@ import {
   FormattedMessage,
   PublishedComponent,
 } from "@openimis/fe-core";
-import { Save } from "@material-ui/icons";
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
-import CompanyPicker from "../../pickers/CompanyPicker";
-import FactoryPicker from "../../pickers/FactoryPicker";
+import { useSelector, useDispatch } from "react-redux";
+
 import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
@@ -30,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    // height: "100vh",
   },
   paper: {
     padding: theme.spacing(2),
@@ -48,8 +44,12 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations(
     "core.RegistrationPage",
-    modulesManager
+    modulesManager,
   );
+
+  const employeeData = useSelector(
+    (state) => state.workforce[`workforceEmployee`] ?? []
+  )
 
   //   const handleChange = (key, value) => {
   //     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -73,7 +73,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
 
               <Grid item xs={6} className={classes.item}>
                 <EmployeeGenderPicker
-                  value={formData?.gender?.id}
+                  value={formData?.gender}
                   label={
                     <FormattedMessage
                       id="workforce.employee.gender"
