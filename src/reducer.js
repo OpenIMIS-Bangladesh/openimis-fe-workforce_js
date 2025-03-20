@@ -227,7 +227,7 @@ function reducer(
     employeeAccidentsPageInfo: { totalCount: 0 },
 
     fetchingEmployeeAccident: false,
-    errorEmployeeAccidents: null,
+    errorEmployeeAccident: null,
     fetchedEmployeeAccident: false,
     employeeAccident: null,
     employeeAccidentPageInfo: { totalCount: 0 },
@@ -240,7 +240,7 @@ function reducer(
     employeeAccountsPageInfo: { totalCount: 0 },
 
     fetchingEmployeeAccount: false,
-    errorEmployeeAccounts: null,
+    errorEmployeeAccount: null,
     fetchedEmployeeAccount: false,
     employeeAccount: null,
     employeeAccountPageInfo: { totalCount: 0 },
