@@ -73,7 +73,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
 
               <Grid item xs={6} className={classes.item}>
                 <EmployeeGenderPicker
-                  value={formData?.gender?.id}
+                  value={formData?.gender}
                   label={
                     <FormattedMessage
                       id="workforce.employee.gender"

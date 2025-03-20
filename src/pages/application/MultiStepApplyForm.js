@@ -48,48 +48,107 @@ const steps = [
 ];
 
 const MultiStepApplyForm = ({ modulesManager }) => {
+  const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
   const reduxState = useSelector((state) => state);
+  
   const [formData, setFormData] = useState({
-    firstNameEn: "",
-    firstNameBn: "",
-    lastNameEn: "",
-    lastNameBn: "",
-    otherName: "",
-    position: "",
-    fatherNameEn: "",
-    fatherNameBn: "",
-    motherNameEn: "",
-    motherNameBn: "",
-    spouseNameEn: "",
-    spouseNameBn: "",
-    phoneNumber: "",
-    email: "",
-    citizenship: "",
-    birthDate: "",
-    deathDate: "",
-    joinDate: "",
-    nid: "",
-    birthCertificateNo: "",
+    firstNameEn: '',
+    firstNameBn: '',
+    lastNameEn: '',
+    lastNameBn: '',
+    otherName: '',
+    position: '',
+    fatherNameEn: '',
+    fatherNameBn: '',
+    motherNameEn: '',
+    motherNameBn: '',
+    spouseNameEn: '',
+    spouseNameBn: '',
+    phoneNumber: '',
+    email: '',
+    citizenship: '',
+    birthDate: '',
+    deathDate: '',
+    joinDate: '',
+    nid: '',
+    birthCertificateNo: '',
+    insuranceNumber: '',
     company: null,
     factory: null,
-    lifeStatus: "",
-    gender: "",
-    maritalStatus: "",
-    monthlyEarning: "",
+    lifeStatus: '',
+    gender: '',
+    maritalStatus: '',
+    monthlyEarning: '',
     uploadedNidFile: [],
     uploadedBirthCertificateFile: [],
-    permanentAddress: "",
-    permanentLocation: null,
-    presentLocation: null,
-    presentAddress: "",
+    permanentAddress: '',
+    permanentLocation: '',
+    presentLocation: '',
+    presentAddress: '',
     dependents: [{}],
     employeeBankInfo: {},
     employeeAccidentInfo: {},
   });
 
+  // Fetch employee data based on username
+  const fetchEmployeeWithUser = () => {
+    dispatch(fetchWorkforceEmployee(modulesManager, [`relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`]));
+  };
+
+  useEffect(() => {
+    if (reduxState.core.user.username) {
+      fetchEmployeeWithUser();
+    }
+  }, [reduxState.core.user.username]);
+
+  useEffect(() => {
+    if (employeeData) {
+      // When employeeData is fetched, set it into the form state
+      setFormData({
+        firstNameEn: employeeData.firstNameEn || '',
+        firstNameBn: employeeData.firstNameBn || '',
+        lastNameEn: employeeData.lastNameEn || '',
+        lastNameBn: employeeData.lastNameBn || '',
+        otherName: employeeData.otherName || '',
+        position: employeeData.position || '',
+        fatherNameEn: employeeData.fatherNameEn || '',
+        fatherNameBn: employeeData.fatherNameBn || '',
+        motherNameEn: employeeData.motherNameEn || '',
+        motherNameBn: employeeData.motherNameBn || '',
+        spouseNameEn: employeeData.spouseNameEn || '',
+        spouseNameBn: employeeData.spouseNameBn || '',
+        phoneNumber: employeeData.phoneNumber || '',
+        email: employeeData.email || '',
+        citizenship: employeeData.citizenship || '',
+        birthDate: employeeData.birthDate || '',
+        deathDate: employeeData.deathDate || '',
+        joinDate: employeeData.joinDate || '',
+        nid: employeeData.nid || '',
+        birthCertificateNo: employeeData.birthCertificateNo || '',
+        insuranceNumber: employeeData.insuranceNumber || '',
+        company: employeeData.company || null,
+        factory: employeeData.factory || null,
+        lifeStatus: employeeData.lifeStatus || '',
+        gender: employeeData.gender || '',
+        maritalStatus: employeeData.maritalStatus || '',
+        monthlyEarning: employeeData.monthlyEarning || '',
+        uploadedNidFile: employeeData.uploadedNidFile || [],
+        uploadedBirthCertificateFile: employeeData.uploadedBirthCertificateFile || [],
+        permanentAddress: employeeData.permanentAddress || '',
+        permanentLocation: employeeData.permanentLocation || '',
+        presentLocation: employeeData.presentLocation || '',
+        presentAddress: employeeData.presentAddress || '',
+        dependents: employeeData.dependents || [{}],
+        employeeBankInfo: employeeData.employeeBankInfo || {},
+        employeeAccidentInfo: employeeData.employeeAccidentInfo || {},
+      });
+    }
+  }, [employeeData]); // Trigger this useEffect when `employeeData` changes.
+
+  // Handle form input changes
   const handleChange = (key, value, parent = null) => {
     setFormData((prev) => {
       if (parent) {
@@ -104,6 +163,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
       return { ...prev, [key]: value };
     });
   };
+
 
   const handleNext = () => {
     console.log({ activeStep });
@@ -200,15 +260,6 @@ const MultiStepApplyForm = ({ modulesManager }) => {
     );
   };
 
-  const fetchEmployeeWithUser = () => {
-    dispatch(fetchWorkforceEmployee(modulesManager, [`relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`]));
-  };
-
-  useEffect(() => {
-    if (reduxState.core.user.username) {
-      fetchEmployeeWithUser();
-    }
-  }, [reduxState.core.user.username]);
 
   return (
     <div className={classes.container}>
