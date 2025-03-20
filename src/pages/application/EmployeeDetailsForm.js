@@ -61,6 +61,16 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <Grid container className={classes.item} spacing={2}>
+               <Grid item xs={6} className={classes.item}>
+                <PublishedComponent
+                  pubRef="workforceOrganization.OrganizationPicker"
+                  value={formData.organization || null}
+                  label={<FormattedMessage module="workforce" id="workforce.organization.picker" />}
+                  onChange={(option) => this.handleChange("organization", v)}
+                  required
+                  readOnly={false}
+                />
+              </Grid>
               <Grid item xs={6} className={classes.item}>
                 <PublishedComponent
                   pubRef="core.DatePicker"

@@ -55,6 +55,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
   const reduxState = useSelector((state) => state);
   
   const [formData, setFormData] = useState({
+    organization: '',
     firstNameEn: '',
     firstNameBn: '',
     lastNameEn: '',
@@ -108,6 +109,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
     if (employeeData) {
       // When employeeData is fetched, set it into the form state
       setFormData({
+        organization: employeeData.organization,
         firstNameEn: employeeData.firstNameEn || '',
         firstNameBn: employeeData.firstNameBn || '',
         lastNameEn: employeeData.lastNameEn || '',
