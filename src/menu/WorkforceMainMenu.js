@@ -21,7 +21,7 @@ import {
   ROUTE_WORKFORCE_BANKS,
   ROUTE_WORKFORCE_REGISTRATION,
   ROUTE_WORKFORCE_APPLICATION,
-  ROUTE_WORKFORCE_APPLICATION_PROCESS
+  ROUTE_WORKFORCE_APPLICATION_PROCESS,
 } from "../routes";
 import { RIGHT_WORKFORCE_EMPLOYER_APPROVE } from "../permission-rights";
 
@@ -63,7 +63,7 @@ function WorkforceMainMenu(props) {
       route: `/${ROUTE_WORKFORCE_COMPANIES}`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
-    
+
     {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.office" />,
       icon: <ListAlt />,
@@ -86,12 +86,6 @@ function WorkforceMainMenu(props) {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.employee" />,
       icon: <ListAlt />,
       route: `/${ROUTE_WORKFORCE_EMPLOYEES}`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
-    },
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.registration" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_REGISTRATION}`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
     {
