@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Button,
@@ -9,6 +9,7 @@ import {
   Box,
   Typography,
 } from "@material-ui/core";
+import { useModulesManager } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../pickers/FileUploader";
 import EmployeeDetailsForm from "./EmployeeDetailsForm";
@@ -16,7 +17,7 @@ import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 import EmployeeLocationForm from "./EmployeeLocationForm";
 import EmployeeDependentForm from "./EmployeeDependentForm";
 import EmployeeAccidentInfoForm from "./EmployeeAccidentInfoForm";
-import { createApplication, updateApplication, updateWorkforceEmployee } from "../../actions";
+import { createApplication, fetchWorkforceEmployee, updateApplication, updateWorkforceEmployee } from "../../actions";
 import EmployeeAccountInfoForm from "./EmployeeAccountInfoForm";
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +47,7 @@ const steps = [
   "Accident Info",
 ];
 
-const MultiStepApplyForm = () => {
+const MultiStepApplyForm = ({ modulesManager }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
@@ -194,13 +195,21 @@ const MultiStepApplyForm = () => {
     dispatch(
       createApplication(
         formData,
-        `Created workforce application ${formData.firstNameEn}`
-      )
+        `Created workforce application ${formData.firstNameEn}`,
+      ),
     );
   };
 
-  console.log({ formData });
-  console.log({ reduxState });
+  const fetchEmployeeWithUser = () => {
+    dispatch(fetchWorkforceEmployee(modulesManager, [`relatedUser_Uuid: "${reduxState.core.user.id}"`]));
+  };
+
+  useEffect(() => {
+    if (reduxState.core.user.id) {
+      fetchEmployeeWithUser();
+    }
+    console.log(reduxState.workforce);
+  }, [reduxState.core.user.id]);
 
   return (
     <div className={classes.container}>
