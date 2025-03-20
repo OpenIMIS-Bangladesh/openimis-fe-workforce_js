@@ -101,12 +101,13 @@ const MultiStepApplyForm = ({ modulesManager }) => {
           },
         };
       }
+      
       return { ...prev, [key]: value };
     });
   };
 
   const handleNext = () => {
-    console.log({ activeStep });
+    console.log({ formData });
     // if (activeStep === 2 || activeStep === 1) {
     //   const workforceEmployeeData = {
     //     // company: formData?.company.id || formData.company.id,

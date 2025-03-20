@@ -66,7 +66,7 @@ console.log({formData})
                 <TextInput
                   label="workforce.employee.nid"
                   value={formData.nid || ""}
-                  onChange={(v) => handleChange( "nid", v )}
+                  onChange={(v) => handleChange("nid", v, "employeeDesignation")}
                   type={"number"}
                   required
                   readOnly={false}
@@ -76,7 +76,7 @@ console.log({formData})
                 <TextInput
                   label="workforce.employee.birth_certificate_no"
                   value={formData.birthCertificateNo || ""}
-                  onChange={(v) => handleChange( "birthCertificateNo", v )}
+                  onChange={(v) => handleChange("birthCertificateNo", v, "employeeDesignation")}
                   type={"number"}
                   readOnly={false}
                 />
@@ -99,7 +99,7 @@ console.log({formData})
                     />
                   }
                   required
-                  onChange={(v) => handleChange( "company", v )}
+                  onChange={(v) => {handleChange("company", v, "employeeDesignation");handleChange("company", v)}}
                   readOnly={false}
                 />
               </Grid>
@@ -115,7 +115,7 @@ console.log({formData})
                   }
                   required
                   companyId={formData?.company?.id} 
-                  onChange={(v) => handleChange( "factory", v )}
+                  onChange={(v) => {handleChange("factory", v, "employeeDesignation");handleChange("factory", v)}}
                   readOnly={false}
                 />
               </Grid>
@@ -124,7 +124,7 @@ console.log({formData})
                 <TextInput
                   label="workforce.employee.monthly_earning"
                   value={formData.monthlyEarning || ""}
-                  onChange={(v) => handleChange( "monthlyEarning", v )}
+                  onChange={(v) => handleChange("monthlyEarning", v, "employeeDesignation")}
                   readOnly={false}
                 />
               </Grid>
@@ -134,7 +134,7 @@ console.log({formData})
                   pubRef="core.DatePicker"
                   label={"workforce.employee.joindate"}
                   value={formData.joinDate || ""}
-                  onChange={(v) => handleChange( "joinDate", v )}
+                  onChange={(v) => handleChange("joinDate", v, "employeeDesignation")}
                   readOnly={false}
                 />
               </Grid>
