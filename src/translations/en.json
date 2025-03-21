@@ -302,6 +302,19 @@
     "registration.mobile":"Mobile Number",
     "registration.name":"Name",
 
+    "workforce.application.type.title":"Select Application Type",
+
+    "workforce.application.type.medical.assistance":"Medical Assistance Form",
+    "workforce.applicaeducation.granttion.type.medical.donation":"Medical donation form",
+    "workforce.application.type.financial.assistance":"Financial Assistance Form for the Family of Deceased Worker (BGMEA/BKMEA)",
+    "workforce.application.type.medical.disability":"Application form for financial assistance due to permanent and partial disability",
+    "workforce.application.type.scholarship":"Scholarship application form",
+    "workforce.application.type.education.grant":"Education Grant Form",
+
+    "workforce.application.company.type":"Is your company a hundred percent export-oriented?",
+    "workforce.application.permission.yes":"yes",
+    "workforce.application.permission,no":"no",
+
 
 
     "workforce.representative.sameAsRepresentative": "Same as Company Representative"

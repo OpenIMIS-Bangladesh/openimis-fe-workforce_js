@@ -1599,7 +1599,7 @@ export function updateBank(
 }
 
 export function createApplication(
-  application,
+  mutation,
   clientMutationLabel,
 ) {
   // const mutation = formatMutation(
@@ -1608,7 +1608,7 @@ export function createApplication(
   //   clientMutationLabel,
   // );
   
-  console.log({mutation})
+  // console.log({mutation})
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,

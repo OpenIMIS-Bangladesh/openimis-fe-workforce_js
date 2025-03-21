@@ -114,5 +114,20 @@
     "workforce.employee.accident.info.application.typeOfAccident": "দুর্ঘটনার ধরন",
     "workforce.employee.accident.info.application.dutyStatus": "ডিউটি ​​স্ট্যাটাস/কর্তব্যের অবস্থা",
     "workforce.employee.accident.info.application.insideOutsideFactory": "কারখানার ভিতরে/বাইরে",
-    "workforce.employee.accident.info.application.reJoiningDate": "পুনঃযোগদানের তারিখ"
+    "workforce.employee.accident.info.application.reJoiningDate": "পুনঃযোগদানের তারিখ",
+
+    "workforce.application.type.title":"আবেদনের ধরন নির্বাচন করুন",
+
+
+    "workforce.application.type.medical.assistance":"চিকিৎসা সহায়তা ফরম",
+    "workforce.application.type.medical.donation":"চিকিৎসা অনুদান ফরম",
+    "workforce.application.type.financial.assistance":"নিহত শ্রমিক পরিবারের জন্য আর্থিক সহায়তা ফর্ম (বিজিএমইএ / বিকেএমইএ)",
+    "workforce.application.type.medical.disability":"স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তার আবেদনপত্র",
+    "workforce.application.type.scholarship":" শিক্ষাবৃত্তির আবেদন ফরম",
+    "workforce.application.type.education.grant":"শিক্ষা অনুদান ফরম",
+
+    "workforce.application.company.type":"আপনার কোম্পানি কি শতভাগ রপ্তানিমুখী?",
+    "workforce.application.permission.yes":"হ্যাঁ",
+    "workforce.application.permission,no":"না"
+
 }

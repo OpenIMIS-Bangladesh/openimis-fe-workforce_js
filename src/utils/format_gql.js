@@ -193,8 +193,9 @@ export function formatWorkforceEmployeeGQL(employee) {
 ///application   ////
 export function formatApplicationeGQL(application) {
   return `
-    ${application?.id ? `id: "${formatGQLString(application?.id)}"` : ""}
-    ${application.workforceEmployeeId ? `workforceEmployeeId: "${formatGQLString(application.workforceEmployeeId)}"` : ""}
+    ${application?.id ? `id: "${(application?.id)}"` : ""}
+    ${application.workforceEmployeeId ? `workforceEmployeeId: "${(application.workforceEmployeeId)}"` : ""}
+    ${application.organizationId ? `organizationId: "${decodeId(application.organizationId.id)}"` : ""}
     ${application.status ? `status: "${WORKFORCE_STATUS.ACTIVE}"` : ""}
     ${application.employeeDependentInfo ? `employeeDependentInfo: "${formatGQLString(application.employeeDependentInfo)}"` : ""}
     ${application.employeeBankInfo ? `employeeBankInfo: "${formatGQLString(application.employeeBankInfo)}"` : ""}

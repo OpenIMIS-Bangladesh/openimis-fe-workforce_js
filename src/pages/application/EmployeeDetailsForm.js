@@ -66,7 +66,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   pubRef="workforceOrganization.OrganizationPicker"
                   value={formData.organization || null}
                   label={<FormattedMessage module="workforce" id="workforce.organization.picker" />}
-                  onChange={(option) => this.handleChange("organization", v)}
+                  onChange={(v) => handleChange("organizationId", v)}
                   required
                   readOnly={false}
                 />
