@@ -38,6 +38,7 @@ export const ROUTE_WORKFORCE_BANKS_BANK = "workforce/banks/bank"
 export const ROUTE_WORKFORCE_REGISTRATION = "registration"
 export const ROUTE_WORKFORCE_APPLICATION = "workforce/application"
 export const ROUTE_WORKFORCE_APPLICATION_PROCESS = "workforce/application/process"
+export const ROUTE_WORKFORCE__VIEW_APPLICATION_PROCESS = "workforce/application/process/view"
 
 
 

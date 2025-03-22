@@ -1235,7 +1235,7 @@ function reducer(
             )?.[0],
             errorApplication: formatGraphQLError(action.payload),
           };
-  
+ 
 
     case "ORG_UNIT_CREATE_RESP":
       return dispatchMutationResp(state, action);

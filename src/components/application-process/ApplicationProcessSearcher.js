@@ -14,7 +14,12 @@ import {
   historyPush,
   decodeId,
 } from "@openimis/fe-core";
-import EditIcon from "@material-ui/icons/Edit";
+import {
+  Tab as TabIcon,
+  Delete as DeleteIcon,
+  Send as SendIcon,
+  Check as CheckIcon,
+} from "@material-ui/icons";
 import { MODULE_NAME } from "../../constants";
 import { fetchApplicationsSummary } from "../../actions";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
@@ -107,7 +112,7 @@ class ApplicationProcessSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      // (application) => application.firstNameEn,
+      // (application) => console.log({application}),
       // (application) => application.lastNameEn,
       (application) => application.workforceEmployee.firstNameBn,
       (application) => application.workforceEmployee.lastNameBn,
@@ -117,25 +122,26 @@ class ApplicationProcessSearcher extends Component {
       (application) =>
         this.isShowHistory() ? application?.version : null,
     ];
-    // formatters.push((application) => (
-    //     <Tooltip title="Edit">
-    //       <IconButton
-    //         disabled={application?.isHistory}
-    //         onClick={() => {
-    //           historyPush(
-    //             this.props.modulesManager,
-    //             this.props.history,
-    //             "workforce.route.organizations.employees.employee",
-    //             [decodeId(application.id)],
-    //             false
-    //           );
-    //         }}
-    //       >
-    //         <EditIcon />
-    //       </IconButton>
-    //     </Tooltip>
+    
+    formatters.push((application) => (
+        <Tooltip title="Edit">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.application.process.view",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <TabIcon />
+          </IconButton>
+        </Tooltip>
 
-    // ));
+    ));
     return formatters;
   };
 

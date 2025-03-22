@@ -40,6 +40,7 @@ import {
   ROUTE_WORKFORCE_REGISTRATION,
   ROUTE_WORKFORCE_APPLICATION,
   ROUTE_WORKFORCE_APPLICATION_PROCESS,
+  ROUTE_WORKFORCE__VIEW_APPLICATION_PROCESS,
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -78,6 +79,7 @@ import RegistrationPage from "./pages/registration/RegistrationPage";
 import MultiStepApplyForm from "./pages/application/MultiStepApplyForm";
 import ApplicationProcessPage from "./pages/application-process/ApplicationProcessPage";
 import RegistrationButton from "./pages/registration/RegistrationButton";
+import ViewApplicationProcessPage from "./pages/application-process/ViewApplicationProcessPage";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -96,6 +98,7 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.unit.designations.designation", ref: ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS_DESIGNATION },
 
     { key: "workforce.route.organizations.employees.employee", ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE },
+
     {
       key: "workforce.route.organizations.employees.employee.account.info",
       ref: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE_ACCOUNT_INFO,
@@ -125,6 +128,7 @@ const DEFAULT_CONFIG = {
 
     { key: "workforce.route.registration", ref: ROUTE_WORKFORCE_REGISTRATION },
     { key: "workforce.route.application", ref: ROUTE_WORKFORCE_APPLICATION },
+    { key: "workforce.route.application.process.view", ref: ROUTE_WORKFORCE__VIEW_APPLICATION_PROCESS },
     { key: "workforce.route.application.process", ref: ROUTE_WORKFORCE_APPLICATION_PROCESS },
 
     { key: "workforce.route.employees.accident.infos", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS },
@@ -217,6 +221,8 @@ const DEFAULT_CONFIG = {
 
     { path: ROUTE_WORKFORCE_APPLICATION, component: MultiStepApplyForm },
     { path: ROUTE_WORKFORCE_APPLICATION_PROCESS, component: ApplicationProcessPage },
+    { path: ROUTE_WORKFORCE__VIEW_APPLICATION_PROCESS, component: ViewApplicationProcessPage },
+    { path: `${ROUTE_WORKFORCE__VIEW_APPLICATION_PROCESS}/:application_uuid`, component: ViewApplicationProcessPage },
   ],
 
   "core.UnauthenticatedRouter": [
