@@ -601,6 +601,7 @@ const permanent_location_projection =
  
   const projections = [
     "id",
+    "organizationType",
     "workforceEmployee{firstNameBn, lastNameBn, phoneNumber, nid, status}",
   ];
   const payload = formatPageQueryWithCount(

@@ -51,8 +51,9 @@ export function formatUnitGQL(unit) {
     ${unit.organization?.id ? `organizationId: "${decodeId(unit.organization.id)}"` : ""}
   `;
 }
+
 export function formatBankGQL(bank) {
-  console.log({bank})
+  console.log({ bank });
   return `
     ${bank?.id ? `id: "${formatGQLString(bank?.id)}"` : ""}
     ${bank?.nameEn ? `nameEn: "${formatGQLString(bank.nameEn)}"` : ""}
@@ -193,15 +194,24 @@ export function formatWorkforceEmployeeGQL(employee) {
 ///application   ////
 export function formatApplicationeGQL(application) {
   return `
-    ${application?.id ? `id: "${(application?.id)}"` : ""}
-    ${application.workforceEmployeeId ? `workforceEmployeeId: "${(application.workforceEmployeeId)}"` : ""}
-    ${application.organizationId ? `organizationId: "${decodeId(application.organizationId.id)}"` : ""}
-    ${application.status ? `status: "${WORKFORCE_STATUS.ACTIVE}"` : ""}
-    ${application.employeeDependentInfo ? `employeeDependentInfo: "${formatGQLString(application.employeeDependentInfo)}"` : ""}
-    ${application.employeeBankInfo ? `employeeBankInfo: "${formatGQLString(application.employeeBankInfo)}"` : ""}
-    ${application.employeeAccidentInfo ? `employeeAccidentInfo: "${formatGQLString(application.employeeAccidentInfo)}"` : ""}
-    ${application.employeeDesignationInfo ? `employeeDesignationInfo: "${formatGQLString(application.employeeDesignationInfo)}"` : ""}
-  `;
+  ${application?.id ? `id: "${(application?.id)}"` : ""}
+  ${application.workforceEmployeeId ? `workforceEmployeeId: "${(application.workforceEmployeeId)}"` : ""}
+  ${application.organizationId ? `organizationId: "${decodeId(application.organizationId.id)}"` : ""}
+  ${application.status ? `status: "${WORKFORCE_STATUS.ACTIVE}"` : ""}
+  ${application.employeeDependentInfo ? `employeeDependentInfo: ${escapeQuotes(application.employeeDependentInfo)}` : ""}
+  ${application.employeeBankInfo ? `employeeBankInfo: ${escapeQuotes(application.employeeBankInfo)}` : ""}
+  ${application.employeeAccidentInfo ? `employeeAccidentInfo: ${escapeQuotes(application.employeeAccidentInfo)}` : ""}
+  ${application.employeeDesignationInfo ? `employeeDesignationInfo: ${escapeQuotes(application.employeeDesignationInfo)}` : ""}
+`;
+}
+
+function escapeQuotes(data) {
+  // Check if it's a string and needs escaping
+  if (typeof data === "string") {
+    return `"${data.replace(/"/g, "\\\"")}"`;
+  }
+  // If it's not a string, stringify it properly
+  return `"${JSON.stringify(data).replace(/"/g, "\\\"")}"`;
 }
 
 export function formatEmployeeDependentGQL(employee) {
@@ -246,6 +256,7 @@ export function formatWorkforceEmployeeAccidentInfoGQL(employee) {
     ${employee.description ? `description: "${employee.description}"` : ""}
   `;
 }
+
 export function formatWorkforceEmployeeAccountInfoGQL(employee) {
   return `
     ${employee.beneficiaryType ? `beneficiaryType: "${formatGQLString(employee.beneficiaryType)}"` : ""}
@@ -257,6 +268,7 @@ export function formatWorkforceEmployeeAccountInfoGQL(employee) {
  
   `;
 }
+
 export function formatUnitDesignationGQL(unitDesignation) {
   return `
     ${unitDesignation.id ? `id: "${formatGQLString(unitDesignation.id)}"` : ""}

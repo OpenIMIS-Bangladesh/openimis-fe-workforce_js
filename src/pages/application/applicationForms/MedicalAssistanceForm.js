@@ -26,6 +26,7 @@ import {
 } from "../../../actions";
 import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
+import { WORKFORCE_STATUS } from "../../../constants";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -56,11 +57,11 @@ const steps = [
 
 const MedicalAssistanceForm = ({ modulesManager }) => {
   const employeeData = useSelector(
-    (state) => state.workforce["workforceEmployee"] ?? []
+    (state) => state.workforce["workforceEmployee"] ?? [],
   );
 
   const applicationId = useSelector(
-    (state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []
+    (state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? [],
   );
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -102,7 +103,7 @@ const MedicalAssistanceForm = ({ modulesManager }) => {
     permanentLocation: "",
     presentLocation: "",
     presentAddress: "",
-    organizationId:"",
+    organizationId: "",
     dependents: [{}],
     employeeBankInfo: {},
     employeeAccidentInfo: {},
@@ -114,7 +115,7 @@ const MedicalAssistanceForm = ({ modulesManager }) => {
     dispatch(
       fetchWorkforceEmployee(modulesManager, [
         `relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`,
-      ])
+      ]),
     );
   };
 
@@ -226,8 +227,8 @@ const MedicalAssistanceForm = ({ modulesManager }) => {
       await dispatch(
         updateWorkforceEmployee(
           workforceEmployeeData,
-          `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-        )
+          `Update Workforce Employee ${workforceEmployeeData.nameEn}`,
+        ),
       );
       // dispatch(
       //   updateApplication(
@@ -245,25 +246,25 @@ const MedicalAssistanceForm = ({ modulesManager }) => {
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents),
         employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo),
-        status: "ontest",
+        status: WORKFORCE_STATUS.PENDING,
       };
 
       const applicationMutation = await formatMutation(
         "createWorkforceApplication",
         formatApplicationeGQL(createApplicationData),
-        `Created application ${formData.nameEn}`
+        `Created application ${formData.nameEn}`,
       );
       const applicationClientMutationId = applicationMutation.clientMutationId;
-
+      console.log("applicationClientMutationId", applicationClientMutationId);
       await dispatch(
         createApplication(
-          createApplicationData,
-          `Created workforce application ${formData.firstNameEn}`
-        )
+          applicationMutation,
+          `Created workforce application ${formData.firstNameEn}`,
+        ),
       );
 
       await dispatch(
-        fetchApplicationId(modulesManager, applicationClientMutationId)
+        fetchApplicationId(modulesManager, applicationClientMutationId),
       );
     } else {
       const updateApplicationData = {
@@ -280,8 +281,8 @@ const MedicalAssistanceForm = ({ modulesManager }) => {
       dispatch(
         updateApplication(
           updateApplicationData,
-          `update workforce application ${formData.firstNameEn}`
-        )
+          `update workforce application ${formData.firstNameEn}`,
+        ),
       );
     }
     setActiveStep((prevStep) => prevStep + 1);
@@ -316,8 +317,8 @@ const MedicalAssistanceForm = ({ modulesManager }) => {
     dispatch(
       createApplication(
         formData,
-        `Created workforce application ${formData.firstNameEn}`
-      )
+        `Created workforce application ${formData.firstNameEn}`,
+      ),
     );
   };
 
@@ -354,7 +355,7 @@ const MedicalAssistanceForm = ({ modulesManager }) => {
               formData={formData}
             />
           </Box>
-          
+
         ) : activeStep === 3 ? (
           <Box mt={3}>
             <EmployeeDetailsForm2
@@ -362,7 +363,7 @@ const MedicalAssistanceForm = ({ modulesManager }) => {
               formData={formData}
             />
           </Box>
-          
+
         ) : activeStep === 4 ? (
           <Box mt={3}>
             <EmployeeDependentForm
@@ -372,17 +373,17 @@ const MedicalAssistanceForm = ({ modulesManager }) => {
               removeDependent={removeDependent}
             />
           </Box>
-         
+
         ) : (
           <Box mt={3}>
-          <EmployeeAccountInfoForm
-            handleChange={(key, value) =>
-              handleChange(key, value, "employeeBankInfo")
-            }
-            formData={formData.employeeBankInfo}
-          />
-        </Box>
-          
+            <EmployeeAccountInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeBankInfo")
+              }
+              formData={formData.employeeBankInfo}
+            />
+          </Box>
+
         )}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
