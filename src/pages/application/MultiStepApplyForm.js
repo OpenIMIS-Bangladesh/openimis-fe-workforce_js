@@ -56,7 +56,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
                 onClick={() => setShowForm(true)}
                 disabled={!selectedApplicationType || !organizationType} // Ensures both are selected
               >
-                Next
+                পরবর্তী
               </Button>
             </div>
           </>

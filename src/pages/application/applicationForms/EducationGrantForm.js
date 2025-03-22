@@ -46,13 +46,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// const steps = [
+//   "Labour Details",
+//   "Location",
+//   "Children Info",
+//   "Upload Documents",
+//   "Dependent",
+//   "Account info",
+// ];
 const steps = [
-  "Labour Details",
-  "Location",
-  "Children Info",
-  "Upload Documents",
-  "Dependent",
-  "Account info",
+  "শ্রমিক বিবরণ",
+  "অবস্থান",
+  "সন্তান তথ্য",
+  "প্রমাণপত্র আপলোড",
+  "নির্ভরশীল",
+  "অ্যাকাউন্ট তথ্য"
 ];
 
 const MedicalAssistanceForm = ({ modulesManager,organizationType,selectedApplicationType }) => {
@@ -388,16 +396,16 @@ const MedicalAssistanceForm = ({ modulesManager,organizationType,selectedApplica
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
-              Back
+              পিছনে
             </Button>
           )}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
-              Save & Next
+             সংরক্ষণ করুন এবং পরবর্তী
             </Button>
           ) : (
             <Button variant="contained" color="primary" onClick={handleSubmit}>
-              Submit
+              জমা দিন
             </Button>
           )}
         </div>
