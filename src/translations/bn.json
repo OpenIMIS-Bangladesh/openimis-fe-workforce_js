@@ -134,7 +134,12 @@
     "workforce.application.employee.children.educationInstituteName":"শিক্ষা প্রতিষ্ঠানের নাম",
     "workforce.application.employee.children.result":"ফলাফল",
     "workforce.application.employee.children.bankNameOrAcNo":"ব্যাংকের নাম এবং অ্যাকাউন্ট নম্বর (যদি থাকে)",
-    "workforce.application.employee.children.nidOrBirthRegistry":"এনআইডি/জন্ম সনদ"
+    "workforce.application.employee.children.nidOrBirthRegistry":"এনআইডি/জন্ম সনদ",
+
+    "workforce.employee.account.info.routingNumber": "রাউটিং নম্বর",
+    "workforce.employee.account.info.status": "অ্যাকাউন্ট স্ট্যাটাস",
+    "workforce.employee.account.info.accountHolderName": "অ্যাকাউন্ট হোল্ডারের নাম",
+    "workforce.employee.account.info.accountNumber": "অ্যাকাউন্ট নম্বর"
 
 
 

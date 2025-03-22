@@ -55,7 +55,7 @@ const steps = [
   "Account info",
 ];
 
-const MedicalAssistanceForm = ({ modulesManager }) => {
+const MedicalAssistanceForm = ({ modulesManager,organizationType,selectedApplicationType }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
   );

@@ -197,6 +197,8 @@ export function formatApplicationeGQL(application) {
   ${application?.id ? `id: "${(application?.id)}"` : ""}
   ${application.workforceEmployeeId ? `workforceEmployeeId: "${(application.workforceEmployeeId)}"` : ""}
   ${application.organizationId ? `organizationId: "${decodeId(application.organizationId.id)}"` : ""}
+  ${application.organizationType ? `organizationType: "${formatGQLString(application.organizationType)}"` : ""}
+  ${application.applicationType ? `applicationType: "${formatGQLString(application.applicationType)}"` : ""}
   ${application.status ? `status: "${WORKFORCE_STATUS.ACTIVE}"` : ""}
   ${application.employeeDependentInfo ? `employeeDependentInfo: ${escapeQuotes(application.employeeDependentInfo)}` : ""}
   ${application.employeeBankInfo ? `employeeBankInfo: ${escapeQuotes(application.employeeBankInfo)}` : ""}

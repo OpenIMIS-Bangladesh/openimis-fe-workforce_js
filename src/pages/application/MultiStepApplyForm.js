@@ -27,13 +27,21 @@ const useStyles = makeStyles((theme) => ({
 const MultiStepApplyForm = ({ modulesManager }) => {
   const classes = useStyles();
   const [selectedApplicationType, setSelectedApplicationType] = useState(null);
-  const [isExportOriented, setIsExportOriented] = useState(null);
+  const [organizationType, setOrganizationType] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
   const handleSelection = (applicationType, exportStatus) => {
     setSelectedApplicationType(applicationType);
-    setIsExportOriented(exportStatus);
+    if (exportStatus === "yes") {
+      setOrganizationType("Central Fund")
+    }else if (exportStatus === "no") {
+      setOrganizationType("BLWF");
+    }
+
   };
+
+  console.log({organizationType})
+  console.log({selectedApplicationType})
 
   return (
     <div className={classes.container}>
@@ -46,18 +54,18 @@ const MultiStepApplyForm = ({ modulesManager }) => {
                 variant="contained"
                 color="primary"
                 onClick={() => setShowForm(true)}
-                disabled={!selectedApplicationType || !isExportOriented} // Ensures both are selected
+                disabled={!selectedApplicationType || !organizationType} // Ensures both are selected
               >
                 Next
               </Button>
             </div>
           </>
         ) : selectedApplicationType === "medicalAssistance" ? (
-          <MedicalAssistanceForm modulesManager={modulesManager} isExportOriented={isExportOriented} />
+          <MedicalAssistanceForm modulesManager={modulesManager} organizationType={organizationType} selectedApplicationType={selectedApplicationType} />
         ) : selectedApplicationType === "disabilityAssistance" ? (
-          <DisabilityForm modulesManager={modulesManager} isExportOriented={isExportOriented} />
+          <DisabilityForm modulesManager={modulesManager} organizationType={organizationType} selectedApplicationType={selectedApplicationType} />
         ) : selectedApplicationType === "educationGrant" ? (
-          <EducationGrantForm modulesManager={modulesManager} isExportOriented={isExportOriented} />
+          <EducationGrantForm modulesManager={modulesManager} organizationType={organizationType} selectedApplicationType={selectedApplicationType} />
         ) : (
           <div>Please select an application type</div>
         )}

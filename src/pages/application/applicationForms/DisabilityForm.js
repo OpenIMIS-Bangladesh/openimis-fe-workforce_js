@@ -56,7 +56,7 @@ const steps = [
   "Accident Info",
 ];
 
-const DisabilityForm = ({ modulesManager }) => {
+const DisabilityForm = ({ modulesManager,organizationType,selectedApplicationType }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
   );
