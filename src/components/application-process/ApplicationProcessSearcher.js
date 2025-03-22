@@ -99,6 +99,8 @@ class ApplicationProcessSearcher extends Component {
     "workforce.employee.application.last.name.bn",
     "workforce.employee.application.nid",
     "workforce.employee.application.phone",
+    "workforce.employee.application.applicationType",
+    "workforce.employee.application.organizationType",
     "workforce.employee.application.status",
     this.isShowHistory() ? "workforce.version" : "",
   ];
@@ -113,8 +115,9 @@ class ApplicationProcessSearcher extends Component {
       (application) => application.workforceEmployee.lastNameBn,
       (application) => application.workforceEmployee.nid,
       (application) => application.workforceEmployee.phoneNumber,
+      (application) => application.applicationType,
       (application) => application.organizationType,
-      (application) =>
+      (application) => application.status,
         this.isShowHistory() ? application?.version : null,
     ];
     // formatters.push((application) => (

@@ -61,6 +61,8 @@
     "workforce.employee.application.location": "অবস্থান",
     "workforce.employee.application.address": "ঠিকানা",
     "workforce.employee.application.phone": "ফোন নম্বর",
+    "workforce.employee.application.applicationType": "আবেদনের ধরন",
+    "workforce.employee.application.organizationType": "সংগঠনের ধরন",
     "workforce.employee.application.email": "ই-মেইল",
     "workforce.employee.application.occupation": "পেশা",
     "workforce.employee.application.gender": "লিঙ্গ",
