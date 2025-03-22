@@ -630,6 +630,9 @@ export function fetchApplication(mm, filters) {
     "id",
     "workforceEmployee{" + present_location_projection + permanent_location_projection + " id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
     "organizationType",
+    "employeeDependentInfo",
+    "employeeBankInfo",
+    "employeeAccidentInfo",
     "applicationType",
     "status",
   ];
