@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ApplicationTypeSelector from "./ApplicationTypeSelector";
 import MedicalAssistanceForm from "./applicationForms/MedicalAssistanceForm";
 import DisabilityForm from "./applicationForms/DisabilityForm";
+import EducationGrantForm from "./applicationForms/EducationGrantForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -55,6 +56,8 @@ const MultiStepApplyForm = ({ modulesManager }) => {
           <MedicalAssistanceForm modulesManager={modulesManager} isExportOriented={isExportOriented} />
         ) : selectedApplicationType === "disabilityAssistance" ? (
           <DisabilityForm modulesManager={modulesManager} isExportOriented={isExportOriented} />
+        ) : selectedApplicationType === "educationGrant" ? (
+          <EducationGrantForm modulesManager={modulesManager} isExportOriented={isExportOriented} />
         ) : (
           <div>Please select an application type</div>
         )}

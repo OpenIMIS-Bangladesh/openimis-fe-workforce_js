@@ -305,7 +305,7 @@
     "workforce.application.type.title":"Select Application Type",
 
     "workforce.application.type.medical.assistance":"Medical Assistance Form",
-    "workforce.applicaeducation.granttion.type.medical.donation":"Medical donation form",
+    "workforce.application.type.medical.donation":"Medical donation form",
     "workforce.application.type.financial.assistance":"Financial Assistance Form for the Family of Deceased Worker (BGMEA/BKMEA)",
     "workforce.application.type.medical.disability":"Application form for financial assistance due to permanent and partial disability",
     "workforce.application.type.scholarship":"Scholarship application form",
@@ -313,7 +313,13 @@
 
     "workforce.application.company.type":"Is your company a hundred percent export-oriented?",
     "workforce.application.permission.yes":"yes",
-    "workforce.application.permission,no":"no",
+    "workforce.application.permission.no":"no",
+
+    "workforce.application.employee.children.studyingClass":"Studying Class",
+    "workforce.application.employee.children.educationInstituteName":"Education Institute Name",
+    "workforce.application.employee.children.result":"Result",
+    "workforce.application.employee.children.bankNameOrAcNo":"Bank Name and AC No (if have)",
+    "workforce.application.employee.children.nidOrBirthRegistry":"NID or Birth Registration Certificate",
 
 
 

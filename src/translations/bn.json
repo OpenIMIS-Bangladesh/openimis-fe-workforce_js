@@ -128,6 +128,14 @@
 
     "workforce.application.company.type":"আপনার কোম্পানি কি শতভাগ রপ্তানিমুখী?",
     "workforce.application.permission.yes":"হ্যাঁ",
-    "workforce.application.permission,no":"না"
+    "workforce.application.permission.no":"না",
+
+    "workforce.application.employee.children.studyingClass":"অধ্যয়নরত শ্রেণী",
+    "workforce.application.employee.children.educationInstituteName":"শিক্ষা প্রতিষ্ঠানের নাম",
+    "workforce.application.employee.children.result":"ফলাফল",
+    "workforce.application.employee.children.bankNameOrAcNo":"ব্যাংকের নাম এবং অ্যাকাউন্ট নম্বর (যদি থাকে)",
+    "workforce.application.employee.children.nidOrBirthRegistry":"এনআইডি/জন্ম সনদ"
+
+
 
 }

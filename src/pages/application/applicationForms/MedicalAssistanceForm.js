@@ -48,10 +48,10 @@ const useStyles = makeStyles((theme) => ({
 const steps = [
   "Labour Details",
   "Location",
+  "Accident Info",
   "Upload Documents",
   "Dependent",
   "Account info",
-  "Accident Info",
 ];
 
 const MedicalAssistanceForm = ({ modulesManager }) => {
@@ -347,12 +347,23 @@ const MedicalAssistanceForm = ({ modulesManager }) => {
           </Box>
         ) : activeStep === 2 ? (
           <Box mt={3}>
+            <EmployeeAccidentInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeAccidentInfo")
+              }
+              formData={formData}
+            />
+          </Box>
+          
+        ) : activeStep === 3 ? (
+          <Box mt={3}>
             <EmployeeDetailsForm2
               handleChange={handleChange}
               formData={formData}
             />
           </Box>
-        ) : activeStep === 3 ? (
+          
+        ) : activeStep === 4 ? (
           <Box mt={3}>
             <EmployeeDependentForm
               dependents={formData.dependents}
@@ -361,24 +372,17 @@ const MedicalAssistanceForm = ({ modulesManager }) => {
               removeDependent={removeDependent}
             />
           </Box>
-        ) : activeStep === 4 ? (
-          <Box mt={3}>
-            <EmployeeAccountInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeBankInfo")
-              }
-              formData={formData.employeeBankInfo}
-            />
-          </Box>
+         
         ) : (
           <Box mt={3}>
-            <EmployeeAccidentInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeAccidentInfo")
-              }
-              formData={formData}
-            />
-          </Box>
+          <EmployeeAccountInfoForm
+            handleChange={(key, value) =>
+              handleChange(key, value, "employeeBankInfo")
+            }
+            formData={formData.employeeBankInfo}
+          />
+        </Box>
+          
         )}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (

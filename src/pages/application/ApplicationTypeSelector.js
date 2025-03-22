@@ -55,7 +55,7 @@ const ApplicationTypeSelector = ({ modulesManager,onSelect }) => {
           <FormControlLabel value="medicalAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.assistance" module="workforce"/>} />
           <FormControlLabel value="educationGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce"/>} />
           <FormControlLabel value="financialAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.financial.assistance" module="workforce"/>} />
-          <FormControlLabel value="disabilityAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.disability" module="workforce"/>} />
+          <FormControlLabel value="disabilityAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.disability" module="workforce"/>} />
           <FormControlLabel value="scholarship" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.scholarship" module="workforce"/>} />
         </RadioGroup>
 
@@ -64,8 +64,8 @@ const ApplicationTypeSelector = ({ modulesManager,onSelect }) => {
           {<FormattedMessage id="workforce.application.company.type" module="workforce"/>}
         </Typography>
         <RadioGroup value={isExportOriented} onChange={handleExportOrientedChange}>
-          <FormControlLabel value="yes" control={<Radio color="primary" />} label={"workforce.application.permission.yes"} />
-          <FormControlLabel value="no" control={<Radio color="primary" />} label={"workforce.application.permission.no"} />
+        <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.permission.yes" module="workforce"/>} />
+        <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.permission.no" module="workforce"/>} />
         </RadioGroup>
       </FormControl>
     </Paper>
