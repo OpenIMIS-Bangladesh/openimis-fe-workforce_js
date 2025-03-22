@@ -81,6 +81,7 @@ const MedicalAssistanceForm = ({
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
+  const [isSubmitted,setIsSubmitted] =useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const reduxState = useSelector((state) => state);
 
@@ -359,7 +360,22 @@ const MedicalAssistanceForm = ({
         `update workforce application ${formData.firstNameEn}`
       )
     );
+
+    setIsSubmitted(true)
   };
+
+  if (isSubmitted) {
+    return (
+      <div className={classes.container}>
+        <Paper className={classes.paper} elevation={3}>
+          <Typography variant="h5" align="center" color="primary">
+            ✅ আবেদন সফলভাবে জমা দেওয়া হয়েছে!
+          </Typography>
+        </Paper>
+      </div>
+    );
+  }
+  
 
   console.log({ applicationId });
 
