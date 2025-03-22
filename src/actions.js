@@ -1,7 +1,7 @@
 import {
   graphql,
   formatMutation,
-  formatPageQueryWithCount
+  formatPageQueryWithCount,
 } from "@openimis/fe-core";
 import {
   formatOrganizationEmployeeGQL,
@@ -14,13 +14,13 @@ import {
   formatWorkforceFactoryGQL,
   formatEmployeeDesignationGQL,
   formatWorkforceEmployeeGQL,
-  formatEmployeeAssignDesignationGQL, 
+  formatEmployeeAssignDesignationGQL,
   formatWorkforceCompanyStatusGql,
   formatBankGQL,
   formatEmployeeDependentGQL,
   formatWorkforceEmployeeAccountInfoGQL,
   formatWorkforceEmployeeAccidentInfoGQL,
-  formatApplicationeGQL
+  formatApplicationeGQL,
 } from "./utils/format_gql";
 
 export function fetchOrganizationsSummary(mm, filters) {
@@ -33,7 +33,7 @@ export function fetchOrganizationsSummary(mm, filters) {
     "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
     "location{name,type,parent{name,type,parent{name,type,parent{name,type}}}}",
     "address",
-    "type"
+    "type",
   ];
   const payload = formatPageQueryWithCount(
     "workforceOrganizations",
@@ -52,9 +52,10 @@ export function fetchOrganizationsPick(filters) {
   );
   return graphql(payload, "WORKFORCE_ORGANIZATIONS_PICKER");
 }
+
 /// bank picker ///
-export function fetchBanksPick(mm,filters) {
-  const projections = ["id", "nameEn","parent{id}"];
+export function fetchBanksPick(mm, filters) {
+  const projections = ["id", "nameEn", "parent{id}"];
   const payload = formatPageQueryWithCount(
     "banks",
     filters,
@@ -63,8 +64,8 @@ export function fetchBanksPick(mm,filters) {
   return graphql(payload, "WORKFORCE_BANKS_PICKER");
 }
 
-export function fetchBranchPick(mm,filters) {
-  const projections = ["id", "nameEn","parent{id}"];
+export function fetchBranchPick(mm, filters) {
+  const projections = ["id", "nameEn", "parent{id}"];
   const payload = formatPageQueryWithCount(
     "banks",
     filters,
@@ -323,7 +324,7 @@ export function fetchOfficesPick(filters) {
 }
 
 export function fetchFactoriesPick(filters) {
-  const projections = ["id", "nameEn", "nameBn","workforceEmployer{id}"];
+  const projections = ["id", "nameEn", "nameBn", "workforceEmployer{id}"];
   const payload = formatPageQueryWithCount(
     "workforceEmployerFactories",
     filters,
@@ -448,6 +449,7 @@ export function fetchWorkforceEmployeesSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_EMPLOYEES");
 }
+
 export function fetchDependentsSummary(mm, filters) {
   const present_location_projection =
     "presentLocation" + mm.getProjection("location.Location.FlatProjection");
@@ -482,8 +484,9 @@ export function fetchDependentsSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_EMPLOYEES_DEPENDENTS");
 }
+
 export function fetchServicesSummary(mm, filters) {
-  
+
   const projections = [
     "id",
     "workforceCompany{id}",
@@ -496,7 +499,7 @@ export function fetchServicesSummary(mm, filters) {
     "monthlySalary",
     "status",
     "workforceEmployee{id,firstNameEn,firstNameBn,lastNameEn,lastNameBn}",
-    
+
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployeeDesignation",
@@ -505,8 +508,9 @@ export function fetchServicesSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_EMPLOYEES_SERVICES");
 }
+
 export function fetchAccidentInfosSummary(mm, filters) {
- 
+
   const projections = [
     "id",
     "injuryType",
@@ -524,18 +528,19 @@ export function fetchAccidentInfosSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_EMPLOYEES_ACCIDENTS");
 }
+
 export function fetchAccidentInfo(mm, filters) {
- 
-const projections = [
-  "id",
-  "injuryType",
-  "accidentDate",
-  "accidentTime",
-  "accidentType",
-  "dutyStatus",
-  "inOutsideFactory",
-  "deathDate",
-  "description",
+
+  const projections = [
+    "id",
+    "injuryType",
+    "accidentDate",
+    "accidentTime",
+    "accidentType",
+    "dutyStatus",
+    "inOutsideFactory",
+    "deathDate",
+    "description",
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployeeAccident",
@@ -544,12 +549,13 @@ const projections = [
   );
   return graphql(payload, "WORKFORCE_EMPLOYEES_ACCIDENT");
 }
+
 export function fetchAccountInfosSummary(mm, filters) {
   const present_location_projection =
-  "presentLocation" + mm.getProjection("location.Location.FlatProjection");
-const permanent_location_projection =
-  "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
- 
+    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+
   const projections = [
     "id",
     "beneficiaryType",
@@ -568,13 +574,14 @@ const permanent_location_projection =
   );
   return graphql(payload, "WORKFORCE_EMPLOYEES_ACCOUNTS");
 }
+
 export function fetchAccountInfo(mm, filters) {
   const present_location_projection =
-  "presentLocation" + mm.getProjection("location.Location.FlatProjection");
-const permanent_location_projection =
-  "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
- 
-const projections = [
+    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+
+  const projections = [
     "id",
     "beneficiaryType",
     "beneficiaryId",
@@ -595,10 +602,10 @@ const projections = [
 
 export function fetchApplicationsSummary(mm, filters) {
   const present_location_projection =
-  "presentLocation" + mm.getProjection("location.Location.FlatProjection");
-const permanent_location_projection =
-  "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
- 
+    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+
   const projections = [
     "id",
     "organizationType",
@@ -611,55 +618,19 @@ const permanent_location_projection =
   );
   return graphql(payload, "WORKFORCE_APPLICATIONS");
 }
+
 export function fetchApplication(mm, filters) {
- 
-const projections = [
-  "id",
-  "employeeId",
-  "employeeIdLima",
-  "insuranceNumber",
-  "employeeType",
-  "globalId",
-  "lastNameBn",
-  "firstNameEn",
-  "lastNameEn",
-  "firstNameBn",
-  "otherName",
-  "fatherNameBn",
-  "fatherNameEn",
-  "motherNameBn",
-  "motherNameEn",
-  "spouseNameBn",
-  "spouseNameEn",
-  "citizenship",
-  "privacyLaw",
-  "maritalStatus",
-  "gender",
-  "photoPath",
-  "photoDate",
-  "position",
-  "monthlyEarning",
-  "referenceSalary",
-  "permanentAddress",
-  "presentAddress",
-  "phoneNumber",
-  "email",
-  "status",
-  "birthCertificateNo",
-  "nid",
-  "passportNo",
-  "registrationDate",
-  "lifeStatus",
-  "disabilityStatus",
-  "deathDate",
-  "employeeDesignationInfo",
-  "employeeDocumentInfo",
-  "employeeBankInfo",
-  "employeeDependentInfo",
-  "employeeAccidentInfo",
-  "birthDate",
-  present_location_projection,
-  permanent_location_projection,
+
+  const present_location_projection =
+    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+
+  const projections = [
+    "id",
+    "workforceEmployee{" + present_location_projection + permanent_location_projection + " id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
+    "organizationType",
+    "applicationType",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
@@ -749,6 +720,7 @@ export function fetchDependent(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_EMPLOYEE_DEPENDENT");
 }
+
 export function fetchService(mm, filters) {
   const projections = [
     "id",
@@ -762,7 +734,7 @@ export function fetchService(mm, filters) {
     "monthlySalary",
     "status",
     "workforceEmployee{id,firstNameEn,firstNameBn,lastNameEn,lastNameBn}",
-    
+
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployeeDesignation",
@@ -1086,6 +1058,7 @@ export function updateWorkforceEmployee(employee, clientMutationLabel) {
     },
   );
 }
+
 export function createAccidentInfo(employee, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceEmployeeAccident",
@@ -1130,6 +1103,7 @@ export function updateAccidentInfo(employee, clientMutationLabel) {
     },
   );
 }
+
 export function createAccountInfo(employee, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceEmployeeAccountInfo",
@@ -1161,7 +1135,7 @@ export function updateAccountInfo(employee, clientMutationLabel) {
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
-    [ "WORKFORCE_EMPLOYEES_ACCOUNT_REQ",
+    ["WORKFORCE_EMPLOYEES_ACCOUNT_REQ",
       "WORKFORCE_EMPLOYEES_ACCOUNT_RESP",
       "WORKFORCE_EMPLOYEES_ACCOUNT_ERR",
     ],
@@ -1173,6 +1147,7 @@ export function updateAccountInfo(employee, clientMutationLabel) {
     },
   );
 }
+
 export function createEmployeeDependent(employee, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceEmployeeDependent",
@@ -1496,7 +1471,7 @@ export function fetchBanksSummary(mm, filters) {
     "contactNumber",
     "parent{id}",
     "status",
-    location_projection
+    location_projection,
   ];
   const payload = formatPageQueryWithCount(
     "banks",
@@ -1519,7 +1494,7 @@ export function fetchBank(mm, filters) {
     "parent{id}",
     "status",
     "type",
-    location_projection
+    location_projection,
   ];
   const payload = formatPageQueryWithCount(
     "banks",
@@ -1541,7 +1516,7 @@ export function fetchBanksBranchSummary(mm, filters) {
     "branchName",
     "routingNumber",
     "contactNumber",
-    location_projection
+    location_projection,
     // "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
     // "location{name,type,parent{name,type,parent{name,type,parent{name,type}}}}",
     // "address",
@@ -1564,7 +1539,7 @@ export function createBank(
     clientMutationLabel,
   );
 
-  console.log({mutation})
+  console.log({ mutation });
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
@@ -1576,6 +1551,7 @@ export function createBank(
     },
   );
 }
+
 export function updateBank(
   bank,
   clientMutationLabel,
@@ -1586,7 +1562,7 @@ export function updateBank(
     clientMutationLabel,
   );
 
-  console.log({mutation})
+  console.log({ mutation });
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
@@ -1608,7 +1584,7 @@ export function createApplication(
   //   formatApplicationeGQL(application),
   //   clientMutationLabel,
   // );
-  
+
   // console.log({mutation})
   const requestedDateTime = new Date();
   return graphql(
@@ -1632,7 +1608,7 @@ export function updateApplication(
     clientMutationLabel,
   );
 
-  console.log({mutation})
+  console.log({ mutation });
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
@@ -1660,6 +1636,7 @@ export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
 `;
   return graphql(payload, "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID");
 }
+
 export function fetchApplicationId(mm, clientMutationId) {
   const payload = `{
   workforceApplication(
