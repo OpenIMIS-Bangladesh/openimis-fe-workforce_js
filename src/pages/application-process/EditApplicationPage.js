@@ -115,7 +115,7 @@ class EditApplicationPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Workforce Employee"
+                      id="Workforce Applicant View"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>
