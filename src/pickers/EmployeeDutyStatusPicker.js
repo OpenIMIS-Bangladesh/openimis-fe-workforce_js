@@ -19,7 +19,8 @@ const EmployeeDutyStatusPicker = ({
   const { formatMessage } = useTranslations("workforce");
 
   // Adjust the options to match the EMPLOYEE_DUTY_STATUS format
-  const EMPLOYEE_DUTY_STATUS = ["On Duty", "Off Duty","Commuting","Others"];
+  // const EMPLOYEE_DUTY_STATUS = ["On Duty", "Off Duty","Commuting","Others"];
+  const EMPLOYEE_DUTY_STATUS = ["অন ​​ডিউটি", "অফ ডিউটি","যাতায়াত","অন্যান্য"];
 
   // Find the selected option
   const selectedOption = useMemo(

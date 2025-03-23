@@ -19,7 +19,8 @@ const EmployeeInjuryTypePicker = ({
   const { formatMessage } = useTranslations("workforce");
 
   // Adjust the options to match the EMPLOYEE_INJURY_TYPE format
-  const EMPLOYEE_INJURY_TYPE = ["Disabled", "Deceased"];
+  // const EMPLOYEE_INJURY_TYPE = ["Disabled", "Deceased"];
+  const EMPLOYEE_INJURY_TYPE = ["অক্ষম", "মৃত"];
 
   // Find the selected option
   const selectedOption = useMemo(
