@@ -59,7 +59,6 @@ const RegistrationPage = () => {
     mobile: "",
     firstName: "",
     lastName: "",
-    name: "",
     location: "",
   });
   const [isSubmitting, setSubmitting] = useState(false);
@@ -71,6 +70,13 @@ const RegistrationPage = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+
+      await dispatch(
+          createWorkforceEmployee(
+            workforceEmployeeData,
+            `Created Workforce Employee ${formData.NID}`
+          )
+        );
 
     try {
       setTimeout(() => {
@@ -96,7 +102,7 @@ const RegistrationPage = () => {
         <Paper className={classes.paper} elevation={3}>
           {/* <img src="/mnt/data/image.png" alt="Logo" className={classes.logo} /> */}
           <Typography variant="h5" color="primary">
-          ওপেন আইএমআইএস
+          নিবন্ধন করুন
           </Typography>
           <form onSubmit={onSubmit}>
             <Box mt={2} className={classes.inputContainer}>
