@@ -609,6 +609,8 @@ export function fetchApplicationsSummary(mm, filters) {
   const projections = [
     "id",
     "organizationType",
+    "applicationType",
+    "status",
     "workforceEmployee{firstNameBn, lastNameBn, phoneNumber, nid, status}",
   ];
   const payload = formatPageQueryWithCount(
