@@ -88,15 +88,15 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
                   readOnly={ false}
                 />
               </Grid>
-              <Grid item xs={6} className={classes.item}>
-                <PublishedComponent
-                  pubRef="core.DatePicker"
-                  label={"workforce.employee.accident.info.timeOfAccident"}
-                  value={ formData.accidentTime || ""}
-                  onChange={(v) =>  handleChange("accidentTime", v)}
-                  readOnly={ false}
+              {/* <Grid item xs={6} className={classes.item}>
+                <TextInput
+                  label="workforce.employee.accident.info.timeOfAccident"
+                  value={formData.accidentTime || ""}
+                  onChange={(v) => handleChange(index, "accidentTime", v)}
+                  readOnly={false}
+                  type="time"
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={6} className={classes.item}>
                 <EmployeeAccidentTypePicker
                   value={ formData.accidentType || ""}
