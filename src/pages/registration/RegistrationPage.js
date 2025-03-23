@@ -96,14 +96,14 @@ const RegistrationPage = () => {
         <Paper className={classes.paper} elevation={3}>
           {/* <img src="/mnt/data/image.png" alt="Logo" className={classes.logo} /> */}
           <Typography variant="h5" color="primary">
-            openIMIS
+          ওপেন আইএমআইএস
           </Typography>
           <form onSubmit={onSubmit}>
             <Box mt={2} className={classes.inputContainer}>
               <TextInput
                 required
                 readOnly={isSubmitting}
-                label="National ID (NID)"
+                label="জাতীয় পরিচয়পত্র (এনআইডি)"
                 fullWidth
                 value={formData.NID}
                 onChange={(NID) => setFormData({ ...formData, NID })}
@@ -111,7 +111,7 @@ const RegistrationPage = () => {
               <TextInput
                 required
                 readOnly={isSubmitting}
-                label="Mobile Number"
+                label="মোবাইল নম্বর"
                 fullWidth
                 value={formData.mobile}
                 onChange={(mobile) => setFormData({ ...formData, mobile })}
@@ -119,7 +119,7 @@ const RegistrationPage = () => {
               <TextInput
                 required
                 readOnly={isSubmitting}
-                label="First Name"
+                label="প্রথম নাম"
                 fullWidth
                 value={formData.firstName}
                 onChange={(firstName) =>
@@ -129,7 +129,7 @@ const RegistrationPage = () => {
               <TextInput
                 required
                 readOnly={isSubmitting}
-                label="Last Name"
+                label="শেষ নাম"
                 fullWidth
                 value={formData.lastName}
                 onChange={(lastName) => setFormData({ ...formData, lastName })}
@@ -138,7 +138,7 @@ const RegistrationPage = () => {
               <TextInput
                 required
                 readOnly={isSubmitting}
-                label="Location"
+                label="অবস্থান"
                 fullWidth
                 value={formData.location}
                 onChange={(location) => setFormData({ ...formData, location })}
@@ -146,7 +146,7 @@ const RegistrationPage = () => {
               <PublishedComponent
                 pubRef="location.DetailedLocation"
                 withNull={true}
-                label="Location"
+                label="অবস্থান"
                 value={formData.location || null}
                 onChange={(location) =>
                   setFormData({ ...formData, location })
@@ -177,7 +177,7 @@ const RegistrationPage = () => {
                 variant="contained"
                 style={{ marginTop: 16 }}
               >
-                Register
+                নিবন্ধন করুন
               </Button>
               <Button
                 fullWidth
@@ -187,7 +187,7 @@ const RegistrationPage = () => {
                 variant="text"
                 style={{ marginTop: 8 }}
               >
-                Back
+                পিছনে
               </Button>
             </Box>
           </form>
