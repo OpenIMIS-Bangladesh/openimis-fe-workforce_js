@@ -127,7 +127,7 @@ class ApplicationProcessSearcher extends Component {
     ];
     
     formatters.push((application) => (
-        <Tooltip title="Edit">
+        <Tooltip title="দেখুন">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {

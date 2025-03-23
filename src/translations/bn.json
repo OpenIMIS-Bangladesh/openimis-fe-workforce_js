@@ -107,6 +107,8 @@
     "menu.workforce.application": "Application",
     "menu.workforce.application.process": "Application Process",
     "menu.workforce.banks": "Banks",
+    "workforce.bank.picker": "ব্যাংক",
+    "workforce.branch.picker": "শাখা",
     "menu.workforce.branch": "Branches",
     "menu.workforce.employee.factory": "Employee Factories",
 

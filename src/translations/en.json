@@ -59,6 +59,7 @@
     "workforce.organization.parent": "Parent",
     "workforce.organization.picker": "Organization",
     "workforce.bank.picker": "Bank",
+    "workforce.branch.picker": "Branch",
     "workforce.organization.unit.picker": "Unit",
     "workforce.employee.relation.picker": "Relation type",
 

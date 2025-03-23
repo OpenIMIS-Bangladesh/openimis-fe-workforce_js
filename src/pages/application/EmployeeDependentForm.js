@@ -83,7 +83,7 @@ const EmployeeDependentForm = ({
         >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography>
-              {formData.firstNameEn ? formData.firstNameEn : `Dependent ${index + 1}`}
+              {formData.firstNameEn ? formData.firstNameEn : `নির্ভরশীল ${index + 1}`}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -331,7 +331,7 @@ const EmployeeDependentForm = ({
                     onClick={() => removeDependent(index)}
                     disabled={dependents.length === 1}
                   >
-                    Remove
+                    বাদ দিন
                   </Button>
                 </Grid>
               </Grid>
@@ -345,7 +345,7 @@ const EmployeeDependentForm = ({
         onClick={addDependent}
         disabled={!isFirstDependentValid}
       >
-        Add Dependent
+        নির্ভরশীল যোগ করুন
       </Button>
     </Box>
   );

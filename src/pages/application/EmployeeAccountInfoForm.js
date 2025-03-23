@@ -75,6 +75,7 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                       id="workforce.bank.picker"
                     />
                   }
+                  required
                   onChange={(option) => handleChange("bank", option)}
                   readOnly={false}
                 />
@@ -85,7 +86,7 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                   value={formData?.branch || ""}
                   label={
                     <FormattedMessage
-                      id="menu.workforce.branch"
+                      id="workforce.branch.picker"
                       module="workforce"
                     />
                   }

@@ -10,10 +10,7 @@ import {
 } from "@openimis/fe-core";
 import { bindActionCreators } from "redux";
 import { fetchApplication } from "../../actions";
-import EditWorkforceCompanyPage from "../../pages/workforce-company/EditWorkforceCompanyPage";
-import AddWorkforceCompanyPage from "../../pages/workforce-company/AddWorkforceCompanyPage";
 import { MODULE_NAME } from "../../constants";
-import ViewWorkforceCompanyPage from "../../pages/workforce-company/ViewWorkforceCompanyPage";
 import AddApplicationPage from "../../pages/application-process/AddApplicationPage";
 import EditApplicationPage from "../../pages/application-process/EditApplicationPage";
 
