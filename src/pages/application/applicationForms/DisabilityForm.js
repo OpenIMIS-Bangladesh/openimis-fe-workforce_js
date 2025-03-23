@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import { useModulesManager, formatMutation, decodeId } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
-// import FileUploader from "../../pickers/FileUploader";
+import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
 import EmployeeDetailsForm2 from "../EmployeeDetailsForm2";
 import EmployeeLocationForm from "../EmployeeLocationForm";
@@ -26,7 +26,7 @@ import {
 } from "../../../actions";
 import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
-import ApplicationTypeSelector from "../ApplicationTypeSelector";
+import { WORKFORCE_STATUS } from "../../../constants";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -47,35 +47,41 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // const steps = [
-//   "Application type",
 //   "Labour Details",
 //   "Location",
+//   "Accident Info",
 //   "Upload Documents",
 //   "Dependent",
 //   "Account info",
-//   "Accident Info",
 // ];
+
 const steps = [
-  "আবেদনের ধরন",
   "শ্রমিক বিবরণ",
   "অবস্থান",
+  "দুর্ঘটনার তথ্য",
   "প্রমাণপত্র আপলোড",
   "নির্ভরশীল",
   "অ্যাকাউন্ট তথ্য",
-  "দুর্ঘটনার তথ্য",
 ];
 
-const DisabilityForm = ({ modulesManager,organizationType,selectedApplicationType }) => {
+const DisabilityForm = ({
+  modulesManager,
+  organizationType,
+  selectedApplicationType,
+}) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
   );
 
+  console.log({ organizationType });
+  console.log({ selectedApplicationType });
   const applicationId = useSelector(
     (state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []
   );
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
+  const [isSubmitted,setIsSubmitted] =useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const reduxState = useSelector((state) => state);
 
@@ -106,6 +112,8 @@ const DisabilityForm = ({ modulesManager,organizationType,selectedApplicationTyp
     lifeStatus: "",
     gender: "",
     maritalStatus: "",
+    organizationType: "",
+    applicationType: "",
     monthlyEarning: "",
     uploadedNidFile: [],
     uploadedBirthCertificateFile: [],
@@ -113,6 +121,7 @@ const DisabilityForm = ({ modulesManager,organizationType,selectedApplicationTyp
     permanentLocation: "",
     presentLocation: "",
     presentAddress: "",
+    organizationId: "",
     dependents: [{}],
     employeeBankInfo: {},
     employeeAccidentInfo: {},
@@ -163,6 +172,8 @@ const DisabilityForm = ({ modulesManager,organizationType,selectedApplicationTyp
         insuranceNumber: employeeData.insuranceNumber || "",
         company: employeeData.company || null,
         factory: employeeData.factory || null,
+        organizationType: organizationType,
+        applicationType: selectedApplicationType,
         lifeStatus: employeeData.lifeStatus || "",
         gender: employeeData.gender || "",
         maritalStatus: employeeData.maritalStatus || "",
@@ -251,12 +262,18 @@ const DisabilityForm = ({ modulesManager,organizationType,selectedApplicationTyp
         workforceEmployeeId: formData.id,
         company: formData.company,
         factory: formData.factory,
-        employeeDesignationInfo: formData.employeeDesignationInfo,
-        employeeBankInfo: formData.employeeBankInfo,
-        employeeDependentInfo: formData.dependents,
-        employeeAccidentInfo: formData.employeeAccidentInfo,
-        status: "ontest",
+        organizationType: formData.organizationType,
+        applicationType: formData.applicationType,
+        employeeDesignationInfo: JSON.stringify(
+          formData.employeeDesignationInfo
+        ),
+        employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
+        employeeDependentInfo: JSON.stringify(formData.dependents),
+        employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo),
+        status: WORKFORCE_STATUS.PENDING,
       };
+
+      console.log({ createApplicationData });
 
       const applicationMutation = await formatMutation(
         "createWorkforceApplication",
@@ -264,10 +281,10 @@ const DisabilityForm = ({ modulesManager,organizationType,selectedApplicationTyp
         `Created application ${formData.nameEn}`
       );
       const applicationClientMutationId = applicationMutation.clientMutationId;
-
+      console.log("applicationClientMutationId", applicationClientMutationId);
       await dispatch(
         createApplication(
-          createApplicationData,
+          applicationMutation,
           `Created workforce application ${formData.firstNameEn}`
         )
       );
@@ -281,6 +298,8 @@ const DisabilityForm = ({ modulesManager,organizationType,selectedApplicationTyp
         workforceEmployeeId: formData.id,
         company: formData.company,
         factory: formData.factory,
+        organizationType: organizationType,
+        applicationType: selectedApplicationType,
         employeeDesignationInfo: formData.employeeDesignationInfo,
         employeeBankInfo: formData.employeeBankInfo,
         employeeDependentInfo: formData.dependents,
@@ -321,15 +340,42 @@ const DisabilityForm = ({ modulesManager,organizationType,selectedApplicationTyp
     });
   };
 
-  const handleSubmit = () => {
-    console.log("Submitting formData:", formData);
+  const handleSubmit = async () => {
+    const updateApplicationData = {
+      id: decodeId(applicationId[0].id),
+      workforceEmployeeId: formData.id,
+      company: formData.company,
+      factory: formData.factory,
+      organizationType: organizationType,
+      applicationType: selectedApplicationType,
+      employeeDesignationInfo: formData.employeeDesignationInfo,
+      employeeBankInfo: formData.employeeBankInfo,
+      employeeDependentInfo: formData.dependents,
+      employeeAccidentInfo: formData.employeeAccidentInfo,
+      status: "ontest",
+    };
     dispatch(
-      createApplication(
-        formData,
-        `Created workforce application ${formData.firstNameEn}`
+      updateApplication(
+        updateApplicationData,
+        `update workforce application ${formData.firstNameEn}`
       )
     );
+
+    setIsSubmitted(true)
   };
+
+  if (isSubmitted) {
+    return (
+      <div className={classes.container}>
+        <Paper className={classes.paper} elevation={3}>
+          <Typography variant="h5" align="center" color="primary">
+            ✅ আবেদন সফলভাবে জমা দেওয়া হয়েছে!
+          </Typography>
+        </Paper>
+      </div>
+    );
+  }
+  
 
   console.log({ applicationId });
 
@@ -344,16 +390,23 @@ const DisabilityForm = ({ modulesManager,organizationType,selectedApplicationTyp
           ))}
         </Stepper>
         {activeStep === 0 ? (
-          <ApplicationTypeSelector onSelect={setSelectedForm} />
-        ) : activeStep === 1 ? (
           <EmployeeDetailsForm
             handleChange={handleChange}
             formData={formData}
           />
-        ) : activeStep === 2 ? (
+        ) : activeStep === 1 ? (
           <Box mt={3}>
             <EmployeeLocationForm
               handleChange={handleChange}
+              formData={formData}
+            />
+          </Box>
+        ) : activeStep === 2 ? (
+          <Box mt={3}>
+            <EmployeeAccidentInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeAccidentInfo")
+              }
               formData={formData}
             />
           </Box>
@@ -373,22 +426,13 @@ const DisabilityForm = ({ modulesManager,organizationType,selectedApplicationTyp
               removeDependent={removeDependent}
             />
           </Box>
-        ) : activeStep === 5 ? (
+        ) : (
           <Box mt={3}>
             <EmployeeAccountInfoForm
               handleChange={(key, value) =>
                 handleChange(key, value, "employeeBankInfo")
               }
               formData={formData.employeeBankInfo}
-            />
-          </Box>
-        ) : (
-          <Box mt={3}>
-            <EmployeeAccidentInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeAccidentInfo")
-              }
-              formData={formData}
             />
           </Box>
         )}
@@ -400,7 +444,7 @@ const DisabilityForm = ({ modulesManager,organizationType,selectedApplicationTyp
           )}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
-            সংরক্ষণ করুন এবং পরবর্তী
+              সংরক্ষণ করুন এবং পরবর্তী
             </Button>
           ) : (
             <Button variant="contained" color="primary" onClick={handleSubmit}>

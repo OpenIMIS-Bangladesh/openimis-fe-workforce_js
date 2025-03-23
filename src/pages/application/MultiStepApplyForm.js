@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Paper, Button } from "@material-ui/core";
+import { Paper, Button,IconButton,Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ApplicationTypeSelector from "./ApplicationTypeSelector";
 import MedicalAssistanceForm from "./applicationForms/MedicalAssistanceForm";
 import DisabilityForm from "./applicationForms/DisabilityForm";
@@ -22,6 +23,15 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flex-end",
     gap: theme.spacing(1),
   },
+  backButtonContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: theme.spacing(2),
+  },
+  backText: {
+    marginLeft: theme.spacing(1),
+    fontWeight: "bold",
+  },
 }));
 
 const MultiStepApplyForm = ({ modulesManager }) => {
@@ -33,22 +43,28 @@ const MultiStepApplyForm = ({ modulesManager }) => {
   const handleSelection = (applicationType, exportStatus) => {
     setSelectedApplicationType(applicationType);
     if (exportStatus === "yes") {
-      setOrganizationType("Central Fund")
-    }else if (exportStatus === "no") {
+      setOrganizationType("Central Fund");
+    } else if (exportStatus === "no") {
       setOrganizationType("BLWF");
     }
-
   };
 
-  console.log({organizationType})
-  console.log({selectedApplicationType})
+  const handleBack = () => {
+    setShowForm(false);
+  };
+
+  console.log({ organizationType });
+  console.log({ selectedApplicationType });
 
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={3}>
         {!showForm ? (
           <>
-            <ApplicationTypeSelector modulesManager={modulesManager} onSelect={handleSelection} />
+            <ApplicationTypeSelector
+              modulesManager={modulesManager}
+              onSelect={handleSelection}
+            />
             <div className={classes.buttonContainer}>
               <Button
                 variant="contained"
@@ -61,11 +77,56 @@ const MultiStepApplyForm = ({ modulesManager }) => {
             </div>
           </>
         ) : selectedApplicationType === "medicalAssistance" ? (
-          <MedicalAssistanceForm modulesManager={modulesManager} organizationType={organizationType} selectedApplicationType={selectedApplicationType} />
+          <>
+            <div className={classes.backButtonContainer}>
+              <IconButton onClick={handleBack} color="primary">
+                <ArrowBackIcon />
+              </IconButton>
+              <Typography variant="body1" className={classes.backText}>
+                {/* Back to Application Type */}
+                প্রথম ধাপে ফিরে যান
+              </Typography>
+            </div>
+            <MedicalAssistanceForm
+              modulesManager={modulesManager}
+              organizationType={organizationType}
+              selectedApplicationType={selectedApplicationType}
+            />
+          </>
         ) : selectedApplicationType === "disabilityAssistance" ? (
-          <DisabilityForm modulesManager={modulesManager} organizationType={organizationType} selectedApplicationType={selectedApplicationType} />
+          <>
+           <div className={classes.backButtonContainer}>
+              <IconButton onClick={handleBack} color="primary">
+                <ArrowBackIcon />
+              </IconButton>
+              <Typography variant="body1" className={classes.backText}>
+                {/* Back to Application Type */}
+                প্রথম ধাপে ফিরে যান
+              </Typography>
+            </div>
+            <DisabilityForm
+              modulesManager={modulesManager}
+              organizationType={organizationType}
+              selectedApplicationType={selectedApplicationType}
+            />
+          </>
         ) : selectedApplicationType === "educationGrant" ? (
-          <EducationGrantForm modulesManager={modulesManager} organizationType={organizationType} selectedApplicationType={selectedApplicationType} />
+          <>
+            <div className={classes.backButtonContainer}>
+              <IconButton onClick={handleBack} color="primary">
+                <ArrowBackIcon />
+              </IconButton>
+              <Typography variant="body1" className={classes.backText}>
+                {/* Back to Application Type */}
+                প্রথম ধাপে ফিরে যান
+              </Typography>
+            </div>
+            <EducationGrantForm
+              modulesManager={modulesManager}
+              organizationType={organizationType}
+              selectedApplicationType={selectedApplicationType}
+            />
+          </>
         ) : (
           <div>Please select an application type</div>
         )}
