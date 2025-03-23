@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Box,
@@ -52,9 +52,24 @@ const EmployeeDetailsForm2 = ({handleChange, formData, setFormData }) => {
     modulesManager
   );
 
-//   const handleChange = (key, value) => {
-//     setFormData((prev) => ({ ...prev, [key]: value }));
-//   };
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  const handleFileChange = (fieldKey, files) => {
+    setUploadedFiles((prevFiles) => {
+      // Check if fieldKey already exists
+      const existingIndex = prevFiles.findIndex((item) => item.fieldKey === fieldKey);
+
+      if (existingIndex !== -1) {
+        // Update existing entry
+        const updatedFiles = [...prevFiles];
+        updatedFiles[existingIndex] = { fieldKey, files };
+        return updatedFiles;
+      } else {
+        // Add new entry
+        return [...prevFiles, { fieldKey, files }];
+      }
+    });
+  };
 console.log({formData})
   return (
     <Box mt={1}>

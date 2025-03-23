@@ -122,6 +122,7 @@ const MedicalAssistanceForm = ({
     presentLocation: "",
     presentAddress: "",
     organizationId: "",
+    isSubmitted:"no",
     dependents: [{}],
     employeeBankInfo: {},
     employeeAccidentInfo: {},
@@ -352,6 +353,7 @@ const MedicalAssistanceForm = ({
       employeeBankInfo: formData.employeeBankInfo,
       employeeDependentInfo: formData.dependents,
       employeeAccidentInfo: formData.employeeAccidentInfo,
+      isSubmitted:"yes",
       status: "ontest",
     };
     dispatch(

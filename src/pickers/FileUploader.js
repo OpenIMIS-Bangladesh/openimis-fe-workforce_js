@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "space-between",
     padding: theme.spacing(0.2),
-    borderBottom: "1px solid #005f67", 
+    borderBottom: "1px solid #005f67",
     borderRadius: 5,
     backgroundColor: "#DBEEF0",
     marginTop: theme.spacing(0.5),
@@ -55,24 +55,35 @@ const useStyles = makeStyles((theme) => ({
   },
   deleteIcon: {
     fontSize: "1rem",
-    color:'black'
+    color: "black",
+  },
+  title: {
+    fontWeight: "bold",
+    marginBottom: theme.spacing(1),
   },
 }));
 
-const FileUploader = ({ fieldKey, onFileChange }) => {
+const FileUploader = ({ fieldKey, label, onFileChange }) => {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
 
-  const onDrop = useCallback((acceptedFiles) => {
-    const newFiles = [...files, ...acceptedFiles];
-    setFiles(newFiles);
-    onFileChange(fieldKey, newFiles); // Call handleChange with updated files
-  }, [files, fieldKey, onFileChange]);
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      const newFiles = [...files, ...acceptedFiles];
+      setFiles(newFiles);
+
+      // Pass the updated array of objects to the parent
+      onFileChange(fieldKey, newFiles);
+    },
+    [files, fieldKey, onFileChange]
+  );
 
   const removeFile = (fileName) => {
     const updatedFiles = files.filter((file) => file.name !== fileName);
     setFiles(updatedFiles);
-    onFileChange(fieldKey, updatedFiles); // Call handleChange after file removal
+
+    // Update parent state with new file list
+    onFileChange(fieldKey, updatedFiles);
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -83,6 +94,9 @@ const FileUploader = ({ fieldKey, onFileChange }) => {
 
   return (
     <div>
+      <Typography variant="subtitle1" className={classes.title}>
+        {label}
+      </Typography>
       <Paper {...getRootProps()} className={classes.dropzone}>
         <input {...getInputProps()} />
         <CloudUploadIcon className={classes.uploadIcon} />
@@ -111,4 +125,3 @@ const FileUploader = ({ fieldKey, onFileChange }) => {
 };
 
 export default FileUploader;
-

@@ -204,6 +204,7 @@ export function formatApplicationeGQL(application) {
   ${application.employeeBankInfo ? `employeeBankInfo: ${escapeQuotes(application.employeeBankInfo)}` : ""}
   ${application.employeeAccidentInfo ? `employeeAccidentInfo: ${escapeQuotes(application.employeeAccidentInfo)}` : ""}
   ${application.employeeDesignationInfo ? `employeeDesignationInfo: ${escapeQuotes(application.employeeDesignationInfo)}` : ""}
+  ${application.isSubmitted ? `isSubmitted: "${(application.isSubmitted)}"` : ""}
 `;
 }
 
