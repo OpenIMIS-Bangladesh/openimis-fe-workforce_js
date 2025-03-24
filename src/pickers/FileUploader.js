@@ -57,26 +57,18 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1rem",
     color: "black",
   },
-  title: {
-    fontWeight: "bold",
-    marginBottom: theme.spacing(1),
-  },
+  
 }));
 
-const FileUploader = ({ fieldKey, label, onFileChange }) => {
+const FileUploader = ({ fieldKey, onFileChange }) => {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      const newFiles = [...files, ...acceptedFiles];
-      setFiles(newFiles);
-
-      // Pass the updated array of objects to the parent
-      onFileChange(fieldKey, newFiles);
-    },
-    [files, fieldKey, onFileChange]
-  );
+  const onDrop = useCallback((acceptedFiles) => {
+    const newFiles = [...files, ...acceptedFiles];
+    setFiles(newFiles);
+    onFileChange(fieldKey, newFiles); // Call handleChange with updated files
+  }, [files, fieldKey, onFileChange]);
 
   const removeFile = (fileName) => {
     const updatedFiles = files.filter((file) => file.name !== fileName);
@@ -92,11 +84,14 @@ const FileUploader = ({ fieldKey, label, onFileChange }) => {
     accept: "*",
   });
 
+  console.log({files})
+
   return (
     <div>
-      <Typography variant="subtitle1" className={classes.title}>
+      {/* <Typography variant="subtitle1" className={classes.title}>
         {label}
-      </Typography>
+        Drag & drop here
+      </Typography> */}
       <Paper {...getRootProps()} className={classes.dropzone}>
         <input {...getInputProps()} />
         <CloudUploadIcon className={classes.uploadIcon} />
