@@ -134,7 +134,7 @@ class ApplicationProcessSearcher extends Component {
               historyPush(
                 this.props.modulesManager,
                 this.props.history,
-                "workforce.route.application.process.view",
+                "workforce.route.applications.application.process.view",
                 [decodeId(application.id)],
                 false
               );
