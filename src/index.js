@@ -77,9 +77,9 @@ import ServicesPage from "./pages/workforce-employee/services/ServicesPage";
 import ServicePage from "./pages/workforce-employee/services/ServicePage";
 import RegistrationPage from "./pages/registration/RegistrationPage";
 import MultiStepApplyForm from "./pages/application/MultiStepApplyForm";
-import ApplicationProcessPage from "./pages/application-process/ApplicationProcessPage";
+import ApplicationsProcessPage from "./pages/application-process/ApplicationsProcessPage";
 import RegistrationButton from "./pages/registration/RegistrationButton";
-import ViewApplicationProcessPage from "./pages/application-process/ViewApplicationProcessPage";
+import ApplicationProcessPage from "./pages/application-process/ApplicationProcessPage";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -220,9 +220,9 @@ const DEFAULT_CONFIG = {
     { path: `${ROUTE_WORKFORCE_BANKS_BANK}/:bank_uuid`, component: WorkforceBankPage },
 
     { path: ROUTE_WORKFORCE_APPLICATION, component: MultiStepApplyForm },
-    { path: ROUTE_WORKFORCE_APPLICATION_PROCESS, component: ApplicationProcessPage },
-    { path: ROUTE_WORKFORCE__VIEW_APPLICATION_PROCESS, component: ViewApplicationProcessPage },
-    { path: `${ROUTE_WORKFORCE__VIEW_APPLICATION_PROCESS}/:application_uuid`, component: ViewApplicationProcessPage },
+    { path: ROUTE_WORKFORCE_APPLICATION_PROCESS, component: ApplicationsProcessPage },
+    { path: ROUTE_WORKFORCE__VIEW_APPLICATION_PROCESS, component: ApplicationProcessPage },
+    { path: `${ROUTE_WORKFORCE__VIEW_APPLICATION_PROCESS}/:application_uuid`, component: ApplicationProcessPage },
   ],
 
   "core.UnauthenticatedRouter": [

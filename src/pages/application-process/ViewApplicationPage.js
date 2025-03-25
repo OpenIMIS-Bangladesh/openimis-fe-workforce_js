@@ -45,7 +45,7 @@ const styles = (theme) => ({
   },
 });
 
-class EditApplicationPage extends Component {
+class ViewApplicationPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -1113,5 +1113,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(
-  withStyles(styles)(EditApplicationPage)
+  withStyles(styles)(ViewApplicationPage)
 );

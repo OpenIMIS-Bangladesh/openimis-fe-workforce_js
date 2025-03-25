@@ -1,64 +1,112 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { Fab } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
 import {
-  historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
+  withModulesManager,
+  withHistory,
+  historyPush,
 } from "@openimis/fe-core";
-
-import { MODULE_NAME } from "../../constants";
-import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
-import { ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE } from "../../routes";
+import WorkforceCompanyForm from "../../components/workforce-company/WorkforceCompanyForm";
+import { createApplication, updateApplication } from "../../actions";
+import {
+  RIGHT_ORGANIZATION_CREATE,
+  RIGHT_ORGANIZATION_EDIT,
+} from "../../permission-rights";
+import ApplicationProcessForm from "../../components/application-process/ApplicationProcessForm";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab, ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE,
+  lockedPage: theme.page.locked,
 });
 
 class ApplicationProcessPage extends Component {
-  onDoubleClick = (application, newTab = false) => {
-    const routeParams = ["workforce.route.application", [decodeId(application.id)]];
-    if (application?.isHistory) {
-      routeParams[1].push(application.version);
-    }
-    historyPush(this.props.modulesManager, this.props.history, ...routeParams, newTab);
+  add = () => {
+    historyPush(
+      this.props.modulesManager,
+      this.props.history,
+      "grievance.route.ticket"
+    );
   };
 
-  onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, "workforce.route.application");
+  save = (application) => {
+    if (!application.id) {
+      this.props.createWorkforceCompany(
+        this.props.modulesManager,
+        application,
+        "Create"
+      );
+    } else {
+      this.props.updateWorkforceCompany(
+        this.props.modulesManager,
+        application,
+        "Update"
+      );
+    }
   };
 
   render() {
-    const { intl, classes, rights } = this.props;
+    const {
+      classes,
+      modulesManager,
+      history,
+      rights,
+      applicationUuid,
+      overview,
+      organizationVersion,
+    } = this.props;
+    // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
+    const readOnly = false;
+    const path = this.props.history.location.pathname;
+    const isEdit =  path.includes("edit");
+    const isApprove =  path.includes("approve");
 
+    // if (!(rights.includes(RIGHT_ORGANIZATION_CREATE) || rights.includes(RIGHT_ORGANIZATION_EDIT))) return null;
     return (
-      <div className={classes.page}>
-        <ApplicationProcessSearcher
-          cacheFiltersKey="ticketPageFiltersCache"
-          onDoubleClick={this.onDoubleClick}
+      <div
+        className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}
+      >
+        <ApplicationProcessForm
+          overview={overview}
+          applicationUuid={applicationUuid}
+          organizationVersion={organizationVersion}
+          readOnly={readOnly}
+          back={() =>
+            historyPush(modulesManager, history,isApprove?"workforce.route.approve.companies": "workforce.route.companies")
+          }
+          add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
+          save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
+          isEdit={isEdit}
         />
-        {/*{rights.includes(RIGHT_ORGANIZATION_CREATE)*/}
-        {/*  && withTooltip(*/}
-        {withTooltip(
-          <div className={classes.fab}>
-            <Fab color="primary" onClick={this.onAdd}>
-              <AddIcon />
-            </Fab>
-          </div>,
-          <FormattedMessage module={MODULE_NAME} id={"workforce.employee.application.addNewTooltip"} />,
-        )}
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => ({
-  rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
+const mapStateToProps = (state, props) => ({
+  rights:
+    !!state.core && !!state.core.user && !!state.core.user.i_user
+      ? state.core.user.i_user.rights
+      : [],
+  applicationUuid: props.match.params.application_uuid,
+  organizationVersion: props.match.params.version,
+  application: state.workforce.application,
 });
 
-export default withModulesManager(
-  withHistory(
-    connect(mapStateToProps)(withTheme(withStyles(styles)(ApplicationProcessPage))),
-  ),
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      createApplication,
+      updateApplication,
+    },
+    dispatch
+  );
+
+export default withHistory(
+  withModulesManager(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(withTheme(withStyles(styles)(ApplicationProcessPage)))
+  )
 );

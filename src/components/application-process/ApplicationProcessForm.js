@@ -12,7 +12,7 @@ import { bindActionCreators } from "redux";
 import { fetchApplication } from "../../actions";
 import { MODULE_NAME } from "../../constants";
 import AddApplicationPage from "../../pages/application-process/AddApplicationPage";
-import EditApplicationPage from "../../pages/application-process/EditApplicationPage";
+import ViewApplicationPage from "../../pages/application-process/ViewApplicationPage";
 
 class ApplicationProcessForm extends Component {
   constructor(props) {
@@ -128,7 +128,7 @@ class ApplicationProcessForm extends Component {
             overview={overview}
             Panels={
               applicationUuid
-                ? [EditApplicationPage]
+                ? [ViewApplicationPage]
                 : [AddApplicationPage]
             }
             onEditedChanged={this.onEditedChanged}
