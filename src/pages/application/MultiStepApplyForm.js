@@ -7,6 +7,7 @@ import MedicalAssistanceForm from "./applicationForms/MedicalAssistanceForm";
 import MedicalDonationForm from "./applicationForms/MedicalDonationForm";
 import DisabilityForm from "./applicationForms/DisabilityForm";
 import EducationGrantForm from "./applicationForms/EducationGrantForm";
+import FinancialAssistanceForm from "./applicationForms/FinancialAssistanceForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -140,6 +141,23 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </Typography>
             </div>
             <EducationGrantForm
+              modulesManager={modulesManager}
+              organizationType={organizationType}
+              selectedApplicationType={selectedApplicationType}
+            />
+          </>
+        ) :selectedApplicationType === "financialAssistance"? (
+          <>
+            <div className={classes.backButtonContainer}>
+              <IconButton onClick={handleBack} color="primary">
+                <ArrowBackIcon />
+              </IconButton>
+              <Typography variant="body1" className={classes.backText}>
+                {/* Back to Application Type */}
+                প্রথম ধাপে ফিরে যান
+              </Typography>
+            </div>
+            <FinancialAssistanceForm
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
