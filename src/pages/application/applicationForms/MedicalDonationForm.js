@@ -16,7 +16,6 @@ import EmployeeDetailsForm from "../EmployeeDetailsForm";
 import EmployeeDetailsForm2 from "../EmployeeDetailsForm2";
 import EmployeeLocationForm from "../EmployeeLocationForm";
 import EmployeeDependentForm from "../EmployeeDependentForm";
-import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import {
   createApplication,
   fetchApplicationId,
@@ -56,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
 const steps = [
   "শ্রমিক বিবরণ",
   "অবস্থান",
-  "দুর্ঘটনার তথ্য",
   "প্রমাণপত্র আপলোড",
   "নির্ভরশীল",
   "অ্যাকাউন্ট তথ্য",
@@ -113,7 +111,6 @@ const MedicalDonationForm = ({ modulesManager }) => {
     organizationId:"",
     dependents: [{}],
     employeeBankInfo: {},
-    employeeAccidentInfo: {},
     id: "",
   });
 
@@ -174,7 +171,6 @@ const MedicalDonationForm = ({ modulesManager }) => {
         presentAddress: employeeData.presentAddress || "",
         dependents: employeeData.dependents || [{}],
         employeeBankInfo: employeeData.employeeBankInfo || {},
-        employeeAccidentInfo: employeeData.employeeAccidentInfo || {},
       });
     }
   }, [employeeData]); // Trigger this useEffect when `employeeData` changes.
@@ -252,7 +248,6 @@ const MedicalDonationForm = ({ modulesManager }) => {
         employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents),
-        employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo),
         status: "ontest",
       };
 
@@ -282,7 +277,6 @@ const MedicalDonationForm = ({ modulesManager }) => {
         employeeDesignationInfo: formData.employeeDesignationInfo,
         employeeBankInfo: formData.employeeBankInfo,
         employeeDependentInfo: formData.dependents,
-        employeeAccidentInfo: formData.employeeAccidentInfo,
         status: "ontest",
       };
       dispatch(
@@ -369,7 +363,7 @@ const MedicalDonationForm = ({ modulesManager }) => {
               removeDependent={removeDependent}
             />
           </Box>
-        ) : activeStep === 4 ? (
+        ) :  (
           <Box mt={3}>
             <EmployeeAccountInfoForm
               handleChange={(key, value) =>
@@ -378,16 +372,7 @@ const MedicalDonationForm = ({ modulesManager }) => {
               formData={formData.employeeBankInfo}
             />
           </Box>
-        ) : (
-          <Box mt={3}>
-            <EmployeeAccidentInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeAccidentInfo")
-              }
-              formData={formData}
-            />
-          </Box>
-        )}
+        ) }
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
