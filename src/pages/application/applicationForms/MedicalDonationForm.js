@@ -16,6 +16,7 @@ import EmployeeDetailsForm from "../EmployeeDetailsForm";
 import EmployeeDetailsForm2 from "../EmployeeDetailsForm2";
 import EmployeeLocationForm from "../EmployeeLocationForm";
 import EmployeeDependentForm from "../EmployeeDependentForm";
+import MedicalDonationCheckbox from "../FormsComponents/MedicalDonationForm/MedicalDonationCheckbox";
 import {
   createApplication,
   fetchApplicationId,
@@ -53,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
 //   "Accident Info",
 // ];
 const steps = [
+  "নির্বাচন করুন",
   "শ্রমিক বিবরণ",
   "অবস্থান",
   "প্রমাণপত্র আপলোড",
@@ -60,7 +62,11 @@ const steps = [
   "অ্যাকাউন্ট তথ্য",
 ];
 
-const MedicalDonationForm = ({ modulesManager }) => {
+const MedicalDonationForm = ({ 
+  modulesManager,
+  organizationType,
+  selectedApplicationType,
+ }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
   );
@@ -336,26 +342,39 @@ const MedicalDonationForm = ({ modulesManager }) => {
           ))}
         </Stepper>
         {activeStep === 0 ? (
+           <Box mt={3}>
+           <MedicalDonationCheckbox
+             handleChange={handleChange}
+             formData={formData}
+           />
+         </Box>
+          
+        ) : activeStep === 1 ? (
+          <Box mt={3}>
           <EmployeeDetailsForm
             handleChange={handleChange}
             formData={formData}
           />
-        ) : activeStep === 1 ? (
+            </Box>
+          
+        ) : activeStep === 2 ? (
           <Box mt={3}>
             <EmployeeLocationForm
               handleChange={handleChange}
               formData={formData}
             />
           </Box>
-        ) : activeStep === 2 ? (
-          <Box mt={3}>
-            <EmployeeDetailsForm2
-              handleChange={handleChange}
-              formData={formData}
-            />
-          </Box>
+        
         ) : activeStep === 3 ? (
           <Box mt={3}>
+          <EmployeeDetailsForm2
+            handleChange={handleChange}
+            formData={formData}
+          />
+        </Box>
+        
+           ) : activeStep === 4 ? (
+            <Box mt={3}>
             <EmployeeDependentForm
               dependents={formData.dependents}
               handleDependentChange={handleDependentChange}
@@ -363,6 +382,7 @@ const MedicalDonationForm = ({ modulesManager }) => {
               removeDependent={removeDependent}
             />
           </Box>
+           
         ) :  (
           <Box mt={3}>
             <EmployeeAccountInfoForm
