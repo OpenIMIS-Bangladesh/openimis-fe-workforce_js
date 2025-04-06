@@ -46,27 +46,42 @@ const ApplicationTypeSelector = ({ modulesManager,onSelect }) => {
   return (
     <Paper className={classes.paper} elevation={3}>
       <FormControl component="fieldset">
-        {/* Application Type Selection */}
-        <Typography variant="h6" className={classes.title}>
-          {<FormattedMessage id= "workforce.application.type.title" module="workforce"/>}
-        </Typography>
-        <RadioGroup value={selectedApplicationType} onChange={handleApplicationTypeChange}>
-          <FormControlLabel value="medicalDonation" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.donation" module="workforce"/>} />
-          <FormControlLabel value="medicalAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.assistance" module="workforce"/>} />
-          <FormControlLabel value="educationGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce"/>} />
-          <FormControlLabel value="financialAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.financial.assistance" module="workforce"/>} />
-          <FormControlLabel value="disabilityAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.disability" module="workforce"/>} />
-          <FormControlLabel value="scholarship" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.scholarship" module="workforce"/>} />
-        </RadioGroup>
-
         {/* New Export-Oriented Company Question */}
         <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
           {<FormattedMessage id="workforce.application.company.type" module="workforce"/>}
         </Typography>
         <RadioGroup value={isExportOriented} onChange={handleExportOrientedChange}>
-        <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.permission.yes" module="workforce"/>} />
-        <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.permission.no" module="workforce"/>} />
+          <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.permission.yes" module="workforce"/>} />
+          <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.permission.no" module="workforce"/>} />
         </RadioGroup>
+
+        {/* Application Type Selection */}
+        {isExportOriented === "yes" ? (
+          <>
+            <Typography variant="h6" className={classes.title}>
+              {<FormattedMessage id= "workforce.application.type.title" module="workforce"/>}
+            </Typography>
+            <RadioGroup value={selectedApplicationType} onChange={handleApplicationTypeChange}>
+              <FormControlLabel value="medicalAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.assistance" module="workforce"/>} />
+              <FormControlLabel value="financialAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.financial.assistance" module="workforce"/>} />
+              <FormControlLabel value="disabilityAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.disability" module="workforce"/>} />
+              <FormControlLabel value="scholarship" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.scholarship" module="workforce"/>} />
+            </RadioGroup>
+          </>
+        ):isExportOriented === "no" ? (
+          <>
+            <Typography variant="h6" className={classes.title}>
+              {<FormattedMessage id= "workforce.application.type.title" module="workforce"/>}
+            </Typography>
+            <RadioGroup value={selectedApplicationType} onChange={handleApplicationTypeChange}>
+              <FormControlLabel value="medicalDonation" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.donation" module="workforce"/>} />
+              <FormControlLabel value="educationGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce"/>} />
+            </RadioGroup>
+          </>
+        ) : null}
+        
+
+        
       </FormControl>
     </Paper>
   );
