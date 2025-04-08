@@ -8,7 +8,7 @@ import {
 
 const useStyles = makeStyles((theme) => ({     
   title: {
-    fontWeight: 800,
+    fontWeight: "bold",
   },
   paper: {
     padding: theme.spacing(2),
@@ -39,7 +39,7 @@ const MedicalDonationCheckbox = ({ modulesManager,onSelect }) => {
   return (
     <Paper className={classes.paper} elevation={3}>
       <FormControl component="fieldset">
-        <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
+        <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
           {<FormattedMessage id="আর্থিক সহায়তা চাওয়ার কারণ"/>}
         </Typography>
         <RadioGroup value={isExportOriented} onChange={handleExportOrientedChange}>
