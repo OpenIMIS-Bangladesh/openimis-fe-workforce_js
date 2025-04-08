@@ -1,145 +1,56 @@
 import React, { useState } from "react";
-import {
-  Grid,
-  Box,
-  Paper,
-  Typography,
-  Divider,
-  IconButton,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-} from "@material-ui/core";
-// import { TextInput } from "@openimis/fe-core";
+import { FormControl, FormControlLabel, Radio, RadioGroup, Typography, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
-  useTranslations,
-  useModulesManager,
-  TextInput,
-  useHistory,
-  FormattedMessage,
-  PublishedComponent,
-} from "@openimis/fe-core";
-import { Save } from "@material-ui/icons";
-import { EMPTY_STRING, MODULE_NAME } from "../../../../constants";
+    useTranslations,
+    FormattedMessage
+  } from "@openimis/fe-core";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    // height: "100vh",
+const useStyles = makeStyles((theme) => ({     
+  title: {
+    fontWeight: 800,
   },
   paper: {
     padding: theme.spacing(2),
+    width: "100%", // Ensures it doesn't overflow
+    maxWidth: 650, // Restrict max width
+    margin: "auto", // Centers the Paper component
   },
-  buttonContainer: {
-    marginTop: theme.spacing(2),
-    display: "flex",
-    justifyContent: "space-between",
+  section: {
+    marginTop: theme.spacing(3),
   },
 }));
 
-const MedicalDonationCheckbox = ({formData, setFormData }) => {
-  const classes = useStyles();
-  const history = useHistory();
-  const modulesManager = useModulesManager();
+const MedicalDonationCheckbox = ({ modulesManager,onSelect }) => {
+  const [selectedDonationOption, setselectedDonationOption] = useState("");
+  const [isExportOriented, setIsExportOriented] = useState("");
   const { formatMessage } = useTranslations(
-    "core.RegistrationPage",
-    modulesManager
-  );
-  const [state, setState] = React.useState({
-    checkedA: true,
-    checkedB: true,
-    checkedF: true,
-    checkedE: true,
-    checkedF: true,   
-  });
-  
-  const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
-  };
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+      "core.RegistrationPage",
+      modulesManager,
+    );
 
-  const handleFileChange = (fieldKey, files) => {
-    setUploadedFiles((prevFiles) => {
-      // Check if fieldKey already exists
-      const existingIndex = prevFiles.findIndex(
-        (item) => item.fieldKey === fieldKey
-      );
+  const classes = useStyles();
 
-      if (existingIndex !== -1) {
-        // Update existing entry
-        const updatedFiles = [...prevFiles];
-        updatedFiles[existingIndex] = { fieldKey, files };
-        return updatedFiles;
-      } else {
-        // Add new entry
-        return [...prevFiles, { fieldKey, files }];
-      }
-    });
+  const handleExportOrientedChange = (event) => {
+    const value = event.target.value;
+    setIsExportOriented(value);
   };
-  console.log({ formData });
+
   return (
-    <Box mt={1}>
-      <FormGroup row>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={state.checkedB}
-              onChange={handleChange}
-              name="checkedA"
-              color="primary"
-            />
-          }
-          label="(ক) দুর্ঘটনাজনিত কারণে দৈহিক ও মানসিকভাবে স্থায়ী অক্ষমতা (সর্বশেষ সময়সীমা বিগত ১০৫ দিনের মধ্যে হতে হবে);"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={state.checkedB}
-              onChange={handleChange}
-              name="checkedB"
-              color="primary"
-            />
-          }
-          label="(খ) দুর্ঘটনাজনিত কারণে মৃত্যু (সর্বশেষ সময়সীমা বিগত ১০৫ দিনের মধ্যে হতে হবে);"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={state.checkedB}
-              onChange={handleChange}
-              name="checkedF"
-              color="primary"
-            />
-          }
-          label="(গ) দুরারোগ্য চিকিৎসা;"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={state.checkedB}
-              onChange={handleChange}
-              name="checkedE"
-              color="primary"
-            />
-          }
-          label="(ঘ) মৃতদেহ পরিবহন ও সৎকার;"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={state.checkedB}
-              onChange={handleChange}
-              name="checkedF"
-              color="primary"
-            />
-          }
-          label="(ঙ) অপ্রাতিষ্ঠানিক খাতে কর্মরত মহিলা শ্রমিকের মাতৃত্ব কল্যাণ;"
-        />
-      </FormGroup>
-    </Box>
+    <Paper className={classes.paper} elevation={3}>
+      <FormControl component="fieldset">
+        <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
+          {<FormattedMessage id="আর্থিক সহায়তা চাওয়ার কারণ"/>}
+        </Typography>
+        <RadioGroup value={isExportOriented} onChange={handleExportOrientedChange}>
+          <FormControlLabel value="physicalMentalDisability" control={<Radio color="primary" />} label="দুর্ঘটনাজনিত কারণে দৈহিক ও মানসিকভাবে স্থায়ী অক্ষমতা (সর্বশেষ সময়সীমা বিগত ১০৫ দিনের মধ্যে হতে হবে);" />
+          <FormControlLabel value="accidentalDeath" control={<Radio color="primary" />} label="দুর্ঘটনাজনিত কারণে মৃত্যু (সর্বশেষ সময়সীমা বিগত ১০৫ দিনের মধ্যে হতে হবে);" />
+          <FormControlLabel value="curativeTreatment" control={<Radio color="primary" />} label="দুরারোগ্য চিকিৎসা;" />
+          <FormControlLabel value="deathbodyRefinement" control={<Radio color="primary" />} label="মৃতদেহ পরিবহন ও সৎকার;" />
+          <FormControlLabel value="maternalWelfare" control={<Radio color="primary" />} label="অপ্রাতিষ্ঠানিক খাতে কর্মরত মহিলা শ্রমিকের মাতৃত্ব কল্যাণ;" />
+        </RadioGroup> 
+      </FormControl>
+    </Paper>
   );
 };
 
