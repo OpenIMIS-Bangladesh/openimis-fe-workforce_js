@@ -57,15 +57,20 @@ const useStyles = makeStyles((theme) => ({
 //   "Account info",
 // ];
 const steps = [
+  "নির্বাচন করুন",
   "শ্রমিক বিবরণ",
   "অবস্থান",
   "সন্তান তথ্য",
   "প্রমাণপত্র আপলোড",
   "নির্ভরশীল",
-  "অ্যাকাউন্ট তথ্য"
+  "অ্যাকাউন্ট তথ্য",
 ];
 
-const ScholarshipApplicationForm = ({ modulesManager,organizationType,selectedApplicationType }) => {
+const ScholarshipApplicationForm = ({
+  modulesManager,
+  organizationType,
+  selectedApplicationType,
+}) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
   );
@@ -113,7 +118,7 @@ const ScholarshipApplicationForm = ({ modulesManager,organizationType,selectedAp
     permanentLocation: "",
     presentLocation: "",
     presentAddress: "",
-    organizationId:"",
+    organizationId: "",
     dependents: [{}],
     employeeBankInfo: {},
     employeeChildrenInfo: {},
@@ -252,7 +257,9 @@ const ScholarshipApplicationForm = ({ modulesManager,organizationType,selectedAp
         workforceEmployeeId: formData.id,
         company: formData.company,
         factory: formData.factory,
-        employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
+        employeeDesignationInfo: JSON.stringify(
+          formData.employeeDesignationInfo
+        ),
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents),
         employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo),
@@ -345,18 +352,27 @@ const ScholarshipApplicationForm = ({ modulesManager,organizationType,selectedAp
           ))}
         </Stepper>
         {activeStep === 0 ? (
-          <ScholarshipApplicationCheckbox
-            handleChange={handleChange}
-            formData={formData}
-          />
+          <Box mt={3}>
+            <ScholarshipApplicationCheckbox
+              handleChange={handleChange}
+              formData={formData}
+            />
+          </Box>
         ) : activeStep === 1 ? (
+          <Box mt={3}>
+            <EmployeeDetailsForm
+              handleChange={handleChange}
+              formData={formData}
+            />
+          </Box>
+        ) : activeStep === 2 ? (
           <Box mt={3}>
             <EmployeeLocationForm
               handleChange={handleChange}
               formData={formData}
             />
           </Box>
-        ) : activeStep === 2 ? (
+        ) : activeStep === 3 ? (
           <Box mt={3}>
             <EmployeeChildrenDetailsForm
               handleChange={(key, value) =>
@@ -365,16 +381,14 @@ const ScholarshipApplicationForm = ({ modulesManager,organizationType,selectedAp
               formData={formData}
             />
           </Box>
-          
-        ) : activeStep === 3 ? (
+        ) : activeStep === 4 ? (
           <Box mt={3}>
             <EmployeeDetailsForm2
               handleChange={handleChange}
               formData={formData}
             />
           </Box>
-          
-        ) : activeStep === 4 ? (
+        ) : activeStep === 5 ? (
           <Box mt={3}>
             <EmployeeDependentForm
               dependents={formData.dependents}
@@ -383,17 +397,15 @@ const ScholarshipApplicationForm = ({ modulesManager,organizationType,selectedAp
               removeDependent={removeDependent}
             />
           </Box>
-         
         ) : (
           <Box mt={3}>
-          <EmployeeAccountInfoForm
-            handleChange={(key, value) =>
-              handleChange(key, value, "employeeBankInfo")
-            }
-            formData={formData.employeeBankInfo}
-          />
-        </Box>
-          
+            <EmployeeAccountInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeBankInfo")
+              }
+              formData={formData.employeeBankInfo}
+            />
+          </Box>
         )}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
@@ -403,7 +415,7 @@ const ScholarshipApplicationForm = ({ modulesManager,organizationType,selectedAp
           )}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
-             সংরক্ষণ করুন এবং পরবর্তী
+              সংরক্ষণ করুন এবং পরবর্তী
             </Button>
           ) : (
             <Button variant="contained" color="primary" onClick={handleSubmit}>
