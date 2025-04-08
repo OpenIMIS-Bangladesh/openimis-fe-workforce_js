@@ -6,7 +6,7 @@ import {
     FormattedMessage
   } from "@openimis/fe-core";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({     
   title: {
     fontWeight: 800,
   },
