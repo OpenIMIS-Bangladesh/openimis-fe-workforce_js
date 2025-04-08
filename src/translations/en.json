@@ -315,8 +315,15 @@
     "workforce.application.type.education.grant":"Education Grant Form",
 
     "workforce.application.company.type":"Is your company a hundred percent export-oriented?",
+    "workforce.application.reason.type":"Purpose for financial aid?",
     "workforce.application.permission.yes":"Yes",
     "workforce.application.permission.no":"No",
+
+    "workforce.financial.assistance.normalDeath":"Normal Death",
+    "workforce.financial.assistance.accidentalDeath":"Accidental Death",
+
+    "workforce.disability.partial":"Partial disability",
+    "workforce.disability.permanent":"Permanent disability",
 
     "workforce.application.employee.children.studyingClass":"Studying Class",
     "workforce.application.employee.children.educationInstituteName":"Education Institute Name",

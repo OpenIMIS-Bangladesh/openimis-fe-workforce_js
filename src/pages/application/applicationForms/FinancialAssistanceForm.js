@@ -27,6 +27,7 @@ import {
 import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
+import ApplicationReason from "../FormsComponents/FinancialAssistance/ApplicationReason";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -56,11 +57,13 @@ const useStyles = makeStyles((theme) => ({
 // ];
 
 const steps = [
-  "শ্রমিক বিবরণ",
+  "আর্থিক সহায়তা কারণ",
+  "আবেদনকারী ব্যক্তিগত বিবরণ",
+  "মৃত শ্রমিক বিবরণ",
   "অবস্থান",
-  "দুর্ঘটনার তথ্য",
+  // "দুর্ঘটনার তথ্য",
   "প্রমাণপত্র আপলোড",
-  "নির্ভরশীল",
+  // "নির্ভরশীল",
   "অ্যাকাউন্ট তথ্য",
 ];
 
@@ -392,41 +395,53 @@ const FinancialAssistanceForm = ({
           ))}
         </Stepper>
         {activeStep === 0 ? (
-          <EmployeeDetailsForm
-            handleChange={handleChange}
-            formData={formData}
-          />
+          <ApplicationReason modulesManager={modulesManager} />
+          
         ) : activeStep === 1 ? (
           <Box mt={3}>
-            <EmployeeLocationForm
+            {/* <EmployeeDetailsForm
               handleChange={handleChange}
               formData={formData}
-            />
-          </Box>
-        ) : activeStep === 2 ? (
-          <Box mt={3}>
-            <EmployeeAccidentInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeAccidentInfo")
-              }
-              formData={formData}
-            />
-          </Box>
-        ) : activeStep === 3 ? (
-          <Box mt={3}>
-            <EmployeeDetailsForm2
-              handleChange={handleChange}
-              formData={formData}
-            />
-          </Box>
-        ) : activeStep === 4 ? (
-          <Box mt={3}>
+            /> */}
             <EmployeeDependentForm
               dependents={formData.dependents}
               handleDependentChange={handleDependentChange}
               addDependent={addDependent}
               removeDependent={removeDependent}
             />
+            {/* <EmployeeLocationForm
+              handleChange={handleChange}
+              formData={formData}
+            /> */}
+          </Box>
+        ) : activeStep === 2 ? (
+          <Box mt={3}>
+            <EmployeeDetailsForm
+              handleChange={handleChange}
+              formData={formData}
+            />
+            {/* <EmployeeAccidentInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeAccidentInfo")
+              }
+              formData={formData}
+            /> */}
+          </Box>
+        ) : activeStep === 3 ? (
+          <Box mt={3}>
+            <EmployeeLocationForm
+              handleChange={handleChange}
+              formData={formData}
+            />
+            
+          </Box>
+        ) : activeStep === 4 ? (
+          <Box mt={3}>
+            <EmployeeDetailsForm2
+              handleChange={handleChange}
+              formData={formData}
+            />
+            
           </Box>
         ) : (
           <Box mt={3}>

@@ -27,6 +27,7 @@ import {
 import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
+import ApplicationReasonForDisability from "../FormsComponents/Disability/ApplicationReasonForDisability";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -56,11 +57,11 @@ const useStyles = makeStyles((theme) => ({
 // ];
 
 const steps = [
+  "আর্থিক সহায়তা কারণ",
   "শ্রমিক বিবরণ",
   "অবস্থান",
   "দুর্ঘটনার তথ্য",
   "প্রমাণপত্র আপলোড",
-  "নির্ভরশীল",
   "অ্যাকাউন্ট তথ্য",
 ];
 
@@ -390,18 +391,26 @@ const DisabilityForm = ({
           ))}
         </Stepper>
         {activeStep === 0 ? (
-          <EmployeeDetailsForm
+          <ApplicationReasonForDisability modulesManager={modulesManager} />
+          
+          
+        ) : activeStep === 1 ? (
+          <Box mt={3}>
+            <EmployeeDetailsForm
             handleChange={handleChange}
             formData={formData}
           />
-        ) : activeStep === 1 ? (
+            
+          </Box>
+        ) : activeStep === 2 ? (
           <Box mt={3}>
             <EmployeeLocationForm
               handleChange={handleChange}
               formData={formData}
             />
+            
           </Box>
-        ) : activeStep === 2 ? (
+        ) : activeStep === 3 ? (
           <Box mt={3}>
             <EmployeeAccidentInfoForm
               handleChange={(key, value) =>
@@ -409,21 +418,13 @@ const DisabilityForm = ({
               }
               formData={formData}
             />
+            
           </Box>
-        ) : activeStep === 3 ? (
+        ) : activeStep === 4 ? (
           <Box mt={3}>
             <EmployeeDetailsForm2
               handleChange={handleChange}
               formData={formData}
-            />
-          </Box>
-        ) : activeStep === 4 ? (
-          <Box mt={3}>
-            <EmployeeDependentForm
-              dependents={formData.dependents}
-              handleDependentChange={handleDependentChange}
-              addDependent={addDependent}
-              removeDependent={removeDependent}
             />
           </Box>
         ) : (

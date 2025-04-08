@@ -131,8 +131,15 @@
     "workforce.application.type.education.grant":"শিক্ষা অনুদান ফরম",
 
     "workforce.application.company.type":"আপনার কোম্পানি কি শতভাগ রপ্তানিমুখী গার্মেন্টস?",
+    "workforce.application.reason.type":"আর্থিক সহায়তা কারণ?",
     "workforce.application.permission.yes":"হ্যাঁ",
     "workforce.application.permission.no":"না",
+
+    "workforce.financial.assistance.normalDeath":"স্বাভাবিক মৃত্যু",
+    "workforce.financial.assistance.accidentalDeath":"দুর্ঘটনাজনিত মৃত্যু",
+    
+    "workforce.disability.partial":"আংশিক অক্ষমতা",
+    "workforce.disability.permanent":"স্থায়ী অক্ষমতা",
 
     "workforce.application.employee.children.studyingClass":"অধ্যয়নরত শ্রেণী",
     "workforce.application.employee.children.educationInstituteName":"শিক্ষা প্রতিষ্ঠানের নাম",
