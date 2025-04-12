@@ -32,6 +32,11 @@ function reducer(
     fetchedOrganizationsPick: false,
     organizationsPick: [],
 
+    fetchingDocumentType: false,
+    errorDocumentType: null,
+    fetchedDocumentType: false,
+    documentType: [],
+
     fetchingBanksPick: false,
     errorBanksPick: null,
     fetchedBanksPick: false,
@@ -363,6 +368,31 @@ function reducer(
           ...state,
           fetching: false,
           errorOrganizationsPick: formatServerError(action.payload),
+        };
+  
+    case "WORKFORCE_DOCUMENT_TYPE_REQ":
+      return {
+        ...state,
+        fetchingDocumentType: true,
+        fetchedDocumentType: false,
+        documentType: [],
+        errorDocumentType: null,
+      };
+    case "WORKFORCE_DOCUMENT_TYPE_RESP":
+      return {
+        ...state,
+        fetchingDocumentType: false,
+        fetchedDocumentType: true,
+        documentType: parseData(
+          action.payload.data.workforceOrganizations
+        ),
+        errorDocumentType: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_DOCUMENT_TYPE_ERR":
+        return {
+          ...state,
+          fetching: false,
+          errorDocumentType: formatServerError(action.payload),
         };
   
     case "WORKFORCE_BANKS_PICKER_REQ":

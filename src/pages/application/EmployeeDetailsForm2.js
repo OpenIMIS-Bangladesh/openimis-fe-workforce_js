@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   Box,
@@ -17,7 +17,7 @@ import {
   FormattedMessage,
   PublishedComponent,
 } from "@openimis/fe-core";
-import { Save } from "@material-ui/icons";
+import { useSelector, useDispatch } from "react-redux";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import CompanyPicker from "../../pickers/CompanyPicker";
 import FactoryPicker from "../../pickers/FactoryPicker";
@@ -25,6 +25,7 @@ import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
 import FileUploader from "../../pickers/FileUploader";
+import { fetchDocumentType } from "../../actions";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDetailsForm2 = ({handleChange, formData, setFormData }) => {
+const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -51,13 +52,30 @@ const EmployeeDetailsForm2 = ({handleChange, formData, setFormData }) => {
     "core.RegistrationPage",
     modulesManager
   );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    return dispatch(fetchDocumentType(modulesManager, []));
+  }, []);
+
+  const isLoading = useSelector(
+    (state) => state.workforce[`fetchingDocumentType`]
+  );
+  const data = useSelector(
+    (state) => state.workforce[`documentType`] ?? []
+  );
+  const error = useSelector(
+    (state) => state.workforce["errorDocumentType"]
+  );
 
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const handleFileChange = (fieldKey, files) => {
     setUploadedFiles((prevFiles) => {
       // Check if fieldKey already exists
-      const existingIndex = prevFiles.findIndex((item) => item.fieldKey === fieldKey);
+      const existingIndex = prevFiles.findIndex(
+        (item) => item.fieldKey === fieldKey
+      );
 
       if (existingIndex !== -1) {
         // Update existing entry
@@ -70,7 +88,7 @@ const EmployeeDetailsForm2 = ({handleChange, formData, setFormData }) => {
       }
     });
   };
-console.log({formData})
+  console.log({ fahim: data });
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
@@ -81,7 +99,9 @@ console.log({formData})
                 <TextInput
                   label="workforce.employee.nid"
                   value={formData.nid || ""}
-                  onChange={(v) => handleChange("nid", v, "employeeDesignation")}
+                  onChange={(v) =>
+                    handleChange("nid", v, "employeeDesignation")
+                  }
                   type={"number"}
                   required
                   readOnly={false}
@@ -91,18 +111,26 @@ console.log({formData})
                 <TextInput
                   label="workforce.employee.birth_certificate_no"
                   value={formData.birthCertificateNo || ""}
-                  onChange={(v) => handleChange("birthCertificateNo", v, "employeeDesignation")}
+                  onChange={(v) =>
+                    handleChange("birthCertificateNo", v, "employeeDesignation")
+                  }
                   type={"number"}
                   readOnly={false}
                 />
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <Typography>Upload NID </Typography>
-                <FileUploader fieldKey="uploadedNidFile" onFileChange={handleChange}/>
+                <FileUploader
+                  fieldKey="uploadedNidFile"
+                  onFileChange={handleChange}
+                />
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <Typography>Upload Birth Certificate </Typography>
-                <FileUploader fieldKey="uploadedBirthCertificateFile" onFileChange={handleChange}/>
+                <FileUploader
+                  fieldKey="uploadedBirthCertificateFile"
+                  onFileChange={handleChange}
+                />
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <CompanyPicker
@@ -114,7 +142,10 @@ console.log({formData})
                     />
                   }
                   required
-                  onChange={(v) => {handleChange("company", v, "employeeDesignation");handleChange("company", v)}}
+                  onChange={(v) => {
+                    handleChange("company", v, "employeeDesignation");
+                    handleChange("company", v);
+                  }}
                   readOnly={false}
                 />
               </Grid>
@@ -129,8 +160,11 @@ console.log({formData})
                     />
                   }
                   required
-                  companyId={formData?.company?.id} 
-                  onChange={(v) => {handleChange("factory", v, "employeeDesignation");handleChange("factory", v)}}
+                  companyId={formData?.company?.id}
+                  onChange={(v) => {
+                    handleChange("factory", v, "employeeDesignation");
+                    handleChange("factory", v);
+                  }}
                   readOnly={false}
                 />
               </Grid>
@@ -139,7 +173,9 @@ console.log({formData})
                 <TextInput
                   label="workforce.employee.monthly_earning"
                   value={formData.monthlyEarning || ""}
-                  onChange={(v) => handleChange("monthlyEarning", v, "employeeDesignation")}
+                  onChange={(v) =>
+                    handleChange("monthlyEarning", v, "employeeDesignation")
+                  }
                   readOnly={false}
                 />
               </Grid>
@@ -149,11 +185,12 @@ console.log({formData})
                   pubRef="core.DatePicker"
                   label={"workforce.employee.joindate"}
                   value={formData.joinDate || ""}
-                  onChange={(v) => handleChange("joinDate", v, "employeeDesignation")}
+                  onChange={(v) =>
+                    handleChange("joinDate", v, "employeeDesignation")
+                  }
                   readOnly={false}
                 />
               </Grid>
-              
             </Grid>
             <Divider />
           </Paper>

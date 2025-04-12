@@ -52,6 +52,15 @@ export function fetchOrganizationsPick(filters) {
   );
   return graphql(payload, "WORKFORCE_ORGANIZATIONS_PICKER");
 }
+export function fetchDocumentType(filters) {
+  const projections = ["id","fieldId","applicationType","documentType","documentCount","status", "nameEn", "nameBn"];
+  const payload = formatPageQueryWithCount(
+    "workforceDocumentType",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_DOCUMENT_TYPE");
+}
 
 /// bank picker ///
 export function fetchBanksPick(mm, filters) {
