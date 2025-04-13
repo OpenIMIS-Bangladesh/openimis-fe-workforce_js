@@ -6,7 +6,9 @@ import {
   Typography,
   Divider,
   IconButton,
-  Card, CardContent,Box
+  Card,
+  CardContent,
+  Box,
 } from "@material-ui/core";
 import {
   TextInput,
@@ -24,16 +26,16 @@ const styles = (theme) => ({
   paper: {
     padding: theme.spacing(1),
     width: 700,
-    margin:"0 auto"
+    margin: "0 auto",
   },
   container: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
-  title:{
-    fontSize:'medium',
-    fontWeight:"bold"
+  title: {
+    fontSize: "medium",
+    fontWeight: "bold",
   },
   tableTitle: theme.table.title,
   item: theme.paper.item,
@@ -71,6 +73,46 @@ class ViewApplicationPage extends Component {
     }
   }
 
+  // Convert camelCase or snake_case to readable label
+  formatKey = (key) => {
+    return key
+      .replace(/_/g, " ")
+      .replace(/([A-Z])/g, " $1")
+      .replace(/^./, (str) => str.toUpperCase());
+  };
+
+  // Render nested objects, arrays, or primitives nicely
+  renderValue = (value) => {
+    if (Array.isArray(value)) {
+      return value.length === 0
+        ? "N/A"
+        : value.map((v, i) => (
+            <div key={i} style={{ marginBottom: 4 }}>
+              {typeof v === "object" ? this.renderNestedObject(v) : v}
+            </div>
+          ));
+    } else if (typeof value === "object" && value !== null) {
+      // Handle known object shape: { id, uuid, code, name, type, parent }
+      if ("code" in value && "name" in value) {
+        return `${value.name} (${value.code})`;
+      }
+  
+      return this.renderNestedObject(value);
+    } else {
+      return value ?? "N/A";
+    }
+  };
+  
+
+  // Nicely print nested object key-values
+  renderNestedObject = (obj) => {
+    return Object.entries(obj).map(([k, v], i) => (
+      <div key={i}>
+        <b>{this.formatKey(k)}:</b> {v || "N/A"}
+      </div>
+    ));
+  };
+
   render() {
     const { classes } = this.props;
     const {
@@ -86,13 +128,37 @@ class ViewApplicationPage extends Component {
     const BankInfo = JSON.parse(parseBankInfo);
     const DependentInfo = JSON.parse(parseDependentInfo);
     const {
-      firstNameEn, lastNameEn, firstNameBn, lastNameBn, otherName,
-      phoneNumber, email, gender, nid, birthCertificateNo, passportNo,
-      presentAddress, permanentAddress, presentLocation, permanentLocation,
-      maritalStatus, citizenship, privacyLaw, insuranceNumber, birthDate,
-      fatherNameBn, fatherNameEn, motherNameBn, motherNameEn,
-      spouseNameBn, spouseNameEn, lifeStatus, deathDate,
-      bankInfo, accidentInfo, dependents
+      firstNameEn,
+      lastNameEn,
+      firstNameBn,
+      lastNameBn,
+      otherName,
+      phoneNumber,
+      email,
+      gender,
+      nid,
+      birthCertificateNo,
+      passportNo,
+      presentAddress,
+      permanentAddress,
+      presentLocation,
+      permanentLocation,
+      maritalStatus,
+      citizenship,
+      privacyLaw,
+      insuranceNumber,
+      birthDate,
+      fatherNameBn,
+      fatherNameEn,
+      motherNameBn,
+      motherNameEn,
+      spouseNameBn,
+      spouseNameEn,
+      lifeStatus,
+      deathDate,
+      bankInfo,
+      accidentInfo,
+      dependents,
     } = stateEdited;
 
     console.log({ stateEdited });
@@ -105,56 +171,34 @@ class ViewApplicationPage extends Component {
             <Grid item xs={12}>
               <Card>
                 <CardContent>
-                  <Typography variant="body1" className={classes.title}><b>Personal Information</b></Typography>
-                  <Divider style={{ margin: "5px 0" }} />
+                  <Typography variant="body1" className={classes.title}>
+                    <b>Employee Information</b>
+                  </Typography>
+                  <Divider style={{ margin: "5px 0 10px" }} />
                   <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <b>Name (EN):</b> {firstNameEn} {lastNameEn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Name (BN):</b> {firstNameBn} {lastNameBn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Other Name:</b> {otherName}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Phone:</b> {phoneNumber}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Email:</b> {email || "N/A"}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Gender:</b> {gender}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>NID:</b> {nid}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Birth Certificate:</b> {birthCertificateNo}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Passport No:</b> {passportNo || "N/A"}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Birth Date:</b> {birthDate}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Life Status:</b> {lifeStatus}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Death Date:</b> {deathDate || "N/A"}
-                    </Grid>
+                    {Object.entries(stateEdited)
+                    .filter(([key]) => !["id", "uuid", "parent"].includes(key))
+                    .map(([key, value], idx) => (
+                      <Grid item xs={6} key={idx}>
+                        <Typography>
+                          <b>{this.formatKey(key)}:</b>{" "}
+                          {this.renderValue(value)}
+                        </Typography>
+                      </Grid>
+                    ))}
                   </Grid>
                 </CardContent>
               </Card>
             </Grid>
 
             {/* Family Info */}
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Card>
                 <CardContent>
-                  <Typography variant="body1" className={classes.title}><b>Family Information</b></Typography>
-                  <Divider style={{ margin: "5px 0" }} />
+                  <Typography variant="body1" className={classes.title}>
+                    <b>Family Information</b>
+                  </Typography>
+                  <Divider style={{ margin: "10px 0" }} />
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
                       <b>Father (EN):</b> {fatherNameEn}
@@ -180,14 +224,14 @@ class ViewApplicationPage extends Component {
                   </Grid>
                 </CardContent>
               </Card>
-            </Grid>
+            </Grid> */}
 
             {/* Location Info */}
             {/* <Grid item xs={12}>
               <Card>
                 <CardContent>
                   <Typography variant="body1" className={classes.title}>Location</Typography>
-                  <Divider style={{ margin: "5px 0" }} />
+                  <Divider style={{ margin: "10px 0" }} />
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
                       <b>Present Address:</b> {presentAddress}
@@ -209,11 +253,13 @@ class ViewApplicationPage extends Component {
             </Grid> */}
 
             {/* Official Info */}
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Card>
                 <CardContent>
-                  <Typography variant="body1" className={classes.title}><b>Official Information</b></Typography>
-                  <Divider style={{ margin: "5px 0" }} />
+                  <Typography variant="body1" className={classes.title}>
+                    <b>Official Information</b>
+                  </Typography>
+                  <Divider style={{ margin: "10px 0" }} />
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
                       <b>Citizenship:</b> {citizenship}
@@ -227,15 +273,15 @@ class ViewApplicationPage extends Component {
                   </Grid>
                 </CardContent>
               </Card>
-            </Grid>
+            </Grid> */}
 
             {/* Bank Info */}
-            {bankInfo && Object.keys(bankInfo).length > 0 && (
+            {/* {bankInfo && Object.keys(bankInfo).length > 0 && (
               <Grid item xs={12}>
                 <Card>
                   <CardContent>
                     <Typography variant="h6">Bank Info</Typography>
-                    <Divider style={{ margin: "5px 0" }} />
+                    <Divider style={{ margin: "10px 0" }} />
                     {Object.entries(bankInfo).map(([key, value]) => (
                       <Typography key={key}>
                         <b>{key}:</b> {value}
@@ -244,15 +290,15 @@ class ViewApplicationPage extends Component {
                   </CardContent>
                 </Card>
               </Grid>
-            )}
+            )} */}
 
             {/* Accident Info */}
-            {accidentInfo && Object.keys(accidentInfo).length > 0 && (
+            {/* {accidentInfo && Object.keys(accidentInfo).length > 0 && (
               <Grid item xs={12}>
                 <Card>
                   <CardContent>
                     <Typography variant="h6">Accident Info</Typography>
-                    <Divider style={{ margin: "5px 0" }} />
+                    <Divider style={{ margin: "10px 0" }} />
                     {Object.entries(accidentInfo).map(([key, value]) => (
                       <Typography key={key}>
                         <b>{key}:</b> {value}
@@ -261,10 +307,10 @@ class ViewApplicationPage extends Component {
                   </CardContent>
                 </Card>
               </Grid>
-            )}
+            )} */}
 
             {/* Dependents */}
-            {Array.isArray(dependents) && dependents.length > 0 && (
+            {/* {Array.isArray(dependents) && dependents.length > 0 && (
               <Grid item xs={12}>
                 <Typography variant="h6">Dependents</Typography>
                 {dependents.map((dep, index) => (
@@ -273,7 +319,7 @@ class ViewApplicationPage extends Component {
                       <Typography variant="subtitle1">
                         Dependent #{index + 1}
                       </Typography>
-                      <Divider style={{ margin: "5px 0" }} />
+                      <Divider style={{ margin: "10px 0" }} />
                       {Object.keys(dep).length === 0 ? (
                         <Typography color="textSecondary">
                           No data provided.
@@ -289,7 +335,7 @@ class ViewApplicationPage extends Component {
                   </Card>
                 ))}
               </Grid>
-            )}
+            )} */}
           </Grid>
         </Box>
       </div>
