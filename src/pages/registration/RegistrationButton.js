@@ -1,21 +1,31 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/styles";
-import { Button, Box, Grid, Paper, LinearProgress } from "@material-ui/core";
-import { useTranslations, useModulesManager, TextInput, useHistory } from "@openimis/fe-core";
+import { Button, Box, Grid, Paper, LinearProgress,Typography } from "@material-ui/core";
+import { useTranslations, useModulesManager, TextInput, useHistory,FormattedMessage } from "@openimis/fe-core";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
     margin: "auto",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    display: "inline-block",
+    // flexWrap:"wrap",
+    alignItems:"center",
+  },
+  title:{
+    fontSize:'small',
+    // fontWeight:500,
+    display:'inline'
+  },
+  inlineButton: {
+    fontSize: "0.875rem",
+    fontWeight: "bold",
+    padding: theme.spacing(0.3),
+    // minWidth: "unset",
+    textTransform: "none",
+    marginLeft: theme.spacing(1),
+    backgroundColor:"#B2D0D5",
+    display: "inline", // crucial to stay inline
   },
   paper: theme.paper.paper,
 }));
@@ -32,9 +42,10 @@ const RegistrationButton = () => {
   };
 
   return (
-    <>
-      <Button onClick={redirectToRegistrationPage}>{formatMessage("Register")}</Button>
-    </>
+    <Box className={classes.container}>
+      <Typography varient="p" className={classes.title}><FormattedMessage module="workforce" id={"workforce.registration.desclaimer"} /></Typography>
+      <Button className={classes.inlineButton}  onClick={redirectToRegistrationPage}>{formatMessage("Register")}</Button>
+    </Box>
   );
 };
 

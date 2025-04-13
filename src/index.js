@@ -41,6 +41,7 @@ import {
   ROUTE_WORKFORCE_APPLICATION,
   ROUTE_WORKFORCE_APPLICATIONS_PROCESS,
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS,
+  ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY,
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -129,6 +130,7 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.registration", ref: ROUTE_WORKFORCE_REGISTRATION },
     { key: "workforce.route.application", ref: ROUTE_WORKFORCE_APPLICATION },
     { key: "workforce.route.applications.application.process.view", ref: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS },
+    { key: "workforce.route.applications.application.verify", ref: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY },
     { key: "workforce.route.applications.process", ref: ROUTE_WORKFORCE_APPLICATIONS_PROCESS },
 
     { key: "workforce.route.employees.accident.infos", ref: ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS },
@@ -223,6 +225,9 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_APPLICATIONS_PROCESS, component: ApplicationsProcessPage },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS, component: ApplicationProcessPage },
     { path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS}/:application_uuid`, component: ApplicationProcessPage },
+    { path: ROUTE_WORKFORCE_APPLICATIONS_PROCESS, component: ApplicationsProcessPage },
+    { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY, component: ApplicationProcessPage },
+    { path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY}/:application_uuid`, component: ApplicationProcessPage },
   ],
 
   "core.UnauthenticatedRouter": [

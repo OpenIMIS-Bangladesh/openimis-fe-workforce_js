@@ -20,6 +20,7 @@ import {
   Send as SendIcon,
   Check as CheckIcon,
 } from "@material-ui/icons";
+import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import { MODULE_NAME } from "../../constants";
 import { fetchApplicationsSummary } from "../../actions";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
@@ -41,7 +42,7 @@ const styles = (theme) => ({
   item: {
     padding: theme.spacing(1),
   },
-  
+  horizontalButtonContainer: theme.buttonContainer.horizontal,
 });
 
 class ApplicationProcessSearcher extends Component {
@@ -133,6 +134,7 @@ class ApplicationProcessSearcher extends Component {
     ];
     
     formatters.push((application) => (
+      <div className={this.props.classes.horizontalButtonContainer}>
         <Tooltip title="দেখুন">
           <IconButton
             disabled={application?.isHistory}
@@ -149,6 +151,24 @@ class ApplicationProcessSearcher extends Component {
             <TabIcon />
           </IconButton>
         </Tooltip>
+
+        <Tooltip title="দেখুন">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.verify",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <VerifiedUserIcon />
+          </IconButton>
+        </Tooltip>
+        </div>
 
     ));
     return formatters;

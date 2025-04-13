@@ -47,7 +47,7 @@ const styles = (theme) => ({
   },
 });
 
-class ViewApplicationPage extends Component {
+class VerifyApplicationPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -302,5 +302,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(
-  withStyles(styles)(ViewApplicationPage)
+  withStyles(styles)(VerifyApplicationPage)
 );

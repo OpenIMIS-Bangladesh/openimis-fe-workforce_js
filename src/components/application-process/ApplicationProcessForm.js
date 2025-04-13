@@ -13,6 +13,7 @@ import { fetchApplication } from "../../actions";
 import { MODULE_NAME } from "../../constants";
 import AddApplicationPage from "../../pages/application-process/AddApplicationPage";
 import ViewApplicationPage from "../../pages/application-process/ViewApplicationPage";
+import VerifyApplicationPage from "../../pages/application-process/VerifyApplicationPage";
 
 class ApplicationProcessForm extends Component {
   constructor(props) {
@@ -48,14 +49,24 @@ class ApplicationProcessForm extends Component {
       }));
     } else if (prevState.applicationUuid !== this.state.applicationUuid) {
       const filters = [`id: "${this.state.applicationUuid}"`];
-      this.props.fetchApplication(this.props.modulesManager, filters);
+      if (this.props.applicationUuid && !this.props.isVerify){
+        this.props.fetchApplication(this.props.modulesManager, filters);
+      }else{
+        this.props.fetchApplication(this.props.modulesManager, filters);
+      }
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
       if (this.props?.organizationEmployee?.id) {
-        this.props.fetchApplication(this.props.modulesManager, [
-          `id: "${this.state.applicationUuid}"`,
-        ]);
+        if (this.props.applicationUuid && !this.props.isVerify){
+          this.props.fetchApplication(this.props.modulesManager, [
+            `id: "${this.state.applicationUuid}"`,
+          ]);
+        }else{
+          this.props.fetchApplication(this.props.modulesManager, [
+            `id: "${this.state.applicationUuid}"`,
+          ]);
+        }
       }
     }
   }
@@ -91,7 +102,7 @@ class ApplicationProcessForm extends Component {
       errorTicket,
       save,
       back,
-      isEdit,
+      isVerify,
     } = this.props;
 
     const { lockNew, reset, update, overview, applicationUuid, ticket } =
@@ -106,7 +117,7 @@ class ApplicationProcessForm extends Component {
       },
     ];
 
-    console.log("Hello", applicationUuid && !isEdit);
+    console.log("Hello", applicationUuid && !isVerify);
 
     return (
       <>
@@ -127,9 +138,9 @@ class ApplicationProcessForm extends Component {
             readOnly={readOnly}
             overview={overview}
             Panels={
-              applicationUuid
+              (applicationUuid && !isVerify)
                 ? [ViewApplicationPage]
-                : [AddApplicationPage]
+                :(applicationUuid && isVerify)? [VerifyApplicationPage]: [AddApplicationPage]
             }
             onEditedChanged={this.onEditedChanged}
           />

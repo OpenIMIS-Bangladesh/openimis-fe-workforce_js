@@ -162,6 +162,9 @@
     "workforce.application.steps.dependent":"নির্ভরশীল",
     "workforce.application.steps.account.info": "অ্যাকাউন্ট তথ্য",
 
+    "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন",
+
+
     "workforce.registration.title":"সুবিধাভোগী নিবন্ধন ফর্ম"
 
 

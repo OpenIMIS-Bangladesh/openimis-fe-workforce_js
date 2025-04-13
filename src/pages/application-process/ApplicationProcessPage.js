@@ -58,7 +58,7 @@ class ApplicationProcessPage extends Component {
     // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
     const path = this.props.history.location.pathname;
-    const isEdit =  path.includes("edit");
+    const isVerify =  path.includes("verify");
     const isApprove =  path.includes("approve");
 
     // if (!(rights.includes(RIGHT_ORGANIZATION_CREATE) || rights.includes(RIGHT_ORGANIZATION_EDIT))) return null;
@@ -76,7 +76,7 @@ class ApplicationProcessPage extends Component {
           }
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
           save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
-          isEdit={isEdit}
+          isVerify={isVerify}
         />
       </div>
     );
