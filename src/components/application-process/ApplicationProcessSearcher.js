@@ -107,6 +107,9 @@ class ApplicationProcessSearcher extends Component {
     "workforce.employee.application.applicationType",
     "workforce.employee.application.organizationType",
     "workforce.employee.application.status",
+    "workforce.employee.application.applicationDate",
+    "workforce.employee.application.assignedBy",
+    "workforce.employee.application.assignedDate",
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
@@ -123,6 +126,9 @@ class ApplicationProcessSearcher extends Component {
       (application) => application.applicationType,
       (application) => application.organizationType,
       (application) => application.status,
+      (application) => application.DateCreated,
+      (application) => application.DateCreated,
+      (application) => application.DateCreated,
         this.isShowHistory() ? application?.version : null,
     ];
     
