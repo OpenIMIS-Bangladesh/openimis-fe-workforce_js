@@ -7,13 +7,15 @@ import {
   Paper,
   LinearProgress,
   Typography,
+  
 } from "@material-ui/core";
 import {
   useTranslations,
   useModulesManager,
   TextInput,
   useHistory,
-  PublishedComponent
+  PublishedComponent,
+  FormattedMessage
 } from "@openimis/fe-core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
@@ -102,7 +104,7 @@ const RegistrationPage = () => {
         <Paper className={classes.paper} elevation={3}>
           {/* <img src="/mnt/data/image.png" alt="Logo" className={classes.logo} /> */}
           <Typography variant="h5" color="primary">
-          নিবন্ধন করুন
+            <FormattedMessage module="workforce" id="workforce.registration.title" />
           </Typography>
           <form onSubmit={onSubmit}>
             <Box mt={2} className={classes.inputContainer}>

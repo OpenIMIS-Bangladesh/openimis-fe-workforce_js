@@ -41,6 +41,7 @@
     "menu.workforce.application": "Application",
     "menu.workforce.application.process": "Application Process",
     "menu.workforce.banks": "Banks",
+    "menu.workforce.documents": "Documents",
     "menu.workforce.branch": "Branches",
     "menu.workforce.employee.factory": "Employee Factories",
 
@@ -330,6 +331,16 @@
     "workforce.application.employee.children.result":"Result",
     "workforce.application.employee.children.bankNameOrAcNo":"Bank Name and AC No (if have)",
     "workforce.application.employee.children.nidOrBirthRegistry":"NID or Birth Registration Certificate",
+
+    "workforce.application.steps.employeeDetails":"Labour Details",
+    "workforce.application.steps.location":"Location",
+    "workforce.application.steps.accident.info":"Accident info",
+    "workforce.application.steps.upload.documents":"Upload documents",
+    "workforce.application.steps.dependent":"Dependent",
+    "workforce.application.steps.account.info":"Account info",
+
+    "workforce.registration.title":"Beneficiary registration form",
+
 
 
 

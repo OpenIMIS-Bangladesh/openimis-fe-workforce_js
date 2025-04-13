@@ -33,6 +33,7 @@ export const ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS_INFO = "workforce/employees
 export const ROUTE_WORKFORCE_EMPLOYEE_FACTORIES = "workforce/employee/factories";
 
 export const ROUTE_WORKFORCE_BANKS = "workforce/banks";
+export const ROUTE_WORKFORCE_DOCUMENTS = "workforce/documents";
 export const ROUTE_WORKFORCE_BANKS_BANK = "workforce/banks/bank"
 
 export const ROUTE_WORKFORCE_REGISTRATION = "registration"

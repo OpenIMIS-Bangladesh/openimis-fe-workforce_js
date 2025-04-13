@@ -150,7 +150,16 @@
     "workforce.employee.account.info.routingNumber": "রাউটিং নম্বর",
     "workforce.employee.account.info.status": "অ্যাকাউন্ট স্ট্যাটাস",
     "workforce.employee.account.info.accountHolderName": "অ্যাকাউন্ট হোল্ডারের নাম",
-    "workforce.employee.account.info.accountNumber": "অ্যাকাউন্ট নম্বর"
+    "workforce.employee.account.info.accountNumber": "অ্যাকাউন্ট নম্বর",
+
+    "workforce.application.steps.employeeDetails":"শ্রমিক বিবরণ",
+    "workforce.application.steps.location":"অবস্থান",
+    "workforce.application.steps.accident.info":"দুর্ঘটনার তথ্য",
+    "workforce.application.steps.upload.documents":"প্রমাণপত্র আপলোড",
+    "workforce.application.steps.dependent":"নির্ভরশীল",
+    "workforce.application.steps.account.info": "অ্যাকাউন্ট তথ্য",
+
+    "workforce.registration.title":"সুবিধাভোগী নিবন্ধন ফর্ম"
 
 
 

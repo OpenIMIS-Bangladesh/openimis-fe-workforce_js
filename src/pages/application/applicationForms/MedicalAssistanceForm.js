@@ -9,7 +9,7 @@ import {
   Box,
   Typography,
 } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId,FormattedMessage } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -56,12 +56,12 @@ const useStyles = makeStyles((theme) => ({
 // ];
 
 const steps = [
-  "শ্রমিক বিবরণ",
-  "অবস্থান",
-  "দুর্ঘটনার তথ্য",
-  "প্রমাণপত্র আপলোড",
-  "নির্ভরশীল",
-  "অ্যাকাউন্ট তথ্য",
+  "workforce.application.steps.employeeDetails",
+  "workforce.application.steps.location",
+  "workforce.application.steps.accident.info",
+  "workforce.application.steps.upload.documents",
+  "workforce.application.steps.dependent",
+  "workforce.application.steps.account.info",
 ];
 
 const MedicalAssistanceForm = ({
@@ -387,7 +387,7 @@ const MedicalAssistanceForm = ({
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel><FormattedMessage module="workforce" id={label} /></StepLabel>
             </Step>
           ))}
         </Stepper>
