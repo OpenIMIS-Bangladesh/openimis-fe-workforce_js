@@ -120,16 +120,16 @@ class ApplicationProcessSearcher extends Component {
     const formatters = [
       // (application) => console.log({application}),
       // (application) => application.lastNameEn,
-      (application) => application.workforceEmployee.firstNameBn,
-      (application) => application.workforceEmployee.lastNameBn,
-      (application) => application.workforceEmployee.nid,
-      (application) => application.workforceEmployee.phoneNumber,
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => application.workforceEmployee?.lastNameBn,
+      (application) => application.workforceEmployee?.nid,
+      (application) => application.workforceEmployee?.phoneNumber,
       (application) => application.applicationType,
       (application) => application.organizationType,
       (application) => application.status,
-      (application) => application.DateCreated,
-      (application) => application.DateCreated,
-      (application) => application.DateCreated,
+      (application) => application.dateCreated,
+      (application) => "Mr. Hafiz",
+      (application) => application.dateCreated,
         this.isShowHistory() ? application?.version : null,
     ];
     

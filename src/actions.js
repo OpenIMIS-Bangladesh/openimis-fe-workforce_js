@@ -619,6 +619,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "id",
     "organizationType",
     "applicationType",
+    "dateCreated",
     "status",
     "workforceEmployee{firstNameBn, lastNameBn, phoneNumber, nid, status}",
   ];
