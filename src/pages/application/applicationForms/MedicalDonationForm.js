@@ -9,7 +9,12 @@ import {
   Box,
   Typography,
 } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId } from "@openimis/fe-core";
+import {
+  useModulesManager,
+  formatMutation,
+  decodeId,
+  FormattedMessage,
+} from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -53,20 +58,29 @@ const useStyles = makeStyles((theme) => ({
 //   "Account info",
 //   "Accident Info",
 // ];
+// const steps = [
+//   "নির্বাচন করুন",
+//   "শ্রমিক বিবরণ",
+//   "অবস্থান",
+//   "প্রমাণপত্র আপলোড",
+//   "নির্ভরশীল",
+//   "অ্যাকাউন্ট তথ্য",
+// ];
+
 const steps = [
-  "নির্বাচন করুন",
-  "শ্রমিক বিবরণ",
-  "অবস্থান",
-  "প্রমাণপত্র আপলোড",
-  "নির্ভরশীল",
-  "অ্যাকাউন্ট তথ্য",
+  "workforce.application.steps.select",
+  "workforce.application.steps.employeeDetails",
+  "workforce.application.steps.location",
+  "workforce.application.steps.upload.documents",
+  "workforce.application.steps.dependent",
+  "workforce.application.steps.account.info",
 ];
 
-const MedicalDonationForm = ({ 
+const MedicalDonationForm = ({
   modulesManager,
   organizationType,
   selectedApplicationType,
- }) => {
+}) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
   );
@@ -114,7 +128,7 @@ const MedicalDonationForm = ({
     permanentLocation: "",
     presentLocation: "",
     presentAddress: "",
-    organizationId:"",
+    organizationId: "",
     dependents: [{}],
     employeeBankInfo: {},
     id: "",
@@ -251,7 +265,9 @@ const MedicalDonationForm = ({
         workforceEmployeeId: formData.id,
         company: formData.company,
         factory: formData.factory,
-        employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
+        employeeDesignationInfo: JSON.stringify(
+          formData.employeeDesignationInfo
+        ),
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents),
         status: "ontest",
@@ -329,33 +345,32 @@ const MedicalDonationForm = ({
     );
   };
 
-
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={3}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel>
+                <FormattedMessage module="workforce" id={label} />
+              </StepLabel>
             </Step>
           ))}
         </Stepper>
         {activeStep === 0 ? (
-           <Box mt={3}>
-           <MedicalDonationCheckbox
-             handleChange={handleChange}
-             formData={formData}
-           />
-         </Box>
-          
+          <Box mt={3}>
+            <MedicalDonationCheckbox
+              handleChange={handleChange}
+              formData={formData}
+            />
+          </Box>
         ) : activeStep === 1 ? (
           <Box mt={3}>
-          <EmployeeDetailsForm
-            handleChange={handleChange}
-            formData={formData}
-          />
-            </Box>
-          
+            <EmployeeDetailsForm
+              handleChange={handleChange}
+              formData={formData}
+            />
+          </Box>
         ) : activeStep === 2 ? (
           <Box mt={3}>
             <EmployeeLocationForm
@@ -363,17 +378,16 @@ const MedicalDonationForm = ({
               formData={formData}
             />
           </Box>
-        
         ) : activeStep === 3 ? (
           <Box mt={3}>
-          <EmployeeDetailsForm2
-            handleChange={handleChange}
-            formData={formData}
-          />
-        </Box>
-        
-           ) : activeStep === 4 ? (
-            <Box mt={3}>
+            <EmployeeDetailsForm2
+              selectedApplicationType={selectedApplicationType}
+              handleChange={handleChange}
+              formData={formData}
+            />
+          </Box>
+        ) : activeStep === 4 ? (
+          <Box mt={3}>
             <EmployeeDependentForm
               dependents={formData.dependents}
               handleDependentChange={handleDependentChange}
@@ -381,8 +395,7 @@ const MedicalDonationForm = ({
               removeDependent={removeDependent}
             />
           </Box>
-           
-        ) :  (
+        ) : (
           <Box mt={3}>
             <EmployeeAccountInfoForm
               handleChange={(key, value) =>
@@ -391,20 +404,20 @@ const MedicalDonationForm = ({
               formData={formData.employeeBankInfo}
             />
           </Box>
-        ) }
+        )}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
-              পিছনে
+              <FormattedMessage module="workforce" id="workforce.back" />{" "}
             </Button>
           )}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
-             সংরক্ষণ করুন এবং পরবর্তী
+              <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
             <Button variant="contained" color="primary" onClick={handleSubmit}>
-              জমা দিন
+              <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
         </div>

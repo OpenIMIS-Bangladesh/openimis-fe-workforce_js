@@ -337,10 +337,18 @@
 
     "workforce.application.steps.employeeDetails":"Labour Details",
     "workforce.application.steps.location":"Location",
-    "workforce.application.steps.accident.info":"Accident info",
-    "workforce.application.steps.upload.documents":"Upload documents",
+    "workforce.application.steps.accident.info":"Accident Info",
+    "workforce.application.steps.upload.documents":"Upload Documents",
     "workforce.application.steps.dependent":"Dependent",
-    "workforce.application.steps.account.info":"Account info",
+    "workforce.application.steps.account.info":"Account Info",
+    "workforce.application.steps.aidReason":"Financial Aid Reasons",
+    "workforce.application.steps.childInfo":"Children Info",
+    "workforce.application.steps.deathLabourDetails":"Death Labour Details",
+    "workforce.application.steps.select":"Select",
+    "workforce.application.steps.ssc":"S.S.C or Equvalent",
+    "workforce.application.steps.hsc":"H.S.C or Equvalent",
+
+
 
     "workforce.registration.desclaimer": "Are you already a registered user? If not, please register.",
     "workforce.registration.title":"Beneficiary registration form",

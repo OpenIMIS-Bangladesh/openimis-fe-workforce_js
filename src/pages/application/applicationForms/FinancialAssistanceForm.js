@@ -9,7 +9,12 @@ import {
   Box,
   Typography,
 } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId } from "@openimis/fe-core";
+import {
+  useModulesManager,
+  formatMutation,
+  decodeId,
+  FormattedMessage,
+} from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -57,14 +62,12 @@ const useStyles = makeStyles((theme) => ({
 // ];
 
 const steps = [
-  "আর্থিক সহায়তা কারণ",
-  "আবেদনকারী ব্যক্তিগত বিবরণ",
-  "মৃত শ্রমিক বিবরণ",
-  "অবস্থান",
-  // "দুর্ঘটনার তথ্য",
-  "প্রমাণপত্র আপলোড",
-  // "নির্ভরশীল",
-  "অ্যাকাউন্ট তথ্য",
+  "workforce.application.steps.aidReason",
+  "workforce.application.steps.employeeDetails",
+  "workforce.application.steps.deathLabourDetails",
+  "workforce.application.steps.location",
+  "workforce.application.steps.upload.documents",
+  "workforce.application.steps.account.info",
 ];
 
 const FinancialAssistanceForm = ({
@@ -84,7 +87,7 @@ const FinancialAssistanceForm = ({
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
-  const [isSubmitted,setIsSubmitted] =useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const reduxState = useSelector((state) => state);
 
@@ -125,7 +128,7 @@ const FinancialAssistanceForm = ({
     presentLocation: "",
     presentAddress: "",
     organizationId: "",
-    isSubmitted:"no",
+    isSubmitted: "no",
     dependents: [{}],
     employeeBankInfo: {},
     employeeAccidentInfo: {},
@@ -356,7 +359,7 @@ const FinancialAssistanceForm = ({
       employeeBankInfo: formData.employeeBankInfo,
       employeeDependentInfo: formData.dependents,
       employeeAccidentInfo: formData.employeeAccidentInfo,
-      isSubmitted:"yes",
+      isSubmitted: "yes",
       status: "ontest",
     };
     dispatch(
@@ -366,7 +369,7 @@ const FinancialAssistanceForm = ({
       )
     );
 
-    setIsSubmitted(true)
+    setIsSubmitted(true);
   };
 
   if (isSubmitted) {
@@ -374,14 +377,15 @@ const FinancialAssistanceForm = ({
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={3}>
           <Typography variant="h5" align="center" color="primary">
-            ✅ আবেদন সফলভাবে জমা দেওয়া হয়েছে!
+            <FormattedMessage
+              module="workforce"
+              id="workforce.success.message"
+            />
           </Typography>
         </Paper>
       </div>
     );
   }
-  
-
 
   return (
     <div className={classes.container}>
@@ -389,13 +393,14 @@ const FinancialAssistanceForm = ({
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel>
+                <FormattedMessage module="workforce" id={label} />
+              </StepLabel>
             </Step>
           ))}
         </Stepper>
         {activeStep === 0 ? (
           <ApplicationReason modulesManager={modulesManager} />
-          
         ) : activeStep === 1 ? (
           <Box mt={3}>
             {/* <EmployeeDetailsForm
@@ -432,15 +437,14 @@ const FinancialAssistanceForm = ({
               handleChange={handleChange}
               formData={formData}
             />
-            
           </Box>
         ) : activeStep === 4 ? (
           <Box mt={3}>
             <EmployeeDetailsForm2
+              selectedApplicationType={selectedApplicationType}
               handleChange={handleChange}
               formData={formData}
             />
-            
           </Box>
         ) : (
           <Box mt={3}>
@@ -455,16 +459,16 @@ const FinancialAssistanceForm = ({
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
-              পিছনে
+              <FormattedMessage module="workforce" id="workforce.back" />{" "}
             </Button>
           )}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
-              সংরক্ষণ করুন এবং পরবর্তী
+              <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
             <Button variant="contained" color="primary" onClick={handleSubmit}>
-             জমা দিন
+              <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
         </div>

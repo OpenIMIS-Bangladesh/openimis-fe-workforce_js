@@ -9,7 +9,7 @@ import {
   Box,
   Typography,
 } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId,FormattedMessage } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -46,22 +46,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const steps = [
-//   "Labour Details",
-//   "Location",
-//   "Children Info",
-//   "Upload Documents",
-//   "Dependent",
-//   "Account info",
-// ];
+
 const steps = [
-  "শ্রমিক বিবরণ",
-  "অবস্থান",
-  "সন্তান তথ্য",
-  "প্রমাণপত্র আপলোড",
-  "নির্ভরশীল",
-  "অ্যাকাউন্ট তথ্য"
+  "workforce.application.steps.employeeDetails",
+  "workforce.application.steps.location",
+  "workforce.application.steps.childInfo",
+  "workforce.application.steps.upload.documents",
+  "workforce.application.steps.dependent",
+  "workforce.application.steps.account.info",
 ];
+
 
 const MedicalAssistanceForm = ({ modulesManager,organizationType,selectedApplicationType }) => {
   const employeeData = useSelector(
@@ -336,9 +330,11 @@ const MedicalAssistanceForm = ({ modulesManager,organizationType,selectedApplica
       <Paper className={classes.paper} elevation={3}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
+          <Step key={label}>
+            <StepLabel>
+              <FormattedMessage module="workforce" id={label} />
+            </StepLabel>
+          </Step>
           ))}
         </Stepper>
         {activeStep === 0 ? (
@@ -366,6 +362,7 @@ const MedicalAssistanceForm = ({ modulesManager,organizationType,selectedApplica
         ) : activeStep === 3 ? (
           <Box mt={3}>
             <EmployeeDetailsForm2
+              selectedApplicationType={selectedApplicationType}
               handleChange={handleChange}
               formData={formData}
             />
@@ -395,16 +392,19 @@ const MedicalAssistanceForm = ({ modulesManager,organizationType,selectedApplica
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
-              পিছনে
+               <FormattedMessage
+                  module="workforce"
+                  id="workforce.next"
+                />
             </Button>
           )}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
-             সংরক্ষণ করুন এবং পরবর্তী
+              <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
             <Button variant="contained" color="primary" onClick={handleSubmit}>
-              জমা দিন
+              <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
         </div>

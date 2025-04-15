@@ -9,7 +9,12 @@ import {
   Box,
   Typography,
 } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId } from "@openimis/fe-core";
+import {
+  useModulesManager,
+  formatMutation,
+  decodeId,
+  FormattedMessage,
+} from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -48,22 +53,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const steps = [
-//   "Labour Details",
-//   "Location",
-//   "Children Info",
-//   "Upload Documents",
-//   "Dependent",
-//   "Account info",
-// ];
 const steps = [
-  "নির্বাচন করুন",
-  "শ্রমিক বিবরণ",
-  "অবস্থান",
-  "সন্তান তথ্য",
-  "প্রমাণপত্র আপলোড",
-  "নির্ভরশীল",
-  "অ্যাকাউন্ট তথ্য",
+  "workforce.application.steps.select",
+  "workforce.application.steps.employeeDetails",
+  "workforce.application.steps.location",
+  "workforce.application.steps.childInfo",
+  "workforce.application.steps.upload.documents",
+  "workforce.application.steps.dependent",
+  "workforce.application.steps.account.info",
 ];
 
 const ScholarshipApplicationForm = ({
@@ -339,14 +336,15 @@ const ScholarshipApplicationForm = ({
     );
   };
 
-
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={3}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel>
+                <FormattedMessage module="workforce" id={label} />
+              </StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -409,16 +407,16 @@ const ScholarshipApplicationForm = ({
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
-              পিছনে
+              <FormattedMessage module="workforce" id="workforce.back" />{" "}
             </Button>
           )}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
-              সংরক্ষণ করুন এবং পরবর্তী
+              <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
             <Button variant="contained" color="primary" onClick={handleSubmit}>
-              জমা দিন
+              <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
         </div>

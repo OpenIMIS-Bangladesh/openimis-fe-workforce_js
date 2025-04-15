@@ -40,11 +40,11 @@ const ScholarshipApplicationCheckbox = ({ modulesManager,onSelect }) => {
     <Paper className={classes.paper} elevation={3}>
       <FormControl component="fieldset">
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
-          {<FormattedMessage id="নির্বাচন করুন"/>}
+          {<FormattedMessage module="workforce" id="workforce.application.steps.select"/>}
         </Typography>
         <RadioGroup value={isExportOriented} onChange={handleExportOrientedChange}>
-          <FormControlLabel value="sscEquvalent" control={<Radio color="primary" />} label="এস.এস.সি. বা সমমান" />
-          <FormControlLabel value="hscEquvalent" control={<Radio color="primary" />} label="এইচ.এস.সি. বা সমমান" />
+          <FormControlLabel value="sscEquvalent" control={<Radio color="primary" />} label={<FormattedMessage module="workforce" id="workforce.application.steps.ssc"/>} />
+          <FormControlLabel value="hscEquvalent" control={<Radio color="primary" />} label={<FormattedMessage module="workforce" id="workforce.application.steps.hsc"/>} />
         </RadioGroup> 
       </FormControl>
     </Paper>
