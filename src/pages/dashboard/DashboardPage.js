@@ -17,13 +17,14 @@ const DashboardPage = () => {
     { name: 'Approved', value: 3 },
   ];
 
-  const COLORS = ['#42a5f5', '#66bb6a', '#ef5350', '#ffa726'];
+  const COLORS = ['#3CA7B4', '#00CCCC', '#90B1BF', '#007BFF','#007980', '#FDACB9', '#0295A0', '#7D84AF'];
 
   const cardStyle = {
     height: '100%',
     borderRadius: 12,
     boxShadow: theme.shadows[2],
     backgroundColor: theme.palette.background.paper,
+    color:'white'
   };
 
   return (
@@ -37,7 +38,7 @@ const DashboardPage = () => {
           { title: 'Total Deceased Worker', count: 28, male: 24, female: 4 },
         ].map((item, index) => (
           <Grid item xs={12} sm={4} key={index}>
-            <Card style={{ ...cardStyle, backgroundColor: theme.palette.grey[100] }}>
+            <Card style={{ ...cardStyle, backgroundColor: COLORS[index] }}>
               <CardContent>
                 <Typography variant="subtitle1">{item.title}</Typography>
                 <Typography variant="h6">Count: {item.count}</Typography>
@@ -51,7 +52,7 @@ const DashboardPage = () => {
       {/* More Info Cards */}
       <Grid container spacing={2} style={{ marginTop: theme.spacing(1) }}>
         <Grid item xs={12} sm={6}>
-          <Card style={{ ...cardStyle, backgroundColor: theme.palette.grey[50] }}>
+          <Card style={{ ...cardStyle, backgroundColor: COLORS[5] }}>
             <CardContent>
               <Typography variant="subtitle1">Total Benefit Amount</Typography>
               <Typography variant="h6">TK: 0</Typography>
@@ -59,7 +60,7 @@ const DashboardPage = () => {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Card style={{ ...cardStyle, backgroundColor: theme.palette.grey[50] }}>
+          <Card style={{ ...cardStyle, backgroundColor: COLORS[6] }}>
             <CardContent>
               <Typography variant="subtitle1">Monthly Total Benefit Amount</Typography>
               <Typography variant="body2">TK: 0.00</Typography>
@@ -74,7 +75,7 @@ const DashboardPage = () => {
       {/* Status & Charts */}
       <Grid container spacing={2} style={{ marginTop: theme.spacing(1) }}>
         <Grid item xs={12}>
-          <Card style={{ ...cardStyle, backgroundColor: theme.palette.grey[100] }}>
+          <Card style={{ ...cardStyle, backgroundColor: COLORS[7] }}>
             <CardContent>
               <Typography variant="subtitle1">Beneficiary Status</Typography>
               <Typography variant="body2">
@@ -85,7 +86,7 @@ const DashboardPage = () => {
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <Card style={{ ...cardStyle, backgroundColor: theme.palette.grey[50], height: 300 }}>
+          <Card style={{ ...cardStyle, backgroundColor: COLORS, height: 300 }}>
             <CardContent>
               <Typography variant="subtitle1">Case Distribution by Month</Typography>
               <ResponsiveContainer width="100%" height={220}>
@@ -103,7 +104,7 @@ const DashboardPage = () => {
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <Card style={{ ...cardStyle, backgroundColor: theme.palette.grey[50], height: 300 }}>
+          <Card style={{ ...cardStyle, backgroundColor: COLORS, height: 300 }}>
             <CardContent>
               <Typography variant="subtitle1">Status Breakdown</Typography>
               <ResponsiveContainer width="100%" height={220}>

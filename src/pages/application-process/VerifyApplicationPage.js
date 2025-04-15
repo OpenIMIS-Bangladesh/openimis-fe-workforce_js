@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
-  Grid,
-  Paper,
-  Typography,
-  Divider,
-  IconButton,
-  Card, CardContent,Box
+  Grid, Card, CardContent, Typography, Button,
+  TextField, Dialog, DialogContent, IconButton
 } from "@material-ui/core";
 import {
   TextInput,
@@ -14,26 +10,27 @@ import {
   PublishedComponent,
   FormattedMessage,
 } from "@openimis/fe-core";
+import CloseIcon from '@material-ui/icons/Close';
 import { updateOrganizationEmployee } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
+import { Document, Page } from 'react-pdf';
 import clsx from "clsx";
 
 const styles = (theme) => ({
-  // paper: theme.paper.paper,
   paper: {
     padding: theme.spacing(1),
     width: 700,
-    margin:"0 auto"
+    margin: "0 auto",
   },
   container: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
-  title:{
-    fontSize:'medium',
-    fontWeight:"bold"
+  title: {
+    fontSize: "medium",
+    fontWeight: "bold",
   },
   tableTitle: theme.table.title,
   item: theme.paper.item,
@@ -42,7 +39,7 @@ const styles = (theme) => ({
   },
   overrideReadOnly: {
     "& .Mui-disabled": {
-      color: `${theme.palette.text.primary} !important`, // Ensures text remains default color
+      color: `${theme.palette.text.primary} !important`,
     },
   },
 });
@@ -52,12 +49,16 @@ class VerifyApplicationPage extends Component {
     super(props);
     this.state = {
       stateEdited: props.application.workforceEmployee || {},
-      parseAccidentInfo:
-        JSON.parse(props.application.employeeAccidentInfo) || {},
-      parseBankInfo: JSON.parse(props.application.employeeBankInfo) || {},
-      parseDependentInfo:
-        JSON.parse(props.application.employeeDependentInfo) || {},
+      parseAccidentInfo: JSON.parse(props.application.employeeAccidentInfo || "{}"),
+      parseBankInfo: JSON.parse(props.application.employeeBankInfo || "{}"),
+      parseDependentInfo: JSON.parse(props.application.employeeDependentInfo || "{}"),
       isSaved: false,
+      preview: null,
+      mockFiles: [
+        { type: "image", src: "/assets/Smart_NID_Card_(Bangladesh).jpg" },
+        { type: "pdf", src: "/assets/Fahim_tazwer_cv.pdf" },
+      ],
+      comment: "",
     };
   }
 
@@ -71,228 +72,135 @@ class VerifyApplicationPage extends Component {
     }
   }
 
+  handlePreviewOpen = (file) => {
+    this.setState({ preview: file });
+  };
+
+  handlePreviewClose = () => {
+    this.setState({ preview: null });
+  };
+
+  handleCommentChange = (event) => {
+    this.setState({ comment: event.target.value });
+  };
+
+  handleVerify = () => {
+    console.log("Verified with comment:", this.state.comment);
+  };
+
+  handleReject = () => {
+    console.log("Rejected with comment:", this.state.comment);
+  };
+
   render() {
     const { classes } = this.props;
-    const {
-      stateEdited,
-      isSaved,
-      parseAccidentInfo,
-      parseBankInfo,
-      parseDependentInfo,
-    } = this.state;
-    const isSaveDisabled = false;
+    const { stateEdited, isSaved, preview, mockFiles, comment } = this.state;
 
-    const AccidentInfo = JSON.parse(parseAccidentInfo);
-    const BankInfo = JSON.parse(parseBankInfo);
-    const DependentInfo = JSON.parse(parseDependentInfo);
-    const {
-      firstNameEn, lastNameEn, firstNameBn, lastNameBn, otherName,
-      phoneNumber, email, gender, nid, birthCertificateNo, passportNo,
-      presentAddress, permanentAddress, presentLocation, permanentLocation,
-      maritalStatus, citizenship, privacyLaw, insuranceNumber, birthDate,
-      fatherNameBn, fatherNameEn, motherNameBn, motherNameEn,
-      spouseNameBn, spouseNameEn, lifeStatus, deathDate,
-      bankInfo, accidentInfo, dependents
-    } = stateEdited;
-
-    console.log({ stateEdited });
-
+    console.log({stateEdited})
     return (
-      <div className={classes.container}>
-        <Box p={0} className={classes.paper}>
-          <Grid container spacing={1}>
-            {/* Personal Information */}
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="body1" className={classes.title}><b>Personal Information</b></Typography>
-                  <Divider style={{ margin: "5px 0" }} />
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <b>Name (EN):</b> {firstNameEn} {lastNameEn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Name (BN):</b> {firstNameBn} {lastNameBn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Other Name:</b> {otherName}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Phone:</b> {phoneNumber}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Email:</b> {email || "N/A"}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Gender:</b> {gender}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>NID:</b> {nid}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Birth Certificate:</b> {birthCertificateNo}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Passport No:</b> {passportNo || "N/A"}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Birth Date:</b> {birthDate}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Life Status:</b> {lifeStatus}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Death Date:</b> {deathDate || "N/A"}
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid>
+      <Grid container spacing={3}>
+        {/* User Summary */}
+        <Grid item xs={12} md={4}>
+          <Card variant="outlined">
+            <CardContent>
+              <Typography variant="h6">User Details</Typography>
+              <Typography>Name: Tazwer Fahim</Typography>
+              <Typography>ID: 10291</Typography>
+              <Typography>Gender: Male</Typography>
+              <Typography>Age: 29</Typography>
+              <Typography>Status: Pending</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
 
-            {/* Family Info */}
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="body1" className={classes.title}><b>Family Information</b></Typography>
-                  <Divider style={{ margin: "5px 0" }} />
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <b>Father (EN):</b> {fatherNameEn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Father (BN):</b> {fatherNameBn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Mother (EN):</b> {motherNameEn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Mother (BN):</b> {motherNameBn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Spouse (EN):</b> {spouseNameEn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Spouse (BN):</b> {spouseNameBn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Marital Status:</b> {maritalStatus}
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            {/* Location Info */}
-            {/* <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="body1" className={classes.title}>Location</Typography>
-                  <Divider style={{ margin: "5px 0" }} />
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <b>Present Address:</b> {presentAddress}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Permanent Address:</b> {permanentAddress}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Present Location:</b>{" "}
-                      {this.renderLocation(presentLocation)}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Permanent Location:</b>{" "}
-                      {this.renderLocation(permanentLocation)}
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid> */}
-
-            {/* Official Info */}
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="body1" className={classes.title}><b>Official Information</b></Typography>
-                  <Divider style={{ margin: "5px 0" }} />
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <b>Citizenship:</b> {citizenship}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Privacy Law:</b> {privacyLaw}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Insurance No:</b> {insuranceNumber}
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            {/* Bank Info */}
-            {bankInfo && Object.keys(bankInfo).length > 0 && (
-              <Grid item xs={12}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">Bank Info</Typography>
-                    <Divider style={{ margin: "5px 0" }} />
-                    {Object.entries(bankInfo).map(([key, value]) => (
-                      <Typography key={key}>
-                        <b>{key}:</b> {value}
-                      </Typography>
-                    ))}
-                  </CardContent>
-                </Card>
-              </Grid>
-            )}
-
-            {/* Accident Info */}
-            {accidentInfo && Object.keys(accidentInfo).length > 0 && (
-              <Grid item xs={12}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">Accident Info</Typography>
-                    <Divider style={{ margin: "5px 0" }} />
-                    {Object.entries(accidentInfo).map(([key, value]) => (
-                      <Typography key={key}>
-                        <b>{key}:</b> {value}
-                      </Typography>
-                    ))}
-                  </CardContent>
-                </Card>
-              </Grid>
-            )}
-
-            {/* Dependents */}
-            {Array.isArray(dependents) && dependents.length > 0 && (
-              <Grid item xs={12}>
-                <Typography variant="h6">Dependents</Typography>
-                {dependents.map((dep, index) => (
-                  <Card key={index} style={{ marginBottom: "16px" }}>
-                    <CardContent>
-                      <Typography variant="subtitle1">
-                        Dependent #{index + 1}
-                      </Typography>
-                      <Divider style={{ margin: "5px 0" }} />
-                      {Object.keys(dep).length === 0 ? (
-                        <Typography color="textSecondary">
-                          No data provided.
-                        </Typography>
+        {/* Documents Preview */}
+        <Grid item xs={12} md={8}>
+          <Card variant="outlined">
+            <CardContent>
+              <Typography variant="h6">Documents</Typography>
+              <Grid container spacing={2}>
+                {mockFiles.map((file, index) => (
+                  <Grid item xs={6} sm={4} key={index}>
+                    <div
+                      style={{
+                        border: "1px solid #ccc",
+                        borderRadius: 6,
+                        padding: 8,
+                        cursor: "pointer",
+                        textAlign: "center",
+                      }}
+                      onClick={() => this.handlePreviewOpen(file)}
+                    >
+                      {file.type === "image" ? (
+                        <img
+                          src={file.src}
+                          alt="preview"
+                          style={{
+                            width: "100%",
+                            height: 100,
+                            objectFit: "cover",
+                          }}
+                        />
                       ) : (
-                        Object.entries(dep).map(([key, value]) => (
-                          <Typography key={key}>
-                            <b>{key}:</b> {value}
-                          </Typography>
-                        ))
+                        <Typography variant="body2">📄 PDF Document</Typography>
                       )}
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </Grid>
                 ))}
               </Grid>
-            )}
+            </CardContent>
+          </Card>
+
+          {/* Comment + Actions */}
+          <Grid container spacing={2} style={{ marginTop: 12 }} alignItems="center">
+            <Grid item xs={12} sm={8}>
+              <TextField
+                label="Comment"
+                fullWidth
+                variant="outlined"
+                size="small"
+                multiline
+                rows={2}
+                value={comment}
+                onChange={this.handleCommentChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4} style={{ display: "flex", gap: 8 }}>
+              <Button variant="contained" color="primary" fullWidth onClick={this.handleVerify}>
+                Verify
+              </Button>
+              <Button variant="outlined" color="secondary" fullWidth onClick={this.handleReject}>
+                Reject
+              </Button>
+            </Grid>
           </Grid>
-        </Box>
-      </div>
+        </Grid>
+
+        {/* Preview Modal */}
+        <Dialog
+          open={!!preview}
+          onClose={this.handlePreviewClose}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogContent style={{ position: "relative" }}>
+            <IconButton
+              onClick={this.handlePreviewClose}
+              style={{ position: "absolute", top: 8, right: 8 }}
+            >
+              <CloseIcon />
+            </IconButton>
+
+            {preview && preview.type === "image" ? (
+              <img src={preview.src} alt="Full Preview" style={{ width: "100%" }} />
+            ) : preview && preview.type === "pdf" ? (
+              <Document file={preview.src}>
+                <Page pageNumber={1} />
+              </Document>
+            ) : null}
+          </DialogContent>
+        </Dialog>
+      </Grid>
     );
   }
 }

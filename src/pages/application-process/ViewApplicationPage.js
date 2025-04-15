@@ -53,7 +53,8 @@ class ViewApplicationPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stateEdited: props.application.workforceEmployee || {},
+      stateEdited:props.application || {},
+      workforceEmployee: props.application.workforceEmployee || {},
       parseAccidentInfo:
         JSON.parse(props.application.employeeAccidentInfo) || {},
       parseBankInfo: JSON.parse(props.application.employeeBankInfo) || {},
@@ -65,7 +66,7 @@ class ViewApplicationPage extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.application !== this.props.application) {
-      this.setState({ stateEdited: this.props.application });
+      this.setState({ workforceEmployee: this.props.application });
     }
 
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
@@ -117,6 +118,7 @@ class ViewApplicationPage extends Component {
     const { classes } = this.props;
     const {
       stateEdited,
+      workforceEmployee,
       isSaved,
       parseAccidentInfo,
       parseBankInfo,
@@ -127,46 +129,39 @@ class ViewApplicationPage extends Component {
     const AccidentInfo = JSON.parse(parseAccidentInfo);
     const BankInfo = JSON.parse(parseBankInfo);
     const DependentInfo = JSON.parse(parseDependentInfo);
-    const {
-      firstNameEn,
-      lastNameEn,
-      firstNameBn,
-      lastNameBn,
-      otherName,
-      phoneNumber,
-      email,
-      gender,
-      nid,
-      birthCertificateNo,
-      passportNo,
-      presentAddress,
-      permanentAddress,
-      presentLocation,
-      permanentLocation,
-      maritalStatus,
-      citizenship,
-      privacyLaw,
-      insuranceNumber,
-      birthDate,
-      fatherNameBn,
-      fatherNameEn,
-      motherNameBn,
-      motherNameEn,
-      spouseNameBn,
-      spouseNameEn,
-      lifeStatus,
-      deathDate,
-      bankInfo,
-      accidentInfo,
-      dependents,
-    } = stateEdited;
-
-    console.log({ stateEdited });
+    console.log({stateEdited})
+    console.log({ workforceEmployee });
+    console.log({AccidentInfo})
+    console.log({BankInfo})
+    console.log({DependentInfo})
 
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>
           <Grid container spacing={1}>
+
+          <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="body1" className={classes.title}>
+                    <b>Application Information</b>
+                  </Typography>
+                  <Divider style={{ margin: "10px 0" }} />
+                  <Grid container spacing={2}>
+                    {Object.entries(stateEdited)
+                    .filter(([key]) => !["id", "employeeAccidentInfo", "workforceEmployee","employeeBankInfo","employeeDependentInfo"].includes(key))
+                    .map(([key, value], idx) => (
+                      <Grid item xs={6} key={idx}>
+                        <Typography>
+                          <b>{this.formatKey(key)}:</b>{" "}
+                          {this.renderValue(value)}
+                        </Typography>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
             {/* Personal Information */}
             <Grid item xs={12}>
               <Card>
@@ -176,7 +171,7 @@ class ViewApplicationPage extends Component {
                   </Typography>
                   <Divider style={{ margin: "5px 0 10px" }} />
                   <Grid container spacing={2}>
-                    {Object.entries(stateEdited)
+                    {Object.entries(workforceEmployee)
                     .filter(([key]) => !["id", "uuid", "parent"].includes(key))
                     .map(([key, value], idx) => (
                       <Grid item xs={6} key={idx}>
@@ -192,39 +187,7 @@ class ViewApplicationPage extends Component {
             </Grid>
 
             {/* Family Info */}
-            {/* <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="body1" className={classes.title}>
-                    <b>Family Information</b>
-                  </Typography>
-                  <Divider style={{ margin: "10px 0" }} />
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <b>Father (EN):</b> {fatherNameEn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Father (BN):</b> {fatherNameBn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Mother (EN):</b> {motherNameEn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Mother (BN):</b> {motherNameBn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Spouse (EN):</b> {spouseNameEn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Spouse (BN):</b> {spouseNameBn}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Marital Status:</b> {maritalStatus}
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid> */}
+            
 
             {/* Location Info */}
             {/* <Grid item xs={12}>

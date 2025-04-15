@@ -371,6 +371,8 @@ const MedicalAssistanceForm = ({
     setIsSubmitted(true);
   };
 
+  console.log({tazwer:formData})
+
   if (isSubmitted) {
     return (
       <div className={classes.container}>
