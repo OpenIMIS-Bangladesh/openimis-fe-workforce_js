@@ -81,6 +81,7 @@ import MultiStepApplyForm from "./pages/application/MultiStepApplyForm";
 import ApplicationsProcessPage from "./pages/application-process/ApplicationsProcessPage";
 import RegistrationButton from "./pages/registration/RegistrationButton";
 import ApplicationProcessPage from "./pages/application-process/ApplicationProcessPage";
+import DashboardPage from "./pages/dashboard/DashboardPage";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -237,6 +238,7 @@ const DEFAULT_CONFIG = {
   "core.MainMenu": [WorkforceMainMenu],
 
   "core.LoginPage": RegistrationButton,
+  "home.HomePage.Blocks":DashboardPage
 };
 
 export const WorkforceModule = (cfg) => {

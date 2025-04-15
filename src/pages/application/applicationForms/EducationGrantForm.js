@@ -330,7 +330,6 @@ const MedicalAssistanceForm = ({ modulesManager,organizationType,selectedApplica
     );
   };
 
-  console.log({ applicationId });
 
   return (
     <div className={classes.container}>

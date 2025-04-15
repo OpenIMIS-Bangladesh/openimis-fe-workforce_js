@@ -384,7 +384,7 @@ function reducer(
         fetchingDocumentType: false,
         fetchedDocumentType: true,
         documentType: parseData(
-          action.payload.data.workforceOrganizations
+          action.payload.data.workforceDocumentType
         ),
         errorDocumentType: formatGraphQLError(action.payload),
       };

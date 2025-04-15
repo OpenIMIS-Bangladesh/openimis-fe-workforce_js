@@ -41,7 +41,7 @@ const FactoryPicker = ({
     return data.filter(factory => decodeId(factory.workforceEmployer.id) === companyId);
   }, [data, companyId]);
 
-  console.log({data})
+  
    const selectedOption = useMemo(
       () => filteredFactories.find((option) => option.id === value) || null,
       [value]

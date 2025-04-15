@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData }) => {
+const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApplicationType}) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -55,7 +55,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    return dispatch(fetchDocumentType(modulesManager, []));
+    return dispatch(fetchDocumentType(modulesManager, [`applicationType:"${selectedApplicationType}"`]));
   }, []);
 
   const isLoading = useSelector(
@@ -118,20 +118,22 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData }) => {
                   readOnly={false}
                 />
               </Grid>
+              {data.map((document,index)=>(
               <Grid item xs={6} className={classes.item}>
-                <Typography>Upload NID </Typography>
+                <Typography>Upload {document.nameEn} </Typography>
                 <FileUploader
-                  fieldKey="uploadedNidFile"
+                  fieldKey={document.fieldId}
                   onFileChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={6} className={classes.item}>
+              ))}
+              {/* <Grid item xs={6} className={classes.item}>
                 <Typography>Upload Birth Certificate </Typography>
                 <FileUploader
                   fieldKey="uploadedBirthCertificateFile"
                   onFileChange={handleChange}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={6} className={classes.item}>
                 <CompanyPicker
                   value={formData?.company?.id}

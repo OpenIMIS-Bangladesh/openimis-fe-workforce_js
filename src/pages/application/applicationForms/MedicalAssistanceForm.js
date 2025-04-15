@@ -9,7 +9,12 @@ import {
   Box,
   Typography,
 } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId,FormattedMessage } from "@openimis/fe-core";
+import {
+  useModulesManager,
+  formatMutation,
+  decodeId,
+  FormattedMessage,
+} from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -81,7 +86,7 @@ const MedicalAssistanceForm = ({
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
-  const [isSubmitted,setIsSubmitted] =useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const reduxState = useSelector((state) => state);
 
@@ -122,7 +127,7 @@ const MedicalAssistanceForm = ({
     presentLocation: "",
     presentAddress: "",
     organizationId: "",
-    isSubmitted:"no",
+    isSubmitted: "no",
     dependents: [{}],
     employeeBankInfo: {},
     employeeAccidentInfo: {},
@@ -353,7 +358,7 @@ const MedicalAssistanceForm = ({
       employeeBankInfo: formData.employeeBankInfo,
       employeeDependentInfo: formData.dependents,
       employeeAccidentInfo: formData.employeeAccidentInfo,
-      isSubmitted:"yes",
+      isSubmitted: "yes",
       status: "ontest",
     };
     dispatch(
@@ -363,7 +368,7 @@ const MedicalAssistanceForm = ({
       )
     );
 
-    setIsSubmitted(true)
+    setIsSubmitted(true);
   };
 
   if (isSubmitted) {
@@ -371,15 +376,13 @@ const MedicalAssistanceForm = ({
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={3}>
           <Typography variant="h5" align="center" color="primary">
-            ✅ আবেদন সফলভাবে জমা দেওয়া হয়েছে!
+            <FormattedMessage module="workforce" id="workforce.success.message" />
           </Typography>
         </Paper>
       </div>
     );
   }
-  
 
-  console.log({ applicationId });
 
   return (
     <div className={classes.container}>
@@ -387,7 +390,9 @@ const MedicalAssistanceForm = ({
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
-              <StepLabel><FormattedMessage module="workforce" id={label} /></StepLabel>
+              <StepLabel>
+                <FormattedMessage module="workforce" id={label} />
+              </StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -417,6 +422,7 @@ const MedicalAssistanceForm = ({
             <EmployeeDetailsForm2
               handleChange={handleChange}
               formData={formData}
+              selectedApplicationType={selectedApplicationType}
             />
           </Box>
         ) : activeStep === 4 ? (
@@ -441,16 +447,20 @@ const MedicalAssistanceForm = ({
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
-              পিছনে
+              <FormattedMessage
+                module="workforce"
+                id="workforce.next"
+              />
             </Button>
           )}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
-              সংরক্ষণ করুন এবং পরবর্তী
+              <FormattedMessage module="workforce" id="workforce.save.next" />
+              
             </Button>
           ) : (
             <Button variant="contained" color="primary" onClick={handleSubmit}>
-             জমা দিন
+              <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
         </div>

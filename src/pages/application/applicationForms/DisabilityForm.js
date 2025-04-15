@@ -378,7 +378,7 @@ const DisabilityForm = ({
   }
   
 
-  console.log({ applicationId });
+
 
   return (
     <div className={classes.container}>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useModulesManager, formatMutation, decodeId,FormattedMessage } from "@openimis/fe-core";
 import { Paper, Button,IconButton,Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -75,7 +76,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
                 onClick={() => setShowForm(true)}
                 disabled={!selectedApplicationType || !organizationType} // Ensures both are selected
               >
-                পরবর্তী
+                <FormattedMessage module="workforce" id="workforce.next" />
               </Button>
             </div>
           </>
@@ -87,7 +88,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                প্রথম ধাপে ফিরে যান
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             <MedicalDonationForm
@@ -104,7 +105,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                প্রথম ধাপে ফিরে যান
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             <MedicalAssistanceForm
@@ -121,7 +122,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                প্রথম ধাপে ফিরে যান
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             <DisabilityForm
@@ -138,7 +139,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                প্রথম ধাপে ফিরে যান
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             <EducationGrantForm
@@ -155,7 +156,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                প্রথম ধাপে ফিরে যান
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             <FinancialAssistanceForm
@@ -172,7 +173,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                প্রথম ধাপে ফিরে যান
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             <ScholarshipApplicationForm

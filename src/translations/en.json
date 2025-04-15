@@ -345,6 +345,13 @@
     "workforce.registration.desclaimer": "Are you already a registered user? If not, please register.",
     "workforce.registration.title":"Beneficiary registration form",
 
+    "workforce.next":"Next",
+    "workforce.back":"Back",
+    "workforce.back.application.type":"Back to Application Type",
+    "workforce.save.next":"Save and next",
+    "workforce.submit":"Submit",
+    "workforce.success.message":"✅ Application submitted successfully!",
+
 
 
 

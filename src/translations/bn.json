@@ -164,6 +164,15 @@
 
     "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন",
 
+    "workforce.next":"পরবর্তী",
+    "workforce.back":"পিছনে",
+    "workforce.back.application.type":"প্রথম ধাপে ফিরে যান",
+    "workforce.save.next":"সংরক্ষণ করুন এবং পরবর্তী",
+    "workforce.submit":"জমা দিন",
+
+    "workforce.success.message":"✅ আবেদন সফলভাবে জমা দেওয়া হয়েছে!",
+
+
 
     "workforce.registration.title":"সুবিধাভোগী নিবন্ধন ফর্ম"
 

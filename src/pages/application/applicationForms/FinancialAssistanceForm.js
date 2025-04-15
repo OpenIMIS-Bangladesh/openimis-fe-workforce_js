@@ -382,7 +382,6 @@ const FinancialAssistanceForm = ({
   }
   
 
-  console.log({ applicationId });
 
   return (
     <div className={classes.container}>
