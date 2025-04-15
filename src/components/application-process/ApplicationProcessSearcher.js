@@ -152,7 +152,7 @@ class ApplicationProcessSearcher extends Component {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="দেখুন">
+        <Tooltip title="যাচাই">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {

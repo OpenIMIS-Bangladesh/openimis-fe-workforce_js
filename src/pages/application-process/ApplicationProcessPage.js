@@ -72,7 +72,7 @@ class ApplicationProcessPage extends Component {
           organizationVersion={organizationVersion}
           readOnly={readOnly}
           back={() =>
-            historyPush(modulesManager, history,"workforce.route.approve.companies")
+            historyPush(modulesManager, history,"workforce.route.applications.process")
           }
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
           save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
