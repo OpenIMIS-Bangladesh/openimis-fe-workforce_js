@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Card, CardContent, Typography, useTheme } from '@material-ui/core';
 import { useTranslations, useModulesManager, TextInput, useHistory,FormattedMessage } from "@openimis/fe-core";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const DashboardPage = () => {
   const theme = useTheme();
@@ -10,14 +10,18 @@ const DashboardPage = () => {
 
   // Sample data
   const caseData = [
-    { month: 'Jan', PTD: 4, PPD: 8, Death: 11 },
-    { month: 'Feb', PTD: 0, PPD: 0, Death: 0 },
-    { month: 'Mar', PTD: 2, PPD: 0, Death: 3 },
+    { month: 'Jan', Permanent_Total_Disability: 4, Permanent_Partial_Disability: 8, Death: 11 },
+    { month: 'Feb', Permanent_Total_Disability: 0, Permanent_Partial_Disability: 0, Death: 0 },
+    { month: 'Mar', Permanent_Total_Disability: 2, Permanent_Partial_Disability: 0, Death: 3 },
   ];
 
   const statusData = [
     { name: 'Open', value: 12 },
     { name: 'Approved', value: 3 },
+    { name: 'Further Query', value: 3 },
+    { name: 'Reject', value: 3 },
+    { name: 'closed', value: 3 },
+    { name: 'Re-open', value: 3 },
   ];
 
   const COLORS = ['#3CA7B4', '#00CCCC', '#90B1BF', '#007BFF','#007980', '#FDACB9', '#0295A0', '#7D84AF'];
@@ -97,8 +101,9 @@ const DashboardPage = () => {
                   <XAxis dataKey="month" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="PTD" stackId="a" fill="#64b5f6" />
-                  <Bar dataKey="PPD" stackId="a" fill="#9575cd" />
+                  <Legend />
+                  <Bar dataKey="Permanent_Total_Disability" stackId="a" fill="#64b5f6" />
+                  <Bar dataKey="Permanent_Partial_Disability" stackId="a" fill="#9575cd" />
                   <Bar dataKey="Death" stackId="a" fill="#f44336" />
                 </BarChart>
               </ResponsiveContainer>
@@ -124,6 +129,7 @@ const DashboardPage = () => {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
+                  <Legend />
                 </PieChart>
               </ResponsiveContainer>
             </CardContent>
