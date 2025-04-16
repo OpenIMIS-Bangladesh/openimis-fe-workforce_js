@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
   Grid, Card, CardContent, Typography, Button,
-  TextField, Dialog, DialogContent, IconButton
+  TextField, Dialog, DialogContent, IconButton,Divider
 } from "@material-ui/core";
 import {
   TextInput,
@@ -55,7 +55,7 @@ class VerifyApplicationPage extends Component {
       isSaved: false,
       preview: null,
       mockFiles: [
-        { type: "image", src: "/assets/Smart_NID_Card_(Bangladesh).jpg" },
+        { type: "image", src: "https://upload.wikimedia.org/wikipedia/commons/b/b9/Smart_NID_Card_%28Bangladesh%29.jpg" },
         { type: "pdf", src: "/assets/Fahim_tazwer_cv.pdf" },
       ],
       comment: "",
@@ -103,12 +103,14 @@ class VerifyApplicationPage extends Component {
         <Grid item xs={12} md={4}>
           <Card variant="outlined">
             <CardContent>
-              <Typography variant="h6">User Details</Typography>
-              <Typography>Name: Tazwer Fahim</Typography>
-              <Typography>ID: 10291</Typography>
-              <Typography>Gender: Male</Typography>
-              <Typography>Age: 29</Typography>
-              <Typography>Status: Pending</Typography>
+              <Typography variant="h6"><b><FormattedMessage module="workforce" id="workforce.employee.details" /></b></Typography>
+              <Divider />
+              <Typography><b><FormattedMessage module="workforce" id="workforce.employee.first.name.en" /></b> : {stateEdited.firstNameBn}</Typography>
+              <Typography><b><FormattedMessage module="workforce" id="workforce.employee.nid" /></b> : {stateEdited.nid}</Typography>
+              <Typography><b><FormattedMessage module="workforce" id="workforce.employee.phone" /></b> : {stateEdited.phoneNumber}</Typography>
+              <Typography><b><FormattedMessage module="workforce" id="workforce.employee.present_address" /></b> : {stateEdited.presentAddress}</Typography>
+              <Typography><b><FormattedMessage module="workforce" id="workforce.employee.email" /></b> : {stateEdited.email}</Typography>
+              <Typography><b><FormattedMessage module="workforce" id="workforce.employee.birth_certificate_no" /></b> : {stateEdited.email}</Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -169,7 +171,7 @@ class VerifyApplicationPage extends Component {
               <Button variant="contained" color="primary" fullWidth onClick={this.handleVerify}>
                 Verify
               </Button>
-              <Button variant="outlined" color="secondary" fullWidth onClick={this.handleReject}>
+              <Button variant="outlined" color="error" fullWidth onClick={this.handleReject}>
                 Reject
               </Button>
             </Grid>

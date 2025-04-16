@@ -120,7 +120,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApp
               </Grid>
               {data.map((document,index)=>(
               <Grid item xs={6} className={classes.item}>
-                <Typography>Upload {document.nameEn} </Typography>
+                <Typography>আপলোড {document.nameBn} </Typography>
                 <FileUploader
                   fieldKey={document.fieldId}
                   onFileChange={handleChange}

@@ -1,9 +1,12 @@
 import React from 'react';
 import { Grid, Card, CardContent, Typography, useTheme } from '@material-ui/core';
+import { useTranslations, useModulesManager, TextInput, useHistory,FormattedMessage } from "@openimis/fe-core";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const DashboardPage = () => {
   const theme = useTheme();
+    const history = useHistory();
+
 
   // Sample data
   const caseData = [
@@ -75,11 +78,11 @@ const DashboardPage = () => {
       {/* Status & Charts */}
       <Grid container spacing={2} style={{ marginTop: theme.spacing(1) }}>
         <Grid item xs={12}>
-          <Card style={{ ...cardStyle, backgroundColor: COLORS[7] }}>
+          <Card style={{ ...cardStyle, backgroundColor: COLORS[7] }} onClick={()=>history.push("workforce/applications/process")}>
             <CardContent>
-              <Typography variant="subtitle1">Beneficiary Status</Typography>
+              <Typography variant="subtitle1">Application Status</Typography>
               <Typography variant="body2">
-                Hold: 0 | Suspend: 0 | Need to Verify: 0 | Verified: 0
+                Count: 10 | Reject: 0 | Need to Verify: 0 | Verified: 0
               </Typography>
             </CardContent>
           </Card>
