@@ -127,9 +127,9 @@ class ApplicationProcessSearcher extends Component {
       (application) => application.applicationType,
       (application) => application.organizationType,
       (application) => application.status,
-      (application) => application.dateCreated,
+      (application) => application.dateCreated.split('T')[0],
       (application) => "Mr. Hafiz",
-      (application) => application.dateCreated,
+      (application) => application.dateCreated.split('T')[0],
         this.isShowHistory() ? application?.version : null,
     ];
     
