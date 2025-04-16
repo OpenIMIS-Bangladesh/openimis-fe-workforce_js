@@ -167,6 +167,8 @@
     "workforce.application.steps.select":"নির্বাচন করুন",
     "workforce.application.steps.ssc":"এস.এস.সি. বা সমমান",
     "workforce.application.steps.hsc":"এইচ.এস.সি. বা সমমান",
+    "workforce.application.steps.skip":"বাদ দিন",
+    "workforce.application.steps.dependentAdd":"নির্ভরশীল যোগ করুন",
 
 
     "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন",

@@ -347,7 +347,8 @@
     "workforce.application.steps.select":"Select",
     "workforce.application.steps.ssc":"S.S.C or Equvalent",
     "workforce.application.steps.hsc":"H.S.C or Equvalent",
-
+    "workforce.application.steps.skip":"Skip",
+    "workforce.application.steps.dependentAdd":"Dependent Add",
 
 
     "workforce.registration.desclaimer": "Are you already a registered user? If not, please register.",
