@@ -46,6 +46,7 @@
   ],
   "dependencies": {
     "react-dropzone": "^14.3.5",
+    "react-pdf": "5.7.2",
     "recharts": "^2.15.2"
   }
 }
