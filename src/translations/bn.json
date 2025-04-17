@@ -94,6 +94,7 @@
     "workforce.employee.application.insurance_number": "বীমা নম্বর",
     "workforce.employee.application.lifeStatus": "জীবন অবস্থা",
     "workforce.employee.application.process": "আবেদন প্রক্রিয়া",
+    "workforce.employee.application.forwardTo":"ফরোয়ার্ড করুন",
     
     "menu.workforce": "Workforce",
     "menu.workforce.organizations": "Organizations",

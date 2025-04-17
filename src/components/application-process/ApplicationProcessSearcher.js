@@ -168,6 +168,22 @@ class ApplicationProcessSearcher extends Component {
             <VerifiedUserIcon />
           </IconButton>
         </Tooltip>
+        <Tooltip title="অনুমোদন">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.verify",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <CheckIcon />
+          </IconButton>
+        </Tooltip>
         </div>
 
     ));

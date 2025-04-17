@@ -59,8 +59,8 @@ const RegistrationPage = () => {
   const [formData, setFormData] = useState({
     NID: "",
     mobile: "",
-    firstName: "",
-    lastName: "",
+    firstNameBn: "",
+    firstNameEn: "",
     location: "",
   });
   const [isSubmitting, setSubmitting] = useState(false);
@@ -108,6 +108,26 @@ const RegistrationPage = () => {
           </Typography>
           <form onSubmit={onSubmit}>
             <Box mt={2} className={classes.inputContainer}>
+            <TextInput
+                required
+                readOnly={isSubmitting}
+                label="নাম (বাংলা)"
+                fullWidth
+                value={formData.firstNameBn}
+                onChange={(firstNameBn) =>
+                  setFormData({ ...formData, firstNameBn })
+                }
+              />
+            <TextInput
+                required
+                readOnly={isSubmitting}
+                label="নাম (ইংরেজি)"
+                fullWidth
+                value={formData.firstNameEn}
+                onChange={(firstNameEn) =>
+                  setFormData({ ...formData, firstNameEn })
+                }
+              />
               <TextInput
                 required
                 readOnly={isSubmitting}
@@ -124,45 +144,16 @@ const RegistrationPage = () => {
                 value={formData.mobile}
                 onChange={(mobile) => setFormData({ ...formData, mobile })}
               />
-              <TextInput
+            
+              {/* <TextInput
                 required
                 readOnly={isSubmitting}
-                label="প্রথম নাম"
+                label="পাসওয়ার্ড"
                 fullWidth
-                value={formData.firstName}
-                onChange={(firstName) =>
-                  setFormData({ ...formData, firstName })
-                }
-              />
-              <TextInput
-                required
-                readOnly={isSubmitting}
-                label="শেষ নাম"
-                fullWidth
-                value={formData.lastName}
+                value={formData.password}
                 onChange={(lastName) => setFormData({ ...formData, lastName })}
-              />
+              /> */}
              
-              <TextInput
-                required
-                readOnly={isSubmitting}
-                label="অবস্থান"
-                fullWidth
-                value={formData.location}
-                onChange={(location) => setFormData({ ...formData, location })}
-              />
-              <PublishedComponent
-                pubRef="location.DetailedLocation"
-                withNull={true}
-                label="অবস্থান"
-                value={formData.location || null}
-                onChange={(location) =>
-                  setFormData({ ...formData, location })
-                }
-                readOnly={isSubmitting}
-                required
-                split={true}
-              />
               {serverResponse?.message && (
                 <Box
                   color={
