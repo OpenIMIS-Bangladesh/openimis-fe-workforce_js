@@ -142,6 +142,7 @@ const RegistrationPage = () => {
                     fullWidth
                     value={formData.mobile}
                     onChange={handleInputChange("mobile")}
+                    type="number"
                   />
                 </>
               )}
