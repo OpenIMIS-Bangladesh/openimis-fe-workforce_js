@@ -191,6 +191,8 @@
     "workforce.employee.privacyLaw": "Privacy Law",
     "workforce.employee.insurance_number": "Insurance Number",
     "workforce.employee.lifeStatus": "Life Status",
+    "workforce.employee.name.en":"Name En",
+    "workforce.employee.name.bn":"Name Bn",
 
     "workforce.employee.application.addNewTooltip": "Add Application",
     "workforce.employee.application.workforce_employer": "Workforce Employer",
@@ -238,6 +240,13 @@
     "workforce.employee.application.lifeStatus": "Life Status",
     "workforce.employee.application.factory.nid": "NID",
     "workforce.employee.application.process": "Application Process",
+    "workforce.employee.application.forwardTo":"Forward To",
+    "workforce.employee.application.moneyAmount":"Money Amount",
+    "workforce.employee.application.verifier":"Verifier",
+    "workforce.employee.application.factoryName":"Factory Name",
+    "workforce.employee.application.totalAmount":"Total amount applied for:",
+    "workforce.employee.application.tk":"Taka",
+
 
     "workforce.banks.nameEn": "Bank Name En",
     "workforce.banks.nameBn": "Bank Name Bn",
@@ -355,7 +364,7 @@
 
 
     "workforce.registration.desclaimer": "Are you already a registered user? If not, please register.",
-    "workforce.registration.title":"Beneficiary registration form",
+    "workforce.registration.title":"সুবিধাভোগী নিবন্ধন ফর্ম",
 
     "workforce.employee.details":"Employee Details",
     "workforce.next":"Next",

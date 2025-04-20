@@ -99,14 +99,15 @@ class ApplicationProcessSearcher extends Component {
   };
 
   headers = () => [
-    // "workforce.employee.application.first.name.en",
-    // "workforce.employee.application.last.name.en",
-    "workforce.employee.application.first.name.bn",
-    "workforce.employee.application.last.name.bn",
+    "workforce.employee.name.en",
+    "workforce.employee.name.bn",
     "workforce.employee.application.nid",
     "workforce.employee.application.phone",
     "workforce.employee.application.applicationType",
     "workforce.employee.application.organizationType",
+    "workforce.employee.application.moneyAmount",
+    "workforce.employee.application.verifier",
+    "workforce.employee.application.factoryName",
     "workforce.employee.application.status",
     "workforce.employee.application.applicationDate",
     "workforce.employee.application.assignedBy",
@@ -118,17 +119,18 @@ class ApplicationProcessSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      // (application) => console.log({application}),
-      // (application) => application.lastNameEn,
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.workforceEmployee?.nid,
       (application) => application.workforceEmployee?.phoneNumber,
       (application) => application.applicationType,
       (application) => application.organizationType,
+      (application) => 200000,
+      (application) => "Nafi",
+      (application) => "Akij",
       (application) => application.status,
       (application) => application.dateCreated.split('T')[0],
-      (application) => "Mr. Hafiz",
+      (application) => "Hafiz",
       (application) => application.dateCreated.split('T')[0],
         this.isShowHistory() ? application?.version : null,
     ];
@@ -168,6 +170,22 @@ class ApplicationProcessSearcher extends Component {
             <VerifiedUserIcon />
           </IconButton>
         </Tooltip>
+        <Tooltip title="অনুমোদন">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.verify",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <CheckIcon />
+          </IconButton>
+        </Tooltip>
         </div>
 
     ));
@@ -179,6 +197,12 @@ class ApplicationProcessSearcher extends Component {
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
+    const totalMoneyAmount = applications?.reduce((acc, app) => {
+      const amount = parseFloat(app.moneyAmount) || 0;
+      return acc + amount;
+    }, 0);
+    
+    
     const {
       intl,
       applications,
@@ -235,6 +259,9 @@ class ApplicationProcessSearcher extends Component {
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
         />
+         <div style={{ margin: "16px", fontWeight: "bold" }}>
+        <FormattedMessage module="workforce" id="workforce.employee.application.totalAmount" /> 400000  <FormattedMessage module="workforce" id="workforce.employee.application.tk" />   
+         </div>
       </>
     );
   }

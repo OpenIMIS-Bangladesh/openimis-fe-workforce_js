@@ -71,7 +71,7 @@ const EmployeeDependentForm = ({
   // };
 
   const isFirstDependentValid =
-    dependents[0]?.nid && dependents[0]?.firstNameEn;
+    dependents[0]?.nid && dependents[0]?.nameEn;
 
   return (
     <Box mt={1}>
@@ -83,8 +83,8 @@ const EmployeeDependentForm = ({
         >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography>
-              {formData.firstNameEn
-                ? formData.firstNameEn
+              {formData.nameEn
+                ? formData.nameEn
                 : `নির্ভরশীল ${index + 1}`}
             </Typography>
           </AccordionSummary>
@@ -156,10 +156,10 @@ const EmployeeDependentForm = ({
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.first.name.en"
-                    value={formData.firstNameEn || ""}
+                    label="workforce.employee.name.en"
+                    value={formData.nameEn || ""}
                     onChange={(v) =>
-                      handleDependentChange(index, "firstNameEn", v)
+                      handleDependentChange(index, "nameEn", v)
                     }
                     required
                     readOnly={false}
@@ -167,16 +167,16 @@ const EmployeeDependentForm = ({
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.first.name.bn"
-                    value={formData.firstNameBn || ""}
+                    label="workforce.employee.name.bn"
+                    value={formData.nameBn || ""}
                     onChange={(v) =>
-                      handleDependentChange(index, "firstNameBn", v)
+                      handleDependentChange(index, "nameBn", v)
                     }
                     required
                     readOnly={false}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                {/* <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.last.name.en"
                     value={formData.lastNameEn || ""}
@@ -197,7 +197,7 @@ const EmployeeDependentForm = ({
                     required
                     readOnly={false}
                   />
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput

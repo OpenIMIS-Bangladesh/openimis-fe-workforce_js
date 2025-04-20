@@ -94,6 +94,13 @@
     "workforce.employee.application.insurance_number": "বীমা নম্বর",
     "workforce.employee.application.lifeStatus": "জীবন অবস্থা",
     "workforce.employee.application.process": "আবেদন প্রক্রিয়া",
+    "workforce.employee.application.forwardTo":"ফরোয়ার্ড করুন",
+    "workforce.employee.application.moneyAmount":"টাকা পরিমাণ",
+    "workforce.employee.application.verifier":"যাচাইকারী",
+    "workforce.employee.application.factoryName":"কারখানার নাম",
+    "workforce.employee.application.totalAmount":"মোট আবেদনকৃত অর্থ:",
+    "workforce.employee.application.tk":"টাকা",
+
     
     "menu.workforce": "Workforce",
     "menu.workforce.organizations": "Organizations",
@@ -189,7 +196,11 @@
 
 
 
-    "workforce.registration.title":"সুবিধাভোগী নিবন্ধন ফর্ম"
+    "workforce.registration.title":"সুবিধাভোগী নিবন্ধন ফর্ম",
+
+    "workforce.employee.name.en":"নাম (বাংলা)",
+    "workforce.employee.name.bn":"নাম (ইংরেজি)"
+
 
 
 

@@ -21,6 +21,7 @@ import {
   formatWorkforceEmployeeAccountInfoGQL,
   formatWorkforceEmployeeAccidentInfoGQL,
   formatApplicationeGQL,
+  formatWorkforceBeneficiaryGQL
 } from "./utils/format_gql";
 
 export function fetchOrganizationsSummary(mm, filters) {
@@ -1031,6 +1032,25 @@ export function updateWorkforceFactory(factory, clientMutationLabel) {
   );
 }
 
+export function createWorkforceBeneficiary(beneficiary,clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceBeneficiary",
+    formatWorkforceBeneficiaryGQL(beneficiary),
+    clientMutationLabel,
+  );
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_EMPLOYEES_REQ",
+      "WORKFORCE_EMPLOYEES_RESP",
+      "WORKFORCE_EMPLOYEES_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+    },
+  );
+}
 export function createWorkforceEmployee(employee, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceEmployerEmployee",
