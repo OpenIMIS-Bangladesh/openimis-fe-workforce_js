@@ -119,8 +119,6 @@ class ApplicationProcessSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      // (application) => console.log({application}),
-      // (application) => application.lastNameEn,
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.workforceEmployee?.nid,
@@ -199,6 +197,12 @@ class ApplicationProcessSearcher extends Component {
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
+    const totalMoneyAmount = applications?.reduce((acc, app) => {
+      const amount = parseFloat(app.moneyAmount) || 0;
+      return acc + amount;
+    }, 0);
+    
+    
     const {
       intl,
       applications,
@@ -255,6 +259,9 @@ class ApplicationProcessSearcher extends Component {
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
         />
+         <div style={{ margin: "16px", fontWeight: "bold" }}>
+        <FormattedMessage module="workforce" id="workforce.employee.application.totalAmount" /> 400000  <FormattedMessage module="workforce" id="workforce.employee.application.tk" />   
+         </div>
       </>
     );
   }

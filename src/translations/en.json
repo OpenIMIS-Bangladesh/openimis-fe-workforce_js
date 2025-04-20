@@ -244,6 +244,9 @@
     "workforce.employee.application.moneyAmount":"Money Amount",
     "workforce.employee.application.verifier":"Verifier",
     "workforce.employee.application.factoryName":"Factory Name",
+    "workforce.employee.application.totalAmount":"Total amount applied for:",
+    "workforce.employee.application.tk":"Taka",
+
 
     "workforce.banks.nameEn": "Bank Name En",
     "workforce.banks.nameBn": "Bank Name Bn",
