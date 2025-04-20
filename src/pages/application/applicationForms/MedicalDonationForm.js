@@ -50,36 +50,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const steps = [
-//   "Labour Details",
-//   "Location",
-//   "Upload Documents",
-//   "Dependent",
-//   "Account info",
-//   "Accident Info",
-// ];
-// const steps = [
-//   "নির্বাচন করুন",
-//   "শ্রমিক বিবরণ",
-//   "অবস্থান",
-//   "প্রমাণপত্র আপলোড",
-//   "নির্ভরশীল",
-//   "অ্যাকাউন্ট তথ্য",
-// ];
-
-const steps = [
-  "workforce.application.steps.select",
-  "workforce.application.steps.employeeDetails",
-  "workforce.application.steps.location",
-  "workforce.application.steps.upload.documents",
-  "workforce.application.steps.dependent",
-  "workforce.application.steps.account.info",
-];
-
 const MedicalDonationForm = ({
   modulesManager,
   organizationType,
   selectedApplicationType,
+  applicationForSelf 
 }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
@@ -345,19 +320,80 @@ const MedicalDonationForm = ({
     );
   };
 
+  const steps = [
+    {
+      label: "workforce.application.steps.select",
+      content: (
+        <MedicalDonationCheckbox
+              handleChange={handleChange}
+              formData={formData}
+            />
+      ),
+    },
+    {
+      label: "workforce.application.steps.employeeDetails",
+      content: (
+        <EmployeeDetailsForm handleChange={handleChange} formData={formData} />
+      ),
+    },
+    {
+      label: "workforce.application.steps.location",
+      content: (
+        <EmployeeLocationForm handleChange={handleChange} formData={formData} />
+      ),
+    },
+    {
+      label: "workforce.application.steps.upload.documents",
+      content: (
+        <EmployeeDetailsForm2
+          handleChange={handleChange}
+          formData={formData}
+          selectedApplicationType={selectedApplicationType}
+        />
+      ),
+    },
+    ...(applicationForSelf === "no"
+      ? [
+          {
+            label: "workforce.application.steps.dependent",
+            content: (
+              <EmployeeDependentForm
+                dependents={formData.dependents}
+                handleDependentChange={handleDependentChange}
+                addDependent={addDependent}
+                removeDependent={removeDependent}
+              />
+            ),
+          },
+        ]
+      : []),
+
+    {
+      label: "workforce.application.steps.account.info",
+      content: (
+        <EmployeeAccountInfoForm
+          handleChange={(key, value) =>
+            handleChange(key, value, "employeeBankInfo")
+          }
+          formData={formData.employeeBankInfo}
+        />
+      ),
+    },
+  ];
+
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={3}>
         <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
+          {steps.map((step, index) => (
+            <Step key={index}>
               <StepLabel>
-                <FormattedMessage module="workforce" id={label} />
+                <FormattedMessage module="workforce" id={step.label} />
               </StepLabel>
             </Step>
           ))}
         </Stepper>
-        {activeStep === 0 ? (
+        {/* {activeStep === 0 ? (
           <Box mt={3}>
             <MedicalDonationCheckbox
               handleChange={handleChange}
@@ -404,7 +440,10 @@ const MedicalDonationForm = ({
               formData={formData.employeeBankInfo}
             />
           </Box>
-        )}
+        )} */}
+        <Box mt={3}>
+        {steps[activeStep].content}
+        </Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">

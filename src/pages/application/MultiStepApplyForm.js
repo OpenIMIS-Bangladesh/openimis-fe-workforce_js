@@ -106,11 +106,27 @@ const MultiStepApplyForm = ({ modulesManager }) => {
                 <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
+            {applicationForSelf === "" ?(
+            <Paper className={classes.subPaper} elevation={3}>
+                  <FormControl component="fieldset">
+                    {/* New Export-Oriented Company Question */}
+                    <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
+                      {<FormattedMessage id="workforce.application.for" module="workforce"/>}
+                    </Typography>
+                    <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
+                      <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>} />
+                      <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>} />
+                    </RadioGroup>
+                  </FormControl>
+            </Paper>
+            ) : (
             <MedicalDonationForm
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
+              applicationForSelf={applicationForSelf}
             />
+            )}
           </>
         ) : selectedApplicationType === "medicalAssistance" ? (
           <>
