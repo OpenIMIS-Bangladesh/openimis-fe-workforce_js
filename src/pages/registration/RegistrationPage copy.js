@@ -15,6 +15,8 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { useDispatch } from "react-redux";
+import { createWorkforceBeneficiary } from "../../actions";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -43,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 const RegistrationPage = () => {
   const classes = useStyles();
   const history = useHistory();
+  const dispatch = useDispatch();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
 
@@ -59,7 +62,6 @@ const RegistrationPage = () => {
   const [isSubmitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState({ status: "", message: null });
 
-  // Fix: Get value directly, not e.target.value
   const handleInputChange = (key) => (val) => {
     setFormData({ ...formData, [key]: val });
   };
@@ -89,20 +91,39 @@ const RegistrationPage = () => {
         message:
           step === 2
             ? "ভুল OTP. দয়া করে আবার চেষ্টা করুন।"
-            : "সমস্ত ঘর পূরণ করুন।",
+            : "সমস্ত ঘর পূরণ করুন এবং নিশ্চিত করুন পাসওয়ার্ড মিলে গেছে।",
       });
     }
   };
 
   const handleSubmit = () => {
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setServerResponse({ status: "SUCCESS", message: "নিবন্ধন সফল হয়েছে!" });
-      setTimeout(() => {
-        history.push("/login");
-      }, 2000);
-    }, 2000);
+
+    const beneficiaryData = {
+      NID: formData.NID,
+      mobile: formData.mobile,
+      firstNameBn: formData.firstNameBn,
+      firstNameEn: formData.firstNameEn,
+      password: formData.password,
+    };
+
+    dispatch(
+      createWorkforceBeneficiary(
+        beneficiaryData,
+        `Created Workforce Beneficiary ${formData.NID}`
+      )
+    )
+      .then(() => {
+        setServerResponse({ status: "SUCCESS", message: "নিবন্ধন সফল হয়েছে!" });
+        // Optional: navigate somewhere or reset form
+        // history.push("/success");
+      })
+      .catch(() => {
+        setServerResponse({ status: "ERROR", message: "নিবন্ধন ব্যর্থ হয়েছে।" });
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   };
 
   return (
@@ -193,7 +214,7 @@ const RegistrationPage = () => {
                 </Box>
               )}
 
-              {/* Main Button */}
+              {/* Next / Submit Button */}
               <Button
                 fullWidth
                 onClick={handleNext}
