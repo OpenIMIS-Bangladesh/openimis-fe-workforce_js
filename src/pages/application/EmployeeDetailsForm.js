@@ -97,23 +97,23 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
 
               <Grid item xs={6} className={classes.item}>
                 <TextInput
-                  label="workforce.employee.first.name.en"
-                  value={formData.firstNameEn || ""}
-                  onChange={(v) => handleChange("firstNameEn", v)}
+                  label="workforce.employee.name.en"
+                  value={formData.nameEn || ""}
+                  onChange={(v) => handleChange("nameEn", v)}
                   required
                   readOnly={false}
                 />
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
-                  label="workforce.employee.first.name.bn"
-                  value={formData.firstNameBn || ""}
-                  onChange={(v) => handleChange("firstNameBn", v)}
+                  label="workforce.employee.name.bn"
+                  value={formData.nameBn || ""}
+                  onChange={(v) => handleChange("nameBn", v)}
                   required
                   readOnly={false}
                 />
               </Grid>
-              <Grid item xs={6} className={classes.item}>
+              {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.last.name.en"
                   value={formData.lastNameEn || ""}
@@ -121,8 +121,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   required
                   readOnly={false}
                 />
-              </Grid>
-              <Grid item xs={6} className={classes.item}>
+              </Grid> */}
+              {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.last.name.bn"
                   value={formData.lastNameBn || ""}
@@ -130,8 +130,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   required
                   readOnly={false}
                 />
-              </Grid>
-              <Grid item xs={6} className={classes.item}>
+              </Grid> */}
+              {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.other.name"
                   value={formData.otherName || ""}
@@ -139,7 +139,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   required
                   readOnly={false}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.position"

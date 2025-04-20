@@ -142,11 +142,9 @@ const DisabilityForm = ({
       setFormData({
         organization: employeeData.organization,
         id: employeeData.id || "",
-        firstNameEn: employeeData.firstNameEn || "",
-        firstNameBn: employeeData.firstNameBn || "",
-        lastNameEn: employeeData.lastNameEn || "",
-        lastNameBn: employeeData.lastNameBn || "",
-        otherName: employeeData.otherName || "",
+        nameEn: employeeData.nameEn || "",
+        nameBn: employeeData.nameBn || "",
+        lastNameEn: "",
         position: employeeData.position || "",
         fatherNameEn: employeeData.fatherNameEn || "",
         fatherNameBn: employeeData.fatherNameBn || "",
@@ -206,11 +204,9 @@ const DisabilityForm = ({
     console.log({ formData });
     if (activeStep === 0 || activeStep === 1) {
       const workforceEmployeeData = {
-        firstNameBn: formData?.firstNameBn || formData.firstNameBn,
-        lastNameBn: formData?.lastNameBn || formData.lastNameBn,
-        otherName: formData?.otherName || formData.otherName,
-        firstNameEn: formData?.firstNameEn || formData.firstNameEn,
-        lastNameEn: formData?.lastNameEn || formData.lastNameEn,
+        nameEn: formData?.lastNameBn || formData.nameEn,
+        nameBn: formData?.firstNameBn || formData.nameBn,
+        lastNameEn: "",
         phoneNumber: formData?.phoneNumber || formData.phoneNumber,
         email: formData?.email || formData.email,
         gender: formData?.gender?.id || formData.gender.id,
