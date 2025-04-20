@@ -207,6 +207,22 @@ export function formatApplicationeGQL(application) {
   ${application.isSubmitted ? `isSubmitted: "${(application.isSubmitted)}"` : ""}
 `;
 }
+///beneficiary registration   ////
+export function formatWorkforceBeneficiaryGQL(beneficiary) {
+  return `
+  ${beneficiary?.id ? `id: "${(beneficiary?.id)}"` : ""}
+  ${beneficiary.lastName ? `lastName: "${(beneficiary.lastName)}"` : ""}
+  ${beneficiary.loginName ? `loginName: "${decodeId(beneficiary.loginName)}"` : ""}
+  ${beneficiary.otherNames ? `otherNames: "${formatGQLString(beneficiary.otherNames)}"` : ""}
+  ${beneficiary.applicationType ? `applicationType: "${formatGQLString(beneficiary.applicationType)}"` : ""}
+  ${beneficiary.status ? `status: "${WORKFORCE_STATUS.ACTIVE}"` : ""}
+  ${beneficiary.employeeDependentInfo ? `employeeDependentInfo: ${escapeQuotes(beneficiary.employeeDependentInfo)}` : ""}
+  ${beneficiary.employeeBankInfo ? `employeeBankInfo: ${escapeQuotes(beneficiary.employeeBankInfo)}` : ""}
+  ${beneficiary.employeeAccidentInfo ? `employeeAccidentInfo: ${escapeQuotes(beneficiary.employeeAccidentInfo)}` : ""}
+  ${beneficiary.employeeDesignationInfo ? `employeeDesignationInfo: ${escapeQuotes(beneficiary.employeeDesignationInfo)}` : ""}
+  ${beneficiary.isSubmitted ? `isSubmitted: "${(beneficiary.isSubmitted)}"` : ""}
+`;
+}
 
 function escapeQuotes(data) {
   // Check if it's a string and needs escaping

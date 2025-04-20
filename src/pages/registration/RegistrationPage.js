@@ -3,19 +3,16 @@ import { makeStyles } from "@material-ui/styles";
 import {
   Button,
   Box,
-  Grid,
   Paper,
-  LinearProgress,
   Typography,
-  
+  LinearProgress,
 } from "@material-ui/core";
 import {
+  TextInput,
   useTranslations,
   useModulesManager,
-  TextInput,
   useHistory,
-  PublishedComponent,
-  FormattedMessage
+  FormattedMessage,
 } from "@openimis/fe-core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
@@ -38,10 +35,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 12,
     background: "#d9e9eb",
   },
-  logo: {
-    width: 120,
-    marginBottom: theme.spacing(2),
-  },
   inputContainer: {
     textAlign: "left",
   },
@@ -51,50 +44,62 @@ const RegistrationPage = () => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
-  const { formatMessage } = useTranslations(
-    "core.RegistrationPage",
-    modulesManager
-  );
+  const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
 
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     NID: "",
     mobile: "",
     firstNameBn: "",
     firstNameEn: "",
-    location: "",
+    otp: "",
+    password: "",
+    confirmPassword: "",
   });
   const [isSubmitting, setSubmitting] = useState(false);
-  const [serverResponse, setServerResponse] = useState({
-    status: "",
-    message: null,
-  });
+  const [serverResponse, setServerResponse] = useState({ status: "", message: null });
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
+  // Fix: Get value directly, not e.target.value
+  const handleInputChange = (key) => (val) => {
+    setFormData({ ...formData, [key]: val });
+  };
 
-      await dispatch(
-          createWorkforceEmployee(
-            workforceEmployeeData,
-            `Created Workforce Employee ${formData.NID}`
-          )
-        );
+  const validateStep1 = () =>
+    formData.NID && formData.mobile && formData.firstNameBn && formData.firstNameEn;
 
-    try {
-      setTimeout(() => {
-        setServerResponse({
-          status: "SUCCESS",
-          message: "Registration successful!",
-        });
-        setSubmitting(false);
-      }, 2000);
-    } catch (error) {
+  const validateStep2 = () => formData.otp === "1234";
+
+  const validateStep3 = () =>
+    formData.password &&
+    formData.confirmPassword &&
+    formData.password === formData.confirmPassword;
+
+  const handleNext = () => {
+    setServerResponse({ status: "", message: null });
+
+    if (step === 1 && validateStep1()) {
+      setStep(2);
+    } else if (step === 2 && validateStep2()) {
+      setStep(3);
+    } else if (step === 3 && validateStep3()) {
+      handleSubmit();
+    } else {
       setServerResponse({
         status: "ERROR",
-        message: "Registration failed. Please try again.",
+        message:
+          step === 2
+            ? "ভুল OTP. দয়া করে আবার চেষ্টা করুন।"
+            : "সমস্ত ঘর পূরণ করুন।",
       });
-      setSubmitting(false);
     }
+  };
+
+  const handleSubmit = () => {
+    setSubmitting(true);
+    setTimeout(() => {
+      setSubmitting(false);
+      setServerResponse({ status: "SUCCESS", message: "নিবন্ধন সফল হয়েছে!" });
+    }, 2000);
   };
 
   return (
@@ -102,82 +107,101 @@ const RegistrationPage = () => {
       {isSubmitting && <LinearProgress />}
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={3}>
-          {/* <img src="/mnt/data/image.png" alt="Logo" className={classes.logo} /> */}
           <Typography variant="h5" color="primary">
             <FormattedMessage module="workforce" id="workforce.registration.title" />
           </Typography>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={(e) => e.preventDefault()}>
             <Box mt={2} className={classes.inputContainer}>
-            <TextInput
-                required
-                readOnly={isSubmitting}
-                label="নাম (বাংলা)"
-                fullWidth
-                value={formData.firstNameBn}
-                onChange={(firstNameBn) =>
-                  setFormData({ ...formData, firstNameBn })
-                }
-              />
-            <TextInput
-                required
-                readOnly={isSubmitting}
-                label="নাম (ইংরেজি)"
-                fullWidth
-                value={formData.firstNameEn}
-                onChange={(firstNameEn) =>
-                  setFormData({ ...formData, firstNameEn })
-                }
-              />
-              <TextInput
-                required
-                readOnly={isSubmitting}
-                label="জাতীয় পরিচয়পত্র (এনআইডি)"
-                fullWidth
-                value={formData.NID}
-                onChange={(NID) => setFormData({ ...formData, NID })}
-              />
-              <TextInput
-                required
-                readOnly={isSubmitting}
-                label="মোবাইল নম্বর"
-                fullWidth
-                value={formData.mobile}
-                onChange={(mobile) => setFormData({ ...formData, mobile })}
-              />
-            
-              {/* <TextInput
-                required
-                readOnly={isSubmitting}
-                label="পাসওয়ার্ড"
-                fullWidth
-                value={formData.password}
-                onChange={(lastName) => setFormData({ ...formData, lastName })}
-              /> */}
-             
+              {/* Step 1: Basic Info */}
+              {step === 1 && (
+                <>
+                  <TextInput
+                    required
+                    label="নাম (বাংলা)"
+                    fullWidth
+                    value={formData.firstNameBn}
+                    onChange={handleInputChange("firstNameBn")}
+                  />
+                  <TextInput
+                    required
+                    label="নাম (ইংরেজি)"
+                    fullWidth
+                    value={formData.firstNameEn}
+                    onChange={handleInputChange("firstNameEn")}
+                  />
+                  <TextInput
+                    required
+                    label="জাতীয় পরিচয়পত্র (এনআইডি)"
+                    fullWidth
+                    value={formData.NID}
+                    onChange={handleInputChange("NID")}
+                  />
+                  <TextInput
+                    required
+                    label="মোবাইল নম্বর"
+                    fullWidth
+                    value={formData.mobile}
+                    onChange={handleInputChange("mobile")}
+                  />
+                </>
+              )}
+
+              {/* Step 2: OTP */}
+              {step === 2 && (
+                <TextInput
+                  required
+                  label="OTP দিন (ডেমো: 1234)"
+                  fullWidth
+                  value={formData.otp}
+                  onChange={handleInputChange("otp")}
+                />
+              )}
+
+              {/* Step 3: Password */}
+              {step === 3 && (
+                <>
+                  <TextInput
+                    required
+                    type="password"
+                    label="পাসওয়ার্ড"
+                    fullWidth
+                    value={formData.password}
+                    onChange={handleInputChange("password")}
+                  />
+                  <TextInput
+                    required
+                    type="password"
+                    label="পাসওয়ার্ড নিশ্চিত করুন"
+                    fullWidth
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange("confirmPassword")}
+                  />
+                </>
+              )}
+
+              {/* Server Response */}
               {serverResponse?.message && (
                 <Box
-                  color={
-                    serverResponse.status === "ERROR"
-                      ? "error.main"
-                      : "success.main"
-                  }
+                  color={serverResponse.status === "ERROR" ? "error.main" : "success.main"}
                   mt={2}
                 >
                   {serverResponse.message}
                 </Box>
               )}
+
+              {/* Main Button */}
               <Button
                 fullWidth
-                type="submit"
-                disabled={
-                  isSubmitting || Object.values(formData).some((val) => !val)
-                }
+                onClick={handleNext}
+                disabled={isSubmitting}
                 color="primary"
                 variant="contained"
                 style={{ marginTop: 16 }}
               >
-                নিবন্ধন করুন
+                {step === 3 ? "সাবমিট করুন" : "পরবর্তী"}
               </Button>
+
+              {/* Back Button */}
               <Button
                 fullWidth
                 onClick={() => history.push("/")}
