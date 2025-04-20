@@ -53,20 +53,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const steps = [
-  "workforce.application.steps.select",
-  "workforce.application.steps.employeeDetails",
-  "workforce.application.steps.location",
-  "workforce.application.steps.childInfo",
-  "workforce.application.steps.upload.documents",
-  "workforce.application.steps.dependent",
-  "workforce.application.steps.account.info",
-];
-
 const ScholarshipApplicationForm = ({
   modulesManager,
   organizationType,
   selectedApplicationType,
+  applicationForSelf,
 }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
@@ -80,6 +71,17 @@ const ScholarshipApplicationForm = ({
   const [activeStep, setActiveStep] = useState(0);
   const [selectedForm, setSelectedForm] = useState(null);
   const reduxState = useSelector((state) => state);
+
+  // const steps = [
+  //   "workforce.application.steps.select",
+  //   "workforce.application.steps.employeeDetails",
+  //   "workforce.application.steps.location",
+  //   "workforce.application.steps.childInfo",
+  //   "workforce.application.steps.upload.documents",
+  //   ...(applicationForSelf === "no" ? ["workforce.application.steps.dependent"] : []),
+  //   "workforce.application.steps.account.info",
+  // ];
+  
 
   const [formData, setFormData] = useState({
     firstNameEn: "",
@@ -336,19 +338,75 @@ const ScholarshipApplicationForm = ({
     );
   };
 
+  const steps = [
+    { label: "workforce.application.steps.select", content: <Box mt={3}>
+    <ScholarshipApplicationCheckbox
+      handleChange={handleChange}
+      formData={formData}
+    />
+  </Box> },
+    { label: "workforce.application.steps.employeeDetails", content: <Box mt={3}>
+    <EmployeeDetailsForm
+      handleChange={handleChange}
+      formData={formData}
+    />
+  </Box> },
+    { label: "workforce.application.steps.location", content: <Box mt={3}>
+    <EmployeeLocationForm
+      handleChange={handleChange}
+      formData={formData}
+    />
+  </Box> },
+    { label: "workforce.application.steps.childInfo", content: <Box mt={3}>
+    <EmployeeChildrenDetailsForm
+      handleChange={(key, value) =>
+        handleChange(key, value, "employeeChildrenInfo")
+      }
+      formData={formData}
+    />
+  </Box> },
+    { label: "workforce.application.steps.upload.documents", content: <Box mt={3}>
+    <EmployeeDetailsForm2
+      handleChange={handleChange}
+      formData={formData}
+    />
+  </Box> },
+    ...(applicationForSelf === "no" ? [{ label: "workforce.application.steps.dependent", content: <Box mt={3}>
+      {formData?.applicationForSelf === "no" && (
+        <EmployeeDependentForm
+          values={formData}
+          onChange={handleChange}
+          onAddDependent={handleAddDependent}
+          onRemoveDependent={handleRemoveDependent}
+        />
+      )}
+
+    </Box> }] : []),
+
+    { label: "workforce.application.steps.account.info", content: <Box mt={3}>
+    <EmployeeAccountInfoForm
+      handleChange={(key, value) =>
+        handleChange(key, value, "employeeBankInfo")
+      }
+      formData={formData.employeeBankInfo}
+    />
+  </Box> },
+  ];
+
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={3}>
         <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
+          {steps.map((step,index) => (
+            <Step key={index}>
               <StepLabel>
-                <FormattedMessage module="workforce" id={label} />
+
+                <FormattedMessage module="workforce" id={step.label} />
               </StepLabel>
             </Step>
           ))}
         </Stepper>
-        {activeStep === 0 ? (
+        {/* {activeStep === 0 ? (
           <Box mt={3}>
             <ScholarshipApplicationCheckbox
               handleChange={handleChange}
@@ -387,12 +445,15 @@ const ScholarshipApplicationForm = ({
           </Box>
         ) : activeStep === 5 ? (
           <Box mt={3}>
-            <EmployeeDependentForm
-              dependents={formData.dependents}
-              handleDependentChange={handleDependentChange}
-              addDependent={addDependent}
-              removeDependent={removeDependent}
-            />
+            {formData?.applicationForSelf === "no" && (
+              <EmployeeDependentForm
+                values={formData}
+                onChange={handleChange}
+                onAddDependent={handleAddDependent}
+                onRemoveDependent={handleRemoveDependent}
+              />
+            )}
+
           </Box>
         ) : (
           <Box mt={3}>
@@ -403,7 +464,9 @@ const ScholarshipApplicationForm = ({
               formData={formData.employeeBankInfo}
             />
           </Box>
-        )}
+        )} */}
+
+        {steps[activeStep].content}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">

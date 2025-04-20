@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useModulesManager, formatMutation, decodeId,FormattedMessage } from "@openimis/fe-core";
-import { Paper, Button,IconButton,Typography } from "@material-ui/core";
+import { Paper, Button,IconButton,Typography,FormControl, FormControlLabel, Radio, RadioGroup } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ApplicationTypeSelector from "./ApplicationTypeSelector";
@@ -16,6 +16,12 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  subPaper : {
+    padding: theme.spacing(2),
+    width: "100%", // Ensures it doesn't overflow
+    maxWidth: 650, // Restrict max width
+    margin: "auto", // Centers the Paper component
   },
   paper: {
     padding: theme.spacing(2),
@@ -43,6 +49,8 @@ const MultiStepApplyForm = ({ modulesManager }) => {
   const [selectedApplicationType, setSelectedApplicationType] = useState(null);
   const [organizationType, setOrganizationType] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [applicationForSelf, setApplicationForSelf] = useState("");
+  
 
   const handleSelection = (applicationType, exportStatus) => {
     setSelectedApplicationType(applicationType);
@@ -55,6 +63,13 @@ const MultiStepApplyForm = ({ modulesManager }) => {
 
   const handleBack = () => {
     setShowForm(false);
+    setApplicationForSelf("")
+  };
+
+  const handleApplicationFor = (event) => {
+    const value = event.target.value;
+    setApplicationForSelf(value);
+    // onSelect(selectedApplicationType, value); // Pass both selections
   };
 
   console.log({ organizationType });
@@ -108,11 +123,27 @@ const MultiStepApplyForm = ({ modulesManager }) => {
                 <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
+            {applicationForSelf === "" ?(
+            <Paper className={classes.subPaper} elevation={3}>
+                  <FormControl component="fieldset">
+                    {/* New Export-Oriented Company Question */}
+                    <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
+                      {<FormattedMessage id="workforce.application.for" module="workforce"/>}
+                    </Typography>
+                    <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
+                      <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>} />
+                      <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>} />
+                    </RadioGroup>
+                  </FormControl>
+            </Paper>
+            ) : (
             <MedicalAssistanceForm
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
+              applicationForSelf={applicationForSelf}
             />
+            )}
           </>
         ) : selectedApplicationType === "disabilityAssistance" ? (
           <>
@@ -142,11 +173,27 @@ const MultiStepApplyForm = ({ modulesManager }) => {
                 <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
+            {applicationForSelf === "" ?(
+            <Paper className={classes.subPaper} elevation={3}>
+                  <FormControl component="fieldset">
+                    {/* New Export-Oriented Company Question */}
+                    <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
+                      {<FormattedMessage id="workforce.application.for" module="workforce"/>}
+                    </Typography>
+                    <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
+                      <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>} />
+                      <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>} />
+                    </RadioGroup>
+                  </FormControl>
+            </Paper>
+            ) : (
             <EducationGrantForm
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
+              applicationForSelf={applicationForSelf}
             />
+            )}
           </>
         ) :selectedApplicationType === "financialAssistance"? (
           <>
@@ -176,11 +223,27 @@ const MultiStepApplyForm = ({ modulesManager }) => {
                 <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
+            {applicationForSelf === "" ?(
+            <Paper className={classes.subPaper} elevation={3}>
+                  <FormControl component="fieldset">
+                    {/* New Export-Oriented Company Question */}
+                    <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
+                      {<FormattedMessage id="workforce.application.for" module="workforce"/>}
+                    </Typography>
+                    <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
+                      <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>} />
+                      <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>} />
+                    </RadioGroup>
+                  </FormControl>
+            </Paper>
+            ) : (
             <ScholarshipApplicationForm
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
+              applicationForSelf={applicationForSelf}
             />
+            )}
           </>
         ) : (
           <div>Please select an application type</div>

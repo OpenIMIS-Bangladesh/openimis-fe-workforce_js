@@ -9,7 +9,12 @@ import {
   Box,
   Typography,
 } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId,FormattedMessage } from "@openimis/fe-core";
+import {
+  useModulesManager,
+  formatMutation,
+  decodeId,
+  FormattedMessage,
+} from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -46,18 +51,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-const steps = [
-  "workforce.application.steps.employeeDetails",
-  "workforce.application.steps.location",
-  "workforce.application.steps.childInfo",
-  "workforce.application.steps.upload.documents",
-  "workforce.application.steps.dependent",
-  "workforce.application.steps.account.info",
-];
-
-
-const MedicalAssistanceForm = ({ modulesManager,organizationType,selectedApplicationType }) => {
+const MedicalAssistanceForm = ({
+  modulesManager,
+  organizationType,
+  selectedApplicationType,
+  applicationForSelf,
+}) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
   );
@@ -105,7 +104,7 @@ const MedicalAssistanceForm = ({ modulesManager,organizationType,selectedApplica
     permanentLocation: "",
     presentLocation: "",
     presentAddress: "",
-    organizationId:"",
+    organizationId: "",
     dependents: [{}],
     employeeBankInfo: {},
     employeeChildrenInfo: {},
@@ -244,7 +243,9 @@ const MedicalAssistanceForm = ({ modulesManager,organizationType,selectedApplica
         workforceEmployeeId: formData.id,
         company: formData.company,
         factory: formData.factory,
-        employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
+        employeeDesignationInfo: JSON.stringify(
+          formData.employeeDesignationInfo
+        ),
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents),
         employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo),
@@ -324,78 +325,94 @@ const MedicalAssistanceForm = ({ modulesManager,organizationType,selectedApplica
     );
   };
 
-
-  return (
-    <div className={classes.container}>
-      <Paper className={classes.paper} elevation={3}>
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>
-              <FormattedMessage module="workforce" id={label} />
-            </StepLabel>
-          </Step>
-          ))}
-        </Stepper>
-        {activeStep === 0 ? (
-          <EmployeeDetailsForm
-            handleChange={handleChange}
-            formData={formData}
-          />
-        ) : activeStep === 1 ? (
-          <Box mt={3}>
-            <EmployeeLocationForm
+  const steps = [
+    {
+      label: "workforce.application.steps.employeeDetails",
+      content: (
+        <EmployeeDetailsForm
+        handleChange={handleChange}
+        formData={formData}
+      />
+      ),
+    },
+    {
+      label: "workforce.application.steps.location",
+      content: (
+        <EmployeeLocationForm
               handleChange={handleChange}
               formData={formData}
             />
-          </Box>
-        ) : activeStep === 2 ? (
-          <Box mt={3}>
-            <EmployeeChildrenDetailsForm
+      ),
+    },
+    {
+      label: "workforce.application.steps.childInfo",
+      content: (
+        <EmployeeChildrenDetailsForm
               handleChange={(key, value) =>
                 handleChange(key, value, "employeeChildrenInfo")
               }
               formData={formData}
             />
-          </Box>
-          
-        ) : activeStep === 3 ? (
-          <Box mt={3}>
-            <EmployeeDetailsForm2
+      ),
+    },
+    {
+      label: "workforce.application.steps.upload.documents",
+      content: (
+        <EmployeeDetailsForm2
               selectedApplicationType={selectedApplicationType}
               handleChange={handleChange}
               formData={formData}
             />
-          </Box>
-          
-        ) : activeStep === 4 ? (
-          <Box mt={3}>
-            <EmployeeDependentForm
+      ),
+    },
+    ...(applicationForSelf === "no"
+      ? [
+          {
+            label: "workforce.application.steps.dependent",
+            content: (
+              <EmployeeDependentForm
               dependents={formData.dependents}
               handleDependentChange={handleDependentChange}
               addDependent={addDependent}
               removeDependent={removeDependent}
             />
-          </Box>
-         
-        ) : (
-          <Box mt={3}>
-          <EmployeeAccountInfoForm
-            handleChange={(key, value) =>
-              handleChange(key, value, "employeeBankInfo")
-            }
-            formData={formData.employeeBankInfo}
-          />
+            ),
+          },
+        ]
+      : []),
+
+    {
+      label: "workforce.application.steps.account.info",
+      content: (
+        <EmployeeAccountInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeBankInfo")
+              }
+              formData={formData.employeeBankInfo}
+            />
+      ),
+    },
+  ];
+
+  return (
+    <div className={classes.container}>
+      <Paper className={classes.paper} elevation={3}>
+        <Stepper activeStep={activeStep} alternativeLabel>
+          {steps.map((step, index) => (
+            <Step key={index}>
+              <StepLabel>
+                <FormattedMessage module="workforce" id={step.label} />
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <Box mt={3}>
+          {steps[activeStep].content}
         </Box>
-          
-        )}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
-               <FormattedMessage
-                  module="workforce"
-                  id="workforce.next"
-                />
+              <FormattedMessage module="workforce" id="workforce.next" />
             </Button>
           )}
           {activeStep < steps.length - 1 ? (

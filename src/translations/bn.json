@@ -138,6 +138,10 @@
     "workforce.application.permission.yes":"হ্যাঁ",
     "workforce.application.permission.no":"না",
 
+    "workforce.application.for":"কার জন্য আবেদন?",
+    "workforce.application.for.type.self":"নিজের জন্য",
+    "workforce.application.for.type.dependent":"নির্ভরশীলদের জন্য",
+
     "workforce.financial.assistance.normalDeath":"স্বাভাবিক মৃত্যু",
     "workforce.financial.assistance.accidentalDeath":"দুর্ঘটনাজনিত মৃত্যু",
     

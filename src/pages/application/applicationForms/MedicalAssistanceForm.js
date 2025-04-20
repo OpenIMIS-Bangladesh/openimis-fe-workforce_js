@@ -51,28 +51,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const steps = [
-//   "Labour Details",
-//   "Location",
-//   "Accident Info",
-//   "Upload Documents",
-//   "Dependent",
-//   "Account info",
-// ];
-
-const steps = [
-  "workforce.application.steps.employeeDetails",
-  "workforce.application.steps.location",
-  "workforce.application.steps.accident.info",
-  "workforce.application.steps.upload.documents",
-  "workforce.application.steps.dependent",
-  "workforce.application.steps.account.info",
-];
-
 const MedicalAssistanceForm = ({
   modulesManager,
   organizationType,
   selectedApplicationType,
+  applicationForSelf
 }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
@@ -371,34 +354,102 @@ const MedicalAssistanceForm = ({
     setIsSubmitted(true);
   };
 
-  console.log({tazwer:formData})
+  const steps = [
+    {
+      label: "workforce.application.steps.employeeDetails",
+      content: (
+        <EmployeeDetailsForm
+            handleChange={handleChange}
+            formData={formData}
+          />
+      ),
+    },
+    {
+      label: "workforce.application.steps.location",
+      content: (
+        <EmployeeLocationForm handleChange={handleChange} formData={formData} />
+      ),
+    },
+    {
+      label: "workforce.application.steps.accident.info",
+      content: (
+        <EmployeeAccidentInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeAccidentInfo")
+              }
+              formData={formData}
+            />
+      ),
+    },
+    {
+      label: "workforce.application.steps.upload.documents",
+      content: (
+        <EmployeeDetailsForm2
+              handleChange={handleChange}
+              formData={formData}
+              selectedApplicationType={selectedApplicationType}
+            />
+      ),
+    },
+    ...(applicationForSelf === "no"
+      ? [
+          {
+            label: "workforce.application.steps.dependent",
+            content: (
+              <EmployeeDependentForm
+              dependents={formData.dependents}
+              handleDependentChange={handleDependentChange}
+              addDependent={addDependent}
+              removeDependent={removeDependent}
+            />
+            ),
+          },
+        ]
+      : []),
+
+    {
+      label: "workforce.application.steps.account.info",
+      content: (
+        <EmployeeAccountInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeBankInfo")
+              }
+              formData={formData.employeeBankInfo}
+            />
+      ),
+    },
+  ];
+
+  console.log({ tazwer: formData });
 
   if (isSubmitted) {
     return (
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={3}>
           <Typography variant="h5" align="center" color="primary">
-            <FormattedMessage module="workforce" id="workforce.success.message" />
+            <FormattedMessage
+              module="workforce"
+              id="workforce.success.message"
+            />
           </Typography>
         </Paper>
       </div>
     );
   }
 
-
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={3}>
         <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
+          {steps.map((step, index) => (
+            <Step key={index}>
               <StepLabel>
-                <FormattedMessage module="workforce" id={label} />
+                <FormattedMessage module="workforce" id={step.label} />
               </StepLabel>
             </Step>
           ))}
         </Stepper>
-        {activeStep === 0 ? (
+        {/* {activeStep === 0 ? (
           <EmployeeDetailsForm
             handleChange={handleChange}
             formData={formData}
@@ -445,20 +496,19 @@ const MedicalAssistanceForm = ({
               formData={formData.employeeBankInfo}
             />
           </Box>
-        )}
+        )} */}
+        <Box mt ={3}>
+        {steps[activeStep].content}
+        </Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
-              <FormattedMessage
-                module="workforce"
-                id="workforce.next"
-              />
+              <FormattedMessage module="workforce" id="workforce.next" />
             </Button>
           )}
           {activeStep < steps.length - 1 ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
               <FormattedMessage module="workforce" id="workforce.save.next" />
-              
             </Button>
           ) : (
             <Button variant="contained" color="primary" onClick={handleSubmit}>
