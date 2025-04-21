@@ -9,7 +9,15 @@ import {
 
 import { MODULE_NAME } from "../../constants";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
+import TabsForm from "../../components/application-process/TabsForm";
 import { ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE } from "../../routes";
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import TabPanel from "./TabPanel";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -28,12 +36,40 @@ class ApplicationsProcessPage extends Component {
   onAdd = () => {
     historyPush(this.props.modulesManager, this.props.history, "workforce.route.application");
   };
+  
 
+  a11yProps (index) {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
+  handleChange(event, newValue){
+    console.log('newValue')
+    this.setState({value:newValue})
+  }
   render() {
-    const { intl, classes, rights } = this.props;
+    const { intl, classes, rights,value } = this.props;
 
     return (
       <div className={classes.page}>
+         <AppBar position="static">
+        <Tabs value={value} onChange={this.handleChange} aria-label="simple tabs example">
+          <Tab label="All" {...this.a11yProps(0)} />
+          <Tab label="Accidental" {...this.a11yProps(1)} />
+          <Tab label="Death" {...this.a11yProps(2)} />
+          <Tab label="Disibility" {...this.a11yProps(3)} />
+        </Tabs>
+      </AppBar>
+      <TabPanel value={value} index={0}>
+        Item One
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        Item Two
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        Item Three
+      </TabPanel>
         <ApplicationProcessSearcher
           cacheFiltersKey="ticketPageFiltersCache"
           onDoubleClick={this.onDoubleClick}
