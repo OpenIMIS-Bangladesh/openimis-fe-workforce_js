@@ -50,6 +50,8 @@ const MultiStepApplyForm = ({ modulesManager }) => {
   const [organizationType, setOrganizationType] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [applicationForSelf, setApplicationForSelf] = useState("");
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [selectedFactory, setSelectedFactory] = useState(null);
   
 
   const handleSelection = (applicationType, exportStatus) => {
@@ -83,6 +85,10 @@ const MultiStepApplyForm = ({ modulesManager }) => {
             <ApplicationTypeSelector
               modulesManager={modulesManager}
               onSelect={handleSelection}
+              setSelectedCompany={setSelectedCompany}
+              selectedCompany= {selectedCompany}
+              setSelectedFactory={setSelectedFactory}
+              selectedFactory= {selectedFactory}
             />
             <div className={classes.buttonContainer}>
               <Button
@@ -158,6 +164,8 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
               applicationForSelf={applicationForSelf}
+              selectedCompany={selectedCompany}
+              selectedFactory={selectedFactory}
             />
             )}
           </>

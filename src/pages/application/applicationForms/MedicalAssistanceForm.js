@@ -32,6 +32,7 @@ import {
 import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
+import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -55,7 +56,9 @@ const MedicalAssistanceForm = ({
   modulesManager,
   organizationType,
   selectedApplicationType,
-  applicationForSelf
+  applicationForSelf,
+  selectedCompany,
+  selectedFactory,
 }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
@@ -71,6 +74,7 @@ const MedicalAssistanceForm = ({
   const [activeStep, setActiveStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
   const reduxState = useSelector((state) => state);
 
   const [formData, setFormData] = useState({
@@ -114,6 +118,8 @@ const MedicalAssistanceForm = ({
     dependents: [{}],
     employeeBankInfo: {},
     employeeAccidentInfo: {},
+    organizationType: "",
+    applicationType: "",
     id: "",
   });
 
@@ -159,8 +165,11 @@ const MedicalAssistanceForm = ({
         nid: employeeData.nid || "",
         birthCertificateNo: employeeData.birthCertificateNo || "",
         insuranceNumber: employeeData.insuranceNumber || "",
-        company: employeeData.company || null,
-        factory: employeeData.factory || null,
+        company: selectedCompany || employeeData.company || null,
+        factory: selectedFactory || employeeData.factory || null,
+        organizationType: organizationType,
+        applicationType: selectedApplicationType,
+        applicationForSelf: applicationForSelf,
         organizationType: organizationType,
         applicationType: selectedApplicationType,
         lifeStatus: employeeData.lifeStatus || "",
@@ -330,27 +339,28 @@ const MedicalAssistanceForm = ({
   };
 
   const handleSubmit = async () => {
-    const updateApplicationData = {
-      id: decodeId(applicationId[0].id),
-      workforceEmployeeId: formData.id,
-      company: formData.company,
-      factory: formData.factory,
-      organizationType: organizationType,
-      applicationType: selectedApplicationType,
-      employeeDesignationInfo: formData.employeeDesignationInfo,
-      employeeBankInfo: formData.employeeBankInfo,
-      employeeDependentInfo: formData.dependents,
-      employeeAccidentInfo: formData.employeeAccidentInfo,
-      isSubmitted: "yes",
-      status: "ontest",
-    };
-    dispatch(
-      updateApplication(
-        updateApplicationData,
-        `update workforce application ${formData.firstNameEn}`
-      )
-    );
-
+    console.log({ tazwer: formData });
+    // const updateApplicationData = {
+    //   id: decodeId(applicationId[0].id),
+    //   workforceEmployeeId: formData.id,
+    //   company: formData.company,
+    //   factory: formData.factory,
+    //   organizationType: organizationType,
+    //   applicationType: selectedApplicationType,
+    //   employeeDesignationInfo: formData.employeeDesignationInfo,
+    //   employeeBankInfo: formData.employeeBankInfo,
+    //   employeeDependentInfo: formData.dependents,
+    //   employeeAccidentInfo: formData.employeeAccidentInfo,
+    //   isSubmitted: "yes",
+    //   status: "ontest",
+    // };
+    // dispatch(
+    //   updateApplication(
+    //     updateApplicationData,
+    //     `update workforce application ${formData.firstNameEn}`
+    //   )
+    // );
+    setShowPreview(true);
     setIsSubmitted(true);
   };
 
@@ -358,10 +368,7 @@ const MedicalAssistanceForm = ({
     {
       label: "workforce.application.steps.employeeDetails",
       content: (
-        <EmployeeDetailsForm
-            handleChange={handleChange}
-            formData={formData}
-          />
+        <EmployeeDetailsForm handleChange={handleChange} formData={formData} />
       ),
     },
     {
@@ -374,21 +381,21 @@ const MedicalAssistanceForm = ({
       label: "workforce.application.steps.accident.info",
       content: (
         <EmployeeAccidentInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeAccidentInfo")
-              }
-              formData={formData}
-            />
+          handleChange={(key, value) =>
+            handleChange(key, value, "employeeAccidentInfo")
+          }
+          formData={formData}
+        />
       ),
     },
     {
       label: "workforce.application.steps.upload.documents",
       content: (
         <EmployeeDetailsForm2
-              handleChange={handleChange}
-              formData={formData}
-              selectedApplicationType={selectedApplicationType}
-            />
+          handleChange={handleChange}
+          formData={formData}
+          selectedApplicationType={selectedApplicationType}
+        />
       ),
     },
     ...(applicationForSelf === "no"
@@ -397,11 +404,11 @@ const MedicalAssistanceForm = ({
             label: "workforce.application.steps.dependent",
             content: (
               <EmployeeDependentForm
-              dependents={formData.dependents}
-              handleDependentChange={handleDependentChange}
-              addDependent={addDependent}
-              removeDependent={removeDependent}
-            />
+                dependents={formData.dependents}
+                handleDependentChange={handleDependentChange}
+                addDependent={addDependent}
+                removeDependent={removeDependent}
+              />
             ),
           },
         ]
@@ -411,27 +418,37 @@ const MedicalAssistanceForm = ({
       label: "workforce.application.steps.account.info",
       content: (
         <EmployeeAccountInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeBankInfo")
-              }
-              formData={formData.employeeBankInfo}
-            />
+          handleChange={(key, value) =>
+            handleChange(key, value, "employeeBankInfo")
+          }
+          formData={formData.employeeBankInfo}
+        />
       ),
     },
   ];
 
   console.log({ tazwer: formData });
 
-  if (isSubmitted) {
+  // if (isSubmitted) {
+  //   return (
+  //     <div className={classes.container}>
+  //       <Paper className={classes.paper} elevation={3}>
+  //         <Typography variant="h5" align="center" color="primary">
+  //           <FormattedMessage
+  //             module="workforce"
+  //             id="workforce.success.message"
+  //           />
+  //         </Typography>
+  //       </Paper>
+  //     </div>
+  //   );
+  // }
+
+  if (showPreview) {
     return (
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={3}>
-          <Typography variant="h5" align="center" color="primary">
-            <FormattedMessage
-              module="workforce"
-              id="workforce.success.message"
-            />
-          </Typography>
+          <PreviewDetails formData={formData} />
         </Paper>
       </div>
     );
@@ -439,6 +456,11 @@ const MedicalAssistanceForm = ({
 
   return (
     <div className={classes.container}>
+      {/* {showPreview && (
+        <Paper className={classes.paper} elevation={3}>
+          <PreviewDetails formData={formData} />
+        </Paper>
+      )} */}
       <Paper className={classes.paper} elevation={3}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((step, index) => (
@@ -497,9 +519,7 @@ const MedicalAssistanceForm = ({
             />
           </Box>
         )} */}
-        <Box mt ={3}>
-        {steps[activeStep].content}
-        </Box>
+        <Box mt={3}>{steps[activeStep].content}</Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
