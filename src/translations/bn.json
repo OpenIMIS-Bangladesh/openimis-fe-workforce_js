@@ -181,7 +181,6 @@
     "workforce.application.steps.skip":"বাদ দিন",
     "workforce.application.steps.dependentAdd":"নির্ভরশীল যোগ করুন",
 
-
     "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন",
 
     "workforce.employee.details":"শ্রমিকের বিবরণ",
@@ -194,12 +193,15 @@
 
     "workforce.success.message":"✅ আবেদন সফলভাবে জমা দেওয়া হয়েছে!",
 
-
-
     "workforce.registration.title":"সুবিধাভোগী নিবন্ধন ফর্ম",
 
     "workforce.employee.name.en":"নাম (বাংলা)",
-    "workforce.employee.name.bn":"নাম (ইংরেজি)"
+    "workforce.employee.name.bn":"নাম (ইংরেজি)",
+
+    "workforce.application.process.all": "সকল",
+    "workforce.application.process.accidental": "দুর্ঘটনাজনিত",
+    "workforce.application.process.death": "মৃত্যু",
+    "workforce.application.process.disability": "অক্ষমতা"
 
 
 

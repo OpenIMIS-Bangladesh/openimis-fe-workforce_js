@@ -61,10 +61,22 @@ class ApplicationsProcessPage extends Component {
       <div className={classes.page}>
          <AppBar position="static">
         <Tabs value={value} onChange={this.handleChange} aria-label="simple tabs example">
-          <Tab label="All" {...this.a11yProps(0)} />
-          <Tab label="Accidental" {...this.a11yProps(1)} />
-          <Tab label="Death" {...this.a11yProps(2)} />
-          <Tab label="Disability" {...this.a11yProps(3)} />
+        <Tab
+            label={<FormattedMessage module="workforce" id="workforce.application.process.all" />}
+            {...this.a11yProps(0)}
+          />
+         <Tab
+            label={<FormattedMessage module="workforce" id="workforce.application.process.accidental" />}
+            {...this.a11yProps(1)}
+          />
+          <Tab
+            label={<FormattedMessage module="workforce" id="workforce.application.process.death" />}
+            {...this.a11yProps(2)}
+          />
+          <Tab
+            label={<FormattedMessage module="workforce" id="workforce.application.process.disability" />}
+            {...this.a11yProps(3)}
+          />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
