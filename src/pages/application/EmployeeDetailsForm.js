@@ -59,12 +59,12 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
     <Box mt={1}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} elevation={0}>
             <Grid container className={classes.item} spacing={2}>
               {/* <Grid item xs={6} className={classes.item}>*/}
               {/*  <PublishedComponent*/}
               {/*    pubRef="workforceOrganization.OrganizationPicker"*/}
-              {/*    value={formData.organization || null}*/}
+              {/*    value={formData?.workforceEmployee.organization || null}*/}
               {/*    label={<FormattedMessage module="workforce" id="workforce.organization.picker" />}*/}
               {/*    onChange={(v) => handleChange("organizationId", v)}*/}
               {/*    required*/}
@@ -75,7 +75,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                 <PublishedComponent
                   pubRef="core.DatePicker"
                   label={"workforce.employee.birthdate"}
-                  value={formData.birthDate || ""}
+                  value={formData?.workforceEmployee.birthDate || ""}
                   onChange={(v) => handleChange("birthDate", v)}
                   readOnly={false}
                 />
@@ -83,7 +83,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
 
               <Grid item xs={6} className={classes.item}>
                 <EmployeeGenderPicker
-                  value={formData?.gender}
+                  value={formData?.workforceEmployee?.gender}
                   label={
                     <FormattedMessage
                       id="workforce.employee.gender"
@@ -98,7 +98,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.name.en"
-                  value={formData.nameEn || ""}
+                  value={formData?.workforceEmployee.nameEn || ""}
                   onChange={(v) => handleChange("nameEn", v)}
                   required
                   readOnly={false}
@@ -107,7 +107,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.name.bn"
-                  value={formData.nameBn || ""}
+                  value={formData?.workforceEmployee.nameBn || ""}
                   onChange={(v) => handleChange("nameBn", v)}
                   required
                   readOnly={false}
@@ -116,7 +116,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.last.name.en"
-                  value={formData.lastNameEn || ""}
+                  value={formData?.workforceEmployee.lastNameEn || ""}
                   onChange={(v) => handleChange("lastNameEn", v)}
                   required
                   readOnly={false}
@@ -125,7 +125,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.last.name.bn"
-                  value={formData.lastNameBn || ""}
+                  value={formData?.workforceEmployee.lastNameBn || ""}
                   onChange={(v) => handleChange("lastNameBn", v)}
                   required
                   readOnly={false}
@@ -134,7 +134,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.other.name"
-                  value={formData.otherName || ""}
+                  value={formData?.workforceEmployee.otherName || ""}
                   onChange={(v) => handleChange("otherName", v)}
                   required
                   readOnly={false}
@@ -143,7 +143,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.position"
-                  value={formData.position || ""}
+                  value={formData?.workforceEmployee.position || ""}
                   onChange={(v) => handleChange("position", v)}
                   readOnly={false}
                 />
@@ -152,7 +152,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.fathers_name.en"
-                  value={formData.fatherNameEn || ""}
+                  value={formData?.workforceEmployee.fatherNameEn || ""}
                   onChange={(v) => handleChange("fatherNameEn", v)}
                   readOnly={false}
                 />
@@ -160,7 +160,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.fathers_name.bn"
-                  value={formData.fatherNameBn || ""}
+                  value={formData?.workforceEmployee.fatherNameBn || ""}
                   onChange={(v) => handleChange("fatherNameBn", v)}
                   readOnly={false}
                 />
@@ -168,7 +168,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.mothers_name.en"
-                  value={formData.motherNameEn || ""}
+                  value={formData?.workforceEmployee.motherNameEn || ""}
                   onChange={(v) => handleChange("motherNameEn", v)}
                   readOnly={false}
                 />
@@ -176,7 +176,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.mothers_name.bn"
-                  value={formData.motherNameBn || ""}
+                  value={formData?.workforceEmployee.motherNameBn || ""}
                   onChange={(v) => handleChange("motherNameBn", v)}
                   readOnly={false}
                 />
@@ -184,7 +184,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.spouse.name.en"
-                  value={formData.spouseNameEn || ""}
+                  value={formData?.workforceEmployee.spouseNameEn || ""}
                   onChange={(v) => handleChange("spouseNameEn", v)}
                   readOnly={false}
                 />
@@ -192,7 +192,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.spouse.name.bn"
-                  value={formData.spouseNameBn || ""}
+                  value={formData?.workforceEmployee.spouseNameBn || ""}
                   onChange={(v) => handleChange("spouseNameBn", v)}
                   readOnly={false}
                 />
@@ -201,7 +201,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.phone"
-                  value={formData.phoneNumber || ""}
+                  value={formData?.workforceEmployee.phoneNumber || ""}
                   onChange={(v) => handleChange("phoneNumber", v)}
                   type={"number"}
                   readOnly={false}
@@ -211,7 +211,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.email"
-                  value={formData.email || ""}
+                  value={formData?.workforceEmployee.email || ""}
                   onChange={(v) => handleChange("email", v)}
                   type={"email"}
                   readOnly={false}
@@ -220,7 +220,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.citizenship"
-                  value={formData.citizenship || ""}
+                  value={formData?.workforceEmployee.citizenship || ""}
                   onChange={(v) => handleChange("citizenship", v)}
                   readOnly={false}
                 />
@@ -228,7 +228,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
 
               <Grid item xs={6} className={classes.item}>
                 <EmployeeMaritalStatusPicker
-                  value={formData.maritalStatus || ""}
+                  value={formData?.workforceEmployee.maritalStatus || ""}
                   label={
                     <FormattedMessage
                       id="workforce.employee.marital_status"
@@ -243,7 +243,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
 
               <Grid item xs={6} className={classes.item}>
                 <EmployeeLifeStatusPicker
-                  value={formData.lifeStatus || ""}
+                  value={formData?.workforceEmployee.lifeStatus || ""}
                   label={
                     <FormattedMessage
                       id="workforce.employee.lifeStatus"
@@ -260,8 +260,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                 <PublishedComponent
                   pubRef="core.DatePicker"
                   label={"workforce.employee.deathdate"}
-                  value={formData.deathDate || ""}
-                  readOnly={formData.lifeStatus === "Deceased" ? false : true}
+                  value={formData?.workforceEmployee.deathDate || ""}
+                  readOnly={formData?.workforceEmployee.lifeStatus === "Deceased" ? false : true}
                   onChange={(v) => handleChange("deathDate", v)}
                   // readOnly={false}
                 />

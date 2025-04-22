@@ -43,17 +43,17 @@ const styles = (theme) => ({
 
   const PreviewDetails = ({ formData = {}, classes }) => {
     const formatKey = (key) =>
-      key
+      String(key)
         .replace(/_/g, " ")
         .replace(/([A-Z])/g, " $1")
-        .replace(/^./, (str) => str.toUpperCase());
+        .replace(/^./, (str) => str.toUpperCase());    
   
     const renderValue = (value) => {
       if (Array.isArray(value)) {
         return value.length === 0
           ? "N/A"
           : value.map((item, idx) => (
-              <Box key={idx} mb={1}>
+              <Box key={idx} mb={0}>
                 {typeof item === "object" ? renderNestedObject(item) : item}
               </Box>
             ));
@@ -67,64 +67,81 @@ const styles = (theme) => ({
       }
     };
   
-    const renderNestedObject = (obj) => (
-      <Box pl={1}>
-        {Object.entries(obj).map(([k, v], i) => (
-          <Typography variant="body2" key={i}>
-            <b>{formatKey(k)}:</b> {renderValue(v)}
-          </Typography>
-        ))}
-      </Box>
-    );
-  
-    const renderSection = ( type, title, data) => (
-      <Grid item xs={12} key={title}>
-        <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              {formatKey(title)}
+    const renderNestedObject = (obj) => {
+      if (!obj || typeof obj !== "object") return null;
+    
+      return (
+        <Box pl={1}>
+          {Object.entries(obj).filter(([k]) => !["id", "parent"].includes(k)).map(([k, v], i) => (
+            <Typography variant="body2" key={i}>
+              <b>{formatKey(k)}:</b> {renderValue(v)}
             </Typography>
-            <Divider style={{ marginBottom: "10px" }} />
-            <Grid container spacing={2}>
-              {Object.entries(data)
-                .filter(([k]) => !["id", "uuid", "parent"].includes(k))
-                .map(([key, value], idx) => (
-                  <Grid item xs={12} sm={6} key={idx}>
-                    <Typography variant="body2">
-                      <b>{formatKey(key)}:</b> {renderValue(value)}
+          ))}
+        </Box>
+      );
+    };
+    
+  
+    const renderSection = (title, data) => {
+      if (!data || typeof data !== "object" ) return null;
+    
+      return (
+        <Grid item xs={12} key={title}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                {formatKey(title)} 
+              </Typography>
+              <Divider style={{ marginBottom: "10px" }} />
+              <Grid container spacing={2}>
+                {Object.entries(data)
+                  .filter(([k]) => !["id", "uuid", "parent","workforceEmployer"].includes(k))
+                  .map(([key, value], idx) => (
+                    <Grid item xs={12} sm={6} key={idx}>
+                      <Typography variant="body2">
+                        <b>{formatKey(key)}:</b> {renderValue(value)}
+                      </Typography>
+                    </Grid>
+                  ))}
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+      );
+    };
+    
+  
+    const renderArraySection = (title, arrayData) => {
+      if (!Array.isArray(arrayData) || arrayData.length === 0) return null;
+    
+      return (
+        <Grid item xs={12} key={title}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                {formatKey(title)}
+              </Typography>
+              <Divider style={{ marginBottom: "10px" }} />
+              {arrayData.map((item, index) => (
+                item && typeof item === "object" && Object.keys(item).length > 0 && (
+                  <Box key={index} mb={1} pl={1}>
+                    <Typography variant="subtitle2">
+                      {formatKey(title)} #{index + 1}
                     </Typography>
-                  </Grid>
-                ))}
-            </Grid>
-          </CardContent>
-        </Card>
-      </Grid>
-    );
-  
-    const renderArraySection = (title, arrayData) => (
-      <Grid item xs={12} key={title}>
-        <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              {formatKey(title)}
-            </Typography>
-            <Divider style={{ marginBottom: "10px" }} />
-            {arrayData.map((item, index) => (
-              <Box key={index} mb={2} pl={1}>
-                <Typography variant="subtitle2">
-                  {formatKey(title)} #{index + 1}
-                </Typography>
-                {renderNestedObject(item)}
-              </Box>
-            ))}
-          </CardContent>
-        </Card>
-      </Grid>
-    );
+                    {renderNestedObject(item)}
+                  </Box>
+                )
+              ))}
+            </CardContent>
+          </Card>
+        </Grid>
+      );
+    };
+    
   
     const renderDynamicSections = () => {
       return Object.entries(formData).map(([key, value]) => {
-        if (!value || ["id", "uuid", "parent"].includes(key)) return null;
+        if (!value || ["id", "uuid", "parent","applicationType","organizationType","applicationForSelf"].includes(key)) return null;
   
         if (Array.isArray(value)) {
           if (value.length > 0 && typeof value[0] === "object") {

@@ -98,7 +98,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApp
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.nid"
-                  value={formData.nid || ""}
+                  value={formData?.workforceEmployee.nid || ""}
                   onChange={(v) =>
                     handleChange("nid", v, "employeeDesignation")
                   }
@@ -110,7 +110,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApp
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.birth_certificate_no"
-                  value={formData.birthCertificateNo || ""}
+                  value={formData?.workforceEmployee.birthCertificateNo || ""}
                   onChange={(v) =>
                     handleChange("birthCertificateNo", v, "employeeDesignation")
                   }
@@ -174,7 +174,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApp
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.monthly_earning"
-                  value={formData.monthlyEarning || ""}
+                  value={formData?.workforceEmployee.monthlyEarning || ""}
                   onChange={(v) =>
                     handleChange("monthlyEarning", v, "employeeDesignation")
                   }
@@ -186,7 +186,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApp
                 <PublishedComponent
                   pubRef="core.DatePicker"
                   label={"workforce.employee.joindate"}
-                  value={formData.joinDate || ""}
+                  value={formData?.workforceEmployee.joinDate || ""}
                   onChange={(v) =>
                     handleChange("joinDate", v, "employeeDesignation")
                   }

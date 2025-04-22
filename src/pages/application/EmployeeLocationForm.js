@@ -66,7 +66,7 @@ const EmployeeLocationForm = ({ handleChange,formData, setFormData }) => {
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
-                  value={formData.presentLocation || null}
+                  value={formData?.workforceEmployee.presentLocation || null}
                   onChange={(presentLocation) =>
                     handleChange( "presentLocation", presentLocation )
                   }
@@ -78,7 +78,7 @@ const EmployeeLocationForm = ({ handleChange,formData, setFormData }) => {
               <Grid item xs={12} className={classes.item}>
                 <TextInput
                   label="workforce.employee.present_address"
-                  value={formData.presentAddress || ""}
+                  value={formData?.workforceEmployee.presentAddress || ""}
                   onChange={(v) => handleChange( "presentAddress", v )}
                   readOnly={false}
                 />
@@ -88,7 +88,7 @@ const EmployeeLocationForm = ({ handleChange,formData, setFormData }) => {
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
-                  value={formData.permanentLocation || null}
+                  value={formData?.workforceEmployee.permanentLocation || null}
                   onChange={(permanentLocation) =>
                     handleChange(
                       "permanentLocation", permanentLocation
@@ -102,7 +102,7 @@ const EmployeeLocationForm = ({ handleChange,formData, setFormData }) => {
               <Grid item xs={12} className={classes.item}>
                 <TextInput
                   label="workforce.employee.permanent_address"
-                  value={formData.permanentAddress || ""}
+                  value={formData?.workforceEmployee.permanentAddress || ""}
                   onChange={(v) => handleChange( "permanentAddress", v )}
                   readOnly={false}
                 />
