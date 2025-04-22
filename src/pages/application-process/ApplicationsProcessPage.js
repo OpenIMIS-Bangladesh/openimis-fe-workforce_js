@@ -25,6 +25,11 @@ const styles = (theme) => ({
 });
 
 class ApplicationsProcessPage extends Component {
+  constructor(props){
+    super(props);
+    this.state = {value:props.value || 0}
+
+  }
   onDoubleClick = (application, newTab = false) => {
     const routeParams = ["workforce.route.application", [decodeId(application.id)]];
     if (application?.isHistory) {
@@ -44,13 +49,14 @@ class ApplicationsProcessPage extends Component {
       'aria-controls': `simple-tabpanel-${index}`,
     };
   }
-  handleChange(event, newValue){
-    console.log('newValue')
-    this.setState({value:newValue})
-  }
+  handleChange = (event, newValue) => {
+    this.setState({ value: newValue });
+  };
+  
   render() {
-    const { intl, classes, rights,value } = this.props;
-
+    const { intl, classes, rights } = this.props;
+    const {value}=this.state;
+    console.log(value)
     return (
       <div className={classes.page}>
          <AppBar position="static">
@@ -58,22 +64,34 @@ class ApplicationsProcessPage extends Component {
           <Tab label="All" {...this.a11yProps(0)} />
           <Tab label="Accidental" {...this.a11yProps(1)} />
           <Tab label="Death" {...this.a11yProps(2)} />
-          <Tab label="Disibility" {...this.a11yProps(3)} />
+          <Tab label="Disability" {...this.a11yProps(3)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        Item One
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        Item Two
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Item Three
-      </TabPanel>
-        <ApplicationProcessSearcher
+      <ApplicationProcessSearcher
           cacheFiltersKey="ticketPageFiltersCache"
           onDoubleClick={this.onDoubleClick}
         />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+      <ApplicationProcessSearcher
+          cacheFiltersKey="ticketPageFiltersCache"
+          onDoubleClick={this.onDoubleClick}
+        />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+      <ApplicationProcessSearcher
+          cacheFiltersKey="ticketPageFiltersCache"
+          onDoubleClick={this.onDoubleClick}
+        />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+      <ApplicationProcessSearcher
+          cacheFiltersKey="ticketPageFiltersCache"
+          onDoubleClick={this.onDoubleClick}
+        />
+      </TabPanel>
+       
         {/*{rights.includes(RIGHT_ORGANIZATION_CREATE)*/}
         {/*  && withTooltip(*/}
         {withTooltip(
