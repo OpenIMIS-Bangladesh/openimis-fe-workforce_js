@@ -14,7 +14,6 @@ import { MODULE_NAME } from "../../constants";
 import AddApplicationPage from "../../pages/application-process/AddApplicationPage";
 import ViewApplicationPage from "../../pages/application-process/ViewApplicationPage";
 import VerifyApplicationPage from "../../pages/application-process/VerifyApplicationPage";
-import TabsForm from "./TabsForm";
 
 
 class ApplicationProcessForm extends Component {
@@ -142,7 +141,7 @@ class ApplicationProcessForm extends Component {
             Panels={
               (applicationUuid && !isVerify)
                 ? [ViewApplicationPage]
-                :(applicationUuid && isVerify)? [VerifyApplicationPage]: [AddApplicationPage][TabsForm]
+                :(applicationUuid && isVerify)? [VerifyApplicationPage]: [AddApplicationPage]
             }
             onEditedChanged={this.onEditedChanged}
           />

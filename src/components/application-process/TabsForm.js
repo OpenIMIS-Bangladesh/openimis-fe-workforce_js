@@ -6,7 +6,6 @@ import AccidentalTabForm from "./AccidentalTabForm";
 import AllTabForm from "./AllTabForm";
 import DeathTabForm from "./DeathTabForm";
 import DisabilityTabForm from "./DisabilityTabForm";
-// import {useLimitDefaultsQuery} from "../../hooks";
 // import {LIMIT_TYPES, PRICE_ORIGINS} from "../../constants";
 
 const CurrentTab = (props) => {
@@ -30,23 +29,11 @@ const TabsForm = (props) => {
   const [activeTab, setActiveTab] = useState("all");
   const handleChange = (_, value) => setActiveTab(value);
   const { formatMessage } = useTranslations("product.TabsForm");
-  const { isLoadingLimitDefaults, dataLimitDefaults} = useLimitDefaultsQuery({skip: true});
   const [isLoadedLimitDefaults, setLoadedLimitDefaults] = useState(false);
   const [limitType, setLimitType] = useState('C');
   const [coInsuranceDefaultValue, setCoInsuranceDefaultValue] = useState(100);
   const [fixedDefaultValue, setFixedDefaultValue] = useState(0);
   const [priceOrigin, setPriceOrigin] = useState('P')
-
-  useEffect(() => {
-    if (!isLoadingLimitDefaults && !isLoadedLimitDefaults) {
-      setPriceOrigin(dataLimitDefaults.limitDefaults.priceOrigin?? 'P')
-      setLimitType(dataLimitDefaults.limitDefaults.limitType?? 'C')
-      setCoInsuranceDefaultValue(dataLimitDefaults.limitDefaults.defaultLimitCoInsuranceValue?? 100)
-      setFixedDefaultValue(dataLimitDefaults.limitDefaults.defaultLimitFixedValue?? 0)
-      setLoadedLimitDefaults(true)
-    }
-  }, [dataLimitDefaults, isLoadingLimitDefaults]);
-
 
 
   return isLoadedLimitDefaults && (

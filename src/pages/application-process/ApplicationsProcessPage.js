@@ -9,7 +9,15 @@ import {
 
 import { MODULE_NAME } from "../../constants";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
+import TabsForm from "../../components/application-process/TabsForm";
 import { ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE } from "../../routes";
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import TabPanel from "./TabPanel";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -17,6 +25,11 @@ const styles = (theme) => ({
 });
 
 class ApplicationsProcessPage extends Component {
+  constructor(props){
+    super(props);
+    this.state = {value:props.value || 0}
+
+  }
   onDoubleClick = (application, newTab = false) => {
     const routeParams = ["workforce.route.application", [decodeId(application.id)]];
     if (application?.isHistory) {
@@ -28,16 +41,69 @@ class ApplicationsProcessPage extends Component {
   onAdd = () => {
     historyPush(this.props.modulesManager, this.props.history, "workforce.route.application");
   };
+  
 
+  a11yProps (index) {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
+  handleChange = (event, newValue) => {
+    this.setState({ value: newValue });
+  };
+  
   render() {
     const { intl, classes, rights } = this.props;
-
+    const {value}=this.state;
+    console.log(value)
     return (
       <div className={classes.page}>
-        <ApplicationProcessSearcher
+         <AppBar position="static">
+        <Tabs value={value} onChange={this.handleChange} aria-label="simple tabs example">
+        <Tab
+            label={<FormattedMessage module="workforce" id="workforce.application.process.all" />}
+            {...this.a11yProps(0)}
+          />
+         <Tab
+            label={<FormattedMessage module="workforce" id="workforce.application.process.accidental" />}
+            {...this.a11yProps(1)}
+          />
+          <Tab
+            label={<FormattedMessage module="workforce" id="workforce.application.process.death" />}
+            {...this.a11yProps(2)}
+          />
+          <Tab
+            label={<FormattedMessage module="workforce" id="workforce.application.process.disability" />}
+            {...this.a11yProps(3)}
+          />
+        </Tabs>
+      </AppBar>
+      <TabPanel value={value} index={0}>
+      <ApplicationProcessSearcher
           cacheFiltersKey="ticketPageFiltersCache"
           onDoubleClick={this.onDoubleClick}
         />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+      <ApplicationProcessSearcher
+          cacheFiltersKey="ticketPageFiltersCache"
+          onDoubleClick={this.onDoubleClick}
+        />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+      <ApplicationProcessSearcher
+          cacheFiltersKey="ticketPageFiltersCache"
+          onDoubleClick={this.onDoubleClick}
+        />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+      <ApplicationProcessSearcher
+          cacheFiltersKey="ticketPageFiltersCache"
+          onDoubleClick={this.onDoubleClick}
+        />
+      </TabPanel>
+       
         {/*{rights.includes(RIGHT_ORGANIZATION_CREATE)*/}
         {/*  && withTooltip(*/}
         {withTooltip(

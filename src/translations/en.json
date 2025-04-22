@@ -362,7 +362,6 @@
     "workforce.application.steps.skip":"Skip",
     "workforce.application.steps.dependentAdd":"Dependent Add",
 
-
     "workforce.registration.desclaimer": "Are you already a registered user? If not, please register.",
     "workforce.registration.title":"সুবিধাভোগী নিবন্ধন ফর্ম",
 
@@ -375,10 +374,13 @@
     "workforce.confirm.submit":"Confirm Submit",
     "workforce.success.message":"✅ Application submitted successfully!",
 
+    "workforce.representative.sameAsRepresentative": "Same as Company Representative",
 
+    "workforce.application.process.all": "All",
+    "workforce.application.process.accidental": "Accidental",
+    "workforce.application.process.death": "Death",
+    "workforce.application.process.disability": "Disability"
 
-
-    "workforce.representative.sameAsRepresentative": "Same as Company Representative"
 
 
 }
