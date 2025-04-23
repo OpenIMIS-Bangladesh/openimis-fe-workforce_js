@@ -79,11 +79,9 @@ const DisabilityForm = ({
   const reduxState = useSelector((state) => state);
 
   const [formData, setFormData] = useState({
-    firstNameEn: "",
-    firstNameBn: "",
+    nameEn: "",
+    nameBn: "",
     lastNameEn: "",
-    lastNameBn: "",
-    otherName: "",
     position: "",
     fatherNameEn: "",
     fatherNameBn: "",
@@ -204,8 +202,8 @@ const DisabilityForm = ({
     console.log({ formData });
     if (activeStep === 0 || activeStep === 1) {
       const workforceEmployeeData = {
-        nameEn: formData?.lastNameBn || formData.nameEn,
-        nameBn: formData?.firstNameBn || formData.nameBn,
+        nameEn: formData?.nameEn || formData.nameEn,
+        nameBn: formData?.nameBn || formData.nameBn,
         lastNameEn: "",
         phoneNumber: formData?.phoneNumber || formData.phoneNumber,
         email: formData?.email || formData.email,

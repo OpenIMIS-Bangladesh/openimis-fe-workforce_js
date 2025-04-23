@@ -84,11 +84,9 @@ const ScholarshipApplicationForm = ({
   
 
   const [formData, setFormData] = useState({
-    firstNameEn: "",
-    firstNameBn: "",
+    nameEn: "",
+    nameBn: "",
     lastNameEn: "",
-    lastNameBn: "",
-    otherName: "",
     position: "",
     fatherNameEn: "",
     fatherNameBn: "",
@@ -145,11 +143,9 @@ const ScholarshipApplicationForm = ({
       setFormData({
         organization: employeeData.organization,
         id: employeeData.id || "",
-        firstNameEn: employeeData.firstNameEn || "",
-        firstNameBn: employeeData.firstNameBn || "",
-        lastNameEn: employeeData.lastNameEn || "",
-        lastNameBn: employeeData.lastNameBn || "",
-        otherName: employeeData.otherName || "",
+        nameEn: employeeData.nameEn || "",
+        nameBn: employeeData.nameBn || "",
+        lastNameEn: "",
         position: employeeData.position || "",
         fatherNameEn: employeeData.fatherNameEn || "",
         fatherNameBn: employeeData.fatherNameBn || "",
@@ -207,11 +203,9 @@ const ScholarshipApplicationForm = ({
     console.log({ formData });
     if (activeStep === 0 || activeStep === 1) {
       const workforceEmployeeData = {
-        firstNameBn: formData?.firstNameBn || formData.firstNameBn,
-        lastNameBn: formData?.lastNameBn || formData.lastNameBn,
-        otherName: formData?.otherName || formData.otherName,
-        firstNameEn: formData?.firstNameEn || formData.firstNameEn,
-        lastNameEn: formData?.lastNameEn || formData.lastNameEn,
+        nameEn: formData?.nameEn || formData.nameEn,
+        nameBn: formData?.nameBn || formData.nameBn,
+        lastNameEn: "",
         phoneNumber: formData?.phoneNumber || formData.phoneNumber,
         email: formData?.email || formData.email,
         gender: formData?.gender?.id || formData.gender.id,
