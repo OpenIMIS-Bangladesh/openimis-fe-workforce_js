@@ -180,6 +180,13 @@
     "workforce.application.steps.hsc":"এইচ.এস.সি. বা সমমান",
     "workforce.application.steps.skip":"বাদ দিন",
     "workforce.application.steps.dependentAdd":"নির্ভরশীল যোগ করুন",
+    "workforce.application.steps.reasonsforSeekingFinancialAssistance":"আর্থিক সহায়তা চাওয়ার কারণ",
+    "workforce.application.reasons.physicalMentalDisability": "দুর্ঘটনাজনিত কারণে দৈহিক ও মানসিকভাবে স্থায়ী অক্ষমতা (সর্বশেষ সময়সীমা বিগত ১০৫ দিনের মধ্যে হতে হবে)",
+    "workforce.application.reasons.accidentalDeath": "দুর্ঘটনাজনিত কারণে মৃত্যু (সর্বশেষ সময়সীমা বিগত ১০৫ দিনের মধ্যে হতে হবে)",
+    "workforce.application.reasons.curativeTreatment": "দুরারোগ্য চিকিৎসা",
+    "workforce.application.reasons.deathbodyRefinement": "মৃতদেহ পরিবহন ও সৎকার",
+    "workforce.application.reasons.maternalWelfare": "অপ্রাতিষ্ঠানিক খাতে কর্মরত মহিলা শ্রমিকের মাতৃত্ব কল্যাণ",
+
 
     "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন",
 

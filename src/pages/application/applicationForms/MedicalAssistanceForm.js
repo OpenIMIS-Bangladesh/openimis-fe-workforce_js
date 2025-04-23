@@ -80,11 +80,9 @@ const MedicalAssistanceForm = ({
 
   const [formData, setFormData] = useState({
     workforceEmployee: {
-      firstNameEn: "",
-      firstNameBn: "",
+      nameEn: "",
+      nameBn: "",
       lastNameEn: "",
-      lastNameBn: "",
-      otherName: "",
       position: "",
       fatherNameEn: "",
       fatherNameBn: "",
@@ -147,11 +145,9 @@ const MedicalAssistanceForm = ({
         id: employeeData.id || "",
         workforceEmployee: {
           organization: employeeData.organization,
-          firstNameEn: employeeData.firstNameEn || "",
-          firstNameBn: employeeData.firstNameBn || "",
-          lastNameEn: employeeData.lastNameEn || "",
-          lastNameBn: employeeData.lastNameBn || "",
-          otherName: employeeData.otherName || "",
+          nameEn: employeeData.nameEn || "",
+          nameBn: employeeData.nameBn || "",
+          lastNameEn: "",
           position: employeeData.position || "",
           fatherNameEn: employeeData.fatherNameEn || "",
           fatherNameBn: employeeData.fatherNameBn || "",
@@ -213,21 +209,13 @@ const MedicalAssistanceForm = ({
     console.log({ formData });
     if (activeStep === 0 || activeStep === 1) {
       const workforceEmployeeData = {
-        firstNameBn:
-          formData?.workforceEmployee?.firstNameBn ||
-          formData?.workforceEmployee.firstNameBn,
-        lastNameBn:
-          formData?.workforceEmployee?.lastNameBn ||
-          formData?.workforceEmployee.lastNameBn,
-        otherName:
-          formData?.workforceEmployee?.otherName ||
-          formData?.workforceEmployee.otherName,
-        firstNameEn:
-          formData?.workforceEmployee?.firstNameEn ||
-          formData?.workforceEmployee.firstNameEn,
-        lastNameEn:
-          formData?.workforceEmployee?.lastNameEn ||
-          formData?.workforceEmployee.lastNameEn,
+        nameEn:
+          formData?.workforceEmployee?.nameEn ||
+          formData?.workforceEmployee.nameEn,
+        nameBn:
+          formData?.workforceEmployee?.nameBn ||
+          formData?.workforceEmployee.nameBn,
+        lastNameEn: "",
         phoneNumber:
           formData?.workforceEmployee?.phoneNumber ||
           formData?.workforceEmployee.phoneNumber,
