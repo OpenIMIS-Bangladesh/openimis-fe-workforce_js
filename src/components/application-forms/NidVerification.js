@@ -51,12 +51,12 @@ const NidVerification = ({ formData }) => {
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <Typography>
-                      <b><FormattedMessage module="workforce" id="workforce.employee.name.en"/>:</b> {formData.workforceEmployee.firstNameEn}
-                      <b><FormattedMessage module="workforce" id="workforce.employee.name.bn"/>:</b> {formData.workforceEmployee.firstNameBn}
-                      <b><FormattedMessage module="workforce" id="workforce.employee.fathers_name.en"/>:</b> {formData.workforceEmployee.fatherNameEn}
-                      <b><FormattedMessage module="workforce" id="workforce.employee.mothers_name.en"/>:</b> {formData.workforceEmployee.motherNameEn}
-                      <b><FormattedMessage module="workforce" id="workforce.employee.birthdate"/>:</b> {formData.workforceEmployee.birthDate}
-                      <b><FormattedMessage module="workforce" id="workforce.employee.nid"/>:</b> {formData.workforceEmployee.Nid}
+                      <b><FormattedMessage module="workforce" id="workforce.employee.name.en"/>:</b> {formData.workforceEmployee.firstNameEn}<br/>
+                      <b><FormattedMessage module="workforce" id="workforce.employee.name.bn"/>:</b> {formData.workforceEmployee.firstNameBn}<br/>
+                      <b><FormattedMessage module="workforce" id="workforce.employee.fathers_name.en"/>:</b> {formData.workforceEmployee.fatherNameEn}<br/>
+                      <b><FormattedMessage module="workforce" id="workforce.employee.mothers_name.en"/>:</b> {formData.workforceEmployee.motherNameEn}<br/>
+                      <b><FormattedMessage module="workforce" id="workforce.employee.birthdate"/>:</b> {formData.workforceEmployee.birthDate}<br/>
+                      <b><FormattedMessage module="workforce" id="workforce.employee.nid"/>:</b> {formData.workforceEmployee.nid}<br/>
                     </Typography>
                   </Grid>
                 </Grid>

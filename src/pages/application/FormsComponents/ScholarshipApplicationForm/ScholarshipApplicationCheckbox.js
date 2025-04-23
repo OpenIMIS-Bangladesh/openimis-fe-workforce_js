@@ -21,9 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ScholarshipApplicationCheckbox = ({ modulesManager,onSelect }) => {
-  const [selectedScholarshipOption, setselectedScholarshipOption] = useState("");
-  const [isExportOriented, setIsExportOriented] = useState("");
+const ScholarshipApplicationCheckbox = ({ modulesManager,onSelect,selectedScholarshipOption, setselectedScholarshipOption }) => {
   const { formatMessage } = useTranslations(
       "core.RegistrationPage",
       modulesManager,
@@ -33,16 +31,16 @@ const ScholarshipApplicationCheckbox = ({ modulesManager,onSelect }) => {
 
   const handleExportOrientedChange = (event) => {
     const value = event.target.value;
-    setIsExportOriented(value);
+    setselectedScholarshipOption(value);
   };
 
   return (
-    <Paper className={classes.paper} elevation={3}>
+    <Paper className={classes.paper} elevation={0}>
       <FormControl component="fieldset">
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
           {<FormattedMessage module="workforce" id="workforce.application.steps.select"/>}
         </Typography>
-        <RadioGroup value={isExportOriented} onChange={handleExportOrientedChange}>
+        <RadioGroup value={selectedScholarshipOption} onChange={handleExportOrientedChange}>
           <FormControlLabel value="sscEquvalent" control={<Radio color="primary" />} label={<FormattedMessage module="workforce" id="workforce.application.steps.ssc"/>} />
           <FormControlLabel value="hscEquvalent" control={<Radio color="primary" />} label={<FormattedMessage module="workforce" id="workforce.application.steps.hsc"/>} />
         </RadioGroup> 

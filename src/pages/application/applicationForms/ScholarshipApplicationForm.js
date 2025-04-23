@@ -58,6 +58,8 @@ const ScholarshipApplicationForm = ({
   organizationType,
   selectedApplicationType,
   applicationForSelf,
+  selectedCompany,
+  selectedFactory,
 }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
@@ -69,58 +71,56 @@ const ScholarshipApplicationForm = ({
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
-  const [selectedForm, setSelectedForm] = useState(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [selectedScholarshipOption, setselectedScholarshipOption] = useState("");
+  const [showVerifyNid, setShowVerifyNid] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const reduxState = useSelector((state) => state);
 
-  // const steps = [
-  //   "workforce.application.steps.select",
-  //   "workforce.application.steps.employeeDetails",
-  //   "workforce.application.steps.location",
-  //   "workforce.application.steps.childInfo",
-  //   "workforce.application.steps.upload.documents",
-  //   ...(applicationForSelf === "no" ? ["workforce.application.steps.dependent"] : []),
-  //   "workforce.application.steps.account.info",
-  // ];
-  
-
   const [formData, setFormData] = useState({
-    firstNameEn: "",
-    firstNameBn: "",
-    lastNameEn: "",
-    lastNameBn: "",
-    otherName: "",
-    position: "",
-    fatherNameEn: "",
-    fatherNameBn: "",
-    motherNameEn: "",
-    motherNameBn: "",
-    spouseNameEn: "",
-    spouseNameBn: "",
-    phoneNumber: "",
-    email: "",
-    citizenship: "",
-    birthDate: "",
-    deathDate: "",
-    joinDate: "",
-    nid: "",
-    birthCertificateNo: "",
-    insuranceNumber: "",
+    workforceEmployee: {
+      firstNameEn: "",
+      firstNameBn: "",
+      lastNameEn: "",
+      lastNameBn: "",
+      otherName: "",
+      position: "",
+      fatherNameEn: "",
+      fatherNameBn: "",
+      motherNameEn: "",
+      motherNameBn: "",
+      spouseNameEn: "",
+      spouseNameBn: "",
+      phoneNumber: "",
+      email: "",
+      birthDate: "",
+      deathDate: "",
+      joinDate: "",
+      nid: "",
+      birthCertificateNo: "",
+      insuranceNumber: "",
+      lifeStatus: "",
+      gender: "",
+      maritalStatus: "",
+      monthlyEarning: "",
+      uploadedNidFile: [],
+      citizenship: "",
+      uploadedBirthCertificateFile: [],
+      permanentAddress: "",
+      permanentLocation: "",
+      presentLocation: "",
+      presentAddress: "",
+      organizationId: "",
+    },
     company: null,
     factory: null,
-    lifeStatus: "",
-    gender: "",
-    maritalStatus: "",
-    monthlyEarning: "",
-    uploadedNidFile: [],
-    uploadedBirthCertificateFile: [],
-    permanentAddress: "",
-    permanentLocation: "",
-    presentLocation: "",
-    presentAddress: "",
-    organizationId: "",
+    isSubmitted: "no",
+    organizationType: "",
+    applicationType: "",
+    applicationForSelf: applicationForSelf,
     dependents: [{}],
     employeeBankInfo: {},
-    employeeChildrenInfo: {},
+    employeeAccidentInfo: {},
     id: "",
   });
 
@@ -143,45 +143,50 @@ const ScholarshipApplicationForm = ({
     if (employeeData) {
       // When employeeData is fetched, set it into the form state
       setFormData({
-        organization: employeeData.organization,
         id: employeeData.id || "",
-        firstNameEn: employeeData.firstNameEn || "",
-        firstNameBn: employeeData.firstNameBn || "",
-        lastNameEn: employeeData.lastNameEn || "",
-        lastNameBn: employeeData.lastNameBn || "",
-        otherName: employeeData.otherName || "",
-        position: employeeData.position || "",
-        fatherNameEn: employeeData.fatherNameEn || "",
-        fatherNameBn: employeeData.fatherNameBn || "",
-        motherNameEn: employeeData.motherNameEn || "",
-        motherNameBn: employeeData.motherNameBn || "",
-        spouseNameEn: employeeData.spouseNameEn || "",
-        spouseNameBn: employeeData.spouseNameBn || "",
-        phoneNumber: employeeData.phoneNumber || "",
-        email: employeeData.email || "",
-        citizenship: employeeData.citizenship || "",
-        birthDate: employeeData.birthDate || "",
-        deathDate: employeeData.deathDate || "",
-        joinDate: employeeData.joinDate || "",
-        nid: employeeData.nid || "",
-        birthCertificateNo: employeeData.birthCertificateNo || "",
-        insuranceNumber: employeeData.insuranceNumber || "",
-        company: employeeData.company || null,
-        factory: employeeData.factory || null,
-        lifeStatus: employeeData.lifeStatus || "",
-        gender: employeeData.gender || "",
-        maritalStatus: employeeData.maritalStatus || "",
-        monthlyEarning: employeeData.monthlyEarning || "",
-        uploadedNidFile: employeeData.uploadedNidFile || [],
-        uploadedBirthCertificateFile:
-          employeeData.uploadedBirthCertificateFile || [],
-        permanentAddress: employeeData.permanentAddress || "",
-        permanentLocation: employeeData.permanentLocation || "",
-        presentLocation: employeeData.presentLocation || "",
-        presentAddress: employeeData.presentAddress || "",
+        workforceEmployee: {
+          organization: employeeData.organization,
+          firstNameEn: employeeData.firstNameEn || "",
+          firstNameBn: employeeData.firstNameBn || "",
+          lastNameEn: employeeData.lastNameEn || "",
+          lastNameBn: employeeData.lastNameBn || "",
+          otherName: employeeData.otherName || "",
+          position: employeeData.position || "",
+          fatherNameEn: employeeData.fatherNameEn || "",
+          fatherNameBn: employeeData.fatherNameBn || "",
+          motherNameEn: employeeData.motherNameEn || "",
+          motherNameBn: employeeData.motherNameBn || "",
+          spouseNameEn: employeeData.spouseNameEn || "",
+          spouseNameBn: employeeData.spouseNameBn || "",
+          phoneNumber: employeeData.phoneNumber || "",
+          email: employeeData.email || "",
+          citizenship: employeeData.citizenship || "",
+          birthDate: employeeData.birthDate || "",
+          deathDate: employeeData.deathDate || "",
+          joinDate: employeeData.joinDate || "",
+          nid: employeeData.nid || "",
+          birthCertificateNo: employeeData.birthCertificateNo || "",
+          insuranceNumber: employeeData.insuranceNumber || "",
+          lifeStatus: employeeData.lifeStatus || "",
+          gender: employeeData.gender || "",
+          maritalStatus: employeeData.maritalStatus || "",
+          monthlyEarning: employeeData.monthlyEarning || "",
+          uploadedNidFile: employeeData.uploadedNidFile || [],
+          uploadedBirthCertificateFile:
+            employeeData.uploadedBirthCertificateFile || [],
+          permanentAddress: employeeData.permanentAddress || "",
+          permanentLocation: employeeData.permanentLocation || "",
+          presentLocation: employeeData.presentLocation || "",
+          presentAddress: employeeData.presentAddress || "",
+        },
+        company: selectedCompany || employeeData.company || null,
+        factory: selectedFactory || employeeData.factory || null,
+        applicationForSelf: applicationForSelf,
+        organizationType: organizationType,
+        applicationType: selectedApplicationType,
         dependents: employeeData.dependents || [{}],
         employeeBankInfo: employeeData.employeeBankInfo || {},
-        employeeChildrenInfo: employeeData.employeeChildrenInfo || {},
+        employeeAccidentInfo: employeeData.employeeAccidentInfo || {},
       });
     }
   }, [employeeData]); // Trigger this useEffect when `employeeData` changes.
@@ -203,106 +208,162 @@ const ScholarshipApplicationForm = ({
     });
   };
 
-  const handleNext = async () => {
-    console.log({ formData });
-    if (activeStep === 0 || activeStep === 1) {
-      const workforceEmployeeData = {
-        firstNameBn: formData?.firstNameBn || formData.firstNameBn,
-        lastNameBn: formData?.lastNameBn || formData.lastNameBn,
-        otherName: formData?.otherName || formData.otherName,
-        firstNameEn: formData?.firstNameEn || formData.firstNameEn,
-        lastNameEn: formData?.lastNameEn || formData.lastNameEn,
-        phoneNumber: formData?.phoneNumber || formData.phoneNumber,
-        email: formData?.email || formData.email,
-        gender: formData?.gender?.id || formData.gender.id,
-        birthDate: formData?.birthDate || formData.birthDate,
-        deathDate: formData?.deathDate || formData.deathDate,
-        lifeStatus: formData?.lifeStatus || formData.lifeStatus,
-        permanentAddress:
-          formData?.permanentAddress || formData.permanentAddress,
-        presentAddress: formData?.presentAddress || formData.presentAddress,
-        position: formData?.position || formData.position,
-        monthlyEarning: formData?.monthlyEarning || formData.monthlyEarning,
-        insuranceNumber: formData?.insuranceNumber || formData.insuranceNumber,
-        fatherNameBn: formData?.fatherNameBn || formData.fatherNameBn,
-        fatherNameEn: formData?.fatherNameEn || formData.fatherNameEn,
-        motherNameBn: formData?.motherNameBn || formData.motherNameBn,
-        motherNameEn: formData?.motherNameEn || formData.motherNameEn,
-        spouseNameBn: formData?.spouseNameBn || formData.spouseNameBn,
-        spouseNameEn: formData?.spouseNameEn || formData.spouseNameEn,
-        citizenship: formData?.citizenship || formData.citizenship,
-        maritalStatus: formData?.maritalStatus || formData.maritalStatus,
-        presentLocation: formData?.presentLocation || formData.presentLocation,
-        permanentLocation:
-          formData?.permanentLocation || formData.permanentLocation,
-        id: formData?.id,
-      };
-      console.log("Update Submitting formData:", formData);
-      await dispatch(
-        updateWorkforceEmployee(
-          workforceEmployeeData,
-          `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-        )
-      );
-      // dispatch(
-      //   updateApplication(
-      //     formData,
-      //     `update workforce application ${formData.firstNameEn}`
-      //   )
-      // );
-    } else if (activeStep === 2) {
-      console.log("Create application formData:", formData);
-      const createApplicationData = {
-        workforceEmployeeId: formData.id,
-        company: formData.company,
-        factory: formData.factory,
-        employeeDesignationInfo: JSON.stringify(
-          formData.employeeDesignationInfo
-        ),
-        employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
-        employeeDependentInfo: JSON.stringify(formData.dependents),
-        employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo),
-        status: "ontest",
-      };
-
-      const applicationMutation = await formatMutation(
-        "createWorkforceApplication",
-        formatApplicationeGQL(createApplicationData),
-        `Created application ${formData.nameEn}`
-      );
-      const applicationClientMutationId = applicationMutation.clientMutationId;
-
-      await dispatch(
-        createApplication(
-          createApplicationData,
-          `Created workforce application ${formData.firstNameEn}`
-        )
-      );
-
-      await dispatch(
-        fetchApplicationId(modulesManager, applicationClientMutationId)
-      );
-    } else {
-      const updateApplicationData = {
-        id: decodeId(applicationId[0].id),
-        workforceEmployeeId: formData.id,
-        company: formData.company,
-        factory: formData.factory,
-        employeeDesignationInfo: formData.employeeDesignationInfo,
-        employeeBankInfo: formData.employeeBankInfo,
-        employeeDependentInfo: formData.dependents,
-        employeeChildrenInfo: formData.employeeChildrenInfo,
-        status: "ontest",
-      };
-      dispatch(
-        updateApplication(
-          updateApplicationData,
-          `update workforce application ${formData.firstNameEn}`
-        )
-      );
-    }
-    setActiveStep((prevStep) => prevStep + 1);
-  };
+   const handleNext = async () => {
+      console.log({ formData });
+      if (activeStep === 0 || activeStep === 1) {
+        const workforceEmployeeData = {
+          firstNameBn:
+            formData?.workforceEmployee?.firstNameBn ||
+            formData?.workforceEmployee.firstNameBn,
+          lastNameBn:
+            formData?.workforceEmployee?.lastNameBn ||
+            formData?.workforceEmployee.lastNameBn,
+          otherName:
+            formData?.workforceEmployee?.otherName ||
+            formData?.workforceEmployee.otherName,
+          firstNameEn:
+            formData?.workforceEmployee?.firstNameEn ||
+            formData?.workforceEmployee.firstNameEn,
+          lastNameEn:
+            formData?.workforceEmployee?.lastNameEn ||
+            formData?.workforceEmployee.lastNameEn,
+          phoneNumber:
+            formData?.workforceEmployee?.phoneNumber ||
+            formData?.workforceEmployee.phoneNumber,
+          email:
+            formData?.workforceEmployee?.email ||
+            formData?.workforceEmployee.email,
+          gender:
+            formData?.workforceEmployee?.gender?.id ||
+            formData?.workforceEmployee.gender.id,
+          birthDate:
+            formData?.workforceEmployee?.birthDate ||
+            formData?.workforceEmployee.birthDate,
+          deathDate:
+            formData?.workforceEmployee?.deathDate ||
+            formData?.workforceEmployee.deathDate,
+          lifeStatus:
+            formData?.workforceEmployee?.lifeStatus ||
+            formData?.workforceEmployee.lifeStatus,
+          permanentAddress:
+            formData?.workforceEmployee?.permanentAddress ||
+            formData?.workforceEmployee.permanentAddress,
+          presentAddress:
+            formData?.workforceEmployee?.presentAddress ||
+            formData?.workforceEmployee.presentAddress,
+          position:
+            formData?.workforceEmployee?.position ||
+            formData?.workforceEmployee.position,
+          monthlyEarning:
+            formData?.workforceEmployee?.monthlyEarning ||
+            formData?.workforceEmployee.monthlyEarning,
+          insuranceNumber:
+            formData?.workforceEmployee?.insuranceNumber ||
+            formData?.workforceEmployee.insuranceNumber,
+          fatherNameBn:
+            formData?.workforceEmployee?.fatherNameBn ||
+            formData?.workforceEmployee.fatherNameBn,
+          fatherNameEn:
+            formData?.workforceEmployee?.fatherNameEn ||
+            formData?.workforceEmployee.fatherNameEn,
+          motherNameBn:
+            formData?.workforceEmployee?.motherNameBn ||
+            formData?.workforceEmployee.motherNameBn,
+          motherNameEn:
+            formData?.workforceEmployee?.motherNameEn ||
+            formData?.workforceEmployee.motherNameEn,
+          spouseNameBn:
+            formData?.workforceEmployee?.spouseNameBn ||
+            formData?.workforceEmployee.spouseNameBn,
+          spouseNameEn:
+            formData?.workforceEmployee?.spouseNameEn ||
+            formData?.workforceEmployee.spouseNameEn,
+          citizenship:
+            formData?.workforceEmployee?.citizenship ||
+            formData?.workforceEmployee.citizenship,
+          maritalStatus:
+            formData?.workforceEmployee?.maritalStatus ||
+            formData?.workforceEmployee.maritalStatus,
+          presentLocation:
+            formData?.workforceEmployee?.presentLocation ||
+            formData?.workforceEmployee.presentLocation,
+          permanentLocation:
+            formData?.workforceEmployee?.permanentLocation ||
+            formData?.workforceEmployee.permanentLocation,
+          id: formData?.id,
+        };
+        console.log("Update Submitting formData:", formData);
+        await dispatch(
+          updateWorkforceEmployee(
+            workforceEmployeeData,
+            `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+          )
+        );
+        // dispatch(
+        //   updateApplication(
+        //     formData,
+        //     `update workforce application ${formData.firstNameEn}`
+        //   )
+        // );
+      } else if (activeStep === 2) {
+        console.log("Create application formData:", formData);
+        const createApplicationData = {
+          workforceEmployeeId: formData.id,
+          company: formData.company,
+          factory: formData.factory,
+          organizationType: formData.organizationType,
+          applicationType: formData.applicationType,
+          employeeDesignationInfo: JSON.stringify(
+            formData.employeeDesignationInfo
+          ),
+          employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
+          employeeDependentInfo: JSON.stringify(formData.dependents),
+          employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo),
+          status: WORKFORCE_STATUS.PENDING,
+        };
+  
+        console.log({ createApplicationData });
+  
+        const applicationMutation = await formatMutation(
+          "createWorkforceApplication",
+          formatApplicationeGQL(createApplicationData),
+          `Created application ${formData.nameEn}`
+        );
+        const applicationClientMutationId = applicationMutation.clientMutationId;
+        console.log("applicationClientMutationId", applicationClientMutationId);
+        await dispatch(
+          createApplication(
+            applicationMutation,
+            `Created workforce application ${formData.firstNameEn}`
+          )
+        );
+  
+        await dispatch(
+          fetchApplicationId(modulesManager, applicationClientMutationId)
+        );
+      } else {
+        const updateApplicationData = {
+          id: decodeId(applicationId[0].id),
+          workforceEmployeeId: formData.id,
+          company: formData.company,
+          factory: formData.factory,
+          organizationType: organizationType,
+          applicationType: selectedApplicationType,
+          employeeDesignationInfo: formData.employeeDesignationInfo,
+          employeeBankInfo: formData.employeeBankInfo,
+          employeeDependentInfo: formData.dependents,
+          employeeAccidentInfo: formData.employeeAccidentInfo,
+          status: "ontest",
+        };
+        dispatch(
+          updateApplication(
+            updateApplicationData,
+            `update workforce application ${formData.firstNameEn}`
+          )
+        );
+      }
+      setActiveStep((prevStep) => prevStep + 1);
+    };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
@@ -328,143 +389,139 @@ const ScholarshipApplicationForm = ({
     });
   };
 
-  const handleSubmit = () => {
-    console.log("Submitting formData:", formData);
-    dispatch(
-      createApplication(
-        formData,
-        `Created workforce application ${formData.firstNameEn}`
-      )
-    );
+  const handleSubmit = async () => {
+    console.log({ tazwer: formData });
+    // const updateApplicationData = {
+    //   id: decodeId(applicationId[0].id),
+    //   workforceEmployeeId: formData.id,
+    //   company: formData.company,
+    //   factory: formData.factory,
+    //   organizationType: organizationType,
+    //   applicationType: selectedApplicationType,
+    //   employeeDesignationInfo: formData.employeeDesignationInfo,
+    //   employeeBankInfo: formData.employeeBankInfo,
+    //   employeeDependentInfo: formData.dependents,
+    //   employeeAccidentInfo: formData.employeeAccidentInfo,
+    //   isSubmitted: "yes",
+    //   status: "ontest",
+    // };
+    // dispatch(
+    //   updateApplication(
+    //     updateApplicationData,
+    //     `update workforce application ${formData.firstNameEn}`
+    //   )
+    // );
+    setShowPreview(true);
+    setIsSubmitted(true);
   };
 
   const steps = [
-    { label: "workforce.application.steps.select", content: <Box mt={3}>
-    <ScholarshipApplicationCheckbox
-      handleChange={handleChange}
-      formData={formData}
-    />
-  </Box> },
-    { label: "workforce.application.steps.employeeDetails", content: <Box mt={3}>
-    <EmployeeDetailsForm
-      handleChange={handleChange}
-      formData={formData}
-    />
-  </Box> },
-    { label: "workforce.application.steps.location", content: <Box mt={3}>
-    <EmployeeLocationForm
-      handleChange={handleChange}
-      formData={formData}
-    />
-  </Box> },
-    { label: "workforce.application.steps.childInfo", content: <Box mt={3}>
-    <EmployeeChildrenDetailsForm
-      handleChange={(key, value) =>
-        handleChange(key, value, "employeeChildrenInfo")
-      }
-      formData={formData}
-    />
-  </Box> },
-    { label: "workforce.application.steps.upload.documents", content: <Box mt={3}>
-    <EmployeeDetailsForm2
-      handleChange={handleChange}
-      formData={formData}
-    />
-  </Box> },
-    ...(applicationForSelf === "no" ? [{ label: "workforce.application.steps.dependent", content: <Box mt={3}>
-      {formData?.applicationForSelf === "no" && (
-        <EmployeeDependentForm
-          values={formData}
-          onChange={handleChange}
-          onAddDependent={handleAddDependent}
-          onRemoveDependent={handleRemoveDependent}
-        />
-      )}
+    {
+      label: "workforce.application.steps.select",
+      content: (
+        <Box mt={1}>
+          <ScholarshipApplicationCheckbox
+            handleChange={handleChange}
+            formData={formData}
+            setselectedScholarshipOption={setselectedScholarshipOption}
+            selectedScholarshipOption={selectedScholarshipOption}
+          />
+        </Box>
+      ),
+    },
+    {
+      label: "workforce.application.steps.employeeDetails",
+      content: (
+        <Box mt={1}>
+          <EmployeeDetailsForm
+            handleChange={handleChange}
+            formData={formData}
+          />
+        </Box>
+      ),
+    },
+    {
+      label: "workforce.application.steps.location",
+      content: (
+        <Box mt={1}>
+          <EmployeeLocationForm
+            handleChange={handleChange}
+            formData={formData}
+          />
+        </Box>
+      ),
+    },
+    {
+      label: "workforce.application.steps.childInfo",
+      content: (
+        <Box mt={1}>
+          <EmployeeChildrenDetailsForm
+            handleChange={(key, value) =>
+              handleChange(key, value, "employeeChildrenInfo")
+            }
+            formData={formData}
+          />
+        </Box>
+      ),
+    },
+    {
+      label: "workforce.application.steps.upload.documents",
+      content: (
+        <Box mt={1}>
+          <EmployeeDetailsForm2
+            handleChange={handleChange}
+            formData={formData}
+          />
+        </Box>
+      ),
+    },
+    ...(applicationForSelf === "no"
+      ? [
+          {
+            label: "workforce.application.steps.dependent",
+            content: (
+              <Box mt={1}>
+                {formData?.applicationForSelf === "no" && (
+                  <EmployeeDependentForm
+                    dependents={formData.dependents}
+                    handleDependentChange={handleDependentChange}
+                    addDependent={addDependent}
+                    removeDependent={removeDependent}
+                  />
+                )}
+              </Box>
+            ),
+          },
+        ]
+      : []),
 
-    </Box> }] : []),
-
-    { label: "workforce.application.steps.account.info", content: <Box mt={3}>
-    <EmployeeAccountInfoForm
-      handleChange={(key, value) =>
-        handleChange(key, value, "employeeBankInfo")
-      }
-      formData={formData.employeeBankInfo}
-    />
-  </Box> },
+    {
+      label: "workforce.application.steps.account.info",
+      content: (
+        <Box mt={1}>
+          <EmployeeAccountInfoForm
+            handleChange={(key, value) =>
+              handleChange(key, value, "employeeBankInfo")
+            }
+            formData={formData.employeeBankInfo}
+          />
+        </Box>
+      ),
+    },
   ];
 
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={3}>
         <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((step,index) => (
+          {steps.map((step, index) => (
             <Step key={index}>
               <StepLabel>
-
                 <FormattedMessage module="workforce" id={step.label} />
               </StepLabel>
             </Step>
           ))}
         </Stepper>
-        {/* {activeStep === 0 ? (
-          <Box mt={3}>
-            <ScholarshipApplicationCheckbox
-              handleChange={handleChange}
-              formData={formData}
-            />
-          </Box>
-        ) : activeStep === 1 ? (
-          <Box mt={3}>
-            <EmployeeDetailsForm
-              handleChange={handleChange}
-              formData={formData}
-            />
-          </Box>
-        ) : activeStep === 2 ? (
-          <Box mt={3}>
-            <EmployeeLocationForm
-              handleChange={handleChange}
-              formData={formData}
-            />
-          </Box>
-        ) : activeStep === 3 ? (
-          <Box mt={3}>
-            <EmployeeChildrenDetailsForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeChildrenInfo")
-              }
-              formData={formData}
-            />
-          </Box>
-        ) : activeStep === 4 ? (
-          <Box mt={3}>
-            <EmployeeDetailsForm2
-              handleChange={handleChange}
-              formData={formData}
-            />
-          </Box>
-        ) : activeStep === 5 ? (
-          <Box mt={3}>
-            {formData?.applicationForSelf === "no" && (
-              <EmployeeDependentForm
-                values={formData}
-                onChange={handleChange}
-                onAddDependent={handleAddDependent}
-                onRemoveDependent={handleRemoveDependent}
-              />
-            )}
-
-          </Box>
-        ) : (
-          <Box mt={3}>
-            <EmployeeAccountInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeBankInfo")
-              }
-              formData={formData.employeeBankInfo}
-            />
-          </Box>
-        )} */}
 
         {steps[activeStep].content}
         <div className={classes.buttonContainer}>
