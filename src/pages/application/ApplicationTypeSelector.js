@@ -63,7 +63,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedCompany, set
   console.log({selectedFactory})
 
   return (
-    <Paper className={classes.paper} elevation={3}>
+    <Paper className={classes.paper} elevation={0}>
       {/* Company Picker */}
       <Box mt={3}>
       <CompanyPicker  
