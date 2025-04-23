@@ -40,15 +40,60 @@ const MedicalDonationCheckbox = ({ modulesManager,onSelect }) => {
     <Paper className={classes.paper} elevation={3}>
       <FormControl component="fieldset">
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
-          {<FormattedMessage id="আর্থিক সহায়তা চাওয়ার কারণ"/>}
+          <FormattedMessage module="workforce" id="workforce.application.steps.reasonsforSeekingFinancialAssistance" />
         </Typography>
         <RadioGroup value={isExportOriented} onChange={handleExportOrientedChange}>
-          <FormControlLabel value="physicalMentalDisability" control={<Radio color="primary" />} label="দুর্ঘটনাজনিত কারণে দৈহিক ও মানসিকভাবে স্থায়ী অক্ষমতা (সর্বশেষ সময়সীমা বিগত ১০৫ দিনের মধ্যে হতে হবে);" />
-          <FormControlLabel value="accidentalDeath" control={<Radio color="primary" />} label="দুর্ঘটনাজনিত কারণে মৃত্যু (সর্বশেষ সময়সীমা বিগত ১০৫ দিনের মধ্যে হতে হবে);" />
-          <FormControlLabel value="curativeTreatment" control={<Radio color="primary" />} label="দুরারোগ্য চিকিৎসা;" />
-          <FormControlLabel value="deathbodyRefinement" control={<Radio color="primary" />} label="মৃতদেহ পরিবহন ও সৎকার;" />
-          <FormControlLabel value="maternalWelfare" control={<Radio color="primary" />} label="অপ্রাতিষ্ঠানিক খাতে কর্মরত মহিলা শ্রমিকের মাতৃত্ব কল্যাণ;" />
-        </RadioGroup> 
+          <FormControlLabel
+            value="physicalMentalDisability"
+            control={<Radio color="primary" />}
+            label={
+              <FormattedMessage
+                module="workforce"
+                id="workforce.application.reasons.physicalMentalDisability"
+              />
+            }
+          />
+          <FormControlLabel
+            value="accidentalDeath"
+            control={<Radio color="primary" />}
+            label={
+              <FormattedMessage
+                module="workforce"
+                id="workforce.application.reasons.accidentalDeath"
+              />
+            }
+          />
+          <FormControlLabel
+            value="curativeTreatment"
+            control={<Radio color="primary" />}
+            label={
+              <FormattedMessage
+                module="workforce"
+                id="workforce.application.reasons.curativeTreatment"
+              />
+            }
+          />
+          <FormControlLabel
+            value="deathbodyRefinement"
+            control={<Radio color="primary" />}
+            label={
+              <FormattedMessage
+                module="workforce"
+                id="workforce.application.reasons.deathbodyRefinement"
+              />
+            }
+          />
+          <FormControlLabel
+            value="maternalWelfare"
+            control={<Radio color="primary" />}
+            label={
+              <FormattedMessage
+                module="workforce"
+                id="workforce.application.reasons.maternalWelfare"
+              />
+            }
+          />
+        </RadioGroup>
       </FormControl>
     </Paper>
   );

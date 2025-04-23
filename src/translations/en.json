@@ -361,6 +361,13 @@
     "workforce.application.steps.hsc":"H.S.C or Equvalent",
     "workforce.application.steps.skip":"Skip",
     "workforce.application.steps.dependentAdd":"Dependent Add",
+    "workforce.application.steps.reasonsforSeekingFinancialAssistance":"Reasons for seeking financial assistance",
+
+    "workforce.application.reasons.physicalMentalDisability": "Permanent physical and mental disability due to accident (must be within the last 105 days)",
+    "workforce.application.reasons.accidentalDeath": "Death due to accident (must be within the last 105 days)",
+    "workforce.application.reasons.curativeTreatment": "Incurable medical treatment",
+    "workforce.application.reasons.deathbodyRefinement": "Transport and burial of dead body",
+    "workforce.application.reasons.maternalWelfare": "Maternity welfare for female workers in the informal sector",
 
     "workforce.registration.desclaimer": "Are you already a registered user? If not, please register.",
     "workforce.registration.title":"সুবিধাভোগী নিবন্ধন ফর্ম",

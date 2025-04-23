@@ -15,7 +15,6 @@ import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
 import EmployeeDetailsForm2 from "../EmployeeDetailsForm2";
 import EmployeeLocationForm from "../EmployeeLocationForm";
-import EmployeeDependentForm from "../EmployeeDependentForm";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import {
   createApplication,
