@@ -34,6 +34,9 @@ import {
 } from "../../../actions";
 import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
+import { WORKFORCE_STATUS } from "../../../constants";
+import NidVerification from "../../../components/application-forms/NidVerification";
+import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -72,7 +75,7 @@ const ScholarshipApplicationForm = ({
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [selectedScholarshipOption, setselectedScholarshipOption] = useState("");
+  const [selectedScholarshipOption, setSelectedScholarshipOption] = useState("");
   const [showVerifyNid, setShowVerifyNid] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const reduxState = useSelector((state) => state);
@@ -112,6 +115,7 @@ const ScholarshipApplicationForm = ({
       presentAddress: "",
       organizationId: "",
     },
+    scholarshipProgram:'',
     company: null,
     factory: null,
     isSubmitted: "no",
@@ -419,11 +423,10 @@ const ScholarshipApplicationForm = ({
     {
       label: "workforce.application.steps.select",
       content: (
-        <Box mt={1}>
+        <Box mt={0}>
           <ScholarshipApplicationCheckbox
             handleChange={handleChange}
-            formData={formData}
-            setselectedScholarshipOption={setselectedScholarshipOption}
+            setSelectedScholarshipOption={setSelectedScholarshipOption}
             selectedScholarshipOption={selectedScholarshipOption}
           />
         </Box>
@@ -432,7 +435,7 @@ const ScholarshipApplicationForm = ({
     {
       label: "workforce.application.steps.employeeDetails",
       content: (
-        <Box mt={1}>
+        <Box mt={0}>
           <EmployeeDetailsForm
             handleChange={handleChange}
             formData={formData}
@@ -443,7 +446,7 @@ const ScholarshipApplicationForm = ({
     {
       label: "workforce.application.steps.location",
       content: (
-        <Box mt={1}>
+        <Box mt={0}>
           <EmployeeLocationForm
             handleChange={handleChange}
             formData={formData}
@@ -454,7 +457,7 @@ const ScholarshipApplicationForm = ({
     {
       label: "workforce.application.steps.childInfo",
       content: (
-        <Box mt={1}>
+        <Box mt={0}>
           <EmployeeChildrenDetailsForm
             handleChange={(key, value) =>
               handleChange(key, value, "employeeChildrenInfo")
@@ -467,7 +470,7 @@ const ScholarshipApplicationForm = ({
     {
       label: "workforce.application.steps.upload.documents",
       content: (
-        <Box mt={1}>
+        <Box mt={0}>
           <EmployeeDetailsForm2
             handleChange={handleChange}
             formData={formData}
@@ -480,7 +483,7 @@ const ScholarshipApplicationForm = ({
           {
             label: "workforce.application.steps.dependent",
             content: (
-              <Box mt={1}>
+              <Box mt={0}>
                 {formData?.applicationForSelf === "no" && (
                   <EmployeeDependentForm
                     dependents={formData.dependents}
@@ -498,7 +501,7 @@ const ScholarshipApplicationForm = ({
     {
       label: "workforce.application.steps.account.info",
       content: (
-        <Box mt={1}>
+        <Box mt={0}>
           <EmployeeAccountInfoForm
             handleChange={(key, value) =>
               handleChange(key, value, "employeeBankInfo")
@@ -509,6 +512,51 @@ const ScholarshipApplicationForm = ({
       ),
     },
   ];
+
+  if (showPreview) {
+    return (
+      <div className={classes.container}>
+        <Paper className={classes.paper} elevation={0}>
+          <PreviewDetails formData={formData} />
+          <div className={classes.buttonContainer}>
+          <Button variant="contained" color="primary" onClick={()=>{setShowPreview(false);setShowVerifyNid(true)}}>
+            <FormattedMessage module="workforce" id="workforce.submit" />
+          </Button>
+          </div>
+        </Paper>
+      </div>
+    );
+  }
+
+  if (showVerifyNid) {
+    return (
+      <div className={classes.container}>
+        <Paper className={classes.paper} elevation={0}>
+          <NidVerification formData={formData} />
+          <div className={classes.buttonContainer}>
+          <Button variant="contained" color="primary" onClick={()=>{setShowVerifyNid(false);setIsSubmitted(true)}}>
+            <FormattedMessage module="workforce" id="workforce.confirm.submit" />
+          </Button>
+          </div>
+        </Paper>
+      </div>
+    );
+  }
+
+  if (isSubmitted) {
+    return (
+      <div className={classes.container}>
+        <Paper className={classes.paper} elevation={0}>
+          <Typography variant="h5" align="center" color="primary">
+            <FormattedMessage
+              module="workforce"
+              id="workforce.success.message"
+            />
+          </Typography>
+        </Paper>
+      </div>
+    );
+  }
 
   return (
     <div className={classes.container}>

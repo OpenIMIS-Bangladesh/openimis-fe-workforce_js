@@ -113,7 +113,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </Typography>
             </div>
             {applicationForSelf === "" ?(
-            <Paper className={classes.subPaper} elevation={3}>
+            <Paper className={classes.subPaper} elevation={0}>
                   <FormControl component="fieldset">
                     {/* New Export-Oriented Company Question */}
                     <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
@@ -203,7 +203,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </Typography>
             </div>
             {applicationForSelf === "" ?(
-            <Paper className={classes.subPaper} elevation={3}>
+            <Paper className={classes.subPaper} elevation={0}>
                   <FormControl component="fieldset">
                     {/* New Export-Oriented Company Question */}
                     <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
@@ -253,7 +253,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </Typography>
             </div>
             {applicationForSelf === "" ?(
-            <Paper className={classes.subPaper} elevation={3}>
+            <Paper className={classes.subPaper} elevation={0}>
                   <FormControl component="fieldset">
                     {/* New Export-Oriented Company Question */}
                     <Typography variant="h6" className={`${classes.title} ${classes.section}`}>

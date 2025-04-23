@@ -6,9 +6,9 @@ import {
     FormattedMessage
   } from "@openimis/fe-core";
 
-const useStyles = makeStyles((theme) => ({     
+const useStyles = makeStyles((theme) => ({
   title: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   paper: {
     padding: theme.spacing(2),
@@ -19,9 +19,12 @@ const useStyles = makeStyles((theme) => ({
   section: {
     marginTop: theme.spacing(3),
   },
+  formSection:{
+    marginLeft:theme.spacing(2)
+  }
 }));
 
-const ScholarshipApplicationCheckbox = ({ modulesManager,onSelect,selectedScholarshipOption, setselectedScholarshipOption }) => {
+const ScholarshipApplicationCheckbox = ({ modulesManager,onSelect,selectedScholarshipOption, setSelectedScholarshipOption }) => {
   const { formatMessage } = useTranslations(
       "core.RegistrationPage",
       modulesManager,
@@ -29,24 +32,29 @@ const ScholarshipApplicationCheckbox = ({ modulesManager,onSelect,selectedSchola
 
   const classes = useStyles();
 
-  const handleExportOrientedChange = (event) => {
+  const handleselectedScholarshipOptionChange = (event) => {
     const value = event.target.value;
-    setselectedScholarshipOption(value);
+    setSelectedScholarshipOption(value);
+    // onSelect(selectedApplicationType, value); // Pass both selections
   };
 
   return (
-    <Paper className={classes.paper} elevation={0}>
-      <FormControl component="fieldset">
+
+      <FormControl component="fieldset" className={classes.formSection}>
+        {/* New Export-Oriented Company Question */}
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
-          {<FormattedMessage module="workforce" id="workforce.application.steps.select"/>}
+          {<FormattedMessage id="workforce.application.steps.select" module="workforce"/>}
         </Typography>
-        <RadioGroup value={selectedScholarshipOption} onChange={handleExportOrientedChange}>
-          <FormControlLabel value="sscEquvalent" control={<Radio color="primary" />} label={<FormattedMessage module="workforce" id="workforce.application.steps.ssc"/>} />
-          <FormControlLabel value="hscEquvalent" control={<Radio color="primary" />} label={<FormattedMessage module="workforce" id="workforce.application.steps.hsc"/>} />
-        </RadioGroup> 
+        <RadioGroup value={selectedScholarshipOption} onChange={handleselectedScholarshipOptionChange}>
+          <FormControlLabel value="ssc" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.steps.ssc" module="workforce"/>} />
+          <FormControlLabel value="hsc" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.steps.hsc" module="workforce"/>} />
+        </RadioGroup>
+
+        
       </FormControl>
-    </Paper>
   );
 };
 
 export default ScholarshipApplicationCheckbox;
+
+

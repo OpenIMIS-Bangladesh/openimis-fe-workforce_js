@@ -477,7 +477,7 @@ const MedicalAssistanceForm = ({
   if (showPreview) {
     return (
       <div className={classes.container}>
-        <Paper className={classes.paper} >
+        <Paper className={classes.paper} elevation={0}>
           <PreviewDetails formData={formData} />
           <div className={classes.buttonContainer}>
           <Button variant="contained" color="primary" onClick={()=>{setShowPreview(false);setShowVerifyNid(true)}}>
@@ -492,7 +492,7 @@ const MedicalAssistanceForm = ({
   if (showVerifyNid) {
     return (
       <div className={classes.container}>
-        <Paper className={classes.paper} >
+        <Paper className={classes.paper} elevation={0}>
           <NidVerification formData={formData} />
           <div className={classes.buttonContainer}>
           <Button variant="contained" color="primary" onClick={()=>{setShowVerifyNid(false);setIsSubmitted(true)}}>
@@ -507,7 +507,7 @@ const MedicalAssistanceForm = ({
   if (isSubmitted) {
     return (
       <div className={classes.container}>
-        <Paper className={classes.paper} >
+        <Paper className={classes.paper} elevation={0}>
           <Typography variant="h5" align="center" color="primary">
             <FormattedMessage
               module="workforce"

@@ -55,7 +55,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
     <Box mt={1}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} elevation={0}>
             <Grid container className={classes.item} spacing={2}>
               <Grid item xs={6} className={classes.item}>
                 <TextInput

@@ -42,7 +42,7 @@ const NidVerification = ({ formData }) => {
       <Box p={0} className={classes.paper}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
-            <Card>
+            <Card >
               <CardContent>
                 <Typography variant="body1" className={classes.title}>
                   <b>Verify Your Nid Card</b>

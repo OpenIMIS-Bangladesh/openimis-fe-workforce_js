@@ -89,7 +89,7 @@ const EmployeeDependentForm = ({
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Paper className={classes.paper}>
+            <Paper className={classes.paper} elevation={0}>
               <Grid container className={classes.item} spacing={2}>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
