@@ -1,7 +1,19 @@
 import React, { Component, Fragment } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { IconButton, Tooltip, Button } from "@material-ui/core";
+import {
+  IconButton,
+  Tooltip,
+  Button,
+  Modal,
+  Box,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
 import {
   coreConfirm,
@@ -20,10 +32,12 @@ import {
   Send as SendIcon,
   Check as CheckIcon,
 } from "@material-ui/icons";
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
+import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import { MODULE_NAME } from "../../constants";
 import { fetchApplicationsSummary } from "../../actions";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
+import ForwardIcon from "@material-ui/icons/Forward";
+import UndoIcon from '@material-ui/icons/Undo';
 
 const styles = (theme) => ({
   paper: {
@@ -54,6 +68,15 @@ class ApplicationProcessSearcher extends Component {
       reset: 0,
       showHistoryFilter: false,
       displayVersion: false,
+
+      // 🆕 Modal state
+      forwardModalOpen: false,
+      selectedApplication: null,
+      selectedUserId: "",
+      deadline: "",
+      userList: [],
+      submitting: false,
+      serverResponse: null,
     };
     this.rowsPerPageOptions = [10, 20, 50, 100];
     this.defaultPageSize = 10;
@@ -71,10 +94,7 @@ class ApplicationProcessSearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchApplicationsSummary(
-      this.props.modulesManager,
-      prms
-    );
+    this.props.fetchApplicationsSummary(this.props.modulesManager, prms);
   };
 
   rowIdentifier = (r) => r.uuid;
@@ -96,6 +116,52 @@ class ApplicationProcessSearcher extends Component {
       prms.push(`orderBy: ["${state.orderBy}"]`);
     }
     return prms;
+  };
+  handleOpenForwardModal = (application) => {
+    this.setState({ forwardModalOpen: true, selectedApplication: application });
+  };
+
+  handleCloseForwardModal = () => {
+    this.setState({ forwardModalOpen: false, selectedApplication: null });
+  };
+  handleUserChange = (event) => {
+    this.setState({ selectedUserId: event.target.value });
+  };
+
+  handleDeadlineChange = (event) => {
+    this.setState({ deadline: event.target.value });
+  };
+
+  handleForwardSubmit = (event) => {
+    event.preventDefault();
+
+    const selectedUser = this.state.userList.find(
+      (user) => user.id === this.state.selectedUserId
+    );
+
+    this.setState({ submitting: true });
+
+    // Simulate async submit
+    setTimeout(() => {
+      this.setState({
+        submitting: false,
+        serverResponse: {
+          status: "SUCCESS",
+          message: "আবেদন সফলভাবে ফরওয়ার্ড করা হয়েছে!",
+        },
+      });
+
+      // After 2 seconds, close modal and reset form
+      setTimeout(() => {
+        this.setState({
+          forwardModalOpen: false,
+          selectedUserId: "",
+          deadline: "",
+          selectedApplication: null,
+          serverResponse: null,
+        });
+      }, 2000);
+    }, 2000);
   };
 
   headers = () => [
@@ -124,12 +190,12 @@ class ApplicationProcessSearcher extends Component {
       (application) => "Nafi",
       (application) => "Akij",
       (application) => application.status,
-      (application) => application.dateCreated.split('T')[0],
+      (application) => application.dateCreated.split("T")[0],
       // (application) => "Hafiz",
       // (application) => application.dateCreated.split('T')[0],
-        this.isShowHistory() ? application?.version : null,
+      this.isShowHistory() ? application?.version : null,
     ];
-    
+
     formatters.push((application) => (
       <div className={this.props.classes.horizontalButtonContainer}>
         <Tooltip title="দেখুন">
@@ -181,8 +247,23 @@ class ApplicationProcessSearcher extends Component {
             <CheckIcon />
           </IconButton>
         </Tooltip>
+        <Tooltip title="ফরওয়ার্ড">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => this.handleOpenForwardModal(application)}
+          >
+            <ForwardIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="রিভার্ট">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => this.handleOpenForwardModal(application)}
+          >
+            <UndoIcon  />
+          </IconButton>
+        </Tooltip>
       </div>
-
     ));
     return formatters;
   };
@@ -192,12 +273,12 @@ class ApplicationProcessSearcher extends Component {
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
+    const { forwardModalOpen, selectedApplication } = this.state;
     const totalMoneyAmount = applications?.reduce((acc, app) => {
       const amount = parseFloat(app.moneyAmount) || 0;
       return acc + amount;
     }, 0);
-    
-    
+
     const {
       intl,
       applications,
@@ -254,9 +335,130 @@ class ApplicationProcessSearcher extends Component {
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
         />
-         <div style={{ margin: "16px", fontWeight: "bold" }}>
-        <FormattedMessage module="workforce" id="workforce.employee.application.totalAmount" /> 400000  <FormattedMessage module="workforce" id="workforce.employee.application.tk" />   
-         </div>
+        <Modal
+          open={forwardModalOpen}
+          onClose={this.handleCloseForwardModal}
+          aria-labelledby="forward-modal-title"
+          aria-describedby="forward-modal-description"
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 800,
+              height: 400,
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            {/* Close Button */}
+            <Box sx={{ position: "absolute", top: 8, right: 8 }}>
+              <Button size="small" onClick={this.handleCloseForwardModal}>
+                ✕
+              </Button>
+            </Box>
+
+            <Typography id="forward-modal-title" variant="h6" component="h2">
+              ফরওয়ার্ড অ্যাপ্লিকেশন
+            </Typography>
+
+            <Typography id="forward-modal-description" sx={{ mt: 2 }}>
+              {selectedApplication
+                ? `${
+                    selectedApplication.workforceEmployee?.firstNameBn ||
+                    "আবেদনকারী"
+                  } এর আবেদন ফরওয়ার্ড করতে চান?`
+                : "একটি আবেদন বেছে নিন।"}
+            </Typography>
+
+            <Box
+              component="form"
+              onSubmit={this.handleForwardSubmit}
+              sx={{ mt: 3 }}
+            >
+              {/* ✅ Success Message */}
+              {this.state.serverResponse?.status === "SUCCESS" && (
+                <Typography sx={{ mb: 2, color: "green", fontWeight: "bold" }}>
+                  ✅ {this.state.serverResponse.message}
+                </Typography>
+              )}
+
+              <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+                {/* Static User List */}
+                <FormControl fullWidth>
+                  <InputLabel id="user-select-label">
+                    ইউজার নির্বাচন করুন
+                  </InputLabel>
+                  <Select
+                    labelId="user-select-label"
+                    value={this.state.selectedUserId}
+                    onChange={this.handleUserChange}
+                    required
+                  >
+                    {/* Static Users */}
+                    <MenuItem value={1}>রহিম উদ্দিন</MenuItem>
+                    <MenuItem value={2}>করিমা বেগম</MenuItem>
+                    <MenuItem value={3}>সজল হোসেন</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <TextField
+                  label="ডেডলাইন"
+                  type="date"
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  value={this.state.deadline}
+                  onChange={this.handleDeadlineChange}
+                  required
+                />
+              </Box>
+
+              {/* Buttons */}
+              <Box
+                sx={{
+                  position: "absolute",
+                  bottom: 16,
+                  right: 16,
+                  display: "flex",
+                  gap: 2,
+                }}
+              >
+                <Button
+                  onClick={this.handleCloseForwardModal}
+                  color="secondary"
+                >
+                  বন্ধ করুন
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={this.state.submitting}
+                >
+                  {this.state.submitting
+                    ? "ফরওয়ার্ড করা হচ্ছে..."
+                    : "ফরওয়ার্ড করুন"}
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </Modal>
+
+        <div style={{ margin: "16px", fontWeight: "bold" }}>
+          <FormattedMessage
+            module="workforce"
+            id="workforce.employee.application.totalAmount"
+          />{" "}
+          400000{" "}
+          <FormattedMessage
+            module="workforce"
+            id="workforce.employee.application.tk"
+          />
+        </div>
       </>
     );
   }
