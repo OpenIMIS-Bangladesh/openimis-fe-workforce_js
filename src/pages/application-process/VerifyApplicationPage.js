@@ -1,21 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import {
-  Grid, Card, CardContent, Typography, Button,
-  TextField, Dialog, DialogContent, IconButton,Divider
+  Grid, Card, CardContent, Typography, Button, AccordionDetails,
+  TextField, Dialog, DialogContent, IconButton, Divider, Accordion, AccordionSummary
 } from "@material-ui/core";
 import {
-  TextInput,
   journalize,
-  PublishedComponent,
   FormattedMessage,
 } from "@openimis/fe-core";
 import CloseIcon from '@material-ui/icons/Close';
-import { updateOrganizationEmployee } from "../../actions";
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from 'react-pdf';
-import clsx from "clsx";
 
 const styles = (theme) => ({
   paper: {
@@ -32,8 +27,6 @@ const styles = (theme) => ({
     fontSize: "medium",
     fontWeight: "bold",
   },
-  tableTitle: theme.table.title,
-  item: theme.paper.item,
   fullHeight: {
     height: "100%",
   },
@@ -47,18 +40,18 @@ const styles = (theme) => ({
 class VerifyApplicationPage extends Component {
   constructor(props) {
     super(props);
+    const mockFiles = [
+      { type: "image", src: "https://upload.wikimedia.org/wikipedia/commons/b/b9/Smart_NID_Card_%28Bangladesh%29.jpg" },
+      { type: "pdf", src: "/assets/Fahim_tazwer_cv.pdf" },
+    ];
+
     this.state = {
-      stateEdited: props.application.workforceEmployee || {},
-      parseAccidentInfo: JSON.parse(props.application.employeeAccidentInfo || "{}"),
-      parseBankInfo: JSON.parse(props.application.employeeBankInfo || "{}"),
-      parseDependentInfo: JSON.parse(props.application.employeeDependentInfo || "{}"),
+      stateEdited: props.application?.workforceEmployee || {},
       isSaved: false,
       preview: null,
-      mockFiles: [
-        { type: "image", src: "https://upload.wikimedia.org/wikipedia/commons/b/b9/Smart_NID_Card_%28Bangladesh%29.jpg" },
-        { type: "pdf", src: "/assets/Fahim_tazwer_cv.pdf" },
-      ],
       comment: "",
+      mockFiles: mockFiles,
+      fileStates: mockFiles.map((file) => ({ ...file, comment: "", status: null })),
     };
   }
 
@@ -80,23 +73,46 @@ class VerifyApplicationPage extends Component {
     this.setState({ preview: null });
   };
 
-  handleCommentChange = (event) => {
-    this.setState({ comment: event.target.value });
+  handleFileCommentChange = (index, value) => {
+    this.setState((prevState) => {
+      const updatedFiles = [...prevState.fileStates];
+      updatedFiles[index].comment = value;
+      return { fileStates: updatedFiles };
+    });
+  };
+
+  handleFileVerify = (index) => {
+    this.setState((prevState) => {
+      const updated = [...prevState.fileStates];
+      updated[index].status = "verified";
+      return { fileStates: updated };
+    });
+  };
+
+  handleFileReject = (index) => {
+    this.setState((prevState) => {
+      const updated = [...prevState.fileStates];
+      updated[index].status = "rejected";
+      return { fileStates: updated };
+    });
+  };
+
+  handleCommentChange = (e) => {
+    this.setState({ comment: e.target.value });
   };
 
   handleVerify = () => {
-    console.log("Verified with comment:", this.state.comment);
+    console.log("Application Verified ✅", this.state.comment);
   };
 
   handleReject = () => {
-    console.log("Rejected with comment:", this.state.comment);
+    console.log("Application Rejected ❌", this.state.comment);
   };
 
   render() {
     const { classes } = this.props;
-    const { stateEdited, isSaved, preview, mockFiles, comment } = this.state;
+    const { stateEdited, preview, fileStates, comment } = this.state;
 
-    console.log({stateEdited})
     return (
       <Grid container spacing={3}>
         {/* User Summary */}
@@ -105,56 +121,84 @@ class VerifyApplicationPage extends Component {
             <CardContent>
               <Typography variant="h6"><b><FormattedMessage module="workforce" id="workforce.employee.details" /></b></Typography>
               <Divider />
-              <Typography><b><FormattedMessage module="workforce" id="workforce.employee.first.name.en" /></b> : {stateEdited.firstNameBn}</Typography>
-              <Typography><b><FormattedMessage module="workforce" id="workforce.employee.nid" /></b> : {stateEdited.nid}</Typography>
-              <Typography><b><FormattedMessage module="workforce" id="workforce.employee.phone" /></b> : {stateEdited.phoneNumber}</Typography>
-              <Typography><b><FormattedMessage module="workforce" id="workforce.employee.present_address" /></b> : {stateEdited.presentAddress}</Typography>
-              <Typography><b><FormattedMessage module="workforce" id="workforce.employee.email" /></b> : {stateEdited.email}</Typography>
-              <Typography><b><FormattedMessage module="workforce" id="workforce.employee.birth_certificate_no" /></b> : {stateEdited.email}</Typography>
+              <Typography><b>First Name:</b> {stateEdited.firstNameBn}</Typography>
+              <Typography><b>NID:</b> {stateEdited.nid}</Typography>
+              <Typography><b>Phone:</b> {stateEdited.phoneNumber}</Typography>
+              <Typography><b>Address:</b> {stateEdited.presentAddress}</Typography>
+              <Typography><b>Email:</b> {stateEdited.email}</Typography>
+              <Typography><b>Birth Cert No:</b> {stateEdited.birthCertificateNo}</Typography>
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Documents Preview */}
+        {/* Document Viewer */}
         <Grid item xs={12} md={8}>
           <Card variant="outlined">
             <CardContent>
               <Typography variant="h6">Documents</Typography>
-              <Grid container spacing={2}>
-                {mockFiles.map((file, index) => (
-                  <Grid item xs={6} sm={4} key={index}>
-                    <div
-                      style={{
-                        border: "1px solid #ccc",
-                        borderRadius: 6,
-                        padding: 8,
-                        cursor: "pointer",
-                        textAlign: "center",
-                      }}
-                      onClick={() => this.handlePreviewOpen(file)}
-                    >
-                      {file.type === "image" ? (
-                        <img
-                          src={file.src}
-                          alt="preview"
-                          style={{
-                            width: "100%",
-                            height: 100,
-                            objectFit: "cover",
-                          }}
+              {fileStates.map((file, index) => (
+                <Accordion key={index}>
+                  <AccordionSummary expandIcon={<i className="material-icons">expand_more</i>}>
+                    <Typography>
+                      Document #{index + 1} {file.type === "pdf" ? "(PDF)" : "(Image)"} {file.status ? ` - ${file.status}` : ""}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        {file.type === "image" ? (
+                          <img
+                            src={file.src}
+                            alt="preview"
+                            style={{ width: "100%", maxHeight: 300, objectFit: "contain" }}
+                          />
+                        ) : (
+                          <Document file={file.src}>
+                            <Page pageNumber={1} />
+                          </Document>
+                        )}
+                      </Grid>
+
+                      <Grid item xs={12}>
+                        <TextField
+                          label="Comment"
+                          fullWidth
+                          variant="outlined"
+                          size="small"
+                          multiline
+                          rows={2}
+                          value={file.comment}
+                          onChange={(e) => this.handleFileCommentChange(index, e.target.value)}
                         />
-                      ) : (
-                        <Typography variant="body2">📄 PDF Document</Typography>
-                      )}
-                    </div>
-                  </Grid>
-                ))}
-              </Grid>
+                      </Grid>
+
+                      <Grid item xs={12} style={{ display: "flex", gap: 8 }}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => this.handleFileVerify(index)}
+                          fullWidth
+                        >
+                          Verify
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          onClick={() => this.handleFileReject(index)}
+                          fullWidth
+                        >
+                          Reject
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
             </CardContent>
           </Card>
 
-          {/* Comment + Actions */}
-          <Grid container spacing={2} style={{ marginTop: 12 }} alignItems="center">
+          {/* Final Comment Section */}
+          {/* <Grid container spacing={2} style={{ marginTop: 12 }}>
             <Grid item xs={12} sm={8}>
               <TextField
                 label="Comment"
@@ -175,7 +219,7 @@ class VerifyApplicationPage extends Component {
                 Reject
               </Button>
             </Grid>
-          </Grid>
+          </Grid> */}
         </Grid>
 
         {/* Preview Modal */}
@@ -192,13 +236,10 @@ class VerifyApplicationPage extends Component {
             >
               <CloseIcon />
             </IconButton>
-
-            {preview && preview.type === "image" ? (
+            {preview?.type === "image" ? (
               <img src={preview.src} alt="Full Preview" style={{ width: "100%" }} />
-            ) : preview && preview.type === "pdf" ? (
-              <Document file={preview.src}>
-                <Page pageNumber={1} />
-              </Document>
+            ) : preview?.type === "pdf" ? (
+              <Document file={preview.src}><Page pageNumber={1} /></Document>
             ) : null}
           </DialogContent>
         </Dialog>
@@ -211,6 +252,4 @@ const mapStateToProps = (state) => ({
   application: state.workforce.application,
 });
 
-export default connect(mapStateToProps)(
-  withStyles(styles)(VerifyApplicationPage)
-);
+export default connect(mapStateToProps)(withStyles(styles)(VerifyApplicationPage));

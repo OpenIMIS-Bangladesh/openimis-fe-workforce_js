@@ -101,17 +101,12 @@ class ApplicationProcessSearcher extends Component {
   headers = () => [
     "workforce.employee.name.en",
     "workforce.employee.name.bn",
-    // "workforce.employee.application.nid",
-    // "workforce.employee.application.phone",
     "workforce.employee.application.applicationType",
-    // "workforce.employee.application.organizationType",
     "workforce.employee.application.moneyAmount",
     "workforce.employee.application.verifier",
     "workforce.employee.application.factoryName",
     "workforce.employee.application.status",
     "workforce.employee.application.applicationDate",
-    // "workforce.employee.application.assignedBy",
-    // "workforce.employee.application.assignedDate",
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
@@ -186,7 +181,7 @@ class ApplicationProcessSearcher extends Component {
             <CheckIcon />
           </IconButton>
         </Tooltip>
-        </div>
+      </div>
 
     ));
     return formatters;
