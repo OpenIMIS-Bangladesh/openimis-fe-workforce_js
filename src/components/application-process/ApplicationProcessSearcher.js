@@ -13,6 +13,7 @@ import {
   Select,
   MenuItem,
   TextField,
+  Grid,
 } from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
 import {
@@ -37,7 +38,10 @@ import { MODULE_NAME } from "../../constants";
 import { fetchApplicationsSummary } from "../../actions";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardIcon from "@material-ui/icons/Forward";
-import UndoIcon from '@material-ui/icons/Undo';
+import UndoIcon from "@material-ui/icons/Undo";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import FileUploader from "../../pickers/FileUploader";
 
 const styles = (theme) => ({
   paper: {
@@ -77,6 +81,30 @@ class ApplicationProcessSearcher extends Component {
       userList: [],
       submitting: false,
       serverResponse: null,
+      editorContent: "",
+      selectedOffice: "",
+      selectedSuboffice: "",
+      selectedUser: "",
+      officeData: {
+        "Central Fund": {
+          suboffices: {
+            "Suboffice A": "রহিম উদ্দিন",
+            "Suboffice B": "করিমা বেগম",
+          },
+        },
+        BLWF: {
+          suboffices: {
+            "Suboffice C": "সজল হোসেন",
+            "Suboffice D": "রাবেয়া খাতুন",
+          },
+        },
+        "EIS PILOT": {
+          suboffices: {
+            "Suboffice E": "মাহফুজ রহমান",
+            "Suboffice F": "নুসরাত জাহান",
+          },
+        },
+      },
     };
     this.rowsPerPageOptions = [10, 20, 50, 100];
     this.defaultPageSize = 10;
@@ -131,8 +159,26 @@ class ApplicationProcessSearcher extends Component {
   handleDeadlineChange = (event) => {
     this.setState({ deadline: event.target.value });
   };
+  handleOfficeChange = (event) => {
+    const selectedOffice = event.target.value;
+    this.setState({
+      selectedOffice,
+      selectedSuboffice: "", // Reset suboffice when office changes
+      selectedUser: "", // Reset user when suboffice changes
+    });
+  };
+
+  handleSubofficeChange = (event) => {
+    const selectedSuboffice = event.target.value;
+    this.setState({
+      selectedSuboffice,
+      selectedUser: this.state.officeData[this.state.selectedOffice].suboffices[selectedSuboffice],
+    });
+  };
 
   handleForwardSubmit = (event) => {
+    this.state.editorContent;
+
     event.preventDefault();
 
     const selectedUser = this.state.userList.find(
@@ -167,12 +213,17 @@ class ApplicationProcessSearcher extends Component {
   headers = () => [
     "workforce.employee.name.en",
     "workforce.employee.name.bn",
+    // "workforce.employee.application.nid",
+    // "workforce.employee.application.phone",
     "workforce.employee.application.applicationType",
+    // "workforce.employee.application.organizationType",
     "workforce.employee.application.moneyAmount",
     "workforce.employee.application.verifier",
     "workforce.employee.application.factoryName",
     "workforce.employee.application.status",
     "workforce.employee.application.applicationDate",
+    // "workforce.employee.application.assignedBy",
+    // "workforce.employee.application.assignedDate",
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
@@ -260,7 +311,7 @@ class ApplicationProcessSearcher extends Component {
             disabled={application?.isHistory}
             onClick={() => this.handleOpenForwardModal(application)}
           >
-            <UndoIcon  />
+            <UndoIcon />
           </IconButton>
         </Tooltip>
       </div>
@@ -274,6 +325,8 @@ class ApplicationProcessSearcher extends Component {
 
   render() {
     const { forwardModalOpen, selectedApplication } = this.state;
+    const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
+      this.state;
     const totalMoneyAmount = applications?.reduce((acc, app) => {
       const amount = parseFloat(app.moneyAmount) || 0;
       return acc + amount;
@@ -347,8 +400,8 @@ class ApplicationProcessSearcher extends Component {
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
-              width: 800,
-              height: 400,
+              width: 1200,
+              height: 800,
               bgcolor: "background.paper",
               borderRadius: 2,
               boxShadow: 24,
@@ -387,34 +440,89 @@ class ApplicationProcessSearcher extends Component {
                 </Typography>
               )}
 
-              <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-                {/* Static User List */}
-                <FormControl fullWidth>
-                  <InputLabel id="user-select-label">
-                    ইউজার নির্বাচন করুন
-                  </InputLabel>
-                  <Select
-                    labelId="user-select-label"
-                    value={this.state.selectedUserId}
-                    onChange={this.handleUserChange}
-                    required
-                  >
-                    {/* Static Users */}
-                    <MenuItem value={1}>রহিম উদ্দিন</MenuItem>
-                    <MenuItem value={2}>করিমা বেগম</MenuItem>
-                    <MenuItem value={3}>সজল হোসেন</MenuItem>
-                  </Select>
-                </FormControl>
+              <Box
+                sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3 }}
+              >
+              <FormattedMessage module="workforce" id="workforce.application.reasons.addComment" />
+                <Box sx={{ width: "100%", mb: 7 }}>
+                  <ReactQuill
+                    value={this.state.editorContent}
+                    onChange={(content) =>
+                      this.setState({ editorContent: content })
+                    }
+                    theme="snow"
+                    style={{ height: "200px" }}
+                  />
+                </Box>
 
-                <TextField
-                  label="ডেডলাইন"
-                  type="date"
-                  fullWidth
-                  InputLabelProps={{ shrink: true }}
-                  value={this.state.deadline}
-                  onChange={this.handleDeadlineChange}
-                  required
-                />
+                {/* Static User List */}
+                <FormattedMessage module="workforce" id="workforce.application.reasons.selectedOfficer" />
+                <Box sx={{ mb:7 }}>
+                  {/* Office Selection */}
+                  <FormControl fullWidth sx={{ mb: 3 }}>
+                    <InputLabel id="office-select-label">
+                      অফিস নির্বাচন করুন
+                    </InputLabel>
+                    <Select
+                      labelId="office-select-label"
+                      value={selectedOffice}
+                      onChange={this.handleOfficeChange}
+                      required
+                    >
+                      {Object.keys(officeData).map((office) => (
+                        <MenuItem key={office} value={office}>
+                          {office}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  {/* Suboffice Selection */}
+                  {selectedOffice && (
+                    <FormControl fullWidth sx={{ mb: 3 }}>
+                      <InputLabel id="suboffice-select-label">
+                        সাবঅফিস নির্বাচন করুন
+                      </InputLabel>
+                      <Select
+                        labelId="suboffice-select-label"
+                        value={selectedSuboffice}
+                        onChange={this.handleSubofficeChange}
+                        required
+                        disabled={!selectedOffice}
+                      >
+                        {Object.keys(
+                          officeData[selectedOffice]?.suboffices || {}
+                        ).map((suboffice) => (
+                          <MenuItem key={suboffice} value={suboffice}>
+                            {suboffice}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+
+                  {/* User Display */}
+                  {selectedSuboffice && selectedUser && (
+                    <div>
+                      <Typography sx={{ mt: 2 }}>
+                        {selectedSuboffice} এর জন্য ইউজার:
+                      </Typography>
+                      <Typography sx={{ fontWeight: "bold", color: "green" }}>
+                        {selectedUser}
+                      </Typography>
+                    </div>
+                  )}
+                </Box>
+                <Grid item xs={12} sx={{ mt: 7, borderBottom: "1px solid #ccc", pb: 1 }}>
+                    <Typography fontWeight="bold">
+                      ইতঃপূর্বের সংযুক্তিসমূহ
+                    </Typography>
+                </Grid>
+
+                <Grid item xs={12} sx={{ mt: 7 }}>
+                  <Typography>ফাইল যুক্ত করুন...  {document.nameBn} </Typography>
+                  <FileUploader fieldKey={document.fieldId} />
+                </Grid>
               </Box>
 
               {/* Buttons */}
