@@ -362,6 +362,10 @@
     "workforce.application.steps.skip":"Skip",
     "workforce.application.steps.dependentAdd":"Dependent Add",
     "workforce.application.steps.reasonsforSeekingFinancialAssistance":"Reasons for seeking financial assistance",
+    "workforce.application.reasons.addComment": "মন্তব্য যোগ করুন",
+    "workforce.application.reasons.selectedOfficer": "বাছাইকৃত কর্মকর্তা:",
+
+
 
     "workforce.application.reasons.physicalMentalDisability": "Permanent physical and mental disability due to accident (must be within the last 105 days)",
     "workforce.application.reasons.accidentalDeath": "Death due to accident (must be within the last 105 days)",

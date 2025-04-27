@@ -443,6 +443,7 @@ class ApplicationProcessSearcher extends Component {
               <Box
                 sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3 }}
               >
+              <FormattedMessage module="workforce" id="workforce.application.reasons.addComment" />
                 <Box sx={{ width: "100%", mb: 7 }}>
                   <ReactQuill
                     value={this.state.editorContent}
@@ -455,6 +456,7 @@ class ApplicationProcessSearcher extends Component {
                 </Box>
 
                 {/* Static User List */}
+                <FormattedMessage module="workforce" id="workforce.application.reasons.selectedOfficer" />
                 <Box sx={{ mb:7 }}>
                   {/* Office Selection */}
                   <FormControl fullWidth sx={{ mb: 3 }}>
@@ -511,6 +513,11 @@ class ApplicationProcessSearcher extends Component {
                     </div>
                   )}
                 </Box>
+                <Grid item xs={12} sx={{ mt: 7, borderBottom: "1px solid #ccc", pb: 1 }}>
+                    <Typography fontWeight="bold">
+                      ইতঃপূর্বের সংযুক্তিসমূহ
+                    </Typography>
+                </Grid>
 
                 <Grid item xs={12} sx={{ mt: 7 }}>
                   <Typography>ফাইল যুক্ত করুন...  {document.nameBn} </Typography>
