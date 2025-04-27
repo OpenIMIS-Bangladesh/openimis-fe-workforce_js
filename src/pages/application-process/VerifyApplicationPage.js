@@ -46,6 +46,7 @@ class VerifyApplicationPage extends Component {
     ];
 
     this.state = {
+      applicationType:props?.application ||{},
       stateEdited: props.application?.workforceEmployee || {},
       isSaved: false,
       preview: null,
@@ -111,13 +112,26 @@ class VerifyApplicationPage extends Component {
 
   render() {
     const { classes } = this.props;
-    const { stateEdited, preview, fileStates, comment } = this.state;
+    const { stateEdited, preview, fileStates, comment,applicationType } = this.state;
+
+    console.log({stateEdited})
 
     return (
       <Grid container spacing={3}>
         {/* User Summary */}
         <Grid item xs={12} md={4}>
-          <Card variant="outlined">
+
+        <Card variant="outlined">
+            <CardContent>
+              <Typography variant="h6"><b><FormattedMessage module="workforce" id="workforce.employee.application.details" /></b></Typography>
+              <Divider />
+              <Typography><b>Application Type:</b> {applicationType.applicationType}</Typography>
+              <Typography><b>Organization Type:</b> {applicationType.organizationType}</Typography>
+              <Typography><b>Applied By:</b> {stateEdited.firstNameEn}</Typography>
+            </CardContent>
+          </Card>
+          
+          <Card variant="outlined" mt={2}>
             <CardContent>
               <Typography variant="h6"><b><FormattedMessage module="workforce" id="workforce.employee.details" /></b></Typography>
               <Divider />
@@ -129,6 +143,7 @@ class VerifyApplicationPage extends Component {
               <Typography><b>Birth Cert No:</b> {stateEdited.birthCertificateNo}</Typography>
             </CardContent>
           </Card>
+      
         </Grid>
 
         {/* Document Viewer */}
@@ -221,6 +236,7 @@ class VerifyApplicationPage extends Component {
             </Grid>
           </Grid> */}
         </Grid>
+
 
         {/* Preview Modal */}
         <Dialog

@@ -82,6 +82,7 @@ import ApplicationsProcessPage from "./pages/application-process/ApplicationsPro
 import RegistrationButton from "./pages/registration/RegistrationButton";
 import ApplicationProcessPage from "./pages/application-process/ApplicationProcessPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
+import ApplicantDashboardPage from "./pages/dashboard/ApplicantDashboardPage";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -238,7 +239,8 @@ const DEFAULT_CONFIG = {
   "core.MainMenu": [WorkforceMainMenu],
 
   "core.LoginPage": RegistrationButton,
-  "home.HomePage.Blocks":DashboardPage
+  // "home.HomePage.Blocks":DashboardPage
+  "home.HomePage.Blocks":ApplicantDashboardPage
 };
 
 export const WorkforceModule = (cfg) => {

@@ -5,7 +5,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 
 const DashboardPage = () => {
   const theme = useTheme();
-    const history = useHistory();
+  const history = useHistory();
 
 
   // Sample data

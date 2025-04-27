@@ -192,6 +192,7 @@
     "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন",
 
     "workforce.employee.details":"শ্রমিকের বিবরণ",
+    "workforce.employee.application.details":"শ্রমিকের আবেদন বিবরণ",
 
     "workforce.next":"পরবর্তী",
     "workforce.back":"পিছনে",
@@ -211,8 +212,18 @@
     "workforce.application.process.all": "সকল",
     "workforce.application.process.accidental": "দুর্ঘটনাজনিত",
     "workforce.application.process.death": "মৃত্যু",
-    "workforce.application.process.disability": "অক্ষমতা"
+    "workforce.application.process.disability": "অক্ষমতা",
 
+    "workforce.application.id":"অ্যাপ্লিকেশন আইডি",
+    "workforce.application.date":"আবেদনের তারিখ",
+    "workforce.application.expected.date":"সেবা প্রদানের সম্ভাব্য তারিখ",
+    "workforce.application.status":"আবেদনের অবস্থা",
+    "workforce.application.steps.taken":"গৃহীত ব্যবস্থা",
+    "workforce.application.filed":"দাখিলকৃত আবেদনসমূহ",
+    "workforce.new.application":"নতুন আবেদন",
+    "workforce.help.complain":"সাহায্য এবং অভিযোগ",
+    "workforce.others":"অন্যান্য",
+    "workforce.search.here":"অনুসন্ধান করুন..."
 
 
 

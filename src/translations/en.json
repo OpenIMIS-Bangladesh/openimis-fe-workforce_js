@@ -375,6 +375,7 @@
     "workforce.registration.title":"সুবিধাভোগী নিবন্ধন ফর্ম",
 
     "workforce.employee.details":"Employee Details",
+    "workforce.employee.application.details":"Employee Application Details",
     "workforce.next":"Next",
     "workforce.back":"Back",
     "workforce.back.application.type":"Back to Application Type",
@@ -388,7 +389,19 @@
     "workforce.application.process.all": "All",
     "workforce.application.process.accidental": "Accidental",
     "workforce.application.process.death": "Death",
-    "workforce.application.process.disability": "Disability"
+    "workforce.application.process.disability": "Disability",
+
+    "workforce.application.id":"Application id",
+    "workforce.application.date":"Application Date",
+    "workforce.application.expected.date":"Probable date of service",
+    "workforce.application.status":"Application Status",
+    "workforce.application.steps.taken":"Measures taken",
+
+    "workforce.application.filed":"Applications filed",
+    "workforce.new.application":"New Application",
+    "workforce.help.complain":"Help and Complains",
+    "workforce.others":"Others",
+    "workforce.search.here":"Search Here ..."
 
 
 
