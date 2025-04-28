@@ -83,36 +83,12 @@ const styles = (theme) => ({
     
   
     const renderSection = (title, data) => {
-      if (!data || typeof data !== "object" ) return null;
+      if (!data || typeof data !== "object") return null;
     
-      return (
-        <Grid item xs={12} key={title}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                {formatKey(title)} 
-              </Typography>
-              <Divider style={{ marginBottom: "10px" }} />
-              <Grid container spacing={2}>
-                {Object.entries(data)
-                  .filter(([k]) => !["id", "uuid", "parent","workforceEmployer"].includes(k))
-                  .map(([key, value], idx) => (
-                    <Grid item xs={12} sm={6} key={idx}>
-                      <Typography variant="body2">
-                        <b>{formatKey(key)}:</b> {renderValue(value)}
-                      </Typography>
-                    </Grid>
-                  ))}
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-      );
-    };
+      const filteredEntries = Object.entries(data)
+        .filter(([k]) => !["id", "uuid", "parent", "workforceEmployer"].includes(k));
     
-  
-    const renderArraySection = (title, arrayData) => {
-      if (!Array.isArray(arrayData) || arrayData.length === 0) return null;
+      if (filteredEntries.length === 0) return null; // 🚀 Don't render empty objects
     
       return (
         <Grid item xs={12} key={title}>
@@ -122,15 +98,89 @@ const styles = (theme) => ({
                 {formatKey(title)}
               </Typography>
               <Divider style={{ marginBottom: "10px" }} />
-              {arrayData.map((item, index) => (
-                item && typeof item === "object" && Object.keys(item).length > 0 && (
-                  <Box key={index} mb={1} pl={1}>
-                    <Typography variant="subtitle2">
-                      {formatKey(title)} #{index + 1}
+              <Grid container spacing={2}>
+                {filteredEntries.map(([key, value], idx) => (
+                  <Grid item xs={12} sm={6} key={idx}>
+                    <Typography variant="body2">
+                      <b>{formatKey(key)}:</b> {renderValue(value)}
                     </Typography>
-                    {renderNestedObject(item)}
-                  </Box>
-                )
+                  </Grid>
+                ))}
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+      );
+    };
+
+    const renderWorkforceEmployeeSections = (employeeData) => {
+      if (!employeeData || typeof employeeData !== "object") return null;
+    
+      const personalFields = ["fatherName", "motherName", "spouseName", "citizenship", "nid", "birthCertificate", "birthDate", "insuranceNumber", "gender"];
+      const contactFields = ["email", "phoneNumber", "presentAddress", "permanentAddress", "presentLocation", "permanentLocation"];
+      const statusFields = ["birthDate", "deathDate", "lifeStatus", "maritalStatus"];
+    
+      const pickFields = (fields) => {
+        return fields.reduce((acc, field) => {
+          if (employeeData[field] !== undefined) {
+            acc[field] = employeeData[field];
+          }
+          return acc;
+        }, {});
+      };
+    
+      const omitFields = (data, fieldsToOmit) => {
+        return Object.keys(data)
+          .filter(key => !fieldsToOmit.includes(key) && !["id", "uuid", "parent"].includes(key))
+          .reduce((acc, key) => {
+            acc[key] = data[key];
+            return acc;
+          }, {});
+      };
+    
+      const personalInfo = pickFields(personalFields);
+      const contactInfo = pickFields(contactFields);
+      const statusInfo = pickFields(statusFields);
+      const organizationInfo = omitFields(employeeData, [...personalFields, ...contactFields, ...statusFields]);
+    
+      return (
+        <>
+          {renderSection("Personal Info", personalInfo)}
+          {renderSection("Contact Info", contactInfo)}
+          {renderSection("Status Info", statusInfo)}
+          {renderSection("Organization Info", organizationInfo)}
+        </>
+      );
+    };
+    
+    
+    
+  
+    const renderArraySection = (title, arrayData) => {
+      if (!Array.isArray(arrayData) || arrayData.length === 0) return null;
+    
+      // Filter out completely empty objects
+      const nonEmptyItems = arrayData.filter(
+        (item) => item && typeof item === "object" && Object.keys(item).length > 0
+      );
+    
+      if (nonEmptyItems.length === 0) return null; // 🚀 Don't render empty arrays
+    
+      return (
+        <Grid item xs={12} key={title}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                {formatKey(title)}
+              </Typography>
+              <Divider style={{ marginBottom: "10px" }} />
+              {nonEmptyItems.map((item, index) => (
+                <Box key={index} mb={1} pl={1}>
+                  <Typography variant="subtitle2">
+                    {formatKey(title)} #{index + 1}
+                  </Typography>
+                  {renderNestedObject(item)}
+                </Box>
               ))}
             </CardContent>
           </Card>
@@ -138,11 +188,15 @@ const styles = (theme) => ({
       );
     };
     
+    
   
     const renderDynamicSections = () => {
       return Object.entries(formData).map(([key, value]) => {
         if (!value || ["id", "uuid", "parent","applicationType","organizationType","applicationForSelf"].includes(key)) return null;
-  
+        if (key === "workforceEmployee") {
+          return renderWorkforceEmployeeSections(value); // 🔥 special case
+        }
+
         if (Array.isArray(value)) {
           if (value.length > 0 && typeof value[0] === "object") {
             return renderArraySection(key, value);

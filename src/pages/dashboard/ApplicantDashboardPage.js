@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useTranslations, useModulesManager, TextInput, useHistory,FormattedMessage } from "@openimis/fe-core";
+import { FormattedMessage } from "@openimis/fe-core";
 import {
   Grid,
   List,
@@ -22,11 +22,9 @@ import {
   Paper,
 } from "@material-ui/core";
 
-import PersonIcon from "@material-ui/icons/Person";
 import DescriptionIcon from "@material-ui/icons/Description";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import SettingsIcon from "@material-ui/icons/Settings";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 
@@ -45,20 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(2),
-  },
-  select: {
-    border: "1px solid #ccc",
-    borderRadius: 4,
-    padding: "4px 8px",
-    minWidth: 80,
-    marginRight: theme.spacing(2),
-  },
-  searchInput: {
-    border: "1px solid #ccc",
-    borderRadius: 4,
-    padding: "4px 8px",
-    width: 200,
+    padding: theme.spacing(0),
   },
   tableContainer: {
     marginTop: theme.spacing(2),
@@ -70,29 +55,225 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     padding: theme.spacing(2),
   },
+  searchInput: {
+    border: "1px solid #ccc",
+    borderRadius: 4,
+    padding: "4px 8px",
+    width: 200,
+  },
   pagination: {
     display: "flex",
     justifyContent: "flex-end",
     marginTop: theme.spacing(2),
     alignItems: "center",
   },
-  tableHeader:{
-    backgroundColor:"#B7D4D8"
-  }
+  tableHeader: {
+    backgroundColor: "#B7D4D8",
+  },
 }));
 
 const SidebarMenu = [
-//   { text: "প্রোফাইল", icon: <PersonIcon /> },
-  { text: <FormattedMessage module="workforce" id="workforce.application.filed" />, icon: <DescriptionIcon /> },
-  { text: <FormattedMessage module="workforce" id="workforce.new.application" />    , icon: <AddCircleOutlineIcon /> },
-  { text: <FormattedMessage module="workforce" id="workforce.application.status" />, icon: <AssignmentIcon /> },
-//   { text: "সেটিংস", icon: <SettingsIcon /> },
-  { text: <FormattedMessage module="workforce" id="workforce.help.complain" />, icon: <HelpOutlineIcon /> },
-  { text: <FormattedMessage module="workforce" id="workforce.others" />, icon: <MoreHorizIcon /> },
+  {
+    id: "filedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.filed" />
+    ),
+    icon: <DescriptionIcon />,
+  },
+  {
+    id: "newApplication",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.new.application" />
+    ),
+    icon: <AddCircleOutlineIcon />,
+  },
+  {
+    id: "applicationStatus",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.status" />
+    ),
+    icon: <AssignmentIcon />,
+  },
+  {
+    id: "helpAndComplaints",
+    text: <FormattedMessage module="workforce" id="workforce.help.complain" />,
+    icon: <HelpOutlineIcon />,
+  },
+  {
+    id: "others",
+    text: <FormattedMessage module="workforce" id="workforce.others" />,
+    icon: <MoreHorizIcon />,
+  },
 ];
+
+// ----------- Components to Render in Main Content -----------
+
+const FiledApplications = () =>{ 
+  const classes = useStyles()
+  return (
+  <>
+    <Typography variant="h5" gutterBottom>
+      <FormattedMessage module="workforce" id="workforce.application.filed" />
+    </Typography>
+
+    {/* Filters */}
+    <Grid container spacing={2} alignItems="center">
+      <Grid item>
+        <InputBase
+          className={classes.searchInput}
+          placeholder="অনুসন্ধান করুন"
+        />
+      </Grid>
+    </Grid>
+
+    {/* Table */}
+    <Card className={classes.tableContainer}>
+      <CardContent>
+        <Table>
+          <TableHead className={classes.tableHeader}>
+            <TableRow>
+              <TableCell className={classes.tableHeadCell}>
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.application.id"
+                />
+              </TableCell>
+              <TableCell className={classes.tableHeadCell}>
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.application.date"
+                />
+              </TableCell>
+              <TableCell className={classes.tableHeadCell}>
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.application.expected.date"
+                />
+              </TableCell>
+              <TableCell className={classes.tableHeadCell}>
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.application.status"
+                />
+              </TableCell>
+              <TableCell className={classes.tableHeadCell}>
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.application.steps.taken"
+                />
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell colSpan={6} className={classes.noData}>
+                কোন এন্ট্রি খুঁজে পাওয়া যায়নি
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+
+    {/* Pagination */}
+    <div className={classes.pagination}>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.back" />
+      </Button>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.next" />
+      </Button>
+    </div>
+  </>
+);}
+
+const NewApplication = () => (
+  <Typography variant="h5">
+    <FormattedMessage module="workforce" id="workforce.new.application" />
+  </Typography>
+);
+
+const ApplicationStatus = () => {
+  const classes = useStyles();
+
+  return (
+    <Card style={{ marginTop: 0, padding: "32px", textAlign: "center" }}>
+      <CardContent>
+        <Typography variant="h5" gutterBottom>
+          <FormattedMessage module="workforce" id="workforce.application.status" />
+        </Typography>
+
+        <Grid container spacing={2} justifyContent="center" style={{ marginTop: 16 }}>
+          <Grid item xs={12} md={6}>
+            <InputBase
+              fullWidth
+              placeholder="মোবাইল নম্বর লিখুন"
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: 4,
+                padding: "8px 12px",
+                marginBottom: 16,
+              }}
+            />
+            <InputBase
+              fullWidth
+              placeholder="ট্র্যাকিং নম্বর লিখুন"
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: 4,
+                padding: "8px 12px",
+                marginBottom: 16,
+              }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+            >
+              <FormattedMessage module="workforce" id="workforce.search" defaultMessage="অনুসন্ধান করুন" />
+            </Button>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  );
+};
+
+
+const HelpAndComplaints = () => (
+  <Typography variant="h5">
+    <FormattedMessage module="workforce" id="workforce.help.complain" />
+  </Typography>
+);
+
+const Others = () => (
+  <Typography variant="h5">
+    <FormattedMessage module="workforce" id="workforce.others" />
+  </Typography>
+);
+
+// ------------------------------------------------------------
 
 const ApplicantDashboard = () => {
   const classes = useStyles();
+  const [selectedMenu, setSelectedMenu] = useState("filedApplications"); // Default first menu
+
+  const renderContent = () => {
+    switch (selectedMenu) {
+      case "filedApplications":
+        return <FiledApplications />;
+      case "newApplication":
+        return <NewApplication />;
+      case "applicationStatus":
+        return <ApplicationStatus />;
+      case "helpAndComplaints":
+        return <HelpAndComplaints />;
+      case "others":
+        return <Others />;
+      default:
+        return <FiledApplications />;
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -101,8 +282,13 @@ const ApplicantDashboard = () => {
         <Grid item xs={12} md={3}>
           <Paper className={classes.sidebar}>
             <List>
-              {SidebarMenu.map((item, index) => (
-                <ListItem button key={index}>
+              {SidebarMenu.map((item) => (
+                <ListItem
+                  button
+                  key={item.id}
+                  selected={selectedMenu === item.id}
+                  onClick={() => setSelectedMenu(item.id)}
+                >
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} />
                 </ListItem>
@@ -113,52 +299,7 @@ const ApplicantDashboard = () => {
 
         {/* Main Content */}
         <Grid item xs={12} md={9}>
-          <div className={classes.content}>
-            <Typography variant="h5" gutterBottom>
-              <FormattedMessage module="workforce" id="workforce.application.filed" />
-            </Typography>
-
-            {/* Filters */}
-            <Grid container spacing={2} alignItems="center">
-            
-              <Grid item>
-                <InputBase
-                  className={classes.searchInput}
-                  placeholder="অনুসন্ধান করুন"
-                />
-              </Grid>
-            </Grid>
-
-            {/* Table */}
-            <Card className={classes.tableContainer}>
-              <CardContent>
-                <Table>
-                  <TableHead className={classes.tableHeader}>
-                    <TableRow>
-                      <TableCell className={classes.tableHeadCell}><FormattedMessage module="workforce" id="workforce.application.id"/></TableCell>
-                      <TableCell className={classes.tableHeadCell}><FormattedMessage module="workforce" id="workforce.application.date"/></TableCell>
-                      <TableCell className={classes.tableHeadCell}><FormattedMessage module="workforce" id="workforce.application.expected.date"/></TableCell>
-                      <TableCell className={classes.tableHeadCell}><FormattedMessage module="workforce" id="workforce.application.status"/></TableCell>
-                      <TableCell className={classes.tableHeadCell}><FormattedMessage module="workforce" id="workforce.application.steps.taken"/></TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell colSpan={6} className={classes.noData}>
-                        কোন এন্ট্রি খুঁজে পাওয়া যায়নি
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-
-            {/* Pagination */}
-            <div className={classes.pagination}>
-              <Button>পূর্ববর্তী</Button>
-              <Button>পরবর্তী</Button>
-            </div>
-          </div>
+          <div className={classes.content}>{renderContent()}</div>
         </Grid>
       </Grid>
     </div>
