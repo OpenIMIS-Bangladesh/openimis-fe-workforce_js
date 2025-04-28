@@ -163,8 +163,8 @@ class ApplicationProcessSearcher extends Component {
     const selectedOffice = event.target.value;
     this.setState({
       selectedOffice,
-      selectedSuboffice: "", // Reset suboffice when office changes
-      selectedUser: "", // Reset user when suboffice changes
+      selectedSuboffice: "", 
+      selectedUser: "",
     });
   };
 
@@ -309,7 +309,7 @@ class ApplicationProcessSearcher extends Component {
         <Tooltip title="রিভার্ট">
           <IconButton
             disabled={application?.isHistory}
-            onClick={() => this.handleOpenForwardModal(application)}
+            // onClick={() => this.handleOpenForwardModal(application)}
           >
             <UndoIcon />
           </IconButton>
@@ -561,7 +561,7 @@ class ApplicationProcessSearcher extends Component {
             module="workforce"
             id="workforce.employee.application.totalAmount"
           />{" "}
-          400000{" "}
+          xxxxxx{" "}
           <FormattedMessage
             module="workforce"
             id="workforce.employee.application.tk"
