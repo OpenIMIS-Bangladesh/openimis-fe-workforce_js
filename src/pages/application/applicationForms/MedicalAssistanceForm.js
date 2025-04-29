@@ -526,7 +526,7 @@ const MedicalAssistanceForm = ({
           <PreviewDetails formData={formData} />
         </Paper>
       )} */}
-      <Paper className={classes.paper} elevation={3}>
+      <Paper className={classes.paper} elevation={0}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((step, index) => (
             <Step key={index}>
@@ -536,54 +536,7 @@ const MedicalAssistanceForm = ({
             </Step>
           ))}
         </Stepper>
-        {/* {activeStep === 0 ? (
-          <EmployeeDetailsForm
-            handleChange={handleChange}
-            formData={formData}
-          />
-        ) : activeStep === 1 ? (
-          <Box mt={3}>
-            <EmployeeLocationForm
-              handleChange={handleChange}
-              formData={formData}
-            />
-          </Box>
-        ) : activeStep === 2 ? (
-          <Box mt={3}>
-            <EmployeeAccidentInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeAccidentInfo")
-              }
-              formData={formData}
-            />
-          </Box>
-        ) : activeStep === 3 ? (
-          <Box mt={3}>
-            <EmployeeDetailsForm2
-              handleChange={handleChange}
-              formData={formData}
-              selectedApplicationType={selectedApplicationType}
-            />
-          </Box>
-        ) : activeStep === 4 ? (
-          <Box mt={3}>
-            <EmployeeDependentForm
-              dependents={formData.dependents}
-              handleDependentChange={handleDependentChange}
-              addDependent={addDependent}
-              removeDependent={removeDependent}
-            />
-          </Box>
-        ) : (
-          <Box mt={3}>
-            <EmployeeAccountInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeBankInfo")
-              }
-              formData={formData.employeeBankInfo}
-            />
-          </Box>
-        )} */}
+        
         <Box mt={3}>{steps[activeStep].content}</Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (

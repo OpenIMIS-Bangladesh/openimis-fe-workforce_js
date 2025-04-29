@@ -16,12 +16,10 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
-import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
 import EmployeeDetailsForm2 from "../EmployeeDetailsForm2";
 import EmployeeLocationForm from "../EmployeeLocationForm";
 import EmployeeDependentForm from "../EmployeeDependentForm";
-import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import EmployeeChildrenDetailsForm from "../EmployeeChildrenDetailsForm";
 import ScholarshipApplicationCheckbox from "../FormsComponents/ScholarshipApplicationForm/ScholarshipApplicationCheckbox";
 
@@ -124,7 +122,7 @@ const ScholarshipApplicationForm = ({
     applicationForSelf: applicationForSelf,
     dependents: [{}],
     employeeBankInfo: {},
-    employeeAccidentInfo: {},
+    employeeChildrenInfo: {},
     id: "",
   });
 
@@ -190,7 +188,7 @@ const ScholarshipApplicationForm = ({
         applicationType: selectedApplicationType,
         dependents: employeeData.dependents || [{}],
         employeeBankInfo: employeeData.employeeBankInfo || {},
-        employeeAccidentInfo: employeeData.employeeAccidentInfo || {},
+        employeeChildrenInfo: employeeData.employeeChildrenInfo || {},
       });
     }
   }, [employeeData]); // Trigger this useEffect when `employeeData` changes.
@@ -322,7 +320,7 @@ const ScholarshipApplicationForm = ({
           ),
           employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
           employeeDependentInfo: JSON.stringify(formData.dependents),
-          employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo),
+          employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo),
           status: WORKFORCE_STATUS.PENDING,
         };
   
@@ -356,7 +354,7 @@ const ScholarshipApplicationForm = ({
           employeeDesignationInfo: formData.employeeDesignationInfo,
           employeeBankInfo: formData.employeeBankInfo,
           employeeDependentInfo: formData.dependents,
-          employeeAccidentInfo: formData.employeeAccidentInfo,
+          employeeChildrenInfo: formData.employeeChildrenInfo,
           status: "ontest",
         };
         dispatch(
@@ -405,7 +403,7 @@ const ScholarshipApplicationForm = ({
     //   employeeDesignationInfo: formData.employeeDesignationInfo,
     //   employeeBankInfo: formData.employeeBankInfo,
     //   employeeDependentInfo: formData.dependents,
-    //   employeeAccidentInfo: formData.employeeAccidentInfo,
+    //   employeeChildrenInfo: formData.employeeChildrenInfo,
     //   isSubmitted: "yes",
     //   status: "ontest",
     // };
@@ -423,24 +421,20 @@ const ScholarshipApplicationForm = ({
     {
       label: "workforce.application.steps.select",
       content: (
-        <Box mt={0}>
           <ScholarshipApplicationCheckbox
             handleChange={handleChange}
             setSelectedScholarshipOption={setSelectedScholarshipOption}
             selectedScholarshipOption={selectedScholarshipOption}
           />
-        </Box>
       ),
     },
     {
       label: "workforce.application.steps.employeeDetails",
       content: (
-        <Box mt={0}>
           <EmployeeDetailsForm
-            handleChange={handleChange}
+            handleChange={(key, value) =>handleChange(key, value, "workforceEmployee")}
             formData={formData}
           />
-        </Box>
       ),
     },
     {
@@ -448,7 +442,7 @@ const ScholarshipApplicationForm = ({
       content: (
         <Box mt={0}>
           <EmployeeLocationForm
-            handleChange={handleChange}
+            handleChange={(key, value) =>handleChange(key, value, "workforceEmployee")}
             formData={formData}
           />
         </Box>
@@ -560,7 +554,7 @@ const ScholarshipApplicationForm = ({
 
   return (
     <div className={classes.container}>
-      <Paper className={classes.paper} elevation={3}>
+      <Paper className={classes.paper} elevation={0}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((step, index) => (
             <Step key={index}>

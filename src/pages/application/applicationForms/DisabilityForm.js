@@ -454,7 +454,7 @@ const DisabilityForm = ({
 
   return (
     <div className={classes.container}>
-      <Paper className={classes.paper} elevation={3}>
+      <Paper className={classes.paper} elevation={0}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>

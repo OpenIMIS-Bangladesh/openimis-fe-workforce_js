@@ -33,6 +33,7 @@ import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
+import { WORKFORCE_STATUS } from "../../../constants";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -512,7 +513,7 @@ const MedicalDonationForm = ({
 
   return (
     <div className={classes.container}>
-      <Paper className={classes.paper} elevation={3}>
+      <Paper className={classes.paper} elevation={0}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((step, index) => (
             <Step key={index}>

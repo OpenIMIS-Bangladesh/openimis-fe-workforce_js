@@ -190,6 +190,8 @@
     "workforce.application.reasons.addComment": "মন্তব্য যোগ করুন",
     "workforce.application.reasons.selectedOfficer": "বাছাইকৃত কর্মকর্তা:",
 
+    "workforce.employee.dependent.phone":"ফোন নম্বর",
+
 
     "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন",
 
@@ -225,6 +227,7 @@
     "workforce.new.application":"নতুন আবেদন",
     "workforce.help.complain":"সাহায্য এবং অভিযোগ",
     "workforce.others":"অন্যান্য",
+    "workforce.application.tracking.number":"ট্র্যাকিং নম্বর লিখুন",
     "workforce.search.here":"অনুসন্ধান করুন..."
 
 

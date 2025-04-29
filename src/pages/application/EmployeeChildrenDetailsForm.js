@@ -61,7 +61,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                 <TextInput
                   label="workforce.employee.first.name.en"
                   // value={formData.firstNameEn || ""}
-                  onChange={(v) => handleChange("firstNameEn", v)}
+                  onChange={(v) => handleChange("nameEn", v)}
                   required
                   readOnly={false}
                 />
@@ -70,12 +70,12 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                 <TextInput
                   label="workforce.employee.first.name.bn"
                   // value={formData.firstNameBn || ""}
-                  onChange={(v) => handleChange("firstNameBn", v)}
+                  onChange={(v) => handleChange("nameBn", v)}
                   required
                   readOnly={false}
                 />
               </Grid>
-              <Grid item xs={6} className={classes.item}>
+              {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.last.name.en"
                   // value={formData.lastNameEn || ""}
@@ -92,7 +92,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                   required
                   readOnly={false}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.other.name"
@@ -140,7 +140,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                 />
               </Grid>
 
-              <Grid item xs={6} className={classes.item}>
+              {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.phone"
                   // value={formData.phoneNumber || ""}
@@ -148,7 +148,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                   type={"number"}
                   readOnly={false}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} className={classes.item}>
                 <TextInput
                   label="workforce.application.employee.children.nidOrBirthRegistry"
@@ -159,7 +159,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                   required
                 />
               </Grid>
-              <Grid item xs={12} className={classes.item}>
+              {/* <Grid item xs={12} className={classes.item}>
                 <TextInput
                   label="workforce.application.employee.children.bankNameOrAcNo"
                   // value={formData.bankNameOrAcNo || ""}
@@ -167,7 +167,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                   type={"number"}
                   readOnly={false}
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
             <Divider />
           </Paper>

@@ -37,7 +37,6 @@ const MedicalDonationCheckbox = ({ modulesManager,onSelect }) => {
   };
 
   return (
-    <Paper className={classes.paper} elevation={3}>
       <FormControl component="fieldset">
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
           <FormattedMessage module="workforce" id="workforce.application.steps.reasonsforSeekingFinancialAssistance" />
@@ -95,7 +94,6 @@ const MedicalDonationCheckbox = ({ modulesManager,onSelect }) => {
           />
         </RadioGroup>
       </FormControl>
-    </Paper>
   );
 };
 

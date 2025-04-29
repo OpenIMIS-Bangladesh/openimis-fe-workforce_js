@@ -33,6 +33,8 @@ import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReason from "../FormsComponents/FinancialAssistance/ApplicationReason";
+import PreviewDetails from "../../../components/application-forms/PreviewDetails";
+import NidVerification from "../../../components/application-forms/NidVerification";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -74,6 +76,8 @@ const FinancialAssistanceForm = ({
   modulesManager,
   organizationType,
   selectedApplicationType,
+  selectedCompany,
+  selectedFactory,
 }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
@@ -88,45 +92,50 @@ const FinancialAssistanceForm = ({
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [selectedForm, setSelectedForm] = useState(null);
+  const [showVerifyNid, setShowVerifyNid] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [deathType, setDeathType] = useState("");
   const reduxState = useSelector((state) => state);
 
   const [formData, setFormData] = useState({
-    nameEn: "",
-    nameBn: "",
-    lastNameEn: "",
-    position: "",
-    fatherNameEn: "",
-    fatherNameBn: "",
-    motherNameEn: "",
-    motherNameBn: "",
-    spouseNameEn: "",
-    spouseNameBn: "",
-    phoneNumber: "",
-    email: "",
-    citizenship: "",
-    birthDate: "",
-    deathDate: "",
-    joinDate: "",
-    nid: "",
-    birthCertificateNo: "",
-    insuranceNumber: "",
+    workforceEmployee: {
+      nameEn: "",
+      nameBn: "",
+      lastNameEn: "",
+      position: "",
+      fatherNameEn: "",
+      fatherNameBn: "",
+      motherNameEn: "",
+      motherNameBn: "",
+      spouseNameEn: "",
+      spouseNameBn: "",
+      phoneNumber: "",
+      email: "",
+      birthDate: "",
+      deathDate: "",
+      joinDate: "",
+      nid: "",
+      birthCertificateNo: "",
+      insuranceNumber: "",
+      lifeStatus: "",
+      gender: "",
+      maritalStatus: "",
+      monthlyEarning: "",
+      uploadedNidFile: [],
+      citizenship: "",
+      uploadedBirthCertificateFile: [],
+      permanentAddress: "",
+      permanentLocation: "",
+      presentLocation: "",
+      presentAddress: "",
+      organizationId: "",
+    },
+    deathType:deathType,
     company: null,
     factory: null,
-    lifeStatus: "",
-    gender: "",
-    maritalStatus: "",
+    isSubmitted: "no",
     organizationType: "",
     applicationType: "",
-    monthlyEarning: "",
-    uploadedNidFile: [],
-    uploadedBirthCertificateFile: [],
-    permanentAddress: "",
-    permanentLocation: "",
-    presentLocation: "",
-    presentAddress: "",
-    organizationId: "",
-    isSubmitted: "no",
     dependents: [{}],
     employeeBankInfo: {},
     employeeAccidentInfo: {},
@@ -152,42 +161,45 @@ const FinancialAssistanceForm = ({
     if (employeeData) {
       // When employeeData is fetched, set it into the form state
       setFormData({
-        organization: employeeData.organization,
         id: employeeData.id || "",
-        nameEn: employeeData.nameEn || "",
-        nameBn: employeeData.nameBn || "",
-        lastNameEn: "",
-        position: employeeData.position || "",
-        fatherNameEn: employeeData.fatherNameEn || "",
-        fatherNameBn: employeeData.fatherNameBn || "",
-        motherNameEn: employeeData.motherNameEn || "",
-        motherNameBn: employeeData.motherNameBn || "",
-        spouseNameEn: employeeData.spouseNameEn || "",
-        spouseNameBn: employeeData.spouseNameBn || "",
-        phoneNumber: employeeData.phoneNumber || "",
-        email: employeeData.email || "",
-        citizenship: employeeData.citizenship || "",
-        birthDate: employeeData.birthDate || "",
-        deathDate: employeeData.deathDate || "",
-        joinDate: employeeData.joinDate || "",
-        nid: employeeData.nid || "",
-        birthCertificateNo: employeeData.birthCertificateNo || "",
-        insuranceNumber: employeeData.insuranceNumber || "",
-        company: employeeData.company || null,
-        factory: employeeData.factory || null,
+        workforceEmployee: {
+          organization: employeeData.organization,
+          nameEn: employeeData.nameEn || "",
+          nameBn: employeeData.nameBn || "",
+          lastNameEn: "",
+          position: employeeData.position || "",
+          fatherNameEn: employeeData.fatherNameEn || "",
+          fatherNameBn: employeeData.fatherNameBn || "",
+          motherNameEn: employeeData.motherNameEn || "",
+          motherNameBn: employeeData.motherNameBn || "",
+          spouseNameEn: employeeData.spouseNameEn || "",
+          spouseNameBn: employeeData.spouseNameBn || "",
+          phoneNumber: employeeData.phoneNumber || "",
+          email: employeeData.email || "",
+          citizenship: employeeData.citizenship || "",
+          birthDate: employeeData.birthDate || "",
+          deathDate: employeeData.deathDate || "",
+          joinDate: employeeData.joinDate || "",
+          nid: employeeData.nid || "",
+          birthCertificateNo: employeeData.birthCertificateNo || "",
+          insuranceNumber: employeeData.insuranceNumber || "",
+          lifeStatus: employeeData.lifeStatus || "",
+          gender: employeeData.gender || "",
+          maritalStatus: employeeData.maritalStatus || "",
+          monthlyEarning: employeeData.monthlyEarning || "",
+          uploadedNidFile: employeeData.uploadedNidFile || [],
+          uploadedBirthCertificateFile:
+            employeeData.uploadedBirthCertificateFile || [],
+          permanentAddress: employeeData.permanentAddress || "",
+          permanentLocation: employeeData.permanentLocation || "",
+          presentLocation: employeeData.presentLocation || "",
+          presentAddress: employeeData.presentAddress || "",
+        },
+        company: selectedCompany || employeeData.company || null,
+        factory: selectedFactory || employeeData.factory || null,
         organizationType: organizationType,
         applicationType: selectedApplicationType,
-        lifeStatus: employeeData.lifeStatus || "",
-        gender: employeeData.gender || "",
-        maritalStatus: employeeData.maritalStatus || "",
-        monthlyEarning: employeeData.monthlyEarning || "",
-        uploadedNidFile: employeeData.uploadedNidFile || [],
-        uploadedBirthCertificateFile:
-          employeeData.uploadedBirthCertificateFile || [],
-        permanentAddress: employeeData.permanentAddress || "",
-        permanentLocation: employeeData.permanentLocation || "",
-        presentLocation: employeeData.presentLocation || "",
-        presentAddress: employeeData.presentAddress || "",
+        deathType:deathType,
         dependents: employeeData.dependents || [{}],
         employeeBankInfo: employeeData.employeeBankInfo || {},
         employeeAccidentInfo: employeeData.employeeAccidentInfo || {},
@@ -216,32 +228,76 @@ const FinancialAssistanceForm = ({
     console.log({ formData });
     if (activeStep === 0 || activeStep === 1) {
       const workforceEmployeeData = {
-        nameEn: formData?.nameEn || formData.nameEn,
-        nameBn: formData?.nameBn || formData.nameBn,
+        nameEn:
+          formData?.workforceEmployee?.nameEn ||
+          formData?.workforceEmployee.nameEn,
+        nameBn:
+          formData?.workforceEmployee?.nameBn ||
+          formData?.workforceEmployee.nameBn,
         lastNameEn: "",
-        phoneNumber: formData?.phoneNumber || formData.phoneNumber,
-        email: formData?.email || formData.email,
-        gender: formData?.gender?.id || formData.gender.id,
-        birthDate: formData?.birthDate || formData.birthDate,
-        deathDate: formData?.deathDate || formData.deathDate,
-        lifeStatus: formData?.lifeStatus || formData.lifeStatus,
+        phoneNumber:
+          formData?.workforceEmployee?.phoneNumber ||
+          formData?.workforceEmployee.phoneNumber,
+        email:
+          formData?.workforceEmployee?.email ||
+          formData?.workforceEmployee.email,
+        gender:
+          formData?.workforceEmployee?.gender?.id ||
+          formData?.workforceEmployee.gender.id,
+        birthDate:
+          formData?.workforceEmployee?.birthDate ||
+          formData?.workforceEmployee.birthDate,
+        deathDate:
+          formData?.workforceEmployee?.deathDate ||
+          formData?.workforceEmployee.deathDate,
+        lifeStatus:
+          formData?.workforceEmployee?.lifeStatus ||
+          formData?.workforceEmployee.lifeStatus,
         permanentAddress:
-          formData?.permanentAddress || formData.permanentAddress,
-        presentAddress: formData?.presentAddress || formData.presentAddress,
-        position: formData?.position || formData.position,
-        monthlyEarning: formData?.monthlyEarning || formData.monthlyEarning,
-        insuranceNumber: formData?.insuranceNumber || formData.insuranceNumber,
-        fatherNameBn: formData?.fatherNameBn || formData.fatherNameBn,
-        fatherNameEn: formData?.fatherNameEn || formData.fatherNameEn,
-        motherNameBn: formData?.motherNameBn || formData.motherNameBn,
-        motherNameEn: formData?.motherNameEn || formData.motherNameEn,
-        spouseNameBn: formData?.spouseNameBn || formData.spouseNameBn,
-        spouseNameEn: formData?.spouseNameEn || formData.spouseNameEn,
-        citizenship: formData?.citizenship || formData.citizenship,
-        maritalStatus: formData?.maritalStatus || formData.maritalStatus,
-        presentLocation: formData?.presentLocation || formData.presentLocation,
+          formData?.workforceEmployee?.permanentAddress ||
+          formData?.workforceEmployee.permanentAddress,
+        presentAddress:
+          formData?.workforceEmployee?.presentAddress ||
+          formData?.workforceEmployee.presentAddress,
+        position:
+          formData?.workforceEmployee?.position ||
+          formData?.workforceEmployee.position,
+        monthlyEarning:
+          formData?.workforceEmployee?.monthlyEarning ||
+          formData?.workforceEmployee.monthlyEarning,
+        insuranceNumber:
+          formData?.workforceEmployee?.insuranceNumber ||
+          formData?.workforceEmployee.insuranceNumber,
+        fatherNameBn:
+          formData?.workforceEmployee?.fatherNameBn ||
+          formData?.workforceEmployee.fatherNameBn,
+        fatherNameEn:
+          formData?.workforceEmployee?.fatherNameEn ||
+          formData?.workforceEmployee.fatherNameEn,
+        motherNameBn:
+          formData?.workforceEmployee?.motherNameBn ||
+          formData?.workforceEmployee.motherNameBn,
+        motherNameEn:
+          formData?.workforceEmployee?.motherNameEn ||
+          formData?.workforceEmployee.motherNameEn,
+        spouseNameBn:
+          formData?.workforceEmployee?.spouseNameBn ||
+          formData?.workforceEmployee.spouseNameBn,
+        spouseNameEn:
+          formData?.workforceEmployee?.spouseNameEn ||
+          formData?.workforceEmployee.spouseNameEn,
+        citizenship:
+          formData?.workforceEmployee?.citizenship ||
+          formData?.workforceEmployee.citizenship,
+        maritalStatus:
+          formData?.workforceEmployee?.maritalStatus ||
+          formData?.workforceEmployee.maritalStatus,
+        presentLocation:
+          formData?.workforceEmployee?.presentLocation ||
+          formData?.workforceEmployee.presentLocation,
         permanentLocation:
-          formData?.permanentLocation || formData.permanentLocation,
+          formData?.workforceEmployee?.permanentLocation ||
+          formData?.workforceEmployee.permanentLocation,
         id: formData?.id,
       };
       console.log("Update Submitting formData:", formData);
@@ -342,34 +398,82 @@ const FinancialAssistanceForm = ({
   };
 
   const handleSubmit = async () => {
-    const updateApplicationData = {
-      id: decodeId(applicationId[0].id),
-      workforceEmployeeId: formData.id,
-      company: formData.company,
-      factory: formData.factory,
-      organizationType: organizationType,
-      applicationType: selectedApplicationType,
-      employeeDesignationInfo: formData.employeeDesignationInfo,
-      employeeBankInfo: formData.employeeBankInfo,
-      employeeDependentInfo: formData.dependents,
-      employeeAccidentInfo: formData.employeeAccidentInfo,
-      isSubmitted: "yes",
-      status: "ontest",
-    };
-    dispatch(
-      updateApplication(
-        updateApplicationData,
-        `update workforce application ${formData.firstNameEn}`
-      )
-    );
-
+    console.log({ tazwer: formData });
+    // const updateApplicationData = {
+    //   id: decodeId(applicationId[0].id),
+    //   workforceEmployeeId: formData.id,
+    //   company: formData.company,
+    //   factory: formData.factory,
+    //   organizationType: organizationType,
+    //   applicationType: selectedApplicationType,
+    //   employeeDesignationInfo: formData.employeeDesignationInfo,
+    //   employeeBankInfo: formData.employeeBankInfo,
+    //   employeeDependentInfo: formData.dependents,
+    //   employeeAccidentInfo: formData.employeeAccidentInfo,
+    //   isSubmitted: "yes",
+    //   status: "ontest",
+    // };
+    // dispatch(
+    //   updateApplication(
+    //     updateApplicationData,
+    //     `update workforce application ${formData.firstNameEn}`
+    //   )
+    // );
+    setShowPreview(true);
     setIsSubmitted(true);
   };
+
+  if (showPreview) {
+    return (
+      <div className={classes.container}>
+        <Paper className={classes.paper} elevation={0}>
+          <PreviewDetails formData={formData} />
+          <div className={classes.buttonContainer}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                setShowPreview(false);
+                setShowVerifyNid(true);
+              }}
+            >
+              <FormattedMessage module="workforce" id="workforce.submit" />
+            </Button>
+          </div>
+        </Paper>
+      </div>
+    );
+  }
+
+  if (showVerifyNid) {
+    return (
+      <div className={classes.container}>
+        <Paper className={classes.paper} elevation={0}>
+          <NidVerification formData={formData} />
+          <div className={classes.buttonContainer}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                setShowVerifyNid(false);
+                setIsSubmitted(true);
+              }}
+            >
+              <FormattedMessage
+                module="workforce"
+                id="workforce.confirm.submit"
+              />
+            </Button>
+          </div>
+        </Paper>
+      </div>
+    );
+  }
 
   if (isSubmitted) {
     return (
       <div className={classes.container}>
-        <Paper className={classes.paper} elevation={3}>
+        <Paper className={classes.paper} elevation={0}>
           <Typography variant="h5" align="center" color="primary">
             <FormattedMessage
               module="workforce"
@@ -383,7 +487,7 @@ const FinancialAssistanceForm = ({
 
   return (
     <div className={classes.container}>
-      <Paper className={classes.paper} elevation={3}>
+      <Paper className={classes.paper} elevation={0}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
             <Step key={label}>
@@ -394,28 +498,27 @@ const FinancialAssistanceForm = ({
           ))}
         </Stepper>
         {activeStep === 0 ? (
-          <ApplicationReason modulesManager={modulesManager} />
+          <ApplicationReason
+            modulesManager={modulesManager}
+            handleChange={handleChange}
+            setDeathType={setDeathType}
+            deathType={deathType}
+          />
         ) : activeStep === 1 ? (
-          <Box mt={3}>
-            {/* <EmployeeDetailsForm
-              handleChange={handleChange}
-              formData={formData}
-            /> */}
+          <Box mt={0}>
             <EmployeeDependentForm
               dependents={formData.dependents}
               handleDependentChange={handleDependentChange}
               addDependent={addDependent}
               removeDependent={removeDependent}
             />
-            {/* <EmployeeLocationForm
-              handleChange={handleChange}
-              formData={formData}
-            /> */}
           </Box>
         ) : activeStep === 2 ? (
-          <Box mt={3}>
+          <Box mt={0}>
             <EmployeeDetailsForm
-              handleChange={handleChange}
+              handleChange={(key, value) =>
+                handleChange(key, value, "workforceEmployee")
+              }
               formData={formData}
             />
             {/* <EmployeeAccidentInfoForm
@@ -426,14 +529,14 @@ const FinancialAssistanceForm = ({
             /> */}
           </Box>
         ) : activeStep === 3 ? (
-          <Box mt={3}>
+          <Box mt={0}>
             <EmployeeLocationForm
-              handleChange={handleChange}
+              handleChange={(key,value)=>handleChange(key,value,"workforceEmployee")}
               formData={formData}
             />
           </Box>
         ) : activeStep === 4 ? (
-          <Box mt={3}>
+          <Box mt={0}>
             <EmployeeDetailsForm2
               selectedApplicationType={selectedApplicationType}
               handleChange={handleChange}
@@ -441,7 +544,7 @@ const FinancialAssistanceForm = ({
             />
           </Box>
         ) : (
-          <Box mt={3}>
+          <Box mt={0}>
             <EmployeeAccountInfoForm
               handleChange={(key, value) =>
                 handleChange(key, value, "employeeBankInfo")

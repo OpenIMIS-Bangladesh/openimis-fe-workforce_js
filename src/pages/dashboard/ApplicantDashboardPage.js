@@ -12,7 +12,7 @@ import {
   CardContent,
   Select,
   MenuItem,
-  InputBase,
+  TextField,
   Table,
   TableHead,
   TableRow,
@@ -119,9 +119,11 @@ const FiledApplications = () =>{
     {/* Filters */}
     <Grid container spacing={2} alignItems="center">
       <Grid item>
-        <InputBase
-          className={classes.searchInput}
-          placeholder="অনুসন্ধান করুন"
+        <TextField
+        variant="outlined"
+        size="small"
+          // className={classes.searchInput}
+          label={<FormattedMessage module="workforce" id="workforce.search.here" />}
         />
       </Grid>
     </Grid>
@@ -205,23 +207,27 @@ const ApplicationStatus = () => {
 
         <Grid container spacing={2} justifyContent="center" style={{ marginTop: 16 }}>
           <Grid item xs={12} md={6}>
-            <InputBase
+            <TextField
               fullWidth
-              placeholder="মোবাইল নম্বর লিখুন"
+              variant="outlined"
+              size="small"
+              label={<FormattedMessage module="workforce" id="workforce.employee.dependent.phone" />}
               style={{
-                border: "1px solid #ccc",
-                borderRadius: 4,
-                padding: "8px 12px",
+                // border: "1px solid #ccc",
+                // borderRadius: 4,
+                // padding: "8px 12px",
                 marginBottom: 16,
               }}
             />
-            <InputBase
+            <TextField
               fullWidth
-              placeholder="ট্র্যাকিং নম্বর লিখুন"
+              variant="outlined"
+              size="small"
+              label={<FormattedMessage module="workforce" id="workforce.application.tracking.number" />}
               style={{
-                border: "1px solid #ccc",
-                borderRadius: 4,
-                padding: "8px 12px",
+                // border: "1px solid #ccc",
+                // borderRadius: 4,
+                // padding: "8px 12px",
                 marginBottom: 16,
               }}
             />
@@ -230,7 +236,7 @@ const ApplicationStatus = () => {
               color="primary"
               fullWidth
             >
-              <FormattedMessage module="workforce" id="workforce.search" defaultMessage="অনুসন্ধান করুন" />
+              <FormattedMessage module="workforce" id="workforce.search.here" />
             </Button>
           </Grid>
         </Grid>

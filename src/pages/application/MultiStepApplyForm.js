@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   subPaper : {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     width: "100%", // Ensures it doesn't overflow
     maxWidth: 650, // Restrict max width
     margin: "auto", // Centers the Paper component
@@ -42,6 +42,12 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     fontWeight: "bold",
   },
+  title:{
+    fontWeight:800
+  },
+  section:{
+    marginTop: theme.spacing(1),
+  }
 }));
 
 const MultiStepApplyForm = ({ modulesManager }) => {
@@ -221,6 +227,8 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
               applicationForSelf={applicationForSelf}
+              selectedCompany={selectedCompany}
+              selectedFactory={selectedFactory}
             />
             )}
           </>
@@ -239,6 +247,8 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
+              selectedCompany={selectedCompany}
+              selectedFactory={selectedFactory}
             />
           </>
         ) :selectedApplicationType === "scholarship"? (
@@ -271,6 +281,8 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
               applicationForSelf={applicationForSelf}
+              selectedCompany={selectedCompany}
+              selectedFactory={selectedFactory}
             />
             )}
           </>

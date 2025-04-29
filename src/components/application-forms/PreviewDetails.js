@@ -56,7 +56,7 @@ const styles = (theme) => ({
               <Box key={idx} mb={0}>
                 {typeof item === "object" ? renderNestedObject(item) : item}
               </Box>
-            ));
+            ))
       } else if (typeof value === "object" && value !== null) {
         if ("code" in value && "name" in value) {
           return `${value.name} (${value.code})`;
@@ -116,9 +116,9 @@ const styles = (theme) => ({
     const renderWorkforceEmployeeSections = (employeeData) => {
       if (!employeeData || typeof employeeData !== "object") return null;
     
-      const personalFields = ["fatherName", "motherName", "spouseName", "citizenship", "nid", "birthCertificate", "birthDate", "insuranceNumber", "gender"];
+      const personalFields = ["nameEn","nameBn","fatherNameEn","fatherNameBn", "motherNameEn","motherNameBn", "spouseName", "citizenship", "nid", "birthCertificate", "birthDate", "insuranceNumber", "gender"];
       const contactFields = ["email", "phoneNumber", "presentAddress", "permanentAddress", "presentLocation", "permanentLocation"];
-      const statusFields = ["birthDate", "deathDate", "lifeStatus", "maritalStatus"];
+      const statusFields = ["birthDate", "deathDate", "lifeStatus", "maritalStatus","monthlyEarning"];
     
       const pickFields = (fields) => {
         return fields.reduce((acc, field) => {
