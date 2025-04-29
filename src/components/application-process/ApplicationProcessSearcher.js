@@ -42,6 +42,7 @@ import UndoIcon from "@material-ui/icons/Undo";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import FileUploader from "../../pickers/FileUploader";
+import CloseIcon from '@material-ui/icons/Close';
 
 const styles = (theme) => ({
   paper: {
@@ -176,6 +177,19 @@ class ApplicationProcessSearcher extends Component {
     });
   };
 
+  handleReject = () => {
+    const { selectedApplication } = this.state;
+  
+    if (window.confirm('Are you sure you want to reject this application?')) {
+      this.setState({
+        selectedApplication: {
+          ...selectedApplication,
+          isHistory: true,
+        },
+      });
+    }
+  };
+  
   handleForwardSubmit = (event) => {
     this.state.editorContent;
 
@@ -224,6 +238,7 @@ class ApplicationProcessSearcher extends Component {
     "workforce.employee.application.applicationDate",
     // "workforce.employee.application.assignedBy",
     // "workforce.employee.application.assignedDate",
+    // "workforce.employee.application.actions",
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
@@ -314,6 +329,18 @@ class ApplicationProcessSearcher extends Component {
             <UndoIcon />
           </IconButton>
         </Tooltip>
+        <Tooltip title="রিজেক্ট">
+          <span>
+            <IconButton
+              onClick={this.handleReject}
+              disabled={this.state.selectedApplication?.isHistory}
+              color="error"
+            >
+              <CloseIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
+
       </div>
     ));
     return formatters;
