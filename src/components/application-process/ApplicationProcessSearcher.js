@@ -478,7 +478,7 @@ class ApplicationProcessSearcher extends Component {
                       this.setState({ editorContent: content })
                     }
                     theme="snow"
-                    style={{ height: "200px" }}
+                    style={{ height: "150px" }}
                   />
                 </Box>
 
