@@ -428,7 +428,7 @@ class ApplicationProcessSearcher extends Component {
               left: "50%",
               transform: "translate(-50%, -50%)",
               width: 1200,
-              height: 800,
+              height: 750,
               bgcolor: "background.paper",
               borderRadius: 2,
               boxShadow: 24,
