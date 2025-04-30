@@ -179,8 +179,18 @@ class ApplicationProcessSearcher extends Component {
 
   handleReject = () => {
     const { selectedApplication } = this.state;
-  
     if (window.confirm('Are you sure you want to reject this application?')) {
+      this.setState({
+        selectedApplication: {
+          ...selectedApplication,
+          isHistory: true,
+        },
+      });
+    }
+  };
+  handleApproval = () => {
+    const { selectedApplication } = this.state; 
+    if (window.confirm('Are you sure you want to approve this application?')) {
       this.setState({
         selectedApplication: {
           ...selectedApplication,
@@ -192,7 +202,6 @@ class ApplicationProcessSearcher extends Component {
   
   handleForwardSubmit = (event) => {
     this.state.editorContent;
-
     event.preventDefault();
 
     const selectedUser = this.state.userList.find(
@@ -300,15 +309,7 @@ class ApplicationProcessSearcher extends Component {
         <Tooltip title="অনুমোদন">
           <IconButton
             disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.verify",
-                [decodeId(application.id)],
-                false
-              );
-            }}
+            onClick={this.handleApproval}
           >
             <CheckIcon />
           </IconButton>

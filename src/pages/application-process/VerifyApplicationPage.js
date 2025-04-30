@@ -19,6 +19,7 @@ import { journalize, FormattedMessage } from "@openimis/fe-core";
 import CloseIcon from "@material-ui/icons/Close";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const styles = (theme) => ({
   paper: {
@@ -209,7 +210,7 @@ class VerifyApplicationPage extends Component {
               {fileStates.map((file, index) => (
                 <Accordion key={index}>
                   <AccordionSummary
-                    expandIcon={<i className="material-icons">expand_more</i>}
+                    expandIcon={<ExpandMoreIcon className="material-icons"/>}
                   >
                     <Grid
                       container
