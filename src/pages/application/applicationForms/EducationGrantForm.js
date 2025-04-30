@@ -400,7 +400,7 @@ const MedicalAssistanceForm = ({
     //   )
     // );
     setShowPreview(true);
-    setIsSubmitted(true);
+    // setIsSubmitted(true);
   };
 
   const steps = [
@@ -467,19 +467,22 @@ const MedicalAssistanceForm = ({
   ];
 
   if (showPreview) {
-    return (
-      <div className={classes.container}>
-        <Paper className={classes.paper} elevation={0}>
-          <PreviewDetails formData={formData} />
-          <div className={classes.buttonContainer}>
-          <Button variant="contained" color="primary" onClick={()=>{setShowPreview(false);setShowVerifyNid(true)}}>
-            <FormattedMessage module="workforce" id="workforce.submit" />
-          </Button>
-          </div>
-        </Paper>
-      </div>
-    );
-  }
+      return (
+        <div className={classes.container}>
+          <Paper className={classes.paper} elevation={0}>
+            <PreviewDetails formData={formData} />
+            <div className={classes.buttonContainer}>
+            <Button variant="outlined" color="error" onClick={()=>{setShowPreview(false)}}>
+              <FormattedMessage module="workforce" id="workforce.back" />
+            </Button>
+            <Button variant="contained" color="primary" onClick={()=>{setShowPreview(false);setShowVerifyNid(true)}}>
+              <FormattedMessage module="workforce" id="workforce.submit" />
+            </Button>
+            </div>
+          </Paper>
+        </div>
+      );
+    }
 
   if (showVerifyNid) {
     return (
@@ -527,7 +530,7 @@ const MedicalAssistanceForm = ({
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
-              <FormattedMessage module="workforce" id="workforce.next" />
+              <FormattedMessage module="workforce" id="workforce.back" />
             </Button>
           )}
           {activeStep < steps.length - 1 ? (
