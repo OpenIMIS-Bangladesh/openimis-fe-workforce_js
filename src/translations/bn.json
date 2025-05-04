@@ -228,7 +228,18 @@
     "workforce.help.complain":"সাহায্য এবং অভিযোগ",
     "workforce.others":"অন্যান্য",
     "workforce.application.tracking.number":"ট্র্যাকিং নম্বর লিখুন",
-    "workforce.search.here":"অনুসন্ধান করুন..."
+    "workforce.search.here":"অনুসন্ধান করুন...",
+    "workforce.application.pending":"মুলতুবি আবেদন",
+    "workforce.application.approve":"আবেদনপত্র অনুমোদন করুন",
+    "workforce.application.recent":"সাম্প্রতিক কার্যকলাপ",
+    "workforce.application.checked":"পরীক্ষিত অ্যাপ্লিকেশনগুলি",
+    "workforce.checker.dashboard":"চেকার ড্যাশবোর্ড",
+    "workforce.applicant.dashboard":"চেকার ড্যাশবোর্ড",
+    "workforce.approver.dashboard":"অনুমোদনকারী ড্যাশবোর্ড",
+    "workforce.approver.noEntry":"কোন এন্ট্রি খুঁজে পাওয়া যায়নি"
+
+   
+
 
 
 

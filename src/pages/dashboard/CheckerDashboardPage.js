@@ -27,6 +27,9 @@ import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
+import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,36 +77,27 @@ const useStyles = makeStyles((theme) => ({
 
 const SidebarMenu = [
   {
-    id: "filedApplications",
+    id: "pendingApplications",
     text: (
-      <FormattedMessage module="workforce" id="workforce.application.filed" />
+      <FormattedMessage module="workforce" id="workforce.application.pending" />
     ),
-    icon: <DescriptionIcon />,
+    icon: <HourglassFullTwoToneIcon />,
   },
   {
-    id: "newApplication",
+    id: "checkedApplications",
     text: (
-      <FormattedMessage module="workforce" id="workforce.new.application" />
+      <FormattedMessage module="workforce" id="workforce.application.checked" />
     ),
-    icon: <AddCircleOutlineIcon />,
+    icon: <CheckCircleOutlineTwoToneIcon />,
   },
   {
-    id: "applicationStatus",
+    id: "recentApplications",
     text: (
-      <FormattedMessage module="workforce" id="workforce.application.status" />
+      <FormattedMessage module="workforce" id="workforce.application.recent" />
     ),
-    icon: <AssignmentIcon />,
+    icon: <DoneAllIcon />,
   },
-  {
-    id: "helpAndComplaints",
-    text: <FormattedMessage module="workforce" id="workforce.help.complain" />,
-    icon: <HelpOutlineIcon />,
-  },
-  {
-    id: "others",
-    text: <FormattedMessage module="workforce" id="workforce.others" />,
-    icon: <MoreHorizIcon />,
-  },
+   
 ];
 
 // ----------- Components to Render in Main Content -----------
@@ -113,7 +107,7 @@ const FiledApplications = () =>{
   return (
   <>
     <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.applicant.dashboard" />
+      <FormattedMessage module="workforce" id="workforce.checker.dashboard" />
     </Typography>
 
     {/* Filters */}
@@ -189,7 +183,7 @@ const FiledApplications = () =>{
   </>
 );}
 
-const NewApplication = () => (
+const checkedApplications = () => (
   <Typography variant="h5">
     <FormattedMessage module="workforce" id="workforce.new.application" />
   </Typography>
@@ -260,22 +254,18 @@ const Others = () => (
 
 // ------------------------------------------------------------
 
-const ApplicantDashboard = () => {
+const CheckerDashboard = () => {
   const classes = useStyles();
-  const [selectedMenu, setSelectedMenu] = useState("filedApplications"); // Default first menu
+  const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
 
   const renderContent = () => {
     switch (selectedMenu) {
-      case "filedApplications":
+      case "pendingApplications":
         return <FiledApplications />;
-      case "newApplication":
-        return <NewApplication />;
-      case "applicationStatus":
-        return <ApplicationStatus />;
-      case "helpAndComplaints":
-        return <HelpAndComplaints />;
-      case "others":
-        return <Others />;
+      case "checkedApplications":
+        return <FiledApplications />;
+      case "recentApplications":
+        return <FiledApplications />;
       default:
         return <FiledApplications />;
     }
@@ -312,4 +302,4 @@ const ApplicantDashboard = () => {
   );
 };
 
-export default ApplicantDashboard;
+export default CheckerDashboard;

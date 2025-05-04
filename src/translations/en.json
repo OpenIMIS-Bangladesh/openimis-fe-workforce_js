@@ -406,7 +406,15 @@
     "workforce.help.complain":"Help and Complains",
     "workforce.others":"Others",
     "workforce.application.tracking.number":"Tracking number",
-    "workforce.search.here":"Search Here ..."
+    "workforce.search.here":"Search Here ...",
+    "workforce.application.pending":"Pending Applications",
+    "workforce.application.approve":"Approve Applications",
+    "workforce.application.recent":"Recent Activity",
+    "workforce.application.checked":"Checked Applications",
+    "workforce.checker.dashboard":"Checker Dashboard",
+    "workforce.applicant.dashboard":"Applicant Dashboard",
+    "workforce.approver.dashboard":"Approver Dashboard",
+    "workforce.approver.noEntry":"No entries found"
 
 
 
