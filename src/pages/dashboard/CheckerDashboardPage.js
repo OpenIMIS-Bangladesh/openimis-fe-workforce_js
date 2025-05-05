@@ -36,21 +36,24 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     padding: theme.spacing(2),
+    height: 'calc(100vh - 64px)', // assuming 64px header/appbar, adjust as needed
+    overflow: 'hidden',
   },
   sidebar: {
-    width: 340,
-    backgroundColor: theme.palette.background.paper,
-    borderRight: `1px solid ${theme.palette.divider}`,
-    height: "auto",
     position: "sticky",
     top: 0,
+    height: "40vh",
+    backgroundColor: theme.palette.background.paper,
+    borderRight: `1px solid ${theme.palette.divider}`,
+    overflowY: "auto",
   },
   content: {
-    flexGrow: 1,
-    padding: theme.spacing(0),
+    height: '100vh',
+    overflowY: 'auto',
+    padding: theme.spacing(2),
   },
   tableContainer: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(0),
   },
   tableHeadCell: {
     fontWeight: "bold",
@@ -98,6 +101,13 @@ const SidebarMenu = [
     ),
     icon: <DoneAllIcon />,
   },
+  {
+    id: "applicationStatus",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.status" />
+    ),
+    icon: <AssignmentIcon  />,
+  },
    
 ];
 
@@ -107,9 +117,9 @@ const FiledApplications = () =>{
   const classes = useStyles()
   return (
   <>
-    <Typography variant="h5" gutterBottom>
+    {/* <Typography variant="h5" gutterBottom>
       <FormattedMessage module="workforce" id="workforce.checker.dashboard" />
-    </Typography>
+    </Typography> */}
 
     {/* Filters */}
     {/* <Grid container spacing={2} alignItems="center">
@@ -227,6 +237,8 @@ const CheckerDashboard = () => {
         return <FiledApplications />;
       case "recentApplications":
         return <FiledApplications />;
+      case "applicationStatus":
+        return <ApplicationStatus />;
       default:
         return <FiledApplications />;
     }
@@ -234,7 +246,7 @@ const CheckerDashboard = () => {
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} className={classes.root}>
         {/* Sidebar */}
         <Grid item xs={12} md={3}>
           <Paper className={classes.sidebar}>
@@ -255,8 +267,8 @@ const CheckerDashboard = () => {
         </Grid>
 
         {/* Main Content */}
-        <Grid item xs={12} md={9}>
-          <div className={classes.content}>{renderContent()}</div>
+        <Grid item xs={12} md={9} className={classes.content}>
+          {renderContent()}
         </Grid>
       </Grid>
     </div>
