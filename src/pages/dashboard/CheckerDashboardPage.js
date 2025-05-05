@@ -30,6 +30,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
+import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -111,7 +112,7 @@ const FiledApplications = () =>{
     </Typography>
 
     {/* Filters */}
-    <Grid container spacing={2} alignItems="center">
+    {/* <Grid container spacing={2} alignItems="center">
       <Grid item>
         <TextField
         variant="outlined"
@@ -120,56 +121,16 @@ const FiledApplications = () =>{
           label={<FormattedMessage module="workforce" id="workforce.search.here" />}
         />
       </Grid>
-    </Grid>
+    </Grid> */}
 
     {/* Table */}
-    <Card className={classes.tableContainer}>
-      <CardContent>
-        <Table>
-          <TableHead className={classes.tableHeader}>
-            <TableRow>
-              <TableCell className={classes.tableHeadCell}>
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.id"
-                />
-              </TableCell>
-              <TableCell className={classes.tableHeadCell}>
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.date"
-                />
-              </TableCell>
-              <TableCell className={classes.tableHeadCell}>
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.expected.date"
-                />
-              </TableCell>
-              <TableCell className={classes.tableHeadCell}>
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.status"
-                />
-              </TableCell>
-              <TableCell className={classes.tableHeadCell}>
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.steps.taken"
-                />
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell colSpan={6} className={classes.noData}>
-                <FormattedMessage module="workforce" id="workforce.approver.noEntry" />
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+   <Card className={classes.tableContainer}>
+       <CardContent>
+             <ApplicationProcessSearcher
+                     
+              />
+            </CardContent>
+      </Card>
 
     {/* Pagination */}
     <div className={classes.pagination}>

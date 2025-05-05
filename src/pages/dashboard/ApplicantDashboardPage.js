@@ -27,6 +27,8 @@ import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -117,7 +119,7 @@ const FiledApplications = () =>{
     </Typography>
 
     {/* Filters */}
-    <Grid container spacing={2} alignItems="center">
+    {/* <Grid container spacing={2} alignItems="center">
       <Grid item>
         <TextField
         variant="outlined"
@@ -126,54 +128,14 @@ const FiledApplications = () =>{
           label={<FormattedMessage module="workforce" id="workforce.search.here" />}
         />
       </Grid>
-    </Grid>
+    </Grid> */}
 
     {/* Table */}
     <Card className={classes.tableContainer}>
       <CardContent>
-        <Table>
-          <TableHead className={classes.tableHeader}>
-            <TableRow>
-              <TableCell className={classes.tableHeadCell}>
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.id"
-                />
-              </TableCell>
-              <TableCell className={classes.tableHeadCell}>
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.date"
-                />
-              </TableCell>
-              <TableCell className={classes.tableHeadCell}>
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.expected.date"
-                />
-              </TableCell>
-              <TableCell className={classes.tableHeadCell}>
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.status"
-                />
-              </TableCell>
-              <TableCell className={classes.tableHeadCell}>
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.steps.taken"
-                />
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell colSpan={6} className={classes.noData}>
-                <FormattedMessage module="workforce" id="workforce.approver.noEntry" />
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+       <ApplicationProcessSearcher
+               
+        />
       </CardContent>
     </Card>
 
@@ -190,9 +152,17 @@ const FiledApplications = () =>{
 );}
 
 const NewApplication = () => (
-  <Typography variant="h5">
+  <Typography variant="h5" gutterBottom>
     <FormattedMessage module="workforce" id="workforce.new.application" />
+    <Card marginTop>
+      <CardContent>
+       <ApplicationProcessSearcher
+               
+        />
+      </CardContent>
+    </Card>
   </Typography>
+  
 );
 
 const ApplicationStatus = () => {
