@@ -25,6 +25,8 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import Badge from '@material-ui/core/Badge';
+import { withStyles } from '@material-ui/core/styles';
 
 const DashboardPage = () => {
   const theme = useTheme();
@@ -79,6 +81,18 @@ const DashboardPage = () => {
     backgroundColor: theme.palette.background.paper,
     color: "white",
   };
+  const StyledBadge = withStyles((theme) => ({
+    badge: {
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: '6px 6px',
+      fontSize: '0.75rem',
+      minWidth: '22px',
+      height: '22px',
+      marginLeft: theme.spacing(10),
+      right: -15,
+
+    },
+  }))(Badge);
 
   return (
     <div style={{ padding: theme.spacing(3) }}>
@@ -88,12 +102,30 @@ const DashboardPage = () => {
             style={{ ...cardStyle, backgroundColor: COLORS[7] }}
             onClick={() => history.push("workforce/applications/process")}
           >
-            <CardContent>
-              <Typography variant="subtitle1">Application Status*</Typography>
-              <Typography variant="body2">
-                Pending: 10* | Reject: 2 | Verified: 20 | On Process: 30
-              </Typography>
-            </CardContent>
+           <CardContent>
+           <Typography variant="subtitle1" style={{ marginBottom: 10, display: 'block' }}>
+            Application Status*
+          </Typography>
+
+            <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
+              <StyledBadge badgeContent={10} color="secondary">
+                <span>Pending</span>
+              </StyledBadge>
+
+              <StyledBadge badgeContent={2} color="error">
+                <span>Reject</span>
+              </StyledBadge>
+
+              <StyledBadge badgeContent={20} color="primary">
+                <span>Verified</span>
+              </StyledBadge>
+
+              <StyledBadge badgeContent={30} color="info">
+                <span>On Process</span>
+              </StyledBadge>
+            </div>
+          </CardContent>
+
           </Card>
         </Grid>
       </Grid>
