@@ -239,7 +239,9 @@
     "workforce.checker.dashboard":"চেকার ড্যাশবোর্ড",
     "workforce.applicant.dashboard":"চেকার ড্যাশবোর্ড",
     "workforce.approver.dashboard":"অনুমোদনকারী ড্যাশবোর্ড",
-    "workforce.approver.noEntry":"কোন এন্ট্রি খুঁজে পাওয়া যায়নি"
+    "workforce.approver.noEntry":"কোন এন্ট্রি খুঁজে পাওয়া যায়নি",
+    "workforce.application.myself":"আমার আবেদনগুলি"
+
 
    
 

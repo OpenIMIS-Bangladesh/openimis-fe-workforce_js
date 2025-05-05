@@ -30,7 +30,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
-import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
+import CheckerApplicationProcessSearcher from "../../components/application-process/CheckerApplicationProcessSearcher";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -117,9 +117,9 @@ const FiledApplications = () =>{
   const classes = useStyles()
   return (
   <>
-    {/* <Typography variant="h5" gutterBottom>
+    <Typography variant="h5" gutterBottom>
       <FormattedMessage module="workforce" id="workforce.checker.dashboard" />
-    </Typography> */}
+    </Typography>
 
     {/* Filters */}
     {/* <Grid container spacing={2} alignItems="center">
@@ -136,7 +136,7 @@ const FiledApplications = () =>{
     {/* Table */}
    <Card className={classes.tableContainer}>
        <CardContent>
-             <ApplicationProcessSearcher
+             <CheckerApplicationProcessSearcher
                      
               />
             </CardContent>

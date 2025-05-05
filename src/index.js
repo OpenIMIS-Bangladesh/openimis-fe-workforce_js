@@ -241,8 +241,8 @@ const DEFAULT_CONFIG = {
   "core.MainMenu": [WorkforceMainMenu],
 
   "core.LoginPage": RegistrationButton,
-  "home.HomePage.Blocks":DashboardPage
-  // "home.HomePage.Blocks":ApplicantDashboardPage
+  // "home.HomePage.Blocks":DashboardPage
+  "home.HomePage.Blocks":ApplicantDashboardPage
   // "home.HomePage.Blocks":CheckerDashboardPage
   // "home.HomePage.Blocks":ApproverDashboardPage
 };

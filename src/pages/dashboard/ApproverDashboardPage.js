@@ -30,7 +30,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
-import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
+import ApproverApplicationProcessSearcher from "../../components/application-process/ApproverApplicationProcessSearcher";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -90,7 +90,7 @@ const SidebarMenu = [
   {
     id: "checkedApplications",
     text: (
-      <FormattedMessage module="workforce" id="workforce.application.checked" />
+      <FormattedMessage module="workforce" id="workforce.application.approve.applications" />
     ),
     icon: <CheckCircleOutlineTwoToneIcon />,
   },
@@ -117,9 +117,9 @@ const FiledApplications = () =>{
   const classes = useStyles()
   return (
   <>
-    {/* <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.checker.dashboard" />
-    </Typography> */}
+    <Typography variant="h5" gutterBottom>
+      <FormattedMessage module="workforce" id="workforce.approver.dashboard" />
+    </Typography>
 
     {/* Filters */}
     {/* <Grid container spacing={2} alignItems="center">
@@ -136,7 +136,7 @@ const FiledApplications = () =>{
     {/* Table */}
    <Card className={classes.tableContainer}>
        <CardContent>
-             <ApplicationProcessSearcher
+             <ApproverApplicationProcessSearcher
                      
               />
             </CardContent>

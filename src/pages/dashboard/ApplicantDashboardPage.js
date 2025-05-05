@@ -30,7 +30,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
-import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
+import ApplicantApplicationProcessSearcher from "../../components/application-process/ApplicantApplicationProcessSearcher";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,16 +83,16 @@ const SidebarMenu = [
   {
     id: "pendingApplications",
     text: (
-      <FormattedMessage module="workforce" id="workforce.application.pending" />
+      <FormattedMessage module="workforce" id="workforce.application.myself" />
     ),
     icon: <HourglassFullTwoToneIcon />,
   },
   {
-    id: "checkedApplications",
+    id: "newApplications",
     text: (
-      <FormattedMessage module="workforce" id="workforce.application.checked" />
+      <FormattedMessage module="workforce" id="workforce.new.application" />
     ),
-    icon: <CheckCircleOutlineTwoToneIcon />,
+    icon: <AddCircleOutlineIcon />,
   },
   {
     id: "recentApplications",
@@ -117,9 +117,9 @@ const FiledApplications = () =>{
   const classes = useStyles()
   return (
   <>
-    {/* <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.checker.dashboard" />
-    </Typography> */}
+    <Typography variant="h5" gutterBottom>
+      <FormattedMessage module="workforce" id="workforce.applicant.dashboard" />
+    </Typography>
 
     {/* Filters */}
     {/* <Grid container spacing={2} alignItems="center">
@@ -136,7 +136,7 @@ const FiledApplications = () =>{
     {/* Table */}
    <Card className={classes.tableContainer}>
        <CardContent>
-             <ApplicationProcessSearcher
+             <ApplicantApplicationProcessSearcher
                      
               />
             </CardContent>
@@ -154,10 +154,14 @@ const FiledApplications = () =>{
   </>
 );}
 
-const checkedApplications = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.new.application" />
-  </Typography>
+const newApplications = () => (
+   <Typography 
+      variant="h5" 
+      onClick={() => history.push("/workforce/application")} 
+      style={{ cursor: "pointer" }} // Add pointer cursor to show it's clickable
+    >
+      <FormattedMessage module="workforce" id="workforce.new.application" />
+    </Typography>
 );
 
 const ApplicationStatus = () => {
@@ -233,7 +237,7 @@ const ApplicantDashboard = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
-      case "checkedApplications":
+      case "newApplications":
         return <FiledApplications />;
       case "recentApplications":
         return <FiledApplications />;

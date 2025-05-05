@@ -417,7 +417,8 @@
     "workforce.checker.dashboard":"Checker Dashboard",
     "workforce.applicant.dashboard":"Applicant Dashboard",
     "workforce.approver.dashboard":"Approver Dashboard",
-    "workforce.approver.noEntry":"No entries found"
+    "workforce.approver.noEntry":"No entries found",
+    "workforce.application.myself":"My Applications"
 
 
 
