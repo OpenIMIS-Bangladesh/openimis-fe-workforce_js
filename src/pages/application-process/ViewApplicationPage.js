@@ -7,7 +7,7 @@ import {
   Divider,
   IconButton,
   Card,
-  CardContent,
+  Button,
   Box,
 } from "@material-ui/core";
 import {
@@ -20,6 +20,7 @@ import { updateOrganizationEmployee } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
+import PreviewDetails from "../../components/application-forms/PreviewDetails";
 
 const styles = (theme) => ({
   // paper: theme.paper.paper,
@@ -47,13 +48,19 @@ const styles = (theme) => ({
       color: `${theme.palette.text.primary} !important`, // Ensures text remains default color
     },
   },
+  buttonContainer: {
+    marginTop: theme.spacing(2),
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: theme.spacing(1),
+  },
 });
 
 class ViewApplicationPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stateEdited:props.application || {},
+      stateEdited: props.application || {},
       workforceEmployee: props.application.workforceEmployee || {},
       parseAccidentInfo:
         JSON.parse(props.application.employeeAccidentInfo) || {},
@@ -74,45 +81,44 @@ class ViewApplicationPage extends Component {
     }
   }
 
-  // Convert camelCase or snake_case to readable label
-  formatKey = (key) => {
-    return key
-      .replace(/_/g, " ")
-      .replace(/([A-Z])/g, " $1")
-      .replace(/^./, (str) => str.toUpperCase());
-  };
+  // // Convert camelCase or snake_case to readable label
+  // formatKey = (key) => {
+  //   return key
+  //     .replace(/_/g, " ")
+  //     .replace(/([A-Z])/g, " $1")
+  //     .replace(/^./, (str) => str.toUpperCase());
+  // };
 
-  // Render nested objects, arrays, or primitives nicely
-  renderValue = (value) => {
-    if (Array.isArray(value)) {
-      return value.length === 0
-        ? "N/A"
-        : value.map((v, i) => (
-            <div key={i} style={{ marginBottom: 4 }}>
-              {typeof v === "object" ? this.renderNestedObject(v) : v}
-            </div>
-          ));
-    } else if (typeof value === "object" && value !== null) {
-      // Handle known object shape: { id, uuid, code, name, type, parent }
-      if ("code" in value && "name" in value) {
-        return `${value.name} (${value.code})`;
-      }
-  
-      return this.renderNestedObject(value);
-    } else {
-      return value ?? "N/A";
-    }
-  };
-  
+  // // Render nested objects, arrays, or primitives nicely
+  // renderValue = (value) => {
+  //   if (Array.isArray(value)) {
+  //     return value.length === 0
+  //       ? "N/A"
+  //       : value.map((v, i) => (
+  //           <div key={i} style={{ marginBottom: 4 }}>
+  //             {typeof v === "object" ? this.renderNestedObject(v) : v}
+  //           </div>
+  //         ));
+  //   } else if (typeof value === "object" && value !== null) {
+  //     // Handle known object shape: { id, uuid, code, name, type, parent }
+  //     if ("code" in value && "name" in value) {
+  //       return `${value.name} (${value.code})`;
+  //     }
 
-  // Nicely print nested object key-values
-  renderNestedObject = (obj) => {
-    return Object.entries(obj).map(([k, v], i) => (
-      <div key={i}>
-        <b>{this.formatKey(k)}:</b> {v || "N/A"}
-      </div>
-    ));
-  };
+  //     return this.renderNestedObject(value);
+  //   } else {
+  //     return value ?? "N/A";
+  //   }
+  // };
+
+  // // Nicely print nested object key-values
+  // renderNestedObject = (obj) => {
+  //   return Object.entries(obj).map(([k, v], i) => (
+  //     <div key={i}>
+  //       <b>{this.formatKey(k)}:</b> {v || "N/A"}
+  //     </div>
+  //   ));
+  // };
 
   render() {
     const { classes } = this.props;
@@ -129,16 +135,24 @@ class ViewApplicationPage extends Component {
     const AccidentInfo = JSON.parse(parseAccidentInfo);
     const BankInfo = JSON.parse(parseBankInfo);
     const DependentInfo = JSON.parse(parseDependentInfo);
-    console.log({stateEdited})
+
+    const formData = {
+      ...stateEdited,
+      workforceEmployee: workforceEmployee,
+      employeeAccidentInfo: AccidentInfo,
+      employeeBankInfo: BankInfo,
+      employeeDependentInfo: DependentInfo,
+    };
+    console.log({ stateEdited });
     console.log({ workforceEmployee });
-    console.log({AccidentInfo})
-    console.log({BankInfo})
-    console.log({DependentInfo})
+    console.log({ AccidentInfo });
+    console.log({ BankInfo });
+    console.log({ DependentInfo });
 
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>
-          <Grid container spacing={1}>
+          {/* <Grid container spacing={1}>
 
           <Grid item xs={12}>
               <Card>
@@ -162,7 +176,7 @@ class ViewApplicationPage extends Component {
                 </CardContent>
               </Card>
             </Grid>
-            {/* Personal Information */}
+            
             <Grid item xs={12}>
               <Card>
                 <CardContent>
@@ -184,122 +198,18 @@ class ViewApplicationPage extends Component {
                   </Grid>
                 </CardContent>
               </Card>
-            </Grid>
-
-            {/* Family Info */}
-            
-
-            {/* Location Info */}
-            {/* <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="body1" className={classes.title}>Location</Typography>
-                  <Divider style={{ margin: "10px 0" }} />
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <b>Present Address:</b> {presentAddress}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Permanent Address:</b> {permanentAddress}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Present Location:</b>{" "}
-                      {this.renderLocation(presentLocation)}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Permanent Location:</b>{" "}
-                      {this.renderLocation(permanentLocation)}
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid> */}
-
-            {/* Official Info */}
-            {/* <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="body1" className={classes.title}>
-                    <b>Official Information</b>
-                  </Typography>
-                  <Divider style={{ margin: "10px 0" }} />
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <b>Citizenship:</b> {citizenship}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Privacy Law:</b> {privacyLaw}
-                    </Grid>
-                    <Grid item xs={6}>
-                      <b>Insurance No:</b> {insuranceNumber}
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid> */}
-
-            {/* Bank Info */}
-            {/* {bankInfo && Object.keys(bankInfo).length > 0 && (
-              <Grid item xs={12}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">Bank Info</Typography>
-                    <Divider style={{ margin: "10px 0" }} />
-                    {Object.entries(bankInfo).map(([key, value]) => (
-                      <Typography key={key}>
-                        <b>{key}:</b> {value}
-                      </Typography>
-                    ))}
-                  </CardContent>
-                </Card>
-              </Grid>
-            )} */}
-
-            {/* Accident Info */}
-            {/* {accidentInfo && Object.keys(accidentInfo).length > 0 && (
-              <Grid item xs={12}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">Accident Info</Typography>
-                    <Divider style={{ margin: "10px 0" }} />
-                    {Object.entries(accidentInfo).map(([key, value]) => (
-                      <Typography key={key}>
-                        <b>{key}:</b> {value}
-                      </Typography>
-                    ))}
-                  </CardContent>
-                </Card>
-              </Grid>
-            )} */}
-
-            {/* Dependents */}
-            {/* {Array.isArray(dependents) && dependents.length > 0 && (
-              <Grid item xs={12}>
-                <Typography variant="h6">Dependents</Typography>
-                {dependents.map((dep, index) => (
-                  <Card key={index} style={{ marginBottom: "16px" }}>
-                    <CardContent>
-                      <Typography variant="subtitle1">
-                        Dependent #{index + 1}
-                      </Typography>
-                      <Divider style={{ margin: "10px 0" }} />
-                      {Object.keys(dep).length === 0 ? (
-                        <Typography color="textSecondary">
-                          No data provided.
-                        </Typography>
-                      ) : (
-                        Object.entries(dep).map(([key, value]) => (
-                          <Typography key={key}>
-                            <b>{key}:</b> {value}
-                          </Typography>
-                        ))
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </Grid>
-            )} */}
-          </Grid>
+            </Grid>  
+          </Grid> */}
+          <PreviewDetails formData={formData} />
+          <div className={classes.buttonContainer}>
+            <Button  variant="outlined">
+              <FormattedMessage module="workforce" id="workforce.application.reject" />
+            </Button>
+            <Button variant="contained" color="primary" >
+              <FormattedMessage module="workforce" id="workforce.application.approve" />
+              
+            </Button>
+          </div>
         </Box>
       </div>
     );

@@ -44,6 +44,26 @@ const styles = (theme) => ({
       color: `${theme.palette.text.primary} !important`,
     },
   },
+  rootGrid: {
+    height: 'calc(100vh - 64px)', // Adjust if you have AppBar
+    overflow: 'hidden',
+  },
+  leftGrid: {
+    position: 'sticky',
+    top: 0,
+    height: '100%',
+    overflowY: 'auto',
+    paddingRight: 8,
+  },
+  rightGrid: {
+    height: '100%',
+    overflowY: 'auto',
+    paddingLeft: 8,
+  },
+  cardSpacing: {
+    marginBottom: theme.spacing(2),
+  },
+  
 });
 
 class VerifyApplicationPage extends Component {
@@ -143,10 +163,10 @@ class VerifyApplicationPage extends Component {
     console.log({ stateEdited });
 
     return (
-      <Grid container spacing={3}>
+      <Grid container spacing={3} className={classes.rootGrid}>
         {/* User Summary */}
-        <Grid item xs={12} md={4}>
-          <Card variant="outlined">
+        <Grid item xs={12} md={4} className={classes.leftGrid}>
+          <Card variant="outlined" className={classes.cardSpacing}>
             <CardContent>
               <Typography variant="h6">
                 <b>
@@ -169,7 +189,7 @@ class VerifyApplicationPage extends Component {
             </CardContent>
           </Card>
 
-          <Card variant="outlined" mt={2}>
+          <Card variant="outlined" mt={2} className={classes.cardSpacing}>
             <CardContent>
               <Typography variant="h6">
                 <b>
@@ -203,8 +223,8 @@ class VerifyApplicationPage extends Component {
         </Grid>
 
         {/* Document Viewer */}
-        <Grid item xs={12} md={8}>
-          <Card variant="outlined">
+        <Grid item xs={12} md={8} className={classes.rightGrid}>
+          <Card variant="outlined" className={classes.cardSpacing}>
             <CardContent>
               <Typography variant="h6">Documents</Typography>
               {fileStates.map((file, index) => (
@@ -284,7 +304,8 @@ class VerifyApplicationPage extends Component {
                           onClick={() => this.handleFileVerify(index)}
                           fullWidth
                         >
-                          Verify
+                          {/* Verify */}
+                          <FormattedMessage module="workforce" id="workforce.application.verify" />
                         </Button>
                         <Button
                           variant="outlined"
@@ -292,7 +313,9 @@ class VerifyApplicationPage extends Component {
                           onClick={() => this.handleFileReject(index)}
                           fullWidth
                         >
-                          Reject
+                          {/* Reject */}
+                          <FormattedMessage module="workforce" id="workforce.application.reject" />
+                          
                         </Button>
                       </Grid>
                     </Grid>

@@ -86,7 +86,7 @@ const SidebarMenu = [
   {
     id: "checkedApplications",
     text: (
-      <FormattedMessage module="workforce" id="workforce.application.approve" />
+      <FormattedMessage module="workforce" id="workforce.application.approve.applications" />
     ),
     icon: <CheckCircleOutlineTwoToneIcon />,
   },
