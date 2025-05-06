@@ -418,8 +418,22 @@
     "workforce.applicant.dashboard":"Applicant Dashboard",
     "workforce.approver.dashboard":"Approver Dashboard",
     "workforce.approver.noEntry":"No entries found",
-    "workforce.application.myself":"My Applications"
+    "workforce.application.myself":"My Applications",
 
+
+    
+    "core.LanguageQuickPicker.dialog.title":"Confirm Language",
+    "core.LanguageQuickPicker.dialog.message":"You are about to change the language to Bengali. Do you want to proceed?",
+    "core.LanguageQuickPicker.dialog.confirm":"Confirm",
+    "core.LanguageQuickPicker.dialog.cancel":"Cancel",
+
+    "profile.mainMenu":"Profile",
+    "profile.menu.changePassword": "Change Password",
+    "profile.menu.myProfile":"My Profile",
+
+    "mainMenuGrievance": "Grievance",
+    "menu.grievance.grievances" : "Grievances",
+    "menu.add_ticket": "Add Grievance"
 
 
 }

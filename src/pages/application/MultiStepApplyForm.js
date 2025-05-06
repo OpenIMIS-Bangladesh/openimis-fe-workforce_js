@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    width: 700,
+    width: "100%",
   },
   buttonContainer: {
     marginTop: theme.spacing(2),

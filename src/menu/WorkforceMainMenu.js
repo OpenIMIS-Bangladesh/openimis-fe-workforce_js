@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { ListAlt } from "@material-ui/icons";
-import { FormattedMessage, MainMenuContribution, withModulesManager } from "@openimis/fe-core";
+import { FormattedMessage, MainMenuContribution, withModulesManager ,formatMessage} from "@openimis/fe-core";
 import {
   WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY,
   MODULE_NAME,
@@ -25,8 +25,12 @@ import {
   ROUTE_WORKFORCE_DOCUMENTS,
 } from "../routes";
 import { RIGHT_WORKFORCE_EMPLOYER_APPROVE } from "../permission-rights";
+import { useSelector, useDispatch } from "react-redux";
+
 
 function WorkforceMainMenu(props) {
+  const reduxState = useSelector((state) => state);
+  console.log({reduxState})
   const entries = [
     {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations" />,
@@ -121,13 +125,14 @@ function WorkforceMainMenu(props) {
   entries.push(
     ...props.modulesManager
       .getContribs(WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY)
-      .filter((c) => !c.filter || c.filter(props.rights)),
+      .filter((c) => !c.filter || c.filter(props.rpights)),
   );
 
   return (
     <MainMenuContribution
       {...props}
-      header="Workforce"
+      // header="Workforce"
+      header={<FormattedMessage module="workforce" id="menu.workforce"/>}
       entries={entries}
     />
   );

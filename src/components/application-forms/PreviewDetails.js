@@ -13,17 +13,16 @@ import {
   } from "@material-ui/core";
 
 
-const styles = (theme) => ({
-    // paper: theme.paper.paper,
+  const styles = (theme) => ({
     paper: {
-      padding: theme.spacing(1),
-      width: 700,
-      margin: "0 auto",
+      padding: theme.spacing(0),
+      width: "100%", // 🔥 full width
     },
     container: {
       display: "flex",
       justifyContent: "center",
-      alignItems: "center",
+      alignItems: "flex-start",
+      width: "100%", // 🔥 full width
     },
     title: {
       fontSize: "medium",
@@ -34,12 +33,17 @@ const styles = (theme) => ({
     fullHeight: {
       height: "100%",
     },
-    overrideReadOnly: {
-      "& .Mui-disabled": {
-        color: `${theme.palette.text.primary} !important`, // Ensures text remains default color
-      },
+    cardGridItem: {
+      display: "flex",
+      flexDirection: "column",
+    },
+    card: {
+      flex: 1, // 🔥 makes all cards same height inside grid
+      display: "flex",
+      flexDirection: "column",
     },
   });
+  
 
   const PreviewDetails = ({ formData = {}, classes }) => {
     const formatKey = (key) =>
@@ -91,8 +95,8 @@ const styles = (theme) => ({
       if (filteredEntries.length === 0) return null; // 🚀 Don't render empty objects
     
       return (
-        <Grid item xs={12} key={title}>
-          <Card>
+        <Grid item xs={6} className={classes.cardGridItem} key={title}>
+          <Card className={classes.card}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 {formatKey(title)}
@@ -139,16 +143,16 @@ const styles = (theme) => ({
       };
     
       const personalInfo = pickFields(personalFields);
+      const organizationInfo = omitFields(employeeData, [...personalFields, ...contactFields, ...statusFields]);
       const contactInfo = pickFields(contactFields);
       const statusInfo = pickFields(statusFields);
-      const organizationInfo = omitFields(employeeData, [...personalFields, ...contactFields, ...statusFields]);
     
       return (
         <>
           {renderSection("Personal Info", personalInfo)}
-          {renderSection("Contact Info", contactInfo)}
-          {renderSection("Status Info", statusInfo)}
           {renderSection("Organization Info", organizationInfo)}
+          {renderSection("Status Info", statusInfo)}
+          {renderSection("Contact Info", contactInfo)}
         </>
       );
     };
@@ -167,8 +171,8 @@ const styles = (theme) => ({
       if (nonEmptyItems.length === 0) return null; // 🚀 Don't render empty arrays
     
       return (
-        <Grid item xs={12} key={title}>
-          <Card>
+        <Grid item xs={6} className={classes.cardGridItem} key={title}>
+          <Card className={classes.card}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 {formatKey(title)}

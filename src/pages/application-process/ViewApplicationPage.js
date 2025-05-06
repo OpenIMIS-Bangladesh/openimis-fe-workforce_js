@@ -26,7 +26,7 @@ const styles = (theme) => ({
   // paper: theme.paper.paper,
   paper: {
     padding: theme.spacing(1),
-    width: 700,
+    width: "100%",
     margin: "0 auto",
   },
   container: {

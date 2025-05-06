@@ -31,21 +31,24 @@ import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import ApplicantApplicationProcessSearcher from "../../components/application-process/ApplicantApplicationProcessSearcher";
+import MultiStepApplyForm from "../application/MultiStepApplyForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     padding: theme.spacing(2),
-    height: 'calc(100vh - 64px)', // assuming 64px header/appbar, adjust as needed
+    height: '100vh', // assuming 64px header/appbar, adjust as needed
     overflow: 'hidden',
   },
   sidebar: {
     position: "sticky",
     top: 0,
     height: "40vh",
+    overflowY: "auto",
     backgroundColor: theme.palette.background.paper,
     borderRight: `1px solid ${theme.palette.divider}`,
     overflowY: "auto",
+    
   },
   content: {
     height: '100vh',
@@ -85,7 +88,7 @@ const SidebarMenu = [
     text: (
       <FormattedMessage module="workforce" id="workforce.application.myself" />
     ),
-    icon: <HourglassFullTwoToneIcon />,
+    icon:<DescriptionIcon />,
   },
   {
     id: "newApplications",
@@ -238,7 +241,7 @@ const ApplicantDashboard = () => {
       case "pendingApplications":
         return <FiledApplications />;
       case "newApplications":
-        return <FiledApplications />;
+        return <MultiStepApplyForm />;
       case "recentApplications":
         return <FiledApplications />;
       case "applicationStatus":

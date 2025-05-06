@@ -659,10 +659,10 @@ export function fetchApplication(mm, filters) {
 }
 
 export function fetchWorkforceEmployee(mm, filters) {
-  const present_location_projection =
-    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
-  const permanent_location_projection =
-    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+  // const present_location_projection =
+  //   "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  // const permanent_location_projection =
+  //   "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
   const projections = [
     "id",
     "firstNameBn",
@@ -695,8 +695,8 @@ export function fetchWorkforceEmployee(mm, filters) {
     "employeeType",
     "lifeStatus",
     "deathDate",
-    present_location_projection,
-    permanent_location_projection,
+    // present_location_projection,
+    // permanent_location_projection,
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployerEmployees",
