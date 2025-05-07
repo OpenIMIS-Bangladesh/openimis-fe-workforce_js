@@ -113,7 +113,7 @@ const DashboardPage = () => {
               </StyledBadge>
 
               <StyledBadge badgeContent={2} color="error">
-                <span>Reject</span>
+                <span>Rejected</span>
               </StyledBadge>
 
               <StyledBadge badgeContent={20} color="primary">

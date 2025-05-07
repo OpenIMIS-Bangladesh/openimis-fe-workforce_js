@@ -29,9 +29,9 @@ const styles = (theme) => ({
 
 const NotificationBar = ({ classes }) => {
     const data = {
-        pending: 3,
-        inProgress: 5,
-        verified: 2,
+        pending: 10,
+        inProgress: 2,
+        verified: 20,
         checked: 4,
       }
   return (

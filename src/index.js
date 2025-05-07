@@ -243,10 +243,10 @@ const DEFAULT_CONFIG = {
 
   "core.LoginPage": RegistrationButton,
   "core.AppBar": NotificationBar,
-  // "home.HomePage.Blocks":DashboardPage,
+  "home.HomePage.Blocks":DashboardPage,
   "HomePage.enableCustomDashboard":true,
   "HomePageContainer.showHomeMessage":false,
-  "home.HomePage.Blocks":ApplicantDashboardPage
+  // "home.HomePage.Blocks":ApplicantDashboardPage
   // "home.HomePage.Blocks":CheckerDashboardPage
   // "home.HomePage.Blocks":ApproverDashboardPage
 };

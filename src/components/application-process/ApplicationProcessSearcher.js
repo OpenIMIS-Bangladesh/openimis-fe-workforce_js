@@ -434,6 +434,7 @@ class ApplicationProcessSearcher extends Component {
               borderRadius: 2,
               boxShadow: 24,
               p: 4,
+              overflow: 'auto',
             }}
           >
             {/* Close Button */}
