@@ -254,8 +254,21 @@
 
     "mainMenuGrievance": "অভিযোগ",
     "menu.grievance.grievances" : "অভিযোগ সমূহ",
-    "menu.add_ticket": "অভিযোগ যোগ করুন"
+    "menu.add_ticket": "অভিযোগ যোগ করুন",
 
+    "admin.mainMenu": "প্রশাসন",
+    "admin.menu.claimAdministrators": "দাবি প্রশাসক",
+    "admin.menu.enrollmentOfficers": "তালিকাভুক্তি কর্মকর্তারা",
+    "admin.menu.healthFacilities": "স্বাস্থ্য সুবিধা",
+    "admin.menu.locations": "অবস্থানসমূহ",
+    "admin.menu.medicalItems": "মেডিকেল আইটেম",
+    "admin.menu.medicalItemsPrices": "চিকিৎসা সামগ্রীর মূল্য তালিকা",
+    "admin.menu.medicalServices": "চিকিৎসা সেবা",
+    "admin.menu.medicalServicesPrices": "চিকিৎসা সেবার মূল্য তালিকা",
+    "admin.menu.users": "ব্যবহারকারীদের",
+    "admin.menu.payers": "প্রদানকারী",
+    "admin.menu.products": "পণ্য",
+    "admin.menu.usersProfiles": "ব্যবহারকারীদের প্রোফাইল"
 
 
     

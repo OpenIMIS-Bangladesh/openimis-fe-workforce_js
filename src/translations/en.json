@@ -433,7 +433,21 @@
 
     "mainMenuGrievance": "Grievance",
     "menu.grievance.grievances" : "Grievances",
-    "menu.add_ticket": "Add Grievance"
+    "menu.add_ticket": "Add Grievance",
+
+    "admin.mainMenu": "Administration",
+    "admin.menu.claimAdministrators": "Claim Administrators",
+  "admin.menu.enrollmentOfficers": "Enrollment Officers",
+  "admin.menu.healthFacilities": "Health Facilities",
+  "admin.menu.locations": "Locations",
+  "admin.menu.medicalItems": "Medical Items",
+  "admin.menu.medicalItemsPrices": "Medical Items Price Lists",
+  "admin.menu.medicalServices": "Medical Services",
+  "admin.menu.medicalServicesPrices": "Medical Services Price Lists",
+  "admin.menu.users": "Users",
+  "admin.menu.payers": "Payers",
+  "admin.menu.products": "Products",
+  "admin.menu.usersProfiles": "Users Profiles"
 
 
 }
