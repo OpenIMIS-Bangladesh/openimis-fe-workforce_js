@@ -85,6 +85,7 @@ import DashboardPage from "./pages/dashboard/DashboardPage";
 import ApplicantDashboardPage from "./pages/dashboard/ApplicantDashboardPage";
 import CheckerDashboardPage from "./pages/dashboard/CheckerDashboardPage";
 import ApproverDashboardPage from "./pages/dashboard/ApproverDashboardPage";
+import NotificationBar from "./components/app-bar/NotificationBar";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -241,6 +242,7 @@ const DEFAULT_CONFIG = {
   "core.MainMenu": [WorkforceMainMenu],
 
   "core.LoginPage": RegistrationButton,
+  "core.AppBar": NotificationBar,
   // "home.HomePage.Blocks":DashboardPage,
   "HomePage.enableCustomDashboard":true,
   "HomePageContainer.showHomeMessage":false,
