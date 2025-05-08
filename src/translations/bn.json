@@ -309,11 +309,10 @@
     "workforce.application.header.dependent": "নির্ভরশীল ফরম",
     "workforce.application.header.account": "অ্যাকাউন্ট তথ্য ফরম",
     "workforce.child.name.bn": "নাম (বাংলা)",
-    "workforce.child.name.en": "নাম (ইংরেজি)"
+    "workforce.child.name.en": "নাম (ইংরেজি)",
 
-    
-
-
-    
+    "workforce.office.dol":"DOL",
+    "workforce.office.dife":"DIFE",
+    "workforce.office.type":"অফিসের ধরন নির্বাচন করুন"
 
 }

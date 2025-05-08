@@ -17,10 +17,16 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import { updateOrganizationEmployee } from "../../actions";
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
+import {
+  EMPTY_STRING,
+  MODULE_NAME,
+  WORKFORCE_USER_TYPE,
+} from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import PreviewDetails from "../../components/application-forms/PreviewDetails";
+import { getUserType, getUserTypeFromRights } from "../../utils/utils";
+import ForwardApplicationAdminModal from "../../components/application-process/ForwardApplicationAdminModal";
 
 const styles = (theme) => ({
   // paper: theme.paper.paper,
@@ -68,6 +74,7 @@ class ViewApplicationPage extends Component {
       parseDependentInfo:
         JSON.parse(props.application.employeeDependentInfo) || {},
       isSaved: false,
+      isForwardModalOpen: false,
     };
   }
 
@@ -81,47 +88,16 @@ class ViewApplicationPage extends Component {
     }
   }
 
-  // // Convert camelCase or snake_case to readable label
-  // formatKey = (key) => {
-  //   return key
-  //     .replace(/_/g, " ")
-  //     .replace(/([A-Z])/g, " $1")
-  //     .replace(/^./, (str) => str.toUpperCase());
-  // };
+  handleOpenForwardModal = () => {
+    this.setState({ isForwardModalOpen: true });
+  };
 
-  // // Render nested objects, arrays, or primitives nicely
-  // renderValue = (value) => {
-  //   if (Array.isArray(value)) {
-  //     return value.length === 0
-  //       ? "N/A"
-  //       : value.map((v, i) => (
-  //           <div key={i} style={{ marginBottom: 4 }}>
-  //             {typeof v === "object" ? this.renderNestedObject(v) : v}
-  //           </div>
-  //         ));
-  //   } else if (typeof value === "object" && value !== null) {
-  //     // Handle known object shape: { id, uuid, code, name, type, parent }
-  //     if ("code" in value && "name" in value) {
-  //       return `${value.name} (${value.code})`;
-  //     }
-
-  //     return this.renderNestedObject(value);
-  //   } else {
-  //     return value ?? "N/A";
-  //   }
-  // };
-
-  // // Nicely print nested object key-values
-  // renderNestedObject = (obj) => {
-  //   return Object.entries(obj).map(([k, v], i) => (
-  //     <div key={i}>
-  //       <b>{this.formatKey(k)}:</b> {v || "N/A"}
-  //     </div>
-  //   ));
-  // };
+  handleCloseForwardModal = () => {
+    this.setState({ isForwardModalOpen: false });
+  };
 
   render() {
-    const { classes } = this.props;
+    const { classes, user_rights } = this.props;
     const {
       stateEdited,
       workforceEmployee,
@@ -134,6 +110,8 @@ class ViewApplicationPage extends Component {
     const AccidentInfo = parseAccidentInfo?.parseAccidentInfo;
     const BankInfo = JSON.parse(parseBankInfo);
     const DependentInfo = JSON.parse(parseDependentInfo);
+
+    const user_type = getUserTypeFromRights(user_rights);
 
     const formData = {
       ...stateEdited,
@@ -151,66 +129,43 @@ class ViewApplicationPage extends Component {
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>
-          {/* <Grid container spacing={1}>
-
-          <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="body1" className={classes.title}>
-                    <b>Application Information</b>
-                  </Typography>
-                  <Divider style={{ margin: "10px 0" }} />
-                  <Grid container spacing={2}>
-                    {Object.entries(stateEdited)
-                    .filter(([key]) => !["id", "employeeAccidentInfo", "workforceEmployee","employeeBankInfo","employeeDependentInfo"].includes(key))
-                    .map(([key, value], idx) => (
-                      <Grid item xs={6} key={idx}>
-                        <Typography>
-                          <b>{this.formatKey(key)}:</b>{" "}
-                          {this.renderValue(value)}
-                        </Typography>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid>
-            
-            <Grid item xs={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="body1" className={classes.title}>
-                    <b>Employee Information</b>
-                  </Typography>
-                  <Divider style={{ margin: "5px 0 10px" }} />
-                  <Grid container spacing={2}>
-                    {Object.entries(workforceEmployee)
-                    .filter(([key]) => !["id", "uuid", "parent"].includes(key))
-                    .map(([key, value], idx) => (
-                      <Grid item xs={6} key={idx}>
-                        <Typography>
-                          <b>{this.formatKey(key)}:</b>{" "}
-                          {this.renderValue(value)}
-                        </Typography>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid>  
-          </Grid> */}
           <PreviewDetails formData={formData} />
-          <div className={classes.buttonContainer}>
-            <Button  variant="outlined" style={{backgroundColor:"#D10000",color:'white'}}>
-              <FormattedMessage module="workforce" id="workforce.application.reject" />
-            </Button>
-            <Button variant="contained" color="primary" >
-              <FormattedMessage module="workforce" id="workforce.application.approve" />
-            </Button>
-            <Button variant="contained" color="secondary">
-              <FormattedMessage module="workforce" id="workforce.employee.application.forwardTo" />
-            </Button>
-          </div>
+          {user_type === WORKFORCE_USER_TYPE.ADMIN && (
+            <>
+            <div className={classes.buttonContainer}>
+              <Button
+                variant="outlined"
+                style={{ backgroundColor: "#D10000", color: "white" }}
+              >
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.application.reject"
+                />
+              </Button>
+              <Button variant="contained" color="primary">
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.application.approve"
+                />
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={this.handleOpenForwardModal}
+              >
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.employee.application.forwardTo"
+                />
+              </Button>
+            </div>
+            <ForwardApplicationAdminModal
+            open={this.state.isForwardModalOpen}
+            onClose={this.handleCloseForwardModal}
+            application={this.props.application}
+          />
+          </>
+          )}
         </Box>
       </div>
     );
@@ -219,6 +174,7 @@ class ViewApplicationPage extends Component {
 
 const mapStateToProps = (state) => ({
   application: state.workforce.application,
+  user_rights: state.core?.user?.i_user?.rights || {},
 });
 
 export default connect(mapStateToProps)(

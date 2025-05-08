@@ -7,6 +7,7 @@ import {
   Grid,
   Divider,
   Paper,
+  FormControl, FormControlLabel, Radio, RadioGroup,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { FormattedMessage } from "@openimis/fe-core";
@@ -63,6 +64,7 @@ const ForwardApplicationAdminModal = ({
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
+  const [officeType,setOfficeType] = useState('')
   const [formData, setFormData] = useState(null);
 
   useEffect(() => {
@@ -93,6 +95,12 @@ const ForwardApplicationAdminModal = ({
     }
   };
 
+  const handleApplicationReason = (event) => {
+    const value = event.target.value;
+    setOfficeType(value);
+    // onSelect(selectedApplicationType, value); // Pass both selections
+  };
+
   return (
     <Modal open={open} onClose={onClose}>
       <form className={classes.modalContainer} onSubmit={handleSubmit}>
@@ -102,11 +110,11 @@ const ForwardApplicationAdminModal = ({
         </Button>
 
         {/* Title */}
-        <Typography variant="h5" gutterBottom>
+        <Typography variant="h5" gutterBottom style={{fontWeight:"bold",marginTop:3,textAlign:"center"}}>
           বিভাগীয় বা জেলা অফিসে পাঠান
         </Typography>
 
-        <Typography variant="body1" color="textSecondary" gutterBottom>
+        <Typography variant="body1" color="textSecondary" gutterBottom style={{fontWeight:600,marginTop:3,textAlign:"center"}}>
           {selectedApplication
             ? `${selectedApplication.workforceEmployee?.firstNameBn || "আবেদনকারী"} এর আবেদন ফরওয়ার্ড করতে চান?`
             : "একটি আবেদন বেছে নিন।"}
@@ -128,17 +136,28 @@ const ForwardApplicationAdminModal = ({
 
         {/* Form Fields */}
         <Paper className={classes.sectionPaper} elevation={1}>
-          <Typography variant="subtitle1" gutterBottom>
+            <FormControl component="fieldset" className={classes.formSection}>
+                {/* New Export-Oriented Company Question */}
+                <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
+                    {<FormattedMessage id="workforce.office.type" module="workforce"/>}
+                </Typography>
+                <RadioGroup value={officeType} onChange={handleApplicationReason}>
+                    <FormControlLabel value="partial" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.office.dol" module="workforce"/>} />
+                    <FormControlLabel value="permanent" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.office.dife" module="workforce"/>} />
+                </RadioGroup>
+            </FormControl>
+
+          <Typography variant="subtitle1" gutterBottom style={{fontWeight:"bold",marginTop:3,textAlign:"center"}}>
             অফিস নির্বাচন
           </Typography>
 
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12}>
               <DistrictOfficePicker
                 value={formData?.id}
                 label={
                   <FormattedMessage
-                    id="workforce.employee.district_office"
+                    id="workforce.officeType.selector.picker"
                     module="workforce"
                   />
                 }
@@ -147,19 +166,6 @@ const ForwardApplicationAdminModal = ({
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <DivisionOfficePicker
-                value={formData?.id}
-                label={
-                  <FormattedMessage
-                    id="workforce.employee.division_office"
-                    module="workforce"
-                  />
-                }
-                required
-                onChange={(v) => setFormData(v)}
-              />
-            </Grid>
           </Grid>
         </Paper>
 

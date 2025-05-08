@@ -63,6 +63,7 @@
     "workforce.branch.picker": "Branch",
     "workforce.organization.unit.picker": "Unit",
     "workforce.employee.relation.picker": "Relation type",
+    "workforce.officeType.selector.picker": "Select Office",
 
     "workforce.representative.details": "Representative Details",
     "workforce.representative.name.en": "Representative Name En",
@@ -460,7 +461,11 @@
     "workforce.application.header.dependent": "Dependent Form",
     "workforce.application.header.account": "Account Info Form",
     "workforce.child.name.bn": "Name (Bangla)",
-    "workforce.child.name.en": "Name (English)"
+    "workforce.child.name.en": "Name (English)",
+
+    "workforce.office.dol":"DOL",
+    "workforce.office.dife":"DIFE",
+    "workforce.office.type":"Select Office Type"
 
 
 

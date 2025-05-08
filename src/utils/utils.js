@@ -22,3 +22,14 @@ export function getUserType() {
 
   return user_type;
 }
+
+// utils/utils.js — remove `useSelector` from this file
+export function getUserTypeFromRights(user_rights) {
+  let user_type = WORKFORCE_USER_TYPE.APPLICANT;
+
+  if (!isEmptyObject(user_rights)) {
+    user_type = WORKFORCE_USER_TYPE.ADMIN;
+  }
+
+  return user_type;
+}

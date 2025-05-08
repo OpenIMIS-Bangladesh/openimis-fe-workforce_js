@@ -340,7 +340,7 @@ export function fetchDivisionOfficePick(filters) {
     filters,
     projections,
   );
-  return graphql(payload, "WORKFORCE_DIVISION_OFFICE_PICKER");
+  return graphql(payload, "WORKFORCE_DISTRICT_OFFICE_PICKER");
 }
 
 export function fetchOfficesPick(filters) {
