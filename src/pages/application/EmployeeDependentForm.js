@@ -81,6 +81,9 @@ const EmployeeDependentForm = ({
           expanded={expanded === index}
           onChange={(_, isExpanded) => setExpanded(isExpanded ? index : false)}
         >
+            <Box mb={4} textAlign="center" fontWeight="bold">
+                <FormattedMessage id="workforce.application.header.dependent" module="workforce" />
+              </Box>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography>
               {formData.nameEn
@@ -140,26 +143,14 @@ const EmployeeDependentForm = ({
                     }
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <EmployeeGenderPicker
-                    value={formData.gender || ""}
-                    label={
-                      <FormattedMessage
-                        id="workforce.employee.gender"
-                        module="workforce"
-                      />
-                    }
-                    onChange={(v) => handleDependentChange(index, "gender", v)}
-                    readOnly={false}
-                  />
-                </Grid>
 
+              
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.name.en"
-                    value={formData.nameEn || ""}
+                    label="workforce.employee.name.bn"
+                    value={formData.nameBn || ""}
                     onChange={(v) =>
-                      handleDependentChange(index, "nameEn", v)
+                      handleDependentChange(index, "nameBn", v)
                     }
                     required
                     readOnly={false}
@@ -167,10 +158,10 @@ const EmployeeDependentForm = ({
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.name.bn"
-                    value={formData.nameBn || ""}
+                    label="workforce.employee.name.en"
+                    value={formData.nameEn || ""}
                     onChange={(v) =>
-                      handleDependentChange(index, "nameBn", v)
+                      handleDependentChange(index, "nameEn", v)
                     }
                     required
                     readOnly={false}
@@ -240,7 +231,19 @@ const EmployeeDependentForm = ({
                     readOnly={false}
                   />
                 </Grid>
-
+                <Grid item xs={6} className={classes.item}>
+                  <EmployeeGenderPicker
+                    value={formData.gender || ""}
+                    label={
+                      <FormattedMessage
+                        id="workforce.employee.gender"
+                        module="workforce"
+                      />
+                    }
+                    onChange={(v) => handleDependentChange(index, "gender", v)}
+                    readOnly={false}
+                  />
+                </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.phone"

@@ -64,6 +64,9 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={0}>
+            <Box mb={4} textAlign="center" fontWeight="bold">
+              <FormattedMessage id="workforce.application.header.account" module="workforce" />
+            </Box>
             <Grid container className={classes.tableTitle} spacing={2}>
               <Grid item xs={6} className={classes.item}>
                 <PublishedComponent

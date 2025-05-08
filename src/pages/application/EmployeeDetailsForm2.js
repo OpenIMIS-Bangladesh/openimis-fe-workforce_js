@@ -94,9 +94,9 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApp
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={0}>
-            {/* <Box mb={4} textAlign="center" fontWeight="bold">
-              <FormattedMessage id="workforce.application.header.location" module="workforce" />
-            </Box> */}
+            <Box mb={4} textAlign="center" fontWeight="bold">
+              <FormattedMessage id="workforce.application.header.document" module="workforce" />
+            </Box>
             <Grid container className={classes.item} spacing={2}>
               <Grid item xs={6} className={classes.item}>
                 <TextInput

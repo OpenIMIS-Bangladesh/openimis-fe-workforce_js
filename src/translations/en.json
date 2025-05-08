@@ -456,6 +456,9 @@
     "workforce.application.header.labour.note": "The following information must be filled as per (NID), otherwise the application will be considered rejected.",
     "workforce.application.header.location": "Location Form",
     "workforce.application.header.child": "Children Details Form",
+    "workforce.application.header.document": "Documents Upload Form",
+    "workforce.application.header.dependent": "Dependent Form",
+    "workforce.application.header.account": "Account Info Form",
     "workforce.child.name.bn": "Name (Bangla)",
     "workforce.child.name.en": "Name (English)"
 

@@ -103,18 +103,18 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
 
               <Grid item xs={6} className={classes.item}>
                 <TextInput
-                  label="workforce.employee.name.en"
-                  value={formData?.workforceEmployee.nameEn || ""}
-                  onChange={(v) => handleChange("nameEn", v)}
+                  label="workforce.employee.name.bn"
+                  value={formData?.workforceEmployee.nameBn || ""}
+                  onChange={(v) => handleChange("nameBn", v)}
                   required
                   readOnly={false}
                 />
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
-                  label="workforce.employee.name.bn"
-                  value={formData?.workforceEmployee.nameBn || ""}
-                  onChange={(v) => handleChange("nameBn", v)}
+                  label="workforce.employee.name.en"
+                  value={formData?.workforceEmployee.nameEn || ""}
+                  onChange={(v) => handleChange("nameEn", v)}
                   required
                   readOnly={false}
                 />
@@ -146,14 +146,6 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   readOnly={false}
                 />
               </Grid> */}
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.employee.position"
-                  value={formData?.workforceEmployee.position || ""}
-                  onChange={(v) => handleChange("position", v)}
-                  readOnly={false}
-                />
-              </Grid>
 
               <Grid item xs={6} className={classes.item}>
                 <TextInput
@@ -205,7 +197,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   readOnly={false}
                 />
               </Grid>
-
+            
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.phone"
@@ -248,7 +240,14 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   readOnly={false}
                 />
               </Grid>
-
+              <Grid item xs={6} className={classes.item}>
+                <TextInput
+                  label="workforce.employee.position"
+                  value={formData?.workforceEmployee.position || ""}
+                  onChange={(v) => handleChange("position", v)}
+                  readOnly={false}
+                />
+              </Grid>
               <Grid item xs={6} className={classes.item}>
                 <EmployeeLifeStatusPicker
                   value={formData?.workforceEmployee.lifeStatus || ""}
@@ -263,7 +262,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   readOnly={false}
                 />
               </Grid>
-
+             
               <Grid item xs={6} className={classes.item}>
                 <PublishedComponent
                   pubRef="core.DatePicker"

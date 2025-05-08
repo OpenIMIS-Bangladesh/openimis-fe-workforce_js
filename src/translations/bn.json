@@ -278,6 +278,9 @@
     "workforce.application.header.labour.note": "নীচের তথ্যগুলি (NID) অনুসারে পূরণ করতে হবে, অন্যথায় আবেদনটি বাতিল বলে বিবেচিত হবে।",
     "workforce.application.header.location": "অবস্থান ফরম",
     "workforce.application.header.child": "সন্তান তথ্য ফরম",
+    "workforce.application.header.document": "প্রমাণপত্র আপলোড ফরম",
+    "workforce.application.header.dependent": "নির্ভরশীল ফরম",
+    "workforce.application.header.account": "অ্যাকাউন্ট তথ্য ফরম",
     "workforce.child.name.bn": "নাম (বাংলা)",
     "workforce.child.name.en": "নাম (ইংরেজি)"
 
