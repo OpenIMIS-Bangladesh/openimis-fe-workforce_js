@@ -158,9 +158,9 @@ const DisabilityForm = ({
           id: employeeData.id || "",
           workforceEmployee: {
             organization: employeeData.organization,
-            firstNameEn: employeeData.firstNameEn || "",
-            firstNameBn: employeeData.firstNameBn || "",
-            lastNameEn: employeeData.lastNameEn || "",
+            nameEn: employeeData.firstNameEn || "",
+            nameBn: employeeData.firstNameBn || "",
+            lastNameEn: " ",
             lastNameBn: employeeData.lastNameBn || "",
             otherName: employeeData.otherName || "",
             position: employeeData.position || "",

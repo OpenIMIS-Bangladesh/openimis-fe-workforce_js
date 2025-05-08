@@ -326,6 +326,9 @@
     "workforce.application.type.medical.disability":"Application Form for Financial Assistance due to Permanent and Partial Disability",
     "workforce.application.type.scholarship":"Scholarship Application Form",
     "workforce.application.type.education.grant":"Education Grant Form",
+    "workforce.application.type.deadly.grant":"Deadly Grant Form",
+    "workforce.application.type.maternal.grant":"Maternal Grant Form",
+
 
     "workforce.application.company.type":"Is your company a hundred percent export-oriented?",
     "workforce.application.for":"Application for whom?",

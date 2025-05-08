@@ -140,6 +140,8 @@
     "workforce.application.type.medical.disability":"স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তার আবেদনপত্র",
     "workforce.application.type.scholarship":" শিক্ষাবৃত্তির আবেদন ফরম",
     "workforce.application.type.education.grant":"শিক্ষা অনুদান ফরম",
+    "workforce.application.type.deadly.grant":"মৃত্যুজনিত অনুদান ফরম",
+    "workforce.application.type.maternal.grant":"মাতৃত্বজনিত অনুদান ফরম",
 
     "workforce.application.company.type":"আপনার কোম্পানি কি শতভাগ রপ্তানিমুখী গার্মেন্টস?",
     "workforce.application.reason.type":"আর্থিক সহায়তা কারণ?",

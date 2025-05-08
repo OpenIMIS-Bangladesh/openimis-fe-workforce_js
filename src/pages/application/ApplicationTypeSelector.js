@@ -65,7 +65,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedCompany, set
   return (
     <Paper className={classes.paper} elevation={0}>
       {/* Company Picker */}
-      <Box mt={3}>
+      {/* <Box mt={3}>
       <CompanyPicker  
         value={selectedCompany?.id}
         label={
@@ -80,10 +80,10 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedCompany, set
         }}
         readOnly={false}
       />
-      </Box>
+      </Box> */}
 
       {/* Factory Picker */}
-      {selectedCompany && (
+      {/* {selectedCompany && (
         <Box mt={3}>
         <FactoryPicker
         value={selectedFactory?.factory?.id}
@@ -101,7 +101,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedCompany, set
         readOnly={false}
       />
       </Box>
-      )}
+      )} */}
       <FormControl component="fieldset">
         {/* New Export-Oriented Company Question */}
         <Typography
@@ -228,6 +228,26 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedCompany, set
                 label={
                   <FormattedMessage
                     id="workforce.application.type.education.grant"
+                    module="workforce"
+                  />
+                }
+              />
+              <FormControlLabel
+                value="deadlyGrant"
+                control={<Radio color="primary" />}
+                label={
+                  <FormattedMessage
+                    id="workforce.application.type.deadly.grant"
+                    module="workforce"
+                  />
+                }
+              />
+              <FormControlLabel
+                value="maternalGrant"
+                control={<Radio color="primary" />}
+                label={
+                  <FormattedMessage
+                    id="workforce.application.type.maternal.grant"
                     module="workforce"
                   />
                 }

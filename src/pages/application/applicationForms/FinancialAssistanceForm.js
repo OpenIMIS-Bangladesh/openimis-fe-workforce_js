@@ -164,9 +164,9 @@ const FinancialAssistanceForm = ({
         id: employeeData.id || "",
         workforceEmployee: {
           organization: employeeData.organization,
-          nameEn: employeeData.nameEn || "",
-          nameBn: employeeData.nameBn || "",
-          lastNameEn: "",
+          nameEn: employeeData.firstNameEn || "",
+          nameBn: employeeData.firstNameBn || "",
+          lastNameEn: " ",
           position: employeeData.position || "",
           fatherNameEn: employeeData.fatherNameEn || "",
           fatherNameBn: employeeData.fatherNameBn || "",

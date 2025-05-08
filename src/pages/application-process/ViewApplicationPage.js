@@ -131,8 +131,7 @@ class ViewApplicationPage extends Component {
       parseDependentInfo,
     } = this.state;
     const isSaveDisabled = false;
-
-    const AccidentInfo = JSON.parse(parseAccidentInfo);
+    const AccidentInfo = parseAccidentInfo?.parseAccidentInfo;
     const BankInfo = JSON.parse(parseBankInfo);
     const DependentInfo = JSON.parse(parseDependentInfo);
 
