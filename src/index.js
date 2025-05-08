@@ -267,11 +267,6 @@ const DEFAULT_CONFIG = {
   "core.LoginPage": RegistrationButton,
   "core.AppBar": NotificationBar,
   "home.HomePage.Blocks": DashboardRelay,
-  "HomePage.enableCustomDashboard": true,
-  "HomePageContainer.showHomeMessage": false,
-  // "home.HomePage.Blocks":ApplicantDashboardPage
-  // "home.HomePage.Blocks":CheckerDashboardPage
-  // "home.HomePage.Blocks":ApproverDashboardPage
 };
 
 export const WorkforceModule = (cfg) => {
