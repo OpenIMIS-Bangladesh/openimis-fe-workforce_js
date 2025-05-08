@@ -26,10 +26,12 @@ import {
 } from "../routes";
 import { RIGHT_WORKFORCE_EMPLOYER_APPROVE } from "../permission-rights";
 import { useSelector, useDispatch } from "react-redux";
+import { isEmptyObject } from "../utils/utils";
 
 
 function WorkforceMainMenu(props) {
   const reduxState = useSelector((state) => state);
+  const user_rights = reduxState.core.user.i_user.rights;
   console.log({reduxState})
   const entries = [
     {
@@ -122,18 +124,28 @@ function WorkforceMainMenu(props) {
     //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     // },
   ];
-  entries.push(
-    ...props.modulesManager
-      .getContribs(WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY)
-      .filter((c) => !c.filter || c.filter(props.rpights)),
-  );
+  const applicantEntries = []
+  if (isEmptyObject((user_rights))) {
+    applicantEntries.push(
+      ...props.modulesManager
+        .getContribs(WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY)
+        .filter((c) => !c.filter || c.filter(props.rpights)),
+    );
+  }else if (!isEmptyObject((user_rights))) {
+    entries.push(
+      ...props.modulesManager
+        .getContribs(WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY)
+        .filter((c) => !c.filter || c.filter(props.rpights)),
+    );
+  }
+  
 
   return (
     <MainMenuContribution
       {...props}
       // header="Workforce"
       header={<FormattedMessage module="workforce" id="menu.workforce"/>}
-      entries={entries}
+      entries={isEmptyObject((user_rights)) ?applicantEntries:entries}
     />
   );
 }

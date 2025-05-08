@@ -6,6 +6,7 @@ import {
   Paper,
   Typography,
   LinearProgress,
+  TextField
 } from "@material-ui/core";
 import {
   TextInput,
@@ -15,6 +16,7 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import OtpInput from 'react-otp-input';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -38,6 +40,20 @@ const useStyles = makeStyles((theme) => ({
   inputContainer: {
     textAlign: "left",
   },
+  otpInput: {
+    width: "30rem",
+    height: "3rem",
+    margin: "0 2rem",
+    fontSize: "2rem",
+    borderRadius: 8,
+    border: "1px solid #ccc",
+    textAlign: "center",
+    outline: "none",
+    transition: "border-color 0.2s ease-in-out",
+    "&:focus": {
+      borderColor: "#1976d2", // MUI primary color
+    },
+  },
 }));
 
 const RegistrationPage = () => {
@@ -45,6 +61,7 @@ const RegistrationPage = () => {
   const history = useHistory();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
+  const [otp, setOtp] = useState('');
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -67,7 +84,7 @@ const RegistrationPage = () => {
   const validateStep1 = () =>
     formData.NID && formData.mobile && formData.firstNameBn && formData.firstNameEn;
 
-  const validateStep2 = () => formData.otp === "1234";
+  const validateStep2 = () => formData.otp === "12345";
 
   const validateStep3 = () =>
     formData.password &&
@@ -152,12 +169,20 @@ const RegistrationPage = () => {
 
               {/* Step 2: OTP */}
               {step === 2 && (
-                <TextInput
-                  required
-                  label="OTP দিন (ডেমো: 1234)"
-                  fullWidth
+                // <TextInput
+                //   required
+                //   label="OTP দিন (ডেমো: 1234)"
+                //   fullWidth
+                //   value={formData.otp}
+                //   onChange={handleInputChange("otp")}
+                // />
+                <OtpInput
                   value={formData.otp}
                   onChange={handleInputChange("otp")}
+                  numInputs={5}
+                  renderSeparator={<span>-</span>}
+                  inputStyle={classes.otpInput}
+                  renderInput={(props) => <input {...props} />}
                 />
               )}
 

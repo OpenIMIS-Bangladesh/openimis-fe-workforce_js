@@ -201,12 +201,14 @@ class ViewApplicationPage extends Component {
           </Grid> */}
           <PreviewDetails formData={formData} />
           <div className={classes.buttonContainer}>
-            <Button  variant="outlined">
+            <Button  variant="outlined" style={{backgroundColor:"#D10000",color:'white'}}>
               <FormattedMessage module="workforce" id="workforce.application.reject" />
             </Button>
             <Button variant="contained" color="primary" >
               <FormattedMessage module="workforce" id="workforce.application.approve" />
-              
+            </Button>
+            <Button variant="contained" color="secondary">
+              <FormattedMessage module="workforce" id="workforce.employee.application.forwardTo" />
             </Button>
           </div>
         </Box>

@@ -323,6 +323,26 @@ export function fetchCompaniesPick(filters) {
   return graphql(payload, "WORKFORCE_COMPANIES_PICKER");
 }
 
+export function fetchDistrictOfficePick(filters) {
+  const projections = ["id", "nameEn", "nameBn"];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployers",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_DISTRICT_OFFICE_PICKER");
+}
+
+export function fetchDivisionOfficePick(filters) {
+  const projections = ["id", "nameEn", "nameBn"];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployers",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_DIVISION_OFFICE_PICKER");
+}
+
 export function fetchOfficesPick(filters) {
   const projections = ["id", "nameEn", "nameBn"];
   const payload = formatPageQueryWithCount(

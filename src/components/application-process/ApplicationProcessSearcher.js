@@ -43,6 +43,9 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import FileUploader from "../../pickers/FileUploader";
 import CloseIcon from '@material-ui/icons/Close';
+import ForwardApplicationModal from "./ForwardApplicationModal";
+import { isEmptyObject } from "../../utils/utils";
+import ForwardApplicationAdminModal from "./ForwardApplicationAdminModal";
 
 const styles = (theme) => ({
   paper: {
@@ -370,6 +373,7 @@ class ApplicationProcessSearcher extends Component {
       filterPaneContributionsKey,
       cacheFiltersKey,
       onDoubleClick,
+      userRights,
     } = this.props;
 
     const count = applicationsPageInfo.totalCount;
@@ -416,174 +420,23 @@ class ApplicationProcessSearcher extends Component {
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
         />
-        <Modal
-          open={forwardModalOpen}
-          onClose={this.handleCloseForwardModal}
-          aria-labelledby="forward-modal-title"
-          aria-describedby="forward-modal-description"
-        >
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 1200,
-              height: 750,
-              bgcolor: "background.paper",
-              borderRadius: 2,
-              boxShadow: 24,
-              p: 4,
-              overflow: 'auto',
-            }}
-          >
-            {/* Close Button */}
-            <Box sx={{ position: "absolute", top: 8, right: 8 }}>
-              <Button size="small" onClick={this.handleCloseForwardModal}>
-                ✕
-              </Button>
-            </Box>
-
-            <Typography id="forward-modal-title" variant="h6" component="h2">
-              ফরওয়ার্ড অ্যাপ্লিকেশন
-            </Typography>
-
-            <Typography id="forward-modal-description" sx={{ mt: 2 }}>
-              {selectedApplication
-                ? `${
-                    selectedApplication.workforceEmployee?.firstNameBn ||
-                    "আবেদনকারী"
-                  } এর আবেদন ফরওয়ার্ড করতে চান?`
-                : "একটি আবেদন বেছে নিন।"}
-            </Typography>
-
-            <Box
-              component="form"
-              onSubmit={this.handleForwardSubmit}
-              sx={{ mt: 3 }}
-            >
-              {/* ✅ Success Message */}
-              {this.state.serverResponse?.status === "SUCCESS" && (
-                <Typography sx={{ mb: 2, color: "green", fontWeight: "bold" }}>
-                  ✅ {this.state.serverResponse.message}
-                </Typography>
-              )}
-
-              <Box
-                sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3 }}
-              >
-              <FormattedMessage module="workforce" id="workforce.application.reasons.addComment" />
-                <Box sx={{ width: "100%", mb: 7 }}>
-                  <ReactQuill
-                    value={this.state.editorContent}
-                    onChange={(content) =>
-                      this.setState({ editorContent: content })
-                    }
-                    theme="snow"
-                    style={{ height: "150px" }}
-                  />
-                </Box>
-
-                {/* Static User List */}
-                <FormattedMessage module="workforce" id="workforce.application.reasons.selectedOfficer" />
-                <Box sx={{ mb:7 }}>
-                  {/* Office Selection */}
-                  <FormControl fullWidth sx={{ mb: 3 }}>
-                    <InputLabel id="office-select-label">
-                      অফিস নির্বাচন করুন
-                    </InputLabel>
-                    <Select
-                      labelId="office-select-label"
-                      value={selectedOffice}
-                      onChange={this.handleOfficeChange}
-                      required
-                    >
-                      {Object.keys(officeData).map((office) => (
-                        <MenuItem key={office} value={office}>
-                          {office}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-
-                  {/* Suboffice Selection */}
-                  {selectedOffice && (
-                    <FormControl fullWidth sx={{ mb: 3 }}>
-                      <InputLabel id="suboffice-select-label">
-                        সাবঅফিস নির্বাচন করুন
-                      </InputLabel>
-                      <Select
-                        labelId="suboffice-select-label"
-                        value={selectedSuboffice}
-                        onChange={this.handleSubofficeChange}
-                        required
-                        disabled={!selectedOffice}
-                      >
-                        {Object.keys(
-                          officeData[selectedOffice]?.suboffices || {}
-                        ).map((suboffice) => (
-                          <MenuItem key={suboffice} value={suboffice}>
-                            {suboffice}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-
-                  {/* User Display */}
-                  {selectedSuboffice && selectedUser && (
-                    <div>
-                      <Typography sx={{ mt: 2 }}>
-                        {selectedSuboffice} এর জন্য ইউজার:
-                      </Typography>
-                      <Typography sx={{ fontWeight: "bold", color: "green" }}>
-                        {selectedUser}
-                      </Typography>
-                    </div>
-                  )}
-                </Box>
-                <Grid item xs={12} sx={{ mt: 7, borderBottom: "1px solid #ccc", pb: 1 }}>
-                    <Typography fontWeight="bold">
-                      ইতঃপূর্বের সংযুক্তিসমূহ
-                    </Typography>
-                </Grid>
-
-                <Grid item xs={12} sx={{ mt: 7 }}>
-                  <Typography>ফাইল যুক্ত করুন...  {document.nameBn} </Typography>
-                  <FileUploader fieldKey={document.fieldId} />
-                </Grid>
-              </Box>
-
-              {/* Buttons */}
-              <Box
-                sx={{
-                  position: "absolute",
-                  bottom: 16,
-                  right: 16,
-                  display: "flex",
-                  gap: 2,
-                }}
-              >
-                <Button
-                  onClick={this.handleCloseForwardModal}
-                  color="secondary"
-                >
-                  বন্ধ করুন
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={this.state.submitting}
-                >
-                  {this.state.submitting
-                    ? "ফরওয়ার্ড করা হচ্ছে..."
-                    : "ফরওয়ার্ড করুন"}
-                </Button>
-              </Box>
-            </Box>
-          </Box>
-        </Modal>
+        {isEmptyObject(userRights)? (
+          <ForwardApplicationModal
+            open={this.state.forwardModalOpen}
+            onClose={this.handleCloseForwardModal}
+            selectedApplication={this.state.selectedApplication}
+            officeData={this.state.officeData}
+            onSubmitForward={this.handleForwardSubmit}
+          />
+        ):(
+          <ForwardApplicationAdminModal
+            open={this.state.forwardModalOpen}
+            onClose={this.handleCloseForwardModal}
+            selectedApplication={this.state.selectedApplication}
+            officeData={this.state.officeData}
+            onSubmitForward={this.handleForwardSubmit}
+          />
+        )}
 
         <div style={{ margin: "16px", fontWeight: "bold" }}>
           <FormattedMessage
@@ -614,6 +467,7 @@ const mapStateToProps = (state) => ({
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   confirmed: state.core.confirmed,
+  userRights: state.core.user.i_user.rights,
 });
 
 const mapDispatchToProps = (dispatch) =>

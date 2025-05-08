@@ -47,6 +47,7 @@
   "dependencies": {
     "quill": "^2.0.3",
     "react-dropzone": "^14.3.5",
+    "react-otp-input": "^3.1.1",
     "react-pdf": "5.7.2",
     "react-quill": "^2.0.0",
     "recharts": "^2.15.2"

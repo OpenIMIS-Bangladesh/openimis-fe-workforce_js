@@ -150,6 +150,16 @@ function reducer(
     fetchedWorkforceCompaniesPick: false,
     workforceCompaniesPick: [],
 
+    fetchingDistrictOfficePick: false,
+    errorDistrictOfficePick: null,
+    fetchedDistrictOfficePick: false,
+    districtOfficePick: [],
+
+    fetchingDivisionOfficePick: false,
+    errorDivisionOfficePick: null,
+    fetchedDivisionOfficePick: false,
+    divisionOfficePick: [],
+
     ///workforce employee states
     fetchingWorkforceEmployees: false,
     errorWorkforceEmployees: null,
@@ -1098,6 +1108,50 @@ function reducer(
           id: decodeId(workforceCompany.id),
         })),
         errorWorkforceCompaniesPick: formatGraphQLError(action.payload),
+      };
+
+    case "WORKFORCE_DISTRICT_OFFICE_PICKER_REQ":
+      return {
+        ...state,
+        fetchingDistrictOfficePick: true,
+        fetchedDistrictOfficePick: false,
+        districtOfficePick: [],
+        errorDistrictOfficePick: null,
+      };
+    case "WORKFORCE_DISTRICT_OFFICE_PICKER_RESP":
+      return {
+        ...state,
+        fetchingDistrictOfficePick: false,
+        fetchedDistrictOfficePick: true,
+        districtOfficePick: parseData(
+          action.payload.data.workforceEmployers
+        ).map((workforceCompany) => ({
+          ...workforceCompany,
+          id: decodeId(workforceCompany.id),
+        })),
+        errorDistrictOfficePick: formatGraphQLError(action.payload),
+      };
+
+    case "WORKFORCE_DIVISION_OFFICE_PICKER_REQ":
+      return {
+        ...state,
+        fetchingDivisionOfficePick: true,
+        fetchedDivisionOfficePick: false,
+        divisionOfficePick: [],
+        errorDivisionOfficePick: null,
+      };
+    case "WORKFORCE_DIVISION_OFFICE_PICKER_RESP":
+      return {
+        ...state,
+        fetchingDivisionOfficePick: false,
+        fetchedDivisionOfficePick: true,
+        divisionOfficePick: parseData(
+          action.payload.data.workforceEmployers
+        ).map((workforceCompany) => ({
+          ...workforceCompany,
+          id: decodeId(workforceCompany.id),
+        })),
+        errorDivisionOfficePick: formatGraphQLError(action.payload),
       };
 
     // end workforce company
