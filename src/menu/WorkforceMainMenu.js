@@ -1,10 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 import { ListAlt } from "@material-ui/icons";
-import { FormattedMessage, MainMenuContribution, withModulesManager ,formatMessage} from "@openimis/fe-core";
+import { FormattedMessage, MainMenuContribution, withModulesManager, formatMessage } from "@openimis/fe-core";
 import {
   WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY,
-  MODULE_NAME,
+  MODULE_NAME, WORKFORCE_USER_TYPE,
 } from "../constants";
 import {
   ROUTE_WORKFORCE_ORGANIZATIONS,
@@ -25,14 +25,13 @@ import {
   ROUTE_WORKFORCE_DOCUMENTS,
 } from "../routes";
 import { RIGHT_WORKFORCE_EMPLOYER_APPROVE } from "../permission-rights";
-import { useSelector, useDispatch } from "react-redux";
-import { isEmptyObject } from "../utils/utils";
+import { getUserType, isEmptyObject } from "../utils/utils";
 
 
 function WorkforceMainMenu(props) {
-  const reduxState = useSelector((state) => state);
-  const user_rights = reduxState.core.user.i_user.rights;
-  console.log({reduxState})
+
+  const user_type = getUserType();
+
   const entries = [
     {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations" />,
@@ -124,30 +123,19 @@ function WorkforceMainMenu(props) {
     //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     // },
   ];
-  const applicantEntries = []
-  if (isEmptyObject((user_rights))) {
-    applicantEntries.push(
-      ...props.modulesManager
-        .getContribs(WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY)
-        .filter((c) => !c.filter || c.filter(props.rpights)),
+  if (user_type === WORKFORCE_USER_TYPE.ADMIN) {
+    return (
+      <MainMenuContribution
+        {...props}
+        header={<FormattedMessage module="workforce" id="menu.workforce" />}
+        entries={entries}
+      />
     );
-  }else if (!isEmptyObject((user_rights))) {
-    entries.push(
-      ...props.modulesManager
-        .getContribs(WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY)
-        .filter((c) => !c.filter || c.filter(props.rpights)),
-    );
+  } else {
+    return <></>;
   }
-  
 
-  return (
-    <MainMenuContribution
-      {...props}
-      // header="Workforce"
-      header={<FormattedMessage module="workforce" id="menu.workforce"/>}
-      entries={isEmptyObject((user_rights)) ?applicantEntries:entries}
-    />
-  );
+
 }
 
 const mapStateToProps = (state) => ({

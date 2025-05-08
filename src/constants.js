@@ -49,3 +49,10 @@ export const WORKFORCE_STATUS = {
   REASSIGNED: "reassigned",
   RESIGNED: "resigned",
 };
+
+export const WORKFORCE_USER_TYPE = {
+  ADMIN: "admin",
+  CHECKER: "checker",
+  APPROVER: "approver",
+  APPLICANT: "applicant",
+};

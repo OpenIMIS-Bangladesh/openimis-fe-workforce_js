@@ -1,15 +1,16 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { isEmptyObject } from "../../utils/utils";
+import { getUserType, isEmptyObject } from "../../utils/utils";
 import ApplicantDashboard from "./ApplicantDashboardPage";
 import DashboardPage from "./DashboardPage";
+import { WORKFORCE_USER_TYPE } from "../../constants";
 
 const DashboardRelay = () => {
-  const reduxState = useSelector((state) => state);
-  const user_rights = reduxState.core.user.i_user.rights;
-  if (isEmptyObject((user_rights))) {
+  const user_type = getUserType();
+
+  if (user_type === WORKFORCE_USER_TYPE.APPLICANT) {
     return <ApplicantDashboard />;
-  } else if (!isEmptyObject(user_rights)) {
+  } else if (user_type === WORKFORCE_USER_TYPE.ADMIN) {
     return <DashboardPage />;
   }
 
