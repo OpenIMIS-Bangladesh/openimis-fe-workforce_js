@@ -55,7 +55,8 @@ import UnitDesignationPage from "./pages/organization-unit-designation/UnitDesig
 import UnitDesignationsPage from "./pages/organization-unit-designation/UnitDesignationsPage";
 import OrganizationEmployeesPage from "./pages/organization-employee/OrganizationEmployeesPage";
 import OrganizationEmployeePage from "./pages/organization-employee/OrganizationEmployeePage";
-import WorkforceEmployeeDesignationPage from "./pages/organization-employee-designation/WorkforceEmployeeDesignationPage";
+import WorkforceEmployeeDesignationPage
+  from "./pages/organization-employee-designation/WorkforceEmployeeDesignationPage";
 import OrganizationOfficesPage from "./pages/workforce-office/WorkforceOfficesPage";
 import OrganizationOfficePage from "./pages/workforce-office/WorkforceOfficePage";
 import OrganizationCompaniesPage from "./pages/workforce-company/WorkforceCompaniesPage";
@@ -82,6 +83,7 @@ import ApplicationsProcessPage from "./pages/application-process/ApplicationsPro
 import RegistrationButton from "./pages/registration/RegistrationButton";
 import ApplicationProcessPage from "./pages/application-process/ApplicationProcessPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
+import DashboardRelay from "./pages/dashboard/DashboardRelay";
 import ApplicantDashboardPage from "./pages/dashboard/ApplicantDashboardPage";
 import CheckerDashboardPage from "./pages/dashboard/CheckerDashboardPage";
 import ApproverDashboardPage from "./pages/dashboard/ApproverDashboardPage";
@@ -134,7 +136,10 @@ const DEFAULT_CONFIG = {
 
     { key: "workforce.route.registration", ref: ROUTE_WORKFORCE_REGISTRATION },
     { key: "workforce.route.application", ref: ROUTE_WORKFORCE_APPLICATION },
-    { key: "workforce.route.applications.application.process.view", ref: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS },
+    {
+      key: "workforce.route.applications.application.process.view",
+      ref: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS,
+    },
     { key: "workforce.route.applications.application.verify", ref: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY },
     { key: "workforce.route.applications.process", ref: ROUTE_WORKFORCE_APPLICATIONS_PROCESS },
 
@@ -164,21 +169,30 @@ const DEFAULT_CONFIG = {
   ],
 
   "core.Router": [
-      { path: ROUTE_WORKFORCE_ORGANIZATIONS, component: WorkforceOrganizationsPage },
+    { path: ROUTE_WORKFORCE_ORGANIZATIONS, component: WorkforceOrganizationsPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION, component: WorkforceOrganizationPage },
     { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION}/:organization_uuid`, component: WorkforceOrganizationPage },
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS, component: WorkforceOrganizationUnitsPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT, component: WorkforceOrganizationUnitPage },
-    { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT}/:organization_unit_uuid`, component: WorkforceOrganizationUnitPage },
+    {
+      path: `${ROUTE_WORKFORCE_ORGANIZATIONS_UNITS_UNIT}/:organization_unit_uuid`,
+      component: WorkforceOrganizationUnitPage,
+    },
 
     { path: ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS, component: UnitDesignationsPage },
     { path: ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS_DESIGNATION, component: UnitDesignationPage },
-    { path: `${ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS_DESIGNATION}/:organization_unit_designation_uuid`, component: UnitDesignationPage },
+    {
+      path: `${ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS_DESIGNATION}/:organization_unit_designation_uuid`,
+      component: UnitDesignationPage,
+    },
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES, component: OrganizationEmployeesPage },
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE, component: OrganizationEmployeePage },
-    { path: `${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE}/:organization_employee_uuid`, component: OrganizationEmployeePage },
+    {
+      path: `${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE}/:organization_employee_uuid`,
+      component: OrganizationEmployeePage,
+    },
 
     { path: ROUTE_WORKFORCE_OFFICES, component: OrganizationOfficesPage },
     { path: ROUTE_WORKFORCE_OFFICES_OFFICE, component: OrganizationOfficePage },
@@ -189,9 +203,15 @@ const DEFAULT_CONFIG = {
     { path: `${ROUTE_WORKFORCE_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OrganizationCompanyPage },
     { path: `${ROUTE_WORKFORCE_EDIT_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OrganizationCompanyPage },
 
-    { path: `${ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OrganizationCompanyPage },
+    {
+      path: `${ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY}/:workforce_company_uuid`,
+      component: OrganizationCompanyPage,
+    },
     { path: ROUTE_WORKFORCE_APPROVE_COMPANIES_COMPANY, component: OrganizationCompanyPage },
-    { path: `${ROUTE_WORKFORCE_APPROVE_EDIT_COMPANIES_COMPANY}/:workforce_company_uuid`, component: OrganizationCompanyPage },
+    {
+      path: `${ROUTE_WORKFORCE_APPROVE_EDIT_COMPANIES_COMPANY}/:workforce_company_uuid`,
+      component: OrganizationCompanyPage,
+    },
     { path: ROUTE_WORKFORCE_APPROVE_COMPANIES, component: OrganizationCompaniesPage },
 
 
@@ -223,13 +243,16 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_EMPLOYEE_FACTORIES, component: WorkforceEmployeeFactoryPage },
 
     { path: ROUTE_WORKFORCE_BANKS, component: WorkforceBanksPage },
-    { path: ROUTE_WORKFORCE_BANKS_BANK, component: WorkforceBankPage},
+    { path: ROUTE_WORKFORCE_BANKS_BANK, component: WorkforceBankPage },
     { path: `${ROUTE_WORKFORCE_BANKS_BANK}/:bank_uuid`, component: WorkforceBankPage },
 
     { path: ROUTE_WORKFORCE_APPLICATION, component: MultiStepApplyForm },
     { path: ROUTE_WORKFORCE_APPLICATIONS_PROCESS, component: ApplicationsProcessPage },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS, component: ApplicationProcessPage },
-    { path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS}/:application_uuid`, component: ApplicationProcessPage },
+    {
+      path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS}/:application_uuid`,
+      component: ApplicationProcessPage,
+    },
     { path: ROUTE_WORKFORCE_APPLICATIONS_PROCESS, component: ApplicationsProcessPage },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY, component: ApplicationProcessPage },
     { path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY}/:application_uuid`, component: ApplicationProcessPage },
@@ -243,9 +266,9 @@ const DEFAULT_CONFIG = {
 
   "core.LoginPage": RegistrationButton,
   "core.AppBar": NotificationBar,
-  "home.HomePage.Blocks":DashboardPage,
-  "HomePage.enableCustomDashboard":true,
-  "HomePageContainer.showHomeMessage":false,
+  "home.HomePage.Blocks": DashboardRelay,
+  "HomePage.enableCustomDashboard": true,
+  "HomePageContainer.showHomeMessage": false,
   // "home.HomePage.Blocks":ApplicantDashboardPage
   // "home.HomePage.Blocks":CheckerDashboardPage
   // "home.HomePage.Blocks":ApproverDashboardPage
