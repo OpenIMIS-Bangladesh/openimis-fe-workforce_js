@@ -56,11 +56,17 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
   //   };
 
   return (
-    <Box mt={1}>
+    <Box>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={0}>
-            <Grid container className={classes.item} spacing={2}>
+          <Box textAlign="center" fontWeight="bold">
+            <FormattedMessage id="workforce.application.header.labour" module="workforce" />
+          </Box>
+          <Box mb={4}>
+            <FormattedMessage id="workforce.application.header.labour.note" module="workforce" />
+          </Box>
+              <Grid container className={classes.item} spacing={2}>
               {/* <Grid item xs={6} className={classes.item}>*/}
               {/*  <PublishedComponent*/}
               {/*    pubRef="workforceOrganization.OrganizationPicker"*/}
@@ -171,6 +177,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   value={formData?.workforceEmployee.motherNameEn || ""}
                   onChange={(v) => handleChange("motherNameEn", v)}
                   readOnly={false}
+                  required
                 />
               </Grid>
               <Grid item xs={6} className={classes.item}>
@@ -179,6 +186,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   value={formData?.workforceEmployee.motherNameBn || ""}
                   onChange={(v) => handleChange("motherNameBn", v)}
                   readOnly={false}
+                  required
                 />
               </Grid>
               <Grid item xs={6} className={classes.item}>

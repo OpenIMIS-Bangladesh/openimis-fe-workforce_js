@@ -60,6 +60,9 @@ const EmployeeLocationForm = ({ handleChange,formData, setFormData }) => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={0}>
+             <Box mb={4} textAlign="center" fontWeight="bold">
+              <FormattedMessage id="workforce.application.header.location" module="workforce" />
+            </Box>
             <Grid container className={classes.item} spacing={2}>
             <Grid item xs={12} className={classes.item}>
                 <p>{formatMessage("workforce.employee.present_location")}</p>

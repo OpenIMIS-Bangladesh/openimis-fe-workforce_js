@@ -47,7 +47,7 @@ const NotificationBar = ({ classes }) => {
       </Tooltip>
 
       {/* In Progress */}
-      <Tooltip title="Applications In Progress">
+      <Tooltip title="Rejected Applications">
         <Box className={classes.item}>
           <Badge badgeContent={data.inProgress || 0} color="primary">
             <RestorePageIcon color="white" />

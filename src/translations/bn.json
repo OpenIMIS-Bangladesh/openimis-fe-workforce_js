@@ -122,6 +122,8 @@
     "workforce.branch.picker": "শাখা",
     "menu.workforce.branch": "শাখা সমূহ",
     "menu.workforce.employee.factory": "কর্মচারী কারখানা",
+    "menu.workforce.documents": "নথিপত্র",
+
 
     "workforce.employee.accident.info.application.injuryType": "ক্ষতি ধরন",
     "workforce.employee.accident.info.application.dateOfAccident": "দুর্ঘটনার তারিখ",
@@ -158,7 +160,7 @@
     "workforce.disability.partial":"আংশিক অক্ষমতা",
     "workforce.disability.permanent":"স্থায়ী অক্ষমতা",
 
-    "workforce.application.employee.children.studyingClass":"অধ্যয়নরত শ্রেণী",
+    "workforce.application.employee.children.studyingClass":"অধ্যয়নরত শ্রেণী/বিভাগ",
     "workforce.application.employee.children.educationInstituteName":"শিক্ষা প্রতিষ্ঠানের নাম",
     "workforce.application.employee.children.result":"ফলাফল",
     "workforce.application.employee.children.bankNameOrAcNo":"ব্যাংকের নাম এবং অ্যাকাউন্ট নম্বর (যদি থাকে)",
@@ -270,7 +272,16 @@
     "admin.menu.users": "ব্যবহারকারীদের",
     "admin.menu.payers": "প্রদানকারী",
     "admin.menu.products": "পণ্য",
-    "admin.menu.usersProfiles": "ব্যবহারকারীদের প্রোফাইল"
+    "admin.menu.usersProfiles": "ব্যবহারকারীদের প্রোফাইল",
+
+    "workforce.application.header.labour": "শ্রমিক বিবরণ ফরম",
+    "workforce.application.header.labour.note": "নীচের তথ্যগুলি (NID) অনুসারে পূরণ করতে হবে, অন্যথায় আবেদনটি বাতিল বলে বিবেচিত হবে।",
+    "workforce.application.header.location": "অবস্থান ফরম",
+    "workforce.application.header.child": "সন্তান তথ্য ফরম",
+    "workforce.child.name.bn": "নাম (বাংলা)",
+    "workforce.child.name.en": "নাম (ইংরেজি)"
+
+    
 
 
     

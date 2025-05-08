@@ -344,7 +344,7 @@
     "workforce.disability.partial":"Partial disability",
     "workforce.disability.permanent":"Permanent disability",
 
-    "workforce.application.employee.children.studyingClass":"Studying Class",
+    "workforce.application.employee.children.studyingClass":"Studying Class/Division",
     "workforce.application.employee.children.educationInstituteName":"Education Institute Name",
     "workforce.application.employee.children.result":"Result",
     "workforce.application.employee.children.bankNameOrAcNo":"Bank Name and AC No (if have)",
@@ -450,7 +450,15 @@
     "admin.menu.users": "Users",
     "admin.menu.payers": "Payers",
     "admin.menu.products": "Products",
-    "admin.menu.usersProfiles": "Users Profiles"
+    "admin.menu.usersProfiles": "Users Profiles",
+
+    "workforce.application.header.labour": "Labour Details Form",
+    "workforce.application.header.labour.note": "The following information must be filled as per (NID), otherwise the application will be considered rejected.",
+    "workforce.application.header.location": "Location Form",
+    "workforce.application.header.child": "Children Details Form",
+    "workforce.child.name.bn": "Name (Bangla)",
+    "workforce.child.name.en": "Name (English)"
+
 
 
 }

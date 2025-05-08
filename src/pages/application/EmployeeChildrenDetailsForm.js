@@ -56,10 +56,13 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={0}>
+             <Box mb={4} textAlign="center" fontWeight="bold">
+               <FormattedMessage id="workforce.application.header.child" module="workforce" />
+              </Box>
             <Grid container className={classes.item} spacing={2}>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
-                  label="workforce.employee.first.name.en"
+                  label="workforce.child.name.en"
                   // value={formData.firstNameEn || ""}
                   onChange={(v) => handleChange("nameEn", v)}
                   required
@@ -68,7 +71,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
-                  label="workforce.employee.first.name.bn"
+                  label="workforce.child.name.bn"
                   // value={formData.firstNameBn || ""}
                   onChange={(v) => handleChange("nameBn", v)}
                   required
@@ -93,7 +96,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                   readOnly={false}
                 />
               </Grid> */}
-              <Grid item xs={6} className={classes.item}>
+              {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.other.name"
                   // value={formData.otherName || ""}
@@ -101,7 +104,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                   required
                   readOnly={false}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={6} className={classes.item}>
                 <PublishedComponent
                   pubRef="core.DatePicker"
@@ -136,7 +139,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                   // value={formData.result || ""}
                   onChange={(v) => handleChange("result", v)}
                   readOnly={false}
-                  required
+                  
                 />
               </Grid>
 
