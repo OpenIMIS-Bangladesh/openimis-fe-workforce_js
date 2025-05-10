@@ -63,8 +63,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
           <Box textAlign="center" fontWeight="bold">
             <FormattedMessage id="workforce.application.header.labour" module="workforce" />
           </Box>
-          <Box mb={4}>
-            <FormattedMessage id="workforce.application.header.labour.note" module="workforce" />
+          <Box mb={4} color="red">
+            * <FormattedMessage id="workforce.application.header.labour.note" module="workforce" />
           </Box>
               <Grid container className={classes.item} spacing={2}>
               {/* <Grid item xs={6} className={classes.item}>*/}
