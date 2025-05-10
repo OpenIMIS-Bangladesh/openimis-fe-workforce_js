@@ -286,9 +286,9 @@ const MultiStepApplyForm = ({ modulesManager }) => {
             />
             )}
           </>
-        ) : selectedApplicationType === "deadlyGrant"?(
+        ) :selectedApplicationType === "deadlyGrant"? (
           <>
-           <div className={classes.backButtonContainer}>
+            <div className={classes.backButtonContainer}>
               <IconButton onClick={handleBack} color="primary">
                 <ArrowBackIcon />
               </IconButton>
@@ -297,11 +297,10 @@ const MultiStepApplyForm = ({ modulesManager }) => {
                 <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
-            <DisabilityForm
+            <FinancialAssistanceForm
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
-              applicationForSelf={applicationForSelf}
               selectedCompany={selectedCompany}
               selectedFactory={selectedFactory}
             />
