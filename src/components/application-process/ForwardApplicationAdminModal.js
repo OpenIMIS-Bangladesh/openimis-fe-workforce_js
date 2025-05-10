@@ -124,29 +124,7 @@ const ForwardApplicationAdminModal = ({
   };
 
   const handleForward = () => {
-    if (selectedApplication?.status === WORKFORCE_STATUS.FIRST_FORWARD) {
-      const updateApplicationData = {
-        id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.SECOND_FORWARD,
-      };
-      dispatch(
-        updateApplication(
-          updateApplicationData,
-          `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`
-        )
-      );
-    }else if (selectedApplication?.status === WORKFORCE_STATUS.SECOND_FORWARD) {
-      const updateApplicationData = {
-        id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.THIRD_FORWARD,
-      };
-      dispatch(
-        updateApplication(
-          updateApplicationData,
-          `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`
-        )
-      );
-    }else{
+
       const updateApplicationData = {
         id: decodeId(selectedApplication.id),
         status: WORKFORCE_STATUS.FIRST_FORWARD,
@@ -157,7 +135,7 @@ const ForwardApplicationAdminModal = ({
           `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`
         )
       );
-    }
+    
   };
 
   console.log({ aha: selectedApplication });
