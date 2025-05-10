@@ -93,7 +93,7 @@ import NotificationBar from "./components/app-bar/NotificationBar";
 
 
 const DEFAULT_CONFIG = {
-  "translations": [{ key: "en", messages: messages_en }, { key: "fr", messages: messages_bn }],
+  "translations": [{ key: "fr", messages: messages_bn },{ key: "en", messages: messages_en } ],
   reducers: [{ key: "workforce", reducer }],
 
   refs: [

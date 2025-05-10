@@ -22,21 +22,28 @@ const EmployeePicker = ({
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    return dispatch(fetchEmployeePick(modulesManager, []));
-  }, []);
+  // useEffect(() => {
+  //   return dispatch(fetchEmployeePick(modulesManager, []));
+  // }, []);
 
-  const isLoading = useSelector(
-    (state) => state.workforce[`fetchingEmployeePick`]
-  );
-  const data = useSelector(
-    (state) => state.workforce[`employeePick`] ?? []
-  );
-  const error = useSelector(
-    (state) => state.workforce["errorEmployeePick"]
-  );
+  // const isLoading = useSelector(
+  //   (state) => state.workforce[`fetchingEmployeePick`]
+  // );
+  // const data = useSelector(
+  //   (state) => state.workforce[`employeePick`] ?? []
+  // );
+  // const error = useSelector(
+  //   (state) => state.workforce["errorEmployeePick"]
+  // );
+ 
+  const EMPLOYEE_NAME_DESIGNATION = ["Admin - Md. Ataullah", "Register - Nurul Islam","Accountant - Ashfaq uddin","Verifier - Mahmud Raju"];
+
+  // const selectedOption = useMemo(
+  //     () => EMPLOYEE_NAME_DESIGNATION.find((option) => option.id === value) || null,
+  //     [value]
+  //   )
   const selectedOption = useMemo(
-      () => data.find((option) => option.id === value) || null,
+      () => (EMPLOYEE_NAME_DESIGNATION.includes(value) ? value : null),
       [value]
     )
 
