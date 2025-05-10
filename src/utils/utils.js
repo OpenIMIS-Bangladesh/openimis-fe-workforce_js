@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { WORKFORCE_USER_TYPE } from "../constants";
 
 export function isBase64Encoded(str) {
@@ -14,16 +14,9 @@ export function isEmptyObject(obj) {
 export function getUserType() {
   const reduxState = useSelector((state) => state);
   const user_rights = reduxState.core.user.i_user.rights;
-  let user_type = WORKFORCE_USER_TYPE.APPLICANT;
-
-  if (!isEmptyObject(user_rights)) {
-    user_type = WORKFORCE_USER_TYPE.ADMIN;
-  }
-
-  return user_type;
+  return getUserTypeFromRights(user_rights);
 }
 
-// utils/utils.js — remove `useSelector` from this file
 export function getUserTypeFromRights(user_rights) {
   let user_type = WORKFORCE_USER_TYPE.APPLICANT;
 

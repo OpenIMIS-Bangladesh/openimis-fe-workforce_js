@@ -34,7 +34,7 @@ import {
   Check as CheckIcon,
 } from "@material-ui/icons";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
-import { MODULE_NAME } from "../../constants";
+import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../constants";
 import { fetchApplicationsSummary } from "../../actions";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardIcon from "@material-ui/icons/Forward";
@@ -44,7 +44,7 @@ import "react-quill/dist/quill.snow.css";
 import FileUploader from "../../pickers/FileUploader";
 import CloseIcon from '@material-ui/icons/Close';
 import ForwardApplicationModal from "./ForwardApplicationModal";
-import { isEmptyObject } from "../../utils/utils";
+import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 import ForwardApplicationAdminModal from "./ForwardApplicationAdminModal";
 
 const styles = (theme) => ({
@@ -420,7 +420,7 @@ class ApplicationProcessSearcher extends Component {
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
         />
-        {isEmptyObject(userRights)? (
+        {getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT? (
           <ForwardApplicationModal
             open={forwardModalOpen}
             onClose={this.handleCloseForwardModal}
