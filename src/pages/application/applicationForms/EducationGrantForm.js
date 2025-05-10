@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   paper: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     width: 700,
   },
   buttonContainer: {
@@ -51,6 +51,14 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "flex-end",
     gap: theme.spacing(1),
+  },
+  overrides: {
+    MuiStepper: {
+      root: {
+        backgroundColor: "transparent", // override MuiStepper-root globally
+        padding: "16px",
+      },
+    },
   },
 }));
 
@@ -517,7 +525,7 @@ const MedicalAssistanceForm = ({
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>
-        <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper activeStep={activeStep} alternativeLabel style={{padding:"0px"}}>
           {steps.map((step, index) => (
             <Step key={index}>
               <StepLabel>
@@ -526,7 +534,7 @@ const MedicalAssistanceForm = ({
             </Step>
           ))}
         </Stepper>
-        <Box mt={3}>{steps[activeStep].content}</Box>
+        <Box mt={0}>{steps[activeStep].content}</Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">

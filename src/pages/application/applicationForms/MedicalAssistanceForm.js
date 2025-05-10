@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(1),
-    width: "100%",
+    width: 700,
   },
   buttonContainer: {
     marginTop: theme.spacing(2),
@@ -524,13 +524,8 @@ const MedicalAssistanceForm = ({
 
   return (
     <div className={classes.container}>
-      {/* {showPreview && (
-        <Paper className={classes.paper} >
-          <PreviewDetails formData={formData} />
-        </Paper>
-      )} */}
       <Paper className={classes.paper} elevation={0}>
-        <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper activeStep={activeStep} alternativeLabel style={{padding:"0px"}}>
           {steps.map((step, index) => (
             <Step key={index}>
               <StepLabel>
@@ -540,7 +535,7 @@ const MedicalAssistanceForm = ({
           ))}
         </Stepper>
         
-        <Box mt={3}>{steps[activeStep].content}</Box>
+        <Box mt={0}>{steps[activeStep].content}</Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">

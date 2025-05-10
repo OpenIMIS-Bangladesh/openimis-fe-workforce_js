@@ -458,7 +458,7 @@ const DisabilityForm = ({
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>
-        <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper activeStep={activeStep} alternativeLabel style={{padding:"0px"}}>
           {steps.map((label) => (
             <Step key={label}>
               <StepLabel>
@@ -474,21 +474,21 @@ const DisabilityForm = ({
             deathType={deathType}
           />
         ) : activeStep === 1 ? (
-          <Box mt={3}>
+          <Box mt={0}>
             <EmployeeDetailsForm
               handleChange={handleChange}
               formData={formData}
             />
           </Box>
         ) : activeStep === 2 ? (
-          <Box mt={3}>
+          <Box mt={0}>
             <EmployeeLocationForm
               handleChange={handleChange}
               formData={formData}
             />
           </Box>
         ) : activeStep === 3 ? (
-          <Box mt={3}>
+          <Box mt={0}>
             <EmployeeAccidentInfoForm
               handleChange={(key, value) =>
                 handleChange(key, value, "employeeAccidentInfo")
@@ -497,7 +497,7 @@ const DisabilityForm = ({
             />
           </Box>
         ) : activeStep === 4 ? (
-          <Box mt={3}>
+          <Box mt={0}>
             <EmployeeDetailsForm2
               selectedApplicationType={selectedApplicationType}
               handleChange={handleChange}
@@ -505,7 +505,7 @@ const DisabilityForm = ({
             />
           </Box>
         ) : (
-          <Box mt={3}>
+          <Box mt={0}>
             <EmployeeAccountInfoForm
               handleChange={(key, value) =>
                 handleChange(key, value, "employeeBankInfo")

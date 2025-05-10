@@ -99,31 +99,23 @@ const DashboardPage = () => {
       <Grid container spacing={2} style={{ marginBottom: theme.spacing(1) }}>
         <Grid item xs={12}>
           <Card
-            style={{ ...cardStyle, backgroundColor: COLORS[7] }}
+            style={{ ...cardStyle, backgroundColor: COLORS[7],display:"flex",flexWrap:"wrap" }}
             onClick={() => history.push("workforce/applications/process")}
           >
            <CardContent>
-           <Typography variant="subtitle1" style={{ marginBottom: 10, display: 'block' }}>
-            Application Status*
-          </Typography>
+           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+            <Typography variant="subtitle1" style={{ marginRight: 16 }}>
+              Application Status* --
+            </Typography>
 
-            <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
-              <StyledBadge badgeContent={10} color="secondary">
-                <span>Pending</span>
-              </StyledBadge>
-
-              <StyledBadge badgeContent={2} color="error">
-                <span>Rejected</span>
-              </StyledBadge>
-
-              <StyledBadge badgeContent={20} color="primary">
-                <span>Verified</span>
-              </StyledBadge>
-
-              <StyledBadge badgeContent={30} color="info">
-                <span>On Process</span>
-              </StyledBadge>
+            <div style={{ display: 'flex', gap: '32px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <StyledBadge badgeContent={10} color="secondary"><span>Pending</span></StyledBadge>
+              <StyledBadge badgeContent={2} color="error"><span>Rejected</span></StyledBadge>
+              <StyledBadge badgeContent={20} color="primary"><span>Verified</span></StyledBadge>
+              <StyledBadge badgeContent={30} color="info"><span>On Process</span></StyledBadge>
             </div>
+          </div>
+
           </CardContent>
 
           </Card>
@@ -140,11 +132,11 @@ const DashboardPage = () => {
           <Grid item xs={12} sm={4} key={index}>
             <Card style={{ ...cardStyle, backgroundColor: COLORS[index] }}>
               <CardContent>
-                <Typography variant="subtitle1">{item.title}</Typography>
-                <Typography variant="h6">Count: {item.count}</Typography>
+                <Typography variant="subtitle1">{item.title} - {item.count} (Male: {item.male} | Female: {item.female}) </Typography>
+                {/* <Typography variant="h6">Count: {item.count}</Typography>
                 <Typography variant="body2">
                   Male: {item.male} | Female: {item.female}
-                </Typography>
+                </Typography> */}
               </CardContent>
             </Card>
           </Grid>
@@ -156,8 +148,8 @@ const DashboardPage = () => {
         <Grid item xs={12} sm={6}>
           <Card style={{ ...cardStyle, backgroundColor: COLORS[5] }}>
             <CardContent>
-              <Typography variant="subtitle1">Total Benefit Amount</Typography>
-              <Typography variant="h6">TK: 55185000</Typography>
+              <Typography variant="subtitle1">Total Benefit Amount - 55185000Tk</Typography>
+              {/* <Typography variant="h6">TK: 55185000</Typography> */}
             </CardContent>
           </Card>
         </Grid>
@@ -165,22 +157,18 @@ const DashboardPage = () => {
           <Card style={{ ...cardStyle, backgroundColor: COLORS[6] }}>
             <CardContent>
               <Typography variant="subtitle1">
-                Monthly Total Benefit Amount
+                Monthly Total Benefit Amount - 0.00TK (Disability Case: 0 | Deceased Case: 0)
               </Typography>
-              <Typography variant="body2">TK: 0.00</Typography>
-              <Typography variant="body2">Disability Case: 0</Typography>
+              {/* <Typography variant="body2">TK: 0.00</Typography>
+              <Typography variant="body2">Disability Case: 0</Typography> */}
               <Typography variant="body2">
                 Highest: 0.00 | Lowest: 0.00
               </Typography>
-              <Typography variant="body2">Deceased Case: 0</Typography>
+              {/* <Typography variant="body2">Deceased Case: 0</Typography> */}
             </CardContent>
           </Card>
         </Grid>
-      </Grid>
-
-      {/* Status & Charts */}
-      <Grid container spacing={2} style={{ marginTop: theme.spacing(1) }}>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <Card style={{ ...cardStyle, backgroundColor: COLORS, height: 300 }}>
             <CardContent>
               <Typography variant="subtitle1">
@@ -209,7 +197,7 @@ const DashboardPage = () => {
           </Card>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
           <Card style={{ ...cardStyle, backgroundColor: COLORS, height: 300 }}>
             <CardContent>
               <Typography variant="subtitle1">Status Breakdown</Typography>
@@ -237,6 +225,66 @@ const DashboardPage = () => {
           </Card>
         </Grid>
       </Grid>
+
+      {/* Status & Charts */}
+      {/* <Grid container spacing={2} columns={12} style={{ marginTop: theme.spacing(1) }}>
+        <Grid item xs={6}>
+          <Card style={{ ...cardStyle, backgroundColor: COLORS, height: 300 }}>
+            <CardContent>
+              <Typography variant="subtitle1">
+                Case Distribution by Month
+              </Typography>
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={caseData}>
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar
+                    dataKey="Permanent_Total_Disability"
+                    stackId="a"
+                    fill="#64b5f6"
+                  />
+                  <Bar
+                    dataKey="Permanent_Partial_Disability"
+                    stackId="a"
+                    fill="#9575cd"
+                  />
+                  <Bar dataKey="Death" stackId="a" fill="#f44336" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={6}>
+          <Card style={{ ...cardStyle, backgroundColor: COLORS, height: 300 }}>
+            <CardContent>
+              <Typography variant="subtitle1">Status Breakdown</Typography>
+              <ResponsiveContainer width="100%" height={220}>
+                <PieChart>
+                  <Pie
+                    data={statusData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    dataKey="value"
+                    label
+                  >
+                    {statusData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid> */}
     </div>
   );
 };

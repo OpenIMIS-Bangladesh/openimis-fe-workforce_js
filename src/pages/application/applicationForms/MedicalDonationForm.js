@@ -517,7 +517,7 @@ const MedicalDonationForm = ({
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>
-        <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper activeStep={activeStep} alternativeLabel style={{padding:"0px"}}>
           {steps.map((step, index) => (
             <Step key={index}>
               <StepLabel>
@@ -527,7 +527,7 @@ const MedicalDonationForm = ({
           ))}
         </Stepper>
        
-        <Box mt={3}>{steps[activeStep].content}</Box>
+        <Box mt={0}>{steps[activeStep].content}</Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">

@@ -558,7 +558,7 @@ const ScholarshipApplicationForm = ({
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>
-        <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper activeStep={activeStep} alternativeLabel style={{padding:"0px"}}>
           {steps.map((step, index) => (
             <Step key={index}>
               <StepLabel>
