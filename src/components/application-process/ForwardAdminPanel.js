@@ -129,7 +129,7 @@ const ForwardAdminPanel = ({
   const handleForward = () => {
     const updateApplicationData = {
       id: decodeId(selectedApplication.id),
-      status: WORKFORCE_STATUS.FIRST_FORWARD,
+      status: WORKFORCE_STATUS.SECOND_FORWARD,
     };
     dispatch(
       updateApplication(
@@ -240,7 +240,7 @@ const ForwardAdminPanel = ({
             </Grid>
             <Grid item xs={12} sm={12}>
               <EmployeePicker
-                value={setEmployeeType?.id}
+                value={employeeType?.id}
                 employeeType={employeeType}
                 label={
                   <FormattedMessage

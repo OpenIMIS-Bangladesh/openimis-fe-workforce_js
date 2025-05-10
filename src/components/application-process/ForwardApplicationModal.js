@@ -11,8 +11,15 @@ import {
   Grid,
 } from "@material-ui/core";
 import ReactQuill from "react-quill";
-import { FormattedMessage } from "@openimis/fe-core"; 
+import {
+  useModulesManager,
+  formatMutation,
+  decodeId,
+  FormattedMessage,
+} from "@openimis/fe-core";
+import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../pickers/FileUploader";
+import { updateApplication } from "../../actions";
 
 const ForwardApplicationModal = ({
   open,
@@ -21,6 +28,8 @@ const ForwardApplicationModal = ({
   officeData = {},
   onSubmitForward,
 }) => {
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
   const [editorContent, setEditorContent] = useState("");
   const [selectedOffice, setSelectedOffice] = useState("");
   const [selectedSuboffice, setSelectedSuboffice] = useState("");
@@ -56,23 +65,33 @@ const ForwardApplicationModal = ({
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    const payload = {
-      comment: editorContent,
-      office: selectedOffice,
-      suboffice: selectedSuboffice,
-      user: selectedUser,
-    };
+    // e.preventDefault();
+    // setSubmitting(true);
+    // const payload = {
+    //   comment: editorContent,
+    //   office: selectedOffice,
+    //   suboffice: selectedSuboffice,
+    //   user: selectedUser,
+    // };
 
-    try {
-      const response = await onSubmitForward(payload); // expects a promise
-      setServerResponse(response);
-    } catch (error) {
-      setServerResponse({ status: "ERROR", message: "সাবমিশনে ব্যর্থ হয়েছে।" });
-    } finally {
-      setSubmitting(false);
-    }
+    // try {
+    //   const response = await onSubmitForward(payload); // expects a promise
+    //   setServerResponse(response);
+    // } catch (error) {
+    //   setServerResponse({ status: "ERROR", message: "সাবমিশনে ব্যর্থ হয়েছে।" });
+    // } finally {
+    //   setSubmitting(false);
+    // }
+    const updateApplicationData = {
+          id: decodeId(selectedApplication.id),
+          status: WORKFORCE_STATUS.SECOND_FORWARD,
+        };
+        dispatch(
+          updateApplication(
+            updateApplicationData,
+            `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`,
+          ),
+        );
   };
 
   return (
