@@ -426,6 +426,17 @@ const MedicalDonationForm = ({
       ),
     },
     {
+      label: "workforce.application.steps.account.info",
+      content: (
+        <EmployeeAccountInfoForm
+          handleChange={(key, value) =>
+            handleChange(key, value, "employeeBankInfo")
+          }
+          formData={formData.employeeBankInfo}
+        />
+      ),
+    },
+    {
       label: "workforce.application.steps.upload.documents",
       content: (
         <EmployeeDetailsForm2
@@ -450,18 +461,6 @@ const MedicalDonationForm = ({
           },
         ]
       : []),
-
-    {
-      label: "workforce.application.steps.account.info",
-      content: (
-        <EmployeeAccountInfoForm
-          handleChange={(key, value) =>
-            handleChange(key, value, "employeeBankInfo")
-          }
-          formData={formData.employeeBankInfo}
-        />
-      ),
-    },
   ];
 
   console.log({ tazwer: formData });

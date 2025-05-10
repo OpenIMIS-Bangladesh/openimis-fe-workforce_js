@@ -423,6 +423,17 @@ const MedicalAssistanceForm = ({
       ),
     },
     {
+      label: "workforce.application.steps.account.info",
+      content: (
+        <EmployeeAccountInfoForm
+          handleChange={(key, value) =>
+            handleChange(key, value, "employeeBankInfo")
+          }
+          formData={formData.employeeBankInfo}
+        />
+      ),
+    },
+    {
       label: "workforce.application.steps.accident.info",
       content: (
         <EmployeeAccidentInfoForm
@@ -459,17 +470,6 @@ const MedicalAssistanceForm = ({
         ]
       : []),
 
-    {
-      label: "workforce.application.steps.account.info",
-      content: (
-        <EmployeeAccountInfoForm
-          handleChange={(key, value) =>
-            handleChange(key, value, "employeeBankInfo")
-          }
-          formData={formData.employeeBankInfo}
-        />
-      ),
-    },
   ];
 
   console.log({ tazwer: formData });
