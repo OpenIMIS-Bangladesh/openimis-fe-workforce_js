@@ -367,6 +367,8 @@
     "workforce.application.steps.skip":"Skip",
     "workforce.application.steps.dependentAdd":"Dependent Add",
     "workforce.application.steps.reasonsforSeekingFinancialAssistance":"Reasons for seeking financial assistance",
+    "workforce.application.steps.previousGrantInfo":"Previous Donation Info",
+    "workforce.application.steps.otherInfo":"Other Info",
     "workforce.application.reasons.addComment": "মন্তব্য যোগ করুন",
     "workforce.application.reasons.selectedOfficer": "বাছাইকৃত কর্মকর্তা:",
 
@@ -461,8 +463,17 @@
     "workforce.application.header.document": "Documents Upload Form",
     "workforce.application.header.dependent": "Dependent Form",
     "workforce.application.header.account": "Account Info Form",
+    "workforce.application.header.previousGrant": "Previous Grant Info Form",
+    "workforce.application.header.other": "Other Info Form",
     "workforce.child.name.bn": "Name (Bangla)",
     "workforce.child.name.en": "Name (English)",
+    "workforce.application.dateofReceipt": "Date of Receipt",
+    "workforce.application.grantAmount": "Amount Received",
+    "workforce.application.reasonforReceipt": "Reason for Receipt",
+    "workforce.application.otherInfo": "Other Info (If Have)",
+    "workforce.application.nidVerify": "Verify Your NID Card",
+
+    
 
     "workforce.office.dol":"DOL",
     "workforce.office.dife":"DIFE",
