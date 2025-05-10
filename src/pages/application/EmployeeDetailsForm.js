@@ -78,30 +78,6 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
               {/*  />*/}
               {/*</Grid>*/}
               <Grid item xs={6} className={classes.item}>
-                <PublishedComponent
-                  pubRef="core.DatePicker"
-                  label={"workforce.employee.birthdate"}
-                  value={formData?.workforceEmployee.birthDate || ""}
-                  onChange={(v) => handleChange("birthDate", v)}
-                  readOnly={false}
-                />
-              </Grid>
-
-              <Grid item xs={6} className={classes.item}>
-                <EmployeeGenderPicker
-                  value={formData?.workforceEmployee?.gender}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.gender"
-                      module="workforce"
-                    />
-                  }
-                  onChange={(v) => handleChange("gender", v)}
-                  readOnly={false}
-                />
-              </Grid>
-
-              <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.name.bn"
                   value={formData?.workforceEmployee.nameBn || ""}
@@ -118,35 +94,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   required
                   readOnly={false}
                 />
-              </Grid>
-              {/* <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.employee.last.name.en"
-                  value={formData?.workforceEmployee.lastNameEn || ""}
-                  onChange={(v) => handleChange("lastNameEn", v)}
-                  required
-                  readOnly={false}
-                />
-              </Grid> */}
-              {/* <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.employee.last.name.bn"
-                  value={formData?.workforceEmployee.lastNameBn || ""}
-                  onChange={(v) => handleChange("lastNameBn", v)}
-                  required
-                  readOnly={false}
-                />
-              </Grid> */}
-              {/* <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.employee.other.name"
-                  value={formData?.workforceEmployee.otherName || ""}
-                  onChange={(v) => handleChange("otherName", v)}
-                  required
-                  readOnly={false}
-                />
-              </Grid> */}
-
+              </Grid>           
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.fathers_name.en"
@@ -197,7 +145,29 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   readOnly={false}
                 />
               </Grid>
-            
+              <Grid item xs={6} className={classes.item}>
+                <PublishedComponent
+                  pubRef="core.DatePicker"
+                  label={"workforce.employee.birthdate"}
+                  value={formData?.workforceEmployee.birthDate || ""}
+                  onChange={(v) => handleChange("birthDate", v)}
+                  readOnly={false}
+                />
+              </Grid>
+
+              <Grid item xs={6} className={classes.item}>
+                <EmployeeGenderPicker
+                  value={formData?.workforceEmployee?.gender}
+                  label={
+                    <FormattedMessage
+                      id="workforce.employee.gender"
+                      module="workforce"
+                    />
+                  }
+                  onChange={(v) => handleChange("gender", v)}
+                  readOnly={false}
+                />
+              </Grid>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.phone"
