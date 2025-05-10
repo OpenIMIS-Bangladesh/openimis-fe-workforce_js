@@ -59,8 +59,8 @@ const OtherInfoForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={12} className={classes.item}>
                 <TextInput
                   label="workforce.application.otherInfo"
-                  // value={formData.otherInfo || ""}
-                  onChange={(v) => handleChange("otherInfo", v)}
+                  value={formData.otherInfo || ""}
+                  onChange={(v) => handleChange("otherInfo", v,"otherInfo")}
                   readOnly={false}
                   
                 />
