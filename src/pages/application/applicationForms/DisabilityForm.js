@@ -57,9 +57,9 @@ const steps = [
   "workforce.application.steps.aidReason",
   "workforce.application.steps.employeeDetails",
   "workforce.application.steps.location",
+  "workforce.application.steps.account.info",
   "workforce.application.steps.accident.info",
   "workforce.application.steps.upload.documents",
-  "workforce.application.steps.account.info",
 ];
 
 const DisabilityForm = ({
