@@ -484,7 +484,7 @@ const FinancialAssistanceForm = ({
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>
-        <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper activeStep={activeStep} alternativeLabel style={{padding:"0px"}}>
           {steps.map((label) => (
             <Step key={label}>
               <StepLabel>

@@ -42,6 +42,7 @@ import {
   ROUTE_WORKFORCE_APPLICATIONS_PROCESS,
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS,
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY,
+  ROUTE_HOME,
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -96,6 +97,7 @@ const DEFAULT_CONFIG = {
   reducers: [{ key: "workforce", reducer }],
 
   refs: [
+    { key: "route.home", ref: ROUTE_HOME },
     { key: "workforce.route.organizations", ref: ROUTE_WORKFORCE_ORGANIZATIONS },
     { key: "workforce.route.organizations.organization", ref: ROUTE_WORKFORCE_ORGANIZATIONS_ORGANIZATION },
 

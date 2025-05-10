@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto", // Centers the Paper component
   },
   paper: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     width: "100%",
   },
   buttonContainer: {
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   backButtonContainer: {
     display: "flex",
     alignItems: "center",
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(0.5),
   },
   backText: {
     marginLeft: theme.spacing(1),
