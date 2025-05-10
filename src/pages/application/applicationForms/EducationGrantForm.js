@@ -120,9 +120,21 @@ const MedicalAssistanceForm = ({
       presentAddress: "",
       organizationId: "",
     },
-    employeeChildrenInfo:{},
-    previousGrantInfo:{},
-    otherInfo:{},
+    employeeChildrenInfo:{
+      nameEn:"",
+      nameBn:"",
+      birthDate:"",
+      educationInstituteName:"",
+      studyingClass:"",
+      result:"",
+      nid:"",
+    },
+    previousGrantInfo:{
+      dateofReceipt:"",
+      grantAmount:"",
+      reasonforReceipt:"",
+    },
+    otherInfo:"",
     company: null,
     factory: null,
     isSubmitted: "no",
@@ -437,7 +449,7 @@ const MedicalAssistanceForm = ({
           handleChange={(key, value) =>
             handleChange(key, value, "employeeChildrenInfo")
           }
-          formData={formData}
+          formData={formData.employeeChildrenInfo}
         />
       ),
     },
@@ -484,7 +496,7 @@ const MedicalAssistanceForm = ({
             handleChange={(key, value) =>
               handleChange(key, value, "previousGrantInfo")
             }
-            formData={formData}
+            formData={formData.previousGrantInfo}
           />
         ),
       },
@@ -495,7 +507,7 @@ const MedicalAssistanceForm = ({
             handleChange={(key, value) =>
               handleChange(key, value, "otherInfo")
             }
-            formData={formData}
+            formData={formData.otherInfo}
           />
         ),
       },

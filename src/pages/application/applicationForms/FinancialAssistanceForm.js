@@ -68,8 +68,8 @@ const steps = [
   "workforce.application.steps.employeeDetails",
   "workforce.application.steps.deathLabourDetails",
   "workforce.application.steps.location",
+    "workforce.application.steps.account.info",
   "workforce.application.steps.upload.documents",
-  "workforce.application.steps.account.info",
 ];
 
 const FinancialAssistanceForm = ({

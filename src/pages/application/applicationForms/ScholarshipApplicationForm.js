@@ -449,6 +449,19 @@ const ScholarshipApplicationForm = ({
       ),
     },
     {
+      label: "workforce.application.steps.account.info",
+      content: (
+        <Box mt={0}>
+          <EmployeeAccountInfoForm
+            handleChange={(key, value) =>
+              handleChange(key, value, "employeeBankInfo")
+            }
+            formData={formData.employeeBankInfo}
+          />
+        </Box>
+      ),
+    },
+    {
       label: "workforce.application.steps.childInfo",
       content: (
         <Box mt={0}>
@@ -491,20 +504,6 @@ const ScholarshipApplicationForm = ({
           },
         ]
       : []),
-
-    {
-      label: "workforce.application.steps.account.info",
-      content: (
-        <Box mt={0}>
-          <EmployeeAccountInfoForm
-            handleChange={(key, value) =>
-              handleChange(key, value, "employeeBankInfo")
-            }
-            formData={formData.employeeBankInfo}
-          />
-        </Box>
-      ),
-    },
   ];
 
   if (showPreview) {

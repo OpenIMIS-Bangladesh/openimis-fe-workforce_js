@@ -60,8 +60,8 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData }) => {
                 <PublishedComponent
                   pubRef="core.DatePicker"
                   label={"workforce.application.dateofReceipt"}
-                  // value={formData.dateofReceipt || ""}
-                  onChange={(v) => handleChange("dateofReceipt", v)}
+                  value={formData.dateofReceipt || ""}
+                  onChange={(v) => handleChange("dateofReceipt", v,"previousGrantInfo")}
                   readOnly={false}
                   
                 />
@@ -70,8 +70,8 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.application.grantAmount"
-                  // value={formData.grantAmount || ""}
-                  onChange={(v) => handleChange("grantAmount", v)}
+                  value={formData.grantAmount || ""}
+                  onChange={(v) => handleChange("grantAmount", v,"previousGrantInfo")}
                   readOnly={false}
                   
                 />
@@ -79,8 +79,8 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={12} className={classes.item}>
                 <TextInput
                   label="workforce.application.reasonforReceipt"
-                  // value={formData.reasonforReceipt || ""}
-                  onChange={(v) => handleChange("reasonforReceipt", v)}
+                  value={formData.reasonforReceipt || ""}
+                  onChange={(v) => handleChange("reasonforReceipt", v,"previousGrantInfo")}
                   readOnly={false}
                   
                 />
