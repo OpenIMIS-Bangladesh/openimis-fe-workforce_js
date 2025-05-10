@@ -7,12 +7,22 @@ import {
   Grid,
   Divider,
   Paper,
-  FormControl, FormControlLabel, Radio, RadioGroup,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
 } from "@material-ui/core";
+import {
+  useModulesManager,
+  formatMutation,
+  decodeId,
+  FormattedMessage,
+} from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
-import { FormattedMessage } from "@openimis/fe-core";
 import DistrictOfficePicker from "../../pickers/DistrictOfficePicker";
-import DivisionOfficePicker from "../../pickers/DivisionOfficePicker";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchApplication, updateApplication } from "../../actions";
+import { WORKFORCE_STATUS } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -61,10 +71,13 @@ const ForwardApplicationAdminModal = ({
   onSubmitForward,
 }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
+  
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
-  const [officeType,setOfficeType] = useState('')
+  const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
 
   useEffect(() => {
@@ -75,6 +88,14 @@ const ForwardApplicationAdminModal = ({
       setFormData(null);
     }
   }, [open]);
+
+  useEffect(() => {
+      return dispatch(fetchApplication(modulesManager, []));
+    }, []);
+
+  const data = useSelector(
+      (state) => state.workforce[`application`] ?? []
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,6 +122,21 @@ const ForwardApplicationAdminModal = ({
     // onSelect(selectedApplicationType, value); // Pass both selections
   };
 
+  const handleForward = () => {
+    const updateApplicationData = {
+      id: decodeId(selectedApplication.id),
+      status: WORKFORCE_STATUS.FIRST_FORWARD,
+    };
+    dispatch(
+      updateApplication(
+        updateApplicationData,
+        `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`
+      )
+    );
+  };
+
+  console.log({ aha: data });
+
   return (
     <Modal open={open} onClose={onClose}>
       <form className={classes.modalContainer} onSubmit={handleSubmit}>
@@ -110,13 +146,25 @@ const ForwardApplicationAdminModal = ({
         </Button>
 
         {/* Title */}
-        <Typography variant="h5" gutterBottom style={{fontWeight:"bold",marginTop:3,textAlign:"center"}}>
+        <Typography
+          variant="h5"
+          gutterBottom
+          style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
+        >
           বিভাগীয় বা জেলা অফিসে পাঠান
         </Typography>
 
-        <Typography variant="body1" color="textSecondary" gutterBottom style={{fontWeight:600,marginTop:3,textAlign:"center"}}>
+        <Typography
+          variant="body1"
+          color="textSecondary"
+          gutterBottom
+          style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}
+        >
           {selectedApplication
-            ? `${selectedApplication.workforceEmployee?.firstNameBn || "আবেদনকারী"} এর আবেদন ফরওয়ার্ড করতে চান?`
+            ? `${
+                selectedApplication.workforceEmployee?.firstNameBn ||
+                "আবেদনকারী"
+              } এর আবেদন ফরওয়ার্ড করতে চান?`
             : "একটি আবেদন বেছে নিন।"}
         </Typography>
 
@@ -128,7 +176,8 @@ const ForwardApplicationAdminModal = ({
               color: serverResponse.status === "SUCCESS" ? "green" : "red",
             }}
           >
-            {serverResponse.status === "SUCCESS" ? "✅" : "⚠️"} {serverResponse.message}
+            {serverResponse.status === "SUCCESS" ? "✅" : "⚠️"}{" "}
+            {serverResponse.message}
           </Typography>
         )}
 
@@ -136,18 +185,48 @@ const ForwardApplicationAdminModal = ({
 
         {/* Form Fields */}
         <Paper className={classes.sectionPaper} elevation={1}>
-            <FormControl component="fieldset" className={classes.formSection}>
-                {/* New Export-Oriented Company Question */}
-                <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
-                    {<FormattedMessage id="workforce.office.type" module="workforce"/>}
-                </Typography>
-                <RadioGroup value={officeType} onChange={handleApplicationReason}>
-                    <FormControlLabel value="partial" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.office.dol" module="workforce"/>} />
-                    <FormControlLabel value="permanent" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.office.dife" module="workforce"/>} />
-                </RadioGroup>
-            </FormControl>
+          <FormControl component="fieldset" className={classes.formSection}>
+            {/* New Export-Oriented Company Question */}
+            <Typography
+              variant="body1"
+              className={`${classes.title} ${classes.section}`}
+            >
+              {
+                <FormattedMessage
+                  id="workforce.office.type"
+                  module="workforce"
+                />
+              }
+            </Typography>
+            <RadioGroup value={officeType} onChange={handleApplicationReason}>
+              <FormControlLabel
+                value="partial"
+                control={<Radio color="primary" />}
+                label={
+                  <FormattedMessage
+                    id="workforce.office.dol"
+                    module="workforce"
+                  />
+                }
+              />
+              <FormControlLabel
+                value="permanent"
+                control={<Radio color="primary" />}
+                label={
+                  <FormattedMessage
+                    id="workforce.office.dife"
+                    module="workforce"
+                  />
+                }
+              />
+            </RadioGroup>
+          </FormControl>
 
-          <Typography variant="subtitle1" gutterBottom style={{fontWeight:"bold",marginTop:3,textAlign:"center"}}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
+          >
             অফিস নির্বাচন
           </Typography>
 
@@ -165,7 +244,6 @@ const ForwardApplicationAdminModal = ({
                 onChange={(v) => setFormData(v)}
               />
             </Grid>
-
           </Grid>
         </Paper>
 
@@ -179,6 +257,7 @@ const ForwardApplicationAdminModal = ({
             variant="contained"
             color="primary"
             disabled={submitting}
+            onClick={handleForward}
           >
             {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"}
           </Button>

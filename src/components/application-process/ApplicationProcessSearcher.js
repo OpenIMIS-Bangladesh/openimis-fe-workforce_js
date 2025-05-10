@@ -422,17 +422,17 @@ class ApplicationProcessSearcher extends Component {
         />
         {isEmptyObject(userRights)? (
           <ForwardApplicationModal
-            open={this.state.forwardModalOpen}
+            open={forwardModalOpen}
             onClose={this.handleCloseForwardModal}
-            selectedApplication={this.state.selectedApplication}
+            selectedApplication={selectedApplication}
             officeData={this.state.officeData}
             onSubmitForward={this.handleForwardSubmit}
           />
         ):(
           <ForwardApplicationAdminModal
-            open={this.state.forwardModalOpen}
+            open={forwardModalOpen}
             onClose={this.handleCloseForwardModal}
-            selectedApplication={this.state.selectedApplication}
+            selectedApplication={selectedApplication}
             officeData={this.state.officeData}
             onSubmitForward={this.handleForwardSubmit}
           />

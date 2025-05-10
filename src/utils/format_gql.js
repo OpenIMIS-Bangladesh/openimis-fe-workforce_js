@@ -195,16 +195,16 @@ export function formatWorkforceEmployeeGQL(employee) {
 export function formatApplicationeGQL(application) {
   return `
   ${application?.id ? `id: "${(application?.id)}"` : ""}
-  ${application.workforceEmployeeId ? `workforceEmployeeId: "${(application.workforceEmployeeId)}"` : ""}
-  ${application.organizationId ? `organizationId: "${decodeId(application.organizationId.id)}"` : ""}
-  ${application.organizationType ? `organizationType: "${formatGQLString(application.organizationType)}"` : ""}
-  ${application.applicationType ? `applicationType: "${formatGQLString(application.applicationType)}"` : ""}
-  ${application.status ? `status: "${WORKFORCE_STATUS.ACTIVE}"` : ""}
-  ${application.employeeDependentInfo ? `employeeDependentInfo: ${escapeQuotes(application.employeeDependentInfo)}` : ""}
-  ${application.employeeBankInfo ? `employeeBankInfo: ${escapeQuotes(application.employeeBankInfo)}` : ""}
-  ${application.employeeAccidentInfo ? `employeeAccidentInfo: ${escapeQuotes(application.employeeAccidentInfo)}` : ""}
-  ${application.employeeDesignationInfo ? `employeeDesignationInfo: ${escapeQuotes(application.employeeDesignationInfo)}` : ""}
-  ${application.isSubmitted ? `isSubmitted: "${(application.isSubmitted)}"` : ""}
+  ${application?.workforceEmployeeId ? `workforceEmployeeId: "${(application?.workforceEmployeeId)}"` : ""}
+  ${application?.organizationId ? `organizationId: "${decodeId(application?.organizationId?.id)}"` : ""}
+  ${application?.organizationType ? `organizationType: "${formatGQLString(application?.organizationType)}"` : ""}
+  ${application?.applicationType ? `applicationType: "${formatGQLString(application?.applicationType)}"` : ""}
+  ${application?.status ? `status: "${application?.status}"` : ""}
+  ${application?.employeeDependentInfo ? `employeeDependentInfo: ${escapeQuotes(application?.employeeDependentInfo)}` : ""}
+  ${application?.employeeBankInfo ? `employeeBankInfo: ${escapeQuotes(application?.employeeBankInfo)}` : ""}
+  ${application?.employeeAccidentInfo ? `employeeAccidentInfo: ${escapeQuotes(application?.employeeAccidentInfo)}` : ""}
+  ${application?.employeeDesignationInfo ? `employeeDesignationInfo: ${escapeQuotes(application?.employeeDesignationInfo)}` : ""}
+  ${application?.isSubmitted ? `isSubmitted: "${(application?.isSubmitted)}"` : ""}
 `;
 }
 ///beneficiary registration   ////

@@ -48,6 +48,7 @@ export const WORKFORCE_STATUS = {
   DISABLED: "disabled",
   REASSIGNED: "reassigned",
   RESIGNED: "resigned",
+  FIRST_FORWARD:"first_forward"
 };
 
 export const WORKFORCE_USER_TYPE = {
