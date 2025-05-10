@@ -286,7 +286,27 @@ const MultiStepApplyForm = ({ modulesManager }) => {
             />
             )}
           </>
-        ) : (
+        ) : selectedApplicationType === "deadlyGrant"?(
+          <>
+           <div className={classes.backButtonContainer}>
+              <IconButton onClick={handleBack} color="primary">
+                <ArrowBackIcon />
+              </IconButton>
+              <Typography variant="body1" className={classes.backText}>
+                {/* Back to Application Type */}
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
+              </Typography>
+            </div>
+            <DisabilityForm
+              modulesManager={modulesManager}
+              organizationType={organizationType}
+              selectedApplicationType={selectedApplicationType}
+              applicationForSelf={applicationForSelf}
+              selectedCompany={selectedCompany}
+              selectedFactory={selectedFactory}
+            />
+          </>
+        ): (
           <div>Please select an application type</div>
         )}
       </Paper>

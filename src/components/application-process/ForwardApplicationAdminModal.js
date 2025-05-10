@@ -248,7 +248,7 @@ const ForwardApplicationAdminModal = ({
           </FormControl>
 
           {officeType && (
-            <Grid container spacing={3}>
+            <Grid container spacing={3} style={{marginTop:3}}>
               <Typography
                 variant="subtitle1"
                 gutterBottom
