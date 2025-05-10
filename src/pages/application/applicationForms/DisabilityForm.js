@@ -489,6 +489,16 @@ const DisabilityForm = ({
           </Box>
         ) : activeStep === 3 ? (
           <Box mt={0}>
+            <EmployeeAccountInfoForm
+              handleChange={(key, value) =>
+                handleChange(key, value, "employeeBankInfo")
+              }
+              formData={formData.employeeBankInfo}
+            />
+            
+          </Box>
+        ) : activeStep === 4 ? (
+          <Box mt={0}>
             <EmployeeAccidentInfoForm
               handleChange={(key, value) =>
                 handleChange(key, value, "employeeAccidentInfo")
@@ -496,21 +506,12 @@ const DisabilityForm = ({
               formData={formData}
             />
           </Box>
-        ) : activeStep === 4 ? (
+        ) : (
           <Box mt={0}>
             <EmployeeDetailsForm2
               selectedApplicationType={selectedApplicationType}
               handleChange={handleChange}
               formData={formData}
-            />
-          </Box>
-        ) : (
-          <Box mt={0}>
-            <EmployeeAccountInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeBankInfo")
-              }
-              formData={formData.employeeBankInfo}
             />
           </Box>
         )}
