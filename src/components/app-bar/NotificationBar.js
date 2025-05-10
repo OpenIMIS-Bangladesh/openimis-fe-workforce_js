@@ -6,6 +6,8 @@ import RestorePageIcon from '@material-ui/icons/RestorePage';
 import HourglassEmptyIcon from "@material-ui/icons/HourglassEmpty";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
+import { getUserType } from "../../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../../constants";
 
 const styles = (theme) => ({
   root: {
@@ -34,6 +36,12 @@ const NotificationBar = ({ classes }) => {
         verified: 20,
         checked: 4,
       }
+      const user_type = getUserType();
+
+  if (user_type === WORKFORCE_USER_TYPE.APPLICANT) {
+    return ( <></>)
+  }
+
   return (
     <Box className={classes.root}>
       {/* Pending */}

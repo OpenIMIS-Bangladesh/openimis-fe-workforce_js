@@ -32,6 +32,7 @@ import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutline
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import ApplicantApplicationProcessSearcher from "../../components/application-process/ApplicantApplicationProcessSearcher";
 import MultiStepApplyForm from "../application/MultiStepApplyForm";
+import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -139,7 +140,7 @@ const FiledApplications = () =>{
     {/* Table */}
    <Card className={classes.tableContainer}>
        <CardContent>
-             <ApplicantApplicationProcessSearcher
+             <ApplicationProcessSearcher
                      
               />
             </CardContent>

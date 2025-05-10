@@ -23,7 +23,6 @@ import {
   WORKFORCE_USER_TYPE,
 } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
 import PreviewDetails from "../../components/application-forms/PreviewDetails";
 import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 import ForwardApplicationAdminModal from "../../components/application-process/ForwardApplicationAdminModal";

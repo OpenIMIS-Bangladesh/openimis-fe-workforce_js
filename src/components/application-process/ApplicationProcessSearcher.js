@@ -254,6 +254,15 @@ class ApplicationProcessSearcher extends Component {
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
+  headerApplicant = () => [
+    "workforce.employee.name.en",
+    "workforce.employee.application.applicationType",
+    "workforce.employee.application.factoryName",
+    "workforce.employee.application.applicationDate",
+    "workforce.employee.application.status",
+    this.isShowHistory() ? "workforce.version" : "",
+  ];
+
   sorts = () => [];
 
   itemFormatters = () => {
@@ -350,6 +359,40 @@ class ApplicationProcessSearcher extends Component {
     return formatters;
   };
 
+  itemFormattersApplicant = () => {
+    const formatters = [
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => application.applicationType,
+      (application) => "Akij",
+      (application) => application.status,
+      (application) => application.dateCreated.split("T")[0],
+      this.isShowHistory() ? application?.version : null,
+    ];
+
+    formatters.push((application) => (
+      <div className={this.props.classes.horizontalButtonContainer}>
+        <Tooltip title="দেখুন">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.process.view",
+                [decodeId(application.id)],
+                false,
+              );
+            }}
+          >
+            <TabIcon />
+          </IconButton>
+        </Tooltip>
+
+      </div>
+    ));
+    return formatters;
+  };
+
   rowDisabled = (selection, i) => !!i.validityTo;
 
   rowLocked = (selection, i) => !!i.clientMutationId;
@@ -392,7 +435,7 @@ class ApplicationProcessSearcher extends Component {
         <Searcher
           module={MODULE_NAME}
           cacheFiltersKey={cacheFiltersKey}
-          FilterPane={filterPane}
+          FilterPane={getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT ?null :filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
           items={applications}
           itemsPageInfo={applicationsPageInfo}
@@ -411,8 +454,8 @@ class ApplicationProcessSearcher extends Component {
           rowIdentifier={this.rowIdentifier}
           filtersToQueryParams={this.filtersToQueryParams}
           defaultOrderBy="-dateCreated"
-          headers={this.headers}
-          itemFormatters={this.itemFormatters}
+          headers={ getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT ? this.headerApplicant : this.headers}
+          itemFormatters={ getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT ? this.itemFormattersApplicant:this.itemFormatters}
           sorts={this.sorts}
           rowDisabled={this.rowDisabled}
           rowLocked={this.rowLocked}
@@ -437,17 +480,6 @@ class ApplicationProcessSearcher extends Component {
           />
         )}
 
-        <div style={{ margin: "16px", fontWeight: "bold" }}>
-          <FormattedMessage
-            module="workforce"
-            id="workforce.employee.application.totalAmount"
-          />{" "}
-          xxxxxx{" "}
-          <FormattedMessage
-            module="workforce"
-            id="workforce.employee.application.tk"
-          />
-        </div>
       </>
     );
   }

@@ -96,7 +96,7 @@ const DashboardPage = () => {
 
   return (
     <div style={{ padding: theme.spacing(3) }}>
-      <Grid container spacing={2} style={{ marginBottom: theme.spacing(1) }}>
+      {/* <Grid container spacing={2} style={{ marginBottom: theme.spacing(1) }}>
         <Grid item xs={12}>
           <Card
             style={{ ...cardStyle, backgroundColor: COLORS[7],display:"flex",flexWrap:"wrap" }}
@@ -120,10 +120,50 @@ const DashboardPage = () => {
 
           </Card>
         </Grid>
-      </Grid>
+      </Grid> */}
 
-      {/* Stats Cards */}
-      <Grid container spacing={2}>
+      
+      {/* <Grid container spacing={2}>
+        {[
+          { title: "Total Dependent", count: 74, male: 31, female: 43 },
+          { title: "Total Injured Worker", count: 19, male: 18, female: 1 },
+          { title: "Total Deceased Worker", count: 28, male: 24, female: 4 },
+        ].map((item, index) => (
+          <Grid item xs={12} sm={4} key={index}>
+            <Card style={{ ...cardStyle, backgroundColor: COLORS[index] }}>
+              <CardContent>
+                <Typography variant="subtitle1">{item.title} - {item.count} (Male: {item.male} | Female: {item.female}) </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid> */}
+
+      {/* More Info Cards */}
+      <Grid container spacing={2} style={{ marginTop: theme.spacing(1) }}>
+        <Grid item xs={12} sm={4}>
+          <Card
+            style={{ ...cardStyle, backgroundColor: COLORS[7],display:"flex",flexWrap:"wrap" }}
+            onClick={() => history.push("workforce/applications/process")}
+          >
+           <CardContent>
+           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+            <Typography variant="subtitle1" style={{ marginRight: 16 }}>
+              Status -
+            </Typography>
+
+            <div style={{ display: 'flex', gap: '32px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <StyledBadge badgeContent={10} color="secondary"><span>Pending</span></StyledBadge>
+              <StyledBadge badgeContent={2} color="error"><span>Rejected</span></StyledBadge>
+              <StyledBadge badgeContent={20} color="primary"><span>Verified</span></StyledBadge>
+              <StyledBadge badgeContent={30} color="info"><span>On Process</span></StyledBadge>
+            </div>
+          </div>
+
+          </CardContent>
+
+          </Card>
+        </Grid>
         {[
           { title: "Total Dependent", count: 74, male: 31, female: 43 },
           { title: "Total Injured Worker", count: 19, male: 18, female: 1 },
@@ -141,11 +181,7 @@ const DashboardPage = () => {
             </Card>
           </Grid>
         ))}
-      </Grid>
-
-      {/* More Info Cards */}
-      <Grid container spacing={2} style={{ marginTop: theme.spacing(1) }}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={4}>
           <Card style={{ ...cardStyle, backgroundColor: COLORS[5] }}>
             <CardContent>
               <Typography variant="subtitle1">Total Benefit Amount - 55185000Tk</Typography>
@@ -153,17 +189,17 @@ const DashboardPage = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={4}>
           <Card style={{ ...cardStyle, backgroundColor: COLORS[6] }}>
             <CardContent>
               <Typography variant="subtitle1">
-                Monthly Total Benefit Amount - 0.00TK (Disability Case: 0 | Deceased Case: 0)
+                Monthly Total Benefit Amount - 0.00TK (Disability Case: 0 | Deceased Case: 0 | Highest: 0.00 | Lowest: 0.00)
               </Typography>
               {/* <Typography variant="body2">TK: 0.00</Typography>
               <Typography variant="body2">Disability Case: 0</Typography> */}
-              <Typography variant="body2">
+              {/* <Typography variant="body2">
                 Highest: 0.00 | Lowest: 0.00
-              </Typography>
+              </Typography> */}
               {/* <Typography variant="body2">Deceased Case: 0</Typography> */}
             </CardContent>
           </Card>
