@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations, Autocomplete } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchCompaniesPick, fetchDistrictOfficePick, fetchDivisionOfficePick } from "../actions";
+import { fetchEmployeePick } from "../actions";
 
-const DivisionOfficePicker = ({
+const EmployeePicker = ({
   modulesManager,
   onChange,
   readOnly,
@@ -23,17 +23,17 @@ const DivisionOfficePicker = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    return dispatch(fetchDivisionOfficePick(modulesManager, []));
+    return dispatch(fetchEmployeePick(modulesManager, []));
   }, []);
 
   const isLoading = useSelector(
-    (state) => state.workforce[`fetchingDivisionOfficePick`]
+    (state) => state.workforce[`fetchingEmployeePick`]
   );
   const data = useSelector(
-    (state) => state.workforce[`districtOfficePick`] ?? []
+    (state) => state.workforce[`employeePick`] ?? []
   );
   const error = useSelector(
-    (state) => state.workforce["errorDivisionOfficePick"]
+    (state) => state.workforce["errorEmployeePick"]
   );
   const selectedOption = useMemo(
       () => data.find((option) => option.id === value) || null,
@@ -62,4 +62,4 @@ const DivisionOfficePicker = ({
   );
 };
 
-export default DivisionOfficePicker;
+export default EmployeePicker;

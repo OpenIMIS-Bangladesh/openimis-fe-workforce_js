@@ -155,10 +155,10 @@ function reducer(
     fetchedDistrictOfficePick: false,
     districtOfficePick: [],
 
-    fetchingDivisionOfficePick: false,
-    errorDivisionOfficePick: null,
-    fetchedDivisionOfficePick: false,
-    divisionOfficePick: [],
+    fetchingEmployeePick: false,
+    errorEmployeePick: null,
+    fetchedEmployeePick: false,
+    employeePick: [],
 
     ///workforce employee states
     fetchingWorkforceEmployees: false,
@@ -1132,26 +1132,26 @@ function reducer(
         errorDistrictOfficePick: formatGraphQLError(action.payload),
       };
 
-    case "WORKFORCE_DIVISION_OFFICE_PICKER_REQ":
+    case "WORKFORCE_EMPLOYEE_PICKER_REQ":
       return {
         ...state,
-        fetchingDivisionOfficePick: true,
-        fetchedDivisionOfficePick: false,
-        divisionOfficePick: [],
-        errorDivisionOfficePick: null,
+        fetchingEmployeePick: true,
+        fetchedEmployeePick: false,
+        employeePick: [],
+        errorEmployeePick: null,
       };
-    case "WORKFORCE_DIVISION_OFFICE_PICKER_RESP":
+    case "WORKFORCE_EMPLOYEE_PICKER_RESP":
       return {
         ...state,
-        fetchingDivisionOfficePick: false,
-        fetchedDivisionOfficePick: true,
-        divisionOfficePick: parseData(
+        fetchingEmployeePick: false,
+        fetchedEmployeePick: true,
+        employeePick: parseData(
           action.payload.data.workforceEmployers
         ).map((workforceCompany) => ({
           ...workforceCompany,
           id: decodeId(workforceCompany.id),
         })),
-        errorDivisionOfficePick: formatGraphQLError(action.payload),
+        errorEmployeePick: formatGraphQLError(action.payload),
       };
 
     // end workforce company

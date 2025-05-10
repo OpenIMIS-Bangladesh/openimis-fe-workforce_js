@@ -333,14 +333,14 @@ export function fetchDistrictOfficePick(mm, filters) {
   return graphql(payload, "WORKFORCE_DISTRICT_OFFICE_PICKER");
 }
 
-export function fetchDivisionOfficePick(filters) {
+export function fetchEmployeePick(filters) {
   const projections = ["id", "nameEn", "nameBn"];
   const payload = formatPageQueryWithCount(
     "workforceEmployers",
     filters,
     projections,
   );
-  return graphql(payload, "WORKFORCE_DISTRICT_OFFICE_PICKER");
+  return graphql(payload, "WORKFORCE_EMPLOYEE_PICKER");
 }
 
 export function fetchOfficesPick(filters) {

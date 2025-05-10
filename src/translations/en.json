@@ -64,6 +64,7 @@
     "workforce.organization.unit.picker": "Unit",
     "workforce.employee.relation.picker": "Relation type",
     "workforce.officeType.selector.picker": "Select Office",
+    "workforce.EmployeeType.selector.picker": "Select Employee",
 
     "workforce.representative.details": "Representative Details",
     "workforce.representative.name.en": "Representative Name En",
