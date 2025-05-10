@@ -65,21 +65,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ForwardApplicationAdminModal = ({
-  open,
-  onClose,
-  selectedApplication,
-  onSubmitForward,
-}) => {
+                                        open,
+                                        onClose,
+                                        selectedApplication,
+                                        onSubmitForward,
+                                      }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
-  
+
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
-
   useEffect(() => {
     if (!open) {
       setEditorContent("");
@@ -87,14 +86,13 @@ const ForwardApplicationAdminModal = ({
       setServerResponse(null);
       setFormData(null);
     }
+    if(selectedApplication){
+      return dispatch(fetchApplication(modulesManager, [`id: "${decodeId(selectedApplication?.id)}"`]));
+    }
   }, [open]);
 
-  useEffect(() => {
-      return dispatch(fetchApplication(modulesManager, []));
-    }, []);
-
   const data = useSelector(
-      (state) => state.workforce[`application`] ?? []
+    (state) => state.workforce[`application`] ?? [],
   );
 
   const handleSubmit = async (e) => {
@@ -130,8 +128,8 @@ const ForwardApplicationAdminModal = ({
     dispatch(
       updateApplication(
         updateApplicationData,
-        `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`
-      )
+        `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`,
+      ),
     );
   };
 
@@ -162,9 +160,9 @@ const ForwardApplicationAdminModal = ({
         >
           {selectedApplication
             ? `${
-                selectedApplication.workforceEmployee?.firstNameBn ||
-                "আবেদনকারী"
-              } এর আবেদন ফরওয়ার্ড করতে চান?`
+              selectedApplication.workforceEmployee?.firstNameBn ||
+              "আবেদনকারী"
+            } এর আবেদন ফরওয়ার্ড করতে চান?`
             : "একটি আবেদন বেছে নিন।"}
         </Typography>
 

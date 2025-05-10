@@ -42,7 +42,7 @@ import UndoIcon from "@material-ui/icons/Undo";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import FileUploader from "../../pickers/FileUploader";
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from "@material-ui/icons/Close";
 import ForwardApplicationModal from "./ForwardApplicationModal";
 import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 import ForwardApplicationAdminModal from "./ForwardApplicationAdminModal";
@@ -167,7 +167,7 @@ class ApplicationProcessSearcher extends Component {
     const selectedOffice = event.target.value;
     this.setState({
       selectedOffice,
-      selectedSuboffice: "", 
+      selectedSuboffice: "",
       selectedUser: "",
     });
   };
@@ -182,7 +182,7 @@ class ApplicationProcessSearcher extends Component {
 
   handleReject = () => {
     const { selectedApplication } = this.state;
-    if (window.confirm('Are you sure you want to reject this application?')) {
+    if (window.confirm("Are you sure you want to reject this application?")) {
       this.setState({
         selectedApplication: {
           ...selectedApplication,
@@ -192,8 +192,8 @@ class ApplicationProcessSearcher extends Component {
     }
   };
   handleApproval = () => {
-    const { selectedApplication } = this.state; 
-    if (window.confirm('Are you sure you want to approve this application?')) {
+    const { selectedApplication } = this.state;
+    if (window.confirm("Are you sure you want to approve this application?")) {
       this.setState({
         selectedApplication: {
           ...selectedApplication,
@@ -202,13 +202,13 @@ class ApplicationProcessSearcher extends Component {
       });
     }
   };
-  
+
   handleForwardSubmit = (event) => {
     this.state.editorContent;
     event.preventDefault();
 
     const selectedUser = this.state.userList.find(
-      (user) => user.id === this.state.selectedUserId
+      (user) => user.id === this.state.selectedUserId,
     );
 
     this.setState({ submitting: true });
@@ -285,7 +285,7 @@ class ApplicationProcessSearcher extends Component {
                 this.props.history,
                 "workforce.route.applications.application.process.view",
                 [decodeId(application.id)],
-                false
+                false,
               );
             }}
           >
@@ -302,7 +302,7 @@ class ApplicationProcessSearcher extends Component {
                 this.props.history,
                 "workforce.route.applications.application.verify",
                 [decodeId(application.id)],
-                false
+                false,
               );
             }}
           >
@@ -356,8 +356,7 @@ class ApplicationProcessSearcher extends Component {
 
   render() {
     const { forwardModalOpen, selectedApplication } = this.state;
-    const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
-      this.state;
+    const { selectedOffice, selectedSuboffice, selectedUser, officeData } = this.state;
     const totalMoneyAmount = applications?.reduce((acc, app) => {
       const amount = parseFloat(app.moneyAmount) || 0;
       return acc + amount;
@@ -420,7 +419,7 @@ class ApplicationProcessSearcher extends Component {
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
         />
-        {getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT? (
+        {getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT ? (
           <ForwardApplicationModal
             open={forwardModalOpen}
             onClose={this.handleCloseForwardModal}
@@ -428,7 +427,7 @@ class ApplicationProcessSearcher extends Component {
             officeData={this.state.officeData}
             onSubmitForward={this.handleForwardSubmit}
           />
-        ):(
+        ) : (
           <ForwardApplicationAdminModal
             open={forwardModalOpen}
             onClose={this.handleCloseForwardModal}
@@ -477,14 +476,14 @@ const mapDispatchToProps = (dispatch) =>
       journalize,
       coreConfirm,
     },
-    dispatch
+    dispatch,
   );
 
 export default withModulesManager(
   withHistory(
     connect(
       mapStateToProps,
-      mapDispatchToProps
-    )(withTheme(withStyles(styles)(ApplicationProcessSearcher)))
-  )
+      mapDispatchToProps,
+    )(withTheme(withStyles(styles)(ApplicationProcessSearcher))),
+  ),
 );
