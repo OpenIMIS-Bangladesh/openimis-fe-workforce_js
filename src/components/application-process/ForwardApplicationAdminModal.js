@@ -86,7 +86,7 @@ const ForwardApplicationAdminModal = ({
       setServerResponse(null);
       setFormData(null);
     }
-    if(selectedApplication){
+    if (selectedApplication) {
       return dispatch(fetchApplication(modulesManager, [`id: "${decodeId(selectedApplication?.id)}"`]));
     }
   }, [open]);
@@ -117,7 +117,6 @@ const ForwardApplicationAdminModal = ({
   const handleApplicationReason = (event) => {
     const value = event.target.value;
     setOfficeType(value);
-    // onSelect(selectedApplicationType, value); // Pass both selections
   };
 
   const handleForward = () => {
@@ -198,40 +197,30 @@ const ForwardApplicationAdminModal = ({
             </Typography>
             <RadioGroup value={officeType} onChange={handleApplicationReason}>
               <FormControlLabel
-                value="partial"
+                value="dol"
                 control={<Radio color="primary" />}
-                label={
-                  <FormattedMessage
-                    id="workforce.office.dol"
-                    module="workforce"
-                  />
-                }
+                label={<FormattedMessage id="workforce.office.dol" module="workforce" />}
               />
               <FormControlLabel
-                value="permanent"
+                value="dife"
                 control={<Radio color="primary" />}
-                label={
-                  <FormattedMessage
-                    id="workforce.office.dife"
-                    module="workforce"
-                  />
-                }
+                label={<FormattedMessage id="workforce.office.dife" module="workforce" />}
               />
             </RadioGroup>
           </FormControl>
 
-          <Typography
-            variant="subtitle1"
-            gutterBottom
-            style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
-          >
-            অফিস নির্বাচন
-          </Typography>
-
-          <Grid container spacing={3}>
+          {officeType && <Grid container spacing={3}>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
+            >
+              অফিস নির্বাচন
+            </Typography>
             <Grid item xs={12} sm={12}>
               <DistrictOfficePicker
                 value={formData?.id}
+                officeType={officeType}
                 label={
                   <FormattedMessage
                     id="workforce.officeType.selector.picker"
@@ -243,6 +232,7 @@ const ForwardApplicationAdminModal = ({
               />
             </Grid>
           </Grid>
+          }
         </Paper>
 
         {/* Action Buttons */}

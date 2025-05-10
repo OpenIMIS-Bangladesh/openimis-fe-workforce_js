@@ -4,41 +4,43 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchCompaniesPick, fetchDistrictOfficePick } from "../actions";
 
 const DistrictOfficePicker = ({
-  modulesManager,
-  onChange,
-  readOnly,
-  required,
-  withLabel = true,
-  withPlaceholder,
-  value,
-  label,
-  placeholder,
-  filterOptions,
-  filterSelectedOptions,
-  multiple,
-}) => {
+                                modulesManager,
+                                onChange,
+                                readOnly,
+                                required,
+                                withLabel = true,
+                                withPlaceholder,
+                                value,
+                                label,
+                                placeholder,
+                                filterOptions,
+                                filterSelectedOptions,
+                                multiple,
+                                officeType,
+                              }) => {
   const [searchString, setSearchString] = useState(null);
   const { formatMessage } = useTranslations("workforce");
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    return dispatch(fetchDistrictOfficePick(modulesManager, []));
-  }, []);
+    const officeFilter = [`type:"${officeType}"`];
+    return dispatch(fetchDistrictOfficePick(modulesManager, officeFilter));
+  }, [officeType]);
 
   const isLoading = useSelector(
-    (state) => state.workforce[`fetchingDistrictOfficePick`]
+    (state) => state.workforce[`fetchingDistrictOfficePick`],
   );
   const data = useSelector(
-    (state) => state.workforce[`districtOfficePick`] ?? []
+    (state) => state.workforce[`districtOfficePick`] ?? [],
   );
   const error = useSelector(
-    (state) => state.workforce["errorDistrictOfficePick"]
+    (state) => state.workforce["errorDistrictOfficePick"],
   );
   const selectedOption = useMemo(
-      () => data.find((option) => option.id === value) || null,
-      [value]
-    )
+    () => data.find((option) => option.id === value) || null,
+    [value],
+  );
 
   return (
     <Autocomplete

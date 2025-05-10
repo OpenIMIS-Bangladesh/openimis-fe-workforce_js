@@ -323,10 +323,10 @@ export function fetchCompaniesPick(filters) {
   return graphql(payload, "WORKFORCE_COMPANIES_PICKER");
 }
 
-export function fetchDistrictOfficePick(filters) {
+export function fetchDistrictOfficePick(mm, filters) {
   const projections = ["id", "nameEn", "nameBn"];
   const payload = formatPageQueryWithCount(
-    "workforceEmployers",
+    "workforceOrganizations",
     filters,
     projections,
   );
