@@ -23,6 +23,8 @@ import EmployeeLocationForm from "../EmployeeLocationForm";
 import EmployeeDependentForm from "../EmployeeDependentForm";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import EmployeeChildrenDetailsForm from "../EmployeeChildrenDetailsForm";
+import PreviousGrantInfoForm from "../PreviousGrantInfoForm";
+import OtherInfoForm from "../OtherInfoForm";
 import {
   createApplication,
   fetchApplicationId,
@@ -111,6 +113,8 @@ const MedicalAssistanceForm = ({
       organizationId: "",
     },
     employeeChildrenInfo:{},
+    previousGrantInfo:{},
+    otherInfo:{},
     company: null,
     factory: null,
     isSubmitted: "no",
@@ -183,6 +187,8 @@ const MedicalAssistanceForm = ({
         dependents: employeeData.dependents || [{}],
         employeeBankInfo: employeeData.employeeBankInfo || {},
         employeeChildrenInfo: employeeData.employeeChildrenInfo || {},
+        previousGrantInfo: employeeData.previousGrantInfo || {},
+        otherInfo: employeeData.otherInfo || {},
       });
     }
   }, [employeeData]); // Trigger this useEffect when `employeeData` changes.
@@ -463,6 +469,28 @@ const MedicalAssistanceForm = ({
           },
         ]
       : []),
+      {
+        label: "workforce.application.steps.previousGrantInfo",
+        content: (
+          <PreviousGrantInfoForm
+            handleChange={(key, value) =>
+              handleChange(key, value, "previousGrantInfo")
+            }
+            formData={formData}
+          />
+        ),
+      },
+      {
+        label: "workforce.application.steps.otherInfo",
+        content: (
+          <OtherInfoForm
+            handleChange={(key, value) =>
+              handleChange(key, value, "otherInfo")
+            }
+            formData={formData}
+          />
+        ),
+      },
 
   ];
 

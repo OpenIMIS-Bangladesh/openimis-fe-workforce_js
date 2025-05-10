@@ -45,14 +45,16 @@ const NidVerification = ({ formData }) => {
             <Card >
               <CardContent>
                 <Typography variant="body1" className={classes.title}>
-                  <b>Verify Your Nid Card</b>
+                  <b>
+                  <FormattedMessage module="workforce" id="workforce.application.nidVerify"/>
+                  </b>
                 </Typography>
                 <Divider style={{ margin: "10px 0" }} />
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <Typography>
-                      <b><FormattedMessage module="workforce" id="workforce.employee.name.en"/>:</b> {formData.workforceEmployee.firstNameEn}<br/>
-                      <b><FormattedMessage module="workforce" id="workforce.employee.name.bn"/>:</b> {formData.workforceEmployee.firstNameBn}<br/>
+                      <b><FormattedMessage module="workforce" id="workforce.employee.name.en"/>:</b> {formData.workforceEmployee.nameEn}<br/>
+                      <b><FormattedMessage module="workforce" id="workforce.employee.name.bn"/>:</b> {formData.workforceEmployee.nameBn}<br/>
                       <b><FormattedMessage module="workforce" id="workforce.employee.fathers_name.en"/>:</b> {formData.workforceEmployee.fatherNameEn}<br/>
                       <b><FormattedMessage module="workforce" id="workforce.employee.mothers_name.en"/>:</b> {formData.workforceEmployee.motherNameEn}<br/>
                       <b><FormattedMessage module="workforce" id="workforce.employee.birthdate"/>:</b> {formData.workforceEmployee.birthDate}<br/>
