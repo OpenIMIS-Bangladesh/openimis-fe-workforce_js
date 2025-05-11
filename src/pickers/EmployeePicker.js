@@ -36,7 +36,8 @@ const EmployeePicker = ({
   //   (state) => state.workforce["errorEmployeePick"]
   // );
  
-  const EMPLOYEE_NAME_DESIGNATION = ["Admin - Md. Ataullah", "Register - Nurul Islam","Accountant - Ashfaq uddin","Verifier - Mahmud Raju"];
+  const EMPLOYEE_NAME_DESIGNATION = ["প্রশাসক - মোঃ আতাউল্লাহ", "রেজিস্ট্রার - নুরুল ইসলাম", "হিসাবরক্ষক - আশফাক উদ্দিন", "যাচাইকরণকারী - মাহমুদ রাজু"]
+;
 
   // const selectedOption = useMemo(
   //     () => EMPLOYEE_NAME_DESIGNATION.find((option) => option.id === value) || null,
@@ -53,15 +54,14 @@ const EmployeePicker = ({
       required={required}
       placeholder={placeholder ?? ""}
       label={label ?? formatMessage("workforce.organization.parent")}
-      error={error}
       withLabel={withLabel}
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
-      options={data}
-      isLoading={isLoading}
+      options={EMPLOYEE_NAME_DESIGNATION}
+      isLoading={false}
       value={selectedOption}
-      getOptionLabel={(option) => `${option.nameEn}`}
-      onChange={(option) => onChange(option, option ? `${option}` : null)}
+      getOptionLabel={(option) => option}
+      onChange={(option) => onChange(option, option ?? null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}
       onInputChange={setSearchString}
