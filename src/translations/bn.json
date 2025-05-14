@@ -326,7 +326,9 @@
     "workforce.office.type":"অফিসের ধরন নির্বাচন করুন",
     
     "workforce.officeType.selector.picker": "অফিস নির্বাচন করুন",
-    "workforce.EmployeeType.selector.picker": "কর্মচারী নির্বাচন করুন"
+    "workforce.EmployeeType.selector.picker": "কর্মচারী নির্বাচন করুন",
+    "workforce.tracking.summary":"ট্র্যাকিং সারাংশ"
+
 
 
 }
