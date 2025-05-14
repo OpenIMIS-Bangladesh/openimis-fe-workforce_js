@@ -67,8 +67,7 @@ const DisabilityForm = ({
   organizationType,
   selectedApplicationType,
   applicationForSelf,
-  selectedCompany,
-  selectedFactory,
+
 }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []

@@ -37,6 +37,7 @@ import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
+import { getParsedApplication } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -64,13 +65,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MedicalAssistanceForm = ({
+const EducationGrantForm = ({
   modulesManager,
   organizationType,
   selectedApplicationType,
   applicationForSelf,
-  selectedCompany,
-  selectedFactory,
 }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
@@ -199,8 +198,8 @@ const MedicalAssistanceForm = ({
           presentLocation: employeeData.presentLocation || "",
           presentAddress: employeeData.presentAddress || "",
         },
-        company: selectedCompany || employeeData.company || null,
-        factory: selectedFactory || employeeData.factory || null,
+        company:employeeData.company || null,
+        factory: employeeData.factory || null,
         applicationForSelf: applicationForSelf,
         organizationType: organizationType,
         applicationType: selectedApplicationType,
@@ -356,6 +355,9 @@ const MedicalAssistanceForm = ({
         fetchApplicationId(modulesManager, applicationClientMutationId)
       );
     } else {
+      const filters = [`id: "${applicationId[0].id}"`];
+      await getParsedApplication(dispatch, modulesManager, filters);
+     
       const updateApplicationData = {
         id: decodeId(applicationId[0].id),
         workforceEmployeeId: formData.id,
@@ -596,4 +598,4 @@ const MedicalAssistanceForm = ({
   );
 };
 
-export default MedicalAssistanceForm;
+export default EducationGrantForm;

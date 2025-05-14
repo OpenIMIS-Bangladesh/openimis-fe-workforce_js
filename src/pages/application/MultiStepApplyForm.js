@@ -52,12 +52,10 @@ const useStyles = makeStyles((theme) => ({
 
 const MultiStepApplyForm = ({ modulesManager }) => {
   const classes = useStyles();
-  const [selectedApplicationType, setSelectedApplicationType] = useState(null);
+  const [selectedApplicationType, setSelectedApplicationType] = useState('');
   const [organizationType, setOrganizationType] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [applicationForSelf, setApplicationForSelf] = useState("");
-  const [selectedCompany, setSelectedCompany] = useState(null);
-  const [selectedFactory, setSelectedFactory] = useState(null);
   
 
   const handleSelection = (applicationType, exportStatus) => {
@@ -91,10 +89,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
             <ApplicationTypeSelector
               modulesManager={modulesManager}
               onSelect={handleSelection}
-              setSelectedCompany={setSelectedCompany}
-              selectedCompany= {selectedCompany}
-              setSelectedFactory={setSelectedFactory}
-              selectedFactory= {selectedFactory}
+              selectedApplicationType={selectedApplicationType}
             />
             <div className={classes.buttonContainer}>
               <Button
@@ -137,8 +132,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
               applicationForSelf={applicationForSelf}
-              selectedCompany={selectedCompany}
-              selectedFactory={selectedFactory}
+              
             />
             )}
           </>
@@ -172,8 +166,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
               applicationForSelf={applicationForSelf}
-              selectedCompany={selectedCompany}
-              selectedFactory={selectedFactory}
+              
             />
             )}
           </>
@@ -193,8 +186,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
               applicationForSelf={applicationForSelf}
-              selectedCompany={selectedCompany}
-              selectedFactory={selectedFactory}
+              
             />
           </>
         ) : selectedApplicationType === "educationGrant" ? (
@@ -227,8 +219,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
               applicationForSelf={applicationForSelf}
-              selectedCompany={selectedCompany}
-              selectedFactory={selectedFactory}
+              
             />
             )}
           </>
@@ -247,8 +238,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
-              selectedCompany={selectedCompany}
-              selectedFactory={selectedFactory}
+              
             />
           </>
         ) :selectedApplicationType === "scholarship"? (
@@ -281,8 +271,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
               applicationForSelf={applicationForSelf}
-              selectedCompany={selectedCompany}
-              selectedFactory={selectedFactory}
+              
             />
             )}
           </>
@@ -301,8 +290,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
-              selectedCompany={selectedCompany}
-              selectedFactory={selectedFactory}
+              
             />
           </>
         ): (

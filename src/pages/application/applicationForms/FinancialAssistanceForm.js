@@ -76,8 +76,7 @@ const FinancialAssistanceForm = ({
   modulesManager,
   organizationType,
   selectedApplicationType,
-  selectedCompany,
-  selectedFactory,
+
 }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []

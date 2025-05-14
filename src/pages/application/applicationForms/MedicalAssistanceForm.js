@@ -58,8 +58,7 @@ const MedicalAssistanceForm = ({
   organizationType,
   selectedApplicationType,
   applicationForSelf,
-  selectedCompany,
-  selectedFactory,
+
 }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []

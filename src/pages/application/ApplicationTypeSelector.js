@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedCompany, setSelectedCompany,selectedFactory, setSelectedFactory }) => {
-  const [selectedApplicationType, setSelectedApplicationType] = useState("");
+const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationType }) => {
+  // const [selectedApplicationType, setSelectedApplicationType] = useState("");
   const [isExportOriented, setIsExportOriented] = useState("");
   
 
@@ -42,7 +42,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedCompany, set
 
   const handleApplicationTypeChange = (event) => {
     const value = event.target.value;
-    setSelectedApplicationType(value);
+    // setSelectedApplicationType(value);
     onSelect(value, isExportOriented); // Pass both selections
   };
 
@@ -52,56 +52,9 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedCompany, set
     onSelect(selectedApplicationType, value); // Pass both selections
   };
 
-  const handleCompanyChange = (option) => {
-    setSelectedCompany(option);
-    setSelectedFactory(null); // Reset factory when company changes
-  };
-
-  const handleFactoryChange = (option) => {
-    setSelectedFactory(option);
-  };
-  console.log({selectedFactory})
-
   return (
     <Paper className={classes.paper} elevation={0}>
-      {/* Company Picker */}
-      {/* <Box mt={3}>
-      <CompanyPicker  
-        value={selectedCompany?.id}
-        label={
-          <FormattedMessage
-            id="workforce.employee.workforce_employer"
-            module="workforce"
-          />
-        }
-        required
-        onChange={(v) => {
-          handleCompanyChange(v)
-        }}
-        readOnly={false}
-      />
-      </Box> */}
 
-      {/* Factory Picker */}
-      {/* {selectedCompany && (
-        <Box mt={3}>
-        <FactoryPicker
-        value={selectedFactory?.factory?.id}
-        label={
-          <FormattedMessage
-            id="workforce.employee.workforce_factory"
-            module="workforce"
-          />
-        }
-        required
-        companyId={selectedCompany?.id}
-        onChange={(v) => {
-          handleFactoryChange(v)
-        }}
-        readOnly={false}
-      />
-      </Box>
-      )} */}
       <FormControl component="fieldset">
         {/* New Export-Oriented Company Question */}
         <Typography
@@ -154,7 +107,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedCompany, set
             </Typography>
             <RadioGroup
               value={selectedApplicationType}
-              onChange={handleApplicationTypeChange}
+              onChange={onSelect}
             >
               <FormControlLabel
                 value="medicalAssistance"
@@ -196,6 +149,26 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedCompany, set
                   />
                 }
               />
+              <FormControlLabel
+                value="deadlyGrant"
+                control={<Radio color="primary" />}
+                label={
+                  <FormattedMessage
+                    id="workforce.application.type.deadly.grant"
+                    module="workforce"
+                  />
+                }
+              />
+              <FormControlLabel
+                value="maternalGrant"
+                control={<Radio color="primary" />}
+                label={
+                  <FormattedMessage
+                    id="workforce.application.type.maternal.grant"
+                    module="workforce"
+                  />
+                }
+              />
             </RadioGroup>
           </>
         ) : isExportOriented === "no" ? (
@@ -232,26 +205,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedCompany, set
                   />
                 }
               />
-              <FormControlLabel
-                value="deadlyGrant"
-                control={<Radio color="primary" />}
-                label={
-                  <FormattedMessage
-                    id="workforce.application.type.deadly.grant"
-                    module="workforce"
-                  />
-                }
-              />
-              <FormControlLabel
-                value="maternalGrant"
-                control={<Radio color="primary" />}
-                label={
-                  <FormattedMessage
-                    id="workforce.application.type.maternal.grant"
-                    module="workforce"
-                  />
-                }
-              />
+              
             </RadioGroup>
           </>
         ) : null}
