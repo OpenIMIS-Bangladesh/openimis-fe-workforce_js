@@ -364,8 +364,8 @@ class ApplicationProcessSearcher extends Component {
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.applicationType,
       (application) => "Akij",
-      (application) => application.status,
       (application) => application.dateCreated.split("T")[0],
+      (application) => application.status,
       this.isShowHistory() ? application?.version : null,
     ];
 
@@ -379,6 +379,22 @@ class ApplicationProcessSearcher extends Component {
                 this.props.modulesManager,
                 this.props.history,
                 "workforce.route.applications.application.process.view",
+                [decodeId(application.id)],
+                false,
+              );
+            }}
+          >
+            <TabIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="গৃহীত কার্যক্রম">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.process.actions",
                 [decodeId(application.id)],
                 false,
               );

@@ -102,13 +102,13 @@ const SidebarMenu = [
     ),
     icon: <AddCircleOutlineIcon />,
   },
-  {
-    id: "recentApplications",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.application.recent" />
-    ),
-    icon: <DoneAllIcon />,
-  },
+  // {
+  //   id: "recentApplications",
+  //   text: (
+  //     <FormattedMessage module="workforce" id="workforce.application.recent" />
+  //   ),
+  //   icon: <DoneAllIcon />,
+  // },
   {
     id: "applicationStatus",
     text: (
