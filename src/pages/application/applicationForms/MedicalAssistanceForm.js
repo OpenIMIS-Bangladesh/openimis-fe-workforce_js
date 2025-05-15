@@ -122,6 +122,7 @@ const MedicalAssistanceForm = ({
     id: "",
   });
 
+  console.log({fahim:activeStep})
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
     dispatch(
@@ -175,8 +176,8 @@ const MedicalAssistanceForm = ({
           presentLocation: employeeData.presentLocation || "",
           presentAddress: employeeData.presentAddress || "",
         },
-        company: selectedCompany || employeeData.company || null,
-        factory: selectedFactory || employeeData.factory || null,
+        company:  employeeData.company || null,
+        factory: employeeData.factory || null,
         applicationForSelf: applicationForSelf,
         organizationType: organizationType,
         applicationType: selectedApplicationType,
@@ -205,8 +206,10 @@ const MedicalAssistanceForm = ({
   };
 
   const handleNext = async () => {
-    console.log({ formData });
+  
+    
     if (activeStep === 0 || activeStep === 1) {
+      setActiveStep((prevStep) => prevStep + 1);
       const workforceEmployeeData = {
         nameEn:
           formData?.workforceEmployee?.nameEn ||
@@ -293,6 +296,7 @@ const MedicalAssistanceForm = ({
       //     `update workforce application ${formData.firstNameEn}`
       //   )
       // );
+      
     } else if (activeStep === 2) {
       console.log("Create application formData:", formData);
       const createApplicationData = {
@@ -329,7 +333,20 @@ const MedicalAssistanceForm = ({
       await dispatch(
         fetchApplicationId(modulesManager, applicationClientMutationId)
       );
-    } else {
+
+      setActiveStep((prevStep) => prevStep + 1);
+    } else if (activeStep === 3 ) {
+      console.log("hello faltu")
+      // const filters = [`id: "${applicationId[0].id}"`];
+      // dispatch(getParsedApplication(modulesManager, filters))
+      //   .then((parsedData) => {
+      //     // Use the parsed data
+      //     console.log("Parsed application:", parsedData);
+      //   })
+      //   .catch((error) => {
+      //     // Handle error
+      //     console.error("Failed to get parsed application:", error);
+      //   });
       const updateApplicationData = {
         id: decodeId(applicationId[0].id),
         workforceEmployeeId: formData.id,
@@ -349,8 +366,11 @@ const MedicalAssistanceForm = ({
           `update workforce application ${formData.firstNameEn}`
         )
       );
+      setActiveStep((prevStep) => prevStep + 1);
     }
-    setActiveStep((prevStep) => prevStep + 1);
+   
+    console.clear()
+    console.log({activeStep})
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
