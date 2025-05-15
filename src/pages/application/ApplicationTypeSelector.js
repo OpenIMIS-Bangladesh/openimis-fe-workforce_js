@@ -43,13 +43,14 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
   const handleApplicationTypeChange = (event) => {
     const value = event.target.value;
     // setSelectedApplicationType(value);
-    onSelect(value, isExportOriented); // Pass both selections
+    onSelect(value, isExportOriented); 
+    
   };
 
   const handleExportOrientedChange = (event) => {
     const value = event.target.value;
     setIsExportOriented(value);
-    onSelect(selectedApplicationType, value); // Pass both selections
+    onSelect(selectedApplicationType, value); 
   };
 
   return (
@@ -107,7 +108,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
             </Typography>
             <RadioGroup
               value={selectedApplicationType}
-              onChange={onSelect}
+              onChange={handleApplicationTypeChange}
             >
               <FormControlLabel
                 value="medicalAssistance"

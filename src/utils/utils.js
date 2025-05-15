@@ -29,30 +29,41 @@ export function getUserTypeFromRights(user_rights) {
 }
 
 
-export const getParsedApplication = async (dispatch, modulesManager, filters) => {
-  try {
-    await dispatch(fetchApplication(modulesManager, filters));
+export const getParsedApplication = (modulesManager, filters) => {
+  return async (dispatch, getState) => {
+    try {
+      // Dispatch the fetch action and wait for it to complete
+      await dispatch(fetchApplication(modulesManager, filters));
+      
+      // Get the current state after the fetch completes
+      const state = getState();
+      const rawData = state.workforce.application;
+      
+      if (!rawData) {
+        console.warn("No application data found in Redux store");
+        return null;
+      }
 
-    // If response failed or empty
-    // if (!response?.payload?.data?.workforceApplication?.nodes?.length) {
-    //   return null;
-    // }
+      console.log("Raw application data:", rawData);
 
-    const rawData = useSelector(
-        (state) => state.workforce[`application`] ?? []
-      );
+      // Parse the JSON fields safely
+      const parsedData = {
+        ...rawData,
+        employeeDependentInfo: rawData.employeeDependentInfo 
+          ? JSON.parse(rawData.employeeDependentInfo.replace(/^"|"$/g, ''))
+          : [],
+        employeeBankInfo: rawData.employeeBankInfo 
+          ? JSON.parse(rawData.employeeBankInfo.replace(/^"|"$/g, ''))
+          : {},
+        employeeAccidentInfo: rawData.employeeAccidentInfo 
+          ? JSON.parse(rawData.employeeAccidentInfo.replace(/^"|"$/g, ''))
+          : null,
+      };
 
-    // const rawData = response.payload.data.workforceApplication.nodes[0];
-    console.log({rawData})
-
-    // return {
-    //   ...rawData,
-    //   employeeDependentInfo: JSON.parse(rawData.employeeDependentInfo),
-    //   employeeBankInfo: JSON.parse(rawData.employeeBankInfo),
-    //   employeeAccidentInfo: JSON.parse(rawData.employeeAccidentInfo),
-    // };
-  } catch (error) {
-    console.error("Error fetching or parsing application:", error);
-    return null;
-  }
+      return parsedData;
+    } catch (error) {
+      console.error("Error in getParsedApplication:", error);
+      throw error; // Re-throw to let caller handle it
+    }
+  };
 };

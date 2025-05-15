@@ -119,21 +119,21 @@ const EducationGrantForm = ({
       presentAddress: "",
       organizationId: "",
     },
-    employeeChildrenInfo:{
-      nameEn:"",
-      nameBn:"",
-      birthDate:"",
-      educationInstituteName:"",
-      studyingClass:"",
-      result:"",
-      nid:"",
+    employeeChildrenInfo: {
+      nameEn: "",
+      nameBn: "",
+      birthDate: "",
+      educationInstituteName: "",
+      studyingClass: "",
+      result: "",
+      nid: "",
     },
-    previousGrantInfo:{
-      dateofReceipt:"",
-      grantAmount:"",
-      reasonforReceipt:"",
+    previousGrantInfo: {
+      dateofReceipt: "",
+      grantAmount: "",
+      reasonforReceipt: "",
     },
-    otherInfo:"",
+    otherInfo: "",
     company: null,
     factory: null,
     isSubmitted: "no",
@@ -198,7 +198,7 @@ const EducationGrantForm = ({
           presentLocation: employeeData.presentLocation || "",
           presentAddress: employeeData.presentAddress || "",
         },
-        company:employeeData.company || null,
+        company: employeeData.company || null,
         factory: employeeData.factory || null,
         applicationForSelf: applicationForSelf,
         organizationType: organizationType,
@@ -312,12 +312,7 @@ const EducationGrantForm = ({
           `Update Workforce Employee ${workforceEmployeeData.nameEn}`
         )
       );
-      // dispatch(
-      //   updateApplication(
-      //     formData,
-      //     `update workforce application ${formData.firstNameEn}`
-      //   )
-      // );
+
     } else if (activeStep === 2) {
       console.log("Create application formData:", formData);
       const createApplicationData = {
@@ -355,9 +350,18 @@ const EducationGrantForm = ({
         fetchApplicationId(modulesManager, applicationClientMutationId)
       );
     } else {
-      const filters = [`id: "${applicationId[0].id}"`];
-      await getParsedApplication(dispatch, modulesManager, filters);
-     
+      console.log("hello faltu")
+      // const filters = [`id: "${applicationId[0].id}"`];
+      // dispatch(getParsedApplication(modulesManager, filters))
+      //   .then((parsedData) => {
+      //     // Use the parsed data
+      //     console.log("Parsed application:", parsedData);
+      //   })
+      //   .catch((error) => {
+      //     // Handle error
+      //     console.error("Failed to get parsed application:", error);
+      //   });
+
       const updateApplicationData = {
         id: decodeId(applicationId[0].id),
         workforceEmployeeId: formData.id,
@@ -435,13 +439,23 @@ const EducationGrantForm = ({
     {
       label: "workforce.application.steps.employeeDetails",
       content: (
-        <EmployeeDetailsForm handleChange={(key, value) =>handleChange(key, value, "workforceEmployee")} formData={formData} />
+        <EmployeeDetailsForm
+          handleChange={(key, value) =>
+            handleChange(key, value, "workforceEmployee")
+          }
+          formData={formData}
+        />
       ),
     },
     {
       label: "workforce.application.steps.location",
       content: (
-        <EmployeeLocationForm handleChange={(key,value)=>handleChange(key,value,"workforceEmployee")} formData={formData} />
+        <EmployeeLocationForm
+          handleChange={(key, value) =>
+            handleChange(key, value, "workforceEmployee")
+          }
+          formData={formData}
+        />
       ),
     },
     {
@@ -491,48 +505,58 @@ const EducationGrantForm = ({
           },
         ]
       : []),
-      {
-        label: "workforce.application.steps.previousGrantInfo",
-        content: (
-          <PreviousGrantInfoForm
-            handleChange={(key, value) =>
-              handleChange(key, value, "previousGrantInfo")
-            }
-            formData={formData.previousGrantInfo}
-          />
-        ),
-      },
-      {
-        label: "workforce.application.steps.otherInfo",
-        content: (
-          <OtherInfoForm
-            handleChange={(key, value) =>
-              handleChange(key, value, "otherInfo")
-            }
-            formData={formData.otherInfo}
-          />
-        ),
-      },
-
+    {
+      label: "workforce.application.steps.previousGrantInfo",
+      content: (
+        <PreviousGrantInfoForm
+          handleChange={(key, value) =>
+            handleChange(key, value, "previousGrantInfo")
+          }
+          formData={formData.previousGrantInfo}
+        />
+      ),
+    },
+    {
+      label: "workforce.application.steps.otherInfo",
+      content: (
+        <OtherInfoForm
+          handleChange={(key, value) => handleChange(key, value, "otherInfo")}
+          formData={formData.otherInfo}
+        />
+      ),
+    },
   ];
 
   if (showPreview) {
-      return (
-        <div className={classes.container}>
-          <Paper className={classes.paper} elevation={0}>
-            <PreviewDetails formData={formData} />
-            <div className={classes.buttonContainer}>
-            <Button variant="outlined" color="error" onClick={()=>{setShowPreview(false)}}>
+    return (
+      <div className={classes.container}>
+        <Paper className={classes.paper} elevation={0}>
+          <PreviewDetails formData={formData} />
+          <div className={classes.buttonContainer}>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => {
+                setShowPreview(false);
+              }}
+            >
               <FormattedMessage module="workforce" id="workforce.back" />
             </Button>
-            <Button variant="contained" color="primary" onClick={()=>{setShowPreview(false);setShowVerifyNid(true)}}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                setShowPreview(false);
+                setShowVerifyNid(true);
+              }}
+            >
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
-            </div>
-          </Paper>
-        </div>
-      );
-    }
+          </div>
+        </Paper>
+      </div>
+    );
+  }
 
   if (showVerifyNid) {
     return (
@@ -540,9 +564,19 @@ const EducationGrantForm = ({
         <Paper className={classes.paper} elevation={0}>
           <NidVerification formData={formData} />
           <div className={classes.buttonContainer}>
-          <Button variant="contained" color="primary" onClick={()=>{setShowVerifyNid(false);setIsSubmitted(true)}}>
-            <FormattedMessage module="workforce" id="workforce.confirm.submit" />
-          </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                setShowVerifyNid(false);
+                setIsSubmitted(true);
+              }}
+            >
+              <FormattedMessage
+                module="workforce"
+                id="workforce.confirm.submit"
+              />
+            </Button>
           </div>
         </Paper>
       </div>
@@ -567,7 +601,11 @@ const EducationGrantForm = ({
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>
-        <Stepper activeStep={activeStep} alternativeLabel style={{padding:"0px"}}>
+        <Stepper
+          activeStep={activeStep}
+          alternativeLabel
+          style={{ padding: "0px" }}
+        >
           {steps.map((step, index) => (
             <Step key={index}>
               <StepLabel>
