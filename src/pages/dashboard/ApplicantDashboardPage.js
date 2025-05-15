@@ -20,6 +20,7 @@ import {
   TableBody,
   Button,
   Paper,
+  Box
 } from "@material-ui/core";
 
 import DescriptionIcon from "@material-ui/icons/Description";
@@ -33,6 +34,9 @@ import DoneAllIcon from '@material-ui/icons/DoneAll';
 import ApplicantApplicationProcessSearcher from "../../components/application-process/ApplicantApplicationProcessSearcher";
 import MultiStepApplyForm from "../application/MultiStepApplyForm";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
+import { useSelector, useDispatch } from "react-redux";
+import { useModulesManager, useTranslations, Autocomplete, useGraphqlQuery, decodeId } from "@openimis/fe-core";
+import { fetchApplication } from "../../actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -124,20 +128,6 @@ const FiledApplications = () =>{
     <Typography variant="h5" gutterBottom>
       <FormattedMessage module="workforce" id="workforce.applicant.dashboard" />
     </Typography>
-
-    {/* Filters */}
-    {/* <Grid container spacing={2} alignItems="center">
-      <Grid item>
-        <TextField
-        variant="outlined"
-        size="small"
-          // className={classes.searchInput}
-          label={<FormattedMessage module="workforce" id="workforce.search.here" />}
-        />
-      </Grid>
-    </Grid> */}
-
-    {/* Table */}
    <Card className={classes.tableContainer}>
        <CardContent>
              <ApplicationProcessSearcher
@@ -169,10 +159,30 @@ const newApplications = () => (
 );
 
 const ApplicationStatus = () => {
-  const classes = useStyles();
+  const dispatch = useDispatch();
+  const mm = useModulesManager();
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [trackingNumber, setTrackingNumber] = useState("");
+  const [applicationData, setApplicationData] = useState(null);
+  const [showResult, setShowResult] = useState(false);
 
+  const handleSearch = () => {
+    const filters = {
+      id: `eq:${trackingNumber}`,
+      "workforceEmployee.phoneNumber": `eq:${phoneNumber}`,
+    };
+
+    dispatch(
+      fetchApplication(mm, filters)
+    ).then((res) => {
+      const data = res.payload?.data?.workforceApplication?.edges?.[0]?.node;
+      setApplicationData(data);
+      setShowResult(true);
+    });
+  };
+  
   return (
-    <Card style={{ marginTop: 0, padding: "32px", textAlign: "center" }}>
+      <Card style={{ marginTop: 0, padding: "32px", textAlign: "center" }}>
       <CardContent>
         <Typography variant="h5" gutterBottom>
           <FormattedMessage module="workforce" id="workforce.application.status" />
@@ -184,35 +194,69 @@ const ApplicationStatus = () => {
               fullWidth
               variant="outlined"
               size="small"
-              label={<FormattedMessage module="workforce" id="workforce.employee.dependent.phone" />}
-              style={{
-                // border: "1px solid #ccc",
-                // borderRadius: 4,
-                // padding: "8px 12px",
-                marginBottom: 16,
-              }}
+              label={
+                <FormattedMessage module="workforce" id="workforce.employee.dependent.phone" />
+              }
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              style={{ marginBottom: 16 }}
             />
             <TextField
               fullWidth
               variant="outlined"
               size="small"
-              label={<FormattedMessage module="workforce" id="workforce.application.tracking.number" />}
-              style={{
-                // border: "1px solid #ccc",
-                // borderRadius: 4,
-                // padding: "8px 12px",
-                marginBottom: 16,
-              }}
+              label={
+                <FormattedMessage module="workforce" id="workforce.application.tracking.number" />
+              }
+              value={trackingNumber}
+              onChange={(e) => setTrackingNumber(e.target.value)}
+              style={{ marginBottom: 16 }}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-            >
+            <Button variant="contained" color="primary" fullWidth onClick={handleSearch}>
               <FormattedMessage module="workforce" id="workforce.search.here" />
             </Button>
           </Grid>
         </Grid>
+
+        {showResult && applicationData && (
+          <Box
+            mt={4}
+            p={3}
+            border={1}
+            borderColor="#ccc"
+            borderRadius={2}
+            textAlign="left"
+            maxWidth={800}
+            margin="32px auto 0"
+          >
+            <Typography variant="h6" gutterBottom style={{ textAlign: "center" }}>
+              <FormattedMessage
+                module="workforce"
+                id="workforce.tracking.summary"
+                defaultMessage="ট্র্যাকিং সারাংশ"
+              />
+            </Typography>
+
+            <Grid container style={{ marginTop: 16 }} spacing={2}>
+              <Grid item xs={6}>
+                <Typography>
+                  <strong>ট্র্যাকিং নম্বর:</strong> 
+                </Typography>
+                <Typography>
+                  <strong>বর্তমান অবস্থা:</strong> {applicationData.status}
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography>
+                  <strong>আবেদনের বিষয়:</strong> {applicationData.applicationType}
+                </Typography>
+                <Typography>
+                  <strong>আবেদনের তারিখ:</strong> {applicationData?.dateCreated || "-"}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );

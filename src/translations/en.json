@@ -412,7 +412,7 @@
     "workforce.new.application":"New Application",
     "workforce.help.complain":"Help and Complains",
     "workforce.others":"Others",
-    "workforce.application.tracking.number":"Tracking number",
+    "workforce.application.tracking.number":"Tracking Number",
     "workforce.search.here":"Search Here ...",
     "workforce.application.pending":"Pending Applications",
     "workforce.application.approve.applications":"Approve Applications",
@@ -477,7 +477,9 @@
 
     "workforce.office.dol":"Department of Labour(DOL)",
     "workforce.office.dife":"Department of Inspection for Factories and Establishments(DIFE)",
-    "workforce.office.type":"Select Office Type"
+    "workforce.office.type":"Select Office Type",
+    "workforce.tracking.summary":"Tracking Summary"
+    
 
 
 
