@@ -67,7 +67,7 @@ class ApplicationProcessFilter extends Component {
     const { classes, filters, onChangeFilters } = this.props;
     return (
       <Grid container className={classes.form}>
-        <ControlledField
+        {/* <ControlledField
           module={MODULE_NAME}
           id="workforce.employee.application.nid"
           field={
@@ -87,8 +87,8 @@ class ApplicationProcessFilter extends Component {
               />
             </Grid>
           }
-        />
-        <ControlledField
+        /> */}
+        {/* <ControlledField
           module={MODULE_NAME}
           id="workforce.employee.application.phone"
           field={
@@ -108,7 +108,7 @@ class ApplicationProcessFilter extends Component {
               />
             </Grid>
           }
-        />
+        /> */}
         <ControlledField
           module={MODULE_NAME}
           id="workforce.employee.application.status"
@@ -124,6 +124,27 @@ class ApplicationProcessFilter extends Component {
                     id: 'status',
                     value: v,
                     filter: `status: "${v}"`,
+                  },
+                ])}
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module={MODULE_NAME}
+          id="workforce.employee.application.applicationType"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.employee.application.applicationType"
+                name="applicationType"
+                value={this._filterValue("applicationType")}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'applicationType',
+                    value: v,
+                    filter: `applicationType: "${v}"`,
                   },
                 ])}
               />

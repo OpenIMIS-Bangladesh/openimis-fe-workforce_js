@@ -114,19 +114,20 @@ class ApplicationProcessSearcher extends Component {
     this.defaultPageSize = 10;
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.submittingMutation && !this.props.submittingMutation) {
-      this.props.journalize(this.props.mutation);
-      this.setState({ reset: prevState.reset + 1 });
-    } else if (!prevProps.confirmed && this.props.confirmed) {
-      this.state.confirmedAction();
-    }
-  }
-
-  fetch = (prms) => {
+   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
+    const { applicationType } = this.props;
+    const finalParams = {
+      ...prms,
+      ...(applicationType ?  [`type:"applicationType"`]  : {}),
+    };
+
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchApplicationsSummary(this.props.modulesManager, prms);
+      this.props.fetchApplicationsSummary(
+          this.props.modulesManager, finalParams,
+          prms,
+        );
+  
   };
 
   rowIdentifier = (r) => r.uuid;
