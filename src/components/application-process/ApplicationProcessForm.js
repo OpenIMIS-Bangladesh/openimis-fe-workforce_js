@@ -14,6 +14,7 @@ import { MODULE_NAME } from "../../constants";
 import AddApplicationPage from "../../pages/application-process/AddApplicationPage";
 import ViewApplicationPage from "../../pages/application-process/ViewApplicationPage";
 import VerifyApplicationPage from "../../pages/application-process/VerifyApplicationPage";
+import ActionsApplicationPage from "../../pages/application-process/ActionsApplicationPage";
 
 
 class ApplicationProcessForm extends Component {
@@ -104,6 +105,7 @@ class ApplicationProcessForm extends Component {
       save,
       back,
       isVerify,
+      isActions
     } = this.props;
 
     const { lockNew, reset, update, overview, applicationUuid, ticket } =
@@ -140,8 +142,11 @@ class ApplicationProcessForm extends Component {
             overview={overview}
             Panels={
               (applicationUuid && !isVerify)
-                ? [ViewApplicationPage]
-                :(applicationUuid && isVerify)? [VerifyApplicationPage]: [AddApplicationPage]
+                ? [ViewApplicationPage] 
+                :(applicationUuid && isActions)? [ActionsApplicationPage]
+                :(applicationUuid && isVerify)? [VerifyApplicationPage]
+                : [AddApplicationPage]
+                
             }
             onEditedChanged={this.onEditedChanged}
           />

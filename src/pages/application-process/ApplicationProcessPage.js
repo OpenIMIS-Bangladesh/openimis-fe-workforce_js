@@ -63,6 +63,7 @@ class ApplicationProcessPage extends Component {
     const path = this.props.history.location.pathname;
     const isVerify =  path.includes("verify");
     const isApprove =  path.includes("approve");
+    const isActions =  path.includes("actions");
     const user_type = getUserTypeFromRights(user_rights);
 
     // if (!(rights.includes(RIGHT_ORGANIZATION_CREATE) || rights.includes(RIGHT_ORGANIZATION_EDIT))) return null;
@@ -82,6 +83,7 @@ class ApplicationProcessPage extends Component {
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
           save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
           isVerify={isVerify}
+          isActions={isActions}
         />
       </div>
     );

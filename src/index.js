@@ -43,6 +43,7 @@ import {
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS,
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY,
   ROUTE_HOME,
+  ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -89,6 +90,7 @@ import ApplicantDashboardPage from "./pages/dashboard/ApplicantDashboardPage";
 import CheckerDashboardPage from "./pages/dashboard/CheckerDashboardPage";
 import ApproverDashboardPage from "./pages/dashboard/ApproverDashboardPage";
 import NotificationBar from "./components/app-bar/NotificationBar";
+import ActionsApplicationPage from "./pages/application-process/ActionsApplicationPage";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -141,6 +143,10 @@ const DEFAULT_CONFIG = {
     {
       key: "workforce.route.applications.application.process.view",
       ref: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS,
+    },
+    {
+      key: "workforce.route.applications.application.process.actions",
+      ref: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS,
     },
     { key: "workforce.route.applications.application.verify", ref: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY },
     { key: "workforce.route.applications.process", ref: ROUTE_WORKFORCE_APPLICATIONS_PROCESS },
@@ -254,6 +260,11 @@ const DEFAULT_CONFIG = {
     {
       path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS}/:application_uuid`,
       component: ApplicationProcessPage,
+    },
+    { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS, component: ActionsApplicationPage },
+   {
+      path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS}/:application_uuid`,
+      component: ActionsApplicationPage,
     },
     { path: ROUTE_WORKFORCE_APPLICATIONS_PROCESS, component: ApplicationsProcessPage },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY, component: ApplicationProcessPage },
