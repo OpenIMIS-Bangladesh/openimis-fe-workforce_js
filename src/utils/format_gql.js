@@ -323,6 +323,18 @@ export function formatEmployeeAssignDesignationGQL(employeeAssignDesignation) {
   `;
 }
 
+export function formatWorkforceOtpGQL(workforceOtp) {
+
+  return `
+    ${workforceOtp.firstNameBn ? `nameBn: "${formatGQLString(workforceOtp.firstNameBn)}"` : ""}
+    ${workforceOtp.firstNameEn ? `firstNameEn: "${formatGQLString(workforceOtp.firstNameEn)}"` : ""}
+    ${workforceOtp.lastNameEn ? `lastNameEn: ""` : ""}
+    ${workforceOtp.NID ? `nid: "${formatGQLString(workforceOtp.NID)}"` : ""}
+    ${workforceOtp.mobile ? `phoneNumber: "${formatGQLString(workforceOtp.mobile)}"` : ""}
+    ${workforceOtp.status ? `status: "${WORKFORCE_STATUS.ACTIVE}"` : ""}
+  `;
+}
+
 export function formatWorkforceCompanyStatusGql(company) {
   return `
     ${company?.id ? `id: "${formatGQLString(company?.id)}"` : ""}

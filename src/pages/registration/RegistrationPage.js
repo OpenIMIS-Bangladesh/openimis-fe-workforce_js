@@ -17,6 +17,8 @@ import {
 } from "@openimis/fe-core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import OtpInput from 'react-otp-input';
+import { createWorkforceOtp } from "../../actions";
+import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -59,9 +61,14 @@ const useStyles = makeStyles((theme) => ({
 const RegistrationPage = () => {
   const classes = useStyles();
   const history = useHistory();
+  const dispatch = useDispatch()
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
   const [otp, setOtp] = useState('');
+
+  const otpPick = useSelector(
+      (state) => state.workforce[`workforceOtpId`] ?? []
+    );
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -91,10 +98,22 @@ const RegistrationPage = () => {
     formData.confirmPassword &&
     formData.password === formData.confirmPassword;
 
-  const handleNext = () => {
+  const handleNext = async() => {
     setServerResponse({ status: "", message: null });
 
     if (step === 1 && validateStep1()) {
+      const createOtpData = {
+        NID:formData.NID,
+        firstNameBn:formData.firstNameBn,
+        firstNameEn:formData.firstNameEn,
+        mobile:formData.mobile
+      }
+      await dispatch(
+              createWorkforceOtp(
+                createOtpData,
+                `Created Workforce Office ${createOtpData.firstNameEn}`,
+              ),
+            );
       setStep(2);
     } else if (step === 2 && validateStep2()) {
       setStep(3);
@@ -121,6 +140,8 @@ const RegistrationPage = () => {
       }, 2000);
     }, 2000);
   };
+
+  console.log({otpPick})
 
   return (
     <>

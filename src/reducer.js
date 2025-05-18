@@ -273,6 +273,9 @@ function reducer(
     fetchedApplication: false,
     application: null,
     applicationPageInfo: { totalCount: 0 },
+
+    ////workforce otp id ///
+    workforceOtpId:"",
   },
   action
 ) {
@@ -1372,6 +1375,22 @@ function reducer(
       return dispatchMutationResp(state, "createOrganization", action);
     case "ORG_UPDATE_ORG_RESP":
       return dispatchMutationResp(state, "updateOrganization", action);
+
+    case "OTP_MUTATION_REQ": {
+      return {
+        ...state,
+        workforceOtpId:""
+      };
+    }
+    case "OTP_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "OTP_CREATE_OTP_RESP":
+      return {
+        ...state,
+        workforceOtpId:parseData(action.data.createWorkforceOtp.internalId)
+      };
+    case "OTP_UPDATE_OTP_RESP":
+      return dispatchMutationResp(state, "updateOtp", action);
     
     case "COMPANY_STATUS_MUTATION_REQ": {
       return dispatchMutationReq(state, action);

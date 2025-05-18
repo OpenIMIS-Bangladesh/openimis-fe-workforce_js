@@ -21,8 +21,10 @@ import {
   formatWorkforceEmployeeAccountInfoGQL,
   formatWorkforceEmployeeAccidentInfoGQL,
   formatApplicationeGQL,
-  formatWorkforceBeneficiaryGQL
+  formatWorkforceBeneficiaryGQL,
+  formatWorkforceOtpGQL
 } from "./utils/format_gql";
+import { WORKFORCE_STATUS } from "./constants";
 
 export function fetchOrganizationsSummary(mm, filters) {
   const projections = [
@@ -835,6 +837,7 @@ export function createWorkforceOrganization(
   );
 }
 
+
 export function updateWorkforceOrganization(
   representative,
   clientMutationLabel,
@@ -853,6 +856,41 @@ export function updateWorkforceOrganization(
       clientMutationLabel,
       requestedDateTime,
       id: representative.id,
+    },
+  );
+}
+
+///registration actions///
+export function createWorkforceOtp(
+  workforceOtp,
+  clientMutationLabel,
+) {
+
+  const mutation = `mutation {
+  createWorkforceOtp(
+    nameBn: "${workforceOtp.firstNameBn}",
+    firstNameEn: "${workforceOtp.firstNameEn}",
+    lastNameEn: "",
+    nid: "${workforceOtp.NID}",
+    phoneNumber: "${workforceOtp.mobile}",
+    status: "${WORKFORCE_STATUS.ACTIVE}"
+  ) {
+    internalId
+  }
+}`
+  // const mutation = formatMutation(
+  //   "createWorkforceOtp",
+  //   formatWorkforceOtpGQL(workforceOtp),
+  //   clientMutationLabel,
+  // );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation,
+    ["OTP_MUTATION_REQ", "OTP_CREATE_OTP_RESP", "OTP_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
     },
   );
 }
