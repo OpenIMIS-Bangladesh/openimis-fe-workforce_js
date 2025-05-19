@@ -31,6 +31,7 @@ import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import CheckerApplicationProcessSearcher from "../../components/application-process/CheckerApplicationProcessSearcher";
+import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -94,20 +95,20 @@ const SidebarMenu = [
     ),
     icon: <CheckCircleOutlineTwoToneIcon />,
   },
-  {
-    id: "recentApplications",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.application.recent" />
-    ),
-    icon: <DoneAllIcon />,
-  },
-  {
-    id: "applicationStatus",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.application.status" />
-    ),
-    icon: <AssignmentIcon  />,
-  },
+  // {
+  //   id: "recentApplications",
+  //   text: (
+  //     <FormattedMessage module="workforce" id="workforce.application.recent" />
+  //   ),
+  //   icon: <DoneAllIcon />,
+  // },
+  // {
+  //   id: "applicationStatus",
+  //   text: (
+  //     <FormattedMessage module="workforce" id="workforce.application.status" />
+  //   ),
+  //   icon: <AssignmentIcon  />,
+  // },
    
 ];
 
@@ -135,11 +136,11 @@ const FiledApplications = () =>{
 
     {/* Table */}
    <Card className={classes.tableContainer}>
-       <CardContent>
-             <CheckerApplicationProcessSearcher
-                     
-              />
-            </CardContent>
+        <CardContent>
+            <ApplicationProcessSearcher
+                    
+            />
+          </CardContent>
       </Card>
 
     {/* Pagination */}

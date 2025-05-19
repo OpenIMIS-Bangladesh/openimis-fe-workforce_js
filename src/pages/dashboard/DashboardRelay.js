@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getUserType, isEmptyObject } from "../../utils/utils";
 import ApplicantDashboard from "./ApplicantDashboardPage";
 import DashboardPage from "./DashboardPage";
+import CheckerDashboardPage from "./CheckerDashboardPage";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 
 const DashboardRelay = () => {
@@ -12,6 +13,8 @@ const DashboardRelay = () => {
     return <ApplicantDashboard />;
   } else if (user_type === WORKFORCE_USER_TYPE.ADMIN) {
     return <DashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.CHECKER) {
+    return <CheckerDashboardPage />;
   }
 
   return <></>;

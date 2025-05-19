@@ -46,6 +46,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import ForwardApplicationModal from "./ForwardApplicationModal";
 import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 import ForwardApplicationAdminModal from "./ForwardApplicationAdminModal";
+import ForwardApplicationCheckerMoal from "./ForwardApplicationCheckerModal";
 
 const styles = (theme) => ({
   paper: {
@@ -114,20 +115,20 @@ class ApplicationProcessSearcher extends Component {
     this.defaultPageSize = 10;
   }
 
-   fetch = (prms) => {
+  fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     const { applicationType } = this.props;
     const finalParams = {
       ...prms,
-      ...(applicationType ?  [`type:"applicationType"`]  : {}),
+      ...(applicationType ? [`type:"applicationType"`] : {}),
     };
 
     this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(
-          this.props.modulesManager, finalParams,
-          prms,
-        );
-  
+    this.props.fetchApplicationsSummary(
+      this.props.modulesManager,
+      finalParams,
+      prms
+    );
   };
 
   rowIdentifier = (r) => r.uuid;
@@ -177,7 +178,10 @@ class ApplicationProcessSearcher extends Component {
     const selectedSuboffice = event.target.value;
     this.setState({
       selectedSuboffice,
-      selectedUser: this.state.officeData[this.state.selectedOffice].suboffices[selectedSuboffice],
+      selectedUser:
+        this.state.officeData[this.state.selectedOffice].suboffices[
+          selectedSuboffice
+        ],
     });
   };
 
@@ -209,7 +213,7 @@ class ApplicationProcessSearcher extends Component {
     event.preventDefault();
 
     const selectedUser = this.state.userList.find(
-      (user) => user.id === this.state.selectedUserId,
+      (user) => user.id === this.state.selectedUserId
     );
 
     this.setState({ submitting: true });
@@ -263,6 +267,16 @@ class ApplicationProcessSearcher extends Component {
     "workforce.employee.application.status",
     this.isShowHistory() ? "workforce.version" : "",
   ];
+  headerChecker = () => [
+    "workforce.employee.name.en",
+    "workforce.employee.name.bn",
+    "workforce.employee.application.applicationType",
+    "workforce.employee.application.moneyAmount",
+    "workforce.employee.application.factoryName",
+    "workforce.employee.application.status",
+    "workforce.employee.application.applicationDate",
+    this.isShowHistory() ? "workforce.version" : "",
+  ];
 
   sorts = () => [];
 
@@ -295,7 +309,7 @@ class ApplicationProcessSearcher extends Component {
                 this.props.history,
                 "workforce.route.applications.application.process.view",
                 [decodeId(application.id)],
-                false,
+                false
               );
             }}
           >
@@ -312,7 +326,7 @@ class ApplicationProcessSearcher extends Component {
                 this.props.history,
                 "workforce.route.applications.application.verify",
                 [decodeId(application.id)],
-                false,
+                false
               );
             }}
           >
@@ -354,7 +368,6 @@ class ApplicationProcessSearcher extends Component {
             </IconButton>
           </span>
         </Tooltip>
-
       </div>
     ));
     return formatters;
@@ -381,7 +394,7 @@ class ApplicationProcessSearcher extends Component {
                 this.props.history,
                 "workforce.route.applications.application.process.view",
                 [decodeId(application.id)],
-                false,
+                false
               );
             }}
           >
@@ -397,17 +410,92 @@ class ApplicationProcessSearcher extends Component {
                 this.props.history,
                 "workforce.route.applications.application.process.actions",
                 [decodeId(application.id)],
-                false,
+                false
               );
             }}
           >
             <TabIcon />
           </IconButton>
         </Tooltip>
-
       </div>
     ));
     return formatters;
+  };
+  itemFormattersChecker = () => {
+   const formatters = [
+       (application) => application.workforceEmployee?.firstNameBn,
+       (application) => application.workforceEmployee?.lastNameBn,
+       // (application) => application.workforceEmployee?.nid,
+       // (application) => application.workforceEmployee?.phoneNumber,
+       (application) => application.applicationType,
+       // (application) => application.organizationType,
+       (application) => 200000,
+       (application) => "Nafi",
+       (application) => "Akij",
+       (application) => application.status,
+       (application) => application.dateCreated.split("T")[0],
+       // (application) => "Hafiz",
+       // (application) => application.dateCreated.split('T')[0],
+       this.isShowHistory() ? application?.version : null,
+     ];
+ 
+     formatters.push((application) => (
+       <div className={this.props.classes.horizontalButtonContainer}>
+         <Tooltip title="দেখুন">
+           <IconButton
+             disabled={application?.isHistory}
+             onClick={() => {
+               historyPush(
+                 this.props.modulesManager,
+                 this.props.history,
+                 "workforce.route.applications.application.process.view",
+                 [decodeId(application.id)],
+                 false
+               );
+             }}
+           >
+             <TabIcon />
+           </IconButton>
+         </Tooltip>
+ 
+         <Tooltip title="যাচাই">
+           <IconButton
+             disabled={application?.isHistory}
+             onClick={() => {
+               historyPush(
+                 this.props.modulesManager,
+                 this.props.history,
+                 "workforce.route.applications.application.verify",
+                 [decodeId(application.id)],
+                 false
+               );
+             }}
+           >
+             <VerifiedUserIcon />
+           </IconButton>
+         </Tooltip>
+        
+         <Tooltip title="ফরওয়ার্ড">
+           <IconButton
+             disabled={application?.isHistory}
+             onClick={() => this.handleOpenForwardModal(application)}
+           >
+             <ForwardIcon />
+           </IconButton>
+         </Tooltip>
+         <Tooltip title="রিভার্ট">
+           <IconButton
+             disabled={application?.isHistory}
+             // onClick={() => this.handleOpenForwardModal(application)}
+           >
+             <UndoIcon />
+           </IconButton>
+         </Tooltip>
+        
+ 
+       </div>
+     ));
+     return formatters;
   };
 
   rowDisabled = (selection, i) => !!i.validityTo;
@@ -416,7 +504,8 @@ class ApplicationProcessSearcher extends Component {
 
   render() {
     const { forwardModalOpen, selectedApplication } = this.state;
-    const { selectedOffice, selectedSuboffice, selectedUser, officeData } = this.state;
+    const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
+      this.state;
     const totalMoneyAmount = applications?.reduce((acc, app) => {
       const amount = parseFloat(app.moneyAmount) || 0;
       return acc + amount;
@@ -452,7 +541,11 @@ class ApplicationProcessSearcher extends Component {
         <Searcher
           module={MODULE_NAME}
           cacheFiltersKey={cacheFiltersKey}
-          FilterPane={getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT ?null :filterPane}
+          FilterPane={
+            getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT
+              ? null
+              : filterPane
+          }
           filterPaneContributionsKey={filterPaneContributionsKey}
           items={applications}
           itemsPageInfo={applicationsPageInfo}
@@ -471,32 +564,65 @@ class ApplicationProcessSearcher extends Component {
           rowIdentifier={this.rowIdentifier}
           filtersToQueryParams={this.filtersToQueryParams}
           defaultOrderBy="-dateCreated"
-          headers={ getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT ? this.headerApplicant : this.headers}
-          itemFormatters={ getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT ? this.itemFormattersApplicant:this.itemFormatters}
+          headers={
+            getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT
+              ? this.headerApplicant
+              : getUserTypeFromRights(userRights) ===
+                WORKFORCE_USER_TYPE.CHECKER
+              ? this.headerChecker
+              : this.headers
+          }
+          itemFormatters={
+            getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT
+              ? this.itemFormattersApplicant
+              : getUserTypeFromRights(userRights) ===
+                WORKFORCE_USER_TYPE.CHECKER
+              ? this.itemFormattersChecker
+              : this.itemFormatters
+          }
           sorts={this.sorts}
           rowDisabled={this.rowDisabled}
           rowLocked={this.rowLocked}
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
         />
-        {getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT ? (
-          <ForwardApplicationModal
-            open={forwardModalOpen}
-            onClose={this.handleCloseForwardModal}
-            selectedApplication={selectedApplication}
-            officeData={this.state.officeData}
-            onSubmitForward={this.handleForwardSubmit}
-          />
-        ) : (
-          <ForwardApplicationAdminModal
-            open={forwardModalOpen}
-            onClose={this.handleCloseForwardModal}
-            selectedApplication={selectedApplication}
-            officeData={this.state.officeData}
-            onSubmitForward={this.handleForwardSubmit}
-          />
-        )}
+        {(() => {
+          const userType = getUserTypeFromRights(userRights);
 
+          if (userType === WORKFORCE_USER_TYPE.APPLICANT) {
+            return (
+              <ForwardApplicationModal
+                open={forwardModalOpen}
+                onClose={this.handleCloseForwardModal}
+                selectedApplication={selectedApplication}
+                officeData={this.state.officeData}
+                onSubmitForward={this.handleForwardSubmit}
+              />
+            );
+          } else if (userType === WORKFORCE_USER_TYPE.ADMIN) {
+            return (
+              <ForwardApplicationAdminModal
+                open={forwardModalOpen}
+                onClose={this.handleCloseForwardModal}
+                selectedApplication={selectedApplication}
+                officeData={this.state.officeData}
+                onSubmitForward={this.handleForwardSubmit}
+              />
+            );
+          } else if (userType === WORKFORCE_USER_TYPE.CHECKER) {
+            return (
+              <ForwardApplicationCheckerMoal
+                open={forwardModalOpen}
+                onClose={this.handleCloseForwardModal}
+                selectedApplication={selectedApplication}
+                officeData={this.state.officeData}
+                onSubmitForward={this.handleForwardSubmit}
+              />
+            );
+          }
+
+          return null;
+        })()}
       </>
     );
   }
@@ -525,14 +651,14 @@ const mapDispatchToProps = (dispatch) =>
       journalize,
       coreConfirm,
     },
-    dispatch,
+    dispatch
   );
 
 export default withModulesManager(
   withHistory(
     connect(
       mapStateToProps,
-      mapDispatchToProps,
-    )(withTheme(withStyles(styles)(ApplicationProcessSearcher))),
-  ),
+      mapDispatchToProps
+    )(withTheme(withStyles(styles)(ApplicationProcessSearcher)))
+  )
 );
