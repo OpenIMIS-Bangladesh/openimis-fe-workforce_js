@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import {
   Button,
@@ -17,7 +17,7 @@ import {
 } from "@openimis/fe-core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import OtpInput from 'react-otp-input';
-import { createWorkforceOtp } from "../../actions";
+import { createWorkforceOtp, createWorkforceUser, fetchWorkforceOtp } from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -66,9 +66,13 @@ const RegistrationPage = () => {
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
   const [otp, setOtp] = useState('');
 
-  const otpPick = useSelector(
-      (state) => state.workforce[`workforceOtpId`] ?? []
-    );
+const internalId = useSelector(
+    (state) => state.workforce?.mutation?.id
+  );
+
+const otpStatus = useSelector(
+    (state) => state.workforce['workforceOtp']
+  );
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -88,10 +92,40 @@ const RegistrationPage = () => {
     setFormData({ ...formData, [key]: val });
   };
 
+  useEffect(() => {
+  if (step === 2 && otpStatus) {
+    if (otpStatus.status === "active") {
+      setStep(3);
+    } else if (otpStatus.status === "invalid") {
+      setServerResponse({
+        status: "ERROR",
+        message: "ভুল OTP. দয়া করে আবার চেষ্টা করুন।",
+      });
+    }
+  }
+}, [otpStatus]);
+
+useEffect(() => {
+  if (
+    isSubmitting &&
+    step === 3 &&
+    internalId
+  ) {
+    setServerResponse({
+      status: "SUCCESS",
+      message: "নিবন্ধন সফল হয়েছে!",
+    });
+
+    setTimeout(() => {
+      setSubmitting(false);
+      history.push("/login");
+    }, 2000);
+  }
+}, [internalId]);
+
+
   const validateStep1 = () =>
     formData.NID && formData.mobile && formData.firstNameBn && formData.firstNameEn;
-
-  const validateStep2 = () => formData.otp === "12345";
 
   const validateStep3 = () =>
     formData.password &&
@@ -114,9 +148,14 @@ const RegistrationPage = () => {
                 `Created Workforce Office ${createOtpData.firstNameEn}`,
               ),
             );
-      setStep(2);
-    } else if (step === 2 && validateStep2()) {
-      setStep(3);
+
+      if (internalId !== "") {
+        setStep(2);
+      }
+    } else if (step === 2) {
+
+      await dispatch(fetchWorkforceOtp(modulesManager, [`id:"${internalId}",otp:"${formData.otp}"`]))
+
     } else if (step === 3 && validateStep3()) {
       handleSubmit();
     } else {
@@ -130,18 +169,25 @@ const RegistrationPage = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit =async () => {
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setServerResponse({ status: "SUCCESS", message: "নিবন্ধন সফল হয়েছে!" });
-      setTimeout(() => {
-        history.push("/login");
-      }, 2000);
-    }, 2000);
+    const createUserData = {
+        NID:formData.NID,
+        firstNameBn:formData.firstNameBn,
+        firstNameEn:formData.firstNameEn,
+        mobile:formData.mobile,
+        password:formData.password,
+      }
+    await dispatch(
+              createWorkforceUser(
+                createUserData,
+                `Created Workforce User ${createUserData.firstNameEn}`,
+              ),
+            );
   };
 
-  console.log({otpPick})
+  console.log({internalId})
+  // console.log({otpStatus})
 
   return (
     <>

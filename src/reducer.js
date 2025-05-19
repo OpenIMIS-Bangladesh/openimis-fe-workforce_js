@@ -42,6 +42,11 @@ function reducer(
     fetchedBanksPick: false,
     banksPick: [],
 
+    fetchingWorkforceOtp: false,
+    errorWorkforceOtp: null,
+    fetchedWorkforceOtp: false,
+    workforceOtp: null,
+
     fetchingBranchPick: false,
     errorBranchPick: null,
     fetchedBranchPick: false,
@@ -431,6 +436,32 @@ function reducer(
           ...state,
           fetching: false,
           errorBanksPick: formatServerError(action.payload),
+        };
+  
+
+    case "WORKFORCE_OTP_REQ":
+      return {
+        ...state,
+        fetchingWorkforceOtp: true,
+        fetchedWorkforceOtp: false,
+        workforceOtp: null,
+        errorWorkforceOtp: null,
+      };
+    case "WORKFORCE_OTP_RESP":
+      return {
+        ...state,
+        fetchingWorkforceOtp: false,
+        fetchedWorkforceOtp: true,
+        workforceOtp:
+          action.payload.data.workforceOtp
+        ,
+        errorWorkforceOtp: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_OTP_ERR":
+        return {
+          ...state,
+          fetching: false,
+          errorWorkforceOtp: formatServerError(action.payload),
         };
   
     case "WORKFORCE_BRANCH_PICKER_REQ":
@@ -1377,20 +1408,24 @@ function reducer(
       return dispatchMutationResp(state, "updateOrganization", action);
 
     case "OTP_MUTATION_REQ": {
-      return {
-        ...state,
-        workforceOtpId:""
-      };
+      return dispatchMutationReq(state, action);
     }
     case "OTP_MUTATION_ERR":
       return dispatchMutationErr(state, action);
     case "OTP_CREATE_OTP_RESP":
-      return {
-        ...state,
-        workforceOtpId:parseData(action.data.createWorkforceOtp.internalId)
-      };
+      return dispatchMutationResp(state,"createWorkforceOtp",action);
     case "OTP_UPDATE_OTP_RESP":
       return dispatchMutationResp(state, "updateOtp", action);
+
+    case "USER_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "USER_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "USER_CREATE_USER_RESP":
+      return dispatchMutationResp(state,"createWorkforceUser",action);
+    case "USER_UPDATE_USER_RESP":
+      return dispatchMutationResp(state, "updateUser", action);
     
     case "COMPANY_STATUS_MUTATION_REQ": {
       return dispatchMutationReq(state, action);

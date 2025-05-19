@@ -2,6 +2,8 @@ import {
   graphql,
   formatMutation,
   formatPageQueryWithCount,
+  formatPageQuery,
+  formatQuery
 } from "@openimis/fe-core";
 import {
   formatOrganizationEmployeeGQL,
@@ -74,6 +76,16 @@ export function fetchBanksPick(mm, filters) {
     projections,
   );
   return graphql(payload, "WORKFORCE_BANKS_PICKER");
+}
+
+export function fetchWorkforceOtp(mm, filters) {
+  const projections = [ "status", "nameBn","firstNameEn","phoneNumber"];
+  const payload = formatQuery(
+    "workforceOtp",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_OTP");
 }
 
 export function fetchBranchPick(mm, filters) {
@@ -887,6 +899,37 @@ export function createWorkforceOtp(
   return graphql(
     mutation,
     ["OTP_MUTATION_REQ", "OTP_CREATE_OTP_RESP", "OTP_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function createWorkforceUser(
+  workforceUser,
+  clientMutationLabel,
+) {
+
+  const mutation = `mutation {
+  createWorkforceUser(
+    nameBn: "${workforceUser.firstNameBn}",
+    firstNameEn: "${workforceUser.firstNameEn}",
+    lastNameEn: " ",
+    nid: "${workforceUser.NID}",
+    phoneNumber: "${workforceUser.mobile}",
+    status: "${WORKFORCE_STATUS.ACTIVE}",
+    username: "",
+    password: "${workforceUser.password}",
+  ) {
+    internalId
+  }
+}`
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation,
+    ["USER_MUTATION_REQ", "USER_CREATE_USER_RESP", "USER_MUTATION_ERR"],
     {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,

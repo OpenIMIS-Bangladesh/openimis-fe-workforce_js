@@ -186,7 +186,7 @@ const MedicalAssistanceForm = ({
         employeeAccidentInfo: employeeData.employeeAccidentInfo || {},
       });
     }
-  }, [employeeData]); // Trigger this useEffect when `employeeData` changes.
+  }, [employeeData?.id]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {
@@ -369,7 +369,7 @@ const MedicalAssistanceForm = ({
       setActiveStep((prevStep) => prevStep + 1);
     }
    
-    console.clear()
+
     console.log({activeStep})
   };
 
