@@ -79,30 +79,35 @@ class ApplicationsProcessPage extends Component {
           />
         </Tabs>
       </AppBar>
+     
       <TabPanel value={value} index={0}>
-      <ApplicationProcessSearcher
-          cacheFiltersKey="ticketPageFiltersCache"
+        <ApplicationProcessSearcher
+          cacheFiltersKey="allApplications"
           onDoubleClick={this.onDoubleClick}
         />
       </TabPanel>
       <TabPanel value={value} index={1}>
-      <ApplicationProcessSearcher
-          cacheFiltersKey="ticketPageFiltersCache"
+        <ApplicationProcessSearcher
+          cacheFiltersKey="accidentalApplications"
+          applicationType="accidentalGrant"
           onDoubleClick={this.onDoubleClick}
         />
       </TabPanel>
       <TabPanel value={value} index={2}>
-      <ApplicationProcessSearcher
-          cacheFiltersKey="ticketPageFiltersCache"
+        <ApplicationProcessSearcher
+          cacheFiltersKey="deathApplications"
+          applicationType="deadlyGrant"
           onDoubleClick={this.onDoubleClick}
         />
       </TabPanel>
       <TabPanel value={value} index={3}>
-      <ApplicationProcessSearcher
-          cacheFiltersKey="ticketPageFiltersCache"
+        <ApplicationProcessSearcher
+          cacheFiltersKey="disabilityApplications"
+          applicationType="disabilityAssistance"
           onDoubleClick={this.onDoubleClick}
         />
       </TabPanel>
+
        
         {/*{rights.includes(RIGHT_ORGANIZATION_CREATE)*/}
         {/*  && withTooltip(*/}
