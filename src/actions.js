@@ -24,7 +24,8 @@ import {
   formatWorkforceEmployeeAccidentInfoGQL,
   formatApplicationeGQL,
   formatWorkforceBeneficiaryGQL,
-  formatWorkforceOtpGQL
+  formatWorkforceOtpGQL,
+  formatApplicationMovementGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 
@@ -1767,6 +1768,28 @@ export function updateApplication(
   return graphql(
     mutation.payload,
     ["APPLICATION_MUTATION_REQ", "APPLICATION_UPDATE_APPLICATION_RESP", "APPLICATION_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+export function createApplicationMovement(
+  application,
+  clientMutationLabel,
+) {
+  const mutation = formatMutation(
+    "createWorkforceApplicationMovement",
+    formatApplicationMovementGQL(application),
+    clientMutationLabel,
+  );
+
+  console.log({ mutation });
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["APPLICATION_MOVEMENT_MUTATION_REQ", "APPLICATION_MOVEMENT_CREATE_APPLICATION_RESP", "APPLICATION_MOVEMENT_MUTATION_ERR"],
     {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,

@@ -207,6 +207,39 @@ export function formatApplicationeGQL(application) {
   ${application?.isSubmitted ? `isSubmitted: "${(application?.isSubmitted)}"` : ""}
 `;
 }
+///application movement ////
+export function formatApplicationMovementGQL(application) {
+  return `
+  ${application?.id ? `id: "${(application?.id)}"` : ""}
+  ${application?.note ? `note: "${(application?.note)}"` : ""}
+  ${application?.action ? `action: "${(application?.action)}"` : ""}
+  ${application?.toEmployeeRecordId ? `toEmployeeRecordId: "${(application?.toEmployeeRecordId)}"` : ""}
+  ${application?.fromEmployeeRecordId ? `fromEmployeeRecordId: "${(application?.fromEmployeeRecordId)}"` : ""}
+  ${application?.toOfficeUnitOrganogramId ? `toOfficeUnitOrganogramId: "${(application?.toOfficeUnitOrganogramId)}"` : ""}
+  ${application?.fromOfficeUnitOrganogramId ? `fromOfficeUnitOrganogramId: "${(application?.fromOfficeUnitOrganogramId)}"` : ""}
+  ${application?.toOfficeId ? `toOfficeId: "${(application?.toOfficeId)}"` : ""}
+  ${application?.fromOfficeId ? `fromOfficeId: "${(application?.fromOfficeId)}"` : ""}
+  ${application?.toOfficeUnitId ? `toOfficeUnitId: "${(application?.toOfficeUnitId)}"` : ""}
+  ${application?.fromOfficeUnitId ? `fromOfficeUnitId: "${(application?.fromOfficeUnitId)}"` : ""}
+  ${application?.isCurrent ? `isCurrent: "${(application?.isCurrent)}"` : ""}
+  ${application?.isCc ? `isCc: "${(application?.isCc)}"` : ""}
+  ${application?.isCommitteeHead ? `isCommitteeHead: "${(application?.isCommitteeHead)}"` : ""}
+  ${application?.isCommitteeMember ? `isCommitteeMember: "${(application?.isCommitteeMember)}"` : ""}
+  ${application?.toEmployeeNameBng ? `toEmployeeNameBng: "${(application?.toEmployeeNameBng)}"` : ""}
+  ${application?.fromEmployeeNameBng ? `fromEmployeeNameBng: "${(application?.fromEmployeeNameBng)}"` : ""}
+  ${application?.toEmployeeNameEng ? `toEmployeeNameEng: "${(application?.toEmployeeNameEng)}"` : ""}
+  ${application?.fromEmployeeNameEng ? `fromEmployeeNameEng: "${(application?.fromEmployeeNameEng)}"` : ""}
+  ${application?.toEmployeeDesignationBng ? `toEmployeeDesignationBng: "${(application?.toEmployeeDesignationBng)}"` : ""}
+  ${application?.fromEmployeeDesignationBng ? `fromEmployeeDesignationBng: "${(application?.fromEmployeeDesignationBng)}"` : ""}
+  ${application?.toOfficeNameBng ? `toOfficeNameBng: "${(application?.toOfficeNameBng)}"` : ""}
+  ${application?.fromOfficeNameBng ? `fromOfficeNameBng: "${(application?.fromOfficeNameBng)}"` : ""}
+  ${application?.toEmployeeUnitNameBng ? `toEmployeeUnitNameBng: "${(application?.toEmployeeUnitNameBng)}"` : ""}
+  ${application?.fromEmployeeUnitNameBng ? `fromEmployeeUnitNameBng: "${(application?.fromEmployeeUnitNameBng)}"` : ""}
+  ${application?.fromEmployeeUsername ? `fromEmployeeUsername: "${(application?.fromEmployeeUsername)}"` : ""}
+  ${application?.deadlineDate ? `deadlineDate: "${(application?.deadlineDate)}"` : ""}
+  ${application?.status ? `status: "${(application?.status)}"` : ""}
+`;
+}
 ///beneficiary registration   ////
 export function formatWorkforceBeneficiaryGQL(beneficiary) {
   return `

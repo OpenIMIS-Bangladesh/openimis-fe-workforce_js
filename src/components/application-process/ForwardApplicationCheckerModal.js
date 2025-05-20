@@ -22,7 +22,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import DistrictOfficePicker from "../../pickers/DistrictOfficePicker";
 import EmployeePicker from "../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchApplication, updateApplication } from "../../actions";
+import { fetchApplication, updateApplication, createApplicationMovement } from "../../actions";
 import { WORKFORCE_STATUS } from "../../constants";
 import ForwardAdminPanel from "./ForwardAdminPanel";
 import ForwardApplicationModal from "./ForwardApplicationModal";
@@ -109,34 +109,41 @@ const ForwardApplicationAdminModal = ({
       destinationOffice: formData,
     };
 
-    try {
-      const response = await onSubmitForward(payload);
-      setServerResponse(response);
-    } catch {
-      setServerResponse({ status: "ERROR", message: "সাবমিশনে ব্যর্থ হয়েছে।" });
-    } finally {
-      setSubmitting(false);
-    }
+    // try {
+    //   const response = await onSubmitForward(payload);
+    //   setServerResponse(response);
+    // } catch {
+    //   setServerResponse({ status: "ERROR", message: "সাবমিশনে ব্যর্থ হয়েছে!" });
+    // } finally {
+    //   setSubmitting(false);
+    // }
+
   };
 
-  const handleApplicationReason = (event) => {
-    const value = event.target.value;
-    setOfficeType(value);
-  };
-
-  const handleForward = () => {
+  const handleForward = async () => {
 
       const updateApplicationData = {
         id: decodeId(selectedApplication.id),
         status: WORKFORCE_STATUS.FIRST_FORWARD,
       };
-      dispatch(
+      const createApplicationMovementData = {
+        id: decodeId(selectedApplication.id),
+        status: WORKFORCE_STATUS.FIRST_FORWARD,
+      };
+   await dispatch(
         updateApplication(
           updateApplicationData,
           `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`
         )
       );
-    
+   await dispatch(
+        createApplicationMovement(
+          createApplicationMovementData,
+          `create workforce movement`
+        )
+      );
+      setServerResponse({ status: "SUCCESS", message: "সাবমিশনে সফল হয়েছে!" });
+
   };
 
   console.log({ aha: selectedApplication });
