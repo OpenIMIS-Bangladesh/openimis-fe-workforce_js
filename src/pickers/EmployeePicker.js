@@ -22,32 +22,32 @@ const EmployeePicker = ({
 
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   return dispatch(fetchEmployeePick(modulesManager, []));
-  // }, []);
+  useEffect(() => {
+    return dispatch(fetchEmployeePick(modulesManager, []));
+  }, []);
 
-  // const isLoading = useSelector(
-  //   (state) => state.workforce[`fetchingEmployeePick`]
-  // );
-  // const data = useSelector(
-  //   (state) => state.workforce[`employeePick`] ?? []
-  // );
-  // const error = useSelector(
-  //   (state) => state.workforce["errorEmployeePick"]
-  // );
+  const isLoading = useSelector(
+    (state) => state.workforce[`fetchingEmployeePick`]
+  );
+  const data = useSelector(
+    (state) => state.workforce[`employeePick`] ?? []
+  );
+  const error = useSelector(
+    (state) => state.workforce["errorEmployeePick"]
+  );
  
-  const EMPLOYEE_NAME_DESIGNATION = ["প্রশাসক - মোঃ আতাউল্লাহ", "রেজিস্ট্রার - নুরুল ইসলাম", "হিসাবরক্ষক - আশফাক উদ্দিন", "যাচাইকরণকারী - মাহমুদ রাজু"]
+  // const data = ["প্রশাসক - মোঃ আতাউল্লাহ", "রেজিস্ট্রার - নুরুল ইসলাম", "হিসাবরক্ষক - আশফাক উদ্দিন", "যাচাইকরণকারী - মাহমুদ রাজু"]
 ;
 
-  // const selectedOption = useMemo(
-  //     () => EMPLOYEE_NAME_DESIGNATION.find((option) => option.id === value) || null,
-  //     [value]
-  //   )
   const selectedOption = useMemo(
-      () => (EMPLOYEE_NAME_DESIGNATION.includes(value) ? value : null),
+      () => data.find((option) => option.id === value) || null,
       [value]
     )
-
+  // const selectedOption = useMemo(
+  //     () => (data.includes(value) ? value : null),
+  //     [value]
+  //   )
+console.log(data)
   return (
     <Autocomplete
       multiple={multiple}
@@ -57,11 +57,11 @@ const EmployeePicker = ({
       withLabel={withLabel}
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
-      options={EMPLOYEE_NAME_DESIGNATION}
+      options={data}
       isLoading={false}
       value={selectedOption}
-      getOptionLabel={(option) => option}
-      onChange={(option) => onChange(option, option ?? null)}
+      getOptionLabel={(option) => `${option.nameEn}`}
+      onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}
       onInputChange={setSearchString}

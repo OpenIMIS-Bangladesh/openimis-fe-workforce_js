@@ -20,6 +20,7 @@ import {
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import DistrictOfficePicker from "../../pickers/DistrictOfficePicker";
+import EmployeePicker from "../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchApplication, updateApplication } from "../../actions";
 import { WORKFORCE_STATUS } from "../../constants";
@@ -140,28 +141,6 @@ const ForwardApplicationAdminModal = ({
 
   console.log({ aha: selectedApplication });
 
-  if (selectedApplication?.status === WORKFORCE_STATUS.FIRST_FORWARD) {
-    return (
-      <ForwardAdminPanel
-        open={open}
-        onClose={onClose}
-        selectedApplication={selectedApplication}
-        onSubmitForward={onSubmitForward}
-      />
-    );
-  }
-
-  if (selectedApplication?.status === WORKFORCE_STATUS.SECOND_FORWARD) {
-    return (
-      <ForwardApplicationModal
-        open={open}
-        onClose={onClose}
-        selectedApplication={selectedApplication}
-        onSubmitForward={onSubmitForward}
-      />
-    );
-  }
-
   return (
     <Modal open={open} onClose={onClose}>
       <form className={classes.modalContainer} onSubmit={handleSubmit}>
@@ -212,7 +191,7 @@ const ForwardApplicationAdminModal = ({
         <Paper className={classes.sectionPaper} elevation={1}>
         
 
-          {officeType && (
+         
             <Grid container spacing={3} style={{marginTop:3}}>
               <Typography
                 variant="subtitle1"
@@ -223,24 +202,24 @@ const ForwardApplicationAdminModal = ({
                   textAlign: "center",
                 }}
               >
-                অফিস নির্বাচন
+                অফিসার নির্বাচন করুন
               </Typography>
               <Grid item xs={12} sm={12}>
-                <DistrictOfficePicker
+                <EmployeePicker
                   value={formData?.id}
                   officeType={officeType}
                   label={
                     <FormattedMessage
-                      id="workforce.officeType.selector.picker"
+                      id="workforce.officer.selector.picker"
                       module="workforce"
                     />
                   }
+                  modulesManager={modulesManager}
                   required
                   onChange={(v) => setFormData(v)}
                 />
               </Grid>
             </Grid>
-          )}
         </Paper>
 
         {/* Action Buttons */}
