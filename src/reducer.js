@@ -1487,6 +1487,16 @@ function reducer(
       return dispatchMutationResp(state,"createWorkforceUser",action);
     case "USER_UPDATE_USER_RESP":
       return dispatchMutationResp(state, "updateUser", action);
+
+    case "DOCUMENT_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "DOCUMENT_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "DOCUMENT_CREATE_DOCUMENT_RESP":
+      return dispatchMutationResp(state,"createWorkforceDocument",action);
+    case "DOCUMENT_UPDATE_DOCUMENT_RESP":
+      return dispatchMutationResp(state, "updateWorkforceDocument", action);
     
     case "COMPANY_STATUS_MUTATION_REQ": {
       return dispatchMutationReq(state, action);

@@ -367,6 +367,21 @@ export function formatWorkforceOtpGQL(workforceOtp) {
     ${workforceOtp.status ? `status: "${WORKFORCE_STATUS.ACTIVE}"` : ""}
   `;
 }
+export function formatWorkforceDocumentGQL(workforceDocumentType) {
+
+  return `
+    ${workforceDocumentType.id ? `id: "${workforceDocumentType.id}"` : ""}
+    ${workforceDocumentType.documentType ? `documentType: "${formatGQLString(workforceDocumentType.documentType)}"` : ""}
+    ${workforceDocumentType.holderType ? `holderType: "${formatGQLString(workforceDocumentType.holderType)}"` : ""}
+    ${workforceDocumentType.path ? `path: "${formatGQLString(workforceDocumentType.path)}"` : ""}
+    ${workforceDocumentType.verifierId ? `verifierId: "${formatGQLString(workforceDocumentType.verifierId)}"` : ""}
+    ${workforceDocumentType.approverId ? `approverId: "${formatGQLString(workforceDocumentType.approverId)}"` : ""}
+    ${workforceDocumentType.submissionDate ? `submissionDate: "${formatGQLString(workforceDocumentType.submissionDate)}"` : ""}
+    ${workforceDocumentType.approvalDate ? `approvalDate: "${formatGQLString(workforceDocumentType.approvalDate)}"` : ""}
+    ${workforceDocumentType.remarks ? `remarks: "${formatGQLString(workforceDocumentType.remarks)}"` : ""}
+    ${workforceDocumentType.status ? `status: "${formatGQLString(workforceDocumentType.status)}"` : ""}
+  `;
+}
 
 export function formatWorkforceCompanyStatusGql(company) {
   return `

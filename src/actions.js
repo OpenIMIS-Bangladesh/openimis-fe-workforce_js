@@ -24,8 +24,7 @@ import {
   formatWorkforceEmployeeAccidentInfoGQL,
   formatApplicationeGQL,
   formatWorkforceBeneficiaryGQL,
-  formatWorkforceOtpGQL,
-  formatApplicationMovementGQL
+  formatWorkforceOtpGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 
@@ -947,6 +946,79 @@ export function createWorkforceUser(
   return graphql(
     mutation,
     ["USER_MUTATION_REQ", "USER_CREATE_USER_RESP", "USER_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function createWorkforceDocument(
+  workforceDocumentType,
+  clientMutationLabel,
+) {
+
+  const mutation = formatMutation(
+    "createWorkforceDocument",
+    formatWorkforceDocumentGQL(workforceDocumentType),
+    clientMutationLabel,
+  );
+
+//   const mutation = `mutation {
+//   createWorkforceUser(
+//     nameBn: "${workforceDocumentType.firstNameBn}",
+//     firstNameEn: "${workforceDocumentType.firstNameEn}",
+//     lastNameEn: " ",
+//     nid: "${workforceDocumentType.NID}",
+//     phoneNumber: "${workforceDocumentType.mobile}",
+//     status: "${WORKFORCE_STATUS.ACTIVE}",
+//     username: "",
+//     password: "${workforceDocumentType.password}",
+//   ) {
+//     internalId
+//   }
+// }`
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation,
+    ["DOCUMENT_MUTATION_REQ", "DOCUMENT_CREATE_DOCUMENT_RESP", "DOCUMENT_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    },
+  );
+}
+
+export function updateWorkforceDocument(
+  workforceDocumentType,
+  clientMutationLabel,
+) {
+  const mutation = formatMutation(
+    "createWorkforceDocument",
+    formatWorkforceDocumentGQL(workforceDocumentType),
+    clientMutationLabel,
+  );
+
+//   const mutation = `mutation {
+//   createWorkforceUser(
+//     nameBn: "${workforceDocumentType.firstNameBn}",
+//     firstNameEn: "${workforceDocumentType.firstNameEn}",
+//     lastNameEn: " ",
+//     nid: "${workforceDocumentType.NID}",
+//     phoneNumber: "${workforceDocumentType.mobile}",
+//     status: "${WORKFORCE_STATUS.ACTIVE}",
+//     username: "",
+//     password: "${workforceDocumentType.password}",
+//   ) {
+//     internalId
+//   }
+// }`
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation,
+    ["DOCUMENT_MUTATION_REQ", "DOCUMENT_CREATE_DOCUMENT_RESP", "DOCUMENT_MUTATION_ERR"],
     {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
