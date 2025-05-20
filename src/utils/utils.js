@@ -24,6 +24,9 @@ export function getUserTypeFromRights(user_rights) {
   if (!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }
+  if (!isEmptyObject(user_rights)) {
+    user_type = WORKFORCE_USER_TYPE.CHECKER;
+  }
 
   return user_type;
 }
