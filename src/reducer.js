@@ -1180,10 +1180,10 @@ function reducer(
         fetchingEmployeePick: false,
         fetchedEmployeePick: true,
         employeePick: parseData(
-          action.payload.data.workforceEmployers
-        ).map((workforceCompany) => ({
-          ...workforceCompany,
-          id: decodeId(workforceCompany.id),
+          action.payload.data.workforceOrganizationEmployees
+        ).map((workforceEmployee) => ({
+          ...workforceEmployee,
+          id: decodeId(workforceEmployee.id),
         })),
         errorEmployeePick: formatGraphQLError(action.payload),
       };

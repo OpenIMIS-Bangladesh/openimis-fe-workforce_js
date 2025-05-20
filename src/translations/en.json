@@ -478,7 +478,9 @@
     "workforce.office.dol":"Department of Labour(DOL)",
     "workforce.office.dife":"Department of Inspection for Factories and Establishments(DIFE)",
     "workforce.office.type":"Select Office Type",
-    "workforce.tracking.summary":"Tracking Summary"
+    "workforce.tracking.summary":"Tracking Summary",
+    "workforce.officer.selector.picker": "Select Officer"
+
     
 
 

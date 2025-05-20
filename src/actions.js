@@ -349,9 +349,25 @@ export function fetchDistrictOfficePick(mm, filters) {
 }
 
 export function fetchEmployeePick(filters) {
-  const projections = ["id", "nameEn", "nameBn"];
+    // const location_projection =
+    // "location" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+    "nameEn",
+    "nameBn",
+    "address",
+    "phoneNumber",
+    "email",
+    "status",
+    "gender",
+    "firstJoiningDate",
+    "birthCertificateNo",
+    "nid",
+    "passportNo",
+    // location_projection,
+  ];
   const payload = formatPageQueryWithCount(
-    "workforceEmployers",
+    "workforceOrganizationEmployees",
     filters,
     projections,
   );
