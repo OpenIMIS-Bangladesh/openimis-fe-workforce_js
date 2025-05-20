@@ -209,7 +209,7 @@ const MedicalAssistanceForm = ({
   
     
     if (activeStep === 0 || activeStep === 1) {
-      setActiveStep((prevStep) => prevStep + 1);
+      
       const workforceEmployeeData = {
         nameEn:
           formData?.workforceEmployee?.nameEn ||
@@ -334,8 +334,8 @@ const MedicalAssistanceForm = ({
         fetchApplicationId(modulesManager, applicationClientMutationId)
       );
 
-      setActiveStep((prevStep) => prevStep + 1);
-    } else if (activeStep === 3 ) {
+      
+    } else {
       console.log("hello faltu")
       // const filters = [`id: "${applicationId[0].id}"`];
       // dispatch(getParsedApplication(modulesManager, filters))
@@ -366,8 +366,8 @@ const MedicalAssistanceForm = ({
           `update workforce application ${formData.firstNameEn}`
         )
       );
-      setActiveStep((prevStep) => prevStep + 1);
     }
+    setActiveStep((prevStep) => prevStep + 1);
    
 
     console.log({activeStep})
