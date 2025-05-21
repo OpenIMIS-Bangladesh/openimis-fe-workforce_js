@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import {
   IconButton,
   Tooltip,
-  Button,
+  Checkbox,
   Modal,
   Box,
   Typography,
@@ -268,6 +268,7 @@ class ApplicationProcessSearcher extends Component {
     this.isShowHistory() ? "workforce.version" : "",
   ];
   headerChecker = () => [
+    "",
     "workforce.employee.name.en",
     "workforce.employee.name.bn",
     "workforce.employee.application.applicationType",
@@ -423,6 +424,7 @@ class ApplicationProcessSearcher extends Component {
   };
   itemFormattersChecker = () => {
    const formatters = [
+    (application) => (application.workforceEmployee ? <Checkbox   /> :""),
        (application) => application.workforceEmployee?.firstNameBn,
        (application) => application.workforceEmployee?.lastNameBn,
        // (application) => application.workforceEmployee?.nid,
@@ -430,7 +432,6 @@ class ApplicationProcessSearcher extends Component {
        (application) => application.applicationType,
        // (application) => application.organizationType,
        (application) => 200000,
-       (application) => "Nafi",
        (application) => "Akij",
        (application) => application.status,
        (application) => application.dateCreated.split("T")[0],
@@ -540,6 +541,8 @@ class ApplicationProcessSearcher extends Component {
       <>
         <Searcher
           module={MODULE_NAME}
+          // selectWithCheckbox={true}
+          // withSelection={true}
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={
             getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT

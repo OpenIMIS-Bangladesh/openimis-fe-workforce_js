@@ -21,15 +21,15 @@ import TabPanel from "./TabPanel";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab, ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE,
+  fab: theme.fab,
 });
 
 class ApplicationsProcessPage extends Component {
   constructor(props){
     super(props);
     this.state = {value:props.value || 0}
-
   }
+
   onDoubleClick = (application, newTab = false) => {
     const routeParams = ["workforce.route.application", [decodeId(application.id)]];
     if (application?.isHistory) {
@@ -41,22 +41,24 @@ class ApplicationsProcessPage extends Component {
   onAdd = () => {
     historyPush(this.props.modulesManager, this.props.history, "workforce.route.application");
   };
-  
 
-  a11yProps (index) {
+  a11yProps(index) {
     return {
       id: `simple-tab-${index}`,
       'aria-controls': `simple-tabpanel-${index}`,
     };
   }
+
   handleChange = (event, newValue) => {
-    this.setState({ value: newValue });
+    this.setState({ value: newValue }, () => {
+      console.log("Current tab index:", this.state.value);
+    });
   };
-  
+
   render() {
     const { intl, classes, rights } = this.props;
     const {value}=this.state;
-    console.log(value)
+
     return (
       <div className={classes.page}>
          <AppBar position="static">
@@ -79,7 +81,7 @@ class ApplicationsProcessPage extends Component {
           />
         </Tabs>
       </AppBar>
-     
+
       <TabPanel value={value} index={0}>
         <ApplicationProcessSearcher
           cacheFiltersKey="allApplications"
@@ -108,16 +110,13 @@ class ApplicationsProcessPage extends Component {
         />
       </TabPanel>
 
-       
-        {/*{rights.includes(RIGHT_ORGANIZATION_CREATE)*/}
-        {/*  && withTooltip(*/}
         {withTooltip(
           <div className={classes.fab}>
             <Fab color="primary" onClick={this.onAdd}>
               <AddIcon />
             </Fab>
           </div>,
-          <FormattedMessage module={MODULE_NAME} id={"workforce.employee.application.addNewTooltip"} />,
+          <FormattedMessage module={MODULE_NAME} id={"workforce.employee.application.addNewTooltip"} />, 
         )}
       </div>
     );
