@@ -615,7 +615,6 @@ class ApplicationProcessSearcher extends Component {
                 open={forwardModalOpen}
                 onClose={this.handleCloseForwardModal}
                 selectedApplication={selectedApplication}
-                officeData={this.state.officeData}
                 onSubmitForward={this.handleForwardSubmit}
               />
             );
