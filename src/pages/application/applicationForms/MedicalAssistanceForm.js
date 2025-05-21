@@ -368,7 +368,6 @@ const MedicalAssistanceForm = ({
       );
     }
     setActiveStep((prevStep) => prevStep + 1);
-   
 
     console.log({activeStep})
   };
