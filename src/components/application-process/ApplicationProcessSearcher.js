@@ -47,6 +47,7 @@ import ForwardApplicationModal from "./ForwardApplicationModal";
 import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 import ForwardApplicationAdminModal from "./ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./ForwardApplicationCheckerModal";
+import ForwardApplicationApproverModal from "./ForwardApplicationApproverModal";
 
 const styles = (theme) => ({
   paper: {
@@ -551,7 +552,7 @@ class ApplicationProcessSearcher extends Component {
                historyPush(
                  this.props.modulesManager,
                  this.props.history,
-                 "workforce.route.applications.application.approve",
+                 "workforce.route.applications.application.verify",
                  [decodeId(application.id)],
                  false
                );
@@ -700,6 +701,15 @@ class ApplicationProcessSearcher extends Component {
           } else if (userType === WORKFORCE_USER_TYPE.CHECKER) {
             return (
               <ForwardApplicationCheckerMoal
+                open={forwardModalOpen}
+                onClose={this.handleCloseForwardModal}
+                selectedApplication={selectedApplication}
+                onSubmitForward={this.handleForwardSubmit}
+              />
+            );
+          } else if (userType === WORKFORCE_USER_TYPE.APPROVER) {
+            return (
+              <ForwardApplicationApproverModal
                 open={forwardModalOpen}
                 onClose={this.handleCloseForwardModal}
                 selectedApplication={selectedApplication}

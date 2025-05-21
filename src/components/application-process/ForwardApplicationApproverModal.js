@@ -124,14 +124,13 @@ const ForwardApplicationAdminModal = ({
 
       const updateApplicationData = {
         id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.FIRST_FORWARD,
+        status: WORKFORCE_STATUS.APPROVED,
       };
       const createApplicationMovementData = {
-        id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.FIRST_FORWARD,
-        note: "আবেদনের প্রমাণপত্র যাচাই করা হয়েছে",
-        action: "first_forward",
-
+       id: decodeId(selectedApplication.id),
+      status: WORKFORCE_STATUS.APPROVED,
+      note: "আবেদন অনুমোদন করা হয়েছে",
+      action: "approved",
       };
    await dispatch(
         updateApplication(
