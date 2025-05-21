@@ -278,6 +278,16 @@ class ApplicationProcessSearcher extends Component {
     "workforce.employee.application.applicationDate",
     this.isShowHistory() ? "workforce.version" : "",
   ];
+  headerApprover = () => [
+    "workforce.employee.name.en",
+    "workforce.employee.name.bn",
+    "workforce.employee.application.applicationType",
+    "workforce.employee.application.moneyAmount",
+    "workforce.employee.application.factoryName",
+    "workforce.employee.application.status",
+    "workforce.employee.application.applicationDate",
+    this.isShowHistory() ? "workforce.version" : "",
+  ];
 
   sorts = () => [];
 
@@ -498,6 +508,80 @@ class ApplicationProcessSearcher extends Component {
      ));
      return formatters;
   };
+  itemFormattersApprover = () => {
+   const formatters = [
+       (application) => application.workforceEmployee?.firstNameBn,
+       (application) => application.workforceEmployee?.lastNameBn,
+       // (application) => application.workforceEmployee?.nid,
+       // (application) => application.workforceEmployee?.phoneNumber,
+       (application) => application.applicationType,
+       // (application) => application.organizationType,
+       (application) => 200000,
+       (application) => "Nafi",
+       (application) => "Akij",
+       (application) => application.status,
+       (application) => application.dateCreated.split("T")[0],
+       // (application) => "Hafiz",
+       // (application) => application.dateCreated.split('T')[0],
+       this.isShowHistory() ? application?.version : null,
+     ];
+ 
+     formatters.push((application) => (
+       <div className={this.props.classes.horizontalButtonContainer}>
+         <Tooltip title="দেখুন">
+           <IconButton
+             disabled={application?.isHistory}
+             onClick={() => {
+               historyPush(
+                 this.props.modulesManager,
+                 this.props.history,
+                 "workforce.route.applications.application.process.view",
+                 [decodeId(application.id)],
+                 false
+               );
+             }}
+           >
+             <TabIcon />
+           </IconButton>
+         </Tooltip>
+ 
+         <Tooltip title="অনুমোদন">
+           <IconButton
+             disabled={application?.isHistory}
+             onClick={() => {
+               historyPush(
+                 this.props.modulesManager,
+                 this.props.history,
+                 "workforce.route.applications.application.approve",
+                 [decodeId(application.id)],
+                 false
+               );
+             }}
+           >
+             <VerifiedUserIcon />
+           </IconButton>
+         </Tooltip>
+        
+         <Tooltip title="ফরওয়ার্ড">
+           <IconButton
+             disabled={application?.isHistory}
+             onClick={() => this.handleOpenForwardModal(application)}
+           >
+             <ForwardIcon />
+           </IconButton>
+         </Tooltip>
+         <Tooltip title="রিভার্ট">
+           <IconButton
+             disabled={application?.isHistory}
+             // onClick={() => this.handleOpenForwardModal(application)}
+           >
+             <UndoIcon />
+           </IconButton>
+         </Tooltip>
+       </div>
+     ));
+     return formatters;
+  };
 
   rowDisabled = (selection, i) => !!i.validityTo;
 
@@ -570,19 +654,23 @@ class ApplicationProcessSearcher extends Component {
           headers={
             getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT
               ? this.headerApplicant
-              : getUserTypeFromRights(userRights) ===
-                WORKFORCE_USER_TYPE.CHECKER
+              : getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER
               ? this.headerChecker
+              : getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER
+              ? this.headerApprover
               : this.headers
           }
+
           itemFormatters={
             getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT
               ? this.itemFormattersApplicant
-              : getUserTypeFromRights(userRights) ===
-                WORKFORCE_USER_TYPE.CHECKER
+              : getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER
               ? this.itemFormattersChecker
+              : getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER
+              ? this.itemFormattersApprover
               : this.itemFormatters
           }
+
           sorts={this.sorts}
           rowDisabled={this.rowDisabled}
           rowLocked={this.rowLocked}
@@ -618,7 +706,6 @@ class ApplicationProcessSearcher extends Component {
                 open={forwardModalOpen}
                 onClose={this.handleCloseForwardModal}
                 selectedApplication={selectedApplication}
-                officeData={this.state.officeData}
                 onSubmitForward={this.handleForwardSubmit}
               />
             );

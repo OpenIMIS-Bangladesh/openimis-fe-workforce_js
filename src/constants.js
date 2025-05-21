@@ -50,7 +50,8 @@ export const WORKFORCE_STATUS = {
   RESIGNED: "resigned",
   FIRST_FORWARD:"first_forward",
   SECOND_FORWARD:"second_forward",
-  THIRD_FORWARD:"third_forward"
+  THIRD_FORWARD:"third_forward",
+  NEW:"new"
 };
 
 export const WORKFORCE_USER_TYPE = {

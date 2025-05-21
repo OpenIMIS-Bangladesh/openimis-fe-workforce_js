@@ -133,7 +133,7 @@ const ForwardApplicationAdminModal = ({
    await dispatch(
         updateApplication(
           updateApplicationData,
-          `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`
+          `update workforce application`
         )
       );
    await dispatch(
@@ -142,7 +142,7 @@ const ForwardApplicationAdminModal = ({
           `create workforce movement`
         )
       );
-      setServerResponse({ status: "SUCCESS", message: "সাবমিশনে সফল হয়েছে!" });
+      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
 
   };
 

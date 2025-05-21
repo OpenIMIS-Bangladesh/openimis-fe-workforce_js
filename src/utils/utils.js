@@ -20,9 +20,10 @@ export function getUserType() {
 
 export function getUserTypeFromRights(user_rights) {
   let user_type = WORKFORCE_USER_TYPE.APPLICANT;
-  console.clear();
   if (user_rights.includes(812001)) {
     user_type = WORKFORCE_USER_TYPE.CHECKER;
+  }else if (user_rights.includes(813001)) {
+    user_type = WORKFORCE_USER_TYPE.APPROVER;
   }else if(!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }
