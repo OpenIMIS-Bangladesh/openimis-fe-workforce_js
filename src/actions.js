@@ -24,7 +24,8 @@ import {
   formatWorkforceEmployeeAccidentInfoGQL,
   formatApplicationeGQL,
   formatWorkforceBeneficiaryGQL,
-  formatWorkforceOtpGQL
+  formatWorkforceOtpGQL,
+  formatApplicationMovementGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 
