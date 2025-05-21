@@ -329,7 +329,7 @@ class ApplicationProcessSearcher extends Component {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="যাচাই">
+        {/* <Tooltip title="যাচাই">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -344,7 +344,7 @@ class ApplicationProcessSearcher extends Component {
           >
             <VerifiedUserIcon />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip title="অনুমোদন">
           <IconButton
             disabled={application?.isHistory}
@@ -353,22 +353,22 @@ class ApplicationProcessSearcher extends Component {
             <CheckIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="ফরওয়ার্ড">
+        {/* <Tooltip title="ফরওয়ার্ড">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => this.handleOpenForwardModal(application)}
           >
             <ForwardIcon />
           </IconButton>
-        </Tooltip>
-        <Tooltip title="রিভার্ট">
+        </Tooltip> */}
+        {/* <Tooltip title="রিভার্ট">
           <IconButton
             disabled={application?.isHistory}
             // onClick={() => this.handleOpenForwardModal(application)}
           >
             <UndoIcon />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip title="রিজেক্ট">
           <span>
             <IconButton

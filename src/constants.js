@@ -36,6 +36,7 @@ export const WORKFORCE_STATUS = {
   COMPLETED: "completed",
   ARCHIVED: "archived",
   APPROVED: "approved",
+  DG_APPROVED: "send_for_dg_approve",
   REJECTED: "rejected",
   DEACTIVATED: "deactivated",
   REINSTATED: "reinstated",
