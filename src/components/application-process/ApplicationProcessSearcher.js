@@ -451,6 +451,22 @@ handleApproval = async (application) => {
             </IconButton>
           </span>
         </Tooltip>
+          <Tooltip title="গৃহীত কার্যক্রম">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.process.actions",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+          <HistoryIcon />
+          </IconButton>
+        </Tooltip>
       </div>
     ));
     return formatters;
