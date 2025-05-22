@@ -18,8 +18,8 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
-import FileUploader from "../../pickers/FileUploader";
-import { updateApplication } from "../../actions";
+import FileUploader from "../../../pickers/FileUploader";
+import { updateApplication } from "../../../actions";
 
 const ForwardApplicationModal = ({
   open,

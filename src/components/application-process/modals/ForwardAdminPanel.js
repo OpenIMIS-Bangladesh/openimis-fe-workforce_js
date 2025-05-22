@@ -19,12 +19,11 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
-import DistrictOfficePicker from "../../pickers/DistrictOfficePicker";
+import DistrictOfficePicker from "../../../pickers/DistrictOfficePicker";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchApplication, updateApplication } from "../../actions";
-import { WORKFORCE_STATUS } from "../../constants";
-import ForwardAdminPanel from "./ForwardAdminPanel";
-import ForwardApplicationModal from "./ForwardApplicationModal";
+import { fetchApplication, updateApplication } from "../../../actions";
+import { WORKFORCE_STATUS } from "../../../constants";
+import EmployeePicker from "../../../pickers/EmployeePicker";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -66,12 +65,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ForwardApplicationAdminModal = ({
-  open,
-  onClose,
-  selectedApplication,
-  onSubmitForward,
-}) => {
+const ForwardAdminPanel = ({
+                                        open,
+                                        onClose,
+                                        selectedApplication,
+                                        onSubmitForward,
+                                      }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
@@ -80,6 +79,7 @@ const ForwardApplicationAdminModal = ({
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
   const [officeType, setOfficeType] = useState("");
+  const [employeeType,setEmployeeType] = useState("")
   const [formData, setFormData] = useState(null);
   useEffect(() => {
     if (!open) {
@@ -89,15 +89,13 @@ const ForwardApplicationAdminModal = ({
       setFormData(null);
     }
     if (selectedApplication) {
-      return dispatch(
-        fetchApplication(modulesManager, [
-          `id: "${decodeId(selectedApplication?.id)}"`,
-        ])
-      );
+      return dispatch(fetchApplication(modulesManager, [`id: "${decodeId(selectedApplication?.id)}"`]));
     }
   }, [open]);
 
-  const data = useSelector((state) => state.workforce[`application`] ?? []);
+  const data = useSelector(
+    (state) => state.workforce[`application`] ?? [],
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -123,44 +121,25 @@ const ForwardApplicationAdminModal = ({
     setOfficeType(value);
   };
 
-  const handleForward = () => {
+  const handleInternalForward = (event) =>{
+    const value = event.target.value;
+    setEmployeeType(value);
+  }
 
-      const updateApplicationData = {
-        id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.FIRST_FORWARD,
-      };
-      dispatch(
-        updateApplication(
-          updateApplicationData,
-          `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`
-        )
-      );
-    
+  const handleForward = () => {
+    const updateApplicationData = {
+      id: decodeId(selectedApplication.id),
+      status: WORKFORCE_STATUS.SECOND_FORWARD,
+    };
+    dispatch(
+      updateApplication(
+        updateApplicationData,
+        `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`,
+      ),
+    );
   };
 
-  console.log({ aha: selectedApplication });
-
-  if (selectedApplication?.status === WORKFORCE_STATUS.FIRST_FORWARD) {
-    return (
-      <ForwardAdminPanel
-        open={open}
-        onClose={onClose}
-        selectedApplication={selectedApplication}
-        onSubmitForward={onSubmitForward}
-      />
-    );
-  }
-
-  if (selectedApplication?.status === WORKFORCE_STATUS.SECOND_FORWARD) {
-    return (
-      <ForwardApplicationModal
-        open={open}
-        onClose={onClose}
-        selectedApplication={selectedApplication}
-        onSubmitForward={onSubmitForward}
-      />
-    );
-  }
+  console.log({ aha: data });
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -187,9 +166,9 @@ const ForwardApplicationAdminModal = ({
         >
           {selectedApplication
             ? `${
-                selectedApplication.workforceEmployee?.firstNameBn ||
-                "আবেদনকারী"
-              } এর আবেদন ফরওয়ার্ড করতে চান?`
+              selectedApplication.workforceEmployee?.firstNameBn ||
+              "আবেদনকারী"
+            } এর আবেদন ফরওয়ার্ড করতে চান?`
             : "একটি আবেদন বেছে নিন।"}
         </Typography>
 
@@ -227,55 +206,54 @@ const ForwardApplicationAdminModal = ({
               <FormControlLabel
                 value="dol"
                 control={<Radio color="primary" />}
-                label={
-                  <FormattedMessage
-                    id="workforce.office.dol"
-                    module="workforce"
-                  />
-                }
+                label={<FormattedMessage id="workforce.office.dol" module="workforce" />}
               />
               <FormControlLabel
                 value="dife"
                 control={<Radio color="primary" />}
-                label={
-                  <FormattedMessage
-                    id="workforce.office.dife"
-                    module="workforce"
-                  />
-                }
+                label={<FormattedMessage id="workforce.office.dife" module="workforce" />}
               />
             </RadioGroup>
           </FormControl>
 
-          {officeType && (
-            <Grid container spacing={3} style={{marginTop:3}}>
-              <Typography
-                variant="subtitle1"
-                gutterBottom
-                style={{
-                  fontWeight: "bold",
-                  marginTop: 3,
-                  textAlign: "center",
-                }}
-              >
-                অফিস নির্বাচন
-              </Typography>
-              <Grid item xs={12} sm={12}>
-                <DistrictOfficePicker
-                  value={formData?.id}
-                  officeType={officeType}
-                  label={
-                    <FormattedMessage
-                      id="workforce.officeType.selector.picker"
-                      module="workforce"
-                    />
-                  }
-                  required
-                  onChange={(v) => setFormData(v)}
-                />
-              </Grid>
+          {officeType && <Grid container spacing={3}>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
+            >
+              অফিস নির্বাচন
+            </Typography>
+            <Grid item xs={12} sm={12}>
+              <DistrictOfficePicker
+                value={formData?.id}
+                officeType={officeType}
+                label={
+                  <FormattedMessage
+                    id="workforce.officeType.selector.picker"
+                    module="workforce"
+                  />
+                }
+                required
+                onChange={(v) => setFormData(v)}
+              />
             </Grid>
-          )}
+            <Grid item xs={12} sm={12}>
+              <EmployeePicker
+                value={employeeType?.id}
+                employeeType={employeeType}
+                label={
+                  <FormattedMessage
+                    id="workforce.EmployeeType.selector.picker"
+                    module="workforce"
+                  />
+                }
+                required
+                onChange={(v) => handleInternalForward(v)}
+              />
+            </Grid>
+          </Grid>
+          }
         </Paper>
 
         {/* Action Buttons */}
@@ -298,4 +276,5 @@ const ForwardApplicationAdminModal = ({
   );
 };
 
-export default ForwardApplicationAdminModal;
+export default ForwardAdminPanel;
+

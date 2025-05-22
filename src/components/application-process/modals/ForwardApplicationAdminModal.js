@@ -19,11 +19,10 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
-import DistrictOfficePicker from "../../pickers/DistrictOfficePicker";
-import EmployeePicker from "../../pickers/EmployeePicker";
+import DistrictOfficePicker from "../../../pickers/DistrictOfficePicker";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchApplication, updateApplication, createApplicationMovement } from "../../actions";
-import { WORKFORCE_STATUS } from "../../constants";
+import { fetchApplication, updateApplication } from "../../../actions";
+import { WORKFORCE_STATUS } from "../../../constants";
 import ForwardAdminPanel from "./ForwardAdminPanel";
 import ForwardApplicationModal from "./ForwardApplicationModal";
 
@@ -109,47 +108,59 @@ const ForwardApplicationAdminModal = ({
       destinationOffice: formData,
     };
 
-    // try {
-    //   const response = await onSubmitForward(payload);
-    //   setServerResponse(response);
-    // } catch {
-    //   setServerResponse({ status: "ERROR", message: "সাবমিশনে ব্যর্থ হয়েছে!" });
-    // } finally {
-    //   setSubmitting(false);
-    // }
-
+    try {
+      const response = await onSubmitForward(payload);
+      setServerResponse(response);
+    } catch {
+      setServerResponse({ status: "ERROR", message: "সাবমিশনে ব্যর্থ হয়েছে।" });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleForward = async () => {
+  const handleApplicationReason = (event) => {
+    const value = event.target.value;
+    setOfficeType(value);
+  };
+
+  const handleForward = () => {
 
       const updateApplicationData = {
         id: decodeId(selectedApplication.id),
         status: WORKFORCE_STATUS.FIRST_FORWARD,
       };
-      const createApplicationMovementData = {
-        id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.FIRST_FORWARD,
-        note: "আবেদনের প্রমাণপত্র যাচাই করা হয়েছে",
-        action: "first_forward",
-
-      };
-   await dispatch(
+      dispatch(
         updateApplication(
           updateApplicationData,
-          `update workforce application`
+          `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`
         )
       );
-   await dispatch(
-        createApplicationMovement(
-          createApplicationMovementData,
-          `create workforce movement`
-        )
-      );
-      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
-
+    
   };
 
   console.log({ aha: selectedApplication });
+
+  if (selectedApplication?.status === WORKFORCE_STATUS.FIRST_FORWARD) {
+    return (
+      <ForwardAdminPanel
+        open={open}
+        onClose={onClose}
+        selectedApplication={selectedApplication}
+        onSubmitForward={onSubmitForward}
+      />
+    );
+  }
+
+  if (selectedApplication?.status === WORKFORCE_STATUS.SECOND_FORWARD) {
+    return (
+      <ForwardApplicationModal
+        open={open}
+        onClose={onClose}
+        selectedApplication={selectedApplication}
+        onSubmitForward={onSubmitForward}
+      />
+    );
+  }
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -165,7 +176,7 @@ const ForwardApplicationAdminModal = ({
           gutterBottom
           style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
         >
-          নিজ অফিসে পাঠান
+          বিভাগীয় বা জেলা অফিসে পাঠান
         </Typography>
 
         <Typography
@@ -199,9 +210,44 @@ const ForwardApplicationAdminModal = ({
 
         {/* Form Fields */}
         <Paper className={classes.sectionPaper} elevation={1}>
-        
+          <FormControl component="fieldset" className={classes.formSection}>
+            {/* New Export-Oriented Company Question */}
+            <Typography
+              variant="body1"
+              className={`${classes.title} ${classes.section}`}
+            >
+              {
+                <FormattedMessage
+                  id="workforce.office.type"
+                  module="workforce"
+                />
+              }
+            </Typography>
+            <RadioGroup value={officeType} onChange={handleApplicationReason}>
+              <FormControlLabel
+                value="dol"
+                control={<Radio color="primary" />}
+                label={
+                  <FormattedMessage
+                    id="workforce.office.dol"
+                    module="workforce"
+                  />
+                }
+              />
+              <FormControlLabel
+                value="dife"
+                control={<Radio color="primary" />}
+                label={
+                  <FormattedMessage
+                    id="workforce.office.dife"
+                    module="workforce"
+                  />
+                }
+              />
+            </RadioGroup>
+          </FormControl>
 
-         
+          {officeType && (
             <Grid container spacing={3} style={{marginTop:3}}>
               <Typography
                 variant="subtitle1"
@@ -212,24 +258,24 @@ const ForwardApplicationAdminModal = ({
                   textAlign: "center",
                 }}
               >
-                অফিসার নির্বাচন করুন
+                অফিস নির্বাচন
               </Typography>
               <Grid item xs={12} sm={12}>
-                <EmployeePicker
+                <DistrictOfficePicker
                   value={formData?.id}
                   officeType={officeType}
                   label={
                     <FormattedMessage
-                      id="workforce.officer.selector.picker"
+                      id="workforce.officeType.selector.picker"
                       module="workforce"
                     />
                   }
-                  modulesManager={modulesManager}
                   required
                   onChange={(v) => setFormData(v)}
                 />
               </Grid>
             </Grid>
+          )}
         </Paper>
 
         {/* Action Buttons */}

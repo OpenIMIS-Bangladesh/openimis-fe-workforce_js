@@ -19,11 +19,11 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
-import DistrictOfficePicker from "../../pickers/DistrictOfficePicker";
-import EmployeePicker from "../../pickers/EmployeePicker";
+import DistrictOfficePicker from "../../../pickers/DistrictOfficePicker";
+import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchApplication, updateApplication, createApplicationMovement } from "../../actions";
-import { WORKFORCE_STATUS } from "../../constants";
+import { fetchApplication, updateApplication, createApplicationMovement } from "../../../actions";
+import { WORKFORCE_STATUS } from "../../../constants";
 import ForwardAdminPanel from "./ForwardAdminPanel";
 import ForwardApplicationModal from "./ForwardApplicationModal";
 

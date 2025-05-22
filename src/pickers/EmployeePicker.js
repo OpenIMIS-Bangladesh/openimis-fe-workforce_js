@@ -24,6 +24,7 @@ const EmployeePicker = ({
 
   useEffect(() => {
     return dispatch(fetchEmployeePick(modulesManager, []));
+    // return dispatch(fetchWorkforceUnitsWithEmployeeDesignation(modulesManager, []));
   }, []);
 
   const isLoading = useSelector(

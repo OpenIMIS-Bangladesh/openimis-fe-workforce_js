@@ -43,11 +43,11 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import FileUploader from "../../pickers/FileUploader";
 import CloseIcon from "@material-ui/icons/Close";
-import ForwardApplicationModal from "./ForwardApplicationModal";
+import ForwardApplicationModal from "./modals/ForwardApplicationModal";
 import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
-import ForwardApplicationAdminModal from "./ForwardApplicationAdminModal";
-import ForwardApplicationCheckerMoal from "./ForwardApplicationCheckerModal";
-import ForwardApplicationApproverModal from "./ForwardApplicationApproverModal";
+import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
+import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
+import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 
 const styles = (theme) => ({
   paper: {
