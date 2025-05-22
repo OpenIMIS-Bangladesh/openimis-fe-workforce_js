@@ -39,7 +39,6 @@ import { fetchApplicationsSummary, fetchOrganizationEmployeeDesignation } from "
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardIcon from "@material-ui/icons/Forward";
 import UndoIcon from "@material-ui/icons/Undo";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import FileUploader from "../../pickers/FileUploader";
 import CloseIcon from "@material-ui/icons/Close";
@@ -48,6 +47,9 @@ import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
+import { WORKFORCE_STATUS } from "../../constants";
+import { updateApplication, createApplicationMovement } from "../../actions";
+import HistoryIcon from '@material-ui/icons/History';
 
 const styles = (theme) => ({
   paper: {
@@ -186,28 +188,97 @@ class ApplicationProcessSearcher extends Component {
     });
   };
 
-  handleReject = () => {
-    const { selectedApplication } = this.state;
-    if (window.confirm("Are you sure you want to reject this application?")) {
-      this.setState({
+handleReject = async (application) => {
+  const { selectedApplication } = this.state;
+
+  if (window.confirm("Are you sure you want to reject this application?")) {
+    this.setState(
+      {
         selectedApplication: {
           ...selectedApplication,
           isHistory: true,
         },
-      });
-    }
-  };
-  handleApproval = () => {
-    const { selectedApplication } = this.state;
-    if (window.confirm("Are you sure you want to approve this application?")) {
-      this.setState({
+      },
+      async () => {
+        const updateApplicationData = {
+          id: decodeId(application.id),
+          status: WORKFORCE_STATUS.REJECTED,
+        };
+
+        const createApplicationMovementData = {
+          id: decodeId(application.id),
+          status: WORKFORCE_STATUS.REJECTED,
+          note: "আবেদন বাতিল করা হয়েছে",
+          action: "rejected",
+        };
+
+        try {
+          await this.props.updateApplication(updateApplicationData, "update workforce application");
+
+          await this.props.createApplicationMovement(
+            createApplicationMovementData,
+            "create workforce movement"
+          );
+          this.setState({
+            serverResponse: { status: "SUCCESS", message: "আবেদন বাতিল করা হয়েছে!" },
+          });
+         window.location.reload();
+        } catch (error) {
+          console.error("Approval failed:", error);
+          this.setState({
+            serverResponse: { status: "ERROR", message: "আবেদন বাতিল ব্যর্থ হয়েছে!" },
+          });
+        }
+      }
+    );
+  }
+};
+handleApproval = async (application) => {
+  const { selectedApplication } = this.state;
+
+  if (window.confirm("Are you sure you want to approve this application?")) {
+    this.setState(
+      {
         selectedApplication: {
           ...selectedApplication,
           isHistory: true,
         },
-      });
-    }
-  };
+      },
+      async () => {
+        const updateApplicationData = {
+          id: decodeId(application.id),
+          status: WORKFORCE_STATUS.APPROVED,
+        };
+
+        const createApplicationMovementData = {
+          id: decodeId(application.id),
+          status: WORKFORCE_STATUS.APPROVED,
+          note: "আবেদন অনুমোদন করা হয়েছে",
+          action: "approved",
+        };
+
+        try {
+          await this.props.updateApplication(updateApplicationData, "update workforce application");
+
+          await this.props.createApplicationMovement(
+            createApplicationMovementData,
+            "create workforce movement"
+          );
+          this.setState({
+            serverResponse: { status: "SUCCESS", message: "আবেদন অনুমোদন করা হয়েছে!" },
+          });
+        window.location.reload();
+        } catch (error) {
+          console.error("Approval failed:", error);
+          this.setState({
+            serverResponse: { status: "ERROR", message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!" },
+          });
+        }
+      }
+    );
+  }
+};
+
 
   handleForwardSubmit = (event) => {
     this.state.editorContent;
@@ -348,7 +419,7 @@ class ApplicationProcessSearcher extends Component {
         <Tooltip title="অনুমোদন">
           <IconButton
             disabled={application?.isHistory}
-            onClick={this.handleApproval}
+            onClick={()=>this.handleApproval(application)}
           >
             <CheckIcon />
           </IconButton>
@@ -372,13 +443,29 @@ class ApplicationProcessSearcher extends Component {
         <Tooltip title="রিজেক্ট">
           <span>
             <IconButton
-              onClick={this.handleReject}
+              onClick={()=>this.handleReject(application)}
               disabled={this.state.selectedApplication?.isHistory}
               color="error"
             >
               <CloseIcon />
             </IconButton>
           </span>
+        </Tooltip>
+          <Tooltip title="গৃহীত কার্যক্রম">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.process.actions",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+          <HistoryIcon />
+          </IconButton>
         </Tooltip>
       </div>
     ));
@@ -426,7 +513,7 @@ class ApplicationProcessSearcher extends Component {
               );
             }}
           >
-            <TabIcon />
+          <HistoryIcon />
           </IconButton>
         </Tooltip>
       </div>
@@ -760,6 +847,8 @@ const mapDispatchToProps = (dispatch) =>
     {
       fetchApplicationsSummary,
       fetchOrganizationEmployeeDesignation,
+      updateApplication,
+      createApplicationMovement,
       journalize,
       coreConfirm,
     },
