@@ -245,6 +245,8 @@ export function fetchWorkforceOffice(mm, filters) {
   return graphql(payload, "WORKFORCE_OFFICE");
 }
 
+
+
 export function fetchWorkforceFactoriesSummary(mm, filters) {
   const location_projection =
     "location" + mm.getProjection("location.Location.FlatProjection");
@@ -1901,6 +1903,23 @@ export function fetchApplicationId(mm, clientMutationId) {
 }
 `;
   return graphql(payload, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID");
+}
+
+export function fetchOrganizationEmployeeDesignation(mm, clientMutationId) {
+  const payload = `{
+  workforceOrganizationEmployeeDesignations(employee_Id:"${clientMutationId}") {
+    edges {
+      node {
+        id
+        designation {
+          id
+        }
+      }
+    }
+  }
+}
+`;
+  return graphql(payload, "WORKFORCE_ORGANIZATION_BY_DESIGNATION_MUTATION_ID");
 }
 
 export function fetchWorkforceUnitsWithEmployeeDesignation(filters) {

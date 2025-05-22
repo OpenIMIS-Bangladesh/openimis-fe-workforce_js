@@ -35,7 +35,7 @@ import {
 } from "@material-ui/icons";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../constants";
-import { fetchApplicationsSummary } from "../../actions";
+import { fetchApplicationsSummary, fetchOrganizationEmployeeDesignation } from "../../actions";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardIcon from "@material-ui/icons/Forward";
 import UndoIcon from "@material-ui/icons/Undo";
@@ -584,6 +584,10 @@ class ApplicationProcessSearcher extends Component {
      return formatters;
   };
 
+  getUserOrganization = async(userId) =>{
+    await  this.fetchOrganizationEmployeeDesignation(this.props.modulesManager,decodeId(userId))
+  }
+
   rowDisabled = (selection, i) => !!i.validityTo;
 
   rowLocked = (selection, i) => !!i.clientMutationId;
@@ -608,7 +612,10 @@ class ApplicationProcessSearcher extends Component {
       cacheFiltersKey,
       onDoubleClick,
       userRights,
+      userId
     } = this.props;
+
+    // this.getUserOrganization(userId)
 
     const count = applicationsPageInfo.totalCount;
 
@@ -621,6 +628,8 @@ class ApplicationProcessSearcher extends Component {
         }
       />
     );
+
+    // console.log({designationId})
 
     return (
       <>
@@ -737,17 +746,20 @@ const mapStateToProps = (state) => ({
   applicationsPageInfo: state.workforce.applicationsPageInfo,
   fetchingApplications: state.workforce.fetchingApplications,
   fetchedApplications: state.workforce.fetchedApplications,
+  // designationId:state.workforce.fetchedWorkforceOrganizationByDesignationId,
   errorApplications: state.workforce.errorApplications,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   confirmed: state.core.confirmed,
   userRights: state.core.user.i_user.rights,
+  userId:state.core.user.i_user.uuid
 });
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       fetchApplicationsSummary,
+      fetchOrganizationEmployeeDesignation,
       journalize,
       coreConfirm,
     },

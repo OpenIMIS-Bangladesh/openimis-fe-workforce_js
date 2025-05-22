@@ -61,6 +61,7 @@ function reducer(
 
     fetchedRepresentativeByClientMutationId: null,
     fetchedApplicationIdByClientMutationId: null,
+    fetchedWorkforceOrganizationByDesignationId: null,
 
     ///organizations employee states
     fetchingOrganizationEmployees: false,
@@ -1268,6 +1269,14 @@ function reducer(
         ...state,
         fetchedApplicationIdByClientMutationId: parseData(
           action.payload.data.workforceApplication
+        ),
+      };
+
+    case "WORKFORCE_ORGANIZATION_BY_DESIGNATION_MUTATION_ID_RESP":
+      return {
+        ...state,
+        fetchedWorkforceOrganizationByDesignationId: parseData(
+          action.payload.data.workforceOrganizationEmployeeDesignations.designation.id
         ),
       };
 
