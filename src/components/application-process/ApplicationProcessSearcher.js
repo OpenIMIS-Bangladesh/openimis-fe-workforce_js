@@ -39,7 +39,6 @@ import { fetchApplicationsSummary } from "../../actions";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardIcon from "@material-ui/icons/Forward";
 import UndoIcon from "@material-ui/icons/Undo";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import FileUploader from "../../pickers/FileUploader";
 import CloseIcon from "@material-ui/icons/Close";
@@ -48,6 +47,8 @@ import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
+import { WORKFORCE_STATUS } from "../../constants";
+import { updateApplication, createApplicationMovement } from "../../actions";
 
 const styles = (theme) => ({
   paper: {
@@ -197,17 +198,53 @@ class ApplicationProcessSearcher extends Component {
       });
     }
   };
-  handleApproval = () => {
-    const { selectedApplication } = this.state;
-    if (window.confirm("Are you sure you want to approve this application?")) {
-      this.setState({
+
+handleApproval = async (application) => {
+  const { selectedApplication } = this.state;
+
+  if (window.confirm("Are you sure you want to approve this application?")) {
+    this.setState(
+      {
         selectedApplication: {
           ...selectedApplication,
           isHistory: true,
         },
-      });
-    }
-  };
+      },
+      async () => {
+        const updateApplicationData = {
+          id: decodeId(application.id),
+          status: WORKFORCE_STATUS.APPROVED,
+        };
+
+        const createApplicationMovementData = {
+          id: decodeId(application.id),
+          status: WORKFORCE_STATUS.FIRST_FORWARD,
+          note: "আবেদন অনুমোদন করা হয়েছে",
+          action: "approved",
+        };
+
+        try {
+          await this.props.updateApplication(updateApplicationData, "update workforce application");
+
+          await this.props.createApplicationMovement(
+            createApplicationMovementData,
+            "create workforce movement"
+          );
+
+          this.setState({
+            serverResponse: { status: "SUCCESS", message: "আবেদন অনুমোদন করা হয়েছে!" },
+          });
+        } catch (error) {
+          console.error("Approval failed:", error);
+          this.setState({
+            serverResponse: { status: "ERROR", message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!" },
+          });
+        }
+      }
+    );
+  }
+};
+
 
   handleForwardSubmit = (event) => {
     this.state.editorContent;
@@ -348,7 +385,7 @@ class ApplicationProcessSearcher extends Component {
         <Tooltip title="অনুমোদন">
           <IconButton
             disabled={application?.isHistory}
-            onClick={this.handleApproval}
+            onClick={()=>this.handleApproval(application)}
           >
             <CheckIcon />
           </IconButton>
@@ -748,6 +785,8 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       fetchApplicationsSummary,
+      updateApplication,
+      createApplicationMovement,
       journalize,
       coreConfirm,
     },
