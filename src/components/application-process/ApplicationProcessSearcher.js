@@ -187,18 +187,51 @@ class ApplicationProcessSearcher extends Component {
     });
   };
 
-  handleReject = () => {
-    const { selectedApplication } = this.state;
-    if (window.confirm("Are you sure you want to reject this application?")) {
-      this.setState({
+handleReject = async (application) => {
+  const { selectedApplication } = this.state;
+
+  if (window.confirm("Are you sure you want to reject this application?")) {
+    this.setState(
+      {
         selectedApplication: {
           ...selectedApplication,
           isHistory: true,
         },
-      });
-    }
-  };
+      },
+      async () => {
+        const updateApplicationData = {
+          id: decodeId(application.id),
+          status: WORKFORCE_STATUS.REJECTED,
+        };
 
+        const createApplicationMovementData = {
+          id: decodeId(application.id),
+          status: WORKFORCE_STATUS.REJECTED,
+          note: "আবেদন বাতিল করা হয়েছে",
+          action: "rejected",
+        };
+
+        try {
+          await this.props.updateApplication(updateApplicationData, "update workforce application");
+
+          await this.props.createApplicationMovement(
+            createApplicationMovementData,
+            "create workforce movement"
+          );
+          this.setState({
+            serverResponse: { status: "SUCCESS", message: "আবেদন বাতিল করা হয়েছে!" },
+          });
+         window.location.reload();
+        } catch (error) {
+          console.error("Approval failed:", error);
+          this.setState({
+            serverResponse: { status: "ERROR", message: "আবেদন বাতিল ব্যর্থ হয়েছে!" },
+          });
+        }
+      }
+    );
+  }
+};
 handleApproval = async (application) => {
   const { selectedApplication } = this.state;
 
@@ -218,7 +251,7 @@ handleApproval = async (application) => {
 
         const createApplicationMovementData = {
           id: decodeId(application.id),
-          status: WORKFORCE_STATUS.FIRST_FORWARD,
+          status: WORKFORCE_STATUS.APPROVED,
           note: "আবেদন অনুমোদন করা হয়েছে",
           action: "approved",
         };
@@ -230,10 +263,10 @@ handleApproval = async (application) => {
             createApplicationMovementData,
             "create workforce movement"
           );
-
           this.setState({
             serverResponse: { status: "SUCCESS", message: "আবেদন অনুমোদন করা হয়েছে!" },
           });
+        window.location.reload();
         } catch (error) {
           console.error("Approval failed:", error);
           this.setState({
@@ -409,7 +442,7 @@ handleApproval = async (application) => {
         <Tooltip title="রিজেক্ট">
           <span>
             <IconButton
-              onClick={this.handleReject}
+              onClick={()=>this.handleReject(application)}
               disabled={this.state.selectedApplication?.isHistory}
               color="error"
             >
