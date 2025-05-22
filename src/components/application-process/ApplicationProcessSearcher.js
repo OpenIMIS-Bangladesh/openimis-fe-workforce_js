@@ -49,6 +49,7 @@ import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerMod
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement } from "../../actions";
+import HistoryIcon from '@material-ui/icons/History';
 
 const styles = (theme) => ({
   paper: {
@@ -496,7 +497,7 @@ handleApproval = async (application) => {
               );
             }}
           >
-            <TabIcon />
+          <HistoryIcon />
           </IconButton>
         </Tooltip>
       </div>
