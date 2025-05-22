@@ -147,7 +147,7 @@ class ViewApplicationPage extends Component {
                   id="workforce.application.approve"
                 />
               </Button>
-              <Button
+              {/* <Button
                 variant="contained"
                 color="secondary"
                 onClick={this.handleOpenForwardModal}
@@ -156,7 +156,7 @@ class ViewApplicationPage extends Component {
                   module="workforce"
                   id="workforce.employee.application.forwardTo"
                 />
-              </Button>
+              </Button> */}
             </div>
             <ForwardApplicationAdminModal
             open={this.state.isForwardModalOpen}

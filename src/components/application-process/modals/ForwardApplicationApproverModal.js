@@ -76,7 +76,6 @@ const ForwardApplicationAdminModal = ({
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
-
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
@@ -124,13 +123,13 @@ const ForwardApplicationAdminModal = ({
 
       const updateApplicationData = {
         id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.APPROVED,
+        status: WORKFORCE_STATUS.DG_APPROVED,
       };
       const createApplicationMovementData = {
-       id: decodeId(selectedApplication.id),
-      status: WORKFORCE_STATUS.APPROVED,
-      note: "আবেদন অনুমোদন করা হয়েছে",
-      action: "approved",
+        id: decodeId(selectedApplication.id),
+        status: WORKFORCE_STATUS.APPROVED,
+        note: "আবেদন ডিজির কাছে প্রেরণ করা হয়েছে",
+        action: "send_for_dg_approve",
       };
    await dispatch(
         updateApplication(
@@ -164,7 +163,7 @@ const ForwardApplicationAdminModal = ({
           gutterBottom
           style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
         >
-          নিজ অফিসে পাঠান
+          ডিজির অফিসে পাঠান
         </Typography>
 
         <Typography
