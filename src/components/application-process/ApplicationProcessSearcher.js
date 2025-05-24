@@ -12,7 +12,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  TextField,
+  Button,
   Grid,
 } from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
@@ -35,7 +35,10 @@ import {
 } from "@material-ui/icons";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../constants";
-import { fetchApplicationsSummary, fetchOrganizationEmployeeDesignation } from "../../actions";
+import {
+  fetchApplicationsSummary,
+  fetchOrganizationEmployeeDesignation,
+} from "../../actions";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardIcon from "@material-ui/icons/Forward";
 import UndoIcon from "@material-ui/icons/Undo";
@@ -49,7 +52,7 @@ import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerMod
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement } from "../../actions";
-import HistoryIcon from '@material-ui/icons/History';
+import HistoryIcon from "@material-ui/icons/History";
 
 const styles = (theme) => ({
   paper: {
@@ -80,7 +83,6 @@ class ApplicationProcessSearcher extends Component {
       reset: 0,
       showHistoryFilter: false,
       displayVersion: false,
-
       // 🆕 Modal state
       forwardModalOpen: false,
       selectedApplication: null,
@@ -93,6 +95,7 @@ class ApplicationProcessSearcher extends Component {
       selectedOffice: "",
       selectedSuboffice: "",
       selectedUser: "",
+      selectedApplicationIds: [],
       officeData: {
         "Central Fund": {
           suboffices: {
@@ -187,110 +190,136 @@ class ApplicationProcessSearcher extends Component {
         ],
     });
   };
+  handleCheckboxChange = (id) => (event) => {
+    const { selectedApplicationIds } = this.state;
+    const selectedIndex = selectedApplicationIds.indexOf(id);
+    let newSelected = [];
 
-handleReject = async (application) => {
-  const { selectedApplication } = this.state;
+    if (selectedIndex === -1) {
+      newSelected = [...selectedApplicationIds, id];
+    } else {
+      newSelected = selectedApplicationIds.filter((item) => item !== id);
+    }
 
-  if (window.confirm("Are you sure you want to reject this application?")) {
-    this.setState(
-      {
-        selectedApplication: {
-          ...selectedApplication,
-          isHistory: true,
+    this.setState({ selectedApplicationIds: newSelected });
+  };
+
+  handleReject = async (application) => {
+    const { selectedApplication } = this.state;
+
+    if (window.confirm("Are you sure you want to reject this application?")) {
+      this.setState(
+        {
+          selectedApplication: {
+            ...selectedApplication,
+            isHistory: true,
+          },
         },
-      },
-      async () => {
-        const updateApplicationData = {
-          id: decodeId(application.id),
-          status: WORKFORCE_STATUS.REJECTED,
-        };
+        async () => {
+          const updateApplicationData = {
+            id: decodeId(application.id),
+            status: WORKFORCE_STATUS.REJECTED,
+          };
 
-        const createApplicationMovementData = {
-          id: decodeId(application.id),
-          status: WORKFORCE_STATUS.REJECTED,
-          note: "আবেদন বাতিল করা হয়েছে",
-          action: "rejected",
-        };
+          const createApplicationMovementData = {
+            id: decodeId(application.id),
+            status: WORKFORCE_STATUS.REJECTED,
+            note: "আবেদন বাতিল করা হয়েছে",
+            action: "rejected",
+          };
 
-        try {
-          await this.props.updateApplication(updateApplicationData, "update workforce application");
+          try {
+            await this.props.updateApplication(
+              updateApplicationData,
+              "update workforce application"
+            );
 
-          await this.props.createApplicationMovement(
-            createApplicationMovementData,
-            "create workforce movement"
-          );
-          this.setState({
-            serverResponse: { status: "SUCCESS", message: "আবেদন বাতিল করা হয়েছে!" },
-          });
-         window.location.reload();
-        } catch (error) {
-          console.error("Approval failed:", error);
-          this.setState({
-            serverResponse: { status: "ERROR", message: "আবেদন বাতিল ব্যর্থ হয়েছে!" },
-          });
+            await this.props.createApplicationMovement(
+              createApplicationMovementData,
+              "create workforce movement"
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদন বাতিল করা হয়েছে!",
+              },
+            });
+            window.location.reload();
+          } catch (error) {
+            console.error("Approval failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "আবেদন বাতিল ব্যর্থ হয়েছে!",
+              },
+            });
+          }
         }
-      }
-    );
-  }
-};
-handleApproval = async (application) => {
-  const { selectedApplication } = this.state;
+      );
+    }
+  };
+  handleApproval = async (application) => {
+    const { selectedApplication } = this.state;
 
-  if (window.confirm("Are you sure you want to approve this application?")) {
-    this.setState(
-      {
-        selectedApplication: {
-          ...selectedApplication,
-          isHistory: true,
+    if (window.confirm("Are you sure you want to approve this application?")) {
+      this.setState(
+        {
+          selectedApplication: {
+            ...selectedApplication,
+            isHistory: true,
+          },
         },
-      },
-      async () => {
-        const updateApplicationData = {
-          id: decodeId(application.id),
-          status: WORKFORCE_STATUS.APPROVED,
-        };
+        async () => {
+          const updateApplicationData = {
+            id: decodeId(application.id),
+            status: WORKFORCE_STATUS.APPROVED,
+          };
 
-        const createApplicationMovementData = {
-          id: decodeId(application.id),
-          status: WORKFORCE_STATUS.APPROVED,
-          note: "আবেদন অনুমোদন করা হয়েছে",
-          action: "approved",
-        };
+          const createApplicationMovementData = {
+            id: decodeId(application.id),
+            status: WORKFORCE_STATUS.APPROVED,
+            note: "আবেদন অনুমোদন করা হয়েছে",
+            action: "approved",
+          };
 
-        try {
-          await this.props.updateApplication(updateApplicationData, "update workforce application");
+          try {
+            await this.props.updateApplication(
+              updateApplicationData,
+              "update workforce application"
+            );
 
-          await this.props.createApplicationMovement(
-            createApplicationMovementData,
-            "create workforce movement"
-          );
-          this.setState({
-            serverResponse: { status: "SUCCESS", message: "আবেদন অনুমোদন করা হয়েছে!" },
-          });
-        window.location.reload();
-        } catch (error) {
-          console.error("Approval failed:", error);
-          this.setState({
-            serverResponse: { status: "ERROR", message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!" },
-          });
+            await this.props.createApplicationMovement(
+              createApplicationMovementData,
+              "create workforce movement"
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদন অনুমোদন করা হয়েছে!",
+              },
+            });
+            window.location.reload();
+          } catch (error) {
+            console.error("Approval failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
+              },
+            });
+          }
         }
-      }
-    );
-  }
-};
-
+      );
+    }
+  };
 
   handleForwardSubmit = (event) => {
     this.state.editorContent;
     event.preventDefault();
-
     const selectedUser = this.state.userList.find(
       (user) => user.id === this.state.selectedUserId
     );
-
     this.setState({ submitting: true });
-
-    // Simulate async submit
     setTimeout(() => {
       this.setState({
         submitting: false,
@@ -299,8 +328,6 @@ handleApproval = async (application) => {
           message: "আবেদন সফলভাবে ফরওয়ার্ড করা হয়েছে!",
         },
       });
-
-      // After 2 seconds, close modal and reset form
       setTimeout(() => {
         this.setState({
           forwardModalOpen: false,
@@ -316,18 +343,12 @@ handleApproval = async (application) => {
   headers = () => [
     "workforce.employee.name.en",
     "workforce.employee.name.bn",
-    // "workforce.employee.application.nid",
-    // "workforce.employee.application.phone",
     "workforce.employee.application.applicationType",
-    // "workforce.employee.application.organizationType",
     "workforce.employee.application.moneyAmount",
     "workforce.employee.application.verifier",
     "workforce.employee.application.factoryName",
     "workforce.employee.application.status",
     "workforce.employee.application.applicationDate",
-    // "workforce.employee.application.assignedBy",
-    // "workforce.employee.application.assignedDate",
-    // "workforce.employee.application.actions",
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
@@ -367,17 +388,12 @@ handleApproval = async (application) => {
     const formatters = [
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
-      // (application) => application.workforceEmployee?.nid,
-      // (application) => application.workforceEmployee?.phoneNumber,
       (application) => application.applicationType,
-      // (application) => application.organizationType,
       (application) => 200000,
       (application) => "Nafi",
       (application) => "Akij",
       (application) => application.status,
       (application) => application.dateCreated.split("T")[0],
-      // (application) => "Hafiz",
-      // (application) => application.dateCreated.split('T')[0],
       this.isShowHistory() ? application?.version : null,
     ];
 
@@ -419,7 +435,7 @@ handleApproval = async (application) => {
         <Tooltip title="অনুমোদন">
           <IconButton
             disabled={application?.isHistory}
-            onClick={()=>this.handleApproval(application)}
+            onClick={() => this.handleApproval(application)}
           >
             <CheckIcon />
           </IconButton>
@@ -443,7 +459,7 @@ handleApproval = async (application) => {
         <Tooltip title="রিজেক্ট">
           <span>
             <IconButton
-              onClick={()=>this.handleReject(application)}
+              onClick={() => this.handleReject(application)}
               disabled={this.state.selectedApplication?.isHistory}
               color="error"
             >
@@ -451,7 +467,7 @@ handleApproval = async (application) => {
             </IconButton>
           </span>
         </Tooltip>
-          <Tooltip title="গৃহীত কার্যক্রম">
+        <Tooltip title="গৃহীত কার্যক্রম">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -464,7 +480,7 @@ handleApproval = async (application) => {
               );
             }}
           >
-          <HistoryIcon />
+            <HistoryIcon />
           </IconButton>
         </Tooltip>
       </div>
@@ -513,7 +529,7 @@ handleApproval = async (application) => {
               );
             }}
           >
-          <HistoryIcon />
+            <HistoryIcon />
           </IconButton>
         </Tooltip>
       </div>
@@ -521,168 +537,187 @@ handleApproval = async (application) => {
     return formatters;
   };
   itemFormattersChecker = () => {
-   const formatters = [
-    (application) => (application.workforceEmployee ? <Checkbox   /> :""),
-       (application) => application.workforceEmployee?.firstNameBn,
-       (application) => application.workforceEmployee?.lastNameBn,
-       // (application) => application.workforceEmployee?.nid,
-       // (application) => application.workforceEmployee?.phoneNumber,
-       (application) => application.applicationType,
-       // (application) => application.organizationType,
-       (application) => 200000,
-       (application) => "Akij",
-       (application) => application.status,
-       (application) => application.dateCreated.split("T")[0],
-       // (application) => "Hafiz",
-       // (application) => application.dateCreated.split('T')[0],
-       this.isShowHistory() ? application?.version : null,
-     ];
- 
-     formatters.push((application) => (
-       <div className={this.props.classes.horizontalButtonContainer}>
-         <Tooltip title="দেখুন">
-           <IconButton
-             disabled={application?.isHistory}
-             onClick={() => {
-               historyPush(
-                 this.props.modulesManager,
-                 this.props.history,
-                 "workforce.route.applications.application.process.view",
-                 [decodeId(application.id)],
-                 false
-               );
-             }}
-           >
-             <TabIcon />
-           </IconButton>
-         </Tooltip>
- 
-         <Tooltip title="যাচাই">
-           <IconButton
-             disabled={application?.isHistory}
-             onClick={() => {
-               historyPush(
-                 this.props.modulesManager,
-                 this.props.history,
-                 "workforce.route.applications.application.verify",
-                 [decodeId(application.id)],
-                 false
-               );
-             }}
-           >
-             <VerifiedUserIcon />
-           </IconButton>
-         </Tooltip>
-        
-         <Tooltip title="ফরওয়ার্ড">
-           <IconButton
-             disabled={application?.isHistory}
-             onClick={() => this.handleOpenForwardModal(application)}
-           >
-             <ForwardIcon />
-           </IconButton>
-         </Tooltip>
-         <Tooltip title="রিভার্ট">
-           <IconButton
-             disabled={application?.isHistory}
-             // onClick={() => this.handleOpenForwardModal(application)}
-           >
-             <UndoIcon />
-           </IconButton>
-         </Tooltip>
-        
- 
-       </div>
-     ));
-     return formatters;
+    const formatters = [
+      (application) =>
+        application.workforceEmployee ? (
+          <Checkbox
+            checked={this.state.selectedApplicationIds.includes(application.id)}
+            onChange={this.handleCheckboxChange(application.id)}
+            color="primary"
+          />
+        ) : (
+          ""
+        ),
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => application.workforceEmployee?.lastNameBn,
+      (application) => application.applicationType,
+      (application) => 200000,
+      (application) => "Akij",
+      (application) => application.status,
+      (application) => application.dateCreated.split("T")[0],
+      this.isShowHistory() ? application?.version : null,
+    ];
+
+    formatters.push((application) => (
+      <div className={this.props.classes.horizontalButtonContainer}>
+        <Tooltip title="দেখুন">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.process.view",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <TabIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="যাচাই">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.verify",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <VerifiedUserIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="ফরওয়ার্ড">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => this.handleOpenForwardModal(application)}
+          >
+            <ForwardIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="রিভার্ট">
+          <IconButton
+            disabled={application?.isHistory}
+            // onClick={() => this.handleOpenForwardModal(application)}
+          >
+            <UndoIcon />
+          </IconButton>
+        </Tooltip>
+      </div>
+    ));
+    return formatters;
   };
   itemFormattersApprover = () => {
-   const formatters = [
-       (application) => application.workforceEmployee?.firstNameBn,
-       (application) => application.workforceEmployee?.lastNameBn,
-       // (application) => application.workforceEmployee?.nid,
-       // (application) => application.workforceEmployee?.phoneNumber,
-       (application) => application.applicationType,
-       // (application) => application.organizationType,
-       (application) => 200000,
-       (application) => "Nafi",
-       (application) => "Akij",
-       (application) => application.status,
-       (application) => application.dateCreated.split("T")[0],
-       // (application) => "Hafiz",
-       // (application) => application.dateCreated.split('T')[0],
-       this.isShowHistory() ? application?.version : null,
-     ];
- 
-     formatters.push((application) => (
-       <div className={this.props.classes.horizontalButtonContainer}>
-         <Tooltip title="দেখুন">
-           <IconButton
-             disabled={application?.isHistory}
-             onClick={() => {
-               historyPush(
-                 this.props.modulesManager,
-                 this.props.history,
-                 "workforce.route.applications.application.process.view",
-                 [decodeId(application.id)],
-                 false
-               );
-             }}
-           >
-             <TabIcon />
-           </IconButton>
-         </Tooltip>
- 
-         <Tooltip title="অনুমোদন">
-           <IconButton
-             disabled={application?.isHistory}
-             onClick={() => {
-               historyPush(
-                 this.props.modulesManager,
-                 this.props.history,
-                 "workforce.route.applications.application.verify",
-                 [decodeId(application.id)],
-                 false
-               );
-             }}
-           >
-             <VerifiedUserIcon />
-           </IconButton>
-         </Tooltip>
-        
-         <Tooltip title="ফরওয়ার্ড">
-           <IconButton
-             disabled={application?.isHistory}
-             onClick={() => this.handleOpenForwardModal(application)}
-           >
-             <ForwardIcon />
-           </IconButton>
-         </Tooltip>
-         <Tooltip title="রিভার্ট">
-           <IconButton
-             disabled={application?.isHistory}
-             // onClick={() => this.handleOpenForwardModal(application)}
-           >
-             <UndoIcon />
-           </IconButton>
-         </Tooltip>
-       </div>
-     ));
-     return formatters;
+    const formatters = [
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => application.workforceEmployee?.lastNameBn,
+      // (application) => application.workforceEmployee?.nid,
+      // (application) => application.workforceEmployee?.phoneNumber,
+      (application) => application.applicationType,
+      // (application) => application.organizationType,
+      (application) => 200000,
+      (application) => "Nafi",
+      (application) => "Akij",
+      (application) => application.status,
+      (application) => application.dateCreated.split("T")[0],
+      // (application) => "Hafiz",
+      // (application) => application.dateCreated.split('T')[0],
+      this.isShowHistory() ? application?.version : null,
+    ];
+
+    formatters.push((application) => (
+      <div className={this.props.classes.horizontalButtonContainer}>
+        <Tooltip title="দেখুন">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.process.view",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <TabIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="অনুমোদন">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.verify",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <VerifiedUserIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="ফরওয়ার্ড">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => this.handleOpenForwardModal(application)}
+          >
+            <ForwardIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="রিভার্ট">
+          <IconButton
+            disabled={application?.isHistory}
+            // onClick={() => this.handleOpenForwardModal(application)}
+          >
+            <UndoIcon />
+          </IconButton>
+        </Tooltip>
+      </div>
+    ));
+    return formatters;
   };
 
-  getUserOrganization = async(userId) =>{
-    await  this.fetchOrganizationEmployeeDesignation(this.props.modulesManager,decodeId(userId))
-  }
+  getUserOrganization = async (userId) => {
+    await this.fetchOrganizationEmployeeDesignation(
+      this.props.modulesManager,
+      decodeId(userId)
+    );
+  };
+
+  handleBulkForward  = async () => {
+    /// here is a problem will focus on later
+    this.state.selectedApplicationIds.map(async(id) =>
+      await updateApplication(
+        {
+          id: decodeId(id),
+          status: WORKFORCE_STATUS.FIRST_FORWARD,
+        },
+        `update workforce application`
+      )
+    );
+  };
 
   rowDisabled = (selection, i) => !!i.validityTo;
 
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
-    const { forwardModalOpen, selectedApplication } = this.state;
-    const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
+    const { forwardModalOpen, selectedApplication, selectedApplicationIds } =
       this.state;
+    // const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
+    //   this.state;
     const totalMoneyAmount = applications?.reduce((acc, app) => {
       const amount = parseFloat(app.moneyAmount) || 0;
       return acc + amount;
@@ -699,12 +734,13 @@ handleApproval = async (application) => {
       cacheFiltersKey,
       onDoubleClick,
       userRights,
-      userId
+      userId,
     } = this.props;
 
     // this.getUserOrganization(userId)
 
     const count = applicationsPageInfo.totalCount;
+    const userType = getUserTypeFromRights(userRights);
 
     const filterPane = ({ filters, onChangeFilters }) => (
       <ApplicationProcessFilter
@@ -716,7 +752,7 @@ handleApproval = async (application) => {
       />
     );
 
-    // console.log({designationId})
+    console.log({ selectedApplicationIds });
 
     return (
       <>
@@ -751,29 +787,54 @@ handleApproval = async (application) => {
           headers={
             getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT
               ? this.headerApplicant
-              : getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER
+              : getUserTypeFromRights(userRights) ===
+                WORKFORCE_USER_TYPE.CHECKER
               ? this.headerChecker
-              : getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER
+              : getUserTypeFromRights(userRights) ===
+                WORKFORCE_USER_TYPE.APPROVER
               ? this.headerApprover
               : this.headers
           }
-
           itemFormatters={
             getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT
               ? this.itemFormattersApplicant
-              : getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER
+              : getUserTypeFromRights(userRights) ===
+                WORKFORCE_USER_TYPE.CHECKER
               ? this.itemFormattersChecker
-              : getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER
+              : getUserTypeFromRights(userRights) ===
+                WORKFORCE_USER_TYPE.APPROVER
               ? this.itemFormattersApprover
               : this.itemFormatters
           }
-
           sorts={this.sorts}
           rowDisabled={this.rowDisabled}
           rowLocked={this.rowLocked}
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
         />
+        {userType === WORKFORCE_USER_TYPE.CHECKER ? (
+          <Box
+            style={{
+              marginTop: 10,
+              display: "flex",
+              gap: 2,
+              justifyContent: "space-between",
+            }}
+          >
+            <Button variant="outlined" color="error">
+              বন্ধ করুন
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.handleBulkForward}
+            >
+              {/* {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"} */}
+              বাল্ক ফরওয়ার্ড করুন
+            </Button>
+          </Box>
+        ) : null}
+
         {(() => {
           const userType = getUserTypeFromRights(userRights);
 
@@ -839,7 +900,7 @@ const mapStateToProps = (state) => ({
   mutation: state.workforce.mutation,
   confirmed: state.core.confirmed,
   userRights: state.core.user.i_user.rights,
-  userId:state.core.user.i_user.uuid
+  userId: state.core.user.i_user.uuid,
 });
 
 const mapDispatchToProps = (dispatch) =>

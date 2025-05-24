@@ -1573,9 +1573,9 @@ function reducer(
     case "APPLICATION_MUTATION_ERR":
       return dispatchMutationErr(state, action);
     case "APPLICATION_CREATE_APPLICATION_RESP":
-      return dispatchMutationResp(state, "createApplication", action);
+      return dispatchMutationResp(state, "createWorkforceApplication", action);
     case "APPLICATION_UPDATE_APPLICATION_RESP":
-      return dispatchMutationResp(state, "updateApplication", action);
+      return dispatchMutationResp(state, "updateWorkforceApplication", action);
 
     case "APPLICATION_MOVEMENT_MUTATION_REQ": {
       return dispatchMutationReq(state, action);
