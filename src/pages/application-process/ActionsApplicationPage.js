@@ -146,7 +146,7 @@ class ActionsApplicationPage extends Component {
             <Box component="span" color="teal" fontWeight="fontWeightMedium">
               মীর মোফাজ্জল হোসেন, ব্যবস্থাপনা পরিচালক, কেন্দ্রীয় তহবিল
             </Box>{' '}
-            এর বিরুদ্ধে আবেদন দাখিল।
+            এর নিকট আবেদন দাখিল।
           </Typography>
 
           {/* Date */}

@@ -50,6 +50,7 @@ import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
+import RevertApplicationModal from "./modals/RevertApplicationModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement } from "../../actions";
 import HistoryIcon from "@material-ui/icons/History";
@@ -85,6 +86,7 @@ class ApplicationProcessSearcher extends Component {
       displayVersion: false,
       // 🆕 Modal state
       forwardModalOpen: false,
+      revertModalOpen: false,
       selectedApplication: null,
       selectedUserId: "",
       deadline: "",
@@ -163,6 +165,13 @@ class ApplicationProcessSearcher extends Component {
 
   handleCloseForwardModal = () => {
     this.setState({ forwardModalOpen: false, selectedApplication: null });
+  };
+  handleOpenRevertModal = (application) => {
+    this.setState({ revertModalOpen: true, selectedApplication: application });
+  };
+
+  handleCloseRevertModal = () => {
+    this.setState({ revertModalOpen: false, selectedApplication: null });
   };
   handleUserChange = (event) => {
     this.setState({ selectedUserId: event.target.value });
@@ -331,6 +340,38 @@ class ApplicationProcessSearcher extends Component {
       setTimeout(() => {
         this.setState({
           forwardModalOpen: false,
+          selectedUserId: "",
+          deadline: "",
+          selectedApplication: null,
+          serverResponse: null,
+        });
+      }, 2000);
+    }, 2000);
+  };
+  handleRevertSubmit = (event) => {
+    this.state.editorContent;
+    event.preventDefault();
+
+    const selectedUser = this.state.userList.find(
+      (user) => user.id === this.state.selectedUserId
+    );
+
+    this.setState({ submitting: true });
+
+    // Simulate async submit
+    setTimeout(() => {
+      this.setState({
+        submitting: false,
+        serverResponse: {
+          status: "SUCCESS",
+          message: "আবেদন সফলভাবে revert করা হয়েছে!",
+        },
+      });
+
+      // After 2 seconds, close modal and reset form
+      setTimeout(() => {
+        this.setState({
+          revertModalOpen : false,
           selectedUserId: "",
           deadline: "",
           selectedApplication: null,
@@ -615,78 +656,78 @@ class ApplicationProcessSearcher extends Component {
     return formatters;
   };
   itemFormattersApprover = () => {
-    const formatters = [
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
-      // (application) => application.workforceEmployee?.nid,
-      // (application) => application.workforceEmployee?.phoneNumber,
-      (application) => application.applicationType,
-      // (application) => application.organizationType,
-      (application) => 200000,
-      (application) => "Nafi",
-      (application) => "Akij",
-      (application) => application.status,
-      (application) => application.dateCreated.split("T")[0],
-      // (application) => "Hafiz",
-      // (application) => application.dateCreated.split('T')[0],
-      this.isShowHistory() ? application?.version : null,
-    ];
-
-    formatters.push((application) => (
-      <div className={this.props.classes.horizontalButtonContainer}>
-        <Tooltip title="দেখুন">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.process.view",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <TabIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="অনুমোদন">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.verify",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <VerifiedUserIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="ফরওয়ার্ড">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => this.handleOpenForwardModal(application)}
-          >
-            <ForwardIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="রিভার্ট">
-          <IconButton
-            disabled={application?.isHistory}
-            // onClick={() => this.handleOpenForwardModal(application)}
-          >
-            <UndoIcon />
-          </IconButton>
-        </Tooltip>
-      </div>
-    ));
-    return formatters;
+   const formatters = [
+       (application) => application.workforceEmployee?.firstNameBn,
+       (application) => application.workforceEmployee?.lastNameBn,
+       // (application) => application.workforceEmployee?.nid,
+       // (application) => application.workforceEmployee?.phoneNumber,
+       (application) => application.applicationType,
+       // (application) => application.organizationType,
+       (application) => 200000,
+       (application) => "Nafi",
+       (application) => "Akij",
+       (application) => application.status,
+       (application) => application.dateCreated.split("T")[0],
+       // (application) => "Hafiz",
+       // (application) => application.dateCreated.split('T')[0],
+       this.isShowHistory() ? application?.version : null,
+     ];
+ 
+     formatters.push((application) => (
+       <div className={this.props.classes.horizontalButtonContainer}>
+         <Tooltip title="দেখুন">
+           <IconButton
+             disabled={application?.isHistory}
+             onClick={() => {
+               historyPush(
+                 this.props.modulesManager,
+                 this.props.history,
+                 "workforce.route.applications.application.process.view",
+                 [decodeId(application.id)],
+                 false
+               );
+             }}
+           >
+             <TabIcon />
+           </IconButton>
+         </Tooltip>
+ 
+         <Tooltip title="অনুমোদন">
+           <IconButton
+             disabled={application?.isHistory}
+             onClick={() => {
+               historyPush(
+                 this.props.modulesManager,
+                 this.props.history,
+                 "workforce.route.applications.application.verify",
+                 [decodeId(application.id)],
+                 false
+               );
+             }}
+           >
+             <VerifiedUserIcon />
+           </IconButton>
+         </Tooltip>
+        
+         <Tooltip title="ফরওয়ার্ড">
+           <IconButton
+             disabled={application?.isHistory}
+             onClick={() => this.handleOpenForwardModal(application)}
+           >
+             <ForwardIcon />
+           </IconButton>
+         </Tooltip>
+         <Tooltip title="রিভার্ট">
+           <IconButton
+             disabled={application?.isHistory}
+             // onClick={() => this.handleOpenForwardModal(application)}
+           >
+             <UndoIcon />
+           </IconButton>
+         </Tooltip>
+       </div>
+     ));
+     return formatters;
   };
 
   getUserOrganization = async (userId) => {
@@ -714,7 +755,8 @@ class ApplicationProcessSearcher extends Component {
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
-    const { forwardModalOpen, selectedApplication, selectedApplicationIds } =
+    const { forwardModalOpen, selectedApplication } = this.state;
+    const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
       this.state;
     // const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
     //   this.state;
@@ -860,21 +902,38 @@ class ApplicationProcessSearcher extends Component {
             );
           } else if (userType === WORKFORCE_USER_TYPE.CHECKER) {
             return (
+              <>
               <ForwardApplicationCheckerMoal
                 open={forwardModalOpen}
                 onClose={this.handleCloseForwardModal}
                 selectedApplication={selectedApplication}
                 onSubmitForward={this.handleForwardSubmit}
               />
+              <RevertApplicationModal
+                open={revertModalOpen}
+                onClose={this.handleCloseRevertModal}
+                selectedApplication={this.state.selectedApplication}
+                onSubmitRevert={this.handleRevertSubmit}
+              />
+            </>
+              
             );
           } else if (userType === WORKFORCE_USER_TYPE.APPROVER) {
             return (
+              <>
               <ForwardApplicationApproverModal
                 open={forwardModalOpen}
                 onClose={this.handleCloseForwardModal}
                 selectedApplication={selectedApplication}
                 onSubmitForward={this.handleForwardSubmit}
               />
+               <RevertApplicationModal
+                open={revertModalOpen}
+                onClose={this.handleCloseRevertModal}
+                selectedApplication={this.state.selectedApplication}
+                onSubmitRevert={this.handleRevertSubmit}
+              />
+            </>
             );
           }
 
