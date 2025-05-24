@@ -47,6 +47,7 @@ import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
+import RevertApplicationModal from "./modals/RevertApplicationModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement } from "../../actions";
 import HistoryIcon from '@material-ui/icons/History';
@@ -83,6 +84,7 @@ class ApplicationProcessSearcher extends Component {
 
       // 🆕 Modal state
       forwardModalOpen: false,
+      revertModalOpen: false,
       selectedApplication: null,
       selectedUserId: "",
       deadline: "",
@@ -160,6 +162,13 @@ class ApplicationProcessSearcher extends Component {
 
   handleCloseForwardModal = () => {
     this.setState({ forwardModalOpen: false, selectedApplication: null });
+  };
+  handleOpenRevertModal = (application) => {
+    this.setState({ revertModalOpen: true, selectedApplication: application });
+  };
+
+  handleCloseRevertModal = () => {
+    this.setState({ revertModalOpen: false, selectedApplication: null });
   };
   handleUserChange = (event) => {
     this.setState({ selectedUserId: event.target.value });
@@ -304,6 +313,38 @@ handleApproval = async (application) => {
       setTimeout(() => {
         this.setState({
           forwardModalOpen: false,
+          selectedUserId: "",
+          deadline: "",
+          selectedApplication: null,
+          serverResponse: null,
+        });
+      }, 2000);
+    }, 2000);
+  };
+  handleRevertSubmit = (event) => {
+    this.state.editorContent;
+    event.preventDefault();
+
+    const selectedUser = this.state.userList.find(
+      (user) => user.id === this.state.selectedUserId
+    );
+
+    this.setState({ submitting: true });
+
+    // Simulate async submit
+    setTimeout(() => {
+      this.setState({
+        submitting: false,
+        serverResponse: {
+          status: "SUCCESS",
+          message: "আবেদন সফলভাবে revert করা হয়েছে!",
+        },
+      });
+
+      // After 2 seconds, close modal and reset form
+      setTimeout(() => {
+        this.setState({
+          revertModalOpen : false,
           selectedUserId: "",
           deadline: "",
           selectedApplication: null,
@@ -585,13 +626,11 @@ handleApproval = async (application) => {
          <Tooltip title="রিভার্ট">
            <IconButton
              disabled={application?.isHistory}
-             // onClick={() => this.handleOpenForwardModal(application)}
+             onClick={() => this.handleOpenRevertModal(application)}
            >
              <UndoIcon />
            </IconButton>
          </Tooltip>
-        
- 
        </div>
      ));
      return formatters;
@@ -658,14 +697,15 @@ handleApproval = async (application) => {
              <ForwardIcon />
            </IconButton>
          </Tooltip>
-         <Tooltip title="রিভার্ট">
-           <IconButton
-             disabled={application?.isHistory}
-             // onClick={() => this.handleOpenForwardModal(application)}
-           >
-             <UndoIcon />
-           </IconButton>
-         </Tooltip>
+        <Tooltip title="রিভার্ট">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => this.handleOpenRevertModal(application)}
+          >
+            <UndoIcon />
+          </IconButton>
+        </Tooltip>
+
        </div>
      ));
      return formatters;
@@ -680,7 +720,7 @@ handleApproval = async (application) => {
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
-    const { forwardModalOpen, selectedApplication } = this.state;
+    const { forwardModalOpen,revertModalOpen, selectedApplication } = this.state;
     const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
       this.state;
     const totalMoneyAmount = applications?.reduce((acc, app) => {
@@ -799,21 +839,38 @@ handleApproval = async (application) => {
             );
           } else if (userType === WORKFORCE_USER_TYPE.CHECKER) {
             return (
+              <>
               <ForwardApplicationCheckerMoal
                 open={forwardModalOpen}
                 onClose={this.handleCloseForwardModal}
                 selectedApplication={selectedApplication}
                 onSubmitForward={this.handleForwardSubmit}
               />
+              <RevertApplicationModal
+                open={revertModalOpen}
+                onClose={this.handleCloseRevertModal}
+                selectedApplication={this.state.selectedApplication}
+                onSubmitRevert={this.handleRevertSubmit}
+              />
+            </>
+              
             );
           } else if (userType === WORKFORCE_USER_TYPE.APPROVER) {
             return (
+              <>
               <ForwardApplicationApproverModal
                 open={forwardModalOpen}
                 onClose={this.handleCloseForwardModal}
                 selectedApplication={selectedApplication}
                 onSubmitForward={this.handleForwardSubmit}
               />
+               <RevertApplicationModal
+                open={revertModalOpen}
+                onClose={this.handleCloseRevertModal}
+                selectedApplication={this.state.selectedApplication}
+                onSubmitRevert={this.handleRevertSubmit}
+              />
+            </>
             );
           }
 

@@ -52,7 +52,8 @@ export const WORKFORCE_STATUS = {
   FIRST_FORWARD:"first_forward",
   SECOND_FORWARD:"second_forward",
   THIRD_FORWARD:"third_forward",
-  NEW:"new"
+  NEW:"new",
+  REVERT:"revert"
 };
 
 export const WORKFORCE_USER_TYPE = {
