@@ -334,12 +334,12 @@ class ApplicationProcessSearcher extends Component {
         submitting: false,
         serverResponse: {
           status: "SUCCESS",
-          message: "আবেদন সফলভাবে ফরওয়ার্ড করা হয়েছে!",
+          message: "আবেদন সফলভাবে revert করা হয়েছে!",
         },
       });
       setTimeout(() => {
         this.setState({
-          forwardModalOpen: false,
+          revertModalOpen : false,
           selectedUserId: "",
           deadline: "",
           selectedApplication: null,
@@ -656,78 +656,78 @@ class ApplicationProcessSearcher extends Component {
     return formatters;
   };
   itemFormattersApprover = () => {
-   const formatters = [
-       (application) => application.workforceEmployee?.firstNameBn,
-       (application) => application.workforceEmployee?.lastNameBn,
-       // (application) => application.workforceEmployee?.nid,
-       // (application) => application.workforceEmployee?.phoneNumber,
-       (application) => application.applicationType,
-       // (application) => application.organizationType,
-       (application) => 200000,
-       (application) => "Nafi",
-       (application) => "Akij",
-       (application) => application.status,
-       (application) => application.dateCreated.split("T")[0],
-       // (application) => "Hafiz",
-       // (application) => application.dateCreated.split('T')[0],
-       this.isShowHistory() ? application?.version : null,
-     ];
- 
-     formatters.push((application) => (
-       <div className={this.props.classes.horizontalButtonContainer}>
-         <Tooltip title="দেখুন">
-           <IconButton
-             disabled={application?.isHistory}
-             onClick={() => {
-               historyPush(
-                 this.props.modulesManager,
-                 this.props.history,
-                 "workforce.route.applications.application.process.view",
-                 [decodeId(application.id)],
-                 false
-               );
-             }}
-           >
-             <TabIcon />
-           </IconButton>
-         </Tooltip>
- 
-         <Tooltip title="অনুমোদন">
-           <IconButton
-             disabled={application?.isHistory}
-             onClick={() => {
-               historyPush(
-                 this.props.modulesManager,
-                 this.props.history,
-                 "workforce.route.applications.application.verify",
-                 [decodeId(application.id)],
-                 false
-               );
-             }}
-           >
-             <VerifiedUserIcon />
-           </IconButton>
-         </Tooltip>
-        
-         <Tooltip title="ফরওয়ার্ড">
-           <IconButton
-             disabled={application?.isHistory}
-             onClick={() => this.handleOpenForwardModal(application)}
-           >
-             <ForwardIcon />
-           </IconButton>
-         </Tooltip>
-         <Tooltip title="রিভার্ট">
-           <IconButton
-             disabled={application?.isHistory}
-             // onClick={() => this.handleOpenForwardModal(application)}
-           >
-             <UndoIcon />
-           </IconButton>
-         </Tooltip>
-       </div>
-     ));
-     return formatters;
+    const formatters = [
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => application.workforceEmployee?.lastNameBn,
+      // (application) => application.workforceEmployee?.nid,
+      // (application) => application.workforceEmployee?.phoneNumber,
+      (application) => application.applicationType,
+      // (application) => application.organizationType,
+      (application) => 200000,
+      (application) => "Nafi",
+      (application) => "Akij",
+      (application) => application.status,
+      (application) => application.dateCreated.split("T")[0],
+      // (application) => "Hafiz",
+      // (application) => application.dateCreated.split('T')[0],
+      this.isShowHistory() ? application?.version : null,
+    ];
+
+    formatters.push((application) => (
+      <div className={this.props.classes.horizontalButtonContainer}>
+        <Tooltip title="দেখুন">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.process.view",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <TabIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="অনুমোদন">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.verify",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <VerifiedUserIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="ফরওয়ার্ড">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => this.handleOpenForwardModal(application)}
+          >
+            <ForwardIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="রিভার্ট">
+          <IconButton
+            disabled={application?.isHistory}
+            // onClick={() => this.handleOpenForwardModal(application)}
+          >
+            <UndoIcon />
+          </IconButton>
+        </Tooltip>
+      </div>
+    ));
+    return formatters;
   };
 
   getUserOrganization = async (userId) => {
@@ -755,8 +755,7 @@ class ApplicationProcessSearcher extends Component {
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
-    const { forwardModalOpen, selectedApplication } = this.state;
-    const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
+    const { forwardModalOpen,revertModalOpen, selectedApplication, selectedApplicationIds } =
       this.state;
     // const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
     //   this.state;
