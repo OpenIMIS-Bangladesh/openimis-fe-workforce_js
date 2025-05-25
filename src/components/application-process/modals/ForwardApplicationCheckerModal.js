@@ -124,11 +124,11 @@ const ForwardApplicationAdminModal = ({
 
       const updateApplicationData = {
         id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.FIRST_FORWARD,
+        status: WORKFORCE_STATUS.SECOND_FORWARD,
       };
       const createApplicationMovementData = {
         id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.FIRST_FORWARD,
+        status: WORKFORCE_STATUS.SECOND_FORWARD,
         note: "আবেদনের প্রমাণপত্র যাচাই করা হয়েছে",
         action: "first_forward",
 

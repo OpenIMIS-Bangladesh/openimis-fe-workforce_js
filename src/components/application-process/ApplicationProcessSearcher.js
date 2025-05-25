@@ -45,6 +45,7 @@ import UndoIcon from "@material-ui/icons/Undo";
 import "react-quill/dist/quill.snow.css";
 import FileUploader from "../../pickers/FileUploader";
 import CloseIcon from "@material-ui/icons/Close";
+import RestorePageIcon from '@material-ui/icons/RestorePage';
 import ForwardApplicationModal from "./modals/ForwardApplicationModal";
 import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
@@ -98,6 +99,7 @@ class ApplicationProcessSearcher extends Component {
       selectedSuboffice: "",
       selectedUser: "",
       selectedApplicationIds: [],
+      revertByChecker:false,
       officeData: {
         "Central Fund": {
           suboffices: {
@@ -125,18 +127,41 @@ class ApplicationProcessSearcher extends Component {
 
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
-    const { applicationType } = this.props;
-    const finalParams = {
-      ...prms,
-      ...(applicationType ? [`type:"applicationType"`] : {}),
-    };
-
-    this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchApplicationsSummary(
-      this.props.modulesManager,
-      finalParams,
-      prms
-    );
+    const { applicationType,userRights } = this.props;
+    if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
+      const finalParams = {
+        ...prms,
+        ... [`status:"first_forward"`],
+      };
+      this.setState({ displayVersion: showHistoryFilter });
+      this.props.fetchApplicationsSummary(
+        this.props.modulesManager,
+        [`status:"first_forward"`]
+      );
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
+      this.setState({ displayVersion: showHistoryFilter });
+      this.props.fetchApplicationsSummary(
+        this.props.modulesManager,
+        [`status:"second_forward"`]
+      );
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
+      this.setState({ displayVersion: showHistoryFilter });
+      this.props.fetchApplicationsSummary(
+        this.props.modulesManager,
+        [`status:"pending"`]
+        // prms
+      );
+    }else{
+      const finalParams = {
+        ...prms,
+        ... [`status:"send_for_dg_approve"`],
+      };
+      this.setState({ displayVersion: showHistoryFilter });
+      this.props.fetchApplicationsSummary(
+        this.props.modulesManager,
+        [`status:"send_for_dg_approve"`]
+      );
+    }
   };
 
   rowIdentifier = (r) => r.uuid;
@@ -167,11 +192,11 @@ class ApplicationProcessSearcher extends Component {
     this.setState({ forwardModalOpen: false, selectedApplication: null });
   };
   handleOpenRevertModal = (application) => {
-    this.setState({ revertModalOpen: true, selectedApplication: application });
+    this.setState({ revertModalOpen: true,revertByChecker:true, selectedApplication: application });
   };
 
   handleCloseRevertModal = () => {
-    this.setState({ revertModalOpen: false, selectedApplication: null });
+    this.setState({ revertModalOpen: false,revertByChecker:false, selectedApplication: null });
   };
   handleUserChange = (event) => {
     this.setState({ selectedUserId: event.target.value });
@@ -573,6 +598,22 @@ class ApplicationProcessSearcher extends Component {
             <HistoryIcon />
           </IconButton>
         </Tooltip>
+        <Tooltip title="গৃহীত কার্যক্রম">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                this.props.modulesManager,
+                this.props.history,
+                "workforce.route.applications.application.process.resend",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <RestorePageIcon />
+          </IconButton>
+        </Tooltip>
       </div>
     ));
     return formatters;
@@ -646,7 +687,7 @@ class ApplicationProcessSearcher extends Component {
         <Tooltip title="রিভার্ট">
           <IconButton
             disabled={application?.isHistory}
-            // onClick={() => this.handleOpenForwardModal(application)}
+            onClick={() => this.handleOpenRevertModal(application)}
           >
             <UndoIcon />
           </IconButton>
@@ -755,7 +796,7 @@ class ApplicationProcessSearcher extends Component {
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
-    const { forwardModalOpen,revertModalOpen, selectedApplication, selectedApplicationIds } =
+    const { forwardModalOpen,revertModalOpen,revertByChecker, selectedApplication, selectedApplicationIds } =
       this.state;
     // const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
     //   this.state;
@@ -911,6 +952,7 @@ class ApplicationProcessSearcher extends Component {
               <RevertApplicationModal
                 open={revertModalOpen}
                 onClose={this.handleCloseRevertModal}
+                revertByChecker={revertByChecker}
                 selectedApplication={this.state.selectedApplication}
                 onSubmitRevert={this.handleRevertSubmit}
               />
@@ -928,6 +970,7 @@ class ApplicationProcessSearcher extends Component {
               />
                <RevertApplicationModal
                 open={revertModalOpen}
+                revertByChecker={revertByChecker}
                 onClose={this.handleCloseRevertModal}
                 selectedApplication={this.state.selectedApplication}
                 onSubmitRevert={this.handleRevertSubmit}

@@ -43,6 +43,7 @@ export const ROUTE_WORKFORCE_APPLICATIONS_PROCESS = "workforce/applications/proc
 export const ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS = "workforce/applications/application/view"
 export const ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY = "workforce/applications/application/verify"
 export const ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS = "workforce/applications/application/actions"
+export const ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND = "workforce/applications/application/resend"
 
 
 

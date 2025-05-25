@@ -22,7 +22,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import DistrictOfficePicker from "../../../pickers/DistrictOfficePicker";
 import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchApplication, updateApplication, createApplicationMovement } from "../../../actions";
+import {
+  fetchApplication,
+  updateApplication,
+  createApplicationMovement,
+} from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
 import ReactQuill from "react-quill";
 
@@ -49,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.2rem",
   },
   sectionPaper: {
-    padding: theme.spacing(3),
+    padding: theme.spacing(2),
     marginBottom: theme.spacing(3),
     borderRadius: theme.spacing(1),
     backgroundColor: theme.palette.grey[50],
@@ -70,6 +74,7 @@ const RevertApplicationModal = ({
   open,
   onClose,
   selectedApplication,
+  revertByChecker,
   onSubmitForward,
 }) => {
   const classes = useStyles();
@@ -116,36 +121,29 @@ const RevertApplicationModal = ({
     // } finally {
     //   setSubmitting(false);
     // }
-
   };
 
   const handleRevert = async () => {
-
-      const updateApplicationData = {
-        id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.REVERT,
-      };
-      const createApplicationMovementData = {
-        id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.REVERT,
-        note: "আবেদন ফেরত পাঠানো হয়েছে",
-        action: "revert",
-
-      };
-   await dispatch(
-        updateApplication(
-          updateApplicationData,
-          `update workforce application`
-        )
-      );
-   await dispatch(
-        createApplicationMovement(
-          createApplicationMovementData,
-          `create workforce movement`
-        )
-      );
-      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
-
+    const updateApplicationData = {
+      id: decodeId(selectedApplication.id),
+      status: WORKFORCE_STATUS.REVERT,
+    };
+    const createApplicationMovementData = {
+      id: decodeId(selectedApplication.id),
+      status: WORKFORCE_STATUS.REVERT,
+      note: "আবেদন ফেরত পাঠানো হয়েছে",
+      action: "revert",
+    };
+    await dispatch(
+      updateApplication(updateApplicationData, `update workforce application`)
+    );
+    await dispatch(
+      createApplicationMovement(
+        createApplicationMovementData,
+        `create workforce movement`
+      )
+    );
+    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
   };
 
   console.log({ aha: selectedApplication });
@@ -175,7 +173,7 @@ const RevertApplicationModal = ({
         >
           {selectedApplication
             ? `${
-                selectedApplication.workforceEmployee?.firstNameBn ||
+                selectedApplication?.workforceEmployee?.firstNameBn ||
                 "আবেদনকারী"
               } এর আবেদন ফেরত পাঠাতে চান?`
             : "একটি আবেদন বেছে নিন।"}
@@ -194,47 +192,83 @@ const RevertApplicationModal = ({
           </Typography>
         )}
 
-        <Divider style={{ marginBottom: 24 }} />
+        <Divider style={{ marginBottom: 15 }} />
 
         {/* Form Fields */}
-        <Paper className={classes.sectionPaper} elevation={1}>      
-            <Grid container spacing={3} style={{marginTop:3}}>
+        <Paper className={classes.sectionPaper} elevation={1}>
+          <Grid container spacing={0} style={{ marginTop: 0 }}>
+            <Grid item xs={12} sm={12}>
+              {revertByChecker ? (
+                <>
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  style={{
+                    marginTop: 0,
+                    textAlign: "left",
+                  }}
+                >
+                  <b>আবেদনকারীর নাম : </b>{selectedApplication?.workforceEmployee?.firstNameBn} <br/>
+                  <b>আবেদনের ধরন : </b>{selectedApplication?.applicationType} <br/>
+                  <b>জাতীয় পরিচয়পত্র : </b>{selectedApplication?.workforceEmployee?.nid} <br/>
+                  <b>ফোন নম্বর : </b>{selectedApplication?.workforceEmployee?.phoneNumber} <br/>
+                </Typography>
+                </>
+              ) : (
+                <>
+                  <Typography
+                    variant="subtitle1"
+                    gutterBottom
+                    style={{
+                      fontWeight: "bold",
+                      marginTop: 3,
+                      textAlign: "center",
+                    }}
+                  >
+                    অফিসার নির্বাচন করুন
+                  </Typography>
+                  <EmployeePicker
+                    value={formData?.id}
+                    officeType={officeType}
+                    label={
+                      <FormattedMessage
+                        id="workforce.officer.selector.picker"
+                        module="workforce"
+                      />
+                    }
+                    modulesManager={modulesManager}
+                    required
+                    onChange={(v) => setFormData(v)}
+                  />
+                </>
+              )}
+            </Grid>
+            <Grid item xs={12} sm={12}>
               <Typography
                 variant="subtitle1"
                 gutterBottom
                 style={{
                   fontWeight: "bold",
-                  marginTop: 3,
+                  marginTop: 1,
                   textAlign: "center",
                 }}
               >
-                অফিসার নির্বাচন করুন
-              </Typography>
-              <Grid item xs={12} sm={12}>
-                <EmployeePicker
-                  value={formData?.id}
-                  officeType={officeType}
-                  label={
-                    <FormattedMessage
-                      id="workforce.officer.selector.picker"
-                      module="workforce"
-                    />
-                  }
-                  modulesManager={modulesManager}
-                  required
-                  onChange={(v) => setFormData(v)}
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.application.reasons.addComment"
                 />
-              </Grid>
-               <FormattedMessage module="workforce" id="workforce.application.reasons.addComment" />
-                  <Box sx={{ width: "100%", mb: 7 }}>
-                    <ReactQuill
-                      value={editorContent}
-                      onChange={setEditorContent}
-                      theme="snow"
-                      style={{ height: "150px" }}
-                    />
-                  </Box>
+              </Typography>
+
+              <Box sx={{ width: "100%", mb: 7 }}>
+                <ReactQuill
+                  value={editorContent}
+                  onChange={setEditorContent}
+                  theme="snow"
+                  style={{ height: "150px" }}
+                />
+              </Box>
             </Grid>
+          </Grid>
         </Paper>
 
         {/* Action Buttons */}

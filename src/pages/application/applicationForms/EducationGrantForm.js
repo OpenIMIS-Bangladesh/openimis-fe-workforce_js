@@ -373,7 +373,7 @@ const EducationGrantForm = ({
         employeeBankInfo: formData.employeeBankInfo,
         employeeDependentInfo: formData.dependents,
         employeeAccidentInfo: formData.employeeAccidentInfo,
-        status: "ontest",
+        status: WORKFORCE_STATUS.PENDING,
       };
       dispatch(
         updateApplication(
