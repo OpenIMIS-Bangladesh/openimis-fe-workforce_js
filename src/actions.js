@@ -675,6 +675,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "applicationType",
     "dateCreated",
     "status",
+    "trackingNumber",
     "workforceEmployee{firstNameBn, lastNameBn, phoneNumber, nid, status}",
   ];
   const payload = formatPageQueryWithCount(
@@ -699,6 +700,7 @@ export function fetchApplication(mm, filters) {
     "organizationType",
     "applicationType",
     "status",
+    "trackingNumber",
     "employeeDependentInfo",
     "employeeBankInfo",
     "employeeAccidentInfo",
