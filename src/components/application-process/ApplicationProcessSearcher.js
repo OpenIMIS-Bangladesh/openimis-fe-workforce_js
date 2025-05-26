@@ -131,7 +131,7 @@ class ApplicationProcessSearcher extends Component {
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       const finalParams = {
         ...prms,
-        ... [`status:"first_forward"`],
+        ... [`status:"first_forward", orderBy: ["-dateCreated"]`],
       };
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
@@ -142,19 +142,19 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"second_forward"`]
+        [`status:"second_forward", orderBy: ["-dateCreated"]`]
       );
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"pending"`]
+        [`status:"pending", orderBy: ["-dateCreated"]`]
         // prms
       );
     }else{
       const finalParams = {
         ...prms,
-        ... [`status:"send_for_dg_approve"`],
+        ... [`status:"send_for_dg_approve",, orderBy: ["-dateCreated"]`],
       };
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(

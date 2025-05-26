@@ -19,7 +19,7 @@ import { journalize, FormattedMessage } from "@openimis/fe-core";
 import CloseIcon from "@material-ui/icons/Close";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const styles = (theme) => ({
   paper: {
@@ -45,25 +45,24 @@ const styles = (theme) => ({
     },
   },
   rootGrid: {
-    height: 'calc(100vh - 64px)', // Adjust if you have AppBar
-    overflow: 'hidden',
+    height: "calc(100vh - 64px)", // Adjust if you have AppBar
+    overflow: "hidden",
   },
   leftGrid: {
-    position: 'sticky',
+    position: "sticky",
     top: 0,
-    height: '100%',
-    overflowY: 'auto',
+    height: "100%",
+    overflowY: "auto",
     paddingRight: 8,
   },
   rightGrid: {
-    height: '100%',
-    overflowY: 'auto',
+    height: "100%",
+    overflowY: "auto",
     paddingLeft: 8,
   },
   cardSpacing: {
     marginBottom: theme.spacing(2),
   },
-  
 });
 
 class ResendApplicationPage extends Component {
@@ -83,7 +82,6 @@ class ResendApplicationPage extends Component {
         status: "rejected",
       },
     ];
-    
 
     this.state = {
       applicationType: props?.application || {},
@@ -92,7 +90,8 @@ class ResendApplicationPage extends Component {
       preview: null,
       comment: "",
       mockFiles: mockFiles,
-      fileStates:mockFiles,
+      fileStates: mockFiles,
+      resendFile: null,
       // fileStates: mockFiles.map((file) => ({
       //   ...file,
       //   comment: "",
@@ -117,6 +116,14 @@ class ResendApplicationPage extends Component {
 
   handlePreviewClose = () => {
     this.setState({ preview: null });
+  };
+
+  handleOpenResendModal = (fileIndex) => {
+    this.setState({ resendFile: fileIndex });
+  };
+
+  handleCloseResendModal = () => {
+    this.setState({ resendFile: null });
   };
 
   handleFileCommentChange = (index, value) => {
@@ -164,17 +171,15 @@ class ResendApplicationPage extends Component {
 
     return (
       <Grid container spacing={3} className={classes.rootGrid}>
-    
-
         {/* Document Viewer */}
-        <Grid item xs={12} md={8} className={classes.rightGrid}>
+        <Grid item xs={12} className={classes.rightGrid}>
           <Card variant="outlined" className={classes.cardSpacing}>
             <CardContent>
               <Typography variant="h6">Documents</Typography>
               {fileStates.map((file, index) => (
                 <Accordion key={index}>
                   <AccordionSummary
-                    expandIcon={<ExpandMoreIcon className="material-icons"/>}
+                    expandIcon={<ExpandMoreIcon className="material-icons" />}
                   >
                     <Grid
                       container
@@ -208,59 +213,63 @@ class ResendApplicationPage extends Component {
 
                   <AccordionDetails>
                     <Grid container spacing={2}>
-                      <Grid item xs={12}>
+                      {/* Left side: Document */}
+                      <Grid item xs={12} md={6}>
                         {file.type === "image" ? (
                           <img
                             src={file.src}
                             alt="preview"
                             style={{
                               width: "100%",
-                              maxHeight: 300,
+                              maxHeight: 400,
                               objectFit: "contain",
+                              borderRadius: 8,
                             }}
                           />
                         ) : (
                           <Document file={file.src}>
-                            <Page pageNumber={1} />
+                            <Page pageNumber={1} width={300} />
                           </Document>
                         )}
                       </Grid>
 
-                      <Grid item xs={12}>
-                        <TextField
-                          label="Comment"
-                          fullWidth
-                          variant="outlined"
-                          size="small"
-                          multiline
-                          rows={2}
-                          value={file.comment}
-                          onChange={(e) =>
-                            this.handleFileCommentChange(index, e.target.value)
-                          }
-                        />
-                      </Grid>
+                      {/* Right side: Comment + Actions */}
+                      <Grid
+                        item
+                        xs={12}
+                        md={6}
+                        container
+                        spacing={2}
+                        direction="column"
+                      >
+                        <Grid item>
+                          <TextField
+                            label="Comment"
+                            fullWidth
+                            variant="outlined"
+                            size="small"
+                            multiline
+                            rows={4}
+                            value={file.comment}
+                            onChange={(e) =>
+                              this.handleFileCommentChange(
+                                index,
+                                e.target.value
+                              )
+                            }
+                          />
+                        </Grid>
 
-                      <Grid item xs={12} style={{ display: "flex", gap: 8 }}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => this.handleFileVerify(index)}
-                          fullWidth
-                        >
-                          {/* Verify */}
-                          <FormattedMessage module="workforce" id="workforce.application.verify" />
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          onClick={() => this.handleFileReject(index)}
-                          fullWidth
-                        >
-                          {/* Reject */}
-                          <FormattedMessage module="workforce" id="workforce.application.reject" />
-                          
-                        </Button>
+                        <Grid item>
+                          <Button
+                            variant="outlined"
+                            fullWidth
+                            color="default"
+                            onClick={() => this.handleOpenResendModal(index)}
+                          >
+                            🔁 Resend Document
+                          </Button>
+                        </Grid>
                       </Grid>
                     </Grid>
                   </AccordionDetails>
@@ -268,30 +277,6 @@ class ResendApplicationPage extends Component {
               ))}
             </CardContent>
           </Card>
-
-          {/* Final Comment Section */}
-          {/* <Grid container spacing={2} style={{ marginTop: 12 }}>
-            <Grid item xs={12} sm={8}>
-              <TextField
-                label="Comment"
-                fullWidth
-                variant="outlined"
-                size="small"
-                multiline
-                rows={2}
-                value={comment}
-                onChange={this.handleCommentChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4} style={{ display: "flex", gap: 8 }}>
-              <Button variant="contained" color="primary" fullWidth onClick={this.handleVerify}>
-                Verify
-              </Button>
-              <Button variant="outlined" color="error" fullWidth onClick={this.handleReject}>
-                Reject
-              </Button>
-            </Grid>
-          </Grid> */}
         </Grid>
 
         {/* Preview Modal */}
@@ -319,6 +304,38 @@ class ResendApplicationPage extends Component {
                 <Page pageNumber={1} />
               </Document>
             ) : null}
+          </DialogContent>
+        </Dialog>
+
+        {/* file upload modal */}
+        <Dialog
+          open={this.state.resendFile !== null}
+          onClose={this.handleCloseResendModal}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogContent>
+            <IconButton
+              onClick={this.handleCloseResendModal}
+              style={{ position: "absolute", top: 8, right: 8 }}
+            >
+              <CloseIcon />
+            </IconButton>
+
+            {/* FileUploader goes here */}
+            <Typography variant="h6" gutterBottom>
+              Upload Replacement Document
+            </Typography>
+
+            {/* Replace with your actual FileUploader component */}
+            {/* Example placeholder below: */}
+            <div style={{ marginTop: 16 }}>
+              <FormattedMessage
+                module="workforce"
+                id="resend.uploadNewFile"
+                defaultMessage="FileUploader Placeholder"
+              />
+            </div>
           </DialogContent>
         </Dialog>
       </Grid>
