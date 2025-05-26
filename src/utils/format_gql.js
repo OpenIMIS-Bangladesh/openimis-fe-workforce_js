@@ -200,6 +200,7 @@ export function formatApplicationeGQL(application) {
   ${application?.organizationType ? `organizationType: "${formatGQLString(application?.organizationType)}"` : ""}
   ${application?.applicationType ? `applicationType: "${formatGQLString(application?.applicationType)}"` : ""}
   ${application?.status ? `status: "${application?.status}"` : ""}
+  ${application?.trackingNumber ? `trackingNumber: "${application?.trackingNumber}"` : ""}
   ${application?.employeeDependentInfo ? `employeeDependentInfo: ${escapeQuotes(application?.employeeDependentInfo)}` : ""}
   ${application?.employeeBankInfo ? `employeeBankInfo: ${escapeQuotes(application?.employeeBankInfo)}` : ""}
   ${application?.employeeAccidentInfo ? `employeeAccidentInfo: ${escapeQuotes(application?.employeeAccidentInfo)}` : ""}
