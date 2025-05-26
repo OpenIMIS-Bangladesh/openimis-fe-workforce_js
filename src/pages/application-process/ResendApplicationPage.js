@@ -15,11 +15,17 @@ import {
   Accordion,
   AccordionSummary,
 } from "@material-ui/core";
+import {
+  withModulesManager,
+  withHistory,
+} from "@openimis/fe-core";
 import { journalize, FormattedMessage } from "@openimis/fe-core";
 import CloseIcon from "@material-ui/icons/Close";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import FileUploader from "../../pickers/FileUploader";
+import { updateApplication } from "../../actions";
 
 const styles = (theme) => ({
   paper: {
@@ -154,20 +160,27 @@ class ResendApplicationPage extends Component {
     this.setState({ comment: e.target.value });
   };
 
-  handleVerify = () => {
-    console.log("Application Verified ✅", this.state.comment);
-  };
-
-  handleReject = () => {
-    console.log("Application Rejected ❌", this.state.comment);
-  };
+  handleResendDoccument = ()=>{
+    const {applicationUuid} = this.props
+    console.log({applicationUuid})
+    // const updateApplicationData = {
+    //           id: decodeId(selectedApplication.id),
+    //           status: WORKFORCE_STATUS.SECOND_FORWARD,
+    //         };
+    //         dispatch(
+    //           updateApplication(
+    //             updateApplicationData,
+    //             `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`,
+    //           ),
+    //         );
+  }
 
   render() {
-    const { classes } = this.props;
+    const { classes,applicationUuid } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType } =
       this.state;
 
-    console.log({ stateEdited });
+    console.log({ applicationUuid });
 
     return (
       <Grid container spacing={3} className={classes.rootGrid}>
@@ -234,14 +247,7 @@ class ResendApplicationPage extends Component {
                       </Grid>
 
                       {/* Right side: Comment + Actions */}
-                      <Grid
-                        item
-                        xs={12}
-                        md={6}
-                        container
-                        spacing={2}
-                        direction="column"
-                      >
+                      <Grid item xs={12} md={6} container spacing={2} direction="column">
                         <Grid item>
                           <TextField
                             label="Comment"
@@ -251,12 +257,7 @@ class ResendApplicationPage extends Component {
                             multiline
                             rows={4}
                             value={file.comment}
-                            onChange={(e) =>
-                              this.handleFileCommentChange(
-                                index,
-                                e.target.value
-                              )
-                            }
+                            onChange={(e) => this.handleFileCommentChange(index,e.target.value)}
                           />
                         </Grid>
 
@@ -328,14 +329,21 @@ class ResendApplicationPage extends Component {
             </Typography>
 
             {/* Replace with your actual FileUploader component */}
-            {/* Example placeholder below: */}
-            <div style={{ marginTop: 16 }}>
+            
+            <FileUploader fieldKey="resend_document" />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.handleResendDoccument()}
+              fullWidth
+              style={{marginTop:6}}
+            >
+              {/* Verify */}
               <FormattedMessage
                 module="workforce"
-                id="resend.uploadNewFile"
-                defaultMessage="FileUploader Placeholder"
+                id="workforce.submit"
               />
-            </div>
+            </Button>
           </DialogContent>
         </Dialog>
       </Grid>
@@ -343,10 +351,24 @@ class ResendApplicationPage extends Component {
   }
 }
 
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      updateApplication,
+    },
+    dispatch
+  );
+
 const mapStateToProps = (state) => ({
   application: state.workforce.application,
+  applicationUuid: props?.match?.params?.application_uuid,
 });
 
-export default connect(mapStateToProps)(
-  withStyles(styles)(ResendApplicationPage)
-);
+export default withHistory(
+  withModulesManager(
+    connect(
+      mapStateToProps,
+      // mapDispatchToProps
+    )(withTheme(withStyles(styles)(ResendApplicationPage)))
+  ))
+

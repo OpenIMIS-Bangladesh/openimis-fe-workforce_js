@@ -136,7 +136,7 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"first_forward"`]
+        [`status:"first_forward",orderBy: ["-dateCreated"]`]
       );
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
       this.setState({ displayVersion: showHistoryFilter });
@@ -192,7 +192,7 @@ class ApplicationProcessSearcher extends Component {
     this.setState({ forwardModalOpen: false, selectedApplication: null });
   };
   handleOpenRevertModal = (application) => {
-    this.setState({ revertModalOpen: true,revertByChecker:true, selectedApplication: application });
+    this.setState({ revertModalOpen: true, selectedApplication: application });
   };
 
   handleCloseRevertModal = () => {
@@ -687,7 +687,7 @@ class ApplicationProcessSearcher extends Component {
         <Tooltip title="রিভার্ট">
           <IconButton
             disabled={application?.isHistory}
-            onClick={() => this.handleOpenRevertModal(application)}
+            onClick={() => {this.handleOpenRevertModal(application);this.setState({revertByChecker:true})}}
           >
             <UndoIcon />
           </IconButton>
