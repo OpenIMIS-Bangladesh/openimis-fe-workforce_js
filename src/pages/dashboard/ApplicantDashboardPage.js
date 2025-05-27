@@ -26,7 +26,7 @@ import {
 import DescriptionIcon from "@material-ui/icons/Description";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import RestorePageIcon from '@material-ui/icons/RestorePage';
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
@@ -102,6 +102,13 @@ const SidebarMenu = [
     ),
     icon: <AddCircleOutlineIcon />,
   },
+  {
+    id: "revertedApplication",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.reverted" />
+    ),
+    icon: <RestorePageIcon  />,
+  },
   // {
   //   id: "recentApplications",
   //   text: (
@@ -116,6 +123,7 @@ const SidebarMenu = [
     ),
     icon: <AssignmentIcon  />,
   },
+  
    
 ];
 
@@ -263,11 +271,32 @@ const ApplicationStatus = () => {
 };
 
 
-const HelpAndComplaints = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.help.complain" />
-  </Typography>
-);
+const RevertApplication = () => {
+  const classes = useStyles()
+  return (
+  <>
+    <Typography variant="h5" gutterBottom>
+      <FormattedMessage module="workforce" id="workforce.application.reverted" />
+    </Typography>
+   <Card className={classes.tableContainer}>
+       <CardContent>
+             <ApplicationProcessSearcher
+                revertedApplication={true}
+              />
+            </CardContent>
+      </Card>
+
+    {/* Pagination */}
+    <div className={classes.pagination}>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.back" />
+      </Button>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.next" />
+      </Button>
+    </div>
+  </>
+)}
 
 const Others = () => (
   <Typography variant="h5">
@@ -287,8 +316,8 @@ const ApplicantDashboard = () => {
         return <FiledApplications />;
       case "newApplications":
         return <MultiStepApplyForm />;
-      case "recentApplications":
-        return <FiledApplications />;
+      case "revertedApplication":
+        return <RevertApplication />;
       case "applicationStatus":
         return <ApplicationStatus />;
       default:

@@ -116,7 +116,7 @@ class ApplicationProcessSearcher extends Component {
 
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
-    const { applicationType,userRights } = this.props;
+    const { applicationType,userRights,revertedApplication } = this.props;
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       const finalParams = {
         ...prms,
@@ -135,11 +135,19 @@ class ApplicationProcessSearcher extends Component {
       );
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
       this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(
+      if (revertedApplication) {
+        this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`orderBy: ["-dateCreated"]`]
+        [`status:"revert_to_applicant",orderBy: ["-dateCreated"]`]
         // prms
       );
+      }else {
+        this.props.fetchApplicationsSummary(
+          this.props.modulesManager,
+          [`orderBy: ["-dateCreated"]`]
+          // prms
+        );
+      }
     }else{
       const finalParams = {
         ...prms,
@@ -447,8 +455,6 @@ class ApplicationProcessSearcher extends Component {
                 WORKFORCE_USER_TYPE.APPROVER
               ?  itemFormattersApprover(this.isShowHistory,this.props.modulesManager,this.props.history,this)
               : itemAdminFormatters(this.isShowHistory,this.props.modulesManager,this.props.history,this)
-            
-   
   };
 
   sorts = () => [];
@@ -501,6 +507,7 @@ class ApplicationProcessSearcher extends Component {
       onDoubleClick,
       userRights,
       userId,
+      revertedApplication
     } = this.props;
 
     // this.getUserOrganization(userId)
@@ -518,7 +525,7 @@ class ApplicationProcessSearcher extends Component {
       />
     );
 
-    console.log({ selectedApplicationIds });
+    console.log({ revertedApplication });
     console.log(itemAdminFormatters(this.isShowHistory,modulesManager,history,this))
 
     return (

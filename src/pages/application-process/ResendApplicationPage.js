@@ -26,6 +26,7 @@ import { Document, Page } from "react-pdf";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FileUploader from "../../pickers/FileUploader";
 import { updateApplication } from "../../actions";
+import { bindActionCreators } from "redux";
 
 const styles = (theme) => ({
   paper: {

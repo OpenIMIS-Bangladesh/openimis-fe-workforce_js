@@ -95,6 +95,13 @@ const SidebarMenu = [
     ),
     icon: <CheckCircleOutlineTwoToneIcon />,
   },
+  {
+      id: "revertedApplication",
+      text: (
+        <FormattedMessage module="workforce" id="workforce.application.reverted" />
+      ),
+      icon: <RestorePageIcon  />,
+    },
   // {
   //   id: "recentApplications",
   //   text: (
@@ -212,11 +219,32 @@ const ApplicationStatus = () => {
 };
 
 
-const HelpAndComplaints = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.help.complain" />
-  </Typography>
-);
+const RevertApplication = () => {
+  const classes = useStyles()
+  return (
+  <>
+    <Typography variant="h5" gutterBottom>
+      <FormattedMessage module="workforce" id="workforce.application.reverted" />
+    </Typography>
+   <Card className={classes.tableContainer}>
+       <CardContent>
+             <ApplicationProcessSearcher
+                revertedApplication={true}
+              />
+            </CardContent>
+      </Card>
+
+    {/* Pagination */}
+    <div className={classes.pagination}>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.back" />
+      </Button>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.next" />
+      </Button>
+    </div>
+  </>
+)}
 
 const Others = () => (
   <Typography variant="h5">
