@@ -212,6 +212,7 @@ export function formatApplicationeGQL(application) {
 export function formatApplicationMovementGQL(application) {
   return `
   ${application?.id ? `id: "${(application?.id)}"` : ""}
+  ${application?.applicationId ? `applicationId: "${(application?.applicationId)}"` : ""}
   ${application?.note ? `note: "${(application?.note)}"` : ""}
   ${application?.action ? `action: "${(application?.action)}"` : ""}
   ${application?.toEmployeeRecordId ? `toEmployeeRecordId: "${(application?.toEmployeeRecordId)}"` : ""}

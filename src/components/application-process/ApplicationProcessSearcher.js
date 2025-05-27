@@ -245,7 +245,7 @@ class ApplicationProcessSearcher extends Component {
           };
 
           const createApplicationMovementData = {
-            id: decodeId(application.id),
+            applicationId: decodeId(application.id),
             status: WORKFORCE_STATUS.REJECTED,
             note: "আবেদন বাতিল করা হয়েছে",
             action: "rejected",
@@ -299,7 +299,7 @@ class ApplicationProcessSearcher extends Component {
           };
 
           const createApplicationMovementData = {
-            id: decodeId(application.id),
+            applicationId: decodeId(application.id),
             status: WORKFORCE_STATUS.APPROVED,
             note: "আবেদন অনুমোদন করা হয়েছে",
             action: "approved",

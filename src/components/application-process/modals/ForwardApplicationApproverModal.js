@@ -126,7 +126,7 @@ const ForwardApplicationAdminModal = ({
         status: WORKFORCE_STATUS.DG_APPROVED,
       };
       const createApplicationMovementData = {
-        id: decodeId(selectedApplication.id),
+        applicationId: decodeId(selectedApplication.id),
         status: WORKFORCE_STATUS.DG_APPROVED,
         note: "আবেদন ডিজির কাছে প্রেরণ করা হয়েছে",
         action: "send_for_dg_approve",
