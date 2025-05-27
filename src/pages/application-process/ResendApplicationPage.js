@@ -360,9 +360,9 @@ const mapDispatchToProps = (dispatch) =>
     dispatch
   );
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state, props) => ({
   application: state.workforce.application,
-  // applicationUuid: props?.match?.params?.application_uuid,
+  applicationUuid: props?.match?.params?.application_uuid,
 });
 
 export default withHistory(
