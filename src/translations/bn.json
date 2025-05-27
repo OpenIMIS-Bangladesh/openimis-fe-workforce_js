@@ -113,6 +113,7 @@
     "workforce.employee.application.present_address": "বর্তমান ঠিকানা",
     "workforce.employee.application.permanent_address": "স্থায়ী ঠিকানা",
     "workforce.employee.application.status": "অবস্থা",
+    "workforce.employee.application.revertNote": "প্রত্যাবর্তিত মন্তব্য",
     "workforce.employee.application.applicationDate": "আবেদনের তারিখ",
     "workforce.employee.application.assignedBy": "দ্বারা নির্ধারিত",
     "workforce.employee.application.assignedDate": "নির্ধারিত তারিখ",

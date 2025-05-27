@@ -233,6 +233,7 @@
     "workforce.employee.application.present_address": "Present Address",
     "workforce.employee.application.permanent_address": "Permanent Address",
     "workforce.employee.application.status": "Status",
+    "workforce.employee.application.revertNote": "Revert Note",
     "workforce.employee.application.applicationDate": "Application Date",
     "workforce.employee.application.assignedBy": "Assigned By",
     "workforce.employee.application.assignedDate": "Assigned Date",

@@ -30,6 +30,7 @@ import {
 import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../constants";
 import {
   fetchApplicationsSummary,
+  fetchApplicationMovementsSummary,
   fetchOrganizationEmployeeDesignation,
 } from "../../actions";
 import "react-quill/dist/quill.snow.css";
@@ -151,12 +152,12 @@ class ApplicationProcessSearcher extends Component {
     }else{
       const finalParams = {
         ...prms,
-        ... [`status:"send_for_dg_approve", orderBy: ["-dateCreated"]`],
+        ... [`orderBy: ["-dateCreated"]`],
       };
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"send_for_dg_approve", orderBy: ["-dateCreated"]`]
+        [`orderBy: ["-dateCreated"]`]
       );
     }
   };
@@ -421,6 +422,7 @@ class ApplicationProcessSearcher extends Component {
     "workforce.employee.application.factoryName",
     "workforce.employee.application.applicationDate",
     "workforce.employee.application.status",
+    "workforce.employee.application.revertNote",
     this.isShowHistory() ? "workforce.version" : "",
   ];
   headerChecker = () => [
@@ -690,6 +692,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       fetchApplicationsSummary,
+      fetchApplicationMovementsSummary,
       fetchOrganizationEmployeeDesignation,
       updateApplication,
       createApplicationMovement,

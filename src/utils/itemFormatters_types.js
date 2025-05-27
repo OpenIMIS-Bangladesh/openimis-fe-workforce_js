@@ -53,26 +53,7 @@ import {
             <TabIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="অনুমোদন">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => component.handleApproval(application)}
-          >
-            <CheckIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="রিজেক্ট">
-          <span>
-            <IconButton
-              onClick={() => component.handleReject(application)}
-              disabled={component.state.selectedApplication?.isHistory}
-              color="error"
-            >
-              <CloseIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-        <Tooltip title="গৃহীত কার্যক্রম">
+           <Tooltip title="গৃহীত কার্যক্রম">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -88,6 +69,25 @@ import {
             <HistoryIcon />
           </IconButton>
         </Tooltip>
+        <Tooltip title="অনুমোদন">
+          <IconButton
+            disabled={application?.isHistory || application?.status !== "send_for_dg_approve"}
+            onClick={() => component.handleApproval(application)}
+          >
+            <CheckIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="রিজেক্ট">
+          <span>
+            <IconButton
+              onClick={() => component.handleReject(application)}
+            disabled={application?.isHistory || application?.status !== "send_for_dg_approve"}
+              color="error"
+            >
+              <CloseIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
       </div>
     ));
     return formatters;
@@ -100,6 +100,7 @@ import {
       (application) => "Akij",
       (application) => application.dateCreated.split("T")[0],
       (application) => application.status,
+      (application) => "",
       isShowHistory() ? application?.version : null,
     ];
 
@@ -137,7 +138,7 @@ import {
             <HistoryIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="গৃহীত কার্যক্রম">
+        <Tooltip title="পুনরায় পাঠান">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
