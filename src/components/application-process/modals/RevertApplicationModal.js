@@ -133,7 +133,8 @@ const RevertApplicationModal = ({
         applicatonId: decodeId(selectedApplication.id),
         status: WORKFORCE_STATUS.REVERT_TO_APPLICANT,
         note: "আবেদন ফেরত পাঠানো হয়েছে",
-        action: "revert",
+        action: "revert_to_applicant",
+        revertNote: editorContent,
       };
       await dispatch(
         updateApplication(updateApplicationData, `update workforce application`)
@@ -154,7 +155,8 @@ const RevertApplicationModal = ({
         applicationId: decodeId(selectedApplication.id),
         status: WORKFORCE_STATUS.REVERT_TO_CHECKER,
         note: "আবেদন ফেরত পাঠানো হয়েছে",
-        action: "revert",
+        action: "revert_to_checker",
+        revertNote: editorContent,
       };
       await dispatch(
         updateApplication(updateApplicationData, `update workforce application`)

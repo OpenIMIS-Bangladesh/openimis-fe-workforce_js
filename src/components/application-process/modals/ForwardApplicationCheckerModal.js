@@ -130,7 +130,7 @@ const ForwardApplicationAdminModal = ({
       applicationId: decodeId(selectedApplication.id),
       status: WORKFORCE_STATUS.APPROVER_FORWARD,
       note: "আবেদনের প্রমাণপত্র যাচাই করা হয়েছে",
-      action: "first_forward",
+      action: "forward_to_approver",
 
     };
     await dispatch(
