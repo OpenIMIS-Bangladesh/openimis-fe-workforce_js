@@ -122,7 +122,7 @@ const MedicalAssistanceForm = ({
     id: "",
   });
 
-  console.log({fahim:activeStep})
+  console.log({ fahim: activeStep })
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
     dispatch(
@@ -176,7 +176,7 @@ const MedicalAssistanceForm = ({
           presentLocation: employeeData.presentLocation || "",
           presentAddress: employeeData.presentAddress || "",
         },
-        company:  employeeData.company || null,
+        company: employeeData.company || null,
         factory: employeeData.factory || null,
         applicationForSelf: applicationForSelf,
         organizationType: organizationType,
@@ -205,11 +205,12 @@ const MedicalAssistanceForm = ({
     });
   };
 
-  const handleNext = async () => {
-  
-    
+  console.clear();
+  console.log(activeStep);
+  const handleNext = () => {
+    console.log(activeStep);
     if (activeStep === 0 || activeStep === 1) {
-      
+
       const workforceEmployeeData = {
         nameEn:
           formData?.workforceEmployee?.nameEn ||
@@ -284,7 +285,7 @@ const MedicalAssistanceForm = ({
         id: formData?.id,
       };
       console.log("Update Submitting formData:", formData);
-      await dispatch(
+      dispatch(
         updateWorkforceEmployee(
           workforceEmployeeData,
           `Update Workforce Employee ${workforceEmployeeData.nameEn}`
@@ -296,7 +297,7 @@ const MedicalAssistanceForm = ({
       //     `update workforce application ${formData.firstNameEn}`
       //   )
       // );
-      
+
     } else if (activeStep === 2) {
       console.log("Create application formData:", formData);
       const createApplicationData = {
@@ -316,25 +317,25 @@ const MedicalAssistanceForm = ({
 
       console.log({ createApplicationData });
 
-      const applicationMutation = await formatMutation(
+      const applicationMutation = formatMutation(
         "createWorkforceApplication",
         formatApplicationeGQL(createApplicationData),
         `Created application ${formData.nameEn}`
       );
       const applicationClientMutationId = applicationMutation.clientMutationId;
       console.log("applicationClientMutationId", applicationClientMutationId);
-      await dispatch(
+      dispatch(
         createApplication(
           applicationMutation,
           `Created workforce application ${formData.firstNameEn}`
         )
       );
 
-      await dispatch(
+      dispatch(
         fetchApplicationId(modulesManager, applicationClientMutationId)
       );
 
-      
+
     } else {
       console.log("hello faltu")
       // const filters = [`id: "${applicationId[0].id}"`];
@@ -358,7 +359,7 @@ const MedicalAssistanceForm = ({
         employeeBankInfo: formData.employeeBankInfo,
         employeeDependentInfo: formData.dependents,
         employeeAccidentInfo: formData.employeeAccidentInfo,
-        status:WORKFORCE_STATUS.NEW,
+        status: WORKFORCE_STATUS.NEW,
       };
       dispatch(
         updateApplication(
@@ -369,7 +370,7 @@ const MedicalAssistanceForm = ({
     }
     setActiveStep((prevStep) => prevStep + 1);
 
-    console.log({activeStep})
+    console.log({ activeStep })
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -437,7 +438,7 @@ const MedicalAssistanceForm = ({
     {
       label: "workforce.application.steps.location",
       content: (
-        <EmployeeLocationForm handleChange={(key,value)=>handleChange(key,value,"workforceEmployee")} formData={formData} />
+        <EmployeeLocationForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />
       ),
     },
     {
@@ -474,18 +475,18 @@ const MedicalAssistanceForm = ({
     },
     ...(applicationForSelf === "no"
       ? [
-          {
-            label: "workforce.application.steps.dependent",
-            content: (
-              <EmployeeDependentForm
-                dependents={formData.dependents}
-                handleDependentChange={handleDependentChange}
-                addDependent={addDependent}
-                removeDependent={removeDependent}
-              />
-            ),
-          },
-        ]
+        {
+          label: "workforce.application.steps.dependent",
+          content: (
+            <EmployeeDependentForm
+              dependents={formData.dependents}
+              handleDependentChange={handleDependentChange}
+              addDependent={addDependent}
+              removeDependent={removeDependent}
+            />
+          ),
+        },
+      ]
       : []),
 
   ];
@@ -498,12 +499,12 @@ const MedicalAssistanceForm = ({
         <Paper className={classes.paper} elevation={0}>
           <PreviewDetails formData={formData} />
           <div className={classes.buttonContainer}>
-          <Button variant="outlined" color="error" onClick={()=>{setShowPreview(false)}}>
-            <FormattedMessage module="workforce" id="workforce.back" />
-          </Button>
-          <Button variant="contained" color="primary" onClick={()=>{setShowPreview(false);setShowVerifyNid(true)}}>
-            <FormattedMessage module="workforce" id="workforce.submit" />
-          </Button>
+            <Button variant="outlined" color="error" onClick={() => { setShowPreview(false) }}>
+              <FormattedMessage module="workforce" id="workforce.back" />
+            </Button>
+            <Button variant="contained" color="primary" onClick={() => { setShowPreview(false); setShowVerifyNid(true) }}>
+              <FormattedMessage module="workforce" id="workforce.submit" />
+            </Button>
           </div>
         </Paper>
       </div>
@@ -516,9 +517,9 @@ const MedicalAssistanceForm = ({
         <Paper className={classes.paper} elevation={0}>
           <NidVerification formData={formData} />
           <div className={classes.buttonContainer}>
-          <Button variant="contained" color="primary" onClick={()=>{setShowVerifyNid(false);setIsSubmitted(true)}}>
-            <FormattedMessage module="workforce" id="workforce.confirm.submit" />
-          </Button>
+            <Button variant="contained" color="primary" onClick={() => { setShowVerifyNid(false); setIsSubmitted(true) }}>
+              <FormattedMessage module="workforce" id="workforce.confirm.submit" />
+            </Button>
           </div>
         </Paper>
       </div>
@@ -543,7 +544,7 @@ const MedicalAssistanceForm = ({
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>
-        <Stepper activeStep={activeStep} alternativeLabel style={{padding:"0px"}}>
+        <Stepper activeStep={activeStep} alternativeLabel style={{ padding: "0px" }}>
           {steps.map((step, index) => (
             <Step key={index}>
               <StepLabel>
@@ -552,7 +553,7 @@ const MedicalAssistanceForm = ({
             </Step>
           ))}
         </Stepper>
-        
+
         <Box mt={0}>{steps[activeStep].content}</Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
