@@ -712,6 +712,95 @@ export function fetchApplication(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_APPLICATION");
 }
+export function fetchApplicationMovementsSummary(mm, filters) {
+  const projections = [
+    "id",
+    "applicationId",
+    "note",
+    "action",
+    "toEmployeeRecordId",
+    "fromEmployeeRecordId",
+    "toOfficeUnitOrganogramId",
+    "fromOfficeUnitOrganogramId",
+    "toOfficeId",
+    "fromOfficeId",
+    "toOfficeUnitId",
+    "fromOfficeUnitId",
+    "isCurrent",
+    "isCc",
+    "isCommitteeHead",
+    "isCommitteeMember",
+    "toEmployeeNameBng",
+    "fromEmployeeNameBng",
+    "toEmployeeNameEng",
+    "fromEmployeeNameEng",
+    "toEmployeeDesignationBng",
+    "fromEmployeeDesignationBng",
+    "toOfficeNameBng",
+    "fromOfficeNameBng",
+    "toEmployeeUnitNameBng",
+    "fromEmployeeUnitNameBng",
+    "fromEmployeeUsername",
+    "deadlineDate",
+    "status",
+    "revertNote",
+    "isReverted",
+    "revertedById",
+    "revertingDate"
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceApplicationMovement",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_APPLICATION_MOVEMENTS");
+}
+
+export function fetchApplicationMovement(mm, filters) {
+
+  const projections = [
+      "id",
+      "applicationId",
+      "note",
+      "action",
+      "toEmployeeRecordId",
+      "fromEmployeeRecordId",
+      "toOfficeUnitOrganogramId",
+      "fromOfficeUnitOrganogramId",
+      "toOfficeId",
+      "fromOfficeId",
+      "toOfficeUnitId",
+      "fromOfficeUnitId",
+      "isCurrent",
+      "isCc",
+      "isCommitteeHead",
+      "isCommitteeMember",
+      "toEmployeeNameBng",
+      "fromEmployeeNameBng",
+      "toEmployeeNameEng",
+      "fromEmployeeNameEng",
+      "toEmployeeDesignationBng",
+      "fromEmployeeDesignationBng",
+      "toOfficeNameBng",
+      "fromOfficeNameBng",
+      "toEmployeeUnitNameBng",
+      "fromEmployeeUnitNameBng",
+      "fromEmployeeUsername",
+      "deadlineDate",
+      "status",
+      "revertNote",
+      "isReverted",
+      "revertedById",
+      "revertingDate"
+
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceApplicationMovement",
+    filters,
+    projections,
+  );
+  return graphql(payload, "WORKFORCE_APPLICATION_MOVEMENT");
+}
 
 export function fetchWorkforceEmployee(mm, filters) {
   // const present_location_projection =
