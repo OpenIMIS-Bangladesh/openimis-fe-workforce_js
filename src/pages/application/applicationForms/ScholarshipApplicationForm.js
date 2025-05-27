@@ -320,7 +320,7 @@ const ScholarshipApplicationForm = ({
           employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
           employeeDependentInfo: JSON.stringify(formData.dependents),
           employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo),
-          status: WORKFORCE_STATUS.PENDING,
+          status: WORKFORCE_STATUS.NEW,
         };
   
         console.log({ createApplicationData });
@@ -354,7 +354,7 @@ const ScholarshipApplicationForm = ({
           employeeBankInfo: formData.employeeBankInfo,
           employeeDependentInfo: formData.dependents,
           employeeChildrenInfo: formData.employeeChildrenInfo,
-          status: "ontest",
+          status: WORKFORCE_STATUS.NEW,
         };
         dispatch(
           updateApplication(

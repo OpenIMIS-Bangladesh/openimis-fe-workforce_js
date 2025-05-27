@@ -27,34 +27,23 @@ import {
   historyPush,
   decodeId,
 } from "@openimis/fe-core";
-import {
-  Tab as TabIcon,
-  Delete as DeleteIcon,
-  Send as SendIcon,
-  Check as CheckIcon,
-} from "@material-ui/icons";
-import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../constants";
 import {
   fetchApplicationsSummary,
   fetchOrganizationEmployeeDesignation,
 } from "../../actions";
-import ApplicationProcessFilter from "./ApplicationProcessFilter";
-import ForwardIcon from "@material-ui/icons/Forward";
-import UndoIcon from "@material-ui/icons/Undo";
 import "react-quill/dist/quill.snow.css";
-import FileUploader from "../../pickers/FileUploader";
-import CloseIcon from "@material-ui/icons/Close";
-import RestorePageIcon from '@material-ui/icons/RestorePage';
+import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardApplicationModal from "./modals/ForwardApplicationModal";
 import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
+import FileUploader from "../../pickers/FileUploader";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 import RevertApplicationModal from "./modals/RevertApplicationModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement } from "../../actions";
-import HistoryIcon from "@material-ui/icons/History";
+import { itemAdminFormatters, itemFormattersApplicant, itemFormattersApprover, itemFormattersChecker } from "../../utils/itemFormatters_types";
 
 const styles = (theme) => ({
   paper: {
@@ -148,7 +137,7 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"pending", orderBy: ["-dateCreated"]`]
+        [`status:"new", orderBy: ["-dateCreated"]`]
         // prms
       );
     }else{
@@ -448,328 +437,21 @@ class ApplicationProcessSearcher extends Component {
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
-  sorts = () => [];
-
   itemFormatters = () => {
-    const formatters = [
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
-      (application) => application.applicationType,
-      (application) => 200000,
-      (application) => "Nafi",
-      (application) => "Akij",
-      (application) => application.status,
-      (application) => application.dateCreated.split("T")[0],
-      this.isShowHistory() ? application?.version : null,
-    ];
-
-    formatters.push((application) => (
-      <div className={this.props.classes.horizontalButtonContainer}>
-        <Tooltip title="দেখুন">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.process.view",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <TabIcon />
-          </IconButton>
-        </Tooltip>
-
-        {/* <Tooltip title="যাচাই">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.verify",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <VerifiedUserIcon />
-          </IconButton>
-        </Tooltip> */}
-        <Tooltip title="অনুমোদন">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => this.handleApproval(application)}
-          >
-            <CheckIcon />
-          </IconButton>
-        </Tooltip>
-        {/* <Tooltip title="ফরওয়ার্ড">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => this.handleOpenForwardModal(application)}
-          >
-            <ForwardIcon />
-          </IconButton>
-        </Tooltip> */}
-        {/* <Tooltip title="রিভার্ট">
-          <IconButton
-            disabled={application?.isHistory}
-            // onClick={() => this.handleOpenForwardModal(application)}
-          >
-            <UndoIcon />
-          </IconButton>
-        </Tooltip> */}
-        <Tooltip title="রিজেক্ট">
-          <span>
-            <IconButton
-              onClick={() => this.handleReject(application)}
-              disabled={this.state.selectedApplication?.isHistory}
-              color="error"
-            >
-              <CloseIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-        <Tooltip title="গৃহীত কার্যক্রম">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.process.actions",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <HistoryIcon />
-          </IconButton>
-        </Tooltip>
-      </div>
-    ));
-    return formatters;
+  return  getUserTypeFromRights(this.props.userRights) === WORKFORCE_USER_TYPE.APPLICANT
+              ? itemFormattersApplicant(this.isShowHistory,this.props.modulesManager,this.props.history,this)
+              : getUserTypeFromRights(this.props.userRights) ===
+                WORKFORCE_USER_TYPE.CHECKER
+              ? itemFormattersChecker(this.isShowHistory,this.props.modulesManager,this.props.history,this)
+              : getUserTypeFromRights(this.props.userRights) ===
+                WORKFORCE_USER_TYPE.APPROVER
+              ?  itemFormattersApprover(this.isShowHistory,this.props.modulesManager,this.props.history,this)
+              : itemAdminFormatters(this.isShowHistory,this.props.modulesManager,this.props.history,this)
+            
+   
   };
 
-  itemFormattersApplicant = () => {
-    const formatters = [
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.applicationType,
-      (application) => "Akij",
-      (application) => application.dateCreated.split("T")[0],
-      (application) => application.status,
-      this.isShowHistory() ? application?.version : null,
-    ];
-
-    formatters.push((application) => (
-      <div className={this.props.classes.horizontalButtonContainer}>
-        <Tooltip title="দেখুন">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.process.view",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <TabIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="গৃহীত কার্যক্রম">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.process.actions",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <HistoryIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="গৃহীত কার্যক্রম">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.process.resend",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <RestorePageIcon />
-          </IconButton>
-        </Tooltip>
-      </div>
-    ));
-    return formatters;
-  };
-  itemFormattersChecker = () => {
-    const formatters = [
-      (application) =>
-        application.workforceEmployee ? (
-          <Checkbox
-            checked={this.state.selectedApplicationIds.includes(application.id)}
-            onChange={this.handleCheckboxChange(application.id)}
-            color="primary"
-          />
-        ) : (
-          ""
-        ),
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
-      (application) => application.applicationType,
-      (application) => 200000,
-      (application) => "Akij",
-      (application) => application.status,
-      (application) => application.dateCreated.split("T")[0],
-      this.isShowHistory() ? application?.version : null,
-    ];
-
-    formatters.push((application) => (
-      <div className={this.props.classes.horizontalButtonContainer}>
-        <Tooltip title="দেখুন">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.process.view",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <TabIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="যাচাই">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.verify",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <VerifiedUserIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="ফরওয়ার্ড">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => this.handleOpenForwardModal(application)}
-          >
-            <ForwardIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="রিভার্ট">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {this.handleOpenRevertModal(application);this.setState({revertByChecker:true})}}
-          >
-            <UndoIcon />
-          </IconButton>
-        </Tooltip>
-      </div>
-    ));
-    return formatters;
-  };
-  itemFormattersApprover = () => {
-    const formatters = [
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
-      // (application) => application.workforceEmployee?.nid,
-      // (application) => application.workforceEmployee?.phoneNumber,
-      (application) => application.applicationType,
-      // (application) => application.organizationType,
-      (application) => 200000,
-      (application) => "Nafi",
-      (application) => "Akij",
-      (application) => application.status,
-      (application) => application.dateCreated.split("T")[0],
-      // (application) => "Hafiz",
-      // (application) => application.dateCreated.split('T')[0],
-      this.isShowHistory() ? application?.version : null,
-    ];
-
-    formatters.push((application) => (
-      <div className={this.props.classes.horizontalButtonContainer}>
-        <Tooltip title="দেখুন">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.process.view",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <TabIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="অনুমোদন">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.applications.application.verify",
-                [decodeId(application.id)],
-                false
-              );
-            }}
-          >
-            <VerifiedUserIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="ফরওয়ার্ড">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => this.handleOpenForwardModal(application)}
-          >
-            <ForwardIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="রিভার্ট">
-          <IconButton
-            disabled={application?.isHistory}
-            // onClick={() => this.handleOpenForwardModal(application)}
-          >
-            <UndoIcon />
-          </IconButton>
-        </Tooltip>
-      </div>
-    ));
-    return formatters;
-  };
+  sorts = () => [];
 
   getUserOrganization = async (userId) => {
     await this.fetchOrganizationEmployeeDesignation(
@@ -807,6 +489,8 @@ class ApplicationProcessSearcher extends Component {
 
     const {
       intl,
+      history,classes,
+      modulesManager,
       applications,
       applicationsPageInfo,
       fetchingApplications,
@@ -835,6 +519,7 @@ class ApplicationProcessSearcher extends Component {
     );
 
     console.log({ selectedApplicationIds });
+    console.log(itemAdminFormatters(this.isShowHistory,modulesManager,history,this))
 
     return (
       <>
@@ -878,15 +563,17 @@ class ApplicationProcessSearcher extends Component {
               : this.headers
           }
           itemFormatters={
-            getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT
-              ? this.itemFormattersApplicant
-              : getUserTypeFromRights(userRights) ===
-                WORKFORCE_USER_TYPE.CHECKER
-              ? this.itemFormattersChecker
-              : getUserTypeFromRights(userRights) ===
-                WORKFORCE_USER_TYPE.APPROVER
-              ? this.itemFormattersApprover
-              : this.itemFormatters
+              this.itemFormatters
+            // getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT
+            //   ? itemFormattersApplicant(this.isShowHistory,modulesManager,history,this)
+            //   : getUserTypeFromRights(userRights) ===
+            //     WORKFORCE_USER_TYPE.CHECKER
+            //   ? itemFormattersChecker(this.isShowHistory,modulesManager,history,this)
+            //   : getUserTypeFromRights(userRights) ===
+            //     WORKFORCE_USER_TYPE.APPROVER
+            //   ? itemFormattersApprover(this.isShowHistory,modulesManager,history,this)
+            //   :
+            // itemAdminFormatters(this.isShowHistory,modulesManager,history,this)
           }
           sorts={this.sorts}
           rowDisabled={this.rowDisabled}

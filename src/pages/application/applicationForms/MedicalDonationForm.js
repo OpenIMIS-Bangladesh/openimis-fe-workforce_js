@@ -306,7 +306,7 @@ const MedicalDonationForm = ({
           employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
           employeeDependentInfo: JSON.stringify(formData.dependents),
           employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo),
-          status: WORKFORCE_STATUS.PENDING,
+          status: WORKFORCE_STATUS.NEW,
         };
   
         console.log({ createApplicationData });
@@ -340,7 +340,7 @@ const MedicalDonationForm = ({
           employeeBankInfo: formData.employeeBankInfo,
           employeeDependentInfo: formData.dependents,
           employeeAccidentInfo: formData.employeeAccidentInfo,
-          status: "ontest",
+          status: WORKFORCE_STATUS.NEW,
         };
         dispatch(
           updateApplication(
