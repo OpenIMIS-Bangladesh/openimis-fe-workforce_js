@@ -22,7 +22,7 @@ import {
   Paper,
 } from "@material-ui/core";
 
-import DescriptionIcon from "@material-ui/icons/Description";
+import RestorePageIcon from '@material-ui/icons/RestorePage';
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
@@ -266,8 +266,8 @@ const CheckerDashboard = () => {
         return <FiledApplications />;
       case "recentApplications":
         return <FiledApplications />;
-      case "applicationStatus":
-        return <ApplicationStatus />;
+      case "revertedApplication":
+        return <RevertApplication />;
       default:
         return <FiledApplications />;
     }
