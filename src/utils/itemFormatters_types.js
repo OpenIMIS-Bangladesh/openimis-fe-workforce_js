@@ -300,7 +300,7 @@ import {
         <Tooltip title="রিভার্ট">
           <IconButton
             disabled={application?.isHistory}
-            // onClick={() => component.handleOpenForwardModal(application)}
+            onClick={() => component.handleOpenRevertModal(application)}
           >
             <UndoIcon />
           </IconButton>

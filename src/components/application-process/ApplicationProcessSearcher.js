@@ -120,35 +120,35 @@ class ApplicationProcessSearcher extends Component {
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       const finalParams = {
         ...prms,
-        ... [`status:"first_forward", orderBy: ["-dateCreated"]`],
+        ... [`status:"new", orderBy: ["-dateCreated"]`],
       };
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"first_forward",orderBy: ["-dateCreated"]`]
+        [`status:"new",orderBy: ["-dateCreated"]`]
       );
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"second_forward", orderBy: ["-dateCreated"]`]
+        [`status:"forward_to_approver", orderBy: ["-dateCreated"]`]
       );
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"new", orderBy: ["-dateCreated"]`]
+        [`orderBy: ["-dateCreated"]`]
         // prms
       );
     }else{
       const finalParams = {
         ...prms,
-        ... [`status:"send_for_dg_approve",, orderBy: ["-dateCreated"]`],
+        ... [`status:"send_for_dg_approve", orderBy: ["-dateCreated"]`],
       };
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"send_for_dg_approve"`]
+        [`status:"send_for_dg_approve", orderBy: ["-dateCreated"]`]
       );
     }
   };
@@ -489,7 +489,7 @@ class ApplicationProcessSearcher extends Component {
 
     const {
       intl,
-      history,classes,
+      history,
       modulesManager,
       applications,
       applicationsPageInfo,
@@ -562,19 +562,7 @@ class ApplicationProcessSearcher extends Component {
               ? this.headerApprover
               : this.headers
           }
-          itemFormatters={
-              this.itemFormatters
-            // getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT
-            //   ? itemFormattersApplicant(this.isShowHistory,modulesManager,history,this)
-            //   : getUserTypeFromRights(userRights) ===
-            //     WORKFORCE_USER_TYPE.CHECKER
-            //   ? itemFormattersChecker(this.isShowHistory,modulesManager,history,this)
-            //   : getUserTypeFromRights(userRights) ===
-            //     WORKFORCE_USER_TYPE.APPROVER
-            //   ? itemFormattersApprover(this.isShowHistory,modulesManager,history,this)
-            //   :
-            // itemAdminFormatters(this.isShowHistory,modulesManager,history,this)
-          }
+          itemFormatters={this.itemFormatters}
           sorts={this.sorts}
           rowDisabled={this.rowDisabled}
           rowLocked={this.rowLocked}

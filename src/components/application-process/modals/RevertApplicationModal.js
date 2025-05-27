@@ -123,27 +123,50 @@ const RevertApplicationModal = ({
     // }
   };
 
-  const handleRevert = async () => {
-    const updateApplicationData = {
-      id: decodeId(selectedApplication.id),
-      status: WORKFORCE_STATUS.REVERT,
-    };
-    const createApplicationMovementData = {
-      id: decodeId(selectedApplication.id),
-      status: WORKFORCE_STATUS.REVERT,
-      note: "আবেদন ফেরত পাঠানো হয়েছে",
-      action: "revert",
-    };
-    await dispatch(
-      updateApplication(updateApplicationData, `update workforce application`)
-    );
-    await dispatch(
-      createApplicationMovement(
-        createApplicationMovementData,
-        `create workforce movement`
-      )
-    );
-    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+  const handleRevert = async (revertByChecker) => {
+    if (revertByChecker) {
+      const updateApplicationData = {
+        id: decodeId(selectedApplication.id),
+        status: WORKFORCE_STATUS.REVERT_TO_APPLICANT,
+      };
+      const createApplicationMovementData = {
+        id: decodeId(selectedApplication.id),
+        status: WORKFORCE_STATUS.REVERT_TO_APPLICANT,
+        note: "আবেদন ফেরত পাঠানো হয়েছে",
+        action: "revert",
+      };
+      await dispatch(
+        updateApplication(updateApplicationData, `update workforce application`)
+      );
+      await dispatch(
+        createApplicationMovement(
+          createApplicationMovementData,
+          `create workforce movement`
+        )
+      );
+      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+    }else {
+      const updateApplicationData = {
+        id: decodeId(selectedApplication.id),
+        status: WORKFORCE_STATUS.REVERT_TO_CHECKER,
+      };
+      const createApplicationMovementData = {
+        id: decodeId(selectedApplication.id),
+        status: WORKFORCE_STATUS.REVERT_TO_CHECKER,
+        note: "আবেদন ফেরত পাঠানো হয়েছে",
+        action: "revert",
+      };
+      await dispatch(
+        updateApplication(updateApplicationData, `update workforce application`)
+      );
+      await dispatch(
+        createApplicationMovement(
+          createApplicationMovementData,
+          `create workforce movement`
+        )
+      );
+      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+    }
   };
 
   console.log({ aha: selectedApplication });
@@ -281,7 +304,7 @@ const RevertApplicationModal = ({
             variant="contained"
             color="primary"
             disabled={submitting}
-            onClick={handleRevert}
+            onClick={()=>handleRevert(revertByChecker)}
           >
             {submitting ? "ফেরত পাঠানো হচ্ছে..." : "ফেরত পাঠান"}
           </Button>

@@ -140,7 +140,7 @@ const ForwardApplicationAdminModal = ({
 
   console.log({ aha: selectedApplication });
 
-  if (selectedApplication?.status === WORKFORCE_STATUS.FIRST_FORWARD) {
+  if (selectedApplication?.status === WORKFORCE_STATUS.APPROVER_FORWARD) {
     return (
       <ForwardAdminPanel
         open={open}
@@ -151,7 +151,7 @@ const ForwardApplicationAdminModal = ({
     );
   }
 
-  if (selectedApplication?.status === WORKFORCE_STATUS.SECOND_FORWARD) {
+  if (selectedApplication?.status === WORKFORCE_STATUS.DG_APPROVED) {
     return (
       <ForwardApplicationModal
         open={open}

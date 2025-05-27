@@ -36,7 +36,6 @@ export const WORKFORCE_STATUS = {
   COMPLETED: "completed",
   ARCHIVED: "archived",
   APPROVED: "approved",
-  DG_APPROVED: "send_for_dg_approve",
   REJECTED: "rejected",
   DEACTIVATED: "deactivated",
   REINSTATED: "reinstated",
@@ -49,10 +48,13 @@ export const WORKFORCE_STATUS = {
   DISABLED: "disabled",
   REASSIGNED: "reassigned",
   RESIGNED: "resigned",
-  FIRST_FORWARD:"first_forward",
+  DG_APPROVED: "send_for_dg_approve",
+  APPROVER_FORWARD:"forward_to_approver",
   SECOND_FORWARD:"second_forward",
   THIRD_FORWARD:"third_forward",
   NEW:"new",
+  REVERT_TO_APPLICANT:"revert_to_applicant",
+  REVERT_TO_CHECKER:"revert_to_checker",
   REVERT:"revert"
 };
 

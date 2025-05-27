@@ -161,8 +161,8 @@ class ResendApplicationPage extends Component {
   };
 
   handleResendDoccument = ()=>{
-    const {applicationUuid} = this.props
-    console.log({applicationUuid})
+    // const {applicationUuid} = this.props
+    // console.log({applicationUuid})
     // const updateApplicationData = {
     //           id: decodeId(selectedApplication.id),
     //           status: WORKFORCE_STATUS.SECOND_FORWARD,
@@ -176,11 +176,11 @@ class ResendApplicationPage extends Component {
   }
 
   render() {
-    const { classes,applicationUuid } = this.props;
+    const { classes } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType } =
       this.state;
 
-    console.log({ applicationUuid });
+    // console.log({ applicationUuid });
 
     return (
       <Grid container spacing={3} className={classes.rootGrid}>
@@ -361,14 +361,14 @@ const mapDispatchToProps = (dispatch) =>
 
 const mapStateToProps = (state) => ({
   application: state.workforce.application,
-  applicationUuid: props?.match?.params?.application_uuid,
+  // applicationUuid: props?.match?.params?.application_uuid,
 });
 
 export default withHistory(
   withModulesManager(
     connect(
       mapStateToProps,
-      // mapDispatchToProps
+      mapDispatchToProps
     )(withTheme(withStyles(styles)(ResendApplicationPage)))
   ))
 
