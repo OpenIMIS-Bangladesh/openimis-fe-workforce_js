@@ -130,7 +130,7 @@ const RevertApplicationModal = ({
         status: WORKFORCE_STATUS.REVERT_TO_APPLICANT,
       };
       const createApplicationMovementData = {
-        applicatonId: decodeId(selectedApplication.id),
+        applicationId: decodeId(selectedApplication.id),
         status: WORKFORCE_STATUS.REVERT_TO_APPLICANT,
         note: "আবেদন ফেরত পাঠানো হয়েছে",
         action: "revert_to_applicant",
