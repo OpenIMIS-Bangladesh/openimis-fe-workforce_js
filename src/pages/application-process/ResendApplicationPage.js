@@ -15,10 +15,7 @@ import {
   Accordion,
   AccordionSummary,
 } from "@material-ui/core";
-import {
-  withModulesManager,
-  withHistory,
-} from "@openimis/fe-core";
+import { withModulesManager, withHistory, decodeId } from "@openimis/fe-core";
 import { journalize, FormattedMessage } from "@openimis/fe-core";
 import CloseIcon from "@material-ui/icons/Close";
 import { withTheme, withStyles } from "@material-ui/core/styles";
@@ -27,6 +24,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FileUploader from "../../pickers/FileUploader";
 import { updateApplication } from "../../actions";
 import { bindActionCreators } from "redux";
+import { WORKFORCE_STATUS } from "../../constants";
 
 const styles = (theme) => ({
   paper: {
@@ -161,23 +159,20 @@ class ResendApplicationPage extends Component {
     this.setState({ comment: e.target.value });
   };
 
-  handleResendDoccument = ()=>{
-    // const {applicationUuid} = this.props
-    // console.log({applicationUuid})
-    // const updateApplicationData = {
-    //           id: decodeId(selectedApplication.id),
-    //           status: WORKFORCE_STATUS.SECOND_FORWARD,
-    //         };
-    //         dispatch(
-    //           updateApplication(
-    //             updateApplicationData,
-    //             `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`,
-    //           ),
-    //         );
-  }
+  handleResendDoccument = async() => {
+    const { applicationUuid } = this.props;
+    const updateApplicationData = {
+      id: applicationUuid,
+      status: WORKFORCE_STATUS.NEW,
+    };
+    await updateApplication(
+      updateApplicationData,
+      `update workforce application `
+    );
+  };
 
   render() {
-    const { classes } = this.props;
+    const { classes, applicationUuid } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType } =
       this.state;
 
@@ -248,7 +243,14 @@ class ResendApplicationPage extends Component {
                       </Grid>
 
                       {/* Right side: Comment + Actions */}
-                      <Grid item xs={12} md={6} container spacing={2} direction="column">
+                      <Grid
+                        item
+                        xs={12}
+                        md={6}
+                        container
+                        spacing={2}
+                        direction="column"
+                      >
                         <Grid item>
                           <TextField
                             label="Comment"
@@ -258,7 +260,12 @@ class ResendApplicationPage extends Component {
                             multiline
                             rows={4}
                             value={file.comment}
-                            onChange={(e) => this.handleFileCommentChange(index,e.target.value)}
+                            onChange={(e) =>
+                              this.handleFileCommentChange(
+                                index,
+                                e.target.value
+                              )
+                            }
                           />
                         </Grid>
 
@@ -330,20 +337,17 @@ class ResendApplicationPage extends Component {
             </Typography>
 
             {/* Replace with your actual FileUploader component */}
-            
+
             <FileUploader fieldKey="resend_document" />
             <Button
               variant="contained"
               color="primary"
-              onClick={() => this.handleResendDoccument()}
+              onClick={ this.handleResendDoccument}
               fullWidth
-              style={{marginTop:6}}
+              style={{ marginTop: 6 }}
             >
               {/* Verify */}
-              <FormattedMessage
-                module="workforce"
-                id="workforce.submit"
-              />
+              <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           </DialogContent>
         </Dialog>
@@ -371,5 +375,5 @@ export default withHistory(
       mapStateToProps,
       mapDispatchToProps
     )(withTheme(withStyles(styles)(ResendApplicationPage)))
-  ))
-
+  )
+);
