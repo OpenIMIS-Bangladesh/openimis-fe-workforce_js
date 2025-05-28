@@ -116,8 +116,8 @@ class ApplicationProcessSearcher extends Component {
   }
 
   fetch = (prms) => {
-    const { showHistoryFilter } = this.state;
     const { applicationType,userRights,revertedApplication } = this.props;
+    const { showHistoryFilter } = this.state;
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       const finalParams = {
         ...prms,
@@ -153,11 +153,12 @@ class ApplicationProcessSearcher extends Component {
       const finalParams = {
         ...prms,
         ... [`orderBy: ["-dateCreated"]`],
-      };
+        };
+        // console.log('shariful',prms)
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`orderBy: ["-dateCreated"]`]
+        prms
       );
     }
   };
@@ -486,7 +487,7 @@ class ApplicationProcessSearcher extends Component {
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
-    const { forwardModalOpen,revertModalOpen,revertByChecker, selectedApplication, selectedApplicationIds } =
+    const { forwardModalOpen,revertModalOpen,revertByChecker, selectedApplication, selectedApplicationIds,showHistoryFilter } =
       this.state;
     // const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
     //   this.state;
