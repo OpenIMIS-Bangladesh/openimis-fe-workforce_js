@@ -31,7 +31,6 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
-import ApplicantApplicationProcessSearcher from "../../components/application-process/ApplicantApplicationProcessSearcher";
 import MultiStepApplyForm from "../application/MultiStepApplyForm";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";

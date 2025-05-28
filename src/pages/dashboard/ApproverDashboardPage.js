@@ -30,7 +30,6 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
-import ApproverApplicationProcessSearcher from "../../components/application-process/ApproverApplicationProcessSearcher";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 
 const useStyles = makeStyles((theme) => ({
