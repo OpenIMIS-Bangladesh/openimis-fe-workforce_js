@@ -159,17 +159,28 @@ class ResendApplicationPage extends Component {
     this.setState({ comment: e.target.value });
   };
 
-  handleResendDoccument = async() => {
-    const { applicationUuid } = this.props;
-    const updateApplicationData = {
-      id: applicationUuid,
-      status: WORKFORCE_STATUS.NEW,
-    };
-    await updateApplication(
-      updateApplicationData,
-      `update workforce application `
-    );
+handleResendDocument = async () => {
+  const { applicationUuid, updateApplication } = this.props;
+
+  console.log("UUID:", applicationUuid);
+
+  const updateApplicationData = {
+    id: applicationUuid,
+    status: WORKFORCE_STATUS.NEW,
   };
+
+  try {
+    const result = await updateApplication(
+      updateApplicationData,
+      "update workforce application"
+    );
+    console.log("GraphQL mutation result:", result);
+  } catch (err) {
+    console.error("Mutation error:", err);
+  }
+};
+
+
 
   render() {
     const { classes, applicationUuid } = this.props;
@@ -342,7 +353,7 @@ class ResendApplicationPage extends Component {
             <Button
               variant="contained"
               color="primary"
-              onClick={ this.handleResendDoccument}
+              onClick={ this.handleResendDocument }
               fullWidth
               style={{ marginTop: 6 }}
             >
