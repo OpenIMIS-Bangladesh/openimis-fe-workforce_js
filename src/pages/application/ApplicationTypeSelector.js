@@ -150,26 +150,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
                   />
                 }
               />
-              <FormControlLabel
-                value="deadlyGrant"
-                control={<Radio color="primary" />}
-                label={
-                  <FormattedMessage
-                    id="workforce.application.type.deadly.grant"
-                    module="workforce"
-                  />
-                }
-              />
-              <FormControlLabel
-                value="maternalGrant"
-                control={<Radio color="primary" />}
-                label={
-                  <FormattedMessage
-                    id="workforce.application.type.maternal.grant"
-                    module="workforce"
-                  />
-                }
-              />
+              
             </RadioGroup>
           </>
         ) : isExportOriented === "no" ? (
@@ -202,6 +183,26 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
                 label={
                   <FormattedMessage
                     id="workforce.application.type.education.grant"
+                    module="workforce"
+                  />
+                }
+              />
+              <FormControlLabel
+                value="deadlyGrant"
+                control={<Radio color="primary" />}
+                label={
+                  <FormattedMessage
+                    id="workforce.application.type.deadly.grant"
+                    module="workforce"
+                  />
+                }
+              />
+              <FormControlLabel
+                value="maternalGrant"
+                control={<Radio color="primary" />}
+                label={
+                  <FormattedMessage
+                    id="workforce.application.type.maternal.grant"
                     module="workforce"
                   />
                 }
