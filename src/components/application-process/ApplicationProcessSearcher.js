@@ -423,7 +423,7 @@ class ApplicationProcessSearcher extends Component {
     "workforce.employee.application.factoryName",
     "workforce.employee.application.applicationDate",
     "workforce.employee.application.status",
-    "workforce.employee.application.revertNote",
+    // "workforce.employee.application.revertNote",
     this.isShowHistory() ? "workforce.version" : "",
   ];
   headerChecker = () => [
