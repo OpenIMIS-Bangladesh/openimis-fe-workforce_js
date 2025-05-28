@@ -9,7 +9,6 @@ import {
 
 import { MODULE_NAME } from "../../constants";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
-import TabsForm from "../../components/application-process/TabsForm";
 import { ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE } from "../../routes";
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
