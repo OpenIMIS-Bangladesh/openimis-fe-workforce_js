@@ -37,7 +37,7 @@ import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardApplicationModal from "./modals/ForwardApplicationModal";
 import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
-import FileUploader from "../../pickers/FileUploader";
+import PrintIcon from '@material-ui/icons/Print';
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
@@ -45,6 +45,8 @@ import RevertApplicationModal from "./modals/RevertApplicationModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement } from "../../actions";
 import { itemAdminFormatters, itemFormattersApplicant, itemFormattersApprover, itemFormattersChecker } from "../../utils/itemFormatters_types";
+import GenereteBFTN from "../../pages/application-process/GenereteBFTN";
+import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
 
 const styles = (theme) => ({
   paper: {
@@ -82,6 +84,7 @@ class ApplicationProcessSearcher extends Component {
       selectedUserId: "",
       deadline: "",
       userList: [],
+      openGenerateBFTN:false,
       submitting: false,
       serverResponse: null,
       editorContent: "",
@@ -482,12 +485,19 @@ class ApplicationProcessSearcher extends Component {
     );
   };
 
+  handleCloseBFTN = ()=>{
+    this.setState({openGenerateBFTN:false})
+  }
+  handleOpenBFTN = ()=>{
+    this.setState({openGenerateBFTN:true})
+  }
+
   rowDisabled = (selection, i) => !!i.validityTo;
 
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
-    const { forwardModalOpen,revertModalOpen,revertByChecker, selectedApplication, selectedApplicationIds,showHistoryFilter } =
+    const { forwardModalOpen,revertModalOpen,revertByChecker, selectedApplication, openGenerateBFTN,showHistoryFilter } =
       this.state;
     // const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
     //   this.state;
@@ -510,6 +520,7 @@ class ApplicationProcessSearcher extends Component {
       onDoubleClick,
       userRights,
       userId,
+      userName,
       revertedApplication
     } = this.props;
 
@@ -617,6 +628,8 @@ class ApplicationProcessSearcher extends Component {
             );
           } else if (userType === WORKFORCE_USER_TYPE.ADMIN) {
             return (
+              <>
+              <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
               <ForwardApplicationAdminModal
                 open={forwardModalOpen}
                 onClose={this.handleCloseForwardModal}
@@ -624,6 +637,8 @@ class ApplicationProcessSearcher extends Component {
                 officeData={this.state.officeData}
                 onSubmitForward={this.handleForwardSubmit}
               />
+              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications}/>
+              </>
             );
           } else if (userType === WORKFORCE_USER_TYPE.CHECKER) {
             return (
@@ -633,6 +648,7 @@ class ApplicationProcessSearcher extends Component {
                 onClose={this.handleCloseForwardModal}
                 selectedApplication={selectedApplication}
                 onSubmitForward={this.handleForwardSubmit}
+                userName={userName}
               />
               <RevertApplicationModal
                 open={revertModalOpen}
@@ -652,6 +668,7 @@ class ApplicationProcessSearcher extends Component {
                 onClose={this.handleCloseForwardModal}
                 selectedApplication={selectedApplication}
                 onSubmitForward={this.handleForwardSubmit}
+                userName={userName}
               />
                <RevertApplicationModal
                 open={revertModalOpen}
@@ -659,6 +676,7 @@ class ApplicationProcessSearcher extends Component {
                 onClose={this.handleCloseRevertModal}
                 selectedApplication={this.state.selectedApplication}
                 onSubmitRevert={this.handleRevertSubmit}
+                userName={userName}
               />
             </>
             );
@@ -687,6 +705,7 @@ const mapStateToProps = (state) => ({
   confirmed: state.core.confirmed,
   userRights: state.core.user.i_user.rights,
   userId: state.core.user.i_user.uuid,
+  userName: state.core.user.username,
 });
 
 const mapDispatchToProps = (dispatch) =>

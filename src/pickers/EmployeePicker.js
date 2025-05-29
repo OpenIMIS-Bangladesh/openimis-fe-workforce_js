@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations, Autocomplete } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchEmployeePick } from "../actions";
+import { createEmployeeService, fetchEmployeePick, fetchOrganizationEmployee } from "../actions";
 
 const EmployeePicker = ({
   modulesManager,
@@ -16,6 +16,7 @@ const EmployeePicker = ({
   filterOptions,
   filterSelectedOptions,
   multiple,
+  userName
 }) => {
   const [searchString, setSearchString] = useState(null);
   const { formatMessage } = useTranslations("workforce");
@@ -23,32 +24,31 @@ const EmployeePicker = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    return dispatch(fetchEmployeePick(modulesManager, []));
-    // return dispatch(fetchWorkforceUnitsWithEmployeeDesignation(modulesManager, []));
+    // return dispatch(fetchEmployeePick(modulesManager, []));
+    if (userName) {
+      return dispatch(fetchOrganizationEmployee(modulesManager, [`username:"${userName}"`]));
+    }else {
+      return dispatch(fetchOrganizationEmployee(modulesManager, []));
+    }
   }, []);
 
   const isLoading = useSelector(
-    (state) => state.workforce[`fetchingEmployeePick`]
+    (state) => state.workforce[`fetchingOrganizationEmployees`]
   );
   const data = useSelector(
-    (state) => state.workforce[`employeePick`] ?? []
+    (state) => state.workforce[`organizationEmployees`] ?? []
   );
   const error = useSelector(
-    (state) => state.workforce["errorEmployeePick"]
+    (state) => state.workforce["errorOrganizationEmployees"]
   );
- 
-  // const data = ["প্রশাসক - মোঃ আতাউল্লাহ", "রেজিস্ট্রার - নুরুল ইসলাম", "হিসাবরক্ষক - আশফাক উদ্দিন", "যাচাইকরণকারী - মাহমুদ রাজু"]
-;
 
   const selectedOption = useMemo(
       () => data.find((option) => option.id === value) || null,
       [value]
     )
-  // const selectedOption = useMemo(
-  //     () => (data.includes(value) ? value : null),
-  //     [value]
-  //   )
-console.log(data)
+
+console.log({userName})
+console.log('organizationEmployees',data)
   return (
     <Autocomplete
       multiple={multiple}

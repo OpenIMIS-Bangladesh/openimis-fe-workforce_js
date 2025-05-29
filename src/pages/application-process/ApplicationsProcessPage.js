@@ -86,6 +86,7 @@ class ApplicationsProcessPage extends Component {
           cacheFiltersKey="allApplications"
           onDoubleClick={this.onDoubleClick}
         />
+        
       </TabPanel>
       <TabPanel value={value} index={1}>
         <ApplicationProcessSearcher
