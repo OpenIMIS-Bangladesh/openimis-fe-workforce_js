@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useTranslations, Autocomplete } from "@openimis/fe-core";
+import { useTranslations, Autocomplete,decodeId } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
-import { createEmployeeService, fetchEmployeePick, fetchOrganizationEmployee } from "../actions";
+import {
+  fetchOrganizationEmployee,
+  fetchOrganizationEmployeesSummary,
+} from "../actions";
 
 const EmployeePicker = ({
   modulesManager,
@@ -16,39 +19,47 @@ const EmployeePicker = ({
   filterOptions,
   filterSelectedOptions,
   multiple,
-  userName
+  organizationEmployee,
 }) => {
   const [searchString, setSearchString] = useState(null);
-  const { formatMessage } = useTranslations("workforce");
 
+  const organizationId =
+    organizationEmployee?.designations?.[0]?.designation?.unit?.organization?.id;
+
+  const { formatMessage } = useTranslations("workforce");
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    // return dispatch(fetchEmployeePick(modulesManager, []));
-    if (userName) {
-      return dispatch(fetchOrganizationEmployee(modulesManager, [`username:"${userName}"`]));
-    }else {
-      return dispatch(fetchOrganizationEmployee(modulesManager, []));
-    }
-  }, []);
+  const employeeData = useSelector(
+    (state) => state.workforce["organizationEmployees"] ?? []
+  );
 
   const isLoading = useSelector(
-    (state) => state.workforce[`fetchingOrganizationEmployees`]
+    (state) => state.workforce["fetchingOrganizationEmployees"]
   );
-  const data = useSelector(
-    (state) => state.workforce[`organizationEmployees`] ?? []
-  );
+
   const error = useSelector(
     (state) => state.workforce["errorOrganizationEmployees"]
   );
 
-  const selectedOption = useMemo(
-      () => data.find((option) => option.id === value) || null,
-      [value]
-    )
+  useEffect(() => {
+    if (organizationId) {
+      dispatch(
+        fetchOrganizationEmployeesSummary(modulesManager, [
+          `designations_Designation_Organization_Id:"${decodeId(organizationId)}"`,
+        ])
+      );
+    } else {
+      dispatch(fetchOrganizationEmployee(modulesManager, []));
+    }
+  }, [dispatch, modulesManager, organizationId]);
 
-console.log({userName})
-console.log('organizationEmployees',data)
+  const selectedOption = useMemo(
+    () => employeeData?.find((option) => option.id === value) || null,
+    [value, employeeData]
+  );
+
+  console.log("OrganizationEmployeeData",employeeData)
+
   return (
     <Autocomplete
       multiple={multiple}
@@ -58,8 +69,8 @@ console.log('organizationEmployees',data)
       withLabel={withLabel}
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
-      options={data}
-      isLoading={false}
+      options={employeeData}
+      isLoading={isLoading}
       value={selectedOption}
       getOptionLabel={(option) => `${option.nameEn}`}
       onChange={(option) => onChange(option, option ? `${option}` : null)}

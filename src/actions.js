@@ -157,6 +157,7 @@ export function fetchOrganizationEmployeesSummary(mm, filters) {
     "birthCertificateNo",
     "nid",
     "passportNo",
+    "designations{id,joiningDate,releaseDate,designation{unit{id,organization{id,nameBn}nameBn,unitDesignations{id,nameBn}}}}",
     location_projection,
   ];
   const payload = formatPageQueryWithCount(

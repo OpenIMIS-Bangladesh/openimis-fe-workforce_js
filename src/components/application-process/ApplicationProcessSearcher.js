@@ -32,6 +32,7 @@ import {
   fetchApplicationsSummary,
   fetchApplicationMovementsSummary,
   fetchOrganizationEmployeeDesignation,
+  fetchOrganizationEmployee,
 } from "../../actions";
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
@@ -119,8 +120,13 @@ class ApplicationProcessSearcher extends Component {
   }
 
   fetch = (prms) => {
-    const { applicationType,userRights,revertedApplication } = this.props;
+    const { applicationType,userRights,revertedApplication,userName } = this.props;
     const { showHistoryFilter } = this.state;
+    this.props.fetchOrganizationEmployee(
+      this.props.modulesManager,
+      [`username:"${userName}"`]
+    )
+  
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       const finalParams = {
         ...prms,
@@ -473,12 +479,12 @@ class ApplicationProcessSearcher extends Component {
   };
 
   handleBulkForward  = async () => {
-    /// here is a problem will focus on later
+    const {updateApplication} = this.props
     this.state.selectedApplicationIds.map(async(id) =>
       await updateApplication(
         {
           id: decodeId(id),
-          status: WORKFORCE_STATUS.FIRST_FORWARD,
+          status: WORKFORCE_STATUS.DRAFT,
         },
         `update workforce application`
       )
@@ -521,7 +527,8 @@ class ApplicationProcessSearcher extends Component {
       userRights,
       userId,
       userName,
-      revertedApplication
+      revertedApplication,
+      organizationEmployee
     } = this.props;
 
     // this.getUserOrganization(userId)
@@ -648,7 +655,7 @@ class ApplicationProcessSearcher extends Component {
                 onClose={this.handleCloseForwardModal}
                 selectedApplication={selectedApplication}
                 onSubmitForward={this.handleForwardSubmit}
-                userName={userName}
+                organizationEmployee={organizationEmployee}
               />
               <RevertApplicationModal
                 open={revertModalOpen}
@@ -706,6 +713,7 @@ const mapStateToProps = (state) => ({
   userRights: state.core.user.i_user.rights,
   userId: state.core.user.i_user.uuid,
   userName: state.core.user.username,
+  organizationEmployee:state.workforce.organizationEmployee
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -716,6 +724,7 @@ const mapDispatchToProps = (dispatch) =>
       fetchOrganizationEmployeeDesignation,
       updateApplication,
       createApplicationMovement,
+      fetchOrganizationEmployee,
       journalize,
       coreConfirm,
     },

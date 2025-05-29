@@ -72,7 +72,7 @@ const ForwardApplicationAdminModal = ({
   onClose,
   selectedApplication,
   onSubmitForward,
-  userName
+  organizationEmployee
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -224,7 +224,7 @@ const ForwardApplicationAdminModal = ({
                     module="workforce"
                   />
                 }
-                userName={userName}
+                organizationEmployee={organizationEmployee}
                 modulesManager={modulesManager}
                 required
                 onChange={(v) => setFormData(v)}

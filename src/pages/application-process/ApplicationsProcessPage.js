@@ -6,7 +6,7 @@ import AddIcon from "@material-ui/icons/Add";
 import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
 } from "@openimis/fe-core";
-
+import PrintIcon from '@material-ui/icons/Print';
 import { MODULE_NAME } from "../../constants";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_EMPLOYEE } from "../../routes";
@@ -17,16 +17,31 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import TabPanel from "./TabPanel";
+import GenerateBFTN from "./GenereteBFTN";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab,
+  fab: {
+    ...theme.fab,
+    display:"flex",
+    flexDirection:"column"
+  },
 });
 
 class ApplicationsProcessPage extends Component {
   constructor(props){
     super(props);
-    this.state = {value:props.value || 0}
+    this.state = {
+      value:props.value || 0,
+      openGenerateBFTN:false,
+    }
+  }
+
+  handleCloseBFTN = ()=>{
+    this.setState({openGenerateBFTN:false})
+  }
+  handleOpenBFTN = ()=>{
+    this.setState({openGenerateBFTN:true})
   }
 
   onDoubleClick = (application, newTab = false) => {
@@ -55,9 +70,9 @@ class ApplicationsProcessPage extends Component {
   };
 
   render() {
-    const { intl, classes, rights } = this.props;
-    const {value}=this.state;
-
+    const { intl, classes, rights,applications, } = this.props;
+    const {value,openGenerateBFTN}=this.state;
+console.log("process page",applications)
     return (
       <div className={classes.page}>
          <AppBar position="static">
@@ -86,7 +101,7 @@ class ApplicationsProcessPage extends Component {
           cacheFiltersKey="allApplications"
           onDoubleClick={this.onDoubleClick}
         />
-        
+        <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         <ApplicationProcessSearcher
@@ -112,8 +127,11 @@ class ApplicationsProcessPage extends Component {
 
         {withTooltip(
           <div className={classes.fab}>
-            <Fab color="primary" onClick={this.onAdd}>
+            <Fab color="primary" onClick={this.onAdd} style={{marginBottom:10}}>
               <AddIcon />
+            </Fab>
+            <Fab color="primary" onClick={this.handleOpenBFTN}>
+              <PrintIcon />
             </Fab>
           </div>,
           <FormattedMessage module={MODULE_NAME} id={"workforce.employee.application.addNewTooltip"} />, 
@@ -125,6 +143,7 @@ class ApplicationsProcessPage extends Component {
 
 const mapStateToProps = (state) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
+  applications: state.workforce.applications,
 });
 
 export default withModulesManager(
