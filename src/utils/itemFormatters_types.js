@@ -100,7 +100,7 @@ import {
       (application) => "Akij",
       (application) => application.dateCreated.split("T")[0],
       (application) => application.status,
-      (application) => "",
+      // (application) => "",
       isShowHistory() ? application?.version : null,
     ];
 
