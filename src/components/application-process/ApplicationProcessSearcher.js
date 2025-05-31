@@ -48,6 +48,7 @@ import { updateApplication, createApplicationMovement } from "../../actions";
 import { itemAdminFormatters, itemFormattersApplicant, itemFormattersApprover, itemFormattersChecker } from "../../utils/itemFormatters_types";
 import GenereteBFTN from "../../pages/application-process/GenereteBFTN";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
+import { headerApplicant, headerApprover, headerChecker, headersAdmin } from "../../utils/headers_types";
 
 const styles = (theme) => ({
   paper: {
@@ -414,48 +415,59 @@ class ApplicationProcessSearcher extends Component {
     }, 2000);
   };
 
-  headers = () => [
-    "workforce.employee.name.en",
-    "workforce.employee.name.bn",
-    "workforce.employee.application.applicationType",
-    "workforce.employee.application.moneyAmount",
-    "workforce.employee.application.verifier",
-    "workforce.employee.application.factoryName",
-    "workforce.employee.application.status",
-    "workforce.employee.application.applicationDate",
-    this.isShowHistory() ? "workforce.version" : "",
-  ];
+  headers = () =>{
+    return  getUserTypeFromRights(this.props.userRights) === WORKFORCE_USER_TYPE.APPLICANT
+              ? headerApplicant(this)
+              : getUserTypeFromRights(this.props.userRights) ===
+                WORKFORCE_USER_TYPE.CHECKER
+              ? headerChecker(this)
+              : getUserTypeFromRights(this.props.userRights) ===
+                WORKFORCE_USER_TYPE.APPROVER
+              ? headerApprover(this)
+              : headersAdmin(this)
+  };
+  // headers = () => [
+  //   "workforce.employee.name.en",
+  //   "workforce.employee.name.bn",
+  //   "workforce.employee.application.applicationType",
+  //   "workforce.employee.application.moneyAmount",
+  //   "workforce.employee.application.verifier",
+  //   "workforce.employee.application.factoryName",
+  //   "workforce.employee.application.status",
+  //   "workforce.employee.application.applicationDate",
+  //   this.isShowHistory() ? "workforce.version" : "",
+  // ];
 
-  headerApplicant = () => [
-    "workforce.employee.name.en",
-    "workforce.employee.application.applicationType",
-    "workforce.employee.application.factoryName",
-    "workforce.employee.application.applicationDate",
-    "workforce.employee.application.status",
-    // "workforce.employee.application.revertNote",
-    this.isShowHistory() ? "workforce.version" : "",
-  ];
-  headerChecker = () => [
-    "",
-    "workforce.employee.name.en",
-    "workforce.employee.name.bn",
-    "workforce.employee.application.applicationType",
-    "workforce.employee.application.moneyAmount",
-    "workforce.employee.application.factoryName",
-    "workforce.employee.application.status",
-    "workforce.employee.application.applicationDate",
-    this.isShowHistory() ? "workforce.version" : "",
-  ];
-  headerApprover = () => [
-    "workforce.employee.name.en",
-    "workforce.employee.name.bn",
-    "workforce.employee.application.applicationType",
-    "workforce.employee.application.moneyAmount",
-    "workforce.employee.application.factoryName",
-    "workforce.employee.application.status",
-    "workforce.employee.application.applicationDate",
-    this.isShowHistory() ? "workforce.version" : "",
-  ];
+  // headerApplicant = () => [
+  //   "workforce.employee.name.en",
+  //   "workforce.employee.application.applicationType",
+  //   "workforce.employee.application.factoryName",
+  //   "workforce.employee.application.applicationDate",
+  //   "workforce.employee.application.status",
+  //   // "workforce.employee.application.revertNote",
+  //   this.isShowHistory() ? "workforce.version" : "",
+  // ];
+  // headerChecker = () => [
+  //   "",
+  //   "workforce.employee.name.en",
+  //   "workforce.employee.name.bn",
+  //   "workforce.employee.application.applicationType",
+  //   "workforce.employee.application.moneyAmount",
+  //   "workforce.employee.application.factoryName",
+  //   "workforce.employee.application.status",
+  //   "workforce.employee.application.applicationDate",
+  //   this.isShowHistory() ? "workforce.version" : "",
+  // ];
+  // headerApprover = () => [
+  //   "workforce.employee.name.en",
+  //   "workforce.employee.name.bn",
+  //   "workforce.employee.application.applicationType",
+  //   "workforce.employee.application.moneyAmount",
+  //   "workforce.employee.application.factoryName",
+  //   "workforce.employee.application.status",
+  //   "workforce.employee.application.applicationDate",
+  //   this.isShowHistory() ? "workforce.version" : "",
+  // ];
 
   itemFormatters = () => {
   return  getUserTypeFromRights(this.props.userRights) === WORKFORCE_USER_TYPE.APPLICANT
@@ -579,17 +591,7 @@ class ApplicationProcessSearcher extends Component {
           rowIdentifier={this.rowIdentifier}
           filtersToQueryParams={this.filtersToQueryParams}
           defaultOrderBy="-dateCreated"
-          headers={
-            getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT
-              ? this.headerApplicant
-              : getUserTypeFromRights(userRights) ===
-                WORKFORCE_USER_TYPE.CHECKER
-              ? this.headerChecker
-              : getUserTypeFromRights(userRights) ===
-                WORKFORCE_USER_TYPE.APPROVER
-              ? this.headerApprover
-              : this.headers
-          }
+          headers={ this.headers}
           itemFormatters={this.itemFormatters}
           sorts={this.sorts}
           rowDisabled={this.rowDisabled}
