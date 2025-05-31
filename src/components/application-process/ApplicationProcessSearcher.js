@@ -426,48 +426,6 @@ class ApplicationProcessSearcher extends Component {
               ? headerApprover(this)
               : headersAdmin(this)
   };
-  // headers = () => [
-  //   "workforce.employee.name.en",
-  //   "workforce.employee.name.bn",
-  //   "workforce.employee.application.applicationType",
-  //   "workforce.employee.application.moneyAmount",
-  //   "workforce.employee.application.verifier",
-  //   "workforce.employee.application.factoryName",
-  //   "workforce.employee.application.status",
-  //   "workforce.employee.application.applicationDate",
-  //   this.isShowHistory() ? "workforce.version" : "",
-  // ];
-
-  // headerApplicant = () => [
-  //   "workforce.employee.name.en",
-  //   "workforce.employee.application.applicationType",
-  //   "workforce.employee.application.factoryName",
-  //   "workforce.employee.application.applicationDate",
-  //   "workforce.employee.application.status",
-  //   // "workforce.employee.application.revertNote",
-  //   this.isShowHistory() ? "workforce.version" : "",
-  // ];
-  // headerChecker = () => [
-  //   "",
-  //   "workforce.employee.name.en",
-  //   "workforce.employee.name.bn",
-  //   "workforce.employee.application.applicationType",
-  //   "workforce.employee.application.moneyAmount",
-  //   "workforce.employee.application.factoryName",
-  //   "workforce.employee.application.status",
-  //   "workforce.employee.application.applicationDate",
-  //   this.isShowHistory() ? "workforce.version" : "",
-  // ];
-  // headerApprover = () => [
-  //   "workforce.employee.name.en",
-  //   "workforce.employee.name.bn",
-  //   "workforce.employee.application.applicationType",
-  //   "workforce.employee.application.moneyAmount",
-  //   "workforce.employee.application.factoryName",
-  //   "workforce.employee.application.status",
-  //   "workforce.employee.application.applicationDate",
-  //   this.isShowHistory() ? "workforce.version" : "",
-  // ];
 
   itemFormatters = () => {
   return  getUserTypeFromRights(this.props.userRights) === WORKFORCE_USER_TYPE.APPLICANT

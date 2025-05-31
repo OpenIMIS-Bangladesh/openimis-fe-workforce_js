@@ -174,6 +174,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApp
                 />
               </Grid>
 
+              {selectedApplicationType === ("financialAssistance" || "disabilityAssistance") && (
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.monthly_earning"
@@ -184,6 +185,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApp
                   readOnly={false}
                 />
               </Grid>
+              )}
 
               <Grid item xs={6} className={classes.item}>
                 <PublishedComponent

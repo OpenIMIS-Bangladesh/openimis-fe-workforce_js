@@ -416,6 +416,8 @@ const ScholarshipApplicationForm = ({
     // setIsSubmitted(true);
   };
 
+  console.log({formData})
+
   const steps = [
     {
       label: "workforce.application.steps.select",
@@ -480,6 +482,7 @@ const ScholarshipApplicationForm = ({
           <EmployeeDetailsForm2
             handleChange={handleChange}
             formData={formData}
+            selectedApplicationType={selectedApplicationType}
           />
         </Box>
       ),

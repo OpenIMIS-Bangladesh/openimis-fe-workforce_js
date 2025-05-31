@@ -18,16 +18,7 @@ import {
   PublishedComponent,
 } from "@openimis/fe-core";
 import { Save } from "@material-ui/icons";
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
-import CompanyPicker from "../../pickers/CompanyPicker";
-import FactoryPicker from "../../pickers/FactoryPicker";
-import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
 import BranchPicker from "../../pickers/BranchPicker";
-import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
-import EmployeeInjuryTypePicker from "../../pickers/EmployeeInjuryTypePicker";
-import EmployeeAccidentTypePicker from "../../pickers/EmployeeAccidentTypePicker";
-import EmployeeDutyStatusPicker from "../../pickers/EmployeeDutyStatusPicker";
-import EmployeeInsideOutsideFactoryPicker from "../../pickers/EmployeeInsideOutsideFactoryPicker";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -127,7 +118,7 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                   readOnly={false}
                 />
               </Grid>
-              <Grid item xs={6} className={classes.item}>
+              {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.account.info.status"
                   value={formData?.status || ""}
@@ -135,7 +126,7 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                   required
                   readOnly={false}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={11} className={classes.item} />
             </Grid>
           </Paper>

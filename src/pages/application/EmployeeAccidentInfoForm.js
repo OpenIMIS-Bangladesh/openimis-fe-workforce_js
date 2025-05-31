@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Box,
   Paper,
   Typography,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
   Divider,
-  IconButton,
 } from "@material-ui/core";
-// import { TextInput } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   useTranslations,
@@ -17,32 +18,17 @@ import {
   FormattedMessage,
   PublishedComponent,
 } from "@openimis/fe-core";
-import { Save } from "@material-ui/icons";
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
-import CompanyPicker from "../../pickers/CompanyPicker";
-import FactoryPicker from "../../pickers/FactoryPicker";
-import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
-import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
-import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
-import EmployeeInjuryTypePicker  from "../../pickers/EmployeeInjuryTypePicker";
-import EmployeeAccidentTypePicker  from "../../pickers/EmployeeAccidentTypePicker";
-import EmployeeDutyStatusPicker   from "../../pickers/EmployeeDutyStatusPicker";
-import EmployeeInsideOutsideFactoryPicker    from "../../pickers/EmployeeInsideOutsideFactoryPicker";
+import EmployeeInjuryTypePicker from "../../pickers/EmployeeInjuryTypePicker";
+import EmployeeAccidentTypePicker from "../../pickers/EmployeeAccidentTypePicker";
+import EmployeeDutyStatusPicker from "../../pickers/EmployeeDutyStatusPicker";
+import EmployeeInsideOutsideFactoryPicker from "../../pickers/EmployeeInsideOutsideFactoryPicker";
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    // height: "100vh",
-  },
   paper: {
     padding: theme.spacing(2),
   },
-  buttonContainer: {
-    marginTop: theme.spacing(2),
-    display: "flex",
-    justifyContent: "space-between",
+  item: {
+    marginBottom: theme.spacing(2),
   },
 }));
 
@@ -50,110 +36,127 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
-  const { formatMessage } = useTranslations(
-    "core.RegistrationPage",
-    modulesManager
-  );
+  const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
 
-  //   const handleChange = (key, value) => {
-  //     setFormData((prev) => ({ ...prev, [key]: value }));
-  //   };
+  const [selectedOption, setSelectedOption] = useState("accident");
+
+  const handleOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
 
   return (
-    <Box mt={1}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Paper className={classes.paper} elevation={0}>
-            <Grid container className={classes.tableTitle} spacing={2}>
-              <Grid item xs={6} className={classes.item}>
-                <EmployeeInjuryTypePicker
-                  value={ formData.lifeStatus || ""}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.accident.info.injuryType"
-                      module="workforce"
-                    />
-                  }
-                  required
-                  onChange={(v) =>  handleChange("injuryType", v)}
-                  readOnly={ false}
-                />
-              </Grid>
-              <Grid item xs={6} className={classes.item}>
-                <PublishedComponent
-                  pubRef="core.DatePicker"
-                  label={"workforce.employee.accident.info.dateOfAccident"}
-                  value={ formData.accidentDate || ""}
-                  onChange={(v) =>  handleChange("accidentDate", v)}
-                  readOnly={ false}
-                />
-              </Grid>
-              {/* <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.employee.accident.info.timeOfAccident"
-                  value={formData.accidentTime || ""}
-                  onChange={(v) => handleChange(index, "accidentTime", v)}
-                  readOnly={false}
-                  type="time"
-                />
-              </Grid> */}
-              <Grid item xs={6} className={classes.item}>
-                <EmployeeAccidentTypePicker
-                  value={ formData.accidentType || ""}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.accident.info.typeOfAccident"
-                      module="workforce"
-                    />
-                  }
-                  required
-                  onChange={(v) =>  handleChange("accidentType", v)}
-                  readOnly={ false}
-                />
-              </Grid>
-              <Grid item xs={6} className={classes.item}>
-                <EmployeeDutyStatusPicker
-                  value={ formData.dutyStatus || ""}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.accident.info.dutyStatus"
-                      module="workforce"
-                    />
-                  }
-                  required
-                  onChange={(v) =>  handleChange("dutyStatus", v)}
-                  readOnly={ false}
-                />
-              </Grid>
-              <Grid item xs={6} className={classes.item}>
-                <EmployeeInsideOutsideFactoryPicker
-                  value={ formData.inOutsideFactory || ""}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.accident.info.insideOutsideFactory"
-                      module="workforce"
-                    />
-                  }
-                  required
-                  onChange={(v) =>  handleChange("inOutsideFactory", v)}
-                  readOnly={ false}
-                />
-              </Grid>
-              <Grid item xs={6} className={classes.item}>
-                <PublishedComponent
-                  pubRef="core.DatePicker"
-                  label={"workforce.employee.accident.info.reJoiningDate"}
-                  value={ formData.reJoiningDate || ""}
-                  onChange={(v) =>  handleChange("reJoiningDate", v)}
-                  readOnly={ false}
-                />
-              </Grid>
-              <Grid item xs={11} className={classes.item} />
+    <Box mt={2}>
+      <Paper className={classes.paper} elevation={0}>
+        <Typography variant="h6" gutterBottom>
+          <FormattedMessage id="workforce.employee.accident.info.title" defaultMessage="Medical Assistance Type" />
+        </Typography>
 
+        <RadioGroup column value={selectedOption} onChange={handleOptionChange}>
+          <FormControlLabel value="terminal" control={<Radio color="primary"/>} label="For Terminal Disease" />
+          <FormControlLabel value="maternity" control={<Radio color="primary"/>} label="For Maternity Disease" />
+          <FormControlLabel value="accident" control={<Radio color="primary"/>} label="For Accident" />
+        </RadioGroup>
+
+        <Divider style={{ margin: "16px 0" }} />
+
+        {selectedOption === "terminal" && (
+          <Grid container spacing={2}>
+            <Grid item xs={6} className={classes.item}>
+              <TextInput
+                label="Terminal Disease Type"
+                value={formData.terminalDiseaseType || ""}
+                onChange={(v) => handleChange("terminalDiseaseType", v)}
+              />
             </Grid>
-          </Paper>
-        </Grid>
-      </Grid>
+            <Grid item xs={6} className={classes.item}>
+              <TextInput
+                label="Doctor's Certificate Number"
+                value={formData.terminalCertNumber || ""}
+                onChange={(v) => handleChange("terminalCertNumber", v)}
+              />
+            </Grid>
+          </Grid>
+        )}
+
+        {selectedOption === "maternity" && (
+          <Grid container spacing={2}>
+            <Grid item xs={6} className={classes.item}>
+              <TextInput
+                label="Expected Delivery Date"
+                value={formData.expectedDelivery || ""}
+                onChange={(v) => handleChange("expectedDelivery", v)}
+                type="date"
+              />
+            </Grid>
+            <Grid item xs={6} className={classes.item}>
+              <TextInput
+                label="Medical Certificate Number"
+                value={formData.maternityCertNumber || ""}
+                onChange={(v) => handleChange("maternityCertNumber", v)}
+              />
+            </Grid>
+          </Grid>
+        )}
+
+        {selectedOption === "accident" && (
+          <Grid container spacing={2}>
+            <Grid item xs={6} className={classes.item}>
+              <EmployeeInjuryTypePicker
+                value={formData.injuryType || ""}
+                label={<FormattedMessage id="workforce.employee.accident.info.injuryType" module="workforce" />}
+                required
+                onChange={(v) => handleChange("injuryType", v)}
+                readOnly={false}
+              />
+            </Grid>
+            <Grid item xs={6} className={classes.item}>
+              <PublishedComponent
+                pubRef="core.DatePicker"
+                label={"workforce.employee.accident.info.dateOfAccident"}
+                value={formData.accidentDate || ""}
+                onChange={(v) => handleChange("accidentDate", v)}
+                readOnly={false}
+              />
+            </Grid>
+            <Grid item xs={6} className={classes.item}>
+              <EmployeeAccidentTypePicker
+                value={formData.accidentType || ""}
+                label={<FormattedMessage id="workforce.employee.accident.info.typeOfAccident" module="workforce" />}
+                required
+                onChange={(v) => handleChange("accidentType", v)}
+                readOnly={false}
+              />
+            </Grid>
+            <Grid item xs={6} className={classes.item}>
+              <EmployeeDutyStatusPicker
+                value={formData.dutyStatus || ""}
+                label={<FormattedMessage id="workforce.employee.accident.info.dutyStatus" module="workforce" />}
+                required
+                onChange={(v) => handleChange("dutyStatus", v)}
+                readOnly={false}
+              />
+            </Grid>
+            <Grid item xs={6} className={classes.item}>
+              <EmployeeInsideOutsideFactoryPicker
+                value={formData.inOutsideFactory || ""}
+                label={<FormattedMessage id="workforce.employee.accident.info.insideOutsideFactory" module="workforce" />}
+                required
+                onChange={(v) => handleChange("inOutsideFactory", v)}
+                readOnly={false}
+              />
+            </Grid>
+            <Grid item xs={6} className={classes.item}>
+              <PublishedComponent
+                pubRef="core.DatePicker"
+                label={"workforce.employee.accident.info.reJoiningDate"}
+                value={formData.reJoiningDate || ""}
+                onChange={(v) => handleChange("reJoiningDate", v)}
+                readOnly={false}
+              />
+            </Grid>
+          </Grid>
+        )}
+      </Paper>
     </Box>
   );
 };
