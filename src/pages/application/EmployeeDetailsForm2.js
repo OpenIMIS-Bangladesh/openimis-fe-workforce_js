@@ -44,7 +44,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApplicationType}) => {
+const EmployeeDetailsForm2 = ({
+  handleChange,
+  formData,
+  setFormData,
+  selectedApplicationType,
+}) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -55,18 +60,18 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApp
   const dispatch = useDispatch();
 
   useEffect(() => {
-    return dispatch(fetchDocumentType(modulesManager, [`applicationType:"${selectedApplicationType}"`]));
+    return dispatch(
+      fetchDocumentType(modulesManager, [
+        `applicationType:"${selectedApplicationType}"`,
+      ])
+    );
   }, []);
 
   const isLoading = useSelector(
     (state) => state.workforce[`fetchingDocumentType`]
   );
-  const data = useSelector(
-    (state) => state.workforce[`documentType`] ?? []
-  );
-  const error = useSelector(
-    (state) => state.workforce["errorDocumentType"]
-  );
+  const data = useSelector((state) => state.workforce[`documentType`] ?? []);
+  const error = useSelector((state) => state.workforce["errorDocumentType"]);
 
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
@@ -88,17 +93,20 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApp
       }
     });
   };
-  console.log({ fahim: data });
+  console.log({ fahim: formData });
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={0}>
             <Box mb={4} textAlign="center" fontWeight="bold">
-              <FormattedMessage id="workforce.application.header.document" module="workforce" />
+              <FormattedMessage
+                id="workforce.application.header.document"
+                module="workforce"
+              />
             </Box>
             <Grid container className={classes.item} spacing={2}>
-              <Grid item xs={6} className={classes.item}>
+              {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.nid"
                   value={formData?.workforceEmployee.nid || ""}
@@ -120,15 +128,56 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApp
                   type={"number"}
                   readOnly={false}
                 />
-              </Grid>
-              {data.map((document,index)=>(
+              </Grid> */}
               <Grid item xs={6} className={classes.item}>
-                <Typography>আপলোড {document.nameBn} </Typography>
-                <FileUploader
-                  fieldKey={document.fieldId}
-                  onFileChange={handleChange}
+                <TextInput
+                  label="workforce.employee.nid_or_birth_certificate"
+                  value={
+                    formData?.workforceEmployee.nid ||
+                    formData?.workforceEmployee.birthCertificateNo ||
+                    ""
+                  }
+                  onChange={(v) => {
+                    const numericValue = String(v).trim();
+
+                    if (numericValue.length === 10) {
+                      handleChange("nid", numericValue, "workforceEmployee");
+                      handleChange(
+                        "birthCertificateNo",
+                        "",
+                        "workforceEmployee"
+                      );
+                    } else if (numericValue.length === 17) {
+                      handleChange(
+                        "birthCertificateNo",
+                        numericValue,
+                        "workforceEmployee"
+                      );
+                      handleChange("nid", "", "workforceEmployee");
+                    } else {
+                      // Clear both if input is neither 10 nor 17 digits
+                      handleChange("nid", "", "workforceEmployee");
+                      handleChange(
+                        "birthCertificateNo",
+                        "",
+                        "workforceEmployee"
+                      );
+                    }
+                  }}
+                  type="number"
+                  required
+                  readOnly={false}
                 />
               </Grid>
+
+              {data.map((document, index) => (
+                <Grid item xs={6} className={classes.item}>
+                  <Typography>আপলোড {document.nameBn} </Typography>
+                  <FileUploader
+                    fieldKey={document.fieldId}
+                    onFileChange={handleChange}
+                  />
+                </Grid>
               ))}
               {/* <Grid item xs={6} className={classes.item}>
                 <Typography>Upload Birth Certificate </Typography>
@@ -174,17 +223,18 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData ,selectedApp
                 />
               </Grid>
 
-              {selectedApplicationType === ("financialAssistance" || "disabilityAssistance") && (
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.employee.monthly_earning"
-                  value={formData?.workforceEmployee.monthlyEarning || ""}
-                  onChange={(v) =>
-                    handleChange("monthlyEarning", v, "employeeDesignation")
-                  }
-                  readOnly={false}
-                />
-              </Grid>
+              {selectedApplicationType ===
+                ("financialAssistance" || "disabilityAssistance") && (
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.employee.monthly_earning"
+                    value={formData?.workforceEmployee.monthlyEarning || ""}
+                    onChange={(v) =>
+                      handleChange("monthlyEarning", v, "employeeDesignation")
+                    }
+                    readOnly={false}
+                  />
+                </Grid>
               )}
 
               <Grid item xs={6} className={classes.item}>

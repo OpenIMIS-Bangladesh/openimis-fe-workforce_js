@@ -205,8 +205,7 @@ const MedicalAssistanceForm = ({
     });
   };
 
-  console.clear();
-  console.log(activeStep);
+
   const handleNext = () => {
     console.log(activeStep);
     if (activeStep === 0 || activeStep === 1) {

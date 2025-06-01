@@ -475,15 +475,19 @@
     "workforce.application.otherInfo": "Other Info (If Have)",
     "workforce.application.nidVerify": "Verify Your NID Card",
 
-    
+    "workforce.employee.nid_or_birth_certificate":"Nid/BirthCertificate No.",
 
     "workforce.office.dol":"Department of Labour(DOL)",
     "workforce.office.dife":"Department of Inspection for Factories and Establishments(DIFE)",
     "workforce.office.type":"Select Office Type",
     "workforce.tracking.summary":"Tracking Summary",
-    "workforce.officer.selector.picker": "Select Officer"
+    "workforce.officer.selector.picker": "Select Officer",
 
-    
+    "workforce.employee.accident.info.title":"Type of disease or accident",
+    "workforce.employee.aid.reason.info.cronic":"For Cronic Disease",
+    "workforce.employee.aid.reason.info.maternity":"For Maternity Desease",
+    "workforce.employee.aid.reason.info.accident":"For Accident"
+
 
 
 

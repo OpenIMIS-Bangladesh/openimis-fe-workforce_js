@@ -77,9 +77,9 @@
     "workforce.employee.factory.nid": "এনআইডি",
 
     "workforce.employee.application.addNewTooltip": "আবেদন করুন",
-    "workforce.employee.application.workforce_employer": "কর্মশক্তি নিয়োগকর্তা/কোম্পানী",
-    "workforce.employee.application.workforce_office": "কর্মশক্তি অফিস",
-    "workforce.employee.application.workforce_factory": "কর্মশক্তি কারখানা",
+    "workforce.employee.application.workforce_employer": "নিয়োগকর্তা/কোম্পানী",
+    "workforce.employee.application.workforce_office": "অফিস",
+    "workforce.employee.application.workforce_factory": "কারখানা",
     "workforce.employee.application.first.name.en": "প্রথম নাম (ইংরেজি)",
     "workforce.employee.application.last.name.en": "শেষ নাম (ইংরেজি)",
     "workforce.employee.application.first.name.bn": "প্রথম নাম (বাংলা)",
@@ -330,8 +330,14 @@
     "workforce.officeType.selector.picker": "অফিস নির্বাচন করুন",
     "workforce.officer.selector.picker": "অফিসার নির্বাচন করুন",
     "workforce.EmployeeType.selector.picker": "কর্মচারী নির্বাচন করুন",
-    "workforce.tracking.summary":"ট্র্যাকিং সারাংশ"
+    "workforce.tracking.summary":"ট্র্যাকিং সারাংশ",
 
+    "workforce.employee.nid_or_birth_certificate":"জাতীয় পরিচয়পত্র/জন্ম নিবন্ধনপত্র নং",
+
+    "workforce.employee.accident.info.title":"রোগ বা দুর্ঘটনার ধরন",
+    "workforce.employee.aid.reason.info.cronic":"দুররোগ্য এর জন্য",
+    "workforce.employee.aid.reason.info.maternity":"মাতৃত্বকালীন রোগের জন্য",
+    "workforce.employee.aid.reason.info.accident":"দুর্ঘটনার জন্য"
 
 
 }

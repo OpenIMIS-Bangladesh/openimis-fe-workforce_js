@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
   item: {
     marginBottom: theme.spacing(2),
   },
+  title: {
+    fontWeight: 800,
+  },
 }));
 
 const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
@@ -48,31 +51,41 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
     <Box mt={2}>
       <Paper className={classes.paper} elevation={0}>
         <Typography variant="h6" gutterBottom>
-          <FormattedMessage id="workforce.employee.accident.info.title" defaultMessage="Medical Assistance Type" />
+          <FormattedMessage id="workforce.employee.accident.info.title"  />
         </Typography>
 
         <RadioGroup column value={selectedOption} onChange={handleOptionChange}>
-          <FormControlLabel value="terminal" control={<Radio color="primary"/>} label="For Terminal Disease" />
-          <FormControlLabel value="maternity" control={<Radio color="primary"/>} label="For Maternity Disease" />
-          <FormControlLabel value="accident" control={<Radio color="primary"/>} label="For Accident" />
+          <FormControlLabel value="cronic" control={<Radio color="primary"/>} label={<FormattedMessage id="workforce.employee.aid.reason.info.cronic"  />} />
+          <FormControlLabel value="maternity" control={<Radio color="primary"/>} label={<FormattedMessage id="workforce.employee.aid.reason.info.maternity"  />} />
+          <FormControlLabel value="accident" control={<Radio color="primary"/>} label={<FormattedMessage id="workforce.employee.aid.reason.info.accident"  />} />
         </RadioGroup>
 
         <Divider style={{ margin: "16px 0" }} />
 
-        {selectedOption === "terminal" && (
+        {selectedOption === "cronic" && (
           <Grid container spacing={2}>
             <Grid item xs={6} className={classes.item}>
               <TextInput
                 label="Terminal Disease Type"
-                value={formData.terminalDiseaseType || ""}
-                onChange={(v) => handleChange("terminalDiseaseType", v)}
+                value={formData.cronicDiseaseType || ""}
+                onChange={(v) => handleChange("cronicDiseaseType", v)}
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <TextInput
-                label="Doctor's Certificate Number"
-                value={formData.terminalCertNumber || ""}
-                onChange={(v) => handleChange("terminalCertNumber", v)}
+                label="Doctor's prescription"
+                value={formData.cronicPrescription || ""}
+                onChange={(v) => handleChange("cronicPrescription", v)}
+              />
+            </Grid>
+            <Grid item xs={6} className={classes.item}>
+              
+              <PublishedComponent
+                pubRef="core.DatePicker"
+                label={"রোগ নিরুপনের তারিখ"}
+                value={formData.diagnosisDate || ""}
+                onChange={(v) => handleChange("diagnosisDate", v)}
+                readOnly={false}
               />
             </Grid>
           </Grid>
@@ -81,18 +94,25 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
         {selectedOption === "maternity" && (
           <Grid container spacing={2}>
             <Grid item xs={6} className={classes.item}>
-              <TextInput
+              {/* <TextInput
                 label="Expected Delivery Date"
                 value={formData.expectedDelivery || ""}
                 onChange={(v) => handleChange("expectedDelivery", v)}
                 type="date"
+              /> */}
+              <PublishedComponent
+                pubRef="core.DatePicker"
+                label={"Diagnosis Date"}
+                value={formData.diagnosisDate || ""}
+                onChange={(v) => handleChange("diagnosisDate", v)}
+                readOnly={false}
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <TextInput
-                label="Medical Certificate Number"
-                value={formData.maternityCertNumber || ""}
-                onChange={(v) => handleChange("maternityCertNumber", v)}
+                label="Medical Prescription"
+                value={formData.maternityPrescription || ""}
+                onChange={(v) => handleChange("maternityPrescription", v)}
               />
             </Grid>
           </Grid>
