@@ -33,6 +33,7 @@ import {
   fetchApplicationMovementsSummary,
   fetchOrganizationEmployeeDesignation,
   fetchOrganizationEmployee,
+  fetchFactoryEmployee
 } from "../../actions";
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
@@ -121,13 +122,20 @@ class ApplicationProcessSearcher extends Component {
   }
 
   fetch = (prms) => {
-    const { applicationType,userRights,revertedApplication,userName } = this.props;
+    const { applicationType,userRights,revertedApplication,userName,workforceEmployeesFactoryId } = this.props;
     const { showHistoryFilter } = this.state;
     this.props.fetchOrganizationEmployee(
       this.props.modulesManager,
       [`username:"${userName}"`]
     )
-  
+    this.props.fetchFactoryEmployee(
+      this.props.modulesManager,
+      [`relatedUser_LoginName_Iexact:"${userName}"`]
+   
+    )
+
+    console.log({workforceEmployeesFactoryId})
+ 
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       const finalParams = {
         ...prms,
@@ -144,7 +152,15 @@ class ApplicationProcessSearcher extends Component {
         this.props.modulesManager,
         [`status:"forward_to_approver", orderBy: ["-dateCreated"]`]
       );
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+      this.setState({ displayVersion: showHistoryFilter });
+      this.props.fetchApplicationsSummary(
+        this.props.modulesManager,
+        [`employeeFactoryId:"${workforceEmployeesFactoryId}", orderBy: ["-dateCreated"]`]
+      
+      );
+    }
+    else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
       this.setState({ displayVersion: showHistoryFilter });
       if (revertedApplication) {
         this.props.fetchApplicationsSummary(
@@ -500,7 +516,8 @@ class ApplicationProcessSearcher extends Component {
       userId,
       userName,
       revertedApplication,
-      organizationEmployee
+      organizationEmployee,
+      
     } = this.props;
 
     // this.getUserOrganization(userId)
@@ -675,7 +692,8 @@ const mapStateToProps = (state) => ({
   userRights: state.core.user.i_user.rights,
   userId: state.core.user.i_user.uuid,
   userName: state.core.user.username,
-  organizationEmployee:state.workforce.organizationEmployee
+  organizationEmployee:state.workforce.organizationEmployee,
+  workforceEmployeesFactoryId: state.workforce.workforceEmployees?.edges?.[0]?.employeeDesignationEmployeeId?.edges?.[0]?.node?.workforceFactory?.id
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -687,6 +705,7 @@ const mapDispatchToProps = (dispatch) =>
       updateApplication,
       createApplicationMovement,
       fetchOrganizationEmployee,
+      fetchFactoryEmployee,
       journalize,
       coreConfirm,
     },
