@@ -63,4 +63,5 @@ export const WORKFORCE_USER_TYPE = {
   CHECKER: "checker",
   APPROVER: "approver",
   APPLICANT: "applicant",
+  FACTORY_ADMIN: "factory_admin",
 };

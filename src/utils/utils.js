@@ -24,6 +24,8 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.CHECKER;
   }else if (user_rights.includes(813001)) {
     user_type = WORKFORCE_USER_TYPE.APPROVER;
+  }else if (user_rights.includes(814001)) {
+    user_type = WORKFORCE_USER_TYPE.FACTORY_ADMIN;
   }else if(!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }

@@ -19,6 +19,15 @@
     // "workforce.employee.application.revertNote",
     component.isShowHistory() ? "workforce.version" : "",
   ];
+  export const headerFactoryAdmin = (component) => [
+    "workforce.employee.name.en",
+    "workforce.employee.application.applicationType",
+    "workforce.employee.application.factoryName",
+    "workforce.employee.application.applicationDate",
+    "workforce.employee.application.status",
+    // "workforce.employee.application.revertNote",
+    component.isShowHistory() ? "workforce.version" : "",
+  ];
   export const headerChecker = (component) => [
     "",
     "workforce.employee.name.en",

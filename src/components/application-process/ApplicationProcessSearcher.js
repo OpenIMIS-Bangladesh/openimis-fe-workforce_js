@@ -45,10 +45,10 @@ import ForwardApplicationApproverModal from "./modals/ForwardApplicationApprover
 import RevertApplicationModal from "./modals/RevertApplicationModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement } from "../../actions";
-import { itemAdminFormatters, itemFormattersApplicant, itemFormattersApprover, itemFormattersChecker } from "../../utils/itemFormatters_types";
+import { itemAdminFormatters, itemFormattersApplicant, itemFormattersApprover, itemFormattersChecker,itemFormattersFactoryAdmin } from "../../utils/itemFormatters_types";
 import GenereteBFTN from "../../pages/application-process/GenereteBFTN";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
-import { headerApplicant, headerApprover, headerChecker, headersAdmin } from "../../utils/headers_types";
+import { headerApplicant, headerApprover, headerChecker, headersAdmin, headerFactoryAdmin} from "../../utils/headers_types";
 
 const styles = (theme) => ({
   paper: {
@@ -415,29 +415,31 @@ class ApplicationProcessSearcher extends Component {
     }, 2000);
   };
 
-  headers = () =>{
-    return  getUserTypeFromRights(this.props.userRights) === WORKFORCE_USER_TYPE.APPLICANT
-              ? headerApplicant(this)
-              : getUserTypeFromRights(this.props.userRights) ===
-                WORKFORCE_USER_TYPE.CHECKER
-              ? headerChecker(this)
-              : getUserTypeFromRights(this.props.userRights) ===
-                WORKFORCE_USER_TYPE.APPROVER
-              ? headerApprover(this)
-              : headersAdmin(this)
-  };
+    headers = () => {
+      const userType = getUserTypeFromRights(this.props.userRights);
+      return userType === WORKFORCE_USER_TYPE.APPLICANT
+        ? headerApplicant(this)
+        : userType === WORKFORCE_USER_TYPE.CHECKER
+        ? headerChecker(this)
+        : userType === WORKFORCE_USER_TYPE.APPROVER
+        ? headerApprover(this)
+        : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+        ? headerFactoryAdmin(this)
+        : headersAdmin(this);
+    };
 
-  itemFormatters = () => {
-  return  getUserTypeFromRights(this.props.userRights) === WORKFORCE_USER_TYPE.APPLICANT
-              ? itemFormattersApplicant(this.isShowHistory,this.props.modulesManager,this.props.history,this)
-              : getUserTypeFromRights(this.props.userRights) ===
-                WORKFORCE_USER_TYPE.CHECKER
-              ? itemFormattersChecker(this.isShowHistory,this.props.modulesManager,this.props.history,this)
-              : getUserTypeFromRights(this.props.userRights) ===
-                WORKFORCE_USER_TYPE.APPROVER
-              ?  itemFormattersApprover(this.isShowHistory,this.props.modulesManager,this.props.history,this)
-              : itemAdminFormatters(this.isShowHistory,this.props.modulesManager,this.props.history,this)
-  };
+    itemFormatters = () => {
+      const userType = getUserTypeFromRights(this.props.userRights);
+      return userType === WORKFORCE_USER_TYPE.APPLICANT
+        ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+        : userType === WORKFORCE_USER_TYPE.CHECKER
+        ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+        : userType === WORKFORCE_USER_TYPE.APPROVER
+        ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+        : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+        ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+        : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this);
+    };
 
   sorts = () => [];
 
