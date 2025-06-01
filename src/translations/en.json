@@ -425,6 +425,7 @@
     "workforce.application.checked":"Checked Applications",
     "workforce.checker.dashboard":"Checker Dashboard",
     "workforce.applicant.dashboard":"Applicant Dashboard",
+    "workforce.factory_admin.dashboard":"Factory Admin Dashboard",
     "workforce.approver.dashboard":"Verifier Dashboard",
     "workforce.approver.noEntry":"No entries found",
     "workforce.application.myself":"My Applications",

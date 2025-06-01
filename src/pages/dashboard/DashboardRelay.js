@@ -5,6 +5,7 @@ import ApplicantDashboard from "./ApplicantDashboardPage";
 import DashboardPage from "./DashboardPage";
 import CheckerDashboardPage from "./CheckerDashboardPage";
 import ApproverDashboardPage from "./ApproverDashboardPage";
+import FactoryAdminDashboardPage from "./FactoryAdminDashboardPage";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 
 const DashboardRelay = () => {
@@ -19,6 +20,8 @@ console.log(user_type)
     return <ApproverDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.ADMIN) {
     return <DashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+    return <FactoryAdminDashboardPage />;
   }
 
   return <></>;
