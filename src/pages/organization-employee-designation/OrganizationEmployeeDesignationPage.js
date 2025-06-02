@@ -10,7 +10,7 @@ import {
   fetchWorkforceUnitsWithEmployeeDesignation,
 } from "../../actions";
 
-class WorkforceEmployeeDesignationPage extends Component {
+class OrganizationEmployeeDesignationPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -140,4 +140,4 @@ const mapDispatchToProps = (dispatch) =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withModulesManager(WorkforceEmployeeDesignationPage));
+)(withModulesManager(OrganizationEmployeeDesignationPage));

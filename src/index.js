@@ -58,8 +58,8 @@ import UnitDesignationPage from "./pages/organization-unit-designation/UnitDesig
 import UnitDesignationsPage from "./pages/organization-unit-designation/UnitDesignationsPage";
 import OrganizationEmployeesPage from "./pages/organization-employee/OrganizationEmployeesPage";
 import OrganizationEmployeePage from "./pages/organization-employee/OrganizationEmployeePage";
-import WorkforceEmployeeDesignationPage
-  from "./pages/organization-employee-designation/WorkforceEmployeeDesignationPage";
+import OrganizationEmployeeDesignationPage
+  from "./pages/organization-employee-designation/OrganizationEmployeeDesignationPage";
 import OrganizationOfficesPage from "./pages/workforce-office/WorkforceOfficesPage";
 import OrganizationOfficePage from "./pages/workforce-office/WorkforceOfficePage";
 import OrganizationCompaniesPage from "./pages/workforce-company/WorkforceCompaniesPage";
@@ -253,7 +253,7 @@ const DEFAULT_CONFIG = {
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS_INFO}/:workforce_employee_uuid`, component: AccountInfoPage },
 
 
-    { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, component: WorkforceEmployeeDesignationPage },
+    { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, component: OrganizationEmployeeDesignationPage },
     { path: ROUTE_WORKFORCE_EMPLOYEE_FACTORIES, component: WorkforceEmployeeFactoryPage },
 
     { path: ROUTE_WORKFORCE_BANKS, component: WorkforceBanksPage },

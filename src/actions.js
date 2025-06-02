@@ -991,7 +991,8 @@ export function createWorkforceOtp(workforceOtp, clientMutationLabel) {
     nameBn: "${workforceOtp.firstNameBn}",
     firstNameEn: "${workforceOtp.firstNameEn}",
     lastNameEn: "",
-    nid: "${workforceOtp.NID}",
+    nid: "${workforceOtp?.NID}",
+    birthCertificateNo: "${workforceOtp?.birthCertificateNo}",
     phoneNumber: "${workforceOtp.mobile}",
     status: "${WORKFORCE_STATUS.ACTIVE}"
   ) {
@@ -1021,7 +1022,8 @@ export function createWorkforceUser(workforceUser, clientMutationLabel) {
     nameBn: "${workforceUser.firstNameBn}",
     firstNameEn: "${workforceUser.firstNameEn}",
     lastNameEn: " ",
-    nid: "${workforceUser.NID}",
+    nid: "${workforceUser?.NID}",
+    birthCertificateNo: "${workforceUser?.birthCertificateNo}",
     phoneNumber: "${workforceUser.mobile}",
     status: "${WORKFORCE_STATUS.ACTIVE}",
     username: "",

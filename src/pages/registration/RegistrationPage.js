@@ -6,7 +6,7 @@ import {
   Paper,
   Typography,
   LinearProgress,
-  TextField
+  TextField,
 } from "@material-ui/core";
 import {
   TextInput,
@@ -16,8 +16,12 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import OtpInput from 'react-otp-input';
-import { createWorkforceOtp, createWorkforceUser, fetchWorkforceOtp } from "../../actions";
+import OtpInput from "react-otp-input";
+import {
+  createWorkforceOtp,
+  createWorkforceUser,
+  fetchWorkforceOtp,
+} from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -61,22 +65,22 @@ const useStyles = makeStyles((theme) => ({
 const RegistrationPage = () => {
   const classes = useStyles();
   const history = useHistory();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const modulesManager = useModulesManager();
-  const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
-  const [otp, setOtp] = useState('');
-
-const internalId = useSelector(
-    (state) => state.workforce?.mutation?.id
+  const { formatMessage } = useTranslations(
+    "core.RegistrationPage",
+    modulesManager
   );
+  const [otp, setOtp] = useState("");
 
-const otpStatus = useSelector(
-    (state) => state.workforce['workforceOtp']
-  );
+  const internalId = useSelector((state) => state.workforce?.mutation?.id);
+
+  const otpStatus = useSelector((state) => state.workforce["workforceOtp"]);
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    NID: "",
+    NID_BirthCertificate: "",
+    birthCertificate: "",
     mobile: "",
     firstNameBn: "",
     firstNameEn: "",
@@ -85,7 +89,10 @@ const otpStatus = useSelector(
     confirmPassword: "",
   });
   const [isSubmitting, setSubmitting] = useState(false);
-  const [serverResponse, setServerResponse] = useState({ status: "", message: null });
+  const [serverResponse, setServerResponse] = useState({
+    status: "",
+    message: null,
+  });
 
   // Fix: Get value directly, not e.target.value
   const handleInputChange = (key) => (val) => {
@@ -93,69 +100,91 @@ const otpStatus = useSelector(
   };
 
   useEffect(() => {
-  if (step === 2 && otpStatus) {
-    if (otpStatus.status === "active") {
-      setStep(3);
-    } else if (otpStatus.status === "invalid") {
-      setServerResponse({
-        status: "ERROR",
-        message: "ভুল OTP. দয়া করে আবার চেষ্টা করুন।",
-      });
+    if (step === 2 && otpStatus) {
+      if (otpStatus.status === "active") {
+        setStep(3);
+      } else if (otpStatus.status === "invalid") {
+        setServerResponse({
+          status: "ERROR",
+          message: "ভুল OTP. দয়া করে আবার চেষ্টা করুন।",
+        });
+      }
     }
-  }
-}, [otpStatus]);
+  }, [otpStatus]);
 
-useEffect(() => {
-  if (
-    isSubmitting &&
-    step === 3 &&
-    internalId
-  ) {
-    setServerResponse({
-      status: "SUCCESS",
-      message: "নিবন্ধন সফল হয়েছে!",
-    });
+  useEffect(() => {
+    if (isSubmitting && step === 3 && internalId) {
+      setServerResponse({
+        status: "SUCCESS",
+        message: "নিবন্ধন সফল হয়েছে!",
+      });
 
-    setTimeout(() => {
-      setSubmitting(false);
-      history.push("/login");
-    }, 2000);
-  }
-}, [internalId]);
-
+      setTimeout(() => {
+        setSubmitting(false);
+        history.push("/login");
+      }, 2000);
+    }
+  }, [internalId]);
 
   const validateStep1 = () =>
-    formData.NID && formData.mobile && formData.firstNameBn && formData.firstNameEn;
+    formData.NID_BirthCertificate &&
+    formData.mobile &&
+    formData.firstNameBn &&
+    formData.firstNameEn;
 
   const validateStep3 = () =>
     formData.password &&
     formData.confirmPassword &&
     formData.password === formData.confirmPassword;
 
-  const handleNext = async() => {
+  const handleNext = async () => {
     setServerResponse({ status: "", message: null });
 
     if (step === 1 && validateStep1()) {
-      const createOtpData = {
-        NID:formData.NID,
-        firstNameBn:formData.firstNameBn,
-        firstNameEn:formData.firstNameEn,
-        mobile:formData.mobile
+      const cleanedInput = (formData.NID_BirthCertificate || "").toString().trim();
+      if (cleanedInput.length === 17) {
+        const createOtpData = {
+          birthCertificateNo: formData.NID_BirthCertificate,
+          firstNameBn: formData.firstNameBn,
+          firstNameEn: formData.firstNameEn,
+          mobile: formData.mobile,
+        };
+        await dispatch(
+          createWorkforceOtp(
+            createOtpData,
+            `Created Workforce Office ${createOtpData.firstNameEn}`
+          )
+        );
+      } else if (cleanedInput.length === 10) {
+        const createOtpData = {
+          NID: formData.NID_BirthCertificate,
+          firstNameBn: formData.firstNameBn,
+          firstNameEn: formData.firstNameEn,
+          mobile: formData.mobile,
+        };
+        await dispatch(
+          createWorkforceOtp(
+            createOtpData,
+            `Created Workforce Office ${createOtpData.firstNameEn}`
+          )
+        );
+      } else {
+        setServerResponse({
+          status: "ERROR",
+          message: "দয়া করে সঠিক এনআইডি বা জন্ম সনদ নম্বর প্রদান করুন।",
+        });
+        return;
       }
-      await dispatch(
-              createWorkforceOtp(
-                createOtpData,
-                `Created Workforce Office ${createOtpData.firstNameEn}`,
-              ),
-            );
 
       if (internalId !== "") {
         setStep(2);
       }
     } else if (step === 2) {
-
-      await dispatch(fetchWorkforceOtp(modulesManager, [`id:"${internalId}",otp:"${formData.otp}"`]))
-
+      await dispatch(
+        fetchWorkforceOtp(modulesManager, [
+          `id:"${internalId}",otp:"${formData.otp}"`,
+        ])
+      );
     } else if (step === 3 && validateStep3()) {
       handleSubmit();
     } else {
@@ -169,24 +198,41 @@ useEffect(() => {
     }
   };
 
-  const handleSubmit =async () => {
+  const handleSubmit = async () => {
+    const cleanedInput = (formData.NID_BirthCertificate || "").toString().trim();
+    if (cleanedInput.length === 17) {
+      const createUserData = {
+        birthCertificateNo: formData.NID_BirthCertificate,
+        firstNameBn: formData.firstNameBn,
+        firstNameEn: formData.firstNameEn,
+        mobile: formData.mobile,
+        password: formData.password,
+      };
+      await dispatch(
+        createWorkforceUser(
+          createUserData,
+          `Created Workforce User ${createUserData.firstNameEn}`
+        )
+      );
+    }else {
+      const createUserData = {
+        NID: formData.NID_BirthCertificate,
+        firstNameBn: formData.firstNameBn,
+        firstNameEn: formData.firstNameEn,
+        mobile: formData.mobile,
+        password: formData.password,
+      };
+      await dispatch(
+        createWorkforceUser(
+          createUserData,
+          `Created Workforce User ${createUserData.firstNameEn}`
+        )
+      );
+    }
     setSubmitting(true);
-    const createUserData = {
-        NID:formData.NID,
-        firstNameBn:formData.firstNameBn,
-        firstNameEn:formData.firstNameEn,
-        mobile:formData.mobile,
-        password:formData.password,
-      }
-    await dispatch(
-              createWorkforceUser(
-                createUserData,
-                `Created Workforce User ${createUserData.firstNameEn}`,
-              ),
-            );
   };
 
-  console.log({internalId})
+  console.log({ formData });
   // console.log({otpStatus})
 
   return (
@@ -195,7 +241,10 @@ useEffect(() => {
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={3}>
           <Typography variant="h5" color="primary">
-            <FormattedMessage module="workforce" id="workforce.registration.title" />
+            <FormattedMessage
+              module="workforce"
+              id="workforce.registration.title"
+            />
           </Typography>
           <form onSubmit={(e) => e.preventDefault()}>
             <Box mt={2} className={classes.inputContainer}>
@@ -218,10 +267,27 @@ useEffect(() => {
                   />
                   <TextInput
                     required
-                    label="জাতীয় পরিচয়পত্র (এনআইডি)"
+                    label="জাতীয় পরিচয়পত্র (এনআইডি) / জন্ম সনদ নম্বর"
                     fullWidth
-                    value={formData.NID}
-                    onChange={handleInputChange("NID")}
+                    onChange={(value) =>
+                      setFormData({ ...formData, NID_BirthCertificate: value })
+                    }
+                    formatInput={(val) =>
+                      (val || "").toString().replace(/\D/g, "").slice(0, 17)
+                    }
+                    type="number"
+                    inputProps={{ maxLength: 17 }}
+
+                    // onChange={(v) => {
+                    //   const cleaned = String(v).trim();
+                    //   if (cleaned.length === 10) {
+                    //     setFormData({...formData,NID: cleaned,birthCertificate: ""});
+                    //   } else if (cleaned.length === 17) {
+                    //     setFormData({...formData,birthCertificate: cleaned,NID: "",});
+                    //   } else {
+                    //     setFormData({...formData,NID: "",birthCertificate: "",});
+                    //   }
+                    // }}
                   />
                   <TextInput
                     required
@@ -278,7 +344,11 @@ useEffect(() => {
               {/* Server Response */}
               {serverResponse?.message && (
                 <Box
-                  color={serverResponse.status === "ERROR" ? "error.main" : "success.main"}
+                  color={
+                    serverResponse.status === "ERROR"
+                      ? "error.main"
+                      : "success.main"
+                  }
                   mt={2}
                 >
                   {serverResponse.message}
