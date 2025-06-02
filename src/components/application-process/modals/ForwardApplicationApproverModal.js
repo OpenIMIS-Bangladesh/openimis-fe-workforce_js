@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ForwardApplicationAdminModal = ({
+const ForwardApplicationApproverAdminModal = ({
   open,
   onClose,
   selectedApplication,
@@ -250,4 +250,4 @@ const ForwardApplicationAdminModal = ({
   );
 };
 
-export default ForwardApplicationAdminModal;
+export default ForwardApplicationApproverAdminModal;

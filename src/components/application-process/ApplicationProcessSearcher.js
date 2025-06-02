@@ -33,6 +33,7 @@ import {
   fetchApplicationMovementsSummary,
   fetchOrganizationEmployeeDesignation,
   fetchOrganizationEmployee,
+  fetchFactoryEmployee
 } from "../../actions";
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
@@ -41,6 +42,7 @@ import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 import PrintIcon from '@material-ui/icons/Print';
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
+import ForwardApplicationFactoryAdminModal from "./modals/ForwardApplicationFactoryAdminModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 import RevertApplicationModal from "./modals/RevertApplicationModal";
 import { WORKFORCE_STATUS } from "../../constants";
@@ -95,6 +97,7 @@ class ApplicationProcessSearcher extends Component {
       selectedUser: "",
       selectedApplicationIds: [],
       revertByChecker:false,
+      revertByFactoryAdmin:false,
       officeData: {
         "Central Fund": {
           suboffices: {
@@ -121,13 +124,20 @@ class ApplicationProcessSearcher extends Component {
   }
 
   fetch = (prms) => {
-    const { applicationType,userRights,revertedApplication,userName } = this.props;
+    const { applicationType,userRights,revertedApplication,userName,workforceEmployeesFactoryId } = this.props;
     const { showHistoryFilter } = this.state;
     this.props.fetchOrganizationEmployee(
       this.props.modulesManager,
       [`username:"${userName}"`]
     )
-  
+    this.props.fetchFactoryEmployee(
+      this.props.modulesManager,
+      [`relatedUser_LoginName_Iexact:"${userName}"`]
+   
+    )
+
+    console.log({workforceEmployeesFactoryId})
+ 
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       const finalParams = {
         ...prms,
@@ -138,13 +148,29 @@ class ApplicationProcessSearcher extends Component {
         this.props.modulesManager,
         [`status:"new",orderBy: ["-dateCreated"]`]
       );
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+      this.setState({ displayVersion: showHistoryFilter });
+      this.props.fetchApplicationsSummary(
+        this.props.modulesManager,
+        [`status:"factory_new", orderBy: ["-dateCreated"]`]
+      );
+    }
+    else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
         [`status:"forward_to_approver", orderBy: ["-dateCreated"]`]
       );
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
+    }
+    // else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+    //   this.setState({ displayVersion: showHistoryFilter });
+    //   this.props.fetchApplicationsSummary(
+    //     this.props.modulesManager,
+    //     [`employeeFactoryId:"${workforceEmployeesFactoryId}", orderBy: ["-dateCreated"]`]
+      
+    //   );
+    // }
+    else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
       this.setState({ displayVersion: showHistoryFilter });
       if (revertedApplication) {
         this.props.fetchApplicationsSummary(
@@ -205,7 +231,7 @@ class ApplicationProcessSearcher extends Component {
   };
 
   handleCloseRevertModal = () => {
-    this.setState({ revertModalOpen: false,revertByChecker:false, selectedApplication: null });
+    this.setState({ revertModalOpen: false,revertByChecker:false,revertByApprover:false, revertByFactoryAdmin:false, selectedApplication: null });
   };
   handleUserChange = (event) => {
     this.setState({ selectedUserId: event.target.value });
@@ -475,7 +501,7 @@ class ApplicationProcessSearcher extends Component {
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
-    const { forwardModalOpen,revertModalOpen,revertByChecker, selectedApplication, openGenerateBFTN,showHistoryFilter } =
+    const { forwardModalOpen,revertModalOpen,revertByChecker,revertByApprover,revertByFactoryAdmin, selectedApplication, openGenerateBFTN,showHistoryFilter } =
       this.state;
     // const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
     //   this.state;
@@ -500,7 +526,8 @@ class ApplicationProcessSearcher extends Component {
       userId,
       userName,
       revertedApplication,
-      organizationEmployee
+      organizationEmployee,
+      
     } = this.props;
 
     // this.getUserOrganization(userId)
@@ -609,6 +636,26 @@ class ApplicationProcessSearcher extends Component {
               <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications}/>
               </>
             );
+          } else if (userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+            return (
+              <>
+              <ForwardApplicationFactoryAdminModal
+                open={forwardModalOpen}
+                onClose={this.handleCloseForwardModal}
+                selectedApplication={selectedApplication}
+                onSubmitForward={this.handleForwardSubmit}
+                organizationEmployee={organizationEmployee}
+              />
+              <RevertApplicationModal
+                open={revertModalOpen}
+                onClose={this.handleCloseRevertModal}
+                revertByChecker={revertByChecker}
+                selectedApplication={this.state.selectedApplication}
+                onSubmitRevert={this.handleRevertSubmit}
+              />
+            </>
+              
+            );
           } else if (userType === WORKFORCE_USER_TYPE.CHECKER) {
             return (
               <>
@@ -675,7 +722,8 @@ const mapStateToProps = (state) => ({
   userRights: state.core.user.i_user.rights,
   userId: state.core.user.i_user.uuid,
   userName: state.core.user.username,
-  organizationEmployee:state.workforce.organizationEmployee
+  organizationEmployee:state.workforce.organizationEmployee,
+  workforceEmployeesFactoryId: state.workforce.workforceEmployee?.edges?.[0]?.employeeDesignationEmployeeId?.edges?.[0]?.node?.workforceFactory?.id ?? null
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -687,6 +735,7 @@ const mapDispatchToProps = (dispatch) =>
       updateApplication,
       createApplicationMovement,
       fetchOrganizationEmployee,
+      fetchFactoryEmployee,
       journalize,
       coreConfirm,
     },

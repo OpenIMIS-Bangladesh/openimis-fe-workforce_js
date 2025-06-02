@@ -206,6 +206,7 @@ export function formatApplicationeGQL(application) {
   ${application?.employeeAccidentInfo ? `employeeAccidentInfo: ${escapeQuotes(application?.employeeAccidentInfo)}` : ""}
   ${application?.employeeDesignationInfo ? `employeeDesignationInfo: ${escapeQuotes(application?.employeeDesignationInfo)}` : ""}
   ${application?.isSubmitted ? `isSubmitted: "${(application?.isSubmitted)}"` : ""}
+  ${application?.employeeFactoryId ? `employeeFactoryId: "${(application?.employeeFactoryId)}"` : ""}
 `;
 }
 ///application movement ////

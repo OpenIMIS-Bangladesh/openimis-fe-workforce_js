@@ -11,6 +11,7 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Checkbox
 } from "@material-ui/core";
 import {
   useModulesManager,
@@ -22,13 +23,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import DistrictOfficePicker from "../../../pickers/DistrictOfficePicker";
 import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  fetchApplication,
-  updateApplication,
-  createApplicationMovement,
-} from "../../../actions";
+import { fetchApplication, updateApplication, createApplicationMovement } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
-import ReactQuill from "react-quill";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -53,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.2rem",
   },
   sectionPaper: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(3),
     marginBottom: theme.spacing(3),
     borderRadius: theme.spacing(1),
     backgroundColor: theme.palette.grey[50],
@@ -70,19 +66,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const RevertApplicationModal = ({
+const ForwardApplicationFactoryAdminModal = ({
   open,
   onClose,
   selectedApplication,
-  revertByChecker,
-  revertByFactoryAdmin,
-  revertByApprover,
   onSubmitForward,
+  organizationEmployee
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
-
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
@@ -123,55 +116,45 @@ const RevertApplicationModal = ({
     // } finally {
     //   setSubmitting(false);
     // }
+
   };
 
-  const handleRevert = async (revertByChecker) => {
-    if (revertByChecker) {
-      const updateApplicationData = {
-        id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.REVERT_TO_APPLICANT,
-      };
-      const createApplicationMovementData = {
-        applicationId: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.REVERT_TO_APPLICANT,
-        note: "আবেদন ফেরত পাঠানো হয়েছে",
-        action: "revert_to_applicant",
-        revertNote: editorContent,
-      };
-      await dispatch(
-        updateApplication(updateApplicationData, `update workforce application`)
-      );
-      await dispatch(
-        createApplicationMovement(
-          createApplicationMovementData,
-          `create workforce movement`
-        )
-      );
-      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
-    }else {
-      const updateApplicationData = {
-        id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.REVERT_TO_CHECKER,
-      };
-      const createApplicationMovementData = {
-        applicationId: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.REVERT_TO_CHECKER,
-        note: "আবেদন ফেরত পাঠানো হয়েছে",
-        action: "revert_to_checker",
-        revertNote: editorContent,
-      };
-      await dispatch(
-        updateApplication(updateApplicationData, `update workforce application`)
-      );
-      await dispatch(
-        createApplicationMovement(
-          createApplicationMovementData,
-          `create workforce movement`
-        )
-      );
-      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
-    }
+ const handleForward = async () => {
+  const isAssociation = formData?.sendToAssociation;
+
+  const updateApplicationData = {
+    id: decodeId(selectedApplication.id),
+    status: isAssociation
+      ? WORKFORCE_STATUS.NEW // <-- Use different status if sending to association
+      : WORKFORCE_STATUS.FACTORY_FORWARD,
   };
+
+  const createApplicationMovementData = {
+    applicationId: decodeId(selectedApplication.id),
+    status: isAssociation
+      ? WORKFORCE_STATUS.NEW
+      : WORKFORCE_STATUS.FACTORY_FORWARD,
+    note: isAssociation
+      ? "অ্যাসোসিয়েশনে পাঠানো হয়েছে"
+      : "আবেদনের প্রমাণপত্র যাচাই করা হয়েছে",
+    action: isAssociation
+      ? "association_forward"
+      : "factory_forward",
+  };
+
+  await dispatch(
+    updateApplication(updateApplicationData, `update workforce application`)
+  );
+
+  await dispatch(
+    createApplicationMovement(
+      createApplicationMovementData,
+      `create workforce movement`
+    )
+  );
+
+  setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+};
 
   console.log({ aha: selectedApplication });
 
@@ -189,7 +172,7 @@ const RevertApplicationModal = ({
           gutterBottom
           style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
         >
-          আবেদন ফেরত পাঠান
+          নিজ অফিসে পাঠান
         </Typography>
 
         <Typography
@@ -199,10 +182,9 @@ const RevertApplicationModal = ({
           style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}
         >
           {selectedApplication
-            ? `${
-                selectedApplication?.workforceEmployee?.firstNameBn ||
-                "আবেদনকারী"
-              } এর আবেদন ফেরত পাঠাতে চান?`
+            ? `${selectedApplication.workforceEmployee?.firstNameBn ||
+            "আবেদনকারী"
+            } এর আবেদন ফরওয়ার্ড করতে চান?`
             : "একটি আবেদন বেছে নিন।"}
         </Typography>
 
@@ -219,41 +201,27 @@ const RevertApplicationModal = ({
           </Typography>
         )}
 
-        <Divider style={{ marginBottom: 15 }} />
+        <Divider style={{ marginBottom: 24 }} />
 
         {/* Form Fields */}
         <Paper className={classes.sectionPaper} elevation={1}>
-          <Grid container spacing={0} style={{ marginTop: 0 }}>
-            <Grid item xs={12} sm={12}>
-              {revertByChecker ? (
-                <>
-                <Typography
-                  variant="subtitle1"
-                  gutterBottom
-                  style={{
-                    marginTop: 0,
-                    textAlign: "left",
-                  }}
-                >
-                  <b>আবেদনকারীর নাম : </b>{selectedApplication?.workforceEmployee?.firstNameBn} <br/>
-                  <b>আবেদনের ধরন : </b>{selectedApplication?.applicationType} <br/>
-                  <b>জাতীয় পরিচয়পত্র : </b>{selectedApplication?.workforceEmployee?.nid} <br/>
-                  <b>ফোন নম্বর : </b>{selectedApplication?.workforceEmployee?.phoneNumber} <br/>
-                </Typography>
-                </>
-              ) : (
-                <>
-                  <Typography
-                    variant="subtitle1"
-                    gutterBottom
-                    style={{
-                      fontWeight: "bold",
-                      marginTop: 3,
-                      textAlign: "center",
-                    }}
-                  >
-                    অফিসার নির্বাচন করুন
-                  </Typography>
+
+
+
+          <Grid container spacing={3} style={{ marginTop: 3 }}>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              style={{
+                fontWeight: "bold",
+                marginTop: 3,
+                textAlign: "center",
+              }}
+            >
+              অফিসার নির্বাচন করুন
+            </Typography>
+            {!formData?.sendToAssociation && (
+                <Grid item xs={12} sm={12}>
                   <EmployeePicker
                     value={formData?.id}
                     officeType={officeType}
@@ -263,37 +231,31 @@ const RevertApplicationModal = ({
                         module="workforce"
                       />
                     }
+                    organizationEmployee={organizationEmployee}
                     modulesManager={modulesManager}
                     required
                     onChange={(v) => setFormData(v)}
                   />
-                </>
+                </Grid>
               )}
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <Typography
-                variant="subtitle1"
-                gutterBottom
-                style={{
-                  fontWeight: "bold",
-                  marginTop: 1,
-                  textAlign: "center",
-                }}
-              >
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.reasons.addComment"
-                />
-              </Typography>
 
-              <Box sx={{ width: "100%", mb: 7 }}>
-                <ReactQuill
-                  value={editorContent}
-                  onChange={setEditorContent}
-                  theme="snow"
-                  style={{ height: "150px" }}
-                />
-              </Box>
+            {/* ✅ Send to Association Field */}
+            <Grid item xs={12} sm={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData?.sendToAssociation || false}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        sendToAssociation: e.target.checked,
+                      }))
+                    }
+                    color="primary"
+                  />
+                }
+                label="অ্যাসোসিয়েশনে পাঠান"
+              />
             </Grid>
           </Grid>
         </Paper>
@@ -308,9 +270,9 @@ const RevertApplicationModal = ({
             variant="contained"
             color="primary"
             disabled={submitting}
-            onClick={()=>handleRevert(revertByChecker)}
+            onClick={handleForward}
           >
-            {submitting ? "ফেরত পাঠানো হচ্ছে..." : "ফেরত পাঠান"}
+            {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"}
           </Button>
         </div>
       </form>
@@ -318,4 +280,4 @@ const RevertApplicationModal = ({
   );
 };
 
-export default RevertApplicationModal;
+export default ForwardApplicationFactoryAdminModal;

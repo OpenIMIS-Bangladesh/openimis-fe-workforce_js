@@ -279,6 +279,19 @@ function reducer(
     fetchedApplication: false,
     application: null,
     applicationPageInfo: { totalCount: 0 },
+    
+    ////Application states
+    fetchingApplications: false,
+    errorApplications: null,
+    fetchedApplications: false,
+    applications: [],
+    applicationsPageInfo: { totalCount: 0 },
+
+    fetchingApplication: false,
+    errorApplication: null,
+    fetchedApplication: false,
+    application: null,
+    applicationPageInfo: { totalCount: 0 },
 
     ////Application movement states
     fetchingApplicationMovements: false,

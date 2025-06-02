@@ -684,6 +684,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "employeeDependentInfo",
     "employeeBankInfo",
     "employeeAccidentInfo",
+    "employeeFactory{id}",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
@@ -713,6 +714,7 @@ export function fetchApplication(mm, filters) {
     "employeeDependentInfo",
     "employeeBankInfo",
     "employeeAccidentInfo",
+    "employeeFactory{id}",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
@@ -1716,6 +1718,25 @@ export function fetchUnitDesignation(mm, filters) {
     projections
   );
   return graphql(payload, "WORKFORCE_ORGANIZATION_UNIT_DESIGNATION");
+}
+
+///fetching workforce factory employee////
+export function fetchFactoryEmployee(mm, filters) {
+  const projections = [
+    "id",
+    "employeeDesignationEmployeeId{edges{node{id,workforceFactory{id}}}}",
+    // "workforceOffice{id}",
+    // "workforceFactory{id}",
+    // "workforceRepresentative{id}",
+    // "workforceApplication{id}",
+    
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployerEmployees",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEE");
 }
 
 ///fetching employee designation details
