@@ -44,7 +44,8 @@ import {
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY,
   ROUTE_HOME,
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS,
-  ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND
+  ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND,
+  ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -68,7 +69,6 @@ import OrganizationFactoriesPage from "./pages/workforce-factory/WorkforceFactor
 import OrganizationFactoryPage from "./pages/workforce-factory/WorkforceFactoryPage";
 import WorkforceEmployeesPage from "./pages/workforce-employee/WorkforceEmployeesPage";
 import WorkforceEmployeePage from "./pages/workforce-employee/WorkforceEmployeePage";
-import WorkforceEmployeeFactoryPage from "./pages/workforce-employee-factory/WorkforceEmployeeFactoryPage";
 import WorkforceBanksPage from "./pages/workforce-banks/WorkforceBanksPage";
 import WorkforceBankPage from "./pages/workforce-banks/WorkforceBankPage";
 import BanksPicker from "./pickers/BanksPicker";
@@ -93,6 +93,7 @@ import ApproverDashboardPage from "./pages/dashboard/ApproverDashboardPage";
 import NotificationBar from "./components/app-bar/NotificationBar";
 import ActionsApplicationPage from "./pages/application-process/ActionsApplicationPage";
 import ResendApplicationPage from "./pages/application-process/ResendApplicationPage";
+import WorkforceEmployeeDesignationPage from "./pages/workforce-employee-designation/WorkforceEmployeeDesignationPage";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -254,7 +255,8 @@ const DEFAULT_CONFIG = {
 
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, component: OrganizationEmployeeDesignationPage },
-    { path: ROUTE_WORKFORCE_EMPLOYEE_FACTORIES, component: WorkforceEmployeeFactoryPage },
+    { path: ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION, component: WorkforceEmployeeDesignationPage },
+    // { path: ROUTE_WORKFORCE_EMPLOYEE_FACTORIES, component: WorkforceEmployeeDesignationPage },
 
     { path: ROUTE_WORKFORCE_BANKS, component: WorkforceBanksPage },
     { path: ROUTE_WORKFORCE_BANKS_BANK, component: WorkforceBankPage },

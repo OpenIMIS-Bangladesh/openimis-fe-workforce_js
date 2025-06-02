@@ -23,6 +23,7 @@ import {
   ROUTE_WORKFORCE_APPLICATION,
   ROUTE_WORKFORCE_APPLICATIONS_PROCESS,
   ROUTE_WORKFORCE_DOCUMENTS,
+  ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION,
 } from "../routes";
 import { RIGHT_WORKFORCE_EMPLOYER_APPROVE } from "../permission-rights";
 import { getUserType, isEmptyObject } from "../utils/utils";
@@ -88,6 +89,13 @@ function WorkforceMainMenu(props) {
       icon: <ListAlt />,
       route: `/${ROUTE_WORKFORCE_FACTORIES}`,
       id: `menu.workforce.factories`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.factory.employee.designation" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION}`,
+      id: `menu.workforce.factory.employee.designation`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
     {

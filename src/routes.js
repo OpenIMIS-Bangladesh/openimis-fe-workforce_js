@@ -32,6 +32,7 @@ export const ROUTE_WORKFORCE_EMPLOYEES_ACCIDENT_INFOS_INFO = "workforce/employee
 export const ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS = "workforce/employees/account/infos";
 export const ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS_INFO = "workforce/employees/account/infos/info";
 export const ROUTE_WORKFORCE_EMPLOYEE_FACTORIES = "workforce/employee/factories";
+export const ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION = "workforce/employee/factory/employee/designation";
 
 export const ROUTE_WORKFORCE_BANKS = "workforce/banks";
 export const ROUTE_WORKFORCE_DOCUMENTS = "workforce/documents";
