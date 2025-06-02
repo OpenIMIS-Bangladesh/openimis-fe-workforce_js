@@ -75,6 +75,8 @@ const RevertApplicationModal = ({
   onClose,
   selectedApplication,
   revertByChecker,
+  revertByFactoryAdmin,
+  revertByApprover,
   onSubmitForward,
 }) => {
   const classes = useStyles();

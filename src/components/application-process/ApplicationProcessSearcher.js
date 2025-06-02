@@ -97,6 +97,7 @@ class ApplicationProcessSearcher extends Component {
       selectedUser: "",
       selectedApplicationIds: [],
       revertByChecker:false,
+      revertByFactoryAdmin:false,
       officeData: {
         "Central Fund": {
           suboffices: {
@@ -147,21 +148,28 @@ class ApplicationProcessSearcher extends Component {
         this.props.modulesManager,
         [`status:"new",orderBy: ["-dateCreated"]`]
       );
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+      this.setState({ displayVersion: showHistoryFilter });
+      this.props.fetchApplicationsSummary(
+        this.props.modulesManager,
+        [`status:"factory_new", orderBy: ["-dateCreated"]`]
+      );
+    }
+    else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
         [`status:"forward_to_approver", orderBy: ["-dateCreated"]`]
       );
     }
-    else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
-      this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(
-        this.props.modulesManager,
-        [`employeeFactoryId:"${workforceEmployeesFactoryId}", orderBy: ["-dateCreated"]`]
+    // else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+    //   this.setState({ displayVersion: showHistoryFilter });
+    //   this.props.fetchApplicationsSummary(
+    //     this.props.modulesManager,
+    //     [`employeeFactoryId:"${workforceEmployeesFactoryId}", orderBy: ["-dateCreated"]`]
       
-      );
-    }
+    //   );
+    // }
     else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
       this.setState({ displayVersion: showHistoryFilter });
       if (revertedApplication) {
@@ -223,7 +231,7 @@ class ApplicationProcessSearcher extends Component {
   };
 
   handleCloseRevertModal = () => {
-    this.setState({ revertModalOpen: false,revertByChecker:false, selectedApplication: null });
+    this.setState({ revertModalOpen: false,revertByChecker:false,revertByApprover:false, revertByFactoryAdmin:false, selectedApplication: null });
   };
   handleUserChange = (event) => {
     this.setState({ selectedUserId: event.target.value });
@@ -493,7 +501,7 @@ class ApplicationProcessSearcher extends Component {
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
-    const { forwardModalOpen,revertModalOpen,revertByChecker, selectedApplication, openGenerateBFTN,showHistoryFilter } =
+    const { forwardModalOpen,revertModalOpen,revertByChecker,revertByApprover,revertByFactoryAdmin, selectedApplication, openGenerateBFTN,showHistoryFilter } =
       this.state;
     // const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
     //   this.state;
@@ -715,7 +723,7 @@ const mapStateToProps = (state) => ({
   userId: state.core.user.i_user.uuid,
   userName: state.core.user.username,
   organizationEmployee:state.workforce.organizationEmployee,
-  workforceEmployeesFactoryId: state.workforce.workforceEmployees?.edges?.[0]?.employeeDesignationEmployeeId?.edges?.[0]?.node?.workforceFactory?.id ?? null
+  workforceEmployeesFactoryId: state.workforce.workforceEmployee?.edges?.[0]?.employeeDesignationEmployeeId?.edges?.[0]?.node?.workforceFactory?.id ?? null
 });
 
 const mapDispatchToProps = (dispatch) =>

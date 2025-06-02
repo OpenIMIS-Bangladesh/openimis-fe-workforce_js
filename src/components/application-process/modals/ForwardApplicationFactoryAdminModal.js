@@ -11,6 +11,7 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Checkbox
 } from "@material-ui/core";
 import {
   useModulesManager,
@@ -118,34 +119,42 @@ const ForwardApplicationFactoryAdminModal = ({
 
   };
 
-  const handleForward = async () => {
+ const handleForward = async () => {
+  const isAssociation = formData?.sendToAssociation;
 
-    const updateApplicationData = {
-      id: decodeId(selectedApplication.id),
-      status: WORKFORCE_STATUS.FACTORY_FORWARD,
-    };
-    const createApplicationMovementData = {
-      applicationId: decodeId(selectedApplication.id),
-      status: WORKFORCE_STATUS.FACTORY_FORWARD,
-      note: "আবেদনের প্রমাণপত্র যাচাই করা হয়েছে",
-      action: "factory_forward",
-
-    };
-    await dispatch(
-      updateApplication(
-        updateApplicationData,
-        `update workforce application`
-      )
-    );
-    await dispatch(
-      createApplicationMovement(
-        createApplicationMovementData,
-        `create workforce movement`
-      )
-    );
-    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
-
+  const updateApplicationData = {
+    id: decodeId(selectedApplication.id),
+    status: isAssociation
+      ? WORKFORCE_STATUS.NEW // <-- Use different status if sending to association
+      : WORKFORCE_STATUS.FACTORY_FORWARD,
   };
+
+  const createApplicationMovementData = {
+    applicationId: decodeId(selectedApplication.id),
+    status: isAssociation
+      ? WORKFORCE_STATUS.NEW
+      : WORKFORCE_STATUS.FACTORY_FORWARD,
+    note: isAssociation
+      ? "অ্যাসোসিয়েশনে পাঠানো হয়েছে"
+      : "আবেদনের প্রমাণপত্র যাচাই করা হয়েছে",
+    action: isAssociation
+      ? "association_forward"
+      : "factory_forward",
+  };
+
+  await dispatch(
+    updateApplication(updateApplicationData, `update workforce application`)
+  );
+
+  await dispatch(
+    createApplicationMovement(
+      createApplicationMovementData,
+      `create workforce movement`
+    )
+  );
+
+  setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+};
 
   console.log({ aha: selectedApplication });
 
@@ -211,20 +220,41 @@ const ForwardApplicationFactoryAdminModal = ({
             >
               অফিসার নির্বাচন করুন
             </Typography>
+            {!formData?.sendToAssociation && (
+                <Grid item xs={12} sm={12}>
+                  <EmployeePicker
+                    value={formData?.id}
+                    officeType={officeType}
+                    label={
+                      <FormattedMessage
+                        id="workforce.officer.selector.picker"
+                        module="workforce"
+                      />
+                    }
+                    organizationEmployee={organizationEmployee}
+                    modulesManager={modulesManager}
+                    required
+                    onChange={(v) => setFormData(v)}
+                  />
+                </Grid>
+              )}
+
+            {/* ✅ Send to Association Field */}
             <Grid item xs={12} sm={12}>
-              <EmployeePicker
-                value={formData?.id}
-                officeType={officeType}
-                label={
-                  <FormattedMessage
-                    id="workforce.officer.selector.picker"
-                    module="workforce"
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData?.sendToAssociation || false}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        sendToAssociation: e.target.checked,
+                      }))
+                    }
+                    color="primary"
                   />
                 }
-                organizationEmployee={organizationEmployee}
-                modulesManager={modulesManager}
-                required
-                onChange={(v) => setFormData(v)}
+                label="অ্যাসোসিয়েশনে পাঠান"
               />
             </Grid>
           </Grid>
