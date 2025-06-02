@@ -42,6 +42,7 @@ import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 import PrintIcon from '@material-ui/icons/Print';
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
+import ForwardApplicationFactoryAdminModal from "./modals/ForwardApplicationFactoryAdminModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 import RevertApplicationModal from "./modals/RevertApplicationModal";
 import { WORKFORCE_STATUS } from "../../constants";
@@ -152,7 +153,8 @@ class ApplicationProcessSearcher extends Component {
         this.props.modulesManager,
         [`status:"forward_to_approver", orderBy: ["-dateCreated"]`]
       );
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+    }
+    else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
@@ -626,6 +628,26 @@ class ApplicationProcessSearcher extends Component {
               <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications}/>
               </>
             );
+          } else if (userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+            return (
+              <>
+              <ForwardApplicationFactoryAdminModal
+                open={forwardModalOpen}
+                onClose={this.handleCloseForwardModal}
+                selectedApplication={selectedApplication}
+                onSubmitForward={this.handleForwardSubmit}
+                organizationEmployee={organizationEmployee}
+              />
+              <RevertApplicationModal
+                open={revertModalOpen}
+                onClose={this.handleCloseRevertModal}
+                revertByChecker={revertByChecker}
+                selectedApplication={this.state.selectedApplication}
+                onSubmitRevert={this.handleRevertSubmit}
+              />
+            </>
+              
+            );
           } else if (userType === WORKFORCE_USER_TYPE.CHECKER) {
             return (
               <>
@@ -693,7 +715,7 @@ const mapStateToProps = (state) => ({
   userId: state.core.user.i_user.uuid,
   userName: state.core.user.username,
   organizationEmployee:state.workforce.organizationEmployee,
-  workforceEmployeesFactoryId: state.workforce.workforceEmployees?.edges?.[0]?.employeeDesignationEmployeeId?.edges?.[0]?.node?.workforceFactory?.id
+  workforceEmployeesFactoryId: state.workforce.workforceEmployees?.edges?.[0]?.employeeDesignationEmployeeId?.edges?.[0]?.node?.workforceFactory?.id ?? null
 });
 
 const mapDispatchToProps = (dispatch) =>

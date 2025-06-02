@@ -24,8 +24,6 @@ import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchApplication, updateApplication, createApplicationMovement } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
-import ForwardAdminPanel from "./ForwardAdminPanel";
-import ForwardApplicationModal from "./ForwardApplicationModal";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -67,11 +65,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ForwardApplicationApproverAdminModal = ({
+const ForwardApplicationFactoryAdminModal = ({
   open,
   onClose,
   selectedApplication,
   onSubmitForward,
+  organizationEmployee
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -121,29 +120,30 @@ const ForwardApplicationApproverAdminModal = ({
 
   const handleForward = async () => {
 
-      const updateApplicationData = {
-        id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.DG_APPROVED,
-      };
-      const createApplicationMovementData = {
-        applicationId: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.DG_APPROVED,
-        note: "আবেদন ডিজির কাছে প্রেরণ করা হয়েছে",
-        action: "send_for_dg_approve",
-      };
-   await dispatch(
-        updateApplication(
-          updateApplicationData,
-          `update workforce application`
-        )
-      );
-   await dispatch(
-        createApplicationMovement(
-          createApplicationMovementData,
-          `create workforce movement`
-        )
-      );
-      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+    const updateApplicationData = {
+      id: decodeId(selectedApplication.id),
+      status: WORKFORCE_STATUS.FACTORY_FORWARD,
+    };
+    const createApplicationMovementData = {
+      applicationId: decodeId(selectedApplication.id),
+      status: WORKFORCE_STATUS.FACTORY_FORWARD,
+      note: "আবেদনের প্রমাণপত্র যাচাই করা হয়েছে",
+      action: "factory_forward",
+
+    };
+    await dispatch(
+      updateApplication(
+        updateApplicationData,
+        `update workforce application`
+      )
+    );
+    await dispatch(
+      createApplicationMovement(
+        createApplicationMovementData,
+        `create workforce movement`
+      )
+    );
+    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
 
   };
 
@@ -163,7 +163,7 @@ const ForwardApplicationApproverAdminModal = ({
           gutterBottom
           style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
         >
-          ডিজির অফিসে পাঠান
+          নিজ অফিসে পাঠান
         </Typography>
 
         <Typography
@@ -173,10 +173,9 @@ const ForwardApplicationApproverAdminModal = ({
           style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}
         >
           {selectedApplication
-            ? `${
-                selectedApplication.workforceEmployee?.firstNameBn ||
-                "আবেদনকারী"
-              } এর আবেদন ফরওয়ার্ড করতে চান?`
+            ? `${selectedApplication.workforceEmployee?.firstNameBn ||
+            "আবেদনকারী"
+            } এর আবেদন ফরওয়ার্ড করতে চান?`
             : "একটি আবেদন বেছে নিন।"}
         </Typography>
 
@@ -197,37 +196,38 @@ const ForwardApplicationApproverAdminModal = ({
 
         {/* Form Fields */}
         <Paper className={classes.sectionPaper} elevation={1}>
-        
 
-         
-            <Grid container spacing={3} style={{marginTop:3}}>
-              <Typography
-                variant="subtitle1"
-                gutterBottom
-                style={{
-                  fontWeight: "bold",
-                  marginTop: 3,
-                  textAlign: "center",
-                }}
-              >
-                অফিসার নির্বাচন করুন
-              </Typography>
-              <Grid item xs={12} sm={12}>
-                <EmployeePicker
-                  value={formData?.id}
-                  officeType={officeType}
-                  label={
-                    <FormattedMessage
-                      id="workforce.officer.selector.picker"
-                      module="workforce"
-                    />
-                  }
-                  modulesManager={modulesManager}
-                  required
-                  onChange={(v) => setFormData(v)}
-                />
-              </Grid>
+
+
+          <Grid container spacing={3} style={{ marginTop: 3 }}>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              style={{
+                fontWeight: "bold",
+                marginTop: 3,
+                textAlign: "center",
+              }}
+            >
+              অফিসার নির্বাচন করুন
+            </Typography>
+            <Grid item xs={12} sm={12}>
+              <EmployeePicker
+                value={formData?.id}
+                officeType={officeType}
+                label={
+                  <FormattedMessage
+                    id="workforce.officer.selector.picker"
+                    module="workforce"
+                  />
+                }
+                organizationEmployee={organizationEmployee}
+                modulesManager={modulesManager}
+                required
+                onChange={(v) => setFormData(v)}
+              />
             </Grid>
+          </Grid>
         </Paper>
 
         {/* Action Buttons */}
@@ -250,4 +250,4 @@ const ForwardApplicationApproverAdminModal = ({
   );
 };
 
-export default ForwardApplicationApproverAdminModal;
+export default ForwardApplicationFactoryAdminModal;

@@ -714,7 +714,7 @@ export function fetchApplication(mm, filters) {
     "employeeDependentInfo",
     "employeeBankInfo",
     "employeeAccidentInfo",
-    "employeeFactoryId",
+    "employeeFactory{id}",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
