@@ -224,6 +224,11 @@ function reducer(
     fetchedUnitWiseDesignationData: false,
     errorUnitWiseDesignationData: null,
     unitWiseDesignationData: null,
+    
+    fetchingWorkforceEmployeeDesignation: false,
+    fetchedWorkforceEmployeeDesignation: false,
+    errorWorkforceEmployeeDesignation: null,
+    workforceEmployeeDesignation: null,
 
     ///Bank states
     fetchingBanks: false,
@@ -947,6 +952,31 @@ function reducer(
         // errorUnitWiseDesignationData: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATIONS_UNITWISE_DESIGNATIONS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
+    case "WORKFORCE_EMPLOYEE_DESIGNATIONS_REQ":
+      return {
+        ...state,
+        fetchingWorkforceEmployeeDesignation: true,
+        fetchedWorkforceEmployeeDesignation: false,
+        errorWorkforceEmployeeDesignation: null,
+        workforceEmployeeDesignation: null,
+      };
+    case "WORKFORCE_EMPLOYEE_DESIGNATIONS_RESP":
+      return {
+        ...state,
+        fetchingWorkforceEmployeeDesignation: false,
+        fetchedWorkforceEmployeeDesignation: true,
+        workforceEmployeeDesignation: parseData(
+          action.payload.data.workforceEmployeeDesignation
+        ),
+        // errorUnitWiseDesignationData: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_EMPLOYEE_DESIGNATIONS_ERR":
       return {
         ...state,
         fetching: false,

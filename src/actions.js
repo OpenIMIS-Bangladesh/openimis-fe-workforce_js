@@ -1729,7 +1729,6 @@ export function fetchFactoryEmployee(mm, filters) {
     // "workforceFactory{id}",
     // "workforceRepresentative{id}",
     // "workforceApplication{id}",
-    
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployerEmployees",
@@ -2030,10 +2029,24 @@ export function fetchOrganizationEmployeeDesignation(mm, clientMutationId) {
   return graphql(payload, "WORKFORCE_ORGANIZATION_BY_DESIGNATION_MUTATION_ID");
 }
 
-export function fetchWorkforceUnitsWithEmployeeDesignation(filters) {
+export function fetchWorkforceEmployeeDesignation(filters) {
   const projections = [
     "id",
-    "nameBn",
+    "workforceEmployee{id,firstNameBn,firstNameEn,email,phoneNumber,birthDate,deathDate,joinDate,presentAddress,insuranceNumber,birthCertificateNo,permanentAddress}",
+    // "unitDesignations {id,nameBn,nameEn,activeEmployeeDesignation{id,status,joiningDate,employee{id,nameEn,nameBn,email,phoneNumber}}}",
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployeeDesignation",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEE_DESIGNATIONS");
+}
+export function  fetchWorkforceUnitsWithEmployeeDesignation(filters) {
+  const projections = [
+    "id",
+    "firstNameBn",
+    "firstNameEn",
     "unitDesignations {id,nameBn,nameEn,activeEmployeeDesignation{id,status,joiningDate,employee{id,nameEn,nameBn,email,phoneNumber}}}",
   ];
   const payload = formatPageQueryWithCount(

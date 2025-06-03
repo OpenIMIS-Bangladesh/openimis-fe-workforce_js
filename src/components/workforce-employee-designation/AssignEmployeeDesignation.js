@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   Paper,
@@ -28,10 +28,13 @@ import {
 import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 import { WORKFORCE_STATUS } from "../../constants";
 import {
+  fetchWorkforceEmployeeDesignation,
   fetchWorkforceUnitsWithEmployeeDesignation,
   updateWorkforceOrganizationEmployeeAssignDesignation,
 } from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
+import CompanyPicker from "../../pickers/CompanyPicker";
+import FactoryPicker from "../../pickers/FactoryPicker";
 
 const useStyles = makeStyles((theme) => ({
   paper: theme.paper.paper,
@@ -95,11 +98,41 @@ const AssignEmployeeDesignation = ({
   const dispatch = useDispatch();
   const [assignDate, setAssignDate] = useState();
   const [disabledAssignButton, setDisabledAssignButton] = useState(false);  // Track button disabled state
+  const [formData, setFormData] = useState({
+      company: null,
+      factory: null,
+    });
+
+
+  const handleChange = (key, value) => {
+      setFormData((prev) => ({
+        ...prev,
+        [key]: value,
+      }));
+      if (key === "factory" && value?.id) {
+        fetchWorkforceEmployeeDesignations(value.id)
+      }
+    };
+
+  const fetchWorkforceEmployeeDesignations = async (v) => {
+  if (!v?.id) return;
+  const prms = [];
+  prms.push(`workforceFactoryId: "${decodeId(v?.id)}"`);
+  // prms.push(`orderBy:["unit_level", "unit_designations__designation_level"]`);
+  await dispatch(fetchWorkforceEmployeeDesignation(modulesManager, prms));
+};
+
+
 
   const employeeDesignationData = useSelector(
-    (state) => state.workforce[`employeeDesignationData`],
+    (state) => state.workforce[`workforceEmployeeDesignation`],
   );
 
+  useEffect(async() => {
+  if (formData?.factory?.id) {
+    await fetchWorkforceEmployeeDesignations(formData.factory.id);
+  }
+}, [formData.factory]);
   // const fetchUnitWiseDesignations = async (v) => {
   //   const prms = [];
   //   prms.push(`organization_Id: "${decodeId(v.id)}"`);
@@ -132,7 +165,8 @@ const AssignEmployeeDesignation = ({
     handleSearch()
   };
 
-  console.log({unitWiseDesignations})
+  console.log({employeeDesignationData})
+  console.log({formData})
 
   return (
     <Paper className={classes.paper}>
@@ -142,6 +176,41 @@ const AssignEmployeeDesignation = ({
           <Grid container className={classes.userCard} spacing={2}>
             <Grid item xs={12}>
               <Typography className={classes.tableHeader}>Assign</Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <CompanyPicker
+                  value={formData?.company?.id}
+                  label={
+                    <FormattedMessage
+                      id="workforce.employee.workforce_employer"
+                      module="workforce"
+                    />
+                  }
+                  required
+                  onChange={(v) => {
+                    // handleChange("company", v, "employeeDesignation");
+                    fetchWorkforceEmployeeDesignation(v);
+                  }}
+                  readOnly={false}
+                />
+            </Grid>
+            <Grid item xs={4}>
+              <FactoryPicker
+                  value={formData?.factory?.id}
+                  label={
+                    <FormattedMessage
+                      id="workforce.employee.workforce_factory"
+                      module="workforce"
+                    />
+                  }
+                  required
+                  companyId={formData?.company?.id}
+                  onChange={(v) => {
+                    // handleChange("factory", v, "employeeDesignation");
+                    handleChange("factory", v);
+                  }}
+                  readOnly={false}
+                />
             </Grid>
             <Grid item xs={4}>
               <PublishedComponent
