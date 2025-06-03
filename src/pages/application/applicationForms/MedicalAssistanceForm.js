@@ -452,7 +452,7 @@ const MedicalAssistanceForm = ({
       ),
     },
     {
-      label: "workforce.application.steps.accident.info",
+      label: "workforce.application.steps.treatment.info",
       content: (
         <EmployeeAccidentInfoForm
           handleChange={(key, value) =>

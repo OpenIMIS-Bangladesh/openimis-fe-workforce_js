@@ -189,7 +189,9 @@ const AssignEmployeeDesignation = ({
                   required
                   onChange={(v) => {
                     // handleChange("company", v, "employeeDesignation");
-                    fetchWorkforceEmployeeDesignation(v);
+                    // fetchWorkforceEmployeeDesignation(v);
+                    handleChange("company", v);
+
                   }}
                   readOnly={false}
                 />
