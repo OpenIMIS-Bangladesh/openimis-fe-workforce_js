@@ -2045,8 +2045,8 @@ export function fetchWorkforceEmployeeDesignation(filters) {
 export function  fetchWorkforceUnitsWithEmployeeDesignation(filters) {
   const projections = [
     "id",
-    "firstNameBn",
-    "firstNameEn",
+    "nameBn",
+    "nameEn",
     "unitDesignations {id,nameBn,nameEn,activeEmployeeDesignation{id,status,joiningDate,employee{id,nameEn,nameBn,email,phoneNumber}}}",
   ];
   const payload = formatPageQueryWithCount(
