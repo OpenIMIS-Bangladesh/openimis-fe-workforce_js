@@ -141,18 +141,18 @@ class ApplicationProcessSearcher extends Component {
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       const finalParams = {
         ...prms,
-        ... [`status:"new", orderBy: ["-dateCreated"]`],
+        ... [`status:"factory_forward", orderBy: ["-dateCreated"]`],
       };
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"new",orderBy: ["-dateCreated"]`]
+        [`status:"factory_forward",orderBy: ["-dateCreated"]`]
       );
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"factory_new", orderBy: ["-dateCreated"]`]
+        [`status:"new", orderBy: ["-dateCreated"]`]
       );
     }
     else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
@@ -181,7 +181,7 @@ class ApplicationProcessSearcher extends Component {
       }else {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
-          [`orderBy: ["-dateCreated"]`]
+          [`orderBy: ["-dateCreated"]`] 
           // prms
         );
       }
