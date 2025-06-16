@@ -125,21 +125,18 @@ const ForwardApplicationFactoryAdminModal = ({
   const updateApplicationData = {
     id: decodeId(selectedApplication.id),
     status: isAssociation
-      ? WORKFORCE_STATUS.NEW // <-- Use different status if sending to association
-      : WORKFORCE_STATUS.FACTORY_FORWARD,
+      ? WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION
+      : WORKFORCE_STATUS.NEW,
   };
 
   const createApplicationMovementData = {
     applicationId: decodeId(selectedApplication.id),
     status: isAssociation
-      ? WORKFORCE_STATUS.NEW
-      : WORKFORCE_STATUS.FACTORY_FORWARD,
+      ? WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION
+      : WORKFORCE_STATUS.NEW,
     note: isAssociation
-      ? "অ্যাসোসিয়েশনে পাঠানো হয়েছে"
+      ? "সুপারিশসহ অ্যাসোসিয়েশনে পাঠানো হয়েছে"
       : "আবেদনের প্রমাণপত্র যাচাই করা হয়েছে",
-    action: isAssociation
-      ? "association_forward"
-      : "factory_forward",
   };
 
   await dispatch(

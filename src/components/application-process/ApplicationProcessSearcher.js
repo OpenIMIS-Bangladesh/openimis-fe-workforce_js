@@ -141,12 +141,12 @@ class ApplicationProcessSearcher extends Component {
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       const finalParams = {
         ...prms,
-        ... [`status:"factory_forward", orderBy: ["-dateCreated"]`],
+        ... [`status:"forward_to_association", orderBy: ["-dateCreated"]`],
       };
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"factory_forward",orderBy: ["-dateCreated"]`]
+        [`status:"forward_to_association",orderBy: ["-dateCreated"]`]
       );
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
