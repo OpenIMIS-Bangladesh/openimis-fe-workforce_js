@@ -49,7 +49,7 @@ export const WORKFORCE_STATUS = {
   REASSIGNED: "reassigned",
   RESIGNED: "resigned",
   DG_APPROVED: "send_for_dg_approve",
-  APPROVER_FORWARD:"forward_to_approver",
+  FORWARD_TO_COMIITEE:"forward_to_comiitee",
   SECOND_FORWARD:"second_forward",
   THIRD_FORWARD:"third_forward",
   NEW:"new",

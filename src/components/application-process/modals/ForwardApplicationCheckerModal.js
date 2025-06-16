@@ -11,6 +11,7 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Checkbox,
 } from "@material-ui/core";
 import {
   useModulesManager,
@@ -22,7 +23,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import DistrictOfficePicker from "../../../pickers/DistrictOfficePicker";
 import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchApplication, updateApplication, createApplicationMovement } from "../../../actions";
+import {
+  fetchApplication,
+  updateApplication,
+  createApplicationMovement,
+} from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
 import ForwardAdminPanel from "./ForwardAdminPanel";
 import ForwardApplicationModal from "./ForwardApplicationModal";
@@ -72,7 +77,7 @@ const ForwardApplicationCheckerAdminModal = ({
   onClose,
   selectedApplication,
   onSubmitForward,
-  organizationEmployee
+  organizationEmployee,
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -118,27 +123,20 @@ const ForwardApplicationCheckerAdminModal = ({
     // } finally {
     //   setSubmitting(false);
     // }
-
   };
 
   const handleForward = async () => {
-
     const updateApplicationData = {
       id: decodeId(selectedApplication.id),
-      status: WORKFORCE_STATUS.APPROVER_FORWARD,
+      status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
     };
     const createApplicationMovementData = {
       applicationId: decodeId(selectedApplication.id),
-      status: WORKFORCE_STATUS.APPROVER_FORWARD,
-      note: "আবেদনের প্রমাণপত্র যাচাই করা হয়েছে",
-      action: "forward_to_approver",
-
+      status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+      note: "কমিটি গঠন করা হয়েছে",
     };
     await dispatch(
-      updateApplication(
-        updateApplicationData,
-        `update workforce application`
-      )
+      updateApplication(updateApplicationData, `update workforce application`)
     );
     await dispatch(
       createApplicationMovement(
@@ -147,7 +145,6 @@ const ForwardApplicationCheckerAdminModal = ({
       )
     );
     setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
-
   };
 
   console.log({ aha: selectedApplication });
@@ -166,7 +163,7 @@ const ForwardApplicationCheckerAdminModal = ({
           gutterBottom
           style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
         >
-          নিজ অফিসে পাঠান
+          নির্বাচন কমিটি গঠন করুন
         </Typography>
 
         <Typography
@@ -176,9 +173,10 @@ const ForwardApplicationCheckerAdminModal = ({
           style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}
         >
           {selectedApplication
-            ? `${selectedApplication.workforceEmployee?.firstNameBn ||
-            "আবেদনকারী"
-            } এর আবেদন ফরওয়ার্ড করতে চান?`
+            ? `${
+                selectedApplication.workforceEmployee?.firstNameBn ||
+                "আবেদনকারী"
+              } এর আবেদন ফরওয়ার্ড করতে চান?`
             : "একটি আবেদন বেছে নিন।"}
         </Typography>
 
@@ -199,37 +197,21 @@ const ForwardApplicationCheckerAdminModal = ({
 
         {/* Form Fields */}
         <Paper className={classes.sectionPaper} elevation={1}>
-
-
-
-          <Grid container spacing={3} style={{ marginTop: 3 }}>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              style={{
-                fontWeight: "bold",
-                marginTop: 3,
-                textAlign: "center",
-              }}
-            >
-              অফিসার নির্বাচন করুন
-            </Typography>
-            <Grid item xs={12} sm={12}>
-              <EmployeePicker
-                value={formData?.id}
-                officeType={officeType}
-                label={
-                  <FormattedMessage
-                    id="workforce.officer.selector.picker"
-                    module="workforce"
-                  />
-                }
-                organizationEmployee={organizationEmployee}
-                modulesManager={modulesManager}
-                required
-                onChange={(v) => setFormData(v)}
-              />
-            </Grid>
+          <Grid item xs={12} sm={12}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                    }))
+                  }
+                  color="primary"
+                />
+              }
+              label="অ্যাসোসিয়েশনের নির্বাচন কমিটি বরাবর পাঠান"
+            />
           </Grid>
         </Paper>
 
