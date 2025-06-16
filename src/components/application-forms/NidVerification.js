@@ -46,27 +46,9 @@ const NidVerification = ({ formData,nidOrBcn,modulesManager }) => {
     }, []);
 
   const data = useSelector(
-      (state) => state.workforce[`verifyNidDetails`] 
+      (state) => state.workforce[`verifyNidDetails`] ?? null
   );
-  const text = JSON.parse(data)
-  let parsedData = null;
-
-if (data && typeof data === "string") {
-  try {
-    const safeStr = data
-      .replace(/'/g, '"')
-      .replace(/\bNone\b/g, 'null')
-      .replace(/\bTrue\b/g, 'true')
-      .replace(/\bFalse\b/g, 'false');
-
-    parsedData = JSON.parse(safeStr);
-  } catch (e) {
-    console.error("Failed to parse NID verification response", e);
-  }
-}
-  console.clear()
-  console.log(text)
-  console.log(JSON.parse(parsedData))
+  console.log(eval(data))
   return (
     <div className={classes.container}>
       <Box p={0} className={classes.paper}>
