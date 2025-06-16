@@ -425,10 +425,10 @@
     "workforce.application.verify":"Verify",
     "workforce.application.recent":"Recent Activity",
     "workforce.application.checked":"Checked Applications",
-    "workforce.checker.dashboard":"Checker Dashboard",
+    "workforce.checker.dashboard":"Association Section Dashboard",
     "workforce.applicant.dashboard":"Applicant Dashboard",
     "workforce.factory_admin.dashboard":"Factory Admin Dashboard",
-    "workforce.approver.dashboard":"Verifier Dashboard",
+    "workforce.approver.dashboard":"Association Selection Comiitee Dashboard",
     "workforce.approver.noEntry":"No entries found",
     "workforce.application.myself":"My Applications",
 
