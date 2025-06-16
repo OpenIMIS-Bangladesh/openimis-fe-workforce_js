@@ -159,7 +159,7 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"forward_to_approver", orderBy: ["-dateCreated"]`]
+        [`status:"forward_to_comiitee", orderBy: ["-dateCreated"]`]
       );
     }
     // else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
