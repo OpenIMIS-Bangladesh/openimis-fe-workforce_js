@@ -10,11 +10,11 @@ import {
   Box,
 } from "@material-ui/core";
 import {
-    useModulesManager,
-    formatMutation,
-    decodeId,
-    FormattedMessage,
-  } from "@openimis/fe-core";
+  useModulesManager,
+  formatMutation,
+  decodeId,
+  FormattedMessage,
+} from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { verifyNid } from "../../actions";
@@ -37,36 +37,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NidVerification = ({ formData,nidOrBcn,modulesManager }) => {
-  console.log({nidOrBcn})
+const NidVerification = ({ formData, nidOrBcn, modulesManager }) => {
+  console.log({ nidOrBcn })
   const classes = useStyles();
   const dispatch = useDispatch();
   useEffect(() => {
-      return dispatch(verifyNid(modulesManager, ""));
-    }, []);
+    return dispatch(verifyNid(modulesManager, ""));
+  }, []);
 
   const data = useSelector(
-      (state) => state.workforce[`verifyNidDetails`] 
+    (state) => state.workforce[`verifyNidDetails`]
   );
-  const text = JSON.parse(data)
-  let parsedData = null;
 
-if (data && typeof data === "string") {
-  try {
-    const safeStr = data
-      .replace(/'/g, '"')
-      .replace(/\bNone\b/g, 'null')
-      .replace(/\bTrue\b/g, 'true')
-      .replace(/\bFalse\b/g, 'false');
-
-    parsedData = JSON.parse(safeStr);
-  } catch (e) {
-    console.error("Failed to parse NID verification response", e);
-  }
-}
-  console.clear()
-  console.log(text)
-  console.log(JSON.parse(parsedData))
   return (
     <div className={classes.container}>
       <Box p={0} className={classes.paper}>
@@ -76,19 +58,19 @@ if (data && typeof data === "string") {
               <CardContent>
                 <Typography variant="body1" className={classes.title}>
                   <b>
-                  <FormattedMessage module="workforce" id="workforce.application.nidVerify"/>
+                    <FormattedMessage module="workforce" id="workforce.application.nidVerify" />
                   </b>
                 </Typography>
                 <Divider style={{ margin: "10px 0" }} />
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <Typography>
-                      <b><FormattedMessage module="workforce" id="workforce.employee.name.en"/>:</b> {formData.workforceEmployee.nameEn}<br/>
-                      <b><FormattedMessage module="workforce" id="workforce.employee.name.bn"/>:</b> {formData.workforceEmployee.nameBn}<br/>
-                      <b><FormattedMessage module="workforce" id="workforce.employee.fathers_name.en"/>:</b> {formData.workforceEmployee.fatherNameEn}<br/>
-                      <b><FormattedMessage module="workforce" id="workforce.employee.mothers_name.en"/>:</b> {formData.workforceEmployee.motherNameEn}<br/>
-                      <b><FormattedMessage module="workforce" id="workforce.employee.birthdate"/>:</b> {formData.workforceEmployee.birthDate}<br/>
-                      <b><FormattedMessage module="workforce" id="workforce.employee.nid"/>:</b> {formData.workforceEmployee.nid}<br/>
+                      <b><FormattedMessage module="workforce" id="workforce.employee.name.en" />:</b> {formData?.workforceEmployee?.nameEn}<br />
+                      <b><FormattedMessage module="workforce" id="workforce.employee.name.bn" />:</b> {formData?.workforceEmployee?.nameBn}<br />
+                      <b><FormattedMessage module="workforce" id="workforce.employee.fathers_name.en" />:</b> {formData?.workforceEmployee?.fatherNameEn}<br />
+                      <b><FormattedMessage module="workforce" id="workforce.employee.mothers_name.en" />:</b> {formData?.workforceEmployee?.motherNameEn}<br />
+                      <b><FormattedMessage module="workforce" id="workforce.employee.birthdate" />:</b> {formData?.workforceEmployee?.birthDate}<br />
+                      <b><FormattedMessage module="workforce" id="workforce.employee.nid" />:</b> {formData?.workforceEmployee?.nid}<br />
                     </Typography>
                   </Grid>
                 </Grid>
