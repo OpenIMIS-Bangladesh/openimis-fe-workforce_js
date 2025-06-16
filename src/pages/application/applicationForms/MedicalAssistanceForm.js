@@ -34,6 +34,7 @@ import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
+import { getParsedApplication } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -64,8 +65,7 @@ const MedicalAssistanceForm = ({
     (state) => state.workforce["workforceEmployee"] ?? []
   );
 
-  console.log({ organizationType });
-  console.log({ selectedApplicationType });
+ 
   const applicationId = useSelector(
     (state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []
   );
@@ -122,7 +122,10 @@ const MedicalAssistanceForm = ({
     id: "",
   });
 
-  console.log({ fahim: activeStep })
+   const [nidOrBcn, setNidOrBcn] = useState({
+    nid: formData.workforceEmployee?.nid ||"",
+    birthCertificateNo:formData?.workforceEmployee?.birthCertificateNo
+  });
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
     dispatch(
@@ -208,7 +211,9 @@ const MedicalAssistanceForm = ({
 
   const handleNext = () => {
     console.log(activeStep);
+    setActiveStep((prevStep) => prevStep + 1);
     if (activeStep === 0 || activeStep === 1) {
+      // const nidValue = formData?.workforceEmployee?.nid;
 
       const workforceEmployeeData = {
         nameEn:
@@ -281,15 +286,19 @@ const MedicalAssistanceForm = ({
         permanentLocation:
           formData?.workforceEmployee?.permanentLocation ||
           formData?.workforceEmployee.permanentLocation,
-        id: formData?.id,
+          id: formData?.id,
+          nid:formData?.workforceEmployee?.nid,
+          birthCertificateNo:formData?.workforceEmployee?.birthCertificateNo,
+          // ...(nidValue?.length === 17 && { birthCertificateNo: nidValue }),
+          // ...(nidValue?.length === 10 && { nid: nidValue }),
       };
-      console.log("Update Submitting formData:", formData);
-      dispatch(
-        updateWorkforceEmployee(
-          workforceEmployeeData,
-          `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-        )
-      );
+      console.log("Update Submitting formData:", workforceEmployeeData);
+      // dispatch(
+      //   updateWorkforceEmployee(
+      //     workforceEmployeeData,
+      //     `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+      //   )
+      // );
       // dispatch(
       //   updateApplication(
       //     formData,
@@ -337,16 +346,16 @@ const MedicalAssistanceForm = ({
 
     } else {
       console.log("hello faltu")
-      // const filters = [`id: "${applicationId[0].id}"`];
-      // dispatch(getParsedApplication(modulesManager, filters))
-      //   .then((parsedData) => {
-      //     // Use the parsed data
-      //     console.log("Parsed application:", parsedData);
-      //   })
-      //   .catch((error) => {
-      //     // Handle error
-      //     console.error("Failed to get parsed application:", error);
-      //   });
+      const filters = [`id: "${applicationId[0].id}"`];
+      dispatch(getParsedApplication(modulesManager, filters))
+        .then((parsedData) => {
+          // Use the parsed data
+          console.log("Parsed application:", parsedData);
+        })
+        .catch((error) => {
+          // Handle error
+          console.error("Failed to get parsed application:", error);
+        });
       const updateApplicationData = {
         id: decodeId(applicationId[0].id),
         workforceEmployeeId: formData.id,
@@ -367,8 +376,6 @@ const MedicalAssistanceForm = ({
         )
       );
     }
-    setActiveStep((prevStep) => prevStep + 1);
-
     console.log({ activeStep })
   };
 
@@ -422,6 +429,8 @@ const MedicalAssistanceForm = ({
     // setIsSubmitted(true);
   };
 
+  console.log({nidOrBcn})
+
   const steps = [
     {
       label: "workforce.application.steps.employeeDetails",
@@ -430,6 +439,8 @@ const MedicalAssistanceForm = ({
           handleChange={(key, value) =>
             handleChange(key, value, "workforceEmployee")
           }
+          setNidOrBcn={setNidOrBcn}
+          nidOrBcn={nidOrBcn}
           formData={formData}
         />
       ),
@@ -514,7 +525,7 @@ const MedicalAssistanceForm = ({
     return (
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={0}>
-          <NidVerification formData={formData} />
+          <NidVerification formData={formData} nidOrBcn ={nidOrBcn}/>
           <div className={classes.buttonContainer}>
             <Button variant="contained" color="primary" onClick={() => { setShowVerifyNid(false); setIsSubmitted(true) }}>
               <FormattedMessage module="workforce" id="workforce.confirm.submit" />

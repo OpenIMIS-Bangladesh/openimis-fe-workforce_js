@@ -137,32 +137,35 @@ const EmployeeDetailsForm2 = ({
                     formData?.workforceEmployee.birthCertificateNo ||
                     ""
                   }
+                  formatInput={(val) =>(val || "").toString().replace(/\D/g, "").slice(0, 17)}
+                  inputProps={{ maxLength: 17 }}
                   onChange={(v) => {
-                    const numericValue = String(v).trim();
+                    handleChange("nid", v, "workforceEmployee")
+                    // const numericValue = String(v).trim();
 
-                    if (numericValue.length === 10) {
-                      handleChange("nid", numericValue, "workforceEmployee");
-                      handleChange(
-                        "birthCertificateNo",
-                        "",
-                        "workforceEmployee"
-                      );
-                    } else if (numericValue.length === 17) {
-                      handleChange(
-                        "birthCertificateNo",
-                        numericValue,
-                        "workforceEmployee"
-                      );
-                      handleChange("nid", "", "workforceEmployee");
-                    } else {
-                      // Clear both if input is neither 10 nor 17 digits
-                      handleChange("nid", "", "workforceEmployee");
-                      handleChange(
-                        "birthCertificateNo",
-                        "",
-                        "workforceEmployee"
-                      );
-                    }
+                    // if (numericValue.length === 10) {
+                    //   handleChange("nid", numericValue, "workforceEmployee");
+                    //   handleChange(
+                    //     "birthCertificateNo",
+                    //     "",
+                    //     "workforceEmployee"
+                    //   );
+                    // } else if (numericValue.length === 17) {
+                    //   handleChange(
+                    //     "birthCertificateNo",
+                    //     numericValue,
+                    //     "workforceEmployee"
+                    //   );
+                    //   handleChange("nid", "", "workforceEmployee");
+                    // } else {
+                    //   // Clear both if input is neither 10 nor 17 digits
+                    //   handleChange("nid", "", "workforceEmployee");
+                    //   handleChange(
+                    //     "birthCertificateNo",
+                    //     "",
+                    //     "workforceEmployee"
+                    //   );
+                    // }
                   }}
                   type="number"
                   required

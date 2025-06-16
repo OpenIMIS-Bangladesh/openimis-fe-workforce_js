@@ -62,6 +62,7 @@ function reducer(
     fetchedRepresentativeByClientMutationId: null,
     fetchedApplicationIdByClientMutationId: null,
     fetchedWorkforceOrganizationByDesignationId: null,
+    verifyNidDetails: null,
 
     ///organizations employee states
     fetchingOrganizationEmployees: false,
@@ -1321,6 +1322,11 @@ function reducer(
         fetchedWorkforceOrganizationByDesignationId: parseData(
           action.payload.data.workforceOrganizationEmployeeDesignations.designation.id
         ),
+      };
+    case "WORKFORCE_VERIFY_NID_RESP":
+      return {
+        ...state,
+        verifyNidDetails:action.payload.data.workforceNidVerification,
       };
 
     /// bank actions////

@@ -17,14 +17,7 @@ import {
   FormattedMessage,
   PublishedComponent,
 } from "@openimis/fe-core";
-import { Save } from "@material-ui/icons";
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
-import CompanyPicker from "../../pickers/CompanyPicker";
-import FactoryPicker from "../../pickers/FactoryPicker";
-import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
-import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
-import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
-import FileUploader from "../../pickers/FileUploader";
+
 
 const useStyles = makeStyles((theme) => ({
   container: {

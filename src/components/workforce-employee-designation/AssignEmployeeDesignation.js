@@ -85,54 +85,54 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AssignEmployeeDesignation = ({
-                             userData,
-                             stateEdited,
-                             updateAttribute,
-                             tableData,
-                             handleSearch,
-                             unitWiseDesignations,
-                             fetchUnitWiseDesignations
-                           }) => {
+  userData,
+  stateEdited,
+  updateAttribute,
+  tableData,
+  handleSearch,
+  unitWiseDesignations,
+  fetchUnitWiseDesignations,
+}) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const dispatch = useDispatch();
   const [assignDate, setAssignDate] = useState();
-  const [disabledAssignButton, setDisabledAssignButton] = useState(false);  // Track button disabled state
+  const [disabledAssignButton, setDisabledAssignButton] = useState(false); // Track button disabled state
   const [formData, setFormData] = useState({
-      company: null,
-      factory: null,
-    });
-
+    company: null,
+    factory: null,
+  });
 
   const handleChange = (key, value) => {
-      setFormData((prev) => ({
-        ...prev,
-        [key]: value,
-      }));
-      if (key === "factory" && value?.id) {
-        fetchWorkforceEmployeeDesignations(value.id)
-      }
-    };
+    setFormData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+    if (key === "factory" && value?.id) {
+      fetchWorkforceEmployeeDesignations(value.id);
+    }
+  };
 
-  const fetchWorkforceEmployeeDesignations = async (v) => {
-  if (!v?.id) return;
-  const prms = [];
-  prms.push(`workforceFactoryId: "${decodeId(v?.id)}"`);
-  // prms.push(`orderBy:["unit_level", "unit_designations__designation_level"]`);
-  await dispatch(fetchWorkforceEmployeeDesignation(modulesManager, prms));
-};
+  const fetchWorkforceEmployeeDesignations = async (factory) => {
+    if (!factory?.id) return;
+    const prms = [];
+    prms.push(`workforceFactoryId: "${decodeId(factory.id)}"`);
 
-
+    await dispatch(fetchWorkforceEmployeeDesignation(modulesManager, prms));
+  };
 
   const employeeDesignationData = useSelector(
-    (state) => state.workforce[`workforceEmployeeDesignation`],
+    (state) => state.workforce[`workforceEmployeeDesignation`]
   );
 
-  useEffect(async() => {
-  if (formData?.factory?.id) {
-    await fetchWorkforceEmployeeDesignations(formData.factory.id);
-  }
-}, [formData.factory]);
+  useEffect(() => {
+    if (formData?.factory?.id) {
+      const fetchData = async () => {
+        await fetchWorkforceEmployeeDesignations(formData.factory);
+      };
+      fetchData();
+    }
+  }, [formData.factory]);
   // const fetchUnitWiseDesignations = async (v) => {
   //   const prms = [];
   //   prms.push(`organization_Id: "${decodeId(v.id)}"`);
@@ -146,7 +146,7 @@ const AssignEmployeeDesignation = ({
   //   (state) => state.workforce[`unitWiseDesignationData`],
   // );
 
-  const handleAssign = async(row) => {
+  const handleAssign = async (row) => {
     setDisabledAssignButton(true);
 
     const assignData = {
@@ -158,15 +158,15 @@ const AssignEmployeeDesignation = ({
     await dispatch(
       updateWorkforceOrganizationEmployeeAssignDesignation(
         assignData,
-        `updated Organization Employee designation ${row.nameEn}`,
-      ),
+        `updated Organization Employee designation ${row.nameEn}`
+      )
     );
 
-    handleSearch()
+    handleSearch();
   };
 
-  console.log({employeeDesignationData})
-  console.log({formData})
+  console.log({ employeeDesignationData });
+  console.log({ formData });
 
   return (
     <Paper className={classes.paper}>
@@ -179,40 +179,39 @@ const AssignEmployeeDesignation = ({
             </Grid>
             <Grid item xs={4}>
               <CompanyPicker
-                  value={formData?.company?.id}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.workforce_employer"
-                      module="workforce"
-                    />
-                  }
-                  required
-                  onChange={(v) => {
-                    // handleChange("company", v, "employeeDesignation");
-                    // fetchWorkforceEmployeeDesignation(v);
-                    handleChange("company", v);
-
-                  }}
-                  readOnly={false}
-                />
+                value={formData?.company?.id}
+                label={
+                  <FormattedMessage
+                    id="workforce.employee.workforce_employer"
+                    module="workforce"
+                  />
+                }
+                required
+                onChange={(v) => {
+                  // handleChange("company", v, "employeeDesignation");
+                  // fetchWorkforceEmployeeDesignation(v);
+                  handleChange("company", v);
+                }}
+                readOnly={false}
+              />
             </Grid>
             <Grid item xs={4}>
               <FactoryPicker
-                  value={formData?.factory?.id}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.workforce_factory"
-                      module="workforce"
-                    />
-                  }
-                  required
-                  companyId={formData?.company?.id}
-                  onChange={(v) => {
-                    // handleChange("factory", v, "employeeDesignation");
-                    handleChange("factory", v);
-                  }}
-                  readOnly={false}
-                />
+                value={formData?.factory?.id}
+                label={
+                  <FormattedMessage
+                    id="workforce.employee.workforce_factory"
+                    module="workforce"
+                  />
+                }
+                required
+                companyId={formData?.company?.id}
+                onChange={(v) => {
+                  // handleChange("factory", v, "employeeDesignation");
+                  handleChange("factory", v);
+                }}
+                readOnly={false}
+              />
             </Grid>
             <Grid item xs={4}>
               <PublishedComponent
@@ -229,7 +228,7 @@ const AssignEmployeeDesignation = ({
                 readOnly={false}
               />
             </Grid>
-            {unitWiseDesignations?.map((unit) => (
+            {employeeDesignationData?.map((unit) => (
               <Grid item xs={12} key={unit.id}>
                 {/* <Paper className={classes.paper}> */}
                 <TableContainer>
@@ -237,12 +236,50 @@ const AssignEmployeeDesignation = ({
                     <TableHead className={classes.tableHeader}>
                       <TableRow>
                         <TableCell colSpan={4}>
-                          <b>{unit.nameBn}</b>
+                          <b>{unit?.nameBn} Factory designation </b>
                         </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {unit?.unitDesignations.map((row, index) => (
+                      <TableRow className={classes.tableRow}>
+                        <TableCell className={classes.tableCell} style={{ width: "50%" }}>
+                          {unit?.workforceEmployee?.email}
+                        </TableCell>
+                        <TableCell className={classes.tableCell} style={{ width: "30%" }}>
+                          <PublishedComponent
+                            pubRef="core.DatePicker"
+                            label={"Assign Date"}
+                            onChange={(v) => setAssignDate(v)}
+                            readOnly={disabledAssignButton ? true : false}
+                            required={false}
+                          />
+                        </TableCell>
+
+                        <TableCell className={classes.tableCell} style={{ width: "20%" }}>
+                          <IconButton
+                            disabled={disabledAssignButton}
+                            className={classes.assignButton}
+                            onClick={() =>
+                              handleAssign(unit?.workforceEmployee)
+                            }
+                          >
+                            <AddBoxIcon />
+                          </IconButton>
+                        </TableCell>
+
+                        {/* {unit?.workforceEmployee?.activeEmployeeDesignation && unit?.workforceEmployee?.activeEmployeeDesignation.length > 0 ? (
+                            <TableCell
+                              className={classes.tableCell}
+                              colSpan={2}
+                              style={{ textAlign: "center" }}
+                            >
+                              {unit?.workforceEmployee?.activeEmployeeDesignation[0]?.employee.nameEn} {unit?.workforceEmployee?.activeEmployeeDesignation[0]?.employee.email}
+                            </TableCell>
+                          ) : (
+                            
+                          )} */}
+                      </TableRow>
+                      {/* {unit?.unitDesignations.map((row, index) => (
                         <TableRow key={index} className={classes.tableRow}>
                           <TableCell className={classes.tableCell} style={{ width: "50%" }}>
                             {row?.nameEn}
@@ -280,7 +317,7 @@ const AssignEmployeeDesignation = ({
                             </>
                           )}
                         </TableRow>
-                      ))}
+                      ))} */}
                     </TableBody>
                   </Table>
                 </TableContainer>

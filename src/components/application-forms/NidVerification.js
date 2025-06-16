@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Grid,
   Paper,
@@ -16,6 +16,8 @@ import {
     FormattedMessage,
   } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useSelector, useDispatch } from "react-redux";
+import { verifyNid } from "../../actions";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -35,8 +37,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NidVerification = ({ formData }) => {
+const NidVerification = ({ formData,nidOrBcn,modulesManager }) => {
+  console.log({nidOrBcn})
   const classes = useStyles();
+  const dispatch = useDispatch();
+  useEffect(() => {
+      return dispatch(verifyNid(modulesManager, ""));
+    }, []);
+
+  const data = useSelector(
+      (state) => state.workforce[`verifyNidDetails`] 
+  );
+  const text = JSON.parse(data)
+  let parsedData = null;
+
+if (data && typeof data === "string") {
+  try {
+    const safeStr = data
+      .replace(/'/g, '"')
+      .replace(/\bNone\b/g, 'null')
+      .replace(/\bTrue\b/g, 'true')
+      .replace(/\bFalse\b/g, 'false');
+
+    parsedData = JSON.parse(safeStr);
+  } catch (e) {
+    console.error("Failed to parse NID verification response", e);
+  }
+}
+  console.clear()
+  console.log(text)
+  console.log(JSON.parse(parsedData))
   return (
     <div className={classes.container}>
       <Box p={0} className={classes.paper}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Box,
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
+const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, setNidOrBcn }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -56,6 +56,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
     modulesManager
   );
 
+
   const employeeData = useSelector(
     (state) => state.workforce[`workforceEmployee`] ?? []
   );
@@ -63,7 +64,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
   //   const handleChange = (key, value) => {
   //     setFormData((prev) => ({ ...prev, [key]: value }));
   //   };
-
+  console.log('hello bangladesh',formData)
   return (
     <Box>
       <Grid container spacing={2}>
@@ -288,6 +289,23 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   readOnly={false}
                 />
               </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <TextInput
+  label="workforce.employee.nid_or_birth_certificate"
+  value={formData?.workforceEmployee?.nid || formData?.workforceEmployee?.birthCertificateNo ||nidOrBcn.nid}
+  formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
+  inputProps={{ maxLength: 17 }}
+  onChange={(v) => {
+    const numericValue = (v || "").replace(/\D/g, "").slice(0, 17);
+    setNidOrBcn({...nidOrBcn,nid:numericValue});
+  }}
+ 
+  type="number"
+  required
+  readOnly={false}
+/>
+
+              </Grid>
               {/* <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <EmployeeLifeStatusPicker
                   value={formData?.workforceEmployee.lifeStatus || ""}
@@ -302,9 +320,13 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData }) => {
                   readOnly={true}
                 />
               </Grid> */}
-              {formData.applicationType ===( "deadlyGrant" ||
-              "financialAssistance" )? (
-                <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
+              {formData.applicationType ===
+              ("deadlyGrant" || "financialAssistance") ? (
+                <Grid
+                  item
+                  xs={6}
+                  className={clsx(classes.item, classes.overrideReadOnly)}
+                >
                   <PublishedComponent
                     pubRef="core.DatePicker"
                     label={"workforce.employee.deathdate"}

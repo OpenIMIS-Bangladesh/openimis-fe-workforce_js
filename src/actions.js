@@ -695,17 +695,14 @@ export function fetchApplicationsSummary(mm, filters) {
 }
 
 export function fetchApplication(mm, filters) {
-  const present_location_projection =
-    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
-  const permanent_location_projection =
-    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+  // const present_location_projection =
+  //   "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  // const permanent_location_projection =
+  //   "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
 
   const projections = [
     "id",
-    "workforceEmployee{" +
-      present_location_projection +
-      permanent_location_projection +
-      " id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
+    "workforceEmployee{id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
 
     "organizationType",
     "applicationType",
@@ -2055,4 +2052,12 @@ export function  fetchWorkforceUnitsWithEmployeeDesignation(filters) {
     projections
   );
   return graphql(payload, "WORKFORCE_ORGANIZATIONS_UNITWISE_DESIGNATIONS");
+}
+
+export function verifyNid(mm, clientMutationId) {
+  const payload = `{
+  workforceNidVerification(nid:"8658556249")
+}
+`;
+  return graphql(payload, "WORKFORCE_VERIFY_NID");
 }
