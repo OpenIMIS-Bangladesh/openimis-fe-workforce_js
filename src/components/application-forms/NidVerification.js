@@ -49,6 +49,8 @@ const NidVerification = ({ formData, nidOrBcn, modulesManager }) => {
     (state) => state.workforce[`verifyNidDetails`]
   );
 
+  console.log(data)
+
   return (
     <div className={classes.container}>
       <Box p={0} className={classes.paper}>
@@ -63,16 +65,19 @@ const NidVerification = ({ formData, nidOrBcn, modulesManager }) => {
                 </Typography>
                 <Divider style={{ margin: "10px 0" }} />
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
+                  {data ?(
+                    <Grid item xs={6}>
                     <Typography>
-                      <b><FormattedMessage module="workforce" id="workforce.employee.name.en" />:</b> {formData?.workforceEmployee?.nameEn}<br />
-                      <b><FormattedMessage module="workforce" id="workforce.employee.name.bn" />:</b> {formData?.workforceEmployee?.nameBn}<br />
-                      <b><FormattedMessage module="workforce" id="workforce.employee.fathers_name.en" />:</b> {formData?.workforceEmployee?.fatherNameEn}<br />
-                      <b><FormattedMessage module="workforce" id="workforce.employee.mothers_name.en" />:</b> {formData?.workforceEmployee?.motherNameEn}<br />
-                      <b><FormattedMessage module="workforce" id="workforce.employee.birthdate" />:</b> {formData?.workforceEmployee?.birthDate}<br />
-                      <b><FormattedMessage module="workforce" id="workforce.employee.nid" />:</b> {formData?.workforceEmployee?.nid}<br />
+                      <b><FormattedMessage module="workforce" id="workforce.employee.name.en" />:</b> {data?.nameEN}<br />
+                      <b><FormattedMessage module="workforce" id="workforce.employee.name.bn" />:</b> {data?.nameBN}<br />
+                      <b><FormattedMessage module="workforce" id="workforce.employee.fathers_name.bn" />:</b> {data?.fatherNameBN}<br />
+                      <b><FormattedMessage module="workforce" id="workforce.employee.mothers_name.bn" />:</b> {data?.motherNameBN}<br />
+                      <b><FormattedMessage module="workforce" id="workforce.employee.birthdate" />:</b> {data?.dateOfBirth}<br />
+                      <b><FormattedMessage module="workforce" id="workforce.employee.nid" />:</b> {data?.nidNumber}<br />
                     </Typography>
                   </Grid>
+                  ):(<b>loading ...</b>)}
+                  
                 </Grid>
               </CardContent>
             </Card>

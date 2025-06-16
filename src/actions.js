@@ -1807,6 +1807,32 @@ export function updateWorkforceOrganizationEmployeeAssignDesignation(
   );
 }
 
+export function updateWorkforceEmployeeAssignDesignation(
+  employeeAssignDesignation,
+  clientMutationLabel
+) {
+  const mutation = formatMutation(
+    "updateWorkforceEmployeeDesignation",
+    formatEmployeeAssignDesignationGQL(employeeAssignDesignation),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_REQ",
+      "EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_ERR",
+      "EMPLOYEE_DESIGNATION_UPDATE_ASSIGN_RESP",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      id: employeeAssignDesignation.id,
+    }
+  );
+}
+
 ///workforce bank  actions////
 export function fetchBanksSummary(mm, filters) {
   const location_projection =
