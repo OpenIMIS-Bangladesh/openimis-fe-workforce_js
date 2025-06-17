@@ -21,7 +21,7 @@ import {
 } from "@openimis/fe-core";
 import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 import { useDispatch } from "react-redux";
-import { updateWorkforceOrganizationEmployeeDesignation } from "../../actions";
+import { updateWorkforceEmployeeAssignDesignation, updateWorkforceOrganizationEmployeeDesignation } from "../../actions";
 import { WORKFORCE_STATUS } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -57,30 +57,32 @@ const useStyles = makeStyles((theme) => ({
 
 const WorkforceEmployeeDesignaitonInfo = ({
   userData,
-  employeeDesignationData,
+  workforceEmployeeDesignation,
   onReleaseDateChange, 
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [releaseDate, setReleaseDate] = useState(null);
   const [tableData, setTableData] = useState([]);
+  const [releaseReason, setReleaseReason] = useState()
 
   useEffect(() => {
-    // Assign data only when employeeDesignationData changes
-    if (employeeDesignationData?.designations) {
-      setTableData(employeeDesignationData.designations);
+    // Assign data only when workforceEmployeeDesignation changes
+    if (workforceEmployeeDesignation) {
+      setTableData(workforceEmployeeDesignation);
     }
-  }, [employeeDesignationData]);
+  }, [workforceEmployeeDesignation]);
 
   const handleRelease = (row) => {
     const updateReleaseDate = {
-      releaseDate: releaseDate,
       id:decodeId(row.id),
-      designationId: decodeId(row?.designation?.id),
-      employeeId: employeeDesignationData?.id,
+      resignatioDate: releaseDate,
+      workforceEmployeeId: workforceEmployeeDesignation?.id,
+      workforceCompany:row?.workforceCompany?.id,
+      resignatioReason:releaseReason,
       status: "inactive",
     };
-    dispatch(updateWorkforceOrganizationEmployeeDesignation(updateReleaseDate, `updated Organization Employee designation ${employeeDesignationData.nameBn}`));
+    dispatch(updateWorkforceEmployeeAssignDesignation(updateReleaseDate, `updated Organization Employee designation`));
 
     setTableData((prevData) =>
       prevData.map((item) =>
@@ -117,10 +119,11 @@ const WorkforceEmployeeDesignaitonInfo = ({
                   <Table size={"small"}>
                     <TableHead className={classes.tableHeader}>
                       <TableRow>
-                        <TableCell>Organization</TableCell>
-                        <TableCell>Unit</TableCell>
+                        <TableCell>Company</TableCell>
+                        <TableCell>Factory</TableCell>
                         <TableCell>Designation</TableCell>
                         <TableCell>Release Date</TableCell>
+                        <TableCell>Release Reason</TableCell>
                         <TableCell></TableCell>
                       </TableRow>
                     </TableHead>
@@ -129,12 +132,12 @@ const WorkforceEmployeeDesignaitonInfo = ({
                         row?.status === WORKFORCE_STATUS.ACTIVE && (
                           <TableRow key={index}>
                           <TableCell>
-                            {row?.designation?.organization?.nameBn}
+                            {row?.workforceCompany?.nameBn}
                           </TableCell>
                           <TableCell>
-                            {row?.designation?.unit?.nameBn}
+                            {row?.workforceFactory?.nameBn}
                           </TableCell>
-                          <TableCell>{row?.designation?.nameBn}</TableCell>
+                          <TableCell>{row?.position}</TableCell>
                           <TableCell>
                             <PublishedComponent
                               pubRef="core.DatePicker"
@@ -142,6 +145,16 @@ const WorkforceEmployeeDesignaitonInfo = ({
                               onChange={(v) => setReleaseDate(v)}
                               readOnly={false}
                               required={false}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <TextInput
+                                key={unit?.id}
+                                label="Assign Designation"
+                                value={position[unit?.id] || ""}
+                                onChange={(v)=>setReleaseReason(v)}
+                                required
+                                readOnly={false}
                             />
                           </TableCell>
                           <TableCell>
