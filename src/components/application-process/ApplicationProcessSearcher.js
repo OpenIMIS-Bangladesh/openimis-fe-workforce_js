@@ -140,25 +140,25 @@ class ApplicationProcessSearcher extends Component {
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       const finalParams = {
         ...prms,
-        ... [`status:"forward_to_association", orderBy: ["-dateCreated"]`],
+        ...  ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]'],
       };
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"forward_to_association",orderBy: ["-dateCreated"]`]
+         ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]']
       );
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"new", orderBy: ["-dateCreated"]`]
+         ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]']
       );
     }
     else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"forward_to_comiitee", orderBy: ["-dateCreated"]`]
+          ['statusIn: ["forward_to_comiitee", "selected"]', 'orderBy: ["-dateCreated"]']
       );
     }
     // else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
@@ -174,13 +174,13 @@ class ApplicationProcessSearcher extends Component {
       if (revertedApplication) {
         this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        [`status:"revert_to_applicant",orderBy: ["-dateCreated"]`]
+        //  ['statusIn: ["revert_to_applicant"]', 'orderBy: ["-dateCreated"]']
         // prms
       );
       }else {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
-          [`orderBy: ["-dateCreated"]`] 
+        ['statusIn: ["new", "revert_to_applicant"]', 'orderBy: ["-dateCreated"]']
           // prms
         );
       }
