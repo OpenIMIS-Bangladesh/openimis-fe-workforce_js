@@ -48,7 +48,6 @@ import RevertApplicationModal from "./modals/RevertApplicationModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement } from "../../actions";
 import { itemAdminFormatters, itemFormattersApplicant, itemFormattersApprover, itemFormattersChecker,itemFormattersFactoryAdmin } from "../../utils/itemFormatters_types";
-import GenereteBFTN from "../../pages/application-process/GenereteBFTN";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
 import { headerApplicant, headerApprover, headerChecker, headersAdmin, headerFactoryAdmin} from "../../utils/headers_types";
 
@@ -381,6 +380,60 @@ class ApplicationProcessSearcher extends Component {
       );
     }
   };
+  handleSelected = async (application) => {
+    const { selectedApplication } = this.state;
+
+    if (window.confirm("Are you sure you want to select this application?")) {
+      this.setState(
+        {
+          selectedApplication: {
+            ...selectedApplication,
+            isHistory: true,
+          },
+        },
+        async () => {
+          const updateApplicationData = {
+            id: decodeId(application.id),
+            status: WORKFORCE_STATUS.SELECTED,
+          };
+
+          const createApplicationMovementData = {
+            applicationId: decodeId(application.id),
+            status: WORKFORCE_STATUS.SELECTED,
+            note: "আবেদন নির্বাচন করা হয়েছে",
+            action: "approved",
+          };
+
+          try {
+            await this.props.updateApplication(
+              updateApplicationData,
+              "update workforce application"
+            );
+
+            await this.props.createApplicationMovement(
+              createApplicationMovementData,
+              "create workforce movement"
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদন নির্বাচন করা হয়েছে!",
+              },
+            });
+            window.location.reload();
+          } catch (error) {
+            console.error("Approval failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+          }
+        }
+      );
+    }
+  };
 
   handleForwardSubmit = (event) => {
     this.state.editorContent;
@@ -633,7 +686,7 @@ class ApplicationProcessSearcher extends Component {
                 officeData={this.state.officeData}
                 onSubmitForward={this.handleForwardSubmit}
               />
-              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications}/>
+              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={userRights}/>
               </>
             );
           } else if (userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
@@ -694,7 +747,16 @@ class ApplicationProcessSearcher extends Component {
                 onSubmitRevert={this.handleRevertSubmit}
                 userName={userName}
               />
-            </>
+              <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
+              <ForwardApplicationAdminModal
+                open={forwardModalOpen}
+                onClose={this.handleCloseForwardModal}
+                selectedApplication={selectedApplication}
+                officeData={this.state.officeData}
+                onSubmitForward={this.handleForwardSubmit}
+              />
+              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications}  userRights={userRights}/>
+              </>
             );
           }
 

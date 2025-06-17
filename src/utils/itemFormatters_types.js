@@ -37,7 +37,7 @@ import {
 
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
-        <Tooltip title="দেখুন">
+        <Tooltip title="ভিউ">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -69,7 +69,7 @@ import {
             <HistoryIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="অনুমোদন">
+        <Tooltip title="এপ্রুভ">
           <IconButton
             disabled={application?.isHistory || application?.status !== "send_for_dg_approve"}
             onClick={() => component.handleApproval(application)}
@@ -106,7 +106,7 @@ import {
 
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
-        <Tooltip title="দেখুন">
+        <Tooltip title="ভিউ">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -182,7 +182,7 @@ import {
 
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
-        <Tooltip title="দেখুন">
+        <Tooltip title="ভিউ">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -260,7 +260,7 @@ import {
 
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
-        <Tooltip title="দেখুন">
+        <Tooltip title="ভিউ">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -323,8 +323,8 @@ import {
       (application) => application.applicationType,
       // (application) => application.organizationType,
       (application) => 200000,
-      (application) => "Nafi",
-      (application) => "Akij",
+      // (application) => "Nafi",
+      // (application) => "Akij",
       (application) => application.status,
       (application) => application.dateCreated.split("T")[0],
       // (application) => "Hafiz",
@@ -334,7 +334,7 @@ import {
 
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
-        <Tooltip title="দেখুন">
+        <Tooltip title="ভিউ">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -351,7 +351,7 @@ import {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="অনুমোদন">
+        <Tooltip title="ভেরিফাই">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -382,6 +382,14 @@ import {
             onClick={() => component.handleOpenRevertModal(application)}
           >
             <UndoIcon />
+          </IconButton>
+        </Tooltip>
+         <Tooltip title="সিলেক্টেড">
+          <IconButton
+            disabled={application?.isHistory || application?.status !== "forward_to_comiitee"}
+            onClick={() => component.handleSelected(application)}
+          >
+            <CheckIcon />
           </IconButton>
         </Tooltip>
       </div>

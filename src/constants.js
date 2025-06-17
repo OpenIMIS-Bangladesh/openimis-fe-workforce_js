@@ -56,7 +56,9 @@ export const WORKFORCE_STATUS = {
   REVERT_TO_APPLICANT:"revert_to_applicant",
   REVERT_TO_CHECKER:"revert_to_checker",
   REVERT:"revert",
-  FORWARD_TO_ASSOCIATION:"forward_to_association"
+  FORWARD_TO_ASSOCIATION:"forward_to_association",
+  SELECTED: "selected",
+
 };
 
 export const WORKFORCE_USER_TYPE = {
