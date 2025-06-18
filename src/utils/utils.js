@@ -35,6 +35,7 @@ export function getUserTypeFromRights(user_rights) {
 
 
 export const getParsedApplication = (modulesManager, filters) => {
+  console.log('hello from getParsedApplication',filters)
   return async (dispatch, getState) => {
     try {
       // Dispatch the fetch action and wait for it to complete

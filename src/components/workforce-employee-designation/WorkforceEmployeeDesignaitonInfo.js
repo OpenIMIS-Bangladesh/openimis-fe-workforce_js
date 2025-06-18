@@ -17,7 +17,8 @@ import {
   PublishedComponent,
   FormattedMessage,
   withModulesManager,
-  decodeId
+  decodeId,
+  TextInput
 } from "@openimis/fe-core";
 import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 import { useDispatch } from "react-redux";
@@ -77,12 +78,14 @@ const WorkforceEmployeeDesignaitonInfo = ({
     const updateReleaseDate = {
       id:decodeId(row.id),
       resignatioDate: releaseDate,
-      workforceEmployeeId: workforceEmployeeDesignation?.id,
-      workforceCompany:row?.workforceCompany?.id,
+      workforceEmployeeId:decodeId(row?.workforceEmployee?.id),
+      workforceCompany:decodeId(row?.workforceCompany?.id),
       resignatioReason:releaseReason,
+      // position:"",
       status: "inactive",
     };
-    dispatch(updateWorkforceEmployeeAssignDesignation(updateReleaseDate, `updated Organization Employee designation`));
+    console.log({updateReleaseDate})
+    dispatch(updateWorkforceEmployeeAssignDesignation(updateReleaseDate, `updated workforce Employee designation`));
 
     setTableData((prevData) =>
       prevData.map((item) =>
@@ -93,7 +96,7 @@ const WorkforceEmployeeDesignaitonInfo = ({
     onReleaseDateChange(releaseDate);
   };
 
-  console.log({ releaseDate });
+  console.log({ tableData });
   return (
     <Paper className={classes.paper}>
       <Grid container spacing={0} className={classes.root}>
@@ -149,9 +152,8 @@ const WorkforceEmployeeDesignaitonInfo = ({
                           </TableCell>
                           <TableCell>
                             <TextInput
-                                key={unit?.id}
-                                label="Assign Designation"
-                                value={position[unit?.id] || ""}
+                                label="Release Reason"
+                                value={releaseReason || ""}
                                 onChange={(v)=>setReleaseReason(v)}
                                 required
                                 readOnly={false}
