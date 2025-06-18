@@ -368,14 +368,14 @@ import {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="ফরওয়ার্ড">
+        {/* <Tooltip title="ফরওয়ার্ড">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => component.handleOpenForwardModal(application)}
           >
             <ForwardIcon />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip title="রিভার্ট">
           <IconButton
             disabled={application?.isHistory}

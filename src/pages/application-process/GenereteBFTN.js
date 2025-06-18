@@ -11,10 +11,15 @@ import {
   TableCell,
   Typography,
   Button,
-  Divider
+  Divider,
+  IconButton,
 } from '@material-ui/core';
 import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
+import ForwardIcon from "@material-ui/icons/Forward";
+import { WORKFORCE_STATUS } from "../../constants";
+import { fetchApplication, createApplicationSummary, createApplicationSummaryMovement } from "../../actions";
+import { useSelector, useDispatch } from "react-redux";
 
 const GenerateBFTN = ({ open, onClose, applications = [],userRights }) => {
   const getTotalAmount = () => {
@@ -22,6 +27,31 @@ const GenerateBFTN = ({ open, onClose, applications = [],userRights }) => {
   };
 
   console.log("generete bftn",applications)
+  const dispatch = useDispatch();
+   const handleForward = async () => {
+  
+        const updateApplicationData = {
+          status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
+        };
+        const createApplicationMovementData = {
+          status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
+          note: "আবেদন ডিরেক্টরের কাছে প্রেরণ করা হয়েছে",
+        };
+     await dispatch(
+          createApplicationSummary(
+            updateApplicationData,
+            `create application summary`
+          )
+        );
+     await dispatch(
+          createApplicationSummaryMovement(
+            createApplicationMovementData,
+            `create application summary movement`
+          )
+        );
+        setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+  
+    };
   
   if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
   return (
@@ -72,6 +102,10 @@ const GenerateBFTN = ({ open, onClose, applications = [],userRights }) => {
         <Button onClick={() => window.print()} variant="contained" color="primary">
           Print Summary
         </Button>
+       <Button onClick={() => handleForward()} variant="contained" color="primary">
+        Forward To Director
+        <ForwardIcon />
+      </Button>
       </DialogActions>
     </Dialog>
   );

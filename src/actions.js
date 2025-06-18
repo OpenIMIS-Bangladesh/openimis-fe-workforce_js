@@ -26,7 +26,11 @@ import {
   formatWorkforceBeneficiaryGQL,
   formatWorkforceOtpGQL,
   formatApplicationMovementGQL,
+<<<<<<< HEAD
+  formatApplicationSummaryGQL
+=======
   formatFactoryEmployeeAssignDesignationGQL,
+>>>>>>> d846ac0894c5e1f117a06fb39e15611303ec218a
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 
@@ -807,6 +811,37 @@ export function fetchApplicationMovement(mm, filters) {
     projections
   );
   return graphql(payload, "WORKFORCE_APPLICATION_MOVEMENT");
+}
+
+export function fetchApplicationPackage(mm, filters) {
+
+  const projections = [
+    "id",
+    "applicationData{id,}",
+    "meetingDate",
+    "status"
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceApplicationSummary",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_APPLICATION_SUMMARY");
+}
+export function fetchApplicationPackagesSummary(mm, filters) {
+
+  const projections = [
+    "id",
+    "applicationData{id,}",
+    "meetingDate",
+    "status"
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceApplicationSummary",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_APPLICATION_SUMMARIES");
 }
 
 export function fetchWorkforceEmployee(mm, filters) {
@@ -1995,6 +2030,30 @@ export function createApplicationMovement(application, clientMutationLabel) {
       "APPLICATION_MOVEMENT_MUTATION_REQ",
       "APPLICATION_MOVEMENT_CREATE_APPLICATION_RESP",
       "APPLICATION_MOVEMENT_MUTATION_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+
+export function createApplicationSummary(clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceApplicationSummary",
+    formatApplicationSummaryGQL(applicationSummary),
+    clientMutationLabel
+  );
+
+  console.log({ mutation });
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "APPLICATION_SUMMARY_MUTATION_REQ",
+      "APPLICATION_SUMMARY_CREATE_APPLICATION_RESP",
+      "APPLICATION_SUMMARY_MUTATION_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,

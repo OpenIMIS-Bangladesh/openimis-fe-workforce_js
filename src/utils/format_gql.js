@@ -68,6 +68,15 @@ export function formatBankGQL(bank) {
   `;
 }
 
+export function formatApplicationSummaryGQL(applicationSummary) {
+  return `
+    ${applicationSummary?.id ? `id: "${formatGQLString(applicationSummary?.id)}"` : ""}
+    ${applicationSummary?.applicationData ? `applicationData: ${escapeQuotes(applicationSummary?.applicationData)}` : ""}
+    ${applicationSummary.meetingDate ? `meetingDate: "${applicationSummary.meetingDate}"` : ""}
+    ${applicationSummary?.status ? `status: "${formatGQLString(applicationSummary.status)}"` : ""}
+  `;
+}
+
 export function formatOrganizationEmployeeGQL(employee) {
   return `
     ${employee.id ? `id: "${formatGQLString(employee.id)}"` : ""}
