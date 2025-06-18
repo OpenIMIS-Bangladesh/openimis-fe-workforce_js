@@ -26,7 +26,11 @@ import {
   formatWorkforceBeneficiaryGQL,
   formatWorkforceOtpGQL,
   formatApplicationMovementGQL,
+<<<<<<< HEAD
   formatApplicationSummaryGQL
+=======
+  formatFactoryEmployeeAssignDesignationGQL,
+>>>>>>> d846ac0894c5e1f117a06fb39e15611303ec218a
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 
@@ -1843,18 +1847,18 @@ export function updateWorkforceEmployeeAssignDesignation(
   employeeAssignDesignation,
   clientMutationLabel
 ) {
-  const mutation = formatMutation(
+  const mutation = formatMutation(    
     "updateWorkforceEmployeeDesignation",
-    formatEmployeeAssignDesignationGQL(employeeAssignDesignation),
+    formatFactoryEmployeeAssignDesignationGQL(employeeAssignDesignation),
     clientMutationLabel
   );
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
     [
-      "EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_REQ",
-      "EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_ERR",
-      "EMPLOYEE_DESIGNATION_UPDATE_ASSIGN_RESP",
+      "WORKFORCE_ EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_REQ",
+      "WORKFORCE_ EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_ERR",
+      "WORKFORCE_ EMPLOYEE_DESIGNATION_UPDATE_ASSIGN_RESP",
     ],
     {
       clientMutationId: mutation.clientMutationId,
@@ -2111,6 +2115,13 @@ export function fetchOrganizationEmployeeDesignation(mm, clientMutationId) {
 export function fetchWorkforceEmployeeDesignation(filters) {
   const projections = [
     "id",
+    "joinDate",
+    "resignationDate",
+    "resignationReason",
+    "position",
+    "workforceCompany {id,nameEn,nameBn}",
+    "workforceFactory {id,nameEn,nameBn}",
+    "workforceOffice {id}",
     "workforceEmployee{id,firstNameBn,firstNameEn,email,phoneNumber,birthDate,deathDate,joinDate,presentAddress,insuranceNumber,birthCertificateNo,permanentAddress}",
     // "unitDesignations {id,nameBn,nameEn,activeEmployeeDesignation{id,status,joiningDate,employee{id,nameEn,nameBn,email,phoneNumber}}}",
   ];

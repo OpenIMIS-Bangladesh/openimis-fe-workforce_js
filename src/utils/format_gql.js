@@ -371,6 +371,19 @@ export function formatEmployeeAssignDesignationGQL(employeeAssignDesignation) {
     ${employeeAssignDesignation.releaseDate ? `releaseDate: "${formatGQLString(employeeAssignDesignation.joiningDate)}"` : ""}
   `;
 }
+export function formatFactoryEmployeeAssignDesignationGQL(employeeAssignDesignation) {
+
+  return `
+    ${employeeAssignDesignation?.id ? `id: "${employeeAssignDesignation?.id}"` : ""}
+    ${employeeAssignDesignation?.workforceEmployeeId ? `workforceEmployeeId: "${employeeAssignDesignation?.workforceEmployeeId}"` : ""}
+    ${employeeAssignDesignation?.status ? `status: "${employeeAssignDesignation?.status}"` : ""}
+    ${employeeAssignDesignation?.position ? `position: "${employeeAssignDesignation?.position}"` : ""}
+    ${employeeAssignDesignation?.releaseDate ? `resignatioDate: "${formatGQLString(employeeAssignDesignation?.resignatioDate)}"` : ""}
+    ${employeeAssignDesignation?.releaseDate ? `resignatioReason: "${formatGQLString(employeeAssignDesignation?.resignatioReason)}"` : ""}
+    ${employeeAssignDesignation?.releaseDate ? `joinDate: "${formatGQLString(employeeAssignDesignation?.joinDate)}"` : ""}
+    ${employeeAssignDesignation?.workforceCompany ? `workforceCompanyId: "${employeeAssignDesignation?.workforceCompany}"` : ""}
+  `;
+}
 
 export function formatWorkforceOtpGQL(workforceOtp) {
 

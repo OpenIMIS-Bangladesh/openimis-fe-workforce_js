@@ -24,12 +24,14 @@ import {
   withModulesManager,
   useModulesManager,
   decodeId,
+  TextInput
 } from "@openimis/fe-core";
 import OrganizationUnitPicker from "../../pickers/OrganizationUnitPicker";
 import { WORKFORCE_STATUS } from "../../constants";
 import {
   fetchWorkforceEmployeeDesignation,
   fetchWorkforceUnitsWithEmployeeDesignation,
+  updateWorkforceEmployeeAssignDesignation,
   updateWorkforceOrganizationEmployeeAssignDesignation,
 } from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
@@ -91,12 +93,13 @@ const AssignEmployeeDesignation = ({
   tableData,
   handleSearch,
   unitWiseDesignations,
-  fetchUnitWiseDesignations,
+  fetchWorkforceEmployeeDesignations,
 }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const dispatch = useDispatch();
   const [assignDate, setAssignDate] = useState();
+  const [position,setPosition]= useState({})
   const [disabledAssignButton, setDisabledAssignButton] = useState(false); // Track button disabled state
   const [formData, setFormData] = useState({
     company: null,
@@ -113,13 +116,7 @@ const AssignEmployeeDesignation = ({
     }
   };
 
-  const fetchWorkforceEmployeeDesignations = async (factory) => {
-    if (!factory?.id) return;
-    const prms = [];
-    prms.push(`workforceFactoryId: "${decodeId(factory.id)}"`);
-
-    await dispatch(fetchWorkforceEmployeeDesignation(modulesManager, prms));
-  };
+  
 
   const employeeDesignationData = useSelector(
     (state) => state.workforce[`workforceEmployeeDesignation`]
@@ -133,7 +130,7 @@ const AssignEmployeeDesignation = ({
       fetchData();
     }
   }, [formData.factory]);
-  // const fetchUnitWiseDesignations = async (v) => {
+  // const fetchWorkforceEmployeeDesignations = async (v) => {
   //   const prms = [];
   //   prms.push(`organization_Id: "${decodeId(v.id)}"`);
   //   prms.push(`orderBy:["unit_level", "unit_designations__designation_level"]`);
@@ -150,15 +147,18 @@ const AssignEmployeeDesignation = ({
     setDisabledAssignButton(true);
 
     const assignData = {
-      designationId: decodeId(row.id),
-      employeeId: employeeDesignationData.id,
+      id: decodeId(row.id),
+      workforceEmployeeId: decodeId(row?.workforceEmployee?.id),
       joiningDate: assignDate,
+      position:position[row.id],
+      workforceCompany:decodeId(row?.workforceCompany?.id),
       status: WORKFORCE_STATUS.ACTIVE,
     };
+    console.log({assignData})
     await dispatch(
-      updateWorkforceOrganizationEmployeeAssignDesignation(
+      updateWorkforceEmployeeAssignDesignation(
         assignData,
-        `updated Organization Employee designation ${row.nameEn}`
+        `updated Organization Employee designation`
       )
     );
 
@@ -223,7 +223,7 @@ const AssignEmployeeDesignation = ({
                   />
                 }
                 value={stateEdited.organization || null}
-                onChange={(v) => fetchUnitWiseDesignations(v)}
+                onChange={(v) => fetchWorkforceEmployeeDesignations(v)}
                 required
                 readOnly={false}
               />
@@ -242,7 +242,21 @@ const AssignEmployeeDesignation = ({
                     </TableHead>
                     <TableBody>
                       <TableRow className={classes.tableRow}>
-                        <TableCell className={classes.tableCell} style={{ width: "50%" }}>
+                        <TableCell className={classes.tableCell} style={{ width: "30%" }}>
+                          <TextInput
+                          key={unit?.id}
+                            label="Assign Designation"
+                            value={position[unit?.id] || ""}
+                            onChange={(v) =>
+                            setPosition((prev) => ({
+                              ...prev,
+                              [unit.id]: v,
+                            }))}
+                            required
+                            readOnly={false}
+                          />
+                        </TableCell>
+                        <TableCell className={classes.tableCell} style={{ width: "30%" }}>
                           {unit?.workforceEmployee?.email}
                         </TableCell>
                         <TableCell className={classes.tableCell} style={{ width: "30%" }}>
@@ -260,7 +274,7 @@ const AssignEmployeeDesignation = ({
                             disabled={disabledAssignButton}
                             className={classes.assignButton}
                             onClick={() =>
-                              handleAssign(unit?.workforceEmployee)
+                              handleAssign(unit)
                             }
                           >
                             <AddBoxIcon />

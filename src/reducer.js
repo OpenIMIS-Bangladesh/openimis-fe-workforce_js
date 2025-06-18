@@ -1606,6 +1606,18 @@ function reducer(
         action
       );
 
+    case "WORKFORCE_EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "WORKFORCE_EMPLOYEE_ASSIGN_DESIGNATION_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "WORKFORCE_EMPLOYEE_DESIGNATION_UPDATE_ASSIGN_RESP":
+      return dispatchMutationResp(
+        state,
+        "createWorkforceEmployeeDesignation",
+        action
+      );
+
     case "BANK_MUTATION_REQ": {
       return dispatchMutationReq(state, action);
     }

@@ -7,6 +7,8 @@ import EmployeeDesignaitonInfo from "../../components/organization-employee-desi
 import AssignDesignation from "../../components/organization-employee-designation/AssignDesignation";
 import {
   fetchEmployeeDesignations,
+  fetchWorkforceEmployee,
+  fetchWorkforceEmployeeDesignation,
   fetchWorkforceUnitsWithEmployeeDesignation,
 } from "../../actions";
 import WorkforceEmployeeDesignationSearcher from "../../components/workforce-employee-designation/WorkforceEmployeeDesignationSearcher";
@@ -43,7 +45,7 @@ class WorkforceEmployeeDesignationPage extends Component {
       
     }
 
-    this.props.fetchEmployeeDesignations(prms);
+    this.props.fetchWorkforceEmployee(this.props.modulesManager,prms);
   };
 
   handleEmailChange = (email) => {
@@ -53,14 +55,13 @@ class WorkforceEmployeeDesignationPage extends Component {
     this.setState({ nid });
   };
 
-  fetchUnitWiseDesignations = async (v) => {
-    const prms = [];
-    prms.push(`organization_Id: "${decodeId(v?.id)}"`);
-    prms.push(`orderBy:["unit_level", "unit_designations__designation_level"]`);
-    await this.props.fetchWorkforceUnitsWithEmployeeDesignation(prms);
-
-    this.setState({ selectedOrganization: v });
-  };
+  fetchWorkforceEmployeeDesignations = async (factory) => {
+      if (!factory?.id) return;
+      const prms = [];
+      prms.push(`workforceFactoryId: "${decodeId(factory.id)}"`);
+  
+      await this.props.fetchWorkforceEmployeeDesignation(this.props.modulesManager, prms);
+    };
 
   handleReleaseDateChange = (date) => {
     this.setState({ releaseDate: date });
@@ -68,31 +69,32 @@ class WorkforceEmployeeDesignationPage extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (
-      prevProps.employeeDesignationData !== this.props.employeeDesignationData &&
-      this.props.employeeDesignationData?.organization
+      prevProps.workforceEmployeeDesignation !== this.props.workforceEmployeeDesignation &&
+      this.props.workforceEmployeeDesignation?.organization
     ) {
-      this.fetchUnitWiseDesignations(this.props.employeeDesignationData.organization);
+      this.fetchWorkforceEmployeeDesignations(this.props.workforceEmployeeDesignation.organization);
     }
 
     if (prevState.releaseDate !== this.state.releaseDate && this.state.selectedOrganization) {
-      this.fetchUnitWiseDesignations(this.state.selectedOrganization);
+      this.fetchWorkforceEmployeeDesignations(this.state.selectedOrganization);
     }
   }
 
 
   render() {
-    const { employeeDesignationData, unitWiseDesignationData } = this.props;
+    const { workforceEmployeeDesignation, unitWiseDesignationData,workforceEmployee } = this.props;
     const { stateEdited, isSaved, email,nid,releaseDate,selectedOrganization } = this.state;
 
     const userData = {
-      name: employeeDesignationData?.nameBn || "",
-      email: employeeDesignationData?.email || "",
-      phone: employeeDesignationData?.phoneNumber || "",
-      nid: employeeDesignationData?.nid || "",
+      name: workforceEmployee?.firstNameBn || "",
+      email: workforceEmployee?.email || "",
+      phone: workforceEmployee?.phoneNumber || "",
+      nid: workforceEmployee?.nid || "",
     };
 
-    const tableData = employeeDesignationData?.designations || [];
-
+    const tableData = workforceEmployeeDesignation?.designations || [];
+    // console.clear()
+    console.log({workforceEmployeeDesignation})
     return (
       <div>
         <WorkforceEmployeeDesignationSearcher
@@ -101,10 +103,10 @@ class WorkforceEmployeeDesignationPage extends Component {
           onNidChange={this.handleNidChange}
         />
         <WorkforceEmployeeDesignaitonInfo
-          employeeDesignationData={employeeDesignationData}
+          workforceEmployeeDesignation={workforceEmployeeDesignation}
           userData={userData}
           tableData={tableData}
-          fetchUnitWiseDesignations={this.fetchUnitWiseDesignations}
+          fetchWorkforceEmployeeDesignations={this.fetchWorkforceEmployeeDesignations}
           onReleaseDateChange={this.handleReleaseDateChange} 
         />
         <AssignEmployeeDesignation
@@ -114,7 +116,7 @@ class WorkforceEmployeeDesignationPage extends Component {
           tableData={tableData}
           handleSearch={this.handleSearch}
           unitWiseDesignations={unitWiseDesignationData}
-          fetchUnitWiseDesignations={this.fetchUnitWiseDesignations}
+          fetchWorkforceEmployeeDesignations={this.fetchWorkforceEmployeeDesignations}
           onValueChange = {this.handleValueChange}
         />
       </div>
@@ -123,8 +125,9 @@ class WorkforceEmployeeDesignationPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  employeeDesignationData: state.workforce.employeeDesignationData,
+  workforceEmployeeDesignation: state.workforce.workforceEmployeeDesignation,
   unitWiseDesignationData: state.workforce.unitWiseDesignationData,
+  workforceEmployee:state.workforce.workforceEmployee
 });
 
 // const mapDispatchToProps = (dispatch) => ({
@@ -134,7 +137,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      fetchEmployeeDesignations,
+      fetchWorkforceEmployee,
+      fetchWorkforceEmployeeDesignation,
       fetchWorkforceUnitsWithEmployeeDesignation,
     },
     dispatch
