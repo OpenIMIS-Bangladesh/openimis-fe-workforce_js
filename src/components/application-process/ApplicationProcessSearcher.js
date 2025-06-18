@@ -45,6 +45,7 @@ import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerMod
 import ForwardApplicationFactoryAdminModal from "./modals/ForwardApplicationFactoryAdminModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 import RevertApplicationModal from "./modals/RevertApplicationModal";
+import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement } from "../../actions";
 import { itemAdminFormatters, itemFormattersApplicant, itemFormattersApprover, itemFormattersChecker,itemFormattersFactoryAdmin } from "../../utils/itemFormatters_types";
@@ -654,6 +655,13 @@ class ApplicationProcessSearcher extends Component {
             <Button
               variant="contained"
               color="primary"
+              onClick={()=>this.setState({forwardModalOpen:true})}
+            >
+              Summary Create
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
               onClick={this.handleBulkForward}
             >
               {/* {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"} */}
@@ -725,6 +733,12 @@ class ApplicationProcessSearcher extends Component {
                 revertByChecker={revertByChecker}
                 selectedApplication={this.state.selectedApplication}
                 onSubmitRevert={this.handleRevertSubmit}
+              />
+              <ForwardApplicationSummaryModal
+                open={forwardModalOpen}
+                onClose={this.handleCloseForwardModal}
+                selectedApplication={this.state.selectedApplication}
+
               />
             </>
               

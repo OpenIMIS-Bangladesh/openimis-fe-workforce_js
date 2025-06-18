@@ -18,7 +18,7 @@ import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
-import { fetchApplication, createApplicationSummary, createApplicationSummaryMovement } from "../../actions";
+import { fetchApplication, createApplicationSummary } from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
 
 const GenerateBFTN = ({ open, onClose, applications = [],userRights }) => {
