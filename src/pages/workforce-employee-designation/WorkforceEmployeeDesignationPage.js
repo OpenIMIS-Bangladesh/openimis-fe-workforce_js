@@ -38,14 +38,14 @@ class WorkforceEmployeeDesignationPage extends Component {
     const { email,nid } = this.state;
     const prms = [];
     if (email) {
-      prms.push(`email: "${email}"`);
+      prms.push(`workforceEmployee_Email: "${email}"`);
     }
     if (nid) {
       prms.push(`nid: "${nid}"`);
       
     }
 
-    this.props.fetchWorkforceEmployee(this.props.modulesManager,prms);
+    this.props.fetchWorkforceEmployeeDesignation(this.props.modulesManager,prms);
   };
 
   handleEmailChange = (email) => {
@@ -58,8 +58,8 @@ class WorkforceEmployeeDesignationPage extends Component {
   fetchWorkforceEmployeeDesignations = async (factory) => {
       if (!factory?.id) return;
       const prms = [];
-      prms.push(`workforceFactoryId: "${decodeId(factory.id)}"`);
-  
+      prms.push(`workforceFactoryId: "${factory.id}"`);
+      console.log({prms})
       await this.props.fetchWorkforceEmployeeDesignation(this.props.modulesManager, prms);
     };
 
@@ -86,14 +86,15 @@ class WorkforceEmployeeDesignationPage extends Component {
     const { stateEdited, isSaved, email,nid,releaseDate,selectedOrganization } = this.state;
 
     const userData = {
-      name: workforceEmployee?.firstNameBn || "",
-      email: workforceEmployee?.email || "",
-      phone: workforceEmployee?.phoneNumber || "",
-      nid: workforceEmployee?.nid || "",
+      name: workforceEmployeeDesignation?.[0]?.workforceEmployee?.firstNameBn || "",
+      email: workforceEmployeeDesignation?.[0]?.workforceEmployee?.email || "",
+      phone: workforceEmployeeDesignation?.[0]?.workforceEmployee?.phoneNumber || "",
+      nid: workforceEmployeeDesignation?.[0]?.workforceEmployee?.nid || "",
     };
 
     const tableData = workforceEmployeeDesignation?.designations || [];
     // console.clear()
+    console.log({userData})
     console.log({workforceEmployeeDesignation})
     return (
       <div>

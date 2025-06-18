@@ -209,7 +209,7 @@ const MedicalAssistanceForm = ({
   };
 
 
-  const handleNext = () => {
+  const handleNext = async() => {
     console.log(activeStep);
     setActiveStep((prevStep) => prevStep + 1);
     if (activeStep === 0 || activeStep === 1) {
@@ -347,7 +347,7 @@ const MedicalAssistanceForm = ({
     } else {
       console.log("hello faltu")
       const filters = [`id: "${applicationId[0].id}"`];
-      dispatch(getParsedApplication(modulesManager, filters))
+      await dispatch(getParsedApplication(modulesManager, filters))
         .then((parsedData) => {
           // Use the parsed data
           console.log("Parsed application:", parsedData);

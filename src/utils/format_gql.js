@@ -378,12 +378,13 @@ export function formatFactoryEmployeeAssignDesignationGQL(employeeAssignDesignat
     ${employeeAssignDesignation?.workforceEmployeeId ? `workforceEmployeeId: "${employeeAssignDesignation?.workforceEmployeeId}"` : ""}
     ${employeeAssignDesignation?.status ? `status: "${employeeAssignDesignation?.status}"` : ""}
     ${employeeAssignDesignation?.position ? `position: "${employeeAssignDesignation?.position}"` : ""}
-    ${employeeAssignDesignation?.releaseDate ? `resignatioDate: "${formatGQLString(employeeAssignDesignation?.resignatioDate)}"` : ""}
-    ${employeeAssignDesignation?.releaseDate ? `resignatioReason: "${formatGQLString(employeeAssignDesignation?.resignatioReason)}"` : ""}
-    ${employeeAssignDesignation?.releaseDate ? `joinDate: "${formatGQLString(employeeAssignDesignation?.joinDate)}"` : ""}
+   
+    ${employeeAssignDesignation?.joiningDate ? `joinDate: "${formatGQLString(employeeAssignDesignation?.joiningDate)}"` : ""}
     ${employeeAssignDesignation?.workforceCompany ? `workforceCompanyId: "${employeeAssignDesignation?.workforceCompany}"` : ""}
   `;
 }
+ // ${employeeAssignDesignation?.resignatioDate ? `resignatioDate: "${formatGQLString(employeeAssignDesignation?.resignatioDate)}"` : ""}
+    // ${employeeAssignDesignation?.resignatioReason ? `resignatioReason: "${formatGQLString(employeeAssignDesignation?.resignatioReason)}"` : ""}
 
 export function formatWorkforceOtpGQL(workforceOtp) {
 

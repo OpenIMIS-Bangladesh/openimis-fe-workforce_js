@@ -2109,17 +2109,18 @@ export function fetchOrganizationEmployeeDesignation(mm, clientMutationId) {
   return graphql(payload, "WORKFORCE_ORGANIZATION_BY_DESIGNATION_MUTATION_ID");
 }
 
-export function fetchWorkforceEmployeeDesignation(filters) {
+export function fetchWorkforceEmployeeDesignation(mm,filters) {
   const projections = [
     "id",
     "joinDate",
     "resignationDate",
     "resignationReason",
     "position",
+    "status",
     "workforceCompany {id,nameEn,nameBn}",
     "workforceFactory {id,nameEn,nameBn}",
     "workforceOffice {id}",
-    "workforceEmployee{id,firstNameBn,firstNameEn,email,phoneNumber,birthDate,deathDate,joinDate,presentAddress,insuranceNumber,birthCertificateNo,permanentAddress}",
+    "workforceEmployee{id,firstNameBn,firstNameEn,email,phoneNumber,birthDate,deathDate,joinDate,presentAddress,insuranceNumber,nid,birthCertificateNo,permanentAddress}",
     // "unitDesignations {id,nameBn,nameEn,activeEmployeeDesignation{id,status,joiningDate,employee{id,nameEn,nameBn,email,phoneNumber}}}",
   ];
   const payload = formatPageQueryWithCount(

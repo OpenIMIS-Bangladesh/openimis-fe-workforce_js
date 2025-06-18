@@ -116,8 +116,6 @@ const AssignEmployeeDesignation = ({
     }
   };
 
-  
-
   const employeeDesignationData = useSelector(
     (state) => state.workforce[`workforceEmployeeDesignation`]
   );
@@ -130,18 +128,7 @@ const AssignEmployeeDesignation = ({
       fetchData();
     }
   }, [formData.factory]);
-  // const fetchWorkforceEmployeeDesignations = async (v) => {
-  //   const prms = [];
-  //   prms.push(`organization_Id: "${decodeId(v.id)}"`);
-  //   prms.push(`orderBy:["unit_level", "unit_designations__designation_level"]`);
 
-  //   await dispatch(
-  //     fetchWorkforceUnitsWithEmployeeDesignation(modulesManager, prms),
-  //   );
-  // };
-  // const unitWiseDesignations = useSelector(
-  //   (state) => state.workforce[`unitWiseDesignationData`],
-  // );
 
   const handleAssign = async (row) => {
     setDisabledAssignButton(true);
@@ -158,7 +145,7 @@ const AssignEmployeeDesignation = ({
     await dispatch(
       updateWorkforceEmployeeAssignDesignation(
         assignData,
-        `updated Organization Employee designation`
+        `updated workforce Employee designation`
       )
     );
 
