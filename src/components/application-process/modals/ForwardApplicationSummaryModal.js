@@ -25,7 +25,9 @@ import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
 import {
   createApplicationSummary,
-  updateApplication
+  updateApplication,
+  fetchApplication,
+  fetchApplicationPackage,
 } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
 import ForwardAdminPanel from "./ForwardAdminPanel";
@@ -129,6 +131,8 @@ const ForwardApplicationSummaryModal = ({
     status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
     name: formData?.meetingName,
     meetingDate: formData?.meetingDate,
+    applicationData: JSON.stringify(selectedApplicationIds),
+
   };
 
   await dispatch(

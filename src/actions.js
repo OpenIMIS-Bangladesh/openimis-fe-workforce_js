@@ -675,9 +675,9 @@ export function fetchApplicationsSummary(mm, filters) {
   const projections = [
     "id",
     "workforceEmployee{" +
-      present_location_projection +
-      permanent_location_projection +
-      "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
+     present_location_projection +
+     permanent_location_projection +
+    "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
     "dateCreated",
     "organizationType",
     "applicationType",
@@ -687,6 +687,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "employeeBankInfo",
     "employeeAccidentInfo",
     "employeeFactory{id}",
+    "applicationSummaryId",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
@@ -705,7 +706,6 @@ export function fetchApplication(mm, filters) {
   const projections = [
     "id",
     "workforceEmployee{id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
-
     "organizationType",
     "applicationType",
     "status",
@@ -714,6 +714,7 @@ export function fetchApplication(mm, filters) {
     "employeeBankInfo",
     "employeeAccidentInfo",
     "employeeFactory{id}",
+    "applicationSummaryId",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
@@ -816,7 +817,9 @@ export function fetchApplicationPackage(mm, filters) {
     "id",
     "applicationData{id,}",
     "meetingDate",
-    "status"
+    "status",
+    "name",
+    "remarks",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationSummary",
@@ -831,7 +834,9 @@ export function fetchApplicationPackagesSummary(mm, filters) {
     "id",
     "applicationData{id,}",
     "meetingDate",
-    "status"
+    "status",
+    "name",
+    "remarks",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationSummary",
