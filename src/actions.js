@@ -26,11 +26,8 @@ import {
   formatWorkforceBeneficiaryGQL,
   formatWorkforceOtpGQL,
   formatApplicationMovementGQL,
-<<<<<<< HEAD
-  formatApplicationSummaryGQL
-=======
   formatFactoryEmployeeAssignDesignationGQL,
->>>>>>> d846ac0894c5e1f117a06fb39e15611303ec218a
+  formatApplicationSummaryGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 
