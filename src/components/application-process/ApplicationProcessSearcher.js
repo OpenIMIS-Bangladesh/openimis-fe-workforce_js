@@ -738,6 +738,7 @@ class ApplicationProcessSearcher extends Component {
                 open={forwardModalOpen}
                 onClose={this.handleCloseForwardModal}
                 selectedApplication={this.state.selectedApplication}
+                selectedApplicationIds={this.state.selectedApplicationIds}
 
               />
             </>

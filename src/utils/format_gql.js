@@ -72,6 +72,8 @@ export function formatApplicationSummaryGQL(applicationSummary) {
   return `
     ${applicationSummary?.id ? `id: "${formatGQLString(applicationSummary?.id)}"` : ""}
     ${applicationSummary?.applicationData ? `applicationData: ${escapeQuotes(applicationSummary?.applicationData)}` : ""}
+    ${applicationSummary.name ? `name: "${applicationSummary.name}"` : ""}
+    ${applicationSummary.remarks ? `remarks: "${applicationSummary.remarks}"` : ""}
     ${applicationSummary.meetingDate ? `meetingDate: "${applicationSummary.meetingDate}"` : ""}
     ${applicationSummary?.status ? `status: "${formatGQLString(applicationSummary.status)}"` : ""}
   `;
@@ -216,6 +218,7 @@ export function formatApplicationeGQL(application) {
   ${application?.employeeDesignationInfo ? `employeeDesignationInfo: ${escapeQuotes(application?.employeeDesignationInfo)}` : ""}
   ${application?.isSubmitted ? `isSubmitted: "${(application?.isSubmitted)}"` : ""}
   ${application?.employeeFactoryId ? `employeeFactoryId: "${(application?.employeeFactoryId)}"` : ""}
+  ${application?.applicationSummaryId ? `applicationSummaryId: "${(application?.applicationSummaryId)}"` : ""}
 `;
 }
 ///application movement ////

@@ -24,10 +24,8 @@ import DistrictOfficePicker from "../../../pickers/DistrictOfficePicker";
 import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  fetchApplication,
-  updateApplication,
-  createApplicationMovement,
-  createApplicationSummary
+  createApplicationSummary,
+  updateApplication
 } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
 import ForwardAdminPanel from "./ForwardAdminPanel";
@@ -77,6 +75,7 @@ const ForwardApplicationSummaryModal = ({
   open,
   onClose,
   selectedApplication,
+  selectedApplicationIds,
   onSubmitForward,
 }) => {
   const classes = useStyles();
@@ -87,6 +86,9 @@ const ForwardApplicationSummaryModal = ({
   const [serverResponse, setServerResponse] = useState(null);
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
+  const data = useSelector((state) => state.workforce[`application`] ?? []);
+  const createdSummaryId = useSelector((state) => state.workforce?.mutation?.id);
+  console.log({createdSummaryId})
   useEffect(() => {
     if (!open) {
       setEditorContent("");
@@ -102,8 +104,6 @@ const ForwardApplicationSummaryModal = ({
       );
     }
   }, [open]);
-
-  const data = useSelector((state) => state.workforce[`application`] ?? []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -124,31 +124,39 @@ const ForwardApplicationSummaryModal = ({
     // }
   };
 
-  const handleForward = async () => {
-    const createApplicationSummaryData = {
-      status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
-      meetingName: formData?.meetingName,
-      meetingDate: formData?.meetingDate
-    };
-    // const createApplicationMovementData = {
-    //   applicationId: decodeId(selectedApplication.id),
-    //   status: WORKFORCE_STATUS.DG_APPROVED,
-    //   note: "আবেদন ডিজির কাছে প্রেরণ করা হয়েছে",
-    //   action: "send_for_dg_approve",
-    // };
-    await dispatch(
-      createApplicationSummary(createApplicationSummaryData, `create workforce application summary`)
-    );
-    // await dispatch(
-    //   createApplicationMovement(
-    //     createApplicationMovementData,
-    //     `create workforce movement`
-    //   )
-    // );
-    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+ const handleForward = async () => {
+  const createApplicationSummaryData = {
+    status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+    name: formData?.meetingName,
+    meetingDate: formData?.meetingDate,
   };
 
-  console.log({ aha: selectedApplication });
+  await dispatch(
+    createApplicationSummary(
+      createApplicationSummaryData,
+      "create workforce application summary"
+    )
+  );
+
+  // if (!createdSummaryId) {
+  //   setServerResponse({ status: "ERROR", message: "সারাংশ তৈরি ব্যর্থ হয়েছে!" });
+  //   return;
+  // }
+
+ for (const encodedId of selectedApplicationIds) {
+    const updateApplicationData = {
+      id: decodeId(encodedId),
+      applicationSummaryId: createdSummaryId,
+      status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+    };
+  
+  await dispatch(
+    updateApplication(updateApplicationData, "update workforce application")
+  );
+ }
+  setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+};
+
 
   return (
     <Modal open={open} onClose={onClose}>

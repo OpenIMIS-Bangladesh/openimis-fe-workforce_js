@@ -312,6 +312,19 @@ function reducer(
     applicationMovement: null,
     applicationMovementPageInfo: { totalCount: 0 },
 
+    ////Application summary states
+    fetchingApplicationSummaries: false,
+    errorApplicationSummaries: null,
+    fetchedApplicationSummaries: false,
+    applicationSummaries: [],
+    applicationSummariesPageInfo: { totalCount: 0 },
+
+    fetchingApplicationSummary: false,
+    errorApplicationSummary: null,
+    fetchedApplicationSummary: false,
+    applicationSummary: null,
+    applicationSummaryPageInfo: { totalCount: 0 },
+
     ////workforce otp id ///
     workforceOtpId:"",
   },
@@ -1426,7 +1439,7 @@ function reducer(
           };
 
             /// Application movement actions////
-    case "WORKFORCE_APPLICATIONS_REQ":
+    case "WORKFORCE_APPLICATIONS_MOVEMENT_REQ":
       return {
         ...state,
         fetchingApplicationMovements: true,
@@ -1435,23 +1448,23 @@ function reducer(
         applicationMovementsPageInfo: { totalCount: 0 },
         errorApplicationMovements: null,
       };
-    case "WORKFORCE_APPLICATIONS_RESP":
+    case "WORKFORCE_APPLICATIONS_MOVEMENT_RESP":
       return {
         ...state,
         fetchingApplicationMovements: false,
         fetchedApplicationMovements: true,
         applicationMovements: parseData(action.payload.data.workforceApplicationMovement),
-        applicationMovementsPageInfo: pageInfo(action.payload.data.workforceApplication),
+        applicationMovementsPageInfo: pageInfo(action.payload.data.workforceApplicationMovement),
         errorApplicationMovements: formatGraphQLError(action.payload),
       };
-    case "WORKFORCE_APPLICATIONS_ERR":
+    case "WORKFORCE_APPLICATIONS_MOVEMENT_ERR":
       return {
         ...state,
         fetching: false,
         error: formatServerError(action.payload),
       };
     
-    case "WORKFORCE_APPLICATION_REQ":
+    case "WORKFORCE_APPLICATION_MOVEMENT_REQ":
         return {
           ...state,
           fetchingApplicationMovement: true,
@@ -1459,7 +1472,7 @@ function reducer(
           applicationMovement: null,
           errorApplication: null,
         };
-    case "WORKFORCE_APPLICATION_RESP":
+    case "WORKFORCE_APPLICATION_MOVEMENT_RESP":
           return {
             ...state,
             fetchingApplicationMovement: false,
@@ -1473,6 +1486,54 @@ function reducer(
             errorApplication: formatGraphQLError(action.payload),
           };
  
+          /// Application summary actions////
+    case "WORKFORCE_APPLICATION_SUMMARIES_REQ":
+      return {
+        ...state,
+        fetchingApplicationSummaries: true,
+        fetchedApplicationSummaries: false,
+        applicationSummaries: [],
+        applicationSummariesPageInfo: { totalCount: 0 },
+        errorApplicationSummaries: null,
+      };
+    case "WORKFORCE_APPLICATION_SUMMARIES_RESP":
+      return {
+        ...state,
+        fetchingApplicationSummaries: false,
+        fetchedApplicationSummaries: true,
+        applicationSummaries: parseData(action.payload.data.workforceApplicationSummary),
+        applicationSummariesPageInfo: pageInfo(action.payload.data.workforceApplicationSummary),
+        errorApplicationSummaries: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_APPLICATION_SUMMARIES_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+    
+    case "WORKFORCE_APPLICATION_SUMMARY_REQ":
+        return {
+          ...state,
+          fetchingApplicationSummary: true,
+          fetchedApplicationSummary: false,
+          applicationSummary: null,
+          applicationSummaryPageInfo: null,
+        };
+    case "WORKFORCE_APPLICATION_SUMMARY_RESP":
+          return {
+            ...state,
+            fetchingApplicationSummary: false,
+            fetchedApplicationSummary: true,
+            applicationSummaryPageInfo: parseData(action.payload.data.workforceApplicationSummary).map(
+              (application) => ({
+                ...application,
+                id: decodeId(application.id),
+              })
+            )?.[0],
+            errorApplicationSummary: formatGraphQLError(action.payload),
+          };
+
 
     case "ORG_UNIT_CREATE_RESP":
       return dispatchMutationResp(state, action);
@@ -1647,6 +1708,14 @@ function reducer(
       return dispatchMutationResp(state, "createWorkforceApplicationMovement", action);
     case "APPLICATION_MOVEMENT_UPDATE_APPLICATION_RESP":
       return dispatchMutationResp(state, "updateWorkforceApplicationMovement", action);
+
+    case "APPLICATION_SUMMARY_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "APPLICATION_SUMMARY_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "APPLICATION_SUMMARY_CREATE_APPLICATION_RESP":
+      return dispatchMutationResp(state, "createWorkforceApplicationSummary", action);
 
     case "EMPLOYEE_DEPENDENT_MUTATION_REQ": {
       return dispatchMutationReq(state, action);
