@@ -378,8 +378,8 @@ export function formatFactoryEmployeeAssignDesignationGQL(employeeAssignDesignat
     ${employeeAssignDesignation?.workforceEmployeeId ? `workforceEmployeeId: "${employeeAssignDesignation?.workforceEmployeeId}"` : ""}
     ${employeeAssignDesignation?.status ? `status: "${employeeAssignDesignation?.status}"` : ""}
     ${employeeAssignDesignation?.position ? `position: "${employeeAssignDesignation?.position}"` : ""}
-    ${employeeAssignDesignation?.resignatioDate ? `resignatioDate: "${employeeAssignDesignation?.resignatioDate}"` : ""}
-    ${employeeAssignDesignation?.resignatioReason ? `resignatioReason: "${employeeAssignDesignation?.resignatioReason}"` : ""}
+    ${employeeAssignDesignation?.resignatioDate ? `resignationDate: "${employeeAssignDesignation?.resignatioDate}"` : ""}
+    ${employeeAssignDesignation?.resignatioReason ? `resignationReason: "${employeeAssignDesignation?.resignatioReason}"` : ""}
     ${employeeAssignDesignation?.joiningDate ? `joinDate: "${formatGQLString(employeeAssignDesignation?.joiningDate)}"` : ""}
     ${employeeAssignDesignation?.workforceCompany ? `workforceCompanyId: "${employeeAssignDesignation?.workforceCompany}"` : ""}
   `;

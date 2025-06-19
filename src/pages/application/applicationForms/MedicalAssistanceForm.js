@@ -211,8 +211,9 @@ const MedicalAssistanceForm = ({
 
   const handleNext = async() => {
     console.log(activeStep);
-    setActiveStep((prevStep) => prevStep + 1);
-    if (activeStep === 0 || activeStep === 1) {
+    const nextStep = activeStep + 1;
+    setActiveStep(nextStep);
+    if (nextStep === 0 || nextStep === 1) {
       // const nidValue = formData?.workforceEmployee?.nid;
 
       const workforceEmployeeData = {
@@ -306,7 +307,7 @@ const MedicalAssistanceForm = ({
       //   )
       // );
 
-    } else if (activeStep === 2) {
+    } else if (nextStep === 2) {
       console.log("Create application formData:", formData);
       const createApplicationData = {
         workforceEmployeeId: formData.id,
@@ -339,23 +340,29 @@ const MedicalAssistanceForm = ({
         )
       );
 
-      dispatch(
+      await dispatch(
         fetchApplicationId(modulesManager, applicationClientMutationId)
-      );
-
+      ).then((b)=>{
+        const rawId = b?.payload?.data?.workforceApplication?.edges?.[0]?.node?.id; 
+        if (rawId) {
+            const filters = [`id: "${decodeId(rawId)}"`];
+          dispatch(getParsedApplication(modulesManager, filters))
+          console.log("hello i am here and everywhere",rawId)
+        }
+      })
 
     } else {
       console.log("hello faltu")
-      const filters = [`id: "${applicationId[0].id}"`];
-      await dispatch(getParsedApplication(modulesManager, filters))
-        .then((parsedData) => {
-          // Use the parsed data
-          console.log("Parsed application:", parsedData);
-        })
-        .catch((error) => {
-          // Handle error
-          console.error("Failed to get parsed application:", error);
-        });
+      // const filters = [`id: "${decodeId(applicationId[0].id)}"`];
+      //  dispatch(getParsedApplication(modulesManager, filters))
+      //   // .then((parsedData) => {
+      //   //   // Use the parsed data
+      //   //   console.log("Parsed application:", parsedData);
+      //   // })
+      //   // .catch((error) => {
+      //   //   // Handle error
+      //   //   console.error("Failed to get parsed application:", error);
+      //   // });
       const updateApplicationData = {
         id: decodeId(applicationId[0].id),
         workforceEmployeeId: formData.id,
@@ -376,7 +383,6 @@ const MedicalAssistanceForm = ({
         )
       );
     }
-    console.log({ activeStep })
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
