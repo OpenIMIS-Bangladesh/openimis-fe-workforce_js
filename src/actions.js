@@ -687,7 +687,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "employeeBankInfo",
     "employeeAccidentInfo",
     "employeeFactory{id}",
-    "applicationSummaryId",
+    "applicationSummary{id}",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
@@ -815,7 +815,7 @@ export function fetchApplicationPackage(mm, filters) {
 
   const projections = [
     "id",
-    "applicationData{id,}",
+    "applicationData{id}",
     "meetingDate",
     "status",
     "name",
@@ -832,7 +832,7 @@ export function fetchApplicationPackagesSummary(mm, filters) {
 
   const projections = [
     "id",
-    "applicationData{id,}",
+    "applicationData{id}",
     "meetingDate",
     "status",
     "name",
