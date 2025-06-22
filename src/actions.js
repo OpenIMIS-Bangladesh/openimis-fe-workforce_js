@@ -820,6 +820,8 @@ export function fetchApplicationPackage(mm, filters) {
     "status",
     "name",
     "remarks",
+    "year",
+    "month",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationSummary",
@@ -837,6 +839,8 @@ export function fetchApplicationPackagesSummary(mm, filters) {
     "status",
     "name",
     "remarks",
+    "year",
+    "month",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationSummary",

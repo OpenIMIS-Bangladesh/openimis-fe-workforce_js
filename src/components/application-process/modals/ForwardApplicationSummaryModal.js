@@ -165,9 +165,8 @@ const ForwardApplicationSummaryModal = ({
     setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
   };
 
-
-    const handleSave = async () => {
-      const createApplicationSummaryData = {
+  const handleSave = async () => {
+    const createApplicationSummaryData = {
       status: WORKFORCE_STATUS.MEETING_CREATED,
       name: formData?.meetingName,
       meetingDate: formData?.meetingDate,
@@ -243,24 +242,14 @@ const ForwardApplicationSummaryModal = ({
                   marginTop: 3,
                   textAlign: "center",
                 }}
-              >           
-            <FormattedMessage module="workforce" id="workforce.employee.application.provideMeetingInfo" />
+              >
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.employee.application.provideMeetingInfo"
+                />
               </Typography>
             </Grid>
 
-            {/* Meeting Name Field */}
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="মিটিং এর নাম"
-                variant="outlined"
-                value={formData?.meetingName || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, meetingName: e.target.value })
-                }
-                required
-              />
-            </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -317,6 +306,19 @@ const ForwardApplicationSummaryModal = ({
                 ))}
               </TextField>
             </Grid>
+
+            {/* Meeting Name Field */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="মিটিং এর নাম"
+                variant="outlined"
+                value={formData?.meetingName || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, meetingName: e.target.value })
+                }
+              />
+            </Grid>
             {/* Meeting Date Field */}
             <Grid item xs={12} sm={6}>
               <TextField
@@ -331,7 +333,6 @@ const ForwardApplicationSummaryModal = ({
                 onChange={(e) =>
                   setFormData({ ...formData, meetingDate: e.target.value })
                 }
-                required
               />
             </Grid>
           </Grid>
@@ -359,7 +360,7 @@ const ForwardApplicationSummaryModal = ({
             disabled={submitting}
             onClick={handleForward}
           >
-          <FormattedMessage module="workforce" id="workforce.employee.application.forwardTo" />  
+            {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"}
           </Button>
         </div>
       </form>
