@@ -28,10 +28,12 @@ import {
   updateApplication,
   fetchApplication,
   fetchApplicationPackage,
+  fetchApplicationSummaryByClientMutationId,
 } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
 import ForwardAdminPanel from "./ForwardAdminPanel";
 import ForwardApplicationModal from "./ForwardApplicationModal";
+import { formatApplicationSummaryGQL } from "../../../utils/format_gql";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -82,6 +84,7 @@ const ForwardApplicationSummaryModal = ({
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  let applicationSummaryId =""
   const modulesManager = useModulesManager();
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -89,8 +92,7 @@ const ForwardApplicationSummaryModal = ({
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
   const data = useSelector((state) => state.workforce[`application`] ?? []);
-  const createdSummaryId = useSelector((state) => state.workforce?.mutation?.id);
-  console.log({createdSummaryId})
+  // const applicationSummaryId = useSelector((state) => state.workforce?.fetchedApplicationSummeryIdByClientMutationId);
   useEffect(() => {
     if (!open) {
       setEditorContent("");
@@ -135,29 +137,48 @@ const ForwardApplicationSummaryModal = ({
 
   };
 
+  const applicationSummeryMutation = formatMutation(
+    "createWorkforceApplicationSummary",
+    formatApplicationSummaryGQL(createApplicationSummaryData),
+    "create workforce application summary"
+  )
+  const applicationSummeryClientMutationId = applicationSummeryMutation.clientMutationId;
   await dispatch(
     createApplicationSummary(
-      createApplicationSummaryData,
+      applicationSummeryMutation,
       "create workforce application summary"
     )
   );
+
+  await dispatch(fetchApplicationSummaryByClientMutationId(modulesManager,applicationSummeryClientMutationId))
+        .then((response)=>{
+          applicationSummaryId= response?.payload?.data?.workforceApplicationSummary?.edges?.[0]?.node?.id
+          console.log({applicationSummaryId})
+        })
 
   // if (!createdSummaryId) {
   //   setServerResponse({ status: "ERROR", message: "সারাংশ তৈরি ব্যর্থ হয়েছে!" });
   //   return;
   // }
 
- for (const encodedId of selectedApplicationIds) {
-    const updateApplicationData = {
-      id: decodeId(encodedId),
-      applicationSummaryId: createdSummaryId,
-      status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
-    };
-  
-  await dispatch(
-    updateApplication(updateApplicationData, "update workforce application")
-  );
- }
+  // console.log(applicationSummaryId)
+  console.log(decodeId(applicationSummaryId))
+  if (!applicationSummaryId) {
+    setServerResponse({ status: "ERROR", message: "সারাংশ তৈরি ব্যর্থ হয়েছে!" });
+    return;
+  }
+  for (const encodedId of selectedApplicationIds) {
+     const updateApplicationData = {
+       id: decodeId(encodedId),
+       applicationSummaryId: decodeId(applicationSummaryId),
+       status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+     };
+   
+   await dispatch(
+     updateApplication(updateApplicationData, "update workforce application")
+   );
+  }
+
   setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
 };
 

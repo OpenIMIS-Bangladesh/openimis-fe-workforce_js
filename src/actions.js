@@ -2041,14 +2041,14 @@ export function createApplicationMovement(application, clientMutationLabel) {
   );
 }
 
-export function createApplicationSummary(applicationSummary,clientMutationLabel) {
-  const mutation = formatMutation(
-    "createWorkforceApplicationSummary",
-    formatApplicationSummaryGQL(applicationSummary),
-    clientMutationLabel
-  );
+export function createApplicationSummary(mutation,clientMutationLabel) {
+  // const mutation = formatMutation(
+  //   "createWorkforceApplicationSummary",
+  //   formatApplicationSummaryGQL(applicationSummary),
+  //   clientMutationLabel
+  // );
 
-  console.log({ mutation });
+  // console.log({ mutation });
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
@@ -2079,6 +2079,22 @@ export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
 }
 `;
   return graphql(payload, "WORKFORCE_REPRESENTATIVE_BY_CLIENT_MUTATION_ID");
+}
+
+export function fetchApplicationSummaryByClientMutationId(mm, clientMutationId) {
+  const payload = `{
+  workforceApplicationSummary(
+    clientMutationId: "${clientMutationId}"
+  ) {
+    edges {
+      node {
+        id
+      }
+    }
+  }
+}
+`;
+  return graphql(payload, "WORKFORCE_APPLICATION_SUMMARY_BY_CLIENT_MUTATION_ID");
 }
 
 export function fetchApplicationId(mm, clientMutationId) {
