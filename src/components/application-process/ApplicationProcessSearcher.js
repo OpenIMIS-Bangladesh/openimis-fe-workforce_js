@@ -654,7 +654,7 @@ class ApplicationProcessSearcher extends Component {
               color="primary"
               onClick={()=>this.setState({forwardModalOpen:true})}
             >
-            <FormattedMessage module="workforce" id="workforce.employee.application.createSummarySheet" />                 
+            <FormattedMessage module="workforce" id="workforce.employee.application.createMeetingSheet" />                 
             </Button>
             <Button
               variant="contained"
