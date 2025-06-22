@@ -184,23 +184,30 @@ const ForwardApplicationSummaryModal = ({
   setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
 };
 
-  const handleSave = async () => {
-    const createApplicationSummaryData = {
-      status: WORKFORCE_STATUS.MEETING_CREATED,
-      name: formData?.meetingName,
-      meetingDate: formData?.meetingDate,
-      year: formData?.year,
-      month: formData?.month,
-      applicationData: JSON.stringify(selectedApplicationIds),
-    };
+const handleSave = async () => {
+  const createApplicationSummarySheetData = {
+    status: WORKFORCE_STATUS.MEETING_CREATED,
+    name: formData?.meetingName,
+    meetingDate: formData?.meetingDate,
+    year: Number(formData?.year),
+    month: formData?.month,
+    applicationData: JSON.stringify(selectedApplicationIds),
+  };
+  const applicationSummeryMutation = formatMutation(
+    "createWorkforceApplicationSummary",
+    formatApplicationSummaryGQL(createApplicationSummarySheetData),
+    "create workforce application summary"
+  )
+  await dispatch(
+    createApplicationSummary(
+      applicationSummeryMutation,
+      "create workforce application summary sheet"
+    )
+  );
 
-    await dispatch(
-      createApplicationSummary(
-        createApplicationSummaryData,
-        "create workforce application summary"
-      )
-    );
-    }
+  setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+};
+
 
 
   return (
