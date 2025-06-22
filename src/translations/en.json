@@ -250,6 +250,10 @@
     "workforce.employee.application.factoryName":"Factory Name",
     "workforce.employee.application.totalAmount":"Total amount applied for:",
     "workforce.employee.application.tk":"Taka",
+    "workforce.employee.application.forwardToAssociation":"Send considered applications to the Association office",
+    "workforce.employee.application.provideMeetingInfo":"Provide meeting information",
+    "workforce.employee.application.createSummarySheet":"Create Summary Sheet",
+    "workforce.employee.application.bulkForward":"Bulk Forward",
 
 
     "workforce.banks.nameEn": "Bank Name En",
@@ -394,6 +398,7 @@
     "workforce.back":"Back",
     "workforce.back.application.type":"Back to Application Type",
     "workforce.save.next":"Save and next",
+    "workforce.save":"Save",
     "workforce.submit":"Submit",
     "workforce.confirm.submit":"Confirm Submit",
     "workforce.success.message":"✅ Application submitted successfully!",

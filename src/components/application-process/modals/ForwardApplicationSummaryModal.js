@@ -11,7 +11,8 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
-  TextField
+  TextField,
+  MenuItem,
 } from "@material-ui/core";
 import {
   useModulesManager,
@@ -89,8 +90,10 @@ const ForwardApplicationSummaryModal = ({
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
   const data = useSelector((state) => state.workforce[`application`] ?? []);
-  const createdSummaryId = useSelector((state) => state.workforce?.mutation?.id);
-  console.log({createdSummaryId})
+  const createdSummaryId = useSelector(
+    (state) => state.workforce?.mutation?.id
+  );
+  console.log({ createdSummaryId });
   useEffect(() => {
     if (!open) {
       setEditorContent("");
@@ -126,40 +129,60 @@ const ForwardApplicationSummaryModal = ({
     // }
   };
 
- const handleForward = async () => {
-  const createApplicationSummaryData = {
-    status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
-    name: formData?.meetingName,
-    meetingDate: formData?.meetingDate,
-    applicationData: JSON.stringify(selectedApplicationIds),
+  const handleForward = async () => {
+    const createApplicationSummaryData = {
+      status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+      name: formData?.meetingName,
+      meetingDate: formData?.meetingDate,
+      year: formData?.year,
+      month: formData?.month,
+      applicationData: JSON.stringify(selectedApplicationIds),
+    };
 
+    await dispatch(
+      createApplicationSummary(
+        createApplicationSummaryData,
+        "create workforce application summary"
+      )
+    );
+
+    // if (!createdSummaryId) {
+    //   setServerResponse({ status: "ERROR", message: "সারাংশ তৈরি ব্যর্থ হয়েছে!" });
+    //   return;
+    // }
+
+    for (const encodedId of selectedApplicationIds) {
+      const updateApplicationData = {
+        id: decodeId(encodedId),
+        applicationSummaryId: createdSummaryId,
+        status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+      };
+
+      await dispatch(
+        updateApplication(updateApplicationData, "update workforce application")
+      );
+    }
+    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
   };
 
-  await dispatch(
-    createApplicationSummary(
-      createApplicationSummaryData,
-      "create workforce application summary"
-    )
-  );
 
-  // if (!createdSummaryId) {
-  //   setServerResponse({ status: "ERROR", message: "সারাংশ তৈরি ব্যর্থ হয়েছে!" });
-  //   return;
-  // }
-
- for (const encodedId of selectedApplicationIds) {
-    const updateApplicationData = {
-      id: decodeId(encodedId),
-      applicationSummaryId: createdSummaryId,
-      status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+    const handleSave = async () => {
+      const createApplicationSummaryData = {
+      status: WORKFORCE_STATUS.MEETING_CREATED,
+      name: formData?.meetingName,
+      meetingDate: formData?.meetingDate,
+      year: formData?.year,
+      month: formData?.month,
+      applicationData: JSON.stringify(selectedApplicationIds),
     };
-  
-  await dispatch(
-    updateApplication(updateApplicationData, "update workforce application")
-  );
- }
-  setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
-};
+
+    await dispatch(
+      createApplicationSummary(
+        createApplicationSummaryData,
+        "create workforce application summary"
+      )
+    );
+    }
 
 
   return (
@@ -176,7 +199,7 @@ const ForwardApplicationSummaryModal = ({
           gutterBottom
           style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
         >
-          বিবেচ্য আবেদন সমূহ অ্যাসোসিয়েশন অফিসে পাঠান
+          <FormattedMessage module="workforce" id="workforce.employee.application.forwardToAssociation" />       
         </Typography>
 
         <Typography
@@ -220,8 +243,8 @@ const ForwardApplicationSummaryModal = ({
                   marginTop: 3,
                   textAlign: "center",
                 }}
-              >
-                মিটিং এর তথ্য দিন
+              >           
+            <FormattedMessage module="workforce" id="workforce.employee.application.provideMeetingInfo" />
               </Typography>
             </Grid>
 
@@ -238,7 +261,62 @@ const ForwardApplicationSummaryModal = ({
                 required
               />
             </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                select
+                label="বছর"
+                variant="outlined"
+                value={formData?.year || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, year: e.target.value })
+                }
+                required
+              >
+                {[...Array(21)].map((_, index) => {
+                  const year = 2020 + index;
+                  return (
+                    <MenuItem key={year} value={year}>
+                      {year}
+                    </MenuItem>
+                  );
+                })}
+              </TextField>
+            </Grid>
 
+            {/* Month Field */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                select
+                label="মাস"
+                variant="outlined"
+                value={formData?.month || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, month: e.target.value })
+                }
+                required
+              >
+                {[
+                  "জানুয়ারি",
+                  "ফেব্রুয়ারি",
+                  "মার্চ",
+                  "এপ্রিল",
+                  "মে",
+                  "জুন",
+                  "জুলাই",
+                  "আগস্ট",
+                  "সেপ্টেম্বর",
+                  "অক্টোবর",
+                  "নভেম্বর",
+                  "ডিসেম্বর",
+                ].map((month, index) => (
+                  <MenuItem key={index} value={month}>
+                    {month}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
             {/* Meeting Date Field */}
             <Grid item xs={12} sm={6}>
               <TextField
@@ -262,8 +340,18 @@ const ForwardApplicationSummaryModal = ({
         {/* Action Buttons */}
         <div className={classes.buttonGroup}>
           <Button onClick={onClose} variant="outlined" color="secondary">
-            বাতিল করুন
+            <FormattedMessage module="workforce" id="core.LanguageQuickPicker.dialog.cancel" />
           </Button>
+
+          <Button
+            variant="outlined"
+            color="default"
+            onClick={handleSave} // You must define this function
+            disabled={submitting}
+          >
+            <FormattedMessage module="workforce" id="workforce.save" />
+          </Button>
+
           <Button
             type="submit"
             variant="contained"
@@ -271,7 +359,7 @@ const ForwardApplicationSummaryModal = ({
             disabled={submitting}
             onClick={handleForward}
           >
-            {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"}
+          <FormattedMessage module="workforce" id="workforce.employee.application.forwardTo" />  
           </Button>
         </div>
       </form>

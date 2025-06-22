@@ -129,6 +129,10 @@
     "workforce.employee.application.totalAmount":"মোট আবেদনকৃত অর্থ:",
     "workforce.employee.application.tk":"টাকা",
     "workforce.employee.application.forward":"ফরওয়ার্ড",
+    "workforce.employee.application.forwardToAssociation":"বিবেচ্য আবেদন সমূহ অ্যাসোসিয়েশন অফিসে পাঠান",
+    "workforce.employee.application.provideMeetingInfo":"মিটিং এর তথ্য দিন",
+    "workforce.employee.application.createSummarySheet":"সারাংশ পত্র তৈরি করুন",
+    "workforce.employee.application.bulkForward":"বাল্ক ফরওয়ার্ড করুন",
 
     
     "menu.workforce": "কর্মশক্তি",
@@ -238,6 +242,7 @@
     "workforce.back":"পিছনে",
     "workforce.back.application.type":"প্রথম ধাপে ফিরে যান",
     "workforce.save.next":"সংরক্ষণ করুন এবং পরবর্তী",
+    "workforce.save":"সংরক্ষণ করুন",
     "workforce.submit":"জমা দিন",
     "workforce.confirm.submit":"জমা নিশ্চিত করুন",
 

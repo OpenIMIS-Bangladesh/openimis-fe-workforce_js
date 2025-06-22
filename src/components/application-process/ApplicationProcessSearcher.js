@@ -657,7 +657,7 @@ class ApplicationProcessSearcher extends Component {
               color="primary"
               onClick={()=>this.setState({forwardModalOpen:true})}
             >
-              Summary Create
+            <FormattedMessage module="workforce" id="workforce.employee.application.createSummarySheet" />                 
             </Button>
             <Button
               variant="contained"
@@ -665,7 +665,7 @@ class ApplicationProcessSearcher extends Component {
               onClick={this.handleBulkForward}
             >
               {/* {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"} */}
-              বাল্ক ফরওয়ার্ড করুন
+            <FormattedMessage module="workforce" id="workforce.employee.application.bulkForward" />                 
             </Button>
           </Box>
         ) : null}
