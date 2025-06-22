@@ -136,6 +136,7 @@ const ForwardApplicationSummaryModal = ({
       meetingDate: formData?.meetingDate,
       year: formData?.year,
       month: formData?.month,
+      organization_type: "cf",
       applicationData: JSON.stringify(selectedApplicationIds),
     };
 
@@ -191,6 +192,7 @@ const handleSave = async () => {
     meetingDate: formData?.meetingDate,
     year: Number(formData?.year),
     month: formData?.month,
+    organization_type: "cf",
     applicationData: JSON.stringify(selectedApplicationIds),
   };
   const applicationSummeryMutation = formatMutation(
