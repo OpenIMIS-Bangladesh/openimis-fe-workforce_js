@@ -75,6 +75,7 @@ const MedicalAssistanceForm = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [parsedApplicationData, setParsedApplicationData] = useState(null)
   const reduxState = useSelector((state) => state);
 
   const [formData, setFormData] = useState({
@@ -182,14 +183,14 @@ const MedicalAssistanceForm = ({
         company: employeeData.company || null,
         factory: employeeData.factory || null,
         applicationForSelf: applicationForSelf,
-        organizationType: organizationType,
-        applicationType: selectedApplicationType,
-        dependents: employeeData.dependents || [{}],
-        employeeBankInfo: employeeData.employeeBankInfo || {},
-        employeeAccidentInfo: employeeData.employeeAccidentInfo || {},
+        organizationType: parsedApplicationData.organizationType ||organizationType,
+        applicationType: parsedApplicationData.applicationType||selectedApplicationType,
+        dependents: parsedApplicationData.employeeDependentInfo || employeeData.dependents || [{}],
+        employeeBankInfo: parsedApplicationData.employeeBankInfo ||employeeData.employeeBankInfo || {},
+        employeeAccidentInfo: parsedApplicationData.employeeAccidentInfo ||employeeData.employeeAccidentInfo || {},
       });
     }
-  }, [employeeData?.id]); // Trigger this useEffect when `employeeData` changes.
+  }, [employeeData?.id,parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {
@@ -342,12 +343,13 @@ const MedicalAssistanceForm = ({
 
       await dispatch(
         fetchApplicationId(modulesManager, applicationClientMutationId)
-      ).then((b)=>{
+      ).then(async(b)=>{
         const rawId = b?.payload?.data?.workforceApplication?.edges?.[0]?.node?.id; 
         if (rawId) {
             const filters = [`id: "${decodeId(rawId)}"`];
-          dispatch(getParsedApplication(modulesManager, filters))
-          console.log("hello i am here and everywhere",rawId)
+          const parsedData = await dispatch(getParsedApplication(modulesManager, filters));
+          console.log("Parsed application data:", parsedData);
+          setParsedApplicationData(parsedData)
         }
       })
 
@@ -507,7 +509,7 @@ const MedicalAssistanceForm = ({
 
   ];
 
-  console.log({ tazwer: formData });
+  console.log({ tazwer: parsedApplicationData });
 
   if (showPreview) {
     return (
