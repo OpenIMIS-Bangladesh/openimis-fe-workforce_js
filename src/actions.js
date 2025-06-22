@@ -687,8 +687,10 @@ export function fetchApplicationsSummary(mm, filters) {
     "employeeBankInfo",
     "employeeAccidentInfo",
     "employeeFactory{id}",
-    "applicationSummary{id}",
-  ];
+    "cfApplicationSummary{id}",
+    "eisApplicationSummary{id}",
+    "blwfApplicationSummary{id}",
+    ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
     filters,
@@ -714,7 +716,9 @@ export function fetchApplication(mm, filters) {
     "employeeBankInfo",
     "employeeAccidentInfo",
     "employeeFactory{id}",
-    "applicationSummary{id}",
+    "cfApplicationSummary{id}",
+    "eisApplicationSummary{id}",
+    "blwfApplicationSummary{id}",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
