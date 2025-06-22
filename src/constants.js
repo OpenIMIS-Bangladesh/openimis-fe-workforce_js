@@ -59,6 +59,7 @@ export const WORKFORCE_STATUS = {
   REVERT:"revert",
   FORWARD_TO_ASSOCIATION:"forward_to_association",
   SELECTED: "selected",
+  MEETING_CREATED: "meeting_created",
 
 };
 

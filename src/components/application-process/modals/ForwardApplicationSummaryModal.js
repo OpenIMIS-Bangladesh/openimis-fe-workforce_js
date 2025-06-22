@@ -11,7 +11,8 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
-  TextField
+  TextField,
+  MenuItem,
 } from "@material-ui/core";
 import {
   useModulesManager,
@@ -128,14 +129,15 @@ const ForwardApplicationSummaryModal = ({
     // }
   };
 
- const handleForward = async () => {
-  const createApplicationSummaryData = {
-    status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
-    name: formData?.meetingName,
-    meetingDate: formData?.meetingDate,
-    applicationData: JSON.stringify(selectedApplicationIds),
-
-  };
+  const handleForward = async () => {
+    const createApplicationSummaryData = {
+      status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+      name: formData?.meetingName,
+      meetingDate: formData?.meetingDate,
+      year: formData?.year,
+      month: formData?.month,
+      applicationData: JSON.stringify(selectedApplicationIds),
+    };
 
   const applicationSummeryMutation = formatMutation(
     "createWorkforceApplicationSummary",
@@ -182,6 +184,24 @@ const ForwardApplicationSummaryModal = ({
   setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
 };
 
+  const handleSave = async () => {
+    const createApplicationSummaryData = {
+      status: WORKFORCE_STATUS.MEETING_CREATED,
+      name: formData?.meetingName,
+      meetingDate: formData?.meetingDate,
+      year: formData?.year,
+      month: formData?.month,
+      applicationData: JSON.stringify(selectedApplicationIds),
+    };
+
+    await dispatch(
+      createApplicationSummary(
+        createApplicationSummaryData,
+        "create workforce application summary"
+      )
+    );
+    }
+
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -197,7 +217,7 @@ const ForwardApplicationSummaryModal = ({
           gutterBottom
           style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
         >
-          বিবেচ্য আবেদন সমূহ অ্যাসোসিয়েশন অফিসে পাঠান
+          <FormattedMessage module="workforce" id="workforce.employee.application.forwardToAssociation" />       
         </Typography>
 
         <Typography
@@ -242,8 +262,68 @@ const ForwardApplicationSummaryModal = ({
                   textAlign: "center",
                 }}
               >
-                মিটিং এর তথ্য দিন
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.employee.application.provideMeetingInfo"
+                />
               </Typography>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                select
+                label="বছর"
+                variant="outlined"
+                value={formData?.year || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, year: e.target.value })
+                }
+                required
+              >
+                {[...Array(21)].map((_, index) => {
+                  const year = 2020 + index;
+                  return (
+                    <MenuItem key={year} value={year}>
+                      {year}
+                    </MenuItem>
+                  );
+                })}
+              </TextField>
+            </Grid>
+
+            {/* Month Field */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                select
+                label="মাস"
+                variant="outlined"
+                value={formData?.month || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, month: e.target.value })
+                }
+                required
+              >
+                {[
+                  "জানুয়ারি",
+                  "ফেব্রুয়ারি",
+                  "মার্চ",
+                  "এপ্রিল",
+                  "মে",
+                  "জুন",
+                  "জুলাই",
+                  "আগস্ট",
+                  "সেপ্টেম্বর",
+                  "অক্টোবর",
+                  "নভেম্বর",
+                  "ডিসেম্বর",
+                ].map((month, index) => (
+                  <MenuItem key={index} value={month}>
+                    {month}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Grid>
 
             {/* Meeting Name Field */}
@@ -256,10 +336,8 @@ const ForwardApplicationSummaryModal = ({
                 onChange={(e) =>
                   setFormData({ ...formData, meetingName: e.target.value })
                 }
-                required
               />
             </Grid>
-
             {/* Meeting Date Field */}
             <Grid item xs={12} sm={6}>
               <TextField
@@ -274,7 +352,6 @@ const ForwardApplicationSummaryModal = ({
                 onChange={(e) =>
                   setFormData({ ...formData, meetingDate: e.target.value })
                 }
-                required
               />
             </Grid>
           </Grid>
@@ -283,8 +360,18 @@ const ForwardApplicationSummaryModal = ({
         {/* Action Buttons */}
         <div className={classes.buttonGroup}>
           <Button onClick={onClose} variant="outlined" color="secondary">
-            বাতিল করুন
+            <FormattedMessage module="workforce" id="core.LanguageQuickPicker.dialog.cancel" />
           </Button>
+
+          <Button
+            variant="outlined"
+            color="default"
+            onClick={handleSave} // You must define this function
+            disabled={submitting}
+          >
+            <FormattedMessage module="workforce" id="workforce.save" />
+          </Button>
+
           <Button
             type="submit"
             variant="contained"
