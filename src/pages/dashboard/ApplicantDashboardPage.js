@@ -319,6 +319,8 @@ const ApplicantDashboard = () => {
         return <RevertApplication />;
       case "applicationStatus":
         return <ApplicationStatus />;
+      case "draftApplications":
+        return <ApplicationStatus />;
       default:
         return <FiledApplications />;
     }
