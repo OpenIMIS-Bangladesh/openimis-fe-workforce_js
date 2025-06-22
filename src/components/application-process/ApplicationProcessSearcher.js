@@ -649,9 +649,6 @@ class ApplicationProcessSearcher extends Component {
               justifyContent: "space-between",
             }}
           >
-            <Button variant="outlined" color="error">
-              বন্ধ করুন
-            </Button>
             <Button
               variant="contained"
               color="primary"
