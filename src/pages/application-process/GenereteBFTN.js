@@ -18,6 +18,7 @@ import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
 import { createApplicationSummary } from "../../actions";
 import { useDispatch } from "react-redux";
+import React, { Component } from "react";
 
 const GenerateBFTN = ({ open, onClose, applications = [], userRights }) => {
   const getTotalAmount = () => {

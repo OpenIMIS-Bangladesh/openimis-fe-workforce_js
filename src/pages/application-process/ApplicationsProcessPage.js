@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Fab } from "@material-ui/core";
