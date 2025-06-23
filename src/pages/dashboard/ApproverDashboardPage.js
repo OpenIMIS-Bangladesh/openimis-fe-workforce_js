@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { FormattedMessage } from "@openimis/fe-core";
+import { FormattedMessage,useModulesManager } from "@openimis/fe-core";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Grid,
   List,
@@ -13,10 +14,15 @@ import {
   TextField,
   Button,
   Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
+import { fetchSummaryApplications } from "../../actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,6 +69,30 @@ const useStyles = makeStyles((theme) => ({
   tableHeader: {
     backgroundColor: "#B7D4D8",
   },
+  accordion: {
+  boxShadow: "1px 1px 1px 1px",
+  border: "none",
+  backgroundColor: "white",
+  marginBottom: "12px",
+  borderRadius: "6px",
+  "&::before": {
+    display: "none", // removes default top border
+  },
+},
+accordionSummary: {
+  padding: "8px 16px",
+  backgroundColor: "white",
+  borderRadius: "6px",
+  "& .MuiTypography-root": {
+    color: "#015C63", // teal-like tone
+    fontWeight: 600,
+  },
+},
+accordionDetails: {
+  backgroundColor: "white",
+  padding: "16px",
+  borderTop: "1px solid #ddd",
+},
 }));
 
 const SidebarMenu = [
@@ -99,32 +129,37 @@ const SidebarMenu = [
 
 // ----------- Components to Render in Main Content -----------
 
-const FiledApplications = () =>{ 
+const FiledApplications = ({ summaryData = [] }) => {
   const classes = useStyles()
   return (
-  <>
-    <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.approver.dashboard" />
-    </Typography>
+    <>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.approver.dashboard" />
+      </Typography>
 
-    {/* Table */}
-    <Card className={classes.tableContainer}>
-        <CardContent>
-          <ApplicationProcessSearcher />
-        </CardContent>
-    </Card>
-
-    {/* Pagination */}
-    <div className={classes.pagination}>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.back" />
-      </Button>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.next" />
-      </Button>
-    </div>
-  </>
-);}
+      {/* Render each summaryData item as an accordion */}
+      {summaryData.map((item, index) => (
+        <Accordion key={index} defaultExpanded={false} className={classes.accordion}>
+          <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon  className="material-icons"/>}>
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography variant="body2" color="textSecondary" style={{ marginLeft: 'auto' }}>
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.AccordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                <ApplicationProcessSearcher summaryId={item.id} />
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+    </>
+  );
+};
 
 const ApplicationStatus = () => {
   const classes = useStyles();
@@ -180,12 +215,23 @@ const ApplicationStatus = () => {
 
 const ApproverDashboard = () => {
   const classes = useStyles();
+  const dispatch = useDispatch()
+  const modulesManager = useModulesManager()
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
+  useEffect(() => {
+      return dispatch(fetchSummaryApplications(modulesManager,""));
+    }, []);
+
+  const data = useSelector(
+      (state) => state.workforce[`applicationsSummary`] ?? []
+    );
+  console.clear()
+  console.log("hello i am approver",data)
 
   const renderContent = () => {
     switch (selectedMenu) {
       case "pendingApplications":
-        return <FiledApplications />;
+        return <FiledApplications summaryData={data}/>;
       case "checkedApplications":
         return <FiledApplications />;
       case "recentApplications":
