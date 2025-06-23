@@ -143,7 +143,7 @@ const ForwardApplicationSummaryModal = ({
       meetingDate: formData?.meetingDate,
       year: formData?.year,
       month: formData?.month,
-      organization_type: "cf",
+      organizationType: "cf",
       applicationData: JSON.stringify(selectedApplicationIds),
     };
 
@@ -180,7 +180,7 @@ const ForwardApplicationSummaryModal = ({
   for (const encodedId of selectedApplicationIds) {
      const updateApplicationData = {
        id: decodeId(encodedId),
-       applicationSummaryId: decodeId(applicationSummaryId),
+       cfApplicationSummaryId: decodeId(applicationSummaryId),
        status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
      };
    

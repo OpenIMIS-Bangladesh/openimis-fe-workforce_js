@@ -27,10 +27,7 @@ import DescriptionIcon from "@material-ui/icons/Description";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import RestorePageIcon from '@material-ui/icons/RestorePage';
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
-import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
-import DoneAllIcon from '@material-ui/icons/DoneAll';
+import DraftsIcon from '@material-ui/icons/Drafts';
 import MultiStepApplyForm from "../application/MultiStepApplyForm";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
@@ -47,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   sidebar: {
     position: "sticky",
     top: 0,
-    height: "40vh",
+    height: "45vh",
     overflowY: "auto",
     backgroundColor: theme.palette.background.paper,
     borderRight: `1px solid ${theme.palette.divider}`,
@@ -121,6 +118,13 @@ const SidebarMenu = [
       <FormattedMessage module="workforce" id="workforce.application.status" />
     ),
     icon: <AssignmentIcon  />,
+  },
+  {
+    id: "draftApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.status" />
+    ),
+    icon: <DraftsIcon  />,
   },
   
    

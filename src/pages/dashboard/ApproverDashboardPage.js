@@ -10,26 +10,12 @@ import {
   Typography,
   Card,
   CardContent,
-  Select,
-  MenuItem,
   TextField,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
   Button,
   Paper,
 } from "@material-ui/core";
-
-import DescriptionIcon from "@material-ui/icons/Description";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
-import DoneAllIcon from '@material-ui/icons/DoneAll';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 
 const useStyles = makeStyles((theme) => ({
@@ -121,26 +107,12 @@ const FiledApplications = () =>{
       <FormattedMessage module="workforce" id="workforce.approver.dashboard" />
     </Typography>
 
-    {/* Filters */}
-    {/* <Grid container spacing={2} alignItems="center">
-      <Grid item>
-        <TextField
-        variant="outlined"
-        size="small"
-          // className={classes.searchInput}
-          label={<FormattedMessage module="workforce" id="workforce.search.here" />}
-        />
-      </Grid>
-    </Grid> */}
-
     {/* Table */}
-   <Card className={classes.tableContainer}>
-       <CardContent>
-             <ApplicationProcessSearcher
-                     
-              />
-            </CardContent>
-      </Card>
+    <Card className={classes.tableContainer}>
+        <CardContent>
+          <ApplicationProcessSearcher />
+        </CardContent>
+    </Card>
 
     {/* Pagination */}
     <div className={classes.pagination}>
@@ -153,12 +125,6 @@ const FiledApplications = () =>{
     </div>
   </>
 );}
-
-const checkedApplications = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.new.application" />
-  </Typography>
-);
 
 const ApplicationStatus = () => {
   const classes = useStyles();
@@ -209,19 +175,6 @@ const ApplicationStatus = () => {
     </Card>
   );
 };
-
-
-const HelpAndComplaints = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.help.complain" />
-  </Typography>
-);
-
-const Others = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.others" />
-  </Typography>
-);
 
 // ------------------------------------------------------------
 

@@ -415,6 +415,7 @@
     "workforce.application.date":"Application Date",
     "workforce.application.expected.date":"Probable date of service",
     "workforce.application.status":"Application Status",
+    "workforce.application.draft":"Draft Applications",
     "workforce.application.reverted":"Reverted Application",
     "workforce.application.steps.taken":"Measures taken",
 

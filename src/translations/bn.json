@@ -264,6 +264,7 @@
     "workforce.application.date":"আবেদনের তারিখ",
     "workforce.application.expected.date":"সেবা প্রদানের সম্ভাব্য তারিখ",
     "workforce.application.reverted":"প্রত্যাবর্তিত আবেদন",
+    "workforce.application.draft":"খসড়া আবেদনসমূহ",
     "workforce.application.status":"আবেদনের অবস্থা",
     "workforce.application.steps.taken":"গৃহীত ব্যবস্থা",
     "workforce.application.filed":"দাখিলকৃত আবেদনসমূহ",
