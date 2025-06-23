@@ -206,7 +206,7 @@ const handleSave = async () => {
     meetingDate: formData?.meetingDate,
     year: Number(formData?.year),
     month: formData?.month,
-    organization_type: "cf",
+    organizationType: "cf",
     applicationData: JSON.stringify(selectedApplicationIds),
   };
   const applicationSummeryMutation = formatMutation(
@@ -214,12 +214,35 @@ const handleSave = async () => {
     formatApplicationSummaryGQL(createApplicationSummarySheetData),
     "create workforce application summary"
   )
+  const applicationSummeryClientMutationId = applicationSummeryMutation.clientMutationId;
   await dispatch(
     createApplicationSummary(
       applicationSummeryMutation,
       "create workforce application summary sheet"
     )
   );
+
+   await dispatch(fetchApplicationSummaryByClientMutationId(modulesManager,applicationSummeryClientMutationId))
+        .then((response)=>{
+          applicationSummaryId= response?.payload?.data?.workforceApplicationSummary?.edges?.[0]?.node?.id
+          console.log({applicationSummaryId})
+        })
+
+    if (!applicationSummaryId) {
+    setServerResponse({ status: "ERROR", message: "সারাংশ তৈরি ব্যর্থ হয়েছে!" });
+    return;
+  }
+  for (const encodedId of selectedApplicationIds) {
+     const updateApplicationData = {
+       id: decodeId(encodedId),
+       cfApplicationSummaryId: decodeId(applicationSummaryId),
+       status: WORKFORCE_STATUS.MEETING_CREATED,
+     };
+   
+   await dispatch(
+     updateApplication(updateApplicationData, "update workforce application")
+   );
+  }
 
   setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
 };

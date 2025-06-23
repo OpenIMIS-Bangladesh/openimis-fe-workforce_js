@@ -838,7 +838,7 @@ export function fetchApplicationPackage(mm, filters) {
 
   const projections = [
     "id",
-    "applicationData{id}",
+    "applicationData",
     "meetingDate",
     "status",
     "name",

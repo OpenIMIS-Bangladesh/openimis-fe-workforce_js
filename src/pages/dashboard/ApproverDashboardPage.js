@@ -99,14 +99,14 @@ const SidebarMenu = [
   {
     id: "pendingApplications",
     text: (
-      <FormattedMessage module="workforce" id="workforce.application.pending" />
+      <FormattedMessage module="workforce" id="workforce.employee.application.pendingMeetingSheet" />
     ),
     icon: <HourglassFullTwoToneIcon />,
   },
   {
     id: "checkedApplications",
     text: (
-      <FormattedMessage module="workforce" id="workforce.application.approve.applications" />
+      <FormattedMessage module="workforce" id="workforce.employee.application.approveMeetingSheet" />
     ),
     icon: <CheckCircleOutlineTwoToneIcon />,
   },
@@ -234,7 +234,7 @@ const ApproverDashboard = () => {
   const modulesManager = useModulesManager()
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
   useEffect(() => {
-      return dispatch(fetchSummaryApplications(modulesManager,""));
+      return dispatch(fetchSummaryApplications(modulesManager,['status:"forward_to_comiitee"']));
     }, []);
 
   const data = useSelector(

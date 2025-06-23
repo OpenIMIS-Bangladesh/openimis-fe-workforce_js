@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { FormattedMessage } from "@openimis/fe-core";
+import { FormattedMessage,useModulesManager } from "@openimis/fe-core";
 import {
   Grid,
   List,
@@ -20,8 +20,12 @@ import {
   TableBody,
   Button,
   Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@material-ui/core";
-
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { fetchSummaryApplications } from "../../actions";
 import RestorePageIcon from '@material-ui/icons/RestorePage';
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
@@ -31,6 +35,7 @@ import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
+import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,6 +82,30 @@ const useStyles = makeStyles((theme) => ({
   tableHeader: {
     backgroundColor: "#B7D4D8",
   },
+   accordion: {
+  boxShadow: "1px 1px 1px 1px",
+  border: "none",
+  backgroundColor: "white",
+  marginBottom: "12px",
+  borderRadius: "6px",
+  "&::before": {
+    display: "none",
+  },
+},
+accordionSummary: {
+  padding: "8px 16px",
+  backgroundColor: "white",
+  borderRadius: "6px",
+  "& .MuiTypography-root": {
+    color: "#015C63", // teal-like tone
+    fontWeight: 600,
+  },
+},
+accordionDetails: {
+  backgroundColor: "white",
+  padding: "16px",
+  borderTop: "1px solid #ddd",
+},
 }));
 
 const SidebarMenu = [
@@ -104,9 +133,9 @@ const SidebarMenu = [
   {
       id: "meetingSheetApplication",
       text: (
-        <FormattedMessage module="workforce" id="workforce.employee.application.meetingSheetApplication" />
+        <FormattedMessage module="workforce" id="workforce.employee.application.pendingMeetingSheet" />
       ),
-      icon: <CheckCircleOutlineTwoToneIcon  />,
+      icon: <HourglassFullTwoToneIcon  />,
     },
   // {
   //   id: "recentApplications",
@@ -252,6 +281,38 @@ const RevertApplication = () => {
   </>
 )}
 
+const MeetingSheetApplication = ({ summaryData = [] }) => {
+  const classes = useStyles()
+  return (
+    <>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.checker.dashboard" />
+      </Typography>
+
+      {/* Render each summaryData item as an accordion */}
+      {summaryData.map((item, index) => (
+        <Accordion key={index} defaultExpanded={false} className={classes.accordion}>
+          <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon  className="material-icons"/>}>
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography variant="body2" color="textSecondary" style={{ marginLeft: 'auto' }}>
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.AccordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                <ApplicationProcessSearcher summaryId={item.id} />
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+    </>
+  );
+};
+
 const Others = () => (
   <Typography variant="h5">
     <FormattedMessage module="workforce" id="workforce.others" />
@@ -262,7 +323,15 @@ const Others = () => (
 
 const CheckerDashboard = () => {
   const classes = useStyles();
+  const dispatch = useDispatch()
+  const modulesManager = useModulesManager()
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
+ useEffect(() => {
+      return dispatch(fetchSummaryApplications(modulesManager,['status:"meeting_created"']));
+    }, []);
+  const data = useSelector(
+      (state) => state.workforce[`applicationsSummary`] ?? []
+    );
 
   const renderContent = () => {
     switch (selectedMenu) {
@@ -275,7 +344,7 @@ const CheckerDashboard = () => {
       case "revertedApplication":
         return <RevertApplication />;
       case "meetingSheetApplication":
-        return <FiledApplications />;
+        return <MeetingSheetApplication summaryData={data} />;
       default:
         return <FiledApplications />;
     }

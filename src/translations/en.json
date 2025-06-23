@@ -254,7 +254,8 @@
     "workforce.employee.application.provideMeetingInfo":"Provide meeting information",
     "workforce.employee.application.createMeetingSheet":"Create Meeting Sheet",
     "workforce.employee.application.bulkForward":"Bulk Forward",
-    "workforce.employee.application.meetingSheetApplication":"Meeting Sheet Application",
+    "workforce.employee.application.pendingMeetingSheet":"Pending Meeting Sheet",
+    "workforce.employee.application.approveMeetingSheet":"Approve Meeting Sheet",
 
 
     "workforce.banks.nameEn": "Bank Name En",
