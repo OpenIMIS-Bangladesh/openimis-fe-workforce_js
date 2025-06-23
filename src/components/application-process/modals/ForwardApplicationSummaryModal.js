@@ -130,6 +130,13 @@ const ForwardApplicationSummaryModal = ({
   };
 
   const handleForward = async () => {
+    if (!formData?.year || !formData?.month) {
+    setServerResponse({
+      status: "ERROR",
+      message: "সকল আবশ্যিক ফিল্ড পূরণ করুন।",
+    });
+    return;
+  }
     const createApplicationSummaryData = {
       status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
       name: formData?.meetingName,
@@ -186,6 +193,13 @@ const ForwardApplicationSummaryModal = ({
 };
 
 const handleSave = async () => {
+  if (!formData?.year || !formData?.month) {
+    setServerResponse({
+      status: "ERROR",
+      message: "সকল আবশ্যিক ফিল্ড পূরণ করুন।",
+    });
+    return;
+  }
   const createApplicationSummarySheetData = {
     status: WORKFORCE_STATUS.MEETING_CREATED,
     name: formData?.meetingName,
@@ -388,7 +402,7 @@ const handleSave = async () => {
             disabled={submitting}
             onClick={handleForward}
           >
-            {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"}
+            <FormattedMessage module="workforce" id="workforce.employee.application.forwardTo" />
           </Button>
         </div>
       </form>

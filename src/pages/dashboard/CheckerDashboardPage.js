@@ -101,6 +101,13 @@ const SidebarMenu = [
       ),
       icon: <RestorePageIcon  />,
     },
+  {
+      id: "meetingSheetApplication",
+      text: (
+        <FormattedMessage module="workforce" id="workforce.employee.application.meetingSheetApplication" />
+      ),
+      icon: <CheckCircleOutlineTwoToneIcon  />,
+    },
   // {
   //   id: "recentApplications",
   //   text: (
@@ -267,6 +274,8 @@ const CheckerDashboard = () => {
         return <FiledApplications />;
       case "revertedApplication":
         return <RevertApplication />;
+      case "meetingSheetApplication":
+        return <FiledApplications />;
       default:
         return <FiledApplications />;
     }
