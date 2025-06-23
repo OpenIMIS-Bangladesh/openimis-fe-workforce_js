@@ -130,28 +130,42 @@ const SidebarMenu = [
 // ----------- Components to Render in Main Content -----------
 
 const FiledApplications = ({ summaryData = [] }) => {
-  const classes = useStyles()
+  const classes = useStyles();
+  const [expanded, setExpanded] = useState(null);
+
+  const handleChange = (panelId) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panelId : null);
+  };
+
   return (
     <>
       <Typography variant="h5" gutterBottom>
         <FormattedMessage module="workforce" id="workforce.approver.dashboard" />
       </Typography>
 
-      {/* Render each summaryData item as an accordion */}
       {summaryData.map((item, index) => (
-        <Accordion key={index} defaultExpanded={false} className={classes.accordion}>
-          <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon  className="material-icons"/>}>
+        <Accordion
+          key={index}
+          expanded={expanded === item.id}
+          onChange={handleChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
             <Typography variant="subtitle1" style={{ flex: 1 }}>
               <strong>{item.name}</strong>
             </Typography>
-            <Typography variant="body2" color="textSecondary" style={{ marginLeft: 'auto' }}>
+            <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
               {item.meetingDate} | {item.month} {item.year}
             </Typography>
           </AccordionSummary>
-          <AccordionDetails className={classes.AccordionDetails}>
+          <AccordionDetails className={classes.accordionDetails}>
             <Card style={{ width: "100%" }}>
               <CardContent>
-                <ApplicationProcessSearcher summaryId={item.id} />
+                {/* 👇 Only render when this accordion is expanded */}
+                {expanded === item.id && <ApplicationProcessSearcher summaryId={item.id} />}
               </CardContent>
             </Card>
           </AccordionDetails>
@@ -160,6 +174,7 @@ const FiledApplications = ({ summaryData = [] }) => {
     </>
   );
 };
+
 
 const ApplicationStatus = () => {
   const classes = useStyles();

@@ -854,26 +854,7 @@ export function fetchApplicationPackage(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_APPLICATION_SUMMARY");
 }
-export function fetchApplicationPackagesSummary(mm, filters) {
 
-  const projections = [
-    "id",
-    "applicationData{id}",
-    "meetingDate",
-    "status",
-    "name",
-    "remarks",
-    "year",
-    "month",
-    "organizationType",
-  ];
-  const payload = formatPageQueryWithCount(
-    "workforceApplicationSummary",
-    filters,
-    projections
-  );
-  return graphql(payload, "WORKFORCE_APPLICATION_SUMMARIES");
-}
 
 export function fetchWorkforceEmployee(mm, filters) {
   // const present_location_projection =

@@ -159,7 +159,7 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-          ['statusIn: ["forward_to_comiitee", "selected"]', 'orderBy: ["-dateCreated"]']
+          [`statusIn: ["forward_to_comiitee", "selected"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
       );
     }
     // else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
@@ -581,7 +581,7 @@ class ApplicationProcessSearcher extends Component {
       userName,
       revertedApplication,
       organizationEmployee,
-      
+      summaryId
     } = this.props;
 
     // this.getUserOrganization(userId)
@@ -599,7 +599,7 @@ class ApplicationProcessSearcher extends Component {
       />
     );
 
-    console.log({ revertedApplication });
+    console.log({ summaryId });
     console.log(itemAdminFormatters(this.isShowHistory,modulesManager,history,this))
 
     return (

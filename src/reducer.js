@@ -320,11 +320,7 @@ function reducer(
     applicationMovementPageInfo: { totalCount: 0 },
 
     ////Application summary states
-    fetchingApplicationSummaries: false,
-    errorApplicationSummaries: null,
-    fetchedApplicationSummaries: false,
-    applicationSummaries: [],
-    applicationSummariesPageInfo: { totalCount: 0 },
+   
 
     fetchingApplicationSummary: false,
     errorApplicationSummary: null,
@@ -1527,30 +1523,6 @@ function reducer(
           };
  
           /// Application summary actions////
-    case "WORKFORCE_APPLICATION_SUMMARIES_REQ":
-      return {
-        ...state,
-        fetchingApplicationSummaries: true,
-        fetchedApplicationSummaries: false,
-        applicationSummaries: [],
-        applicationSummariesPageInfo: { totalCount: 0 },
-        errorApplicationSummaries: null,
-      };
-    case "WORKFORCE_APPLICATION_SUMMARIES_RESP":
-      return {
-        ...state,
-        fetchingApplicationSummaries: false,
-        fetchedApplicationSummaries: true,
-        applicationSummaries: parseData(action.payload.data.workforceApplicationSummary),
-        applicationSummariesPageInfo: pageInfo(action.payload.data.workforceApplicationSummary),
-        errorApplicationSummaries: formatGraphQLError(action.payload),
-      };
-    case "WORKFORCE_APPLICATION_SUMMARIES_ERR":
-      return {
-        ...state,
-        fetching: false,
-        error: formatServerError(action.payload),
-      };
     
     case "WORKFORCE_APPLICATION_SUMMARY_REQ":
         return {
