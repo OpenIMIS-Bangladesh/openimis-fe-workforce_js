@@ -281,6 +281,12 @@ function reducer(
     applications: [],
     applicationsPageInfo: { totalCount: 0 },
 
+    fetchingApplicationsSummary: false,
+    errorApplicationsSummary: null,
+    fetchedApplicationsSummary: false,
+    applicationsSummary: [],
+    applicationsSummaryPageInfo: { totalCount: 0 },
+
     fetchingApplication: false,
     errorApplication: null,
     fetchedApplication: false,
@@ -1419,6 +1425,31 @@ function reducer(
         errorApplications: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_APPLICATIONS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
+    case "WORKFORCE_APPLICATIONS_SUMMARY_REQ":
+      return {
+        ...state,
+        fetchingApplicationsSummary: true,
+        fetchedApplicationsSummary: false,
+        applicationsSummary: [],
+        applicationsSummaryPageInfo: { totalCount: 0 },
+        errorApplicationsSummary: null,
+      };
+    case "WORKFORCE_APPLICATIONS_SUMMARY_RESP":
+      return {
+        ...state,
+        fetchingApplicationsSummary: false,
+        fetchedApplicationsSummary: true,
+        applicationsSummary: parseData(action.payload.data.workforceApplicationSummary),
+        applicationsSummaryPageInfo: pageInfo(action.payload.data.workforceApplicationSummary),
+        errorApplicationsSummary: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_APPLICATIONS_SUMMARY_ERR":
       return {
         ...state,
         fetching: false,
