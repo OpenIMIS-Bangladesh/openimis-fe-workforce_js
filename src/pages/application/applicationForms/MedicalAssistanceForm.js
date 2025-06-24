@@ -59,7 +59,7 @@ const MedicalAssistanceForm = ({
   organizationType,
   selectedApplicationType,
   applicationForSelf,
-
+  parsedApplicationData
 }) => {
   const employeeData = useSelector(
     (state) => state.workforce["workforceEmployee"] ?? []
@@ -75,7 +75,7 @@ const MedicalAssistanceForm = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [parsedApplicationData, setParsedApplicationData] = useState(null)
+  // const [parsedApplicationData, setParsedApplicationData] = useState(null)
   const reduxState = useSelector((state) => state);
 
   const [formData, setFormData] = useState({
@@ -183,7 +183,7 @@ const MedicalAssistanceForm = ({
         company: employeeData.company || null,
         factory: employeeData.factory || null,
         applicationForSelf: applicationForSelf,
-        organizationType: parsedApplicationData.organizationType ||organizationType,
+        organizationType: parsedApplicationData.organizationType,
         applicationType: parsedApplicationData.applicationType||selectedApplicationType,
         dependents: parsedApplicationData.employeeDependentInfo || employeeData.dependents || [{}],
         employeeBankInfo: parsedApplicationData.employeeBankInfo ||employeeData.employeeBankInfo || {},
@@ -346,10 +346,10 @@ const MedicalAssistanceForm = ({
       ).then(async(b)=>{
         const rawId = b?.payload?.data?.workforceApplication?.edges?.[0]?.node?.id; 
         if (rawId) {
-            const filters = [`id: "${decodeId(rawId)}"`];
+          const filters = [`id: "${decodeId(rawId)}"`];
           const parsedData = await dispatch(getParsedApplication(modulesManager, filters));
           console.log("Parsed application data:", parsedData);
-          setParsedApplicationData(parsedData)
+          // setParsedApplicationData(parsedData)
         }
       })
 

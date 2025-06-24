@@ -141,21 +141,24 @@ const FiledApplications = () =>{
     </Typography>
    <Card className={classes.tableContainer}>
        <CardContent>
-             <ApplicationProcessSearcher
-                     
-              />
-            </CardContent>
-      </Card>
+             <ApplicationProcessSearcher />
+        </CardContent>
+    </Card>
+  </>
+);}
 
-    {/* Pagination */}
-    <div className={classes.pagination}>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.back" />
-      </Button>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.next" />
-      </Button>
-    </div>
+const DraftApplications = () =>{ 
+  const classes = useStyles()
+  return (
+  <>
+    <Typography variant="h5" gutterBottom>
+      <FormattedMessage module="workforce" id="workforce.applicant.dashboard" />
+    </Typography>
+   <Card className={classes.tableContainer}>
+       <CardContent>
+             <ApplicationProcessSearcher applicationStatus={"draft"}/>
+        </CardContent>
+    </Card>
   </>
 );}
 
@@ -301,13 +304,6 @@ const RevertApplication = () => {
   </>
 )}
 
-const Others = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.others" />
-  </Typography>
-);
-
-// ------------------------------------------------------------
 
 const ApplicantDashboard = () => {
   const classes = useStyles();
@@ -324,7 +320,7 @@ const ApplicantDashboard = () => {
       case "applicationStatus":
         return <ApplicationStatus />;
       case "draftApplications":
-        return <ApplicationStatus />;
+        return <DraftApplications />;
       default:
         return <FiledApplications />;
     }

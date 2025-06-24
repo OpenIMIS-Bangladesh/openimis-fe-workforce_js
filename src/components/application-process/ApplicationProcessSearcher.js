@@ -178,6 +178,12 @@ class ApplicationProcessSearcher extends Component {
         //  ['statusIn: ["revert_to_applicant"]', 'orderBy: ["-dateCreated"]']
         // prms
       );
+      }else if (this.props.applicationStatus){
+        this.props.fetchApplicationsSummary(
+          this.props.modulesManager,
+        [`statusIn: ["draft"], orderBy: ["-dateCreated"]`]
+          // prms
+        );
       }else {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
@@ -581,7 +587,8 @@ class ApplicationProcessSearcher extends Component {
       userName,
       revertedApplication,
       organizationEmployee,
-      summaryId
+      summaryId,
+      applicationStatus
     } = this.props;
 
     // this.getUserOrganization(userId)

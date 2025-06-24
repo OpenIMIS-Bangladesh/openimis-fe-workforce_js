@@ -263,6 +263,7 @@ const DEFAULT_CONFIG = {
     { path: `${ROUTE_WORKFORCE_BANKS_BANK}/:bank_uuid`, component: WorkforceBankPage },
 
     { path: ROUTE_WORKFORCE_APPLICATION, component: MultiStepApplyForm },
+    { path: `${ROUTE_WORKFORCE_APPLICATION}/:application_uuid`, component: MultiStepApplyForm },
     { path: ROUTE_WORKFORCE_APPLICATIONS_PROCESS, component: ApplicationsProcessPage },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS, component: ApplicationProcessPage },
     {

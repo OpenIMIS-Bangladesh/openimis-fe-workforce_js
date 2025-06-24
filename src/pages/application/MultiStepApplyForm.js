@@ -1,7 +1,23 @@
-import React, { useState } from "react";
-import { useModulesManager, formatMutation, decodeId,FormattedMessage } from "@openimis/fe-core";
-import { Paper, Button,IconButton,Typography,FormControl, FormControlLabel, Radio, RadioGroup } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import {
+  useModulesManager,
+  formatMutation,
+  decodeId,
+  FormattedMessage,
+  useParams,
+} from "@openimis/fe-core";
+import {
+  Paper,
+  Button,
+  IconButton,
+  Typography,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useDispatch, useSelector } from "react-redux";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ApplicationTypeSelector from "./ApplicationTypeSelector";
 import MedicalAssistanceForm from "./applicationForms/MedicalAssistanceForm";
@@ -10,6 +26,7 @@ import DisabilityForm from "./applicationForms/DisabilityForm";
 import EducationGrantForm from "./applicationForms/EducationGrantForm";
 import FinancialAssistanceForm from "./applicationForms/FinancialAssistanceForm";
 import ScholarshipApplicationForm from "./applicationForms/ScholarshipApplicationForm";
+import { getParsedApplication } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -17,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
   },
-  subPaper : {
+  subPaper: {
     padding: theme.spacing(1),
     width: "100%", // Ensures it doesn't overflow
     maxWidth: 650, // Restrict max width
@@ -42,21 +59,48 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     fontWeight: "bold",
   },
-  title:{
-    fontWeight:800
+  title: {
+    fontWeight: 800,
   },
-  section:{
+  section: {
     marginTop: theme.spacing(1),
-  }
+  },
 }));
 
 const MultiStepApplyForm = ({ modulesManager }) => {
   const classes = useStyles();
-  const [selectedApplicationType, setSelectedApplicationType] = useState('');
+  const { application_uuid } = useParams();
+  const dispatch = useDispatch();
+  const [selectedApplicationType, setSelectedApplicationType] = useState("");
   const [organizationType, setOrganizationType] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [applicationForSelf, setApplicationForSelf] = useState("");
-  
+  const [parsedApplicationData, setParsedApplicationData] = useState();
+  console.log({ application_uuid });
+
+  useEffect(async () => {
+    const fetchData = async () => {
+      const filters = [`id: "${application_uuid}"`];
+      const parsedData = await dispatch(
+        getParsedApplication(modulesManager, filters)
+      );
+      setParsedApplicationData(parsedData); // <- parsed data will now be set correctly
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!parsedApplicationData?.employeeDependentInfo) return;
+    const hasNoDependents =
+      parsedApplicationData?.employeeDependentInfo.length === 0 ||
+      parsedApplicationData?.employeeDependentInfo.every(
+        (dep) => Object.keys(dep).length === 0
+      );
+
+    setApplicationForSelf(hasNoDependents ? "yes" : "no");
+    
+  }, [parsedApplicationData]);
 
   const handleSelection = (applicationType, exportStatus) => {
     setSelectedApplicationType(applicationType);
@@ -69,7 +113,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
 
   const handleBack = () => {
     setShowForm(false);
-    setApplicationForSelf("")
+    setApplicationForSelf("");
   };
 
   const handleApplicationFor = (event) => {
@@ -78,8 +122,8 @@ const MultiStepApplyForm = ({ modulesManager }) => {
     // onSelect(selectedApplicationType, value); // Pass both selections
   };
 
+  console.log({ parsedApplicationData });
   console.log({ organizationType });
-  console.log({ selectedApplicationType });
 
   return (
     <div className={classes.container}>
@@ -90,6 +134,7 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               modulesManager={modulesManager}
               onSelect={handleSelection}
               selectedApplicationType={selectedApplicationType}
+              parsedApplicationData={parsedApplicationData}
             />
             <div className={classes.buttonContainer}>
               <Button
@@ -110,30 +155,61 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage module="workforce" id="workforce.back.application.type" />
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.back.application.type"
+                />
               </Typography>
             </div>
-            {applicationForSelf === "" ?(
-            <Paper className={classes.subPaper} elevation={0}>
-                  <FormControl component="fieldset">
-                    {/* New Export-Oriented Company Question */}
-                    <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
-                      {<FormattedMessage id="workforce.application.for" module="workforce"/>}
-                    </Typography>
-                    <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
-                      <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>} />
-                      <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>} />
-                    </RadioGroup>
-                  </FormControl>
-            </Paper>
+            {applicationForSelf === "" ? (
+              <Paper className={classes.subPaper} elevation={0}>
+                <FormControl component="fieldset">
+                  {/* New Export-Oriented Company Question */}
+                  <Typography
+                    variant="h6"
+                    className={`${classes.title} ${classes.section}`}
+                  >
+                    {
+                      <FormattedMessage
+                        id="workforce.application.for"
+                        module="workforce"
+                      />
+                    }
+                  </Typography>
+                  <RadioGroup
+                    value={applicationForSelf}
+                    onChange={handleApplicationFor}
+                  >
+                    <FormControlLabel
+                      value="yes"
+                      control={<Radio color="primary" />}
+                      label={
+                        <FormattedMessage
+                          id="workforce.application.for.type.self"
+                          module="workforce"
+                        />
+                      }
+                    />
+                    <FormControlLabel
+                      value="no"
+                      control={<Radio color="primary" />}
+                      label={
+                        <FormattedMessage
+                          id="workforce.application.for.type.dependent"
+                          module="workforce"
+                        />
+                      }
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Paper>
             ) : (
-            <MedicalDonationForm
-              modulesManager={modulesManager}
-              organizationType={organizationType}
-              selectedApplicationType={selectedApplicationType}
-              applicationForSelf={applicationForSelf}
-              
-            />
+              <MedicalDonationForm
+                modulesManager={modulesManager}
+                organizationType={organizationType}
+                selectedApplicationType={selectedApplicationType}
+                applicationForSelf={applicationForSelf}
+              />
             )}
           </>
         ) : selectedApplicationType === "medicalAssistance" ? (
@@ -144,41 +220,76 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage module="workforce" id="workforce.back.application.type" />
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.back.application.type"
+                />
               </Typography>
             </div>
-            {applicationForSelf === "" ?(
-            <Paper className={classes.subPaper} elevation={0}>
-                  <FormControl component="fieldset">
-                    {/* New Export-Oriented Company Question */}
-                    <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
-                      {<FormattedMessage id="workforce.application.for" module="workforce"/>}
-                    </Typography>
-                    <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
-                      <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>} />
-                      <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>} />
-                    </RadioGroup>
-                  </FormControl>
-            </Paper>
+            {applicationForSelf === "" ? (
+              <Paper className={classes.subPaper} elevation={0}>
+                <FormControl component="fieldset">
+                  {/* New Export-Oriented Company Question */}
+                  <Typography
+                    variant="h6"
+                    className={`${classes.title} ${classes.section}`}
+                  >
+                    {
+                      <FormattedMessage
+                        id="workforce.application.for"
+                        module="workforce"
+                      />
+                    }
+                  </Typography>
+                  <RadioGroup
+                    value={applicationForSelf}
+                    onChange={handleApplicationFor}
+                  >
+                    <FormControlLabel
+                      value="yes"
+                      control={<Radio color="primary" />}
+                      label={
+                        <FormattedMessage
+                          id="workforce.application.for.type.self"
+                          module="workforce"
+                        />
+                      }
+                    />
+                    <FormControlLabel
+                      value="no"
+                      control={<Radio color="primary" />}
+                      label={
+                        <FormattedMessage
+                          id="workforce.application.for.type.dependent"
+                          module="workforce"
+                        />
+                      }
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Paper>
             ) : (
-            <MedicalAssistanceForm
-              modulesManager={modulesManager}
-              organizationType={organizationType}
-              selectedApplicationType={selectedApplicationType}
-              applicationForSelf={applicationForSelf}
-              
-            />
+              <MedicalAssistanceForm
+                modulesManager={modulesManager}
+                organizationType={organizationType}
+                parsedApplicationData={parsedApplicationData}
+                selectedApplicationType={selectedApplicationType}
+                applicationForSelf={applicationForSelf}
+              />
             )}
           </>
         ) : selectedApplicationType === "disabilityAssistance" ? (
           <>
-           <div className={classes.backButtonContainer}>
+            <div className={classes.backButtonContainer}>
               <IconButton onClick={handleBack} color="primary">
                 <ArrowBackIcon />
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage module="workforce" id="workforce.back.application.type" />
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.back.application.type"
+                />
               </Typography>
             </div>
             <DisabilityForm
@@ -186,7 +297,6 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
               applicationForSelf={applicationForSelf}
-              
             />
           </>
         ) : selectedApplicationType === "educationGrant" ? (
@@ -197,33 +307,64 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage module="workforce" id="workforce.back.application.type" />
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.back.application.type"
+                />
               </Typography>
             </div>
-            {applicationForSelf === "" ?(
-            <Paper className={classes.subPaper} elevation={0}>
-                  <FormControl component="fieldset">
-                    {/* New Export-Oriented Company Question */}
-                    <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
-                      {<FormattedMessage id="workforce.application.for" module="workforce"/>}
-                    </Typography>
-                    <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
-                      <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>} />
-                      <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>} />
-                    </RadioGroup>
-                  </FormControl>
-            </Paper>
+            {applicationForSelf === "" ? (
+              <Paper className={classes.subPaper} elevation={0}>
+                <FormControl component="fieldset">
+                  {/* New Export-Oriented Company Question */}
+                  <Typography
+                    variant="h6"
+                    className={`${classes.title} ${classes.section}`}
+                  >
+                    {
+                      <FormattedMessage
+                        id="workforce.application.for"
+                        module="workforce"
+                      />
+                    }
+                  </Typography>
+                  <RadioGroup
+                    value={applicationForSelf}
+                    onChange={handleApplicationFor}
+                  >
+                    <FormControlLabel
+                      value="yes"
+                      control={<Radio color="primary" />}
+                      label={
+                        <FormattedMessage
+                          id="workforce.application.for.type.self"
+                          module="workforce"
+                        />
+                      }
+                    />
+                    <FormControlLabel
+                      value="no"
+                      control={<Radio color="primary" />}
+                      label={
+                        <FormattedMessage
+                          id="workforce.application.for.type.dependent"
+                          module="workforce"
+                        />
+                      }
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Paper>
             ) : (
-            <EducationGrantForm
-              modulesManager={modulesManager}
-              organizationType={organizationType}
-              selectedApplicationType={selectedApplicationType}
-              applicationForSelf={applicationForSelf}
-              
-            />
+              <EducationGrantForm
+                modulesManager={modulesManager}
+                organizationType={organizationType}
+                selectedApplicationType={selectedApplicationType}
+                applicationForSelf={applicationForSelf}
+              />
             )}
           </>
-        ) :selectedApplicationType === "financialAssistance"? (
+        ) : selectedApplicationType === "financialAssistance" ? (
           <>
             <div className={classes.backButtonContainer}>
               <IconButton onClick={handleBack} color="primary">
@@ -231,17 +372,19 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage module="workforce" id="workforce.back.application.type" />
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.back.application.type"
+                />
               </Typography>
             </div>
             <FinancialAssistanceForm
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
-              
             />
           </>
-        ) :selectedApplicationType === "scholarship"? (
+        ) : selectedApplicationType === "scholarship" ? (
           <>
             <div className={classes.backButtonContainer}>
               <IconButton onClick={handleBack} color="primary">
@@ -249,33 +392,64 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage module="workforce" id="workforce.back.application.type" />
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.back.application.type"
+                />
               </Typography>
             </div>
-            {applicationForSelf === "" ?(
-            <Paper className={classes.subPaper} elevation={0}>
-                  <FormControl component="fieldset">
-                    {/* New Export-Oriented Company Question */}
-                    <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
-                      {<FormattedMessage id="workforce.application.for" module="workforce"/>}
-                    </Typography>
-                    <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
-                      <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>} />
-                      <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>} />
-                    </RadioGroup>
-                  </FormControl>
-            </Paper>
+            {applicationForSelf === "" ? (
+              <Paper className={classes.subPaper} elevation={0}>
+                <FormControl component="fieldset">
+                  {/* New Export-Oriented Company Question */}
+                  <Typography
+                    variant="h6"
+                    className={`${classes.title} ${classes.section}`}
+                  >
+                    {
+                      <FormattedMessage
+                        id="workforce.application.for"
+                        module="workforce"
+                      />
+                    }
+                  </Typography>
+                  <RadioGroup
+                    value={applicationForSelf}
+                    onChange={handleApplicationFor}
+                  >
+                    <FormControlLabel
+                      value="yes"
+                      control={<Radio color="primary" />}
+                      label={
+                        <FormattedMessage
+                          id="workforce.application.for.type.self"
+                          module="workforce"
+                        />
+                      }
+                    />
+                    <FormControlLabel
+                      value="no"
+                      control={<Radio color="primary" />}
+                      label={
+                        <FormattedMessage
+                          id="workforce.application.for.type.dependent"
+                          module="workforce"
+                        />
+                      }
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Paper>
             ) : (
-            <ScholarshipApplicationForm
-              modulesManager={modulesManager}
-              organizationType={organizationType}
-              selectedApplicationType={selectedApplicationType}
-              applicationForSelf={applicationForSelf}
-              
-            />
+              <ScholarshipApplicationForm
+                modulesManager={modulesManager}
+                organizationType={organizationType}
+                selectedApplicationType={selectedApplicationType}
+                applicationForSelf={applicationForSelf}
+              />
             )}
           </>
-        ) :selectedApplicationType === "deadlyGrant"? (
+        ) : selectedApplicationType === "deadlyGrant" ? (
           <>
             <div className={classes.backButtonContainer}>
               <IconButton onClick={handleBack} color="primary">
@@ -283,17 +457,19 @@ const MultiStepApplyForm = ({ modulesManager }) => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage module="workforce" id="workforce.back.application.type" />
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.back.application.type"
+                />
               </Typography>
             </div>
             <FinancialAssistanceForm
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
-              
             />
           </>
-        ): (
+        ) : (
           <div>Please select an application type</div>
         )}
       </Paper>

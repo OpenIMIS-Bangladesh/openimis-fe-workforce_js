@@ -33,6 +33,16 @@ export function getUserTypeFromRights(user_rights) {
   return user_type;
 }
 
+const safeParse = (str) => {
+  try {
+    if (!str) return null;
+    const once = JSON.parse(str);     // first parse
+    return typeof once === 'string' ? JSON.parse(once) : once; // second parse if needed
+  } catch (e) {
+    console.warn("Parsing failed for:", str);
+    return null;
+  }
+};
 
 export const getParsedApplication = (modulesManager, filters) => {
   console.log('hello from getParsedApplication',filters)
@@ -55,15 +65,9 @@ export const getParsedApplication = (modulesManager, filters) => {
       // Parse the JSON fields safely
       const parsedData = {
         ...rawData,
-        employeeDependentInfo: rawData.employeeDependentInfo 
-          ? JSON.parse(rawData.employeeDependentInfo.replace(/^"|"$/g, ''))
-          : [],
-        employeeBankInfo: rawData.employeeBankInfo 
-          ? JSON.parse(rawData.employeeBankInfo.replace(/^"|"$/g, ''))
-          : {},
-        employeeAccidentInfo: rawData.employeeAccidentInfo 
-          ? JSON.parse(rawData.employeeAccidentInfo.replace(/^"|"$/g, ''))
-          : null,
+        employeeDependentInfo: safeParse(rawData.employeeDependentInfo) || [],
+        employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
+        employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo),
       };
 
       return parsedData;

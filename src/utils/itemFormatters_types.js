@@ -4,6 +4,7 @@
   import UndoIcon from "@material-ui/icons/Undo";
   import CloseIcon from "@material-ui/icons/Close";
   import RestorePageIcon from '@material-ui/icons/RestorePage';
+  import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
   import HistoryIcon from "@material-ui/icons/History";
   import {
   Tab as TabIcon,
@@ -106,6 +107,8 @@ import {
 
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
+        {!component.props.applicationStatus ? (
+        <>
         <Tooltip title="ভিউ">
           <IconButton
             disabled={application?.isHistory}
@@ -154,6 +157,25 @@ import {
             <RestorePageIcon />
           </IconButton>
         </Tooltip>
+        </>
+        ):(
+        <Tooltip title="পুনরায় কোরুন">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.application",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <DoubleArrowIcon />
+          </IconButton>
+        </Tooltip>
+        )}
       </div>
     ));
     return formatters;
