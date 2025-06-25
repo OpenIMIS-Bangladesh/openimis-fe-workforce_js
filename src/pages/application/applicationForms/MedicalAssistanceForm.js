@@ -146,8 +146,9 @@ const MedicalAssistanceForm = ({
     if (employeeData) {
       // When employeeData is fetched, set it into the form state
       setFormData({
-        id: employeeData.id || "",
+        id: parsedApplicationData?.id || "",
         workforceEmployee: {
+          id: employeeData.id || "",
           organization: employeeData.organization,
           nameEn: employeeData.firstNameEn || "",
           nameBn: employeeData.firstNameBn || "",
@@ -183,11 +184,11 @@ const MedicalAssistanceForm = ({
         company: employeeData.company || null,
         factory: employeeData.factory || null,
         applicationForSelf: applicationForSelf,
-        organizationType: parsedApplicationData.organizationType,
-        applicationType: parsedApplicationData.applicationType||selectedApplicationType,
-        dependents: parsedApplicationData.employeeDependentInfo || employeeData.dependents || [{}],
-        employeeBankInfo: parsedApplicationData.employeeBankInfo ||employeeData.employeeBankInfo || {},
-        employeeAccidentInfo: parsedApplicationData.employeeAccidentInfo ||employeeData.employeeAccidentInfo || {},
+        organizationType: parsedApplicationData?.organizationType ||organizationType,
+        applicationType: parsedApplicationData?.applicationType||selectedApplicationType,
+        dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || [{}],
+        employeeBankInfo: parsedApplicationData?.employeeBankInfo ||employeeData?.employeeBankInfo || {},
+        employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo ||employeeData.employeeAccidentInfo || {},
       });
     }
   }, [employeeData?.id,parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.
@@ -214,7 +215,7 @@ const MedicalAssistanceForm = ({
     console.log(activeStep);
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
-    if (nextStep === 0 || nextStep === 1) {
+    if (nextStep === 1 || nextStep === 2) {
       // const nidValue = formData?.workforceEmployee?.nid;
 
       const workforceEmployeeData = {
@@ -308,10 +309,10 @@ const MedicalAssistanceForm = ({
       //   )
       // );
 
-    } else if (nextStep === 2) {
+    } else if (nextStep === 3) {
       console.log("Create application formData:", formData);
       const createApplicationData = {
-        workforceEmployeeId: formData.id,
+        // workforceEmployeeId:decodeId(formData?.workforceEmployee?.id) || decodeId(parsedApplicationData?.workforceEmployee?.id),
         company: formData.company,
         factory: formData.factory,
         organizationType: formData.organizationType,
@@ -322,36 +323,46 @@ const MedicalAssistanceForm = ({
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents),
         employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo),
-        status: WORKFORCE_STATUS.NEW,
+        status: WORKFORCE_STATUS.DRAFT
       };
 
       console.log({ createApplicationData });
-
-      const applicationMutation = formatMutation(
-        "createWorkforceApplication",
-        formatApplicationeGQL(createApplicationData),
-        `Created application ${formData.nameEn}`
-      );
-      const applicationClientMutationId = applicationMutation.clientMutationId;
-      console.log("applicationClientMutationId", applicationClientMutationId);
-      dispatch(
-        createApplication(
-          applicationMutation,
-          `Created workforce application ${formData.firstNameEn}`
+      if (!parsedApplicationData) {
+        const applicationMutation = formatMutation(
+          "createWorkforceApplication",
+          formatApplicationeGQL(createApplicationData),
+          `Created application ${formData.nameEn}`
+        );
+        const applicationClientMutationId = applicationMutation.clientMutationId;
+        console.log("applicationClientMutationId", applicationClientMutationId);
+        dispatch(
+          createApplication(
+            applicationMutation,
+            `Created workforce application ${formData.firstNameEn}`
+          )
+        );
+  
+        await dispatch(
+          fetchApplicationId(modulesManager, applicationClientMutationId)
+        ).then(async(b)=>{
+          const rawId = b?.payload?.data?.workforceApplication?.edges?.[0]?.node?.id; 
+          if (rawId) {
+            const filters = [`id: "${decodeId(rawId)}"`];
+            const parsedData = await dispatch(getParsedApplication(modulesManager, filters));
+            console.log("Parsed application data:", parsedData);
+            // setParsedApplicationData(parsedData)
+          }
+        })
+      }else{
+        const updateApplicationData = {id:parsedApplicationData?.id,...createApplicationData}
+        console.log("i am from update",updateApplicationData)
+        dispatch(
+        updateApplication(
+          updateApplicationData,
+          `update workforce application ${formData.firstNameEn}`
         )
       );
-
-      await dispatch(
-        fetchApplicationId(modulesManager, applicationClientMutationId)
-      ).then(async(b)=>{
-        const rawId = b?.payload?.data?.workforceApplication?.edges?.[0]?.node?.id; 
-        if (rawId) {
-          const filters = [`id: "${decodeId(rawId)}"`];
-          const parsedData = await dispatch(getParsedApplication(modulesManager, filters));
-          console.log("Parsed application data:", parsedData);
-          // setParsedApplicationData(parsedData)
-        }
-      })
+      }
 
     } else {
       console.log("hello faltu")
@@ -366,18 +377,19 @@ const MedicalAssistanceForm = ({
       //   //   console.error("Failed to get parsed application:", error);
       //   // });
       const updateApplicationData = {
-        id: decodeId(applicationId[0].id),
-        workforceEmployeeId: formData.id,
+        id: applicationId[0]?.id || parsedApplicationData?.id,
+        //workforceEmployeeId: decodeId(formData?.workforceEmployee.id) ||decodeId(parsedApplicationData?.workforceEmployee?.id),
         company: formData.company,
         factory: formData.factory,
-        organizationType: organizationType,
-        applicationType: selectedApplicationType,
-        employeeDesignationInfo: formData.employeeDesignationInfo,
-        employeeBankInfo: formData.employeeBankInfo,
-        employeeDependentInfo: formData.dependents,
-        employeeAccidentInfo: formData.employeeAccidentInfo,
-        status: WORKFORCE_STATUS.NEW,
+        organizationType: organizationType ||parsedApplicationData?.organizationType,
+        applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+        employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
+        employeeDependentInfo:JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+        employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+        status: WORKFORCE_STATUS.DRAFT,
       };
+
+      console.log("i am from accident info",updateApplicationData)
       dispatch(
         updateApplication(
           updateApplicationData,
@@ -466,7 +478,7 @@ const MedicalAssistanceForm = ({
           handleChange={(key, value) =>
             handleChange(key, value, "employeeBankInfo")
           }
-          formData={formData.employeeBankInfo}
+          formData={formData?.employeeBankInfo}
         />
       ),
     },

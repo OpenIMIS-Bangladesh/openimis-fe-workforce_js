@@ -67,16 +67,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MultiStepApplyForm = ({ modulesManager }) => {
+const MultiStepApplyForm = () => {
   const classes = useStyles();
+  const modulesManager = useModulesManager()
   const { application_uuid } = useParams();
   const dispatch = useDispatch();
-  const [selectedApplicationType, setSelectedApplicationType] = useState("");
-  const [organizationType, setOrganizationType] = useState(null);
+  const [parsedApplicationData, setParsedApplicationData] = useState();
   const [showForm, setShowForm] = useState(false);
   const [applicationForSelf, setApplicationForSelf] = useState("");
-  const [parsedApplicationData, setParsedApplicationData] = useState();
-  console.log({ application_uuid });
+  const [organizationType, setOrganizationType] = useState("" || parsedApplicationData?.organizationType);
+  const [selectedApplicationType, setSelectedApplicationType] = useState("" ||parsedApplicationData?.applicationType);
+  const [isApplicationForSelfSelected, setIsApplicationForSelfSelected] = useState(true);
 
   useEffect(async () => {
     const fetchData = async () => {
@@ -86,7 +87,6 @@ const MultiStepApplyForm = ({ modulesManager }) => {
       );
       setParsedApplicationData(parsedData); // <- parsed data will now be set correctly
     };
-
     fetchData();
   }, []);
 
@@ -99,7 +99,8 @@ const MultiStepApplyForm = ({ modulesManager }) => {
       );
 
     setApplicationForSelf(hasNoDependents ? "yes" : "no");
-    
+    setSelectedApplicationType(parsedApplicationData?.applicationType)
+    setOrganizationType(parsedApplicationData?.organizationType)
   }, [parsedApplicationData]);
 
   const handleSelection = (applicationType, exportStatus) => {
@@ -119,11 +120,12 @@ const MultiStepApplyForm = ({ modulesManager }) => {
   const handleApplicationFor = (event) => {
     const value = event.target.value;
     setApplicationForSelf(value);
+    // setIsApplicationForSelfSelected(false)
     // onSelect(selectedApplicationType, value); // Pass both selections
   };
 
+  console.log({ applicationForSelf });
   console.log({ parsedApplicationData });
-  console.log({ organizationType });
 
   return (
     <div className={classes.container}>
@@ -226,47 +228,34 @@ const MultiStepApplyForm = ({ modulesManager }) => {
                 />
               </Typography>
             </div>
-            {applicationForSelf === "" ? (
+            {applicationForSelf === "" || isApplicationForSelfSelected ? (
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
-                  {/* New Export-Oriented Company Question */}
-                  <Typography
-                    variant="h6"
-                    className={`${classes.title} ${classes.section}`}
-                  >
-                    {
-                      <FormattedMessage
-                        id="workforce.application.for"
-                        module="workforce"
-                      />
-                    }
+                  <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
+                    {<FormattedMessage id="workforce.application.for" module="workforce"/>}
                   </Typography>
-                  <RadioGroup
-                    value={applicationForSelf}
-                    onChange={handleApplicationFor}
-                  >
+                  <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
                     <FormControlLabel
                       value="yes"
                       control={<Radio color="primary" />}
-                      label={
-                        <FormattedMessage
-                          id="workforce.application.for.type.self"
-                          module="workforce"
-                        />
-                      }
+                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>}
                     />
                     <FormControlLabel
                       value="no"
                       control={<Radio color="primary" />}
-                      label={
-                        <FormattedMessage
-                          id="workforce.application.for.type.dependent"
-                          module="workforce"
-                        />
-                      }
+                      label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>}
                     />
                   </RadioGroup>
                 </FormControl>
+                <div className={classes.buttonContainer}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setIsApplicationForSelfSelected(false)}
+                  >
+                    <FormattedMessage module="workforce" id="workforce.next" />
+                  </Button>
+                </div>
               </Paper>
             ) : (
               <MedicalAssistanceForm

@@ -56,14 +56,10 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
     modulesManager
   );
 
-
   const employeeData = useSelector(
     (state) => state.workforce[`workforceEmployee`] ?? []
   );
 
-  //   const handleChange = (key, value) => {
-  //     setFormData((prev) => ({ ...prev, [key]: value }));
-  //   };
   console.log('hello bangladesh',formData)
   return (
     <Box>
@@ -77,7 +73,6 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
               />
             </Box>
             <Box mb={4} color="red">
-              *{" "}
               <FormattedMessage
                 id="workforce.application.header.labour.note"
                 module="workforce"

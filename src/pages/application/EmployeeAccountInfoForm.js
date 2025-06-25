@@ -62,7 +62,7 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <PublishedComponent
                   pubRef="workforce.BanksPicker"
-                  value={formData?.bank || null}
+                  value={formData?.bank.id || null}
                   label={
                     <FormattedMessage
                       module="workforce"
@@ -77,7 +77,7 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
 
               <Grid item xs={6} className={classes.item}>
                 <BranchPicker
-                  value={formData?.branch || ""}
+                  value={formData?.branch.id || ""}
                   label={
                     <FormattedMessage
                       id="workforce.branch.picker"

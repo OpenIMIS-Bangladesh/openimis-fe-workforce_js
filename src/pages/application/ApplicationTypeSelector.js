@@ -35,7 +35,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
       const appType = parsedApplicationData?.applicationType;
       const exportStatus = orgType === "Central Fund" ? "yes" : "no";
       setIsExportOriented(exportStatus);
-      onSelect(appType, exportStatus); // preselect both in parent
+      // onSelect(appType, exportStatus); // preselect both in parent
     }
   }, [parsedApplicationData]);
 
