@@ -338,6 +338,16 @@ import {
   };
   export const itemFormattersApprover = (isShowHistory,modulesManager,history,component) => {
     const formatters = [
+        (application) =>
+        application.workforceEmployee ? (
+          <Checkbox
+            checked={component.state.selectedApplicationIds.includes(application.id)}
+            onChange={component.handleCheckboxChange(application.id)}
+            color="primary"
+          />
+        ) : (
+          ""
+        ),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
       // (application) => application.workforceEmployee?.nid,

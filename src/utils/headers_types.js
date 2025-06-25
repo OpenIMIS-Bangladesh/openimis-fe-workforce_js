@@ -42,6 +42,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerApprover = (component) => [
+     "",
     "workforce.employee.name.en",
     "workforce.employee.name.bn",
     "workforce.employee.application.applicationType",
