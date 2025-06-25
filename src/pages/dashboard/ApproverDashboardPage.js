@@ -79,6 +79,9 @@ const useStyles = makeStyles((theme) => ({
     display: "none", // removes default top border
   },
 },
+accordionPadding:{
+paddingBottom: "40px !important",
+},
 accordionSummary: {
   padding: "8px 16px",
   backgroundColor: "white",
@@ -97,14 +100,14 @@ accordionDetails: {
 
 const SidebarMenu = [
   {
-    id: "pendingApplications",
+    id: "pendingMeetingSheet",
     text: (
       <FormattedMessage module="workforce" id="workforce.employee.application.pendingMeetingSheet" />
     ),
     icon: <HourglassFullTwoToneIcon />,
   },
   {
-    id: "checkedApplications",
+    id: "approveMeetingSheet",
     text: (
       <FormattedMessage module="workforce" id="workforce.employee.application.approveMeetingSheet" />
     ),
@@ -138,7 +141,7 @@ const FiledApplications = ({ summaryData = [] }) => {
   };
 
   return (
-    <>
+    <div  className={classes.accordionPadding} >
       <Typography variant="h5" gutterBottom>
         <FormattedMessage module="workforce" id="workforce.approver.dashboard" />
       </Typography>
@@ -171,7 +174,7 @@ const FiledApplications = ({ summaryData = [] }) => {
           </AccordionDetails>
         </Accordion>
       ))}
-    </>
+    </div>
   );
 };
 
@@ -232,7 +235,7 @@ const ApproverDashboard = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
-  const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
+  const [selectedMenu, setSelectedMenu] = useState("pendingMeetingSheet"); // Default first menu
   useEffect(() => {
       return dispatch(fetchSummaryApplications(modulesManager,['status:"forward_to_comiitee"']));
     }, []);
@@ -245,9 +248,9 @@ const ApproverDashboard = () => {
 
   const renderContent = () => {
     switch (selectedMenu) {
-      case "pendingApplications":
+      case "pendingMeetingSheet":
         return <FiledApplications summaryData={data}/>;
-      case "checkedApplications":
+      case "approveMeetingSheet":
         return <FiledApplications />;
       case "recentApplications":
         return <FiledApplications />;

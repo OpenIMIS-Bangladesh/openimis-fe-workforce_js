@@ -760,7 +760,7 @@ handleBulkSelected = async () => {
                 officeData={this.state.officeData}
                 onSubmitForward={this.handleForwardSubmit}
               />
-              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={userRights}/>
+              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"approved"} userRights={userRights}/>
               </>
             );
           } else if (userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
@@ -835,7 +835,7 @@ handleBulkSelected = async () => {
                 officeData={this.state.officeData}
                 onSubmitForward={this.handleForwardSubmit}
               />
-              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications}  userRights={userRights}/>
+              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"selected"}  userRights={userRights}/>
               </>
             );
           }

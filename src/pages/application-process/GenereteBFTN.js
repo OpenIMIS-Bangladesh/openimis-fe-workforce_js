@@ -16,40 +16,46 @@ import { WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserTypeFromRights } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
-import { createApplicationSummary } from "../../actions";
+import { createApplicationSummary,updateApplication } from "../../actions";
 import { useDispatch } from "react-redux";
-import React, { Component } from "react";
-
-const GenerateBFTN = ({ open, onClose, applications = [], userRights }) => {
+import React, { Component,useState } from "react";
+import {
+  useModulesManager,
+  decodeId,
+  FormattedMessage,
+} from "@openimis/fe-core";
+const GenerateBFTN = ({ open, onClose, applications = [], userRights,status }) => {
   const getTotalAmount = () => {
     return applications.reduce((sum, item) => sum + (parseFloat(item.approvedAmount) || 0), 0).toFixed(2);
   };
-
+  const [serverResponse, setServerResponse] = useState(null);
   const dispatch = useDispatch();
   const handleForward = async () => {
+  const filteredApplications = applications.filter(
+    (item) => String(item.status) === String(status)
+  );
+  console.clear
+  if (filteredApplications.length === 0) {
+    setServerResponse({ status: "ERROR", message: "কোনো উপযুক্ত আবেদন পাওয়া যায়নি।" });
+    return;
+  }
+
+  for (const item of filteredApplications) {
+    console.log(item)
 
     const updateApplicationData = {
+      id: decodeId(item.id), 
       status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
     };
-    const createApplicationMovementData = {
-      status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
-      note: "আবেদন ডিরেক্টরের কাছে প্রেরণ করা হয়েছে",
-    };
-    await dispatch(
-      createApplicationSummary(
-        updateApplicationData,
-        `create application summary`
-      )
-    );
-    await dispatch(
-      createApplicationSummaryMovement(
-        createApplicationMovementData,
-        `create application summary movement`
-      )
-    );
-    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
 
+    await dispatch(
+      updateApplication(updateApplicationData, "update workforce application")
+    );
+  }
+
+  setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
   };
+
 
   if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
     return (
@@ -70,7 +76,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {applications.map((row, index) => {
+              {applications.filter((item)=>item.status===status).map((row, index) => {
                 const parseBankInfo = JSON.parse(row.employeeBankInfo)
                 const bankInfo = JSON.parse(parseBankInfo)
                 console.log(bankInfo)
@@ -127,7 +133,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {applications.map((row, index) => {
+              {applications.filter((item)=>item.status===status).map((row, index) => {
                 const parseBankInfo = JSON.parse(row.employeeBankInfo)
                 const bankInfo = JSON.parse(parseBankInfo)
                 console.log(bankInfo)
