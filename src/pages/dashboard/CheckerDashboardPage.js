@@ -116,13 +116,13 @@ const SidebarMenu = [
     ),
     icon: <HourglassFullTwoToneIcon />,
   },
-  {
-    id: "checkedApplications",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.application.checked" />
-    ),
-    icon: <CheckCircleOutlineTwoToneIcon />,
-  },
+  // {
+  //   id: "checkedApplications",
+  //   text: (
+  //     <FormattedMessage module="workforce" id="workforce.application.checked" />
+  //   ),
+  //   icon: <CheckCircleOutlineTwoToneIcon />,
+  // },
   {
       id: "revertedApplication",
       text: (
@@ -131,7 +131,7 @@ const SidebarMenu = [
       icon: <RestorePageIcon  />,
     },
   {
-      id: "meetingSheetApplication",
+      id: "pendingMeetingSheet",
       text: (
         <FormattedMessage module="workforce" id="workforce.employee.application.pendingMeetingSheet" />
       ),
@@ -281,7 +281,7 @@ const RevertApplication = () => {
   </>
 )}
 
-const MeetingSheetApplication = ({ summaryData = [] }) => {
+const PendingMeetingSheet = ({ summaryData = [] }) => {
   const classes = useStyles()
   return (
     <>
@@ -337,14 +337,14 @@ const CheckerDashboard = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
-      case "checkedApplications":
-        return <FiledApplications />;
-      case "recentApplications":
-        return <FiledApplications />;
+      // case "checkedApplications":
+      //   return <FiledApplications />;
+      // case "recentApplications":
+      //   return <FiledApplications />;
       case "revertedApplication":
         return <RevertApplication />;
-      case "meetingSheetApplication":
-        return <MeetingSheetApplication summaryData={data} />;
+      case "pendingMeetingSheet":
+        return <PendingMeetingSheet summaryData={data} />;
       default:
         return <FiledApplications />;
     }

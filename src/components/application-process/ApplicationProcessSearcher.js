@@ -536,18 +536,60 @@ class ApplicationProcessSearcher extends Component {
     );
   };
 
-  handleBulkForward  = async () => {
-    const {updateApplication} = this.props
-    this.state.selectedApplicationIds.map(async(id) =>
-      await updateApplication(
-        {
-          id: decodeId(id),
-          status: WORKFORCE_STATUS.DRAFT,
+handleBulkSelected = async () => {
+  const { selectedApplicationIds } = this.state;
+  const { updateApplication, createApplicationMovement } = this.props;
+
+  if (selectedApplicationIds.length === 0) {
+    alert("Please select at least one application.");
+    return;
+  }
+
+  if (window.confirm("Are you sure you want to select these applications?")) {
+    try {
+      // Process each selected application
+      await Promise.all(
+        selectedApplicationIds.map(async (id) => {
+          const decodedId = decodeId(id);
+
+          const updateApplicationData = {
+            id: decodedId,
+            status: WORKFORCE_STATUS.SELECTED,
+          };
+
+          const createApplicationMovementData = {
+            applicationId: decodedId,
+            status: WORKFORCE_STATUS.SELECTED,
+            note: "আবেদন নির্বাচন করা হয়েছে",
+            action: "approved",
+          };
+
+          await updateApplication(updateApplicationData, "update workforce application");
+          await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+        })
+      );
+
+      this.setState({
+        serverResponse: {
+          status: "SUCCESS",
+          message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
         },
-        `update workforce application`
-      )
-    );
-  };
+      });
+
+      // Optionally reload
+      window.location.reload();
+    } catch (error) {
+      console.error("Bulk selection failed:", error);
+      this.setState({
+        serverResponse: {
+          status: "ERROR",
+          message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+        },
+      });
+    }
+  }
+};
+
 
   handleCloseBFTN = ()=>{
     this.setState({openGenerateBFTN:false})
@@ -673,6 +715,26 @@ class ApplicationProcessSearcher extends Component {
             </Button>
           </Box>
         ) : null}
+        {userType === WORKFORCE_USER_TYPE.APPROVER ? (
+          <Box
+            style={{
+              marginTop: 10,
+              display: "flex",
+              gap: 2,
+              justifyContent: "space-between",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.handleBulkSelected}
+            >
+            <FormattedMessage module="workforce" id="workforce.employee.application.bulkSelect" />                 
+            </Button>
+            <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
+
+          </Box>
+        ) : null}
 
         {(() => {
           const userType = getUserTypeFromRights(userRights);
@@ -766,7 +828,6 @@ class ApplicationProcessSearcher extends Component {
                 onSubmitRevert={this.handleRevertSubmit}
                 userName={userName}
               />
-              <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
               <ForwardApplicationAdminModal
                 open={forwardModalOpen}
                 onClose={this.handleCloseForwardModal}
