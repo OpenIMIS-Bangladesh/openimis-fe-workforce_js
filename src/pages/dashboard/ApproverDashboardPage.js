@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { FormattedMessage,useModulesManager } from "@openimis/fe-core";
+import { FormattedMessage, useModulesManager } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Grid,
@@ -19,8 +19,8 @@ import {
   AccordionDetails,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
-import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
+import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
+import CheckCircleOutlineTwoToneIcon from "@material-ui/icons/CheckCircleOutlineTwoTone";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { fetchSummaryApplications } from "../../actions";
 
@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     padding: theme.spacing(2),
-    height: 'calc(100vh - 64px)', // assuming 64px header/appbar, adjust as needed
-    overflow: 'hidden',
+    height: "calc(100vh - 64px)", // assuming 64px header/appbar, adjust as needed
+    overflow: "hidden",
   },
   sidebar: {
     position: "sticky",
@@ -40,8 +40,8 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "auto",
   },
   content: {
-    height: '100vh',
-    overflowY: 'auto',
+    height: "100vh",
+    overflowY: "auto",
     padding: theme.spacing(2),
   },
   tableContainer: {
@@ -70,46 +70,52 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#B7D4D8",
   },
   accordion: {
-  boxShadow: "1px 1px 1px 1px",
-  border: "none",
-  backgroundColor: "white",
-  marginBottom: "12px",
-  borderRadius: "6px",
-  "&::before": {
-    display: "none", // removes default top border
+    boxShadow: "1px 1px 1px 1px",
+    border: "none",
+    backgroundColor: "white",
+    marginBottom: "12px",
+    borderRadius: "6px",
+    "&::before": {
+      display: "none", // removes default top border
+    },
   },
-},
-accordionPadding:{
-paddingBottom: "40px !important",
-},
-accordionSummary: {
-  padding: "8px 16px",
-  backgroundColor: "white",
-  borderRadius: "6px",
-  "& .MuiTypography-root": {
-    color: "#015C63", // teal-like tone
-    fontWeight: 600,
+  accordionPadding: {
+    paddingBottom: "40px !important",
   },
-},
-accordionDetails: {
-  backgroundColor: "white",
-  padding: "16px",
-  borderTop: "1px solid #ddd",
-},
+  accordionSummary: {
+    padding: "8px 16px",
+    backgroundColor: "white",
+    borderRadius: "6px",
+    "& .MuiTypography-root": {
+      color: "#015C63", // teal-like tone
+      fontWeight: 600,
+    },
+  },
+  accordionDetails: {
+    backgroundColor: "white",
+    padding: "16px",
+    borderTop: "1px solid #ddd",
+  },
 }));
 
 const SidebarMenu = [
   {
     id: "pendingMeetingSheet",
     text: (
-      <FormattedMessage module="workforce" id="workforce.employee.application.pendingMeetingSheet" />
+      <FormattedMessage
+        module="workforce"
+        id="workforce.employee.application.pendingMeetingSheet"
+      />
     ),
     icon: <HourglassFullTwoToneIcon />,
   },
   {
     id: "approveMeetingSheet",
     text: (
-      <FormattedMessage module="workforce" id="workforce.employee.application.approveMeetingSheet" />
+      <FormattedMessage
+        module="workforce"
+        id="workforce.employee.application.approveMeetingSheet"
+      />
     ),
     icon: <CheckCircleOutlineTwoToneIcon />,
   },
@@ -127,57 +133,70 @@ const SidebarMenu = [
   //   ),
   //   icon: <AssignmentIcon  />,
   // },
-   
 ];
 
 // ----------- Components to Render in Main Content -----------
 
-const FiledApplications = ({ summaryData = [] }) => {
+const FiledApplications = ({ summaryData = [], showSummaryBlock = true }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
 
   const handleChange = (panelId) => (event, isExpanded) => {
     setExpanded(isExpanded ? panelId : null);
   };
-
+  console.clear;
+  console.log("summary data", summaryData);
   return (
-    <div  className={classes.accordionPadding} >
+    <div className={classes.accordionPadding}>
       <Typography variant="h5" gutterBottom>
-        <FormattedMessage module="workforce" id="workforce.approver.dashboard" />
+        <FormattedMessage
+          module="workforce"
+          id="workforce.approver.dashboard"
+        />
       </Typography>
 
-      {summaryData.map((item, index) => (
-        <Accordion
-          key={index}
-          expanded={expanded === item.id}
-          onChange={handleChange(item.id)}
-          className={classes.accordion}
-        >
-          <AccordionSummary
-            className={classes.accordionSummary}
-            expandIcon={<ExpandMoreIcon className="material-icons" />}
-          >
-            <Typography variant="subtitle1" style={{ flex: 1 }}>
-              <strong>{item.name}</strong>
-            </Typography>
-            <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
-              {item.meetingDate} | {item.month} {item.year}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails className={classes.accordionDetails}>
-            <Card style={{ width: "100%" }}>
-              <CardContent>
-                {/* 👇 Only render when this accordion is expanded */}
-                {expanded === item.id && <ApplicationProcessSearcher summaryId={item.id} />}
-              </CardContent>
-            </Card>
-          </AccordionDetails>
-        </Accordion>
-      ))}
+      {showSummaryBlock &&
+        summaryData
+          .filter(
+            (item) =>
+              item.status !== "forward_to_director" ||
+              selectedMenu === "approveMeetingSheet"
+          )
+          .map((item, index) => (
+            <Accordion
+              key={index}
+              expanded={expanded === item.id}
+              onChange={handleChange(item.id)}
+              className={classes.accordion}
+            >
+              <AccordionSummary
+                className={classes.accordionSummary}
+                expandIcon={<ExpandMoreIcon className="material-icons" />}
+              >
+                <Typography variant="subtitle1" style={{ flex: 1 }}>
+                  <strong>{item.name}</strong>
+                </Typography>
+                <Typography
+                  variant="body2"
+                  style={{ marginLeft: "auto", color: "#015C63" }}
+                >
+                  {item.meetingDate} | {item.month} {item.year}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className={classes.accordionDetails}>
+                <Card style={{ width: "100%" }}>
+                  <CardContent>
+                    {expanded === item.id && (
+                      <ApplicationProcessSearcher summaryId={item.id} />
+                    )}
+                  </CardContent>
+                </Card>
+              </AccordionDetails>
+            </Accordion>
+          ))}
     </div>
   );
 };
-
 
 const ApplicationStatus = () => {
   const classes = useStyles();
@@ -186,16 +205,29 @@ const ApplicationStatus = () => {
     <Card style={{ marginTop: 0, padding: "32px", textAlign: "center" }}>
       <CardContent>
         <Typography variant="h5" gutterBottom>
-          <FormattedMessage module="workforce" id="workforce.application.status" />
+          <FormattedMessage
+            module="workforce"
+            id="workforce.application.status"
+          />
         </Typography>
 
-        <Grid container spacing={2} justifyContent="center" style={{ marginTop: 16 }}>
+        <Grid
+          container
+          spacing={2}
+          justifyContent="center"
+          style={{ marginTop: 16 }}
+        >
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
               variant="outlined"
               size="small"
-              label={<FormattedMessage module="workforce" id="workforce.employee.dependent.phone" />}
+              label={
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.employee.dependent.phone"
+                />
+              }
               style={{
                 // border: "1px solid #ccc",
                 // borderRadius: 4,
@@ -207,7 +239,12 @@ const ApplicationStatus = () => {
               fullWidth
               variant="outlined"
               size="small"
-              label={<FormattedMessage module="workforce" id="workforce.application.tracking.number" />}
+              label={
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.application.tracking.number"
+                />
+              }
               style={{
                 // border: "1px solid #ccc",
                 // borderRadius: 4,
@@ -215,11 +252,7 @@ const ApplicationStatus = () => {
                 marginBottom: 16,
               }}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-            >
+            <Button variant="contained" color="primary" fullWidth>
               <FormattedMessage module="workforce" id="workforce.search.here" />
             </Button>
           </Grid>
@@ -233,25 +266,29 @@ const ApplicationStatus = () => {
 
 const ApproverDashboard = () => {
   const classes = useStyles();
-  const dispatch = useDispatch()
-  const modulesManager = useModulesManager()
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
   const [selectedMenu, setSelectedMenu] = useState("pendingMeetingSheet"); // Default first menu
   useEffect(() => {
-      return dispatch(fetchSummaryApplications(modulesManager,['status:"forward_to_comiitee"']));
-    }, []);
+    return dispatch(
+      fetchSummaryApplications(modulesManager, ['status:"forward_to_comiitee"'])
+    );
+  }, []);
 
   const data = useSelector(
-      (state) => state.workforce[`applicationsSummary`] ?? []
-    );
-  console.clear()
-  console.log("hello i am approver",data)
+    (state) => state.workforce[`applicationsSummary`] ?? []
+  );
+  console.clear();
+  console.log("hello i am approver", data);
 
   const renderContent = () => {
     switch (selectedMenu) {
       case "pendingMeetingSheet":
-        return <FiledApplications summaryData={data}/>;
+        return (
+          <FiledApplications summaryData={data} showSummaryBlock={false} />
+        );
       case "approveMeetingSheet":
-        return <FiledApplications />;
+        return <FiledApplications summaryData={data} showSummaryBlock={true} />;
       case "recentApplications":
         return <FiledApplications />;
       case "applicationStatus":

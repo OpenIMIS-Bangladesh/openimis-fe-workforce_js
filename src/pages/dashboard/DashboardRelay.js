@@ -20,6 +20,8 @@ console.log(user_type)
     return <ApproverDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.ADMIN) {
     return <DashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.DIRECTOR) {
+    return <DashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
     return <FactoryAdminDashboardPage />;
   }

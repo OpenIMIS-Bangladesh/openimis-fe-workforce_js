@@ -167,6 +167,59 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status }) =
         </DialogActions>
       </Dialog>
     );
+  }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
+    return (
+      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+        <DialogTitle disableTypography>
+          <Typography variant="h6">Bank Payment Advice (BFTN)</Typography>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Applicant Name</TableCell>
+                <TableCell>Application Type</TableCell>
+                <TableCell align="right">Approved Amount</TableCell>
+                <TableCell>Account No</TableCell>
+                <TableCell>Bank Name</TableCell>
+                <TableCell>Branch</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {applications.filter((item)=>item.status===status).map((row, index) => {
+                const parseBankInfo = JSON.parse(row.employeeBankInfo)
+                const bankInfo = JSON.parse(parseBankInfo)
+                console.log(bankInfo)
+                return (
+                  <TableRow key={index}>
+                    <TableCell>{row.workforceEmployee?.firstNameBn}</TableCell>
+                    <TableCell>{row.applicationType}</TableCell>
+                    <TableCell align="right">20000</TableCell>
+                    <TableCell>{bankInfo.accountNumber}</TableCell>
+                    <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
+                    <TableCell>{bankInfo?.branch?.nameEn}</TableCell>
+                  </TableRow>
+                )
+              })}
+              <TableRow>
+                <TableCell colSpan={2}><strong>Total</strong></TableCell>
+                <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
+                <TableCell colSpan={3} />
+              </TableRow>
+            </TableBody>
+          </Table>
+        </DialogContent>
+        <Divider />
+        <DialogActions>
+          <Button onClick={onClose} variant="outlined" color="primary">
+            Close
+          </Button>
+          <Button onClick={() => window.print()} variant="contained" color="primary">
+            Print Advice
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
   }
 };
 
