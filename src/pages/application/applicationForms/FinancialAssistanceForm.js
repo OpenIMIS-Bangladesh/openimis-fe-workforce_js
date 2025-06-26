@@ -82,8 +82,7 @@ const FinancialAssistanceForm = ({
     (state) => state.workforce["workforceEmployee"] ?? []
   );
 
-  console.log({ organizationType });
-  console.log({ selectedApplicationType });
+
   const applicationId = useSelector(
     (state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []
   );
@@ -313,7 +312,6 @@ const FinancialAssistanceForm = ({
       //   )
       // );
     } else if (activeStep === 2) {
-      console.log("Create application formData:", formData);
       const createApplicationData = {
         workforceEmployeeId: formData.id,
         company: formData.company,

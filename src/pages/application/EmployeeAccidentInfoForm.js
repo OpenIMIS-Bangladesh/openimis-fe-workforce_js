@@ -40,11 +40,14 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
   const history = useHistory();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
-
-  const [selectedOption, setSelectedOption] = useState("accident");
+  const [selectedOption, setSelectedOption] = useState("accident" || formData?.employeeAccidentInfo?.accidentType);
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
+    setFormData((prev) => ({
+    ...prev,
+    employeeAccidentInfo: {accidentType:event.target.value},
+  }));
   };
 
   return (
@@ -67,14 +70,14 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
             <Grid item xs={6} className={classes.item}>
               <TextInput
                 label="Terminal Disease Type"
-                value={formData.cronicDiseaseType || ""}
+                value={formData?.employeeAccidentInfo?.cronicDiseaseType || ""}
                 onChange={(v) => handleChange("cronicDiseaseType", v)}
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <TextInput
                 label="Doctor's prescription"
-                value={formData.cronicPrescription || ""}
+                value={formData?.employeeAccidentInfo?.cronicPrescription || ""}
                 onChange={(v) => handleChange("cronicPrescription", v)}
               />
             </Grid>
@@ -83,7 +86,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
               <PublishedComponent
                 pubRef="core.DatePicker"
                 label={"রোগ নিরুপনের তারিখ"}
-                value={formData.diagnosisDate || ""}
+                value={formData?.employeeAccidentInfo?.diagnosisDate || ""}
                 onChange={(v) => handleChange("diagnosisDate", v)}
                 readOnly={false}
               />
@@ -103,7 +106,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
               <PublishedComponent
                 pubRef="core.DatePicker"
                 label={"Diagnosis Date"}
-                value={formData.diagnosisDate || ""}
+                value={formData?.employeeAccidentInfo?.diagnosisDate || ""}
                 onChange={(v) => handleChange("diagnosisDate", v)}
                 readOnly={false}
               />
@@ -111,7 +114,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
             <Grid item xs={6} className={classes.item}>
               <TextInput
                 label="Medical Prescription"
-                value={formData.maternityPrescription || ""}
+                value={formData?.employeeAccidentInfo?.maternityPrescription || ""}
                 onChange={(v) => handleChange("maternityPrescription", v)}
               />
             </Grid>
@@ -122,7 +125,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
           <Grid container spacing={2}>
             <Grid item xs={6} className={classes.item}>
               <EmployeeInjuryTypePicker
-                value={formData.injuryType || ""}
+                value={formData?.employeeAccidentInfo?.injuryType || ""}
                 label={<FormattedMessage id="workforce.employee.accident.info.injuryType" module="workforce" />}
                 required
                 onChange={(v) => handleChange("injuryType", v)}
@@ -133,14 +136,14 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
               <PublishedComponent
                 pubRef="core.DatePicker"
                 label={"workforce.employee.accident.info.dateOfAccident"}
-                value={formData.accidentDate || ""}
+                value={formData?.employeeAccidentInfo?.accidentDate || ""}
                 onChange={(v) => handleChange("accidentDate", v)}
                 readOnly={false}
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <EmployeeAccidentTypePicker
-                value={formData.accidentType || ""}
+                value={formData?.employeeAccidentInfo?.accidentType || ""}
                 label={<FormattedMessage id="workforce.employee.accident.info.typeOfAccident" module="workforce" />}
                 required
                 onChange={(v) => handleChange("accidentType", v)}
@@ -149,7 +152,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <EmployeeDutyStatusPicker
-                value={formData.dutyStatus || ""}
+                value={formData?.employeeAccidentInfo?.dutyStatus || ""}
                 label={<FormattedMessage id="workforce.employee.accident.info.dutyStatus" module="workforce" />}
                 required
                 onChange={(v) => handleChange("dutyStatus", v)}
@@ -158,7 +161,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <EmployeeInsideOutsideFactoryPicker
-                value={formData.inOutsideFactory || ""}
+                value={formData?.employeeAccidentInfo?.inOutsideFactory || ""}
                 label={<FormattedMessage id="workforce.employee.accident.info.insideOutsideFactory" module="workforce" />}
                 required
                 onChange={(v) => handleChange("inOutsideFactory", v)}
@@ -169,7 +172,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
               <PublishedComponent
                 pubRef="core.DatePicker"
                 label={"workforce.employee.accident.info.reJoiningDate"}
-                value={formData.reJoiningDate || ""}
+                value={formData?.employeeAccidentInfo?.reJoiningDate || ""}
                 onChange={(v) => handleChange("reJoiningDate", v)}
                 readOnly={false}
               />

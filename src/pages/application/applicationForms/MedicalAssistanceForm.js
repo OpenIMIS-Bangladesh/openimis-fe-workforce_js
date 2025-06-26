@@ -490,6 +490,7 @@ const MedicalAssistanceForm = ({
             handleChange(key, value, "employeeAccidentInfo")
           }
           formData={formData}
+          setFormData={setFormData}
         />
       ),
     },
@@ -522,6 +523,7 @@ const MedicalAssistanceForm = ({
   ];
 
   console.log({ tazwer: parsedApplicationData });
+  console.log({ fahimTazwer: formData });
 
   if (showPreview) {
     return (
