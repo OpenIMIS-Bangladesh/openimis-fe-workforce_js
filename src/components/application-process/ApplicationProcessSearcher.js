@@ -48,9 +48,9 @@ import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement } from "../../actions";
-import { itemAdminFormatters, itemFormattersApplicant, itemFormattersApprover, itemFormattersChecker,itemFormattersFactoryAdmin } from "../../utils/itemFormatters_types";
+import { itemAdminFormatters, itemFormattersApplicant, itemFormattersApprover, itemFormattersChecker,itemFormattersFactoryAdmin,itemFormattersDirector } from "../../utils/itemFormatters_types";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
-import { headerApplicant, headerApprover, headerChecker, headersAdmin, headerFactoryAdmin} from "../../utils/headers_types";
+import { headerApplicant, headerApprover, headerChecker, headersAdmin, headerFactoryAdmin, headerDirector} from "../../utils/headers_types";
 
 const styles = (theme) => ({
   paper: {
@@ -153,6 +153,12 @@ class ApplicationProcessSearcher extends Component {
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
          ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]']
+      );
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
+      this.setState({ displayVersion: showHistoryFilter });
+      this.props.fetchApplicationsSummary(
+        this.props.modulesManager,
+         ['statusIn: ["forward_to_director","approved_by_director"]', 'orderBy: ["-dateCreated"]']
       );
     }
     else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
@@ -347,14 +353,49 @@ class ApplicationProcessSearcher extends Component {
         async () => {
           const updateApplicationData = {
             id: decodeId(application.id),
-            status: WORKFORCE_STATUS.APPROVED,
+            status: WORKFORCE_STATUS.APPROVED_BY_DG,
           };
 
-          const createApplicationMovementData = {
-            applicationId: decodeId(application.id),
-            status: WORKFORCE_STATUS.APPROVED,
-            note: "আবেদন অনুমোদন করা হয়েছে",
-            action: "approved",
+          try {
+            await this.props.updateApplication(
+              updateApplicationData,
+              "update workforce application"
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদন অনুমোদন করা হয়েছে!",
+              },
+            });
+            window.location.reload();
+          } catch (error) {
+            console.error("Approval failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
+              },
+            });
+          }
+        }
+      );
+    }
+  };
+  handleApprovalByDirector = async (application) => {
+    const { selectedApplication } = this.state;
+
+    if (window.confirm("Are you sure you want to approve this application?")) {
+      this.setState(
+        {
+          selectedApplication: {
+            ...selectedApplication,
+            isHistory: true,
+          },
+        },
+        async () => {
+          const updateApplicationData = {
+            id: decodeId(application.id),
+            status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
           };
 
           try {
@@ -363,10 +404,6 @@ class ApplicationProcessSearcher extends Component {
               "update workforce application"
             );
 
-            await this.props.createApplicationMovement(
-              createApplicationMovementData,
-              "create workforce movement"
-            );
             this.setState({
               serverResponse: {
                 status: "SUCCESS",
@@ -511,6 +548,8 @@ class ApplicationProcessSearcher extends Component {
         ? headerApprover(this)
         : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
         ? headerFactoryAdmin(this)
+        : userType === WORKFORCE_USER_TYPE.DIRECTOR
+        ? headerDirector(this)
         : headersAdmin(this);
     };
 
@@ -524,6 +563,8 @@ class ApplicationProcessSearcher extends Component {
         ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this)
         : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
         ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+        : userType === WORKFORCE_USER_TYPE.DIRECTOR
+        ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this)
         : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this);
     };
 

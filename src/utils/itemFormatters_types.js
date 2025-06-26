@@ -38,7 +38,7 @@ import {
 
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
-        <Tooltip title="ভিউ">
+        <Tooltip title="View">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -54,7 +54,7 @@ import {
             <TabIcon />
           </IconButton>
         </Tooltip>
-           <Tooltip title="গৃহীত কার্যক্রম">
+           <Tooltip title="Action taken">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -70,19 +70,89 @@ import {
             <HistoryIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="এপ্রুভ">
+        <Tooltip title="Approve">
           <IconButton
-            disabled={application?.isHistory || application?.status !== "send_for_dg_approve"}
+            disabled={application?.isHistory || application?.status !== "approved_by_director"}
             onClick={() => component.handleApproval(application)}
           >
             <CheckIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="রিজেক্ট">
+        <Tooltip title="Reject">
           <span>
             <IconButton
               onClick={() => component.handleReject(application)}
-            disabled={application?.isHistory || application?.status !== "send_for_dg_approve"}
+            disabled={application?.isHistory || application?.status !== "approved_by_director"}
+              color="error"
+            >
+              <CloseIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </div>
+    ));
+    return formatters;
+  };
+  export const itemFormattersDirector = (isShowHistory,modulesManager,history,component) => {
+    const formatters = [
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => application.workforceEmployee?.lastNameBn,
+      (application) => application.applicationType,
+      (application) => 200000,
+      (application) => "Nafi",
+      (application) => "Akij",
+      (application) => application.status,
+      (application) => application.dateCreated.split("T")[0],
+      isShowHistory() ? application?.version : null,
+    ];
+
+    formatters.push((application) => (
+      <div className={component.props.classes.horizontalButtonContainer}>
+        <Tooltip title="View">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.process.view",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <TabIcon />
+          </IconButton>
+        </Tooltip>
+           <Tooltip title="Action taken">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.process.actions",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <HistoryIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Approve">
+          <IconButton
+            disabled={application?.isHistory || application?.status !== "forward_to_director"}
+            onClick={() => component.handleApprovalByDirector(application)}
+          >
+            <CheckIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Reject">
+          <span>
+            <IconButton
+              onClick={() => component.handleReject(application)}
+            disabled={application?.isHistory || application?.status !== "forward_to_director"}
               color="error"
             >
               <CloseIcon />
@@ -109,7 +179,7 @@ import {
       <div className={component.props.classes.horizontalButtonContainer}>
         {!component.props.applicationStatus ? (
         <>
-        <Tooltip title="ভিউ">
+        <Tooltip title="View">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -125,7 +195,7 @@ import {
             <TabIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="গৃহীত কার্যক্রম">
+        <Tooltip title="Action taken">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -141,7 +211,7 @@ import {
             <HistoryIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="পুনরায় পাঠান">
+        <Tooltip title="Resend">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -159,7 +229,7 @@ import {
         </Tooltip>
         </>
         ):(
-        <Tooltip title="পুনরায় কোরুন">
+        <Tooltip title="Resend">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -204,7 +274,7 @@ import {
 
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
-        <Tooltip title="ভিউ">
+        <Tooltip title="View">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -221,7 +291,7 @@ import {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="যাচাই">
+        <Tooltip title="Verify">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -238,7 +308,7 @@ import {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="ফরওয়ার্ড">
+        <Tooltip title="Forward">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => component.handleOpenForwardModal(application)}
@@ -246,7 +316,7 @@ import {
             <ForwardIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="রিভার্ট">
+        <Tooltip title="Revert">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {component.handleOpenRevertModal(application);component.setState({revertByChecker:true})}}
@@ -366,7 +436,7 @@ import {
 
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
-        <Tooltip title="ভিউ">
+        <Tooltip title="View">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -383,7 +453,7 @@ import {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="ভেরিফাই">
+        <Tooltip title="Veify">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -408,7 +478,7 @@ import {
             <ForwardIcon />
           </IconButton>
         </Tooltip> */}
-        <Tooltip title="রিভার্ট">
+        <Tooltip title="Revert">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => component.handleOpenRevertModal(application)}
@@ -416,7 +486,7 @@ import {
             <UndoIcon />
           </IconButton>
         </Tooltip>
-         <Tooltip title="সিলেক্টেড">
+         <Tooltip title="Selected">
           <IconButton
             disabled={application?.isHistory || application?.status !== "forward_to_comiitee"}
             onClick={() => component.handleSelected(application)}

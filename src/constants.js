@@ -35,7 +35,8 @@ export const WORKFORCE_STATUS = {
   ON_LEAVE: "on_leave",
   COMPLETED: "completed",
   ARCHIVED: "archived",
-  APPROVED: "approved",
+  APPROVED_BY_DG: "approved_by_dg",
+  APPROVED_BY_DIRECTOR: "approved_by_director",
   REJECTED: "rejected",
   DEACTIVATED: "deactivated",
   REINSTATED: "reinstated",
@@ -69,4 +70,5 @@ export const WORKFORCE_USER_TYPE = {
   APPROVER: "approver",
   APPLICANT: "applicant",
   FACTORY_ADMIN: "factory_admin",
+  DIRECTOR: "director",
 };
