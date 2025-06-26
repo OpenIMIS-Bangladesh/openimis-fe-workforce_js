@@ -51,25 +51,6 @@ const EmployeeDependentForm = ({
     modulesManager
   );
 
-  // const handleDependentChange = (index, key, value) => {
-  //   const updatedDependents = [...dependents];
-  //   updatedDependents[index][key] = value;
-  //   setDependents(updatedDependents);
-  // };
-
-  // const addDependent = () => {
-  //   setDependents([...dependents, {}]);
-  //   setExpanded(dependents.length); // Expand the newly added dependent
-  // };
-
-  // const removeDependent = (index) => {
-  //   if (dependents.length > 1) {
-  //     const updatedDependents = dependents.filter((_, i) => i !== index);
-  //     setDependents(updatedDependents);
-  //     setExpanded(index === 0 ? 0 : index - 1); // Keep previous one expanded
-  //   }
-  // };
-
   const isFirstDependentValid =
     dependents[0]?.nid && dependents[0]?.nameEn;
 
@@ -82,13 +63,11 @@ const EmployeeDependentForm = ({
           onChange={(_, isExpanded) => setExpanded(isExpanded ? index : false)}
         >
             <Box mb={4} textAlign="center" fontWeight="bold">
-                <FormattedMessage id="workforce.application.header.dependent" module="workforce" />
-              </Box>
+              <FormattedMessage id="workforce.application.header.dependent" module="workforce" />
+            </Box>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography>
-              {formData.nameEn
-                ? formData.nameEn
-                : `নির্ভরশীল ${index + 1}`}
+              {formData.nameEn? formData.nameEn: `নির্ভরশীল ${index + 1}`}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -119,12 +98,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <EmployeeLifeStatusPicker
                     value={formData.lifeStatus || ""}
-                    label={
-                      <FormattedMessage
-                        id="workforce.employee.lifeStatus"
-                        module="workforce"
-                      />
-                    }
+                    label={<FormattedMessage id="workforce.employee.lifeStatus" module="workforce"/>}
                     required
                     onChange={(v) =>
                       handleDependentChange(index, "lifeStatus", v)
@@ -167,28 +141,6 @@ const EmployeeDependentForm = ({
                     readOnly={false}
                   />
                 </Grid>
-                {/* <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.employee.last.name.en"
-                    value={formData.lastNameEn || ""}
-                    onChange={(v) =>
-                      handleDependentChange(index, "lastNameEn", v)
-                    }
-                    required
-                    readOnly={false}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.employee.last.name.bn"
-                    value={formData.lastNameBn || ""}
-                    onChange={(v) =>
-                      handleDependentChange(index, "lastNameBn", v)
-                    }
-                    required
-                    readOnly={false}
-                  />
-                </Grid> */}
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
@@ -234,12 +186,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <EmployeeGenderPicker
                     value={formData.gender || ""}
-                    label={
-                      <FormattedMessage
-                        id="workforce.employee.gender"
-                        module="workforce"
-                      />
-                    }
+                    label={<FormattedMessage id="workforce.employee.gender" module="workforce"/>}
                     onChange={(v) => handleDependentChange(index, "gender", v)}
                     readOnly={false}
                   />
@@ -327,11 +274,7 @@ const EmployeeDependentForm = ({
                     withNull={true}
                     value={formData.presentLocation || null}
                     onChange={(presentLocation) =>
-                      handleDependentChange(
-                        index,
-                        "presentLocation",
-                        presentLocation
-                      )
+                      handleDependentChange(index,"presentLocation",presentLocation)
                     }
                     readOnly={false}
                     required
@@ -347,11 +290,7 @@ const EmployeeDependentForm = ({
                     withNull={true}
                     value={formData.permanentLocation || null}
                     onChange={(permanentLocation) =>
-                      handleDependentChange(
-                        index,
-                        "permanentLocation",
-                        permanentLocation
-                      )
+                      handleDependentChange(index,"permanentLocation",permanentLocation)
                     }
                     readOnly={false}
                     required
@@ -372,10 +311,7 @@ const EmployeeDependentForm = ({
                     onClick={() => removeDependent(index)}
                     disabled={dependents.length === 1}
                   >
-                    <FormattedMessage
-                      module="workforce"
-                      id="workforce.application.steps.skip"
-                    />
+                    <FormattedMessage module="workforce" id="workforce.application.steps.skip"/>
                   </Button>
                 </Grid>
               </Grid>
@@ -389,10 +325,7 @@ const EmployeeDependentForm = ({
         onClick={addDependent}
         disabled={!isFirstDependentValid}
       >
-        <FormattedMessage
-          module="workforce"
-          id="workforce.application.steps.dependentAdd"
-        />
+        <FormattedMessage module="workforce" id="workforce.application.steps.dependentAdd"/>
       </Button>
     </Box>
   );

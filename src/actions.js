@@ -1069,12 +1069,12 @@ export function createWorkforceUser(workforceUser, clientMutationLabel) {
     nameBn: "${workforceUser.firstNameBn}",
     firstNameEn: "${workforceUser.firstNameEn}",
     lastNameEn: " ",
-    nid: "${workforceUser?.NID}",
-    birthCertificateNo: "${workforceUser?.birthCertificateNo}",
+    nid: "${workforceUser?.NID || ""}",
+    birthCertificateNo: "${workforceUser?.birthCertificateNo || ""}",
     phoneNumber: "${workforceUser.mobile}",
     status: "${WORKFORCE_STATUS.ACTIVE}",
     username: "",
-    password: "${workforceUser.password}",
+    password: "${workforceUser?.password}",
   ) {
     internalId
   }

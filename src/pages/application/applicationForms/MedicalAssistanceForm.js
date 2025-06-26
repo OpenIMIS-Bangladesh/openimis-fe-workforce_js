@@ -425,26 +425,19 @@ const MedicalAssistanceForm = ({
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
-    // const updateApplicationData = {
-    //   id: decodeId(applicationId[0].id),
-    //   workforceEmployeeId: formData.id,
-    //   company: formData.company,
-    //   factory: formData.factory,
-    //   organizationType: organizationType,
-    //   applicationType: selectedApplicationType,
-    //   employeeDesignationInfo: formData.employeeDesignationInfo,
-    //   employeeBankInfo: formData.employeeBankInfo,
-    //   employeeDependentInfo: formData.dependents,
-    //   employeeAccidentInfo: formData.employeeAccidentInfo,
-    //   isSubmitted: "yes",
-    //   status: "ontest",
-    // };
-    // dispatch(
-    //   updateApplication(
-    //     updateApplicationData,
-    //     `update workforce application ${formData.firstNameEn}`
-    //   )
-    // );
+    const updateApplicationData = {
+      id: applicationId[0]?.id || parsedApplicationData?.id,
+      
+      status:WORKFORCE_STATUS.NEW,
+    };
+    console.clear()
+    console.log("hello i am from submit",updateApplicationData)
+    dispatch(
+      updateApplication(
+        updateApplicationData,
+        `update workforce application ${formData.firstNameEn}`
+      )
+    );
     setShowPreview(true);
     // setIsSubmitted(true);
   };

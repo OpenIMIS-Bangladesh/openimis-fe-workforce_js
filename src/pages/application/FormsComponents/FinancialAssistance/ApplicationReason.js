@@ -35,6 +35,7 @@ const ApplicationReason = ({ modulesManager,handleChange,setDeathType,deathType 
   const handleApplicationReason = (event) => {
     const value = event.target.value;
     setDeathType(value);
+    handleChange("deathType",value)
     // onSelect(selectedApplicationType, value); // Pass both selections
   };
 

@@ -224,7 +224,9 @@ const FinancialAssistanceForm = ({
 
   const handleNext = async () => {
     console.log({ formData });
-    if (activeStep === 0 || activeStep === 1) {
+    const nextStep = activeStep + 1;
+    setActiveStep(nextStep);
+    if (nextStep === 3 || nextStep === 4) {
       const workforceEmployeeData = {
         nameEn:
           formData?.workforceEmployee?.nameEn ||
@@ -311,7 +313,7 @@ const FinancialAssistanceForm = ({
       //     `update workforce application ${formData.firstNameEn}`
       //   )
       // );
-    } else if (activeStep === 2) {
+    } else if (nextStep === 2) {
       const createApplicationData = {
         workforceEmployeeId: formData.id,
         company: formData.company,
@@ -346,6 +348,12 @@ const FinancialAssistanceForm = ({
       await dispatch(
         fetchApplicationId(modulesManager, applicationClientMutationId)
       );
+    }else if (nextStep === 1) {
+      const createApplicationData = {
+              // workforceEmployeeId:decodeId(formData?.workforceEmployee?.id) || decodeId(parsedApplicationData?.workforceEmployee?.id),
+              deathType:formData?.deathType
+            };
+      
     } else {
       const updateApplicationData = {
         id: decodeId(applicationId[0].id),
@@ -367,7 +375,6 @@ const FinancialAssistanceForm = ({
         )
       );
     }
-    setActiveStep((prevStep) => prevStep + 1);
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -477,6 +484,8 @@ const FinancialAssistanceForm = ({
       </div>
     );
   }
+
+  console.log({tazwer:formData})
 
   return (
     <div className={classes.container}>
