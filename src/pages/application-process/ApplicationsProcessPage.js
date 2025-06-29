@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { Component,useEffect,useState } from "react";
 import { connect } from "react-redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { Fab } from "@material-ui/core";
+import { Fab,Accordion,AccordionSummary,Typography,AccordionDetails,Card,CardContent } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
@@ -14,6 +14,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TabPanel from "./TabPanel";
 import GenerateBFTN from "./GenereteBFTN";
+import { fetchSummaryApplications } from "../../actions";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -30,6 +32,7 @@ class ApplicationsProcessPage extends Component {
     this.state = {
       value: props.value || 0,
       openGenerateBFTN: false,
+      expanded: null,
     }
   }
 
@@ -65,9 +68,20 @@ class ApplicationsProcessPage extends Component {
     });
   };
 
+   handleAccordionChange = (panelId) => (event, isExpanded) => {
+    this.setState({ expanded: isExpanded ? panelId : null });
+  };
+  componentDidMount() {
+  const { modulesManager, fetchSummaryApplications } = this.props;
+  fetchSummaryApplications(modulesManager);
+}
+
   render() {
     const { intl, classes, rights, applications, } = this.props;
     const { value, openGenerateBFTN } = this.state;
+    const summaryData = this.props.summaryData || [];
+    console.clear
+    console.log('summary data',summaryData)
     console.log("process page", applications)
     return (
       <div className={classes.page}>
@@ -93,10 +107,35 @@ class ApplicationsProcessPage extends Component {
         </AppBar>
 
         <TabPanel value={value} index={0}>
-          <ApplicationProcessSearcher
-            cacheFiltersKey="allApplications"
-            onDoubleClick={this.onDoubleClick}
-          />
+            {summaryData.map((item, index) => (
+              <Accordion
+                key={index}
+                expanded={this.state.expanded === item.id}
+                onChange={this.handleAccordionChange(item.id)}
+                className={classes.accordion}
+              >
+                <AccordionSummary
+                  className={classes.accordionSummary}
+                  expandIcon={<ExpandMoreIcon className="material-icons" />}
+                >
+                  <Typography variant="subtitle1" style={{ flex: 1 }}>
+                    <strong>{item.name}</strong>
+                  </Typography>
+                  <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
+                    {item.meetingDate} | {item.month} {item.year}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails className={classes.accordionDetails}>
+                  <Card style={{ width: "100%" }}>
+                    <CardContent>
+                      {/* 👇 Only render when this accordion is expanded */}
+                      {this.state.expanded === item.id && <ApplicationProcessSearcher summaryId={item.id} cacheFiltersKey="allApplications"
+                      onDoubleClick={this.onDoubleClick} />}
+                    </CardContent>
+                  </Card>
+                </AccordionDetails>
+              </Accordion>
+            ))}        
           <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
         </TabPanel>
         <TabPanel value={value} index={1}>
@@ -140,10 +179,20 @@ class ApplicationsProcessPage extends Component {
 const mapStateToProps = (state) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   applications: state.workforce.applications,
+  summaryData: state.workforce.applicationsSummary ?? [],
 });
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchSummaryApplications: (modulesManager) =>
+    dispatch(fetchSummaryApplications(modulesManager, ['status:"forward_to_director"'])),
+});
+
 
 export default withModulesManager(
   withHistory(
-    connect(mapStateToProps)(withTheme(withStyles(styles)(ApplicationsProcessPage))),
+    connect(mapStateToProps, mapDispatchToProps)(
+      withTheme(withStyles(styles)(ApplicationsProcessPage))
+    ),
   ),
 );
+

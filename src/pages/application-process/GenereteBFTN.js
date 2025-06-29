@@ -16,7 +16,7 @@ import { WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserTypeFromRights } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
-import { createApplicationSummary,updateApplication } from "../../actions";
+import { createApplicationSummary,updateApplication,updateApplicationSummary } from "../../actions";
 import { useDispatch } from "react-redux";
 import React, { Component,useState } from "react";
 import {
@@ -24,7 +24,7 @@ import {
   decodeId,
   FormattedMessage,
 } from "@openimis/fe-core";
-const GenerateBFTN = ({ open, onClose, applications = [], userRights,status }) => {
+const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summary_Id }) => {
   const getTotalAmount = () => {
     return applications.reduce((sum, item) => sum + (parseFloat(item.approvedAmount) || 0), 0).toFixed(2);
   };
@@ -52,6 +52,14 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status }) =
       updateApplication(updateApplicationData, "update workforce application")
     );
   }
+   const updateApplicationSummaryData = {
+      id: summary_Id, 
+      status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
+    };
+
+    await dispatch(
+      updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary")
+    );
 
   setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
   };
