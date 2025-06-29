@@ -45,10 +45,7 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
     "core.RegistrationPage",
     modulesManager
   );
-
-  //   const handleChange = (key, value) => {
-  //     setFormData((prev) => ({ ...prev, [key]: value }));
-  //   };
+  console.log("formData from accountInfo", formData);
 
   return (
     <Box mt={1}>
@@ -56,13 +53,16 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={0}>
             <Box mb={4} textAlign="center" fontWeight="bold">
-              <FormattedMessage id="workforce.application.header.account" module="workforce" />
+              <FormattedMessage
+                id="workforce.application.header.account"
+                module="workforce"
+              />
             </Box>
             <Grid container className={classes.tableTitle} spacing={2}>
               <Grid item xs={6} className={classes.item}>
                 <PublishedComponent
                   pubRef="workforce.BanksPicker"
-                  value={formData?.bank.id || null}
+                  value={formData?.employeeBankInfo?.bank?.id || null}
                   label={
                     <FormattedMessage
                       module="workforce"
@@ -70,14 +70,16 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                     />
                   }
                   required
-                  onChange={(option) => handleChange("bank", option)}
+                  onChange={(option) =>
+                    handleChange("bank", option, "employeeBankInfo")
+                  }
                   readOnly={false}
                 />
               </Grid>
 
               <Grid item xs={6} className={classes.item}>
                 <BranchPicker
-                  value={formData?.branch.id || ""}
+                  value={formData?.employeeBankInfo?.branch?.id || ""}
                   label={
                     <FormattedMessage
                       id="workforce.branch.picker"
@@ -85,8 +87,10 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                     />
                   }
                   required
-                  bankId={formData?.bank?.id} // Pass selected bank ID
-                  onChange={(v) => handleChange("branch", v, "employeeBankInfo")}
+                  bankId={formData?.employeeBankInfo?.bank?.id}
+                  onChange={(v) =>
+                    handleChange("branch", v, "employeeBankInfo")
+                  }
                   readOnly={false}
                 />
               </Grid>
@@ -94,8 +98,10 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.account.info.accountHolderName"
-                  value={formData?.accountHolderName || ""}
-                  onChange={(v) => handleChange("accountHolderName", v, "employeeBankInfo")}
+                  value={formData?.employeeBankInfo?.accountHolderName || ""}
+                  onChange={(v) =>
+                    handleChange("accountHolderName", v, "employeeBankInfo")
+                  }
                   required
                   readOnly={false}
                 />
@@ -103,8 +109,10 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.account.info.routingNumber"
-                  value={formData?.routingNumber || ""}
-                  onChange={(v) => handleChange("routingNumber", v, "employeeBankInfo")}
+                  value={formData?.employeeBankInfo?.routingNumber || ""}
+                  onChange={(v) =>
+                    handleChange("routingNumber", v, "employeeBankInfo")
+                  }
                   required
                   readOnly={false}
                 />
@@ -112,8 +120,10 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.account.info.accountNumber"
-                  value={formData?.accountNumber || ""}
-                  onChange={(v) => handleChange("accountNumber", v, "employeeBankInfo")}
+                  value={formData?.employeeBankInfo?.accountNumber || ""}
+                  onChange={(v) =>
+                    handleChange("accountNumber", v, "employeeBankInfo")
+                  }
                   required
                   readOnly={false}
                 />

@@ -118,7 +118,13 @@ const MedicalAssistanceForm = ({
     applicationType: "",
     applicationForSelf: applicationForSelf,
     dependents: [{}],
-    employeeBankInfo: {},
+    employeeBankInfo: {
+    bank: null,
+    branch: null,
+    accountHolderName: "",
+    routingNumber: "",
+    accountNumber: "",
+  },
     employeeAccidentInfo: {},
     id: "",
   });
@@ -148,7 +154,7 @@ const MedicalAssistanceForm = ({
       setFormData({
         id: parsedApplicationData?.id || "",
         workforceEmployee: {
-          id: employeeData.id || "",
+          id: employeeData?.id || "",
           organization: employeeData.organization,
           nameEn: employeeData.firstNameEn || "",
           nameBn: employeeData.firstNameBn || "",
@@ -312,7 +318,7 @@ const MedicalAssistanceForm = ({
     } else if (nextStep === 3) {
       console.log("Create application formData:", formData);
       const createApplicationData = {
-        // workforceEmployeeId:decodeId(formData?.workforceEmployee?.id) || decodeId(parsedApplicationData?.workforceEmployee?.id),
+        workforceEmployeeId:formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
         company: formData.company,
         factory: formData.factory,
         organizationType: formData.organizationType,
@@ -378,7 +384,7 @@ const MedicalAssistanceForm = ({
       //   // });
       const updateApplicationData = {
         id: applicationId[0]?.id || parsedApplicationData?.id,
-        //workforceEmployeeId: decodeId(formData?.workforceEmployee.id) ||decodeId(parsedApplicationData?.workforceEmployee?.id),
+        workforceEmployeeId: decodeId(formData?.workforceEmployee.id) ||decodeId(parsedApplicationData?.workforceEmployee?.id),
         company: formData.company,
         factory: formData.factory,
         organizationType: organizationType ||parsedApplicationData?.organizationType,
@@ -471,7 +477,7 @@ const MedicalAssistanceForm = ({
           handleChange={(key, value) =>
             handleChange(key, value, "employeeBankInfo")
           }
-          formData={formData?.employeeBankInfo}
+          formData={formData}
         />
       ),
     },
@@ -503,8 +509,8 @@ const MedicalAssistanceForm = ({
           label: "workforce.application.steps.dependent",
           content: (
             <EmployeeDependentForm
-              dependents={formData.dependents}
-              handleDependentChange={handleDependentChange}
+              formData={formData}
+              handleChange={handleChange}
               addDependent={addDependent}
               removeDependent={removeDependent}
             />

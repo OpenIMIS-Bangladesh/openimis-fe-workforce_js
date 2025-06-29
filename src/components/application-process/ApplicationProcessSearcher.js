@@ -3,28 +3,17 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
   IconButton,
-  Tooltip,
-  Checkbox,
-  Modal,
   Box,
-  Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Button,
-  Grid,
 } from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
 import {
   coreConfirm,
-  formatMessageWithValues,
   journalize,
   Searcher,
   withHistory,
   withModulesManager,
   FormattedMessage,
-  historyPush,
   decodeId,
 } from "@openimis/fe-core";
 import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../constants";
@@ -99,13 +88,13 @@ class ApplicationProcessSearcher extends Component {
       revertByChecker:false,
       revertByFactoryAdmin:false,
       officeData: {
-        "Central Fund": {
+        cf: {
           suboffices: {
             "Suboffice A": "রহিম উদ্দিন",
             "Suboffice B": "করিমা বেগম",
           },
         },
-        BLWF: {
+        blwf: {
           suboffices: {
             "Suboffice C": "সজল হোসেন",
             "Suboffice D": "রাবেয়া খাতুন",

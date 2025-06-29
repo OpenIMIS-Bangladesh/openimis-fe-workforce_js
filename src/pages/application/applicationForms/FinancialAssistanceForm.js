@@ -510,7 +510,7 @@ const FinancialAssistanceForm = ({
           <Box mt={0}>
             <EmployeeDependentForm
               dependents={formData.dependents}
-              handleDependentChange={handleDependentChange}
+              handleChange={handleChange}
               addDependent={addDependent}
               removeDependent={removeDependent}
             />

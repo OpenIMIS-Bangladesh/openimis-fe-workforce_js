@@ -15,6 +15,7 @@
 import {
   historyPush,
   decodeId,
+  TextInput
 } from "@openimis/fe-core";
 import {
   IconButton,
@@ -265,7 +266,7 @@ import {
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,
-      (application) => 200000,
+      (application) => <TextInput value={application?.grantMoney?.grantMoney}/> ,
       (application) => "Akij",
       (application) => application.status,
       (application) => application.dateCreated.split("T")[0],
@@ -420,17 +421,12 @@ import {
         ),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
-      // (application) => application.workforceEmployee?.nid,
-      // (application) => application.workforceEmployee?.phoneNumber,
       (application) => application.applicationType,
       // (application) => application.organizationType,
-      (application) => 200000,
-      // (application) => "Nafi",
-      // (application) => "Akij",
+      (application) => <TextInput value={application?.grantMoney?.grantMoney}/> ,
+      // (application) => 200000,
       (application) => application.status,
       (application) => application.dateCreated.split("T")[0],
-      // (application) => "Hafiz",
-      // (application) => application.dateCreated.split('T')[0],
       isShowHistory() ? application?.version : null,
     ];
 

@@ -106,9 +106,9 @@ const MultiStepApplyForm = () => {
   const handleSelection = (applicationType, exportStatus) => {
     setSelectedApplicationType(applicationType);
     if (exportStatus === "yes") {
-      setOrganizationType("Central Fund");
+      setOrganizationType("cf");
     } else if (exportStatus === "no") {
-      setOrganizationType("BLWF");
+      setOrganizationType("blwf");
     }
   };
 
