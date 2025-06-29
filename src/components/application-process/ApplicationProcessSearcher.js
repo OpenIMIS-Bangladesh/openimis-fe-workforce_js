@@ -147,7 +147,8 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-         ['statusIn: ["forward_to_director","approved_by_director"]', 'orderBy: ["-dateCreated"]']
+          [`statusIn: ["forward_to_director","approved_by_director"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
+
       );
     }
     else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
@@ -865,7 +866,7 @@ handleBulkSelected = async () => {
                 officeData={this.state.officeData}
                 onSubmitForward={this.handleForwardSubmit}
               />
-              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"selected"}  userRights={userRights}/>
+              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"selected"} summary_Id={decodeId(this.props.summaryId)}  userRights={userRights}/>
               </>
             );
           }

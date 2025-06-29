@@ -2077,6 +2077,29 @@ export function createApplicationSummary(mutation,clientMutationLabel) {
     }
   );
 }
+export function updateApplicationSummary(applicationSummary,clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWorkforceApplicationSummary",
+    formatApplicationSummaryGQL(applicationSummary),
+    clientMutationLabel
+  );
+
+  // console.log({ mutation });
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "APPLICATION_SUMMARY_MUTATION_REQ",
+      "APPLICATION_SUMMARY_CREATE_APPLICATION_RESP",
+      "APPLICATION_SUMMARY_MUTATION_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
 
 export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
   const payload = `{
