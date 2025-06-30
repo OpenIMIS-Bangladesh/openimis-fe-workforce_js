@@ -26,6 +26,16 @@ import {
   
   export const itemAdminFormatters = (isShowHistory,modulesManager,history,component) => {
     const formatters = [
+      (application) =>
+        application.workforceEmployee ? (
+          <Checkbox
+            checked={component.state.selectedApplicationIds.includes(application.id)}
+            onChange={component.handleCheckboxChange(application.id)}
+            color="primary"
+          />
+        ) : (
+          ""
+        ),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,
@@ -75,7 +85,6 @@ import {
           <IconButton
             disabled={
               application?.isHistory || 
-              application?.status === "approved_by_director" || 
               application?.status === "approved_by_dg" ||
               application?.status === "forward_to_director"
             }
@@ -91,7 +100,6 @@ import {
               onClick={() => component.handleReject(application)}
               disabled={
                 application?.isHistory || 
-                application?.status === "approved_by_director" || 
                 application?.status === "approved_by_dg" ||
                 application?.status === "forward_to_director"
               }
@@ -107,6 +115,16 @@ import {
   };
   export const itemFormattersDirector = (isShowHistory,modulesManager,history,component) => {
     const formatters = [
+      (application) =>
+        application.workforceEmployee ? (
+          <Checkbox
+            checked={component.state.selectedApplicationIds.includes(application.id)}
+            onChange={component.handleCheckboxChange(application.id)}
+            color="primary"
+          />
+        ) : (
+          ""
+        ),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,
