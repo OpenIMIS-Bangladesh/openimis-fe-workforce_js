@@ -55,23 +55,14 @@ const EmployeeDependentForm = ({
 
   return (
     <Box mt={1}>
-      
-        <Accordion expanded>
             <Box mb={4} textAlign="center" fontWeight="bold">
               <FormattedMessage id="workforce.application.header.dependent" module="workforce" />
             </Box>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>
-              {formData?.dependents?.nameEn? formData?.dependents.nameEn: `নির্ভরশীল`}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Paper className={classes.paper} elevation={0}>
               <Grid container className={classes.item} spacing={2}>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.nid"
-                    value={formData?.dependents.nid || ""}
+                    value={formData?.dependents?.nid || ""}
                     onChange={(v) => handleChange("nid", v,"dependent")}
                     type={"number"}
                     required
@@ -82,7 +73,7 @@ const EmployeeDependentForm = ({
                   <PublishedComponent
                     pubRef="core.DatePicker"
                     label={"workforce.employee.birthdate"}
-                    value={formData?.dependents.birthDate || ""}
+                    value={formData?.dependents?.birthDate || ""}
                     onChange={(v) =>
                       handleChange("birthDate", v,"dependent")
                     }
@@ -92,7 +83,7 @@ const EmployeeDependentForm = ({
 
                 <Grid item xs={6} className={classes.item}>
                   <EmployeeLifeStatusPicker
-                    value={formData?.dependents.lifeStatus || ""}
+                    value={formData?.dependents?.lifeStatus || ""}
                     label={<FormattedMessage id="workforce.employee.lifeStatus" module="workforce"/>}
                     required
                     onChange={(v) =>
@@ -105,8 +96,8 @@ const EmployeeDependentForm = ({
                   <PublishedComponent
                     pubRef="core.DatePicker"
                     label={"workforce.employee.deathdate"}
-                    value={formData?.dependents.deathDate || ""}
-                    readOnly={formData?.dependents.lifeStatus === "Deceased" ? false : true}
+                    value={formData?.dependents?.deathDate || ""}
+                    readOnly={formData?.dependents?.lifeStatus === "Deceased" ? false : true}
                     onChange={(v) =>
                       handleChange("deathDate", v,"dependent")
                     }
@@ -117,7 +108,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.name.bn"
-                    value={formData?.dependents.nameBn || ""}
+                    value={formData?.dependents?.nameBn || ""}
                     onChange={(v) =>
                       handleChange("nameBn", v,"dependent")
                     }
@@ -128,7 +119,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.name.en"
-                    value={formData?.dependents.nameEn || ""}
+                    value={formData?.dependents?.nameEn || ""}
                     onChange={(v) =>
                       handleChange("nameEn", v,"dependent")
                     }
@@ -140,7 +131,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.fathers_name.en"
-                    value={formData?.dependents.fatherNameEn || ""}
+                    value={formData?.dependents?.fatherNameEn || ""}
                     onChange={(v) =>
                       handleChange("fatherNameEn", v,"dependent")
                     }
@@ -150,7 +141,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.fathers_name.bn"
-                    value={formData?.dependents.fatherNameBn || ""}
+                    value={formData?.dependents?.fatherNameBn || ""}
                     onChange={(v) =>
                       handleChange("fatherNameBn", v,"dependent")
                     }
@@ -161,7 +152,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.mothers_name.en"
-                    value={formData?.dependents.motherNameEn || ""}
+                    value={formData?.dependents?.motherNameEn || ""}
                     onChange={(v) =>
                       handleChange("motherNameEn", v,"dependent")
                     }
@@ -171,7 +162,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.mothers_name.bn"
-                    value={formData?.dependents.motherNameBn || ""}
+                    value={formData?.dependents?.motherNameBn || ""}
                     onChange={(v) =>
                       handleChange("motherNameBn", v,"dependent")
                     }
@@ -180,7 +171,7 @@ const EmployeeDependentForm = ({
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <EmployeeGenderPicker
-                    value={formData?.dependents.gender || ""}
+                    value={formData?.dependents?.gender || ""}
                     label={<FormattedMessage id="workforce.employee.gender" module="workforce"/>}
                     onChange={(v) => handleChange("gender", v,"dependent")}
                     readOnly={false}
@@ -189,7 +180,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.phone"
-                    value={formData?.dependents.phoneNumber || ""}
+                    value={formData?.dependents?.phoneNumber || ""}
                     onChange={(v) =>
                       handleChange("phoneNumber", v,"dependent")
                     }
@@ -201,7 +192,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.email"
-                    value={formData?.dependents.email || ""}
+                    value={formData?.dependents?.email || ""}
                     onChange={(v) => handleChange("email", v,"dependent")}
                     type={"email"}
                     readOnly={false}
@@ -210,7 +201,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.occupation"
-                    value={formData?.dependents.occupation || ""}
+                    value={formData?.dependents?.occupation || ""}
                     onChange={(v) =>
                       handleChange("occupation", v,"dependent")
                     }
@@ -222,7 +213,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.birth_certificate_no"
-                    value={formData?.dependents.birthCertificateNo || ""}
+                    value={formData?.dependents?.birthCertificateNo || ""}
                     onChange={(v) =>
                       handleChange("birthCertificateNo", v,"dependent")
                     }
@@ -234,7 +225,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.marital_status"
-                    value={formData?.dependents.maritalStatus || ""}
+                    value={formData?.dependents?.maritalStatus || ""}
                     onChange={(v) =>
                       handleChange("maritalStatus", v,"dependent")
                     }
@@ -245,7 +236,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.present_address"
-                    value={formData?.dependents.presentAddress || ""}
+                    value={formData?.dependents?.presentAddress || ""}
                     onChange={(v) =>
                       handleChange("presentAddress", v,"dependent")
                     }
@@ -255,7 +246,7 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.permanent_address"
-                    value={formData?.dependents.permanentAddress || ""}
+                    value={formData?.dependents?.permanentAddress || ""}
                     onChange={(v) =>
                       handleChange("permanentAddress", v,"dependent")
                     }
@@ -267,9 +258,9 @@ const EmployeeDependentForm = ({
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
-                    value={formData?.dependents.presentLocation || null}
+                    value={formData?.dependents?.presentLocation || null}
                     onChange={(presentLocation) =>
-                      handleChange(index,"presentLocation",presentLocation)
+                      handleChange("presentLocation",presentLocation,"dependent")
                     }
                     readOnly={false}
                     required
@@ -283,9 +274,9 @@ const EmployeeDependentForm = ({
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
-                    value={formData?.dependents.permanentLocation || null}
+                    value={formData?.dependents?.permanentLocation || null}
                     onChange={(permanentLocation) =>
-                      handleChange(index,"permanentLocation",permanentLocation)
+                      handleChange("permanentLocation",permanentLocation,"dependent")
                     }
                     readOnly={false}
                     required
@@ -295,33 +286,29 @@ const EmployeeDependentForm = ({
 
                 {/* <Grid item xs={11} className={classes.item} /> */}
                 <Divider style={{ margin: "16px 0" }} />
-                <Grid item xs={12} className={classes.buttonContainer}>
+                {/* <Grid item xs={12} className={classes.buttonContainer}>
                   <Button
                     variant="contained"
                     style={{
                       backgroundColor:
-                        dependents.length === 1 ? "#B0B0B0" : "#d32f2f",
+                        formData?.dependents.length === 1 ? "#B0B0B0" : "#d32f2f",
                       color: "white",
                     }}
                     onClick={() => removeDependent(index)}
-                    disabled={dependents.length === 1}
+                    disabled={formData?.dependents.length === 1}
                   >
                     <FormattedMessage module="workforce" id="workforce.application.steps.skip"/>
                   </Button>
-                </Grid>
+                </Grid> */}
               </Grid>
-            </Paper>
-          </AccordionDetails>
-        </Accordion>
-
-      <Button
+      {/* <Button
         variant="contained"
         color="primary"
         onClick={addDependent}
         disabled={!isFirstDependentValid}
       >
         <FormattedMessage module="workforce" id="workforce.application.steps.dependentAdd"/>
-      </Button>
+      </Button> */}
     </Box>
   );
 };

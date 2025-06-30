@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NidVerification = ({ formData, nidOrBcn, modulesManager }) => {
+const NidVerification = ({ formData, nidOrBcn, modulesManager,setDisableConfirmSubmit }) => {
   console.log({ nidOrBcn })
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -49,7 +49,10 @@ const NidVerification = ({ formData, nidOrBcn, modulesManager }) => {
     (state) => state.workforce[`verifyNidDetails`]
   );
 
-  console.log(data)
+  console.log("verify nid",data)
+  if (data?.error) {
+    setDisableConfirmSubmit(true)
+  }
 
   return (
     <div className={classes.container}>
@@ -59,13 +62,23 @@ const NidVerification = ({ formData, nidOrBcn, modulesManager }) => {
             <Card >
               <CardContent>
                 <Typography variant="body1" className={classes.title}>
-                  <b>
-                    <FormattedMessage module="workforce" id="workforce.application.nidVerify" />
+                  {(data && !data.error) ? (
+                  <b style={{color:"#25D366"}}>
+                    ✅ <FormattedMessage module="workforce" id="workforce.application.nidVerify.success" />
                   </b>
+                  ): (data && data?.error) ? (
+                    <b style={{color:"red"}}>
+                    ❌ <FormattedMessage module="workforce" id="workforce.application.nidVerify.error" />
+                  </b>
+                  ):(
+                  <b>
+                    <FormattedMessage module="workforce" id="workforce.application.nidVerify.loading" />
+                  </b>
+                )}
                 </Typography>
                 <Divider style={{ margin: "10px 0" }} />
                 <Grid container spacing={2}>
-                  {data ?(
+                  {data && !data?.error ?(
                     <Grid item xs={6}>
                     <Typography>
                       <b><FormattedMessage module="workforce" id="workforce.employee.name.en" />:</b> {data?.nameEN}<br />
@@ -76,7 +89,7 @@ const NidVerification = ({ formData, nidOrBcn, modulesManager }) => {
                       <b><FormattedMessage module="workforce" id="workforce.employee.nid" />:</b> {data?.nidNumber}<br />
                     </Typography>
                   </Grid>
-                  ):(<b>loading ...</b>)}
+                  ):data && data?.error ? null: (<b>loading ...</b>)}
                   
                 </Grid>
               </CardContent>

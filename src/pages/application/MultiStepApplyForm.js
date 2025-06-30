@@ -285,6 +285,7 @@ const MultiStepApplyForm = () => {
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
+              parsedApplicationData={parsedApplicationData}
               applicationForSelf={applicationForSelf}
             />
           </>
@@ -370,6 +371,7 @@ const MultiStepApplyForm = () => {
             <FinancialAssistanceForm
               modulesManager={modulesManager}
               organizationType={organizationType}
+              parsedApplicationData={parsedApplicationData}
               selectedApplicationType={selectedApplicationType}
             />
           </>
@@ -455,6 +457,7 @@ const MultiStepApplyForm = () => {
             <FinancialAssistanceForm
               modulesManager={modulesManager}
               organizationType={organizationType}
+              parsedApplicationData={parsedApplicationData}
               selectedApplicationType={selectedApplicationType}
             />
           </>

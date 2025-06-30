@@ -485,7 +485,9 @@
     "workforce.application.grantAmount": "Amount Received",
     "workforce.application.reasonforReceipt": "Reason for Receipt",
     "workforce.application.otherInfo": "Other Info (If Have)",
-    "workforce.application.nidVerify": "Verify Your NID Card",
+    "workforce.application.nidVerify.loading": "Your information is verifing from LIMS",
+     "workforce.application.nidVerify.success": "Your information has been successfully verified from LIMS",
+    "workforce.application.nidVerify.error": "Your information has  been failed to verified from LIMS ",
 
     "workforce.employee.nid_or_birth_certificate":"Nid/BirthCertificate No.",
 

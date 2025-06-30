@@ -332,7 +332,9 @@
     "workforce.application.grantAmount": "প্রাপ্ত অর্থের পরিমাণ",
     "workforce.application.reasonforReceipt": "প্রাপ্তির কারণ",
     "workforce.application.otherInfo": "অন্য কোন তথ্য (যদি থাকে)",
-    "workforce.application.nidVerify": "আপনার এনআইডি কার্ড যাচাই হচ্ছে",
+    "workforce.application.nidVerify.loading": "আপনার তথ্যাটি LIMS থেকে যাচাই করা হচ্ছে",
+    "workforce.application.nidVerify.success": "আপনার তথ্যাটি LIMS থেকে সফলভাবে যাচাই করা হয়েছে",
+    "workforce.application.nidVerify.error": "আপনার তথ্যটি LIMS থেকে যাচাই করা সম্ভব হয়নি",
     
 
     "workforce.office.dol":"শ্রম অধিদপ্তর",

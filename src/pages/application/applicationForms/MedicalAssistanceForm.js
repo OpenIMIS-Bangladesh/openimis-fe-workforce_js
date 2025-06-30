@@ -75,8 +75,8 @@ const MedicalAssistanceForm = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  // const [parsedApplicationData, setParsedApplicationData] = useState(null)
   const reduxState = useSelector((state) => state);
+  const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false)
 
   const [formData, setFormData] = useState({
     workforceEmployee: {
@@ -152,7 +152,7 @@ const MedicalAssistanceForm = ({
     if (employeeData) {
       // When employeeData is fetched, set it into the form state
       setFormData({
-        id: parsedApplicationData?.id || "",
+        id: parsedApplicationData?.id || "",  
         workforceEmployee: {
           id: employeeData?.id || "",
           organization: employeeData.organization,
@@ -192,7 +192,7 @@ const MedicalAssistanceForm = ({
         applicationForSelf: applicationForSelf,
         organizationType: parsedApplicationData?.organizationType ||organizationType,
         applicationType: parsedApplicationData?.applicationType||selectedApplicationType,
-        dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || [{}],
+        dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || {},
         employeeBankInfo: parsedApplicationData?.employeeBankInfo ||employeeData?.employeeBankInfo || {},
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo ||employeeData.employeeAccidentInfo || {},
       });
@@ -225,96 +225,39 @@ const MedicalAssistanceForm = ({
       // const nidValue = formData?.workforceEmployee?.nid;
 
       const workforceEmployeeData = {
-        nameEn:
-          formData?.workforceEmployee?.nameEn ||
-          formData?.workforceEmployee.nameEn,
-        nameBn:
-          formData?.workforceEmployee?.nameBn ||
-          formData?.workforceEmployee.nameBn,
+        nameEn: formData?.workforceEmployee?.nameEn,
+        nameBn: formData?.workforceEmployee?.nameBn,
         lastNameEn: "",
-        phoneNumber:
-          formData?.workforceEmployee?.phoneNumber ||
-          formData?.workforceEmployee.phoneNumber,
-        email:
-          formData?.workforceEmployee?.email ||
-          formData?.workforceEmployee.email,
-        gender:
-          formData?.workforceEmployee?.gender?.id ||
-          formData?.workforceEmployee.gender.id,
-        birthDate:
-          formData?.workforceEmployee?.birthDate ||
-          formData?.workforceEmployee.birthDate,
-        deathDate:
-          formData?.workforceEmployee?.deathDate ||
-          formData?.workforceEmployee.deathDate,
-        lifeStatus:
-          formData?.workforceEmployee?.lifeStatus ||
-          formData?.workforceEmployee.lifeStatus,
-        permanentAddress:
-          formData?.workforceEmployee?.permanentAddress ||
-          formData?.workforceEmployee.permanentAddress,
-        presentAddress:
-          formData?.workforceEmployee?.presentAddress ||
-          formData?.workforceEmployee.presentAddress,
-        position:
-          formData?.workforceEmployee?.position ||
-          formData?.workforceEmployee.position,
-        monthlyEarning:
-          formData?.workforceEmployee?.monthlyEarning ||
-          formData?.workforceEmployee.monthlyEarning,
-        insuranceNumber:
-          formData?.workforceEmployee?.insuranceNumber ||
-          formData?.workforceEmployee.insuranceNumber,
-        fatherNameBn:
-          formData?.workforceEmployee?.fatherNameBn ||
-          formData?.workforceEmployee.fatherNameBn,
-        fatherNameEn:
-          formData?.workforceEmployee?.fatherNameEn ||
-          formData?.workforceEmployee.fatherNameEn,
-        motherNameBn:
-          formData?.workforceEmployee?.motherNameBn ||
-          formData?.workforceEmployee.motherNameBn,
-        motherNameEn:
-          formData?.workforceEmployee?.motherNameEn ||
-          formData?.workforceEmployee.motherNameEn,
-        spouseNameBn:
-          formData?.workforceEmployee?.spouseNameBn ||
-          formData?.workforceEmployee.spouseNameBn,
-        spouseNameEn:
-          formData?.workforceEmployee?.spouseNameEn ||
-          formData?.workforceEmployee.spouseNameEn,
-        citizenship:
-          formData?.workforceEmployee?.citizenship ||
-          formData?.workforceEmployee.citizenship,
-        maritalStatus:
-          formData?.workforceEmployee?.maritalStatus ||
-          formData?.workforceEmployee.maritalStatus,
-        presentLocation:
-          formData?.workforceEmployee?.presentLocation ||
-          formData?.workforceEmployee.presentLocation,
-        permanentLocation:
-          formData?.workforceEmployee?.permanentLocation ||
-          formData?.workforceEmployee.permanentLocation,
-          id: formData?.id,
-          nid:formData?.workforceEmployee?.nid,
-          birthCertificateNo:formData?.workforceEmployee?.birthCertificateNo,
-          // ...(nidValue?.length === 17 && { birthCertificateNo: nidValue }),
-          // ...(nidValue?.length === 10 && { nid: nidValue }),
+        phoneNumber: formData?.workforceEmployee?.phoneNumber,
+        email: formData?.workforceEmployee?.email,
+        gender: formData?.workforceEmployee?.gender?.id,
+        birthDate: formData?.workforceEmployee?.birthDate,
+        deathDate: formData?.workforceEmployee?.deathDate,
+        lifeStatus: formData?.workforceEmployee?.lifeStatus,
+        permanentAddress: formData?.workforceEmployee?.permanentAddress,
+        presentAddress: formData?.workforceEmployee?.presentAddress,
+        position: formData?.workforceEmployee?.position,
+        monthlyEarning: formData?.workforceEmployee?.monthlyEarning,
+        insuranceNumber: formData?.workforceEmployee?.insuranceNumber,
+        fatherNameBn: formData?.workforceEmployee?.fatherNameBn,
+        fatherNameEn: formData?.workforceEmployee?.fatherNameEn,
+        motherNameBn: formData?.workforceEmployee?.motherNameBn,
+        motherNameEn: formData?.workforceEmployee?.motherNameEn,
+        spouseNameBn: formData?.workforceEmployee?.spouseNameBn,
+        spouseNameEn: formData?.workforceEmployee?.spouseNameEn,
+        citizenship: formData?.workforceEmployee?.citizenship,
+        maritalStatus: formData?.workforceEmployee?.maritalStatus,
+        presentLocation: formData?.workforceEmployee?.presentLocation,
+        permanentLocation: formData?.workforceEmployee?.permanentLocation,
+        id: formData?.workforceEmployee?.id,
       };
       console.log("Update Submitting formData:", workforceEmployeeData);
-      // dispatch(
-      //   updateWorkforceEmployee(
-      //     workforceEmployeeData,
-      //     `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-      //   )
-      // );
-      // dispatch(
-      //   updateApplication(
-      //     formData,
-      //     `update workforce application ${formData.firstNameEn}`
-      //   )
-      // );
-
+      await dispatch(
+              updateWorkforceEmployee(
+                workforceEmployeeData,
+                `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+              )
+            );
     } else if (nextStep === 3) {
       console.log("Create application formData:", formData);
       const createApplicationData = {
@@ -350,15 +293,7 @@ const MedicalAssistanceForm = ({
   
         await dispatch(
           fetchApplicationId(modulesManager, applicationClientMutationId)
-        ).then(async(b)=>{
-          const rawId = b?.payload?.data?.workforceApplication?.edges?.[0]?.node?.id; 
-          if (rawId) {
-            const filters = [`id: "${decodeId(rawId)}"`];
-            const parsedData = await dispatch(getParsedApplication(modulesManager, filters));
-            console.log("Parsed application data:", parsedData);
-            // setParsedApplicationData(parsedData)
-          }
-        })
+        )
       }else{
         const updateApplicationData = {id:parsedApplicationData?.id,...createApplicationData}
         console.log("i am from update",updateApplicationData)
@@ -384,7 +319,7 @@ const MedicalAssistanceForm = ({
       //   // });
       const updateApplicationData = {
         id: applicationId[0]?.id || parsedApplicationData?.id,
-        workforceEmployeeId: decodeId(formData?.workforceEmployee.id) ||decodeId(parsedApplicationData?.workforceEmployee?.id),
+        workforceEmployeeId: formData?.workforceEmployee.id ||parsedApplicationData?.workforceEmployee?.id,
         company: formData.company,
         factory: formData.factory,
         organizationType: organizationType ||parsedApplicationData?.organizationType,
@@ -433,7 +368,14 @@ const MedicalAssistanceForm = ({
     console.log({ tazwer: formData });
     const updateApplicationData = {
       id: applicationId[0]?.id || parsedApplicationData?.id,
-      
+      workforceEmployeeId: formData?.workforceEmployee.id ||parsedApplicationData?.workforceEmployee?.id,
+        company: formData.company,
+        factory: formData.factory,
+        organizationType: organizationType ||parsedApplicationData?.organizationType,
+        applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+        employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
+        employeeDependentInfo:JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+        employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       status:WORKFORCE_STATUS.NEW,
     };
     console.clear()
@@ -546,9 +488,9 @@ const MedicalAssistanceForm = ({
     return (
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={0}>
-          <NidVerification formData={formData} nidOrBcn ={nidOrBcn}/>
+          <NidVerification formData={formData} nidOrBcn ={nidOrBcn} setDisableConfirmSubmit={setDisableConfirmSubmit}/>
           <div className={classes.buttonContainer}>
-            <Button variant="contained" color="primary" onClick={() => { setShowVerifyNid(false); setIsSubmitted(true) }}>
+            <Button variant="contained" color="primary" disabled={disableConfirmSubmit} onClick={() => { setShowVerifyNid(false); setIsSubmitted(true) }}>
               <FormattedMessage module="workforce" id="workforce.confirm.submit" />
             </Button>
           </div>
