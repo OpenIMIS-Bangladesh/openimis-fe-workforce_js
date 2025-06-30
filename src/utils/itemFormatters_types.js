@@ -71,19 +71,30 @@ import {
             <HistoryIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Approve">
+       <Tooltip title="Approve">
           <IconButton
-            disabled={application?.isHistory || application?.status !== "approved_by_director"}
+            disabled={
+              application?.isHistory || 
+              application?.status === "approved_by_director" || 
+              application?.status === "approved_by_dg" ||
+              application?.status === "forward_to_director"
+            }
             onClick={() => component.handleApproval(application)}
           >
             <CheckIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Reject">
+
+       <Tooltip title="Reject">
           <span>
             <IconButton
               onClick={() => component.handleReject(application)}
-            disabled={application?.isHistory || application?.status !== "approved_by_director"}
+              disabled={
+                application?.isHistory || 
+                application?.status === "approved_by_director" || 
+                application?.status === "approved_by_dg" ||
+                application?.status === "forward_to_director"
+              }
               color="error"
             >
               <CloseIcon />

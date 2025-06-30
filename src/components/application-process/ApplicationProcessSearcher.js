@@ -147,7 +147,7 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-          [`statusIn: ["forward_to_director","approved_by_director"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
+          [`statusIn: ["forward_to_director","approved_by_director","approved_by_dg"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
 
       );
     }
@@ -196,7 +196,8 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        prms
+        [`statusIn: ["forward_to_director","approved_by_director","approved_by_dg"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
+
       );
     }
   };
@@ -791,7 +792,7 @@ handleBulkSelected = async () => {
                 officeData={this.state.officeData}
                 onSubmitForward={this.handleForwardSubmit}
               />
-              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"approved"} userRights={userRights}/>
+              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"approved_by_dg"} userRights={userRights}/>
               </>
             );
           } else if (userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
