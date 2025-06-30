@@ -26,6 +26,16 @@ import {
   
   export const itemAdminFormatters = (isShowHistory,modulesManager,history,component) => {
     const formatters = [
+      (application) =>
+        application.workforceEmployee ? (
+          <Checkbox
+            checked={component.state.selectedApplicationIds.includes(application.id)}
+            onChange={component.handleCheckboxChange(application.id)}
+            color="primary"
+          />
+        ) : (
+          ""
+        ),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,
@@ -71,19 +81,28 @@ import {
             <HistoryIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Approve">
+       <Tooltip title="Approve">
           <IconButton
-            disabled={application?.isHistory || application?.status !== "approved_by_director"}
+            disabled={
+              application?.isHistory || 
+              application?.status === "approved_by_dg" ||
+              application?.status === "forward_to_director"
+            }
             onClick={() => component.handleApproval(application)}
           >
             <CheckIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Reject">
+
+       <Tooltip title="Reject">
           <span>
             <IconButton
               onClick={() => component.handleReject(application)}
-            disabled={application?.isHistory || application?.status !== "approved_by_director"}
+              disabled={
+                application?.isHistory || 
+                application?.status === "approved_by_dg" ||
+                application?.status === "forward_to_director"
+              }
               color="error"
             >
               <CloseIcon />
@@ -96,6 +115,16 @@ import {
   };
   export const itemFormattersDirector = (isShowHistory,modulesManager,history,component) => {
     const formatters = [
+      (application) =>
+        application.workforceEmployee ? (
+          <Checkbox
+            checked={component.state.selectedApplicationIds.includes(application.id)}
+            onChange={component.handleCheckboxChange(application.id)}
+            color="primary"
+          />
+        ) : (
+          ""
+        ),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,

@@ -147,7 +147,7 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-          [`statusIn: ["forward_to_director","approved_by_director"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
+          [`statusIn: ["forward_to_director","approved_by_director","approved_by_dg"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
 
       );
     }
@@ -196,7 +196,8 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-        prms
+        [`statusIn: ["forward_to_director","approved_by_director","approved_by_dg"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
+
       );
     }
   };
@@ -620,6 +621,112 @@ handleBulkSelected = async () => {
     }
   }
 };
+handleBulkApproveByAdmin = async () => {
+  const { selectedApplicationIds } = this.state;
+  const { updateApplication, createApplicationMovement } = this.props;
+
+  if (selectedApplicationIds.length === 0) {
+    alert("Please select at least one application.");
+    return;
+  }
+
+  if (window.confirm("Are you sure you want to approve these applications?")) {
+    try {
+      // Process each selected application
+      await Promise.all(
+        selectedApplicationIds.map(async (id) => {
+          const decodedId = decodeId(id);
+
+          const updateApplicationData = {
+            id: decodedId,
+            status: WORKFORCE_STATUS.APPROVED_BY_DG,
+          };
+
+          const createApplicationMovementData = {
+            applicationId: decodedId,
+            status: WORKFORCE_STATUS.APPROVED_BY_DG,
+            note: "আবেদন নির্বাচন করা হয়েছে",
+            action: "approved_by_dg",
+          };
+
+          await updateApplication(updateApplicationData, "update workforce application");
+          await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+        })
+      );
+
+      this.setState({
+        serverResponse: {
+          status: "SUCCESS",
+          message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+        },
+      });
+
+      // Optionally reload
+      window.location.reload();
+    } catch (error) {
+      console.error("Bulk selection failed:", error);
+      this.setState({
+        serverResponse: {
+          status: "ERROR",
+          message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+        },
+      });
+    }
+  }
+};
+handleBulkApproveByDirector = async () => {
+  const { selectedApplicationIds } = this.state;
+  const { updateApplication, createApplicationMovement } = this.props;
+
+  if (selectedApplicationIds.length === 0) {
+    alert("Please select at least one application.");
+    return;
+  }
+
+  if (window.confirm("Are you sure you want to approve these applications?")) {
+    try {
+      // Process each selected application
+      await Promise.all(
+        selectedApplicationIds.map(async (id) => {
+          const decodedId = decodeId(id);
+
+          const updateApplicationData = {
+            id: decodedId,
+            status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
+          };
+
+          const createApplicationMovementData = {
+            applicationId: decodedId,
+            status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
+            note: "আবেদন নির্বাচন করা হয়েছে",
+            action: "approved_by_DIRECTOR",
+          };
+
+          await updateApplication(updateApplicationData, "update workforce application");
+          await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+        })
+      );
+
+      this.setState({
+        serverResponse: {
+          status: "SUCCESS",
+          message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+        },
+      });
+
+      // Optionally reload
+      window.location.reload();
+    } catch (error) {
+      console.error("Bulk selection failed:", error);
+      this.setState({
+        serverResponse: {
+          status: "ERROR",
+          message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+        },
+      });
+    }
+  }
+};
 
 
   handleCloseBFTN = ()=>{
@@ -766,6 +873,46 @@ handleBulkSelected = async () => {
 
           </Box>
         ) : null}
+        {userType === WORKFORCE_USER_TYPE.ADMIN ? (
+          <Box
+            style={{
+              marginTop: 10,
+              display: "flex",
+              gap: 2,
+              justifyContent: "space-between",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.handleBulkApproveByAdmin}
+            >
+            <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />                 
+            </Button>
+            <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
+
+          </Box>
+        ) : null}
+        {userType === WORKFORCE_USER_TYPE.DIRECTOR ? (
+          <Box
+            style={{
+              marginTop: 10,
+              display: "flex",
+              gap: 2,
+              justifyContent: "space-between",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.handleBulkApproveByDirector}
+            >
+            <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />                 
+            </Button>
+            <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
+
+          </Box>
+        ) : null}
 
         {(() => {
           const userType = getUserTypeFromRights(userRights);
@@ -783,7 +930,6 @@ handleBulkSelected = async () => {
           } else if (userType === WORKFORCE_USER_TYPE.ADMIN) {
             return (
               <>
-              <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
               <ForwardApplicationAdminModal
                 open={forwardModalOpen}
                 onClose={this.handleCloseForwardModal}
@@ -791,7 +937,7 @@ handleBulkSelected = async () => {
                 officeData={this.state.officeData}
                 onSubmitForward={this.handleForwardSubmit}
               />
-              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"approved"} userRights={userRights}/>
+              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"approved_by_dg"} userRights={userRights}/>
               </>
             );
           } else if (userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {

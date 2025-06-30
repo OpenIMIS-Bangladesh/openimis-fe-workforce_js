@@ -1,4 +1,5 @@
   export const headersAdmin = (component) => [
+     "",
     "workforce.employee.name.en",
     "workforce.employee.name.bn",
     "workforce.employee.application.applicationType",
@@ -10,6 +11,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerDirector = (component) => [
+     "",
     "workforce.employee.name.en",
     "workforce.employee.name.bn",
     "workforce.employee.application.applicationType",
