@@ -362,21 +362,21 @@ const FinancialAssistanceForm = ({
     });
   };
 
-  const handleSubmit = async () => {
-    console.log({ tazwer: formData });
+  const handleSubmit = () => {
      const updateApplicationData = {
               id: applicationId[0]?.id || parsedApplicationData?.id,
               workforceEmployeeId: formData?.workforceEmployee.id ||parsedApplicationData?.workforceEmployee?.id,
               company: formData.company,
               factory: formData.factory,
-              organizationType: organizationType ||parsedApplicationData?.organizationType,
+              organizationType: organizationType || parsedApplicationData?.organizationType,
               applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
               employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
               employeeDependentInfo:JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
               employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
               metadata:JSON.stringify(formData.metadata),
-              status: WORKFORCE_STATUS.DRAFT,
+              status: WORKFORCE_STATUS.NEW,
             };
+      console.log({updateApplicationData})
       dispatch(
         updateApplication(
           updateApplicationData,
@@ -384,7 +384,7 @@ const FinancialAssistanceForm = ({
         )
       );
    
-    setShowPreview(true);
+    // setShowPreview(true);
     // setIsSubmitted(true);
   };
 
@@ -431,6 +431,7 @@ const FinancialAssistanceForm = ({
               onClick={() => {
                 setShowVerifyNid(false);
                 setIsSubmitted(true);
+                handleSubmit()
               }}
             >
               <FormattedMessage
@@ -519,19 +520,19 @@ const FinancialAssistanceForm = ({
           </Box>
         ) : activeStep === 4 ? (
           <Box mt={0}>
-            <EmployeeDetailsForm2
-              selectedApplicationType={selectedApplicationType}
-              handleChange={handleChange}
-              formData={formData}
-            />
-          </Box>
-        ) : (
-          <Box mt={0}>
             <EmployeeAccountInfoForm
               handleChange={(key, value) =>
                 handleChange(key, value, "employeeBankInfo")
               }
               formData={formData.employeeBankInfo}
+            />
+          </Box>
+        ) : (
+          <Box mt={0}>
+            <EmployeeDetailsForm2
+              selectedApplicationType={selectedApplicationType}
+              handleChange={handleChange}
+              formData={formData}
             />
           </Box>
         )}
@@ -546,7 +547,7 @@ const FinancialAssistanceForm = ({
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            <Button variant="contained" color="primary" onClick={()=>setShowPreview(true)}>
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}

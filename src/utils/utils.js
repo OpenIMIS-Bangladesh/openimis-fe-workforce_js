@@ -67,9 +67,10 @@ export const getParsedApplication = (modulesManager, filters) => {
       // Parse the JSON fields safely
       const parsedData = {
         ...rawData,
-        employeeDependentInfo: safeParse(rawData.employeeDependentInfo) || [],
+        employeeDependentInfo: safeParse(rawData.employeeDependentInfo) || {},
         employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
-        employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo),
+        employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo) || {},
+        metadata:safeParse(rawData.metadata) ||{}
       };
 
       return parsedData;

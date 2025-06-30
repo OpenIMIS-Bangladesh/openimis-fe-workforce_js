@@ -91,17 +91,16 @@ const MultiStepApplyForm = () => {
   }, []);
 
   useEffect(() => {
-    if (!parsedApplicationData?.employeeDependentInfo) return;
-    const hasNoDependents =
-      parsedApplicationData?.employeeDependentInfo.length === 0 ||
-      parsedApplicationData?.employeeDependentInfo.every(
-        (dep) => Object.keys(dep).length === 0
-      );
+  if (!parsedApplicationData?.employeeDependentInfo) return;
 
-    setApplicationForSelf(hasNoDependents ? "yes" : "no");
-    setSelectedApplicationType(parsedApplicationData?.applicationType)
-    setOrganizationType(parsedApplicationData?.organizationType)
-  }, [parsedApplicationData]);
+  const isEmptyDependent =
+    Object.keys(parsedApplicationData.employeeDependentInfo).length === 0;
+
+  setApplicationForSelf(isEmptyDependent ? "yes" : "no");
+  setSelectedApplicationType(parsedApplicationData?.applicationType);
+  setOrganizationType(parsedApplicationData?.organizationType);
+}, [parsedApplicationData]);
+
 
   const handleSelection = (applicationType, exportStatus) => {
     setSelectedApplicationType(applicationType);

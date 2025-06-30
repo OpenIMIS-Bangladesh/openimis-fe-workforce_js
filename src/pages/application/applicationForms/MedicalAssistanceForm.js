@@ -383,10 +383,10 @@ const MedicalAssistanceForm = ({
     dispatch(
       updateApplication(
         updateApplicationData,
-        `update workforce application ${formData.firstNameEn}`
+        `update workforce application `
       )
     );
-    setShowPreview(true);
+    // setShowPreview(true);
     // setIsSubmitted(true);
   };
 
@@ -490,7 +490,7 @@ const MedicalAssistanceForm = ({
         <Paper className={classes.paper} elevation={0}>
           <NidVerification formData={formData} nidOrBcn ={nidOrBcn} setDisableConfirmSubmit={setDisableConfirmSubmit}/>
           <div className={classes.buttonContainer}>
-            <Button variant="contained" color="primary" disabled={disableConfirmSubmit} onClick={() => { setShowVerifyNid(false); setIsSubmitted(true) }}>
+            <Button variant="contained" color="primary" disabled={disableConfirmSubmit} onClick={() => { setShowVerifyNid(false); setIsSubmitted(true),handleSubmit() }}>
               <FormattedMessage module="workforce" id="workforce.confirm.submit" />
             </Button>
           </div>
@@ -539,7 +539,7 @@ const MedicalAssistanceForm = ({
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            <Button variant="contained" color="primary" onClick={()=>setShowPreview(true)}>
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
