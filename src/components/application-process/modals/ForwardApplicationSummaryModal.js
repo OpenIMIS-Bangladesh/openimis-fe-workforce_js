@@ -263,7 +263,7 @@ const handleSave = async () => {
           gutterBottom
           style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
         >
-          <FormattedMessage module="workforce" id="workforce.employee.application.forwardToAssociation" />       
+          <FormattedMessage module="workforce" id="workforce.employee.application.forwardToCF" />       
         </Typography>
 
         <Typography

@@ -821,14 +821,13 @@ handleBulkApproveByDirector = async () => {
             >
             <FormattedMessage module="workforce" id="workforce.employee.application.createMeetingSheet" />                 
             </Button>
-            <Button
+            {/* <Button
               variant="contained"
               color="primary"
               onClick={this.handleBulkForward}
             >
-              {/* {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"} */}
             <FormattedMessage module="workforce" id="workforce.employee.application.bulkForward" />                 
-            </Button>
+            </Button> */}
           </Box>
         ) : null}
         {userType === WORKFORCE_USER_TYPE.APPROVER ? (
@@ -845,7 +844,7 @@ handleBulkApproveByDirector = async () => {
               color="primary"
               onClick={this.handleBulkSelected}
             >
-            <FormattedMessage module="workforce" id="workforce.employee.application.bulkSelect" />                 
+            <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />                 
             </Button>
             <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
 

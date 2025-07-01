@@ -65,7 +65,7 @@ import {
             <TabIcon />
           </IconButton>
         </Tooltip>
-           <Tooltip title="Action taken">
+           <Tooltip title="History">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -154,7 +154,7 @@ import {
             <TabIcon />
           </IconButton>
         </Tooltip>
-           <Tooltip title="Action taken">
+           <Tooltip title="History">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -225,7 +225,7 @@ import {
             <TabIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Action taken">
+        <Tooltip title="History">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -337,7 +337,7 @@ import {
             <VerifiedUserIcon />
           </IconButton>
         </Tooltip>
-
+{/* 
         <Tooltip title="Forward">
           <IconButton
             disabled={application?.isHistory}
@@ -345,7 +345,7 @@ import {
           >
             <ForwardIcon />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip title="Revert">
           <IconButton
             disabled={application?.isHistory}
