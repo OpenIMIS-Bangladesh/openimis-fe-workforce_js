@@ -37,9 +37,9 @@ import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement } from "../../actions";
-import { itemAdminFormatters, itemFormattersApplicant, itemFormattersApprover, itemFormattersChecker,itemFormattersFactoryAdmin,itemFormattersDirector } from "../../utils/itemFormatters_types";
+import { itemAdminFormatters, itemFormattersApplicant, itemFormattersApprover, itemFormattersChecker, itemFormattersFactoryAdmin, itemFormattersDirector } from "../../utils/itemFormatters_types";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
-import { headerApplicant, headerApprover, headerChecker, headersAdmin, headerFactoryAdmin, headerDirector} from "../../utils/headers_types";
+import { headerApplicant, headerApprover, headerChecker, headersAdmin, headerFactoryAdmin, headerDirector } from "../../utils/headers_types";
 
 const styles = (theme) => ({
   paper: {
@@ -77,7 +77,7 @@ class ApplicationProcessSearcher extends Component {
       selectedUserId: "",
       deadline: "",
       userList: [],
-      openGenerateBFTN:false,
+      openGenerateBFTN: false,
       submitting: false,
       serverResponse: null,
       editorContent: "",
@@ -85,8 +85,8 @@ class ApplicationProcessSearcher extends Component {
       selectedSuboffice: "",
       selectedUser: "",
       selectedApplicationIds: [],
-      revertByChecker:false,
-      revertByFactoryAdmin:false,
+      revertByChecker: false,
+      revertByFactoryAdmin: false,
       officeData: {
         cf: {
           suboffices: {
@@ -113,7 +113,7 @@ class ApplicationProcessSearcher extends Component {
   }
 
   fetch = (prms) => {
-    const { applicationType,userRights,revertedApplication,userName,workforceEmployeesFactoryId } = this.props;
+    const { applicationType, userRights, revertedApplication, userName, workforceEmployeesFactoryId } = this.props;
     const { showHistoryFilter } = this.state;
     this.props.fetchOrganizationEmployee(
       this.props.modulesManager,
@@ -122,28 +122,33 @@ class ApplicationProcessSearcher extends Component {
     this.props.fetchFactoryEmployee(
       this.props.modulesManager,
       [`relatedUser_LoginName_Iexact:"${userName}"`]
-   
-    )
-console.log(this.props) 
-    if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
-                  console.log('propssummaryId',this.props.summaryId)
-      this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(
-        this.props.modulesManager,
-        [`statusIn: ["forward_to_association", "meeting_created"], orderBy: ["-dateCreated"]`]
 
-      );
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+    )
+    console.log(this.props)
+    if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
+      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+      let filter = [];
+      if (summaryId) {
+        filter = [`statusIn: ["forward_to_association", "meeting_created"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${summaryId}"`];
+      } else {
+        filter = [`statusIn: ["forward_to_association"], orderBy: ["-dateCreated"]`];
+      }
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-         ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]']
+        filter
       );
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
+    } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-          [`statusIn: ["forward_to_director","approved_by_director","approved_by_dg"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
+        ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]']
+      );
+    } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
+      this.setState({ displayVersion: showHistoryFilter });
+      this.props.fetchApplicationsSummary(
+        this.props.modulesManager,
+        [`statusIn: ["forward_to_director","approved_by_director","approved_by_dg"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
 
       );
     }
@@ -151,31 +156,31 @@ console.log(this.props)
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-          [`statusIn: ["forward_to_comiitee", "selected","forward_to_director"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
+        [`statusIn: ["forward_to_comiitee", "selected","forward_to_director"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
       );
     }
     else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
       this.setState({ displayVersion: showHistoryFilter });
       if (revertedApplication) {
         this.props.fetchApplicationsSummary(
-        this.props.modulesManager,
-        //  ['statusIn: ["revert_to_applicant"]', 'orderBy: ["-dateCreated"]']
-        // prms
-      );
-      }else if (this.props.applicationStatus){
-        this.props.fetchApplicationsSummary(
           this.props.modulesManager,
-        [`statusIn: ["draft"], orderBy: ["-dateCreated"]`]
+          //  ['statusIn: ["revert_to_applicant"]', 'orderBy: ["-dateCreated"]']
           // prms
         );
-      }else {
+      } else if (this.props.applicationStatus) {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
-        ['statusIn: ["new", "revert_to_applicant"]', 'orderBy: ["-dateCreated"]']
+          [`statusIn: ["draft"], orderBy: ["-dateCreated"]`]
+          // prms
+        );
+      } else {
+        this.props.fetchApplicationsSummary(
+          this.props.modulesManager,
+          ['statusIn: ["new", "revert_to_applicant"]', 'orderBy: ["-dateCreated"]']
           // prms
         );
       }
-    }else{
+    } else {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
@@ -217,7 +222,7 @@ console.log(this.props)
   };
 
   handleCloseRevertModal = () => {
-    this.setState({ revertModalOpen: false,revertByChecker:false,revertByApprover:false, revertByFactoryAdmin:false, selectedApplication: null });
+    this.setState({ revertModalOpen: false, revertByChecker: false, revertByApprover: false, revertByFactoryAdmin: false, selectedApplication: null });
   };
   handleUserChange = (event) => {
     this.setState({ selectedUserId: event.target.value });
@@ -241,7 +246,7 @@ console.log(this.props)
       selectedSuboffice,
       selectedUser:
         this.state.officeData[this.state.selectedOffice].suboffices[
-          selectedSuboffice
+        selectedSuboffice
         ],
     });
   };
@@ -470,7 +475,7 @@ console.log(this.props)
       });
       setTimeout(() => {
         this.setState({
-          revertModalOpen : false,
+          revertModalOpen: false,
           selectedUserId: "",
           deadline: "",
           selectedApplication: null,
@@ -502,7 +507,7 @@ console.log(this.props)
       // After 2 seconds, close modal and reset form
       setTimeout(() => {
         this.setState({
-          revertModalOpen : false,
+          revertModalOpen: false,
           selectedUserId: "",
           deadline: "",
           selectedApplication: null,
@@ -512,35 +517,35 @@ console.log(this.props)
     }, 2000);
   };
 
-    headers = () => {
-      const userType = getUserTypeFromRights(this.props.userRights);
-      return userType === WORKFORCE_USER_TYPE.APPLICANT
-        ? headerApplicant(this)
-        : userType === WORKFORCE_USER_TYPE.CHECKER
+  headers = () => {
+    const userType = getUserTypeFromRights(this.props.userRights);
+    return userType === WORKFORCE_USER_TYPE.APPLICANT
+      ? headerApplicant(this)
+      : userType === WORKFORCE_USER_TYPE.CHECKER
         ? headerChecker(this)
         : userType === WORKFORCE_USER_TYPE.APPROVER
-        ? headerApprover(this)
-        : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
-        ? headerFactoryAdmin(this)
-        : userType === WORKFORCE_USER_TYPE.DIRECTOR
-        ? headerDirector(this)
-        : headersAdmin(this);
-    };
+          ? headerApprover(this)
+          : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+            ? headerFactoryAdmin(this)
+            : userType === WORKFORCE_USER_TYPE.DIRECTOR
+              ? headerDirector(this)
+              : headersAdmin(this);
+  };
 
-    itemFormatters = () => {
-      const userType = getUserTypeFromRights(this.props.userRights);
-      return userType === WORKFORCE_USER_TYPE.APPLICANT
-        ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this)
-        : userType === WORKFORCE_USER_TYPE.CHECKER
+  itemFormatters = () => {
+    const userType = getUserTypeFromRights(this.props.userRights);
+    return userType === WORKFORCE_USER_TYPE.APPLICANT
+      ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+      : userType === WORKFORCE_USER_TYPE.CHECKER
         ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this)
         : userType === WORKFORCE_USER_TYPE.APPROVER
-        ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this)
-        : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
-        ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this)
-        : userType === WORKFORCE_USER_TYPE.DIRECTOR
-        ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this)
-        : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this);
-    };
+          ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+          : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+            ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+            : userType === WORKFORCE_USER_TYPE.DIRECTOR
+              ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+              : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this);
+  };
 
   sorts = () => [];
 
@@ -551,172 +556,172 @@ console.log(this.props)
     );
   };
 
-handleBulkSelected = async () => {
-  const { selectedApplicationIds } = this.state;
-  const { updateApplication, createApplicationMovement } = this.props;
+  handleBulkSelected = async () => {
+    const { selectedApplicationIds } = this.state;
+    const { updateApplication, createApplicationMovement } = this.props;
 
-  if (selectedApplicationIds.length === 0) {
-    alert("Please select at least one application.");
-    return;
-  }
-
-  if (window.confirm("Are you sure you want to select these applications?")) {
-    try {
-      // Process each selected application
-      await Promise.all(
-        selectedApplicationIds.map(async (id) => {
-          const decodedId = decodeId(id);
-
-          const updateApplicationData = {
-            id: decodedId,
-            status: WORKFORCE_STATUS.SELECTED,
-          };
-
-          const createApplicationMovementData = {
-            applicationId: decodedId,
-            status: WORKFORCE_STATUS.SELECTED,
-            note: "আবেদন নির্বাচন করা হয়েছে",
-            action: "approved",
-          };
-
-          await updateApplication(updateApplicationData, "update workforce application");
-          await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-        })
-      );
-
-      this.setState({
-        serverResponse: {
-          status: "SUCCESS",
-          message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-        },
-      });
-
-      // Optionally reload
-      window.location.reload();
-    } catch (error) {
-      console.error("Bulk selection failed:", error);
-      this.setState({
-        serverResponse: {
-          status: "ERROR",
-          message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-        },
-      });
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
     }
-  }
-};
-handleBulkApproveByAdmin = async () => {
-  const { selectedApplicationIds } = this.state;
-  const { updateApplication, createApplicationMovement } = this.props;
 
-  if (selectedApplicationIds.length === 0) {
-    alert("Please select at least one application.");
-    return;
-  }
+    if (window.confirm("Are you sure you want to select these applications?")) {
+      try {
+        // Process each selected application
+        await Promise.all(
+          selectedApplicationIds.map(async (id) => {
+            const decodedId = decodeId(id);
 
-  if (window.confirm("Are you sure you want to approve these applications?")) {
-    try {
-      // Process each selected application
-      await Promise.all(
-        selectedApplicationIds.map(async (id) => {
-          const decodedId = decodeId(id);
+            const updateApplicationData = {
+              id: decodedId,
+              status: WORKFORCE_STATUS.SELECTED,
+            };
 
-          const updateApplicationData = {
-            id: decodedId,
-            status: WORKFORCE_STATUS.APPROVED_BY_DG,
-          };
+            const createApplicationMovementData = {
+              applicationId: decodedId,
+              status: WORKFORCE_STATUS.SELECTED,
+              note: "আবেদন নির্বাচন করা হয়েছে",
+              action: "approved",
+            };
 
-          const createApplicationMovementData = {
-            applicationId: decodedId,
-            status: WORKFORCE_STATUS.APPROVED_BY_DG,
-            note: "আবেদন নির্বাচন করা হয়েছে",
-            action: "approved_by_dg",
-          };
+            await updateApplication(updateApplicationData, "update workforce application");
+            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+          })
+        );
 
-          await updateApplication(updateApplicationData, "update workforce application");
-          await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-        })
-      );
+        this.setState({
+          serverResponse: {
+            status: "SUCCESS",
+            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+          },
+        });
 
-      this.setState({
-        serverResponse: {
-          status: "SUCCESS",
-          message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-        },
-      });
-
-      // Optionally reload
-      window.location.reload();
-    } catch (error) {
-      console.error("Bulk selection failed:", error);
-      this.setState({
-        serverResponse: {
-          status: "ERROR",
-          message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-        },
-      });
+        // Optionally reload
+        window.location.reload();
+      } catch (error) {
+        console.error("Bulk selection failed:", error);
+        this.setState({
+          serverResponse: {
+            status: "ERROR",
+            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+          },
+        });
+      }
     }
-  }
-};
-handleBulkApproveByDirector = async () => {
-  const { selectedApplicationIds } = this.state;
-  const { updateApplication, createApplicationMovement } = this.props;
+  };
+  handleBulkApproveByAdmin = async () => {
+    const { selectedApplicationIds } = this.state;
+    const { updateApplication, createApplicationMovement } = this.props;
 
-  if (selectedApplicationIds.length === 0) {
-    alert("Please select at least one application.");
-    return;
-  }
-
-  if (window.confirm("Are you sure you want to approve these applications?")) {
-    try {
-      // Process each selected application
-      await Promise.all(
-        selectedApplicationIds.map(async (id) => {
-          const decodedId = decodeId(id);
-
-          const updateApplicationData = {
-            id: decodedId,
-            status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
-          };
-
-          const createApplicationMovementData = {
-            applicationId: decodedId,
-            status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
-            note: "আবেদন নির্বাচন করা হয়েছে",
-            action: "approved_by_DIRECTOR",
-          };
-
-          await updateApplication(updateApplicationData, "update workforce application");
-          await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-        })
-      );
-
-      this.setState({
-        serverResponse: {
-          status: "SUCCESS",
-          message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-        },
-      });
-
-      // Optionally reload
-      window.location.reload();
-    } catch (error) {
-      console.error("Bulk selection failed:", error);
-      this.setState({
-        serverResponse: {
-          status: "ERROR",
-          message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-        },
-      });
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
     }
-  }
-};
+
+    if (window.confirm("Are you sure you want to approve these applications?")) {
+      try {
+        // Process each selected application
+        await Promise.all(
+          selectedApplicationIds.map(async (id) => {
+            const decodedId = decodeId(id);
+
+            const updateApplicationData = {
+              id: decodedId,
+              status: WORKFORCE_STATUS.APPROVED_BY_DG,
+            };
+
+            const createApplicationMovementData = {
+              applicationId: decodedId,
+              status: WORKFORCE_STATUS.APPROVED_BY_DG,
+              note: "আবেদন নির্বাচন করা হয়েছে",
+              action: "approved_by_dg",
+            };
+
+            await updateApplication(updateApplicationData, "update workforce application");
+            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+          })
+        );
+
+        this.setState({
+          serverResponse: {
+            status: "SUCCESS",
+            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+          },
+        });
+
+        // Optionally reload
+        window.location.reload();
+      } catch (error) {
+        console.error("Bulk selection failed:", error);
+        this.setState({
+          serverResponse: {
+            status: "ERROR",
+            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+          },
+        });
+      }
+    }
+  };
+  handleBulkApproveByDirector = async () => {
+    const { selectedApplicationIds } = this.state;
+    const { updateApplication, createApplicationMovement } = this.props;
+
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to approve these applications?")) {
+      try {
+        // Process each selected application
+        await Promise.all(
+          selectedApplicationIds.map(async (id) => {
+            const decodedId = decodeId(id);
+
+            const updateApplicationData = {
+              id: decodedId,
+              status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
+            };
+
+            const createApplicationMovementData = {
+              applicationId: decodedId,
+              status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
+              note: "আবেদন নির্বাচন করা হয়েছে",
+              action: "approved_by_DIRECTOR",
+            };
+
+            await updateApplication(updateApplicationData, "update workforce application");
+            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+          })
+        );
+
+        this.setState({
+          serverResponse: {
+            status: "SUCCESS",
+            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+          },
+        });
+
+        // Optionally reload
+        window.location.reload();
+      } catch (error) {
+        console.error("Bulk selection failed:", error);
+        this.setState({
+          serverResponse: {
+            status: "ERROR",
+            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+          },
+        });
+      }
+    }
+  };
 
 
-  handleCloseBFTN = ()=>{
-    this.setState({openGenerateBFTN:false})
+  handleCloseBFTN = () => {
+    this.setState({ openGenerateBFTN: false })
   }
-  handleOpenBFTN = ()=>{
-    this.setState({openGenerateBFTN:true})
+  handleOpenBFTN = () => {
+    this.setState({ openGenerateBFTN: true })
   }
 
   rowDisabled = (selection, i) => !!i.validityTo;
@@ -724,7 +729,7 @@ handleBulkApproveByDirector = async () => {
   rowLocked = (selection, i) => !!i.clientMutationId;
 
   render() {
-    const { forwardModalOpen,revertModalOpen,revertByChecker,revertByApprover,revertByFactoryAdmin, selectedApplication, openGenerateBFTN,showHistoryFilter } =
+    const { forwardModalOpen, revertModalOpen, revertByChecker, revertByApprover, revertByFactoryAdmin, selectedApplication, openGenerateBFTN, showHistoryFilter } =
       this.state;
     const totalMoneyAmount = applications?.reduce((acc, app) => {
       const amount = parseFloat(app.moneyAmount) || 0;
@@ -797,7 +802,7 @@ handleBulkApproveByDirector = async () => {
           rowIdentifier={this.rowIdentifier}
           filtersToQueryParams={this.filtersToQueryParams}
           defaultOrderBy="-dateCreated"
-          headers={ this.headers}
+          headers={this.headers}
           itemFormatters={this.itemFormatters}
           sorts={this.sorts}
           rowDisabled={this.rowDisabled}
@@ -817,9 +822,9 @@ handleBulkApproveByDirector = async () => {
             <Button
               variant="contained"
               color="primary"
-              onClick={()=>this.setState({forwardModalOpen:true})}
+              onClick={() => this.setState({ forwardModalOpen: true })}
             >
-            <FormattedMessage module="workforce" id="workforce.employee.application.createMeetingSheet" />                 
+              <FormattedMessage module="workforce" id="workforce.employee.application.createMeetingSheet" />
             </Button>
             <Button
               variant="contained"
@@ -827,7 +832,7 @@ handleBulkApproveByDirector = async () => {
               onClick={this.handleBulkForward}
             >
               {/* {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"} */}
-            <FormattedMessage module="workforce" id="workforce.employee.application.bulkForward" />                 
+              <FormattedMessage module="workforce" id="workforce.employee.application.bulkForward" />
             </Button>
           </Box>
         ) : null}
@@ -845,7 +850,7 @@ handleBulkApproveByDirector = async () => {
               color="primary"
               onClick={this.handleBulkSelected}
             >
-            <FormattedMessage module="workforce" id="workforce.employee.application.bulkSelect" />                 
+              <FormattedMessage module="workforce" id="workforce.employee.application.bulkSelect" />
             </Button>
             <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
 
@@ -865,7 +870,7 @@ handleBulkApproveByDirector = async () => {
               color="primary"
               onClick={this.handleBulkApproveByAdmin}
             >
-            <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />                 
+              <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
             </Button>
             <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
 
@@ -885,7 +890,7 @@ handleBulkApproveByDirector = async () => {
               color="primary"
               onClick={this.handleBulkApproveByDirector}
             >
-            <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />                 
+              <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
             </Button>
             <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
 
@@ -908,89 +913,89 @@ handleBulkApproveByDirector = async () => {
           } else if (userType === WORKFORCE_USER_TYPE.ADMIN) {
             return (
               <>
-              <ForwardApplicationAdminModal
-                open={forwardModalOpen}
-                onClose={this.handleCloseForwardModal}
-                selectedApplication={selectedApplication}
-                officeData={this.state.officeData}
-                onSubmitForward={this.handleForwardSubmit}
-              />
-              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"approved_by_dg"} userRights={userRights}/>
+                <ForwardApplicationAdminModal
+                  open={forwardModalOpen}
+                  onClose={this.handleCloseForwardModal}
+                  selectedApplication={selectedApplication}
+                  officeData={this.state.officeData}
+                  onSubmitForward={this.handleForwardSubmit}
+                />
+                <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"approved_by_dg"} userRights={userRights} />
               </>
             );
           } else if (userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
             return (
               <>
-              <ForwardApplicationFactoryAdminModal
-                open={forwardModalOpen}
-                onClose={this.handleCloseForwardModal}
-                selectedApplication={selectedApplication}
-                onSubmitForward={this.handleForwardSubmit}
-                organizationEmployee={organizationEmployee}
-              />
-              <RevertApplicationModal
-                open={revertModalOpen}
-                onClose={this.handleCloseRevertModal}
-                revertByChecker={revertByChecker}
-                selectedApplication={this.state.selectedApplication}
-                onSubmitRevert={this.handleRevertSubmit}
-              />
-            </>
-              
+                <ForwardApplicationFactoryAdminModal
+                  open={forwardModalOpen}
+                  onClose={this.handleCloseForwardModal}
+                  selectedApplication={selectedApplication}
+                  onSubmitForward={this.handleForwardSubmit}
+                  organizationEmployee={organizationEmployee}
+                />
+                <RevertApplicationModal
+                  open={revertModalOpen}
+                  onClose={this.handleCloseRevertModal}
+                  revertByChecker={revertByChecker}
+                  selectedApplication={this.state.selectedApplication}
+                  onSubmitRevert={this.handleRevertSubmit}
+                />
+              </>
+
             );
           } else if (userType === WORKFORCE_USER_TYPE.CHECKER) {
             return (
               <>
-              <ForwardApplicationCheckerMoal
-                open={forwardModalOpen}
-                onClose={this.handleCloseForwardModal}
-                selectedApplication={selectedApplication}
-                onSubmitForward={this.handleForwardSubmit}
-                organizationEmployee={organizationEmployee}
-              />
-              <RevertApplicationModal
-                open={revertModalOpen}
-                onClose={this.handleCloseRevertModal}
-                revertByChecker={revertByChecker}
-                selectedApplication={this.state.selectedApplication}
-                onSubmitRevert={this.handleRevertSubmit}
-              />
-              <ForwardApplicationSummaryModal
-                open={forwardModalOpen}
-                onClose={this.handleCloseForwardModal}
-                selectedApplication={this.state.selectedApplication}
-                selectedApplicationIds={this.state.selectedApplicationIds}
+                <ForwardApplicationCheckerMoal
+                  open={forwardModalOpen}
+                  onClose={this.handleCloseForwardModal}
+                  selectedApplication={selectedApplication}
+                  onSubmitForward={this.handleForwardSubmit}
+                  organizationEmployee={organizationEmployee}
+                />
+                <RevertApplicationModal
+                  open={revertModalOpen}
+                  onClose={this.handleCloseRevertModal}
+                  revertByChecker={revertByChecker}
+                  selectedApplication={this.state.selectedApplication}
+                  onSubmitRevert={this.handleRevertSubmit}
+                />
+                <ForwardApplicationSummaryModal
+                  open={forwardModalOpen}
+                  onClose={this.handleCloseForwardModal}
+                  selectedApplication={this.state.selectedApplication}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
 
-              />
-            </>
-              
+                />
+              </>
+
             );
           } else if (userType === WORKFORCE_USER_TYPE.APPROVER) {
             return (
               <>
-              <ForwardApplicationApproverModal
-                open={forwardModalOpen}
-                onClose={this.handleCloseForwardModal}
-                selectedApplication={selectedApplication}
-                onSubmitForward={this.handleForwardSubmit}
-                userName={userName}
-              />
-               <RevertApplicationModal
-                open={revertModalOpen}
-                revertByChecker={revertByChecker}
-                onClose={this.handleCloseRevertModal}
-                selectedApplication={this.state.selectedApplication}
-                onSubmitRevert={this.handleRevertSubmit}
-                userName={userName}
-              />
-              <ForwardApplicationAdminModal
-                open={forwardModalOpen}
-                onClose={this.handleCloseForwardModal}
-                selectedApplication={selectedApplication}
-                officeData={this.state.officeData}
-                onSubmitForward={this.handleForwardSubmit}
-              />
-              <GenerateBFTN  open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"selected"} summary_Id={decodeId(this.props.summaryId)}  userRights={userRights}/>
+                <ForwardApplicationApproverModal
+                  open={forwardModalOpen}
+                  onClose={this.handleCloseForwardModal}
+                  selectedApplication={selectedApplication}
+                  onSubmitForward={this.handleForwardSubmit}
+                  userName={userName}
+                />
+                <RevertApplicationModal
+                  open={revertModalOpen}
+                  revertByChecker={revertByChecker}
+                  onClose={this.handleCloseRevertModal}
+                  selectedApplication={this.state.selectedApplication}
+                  onSubmitRevert={this.handleRevertSubmit}
+                  userName={userName}
+                />
+                <ForwardApplicationAdminModal
+                  open={forwardModalOpen}
+                  onClose={this.handleCloseForwardModal}
+                  selectedApplication={selectedApplication}
+                  officeData={this.state.officeData}
+                  onSubmitForward={this.handleForwardSubmit}
+                />
+                <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"selected"} summary_Id={decodeId(this.props.summaryId)} userRights={userRights} />
               </>
             );
           }
@@ -1019,7 +1024,7 @@ const mapStateToProps = (state) => ({
   userRights: state.core.user.i_user.rights,
   userId: state.core.user.i_user.uuid,
   userName: state.core.user.username,
-  organizationEmployee:state.workforce.organizationEmployee,
+  organizationEmployee: state.workforce.organizationEmployee,
   workforceEmployeesFactoryId: state.workforce.workforceEmployee?.edges?.[0]?.employeeDesignationEmployeeId?.edges?.[0]?.node?.workforceFactory?.id ?? null
 });
 
