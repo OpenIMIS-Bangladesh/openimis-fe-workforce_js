@@ -59,6 +59,7 @@ export const WORKFORCE_STATUS = {
   REVERT_TO_CHECKER:"revert_to_checker",
   REVERT:"revert",
   FORWARD_TO_ASSOCIATION:"forward_to_association",
+  FORWARD_TO_CF_SECTION:"forward_to_cf_section",
   SELECTED: "selected",
   MEETING_CREATED: "meeting_created",
 
@@ -71,4 +72,5 @@ export const WORKFORCE_USER_TYPE = {
   APPLICANT: "applicant",
   FACTORY_ADMIN: "factory_admin",
   DIRECTOR: "director",
+  ASSOCIATION: "association",
 };

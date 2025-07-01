@@ -358,6 +358,84 @@ import {
     ));
     return formatters;
   };
+   export const itemFormattersAssociation = (isShowHistory,modulesManager,history,component) => {
+    const formatters = [
+      (application) =>
+        application.workforceEmployee ? (
+          <Checkbox
+            checked={component.state.selectedApplicationIds.includes(application.id)}
+            onChange={component.handleCheckboxChange(application.id)}
+            color="primary"
+          />
+        ) : (
+          ""
+        ),
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => application.workforceEmployee?.lastNameBn,
+      (application) => application.applicationType,
+      (application) => <TextInput value={application?.grantMoney?.grantMoney}/> ,
+      (application) => "Akij",
+      (application) => application.status,
+      (application) => application.dateCreated.split("T")[0],
+      isShowHistory() ? application?.version : null,
+    ];
+
+    formatters.push((application) => (
+      <div className={component.props.classes.horizontalButtonContainer}>
+        <Tooltip title="View">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.process.view",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <TabIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Verify">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.verify",
+                [decodeId(application.id)],
+                false
+              );
+            }}
+          >
+            <VerifiedUserIcon />
+          </IconButton>
+        </Tooltip>
+ 
+        <Tooltip title="Forward">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => component.handleOpenForwardModal(application)}
+          >
+            <ForwardIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Revert">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {component.handleOpenRevertModal(application);component.setState({revertByChecker:true})}}
+          >
+            <UndoIcon />
+          </IconButton>
+        </Tooltip>
+      </div>
+    ));
+    return formatters;
+  };
   export const itemFormattersFactoryAdmin = (isShowHistory,modulesManager,history,component) => {
     const formatters = [
       (application) =>

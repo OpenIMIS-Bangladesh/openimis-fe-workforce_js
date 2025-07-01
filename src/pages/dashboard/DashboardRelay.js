@@ -4,6 +4,7 @@ import { getUserType, isEmptyObject } from "../../utils/utils";
 import ApplicantDashboard from "./ApplicantDashboardPage";
 import DashboardPage from "./DashboardPage";
 import CheckerDashboardPage from "./CheckerDashboardPage";
+import AssociationDashboardPage from "./AssociationDashboardPage";
 import ApproverDashboardPage from "./ApproverDashboardPage";
 import FactoryAdminDashboardPage from "./FactoryAdminDashboardPage";
 import { WORKFORCE_USER_TYPE } from "../../constants";
@@ -22,6 +23,8 @@ console.log(user_type)
     return <DashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.DIRECTOR) {
     return <DashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.ASSOCIATION) {
+    return <AssociationDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
     return <FactoryAdminDashboardPage />;
   }

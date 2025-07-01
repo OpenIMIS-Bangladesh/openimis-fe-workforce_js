@@ -91,7 +91,7 @@ class ApplicationsProcessPage extends Component {
               label={<FormattedMessage module="workforce" id="workforce.application.process.all" />}
               {...this.a11yProps(0)}
             />
-            <Tab
+            {/* <Tab
               label={<FormattedMessage module="workforce" id="workforce.application.process.accidental" />}
               {...this.a11yProps(1)}
             />
@@ -102,7 +102,7 @@ class ApplicationsProcessPage extends Component {
             <Tab
               label={<FormattedMessage module="workforce" id="workforce.application.process.disability" />}
               {...this.a11yProps(3)}
-            />
+            /> */}
           </Tabs>
         </AppBar>
 
@@ -138,7 +138,7 @@ class ApplicationsProcessPage extends Component {
             ))}        
           <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
         </TabPanel>
-        <TabPanel value={value} index={1}>
+        {/* <TabPanel value={value} index={1}>
           <ApplicationProcessSearcher
             cacheFiltersKey="accidentalApplications"
             applicationType="accidentalGrant"
@@ -158,7 +158,7 @@ class ApplicationsProcessPage extends Component {
             applicationType="disabilityAssistance"
             onDoubleClick={this.onDoubleClick}
           />
-        </TabPanel>
+        </TabPanel> */}
 
         {withTooltip(
           <div className={classes.fab}>
