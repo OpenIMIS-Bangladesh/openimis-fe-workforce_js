@@ -251,6 +251,7 @@
     "workforce.employee.application.totalAmount":"Total amount applied for:",
     "workforce.employee.application.tk":"Taka",
     "workforce.employee.application.forwardToAssociation":"Send considered applications to the Association office",
+    "workforce.employee.application.forwardToCF":"Send considered applications to the CF Section Office",
     "workforce.employee.application.provideMeetingInfo":"Provide meeting information",
     "workforce.employee.application.createMeetingSheet":"Create Meeting Sheet",
     "workforce.employee.application.bulkForward":"Bulk Forward",
@@ -258,7 +259,7 @@
     "workforce.employee.application.meetingSheet":"Meeting Sheet",
     "workforce.employee.application.approveMeetingSheet":"Approve Meeting Sheet",
     "workforce.employee.application.bulkSelect":"Bulk Select",
-    "workforce.employee.application.bulkApprove":"Bulk Approve",
+    "workforce.employee.application.bulkApprove":"Approve",
 
 
     "workforce.banks.nameEn": "Bank Name En",
