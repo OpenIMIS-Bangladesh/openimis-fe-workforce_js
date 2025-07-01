@@ -124,18 +124,14 @@ class ApplicationProcessSearcher extends Component {
       [`relatedUser_LoginName_Iexact:"${userName}"`]
    
     )
-
-    console.log({workforceEmployeesFactoryId})
- 
+console.log(this.props) 
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
-      const finalParams = {
-        ...prms,
-        ...  ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]'],
-      };
+                  console.log('propssummaryId',this.props.summaryId)
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-         ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]']
+        [`statusIn: ["forward_to_association", "meeting_created"], orderBy: ["-dateCreated"]`]
+
       );
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
@@ -158,14 +154,6 @@ class ApplicationProcessSearcher extends Component {
           [`statusIn: ["forward_to_comiitee", "selected","forward_to_director"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`]
       );
     }
-    // else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
-    //   this.setState({ displayVersion: showHistoryFilter });
-    //   this.props.fetchApplicationsSummary(
-    //     this.props.modulesManager,
-    //     [`employeeFactoryId:"${workforceEmployeesFactoryId}", orderBy: ["-dateCreated"]`]
-      
-    //   );
-    // }
     else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
       this.setState({ displayVersion: showHistoryFilter });
       if (revertedApplication) {
@@ -188,11 +176,6 @@ class ApplicationProcessSearcher extends Component {
         );
       }
     }else{
-      const finalParams = {
-        ...prms,
-        ... [`orderBy: ["-dateCreated"]`],
-        };
-        // console.log('shariful',prms)
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
@@ -743,8 +726,6 @@ handleBulkApproveByDirector = async () => {
   render() {
     const { forwardModalOpen,revertModalOpen,revertByChecker,revertByApprover,revertByFactoryAdmin, selectedApplication, openGenerateBFTN,showHistoryFilter } =
       this.state;
-    // const { selectedOffice, selectedSuboffice, selectedUser, officeData } =
-    //   this.state;
     const totalMoneyAmount = applications?.reduce((acc, app) => {
       const amount = parseFloat(app.moneyAmount) || 0;
       return acc + amount;
@@ -785,9 +766,6 @@ handleBulkApproveByDirector = async () => {
         }
       />
     );
-
-    console.log({ summaryId });
-    console.log(itemAdminFormatters(this.isShowHistory,modulesManager,history,this))
 
     return (
       <>

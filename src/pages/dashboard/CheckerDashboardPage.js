@@ -138,13 +138,6 @@ const SidebarMenu = [
       icon: <HourglassFullTwoToneIcon  />,
     },
   // {
-  //   id: "recentApplications",
-  //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.application.recent" />
-  //   ),
-  //   icon: <DoneAllIcon />,
-  // },
-  // {
   //   id: "applicationStatus",
   //   text: (
   //     <FormattedMessage module="workforce" id="workforce.application.status" />
@@ -163,20 +156,6 @@ const FiledApplications = () =>{
     <Typography variant="h5" gutterBottom>
       <FormattedMessage module="workforce" id="workforce.checker.dashboard" />
     </Typography>
-
-    {/* Filters */}
-    {/* <Grid container spacing={2} alignItems="center">
-      <Grid item>
-        <TextField
-        variant="outlined"
-        size="small"
-          // className={classes.searchInput}
-          label={<FormattedMessage module="workforce" id="workforce.search.here" />}
-        />
-      </Grid>
-    </Grid> */}
-
-    {/* Table */}
    <Card className={classes.tableContainer}>
         <CardContent>
             <ApplicationProcessSearcher
@@ -221,9 +200,6 @@ const ApplicationStatus = () => {
               size="small"
               label={<FormattedMessage module="workforce" id="workforce.employee.dependent.phone" />}
               style={{
-                // border: "1px solid #ccc",
-                // borderRadius: 4,
-                // padding: "8px 12px",
                 marginBottom: 16,
               }}
             />
@@ -233,9 +209,6 @@ const ApplicationStatus = () => {
               size="small"
               label={<FormattedMessage module="workforce" id="workforce.application.tracking.number" />}
               style={{
-                // border: "1px solid #ccc",
-                // borderRadius: 4,
-                // padding: "8px 12px",
                 marginBottom: 16,
               }}
             />
@@ -282,6 +255,7 @@ const RevertApplication = () => {
 )}
 
 const PendingMeetingSheet = ({ summaryData = [] }) => {
+  console.log("summary data", summaryData);
   const classes = useStyles()
   return (
     <>
@@ -337,10 +311,6 @@ const CheckerDashboard = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
-      // case "checkedApplications":
-      //   return <FiledApplications />;
-      // case "recentApplications":
-      //   return <FiledApplications />;
       case "revertedApplication":
         return <RevertApplication />;
       case "pendingMeetingSheet":

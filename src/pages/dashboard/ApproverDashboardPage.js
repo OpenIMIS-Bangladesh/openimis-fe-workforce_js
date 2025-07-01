@@ -20,7 +20,6 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
-import CheckCircleOutlineTwoToneIcon from "@material-ui/icons/CheckCircleOutlineTwoTone";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { fetchSummaryApplications } from "../../actions";
 
@@ -76,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "12px",
     borderRadius: "6px",
     "&::before": {
-      display: "none", // removes default top border
+      display: "none",
     },
   },
   accordionPadding: {
@@ -104,27 +103,20 @@ const SidebarMenu = [
     text: (
       <FormattedMessage
         module="workforce"
-        id="workforce.employee.application.pendingMeetingSheet"
+        id="workforce.employee.application.meetingSheet"
       />
     ),
     icon: <HourglassFullTwoToneIcon />,
   },
-  {
-    id: "approveMeetingSheet",
-    text: (
-      <FormattedMessage
-        module="workforce"
-        id="workforce.employee.application.approveMeetingSheet"
-      />
-    ),
-    icon: <CheckCircleOutlineTwoToneIcon />,
-  },
   // {
-  //   id: "recentApplications",
+  //   id: "approveMeetingSheet",
   //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.application.recent" />
+  //     <FormattedMessage
+  //       module="workforce"
+  //       id="workforce.employee.application.approveMeetingSheet"
+  //     />
   //   ),
-  //   icon: <DoneAllIcon />,
+  //   icon: <CheckCircleOutlineTwoToneIcon />,
   // },
   // {
   //   id: "applicationStatus",
@@ -144,7 +136,6 @@ const FiledApplications = ({ summaryData = [], showSummaryBlock = true }) => {
   const handleChange = (panelId) => (event, isExpanded) => {
     setExpanded(isExpanded ? panelId : null);
   };
-  console.clear;
   console.log("summary data", summaryData);
   return (
     <div className={classes.accordionPadding}>
@@ -155,13 +146,7 @@ const FiledApplications = ({ summaryData = [], showSummaryBlock = true }) => {
         />
       </Typography>
 
-      {showSummaryBlock &&
-        summaryData
-          .filter(
-            (item) =>
-              item.status !== "forward_to_director" ||
-              selectedMenu === "approveMeetingSheet"
-          )
+        {summaryData         
           .map((item, index) => (
             <Accordion
               key={index}
@@ -229,9 +214,6 @@ const ApplicationStatus = () => {
                 />
               }
               style={{
-                // border: "1px solid #ccc",
-                // borderRadius: 4,
-                // padding: "8px 12px",
                 marginBottom: 16,
               }}
             />
@@ -246,9 +228,6 @@ const ApplicationStatus = () => {
                 />
               }
               style={{
-                // border: "1px solid #ccc",
-                // borderRadius: 4,
-                // padding: "8px 12px",
                 marginBottom: 16,
               }}
             />
@@ -278,7 +257,6 @@ const ApproverDashboard = () => {
   const data = useSelector(
     (state) => state.workforce[`applicationsSummary`] ?? []
   );
-  console.clear();
   console.log("hello i am approver", data);
 
   const renderContent = () => {
