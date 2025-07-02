@@ -80,6 +80,7 @@ class ApplicationProcessSearcher extends Component {
       openGenerateBFTN: false,
       submitting: false,
       serverResponse: null,
+      editedGrantMoney: "",
       editorContent: "",
       selectedOffice: "",
       selectedSuboffice: "",
@@ -423,6 +424,7 @@ class ApplicationProcessSearcher extends Component {
         async () => {
           const updateApplicationData = {
             id: decodeId(application.id),
+            grantAmount:this.state.editedGrantMoney,
             status: WORKFORCE_STATUS.SELECTED,
           };
 

@@ -83,8 +83,13 @@ const DisabilityForm = ({
   const [activeStep, setActiveStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
+  const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [deathType, setDeathType] = useState("");
+  const [nidOrBcn, setNidOrBcn] = useState({
+      nid: formData.workforceEmployee?.nid || "",
+      birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
+    });
   const reduxState = useSelector((state) => state);
 
   const [formData, setFormData] = useState({
@@ -408,7 +413,7 @@ const DisabilityForm = ({
     dispatch(
       updateApplication(updateApplicationData, `update workforce application `)
     );
-    setShowPreview(true);
+    // setShowPreview(true);
     // setIsSubmitted(true);
   };
 
@@ -447,14 +452,16 @@ const DisabilityForm = ({
     return (
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={0}>
-          <NidVerification formData={formData} />
+          <NidVerification formData={formData} nidOrBcn={nidOrBcn} setDisableConfirmSubmit={setDisableConfirmSubmit}/>
           <div className={classes.buttonContainer}>
             <Button
               variant="contained"
               color="primary"
+              disabled={disableConfirmSubmit}
               onClick={() => {
                 setShowVerifyNid(false);
                 setIsSubmitted(true);
+                handleSubmit()
               }}
             >
               <FormattedMessage
@@ -526,7 +533,7 @@ const DisabilityForm = ({
               handleChange={(key, value) =>
                 handleChange(key, value, "employeeBankInfo")
               }
-              formData={formData.employeeBankInfo}
+              formData={formData}
             />
           </Box>
         ) : activeStep === 4 ? (
@@ -558,7 +565,7 @@ const DisabilityForm = ({
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            <Button variant="contained" color="primary" onClick={()=>setShowPreview(true)}>
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}

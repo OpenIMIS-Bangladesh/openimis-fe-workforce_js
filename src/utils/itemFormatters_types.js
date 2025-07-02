@@ -39,7 +39,7 @@ import {
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,
-      (application) => 200000,
+      (application) => application?.grantAmount,
       (application) => "Nafi",
       (application) => "Akij",
       (application) => application.status,
@@ -128,7 +128,7 @@ import {
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,
-      (application) => 200000,
+      (application) => application?.grantAmount,
       (application) => "Nafi",
       (application) => "Akij",
       (application) => application.status,
@@ -295,7 +295,7 @@ import {
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,
-      (application) => <TextInput value={application?.grantMoney?.grantMoney}/> ,
+      (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => "Akij",
       (application) => application.status,
       (application) => application.dateCreated.split("T")[0],
@@ -372,8 +372,8 @@ import {
         ),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
-      (application) => application.applicationType,
-      (application) => <TextInput value={application?.grantMoney?.grantMoney}/> ,
+      (application) => application.applicationType, 
+      (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => "Akij",
       (application) => application.status,
       (application) => application.dateCreated.split("T")[0],
@@ -451,7 +451,7 @@ import {
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,
-      (application) => 200000,
+      (application) => application?.grantAmount,
       (application) => "Akij",
       (application) => application.status,
       (application) => application.dateCreated.split("T")[0],
@@ -530,8 +530,8 @@ import {
       (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,
       // (application) => application.organizationType,
-      (application) => <TextInput value={application?.grantMoney?.grantMoney}/> ,
-      // (application) => 200000,
+      (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
+      // (application) => application?.grantAmount,
       (application) => application.status,
       (application) => application.dateCreated.split("T")[0],
       isShowHistory() ? application?.version : null,
@@ -572,15 +572,6 @@ import {
             <VerifiedUserIcon />
           </IconButton>
         </Tooltip>
-
-        {/* <Tooltip title="ফরওয়ার্ড">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => component.handleOpenForwardModal(application)}
-          >
-            <ForwardIcon />
-          </IconButton>
-        </Tooltip> */}
         <Tooltip title="Revert">
           <IconButton
             disabled={application?.isHistory}

@@ -225,6 +225,7 @@ export function formatApplicationeGQL(application) {
   ${application?.cfApplicationSummaryId ? `cfApplicationSummaryId: "${(application?.cfApplicationSummaryId)}"` : ""}
   ${application?.eisApplicationSummaryId ? `eisApplicationSummaryId: "${(application?.eisApplicationSummaryId)}"` : ""}
   ${application?.blwfApplicationSummaryId ? `blwfApplicationSummaryId: "${(application?.blwfApplicationSummaryId)}"` : ""}
+  ${application?.grantAmount ? `grantAmount: "${(application?.grantAmount)}"` : ""}
 `;
 }
 ///application movement ////

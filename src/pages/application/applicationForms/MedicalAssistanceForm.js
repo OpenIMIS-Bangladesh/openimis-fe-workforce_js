@@ -425,7 +425,7 @@ const MedicalAssistanceForm = ({
     dispatch(
       updateApplication(updateApplicationData, `update workforce application `)
     );
-    setShowPreview(true);
+    // setShowPreview(true);
     // setIsSubmitted(true);
   };
 
@@ -555,6 +555,7 @@ const MedicalAssistanceForm = ({
               onClick={() => {
                 setShowVerifyNid(false);
                 setIsSubmitted(true);
+                handleSubmit()
               }}
             >
               <FormattedMessage
@@ -615,7 +616,7 @@ const MedicalAssistanceForm = ({
             <Button
               variant="contained"
               color="primary"
-              onClick={() => handleSubmit()}
+              onClick={() => setShowPreview(true)}
             >
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
