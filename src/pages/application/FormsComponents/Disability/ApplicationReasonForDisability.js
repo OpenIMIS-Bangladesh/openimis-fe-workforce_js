@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ApplicationReasonForDisability = ({ modulesManager,onSelect,deathType, setDeathType }) => {
+const ApplicationReasonForDisability = ({ modulesManager,handleChange,deathType, setDeathType }) => {
   const { formatMessage } = useTranslations(
       "core.RegistrationPage",
       modulesManager,
@@ -35,6 +35,7 @@ const ApplicationReasonForDisability = ({ modulesManager,onSelect,deathType, set
   const handleDeathTypeChange = (event) => {
     const value = event.target.value;
     setDeathType(value);
+    handleChange("disabilityType",value)
     // onSelect(selectedApplicationType, value); // Pass both selections
   };
 
