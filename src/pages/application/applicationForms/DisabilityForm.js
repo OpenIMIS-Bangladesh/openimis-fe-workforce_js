@@ -87,7 +87,7 @@ const DisabilityForm = ({
   const [showPreview, setShowPreview] = useState(false);
   const [deathType, setDeathType] = useState("");
   const [nidOrBcn, setNidOrBcn] = useState({
-      nid: formData.workforceEmployee?.nid || "",
+      nid: formData?.workforceEmployee?.nid || "",
       birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
     });
   const reduxState = useSelector((state) => state);

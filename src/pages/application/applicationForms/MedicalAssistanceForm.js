@@ -129,7 +129,7 @@ const MedicalAssistanceForm = ({
   });
 
   const [nidOrBcn, setNidOrBcn] = useState({
-    nid: formData.workforceEmployee?.nid || "",
+    nid: formData?.workforceEmployee?.nid || "",
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
   });
 

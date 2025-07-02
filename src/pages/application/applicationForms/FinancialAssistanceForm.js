@@ -94,7 +94,7 @@ const FinancialAssistanceForm = ({
   const [deathType, setDeathType] = useState("");
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
   const [nidOrBcn, setNidOrBcn] = useState({
-      nid: formData.workforceEmployee?.nid || "",
+      nid: formData?.workforceEmployee?.nid || "",
       birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
     });
   

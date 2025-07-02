@@ -73,7 +73,7 @@ const FileUploader = ({ fieldKey, onFileChange }) => {
   const jwtToken = localStorage.getItem("token"); // Adjust this as needed
 
   try {
-    const response = await fetch("http://localhost:8000/api/workforce/document/upload", {
+    const response = await fetch("/api/workforce/document/upload", {
       method: "POST",
       credentials: 'include',
       headers: {
