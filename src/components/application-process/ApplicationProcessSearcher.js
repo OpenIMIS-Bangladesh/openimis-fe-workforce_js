@@ -904,6 +904,7 @@ class ApplicationProcessSearcher extends Component {
               <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
             </Button>
             <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
+            <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} status={"approved_by_director"} userRights={userRights} />
 
           </Box>
         ) : null}
