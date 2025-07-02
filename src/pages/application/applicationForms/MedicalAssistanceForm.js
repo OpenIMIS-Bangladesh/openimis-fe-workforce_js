@@ -133,6 +133,15 @@ const MedicalAssistanceForm = ({
     nid: formData.workforceEmployee?.nid ||"",
     birthCertificateNo:formData?.workforceEmployee?.birthCertificateNo
   });
+
+  useEffect(() => {
+  if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
+    setFormData((prev) => ({
+      ...prev,
+      applicationId: applicationId[0].id,
+    }));
+  }
+}, [applicationId]);
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
     dispatch(
@@ -378,7 +387,7 @@ const MedicalAssistanceForm = ({
       employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       status:WORKFORCE_STATUS.NEW,
     };
-    console.clear()
+    
     console.log("hello i am from submit",updateApplicationData)
     dispatch(
       updateApplication(

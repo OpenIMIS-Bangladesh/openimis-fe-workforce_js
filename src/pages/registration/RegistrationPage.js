@@ -192,7 +192,8 @@ const RegistrationPage = () => {
       //   ])
       // );
     } else if (step === 3 && validateStep3()) {
-      handleSubmit();
+      await handleSubmit();
+      history.push("/");
     } else {
       setServerResponse({
         status: "ERROR",
@@ -275,7 +276,7 @@ const RegistrationPage = () => {
                   />
                   <TextInput
                     required
-                    label="জাতীয় পরিচয়পত্র (এনআইডি) / জন্ম সনদ নম্বর"
+                    label="জাতীয় পরিচয়পত্র (এনআইডি) / জন্ম সনদ নম্বর (ইউজারনেম)"
                     fullWidth
                     onChange={(value) =>
                       setFormData({ ...formData, NID_BirthCertificate: value })
@@ -317,14 +318,16 @@ const RegistrationPage = () => {
                 //   value={formData.otp}
                 //   onChange={handleInputChange("otp")}
                 // />
-                <OtpInput
-                  value={formData.otp}
-                  onChange={handleInputChange("otp")}
-                  numInputs={5}
-                  renderSeparator={<span>-</span>}
-                  inputStyle={classes.otpInput}
-                  renderInput={(props) => <input {...props} />}
-                />
+                
+                  <OtpInput
+                    value={formData.otp}
+                    onChange={handleInputChange("otp")}
+                    numInputs={5}
+                    renderSeparator={<span>-</span>}
+                    inputStyle={classes.otpInput}
+                    renderInput={(props) => <input {...props} />}
+                  />
+               
               )}
 
               {/* Step 3: Password */}
