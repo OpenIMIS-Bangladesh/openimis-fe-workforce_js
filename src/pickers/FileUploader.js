@@ -8,7 +8,6 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
-import axios from "axios"; // Make sure axios is installed
 
 const useStyles = makeStyles((theme) => ({
   dropzone: {
@@ -64,29 +63,38 @@ const FileUploader = ({ fieldKey, onFileChange }) => {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
 
-  const jwtToken = localStorage.getItem("token"); // Replace with how you store token
+  // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
 
   const uploadFileToApi = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);        // file content
-    formData.append("fileName", file.name); // file name
+  const formData = new FormData();
+  formData.append("file", file);         // actual file content
+  formData.append("fileName", file.name); // optional field if backend expects this
 
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/workforce/document/upload",
-        formData,
-        {
-          headers: {
-            "Authorization": `Bearer ${jwtToken}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(`Upload successful for ${file.name}:`, response.data);
-    } catch (error) {
-      console.error(`Upload failed for ${file.name}:`, error.response?.data || error.message);
+  const jwtToken = localStorage.getItem("token"); // Adjust this as needed
+
+  try {
+    const response = await fetch("http://localhost:8000/api/workforce/document/upload", {
+      method: "POST",
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        // DO NOT set "Content-Type" manually for FormData, browser handles it correctly
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error(`Upload failed for ${file.name}:`, errorData);
+    } else {
+      const responseData = await response.json();
+      console.log(`Upload successful for ${file.name}:`, responseData);
     }
-  };
+  } catch (error) {
+    console.error(`Upload error for ${file.name}:`, error);
+  }
+};
+
 
   const onDrop = useCallback(
     async (acceptedFiles) => {
