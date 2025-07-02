@@ -83,6 +83,18 @@ class ApplicationsProcessPage extends Component {
     console.clear
     console.log('summary data',summaryData)
     console.log("process page", applications)
+
+    const approvedSummaries = summaryData.filter(item =>
+        item.status === "approved_by_dg"
+      );
+      const pendingSummaries = summaryData.filter(item =>
+        item.status === "forward_to_director" || item.status === "approved_by_director"
+      );
+
+      const allSummaries = summaryData.filter(item =>
+      item.status === "forward_to_director" || item.status === "approved_by_director" ||   item.status === "approved_by_dg"
+      );
+
     return (
       <div className={classes.page}>
         <AppBar position="static">
@@ -103,7 +115,7 @@ class ApplicationsProcessPage extends Component {
         </AppBar>
 
         <TabPanel value={value} index={0}>
-            {summaryData.map((item, index) => (
+        {allSummaries.map((item, index) => (
               <Accordion
                 key={index}
                 expanded={this.state.expanded === item.id}
@@ -135,7 +147,7 @@ class ApplicationsProcessPage extends Component {
           <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-            {summaryData.map((item, index) => (
+          {pendingSummaries.map((item, index) => (
               <Accordion
                 key={index}
                 expanded={this.state.expanded === item.id}
@@ -167,7 +179,7 @@ class ApplicationsProcessPage extends Component {
           <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
         </TabPanel>
         <TabPanel value={value} index={2}>
-            {summaryData.map((item, index) => (
+          {approvedSummaries.map((item, index) => (
               <Accordion
                 key={index}
                 expanded={this.state.expanded === item.id}
@@ -223,7 +235,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchSummaryApplications: (modulesManager) =>
-    dispatch(fetchSummaryApplications(modulesManager, ['status:"forward_to_director"'])),
+    dispatch(fetchSummaryApplications(modulesManager,"")),
 });
 
 
