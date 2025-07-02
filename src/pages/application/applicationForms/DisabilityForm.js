@@ -145,6 +145,15 @@ const DisabilityForm = ({
   };
 
   useEffect(() => {
+        if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
+          setFormData((prev) => ({
+            ...prev,
+            applicationId: applicationId[0].id,
+          }));
+        }
+      }, [applicationId]);
+
+  useEffect(() => {
     if (reduxState.core.user.username) {
       fetchEmployeeWithUser();
     }

@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
+import axios from "axios"; // Make sure axios is installed
 
 const useStyles = makeStyles((theme) => ({
   dropzone: {
@@ -57,24 +58,53 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1rem",
     color: "black",
   },
-  
 }));
 
 const FileUploader = ({ fieldKey, onFileChange }) => {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
 
-  const onDrop = useCallback((acceptedFiles) => {
-    const newFiles = [...files, ...acceptedFiles];
-    setFiles(newFiles);
-    onFileChange(fieldKey, newFiles); // Call handleChange with updated files
-  }, [files, fieldKey, onFileChange]);
+  const jwtToken = localStorage.getItem("token"); // Replace with how you store token
+
+  const uploadFileToApi = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);        // file content
+    formData.append("fileName", file.name); // file name
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/workforce/document/upload",
+        formData,
+        {
+          headers: {
+            "Authorization": `Bearer ${jwtToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(`Upload successful for ${file.name}:`, response.data);
+    } catch (error) {
+      console.error(`Upload failed for ${file.name}:`, error.response?.data || error.message);
+    }
+  };
+
+  const onDrop = useCallback(
+    async (acceptedFiles) => {
+      const newFiles = [...files, ...acceptedFiles];
+      setFiles(newFiles);
+      onFileChange(fieldKey, newFiles);
+
+      // Upload each file one-by-one
+      for (const file of acceptedFiles) {
+        await uploadFileToApi(file);
+      }
+    },
+    [files, fieldKey, onFileChange]
+  );
 
   const removeFile = (fileName) => {
     const updatedFiles = files.filter((file) => file.name !== fileName);
     setFiles(updatedFiles);
-
-    // Update parent state with new file list
     onFileChange(fieldKey, updatedFiles);
   };
 
@@ -84,14 +114,8 @@ const FileUploader = ({ fieldKey, onFileChange }) => {
     accept: "*",
   });
 
-  console.log({files})
-
   return (
     <div>
-      {/* <Typography variant="subtitle1" className={classes.title}>
-        {label}
-        Drag & drop here
-      </Typography> */}
       <Paper {...getRootProps()} className={classes.dropzone}>
         <input {...getInputProps()} />
         <CloudUploadIcon className={classes.uploadIcon} />

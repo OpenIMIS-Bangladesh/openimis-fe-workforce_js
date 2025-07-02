@@ -198,7 +198,7 @@ const EmployeeDetailsForm2 = ({
                       module="workforce"
                     />
                   }
-                  required
+                  
                   onChange={(v) => {
                     handleChange("company", v, "employeeDesignation");
                     handleChange("company", v);
@@ -216,7 +216,7 @@ const EmployeeDetailsForm2 = ({
                       module="workforce"
                     />
                   }
-                  required
+                  
                   companyId={formData?.company?.id}
                   onChange={(v) => {
                     handleChange("factory", v, "employeeDesignation");

@@ -150,6 +150,15 @@ const FinancialAssistanceForm = ({
   };
 
   useEffect(() => {
+      if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
+        setFormData((prev) => ({
+          ...prev,
+          applicationId: applicationId[0].id,
+        }));
+      }
+    }, [applicationId]);
+
+  useEffect(() => {
     if (reduxState.core.user.username) {
       fetchEmployeeWithUser();
     }
@@ -317,7 +326,7 @@ const FinancialAssistanceForm = ({
       };
     } else {
       const updateApplicationData = {
-              id: applicationId[0]?.id || parsedApplicationData?.id,
+              id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
               workforceEmployeeId: formData?.workforceEmployee.id ||parsedApplicationData?.workforceEmployee?.id,
               company: formData.company,
               factory: formData.factory,
@@ -364,7 +373,7 @@ const FinancialAssistanceForm = ({
 
   const handleSubmit = () => {
      const updateApplicationData = {
-              id: applicationId[0]?.id || parsedApplicationData?.id,
+              id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
               workforceEmployeeId: formData?.workforceEmployee.id ||parsedApplicationData?.workforceEmployee?.id,
               company: formData.company,
               factory: formData.factory,
