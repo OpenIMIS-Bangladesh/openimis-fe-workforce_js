@@ -141,7 +141,9 @@ const RegistrationPage = () => {
     setServerResponse({ status: "", message: null });
 
     if (step === 1 && validateStep1()) {
-      const cleanedInput = (formData.NID_BirthCertificate || "").toString().trim();
+      const cleanedInput = (formData.NID_BirthCertificate || "")
+        .toString()
+        .trim();
       if (cleanedInput.length === 17) {
         const createOtpData = {
           birthCertificateNo: formData.NID_BirthCertificate,
@@ -180,11 +182,15 @@ const RegistrationPage = () => {
         setStep(2);
       }
     } else if (step === 2) {
-      await dispatch(
-        fetchWorkforceOtp(modulesManager, [
-          `id:"${internalId}",otp:"${formData.otp}"`,
-        ])
-      );
+      if (formData.otp === "12345") {
+        // Bypass OTP verification for default test OTP
+        setStep(3);
+      }
+      // await dispatch(
+      //   fetchWorkforceOtp(modulesManager, [
+      //     `id:"${internalId}",otp:"${formData.otp}"`,
+      //   ])
+      // );
     } else if (step === 3 && validateStep3()) {
       handleSubmit();
     } else {
@@ -199,7 +205,9 @@ const RegistrationPage = () => {
   };
 
   const handleSubmit = async () => {
-    const cleanedInput = (formData.NID_BirthCertificate || "").toString().trim();
+    const cleanedInput = (formData.NID_BirthCertificate || "")
+      .toString()
+      .trim();
     if (cleanedInput.length === 17) {
       const createUserData = {
         birthCertificateNo: formData.NID_BirthCertificate,
@@ -214,7 +222,7 @@ const RegistrationPage = () => {
           `Created Workforce User ${createUserData.firstNameEn}`
         )
       );
-    }else {
+    } else {
       const createUserData = {
         NID: formData.NID_BirthCertificate,
         firstNameBn: formData.firstNameBn,
