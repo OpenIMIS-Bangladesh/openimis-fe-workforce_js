@@ -264,6 +264,8 @@
     "workforce.application.process.accidental": "দুর্ঘটনাজনিত",
     "workforce.application.process.death": "মৃত্যু",
     "workforce.application.process.disability": "অক্ষমতা",
+    "workforce.application.process.pending": "অনিষ্পন্ন",
+    "workforce.application.process.approved": "অনুমোদিত",
 
     "workforce.application.id":"অ্যাপ্লিকেশন আইডি",
     "workforce.application.date":"আবেদনের তারিখ",

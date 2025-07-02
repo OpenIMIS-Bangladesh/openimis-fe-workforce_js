@@ -24,10 +24,36 @@ import {
   decodeId,
   FormattedMessage,
 } from "@openimis/fe-core";
+import { makeStyles } from "@material-ui/core/styles";
+const useStyles = makeStyles((theme) => ({
+  noPrint: {
+    '@media print': {
+      display: 'none !important',
+    },
+  },
+  dialogPaper: {
+    '@media print': {
+      boxShadow: 'none',
+      border: 'none',
+    },
+  },
+  dialogContent: {
+    '@media print': {
+      padding: 0,
+    },
+  },
+}));
+
 const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summary_Id }) => {
+  const classes = useStyles();
   const getTotalAmount = () => {
-    return applications.reduce((sum, item) => sum + (parseFloat(item.approvedAmount) || 0), 0).toFixed(2);
-  };
+  return applications
+    .filter((item) => String(item.status) === String(status))
+    .reduce((sum, item) => sum + (parseFloat(item.grantAmount) || 0), 0)
+    .toFixed(2);
+};
+
+
   const [serverResponse, setServerResponse] = useState(null);
   const dispatch = useDispatch();
   const handleForward = async () => {
@@ -92,7 +118,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
                   <TableRow key={index}>
                     <TableCell>{row.workforceEmployee?.firstNameBn}</TableCell>
                     <TableCell>{row.applicationType}</TableCell>
-                    <TableCell align="right">20000</TableCell>
+                    <TableCell align="right">{row.grantAmount}</TableCell>
                     <TableCell>{bankInfo.accountNumber}</TableCell>
                     <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
                     <TableCell>{bankInfo?.branch?.nameEn}</TableCell>
@@ -108,7 +134,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
           </Table>
         </DialogContent>
         <Divider />
-        <DialogActions>
+        <DialogActions className={classes.noPrint}>
           <Button onClick={onClose} variant="outlined" color="primary">
             Close
           </Button>
@@ -149,7 +175,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
                   <TableRow key={index}>
                     <TableCell>{row.workforceEmployee?.firstNameBn}</TableCell>
                     <TableCell>{row.applicationType}</TableCell>
-                    <TableCell align="right">20000</TableCell>
+                    <TableCell align="right">{row.grantAmount}</TableCell>
                     <TableCell>{bankInfo.accountNumber}</TableCell>
                     <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
                     <TableCell>{bankInfo?.branch?.nameEn}</TableCell>
@@ -165,14 +191,15 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
           </Table>
         </DialogContent>
         <Divider />
-        <DialogActions>
-          <Button onClick={onClose} variant="outlined" color="primary">
-            Close
-          </Button>
-          <Button onClick={() => window.print()} variant="contained" color="primary">
-            Print Advice
-          </Button>
-        </DialogActions>
+        <DialogActions className={classes.noPrint}>
+        <Button onClick={onClose} variant="outlined" color="primary">
+          Close
+        </Button>
+        <Button onClick={() => window.print()} variant="contained" color="primary">
+          Print Advice
+        </Button>
+      </DialogActions>
+
       </Dialog>
     );
   }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
@@ -202,7 +229,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
                   <TableRow key={index}>
                     <TableCell>{row.workforceEmployee?.firstNameBn}</TableCell>
                     <TableCell>{row.applicationType}</TableCell>
-                    <TableCell align="right">20000</TableCell>
+                    <TableCell align="right">{row.grantAmount}</TableCell>
                     <TableCell>{bankInfo.accountNumber}</TableCell>
                     <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
                     <TableCell>{bankInfo?.branch?.nameEn}</TableCell>
@@ -218,7 +245,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
           </Table>
         </DialogContent>
         <Divider />
-        <DialogActions>
+        <DialogActions className={classes.noPrint}>
           <Button onClick={onClose} variant="outlined" color="primary">
             Close
           </Button>

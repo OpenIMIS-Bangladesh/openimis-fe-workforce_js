@@ -415,6 +415,8 @@
     "workforce.application.process.accidental": "Accidental",
     "workforce.application.process.death": "Death",
     "workforce.application.process.disability": "Disability",
+    "workforce.application.process.pending": "Pending",
+    "workforce.application.process.approved": "Approved",
 
     "workforce.application.id":"Application id",
     "workforce.application.date":"Application Date",

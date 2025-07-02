@@ -91,18 +91,14 @@ class ApplicationsProcessPage extends Component {
               label={<FormattedMessage module="workforce" id="workforce.application.process.all" />}
               {...this.a11yProps(0)}
             />
-            {/* <Tab
-              label={<FormattedMessage module="workforce" id="workforce.application.process.accidental" />}
+             <Tab
+              label={<FormattedMessage module="workforce" id="workforce.application.process.pending" />}
               {...this.a11yProps(1)}
             />
             <Tab
-              label={<FormattedMessage module="workforce" id="workforce.application.process.death" />}
+              label={<FormattedMessage module="workforce" id="workforce.application.process.approved" />}
               {...this.a11yProps(2)}
             />
-            <Tab
-              label={<FormattedMessage module="workforce" id="workforce.application.process.disability" />}
-              {...this.a11yProps(3)}
-            /> */}
           </Tabs>
         </AppBar>
 
@@ -129,7 +125,7 @@ class ApplicationsProcessPage extends Component {
                   <Card style={{ width: "100%" }}>
                     <CardContent>
                       {/* 👇 Only render when this accordion is expanded */}
-                      {this.state.expanded === item.id && <ApplicationProcessSearcher summaryId={item.id} cacheFiltersKey="allApplications"
+                      {this.state.expanded === item.id && <ApplicationProcessSearcher summaryId={item.id} cacheFiltersKey="all"
                       onDoubleClick={this.onDoubleClick} />}
                     </CardContent>
                   </Card>
@@ -138,27 +134,70 @@ class ApplicationsProcessPage extends Component {
             ))}        
           <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
         </TabPanel>
-        {/* <TabPanel value={value} index={1}>
-          <ApplicationProcessSearcher
-            cacheFiltersKey="accidentalApplications"
-            applicationType="accidentalGrant"
-            onDoubleClick={this.onDoubleClick}
-          />
+        <TabPanel value={value} index={1}>
+            {summaryData.map((item, index) => (
+              <Accordion
+                key={index}
+                expanded={this.state.expanded === item.id}
+                onChange={this.handleAccordionChange(item.id)}
+                className={classes.accordion}
+              >
+                <AccordionSummary
+                  className={classes.accordionSummary}
+                  expandIcon={<ExpandMoreIcon className="material-icons" />}
+                >
+                  <Typography variant="subtitle1" style={{ flex: 1 }}>
+                    <strong>{item.name}</strong>
+                  </Typography>
+                  <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
+                    {item.meetingDate} | {item.month} {item.year}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails className={classes.accordionDetails}>
+                  <Card style={{ width: "100%" }}>
+                    <CardContent>
+                      {/* 👇 Only render when this accordion is expanded */}
+                      {this.state.expanded === item.id && <ApplicationProcessSearcher summaryId={item.id} cacheFiltersKey="pending"
+                      onDoubleClick={this.onDoubleClick} />}
+                    </CardContent>
+                  </Card>
+                </AccordionDetails>
+              </Accordion>
+            ))}        
+          <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <ApplicationProcessSearcher
-            cacheFiltersKey="deathApplications"
-            applicationType="deadlyGrant"
-            onDoubleClick={this.onDoubleClick}
-          />
+            {summaryData.map((item, index) => (
+              <Accordion
+                key={index}
+                expanded={this.state.expanded === item.id}
+                onChange={this.handleAccordionChange(item.id)}
+                className={classes.accordion}
+              >
+                <AccordionSummary
+                  className={classes.accordionSummary}
+                  expandIcon={<ExpandMoreIcon className="material-icons" />}
+                >
+                  <Typography variant="subtitle1" style={{ flex: 1 }}>
+                    <strong>{item.name}</strong>
+                  </Typography>
+                  <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
+                    {item.meetingDate} | {item.month} {item.year}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails className={classes.accordionDetails}>
+                  <Card style={{ width: "100%" }}>
+                    <CardContent>
+                      {/* 👇 Only render when this accordion is expanded */}
+                      {this.state.expanded === item.id && <ApplicationProcessSearcher summaryId={item.id} cacheFiltersKey="approved"
+                      onDoubleClick={this.onDoubleClick} />}
+                    </CardContent>
+                  </Card>
+                </AccordionDetails>
+              </Accordion>
+            ))}        
+          <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
         </TabPanel>
-        <TabPanel value={value} index={3}>
-          <ApplicationProcessSearcher
-            cacheFiltersKey="disabilityApplications"
-            applicationType="disabilityAssistance"
-            onDoubleClick={this.onDoubleClick}
-          />
-        </TabPanel> */}
 
         {withTooltip(
           <div className={classes.fab}>
