@@ -8,6 +8,11 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
+import { useDispatch } from 'react-redux'
+import {
+  formatGQLString, decodeId,
+} from "@openimis/fe-core";
+import { createWorkforceDocument } from "../actions";
 
 const useStyles = makeStyles((theme) => ({
   dropzone: {
@@ -59,16 +64,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FileUploader = ({ fieldKey, onFileChange }) => {
+const FileUploader = ({ fieldKey, onFileChange,applicationId,documentType }) => {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
+  const dispatch = useDispatch()
 
   // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
 
   const uploadFileToApi = async (file) => {
   const formData = new FormData();
   formData.append("file", file);         // actual file content
-  formData.append("fileName", file.name); // optional field if backend expects this
+  formData.append("name", file.name); // optional field if backend expects this
 
   const jwtToken = localStorage.getItem("token"); // Adjust this as needed
 
@@ -76,10 +82,10 @@ const FileUploader = ({ fieldKey, onFileChange }) => {
     const response = await fetch("/api/workforce/document/upload", {
       method: "POST",
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        // DO NOT set "Content-Type" manually for FormData, browser handles it correctly
-      },
+      // headers: {
+      //   'Content-Type': 'application/json',
+      //   // DO NOT set "Content-Type" manually for FormData, browser handles it correctly
+      // },
       body: formData,
     });
 
@@ -89,6 +95,21 @@ const FileUploader = ({ fieldKey, onFileChange }) => {
     } else {
       const responseData = await response.json();
       console.log(`Upload successful for ${file.name}:`, responseData);
+      const createDocumentData = {
+        path:responseData.file_path,
+        url:responseData.file_url,
+        workforceApplicationId:decodeId(applicationId),
+        documentType:documentType,
+        holder:"57",
+        holderType:"user"
+      }
+       dispatch(
+                createWorkforceDocument(
+                  createDocumentData,
+                  `Created workforce document `
+                )
+              );
+
     }
   } catch (error) {
     console.error(`Upload error for ${file.name}:`, error);

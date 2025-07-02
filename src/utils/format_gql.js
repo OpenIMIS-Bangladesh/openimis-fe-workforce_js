@@ -410,16 +410,20 @@ export function formatWorkforceOtpGQL(workforceOtp) {
 export function formatWorkforceDocumentGQL(workforceDocumentType) {
 
   return `
-    ${workforceDocumentType.id ? `id: "${workforceDocumentType.id}"` : ""}
-    ${workforceDocumentType.documentType ? `documentType: "${formatGQLString(workforceDocumentType.documentType)}"` : ""}
-    ${workforceDocumentType.holderType ? `holderType: "${formatGQLString(workforceDocumentType.holderType)}"` : ""}
-    ${workforceDocumentType.path ? `path: "${formatGQLString(workforceDocumentType.path)}"` : ""}
-    ${workforceDocumentType.verifierId ? `verifierId: "${formatGQLString(workforceDocumentType.verifierId)}"` : ""}
-    ${workforceDocumentType.approverId ? `approverId: "${formatGQLString(workforceDocumentType.approverId)}"` : ""}
-    ${workforceDocumentType.submissionDate ? `submissionDate: "${formatGQLString(workforceDocumentType.submissionDate)}"` : ""}
-    ${workforceDocumentType.approvalDate ? `approvalDate: "${formatGQLString(workforceDocumentType.approvalDate)}"` : ""}
-    ${workforceDocumentType.remarks ? `remarks: "${formatGQLString(workforceDocumentType.remarks)}"` : ""}
-    ${workforceDocumentType.status ? `status: "${formatGQLString(workforceDocumentType.status)}"` : ""}
+    ${workforceDocumentType?.id ? `id: "${workforceDocumentType?.id}"` : ""}
+    ${workforceDocumentType?.workforceApplicationId ? `workforceApplicationId: "${workforceDocumentType?.workforceApplicationId}"` : ""}
+    ${workforceDocumentType?.path ? `path: "${workforceDocumentType?.path}"` : ""}
+    ${workforceDocumentType?.url ? `url: "${workforceDocumentType?.url}"` : ""}
+
+    ${workforceDocumentType?.documentType ? `documentType: "${formatGQLString(workforceDocumentType?.documentType)}"` : ""}
+    ${workforceDocumentType?.holderType ? `holderType: "${formatGQLString(workforceDocumentType?.holderType)}"` : ""}
+    ${workforceDocumentType?.holder ? `holder: "${formatGQLString(workforceDocumentType?.holder)}"` : ""}
+    ${workforceDocumentType?.verifierId ? `verifierId: "${formatGQLString(workforceDocumentType?.verifierId)}"` : ""}
+    ${workforceDocumentType?.approverId ? `approverId: "${formatGQLString(workforceDocumentType?.approverId)}"` : ""}
+    ${workforceDocumentType?.submissionDate ? `submissionDate: "${formatGQLString(workforceDocumentType?.submissionDate)}"` : ""}
+    ${workforceDocumentType?.approvalDate ? `approvalDate: "${formatGQLString(workforceDocumentType?.approvalDate)}"` : ""}
+    ${workforceDocumentType?.remarks ? `remarks: "${formatGQLString(workforceDocumentType?.remarks)}"` : ""}
+    ${workforceDocumentType?.status ? `status: "${formatGQLString(workforceDocumentType?.status)}"` : ""}
   `;
 }
 

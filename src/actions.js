@@ -27,7 +27,8 @@ import {
   formatWorkforceOtpGQL,
   formatApplicationMovementGQL,
   formatFactoryEmployeeAssignDesignationGQL,
-  formatApplicationSummaryGQL
+  formatApplicationSummaryGQL,
+  formatWorkforceDocumentGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 
@@ -1094,6 +1095,25 @@ export function createWorkforceUser(workforceUser, clientMutationLabel) {
       requestedDateTime,
     }
   );
+}
+
+export function fetchWorkforceDocument(mm, filters) {
+  const projections = [
+    "id",
+    "path",
+    "url",
+    "status",
+    "approver{id}",
+    "workforceApplicationId",
+    "documentType",
+   
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceDocuments",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_ORGANIZATION");
 }
 
 export function createWorkforceDocument(

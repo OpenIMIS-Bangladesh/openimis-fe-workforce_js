@@ -93,7 +93,7 @@ const EmployeeDetailsForm2 = ({
       }
     });
   };
-  console.log({ fahim: formData });
+  console.log({ fahim: data });
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
@@ -179,6 +179,8 @@ const EmployeeDetailsForm2 = ({
                   <FileUploader
                     fieldKey={document.fieldId}
                     onFileChange={handleChange}
+                    applicationId={formData.id}
+                    documentType={document.documentType}
                   />
                 </Grid>
               ))}
