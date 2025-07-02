@@ -384,7 +384,7 @@ const FinancialAssistanceForm = ({
         )
       );
    
-    // setShowPreview(true);
+    setShowPreview(true);
     // setIsSubmitted(true);
   };
 
@@ -431,7 +431,7 @@ const FinancialAssistanceForm = ({
               onClick={() => {
                 setShowVerifyNid(false);
                 setIsSubmitted(true);
-                handleSubmit()
+                // handleSubmit()
               }}
             >
               <FormattedMessage
@@ -547,7 +547,7 @@ const FinancialAssistanceForm = ({
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" onClick={()=>setShowPreview(true)}>
+            <Button variant="contained" color="primary" onClick={()=>handleSubmit()}>
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
