@@ -22,7 +22,7 @@ import {
   fetchApplicationMovementsSummary,
   fetchOrganizationEmployeeDesignation,
   fetchOrganizationEmployee,
-  fetchFactoryEmployee
+  fetchFactoryEmployee,
 } from "../../actions";
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
@@ -36,7 +36,7 @@ import ForwardApplicationApproverModal from "./modals/ForwardApplicationApprover
 import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
 import { WORKFORCE_STATUS } from "../../constants";
-import { updateApplication, createApplicationMovement } from "../../actions";
+import { updateApplication, createApplicationMovement,updateApplicationSummary } from "../../actions";
 import { itemAdminFormatters, itemFormattersApplicant,itemFormattersAssociation, itemFormattersApprover, itemFormattersChecker, itemFormattersFactoryAdmin, itemFormattersDirector } from "../../utils/itemFormatters_types";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
 import { headerApplicant, headerApprover, headerChecker,headerAssociation, headersAdmin, headerFactoryAdmin, headerDirector } from "../../utils/headers_types";
@@ -608,8 +608,6 @@ class ApplicationProcessSearcher extends Component {
           },
         });
 
-        // Optionally reload
-        window.location.reload();
       } catch (error) {
         console.error("Bulk selection failed:", error);
         this.setState({
@@ -623,7 +621,7 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkApproveByAdmin = async () => {
     const { selectedApplicationIds } = this.state;
-    const { updateApplication, createApplicationMovement } = this.props;
+    const { updateApplication, createApplicationMovement,updateApplicationSummary } = this.props;
 
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
@@ -648,9 +646,14 @@ class ApplicationProcessSearcher extends Component {
               note: "আবেদন নির্বাচন করা হয়েছে",
               action: "approved_by_dg",
             };
-
+            const updateApplicationSummaryData = {
+              id: decodeId(this.props.summaryId), 
+              status: WORKFORCE_STATUS.APPROVED_BY_DG,
+            };
             await updateApplication(updateApplicationData, "update workforce application");
             await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+            await updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
+
           })
         );
 
@@ -661,7 +664,6 @@ class ApplicationProcessSearcher extends Component {
           },
         });
 
-        // Optionally reload
         window.location.reload();
       } catch (error) {
         console.error("Bulk selection failed:", error);
@@ -676,7 +678,7 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkApproveByDirector = async () => {
     const { selectedApplicationIds } = this.state;
-    const { updateApplication, createApplicationMovement } = this.props;
+    const { updateApplication, createApplicationMovement,updateApplicationSummary } = this.props;
 
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
@@ -689,7 +691,6 @@ class ApplicationProcessSearcher extends Component {
         await Promise.all(
           selectedApplicationIds.map(async (id) => {
             const decodedId = decodeId(id);
-
             const updateApplicationData = {
               id: decodedId,
               status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
@@ -702,8 +703,15 @@ class ApplicationProcessSearcher extends Component {
               action: "approved_by_DIRECTOR",
             };
 
+            const updateApplicationSummaryData = {
+              id: decodeId(this.props.summaryId), 
+              status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
+            };
+            console.log('summay row id',id)
             await updateApplication(updateApplicationData, "update workforce application");
             await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+            await updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
+
           })
         );
 
@@ -713,9 +721,7 @@ class ApplicationProcessSearcher extends Component {
             message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
           },
         });
-
-        // Optionally reload
-        window.location.reload();
+      
       } catch (error) {
         console.error("Bulk selection failed:", error);
         this.setState({
@@ -1047,6 +1053,7 @@ const mapDispatchToProps = (dispatch) =>
       fetchApplicationMovementsSummary,
       fetchOrganizationEmployeeDesignation,
       updateApplication,
+      updateApplicationSummary,
       createApplicationMovement,
       fetchOrganizationEmployee,
       fetchFactoryEmployee,

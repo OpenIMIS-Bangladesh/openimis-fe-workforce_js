@@ -16,6 +16,8 @@ import TabPanel from "./TabPanel";
 import GenerateBFTN from "./GenereteBFTN";
 import { fetchSummaryApplications } from "../../actions";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { WORKFORCE_USER_TYPE } from "../../constants";
+import { getUserTypeFromRights } from "../../utils/utils";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -94,6 +96,16 @@ class ApplicationsProcessPage extends Component {
       const allSummaries = summaryData.filter(item =>
       item.status === "forward_to_director" || item.status === "approved_by_director" ||   item.status === "approved_by_dg"
       );
+    const approvedSummariesDirector = summaryData.filter(item =>
+        item.status === "approved_by_director"
+      );
+      const pendingSummariesDirector = summaryData.filter(item =>
+        item.status === "forward_to_director"
+      );
+
+      const allSummariesDirector = summaryData.filter(item =>
+      item.status === "forward_to_director" || item.status === "approved_by_director" ||   item.status === "forward_to_dg"
+      );
 
     return (
       <div className={classes.page}>
@@ -114,102 +126,265 @@ class ApplicationsProcessPage extends Component {
           </Tabs>
         </AppBar>
 
-        <TabPanel value={value} index={0}>
-        {allSummaries.map((item, index) => (
-              <Accordion
-                key={index}
-                expanded={this.state.expanded === item.id}
-                onChange={this.handleAccordionChange(item.id)}
-                className={classes.accordion}
-              >
-                <AccordionSummary
-                  className={classes.accordionSummary}
-                  expandIcon={<ExpandMoreIcon className="material-icons" />}
-                >
-                  <Typography variant="subtitle1" style={{ flex: 1 }}>
-                    <strong>{item.name}</strong>
-                  </Typography>
-                  <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
-                    {item.meetingDate} | {item.month} {item.year}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails className={classes.accordionDetails}>
-                  <Card style={{ width: "100%" }}>
-                    <CardContent>
-                      {/* 👇 Only render when this accordion is expanded */}
-                      {this.state.expanded === item.id && <ApplicationProcessSearcher summaryId={item.id} cacheFiltersKey="all"
-                      onDoubleClick={this.onDoubleClick} />}
-                    </CardContent>
-                  </Card>
-                </AccordionDetails>
-              </Accordion>
-            ))}        
-          <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          {pendingSummaries.map((item, index) => (
-              <Accordion
-                key={index}
-                expanded={this.state.expanded === item.id}
-                onChange={this.handleAccordionChange(item.id)}
-                className={classes.accordion}
-              >
-                <AccordionSummary
-                  className={classes.accordionSummary}
-                  expandIcon={<ExpandMoreIcon className="material-icons" />}
-                >
-                  <Typography variant="subtitle1" style={{ flex: 1 }}>
-                    <strong>{item.name}</strong>
-                  </Typography>
-                  <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
-                    {item.meetingDate} | {item.month} {item.year}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails className={classes.accordionDetails}>
-                  <Card style={{ width: "100%" }}>
-                    <CardContent>
-                      {/* 👇 Only render when this accordion is expanded */}
-                      {this.state.expanded === item.id && <ApplicationProcessSearcher summaryId={item.id} cacheFiltersKey="pending"
-                      onDoubleClick={this.onDoubleClick} />}
-                    </CardContent>
-                  </Card>
-                </AccordionDetails>
-              </Accordion>
-            ))}        
-          <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          {approvedSummaries.map((item, index) => (
-              <Accordion
-                key={index}
-                expanded={this.state.expanded === item.id}
-                onChange={this.handleAccordionChange(item.id)}
-                className={classes.accordion}
-              >
-                <AccordionSummary
-                  className={classes.accordionSummary}
-                  expandIcon={<ExpandMoreIcon className="material-icons" />}
-                >
-                  <Typography variant="subtitle1" style={{ flex: 1 }}>
-                    <strong>{item.name}</strong>
-                  </Typography>
-                  <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
-                    {item.meetingDate} | {item.month} {item.year}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails className={classes.accordionDetails}>
-                  <Card style={{ width: "100%" }}>
-                    <CardContent>
-                      {/* 👇 Only render when this accordion is expanded */}
-                      {this.state.expanded === item.id && <ApplicationProcessSearcher summaryId={item.id} cacheFiltersKey="approved"
-                      onDoubleClick={this.onDoubleClick} />}
-                    </CardContent>
-                  </Card>
-                </AccordionDetails>
-              </Accordion>
-            ))}        
-          <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
-        </TabPanel>
+   {getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.ADMIN ? (
+  <>
+    <TabPanel value={value} index={0}>
+      {allSummaries.map((item, index) => (
+        <Accordion
+          key={index}
+          expanded={this.state.expanded === item.id}
+          onChange={this.handleAccordionChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {this.state.expanded === item.id && (
+                  <ApplicationProcessSearcher
+                    summaryId={item.id}
+                    cacheFiltersKey="all"
+                    onDoubleClick={this.onDoubleClick}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+      <GenerateBFTN
+        open={openGenerateBFTN}
+        onClose={this.handleCloseBFTN}
+        applications={applications}
+        userRights={rights}
+      />
+    </TabPanel>
+
+    <TabPanel value={value} index={1}>
+      {pendingSummaries.map((item, index) => (
+        <Accordion
+          key={index}
+          expanded={this.state.expanded === item.id}
+          onChange={this.handleAccordionChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {this.state.expanded === item.id && (
+                  <ApplicationProcessSearcher
+                    summaryId={item.id}
+                    cacheFiltersKey="pending"
+                    onDoubleClick={this.onDoubleClick}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+      <GenerateBFTN
+        open={openGenerateBFTN}
+        onClose={this.handleCloseBFTN}
+        applications={applications}
+        userRights={rights}
+      />
+    </TabPanel>
+
+    <TabPanel value={value} index={2}>
+      {approvedSummaries.map((item, index) => (
+        <Accordion
+          key={index}
+          expanded={this.state.expanded === item.id}
+          onChange={this.handleAccordionChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {this.state.expanded === item.id && (
+                  <ApplicationProcessSearcher
+                    summaryId={item.id}
+                    cacheFiltersKey="approved"
+                    onDoubleClick={this.onDoubleClick}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+      <GenerateBFTN
+        open={openGenerateBFTN}
+        onClose={this.handleCloseBFTN}
+        applications={applications}
+        userRights={rights}
+      />
+    </TabPanel>
+  </>
+) : ( 
+  // Else part: Blank or fallback UI
+ <>
+    <TabPanel value={value} index={0}>
+      {allSummariesDirector.map((item, index) => (
+        <Accordion
+          key={index}
+          expanded={this.state.expanded === item.id}
+          onChange={this.handleAccordionChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {this.state.expanded === item.id && (
+                  <ApplicationProcessSearcher
+                    summaryId={item.id}
+                    cacheFiltersKey="all"
+                    onDoubleClick={this.onDoubleClick}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+      <GenerateBFTN
+        open={openGenerateBFTN}
+        onClose={this.handleCloseBFTN}
+        applications={applications}
+        userRights={rights}
+      />
+    </TabPanel>
+
+    <TabPanel value={value} index={1}>
+      {pendingSummariesDirector.map((item, index) => (
+        <Accordion
+          key={index}
+          expanded={this.state.expanded === item.id}
+          onChange={this.handleAccordionChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {this.state.expanded === item.id && (
+                  <ApplicationProcessSearcher
+                    summaryId={item.id}
+                    cacheFiltersKey="pending"
+                    onDoubleClick={this.onDoubleClick}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+      <GenerateBFTN
+        open={openGenerateBFTN}
+        onClose={this.handleCloseBFTN}
+        applications={applications}
+        userRights={rights}
+      />
+    </TabPanel>
+
+    <TabPanel value={value} index={2}>
+      {approvedSummariesDirector.map((item, index) => (
+        <Accordion
+          key={index}
+          expanded={this.state.expanded === item.id}
+          onChange={this.handleAccordionChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {this.state.expanded === item.id && (
+                  <ApplicationProcessSearcher
+                    summaryId={item.id}
+                    cacheFiltersKey="approved"
+                    onDoubleClick={this.onDoubleClick}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+      <GenerateBFTN
+        open={openGenerateBFTN}
+        onClose={this.handleCloseBFTN}
+        applications={applications}
+        userRights={rights}
+      />
+    </TabPanel>
+  </>
+)}
+
 
         {withTooltip(
           <div className={classes.fab}>

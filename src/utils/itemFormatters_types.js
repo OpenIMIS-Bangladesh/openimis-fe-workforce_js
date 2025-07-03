@@ -36,14 +36,14 @@ import {
         ) : (
           ""
         ),
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
-      (application) => application.applicationType,
-      (application) => application?.grantAmount,
-      (application) => "Nafi",
-      (application) => "Akij",
-      (application) => application.status,
+      (application) => "2501XYZXYZ",
       (application) => application.dateCreated.split("T")[0],
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => "Akij",
+      (application) => application.applicationType,
+      (application) => "Nafi",
+      (application) => application?.grantAmount,
+      (application) => application.status,
       isShowHistory() ? application?.version : null,
     ];
 
@@ -125,14 +125,14 @@ import {
         ) : (
           ""
         ),
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
-      (application) => application.applicationType,
-      (application) => application?.grantAmount,
-      (application) => "Nafi",
-      (application) => "Akij",
-      (application) => application.status,
+      (application) => "2501XYZXYZ",
       (application) => application.dateCreated.split("T")[0],
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => "Akij",
+      (application) => application.applicationType,
+      (application) => "Nafi",
+      (application) => application?.grantAmount,
+      (application) => application.status,
       isShowHistory() ? application?.version : null,
     ];
 
@@ -196,12 +196,12 @@ import {
 
   export const itemFormattersApplicant = (isShowHistory,modulesManager,history,component) => {
     const formatters = [
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.applicationType,
-      (application) => "Akij",
+      (application) => "2501XYZXYZ",
       (application) => application.dateCreated.split("T")[0],
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => "Akij",
+      (application) => application.applicationType,
       (application) => application.status,
-      // (application) => "",
       isShowHistory() ? application?.version : null,
     ];
 
@@ -292,14 +292,14 @@ import {
         ) : (
           ""
         ),
+      (application) => "2501XYZXYZ",
       (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
+      (application) => application.dateCreated.split("T")[0],
+      (application) => "Akij",
       (application) => application.applicationType,
       (application) => application?.grantAmount,
       // (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
-      (application) => "Akij",
       (application) => application.status,
-      (application) => application.dateCreated.split("T")[0],
       isShowHistory() ? application?.version : null,
     ];
 
@@ -371,14 +371,13 @@ import {
         ) : (
           ""
         ),
+        (application) => "2501XYZXYZ",
+        (application) => application.dateCreated.split("T")[0],
       (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
-      (application) => application.applicationType, 
-      (application) => application?.grantAmount, 
-      // (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => "Akij",
+      (application) => application.applicationType, 
+      (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => application.status,
-      (application) => application.dateCreated.split("T")[0],
       isShowHistory() ? application?.version : null,
     ];
 
@@ -450,13 +449,13 @@ import {
         ) : (
           ""
         ),
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
-      (application) => application.applicationType,
-      (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
-      (application) => "Akij",
-      (application) => application.status,
+      (application) => "2501XYZXYZ",
       (application) => application.dateCreated.split("T")[0],
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => "Akij",
+      (application) => application.applicationType,
+      (application) => application?.grantAmount,
+      (application) => application.status,
       isShowHistory() ? application?.version : null,
     ];
 
@@ -528,14 +527,12 @@ import {
         ) : (
           ""
         ),
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
-      (application) => application.applicationType,
-      // (application) => application.organizationType,
-      (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
-      // (application) => application?.grantAmount,
-      (application) => application.status,
+      (application) => "2501XYZXYZ",
       (application) => application.dateCreated.split("T")[0],
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => application.applicationType,
+      (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
+      (application) => application.status,
       isShowHistory() ? application?.version : null,
     ];
 

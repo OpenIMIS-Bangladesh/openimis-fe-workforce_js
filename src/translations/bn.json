@@ -259,12 +259,13 @@
 
     "workforce.employee.name.en":"নাম (বাংলা)",
     "workforce.employee.name.bn":"নাম (ইংরেজি)",
+    "workforce.employee.name":"নাম",
 
     "workforce.application.process.all": "সকল",
     "workforce.application.process.accidental": "দুর্ঘটনাজনিত",
     "workforce.application.process.death": "মৃত্যু",
     "workforce.application.process.disability": "অক্ষমতা",
-    "workforce.application.process.pending": "অনিষ্পন্ন",
+    "workforce.application.process.pending": "অপেক্ষমান",
     "workforce.application.process.approved": "অনুমোদিত",
 
     "workforce.application.id":"অ্যাপ্লিকেশন আইডি",
@@ -278,7 +279,7 @@
     "workforce.new.application":"নতুন আবেদন",
     "workforce.help.complain":"সাহায্য এবং অভিযোগ",
     "workforce.others":"অন্যান্য",
-    "workforce.application.tracking.number":"ট্র্যাকিং নম্বর লিখুন",
+    "workforce.application.tracking.number":"ট্র্যাকিং নম্বর",
     "workforce.search.here":"অনুসন্ধান করুন...",
     "workforce.application.pending":"অনিষ্পন্ন আবেদন",
     "workforce.application.approve.applications":"অনুমোদিত আবেদন",
