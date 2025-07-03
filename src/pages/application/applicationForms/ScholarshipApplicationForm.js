@@ -238,86 +238,33 @@ const ScholarshipApplicationForm = ({
     setActiveStep(nextStep);
     if (nextStep === 1 || nextStep === 2) {
       const workforceEmployeeData = {
-        firstNameBn:
-          formData?.workforceEmployee?.firstNameBn ||
-          formData?.workforceEmployee.firstNameBn,
-        lastNameBn:
-          formData?.workforceEmployee?.lastNameBn ||
-          formData?.workforceEmployee.lastNameBn,
-        otherName:
-          formData?.workforceEmployee?.otherName ||
-          formData?.workforceEmployee.otherName,
-        firstNameEn:
-          formData?.workforceEmployee?.firstNameEn ||
-          formData?.workforceEmployee.firstNameEn,
-        lastNameEn:
-          formData?.workforceEmployee?.lastNameEn ||
-          formData?.workforceEmployee.lastNameEn,
-        phoneNumber:
-          formData?.workforceEmployee?.phoneNumber ||
-          formData?.workforceEmployee.phoneNumber,
-        email:
-          formData?.workforceEmployee?.email ||
-          formData?.workforceEmployee.email,
-        gender:
-          formData?.workforceEmployee?.gender?.id ||
-          formData?.workforceEmployee.gender.id,
-        birthDate:
-          formData?.workforceEmployee?.birthDate ||
-          formData?.workforceEmployee.birthDate,
-        deathDate:
-          formData?.workforceEmployee?.deathDate ||
-          formData?.workforceEmployee.deathDate,
-        lifeStatus:
-          formData?.workforceEmployee?.lifeStatus ||
-          formData?.workforceEmployee.lifeStatus,
-        permanentAddress:
-          formData?.workforceEmployee?.permanentAddress ||
-          formData?.workforceEmployee.permanentAddress,
-        presentAddress:
-          formData?.workforceEmployee?.presentAddress ||
-          formData?.workforceEmployee.presentAddress,
-        position:
-          formData?.workforceEmployee?.position ||
-          formData?.workforceEmployee.position,
-        monthlyEarning:
-          formData?.workforceEmployee?.monthlyEarning ||
-          formData?.workforceEmployee.monthlyEarning,
-        insuranceNumber:
-          formData?.workforceEmployee?.insuranceNumber ||
-          formData?.workforceEmployee.insuranceNumber,
-        fatherNameBn:
-          formData?.workforceEmployee?.fatherNameBn ||
-          formData?.workforceEmployee.fatherNameBn,
-        fatherNameEn:
-          formData?.workforceEmployee?.fatherNameEn ||
-          formData?.workforceEmployee.fatherNameEn,
-        motherNameBn:
-          formData?.workforceEmployee?.motherNameBn ||
-          formData?.workforceEmployee.motherNameBn,
-        motherNameEn:
-          formData?.workforceEmployee?.motherNameEn ||
-          formData?.workforceEmployee.motherNameEn,
-        spouseNameBn:
-          formData?.workforceEmployee?.spouseNameBn ||
-          formData?.workforceEmployee.spouseNameBn,
-        spouseNameEn:
-          formData?.workforceEmployee?.spouseNameEn ||
-          formData?.workforceEmployee.spouseNameEn,
-        citizenship:
-          formData?.workforceEmployee?.citizenship ||
-          formData?.workforceEmployee.citizenship,
-        maritalStatus:
-          formData?.workforceEmployee?.maritalStatus ||
-          formData?.workforceEmployee.maritalStatus,
-        presentLocation:
-          formData?.workforceEmployee?.presentLocation ||
-          formData?.workforceEmployee.presentLocation,
-        permanentLocation:
-          formData?.workforceEmployee?.permanentLocation ||
-          formData?.workforceEmployee.permanentLocation,
-        id: formData?.id,
-      };
+        nameEn: formData?.workforceEmployee?.nameEn,
+        nameBn: formData?.workforceEmployee?.nameBn,
+        lastNameEn: "",
+        phoneNumber: formData?.workforceEmployee?.phoneNumber,
+        email: formData?.workforceEmployee?.email,
+        gender: formData?.workforceEmployee?.gender?.id,
+        birthDate: formData?.workforceEmployee?.birthDate,
+        deathDate: formData?.workforceEmployee?.deathDate,
+        lifeStatus: formData?.workforceEmployee?.lifeStatus,
+        permanentAddress: formData?.workforceEmployee?.permanentAddress,
+        presentAddress: formData?.workforceEmployee?.presentAddress,
+        position: formData?.workforceEmployee?.position,
+        monthlyEarning: formData?.workforceEmployee?.monthlyEarning,
+        insuranceNumber: " ",
+        fatherNameBn: formData?.workforceEmployee?.fatherNameBn,
+        fatherNameEn: formData?.workforceEmployee?.fatherNameEn,
+        motherNameBn: formData?.workforceEmployee?.motherNameBn,
+        motherNameEn: formData?.workforceEmployee?.motherNameEn,
+        spouseNameBn: formData?.workforceEmployee?.spouseNameBn,
+        spouseNameEn: formData?.workforceEmployee?.spouseNameEn,
+        citizenship: formData?.workforceEmployee?.citizenship,
+        maritalStatus: formData?.workforceEmployee?.maritalStatus,
+        presentLocation: formData?.workforceEmployee?.presentLocation,
+        permanentLocation: formData?.workforceEmployee?.permanentLocation,
+
+        id: formData?.workforceEmployee?.id,
+      };;
       console.log("Update Submitting formData:", formData);
       if (workforceEmployeeData?.id) {
               await dispatch(

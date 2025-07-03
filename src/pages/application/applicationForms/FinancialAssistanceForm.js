@@ -258,7 +258,7 @@ const FinancialAssistanceForm = ({
         presentAddress: formData?.workforceEmployee?.presentAddress,
         position: formData?.workforceEmployee?.position,
         monthlyEarning: formData?.workforceEmployee?.monthlyEarning,
-        insuranceNumber: formData?.workforceEmployee?.insuranceNumber,
+        insuranceNumber: " ",
         fatherNameBn: formData?.workforceEmployee?.fatherNameBn,
         fatherNameEn: formData?.workforceEmployee?.fatherNameEn,
         motherNameBn: formData?.workforceEmployee?.motherNameBn,
@@ -269,6 +269,7 @@ const FinancialAssistanceForm = ({
         maritalStatus: formData?.workforceEmployee?.maritalStatus,
         presentLocation: formData?.workforceEmployee?.presentLocation,
         permanentLocation: formData?.workforceEmployee?.permanentLocation,
+
         id: formData?.workforceEmployee?.id,
       };
       console.log("Update Submitting formData:", formData);
