@@ -42,7 +42,8 @@ import {
       (application) => "Akij",
       (application) => application.applicationType,
       (application) => "Nafi",
-      (application) => application?.grantAmount,
+      (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
+      // (application) => application?.grantAmount,
       (application) => application.status,
       isShowHistory() ? application?.version : null,
     ];
@@ -131,7 +132,8 @@ import {
       (application) => "Akij",
       (application) => application.applicationType,
       (application) => "Nafi",
-      (application) => application?.grantAmount,
+      (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
+      // (application) => application?.grantAmount,
       (application) => application.status,
       isShowHistory() ? application?.version : null,
     ];
@@ -376,7 +378,8 @@ import {
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => "Akij",
       (application) => application.applicationType, 
-      (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
+      (application) => application.grantAmount, 
+      // (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => application.status,
       isShowHistory() ? application?.version : null,
     ];
