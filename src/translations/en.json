@@ -196,6 +196,7 @@
     "workforce.employee.lifeStatus": "Life Status",
     "workforce.employee.name.en":"Name En",
     "workforce.employee.name.bn":"Name Bn",
+    "workforce.employee.name":"Name",
 
     "workforce.employee.application.addNewTooltip": "Add Application",
     "workforce.employee.application.workforce_employer": "Workforce Employer",

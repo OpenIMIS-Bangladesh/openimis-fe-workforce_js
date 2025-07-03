@@ -1,19 +1,18 @@
   export const headersAdmin = (component) => [
      "",
-    "workforce.employee.name.en",
-    "workforce.employee.name.bn",
-    "workforce.employee.application.applicationType",
-    "workforce.employee.application.moneyAmount",
-    "workforce.employee.application.verifier",
-    "workforce.employee.application.factoryName",
-    "workforce.employee.application.status",
+    "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
+    "workforce.employee.name",
+    "workforce.employee.application.factoryName",
+    "workforce.employee.application.applicationType",
+    "workforce.employee.application.verifier",
+    "workforce.employee.application.moneyAmount",
+    "workforce.employee.application.status",
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerDirector = (component) => [
      "",
-    "workforce.employee.name.en",
-    "workforce.employee.name.bn",
+    "workforce.employee.name",
     "workforce.employee.application.applicationType",
     "workforce.employee.application.moneyAmount",
     "workforce.employee.application.verifier",
@@ -24,7 +23,7 @@
   ];
 
   export const headerApplicant = (component) => [
-    "workforce.employee.name.en",
+    "workforce.employee.name",
     "workforce.employee.application.applicationType",
     "workforce.employee.application.factoryName",
     "workforce.employee.application.applicationDate",
@@ -34,8 +33,7 @@
   ];
   export const headerFactoryAdmin = (component) => [
     "",
-    "workforce.employee.name.en",
-    "workforce.employee.name.bn",
+    "workforce.employee.name",
     "workforce.employee.application.applicationType",
     "workforce.employee.application.moneyAmount",
     "workforce.employee.application.factoryName",
@@ -45,8 +43,7 @@
   ];
   export const headerChecker = (component) => [
     "",
-    "workforce.employee.name.en",
-    "workforce.employee.name.bn",
+    "workforce.employee.name",
     "workforce.employee.application.applicationType",
     "workforce.employee.application.moneyAmount",
     "workforce.employee.application.factoryName",
@@ -56,8 +53,7 @@
   ];
   export const headerAssociation = (component) => [
     "",
-    "workforce.employee.name.en",
-    "workforce.employee.name.bn",
+    "workforce.employee.name",
     "workforce.employee.application.applicationType",
     "workforce.employee.application.moneyAmount",
     "workforce.employee.application.factoryName",
@@ -67,8 +63,7 @@
   ];
   export const headerApprover = (component) => [
      "",
-    "workforce.employee.name.en",
-    "workforce.employee.name.bn",
+    "workforce.employee.name",
     "workforce.employee.application.applicationType",
     "workforce.employee.application.moneyAmount",
     // "workforce.employee.application.factoryName",

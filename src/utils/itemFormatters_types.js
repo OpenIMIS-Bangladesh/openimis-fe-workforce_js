@@ -36,14 +36,14 @@ import {
         ) : (
           ""
         ),
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
-      (application) => application.applicationType,
-      (application) => application?.grantAmount,
-      (application) => "Nafi",
-      (application) => "Akij",
-      (application) => application.status,
+      (application) => 2501202020,
       (application) => application.dateCreated.split("T")[0],
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => "Akij",
+      (application) => application.applicationType,
+      (application) => "Nafi",
+      (application) => application?.grantAmount,
+      (application) => application.status,
       isShowHistory() ? application?.version : null,
     ];
 
@@ -126,7 +126,6 @@ import {
           ""
         ),
       (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,
       (application) => application?.grantAmount,
       (application) => "Nafi",
@@ -371,7 +370,6 @@ import {
           ""
         ),
       (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType, 
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => "Akij",
@@ -449,7 +447,6 @@ import {
           ""
         ),
       (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,
       (application) => application?.grantAmount,
       (application) => "Akij",
@@ -527,7 +524,6 @@ import {
           ""
         ),
       (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.workforceEmployee?.lastNameBn,
       (application) => application.applicationType,
       // (application) => application.organizationType,
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,

@@ -259,6 +259,7 @@
 
     "workforce.employee.name.en":"নাম (বাংলা)",
     "workforce.employee.name.bn":"নাম (ইংরেজি)",
+    "workforce.employee.name":"নাম",
 
     "workforce.application.process.all": "সকল",
     "workforce.application.process.accidental": "দুর্ঘটনাজনিত",
