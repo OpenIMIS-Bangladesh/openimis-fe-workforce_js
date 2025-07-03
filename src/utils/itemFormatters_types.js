@@ -295,8 +295,8 @@ import {
           ""
         ),
       (application) => "2501XYZXYZ",
-      (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.dateCreated.split("T")[0],
+      (application) => application.workforceEmployee?.firstNameBn,
       (application) => "Akij",
       (application) => application.applicationType,
       (application) => application?.grantAmount,
