@@ -392,21 +392,10 @@ const MultiStepApplyForm = () => {
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
                   {/* New Export-Oriented Company Question */}
-                  <Typography
-                    variant="h6"
-                    className={`${classes.title} ${classes.section}`}
-                  >
-                    {
-                      <FormattedMessage
-                        id="workforce.application.for"
-                        module="workforce"
-                      />
-                    }
+                  <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
+                    {<FormattedMessage id="workforce.application.for" module="workforce"/>}
                   </Typography>
-                  <RadioGroup
-                    value={applicationForSelf}
-                    onChange={handleApplicationFor}
-                  >
+                  <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
                     <FormControlLabel
                       value="yes"
                       control={<Radio color="primary" />}
@@ -436,6 +425,7 @@ const MultiStepApplyForm = () => {
                 organizationType={organizationType}
                 selectedApplicationType={selectedApplicationType}
                 applicationForSelf={applicationForSelf}
+                parsedApplicationData={parsedApplicationData}
               />
             )}
           </>

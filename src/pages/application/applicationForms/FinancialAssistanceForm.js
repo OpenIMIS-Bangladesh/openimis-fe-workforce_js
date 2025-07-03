@@ -24,6 +24,7 @@ import EmployeeDependentForm from "../EmployeeDependentForm";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import {
   createApplication,
+  createWorkforceEmployee,
   fetchApplicationId,
   fetchWorkforceEmployee,
   updateApplication,
@@ -271,12 +272,21 @@ const FinancialAssistanceForm = ({
         id: formData?.workforceEmployee?.id,
       };
       console.log("Update Submitting formData:", formData);
-      await dispatch(
-        updateWorkforceEmployee(
-          workforceEmployeeData,
-          `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-        )
-      );
+      if (workforceEmployeeData?.id) {
+              await dispatch(
+                updateWorkforceEmployee(
+                  workforceEmployeeData,
+                  `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+                )
+              );
+            }else{
+              await dispatch(
+                createWorkforceEmployee(
+                  workforceEmployeeData,
+                  `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+                )
+              );
+            }
     } else if (nextStep === 2) {
       const createApplicationData = {
         workforceEmployeeId:

@@ -24,6 +24,7 @@ import EmployeeDependentForm from "../EmployeeDependentForm";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import {
   createApplication,
+  createWorkforceEmployee,
   fetchApplicationId,
   fetchWorkforceEmployee,
   updateApplication,
@@ -116,7 +117,7 @@ const MedicalAssistanceForm = ({
     organizationType: "",
     applicationType: "",
     applicationForSelf: applicationForSelf,
-    dependents: [{}],
+    dependent: {},
     employeeBankInfo: {
       bank: null,
       branch: null,
@@ -198,22 +199,12 @@ const MedicalAssistanceForm = ({
         company: employeeData.company || null,
         factory: employeeData.factory || null,
         applicationForSelf: applicationForSelf,
-        organizationType:
-          parsedApplicationData?.organizationType || organizationType,
-        applicationType:
-          parsedApplicationData?.applicationType || selectedApplicationType,
-        dependents:
-          parsedApplicationData?.employeeDependentInfo ||
-          employeeData.dependents ||
-          {},
-        employeeBankInfo:
-          parsedApplicationData?.employeeBankInfo ||
-          employeeData?.employeeBankInfo ||
-          {},
-        employeeAccidentInfo:
-          parsedApplicationData?.employeeAccidentInfo ||
-          employeeData.employeeAccidentInfo ||
-          {},
+        organizationType:parsedApplicationData?.organizationType || organizationType,
+        applicationType:parsedApplicationData?.applicationType || selectedApplicationType,
+        dependents:parsedApplicationData?.employeeDependentInfo ||employeeData.dependents ||{},
+        employeeBankInfo:parsedApplicationData?.employeeBankInfo ||employeeData?.employeeBankInfo ||{},
+        employeeAccidentInfo:parsedApplicationData?.employeeAccidentInfo ||employeeData.employeeAccidentInfo ||{},
+        metadata:parsedApplicationData?.metadata || employeeData?.metadata || {},
       });
     }
   }, [employeeData?.id, parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.
@@ -241,7 +232,6 @@ const MedicalAssistanceForm = ({
     setActiveStep(nextStep);
     if (nextStep === 1 || nextStep === 2) {
       // const nidValue = formData?.workforceEmployee?.nid;
-
       const workforceEmployeeData = {
         nameEn: formData?.workforceEmployee?.nameEn,
         nameBn: formData?.workforceEmployee?.nameBn,
@@ -256,7 +246,7 @@ const MedicalAssistanceForm = ({
         presentAddress: formData?.workforceEmployee?.presentAddress,
         position: formData?.workforceEmployee?.position,
         monthlyEarning: formData?.workforceEmployee?.monthlyEarning,
-        insuranceNumber: formData?.workforceEmployee?.insuranceNumber,
+        insuranceNumber: " ",
         fatherNameBn: formData?.workforceEmployee?.fatherNameBn,
         fatherNameEn: formData?.workforceEmployee?.fatherNameEn,
         motherNameBn: formData?.workforceEmployee?.motherNameBn,
@@ -267,15 +257,25 @@ const MedicalAssistanceForm = ({
         maritalStatus: formData?.workforceEmployee?.maritalStatus,
         presentLocation: formData?.workforceEmployee?.presentLocation,
         permanentLocation: formData?.workforceEmployee?.permanentLocation,
+
         id: formData?.workforceEmployee?.id,
       };
       console.log("Update Submitting formData:", workforceEmployeeData);
-      await dispatch(
-        updateWorkforceEmployee(
-          workforceEmployeeData,
-          `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-        )
-      );
+      if (workforceEmployeeData?.id) {
+        await dispatch(
+          updateWorkforceEmployee(
+            workforceEmployeeData,
+            `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+          )
+        );
+      }else{
+        await dispatch(
+          createWorkforceEmployee(
+            workforceEmployeeData,
+            `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+          )
+        );
+      }
     } else if (nextStep === 3) {
       console.log("Create application formData:", formData);
       const createApplicationData = {

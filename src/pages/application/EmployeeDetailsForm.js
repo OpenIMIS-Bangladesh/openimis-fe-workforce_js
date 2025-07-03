@@ -93,7 +93,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   value={formData?.workforceEmployee.nameBn || ""}
                   onChange={(v) => handleChange("nameBn", v)}
                   required
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.nameBn?true : false}
                 />
               </Grid>
               <Grid
@@ -106,7 +106,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   value={formData?.workforceEmployee.nameEn || ""}
                   onChange={(v) => handleChange("nameEn", v)}
                   required
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.nameEn? true:false}
                 />
               </Grid>
               <Grid
@@ -118,7 +118,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   label="workforce.employee.fathers_name.en"
                   value={formData?.workforceEmployee.fatherNameEn || ""}
                   onChange={(v) => handleChange("fatherNameEn", v)}
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.fatherNameEn?true:false}
                 />
               </Grid>
               <Grid
@@ -130,7 +130,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   label="workforce.employee.fathers_name.bn"
                   value={formData?.workforceEmployee.fatherNameBn || ""}
                   onChange={(v) => handleChange("fatherNameBn", v)}
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.fatherNameBn?true:false}
                 />
               </Grid>
               <Grid
@@ -142,7 +142,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   label="workforce.employee.mothers_name.en"
                   value={formData?.workforceEmployee.motherNameEn || ""}
                   onChange={(v) => handleChange("motherNameEn", v)}
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.motherNameEn?true:false}
                   required
                 />
               </Grid>
@@ -155,7 +155,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   label="workforce.employee.mothers_name.bn"
                   value={formData?.workforceEmployee.motherNameBn || ""}
                   onChange={(v) => handleChange("motherNameBn", v)}
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.motherNameBn?true:false}
                   required
                 />
               </Grid>
@@ -168,7 +168,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   label="workforce.employee.spouse.name.en"
                   value={formData?.workforceEmployee.spouseNameEn || ""}
                   onChange={(v) => handleChange("spouseNameEn", v)}
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.spouseNameEn?true:false}
                 />
               </Grid>
               <Grid
@@ -180,7 +180,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   label="workforce.employee.spouse.name.bn"
                   value={formData?.workforceEmployee.spouseNameBn || ""}
                   onChange={(v) => handleChange("spouseNameBn", v)}
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.spouseNameBn?true:false}
                 />
               </Grid>
               <Grid
@@ -193,7 +193,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   label={"workforce.employee.birthdate"}
                   value={formData?.workforceEmployee.birthDate || ""}
                   onChange={(v) => handleChange("birthDate", v)}
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.birthDate?true:false}
                 />
               </Grid>
 
@@ -211,7 +211,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                     />
                   }
                   onChange={(v) => handleChange("gender", v)}
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee?.gender?true:false}
                 />
               </Grid>
               <Grid
@@ -224,7 +224,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   value={formData?.workforceEmployee.phoneNumber || ""}
                   onChange={(v) => handleChange("phoneNumber", v)}
                   type={"number"}
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.phoneNumber?true:false}
                 />
               </Grid>
 
@@ -238,7 +238,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   value={formData?.workforceEmployee.email || ""}
                   onChange={(v) => handleChange("email", v)}
                   type={"email"}
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.email?true:false}
                 />
               </Grid>
               <Grid
@@ -250,7 +250,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   label="workforce.employee.citizenship"
                   value={formData?.workforceEmployee.citizenship || ""}
                   onChange={(v) => handleChange("citizenship", v)}
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.citizenship?true:false}
                 />
               </Grid>
 
@@ -269,7 +269,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   }
                   required
                   onChange={(v) => handleChange("maritalStatus", v)}
-                  readOnly={true}
+                  readOnly={formData?.workforceEmployee.maritalStatus?true:false}
                 />
               </Grid>
               <Grid
@@ -281,7 +281,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
                   label="workforce.employee.position"
                   value={formData?.workforceEmployee.position || ""}
                   onChange={(v) => handleChange("position", v)}
-                  readOnly={false}
+                  readOnly={formData?.workforceEmployee.position?true:false}
                 />
               </Grid>
               <Grid item xs={6} className={classes.item}>
@@ -297,7 +297,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData,nidOrBcn, set
  
   type="number"
   required
-  readOnly={false}
+  readOnly={formData?.workforceEmployee?.nid || formData?.workforceEmployee?.birthCertificateNo ||nidOrBcn.nid?true:false}
 />
 
               </Grid>
