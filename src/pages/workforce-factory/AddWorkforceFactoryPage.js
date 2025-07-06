@@ -1,34 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-  Grid,
-  Paper,
-  Typography,
-  Divider,
-  IconButton,
-  FormControlLabel,
-  Checkbox,
-} from "@material-ui/core";
+import { Grid, Paper, Typography, Divider, IconButton, FormControlLabel, Checkbox } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
-import {
-  createRepresentative,
-  fetchRepresentativeByClientMutationId,
-  createWorkforceFactory,
-} from "../../actions";
-import {
-  TextInput,
-  journalize,
-  PublishedComponent,
-  FormattedMessage,
-  formatMutation,
-} from "@openimis/fe-core";
+import { createRepresentative, fetchRepresentativeByClientMutationId, createWorkforceFactory } from "../../actions";
+import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation } from "@openimis/fe-core";
 
 import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 import CompanyPicker from "../../pickers/CompanyPicker";
-
+import FileUploader from "../../pickers/FileUploader";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -51,10 +33,7 @@ class AddWorkforceFactoryPage extends Component {
 
   componentDidUpdate(prevProps) {
     const { submittingMutation, mutation, dispatch } = this.props;
-    if (
-      !submittingMutation &&
-      prevProps.submittingMutation !== submittingMutation
-    ) {
+    if (!submittingMutation && prevProps.submittingMutation !== submittingMutation) {
       dispatch(journalize(mutation));
     }
   }
@@ -62,7 +41,6 @@ class AddWorkforceFactoryPage extends Component {
   save = async () => {
     const { stateEdited } = this.state;
     const { dispatch } = this.props;
-
 
     let representativeId = EMPTY_STRING;
 
@@ -84,24 +62,13 @@ class AddWorkforceFactoryPage extends Component {
       const representativeMutation = await formatMutation(
         "createWorkforceRepresentative",
         formatRepresentativeGQL(representativeData),
-        `Created Representative ${representativeData.nameEn}`,
+        `Created Representative ${representativeData.nameEn}`
       );
-      const representativeClientMutationId =
-        representativeMutation.clientMutationId;
+      const representativeClientMutationId = representativeMutation.clientMutationId;
 
-      await dispatch(
-        createRepresentative(
-          representativeMutation,
-          `Created Representative ${representativeData.nameEn}`,
-        ),
-      );
+      await dispatch(createRepresentative(representativeMutation, `Created Representative ${representativeData.nameEn}`));
 
-      await dispatch(
-        fetchRepresentativeByClientMutationId(
-          this.props.modulesManger,
-          representativeClientMutationId,
-        ),
-      );
+      await dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
 
       const representativeId = this.props.representativeId[0].id;
 
@@ -120,13 +87,7 @@ class AddWorkforceFactoryPage extends Component {
         workforceFactory: stateEdited.workforceFactory,
       };
 
-      await dispatch(
-        createWorkforceFactory(
-          workforceFactoryData,
-          `Created Workforce Factory ${workforceFactoryData.nameEn}`,
-        ),
-      );
-
+      await dispatch(createWorkforceFactory(workforceFactoryData, `Created Workforce Factory ${workforceFactoryData.nameEn}`));
     }
 
     const workforceFactoryData = {
@@ -144,13 +105,7 @@ class AddWorkforceFactoryPage extends Component {
       workforceFactory: stateEdited.workforceFactory,
     };
 
-    await dispatch(
-      createWorkforceFactory(
-        workforceFactoryData,
-        `Created Workforce Factory ${workforceFactoryData.nameEn}`,
-      ),
-    );
-
+    await dispatch(createWorkforceFactory(workforceFactoryData, `Created Workforce Factory ${workforceFactoryData.nameEn}`));
 
     this.setState({ isSaved: true });
   };
@@ -178,11 +133,7 @@ class AddWorkforceFactoryPage extends Component {
               <Grid container className={classes.tableTitle}>
                 <Grid item xs={12} className={classes.tableTitle}>
                   <Typography>
-                    <FormattedMessage
-                      module={MODULE_NAME}
-                      id="Workforce Factory"
-                      values={{ label: EMPTY_STRING }}
-                    />
+                    <FormattedMessage module={MODULE_NAME} id="Workforce Factory" values={{ label: EMPTY_STRING }} />
                   </Typography>
                 </Grid>
               </Grid>
@@ -191,12 +142,7 @@ class AddWorkforceFactoryPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <CompanyPicker
                     value={stateEdited?.company?.id}
-                    label={
-                      <FormattedMessage
-                        id="workforce.employee.workforce_employer"
-                        module="workforce"
-                      />
-                    }
+                    label={<FormattedMessage id="workforce.employee.workforce_employer" module="workforce" />}
                     required
                     onChange={(v) => this.updateAttribute("company", v)}
                     readOnly={isSaved}
@@ -257,6 +203,16 @@ class AddWorkforceFactoryPage extends Component {
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
+                  <Typography>Upload Association Membership Certificate</Typography>
+                  <FileUploader
+                    fieldKey="associationCertificate"
+                    onFileChange={(v)=>this.updateAttribute("associationCertificate",v)}
+                    applicationId={this.props.applicationId || "temp-id"} // Replace with real application/factory ID
+                    documentType="ASSOCIATION_MEMBERSHIP_CERTIFICATE" // Use your documentType enum or string
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.factory.website"
                     value={stateEdited.website || ""}
@@ -279,9 +235,7 @@ class AddWorkforceFactoryPage extends Component {
                     pubRef="location.DetailedLocation"
                     withNull={true}
                     value={stateEdited.location || null}
-                    onChange={(location) =>
-                      this.updateAttribute("location", location)
-                    }
+                    onChange={(location) => this.updateAttribute("location", location)}
                     readOnly={isSaved}
                     required
                     split={true}
@@ -360,18 +314,11 @@ class AddWorkforceFactoryPage extends Component {
                         ]}
                       />
                     </Grid>
-                  )
-                  }
+                  )}
                 </>
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
-                  <IconButton
-                    variant="contained"
-                    component="label"
-                    color="primary"
-                    onClick={this.save}
-                    disabled={isSaveDisabled || isSaved}
-                  >
+                  <IconButton variant="contained" component="label" color="primary" onClick={this.save} disabled={isSaveDisabled || isSaved}>
                     <Save />
                   </IconButton>
                 </Grid>
@@ -391,6 +338,4 @@ const mapStateToProps = (state) => ({
   representativeId: state.workforce.fetchedRepresentativeByClientMutationId,
 });
 
-export default connect(mapStateToProps)(
-  withStyles(styles)(AddWorkforceFactoryPage),
-);
+export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceFactoryPage));

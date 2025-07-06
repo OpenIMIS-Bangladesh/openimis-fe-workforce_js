@@ -31,6 +31,7 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 import CompanyPicker from "../../pickers/CompanyPicker";
+import FileUploader from "../../pickers/FileUploader";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -255,6 +256,16 @@ class EditWorkforceFactoryPage extends Component {
                     onChange={(v) => this.updateAttribute("email", v)}
                     type={"email"}
                     readOnly={isSaved}
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
+                  <Typography>Upload Association Membership Certificate</Typography>
+                  <FileUploader
+                    fieldKey="associationCertificate"
+                    onFileChange={(v)=>this.updateAttribute("associationCertificate",v)}
+                    applicationId={this.props.applicationId || "temp-id"} // Replace with real application/factory ID
+                    documentType="ASSOCIATION_MEMBERSHIP_CERTIFICATE" // Use your documentType enum or string
                   />
                 </Grid>
 
