@@ -163,8 +163,8 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) =
 
       {files.length > 0 && (
         <Paper className={classes.fileList}>
-          {files.map((file) => (
-            <Box key={file.name} className={classes.fileItem}>
+          {files.map((file, index) => (
+            <Box key={`${file.name}-${index}`} className={classes.fileItem}>
               <Typography variant="body2" className={classes.fileName}>
                 {file.name}
               </Typography>
