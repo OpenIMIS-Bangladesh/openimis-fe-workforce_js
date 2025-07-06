@@ -441,6 +441,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
             <Button
               variant="contained"
               color="primary"
+              // disabled={disableConfirmSubmit}
               onClick={() => {
                 setShowVerifyNid(false);
                 setIsSubmitted(true);
