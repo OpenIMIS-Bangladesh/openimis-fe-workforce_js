@@ -339,8 +339,10 @@ const MedicalAssistanceForm = ({
       //   //   // Handle error
       //   //   console.error("Failed to get parsed application:", error);
       //   // });
+      console.clear();
+      console.log(applicationId);
       const updateApplicationData = {
-        id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+      id: safeApplicationId(applicationId, parsedApplicationData),
         workforceEmployeeId:
           formData?.workforceEmployee.id ||
           parsedApplicationData?.workforceEmployee?.id,
@@ -396,10 +398,23 @@ const MedicalAssistanceForm = ({
     });
   };
 
+  const safeApplicationId = (applicationId, parsedApplicationData) => {
+    console.clear();
+    console.log("applicationId", applicationId);
+    console.log("parsedApplicationData", parsedApplicationData);
+    if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
+      return applicationId[0].id;
+    } else if (parsedApplicationData && parsedApplicationData.id) {
+      return parsedApplicationData.id;
+    } else {
+      return null;
+    }
+  };
+
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
     const updateApplicationData = {
-      id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+      id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId:
         formData?.workforceEmployee.id ||
         parsedApplicationData?.workforceEmployee?.id,
