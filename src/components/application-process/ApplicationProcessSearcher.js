@@ -130,9 +130,9 @@ class ApplicationProcessSearcher extends Component {
       const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
       let filter = [];
       if (summaryId) {
-        filter = [`statusIn: ["forward_to_association", "meeting_created"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${summaryId}"`];
+        filter = [`statusIn: ["forward_to_cf_section","meeting_created"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${summaryId}"`];
       } else {
-        filter = [`statusIn: ["forward_to_association"], orderBy: ["-dateCreated"]`];
+        filter = [`statusIn: ["forward_to_cf_section"], orderBy: ["-dateCreated"]`];
       }
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
@@ -478,7 +478,7 @@ class ApplicationProcessSearcher extends Component {
         submitting: false,
         serverResponse: {
           status: "SUCCESS",
-          message: "আবেদন সফলভাবে revert করা হয়েছে!",
+          message: "আবেদন সফলভাবে Forward করা হয়েছে!",
         },
       });
       setTimeout(() => {
@@ -594,6 +594,106 @@ class ApplicationProcessSearcher extends Component {
               status: WORKFORCE_STATUS.SELECTED,
               note: "আবেদন নির্বাচন করা হয়েছে",
               action: "approved",
+            };
+
+            await updateApplication(updateApplicationData, "update workforce application");
+            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+          })
+        );
+
+        this.setState({
+          serverResponse: {
+            status: "SUCCESS",
+            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+          },
+        });
+
+      } catch (error) {
+        console.error("Bulk selection failed:", error);
+        this.setState({
+          serverResponse: {
+            status: "ERROR",
+            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+          },
+        });
+      }
+    }
+  };
+  handleBulkSelectedbyAssociation = async () => {
+    const { selectedApplicationIds } = this.state;
+    const { updateApplication, createApplicationMovement } = this.props;
+
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to forward these applications?")) {
+      try {
+        await Promise.all(
+          selectedApplicationIds.map(async (id) => {
+            const decodedId = decodeId(id);
+
+            const updateApplicationData = {
+              id: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+            };
+
+            const createApplicationMovementData = {
+              applicationId: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+              note: "আবেদন নির্বাচন করা হয়েছে",
+              action: "forward_to_cf_section",
+            };
+
+            await updateApplication(updateApplicationData, "update workforce application");
+            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+          })
+        );
+
+        this.setState({
+          serverResponse: {
+            status: "SUCCESS",
+            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+          },
+        });
+
+      } catch (error) {
+        console.error("Bulk selection failed:", error);
+        this.setState({
+          serverResponse: {
+            status: "ERROR",
+            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+          },
+        });
+      }
+    }
+  };
+  handleBulkSelectedbyFactoryAdmin = async () => {
+    const { selectedApplicationIds } = this.state;
+    const { updateApplication, createApplicationMovement } = this.props;
+
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to forward these applications?")) {
+      try {
+        await Promise.all(
+          selectedApplicationIds.map(async (id) => {
+            const decodedId = decodeId(id);
+
+            const updateApplicationData = {
+              id: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
+            };
+
+            const createApplicationMovementData = {
+              applicationId: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
+              note: "আবেদন নির্বাচন করা হয়েছে",
+              action: "forward_to_association",
             };
 
             await updateApplication(updateApplicationData, "update workforce application");
@@ -871,6 +971,42 @@ class ApplicationProcessSearcher extends Component {
             </Button>
             <IconButton onClick={this.handleOpenBFTN}><PrintIcon /></IconButton>
 
+          </Box>
+        ) : null}
+        {userType === WORKFORCE_USER_TYPE.ASSOCIATION ? (
+          <Box
+            style={{
+              marginTop: 10,
+              display: "flex",
+              gap: 2,
+              justifyContent: "space-between",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.handleBulkSelectedbyAssociation}
+            >
+              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+            </Button>
+          </Box>
+        ) : null}
+        {userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? (
+          <Box
+            style={{
+              marginTop: 10,
+              display: "flex",
+              gap: 2,
+              justifyContent: "space-between",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.handleBulkSelectedbyFactoryAdmin}
+            >
+              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+            </Button>
           </Box>
         ) : null}
         {userType === WORKFORCE_USER_TYPE.ADMIN ? (

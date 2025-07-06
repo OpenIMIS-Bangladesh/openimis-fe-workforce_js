@@ -2234,13 +2234,22 @@ export function verifyNid(mm, clientMutationId) {
 
 export function fetchWorkforceApplicationStatusCount() {
   const payload = `query{
-  pending: workforceApplication(status:"pending"){
+  pending: workforceApplication(statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_DIRECTOR}", "${WORKFORCE_STATUS.FORWARD_TO_DG}"]){
     totalCount
   }
-  rejected:workforceApplication(status:"rejected"){
+  rejected:workforceApplication(statusIn: ["${WORKFORCE_STATUS.REJECTED}"]){
     totalCount
   }
-  approved:workforceApplication(status:"approved_by_dg"){
+  approved:workforceApplication(statusIn: ["${WORKFORCE_STATUS.APPROVED_BY_DG}"]){
+    totalCount
+  }
+  pendingForDirector: workforceApplication(statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_DIRECTOR}"]){
+    totalCount
+  }
+  rejectedForDirector:workforceApplication(statusIn: ["${WORKFORCE_STATUS.REJECTED}"]){
+    totalCount
+  }
+  approvedForDirector:workforceApplication(statusIn: ["${WORKFORCE_STATUS.APPROVED_BY_DIRECTOR}"]){
     totalCount
   }
 }`

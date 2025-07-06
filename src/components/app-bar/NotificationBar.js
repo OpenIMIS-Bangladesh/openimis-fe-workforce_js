@@ -8,6 +8,9 @@ import { getUserType } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { fetchWorkforceApplicationStatusCount } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  useHistory,
+} from "@openimis/fe-core";
 
 const styles = (theme) => ({
   root: {
@@ -32,6 +35,7 @@ const styles = (theme) => ({
 const NotificationBar = ({ classes }) => {
 
   const user_type = getUserType();
+  const history = useHistory();
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -43,25 +47,38 @@ const NotificationBar = ({ classes }) => {
     (state) => state.workforce[`workforceApplicationStatusCount`]
   );
 
-  const data = {
+  const status_data = {
     pending: status_count?.pending?.totalCount || 0,
     rejected: status_count?.rejected?.totalCount || 0,
     approved: status_count?.approved?.totalCount || 0,
-    checked: 4,
+    pendingForDirector: status_count?.pendingForDirector?.totalCount || 0,
+    rejectedForDirector: status_count?.rejectedForDirector?.totalCount || 0,
+    approvedForDirector: status_count?.approvedForDirector?.totalCount || 0,
   }
-  console.clear();
-  console.log(data)
+
+  const data = [];
+
   if (user_type === WORKFORCE_USER_TYPE.APPLICANT) {
     return (<></>)
+  }
+
+  if (user_type === WORKFORCE_USER_TYPE.DIRECTOR) {
+    data.pending = status_data.pendingForDirector;
+    data.rejected = status_data.rejectedForDirector;
+    data.approved = status_data.approvedForDirector;
+  } else {
+    data.pending = status_data.pending;
+    data.rejected = status_data.rejected;
+    data.approved = status_data.approved;
   }
 
   return (
     <Box className={classes.root}>
       {/* Pending */}
       <Tooltip title="Pending Applications">
-        <Box className={classes.item}>
+        <Box className={classes.item} onClick={() => history.push("/workforce/applications/process?status=pending")}>
           <Badge badgeContent={data.pending || 0} color="primary">
-            <HourglassEmptyIcon color="white" />
+            <HourglassEmptyIcon color="yellow" />
           </Badge>
           <Typography className={classes.label}>Pending</Typography>
         </Box>
@@ -69,9 +86,9 @@ const NotificationBar = ({ classes }) => {
 
       {/* In Progress */}
       <Tooltip title="Rejected Applications">
-        <Box className={classes.item}>
+        <Box className={classes.item} onClick={() => history.push("/workforce/applications/process?status=rejected")}>
           <Badge badgeContent={data.rejected || 0} color="primary">
-            <RestorePageIcon color="white" />
+            <RestorePageIcon color="red" />
           </Badge>
           <Typography className={classes.label}>Rejected</Typography>
         </Box>
@@ -79,7 +96,7 @@ const NotificationBar = ({ classes }) => {
 
       {/* Verified */}
       <Tooltip title="Verified Applications">
-        <Box className={classes.item}>
+        <Box className={classes.item} onClick={() => history.push("/workforce/applications/process?status=approved")}>
           <Badge badgeContent={data.approved || 0} color="primary">
             <VerifiedUserIcon style={{ color: "#4caf50" }} />
           </Badge>
