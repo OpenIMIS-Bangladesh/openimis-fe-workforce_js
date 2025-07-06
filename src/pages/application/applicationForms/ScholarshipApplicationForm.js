@@ -1,20 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
-  Paper,
-  Box,
-  Typography,
-} from "@material-ui/core";
-import {
-  useModulesManager,
-  formatMutation,
-  decodeId,
-  FormattedMessage,
-} from "@openimis/fe-core";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography } from "@material-ui/core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
 import EmployeeDetailsForm2 from "../EmployeeDetailsForm2";
@@ -55,20 +42,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ScholarshipApplicationForm = ({
-  modulesManager,
-  organizationType,
-  selectedApplicationType,
-  applicationForSelf,
-  parsedApplicationData
-}) => {
-  const employeeData = useSelector(
-    (state) => state.workforce["workforceEmployee"] ?? []
-  );
+const ScholarshipApplicationForm = ({ modulesManager, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
+  const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
-  const applicationId = useSelector(
-    (state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []
-  );
+  const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
@@ -77,6 +54,11 @@ const ScholarshipApplicationForm = ({
   const [showVerifyNid, setShowVerifyNid] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const reduxState = useSelector((state) => state);
+  const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
+  const [nidOrBcn, setNidOrBcn] = useState({
+        nid: formData?.workforceEmployee?.nid || "",
+        birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
+      });
 
   const [formData, setFormData] = useState({
     workforceEmployee: {
@@ -129,11 +111,7 @@ const ScholarshipApplicationForm = ({
 
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
-    dispatch(
-      fetchWorkforceEmployee(modulesManager, [
-        `relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`,
-      ])
-    );
+    dispatch(fetchWorkforceEmployee(modulesManager, [`relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`]));
   };
 
   useEffect(() => {
@@ -183,8 +161,7 @@ const ScholarshipApplicationForm = ({
           maritalStatus: employeeData.maritalStatus || "",
           monthlyEarning: employeeData.monthlyEarning || "",
           uploadedNidFile: employeeData.uploadedNidFile || [],
-          uploadedBirthCertificateFile:
-            employeeData.uploadedBirthCertificateFile || [],
+          uploadedBirthCertificateFile: employeeData.uploadedBirthCertificateFile || [],
           permanentAddress: employeeData.permanentAddress || "",
           permanentLocation: employeeData.permanentLocation || "",
           presentLocation: employeeData.presentLocation || "",
@@ -193,24 +170,13 @@ const ScholarshipApplicationForm = ({
         company: employeeData.company || null,
         factory: employeeData.factory || null,
         applicationForSelf: applicationForSelf,
-        organizationType:
-          parsedApplicationData?.organizationType || organizationType,
-        applicationType:
-          parsedApplicationData?.applicationType || selectedApplicationType,
-        metadata:
-          parsedApplicationData?.metadata || employeeData?.metadata || {},
-        dependents:
-          parsedApplicationData?.employeeDependentInfo ||
-          employeeData.dependents ||
-          {},
-        employeeBankInfo:
-          parsedApplicationData?.employeeBankInfo ||
-          employeeData?.employeeBankInfo ||
-          {},
-        employeeAccidentInfo:
-          parsedApplicationData?.employeeAccidentInfo ||
-          employeeData.employeeAccidentInfo ||
-          {},
+        organizationType: parsedApplicationData?.organizationType || organizationType,
+        applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
+        metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
+        dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || {},
+        employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || {},
+        employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData.employeeAccidentInfo || {},
+        employeeChildrenInfo: parsedApplicationData?.employeeChildrenInfo || employeeData.employeeChildrenInfo || {},
       });
     }
   }, [employeeData]); // Trigger this useEffect when `employeeData` changes.
@@ -236,7 +202,7 @@ const ScholarshipApplicationForm = ({
     console.log({ formData });
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
-    if (nextStep === 1 || nextStep === 2) {
+    if (nextStep === 2 || nextStep === 3) {
       const workforceEmployeeData = {
         nameEn: formData?.workforceEmployee?.nameEn,
         nameBn: formData?.workforceEmployee?.nameBn,
@@ -262,83 +228,67 @@ const ScholarshipApplicationForm = ({
         maritalStatus: formData?.workforceEmployee?.maritalStatus,
         presentLocation: formData?.workforceEmployee?.presentLocation,
         permanentLocation: formData?.workforceEmployee?.permanentLocation,
-
         id: formData?.workforceEmployee?.id,
-      };;
+      };
       console.log("Update Submitting formData:", formData);
       if (workforceEmployeeData?.id) {
-              await dispatch(
-                updateWorkforceEmployee(
-                  workforceEmployeeData,
-                  `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-                )
-              );
-      }else{
-              await dispatch(
-                createWorkforceEmployee(
-                  workforceEmployeeData,
-                  `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-                )
-              );
+        await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
+      } else {
+        await dispatch(createWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
       }
-    } else if (nextStep === 3) {
+    } else if (nextStep === 4) {
       console.log("Create application formData:", formData);
       const createApplicationData = {
-        workforceEmployeeId: formData.id,
+        workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
         company: formData.company,
         factory: formData.factory,
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
-        employeeDesignationInfo: JSON.stringify(
-          formData.employeeDesignationInfo
-        ),
+        employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
-        employeeDependentInfo: JSON.stringify(formData.dependents),
+        employeeDependentInfo: JSON.stringify(formData.dependent),
         employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo),
-        status: WORKFORCE_STATUS.NEW,
+        metadata: JSON.stringify(formData.metadata),
+        status: WORKFORCE_STATUS.DRAFT,
       };
 
       console.log({ createApplicationData });
 
-      const applicationMutation = await formatMutation(
-        "createWorkforceApplication",
-        formatApplicationeGQL(createApplicationData),
-        `Created application ${formData.nameEn}`
-      );
-      const applicationClientMutationId = applicationMutation.clientMutationId;
-      console.log("applicationClientMutationId", applicationClientMutationId);
-      await dispatch(
-        createApplication(
-          applicationMutation,
-          `Created workforce application ${formData.firstNameEn}`
-        )
-      );
+      if (!parsedApplicationData) {
+        const applicationMutation = await formatMutation(
+          "createWorkforceApplication",
+          formatApplicationeGQL(createApplicationData),
+          `Created application ${formData.workforceEmployee.nameEn}`
+        );
+        const applicationClientMutationId = applicationMutation.clientMutationId;
+        console.log("applicationClientMutationId", applicationClientMutationId);
+        await dispatch(createApplication(applicationMutation, `Created workforce application ${formData.firstNameEn}`));
 
-      await dispatch(
-        fetchApplicationId(modulesManager, applicationClientMutationId)
-      );
+        await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
+      } else {
+        const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
+        console.log("i am from update", updateApplicationData);
+        dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
+      }
+    } else if (nextStep === 1) {
+      const applicationfor = { applyingfor: formData.metadata };
     } else {
       const updateApplicationData = {
-        id: decodeId(applicationId[0].id),
-        workforceEmployeeId: formData.id,
+        id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+        workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
         company: formData.company,
         factory: formData.factory,
-        organizationType: organizationType,
-        applicationType: selectedApplicationType,
-        employeeDesignationInfo: formData.employeeDesignationInfo,
-        employeeBankInfo: formData.employeeBankInfo,
-        employeeDependentInfo: formData.dependents,
-        employeeChildrenInfo: formData.employeeChildrenInfo,
-        status: WORKFORCE_STATUS.NEW,
+        organizationType: organizationType || parsedApplicationData?.organizationType,
+        applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+        employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
+        employeeDependentInfo: JSON.stringify(formData.dependent) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+        employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo) || JSON.stringify(parsedApplicationData?.employeeChildrenInfo),
+        metadata: JSON.stringify(formData.metadata),
+        status: WORKFORCE_STATUS.DRAFT,
       };
-      dispatch(
-        updateApplication(
-          updateApplicationData,
-          `update workforce application ${formData.firstNameEn}`
-        )
-      );
+      dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
     }
-    setActiveStep((prevStep) => prevStep + 1);
+    // setActiveStep((prevStep) => prevStep + 1);
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -365,29 +315,24 @@ const ScholarshipApplicationForm = ({
     });
   };
 
-  const handleSubmit = async () => {
-    console.log({ tazwer: formData });
-    // const updateApplicationData = {
-    //   id: decodeId(applicationId[0].id),
-    //   workforceEmployeeId: formData.id,
-    //   company: formData.company,
-    //   factory: formData.factory,
-    //   organizationType: organizationType,
-    //   applicationType: selectedApplicationType,
-    //   employeeDesignationInfo: formData.employeeDesignationInfo,
-    //   employeeBankInfo: formData.employeeBankInfo,
-    //   employeeDependentInfo: formData.dependents,
-    //   employeeChildrenInfo: formData.employeeChildrenInfo,
-    //   isSubmitted: "yes",
-    //   status: "ontest",
-    // };
-    // dispatch(
-    //   updateApplication(
-    //     updateApplicationData,
-    //     `update workforce application ${formData.firstNameEn}`
-    //   )
-    // );
-    setShowPreview(true);
+  const handleSubmit = () => {
+    const updateApplicationData = {
+      id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+      workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
+      company: formData.company,
+      factory: formData.factory,
+      organizationType: organizationType || parsedApplicationData?.organizationType,
+      applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+      employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
+      employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+      employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+      metadata: JSON.stringify(formData.metadata),
+      status: WORKFORCE_STATUS.NEW,
+    };
+    console.log({ updateApplicationData });
+    dispatch(updateApplication(updateApplicationData, `update workforce application`));
+
+    // setShowPreview(true);
     // setIsSubmitted(true);
   };
 
@@ -398,7 +343,7 @@ const ScholarshipApplicationForm = ({
       label: "workforce.application.steps.select",
       content: (
         <ScholarshipApplicationCheckbox
-          handleChange={handleChange}
+          handleChange={(key, value) => handleChange(key, value, "metadata")}
           setSelectedScholarshipOption={setSelectedScholarshipOption}
           selectedScholarshipOption={selectedScholarshipOption}
         />
@@ -406,25 +351,13 @@ const ScholarshipApplicationForm = ({
     },
     {
       label: "workforce.application.steps.employeeDetails",
-      content: (
-        <EmployeeDetailsForm
-          handleChange={(key, value) =>
-            handleChange(key, value, "workforceEmployee")
-          }
-          formData={formData}
-        />
-      ),
+      content: <EmployeeDetailsForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />,
     },
     {
       label: "workforce.application.steps.location",
       content: (
         <Box mt={0}>
-          <EmployeeLocationForm
-            handleChange={(key, value) =>
-              handleChange(key, value, "workforceEmployee")
-            }
-            formData={formData}
-          />
+          <EmployeeLocationForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />
         </Box>
       ),
     },
@@ -432,12 +365,7 @@ const ScholarshipApplicationForm = ({
       label: "workforce.application.steps.account.info",
       content: (
         <Box mt={0}>
-          <EmployeeAccountInfoForm
-            handleChange={(key, value) =>
-              handleChange(key, value, "employeeBankInfo")
-            }
-            formData={formData}
-          />
+          <EmployeeAccountInfoForm handleChange={(key, value) => handleChange(key, value, "employeeBankInfo")} formData={formData} />
         </Box>
       ),
     },
@@ -445,12 +373,7 @@ const ScholarshipApplicationForm = ({
       label: "workforce.application.steps.childInfo",
       content: (
         <Box mt={0}>
-          <EmployeeChildrenDetailsForm
-            handleChange={(key, value) =>
-              handleChange(key, value, "employeeChildrenInfo")
-            }
-            formData={formData}
-          />
+          <EmployeeChildrenDetailsForm handleChange={(key, value) => handleChange(key, value, "employeeChildrenInfo")} formData={formData} />
         </Box>
       ),
     },
@@ -458,11 +381,7 @@ const ScholarshipApplicationForm = ({
       label: "workforce.application.steps.upload.documents",
       content: (
         <Box mt={0}>
-          <EmployeeDetailsForm2
-            handleChange={handleChange}
-            formData={formData}
-            selectedApplicationType={selectedApplicationType}
-          />
+          <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={selectedApplicationType} />
         </Box>
       ),
     },
@@ -473,12 +392,7 @@ const ScholarshipApplicationForm = ({
             content: (
               <Box mt={0}>
                 {formData?.applicationForSelf === "no" && (
-                  <EmployeeDependentForm
-                    formData={formData}
-                    handleChange={handleChange}
-                    addDependent={addDependent}
-                    removeDependent={removeDependent}
-                  />
+                  <EmployeeDependentForm formData={formData} handleChange={handleChange} addDependent={addDependent} removeDependent={removeDependent} />
                 )}
               </Box>
             ),
@@ -522,7 +436,7 @@ const ScholarshipApplicationForm = ({
     return (
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={0}>
-          <NidVerification formData={formData} />
+          <NidVerification formData={formData} nidOrBcn={nidOrBcn} setDisableConfirmSubmit={setDisableConfirmSubmit}/>
           <div className={classes.buttonContainer}>
             <Button
               variant="contained"
@@ -530,12 +444,10 @@ const ScholarshipApplicationForm = ({
               onClick={() => {
                 setShowVerifyNid(false);
                 setIsSubmitted(true);
+                handleSubmit();
               }}
             >
-              <FormattedMessage
-                module="workforce"
-                id="workforce.confirm.submit"
-              />
+              <FormattedMessage module="workforce" id="workforce.confirm.submit" />
             </Button>
           </div>
         </Paper>
@@ -548,10 +460,7 @@ const ScholarshipApplicationForm = ({
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={0}>
           <Typography variant="h5" align="center" color="primary">
-            <FormattedMessage
-              module="workforce"
-              id="workforce.success.message"
-            />
+            <FormattedMessage module="workforce" id="workforce.success.message" />
           </Typography>
         </Paper>
       </div>
@@ -561,11 +470,7 @@ const ScholarshipApplicationForm = ({
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>
-        <Stepper
-          activeStep={activeStep}
-          alternativeLabel
-          style={{ padding: "0px" }}
-        >
+        <Stepper activeStep={activeStep} alternativeLabel style={{ padding: "0px" }}>
           {steps.map((step, index) => (
             <Step key={index}>
               <StepLabel>
@@ -587,7 +492,7 @@ const ScholarshipApplicationForm = ({
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            <Button variant="contained" color="primary" onClick={() => setShowPreview(true)}>
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
