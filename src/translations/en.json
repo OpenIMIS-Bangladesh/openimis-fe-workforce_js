@@ -396,7 +396,7 @@
 
     "workforce.employee.application.forward":"Forward",
 
-    "workforce.registration.desclaimer": "Are you already a registered user? If not, please register.",
+    "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন।",
     "workforce.registration.title":"উপকারভোগী নিবন্ধন ফর্ম",
 
     "workforce.employee.details":"Employee Details",
@@ -423,6 +423,7 @@
     "workforce.application.date":"Application Date",
     "workforce.application.expected.date":"Probable date of service",
     "workforce.application.status":"Application Status",
+    "workforce.application.draft_applications":"Draft Applications",
     "workforce.application.draft":"Draft Applications",
     "workforce.application.reverted":"Reverted Application",
     "workforce.application.steps.taken":"Measures taken",

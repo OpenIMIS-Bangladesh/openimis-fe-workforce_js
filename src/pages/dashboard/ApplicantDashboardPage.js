@@ -115,7 +115,7 @@ const SidebarMenu = [
   {
     id: "draftApplications",
     text: (
-      <FormattedMessage module="workforce" id="অসমাপ্ত আবেদন" />
+      <FormattedMessage module="workforce" id="workforce.application.draft_applications" />
     ),
     icon: <DraftsIcon  />,
   },
