@@ -470,7 +470,7 @@ const DisabilityForm = ({
             <Button
               variant="contained"
               color="primary"
-              disabled={disableConfirmSubmit}
+              // disabled={disableConfirmSubmit}
               onClick={() => {
                 setShowVerifyNid(false);
                 setIsSubmitted(true);
