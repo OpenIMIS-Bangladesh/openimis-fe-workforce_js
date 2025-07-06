@@ -1,17 +1,14 @@
-import React from "react";
+import React, { use } from "react";
 import {
   Grid,
   Card,
   CardContent,
   Typography,
   useTheme,
+  Button
 } from "@material-ui/core";
 import {
-  useTranslations,
-  useModulesManager,
-  TextInput,
   useHistory,
-  FormattedMessage,
 } from "@openimis/fe-core";
 import {
   BarChart,
@@ -27,10 +24,30 @@ import {
 } from "recharts";
 import Badge from '@material-ui/core/Badge';
 import { withStyles } from '@material-ui/core/styles';
+import { useSelector } from "react-redux";
+import { getUserType } from "../../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../../constants";
 
 const DashboardPage = () => {
   const theme = useTheme();
   const history = useHistory();
+  const user_type = getUserType();
+
+  const application_status_count_data = useSelector(
+    (state) => state.workforce[`workforceApplicationStatusCount`]
+  );
+
+  const application_status_count = [];
+
+  if (user_type === WORKFORCE_USER_TYPE.DIRECTOR) {
+    application_status_count.pending = application_status_count_data?.pendingForDirector?.totalCount;
+    application_status_count.rejected = application_status_count_data?.rejectedForDirector?.totalCount;
+    application_status_count.approved = application_status_count_data?.approvedForDirector?.totalCount;
+  } else {
+    application_status_count.pending = application_status_count_data?.pending?.totalCount;
+    application_status_count.rejected = application_status_count_data?.rejected?.totalCount;
+    application_status_count.approved = application_status_count_data?.approved?.totalCount;
+  }
 
   // Sample data
   const caseData = [
@@ -122,7 +139,7 @@ const DashboardPage = () => {
         </Grid>
       </Grid> */}
 
-      
+
       {/* <Grid container spacing={2}>
         {[
           { title: "Total Dependent", count: 74, male: 31, female: 43 },
@@ -143,24 +160,28 @@ const DashboardPage = () => {
       <Grid container spacing={2} style={{ marginTop: theme.spacing(1) }}>
         <Grid item xs={12} sm={4}>
           <Card
-            style={{ ...cardStyle, backgroundColor: COLORS[7],display:"flex",flexWrap:"wrap" }}
-            onClick={() => history.push("workforce/applications/process")}
+            style={{ ...cardStyle, backgroundColor: COLORS[7], display: "flex", flexWrap: "wrap" }}
           >
-           <CardContent>
-           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-            <Typography variant="subtitle1" style={{ marginRight: 16 }}>
-              Status -
-            </Typography>
+            <CardContent>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                <Typography variant="subtitle1" style={{ marginRight: 16 }}>
+                  Status -
+                </Typography>
 
-            <div style={{ display: 'flex', gap: '32px', alignItems: 'center', flexWrap: 'wrap' }}>
-              <StyledBadge badgeContent={10} color="secondary"><span>Pending</span></StyledBadge>
-              <StyledBadge badgeContent={2} color="error"><span>Rejected</span></StyledBadge>
-              <StyledBadge badgeContent={20} color="primary"><span>Verified</span></StyledBadge>
-              <StyledBadge badgeContent={30} color="info"><span>On Process</span></StyledBadge>
-            </div>
-          </div>
+                <div style={{ display: 'flex', gap: '32px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <Button backgroundColor="transparent" border="1px solid" style={{ color: "white", padding: 0, minWidth: 'auto' }}>
+                    <StyledBadge onClick={() => history.push("workforce/applications/process?status=pending")} badgeContent={application_status_count?.pending || 0} color="secondary" className="cu"><span>Pending</span></StyledBadge>
+                  </Button>
+                  <Button backgroundColor="transparent" border="1px solid" style={{ color: "white", padding: 0, minWidth: 'auto' }}>
+                    <StyledBadge onClick={() => history.push("workforce/applications/process?status=rejected")} badgeContent={application_status_count?.rejected || 0} color="error"><span>Rejected</span></StyledBadge>
+                  </Button>
+                  <Button backgroundColor="transparent" border="1px solid" style={{ color: "white", padding: 0, minWidth: 'auto' }}>
+                    <StyledBadge onClick={() => history.push("workforce/applications/process?status=approved")} badgeContent={application_status_count?.approved || 0} color="primary"><span>Verified</span></StyledBadge>
+                  </Button>
+                </div>
+              </div>
 
-          </CardContent>
+            </CardContent>
 
           </Card>
         </Grid>
