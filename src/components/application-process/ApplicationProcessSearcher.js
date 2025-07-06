@@ -669,6 +669,56 @@ class ApplicationProcessSearcher extends Component {
       }
     }
   };
+  handleBulkSelectedbyFactoryAdmin = async () => {
+    const { selectedApplicationIds } = this.state;
+    const { updateApplication, createApplicationMovement } = this.props;
+
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to forward these applications?")) {
+      try {
+        await Promise.all(
+          selectedApplicationIds.map(async (id) => {
+            const decodedId = decodeId(id);
+
+            const updateApplicationData = {
+              id: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
+            };
+
+            const createApplicationMovementData = {
+              applicationId: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
+              note: "আবেদন নির্বাচন করা হয়েছে",
+              action: "forward_to_association",
+            };
+
+            await updateApplication(updateApplicationData, "update workforce application");
+            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+          })
+        );
+
+        this.setState({
+          serverResponse: {
+            status: "SUCCESS",
+            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+          },
+        });
+
+      } catch (error) {
+        console.error("Bulk selection failed:", error);
+        this.setState({
+          serverResponse: {
+            status: "ERROR",
+            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+          },
+        });
+      }
+    }
+  };
   handleBulkApproveByAdmin = async () => {
     const { selectedApplicationIds } = this.state;
     const { updateApplication, createApplicationMovement,updateApplicationSummary } = this.props;
@@ -936,6 +986,24 @@ class ApplicationProcessSearcher extends Component {
               variant="contained"
               color="primary"
               onClick={this.handleBulkSelectedbyAssociation}
+            >
+              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+            </Button>
+          </Box>
+        ) : null}
+        {userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? (
+          <Box
+            style={{
+              marginTop: 10,
+              display: "flex",
+              gap: 2,
+              justifyContent: "space-between",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.handleBulkSelectedbyFactoryAdmin}
             >
               <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
             </Button>
