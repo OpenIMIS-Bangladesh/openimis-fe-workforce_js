@@ -174,7 +174,7 @@ const EmployeeDetailsForm2 = ({
               </Grid>
 
               {data.map((document, index) => (
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6} className={classes.item} key={document.fieldId}>
                   <Typography>আপলোড {document.nameBn} </Typography>
                   <FileUploader
                     fieldKey={document.fieldId}

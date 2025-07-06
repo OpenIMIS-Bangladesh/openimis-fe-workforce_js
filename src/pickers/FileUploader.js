@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FileUploader = ({ fieldKey, onFileChange,applicationId,documentType }) => {
+const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) => {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
   const dispatch = useDispatch()
@@ -72,49 +72,49 @@ const FileUploader = ({ fieldKey, onFileChange,applicationId,documentType }) => 
   // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
 
   const uploadFileToApi = async (file) => {
-  const formData = new FormData();
-  formData.append("file", file);         // actual file content
-  formData.append("name", file.name); // optional field if backend expects this
+    const formData = new FormData();
+    formData.append("file", file);         // actual file content
+    formData.append("name", file.name); // optional field if backend expects this
 
-  const jwtToken = localStorage.getItem("token"); // Adjust this as needed
+    const jwtToken = localStorage.getItem("token"); // Adjust this as needed
 
-  try {
-    const response = await fetch("/api/workforce/document/upload", {
-      method: "POST",
-      credentials: 'include',
-      // headers: {
-      //   'Content-Type': 'application/json',
-      //   // DO NOT set "Content-Type" manually for FormData, browser handles it correctly
-      // },
-      body: formData,
-    });
+    try {
+      const response = await fetch("/api/workforce/document/upload", {
+        method: "POST",
+        credentials: 'include',
+        // headers: {
+        //   'Content-Type': 'application/json',
+        //   // DO NOT set "Content-Type" manually for FormData, browser handles it correctly
+        // },
+        body: formData,
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error(`Upload failed for ${file.name}:`, errorData);
-    } else {
-      const responseData = await response.json();
-      console.log(`Upload successful for ${file.name}:`, responseData);
-      const createDocumentData = {
-        path:responseData.file_path,
-        url:responseData.file_url,
-        workforceApplicationId:decodeId(applicationId),
-        documentType:documentType,
-        holder:"57",
-        holderType:"user"
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error(`Upload failed for ${file.name}:`, errorData);
+      } else {
+        const responseData = await response.json();
+        console.log(`Upload successful for ${file.name}:`, responseData);
+        const createDocumentData = {
+          path: responseData.file_path,
+          url: responseData.file_url,
+          workforceApplicationId: decodeId(applicationId),
+          documentType: documentType,
+          holder: "57",
+          holderType: "user"
+        }
+        dispatch(
+          createWorkforceDocument(
+            createDocumentData,
+            `Created workforce document `
+          )
+        );
+
       }
-       dispatch(
-                createWorkforceDocument(
-                  createDocumentData,
-                  `Created workforce document `
-                )
-              );
-
+    } catch (error) {
+      console.error(`Upload error for ${file.name}:`, error);
     }
-  } catch (error) {
-    console.error(`Upload error for ${file.name}:`, error);
-  }
-};
+  };
 
 
   const onDrop = useCallback(
@@ -140,7 +140,14 @@ const FileUploader = ({ fieldKey, onFileChange,applicationId,documentType }) => 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     multiple: true,
-    accept: "*",
+    accept: {
+      "application/pdf": [".pdf"],
+      "application/msword": [".doc"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+      "image/png": [".png"],
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/gif": [".gif"],
+    },
   });
 
   return (
@@ -156,8 +163,8 @@ const FileUploader = ({ fieldKey, onFileChange,applicationId,documentType }) => 
 
       {files.length > 0 && (
         <Paper className={classes.fileList}>
-          {files.map((file) => (
-            <Box key={file.name} className={classes.fileItem}>
+          {files.map((file, index) => (
+            <Box key={`${file.name}-${index}`} className={classes.fileItem}>
               <Typography variant="body2" className={classes.fileName}>
                 {file.name}
               </Typography>
