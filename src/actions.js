@@ -236,8 +236,8 @@ export function fetchWorkforceOffice(mm, filters) {
     "website",
     "workforceEmployer{id}",
     "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
-      location_projection +
-      "}",
+    location_projection +
+    "}",
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployerOffices",
@@ -285,8 +285,8 @@ export function fetchWorkforceFactory(mm, filters) {
     location_projection,
     "workforceEmployer{id}",
     "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
-      location_projection +
-      "}",
+    location_projection +
+    "}",
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployerFactories",
@@ -421,8 +421,8 @@ export function fetchWorkforceCompany(mm, filters) {
     "establishmentName",
     location_projection,
     "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
-      location_projection +
-      "}",
+    location_projection +
+    "}",
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployers",
@@ -456,14 +456,14 @@ export function fetchWorkforceCompanyWithFactoriesAndOffices(mm, filters) {
     "establishmentName",
     location_projection,
     "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
-      location_projection +
-      "}",
+    location_projection +
+    "}",
     "factories {id,nameBn,nameEn,address,phoneNumber,email,website,status, " +
-      location_projection +
-      "}",
+    location_projection +
+    "}",
     "offices {id,nameBn,nameEn,address,phoneNumber,email,website,status, " +
-      location_projection +
-      "}",
+    location_projection +
+    "}",
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployers",
@@ -676,8 +676,8 @@ export function fetchApplicationsSummary(mm, filters) {
   const projections = [
     "id",
     "workforceEmployee{" +
-     present_location_projection +
-     permanent_location_projection +
+    present_location_projection +
+    permanent_location_projection +
     "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
     "dateCreated",
     "organizationType",
@@ -694,7 +694,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "grantMoney {id,grantMoney}",
     "grantAmount"
 
-    ];
+  ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
     filters,
@@ -713,7 +713,7 @@ export function fetchSummaryApplications(mm, filters) {
     "meetingDate",
     "month",
     "year",
-    ];
+  ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationSummary",
     filters,
@@ -730,7 +730,7 @@ export function fetchApplication(mm, filters) {
 
   const projections = [
     "id",
-    "workforceEmployee{"+present_location_projection+permanent_location_projection+",id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
+    "workforceEmployee{" + present_location_projection + permanent_location_projection + ",id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
     "organizationType",
     "applicationType",
     "status",
@@ -1106,7 +1106,7 @@ export function fetchWorkforceDocument(mm, filters) {
     "approver{id}",
     "workforceApplicationId",
     "documentType",
-   
+
   ];
   const payload = formatPageQueryWithCount(
     "workforceDocuments",
@@ -1739,8 +1739,8 @@ export function fetchOrganization(mm, filters) {
     "website",
     "parent{id,nameEn,nameBn}",
     "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
-      location_projection +
-      "}",
+    location_projection +
+    "}",
     "address",
     location_projection,
   ];
@@ -1884,7 +1884,7 @@ export function updateWorkforceEmployeeAssignDesignation(
   employeeAssignDesignation,
   clientMutationLabel
 ) {
-  const mutation = formatMutation(    
+  const mutation = formatMutation(
     "updateWorkforceEmployeeDesignation",
     formatFactoryEmployeeAssignDesignationGQL(employeeAssignDesignation),
     clientMutationLabel
@@ -2076,7 +2076,7 @@ export function createApplicationMovement(application, clientMutationLabel) {
   );
 }
 
-export function createApplicationSummary(mutation,clientMutationLabel) {
+export function createApplicationSummary(mutation, clientMutationLabel) {
   // const mutation = formatMutation(
   //   "createWorkforceApplicationSummary",
   //   formatApplicationSummaryGQL(applicationSummary),
@@ -2099,7 +2099,7 @@ export function createApplicationSummary(mutation,clientMutationLabel) {
     }
   );
 }
-export function updateApplicationSummary(applicationSummary,clientMutationLabel) {
+export function updateApplicationSummary(applicationSummary, clientMutationLabel) {
   const mutation = formatMutation(
     "updateWorkforceApplicationSummary",
     formatApplicationSummaryGQL(applicationSummary),
@@ -2188,7 +2188,7 @@ export function fetchOrganizationEmployeeDesignation(mm, clientMutationId) {
   return graphql(payload, "WORKFORCE_ORGANIZATION_BY_DESIGNATION_MUTATION_ID");
 }
 
-export function fetchWorkforceEmployeeDesignation(mm,filters) {
+export function fetchWorkforceEmployeeDesignation(mm, filters) {
   const projections = [
     "id",
     "joinDate",
@@ -2209,7 +2209,7 @@ export function fetchWorkforceEmployeeDesignation(mm,filters) {
   );
   return graphql(payload, "WORKFORCE_EMPLOYEE_DESIGNATIONS");
 }
-export function  fetchWorkforceUnitsWithEmployeeDesignation(filters) {
+export function fetchWorkforceUnitsWithEmployeeDesignation(filters) {
   const projections = [
     "id",
     "nameBn",
@@ -2230,4 +2230,19 @@ export function verifyNid(mm, clientMutationId) {
 }
 `;
   return graphql(payload, "WORKFORCE_VERIFY_NID");
+}
+
+export function fetchWorkforceApplicationStatusCount() {
+  const payload = `query{
+  pending: workforceApplication(status:"pending"){
+    totalCount
+  }
+  rejected:workforceApplication(status:"rejected"){
+    totalCount
+  }
+  approved:workforceApplication(status:"approved_by_dg"){
+    totalCount
+  }
+}`
+  return graphql(payload, "WORKFORCE_APPLICATION_STATUS_COUNT");
 }

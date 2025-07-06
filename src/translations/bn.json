@@ -274,6 +274,7 @@
     "workforce.application.reverted":"প্রত্যাবর্তিত আবেদন",
     "workforce.application.draft":"খসড়া আবেদনসমূহ",
     "workforce.application.status":"আবেদনের অবস্থা",
+    "workforce.application.draft_applications":"অসমাপ্ত আবেদন",
     "workforce.application.steps.taken":"গৃহীত ব্যবস্থা",
     "workforce.application.filed":"দাখিলকৃত আবেদনসমূহ",
     "workforce.new.application":"নতুন আবেদন",

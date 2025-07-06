@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { Box, Badge, Typography, Tooltip } from "@material-ui/core";
-import MailIcon from "@material-ui/icons/Mail";
 import RestorePageIcon from '@material-ui/icons/RestorePage';
 import HourglassEmptyIcon from "@material-ui/icons/HourglassEmpty";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import { getUserType } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
+import { fetchWorkforceApplicationStatusCount } from "../../actions";
+import { useDispatch, useSelector } from "react-redux";
 
 const styles = (theme) => ({
   root: {
@@ -30,16 +30,29 @@ const styles = (theme) => ({
 });
 
 const NotificationBar = ({ classes }) => {
-    const data = {
-        pending: 10,
-        inProgress: 2,
-        verified: 20,
-        checked: 4,
-      }
-      const user_type = getUserType();
 
+  const user_type = getUserType();
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    return dispatch(
+      fetchWorkforceApplicationStatusCount()
+    );
+  }, []);
+  const status_count = useSelector(
+    (state) => state.workforce[`workforceApplicationStatusCount`]
+  );
+
+  const data = {
+    pending: status_count?.pending?.totalCount || 0,
+    rejected: status_count?.rejected?.totalCount || 0,
+    approved: status_count?.approved?.totalCount || 0,
+    checked: 4,
+  }
+  console.clear();
+  console.log(data)
   if (user_type === WORKFORCE_USER_TYPE.APPLICANT) {
-    return ( <></>)
+    return (<></>)
   }
 
   return (
@@ -57,7 +70,7 @@ const NotificationBar = ({ classes }) => {
       {/* In Progress */}
       <Tooltip title="Rejected Applications">
         <Box className={classes.item}>
-          <Badge badgeContent={data.inProgress || 0} color="primary">
+          <Badge badgeContent={data.rejected || 0} color="primary">
             <RestorePageIcon color="white" />
           </Badge>
           <Typography className={classes.label}>Rejected</Typography>
@@ -67,20 +80,10 @@ const NotificationBar = ({ classes }) => {
       {/* Verified */}
       <Tooltip title="Verified Applications">
         <Box className={classes.item}>
-          <Badge badgeContent={data.verified || 0} color="primary">
+          <Badge badgeContent={data.approved || 0} color="primary">
             <VerifiedUserIcon style={{ color: "#4caf50" }} />
           </Badge>
-          <Typography className={classes.label}>Verified</Typography>
-        </Box>
-      </Tooltip>
-
-      {/* Checked */}
-      <Tooltip title="Checked Applications">
-        <Box className={classes.item}>
-          <Badge badgeContent={data.checked || 0} color="primary">
-            <CheckCircleIcon style={{ color: "#ff9800" }} />
-          </Badge>
-          <Typography className={classes.label}>Checked</Typography>
+          <Typography className={classes.label}>Approved</Typography>
         </Box>
       </Tooltip>
     </Box>

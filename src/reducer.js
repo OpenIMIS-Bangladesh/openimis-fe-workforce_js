@@ -226,7 +226,7 @@ function reducer(
     fetchedUnitWiseDesignationData: false,
     errorUnitWiseDesignationData: null,
     unitWiseDesignationData: null,
-    
+
     fetchingWorkforceEmployeeDesignation: false,
     fetchedWorkforceEmployeeDesignation: false,
     errorWorkforceEmployeeDesignation: null,
@@ -292,7 +292,7 @@ function reducer(
     fetchedApplication: false,
     application: null,
     applicationPageInfo: { totalCount: 0 },
-    
+
     ////Application states
     fetchingApplications: false,
     errorApplications: null,
@@ -320,7 +320,7 @@ function reducer(
     applicationMovementPageInfo: { totalCount: 0 },
 
     ////Application summary states
-   
+
 
     fetchingApplicationSummary: false,
     errorApplicationSummary: null,
@@ -329,7 +329,9 @@ function reducer(
     applicationSummaryPageInfo: { totalCount: 0 },
 
     ////workforce otp id ///
-    workforceOtpId:"",
+    workforceOtpId: "",
+
+    workforceApplicationStatusCount: {}
   },
   action
 ) {
@@ -370,18 +372,18 @@ function reducer(
         errorOrganization: null,
       };
     case "WORKFORCE_ORGANIZATION_RESP":
-        return {
-          ...state,
-          fetchingOrganization: false,
-          fetchedOrganization: true,
-          organization: parseData(action.payload.data.workforceOrganizations).map(
-            (Organization) => ({
-              ...Organization,
-              id: decodeId(Organization.id),
-            })
-          )?.[0],
-          errorOrganization: formatGraphQLError(action.payload),
-        };
+      return {
+        ...state,
+        fetchingOrganization: false,
+        fetchedOrganization: true,
+        organization: parseData(action.payload.data.workforceOrganizations).map(
+          (Organization) => ({
+            ...Organization,
+            id: decodeId(Organization.id),
+          })
+        )?.[0],
+        errorOrganization: formatGraphQLError(action.payload),
+      };
 
     case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATIONS_REQ":
       return {
@@ -431,12 +433,12 @@ function reducer(
         errorOrganizationsPick: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATIONS_PICKER_ERR":
-        return {
-          ...state,
-          fetching: false,
-          errorOrganizationsPick: formatServerError(action.payload),
-        };
-  
+      return {
+        ...state,
+        fetching: false,
+        errorOrganizationsPick: formatServerError(action.payload),
+      };
+
     case "WORKFORCE_DOCUMENT_TYPE_REQ":
       return {
         ...state,
@@ -456,12 +458,12 @@ function reducer(
         errorDocumentType: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_DOCUMENT_TYPE_ERR":
-        return {
-          ...state,
-          fetching: false,
-          errorDocumentType: formatServerError(action.payload),
-        };
-  
+      return {
+        ...state,
+        fetching: false,
+        errorDocumentType: formatServerError(action.payload),
+      };
+
     case "WORKFORCE_BANKS_PICKER_REQ":
       return {
         ...state,
@@ -481,12 +483,12 @@ function reducer(
         errorBanksPick: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_BANKS_PICKER_ERR":
-        return {
-          ...state,
-          fetching: false,
-          errorBanksPick: formatServerError(action.payload),
-        };
-  
+      return {
+        ...state,
+        fetching: false,
+        errorBanksPick: formatServerError(action.payload),
+      };
+
 
     case "WORKFORCE_OTP_REQ":
       return {
@@ -507,12 +509,12 @@ function reducer(
         errorWorkforceOtp: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_OTP_ERR":
-        return {
-          ...state,
-          fetching: false,
-          errorWorkforceOtp: formatServerError(action.payload),
-        };
-  
+      return {
+        ...state,
+        fetching: false,
+        errorWorkforceOtp: formatServerError(action.payload),
+      };
+
     case "WORKFORCE_BRANCH_PICKER_REQ":
       return {
         ...state,
@@ -532,13 +534,13 @@ function reducer(
         erroBranchPick: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_BRANCH_PICKER_ERR":
-        return {
-          ...state,
-          fetching: false,
-          errorBranchPick: formatServerError(action.payload),
-        };
-  
-    
+      return {
+        ...state,
+        fetching: false,
+        errorBranchPick: formatServerError(action.payload),
+      };
+
+
     case "WORKFORCE_ORGANIZATION_UNITS_PICKER_REQ":
       return {
         ...state,
@@ -581,7 +583,7 @@ function reducer(
         }))?.[0],
         errorUnitDesignation: formatGraphQLError(action.payload),
       };
-    
+
     case "WORKFORCE_ORGANIZATION_UNIT_REQ":
       return {
         ...state,
@@ -659,7 +661,7 @@ function reducer(
         fetching: false,
         error: formatServerError(action.payload),
       };
-    
+
     case "WORKFORCE_ORGANIZATION_EMPLOYEES_REQ":
       return {
         ...state,
@@ -688,7 +690,7 @@ function reducer(
         fetching: false,
         error: formatServerError(action.payload),
       };
-    
+
     case "WORKFORCE_ORGANIZATION_EMPLOYEE_REQ":
       return {
         ...state,
@@ -816,7 +818,7 @@ function reducer(
       };
 
 
-       //employee accident //
+    //employee accident //
     case "WORKFORCE_EMPLOYEE_ACCIDENT_REQ":
       return {
         ...state,
@@ -867,8 +869,8 @@ function reducer(
         fetching: false,
         error: formatServerError(action.payload),
       };
-   
-       //employee account //
+
+    //employee account //
     case "WORKFORCE_EMPLOYEE_ACCOUNT_REQ":
       return {
         ...state,
@@ -919,8 +921,8 @@ function reducer(
         fetching: false,
         error: formatServerError(action.payload),
       };
-   
-   
+
+
     ////workforce organization employee designation////
     case "WORKFORCE_ORGANIZATIONS_EMPLOYEE_DESIGNATIONS_REQ":
       return {
@@ -1350,7 +1352,7 @@ function reducer(
     case "WORKFORCE_VERIFY_NID_RESP":
       return {
         ...state,
-        verifyNidDetails:action.payload.data.workforceNidVerification,
+        verifyNidDetails: action.payload.data.workforceNidVerification,
       };
 
     /// bank actions////
@@ -1378,30 +1380,30 @@ function reducer(
         fetching: false,
         error: formatServerError(action.payload),
       };
-    
+
     case "WORKFORCE_BANK_REQ":
-        return {
-          ...state,
-          fetchingBank: true,
-          fetchedBank: false,
-          bank: null,
-          errorBank: null,
-        };
+      return {
+        ...state,
+        fetchingBank: true,
+        fetchedBank: false,
+        bank: null,
+        errorBank: null,
+      };
     case "WORKFORCE_BANK_RESP":
-          return {
-            ...state,
-            fetchingBank: false,
-            fetchedBank: true,
-            bank: parseData(action.payload.data.banks).map(
-              (bank) => ({
-                ...bank,
-                id: decodeId(bank.id),
-              })
-            )?.[0],
-            errorBank: formatGraphQLError(action.payload),
-          };
-  
-            /// Application actions////
+      return {
+        ...state,
+        fetchingBank: false,
+        fetchedBank: true,
+        bank: parseData(action.payload.data.banks).map(
+          (bank) => ({
+            ...bank,
+            id: decodeId(bank.id),
+          })
+        )?.[0],
+        errorBank: formatGraphQLError(action.payload),
+      };
+
+    /// Application actions////
     case "WORKFORCE_APPLICATIONS_REQ":
       return {
         ...state,
@@ -1451,30 +1453,30 @@ function reducer(
         fetching: false,
         error: formatServerError(action.payload),
       };
-    
-    case "WORKFORCE_APPLICATION_REQ":
-        return {
-          ...state,
-          fetchingApplication: true,
-          fetchedApplication: false,
-          application: null,
-          errorApplication: null,
-        };
-    case "WORKFORCE_APPLICATION_RESP":
-          return {
-            ...state,
-            fetchingApplication: false,
-            fetchedApplication: true,
-            application: parseData(action.payload.data.workforceApplication).map(
-              (application) => ({
-                ...application,
-                id: decodeId(application.id),
-              })
-            )?.[0],
-            errorApplication: formatGraphQLError(action.payload),
-          };
 
-            /// Application movement actions////
+    case "WORKFORCE_APPLICATION_REQ":
+      return {
+        ...state,
+        fetchingApplication: true,
+        fetchedApplication: false,
+        application: null,
+        errorApplication: null,
+      };
+    case "WORKFORCE_APPLICATION_RESP":
+      return {
+        ...state,
+        fetchingApplication: false,
+        fetchedApplication: true,
+        application: parseData(action.payload.data.workforceApplication).map(
+          (application) => ({
+            ...application,
+            id: decodeId(application.id),
+          })
+        )?.[0],
+        errorApplication: formatGraphQLError(action.payload),
+      };
+
+    /// Application movement actions////
     case "WORKFORCE_APPLICATIONS_MOVEMENT_REQ":
       return {
         ...state,
@@ -1499,52 +1501,52 @@ function reducer(
         fetching: false,
         error: formatServerError(action.payload),
       };
-    
+
     case "WORKFORCE_APPLICATION_MOVEMENT_REQ":
-        return {
-          ...state,
-          fetchingApplicationMovement: true,
-          fetchedApplicationMovement: false,
-          applicationMovement: null,
-          errorApplication: null,
-        };
+      return {
+        ...state,
+        fetchingApplicationMovement: true,
+        fetchedApplicationMovement: false,
+        applicationMovement: null,
+        errorApplication: null,
+      };
     case "WORKFORCE_APPLICATION_MOVEMENT_RESP":
-          return {
-            ...state,
-            fetchingApplicationMovement: false,
-            fetchedApplicationMovement: true,
-            applicationMovement: parseData(action.payload.data.workforceApplicationMovement).map(
-              (application) => ({
-                ...application,
-                id: decodeId(application.id),
-              })
-            )?.[0],
-            errorApplication: formatGraphQLError(action.payload),
-          };
- 
-          /// Application summary actions////
-    
+      return {
+        ...state,
+        fetchingApplicationMovement: false,
+        fetchedApplicationMovement: true,
+        applicationMovement: parseData(action.payload.data.workforceApplicationMovement).map(
+          (application) => ({
+            ...application,
+            id: decodeId(application.id),
+          })
+        )?.[0],
+        errorApplication: formatGraphQLError(action.payload),
+      };
+
+    /// Application summary actions////
+
     case "WORKFORCE_APPLICATION_SUMMARY_REQ":
-        return {
-          ...state,
-          fetchingApplicationSummary: true,
-          fetchedApplicationSummary: false,
-          applicationSummary: null,
-          applicationSummaryPageInfo: null,
-        };
+      return {
+        ...state,
+        fetchingApplicationSummary: true,
+        fetchedApplicationSummary: false,
+        applicationSummary: null,
+        applicationSummaryPageInfo: null,
+      };
     case "WORKFORCE_APPLICATION_SUMMARY_RESP":
-          return {
-            ...state,
-            fetchingApplicationSummary: false,
-            fetchedApplicationSummary: true,
-            applicationSummaryPageInfo: parseData(action.payload.data.workforceApplicationSummary).map(
-              (application) => ({
-                ...application,
-                id: decodeId(application.id),
-              })
-            )?.[0],
-            errorApplicationSummary: formatGraphQLError(action.payload),
-          };
+      return {
+        ...state,
+        fetchingApplicationSummary: false,
+        fetchedApplicationSummary: true,
+        applicationSummaryPageInfo: parseData(action.payload.data.workforceApplicationSummary).map(
+          (application) => ({
+            ...application,
+            id: decodeId(application.id),
+          })
+        )?.[0],
+        errorApplicationSummary: formatGraphQLError(action.payload),
+      };
 
 
     case "ORG_UNIT_CREATE_RESP":
@@ -1581,6 +1583,11 @@ function reducer(
         errorGrievanceConfig: formatGraphQLError(action.payload),
         grievanceConfig: null,
       };
+    case "WORKFORCE_APPLICATION_STATUS_COUNT_RESP":
+      return {
+        ...state,
+        workforceApplicationStatusCount: action.payload.data,
+      };
     case REQUEST(ACTION_TYPE.MUTATION):
       return dispatchMutationReq(state, action);
     case ERROR(ACTION_TYPE.MUTATION):
@@ -1605,7 +1612,7 @@ function reducer(
     case "OTP_MUTATION_ERR":
       return dispatchMutationErr(state, action);
     case "OTP_CREATE_OTP_RESP":
-      return dispatchMutationResp(state,"createWorkforceOtp",action);
+      return dispatchMutationResp(state, "createWorkforceOtp", action);
     case "OTP_UPDATE_OTP_RESP":
       return dispatchMutationResp(state, "updateOtp", action);
 
@@ -1615,7 +1622,7 @@ function reducer(
     case "USER_MUTATION_ERR":
       return dispatchMutationErr(state, action);
     case "USER_CREATE_USER_RESP":
-      return dispatchMutationResp(state,"createWorkforceUser",action);
+      return dispatchMutationResp(state, "createWorkforceUser", action);
     case "USER_UPDATE_USER_RESP":
       return dispatchMutationResp(state, "updateUser", action);
 
@@ -1625,10 +1632,10 @@ function reducer(
     case "DOCUMENT_MUTATION_ERR":
       return dispatchMutationErr(state, action);
     case "DOCUMENT_CREATE_DOCUMENT_RESP":
-      return dispatchMutationResp(state,"createWorkforceDocument",action);
+      return dispatchMutationResp(state, "createWorkforceDocument", action);
     case "DOCUMENT_UPDATE_DOCUMENT_RESP":
       return dispatchMutationResp(state, "updateWorkforceDocument", action);
-    
+
     case "COMPANY_STATUS_MUTATION_REQ": {
       return dispatchMutationReq(state, action);
     }
@@ -1739,7 +1746,7 @@ function reducer(
     case "EMPLOYEE_DEPENDENT_UPDATE_EMPLOYEE_DEPENDENT_RESP":
       return dispatchMutationResp(state, "updateBank", action);
 
-    case "EMPLOYEE_SERVICE_MUTATION_REQ": 
+    case "EMPLOYEE_SERVICE_MUTATION_REQ":
       return dispatchMutationReq(state, action);
     case "EMPLOYEE_SERVICE_MUTATION_ERR":
       return dispatchMutationErr(state, action);
