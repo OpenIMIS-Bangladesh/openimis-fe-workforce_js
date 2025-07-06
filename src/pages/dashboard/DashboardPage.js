@@ -176,7 +176,7 @@ const DashboardPage = () => {
                     <StyledBadge onClick={() => history.push("workforce/applications/process?status=rejected")} badgeContent={application_status_count?.rejected || 0} color="error"><span>Rejected</span></StyledBadge>
                   </Button>
                   <Button backgroundColor="transparent" border="1px solid" style={{ color: "white", padding: 0, minWidth: 'auto' }}>
-                    <StyledBadge onClick={() => history.push("workforce/applications/process?status=approved")} badgeContent={application_status_count?.approved || 0} color="primary"><span>Verified</span></StyledBadge>
+                    <StyledBadge onClick={() => history.push("workforce/applications/process?status=approved")} badgeContent={application_status_count?.approved || 0} color="primary"><span>Approved</span></StyledBadge>
                   </Button>
                 </div>
               </div>
