@@ -267,6 +267,7 @@
     "workforce.application.process.disability": "অক্ষমতা",
     "workforce.application.process.pending": "অপেক্ষমান",
     "workforce.application.process.approved": "অনুমোদিত",
+    "workforce.application.process.rejected": "বাতিলকৃত",
 
     "workforce.application.id":"অ্যাপ্লিকেশন আইডি",
     "workforce.application.date":"আবেদনের তারিখ",

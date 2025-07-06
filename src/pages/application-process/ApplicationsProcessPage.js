@@ -69,6 +69,9 @@ class ApplicationsProcessPage extends Component {
         case 'approved':
           this.setState({ value: 2 });
           break;
+        case 'rejected':
+          this.setState({ value: 3 });
+          break;
         default:
           this.setState({ value: 0 });
       }
@@ -115,6 +118,9 @@ class ApplicationsProcessPage extends Component {
     const pendingSummaries = summaryData.filter(item =>
       item.status === "forward_to_director" || item.status === "approved_by_director"
     );
+    const rejectedSummaries = summaryData.filter(item =>
+      item.status === "rejected"
+    );
 
     const allSummaries = summaryData.filter(item =>
       item.status === "forward_to_director" || item.status === "approved_by_director" || item.status === "approved_by_dg"
@@ -124,6 +130,9 @@ class ApplicationsProcessPage extends Component {
     );
     const pendingSummariesDirector = summaryData.filter(item =>
       item.status === "forward_to_director"
+    );
+    const rejectedSummariesDirector = summaryData.filter(item =>
+      item.status === "rejected"
     );
 
     const allSummariesDirector = summaryData.filter(item =>
@@ -145,6 +154,10 @@ class ApplicationsProcessPage extends Component {
             <Tab
               label={<FormattedMessage module="workforce" id="workforce.application.process.approved" />}
               {...this.a11yProps(2)}
+            />
+              <Tab
+              label={<FormattedMessage module="workforce" id="workforce.application.process.rejected" />}
+              {...this.a11yProps(3)}
             />
           </Tabs>
         </AppBar>
@@ -276,6 +289,48 @@ class ApplicationsProcessPage extends Component {
                 userRights={rights}
               />
             </TabPanel>
+
+            <TabPanel value={value} index={3}>
+              {rejectedSummaries.map((item, index) => (
+                <Accordion
+                  key={index}
+                  expanded={this.state.expanded === item.id}
+                  onChange={this.handleAccordionChange(item.id)}
+                  className={classes.accordion}
+                >
+                  <AccordionSummary
+                    className={classes.accordionSummary}
+                    expandIcon={<ExpandMoreIcon className="material-icons" />}
+                  >
+                    <Typography variant="subtitle1" style={{ flex: 1 }}>
+                      <strong>{item.name}</strong>
+                    </Typography>
+                    <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
+                      {item.meetingDate} | {item.month} {item.year}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails className={classes.accordionDetails}>
+                    <Card style={{ width: "100%" }}>
+                      <CardContent>
+                        {this.state.expanded === item.id && (
+                          <ApplicationProcessSearcher
+                            summaryId={item.id}
+                            cacheFiltersKey="rejected"
+                            onDoubleClick={this.onDoubleClick}
+                          />
+                        )}
+                      </CardContent>
+                    </Card>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+              <GenerateBFTN
+                open={openGenerateBFTN}
+                onClose={this.handleCloseBFTN}
+                applications={applications}
+                userRights={rights}
+              />
+            </TabPanel>
           </>
         ) : (
           // Else part: Blank or fallback UI
@@ -390,6 +445,48 @@ class ApplicationsProcessPage extends Component {
                           <ApplicationProcessSearcher
                             summaryId={item.id}
                             cacheFiltersKey="approved"
+                            onDoubleClick={this.onDoubleClick}
+                          />
+                        )}
+                      </CardContent>
+                    </Card>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+              <GenerateBFTN
+                open={openGenerateBFTN}
+                onClose={this.handleCloseBFTN}
+                applications={applications}
+                userRights={rights}
+              />
+            </TabPanel>
+
+            <TabPanel value={value} index={3}>
+              {rejectedSummariesDirector.map((item, index) => (
+                <Accordion
+                  key={index}
+                  expanded={this.state.expanded === item.id}
+                  onChange={this.handleAccordionChange(item.id)}
+                  className={classes.accordion}
+                >
+                  <AccordionSummary
+                    className={classes.accordionSummary}
+                    expandIcon={<ExpandMoreIcon className="material-icons" />}
+                  >
+                    <Typography variant="subtitle1" style={{ flex: 1 }}>
+                      <strong>{item.name}</strong>
+                    </Typography>
+                    <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
+                      {item.meetingDate} | {item.month} {item.year}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails className={classes.accordionDetails}>
+                    <Card style={{ width: "100%" }}>
+                      <CardContent>
+                        {this.state.expanded === item.id && (
+                          <ApplicationProcessSearcher
+                            summaryId={item.id}
+                            cacheFiltersKey="rejected"
                             onDoubleClick={this.onDoubleClick}
                           />
                         )}
