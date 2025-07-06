@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ScholarshipApplicationCheckbox = ({ modulesManager,onSelect,selectedScholarshipOption, setSelectedScholarshipOption }) => {
+const ScholarshipApplicationCheckbox = ({ modulesManager,handleChange,selectedScholarshipOption, setSelectedScholarshipOption }) => {
   const { formatMessage } = useTranslations(
       "core.RegistrationPage",
       modulesManager,
@@ -35,6 +35,7 @@ const ScholarshipApplicationCheckbox = ({ modulesManager,onSelect,selectedSchola
   const handleselectedScholarshipOptionChange = (event) => {
     const value = event.target.value;
     setSelectedScholarshipOption(value);
+    handleChange("scholarshipFor",value)
     // onSelect(selectedApplicationType, value); // Pass both selections
   };
 

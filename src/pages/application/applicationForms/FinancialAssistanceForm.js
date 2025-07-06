@@ -36,6 +36,7 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReason from "../FormsComponents/FinancialAssistance/ApplicationReason";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
+import { safeApplicationId } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -343,7 +344,8 @@ const FinancialAssistanceForm = ({
       };
     } else {
       const updateApplicationData = {
-              id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+              // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+              id: safeApplicationId(applicationId, parsedApplicationData),
               workforceEmployeeId: formData?.workforceEmployee.id ||parsedApplicationData?.workforceEmployee?.id,
               company: formData.company,
               factory: formData.factory,
@@ -390,7 +392,8 @@ const FinancialAssistanceForm = ({
 
   const handleSubmit = () => {
      const updateApplicationData = {
-              id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+              // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+              id: safeApplicationId(applicationId, parsedApplicationData),
               workforceEmployeeId: formData?.workforceEmployee.id ||parsedApplicationData?.workforceEmployee?.id,
               company: formData.company,
               factory: formData.factory,

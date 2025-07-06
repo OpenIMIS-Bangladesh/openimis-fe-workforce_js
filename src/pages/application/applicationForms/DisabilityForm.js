@@ -35,6 +35,7 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReasonForDisability from "../FormsComponents/Disability/ApplicationReasonForDisability";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
+import { safeApplicationId } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -276,7 +277,7 @@ const DisabilityForm = ({
         presentLocation: formData?.workforceEmployee?.presentLocation,
         permanentLocation: formData?.workforceEmployee?.permanentLocation,
         id: formData?.workforceEmployee?.id,
-      };;
+      };
       console.log("Update Submitting formData:", formData);
       if (workforceEmployeeData?.id) {
               await dispatch(
@@ -362,7 +363,8 @@ const DisabilityForm = ({
       }
     } else {
       const updateApplicationData = {
-        id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+        // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+        id: safeApplicationId(applicationId, parsedApplicationData),
         workforceEmployeeId:
           formData?.workforceEmployee.id ||
           parsedApplicationData?.workforceEmployee?.id,
@@ -396,7 +398,8 @@ const DisabilityForm = ({
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
     const updateApplicationData = {
-      id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+      // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+      id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId:
         formData?.workforceEmployee.id ||
         parsedApplicationData?.workforceEmployee?.id,

@@ -60,7 +60,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                 <TextInput
                   label="workforce.child.name.en"
                   value={formData.nameEn || ""}
-                  onChange={(v) => handleChange("nameEn", v,"employeeChildrenInfo")}
+                  onChange={(v) => handleChange("nameEn", v)}
                   required
                   readOnly={false}
                 />
@@ -69,7 +69,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                 <TextInput
                   label="workforce.child.name.bn"
                   value={formData.nameBn || ""}
-                  onChange={(v) => handleChange("nameBn", v,"employeeChildrenInfo")}
+                  onChange={(v) => handleChange("nameBn", v)}
                   required
                   readOnly={false}
                 />
@@ -79,7 +79,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                   pubRef="core.DatePicker"
                   label={"workforce.employee.birthdate"}
                   value={formData.birthDate || ""}
-                  onChange={(v) => handleChange("birthDate", v,"employeeChildrenInfo")}
+                  onChange={(v) => handleChange("birthDate", v)}
                   readOnly={false}
                   required
                 />
@@ -88,7 +88,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                 <TextInput
                   label="workforce.application.employee.children.educationInstituteName"
                   value={formData.educationInstituteName || ""}
-                  onChange={(v) => handleChange("educationInstituteName", v,"employeeChildrenInfo")}
+                  onChange={(v) => handleChange("educationInstituteName", v)}
                   readOnly={false}
                   required
                 />
@@ -97,7 +97,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                 <TextInput
                   label="workforce.application.employee.children.studyingClass"
                   value={formData.studyingClass || ""}
-                  onChange={(v) => handleChange("studyingClass", v,"employeeChildrenInfo")}
+                  onChange={(v) => handleChange("studyingClass", v)}
                   readOnly={false}
                   required
                 />
@@ -106,7 +106,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                 <TextInput
                   label="workforce.application.employee.children.result"
                   value={formData.result || ""}
-                  onChange={(v) => handleChange("result", v,"employeeChildrenInfo")}
+                  onChange={(v) => handleChange("result", v)}
                   readOnly={false}
                   
                 />
@@ -115,7 +115,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                 <TextInput
                   label="workforce.application.employee.children.nidOrBirthRegistry"
                   value={formData.nid || ""}
-                  onChange={(v) => handleChange("nid", v,"employeeChildrenInfo")}
+                  onChange={(v) => handleChange("nid", v)}
                   type={"number"}
                   readOnly={false}
                   required

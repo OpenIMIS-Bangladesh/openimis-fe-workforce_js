@@ -1,6 +1,12 @@
 import { useSelector } from "react-redux";
 import { WORKFORCE_USER_TYPE } from "../constants";
 import { fetchApplication } from "../actions";
+import {
+  useModulesManager,
+  formatMutation,
+  decodeId,
+  FormattedMessage,
+} from "@openimis/fe-core";
 
 export function isBase64Encoded(str) {
   // Base64 encoded strings can only contain characters from [A-Za-z0-9+/=]
@@ -11,6 +17,19 @@ export function isBase64Encoded(str) {
 export function isEmptyObject(obj) {
   return Object.keys(obj).length === 0;
 }
+
+export const safeApplicationId = (applicationId, parsedApplicationData) => {
+    console.clear();
+    console.log("applicationId", applicationId);
+    console.log("parsedApplicationData", parsedApplicationData);
+    if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
+      return decodeId(applicationId[0].id);
+    } else if (parsedApplicationData && parsedApplicationData.id) {
+      return parsedApplicationData.id;
+    } else {
+      return null;
+    }
+  };
 
 export function getUserType() {
   const reduxState = useSelector((state) => state);
