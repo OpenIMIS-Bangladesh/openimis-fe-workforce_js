@@ -109,8 +109,8 @@ class BanksSearcher extends Component {
   };
 
   bankHeaders = () => [
-    "workforce.banks.nameEn",
-    "workforce.banks.address",
+    "Bank Name",
+    "Bank Address",
     this.isShowHistory() ? "workforce.version" : "",
   ];
   branchHeaders = () => [

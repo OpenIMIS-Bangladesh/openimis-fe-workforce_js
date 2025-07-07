@@ -87,24 +87,28 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
               <FormControlLabel
                 value="medicalAssistance"
                 control={<Radio color="primary" />}
-                label={ <FormattedMessage id="workforce.application.type.medical.assistance" module="workforce"/>}
-              />
-              <FormControlLabel
-                value="financialAssistance"
-                control={<Radio color="primary" />}
-                label={<FormattedMessage id="workforce.application.type.financial.assistance" module="workforce"/>}
-              />
-              <FormControlLabel
-                value="disabilityAssistance"
-                control={<Radio color="primary" />}
-                label={<FormattedMessage id="workforce.application.type.medical.disability" module="workforce"/>}
+                label={<FormattedMessage id="workforce.application.type.medical.donation" module="workforce" />}
               />
               <FormControlLabel
                 value="scholarship"
                 control={<Radio color="primary" />}
-                label={<FormattedMessage id="workforce.application.type.scholarship" module="workforce"/>}
+                label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce"/>}
               />
-              
+              <FormControlLabel
+                value="financialAssistance"
+                control={<Radio color="primary" />}
+                label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce"/>}
+              />
+              <FormControlLabel
+                value="maternalGrant"
+                control={<Radio color="primary" />}
+                label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce"/>}
+              />
+               <FormControlLabel
+                value="disabilityAssistance"
+                control={<Radio color="primary" />}
+                label={<FormattedMessage id="workforce.application.type.medical.disability" module="workforce"/>}
+              />
             </RadioGroup>
           </>
         ) : isExportOriented === "no" ? (

@@ -10,9 +10,10 @@ import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import { useDispatch } from 'react-redux'
 import {
-  formatGQLString, decodeId,
+  formatGQLString, decodeId,FormattedMessage
 } from "@openimis/fe-core";
 import { createWorkforceDocument } from "../actions";
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 
 const useStyles = makeStyles((theme) => ({
   dropzone: {
@@ -152,14 +153,27 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) =
 
   return (
     <div>
-      <Paper {...getRootProps()} className={classes.dropzone}>
-        <input {...getInputProps()} />
-        <CloudUploadIcon className={classes.uploadIcon} />
-        <Typography variant="body2">Drag & Drop or Click to Upload</Typography>
-        <Button variant="contained" color="primary" className={classes.button}>
-          Select Files
-        </Button>
-      </Paper>
+     <Paper {...getRootProps()} className={classes.dropzone}>
+      <input {...getInputProps()} />
+      <Box display="flex" alignItems="center" justifyContent="center" style={{ gap: '24px' }}>
+        {/* Upload Option */}
+        <Box display="flex" alignItems="center" style={{ gap: '8px' }}>
+          <CloudUploadIcon className={classes.uploadIcon} />
+          <FormattedMessage module="workforce" id="workforce.application.steps.upload">
+            {(msg) => <Typography variant="body2">{msg}</Typography>}
+          </FormattedMessage>
+        </Box>
+
+        {/* Instant Capture Option */}
+        <Box display="flex" alignItems="center" style={{ gap: '8px', cursor: 'pointer' }}>
+          <PhotoCameraIcon color="action" />
+          <FormattedMessage module="workforce" id="workforce.application.steps.capture">
+            {(msg) => <Typography variant="body2">{msg}</Typography>}
+          </FormattedMessage>
+        </Box>
+      </Box>
+    </Paper>
+
 
       {files.length > 0 && (
         <Paper className={classes.fileList}>
