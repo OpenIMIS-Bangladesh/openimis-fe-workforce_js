@@ -326,6 +326,8 @@ const DisabilityForm = ({
         workforceEmployeeId:
           formData?.workforceEmployee?.id ||
           parsedApplicationData?.workforceEmployee?.id,
+        organizationType: formData.organizationType,
+        applicationType: formData.applicationType,
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
       }
