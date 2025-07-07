@@ -129,7 +129,7 @@ const EmployeeDetailsForm2 = ({
                   readOnly={false}
                 />
               </Grid> */}
-              <Grid item xs={6} className={classes.item}>
+              {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.nid_or_birth_certificate"
                   value={
@@ -141,40 +141,16 @@ const EmployeeDetailsForm2 = ({
                   inputProps={{ maxLength: 17 }}
                   onChange={(v) => {
                     handleChange("nid", v, "workforceEmployee")
-                    // const numericValue = String(v).trim();
-
-                    // if (numericValue.length === 10) {
-                    //   handleChange("nid", numericValue, "workforceEmployee");
-                    //   handleChange(
-                    //     "birthCertificateNo",
-                    //     "",
-                    //     "workforceEmployee"
-                    //   );
-                    // } else if (numericValue.length === 17) {
-                    //   handleChange(
-                    //     "birthCertificateNo",
-                    //     numericValue,
-                    //     "workforceEmployee"
-                    //   );
-                    //   handleChange("nid", "", "workforceEmployee");
-                    // } else {
-                    //   // Clear both if input is neither 10 nor 17 digits
-                    //   handleChange("nid", "", "workforceEmployee");
-                    //   handleChange(
-                    //     "birthCertificateNo",
-                    //     "",
-                    //     "workforceEmployee"
-                    //   );
-                    // }
+                  
                   }}
                   type="number"
                   required
                   readOnly={false}
                 />
-              </Grid>
+              </Grid> */}
 
               {data.map((document, index) => (
-                <Grid item xs={6} className={classes.item} key={document.fieldId}>
+                <Grid item xs={12} className={classes.item} key={document.fieldId}>
                   <Typography>আপলোড {document.nameBn} </Typography>
                   <FileUploader
                     fieldKey={document.fieldId}
@@ -191,7 +167,7 @@ const EmployeeDetailsForm2 = ({
                   onFileChange={handleChange}
                 />
               </Grid> */}
-              <Grid item xs={6} className={classes.item}>
+              {/* <Grid item xs={12} className={classes.item}>
                 <CompanyPicker
                   value={formData?.company?.id}
                   label={
@@ -207,9 +183,9 @@ const EmployeeDetailsForm2 = ({
                   }}
                   readOnly={false}
                 />
-              </Grid>
-
-              <Grid item xs={6} className={classes.item}>
+              </Grid> */}
+{/* 
+              <Grid item xs={12} className={classes.item}>
                 <FactoryPicker
                   value={formData?.factory?.id}
                   label={
@@ -226,9 +202,9 @@ const EmployeeDetailsForm2 = ({
                   }}
                   readOnly={false}
                 />
-              </Grid>
+              </Grid> */}
 
-              {selectedApplicationType ===
+              {/* {selectedApplicationType ===
                 ("financialAssistance" || "disabilityAssistance") && (
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
@@ -240,9 +216,9 @@ const EmployeeDetailsForm2 = ({
                     readOnly={false}
                   />
                 </Grid>
-              )}
+              )} */}
 
-              <Grid item xs={6} className={classes.item}>
+              {/* <Grid item xs={12} className={classes.item}>
                 <PublishedComponent
                   pubRef="core.DatePicker"
                   label={"workforce.employee.joindate"}
@@ -252,7 +228,7 @@ const EmployeeDetailsForm2 = ({
                   }
                   readOnly={false}
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
             <Divider />
           </Paper>
