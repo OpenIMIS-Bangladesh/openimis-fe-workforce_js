@@ -59,7 +59,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.child.name.en"
-                  value={formData.nameEn || ""}
+                  value={formData?.employeeChildrenInfo?.nameEn || ""}
                   onChange={(v) => handleChange("nameEn", v)}
                   required
                   readOnly={false}
@@ -68,7 +68,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.child.name.bn"
-                  value={formData.nameBn || ""}
+                  value={formData?.employeeChildrenInfo?.nameBn || ""}
                   onChange={(v) => handleChange("nameBn", v)}
                   required
                   readOnly={false}
@@ -78,7 +78,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                 <PublishedComponent
                   pubRef="core.DatePicker"
                   label={"workforce.employee.birthdate"}
-                  value={formData.birthDate || ""}
+                  value={formData?.employeeChildrenInfo?.birthDate || ""}
                   onChange={(v) => handleChange("birthDate", v)}
                   readOnly={false}
                   required
@@ -87,7 +87,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.application.employee.children.educationInstituteName"
-                  value={formData.educationInstituteName || ""}
+                  value={formData?.employeeChildrenInfo?.educationInstituteName || ""}
                   onChange={(v) => handleChange("educationInstituteName", v)}
                   readOnly={false}
                   required
@@ -96,7 +96,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.application.employee.children.studyingClass"
-                  value={formData.studyingClass || ""}
+                  value={formData?.employeeChildrenInfo?.studyingClass || ""}
                   onChange={(v) => handleChange("studyingClass", v)}
                   readOnly={false}
                   required
@@ -105,7 +105,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.application.employee.children.result"
-                  value={formData.result || ""}
+                  value={formData?.employeeChildrenInfo?.result || ""}
                   onChange={(v) => handleChange("result", v)}
                   readOnly={false}
                   
@@ -114,7 +114,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
               <Grid item xs={12} className={classes.item}>
                 <TextInput
                   label="workforce.application.employee.children.nidOrBirthRegistry"
-                  value={formData.nid || ""}
+                  value={formData?.employeeChildrenInfo?.nid || ""}
                   onChange={(v) => handleChange("nid", v)}
                   type={"number"}
                   readOnly={false}

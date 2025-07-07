@@ -23,6 +23,7 @@ import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
+import { safeApplicationId } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -274,7 +275,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
       const applicationfor = { applyingfor: formData.metadata };
     } else {
       const updateApplicationData = {
-        id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+        id: safeApplicationId(applicationId, parsedApplicationData),
         workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
         company: formData.company,
         factory: formData.factory,
@@ -317,7 +318,8 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
 
   const handleSubmit = () => {
     const updateApplicationData = {
-      id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+      // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+      id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
       company: formData.company,
       factory: formData.factory,
@@ -346,6 +348,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
           handleChange={(key, value) => handleChange(key, value, "metadata")}
           setSelectedScholarshipOption={setSelectedScholarshipOption}
           selectedScholarshipOption={selectedScholarshipOption}
+          formData={formData}
         />
       ),
     },

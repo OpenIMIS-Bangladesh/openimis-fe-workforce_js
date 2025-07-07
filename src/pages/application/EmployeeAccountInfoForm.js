@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Box,
   Paper,
   Typography,
   Divider,
-  IconButton,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  MenuItem,
 } from "@material-ui/core";
-// import { TextInput } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   useTranslations,
@@ -17,91 +20,118 @@ import {
   FormattedMessage,
   PublishedComponent,
 } from "@openimis/fe-core";
-import { Save } from "@material-ui/icons";
 import BranchPicker from "../../pickers/BranchPicker";
+import MobileBankingPicker from "../../pickers/MobileBankingPicker";
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    // height: "100vh",
-  },
   paper: {
     padding: theme.spacing(2),
   },
-  buttonContainer: {
-    marginTop: theme.spacing(2),
-    display: "flex",
-    justifyContent: "space-between",
+  item: {
+    marginBottom: theme.spacing(2),
   },
 }));
+
+const mobileBankingOptions = ["Bkash", "Nagad", "Rocket"];
 
 const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
-  const { formatMessage } = useTranslations(
-    "core.RegistrationPage",
-    modulesManager
-  );
-  console.log("formData from accountInfo", formData);
+  const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
+
+  const accountType = formData?.employeeBankInfo?.accountType || "bank"; // 'bank' or 'mobile'
+
+  const handleAccountTypeChange = (event) => {
+    const value = event.target.value;
+    handleChange("accountType", value, "employeeBankInfo");
+
+    // Optionally reset fields on switch
+    if (value === "bank") {
+      handleChange("mobileBankingService", "", "employeeBankInfo");
+    }
+  };
 
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={0}>
-            <Box mb={4} textAlign="center" fontWeight="bold">
-              <FormattedMessage
-                id="workforce.application.header.account"
-                module="workforce"
-              />
+            <Box mb={2}>
+              <FormControl component="fieldset">
+                <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
+                  <FormattedMessage id="workforce.account.selection.type" defaultMessage="Select Account Type" />
+                </Typography>
+                <RadioGroup
+                  row
+                  value={accountType}
+                  onChange={handleAccountTypeChange}
+                >
+                  <FormControlLabel
+                    value="bank"
+                    control={<Radio color="primary" />}
+                    label="Banking"
+                  />
+                  <FormControlLabel
+                    value="mobile"
+                    control={<Radio color="primary" />}
+                    label="Mobile Banking"
+                  />
+                </RadioGroup>
+              </FormControl>
             </Box>
-            <Grid container className={classes.tableTitle} spacing={2}>
-              <Grid item xs={6} className={classes.item}>
-                <PublishedComponent
-                  pubRef="workforce.BanksPicker"
-                  value={formData?.employeeBankInfo?.bank?.id || null}
-                  label={
-                    <FormattedMessage
-                      module="workforce"
-                      id="workforce.bank.picker"
-                    />
-                  }
-                  required
-                  onChange={(option) =>
-                    handleChange("bank", option, "employeeBankInfo")
-                  }
-                  readOnly={false}
-                />
-              </Grid>
 
-              <Grid item xs={6} className={classes.item}>
-                <BranchPicker
-                  value={formData?.employeeBankInfo?.branch?.id || ""}
+            {accountType === "mobile" && (
+              <Grid container spacing={2}>
+                <Grid item xs={6} className={classes.item}>
+                 <MobileBankingPicker
+                  value={formData?.employeeAccountInfoForm?.bankingOptions || ""}
                   label={
                     <FormattedMessage
-                      id="workforce.branch.picker"
+                      id="Mobile Banking Options"
                       module="workforce"
                     />
                   }
                   required
-                  bankId={formData?.employeeBankInfo?.bank?.id}
-                  onChange={(v) =>
-                    handleChange("branch", v, "employeeBankInfo")
-                  }
+                  onChange={(v) => handleChange("bankingOptions", v,"employeeAccountInfoForm")}
                   readOnly={false}
                 />
+                </Grid>
               </Grid>
+            )}
 
+            {accountType === "bank" && (
+              <Grid container spacing={2}>
+                <Grid item xs={6} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="workforce.BanksPicker"
+                    value={formData?.employeeBankInfo?.bank?.id || null}
+                    label={<FormattedMessage id="workforce.bank.picker" module="workforce" />}
+                    required
+                    onChange={(option) => handleChange("bank", option, "employeeBankInfo")}
+                    readOnly={false}
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
+                  <BranchPicker
+                    value={formData?.employeeBankInfo?.branch?.id || ""}
+                    label={<FormattedMessage id="workforce.branch.picker" module="workforce" />}
+                    required
+                    bankId={formData?.employeeBankInfo?.bank?.id}
+                    onChange={(v) => handleChange("branch", v, "employeeBankInfo")}
+                    readOnly={false}
+                  />
+                </Grid>
+              </Grid>
+            )}
+
+            <Grid container spacing={2}>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.account.info.accountHolderName"
                   value={formData?.employeeBankInfo?.accountHolderName || ""}
-                  onChange={(v) =>
-                    handleChange("accountHolderName", v, "employeeBankInfo")
-                  }
+                  onChange={(v) => handleChange("accountHolderName", v, "employeeBankInfo")}
                   required
                   readOnly={false}
                 />
@@ -110,9 +140,7 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                 <TextInput
                   label="workforce.employee.account.info.routingNumber"
                   value={formData?.employeeBankInfo?.routingNumber || ""}
-                  onChange={(v) =>
-                    handleChange("routingNumber", v, "employeeBankInfo")
-                  }
+                  onChange={(v) => handleChange("routingNumber", v, "employeeBankInfo")}
                   required
                   readOnly={false}
                 />
@@ -121,23 +149,11 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                 <TextInput
                   label="workforce.employee.account.info.accountNumber"
                   value={formData?.employeeBankInfo?.accountNumber || ""}
-                  onChange={(v) =>
-                    handleChange("accountNumber", v, "employeeBankInfo")
-                  }
+                  onChange={(v) => handleChange("accountNumber", v, "employeeBankInfo")}
                   required
                   readOnly={false}
                 />
               </Grid>
-              {/* <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.employee.account.info.status"
-                  value={formData?.status || ""}
-                  onChange={(v) => handleChange("status", v, "employeeBankInfo")}
-                  required
-                  readOnly={false}
-                />
-              </Grid> */}
-              <Grid item xs={11} className={classes.item} />
             </Grid>
           </Paper>
         </Grid>

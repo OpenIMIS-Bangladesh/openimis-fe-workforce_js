@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ApplicationReason = ({ modulesManager,handleChange,setDeathType,deathType }) => {
+const ApplicationReason = ({ modulesManager,handleChange,setDeathType,deathType,formData }) => {
   const { formatMessage } = useTranslations(
       "core.RegistrationPage",
       modulesManager,
@@ -34,7 +34,7 @@ const ApplicationReason = ({ modulesManager,handleChange,setDeathType,deathType 
 
   const handleApplicationReason = (event) => {
     const value = event.target.value;
-    setDeathType(value);
+    // setDeathType(value);
     handleChange("deathType",value)
     // onSelect(selectedApplicationType, value); // Pass both selections
   };
@@ -46,7 +46,7 @@ const ApplicationReason = ({ modulesManager,handleChange,setDeathType,deathType 
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
           {<FormattedMessage id="workforce.application.reason.type" module="workforce"/>}
         </Typography>
-        <RadioGroup value={deathType} onChange={handleApplicationReason}>
+        <RadioGroup value={formData?.metadata?.deathType ||""} onChange={handleApplicationReason}>
           <FormControlLabel value="normalDeath" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.financial.assistance.normalDeath" module="workforce"/>} />
           <FormControlLabel value="accidentalDeath" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.financial.assistance.accidentalDeath" module="workforce"/>} />
         </RadioGroup>

@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ScholarshipApplicationCheckbox = ({ modulesManager,handleChange,selectedScholarshipOption, setSelectedScholarshipOption }) => {
+const ScholarshipApplicationCheckbox = ({ modulesManager,handleChange,selectedScholarshipOption, setSelectedScholarshipOption,formData }) => {
   const { formatMessage } = useTranslations(
       "core.RegistrationPage",
       modulesManager,
@@ -34,10 +34,11 @@ const ScholarshipApplicationCheckbox = ({ modulesManager,handleChange,selectedSc
 
   const handleselectedScholarshipOptionChange = (event) => {
     const value = event.target.value;
-    setSelectedScholarshipOption(value);
+    // setSelectedScholarshipOption(value);
     handleChange("scholarshipFor",value)
     // onSelect(selectedApplicationType, value); // Pass both selections
   };
+  console.log("formdata from scholarship",formData)
 
   return (
 
@@ -46,7 +47,7 @@ const ScholarshipApplicationCheckbox = ({ modulesManager,handleChange,selectedSc
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
           {<FormattedMessage id="workforce.application.steps.select" module="workforce"/>}
         </Typography>
-        <RadioGroup value={selectedScholarshipOption} onChange={handleselectedScholarshipOptionChange}>
+        <RadioGroup value={formData?.metadata?.scholarshipFor || ""} onChange={handleselectedScholarshipOptionChange}>
           <FormControlLabel value="ssc" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.steps.ssc" module="workforce"/>} />
           <FormControlLabel value="hsc" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.steps.hsc" module="workforce"/>} />
         </RadioGroup>

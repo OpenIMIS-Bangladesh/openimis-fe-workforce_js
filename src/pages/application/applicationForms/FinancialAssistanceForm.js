@@ -512,6 +512,7 @@ const FinancialAssistanceForm = ({
           <ApplicationReason
             modulesManager={modulesManager}
             handleChange={(key, value) => handleChange(key, value, "metadata")}
+            formData={formData}
             setDeathType={setDeathType}
             deathType={deathType}
           />

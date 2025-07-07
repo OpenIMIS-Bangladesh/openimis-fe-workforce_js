@@ -360,7 +360,8 @@
     "workforce.employee.accident.info.title":"রোগ বা দুর্ঘটনার ধরন",
     "workforce.employee.aid.reason.info.cronic":"দুররোগ্য এর জন্য",
     "workforce.employee.aid.reason.info.maternity":"মাতৃত্বকালীন রোগের জন্য",
-    "workforce.employee.aid.reason.info.accident":"দুর্ঘটনার জন্য"
+    "workforce.employee.aid.reason.info.accident":"দুর্ঘটনার জন্য",
 
+    "workforce.account.selection.type":"Select Account Type"
 
 }
