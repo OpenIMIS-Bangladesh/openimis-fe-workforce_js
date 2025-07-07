@@ -556,6 +556,7 @@ const DisabilityForm = ({
                 handleChange(key, value, "employeeAccidentInfo")
               }
               formData={formData}
+              setFormData={setFormData}
             />
           </Box>
         ) : (

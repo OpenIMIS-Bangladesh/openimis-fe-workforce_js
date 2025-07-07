@@ -35,7 +35,7 @@ import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getParsedApplication } from "../../../utils/utils";
+import { getParsedApplication, safeApplicationId } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -398,18 +398,18 @@ const MedicalAssistanceForm = ({
     });
   };
 
-  const safeApplicationId = (applicationId, parsedApplicationData) => {
-    console.clear();
-    console.log("applicationId", applicationId);
-    console.log("parsedApplicationData", parsedApplicationData);
-    if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
-      return applicationId[0].id;
-    } else if (parsedApplicationData && parsedApplicationData.id) {
-      return parsedApplicationData.id;
-    } else {
-      return null;
-    }
-  };
+  // const safeApplicationId = (applicationId, parsedApplicationData) => {
+  //   console.clear();
+  //   console.log("applicationId", applicationId);
+  //   console.log("parsedApplicationData", parsedApplicationData);
+  //   if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
+  //     return decodeId(applicationId[0].id);
+  //   } else if (parsedApplicationData && parsedApplicationData.id) {
+  //     return parsedApplicationData.id;
+  //   } else {
+  //     return null;
+  //   }
+  // };
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });

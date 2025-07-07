@@ -40,15 +40,19 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
   const history = useHistory();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
-  const [selectedOption, setSelectedOption] = useState("accident" || formData?.employeeAccidentInfo?.accidentType);
+  const [selectedOption, setSelectedOption] = useState(formData?.employeeAccidentInfo?.accidentType ||"accident");
 
   const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value);
-    setFormData((prev) => ({
+  const newValue = event.target.value;
+  setSelectedOption(newValue);
+  setFormData((prev) => ({
     ...prev,
-    employeeAccidentInfo: {accidentType:event.target.value},
+    employeeAccidentInfo: {
+      ...prev.employeeAccidentInfo,
+      accidentType: newValue,
+    },
   }));
-  };
+};
 
   return (
     <Box mt={2}>
