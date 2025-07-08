@@ -50,7 +50,7 @@ const diseaseOptions = [
   "Others", // Allow manual input if selected
 ];
 
-const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
+const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicationType }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
@@ -200,6 +200,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
                 required
                 onChange={(v) => handleChange("injuryType", v)}
                 readOnly={false}
+                applicationType={applicationType}
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>

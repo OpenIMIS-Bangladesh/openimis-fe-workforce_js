@@ -103,12 +103,19 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                   </Grid>
 
                   <Grid item xs={6} className={classes.item}>
-                    <BranchPicker
+                    {/* <BranchPicker
                       value={formData?.employeeBankInfo?.branch?.id || ""}
                       label={<FormattedMessage id="workforce.branch.picker" module="workforce" />}
                       required
                       bankId={formData?.employeeBankInfo?.bank?.id}
                       onChange={(v) => handleChange("branch", v, "employeeBankInfo")}
+                      readOnly={false}
+                    /> */}
+                    <TextInput
+                      label={"workforce.branch.picker"}
+                      value={formData?.employeeBankInfo?.branch || ""}
+                      onChange={(v) => handleChange("branch", v, "employeeBankInfo")}
+                      required
                       readOnly={false}
                     />
                   </Grid>

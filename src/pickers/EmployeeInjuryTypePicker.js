@@ -14,6 +14,7 @@ const EmployeeInjuryTypePicker = ({
   filterOptions,
   filterSelectedOptions,
   multiple,
+  applicationType
 }) => {
   const [searchString, setSearchString] = useState(null);
   const { formatMessage } = useTranslations("workforce");
@@ -21,6 +22,7 @@ const EmployeeInjuryTypePicker = ({
   // Adjust the options to match the EMPLOYEE_INJURY_TYPE format
   // const EMPLOYEE_INJURY_TYPE = ["Disabled", "Deceased"];
   const EMPLOYEE_INJURY_TYPE = ["অক্ষম", "মৃত"];
+  const EMPLOYEE_ASSISTANCE_INJURY_TYPE = ["অক্ষম"];
 
   // Find the selected option
   const selectedOption = useMemo(
@@ -38,7 +40,7 @@ const EmployeeInjuryTypePicker = ({
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
       isLoading={false} // Set to false if not loading data dynamically
-      options={EMPLOYEE_INJURY_TYPE}
+      options={applicationType? EMPLOYEE_ASSISTANCE_INJURY_TYPE:EMPLOYEE_INJURY_TYPE}
       value={selectedOption}
       getOptionLabel={(option) => option} // Since options are strings, return the string directly
       onChange={(option) => onChange(option, option ?? null)}

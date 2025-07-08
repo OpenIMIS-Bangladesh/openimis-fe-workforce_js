@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { makeStyles } from "@material-ui/core/styles";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
@@ -8,12 +8,14 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
-import { useDispatch } from 'react-redux'
-import {
-  formatGQLString, decodeId,FormattedMessage
-} from "@openimis/fe-core";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Webcam from "react-webcam";
+import { useDispatch } from "react-redux";
+import { formatGQLString, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { createWorkforceDocument } from "../actions";
-import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 
 const useStyles = makeStyles((theme) => ({
   dropzone: {
@@ -67,56 +69,65 @@ const useStyles = makeStyles((theme) => ({
 
 const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) => {
   const classes = useStyles();
+  const [webcamOpen, setWebcamOpen] = useState(false);
+  const webcamRef = useRef(null);
   const [files, setFiles] = useState([]);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
 
   const uploadFileToApi = async (file) => {
     const formData = new FormData();
-    formData.append("file", file);         // actual file content
+    formData.append("file", file); // actual file content
     formData.append("name", file.name); // optional field if backend expects this
 
     const jwtToken = localStorage.getItem("token"); // Adjust this as needed
 
-    try {
-      const response = await fetch("/api/workforce/document/upload", {
-        method: "POST",
-        credentials: 'include',
-        // headers: {
-        //   'Content-Type': 'application/json',
-        //   // DO NOT set "Content-Type" manually for FormData, browser handles it correctly
-        // },
-        body: formData,
-      });
+    // try {
+    //   const response = await fetch("/api/workforce/document/upload", {
+    //     method: "POST",
+    //     credentials: "include",
+    //     // headers: {
+    //     //   'Content-Type': 'application/json',
+    //     //   // DO NOT set "Content-Type" manually for FormData, browser handles it correctly
+    //     // },
+    //     body: formData,
+    //   });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error(`Upload failed for ${file.name}:`, errorData);
-      } else {
-        const responseData = await response.json();
-        console.log(`Upload successful for ${file.name}:`, responseData);
-        const createDocumentData = {
-          path: responseData.file_path,
-          url: responseData.file_url,
-          workforceApplicationId: decodeId(applicationId),
-          documentType: documentType,
-          holder: "57",
-          holderType: "user"
-        }
-        dispatch(
-          createWorkforceDocument(
-            createDocumentData,
-            `Created workforce document `
-          )
-        );
-
-      }
-    } catch (error) {
-      console.error(`Upload error for ${file.name}:`, error);
-    }
+    //   if (!response.ok) {
+    //     const errorData = await response.json();
+    //     console.error(`Upload failed for ${file.name}:`, errorData);
+    //   } else {
+    //     const responseData = await response.json();
+    //     console.log(`Upload successful for ${file.name}:`, responseData);
+    //     const createDocumentData = {
+    //       path: responseData.file_path,
+    //       url: responseData.file_url,
+    //       workforceApplicationId: decodeId(applicationId),
+    //       documentType: documentType,
+    //       holder: "57",
+    //       holderType: "user",
+    //     };
+    //     dispatch(createWorkforceDocument(createDocumentData, `Created workforce document `));
+    //   }
+    // } catch (error) {
+    //   console.error(`Upload error for ${file.name}:`, error);
+    // }
   };
 
+  const captureAndUpload = async () => {
+    const imageSrc = webcamRef.current.getScreenshot();
+
+    // Convert base64 to a file
+    const response = await fetch(imageSrc);
+    const blob = await response.blob();
+    const file = new File([blob], `capture_${Date.now()}.jpg`, { type: "image/jpeg" });
+
+    setFiles([...files, file]);
+    onFileChange(fieldKey, [...files, file]);
+    await uploadFileToApi(file);
+    setWebcamOpen(false);
+  };
 
   const onDrop = useCallback(
     async (acceptedFiles) => {
@@ -153,27 +164,65 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) =
 
   return (
     <div>
-     <Paper {...getRootProps()} className={classes.dropzone}>
+      <Paper className={classes.dropzone}>
+  <Box display="flex" alignItems="center" justifyContent="center" style={{ gap: "24px" }}>
+    
+    {/* Upload Option - only this part gets getRootProps */}
+    <Box {...getRootProps()} display="flex" alignItems="center" style={{ gap: "8px", cursor: "pointer" }}>
       <input {...getInputProps()} />
-      <Box display="flex" alignItems="center" justifyContent="center" style={{ gap: '24px' }}>
-        {/* Upload Option */}
-        <Box display="flex" alignItems="center" style={{ gap: '8px' }}>
-          <CloudUploadIcon className={classes.uploadIcon} />
-          <FormattedMessage module="workforce" id="workforce.application.steps.upload">
-            {(msg) => <Typography variant="body2">{msg}</Typography>}
-          </FormattedMessage>
-        </Box>
+      <CloudUploadIcon className={classes.uploadIcon} />
+      <FormattedMessage module="workforce" id="workforce.application.steps.upload">
+        {(msg) => <Typography variant="body2">{msg}</Typography>}
+      </FormattedMessage>
+    </Box>
 
-        {/* Instant Capture Option */}
-        <Box display="flex" alignItems="center" style={{ gap: '8px', cursor: 'pointer' }}>
-          <PhotoCameraIcon color="action" />
-          <FormattedMessage module="workforce" id="workforce.application.steps.capture">
-            {(msg) => <Typography variant="body2">{msg}</Typography>}
-          </FormattedMessage>
-        </Box>
-      </Box>
-    </Paper>
+    {/* Camera Option */}
+    <Box
+      onClick={() => {
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+          document.getElementById("cameraCaptureInput").click();
+        } else {
+          setWebcamOpen(true);
+        }
+      }}
+      style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}
+    >
+      <PhotoCameraIcon color="action" />
+      <FormattedMessage module="workforce" id="workforce.application.steps.capture">
+        {(msg) => <Typography variant="body2">{msg}</Typography>}
+      </FormattedMessage>
+    </Box>
 
+    {/* Mobile capture input (only one!) */}
+    <input
+      id="cameraCaptureInput"
+      type="file"
+      accept="image/*"
+      capture="environment"
+      style={{ display: "none" }}
+      onChange={(e) => {
+        if (e.target.files && e.target.files.length > 0) {
+          onDrop(Array.from(e.target.files));
+        }
+      }}
+    />
+  </Box>
+</Paper>
+
+
+      <Dialog open={webcamOpen} onClose={() => setWebcamOpen(false)} maxWidth="sm" fullWidth>
+        <DialogContent>
+          <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" style={{ width: "100%" }} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setWebcamOpen(false)} variant="outlined" color="error">
+            Cancel
+          </Button>
+          <Button onClick={captureAndUpload} variant="contained" color="primary">
+            Capture & Upload
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {files.length > 0 && (
         <Paper className={classes.fileList}>
