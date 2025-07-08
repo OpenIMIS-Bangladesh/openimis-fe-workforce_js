@@ -379,7 +379,7 @@ const FinancialAssistanceForm = ({
   const addDependent = () => {
     setFormData((prev) => ({
       ...prev,
-      dependents: [...prev.dependents, {}],
+      dependents: [...prev.dependent, {}],
     }));
   };
 
@@ -532,6 +532,8 @@ const FinancialAssistanceForm = ({
                 handleChange(key, value, "workforceEmployee")
               }
               formData={formData}
+              setNidOrBcn={setNidOrBcn}
+              nidOrBcn={nidOrBcn}
             />
             {/* <EmployeeAccidentInfoForm
               handleChange={(key, value) =>
@@ -564,6 +566,7 @@ const FinancialAssistanceForm = ({
               selectedApplicationType={selectedApplicationType}
               handleChange={handleChange}
               formData={formData}
+              applicationId={applicationId}
             />
           </Box>
         )}

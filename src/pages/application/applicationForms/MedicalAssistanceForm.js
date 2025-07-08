@@ -260,21 +260,21 @@ const MedicalAssistanceForm = ({
         id: formData?.workforceEmployee?.id || reduxState.core.user.id,
       };
       console.log("Update Submitting formData:", workforceEmployeeData);
-      if (workforceEmployeeData?.id) {
-        await dispatch(
-          updateWorkforceEmployee(
-            workforceEmployeeData,
-            `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-          )
-        );
-      }else{
-        await dispatch(
-          createWorkforceEmployee(
-            workforceEmployeeData,
-            `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-          )
-        );
-      }
+      await dispatch(
+        updateWorkforceEmployee(
+          workforceEmployeeData,
+          `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+        )
+      );
+      // if (workforceEmployeeData?.id) {
+      // }else{
+      //   await dispatch(
+      //     createWorkforceEmployee(
+      //       workforceEmployeeData,
+      //       `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+      //     )
+      //   );
+      // }
     } else if (nextStep === 3) {
       console.log("Create application formData:", formData);
       const createApplicationData = {

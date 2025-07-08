@@ -57,9 +57,9 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
   const reduxState = useSelector((state) => state);
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
   const [nidOrBcn, setNidOrBcn] = useState({
-        nid: formData?.workforceEmployee?.nid || "",
-        birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
-      });
+    nid: formData?.workforceEmployee?.nid || "",
+    birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
+  });
 
   const [formData, setFormData] = useState({
     workforceEmployee: {
@@ -354,7 +354,14 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
     },
     {
       label: "workforce.application.steps.employeeDetails",
-      content: <EmployeeDetailsForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />,
+      content: (
+        <EmployeeDetailsForm
+          handleChange={(key, value) => handleChange(key, value, "workforceEmployee")}
+          formData={formData}
+          setNidOrBcn={setNidOrBcn}
+          nidOrBcn={nidOrBcn}
+        />
+      ),
     },
     {
       label: "workforce.application.steps.location",
@@ -384,7 +391,12 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
       label: "workforce.application.steps.upload.documents",
       content: (
         <Box mt={0}>
-          <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={selectedApplicationType} />
+          <EmployeeDetailsForm2
+            handleChange={handleChange}
+            formData={formData}
+            selectedApplicationType={selectedApplicationType}
+            applicationId={applicationId}
+          />
         </Box>
       ),
     },
@@ -439,7 +451,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
     return (
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={0}>
-          <NidVerification formData={formData} nidOrBcn={nidOrBcn} setDisableConfirmSubmit={setDisableConfirmSubmit}/>
+          <NidVerification formData={formData} nidOrBcn={nidOrBcn} setDisableConfirmSubmit={setDisableConfirmSubmit} />
           <div className={classes.buttonContainer}>
             <Button
               variant="contained"

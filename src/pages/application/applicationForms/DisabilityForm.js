@@ -533,6 +533,8 @@ const DisabilityForm = ({
             <EmployeeDetailsForm
               handleChange={handleChange}
               formData={formData}
+              setNidOrBcn={setNidOrBcn}
+              nidOrBcn={nidOrBcn}
             />
           </Box>
         ) : activeStep === 2 ? (
@@ -559,6 +561,7 @@ const DisabilityForm = ({
               }
               formData={formData}
               setFormData={setFormData}
+              applicationType={"disabilityAssistance"}
             />
           </Box>
         ) : (
@@ -567,6 +570,7 @@ const DisabilityForm = ({
               selectedApplicationType={selectedApplicationType}
               handleChange={handleChange}
               formData={formData}
+              applicationId={applicationId}
             />
           </Box>
         )}
