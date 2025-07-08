@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { formatGQLString, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { createWorkforceDocument } from "../actions";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
+import { safeApplicationId } from "../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   dropzone: {
@@ -103,8 +104,9 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) =
         const createDocumentData = {
           path: responseData.file_path,
           url: responseData.file_url,
-          workforceApplicationId: applicationId,
+          workforceApplicationId: safeApplicationId(applicationId),
           documentType: documentType,
+
           holder: "57",
           holderType: "user",
         };
@@ -161,6 +163,8 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) =
       "image/gif": [".gif"],
     },
   });
+
+  console.log('upload files',applicationId)
 
   return (
     <div>

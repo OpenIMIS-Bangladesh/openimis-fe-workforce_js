@@ -163,7 +163,7 @@ const MedicalAssistanceForm = ({
       setFormData({
         id: parsedApplicationData?.id || "",
         workforceEmployee: {
-          id: employeeData?.id || "",
+          id: employeeData?.id ||reduxState.core.user.id || "",
           organization: employeeData.organization,
           nameEn: employeeData.firstNameEn || "",
           nameBn: employeeData.firstNameBn || "",
@@ -257,8 +257,7 @@ const MedicalAssistanceForm = ({
         maritalStatus: formData?.workforceEmployee?.maritalStatus,
         presentLocation: formData?.workforceEmployee?.presentLocation,
         permanentLocation: formData?.workforceEmployee?.permanentLocation,
-
-        id: formData?.workforceEmployee?.id,
+        id: formData?.workforceEmployee?.id || reduxState.core.user.id,
       };
       console.log("Update Submitting formData:", workforceEmployeeData);
       if (workforceEmployeeData?.id) {
@@ -398,19 +397,6 @@ const MedicalAssistanceForm = ({
     });
   };
 
-  // const safeApplicationId = (applicationId, parsedApplicationData) => {
-  //   console.clear();
-  //   console.log("applicationId", applicationId);
-  //   console.log("parsedApplicationData", parsedApplicationData);
-  //   if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
-  //     return decodeId(applicationId[0].id);
-  //   } else if (parsedApplicationData && parsedApplicationData.id) {
-  //     return parsedApplicationData.id;
-  //   } else {
-  //     return null;
-  //   }
-  // };
-
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
     const updateApplicationData = {
@@ -489,6 +475,7 @@ const MedicalAssistanceForm = ({
           }
           formData={formData}
           setFormData={setFormData}
+          applicationType={"medicalAssistance"}
         />
       ),
     },
@@ -499,6 +486,7 @@ const MedicalAssistanceForm = ({
           handleChange={handleChange}
           formData={formData}
           selectedApplicationType={selectedApplicationType}
+          applicationId={applicationId}
         />
       ),
     },
@@ -519,7 +507,7 @@ const MedicalAssistanceForm = ({
       : []),
   ];
 
-  console.log({ tazwer: parsedApplicationData });
+  console.log({ tazwer: reduxState.core.user.id });
   console.log({ fahimTazwer: formData });
 
   if (showPreview) {

@@ -49,6 +49,7 @@ const EmployeeDetailsForm2 = ({
   formData,
   setFormData,
   selectedApplicationType,
+  applicationId
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -155,7 +156,7 @@ const EmployeeDetailsForm2 = ({
                   <FileUploader
                     fieldKey={document.fieldId}
                     onFileChange={handleChange}
-                    applicationId={formData.id}
+                    applicationId={applicationId}
                     documentType={document.documentType}
                   />
                 </Grid>
