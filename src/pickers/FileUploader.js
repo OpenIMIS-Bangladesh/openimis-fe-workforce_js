@@ -83,36 +83,36 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) =
 
     const jwtToken = localStorage.getItem("token"); // Adjust this as needed
 
-    // try {
-    //   const response = await fetch("/api/workforce/document/upload", {
-    //     method: "POST",
-    //     credentials: "include",
-    //     // headers: {
-    //     //   'Content-Type': 'application/json',
-    //     //   // DO NOT set "Content-Type" manually for FormData, browser handles it correctly
-    //     // },
-    //     body: formData,
-    //   });
+    try {
+      const response = await fetch("/api/workforce/document/upload", {
+        method: "POST",
+        credentials: "include",
+        // headers: {
+        //   'Content-Type': 'application/json',
+        //   // DO NOT set "Content-Type" manually for FormData, browser handles it correctly
+        // },
+        body: formData,
+      });
 
-    //   if (!response.ok) {
-    //     const errorData = await response.json();
-    //     console.error(`Upload failed for ${file.name}:`, errorData);
-    //   } else {
-    //     const responseData = await response.json();
-    //     console.log(`Upload successful for ${file.name}:`, responseData);
-    //     const createDocumentData = {
-    //       path: responseData.file_path,
-    //       url: responseData.file_url,
-    //       workforceApplicationId: decodeId(applicationId),
-    //       documentType: documentType,
-    //       holder: "57",
-    //       holderType: "user",
-    //     };
-    //     dispatch(createWorkforceDocument(createDocumentData, `Created workforce document `));
-    //   }
-    // } catch (error) {
-    //   console.error(`Upload error for ${file.name}:`, error);
-    // }
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error(`Upload failed for ${file.name}:`, errorData);
+      } else {
+        const responseData = await response.json();
+        console.log(`Upload successful for ${file.name}:`, responseData);
+        const createDocumentData = {
+          path: responseData.file_path,
+          url: responseData.file_url,
+          workforceApplicationId: applicationId,
+          documentType: documentType,
+          holder: "57",
+          holderType: "user",
+        };
+        dispatch(createWorkforceDocument(createDocumentData, `Created workforce document `));
+      }
+    } catch (error) {
+      console.error(`Upload error for ${file.name}:`, error);
+    }
   };
 
   const captureAndUpload = async () => {

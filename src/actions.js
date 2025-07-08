@@ -1146,7 +1146,7 @@ export function createWorkforceDocument(
   // }`
   const requestedDateTime = new Date();
   return graphql(
-    mutation,
+    mutation.payload,
     [
       "DOCUMENT_MUTATION_REQ",
       "DOCUMENT_CREATE_DOCUMENT_RESP",
