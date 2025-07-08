@@ -510,9 +510,9 @@
     "workforce.officer.selector.picker": "Select Officer",
 
     "workforce.employee.accident.info.title":"Type of disease or accident",
-    "workforce.employee.aid.reason.info.cronic":"For Cronic Disease",
+    "workforce.employee.aid.reason.info.cronic":"Description of the disease",
     "workforce.employee.aid.reason.info.maternity":"For Maternity Desease",
-    "workforce.employee.aid.reason.info.accident":"For Accident",
+    "workforce.employee.aid.reason.info.accident":"Description of the accident",
 
     "workforce.account.selection.type":"Select Account Type"
 

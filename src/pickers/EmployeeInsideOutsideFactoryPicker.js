@@ -20,7 +20,7 @@ const EmployeeInsideOutsideFactoryPicker = ({
 
   // Adjust the options to match the EMPLOYEE_INSIDE_OUTSIDE_FACTORY format
   // const EMPLOYEE_INSIDE_OUTSIDE_FACTORY = ["Inside Factory", "Outside Factory"];
-  const EMPLOYEE_INSIDE_OUTSIDE_FACTORY = ["কারখানার ভিতরে", "অফিস থেকে বাসায় যাওয়ার সময়","বাসা থেকে অফিসে যাওয়ার সময়","অফিসার-এর কাজে বাইরে যাওয়ার সময়","অন্যান্য"];
+  const EMPLOYEE_INSIDE_OUTSIDE_FACTORY = ["কারখানার ভিতরে", "অফিস থেকে বাসায় যাওয়ার সময়","বাসা থেকে অফিসে যাওয়ার সময়","অফিসের কাজে বাইরে যাওয়ার সময়","অন্যান্য"];
 
   // Find the selected option
   const selectedOption = useMemo(

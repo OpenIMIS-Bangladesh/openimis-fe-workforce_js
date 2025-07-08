@@ -127,7 +127,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
             <Grid item xs={6} className={classes.item}>
               <PublishedComponent
                 pubRef="core.DatePicker"
-                label="Diagnosis Date"
+                label="রোগ নির্ণয়ের তারিখ"
                 value={formData?.employeeAccidentInfo?.diagnosisDate || ""}
                 onChange={(v) => handleChange("diagnosisDate", v)}
                 readOnly={false}
@@ -135,7 +135,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
             </Grid>
 
             <Grid item xs={6} className={classes.item}>
-              <TextInput label="Doctor's Name" value={formData?.employeeAccidentInfo?.doctorName || ""} onChange={(v) => handleChange("doctorName", v)} />
+              <TextInput label="ডাক্তারের নাম" value={formData?.employeeAccidentInfo?.doctorName || ""} onChange={(v) => handleChange("doctorName", v)} />
             </Grid>
 
             <Grid item xs={12} className={classes.item}>

@@ -35,7 +35,7 @@ const DiseaseMultiSelectPicker = ({ value = [], onChange, selectedDiseases, onOt
   return (
     <>
       <FormControl fullWidth>
-        <InputLabel>Disease Name(s)</InputLabel>
+        <InputLabel>রোগের নাম</InputLabel>
         <Select
           multiple
           value={selectedDiseases}

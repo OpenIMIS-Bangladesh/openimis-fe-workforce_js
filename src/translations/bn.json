@@ -32,7 +32,7 @@
     "workforce.employee.accident.info.typeOfAccident": "দুর্ঘটনার ধরন",
     "workforce.employee.accident.info.dutyStatus": "ডিউটি ​​স্ট্যাটাস/কর্তব্যের অবস্থা",
     "workforce.employee.accident.info.insideOutsideFactory": "কারখানার ভিতরে/বাইরে",
-    "workforce.employee.accident.info.reJoiningDate": "পুনঃযোগদানের তারিখ",
+    "workforce.employee.accident.info.reJoiningDate": "সুস্থ হওয়ার পরে পুনরায় কাজে যোগদানের তারিখ",
 
     "workforce.employee.workforce_employer": "কর্মশক্তি নিয়োগকর্তা/কোম্পানী",
     "workforce.employee.workforce_office": "কর্মশক্তি অফিস",
@@ -170,7 +170,7 @@
     "workforce.employee.accident.info.application.typeOfAccident": "দুর্ঘটনার ধরন",
     "workforce.employee.accident.info.application.dutyStatus": "ডিউটি ​​স্ট্যাটাস/কর্তব্যের অবস্থা",
     "workforce.employee.accident.info.application.insideOutsideFactory": "কারখানার ভিতরে/বাইরে",
-    "workforce.employee.accident.info.application.reJoiningDate": "পুনঃযোগদানের তারিখ",
+    "workforce.employee.accident.info.application.reJoiningDate": "সুস্থ হওয়ার পরে পুনরায় কাজে যোগদানের তারিখ",
 
     "workforce.application.type.title":"আবেদনের ধরন নির্বাচন করুন",
 
@@ -362,10 +362,10 @@
     "workforce.employee.nid_or_birth_certificate":"জাতীয় পরিচয়পত্র/জন্ম নিবন্ধনপত্র নং",
 
     "workforce.employee.accident.info.title":"চিকিৎসার কারন",
-    "workforce.employee.aid.reason.info.cronic":"দুররোগ্য এর জন্য",
+    "workforce.employee.aid.reason.info.cronic":"রোগের বিবরণ",
     "workforce.employee.aid.reason.info.maternity":"মাতৃত্বকালীন রোগের জন্য",
-    "workforce.employee.aid.reason.info.accident":"দুর্ঘটনার জন্য",
+    "workforce.employee.aid.reason.info.accident":"দুর্ঘটনার বিবরণ",
 
-    "workforce.account.selection.type":"Select Account Type"
+    "workforce.account.selection.type":"অ্যাকাউন্টের ধরণ নির্বাচন করুন"
 
 }
