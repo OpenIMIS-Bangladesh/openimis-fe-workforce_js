@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     borderRight: `1px solid ${theme.palette.divider}`,
     overflowY: "auto",
-    
+
   },
   content: {
     height: '100vh',
@@ -82,7 +82,7 @@ const SidebarMenu = [
     text: (
       <FormattedMessage module="workforce" id="workforce.application.myself" />
     ),
-    icon:<DescriptionIcon />,
+    icon: <DescriptionIcon />,
   },
   {
     id: "newApplications",
@@ -96,7 +96,7 @@ const SidebarMenu = [
     text: (
       <FormattedMessage module="workforce" id="workforce.application.reverted" />
     ),
-    icon: <RestorePageIcon  />,
+    icon: <RestorePageIcon />,
   },
   // {
   //   id: "recentApplications",
@@ -110,59 +110,62 @@ const SidebarMenu = [
     text: (
       <FormattedMessage module="workforce" id="workforce.application.status" />
     ),
-    icon: <AssignmentIcon  />,
+    icon: <AssignmentIcon />,
   },
   {
     id: "draftApplications",
     text: (
       <FormattedMessage module="workforce" id="workforce.application.draft_applications" />
     ),
-    icon: <DraftsIcon  />,
+    icon: <DraftsIcon />,
   },
-  
-   
+
+
 ];
 
 // ----------- Components to Render in Main Content -----------
 
-const FiledApplications = () =>{ 
+const FiledApplications = () => {
   const classes = useStyles()
+  const username = useSelector((state) => state.core.user.username);
   return (
-  <>
-    <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.applicant.dashboard" />
-    </Typography>
-   <Card className={classes.tableContainer}>
-       <CardContent>
-             <ApplicationProcessSearcher />
+    <>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.applicant.dashboard" />
+      </Typography>
+      <Card className={classes.tableContainer}>
+        <CardContent>
+          <ApplicationProcessSearcher />
         </CardContent>
-    </Card>
-  </>
-);}
+      </Card>
+    </>
+  );
+}
 
-const DraftApplications = () =>{ 
+const DraftApplications = () => {
   const classes = useStyles()
   return (
-  <>
-    <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.applicant.dashboard" />
-    </Typography>
-   <Card className={classes.tableContainer}>
-       <CardContent>
-             <ApplicationProcessSearcher applicationStatus={"draft"}/>
+    <>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.applicant.dashboard" />
+      </Typography>
+      <Card className={classes.tableContainer}>
+        <CardContent>
+          <ApplicationProcessSearcher applicationStatus={"draft"} />
         </CardContent>
-    </Card>
-  </>
-);}
+      </Card>
+    </>
+  );
+}
 
 const newApplications = () => (
-   <Typography 
-      variant="h5" 
-      onClick={() => history.push("/workforce/application")} 
-      style={{ cursor: "pointer" }} // Add pointer cursor to show it's clickable
-    >
-      <FormattedMessage module="workforce" id="workforce.new.application" />
-    </Typography>
+  <Typography
+    variant="h5"
+    onClick={() => history.push("/workforce/application")}
+    style={{ cursor: "pointer" }} // Add pointer cursor to show it's clickable
+  >
+    <FormattedMessage module="workforce" id="workforce.new.application" />
+  </Typography>
 );
 
 const ApplicationStatus = () => {
@@ -187,9 +190,9 @@ const ApplicationStatus = () => {
       setShowResult(true);
     });
   };
-  
+
   return (
-      <Card style={{ marginTop: 0, padding: "32px", textAlign: "center" }}>
+    <Card style={{ marginTop: 0, padding: "32px", textAlign: "center" }}>
       <CardContent>
         <Typography variant="h5" gutterBottom>
           <FormattedMessage module="workforce" id="workforce.application.status" />
@@ -247,7 +250,7 @@ const ApplicationStatus = () => {
             <Grid container style={{ marginTop: 16 }} spacing={2}>
               <Grid item xs={6}>
                 <Typography>
-                  <strong>ট্র্যাকিং নম্বর:</strong> 
+                  <strong>ট্র্যাকিং নম্বর:</strong>
                 </Typography>
                 <Typography>
                   <strong>বর্তমান অবস্থা:</strong> {applicationData.status}
@@ -273,29 +276,30 @@ const ApplicationStatus = () => {
 const RevertApplication = () => {
   const classes = useStyles()
   return (
-  <>
-    <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.application.reverted" />
-    </Typography>
-   <Card className={classes.tableContainer}>
-       <CardContent>
-             <ApplicationProcessSearcher
-                revertedApplication={true}
-              />
-            </CardContent>
+    <>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.application.reverted" />
+      </Typography>
+      <Card className={classes.tableContainer}>
+        <CardContent>
+          <ApplicationProcessSearcher
+            revertedApplication={true}
+          />
+        </CardContent>
       </Card>
 
-    {/* Pagination */}
-    <div className={classes.pagination}>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.back" />
-      </Button>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.next" />
-      </Button>
-    </div>
-  </>
-)}
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
 
 
 const ApplicantDashboard = () => {

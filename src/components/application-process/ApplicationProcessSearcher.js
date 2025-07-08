@@ -36,10 +36,10 @@ import ForwardApplicationApproverModal from "./modals/ForwardApplicationApprover
 import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
 import { WORKFORCE_STATUS } from "../../constants";
-import { updateApplication, createApplicationMovement,updateApplicationSummary } from "../../actions";
-import { itemAdminFormatters, itemFormattersApplicant,itemFormattersAssociation, itemFormattersApprover, itemFormattersChecker, itemFormattersFactoryAdmin, itemFormattersDirector } from "../../utils/itemFormatters_types";
+import { updateApplication, createApplicationMovement, updateApplicationSummary } from "../../actions";
+import { itemAdminFormatters, itemFormattersApplicant, itemFormattersAssociation, itemFormattersApprover, itemFormattersChecker, itemFormattersFactoryAdmin, itemFormattersDirector } from "../../utils/itemFormatters_types";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
-import { headerApplicant, headerApprover, headerChecker,headerAssociation, headersAdmin, headerFactoryAdmin, headerDirector } from "../../utils/headers_types";
+import { headerApplicant, headerApprover, headerChecker, headerAssociation, headersAdmin, headerFactoryAdmin, headerDirector } from "../../utils/headers_types";
 
 const styles = (theme) => ({
   paper: {
@@ -60,6 +60,7 @@ const styles = (theme) => ({
   },
   horizontalButtonContainer: theme.buttonContainer.horizontal,
 });
+
 
 class ApplicationProcessSearcher extends Component {
   constructor(props) {
@@ -113,19 +114,23 @@ class ApplicationProcessSearcher extends Component {
     this.defaultPageSize = 10;
   }
 
-  fetch = (prms) => {
+  async fetchApplicant() {
+    await this.props.fetchFactoryEmployee(
+      this.props.modulesManager,
+      [`relatedUser_LoginName_Iexact:"${this.props.userName}"`]
+    );
+  }
+
+  fetch = async (prms) => {
     const { applicationType, userRights, revertedApplication, userName, workforceEmployeesFactoryId } = this.props;
     const { showHistoryFilter } = this.state;
     this.props.fetchOrganizationEmployee(
       this.props.modulesManager,
       [`username:"${userName}"`]
-    )
-    this.props.fetchFactoryEmployee(
-      this.props.modulesManager,
-      [`relatedUser_LoginName_Iexact:"${userName}"`]
-
-    )
-    console.log(this.props)
+    );
+    console.clear();
+    await this.fetchApplicant();
+    console.log(this.props);
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
       let filter = [];
@@ -134,16 +139,17 @@ class ApplicationProcessSearcher extends Component {
       } else {
         filter = [`statusIn: ["forward_to_cf_section"], orderBy: ["-dateCreated"]`];
       }
+
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
         filter
       );
-       }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ASSOCIATION) {
+    } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ASSOCIATION) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(
         this.props.modulesManager,
-         ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]']
+        ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]']
       );
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
@@ -167,23 +173,24 @@ class ApplicationProcessSearcher extends Component {
       );
     }
     else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
+      console.log(this.props.workforceEmployee)
       this.setState({ displayVersion: showHistoryFilter });
       if (revertedApplication) {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
-          //  ['statusIn: ["revert_to_applicant"]', 'orderBy: ["-dateCreated"]']
+          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, 'orderBy: ["-dateCreated"]']
           // prms
         );
       } else if (this.props.applicationStatus) {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
-          [`statusIn: ["draft"], orderBy: ["-dateCreated"]`]
+          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, `statusIn: ["draft"], orderBy: ["-dateCreated"]`]
           // prms
         );
       } else {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
-          ['statusIn: ["new", "revert_to_applicant"]', 'orderBy: ["-dateCreated"]']
+          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, 'statusIn: ["new", "revert_to_applicant"]', 'orderBy: ["-dateCreated"]']
           // prms
         );
       }
@@ -424,7 +431,7 @@ class ApplicationProcessSearcher extends Component {
         async () => {
           const updateApplicationData = {
             id: decodeId(application.id),
-            grantAmount:this.state.editedGrantMoney,
+            grantAmount: this.state.editedGrantMoney,
             status: WORKFORCE_STATUS.SELECTED,
           };
 
@@ -531,15 +538,15 @@ class ApplicationProcessSearcher extends Component {
       ? headerApplicant(this)
       : userType === WORKFORCE_USER_TYPE.CHECKER
         ? headerChecker(this)
-      : userType === WORKFORCE_USER_TYPE.ASSOCIATION
-        ? headerAssociation(this)
-        : userType === WORKFORCE_USER_TYPE.APPROVER
-          ? headerApprover(this)
-          : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
-            ? headerFactoryAdmin(this)
-            : userType === WORKFORCE_USER_TYPE.DIRECTOR
-              ? headerDirector(this)
-              : headersAdmin(this);
+        : userType === WORKFORCE_USER_TYPE.ASSOCIATION
+          ? headerAssociation(this)
+          : userType === WORKFORCE_USER_TYPE.APPROVER
+            ? headerApprover(this)
+            : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+              ? headerFactoryAdmin(this)
+              : userType === WORKFORCE_USER_TYPE.DIRECTOR
+                ? headerDirector(this)
+                : headersAdmin(this);
   };
 
   itemFormatters = () => {
@@ -548,15 +555,15 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this)
       : userType === WORKFORCE_USER_TYPE.CHECKER
         ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this)
-      : userType === WORKFORCE_USER_TYPE.ASSOCIATION
-        ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this)
-        : userType === WORKFORCE_USER_TYPE.APPROVER
-          ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this)
-          : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
-            ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this)
-            : userType === WORKFORCE_USER_TYPE.DIRECTOR
-              ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this)
-              : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this);
+        : userType === WORKFORCE_USER_TYPE.ASSOCIATION
+          ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+          : userType === WORKFORCE_USER_TYPE.APPROVER
+            ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+            : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+              ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+              : userType === WORKFORCE_USER_TYPE.DIRECTOR
+                ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+                : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this);
   };
 
   sorts = () => [];
@@ -721,7 +728,7 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkApproveByAdmin = async () => {
     const { selectedApplicationIds } = this.state;
-    const { updateApplication, createApplicationMovement,updateApplicationSummary } = this.props;
+    const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
 
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
@@ -747,7 +754,7 @@ class ApplicationProcessSearcher extends Component {
               action: "approved_by_dg",
             };
             const updateApplicationSummaryData = {
-              id: decodeId(this.props.summaryId), 
+              id: decodeId(this.props.summaryId),
               status: WORKFORCE_STATUS.APPROVED_BY_DG,
             };
             await updateApplication(updateApplicationData, "update workforce application");
@@ -778,7 +785,7 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkApproveByDirector = async () => {
     const { selectedApplicationIds } = this.state;
-    const { updateApplication, createApplicationMovement,updateApplicationSummary } = this.props;
+    const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
 
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
@@ -804,10 +811,10 @@ class ApplicationProcessSearcher extends Component {
             };
 
             const updateApplicationSummaryData = {
-              id: decodeId(this.props.summaryId), 
+              id: decodeId(this.props.summaryId),
               status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
             };
-            console.log('summay row id',id)
+            console.log('summay row id', id)
             await updateApplication(updateApplicationData, "update workforce application");
             await createApplicationMovement(createApplicationMovementData, "create workforce movement");
             await updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
@@ -821,7 +828,7 @@ class ApplicationProcessSearcher extends Component {
             message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
           },
         });
-      
+
       } catch (error) {
         console.error("Bulk selection failed:", error);
         this.setState({
@@ -855,9 +862,6 @@ class ApplicationProcessSearcher extends Component {
     }, 0);
 
     const {
-      intl,
-      history,
-      modulesManager,
       applications,
       applicationsPageInfo,
       fetchingApplications,
@@ -867,15 +871,9 @@ class ApplicationProcessSearcher extends Component {
       cacheFiltersKey,
       onDoubleClick,
       userRights,
-      userId,
       userName,
-      revertedApplication,
       organizationEmployee,
-      summaryId,
-      applicationStatus
     } = this.props;
-
-    // this.getUserOrganization(userId)
 
     const count = applicationsPageInfo.totalCount;
     const userType = getUserTypeFromRights(userRights);
@@ -1179,7 +1177,8 @@ const mapStateToProps = (state) => ({
   userId: state.core.user.i_user.uuid,
   userName: state.core.user.username,
   organizationEmployee: state.workforce.organizationEmployee,
-  workforceEmployeesFactoryId: state.workforce.workforceEmployee?.edges?.[0]?.employeeDesignationEmployeeId?.edges?.[0]?.node?.workforceFactory?.id ?? null
+  workforceEmployeesFactoryId: state.workforce.workforceEmployee?.edges?.[0]?.employeeDesignationEmployeeId?.edges?.[0]?.node?.workforceFactory?.id ?? null,
+  workforceEmployee: state.workforce.workforceEmployee,
 });
 
 const mapDispatchToProps = (dispatch) =>
