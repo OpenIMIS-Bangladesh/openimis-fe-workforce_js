@@ -209,6 +209,8 @@
     "workforce.employee.account.info.status": "অ্যাকাউন্ট স্ট্যাটাস",
     "workforce.employee.account.info.accountHolderName": "অ্যাকাউন্ট হোল্ডারের নাম",
     "workforce.employee.account.info.accountNumber": "অ্যাকাউন্ট নম্বর",
+    "workforce.employee.account.info.mobileNumber": "মোবাইল নম্বর",
+
 
     "workforce.application.steps.employeeDetails":"শ্রমিকের বিবরণ",
     "workforce.application.steps.location":"ঠিকানা",
@@ -359,7 +361,7 @@
 
     "workforce.employee.nid_or_birth_certificate":"জাতীয় পরিচয়পত্র/জন্ম নিবন্ধনপত্র নং",
 
-    "workforce.employee.accident.info.title":"রোগ বা দুর্ঘটনার ধরন",
+    "workforce.employee.accident.info.title":"চিকিৎসার কারন",
     "workforce.employee.aid.reason.info.cronic":"দুররোগ্য এর জন্য",
     "workforce.employee.aid.reason.info.maternity":"মাতৃত্বকালীন রোগের জন্য",
     "workforce.employee.aid.reason.info.accident":"দুর্ঘটনার জন্য",

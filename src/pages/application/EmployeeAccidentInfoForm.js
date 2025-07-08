@@ -74,7 +74,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
   const handleDiseaseChange = (event) => {
     const value = event.target.value;
     setSelectedDiseases(value);
-    handleChange("cronicDiseaseType", value);
+    handleChange("diseaseType", value);
   };
 
   const handleAdmittedChange = (event) => {
@@ -90,7 +90,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
           <FormattedMessage id="workforce.employee.accident.info.title" />
         </Typography>
 
-        <RadioGroup column value={formData?.employeeAccidentInfo?.accidentType || ""} onChange={handleOptionChange}>
+        <RadioGroup column value={formData?.employeeAccidentInfo?.accidentType || "accident"} onChange={handleOptionChange}>
           <FormControlLabel value="disease" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.employee.aid.reason.info.cronic" />} />
           <FormControlLabel
             value="accident"
@@ -104,17 +104,6 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
         {selectedOption === "disease" && (
           <Grid container spacing={1}>
             <Grid item xs={6} className={classes.item}>
-              {/* <FormControl fullWidth>
-                <InputLabel>Disease Name(s)</InputLabel>
-                <Select multiple value={selectedDiseases} onChange={handleDiseaseChange} renderValue={(selected) => selected.join(", ")}>
-                  {diseaseOptions.map((disease) => (
-                    <MenuItem key={disease} value={disease}>
-                      <Checkbox checked={selectedDiseases.indexOf(disease) > -1} color="primary" />
-                      <Typography>{disease}</Typography>
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl> */}
               <DiseaseMultiSelectPicker
                 value={formData?.employeeAccidentInfo?.cronicDiseaseType || []}
                 selectedDiseases={selectedDiseases}
@@ -122,14 +111,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData }) => {
                 // otherDiseaseValue={formData?.employeeAccidentInfo?.otherDisease || ""}
                 // onOtherDiseaseChange={(v) => handleChange("otherDisease", v)}
               />
-              {/* <DiseaseMultiSelectPicker
-                modulesManager={modulesManager}
-                value={formData?.employeeAccidentInfo?.cronicDiseaseType || []}
-                otherValue={formData?.employeeAccidentInfo?.otherDisease || ""}
-                onChange={(selected) => handleChange("diseaseType", selected)}
-                onOtherChange={(value) => handleChange("otherDisease", value)}
-                readOnly={false}
-              /> */}
+              
             </Grid>
 
             {selectedDiseases.includes("Others") && (

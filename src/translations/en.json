@@ -318,6 +318,7 @@
     "workforce.employee.account.info.routingNumber": "Routing Number",
     "workforce.employee.account.info.accountHolderName": "Account Holder Name",
     "workforce.employee.account.info.accountNumber": "Account Number",
+    "workforce.employee.account.info.mobileNumber": "Mobile Number",
     "workforce.employee.account.info.status": "Status",
 
     "workforce.employee.services.employee.id": "Employee ID",

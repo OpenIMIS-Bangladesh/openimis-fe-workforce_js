@@ -23,7 +23,7 @@ const diseaseOptions = [
   "Others",
 ];
 
-const DiseaseMultiSelectPicker = ({ value = [], onChange, selectedDiseases, onOtherDiseaseChange }) => {
+const DiseaseMultiSelectPicker = ({ value = [], onChange, selectedDiseases, onOtherDiseaseChange,otherDiseaseValue }) => {
   const handleSelectChange = (event) => {
     const selected = event.target.value;
 
@@ -51,7 +51,7 @@ const DiseaseMultiSelectPicker = ({ value = [], onChange, selectedDiseases, onOt
         </Select>
       </FormControl>
 
-      {selectedDiseases.includes("Others") && (
+      {/* {selectedDiseases.includes("Others") && (
         <TextField
           fullWidth
           label="Specify Other Disease"
@@ -59,7 +59,7 @@ const DiseaseMultiSelectPicker = ({ value = [], onChange, selectedDiseases, onOt
           onChange={(e) => onOtherDiseaseChange(e.target.value)}
           margin="normal"
         />
-      )}
+      )} */}
     </>
   );
 };
