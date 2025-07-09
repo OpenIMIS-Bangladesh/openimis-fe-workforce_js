@@ -7,7 +7,7 @@ import clsx from "clsx";
 import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
-import CustomDateTimePicker from "../../pickers/CustomDatePicker";
+// import CustomDateTimePicker from "../../pickers/CustomDatePicker";
 
 const useStyles = makeStyles((theme) => ({
   container: {
