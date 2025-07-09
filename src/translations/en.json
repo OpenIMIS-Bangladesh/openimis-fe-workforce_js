@@ -499,7 +499,24 @@
     "workforce.application.otherInfo": "Other Info (If Have)",
     "workforce.application.nidVerify.loading": "Your information is verifing from LIMS",
      "workforce.application.nidVerify.success": "Your information has been successfully verified from LIMS",
-    "workforce.application.nidVerify.error": "Your information has  been failed to verified from LIMS ",
+    "workforce.application.nidVerify.error": "Your information has  been failed to verified from LIMS",
+    "workforce.application.labourHeadingOne": "Personal information",
+    "workforce.application.labourHeadingTwo": "Family information",
+    "workforce.application.account.bank": "To get assistance through the bank",
+    "workforce.application.account.mobile": "To get help from mobile banking",
+    "workforce.application.account.mobile.operator": "Mobile banking operator",
+    "workforce.application.account.mobile.operator.msg": "The mobile number you provide must be registered with your National Identity Card (NID)",
+    "workforce.employee.accident.info.hospitalName": "Hospital name",
+    "workforce.employee.accident.info.admitDate": "admit date",
+    "workforce.employee.accident.info.releaseDate": "Release date",
+    "workforce.employee.accident.info.doctorName": "Doctor's name",
+    "workforce.application.accident.hospitalized": "Was admitted to the hospital?",
+    "workforce.application.accident.accidentPlace": "Accident Place",
+    "workforce.application.accident.dateOfDiagnosis": "Date of diagnosis",
+    "workforce.application.otherDieses.": "Mention other diseases",
+    "workforce.application.disease.name": "Disease name",
+    
+
 
     "workforce.employee.nid_or_birth_certificate":"Nid/BirthCertificate No.",
 

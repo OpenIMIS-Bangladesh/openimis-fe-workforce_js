@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 
 const diseaseOptions = [
 "ডায়াবেটিস",
@@ -34,12 +35,19 @@ const DiseaseMultiSelectPicker = ({ value = [], onChange, selectedDiseases, onOt
   return (
     <>
       <FormControl fullWidth>
-        <InputLabel>রোগের নাম</InputLabel>
+      <InputLabel>
+        <FormattedMessage
+          id="workforce.application.disease.name"
+          defaultMessage="রোগের নাম"
+          module="workforce"
+        />
+      </InputLabel>
         <Select
           multiple
           value={selectedDiseases}
           onChange={onChange}
           renderValue={(selected) => selected.join(", ")}
+          required
         >
           {diseaseOptions.map((disease) => (
             <MenuItem key={disease} value={disease}>

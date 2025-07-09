@@ -348,7 +348,23 @@
     "workforce.application.nidVerify.loading": "আপনার তথ্যাটি LIMS থেকে যাচাই করা হচ্ছে",
     "workforce.application.nidVerify.success": "আপনার তথ্যাটি LIMS থেকে সফলভাবে যাচাই করা হয়েছে",
     "workforce.application.nidVerify.error": "আপনার তথ্যটি LIMS থেকে যাচাই করা সম্ভব হয়নি",
-    
+    "workforce.application.labourHeadingOne": "ব্যক্তিগত তথ্য",
+    "workforce.application.labourHeadingTwo": "পারিবারিক তথ্য",
+    "workforce.application.account.bank": "ব্যাংকের মাধ্যমে সহায়তা পেতে",
+    "workforce.application.account.mobile": "মোবাইল ব্যাংকিং থেকে সহায়তা পেতে",
+    "workforce.application.account.mobile.operator": "মোবাইল ব্যাংকিং অপারেটর",
+    "workforce.application.account.mobile.operator.msg": "আপনার প্রদত্ত মোবাইল নম্বরটি অবশ্যই আপনার জাতীয় পরিচয়পত্রের (NID) সাথে নিবন্ধিত থাকতে হবে",
+    "workforce.employee.accident.info.hospitalName": "হাসপাতালের নাম",
+    "workforce.employee.accident.info.admitDate": "ভর্তির ডেট",
+    "workforce.employee.accident.info.releaseDate": "রিলিজ ডেট",
+    "workforce.employee.accident.info.doctorName": "ডাক্তারের নাম",
+    "workforce.application.accident.hospitalized": "হাসপাতালে ভর্তি হয়েছিলেন?",
+    "workforce.application.accident.accidentPlace": "দুর্ঘটনার স্থান",
+    "workforce.application.accident.dateOfDiagnosis": "রোগ নির্ণয়ের তারিখ",
+    "workforce.application.accident.": "অন্যান্য রোগ উল্লেখ করুন",
+    "workforce.application.disease.name": "রোগের নাম",
+
+
 
     "workforce.office.dol":"শ্রম অধিদপ্তর",
     "workforce.office.dife":"কলকারখানা ও প্রতিষ্ঠান পরিদর্শন অধিদপ্তর",

@@ -134,6 +134,7 @@ class AccidentInfoSearcher extends Component {
     const formatters = [
       (organizationemployee) => organizationemployee.injuryType,
       (organizationemployee) => organizationemployee.accidentDate,
+      (organizationemployee) => organizationemployee.accidentPlace,
       (organizationemployee) => organizationemployee.accidentType,
       (organizationemployee) => organizationemployee.dutyStatus,
       (organizationemployee) => organizationemployee.inOutsideFactory,
