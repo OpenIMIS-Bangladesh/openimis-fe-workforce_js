@@ -76,7 +76,7 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
               <Typography variant="body2" color="textSecondary" style={{ marginBottom: 8 }}>
                 <FormattedMessage id="workforce.application.account.mobile.operator.msg" module="workforce" />
               </Typography>
-                <Grid container spacing={2}>
+                <Grid mt-4 container spacing={2}>
                   <Grid item xs={6} className={classes.item}>
                     <MobileBankingPicker
                       value={formData?.employeeAccountInfoForm?.bankingOptions || ""}
@@ -85,19 +85,7 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                       onChange={(v) => handleChange("bankingOptions", v, "employeeAccountInfoForm")}
                       readOnly={false}
                     />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2}>
-                  <Grid item xs={6} className={classes.item}>
-                    <TextInput
-                      label="workforce.employee.account.info.accountHolderName"
-                      value={formData?.employeeBankInfo?.accountHolderName || ""}
-                      onChange={(v) => handleChange("accountHolderName", v, "employeeBankInfo")}
-                      required
-                      readOnly={false}
-                    />
-                  </Grid>
-
+                  </Grid>             
                   <Grid item xs={6} className={classes.item}>
                     <TextInput
                       label="workforce.employee.account.info.mobileNumber"
@@ -107,6 +95,18 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                       readOnly={false}
                     />
                   </Grid>
+                </Grid>
+                <Grid container spacing={2}>
+                  {/* <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.employee.account.info.accountHolderName"
+                      value={formData?.employeeBankInfo?.accountHolderName || ""}
+                      onChange={(v) => handleChange("accountHolderName", v, "employeeBankInfo")}
+                      required
+                      readOnly={false}
+                    />
+                  </Grid> */}
+
                 </Grid>
               </>
             )}

@@ -297,7 +297,7 @@
     "workforce.employee.accident.info.timeOfAccident": "Time Of Accident",
     "workforce.employee.accident.info.typeOfAccident": "Type Of Accident",
     "workforce.employee.accident.info.dutyStatus": "Duty Status",
-    "workforce.employee.accident.info.insideOutsideFactory": "Inside/Outside Factory",
+    "workforce.employee.accident.info.insideOutsideFactory": "Under what circumstances did the accident occur?",
     "workforce.employee.accident.info.reJoiningDate": "Re-Joining Date",
 
     "workforce.employee.accident.info.application.injuryType": "Injury Type",
@@ -502,8 +502,8 @@
     "workforce.application.nidVerify.error": "Your information has  been failed to verified from LIMS",
     "workforce.application.labourHeadingOne": "Personal information",
     "workforce.application.labourHeadingTwo": "Family information",
-    "workforce.application.account.bank": "To get assistance through the bank",
-    "workforce.application.account.mobile": "To get help from mobile banking",
+    "workforce.application.account.bank": "Want to get help through the bank?",
+    "workforce.application.account.mobile": "Want to get assistance through mobile banking?",
     "workforce.application.account.mobile.operator": "Mobile banking operator",
     "workforce.application.account.mobile.operator.msg": "The mobile number you provide must be registered with your National Identity Card (NID)",
     "workforce.employee.accident.info.hospitalName": "Hospital name",
@@ -515,6 +515,8 @@
     "workforce.application.accident.dateOfDiagnosis": "Date of diagnosis",
     "workforce.application.otherDieses.": "Mention other diseases",
     "workforce.application.disease.name": "Disease name",
+    "workforce.application.disease.timeOfAccident": "Accident Time",
+
     
 
 

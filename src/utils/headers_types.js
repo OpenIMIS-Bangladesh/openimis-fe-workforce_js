@@ -41,7 +41,6 @@
     "workforce.employee.name",
     "workforce.employee.application.factoryName",
     "workforce.employee.application.applicationType",
-    "workforce.employee.application.moneyAmount",
     "workforce.employee.application.status",
     component.isShowHistory() ? "workforce.version" : "",
   ];

@@ -199,7 +199,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
         {/* Keep your accident section as is */}
         {selectedOption === "accident" && (
           <Grid container spacing={2}>
-            <Grid item xs={6} className={classes.item}>
+            {/* <Grid item xs={6} className={classes.item}>
               <EmployeeInjuryTypePicker
                 value={formData?.employeeAccidentInfo?.injuryType || ""}
                 label={<FormattedMessage id="workforce.employee.accident.info.injuryType" module="workforce" />}
@@ -207,7 +207,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                 readOnly={false}
                 applicationType={applicationType}
               />
-            </Grid>
+            </Grid> */}
               <Grid item xs={6} className={classes.item}>
               <EmployeeAccidentTypePicker
                 value={formData?.employeeAccidentInfo?.accidentType || ""}
@@ -215,6 +215,14 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                 required
                 onChange={(v) => handleChange("accidentType", v)}
                 readOnly={false}
+              />
+            </Grid>
+              <Grid item xs={6} className={classes.item}>
+              <TextInput
+                label={"workforce.application.accident.accidentPlace"}
+                value={formData?.employeeAccidentInfo?.accidentPlace || ""}
+                onChange={(v) => handleChange("accidentPlace", v)}
+                required
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
@@ -228,14 +236,17 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
-              <TextInput
-                label={"workforce.application.accident.accidentPlace"}
-                value={formData?.employeeAccidentInfo?.accidentPlace || ""}
-                onChange={(v) => handleChange("accidentPlace", v)}
+              <PublishedComponent
+                pubRef="core.DatePicker"
+                label={"workforce.employee.accident.info.timeOfAccident"}
+                value={formData?.employeeAccidentInfo?.accidentTime || ""}
+                onChange={(v) => handleChange("accidentTime", v)}
+                readOnly={false}
                 required
               />
             </Grid>
-            <Grid item xs={6} className={classes.item}>
+          
+            {/* <Grid item xs={6} className={classes.item}>
               <EmployeeDutyStatusPicker
                 value={formData?.employeeAccidentInfo?.dutyStatus || ""}
                 label={<FormattedMessage id="workforce.employee.accident.info.dutyStatus" module="workforce" />}
@@ -243,7 +254,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                 onChange={(v) => handleChange("dutyStatus", v)}
                 readOnly={false}
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={6} className={classes.item}>
               <EmployeeInsideOutsideFactoryPicker
                 value={formData?.employeeAccidentInfo?.inOutsideFactory || ""}
