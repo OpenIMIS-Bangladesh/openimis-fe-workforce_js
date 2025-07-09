@@ -380,14 +380,6 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
       ),
     },
     {
-      label: "workforce.application.steps.childInfo",
-      content: (
-        <Box mt={0}>
-          <EmployeeChildrenDetailsForm handleChange={(key, value) => handleChange(key, value, "employeeChildrenInfo")} formData={formData} />
-        </Box>
-      ),
-    },
-    {
       label: "workforce.application.steps.upload.documents",
       content: (
         <Box mt={0}>
@@ -402,6 +394,16 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
     },
     ...(applicationForSelf === "no"
       ? [
+          {
+            label: "workforce.application.steps.childInfo",
+            content: (
+              <Box mt={0}>
+                  {formData?.applicationForSelf === "no" && (
+                <EmployeeChildrenDetailsForm handleChange={(key, value) => handleChange(key, value, "employeeChildrenInfo")} formData={formData} />
+                  )}
+                </Box>
+            ),
+          },
           {
             label: "workforce.application.steps.dependent",
             content: (
