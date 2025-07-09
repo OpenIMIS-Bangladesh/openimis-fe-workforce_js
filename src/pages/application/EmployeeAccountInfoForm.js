@@ -14,8 +14,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const mobileBankingOptions = ["Bkash", "Nagad", "Rocket"];
-
 const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -41,43 +39,51 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
           <Paper className={classes.paper} elevation={0}>
             <Box mb={2}>
               <FormControl component="fieldset">
-                <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
+                <Typography textAlign="center" variant="subtitle1" style={{ fontWeight: "bold", textAlign: "center", width: "100%" }}>
                   <FormattedMessage id="workforce.account.selection.type" defaultMessage="Select Account Type" />
                 </Typography>
                 <RadioGroup row value={accountType} onChange={handleAccountTypeChange}>
-                  <FormControlLabel value="bank" control={<Radio color="primary" />} label="ব্যাংকের মাধ্যমে সহায়তা পেতে" />
-                  <FormControlLabel value="mobile" control={<Radio color="primary" />} label="মোবাইল ব্যাংকিং থেকে সহায়তা পেতে" />
+                  <FormControlLabel
+                    value="bank"
+                    control={<Radio color="primary" />}
+                    label={
+                      <FormattedMessage
+                        id="workforce.application.account.bank"
+                        defaultMessage="ব্যাংকের মাধ্যমে সহায়তা পেতে"
+                        module="workforce"
+                      />
+                    }
+                  />
+                  <FormControlLabel
+                    value="mobile"
+                    control={<Radio color="primary" />}
+                    label={
+                      <FormattedMessage
+                        id="workforce.application.account.mobile"
+                        defaultMessage="মোবাইল ব্যাংকিং থেকে সহায়তা পেতে"
+                        module="workforce"
+                      />
+                    }
+                  />
                 </RadioGroup>
               </FormControl>
             </Box>
 
             {accountType === "mobile" && (
               <>
-              <Typography variant="body2" color="textSecondary" style={{ marginBottom: 8 }}>
-                আপনার প্রদত্ত মোবাইল নম্বরটি অবশ্যই আপনার জাতীয় পরিচয়পত্রের (NID) সাথে নিবন্ধিত থাকতে হবে।
+              <Typography variant="body2" color="textSecondary" style={{ marginBottom: 8, color:"red"}}>
+                <FormattedMessage id="workforce.application.account.mobile.operator.msg" module="workforce" />
               </Typography>
-                <Grid container spacing={2}>
+                <Grid mt-4 container spacing={2}>
                   <Grid item xs={6} className={classes.item}>
                     <MobileBankingPicker
                       value={formData?.employeeAccountInfoForm?.bankingOptions || ""}
-                      label={<FormattedMessage id="মোবাইল ব্যাংকিং অপারেটর" module="workforce" />}
+                      label={<FormattedMessage id="workforce.application.account.mobile.operator" module="workforce" />}
                       required
                       onChange={(v) => handleChange("bankingOptions", v, "employeeAccountInfoForm")}
                       readOnly={false}
                     />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2}>
-                  <Grid item xs={6} className={classes.item}>
-                    <TextInput
-                      label="workforce.employee.account.info.accountHolderName"
-                      value={formData?.employeeBankInfo?.accountHolderName || ""}
-                      onChange={(v) => handleChange("accountHolderName", v, "employeeBankInfo")}
-                      required
-                      readOnly={false}
-                    />
-                  </Grid>
-
+                  </Grid>             
                   <Grid item xs={6} className={classes.item}>
                     <TextInput
                       label="workforce.employee.account.info.mobileNumber"
@@ -87,6 +93,18 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                       readOnly={false}
                     />
                   </Grid>
+                </Grid>
+                <Grid container spacing={2}>
+                  {/* <Grid item xs={6} className={classes.item}>
+                    <TextInput
+                      label="workforce.employee.account.info.accountHolderName"
+                      value={formData?.employeeBankInfo?.accountHolderName || ""}
+                      onChange={(v) => handleChange("accountHolderName", v, "employeeBankInfo")}
+                      required
+                      readOnly={false}
+                    />
+                  </Grid> */}
+
                 </Grid>
               </>
             )}

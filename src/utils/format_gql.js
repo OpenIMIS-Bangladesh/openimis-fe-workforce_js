@@ -328,6 +328,7 @@ export function formatWorkforceEmployeeAccidentInfoGQL(employee) {
   return `
     ${employee.injuryType ? `injuryType: "${formatGQLString(employee.injuryType)}"` : ""}
     ${employee.accidentDate ? `accidentDate: "${formatGQLString(employee.accidentDate)}"` : ""}
+    ${employee.accidentPlace ? `accidentPlace: "${formatGQLString(employee.accidentPlace)}"` : ""}
     ${employee.accidentTime ? `accidentTime: "${employee.accidentTime}"` : ""}
     ${employee.accidentType ? `accidentType: "${employee.accidentType}"` : ""}
     ${employee.dutyStatus ? `dutyStatus: "${employee.dutyStatus}"` : ""}

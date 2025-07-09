@@ -9,18 +9,18 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 
 const diseaseOptions = [
-  "Diabetes",
-  "Hypertension",
-  "Asthma",
-  "Heart Disease",
-  "Kidney Disease",
-  "Cancer",
-  "Tuberculosis",
-  "Arthritis",
-  "Stroke",
-  "Others",
+"ডায়াবেটিস",
+"উচ্চ রক্তচাপ",
+"হাঁপানি",
+"হৃদরোগ",
+"কিডনি রোগ",
+"ক্যান্সার",
+"যক্ষ্মা",
+"স্ট্রোক",
+"অন্যান্য"
 ];
 
 const DiseaseMultiSelectPicker = ({ value = [], onChange, selectedDiseases, onOtherDiseaseChange,otherDiseaseValue }) => {
@@ -35,12 +35,19 @@ const DiseaseMultiSelectPicker = ({ value = [], onChange, selectedDiseases, onOt
   return (
     <>
       <FormControl fullWidth>
-        <InputLabel>রোগের নাম</InputLabel>
+      <InputLabel>
+        <FormattedMessage
+          id="workforce.application.disease.name"
+          defaultMessage="রোগের নাম"
+          module="workforce"
+        />
+      </InputLabel>
         <Select
           multiple
           value={selectedDiseases}
           onChange={onChange}
           renderValue={(selected) => selected.join(", ")}
+          required
         >
           {diseaseOptions.map((disease) => (
             <MenuItem key={disease} value={disease}>

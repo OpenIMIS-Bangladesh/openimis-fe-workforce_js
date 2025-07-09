@@ -19,7 +19,19 @@ const MobileBankingPicker = ({
   const { formatMessage } = useTranslations("workforce");
 
   // Adjust the options to match the EMPLOYEE_LIFE_STATUS format
-  const EMPLOYEE_LIFE_STATUS = ["BKash", "Nagad","Rocket"];
+  const EMPLOYEE_LIFE_STATUS = [ "নগদ",
+  "রকেট",
+  "উপায়",
+  "শিওরক্যাশ",
+  "সেলফিন",
+  "ট্যাপ",
+  "মাই ক্যাশ",
+  "এমক্যাশ",
+  "ফার্স্ট ক্যাশ",
+  "ওকে ওয়ালেট",
+  "টেলিক্যাশ",
+  "ইসলামিক ওয়ালেট",
+  "মেঘনা পে"];
 
   // Find the selected option
   const selectedOption = useMemo(

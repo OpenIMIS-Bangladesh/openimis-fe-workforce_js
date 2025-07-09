@@ -64,6 +64,7 @@ class EditAccidentInfoPage extends Component {
 
     const accidentInfoData = {
       accidentDate: stateEdited?.accidentDate || stateEdited.accidentDate,
+      accidentPlace: stateEdited?.accidentPlace || stateEdited.accidentPlace,
       injuryType: stateEdited?.injuryType || stateEdited.injuryType,
       accidentTime: stateEdited?.accidentTime || stateEdited.accidentTime,
       accidentType: stateEdited?.accidentType || stateEdited.accidentType,

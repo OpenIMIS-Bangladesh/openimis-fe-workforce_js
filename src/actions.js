@@ -583,6 +583,7 @@ export function fetchAccidentInfosSummary(mm, filters) {
     "id",
     "injuryType",
     "accidentDate",
+    "accidentPlace",
     "accidentTime",
     "accidentType",
     "dutyStatus",

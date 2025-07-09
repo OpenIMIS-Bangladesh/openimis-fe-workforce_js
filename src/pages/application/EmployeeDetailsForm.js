@@ -56,7 +56,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
             </Box>
               
                 {/* <p><b>Personal Info </b></p> */}
-                <Typography><b> ব্যক্তিগত তথ্য</b></Typography> 
+                <Typography><b><FormattedMessage id="workforce.application.labourHeadingOne" module="workforce" /></b></Typography> 
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
               
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
@@ -185,7 +185,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
 
             </Grid>
                 {/* <p><b>Family Info</b></p> */}
-                <Typography><b>পারিবারিক তথ্য</b></Typography> 
+                <Typography><b><FormattedMessage id="workforce.application.labourHeadingTwo" module="workforce" /></b></Typography> 
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
               
                <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
