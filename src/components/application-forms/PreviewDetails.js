@@ -123,6 +123,7 @@ import {
       const personalFields = ["nameEn","nameBn","fatherNameEn","fatherNameBn", "motherNameEn","motherNameBn", "spouseName", "citizenship", "nid", "birthCertificate", "birthDate", "insuranceNumber", "gender"];
       const contactFields = ["email", "phoneNumber", "presentAddress", "permanentAddress", "presentLocation", "permanentLocation"];
       const statusFields = ["birthDate", "deathDate", "lifeStatus", "maritalStatus","monthlyEarning"];
+      const accidentFields = ["diseaseType", "diagnosisDate", "hospitalName", "admitDate","releaseDate","hospitalDoctorName"];
     
       const pickFields = (fields) => {
         return fields.reduce((acc, field) => {
@@ -146,12 +147,14 @@ import {
       const organizationInfo = omitFields(employeeData, [...personalFields, ...contactFields, ...statusFields]);
       const contactInfo = pickFields(contactFields);
       const statusInfo = pickFields(statusFields);
+      const accidentInfo = pickFields(accidentFields);
     
       return (
         <>
           {renderSection("Personal Info", personalInfo)}
-          {renderSection("Organization Info", organizationInfo)}
+          {/* {renderSection("Organization Info", organizationInfo)} */}
           {renderSection("Status Info", statusInfo)}
+          {renderSection("Accident Info", accidentInfo)}
           {renderSection("Contact Info", contactInfo)}
         </>
       );
