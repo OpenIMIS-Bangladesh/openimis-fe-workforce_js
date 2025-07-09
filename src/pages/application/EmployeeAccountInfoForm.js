@@ -14,8 +14,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const mobileBankingOptions = ["Bkash", "Nagad", "Rocket"];
-
 const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -41,7 +39,7 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
           <Paper className={classes.paper} elevation={0}>
             <Box mb={2}>
               <FormControl component="fieldset">
-                <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
+                <Typography textAlign="center" variant="subtitle1" style={{ fontWeight: "bold", textAlign: "center", width: "100%" }}>
                   <FormattedMessage id="workforce.account.selection.type" defaultMessage="Select Account Type" />
                 </Typography>
                 <RadioGroup row value={accountType} onChange={handleAccountTypeChange}>
@@ -73,7 +71,7 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
 
             {accountType === "mobile" && (
               <>
-              <Typography variant="body2" color="textSecondary" style={{ marginBottom: 8 }}>
+              <Typography variant="body2" color="textSecondary" style={{ marginBottom: 8, color:"red"}}>
                 <FormattedMessage id="workforce.application.account.mobile.operator.msg" module="workforce" />
               </Typography>
                 <Grid mt-4 container spacing={2}>

@@ -353,7 +353,7 @@
     "workforce.application.account.bank": "ব্যাংকের মাধ্যমে সহায়তা পেতে চান?",
     "workforce.application.account.mobile": "মোবাইল ব্যাংকিংয়ের মাধ্যমে সহায়তা পেতে চান?",
     "workforce.application.account.mobile.operator": "মোবাইল ব্যাংকিং অপারেটর",
-    "workforce.application.account.mobile.operator.msg": "আপনার প্রদত্ত মোবাইল নম্বরটি অবশ্যই আপনার জাতীয় পরিচয়পত্রের (NID) সাথে নিবন্ধিত থাকতে হবে",
+    "workforce.application.account.mobile.operator.msg": "আপনার প্রদত্ত মোবাইল নম্বরটি অবশ্যই আপনার জাতীয় পরিচয়পত্র (NID)-এর সাথে নিবন্ধিত থাকতে হবে",
     "workforce.employee.accident.info.hospitalName": "হাসপাতালের নাম",
     "workforce.employee.accident.info.admitDate": "ভর্তির তারিখ",
     "workforce.employee.accident.info.releaseDate": "রিলিজের তারিখ",
