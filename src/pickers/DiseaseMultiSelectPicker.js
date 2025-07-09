@@ -11,16 +11,15 @@ import {
 } from "@material-ui/core";
 
 const diseaseOptions = [
-  "Diabetes",
-  "Hypertension",
-  "Asthma",
-  "Heart Disease",
-  "Kidney Disease",
-  "Cancer",
-  "Tuberculosis",
-  "Arthritis",
-  "Stroke",
-  "Others",
+"ডায়াবেটিস",
+"উচ্চ রক্তচাপ",
+"হাঁপানি",
+"হৃদরোগ",
+"কিডনি রোগ",
+"ক্যান্সার",
+"যক্ষ্মা",
+"স্ট্রোক",
+"অন্যান্য"
 ];
 
 const DiseaseMultiSelectPicker = ({ value = [], onChange, selectedDiseases, onOtherDiseaseChange,otherDiseaseValue }) => {

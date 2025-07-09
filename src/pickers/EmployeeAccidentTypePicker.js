@@ -20,7 +20,7 @@ const EmployeeAccidentTypePicker = ({
 
   // Adjust the options to match the EMPLOYEE_ACCIDENT_TYPE format
   // const EMPLOYEE_ACCIDENT_TYPE = ["Fire Accident", "Boiler Explosion","Burn Injury","Machinery","Electric Shock","Heavy Weight Fall","Commuting RTA","RTA","Others"];
-  const EMPLOYEE_ACCIDENT_TYPE = ["অগ্নি দুর্ঘটনা", "বয়লার বিস্ফোরণ","পোড়া আঘাত","যন্ত্রপাতি","বৈদ্যুতিক শক","ভারী ওজন পতন","আরটিএ যাতায়াত","আরটিএ","অন্যান্য"];
+  const EMPLOYEE_ACCIDENT_TYPE = ["অগ্নি দুর্ঘটনা", "বয়লার বিস্ফোরণ","পোড়া আঘাত","যন্ত্রপাতি","বৈদ্যুতিক শক","ভারী ওজন পতন","সড়ক যাতায়াত","অন্যান্য"];
 
   // Find the selected option
   const selectedOption = useMemo(
