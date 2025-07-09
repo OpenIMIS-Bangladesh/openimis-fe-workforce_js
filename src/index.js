@@ -94,6 +94,7 @@ import NotificationBar from "./components/app-bar/NotificationBar";
 import ActionsApplicationPage from "./pages/application-process/ActionsApplicationPage";
 import ResendApplicationPage from "./pages/application-process/ResendApplicationPage";
 import WorkforceEmployeeDesignationPage from "./pages/workforce-employee-designation/WorkforceEmployeeDesignationPage";
+import VerifyApplicationPage from "./pages/application-process/VerifyApplicationPage";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -282,7 +283,7 @@ const DEFAULT_CONFIG = {
     },
     { path: ROUTE_WORKFORCE_APPLICATIONS_PROCESS, component: ApplicationsProcessPage },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY, component: ApplicationProcessPage },
-    { path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY}/:application_uuid`, component: ApplicationProcessPage },
+    { path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY}/:application_uuid`, component: VerifyApplicationPage },
   ],
 
   "core.UnauthenticatedRouter": [

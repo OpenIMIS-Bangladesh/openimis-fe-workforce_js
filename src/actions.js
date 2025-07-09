@@ -1107,17 +1107,17 @@ export function fetchWorkforceDocument(mm, filters) {
     "path",
     "url",
     "status",
-    "approver{id}",
-    "workforceApplicationId",
     "documentType",
-
+    "holderType",
+    "holder",
+    "workforceApplication{id}"
   ];
   const payload = formatPageQueryWithCount(
     "workforceDocuments",
     filters,
     projections
   );
-  return graphql(payload, "WORKFORCE_ORGANIZATION");
+  return graphql(payload, "WORKFORCE_DOCUMENT");
 }
 
 export function createWorkforceDocument(

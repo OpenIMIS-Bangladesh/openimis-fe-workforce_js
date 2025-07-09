@@ -7,6 +7,7 @@ import clsx from "clsx";
 import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
+import CustomDateTimePicker from "../../pickers/CustomDatePicker";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -84,6 +85,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   onChange={(v) => handleChange("birthDate", v)}
                   readOnly={ false}
                 />
+                {/* <CustomDateTimePicker value={formData?.workforceEmployee.birthDate || "birthDate"} onChange={(v) => {handleChange("birthDate", v);console.log(v)}}/> */}
               </Grid>
 
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
