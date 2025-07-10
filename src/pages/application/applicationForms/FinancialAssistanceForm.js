@@ -1,20 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
-  Paper,
-  Box,
-  Typography,
-} from "@material-ui/core";
-import {
-  useModulesManager,
-  formatMutation,
-  decodeId,
-  FormattedMessage,
-} from "@openimis/fe-core";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography } from "@material-ui/core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -74,19 +61,10 @@ const steps = [
   "workforce.application.steps.upload.documents",
 ];
 
-const FinancialAssistanceForm = ({
-  modulesManager,
-  organizationType,
-  selectedApplicationType,
-  parsedApplicationData,
-}) => {
-  const employeeData = useSelector(
-    (state) => state.workforce["workforceEmployee"] ?? []
-  );
+const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApplicationType, parsedApplicationData }) => {
+  const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
-  const applicationId = useSelector(
-    (state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []
-  );
+  const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
@@ -96,10 +74,10 @@ const FinancialAssistanceForm = ({
   const [deathType, setDeathType] = useState("");
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
   const [nidOrBcn, setNidOrBcn] = useState({
-      nid: formData?.workforceEmployee?.nid || "",
-      birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
-    });
-  
+    nid: formData?.workforceEmployee?.nid || "",
+    birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
+  });
+
   const reduxState = useSelector((state) => state);
 
   const [formData, setFormData] = useState({
@@ -150,21 +128,17 @@ const FinancialAssistanceForm = ({
 
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
-    dispatch(
-      fetchWorkforceEmployee(modulesManager, [
-        `relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`,
-      ])
-    );
+    dispatch(fetchWorkforceEmployee(modulesManager, [`relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`]));
   };
 
   useEffect(() => {
-      if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
-        setFormData((prev) => ({
-          ...prev,
-          applicationId: applicationId[0].id,
-        }));
-      }
-    }, [applicationId]);
+    if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
+      setFormData((prev) => ({
+        ...prev,
+        applicationId: applicationId[0].id,
+      }));
+    }
+  }, [applicationId]);
 
   useEffect(() => {
     if (reduxState.core.user.username) {
@@ -178,7 +152,7 @@ const FinancialAssistanceForm = ({
       setFormData({
         id: parsedApplicationData?.id || "",
         workforceEmployee: {
-          id: employeeData?.id || "",
+          id: employeeData?.id|| reduxState.core.user.id || "",
           organization: employeeData.organization,
           nameEn: employeeData.firstNameEn || "",
           nameBn: employeeData.firstNameBn || "",
@@ -204,8 +178,7 @@ const FinancialAssistanceForm = ({
           maritalStatus: employeeData.maritalStatus || "",
           monthlyEarning: employeeData.monthlyEarning || "",
           uploadedNidFile: employeeData.uploadedNidFile || [],
-          uploadedBirthCertificateFile:
-            employeeData.uploadedBirthCertificateFile || [],
+          uploadedBirthCertificateFile: employeeData.uploadedBirthCertificateFile || [],
           permanentAddress: employeeData.permanentAddress || "",
           permanentLocation: employeeData.permanentLocation || "",
           presentLocation: employeeData.presentLocation || "",
@@ -213,11 +186,11 @@ const FinancialAssistanceForm = ({
         },
         company: employeeData.company || null,
         factory: employeeData.factory || null,
-        organizationType:parsedApplicationData?.organizationType || organizationType,
-        applicationType:parsedApplicationData?.applicationType || selectedApplicationType,
-        metadata:parsedApplicationData?.metadata || employeeData?.metadata || {},
-        dependents:parsedApplicationData?.employeeDependentInfo || employeeData?.dependents || {},
-        employeeBankInfo:parsedApplicationData?.employeeBankInfo ||employeeData?.employeeBankInfo || {},
+        organizationType: parsedApplicationData?.organizationType || organizationType,
+        applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
+        metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
+        dependents: parsedApplicationData?.employeeDependentInfo || employeeData?.dependents || {},
+        employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || {},
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData.employeeAccidentInfo || {},
       });
     }
@@ -271,36 +244,22 @@ const FinancialAssistanceForm = ({
         presentLocation: formData?.workforceEmployee?.presentLocation,
         permanentLocation: formData?.workforceEmployee?.permanentLocation,
 
-        id: formData?.workforceEmployee?.id,
+        id: formData?.workforceEmployee?.id|| reduxState.core.user.id,
       };
       console.log("Update Submitting formData:", formData);
-      if (workforceEmployeeData?.id) {
-              await dispatch(
-                updateWorkforceEmployee(
-                  workforceEmployeeData,
-                  `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-                )
-              );
-            }else{
-              await dispatch(
-                createWorkforceEmployee(
-                  workforceEmployeeData,
-                  `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-                )
-              );
-            }
+      await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
+      // if (workforceEmployeeData?.id) {
+      // } else {
+      //   await dispatch(createWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
+      // }
     } else if (nextStep === 2) {
       const createApplicationData = {
-        workforceEmployeeId:
-          formData?.workforceEmployee?.id ||
-          parsedApplicationData?.workforceEmployee?.id,
+        workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
         company: formData.company,
         factory: formData.factory,
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
-        employeeDesignationInfo: JSON.stringify(
-          formData.employeeDesignationInfo
-        ),
+        employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependent),
         employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo),
@@ -309,7 +268,7 @@ const FinancialAssistanceForm = ({
       };
 
       console.log({ createApplicationData });
-      if (!parsedApplicationData) {   
+      if (!parsedApplicationData) {
         const applicationMutation = await formatMutation(
           "createWorkforceApplication",
           formatApplicationeGQL(createApplicationData),
@@ -317,25 +276,13 @@ const FinancialAssistanceForm = ({
         );
         const applicationClientMutationId = applicationMutation.clientMutationId;
         console.log("applicationClientMutationId", applicationClientMutationId);
-        await dispatch(
-          createApplication(
-            applicationMutation,
-            `Created workforce application ${formData.firstNameEn}`
-          )
-        );
-  
-        await dispatch(
-          fetchApplicationId(modulesManager, applicationClientMutationId)
-        );
-      }else{
-        const updateApplicationData = {id:parsedApplicationData?.id,...createApplicationData}
-                console.log("i am from update",updateApplicationData)
-                dispatch(
-                updateApplication(
-                  updateApplicationData,
-                  `update workforce application ${formData.firstNameEn}`
-                )
-              );
+        await dispatch(createApplication(applicationMutation, `Created workforce application ${formData.firstNameEn}`));
+
+        await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
+      } else {
+        const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
+        console.log("i am from update", updateApplicationData);
+        dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
       }
     } else if (nextStep === 1) {
       const createApplicationData = {
@@ -344,25 +291,20 @@ const FinancialAssistanceForm = ({
       };
     } else {
       const updateApplicationData = {
-              // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
-              id: safeApplicationId(applicationId, parsedApplicationData),
-              workforceEmployeeId: formData?.workforceEmployee.id ||parsedApplicationData?.workforceEmployee?.id,
-              company: formData.company,
-              factory: formData.factory,
-              organizationType: organizationType ||parsedApplicationData?.organizationType,
-              applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
-              employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
-              employeeDependentInfo:JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
-              employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
-              metadata:JSON.stringify(formData.metadata),
-              status: WORKFORCE_STATUS.DRAFT,
-            };
-      dispatch(
-        updateApplication(
-          updateApplicationData,
-          `update workforce application ${formData.firstNameEn}`
-        )
-      );
+        // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+        id: safeApplicationId(applicationId, parsedApplicationData),
+        workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
+        company: formData.company,
+        factory: formData.factory,
+        organizationType: organizationType || parsedApplicationData?.organizationType,
+        applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+        employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
+        employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+        employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+        metadata: JSON.stringify(formData.metadata),
+        status: WORKFORCE_STATUS.DRAFT,
+      };
+      dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
     }
   };
 
@@ -391,28 +333,23 @@ const FinancialAssistanceForm = ({
   };
 
   const handleSubmit = () => {
-     const updateApplicationData = {
-              // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
-              id: safeApplicationId(applicationId, parsedApplicationData),
-              workforceEmployeeId: formData?.workforceEmployee.id ||parsedApplicationData?.workforceEmployee?.id,
-              company: formData.company,
-              factory: formData.factory,
-              organizationType: organizationType || parsedApplicationData?.organizationType,
-              applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
-              employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
-              employeeDependentInfo:JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
-              employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
-              metadata:JSON.stringify(formData.metadata),
-              status: WORKFORCE_STATUS.NEW,
-            };
-      console.log({updateApplicationData})
-      dispatch(
-        updateApplication(
-          updateApplicationData,
-          `update workforce application`
-        )
-      );
-   
+    const updateApplicationData = {
+      // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+      id: safeApplicationId(applicationId, parsedApplicationData),
+      workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
+      company: formData.company,
+      factory: formData.factory,
+      organizationType: organizationType || parsedApplicationData?.organizationType,
+      applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+      employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
+      employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+      employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+      metadata: JSON.stringify(formData.metadata),
+      status: WORKFORCE_STATUS.NEW,
+    };
+    console.log({ updateApplicationData });
+    dispatch(updateApplication(updateApplicationData, `update workforce application`));
+
     // setShowPreview(true);
     // setIsSubmitted(true);
   };
@@ -452,7 +389,7 @@ const FinancialAssistanceForm = ({
     return (
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={0}>
-          <NidVerification formData={formData} nidOrBcn={nidOrBcn} setDisableConfirmSubmit={setDisableConfirmSubmit}/>
+          <NidVerification formData={formData} nidOrBcn={nidOrBcn} setDisableConfirmSubmit={setDisableConfirmSubmit} />
           <div className={classes.buttonContainer}>
             <Button
               variant="contained"
@@ -461,13 +398,10 @@ const FinancialAssistanceForm = ({
               onClick={() => {
                 setShowVerifyNid(false);
                 setIsSubmitted(true);
-                handleSubmit()
+                handleSubmit();
               }}
             >
-              <FormattedMessage
-                module="workforce"
-                id="workforce.confirm.submit"
-              />
+              <FormattedMessage module="workforce" id="workforce.confirm.submit" />
             </Button>
           </div>
         </Paper>
@@ -480,10 +414,7 @@ const FinancialAssistanceForm = ({
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={0}>
           <Typography variant="h5" align="center" color="primary">
-            <FormattedMessage
-              module="workforce"
-              id="workforce.success.message"
-            />
+            <FormattedMessage module="workforce" id="workforce.success.message" />
           </Typography>
         </Paper>
       </div>
@@ -495,11 +426,7 @@ const FinancialAssistanceForm = ({
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>
-        <Stepper
-          activeStep={activeStep}
-          alternativeLabel
-          style={{ padding: "0px" }}
-        >
+        <Stepper activeStep={activeStep} alternativeLabel style={{ padding: "0px" }}>
           {steps.map((label) => (
             <Step key={label}>
               <StepLabel>
@@ -518,47 +445,24 @@ const FinancialAssistanceForm = ({
           />
         ) : activeStep === 1 ? (
           <Box mt={0}>
-            <EmployeeDependentForm
-              dependents={formData}
-              handleChange={handleChange}
-              addDependent={addDependent}
-              removeDependent={removeDependent}
-            />
+            <EmployeeDependentForm dependents={formData} handleChange={handleChange} addDependent={addDependent} removeDependent={removeDependent} />
           </Box>
         ) : activeStep === 2 ? (
           <Box mt={0}>
             <EmployeeDetailsForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "workforceEmployee")
-              }
+              handleChange={(key, value) => handleChange(key, value, "workforceEmployee")}
               formData={formData}
               setNidOrBcn={setNidOrBcn}
               nidOrBcn={nidOrBcn}
             />
-            {/* <EmployeeAccidentInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeAccidentInfo")
-              }
-              formData={formData}
-            /> */}
           </Box>
         ) : activeStep === 3 ? (
           <Box mt={0}>
-            <EmployeeLocationForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "workforceEmployee")
-              }
-              formData={formData}
-            />
+            <EmployeeLocationForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />
           </Box>
         ) : activeStep === 4 ? (
           <Box mt={0}>
-            <EmployeeAccountInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeBankInfo")
-              }
-              formData={formData}
-            />
+            <EmployeeAccountInfoForm handleChange={(key, value) => handleChange(key, value, "employeeBankInfo")} formData={formData} />
           </Box>
         ) : (
           <Box mt={0}>
@@ -581,7 +485,7 @@ const FinancialAssistanceForm = ({
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" onClick={()=>setShowPreview(true)}>
+            <Button variant="contained" color="primary" onClick={() => setShowPreview(true)}>
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}

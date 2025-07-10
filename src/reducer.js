@@ -261,6 +261,13 @@ function reducer(
     employeeAccident: null,
     employeeAccidentPageInfo: { totalCount: 0 },
 
+    ///workforce document ///
+    fetchingDocument: false,
+    errorDocument: null,
+    fetchedDocument: false,
+    document: [],
+    documentPageInfo: { totalCount: 0 },
+
     ////employee Account states
     fetchingEmployeeAccounts: false,
     errorEmployeeAccounts: null,
@@ -383,6 +390,23 @@ function reducer(
           })
         )?.[0],
         errorOrganization: formatGraphQLError(action.payload),
+      };
+      
+    case "WORKFORCE_DOCUMENT_REQ":
+      return {
+        ...state,
+        fetchingDocument: true,
+        fetchedDocument: false,
+        document: null,
+        errorDocument: null,
+      };
+    case "WORKFORCE_DOCUMENT_RESP":
+      return {
+        ...state,
+        fetchingDocument: false,
+        fetchedDocument: true,
+        document: parseData(action.payload.data.workforceDocuments),
+        errorDocument: formatGraphQLError(action.payload),
       };
 
     case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATIONS_REQ":

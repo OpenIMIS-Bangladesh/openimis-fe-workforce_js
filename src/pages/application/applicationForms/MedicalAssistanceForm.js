@@ -327,17 +327,6 @@ const MedicalAssistanceForm = ({
         );
       }
     } else {
-      console.log("hello faltu");
-      // const filters = [`id: "${decodeId(applicationId[0].id)}"`];
-      //  dispatch(getParsedApplication(modulesManager, filters))
-      //   // .then((parsedData) => {
-      //   //   // Use the parsed data
-      //   //   console.log("Parsed application:", parsedData);
-      //   // })
-      //   // .catch((error) => {
-      //   //   // Handle error
-      //   //   console.error("Failed to get parsed application:", error);
-      //   // });
       console.clear();
       console.log(applicationId);
       const updateApplicationData = {
@@ -475,7 +464,6 @@ const MedicalAssistanceForm = ({
           }
           formData={formData}
           setFormData={setFormData}
-          applicationType={"medicalAssistance"}
         />
       ),
     },

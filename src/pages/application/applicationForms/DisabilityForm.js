@@ -172,7 +172,7 @@ const DisabilityForm = ({
       setFormData({
         id: parsedApplicationData?.id || "",
         workforceEmployee: {
-          id: employeeData?.id || "",
+          id: employeeData?.id || reduxState.core.user.id || "",
           organization: employeeData.organization,
           nameEn: employeeData.firstNameEn || "",
           nameBn: employeeData.firstNameBn || "",
@@ -276,24 +276,24 @@ const DisabilityForm = ({
         maritalStatus: formData?.workforceEmployee?.maritalStatus,
         presentLocation: formData?.workforceEmployee?.presentLocation,
         permanentLocation: formData?.workforceEmployee?.permanentLocation,
-        id: formData?.workforceEmployee?.id,
+        id: formData?.workforceEmployee?.id || reduxState.core.user.id,
       };
       console.log("Update Submitting formData:", formData);
-      if (workforceEmployeeData?.id) {
-              await dispatch(
-                updateWorkforceEmployee(
-                  workforceEmployeeData,
-                  `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-                )
-              );
-      }else{
-              await dispatch(
-                createWorkforceEmployee(
-                  workforceEmployeeData,
-                  `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-                )
-              );
-      }
+      await dispatch(
+        updateWorkforceEmployee(
+          workforceEmployeeData,
+          `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+        )
+      );
+      // if (workforceEmployeeData?.id) {
+      // }else{
+      //         await dispatch(
+      //           createWorkforceEmployee(
+      //             workforceEmployeeData,
+      //             `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+      //           )
+      //         );
+      // }
     } else if (nextStep === 4) {
       console.log("Create application formData:", formData);
       const createApplicationData = {

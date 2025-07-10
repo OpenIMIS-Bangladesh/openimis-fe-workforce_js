@@ -15,11 +15,13 @@ import {
   Accordion,
   AccordionSummary,
 } from "@material-ui/core";
-import { journalize, FormattedMessage } from "@openimis/fe-core";
 import CloseIcon from "@material-ui/icons/Close";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage } from "@openimis/fe-core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { bindActionCreators } from "redux";
+import { fetchApplication, fetchWorkforceDocument } from "../../actions";
 
 const styles = (theme) => ({
   paper: {
@@ -45,25 +47,24 @@ const styles = (theme) => ({
     },
   },
   rootGrid: {
-    height: 'calc(100vh - 64px)', // Adjust if you have AppBar
-    overflow: 'hidden',
+    height: "calc(100vh - 64px)", // Adjust if you have AppBar
+    overflow: "hidden",
   },
   leftGrid: {
-    position: 'sticky',
+    position: "sticky",
     top: 0,
-    height: '100%',
-    overflowY: 'auto',
+    height: "100%",
+    overflowY: "auto",
     paddingRight: 8,
   },
   rightGrid: {
-    height: '100%',
-    overflowY: 'auto',
+    height: "100%",
+    overflowY: "auto",
     paddingLeft: 8,
   },
   cardSpacing: {
     marginBottom: theme.spacing(2),
   },
-  
 });
 
 class VerifyApplicationPage extends Component {
@@ -83,16 +84,15 @@ class VerifyApplicationPage extends Component {
         status: "rejected",
       },
     ];
-    
 
     this.state = {
-      applicationType: props?.application || {},
-      stateEdited: props.application?.workforceEmployee || {},
+      // applicationType: props?.application || {},
+      // stateEdited: props.application?.workforceEmployee || {},
       isSaved: false,
       preview: null,
       comment: "",
       mockFiles: mockFiles,
-      fileStates:mockFiles,
+      fileStates: mockFiles,
       // fileStates: mockFiles.map((file) => ({
       //   ...file,
       //   comment: "",
@@ -109,6 +109,12 @@ class VerifyApplicationPage extends Component {
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.dispatch(journalize(this.props.mutation));
     }
+  }
+
+  componentDidMount() {
+    const { dispatch, modulesManager, applicationUuid } = this.props;
+    this.props.fetchApplication(modulesManager,[`id:"${applicationUuid}"`])
+    this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${applicationUuid}"`]);
   }
 
   handlePreviewOpen = (file) => {
@@ -156,11 +162,10 @@ class VerifyApplicationPage extends Component {
   };
 
   render() {
-    const { classes } = this.props;
-    const { stateEdited, preview, fileStates, comment, applicationType } =
-      this.state;
+    const { classes, applicationUuid, documents,application } = this.props;
+    const { stateEdited, preview, fileStates, comment, applicationType } = this.state;
 
-    console.log({ stateEdited });
+    console.log({ mah_boob: application });
 
     return (
       <Grid container spacing={3} className={classes.rootGrid}>
@@ -170,21 +175,18 @@ class VerifyApplicationPage extends Component {
             <CardContent>
               <Typography variant="h6">
                 <b>
-                  <FormattedMessage
-                    module="workforce"
-                    id="workforce.employee.application.details"
-                  />
+                  <FormattedMessage module="workforce" id="workforce.employee.application.details" />
                 </b>
               </Typography>
               <Divider />
               <Typography>
-                <b>Application Type:</b> {applicationType.applicationType}
+                <b>Application Type:</b> {application?.applicationType}
               </Typography>
               <Typography>
-                <b>Organization Type:</b> {applicationType.organizationType}
+                <b>Organization Type:</b> {application?.organizationType}
               </Typography>
               <Typography>
-                <b>Applied By:</b> {stateEdited.firstNameEn}
+                <b>Applied By:</b> {application?.workforceEmployee?.firstNameEn}
               </Typography>
             </CardContent>
           </Card>
@@ -193,30 +195,27 @@ class VerifyApplicationPage extends Component {
             <CardContent>
               <Typography variant="h6">
                 <b>
-                  <FormattedMessage
-                    module="workforce"
-                    id="workforce.employee.details"
-                  />
+                  <FormattedMessage module="workforce" id="workforce.employee.details" />
                 </b>
               </Typography>
               <Divider />
               <Typography>
-                <b>First Name:</b> {stateEdited.firstNameBn}
+                <b>First Name:</b> {application?.workforceEmployee?.firstNameBn}
               </Typography>
               <Typography>
-                <b>NID:</b> {stateEdited.nid}
+                <b>NID:</b> {application?.workforceEmployee?.nid}
               </Typography>
               <Typography>
-                <b>Phone:</b> {stateEdited.phoneNumber}
+                <b>Phone:</b> {application?.workforceEmployee?.phoneNumber}
               </Typography>
               <Typography>
-                <b>Address:</b> {stateEdited.presentAddress}
+                <b>Address:</b> {application?.workforceEmployee?.presentAddress}
               </Typography>
               <Typography>
-                <b>Email:</b> {stateEdited.email}
+                <b>Email:</b> {application?.workforceEmployee?.email}
               </Typography>
               <Typography>
-                <b>Birth Cert No:</b> {stateEdited.birthCertificateNo}
+                <b>Birth Cert No:</b> {application?.workforceEmployee?.birthCertificateNo}
               </Typography>
             </CardContent>
           </Card>
@@ -227,149 +226,85 @@ class VerifyApplicationPage extends Component {
           <Card variant="outlined" className={classes.cardSpacing}>
             <CardContent>
               <Typography variant="h6">Documents</Typography>
-              {fileStates.map((file, index) => (
-                <Accordion key={index}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon className="material-icons"/>}
-                  >
-                    <Grid
-                      container
-                      alignItems="center"
-                      justifyContent="space-between"
-                    >
-                      <Grid item>
-                        <Typography>
-                          Document #{index + 1}{" "}
-                          {file.type === "pdf" ? "(PDF)" : "(Image)"}
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        {file.status === "verified" && (
-                          <Typography
-                            style={{ color: "green", fontWeight: "bold" }}
-                          >
-                            ✅ Verified
-                          </Typography>
-                        )}
-                        {file.status === "rejected" && (
-                          <Typography
-                            style={{ color: "red", fontWeight: "bold" }}
-                          >
-                            ❌ Rejected
-                          </Typography>
-                        )}
-                      </Grid>
-                    </Grid>
-                  </AccordionSummary>
+              {documents?.map((file, index) => {
+                const isPDF = file.url?.toLowerCase().endsWith(".pdf");
+                const type = isPDF ? "pdf" : "image";
 
-                  <AccordionDetails>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        {file.type === "image" ? (
-                          <img
-                            src={file.src}
-                            alt="preview"
-                            style={{
-                              width: "100%",
-                              maxHeight: 300,
-                              objectFit: "contain",
-                            }}
+                return (
+                  <Accordion key={index}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon className="material-icons" />}>
+                      <Grid container alignItems="center" justifyContent="space-between">
+                        <Grid item>
+                          <Typography>
+                            {/* Document #{index + 1} {type === "pdf" ? "(PDF)" : "(Image)"} */}
+                            {file.documentType } {type === "pdf" ? "(PDF)" : "(Image)"}
+                          </Typography>
+                        </Grid>
+                        <Grid item>
+                          {file.status === "verified" && <Typography style={{ color: "green", fontWeight: "bold" }}>✅ Verified</Typography>}
+                          {file.status === "rejected" && <Typography style={{ color: "red", fontWeight: "bold" }}>❌ Rejected</Typography>}
+                        </Grid>
+                      </Grid>
+                    </AccordionSummary>
+
+                    <AccordionDetails>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                          {type === "image" ? (
+                            <img
+                              src={file.url}
+                              alt="preview"
+                              style={{
+                                width: "100%",
+                                maxHeight: 300,
+                                objectFit: "contain",
+                              }}
+                            />
+                          ) : (
+                            <Document file={file.url}>
+                              <Page pageNumber={1} />
+                            </Document>
+                          )}
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          <TextField
+                            label="Comment"
+                            fullWidth
+                            variant="outlined"
+                            size="small"
+                            multiline
+                            rows={2}
+                            value={file.comment || ""}
+                            onChange={(e) => this.handleFileCommentChange(index, e.target.value)}
                           />
-                        ) : (
-                          <Document file={file.src}>
-                            <Page pageNumber={1} />
-                          </Document>
-                        )}
-                      </Grid>
+                        </Grid>
 
-                      <Grid item xs={12}>
-                        <TextField
-                          label="Comment"
-                          fullWidth
-                          variant="outlined"
-                          size="small"
-                          multiline
-                          rows={2}
-                          value={file.comment}
-                          onChange={(e) =>
-                            this.handleFileCommentChange(index, e.target.value)
-                          }
-                        />
+                        <Grid item xs={12} style={{ display: "flex", gap: 8 }}>
+                          <Button variant="contained" color="primary" onClick={() => this.handleFileVerify(index)} fullWidth>
+                            <FormattedMessage module="workforce" id="workforce.application.verify" />
+                          </Button>
+                          <Button variant="outlined" color="error" onClick={() => this.handleFileReject(index)} fullWidth>
+                            <FormattedMessage module="workforce" id="workforce.application.reject" />
+                          </Button>
+                        </Grid>
                       </Grid>
-
-                      <Grid item xs={12} style={{ display: "flex", gap: 8 }}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => this.handleFileVerify(index)}
-                          fullWidth
-                        >
-                          {/* Verify */}
-                          <FormattedMessage module="workforce" id="workforce.application.verify" />
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          onClick={() => this.handleFileReject(index)}
-                          fullWidth
-                        >
-                          {/* Reject */}
-                          <FormattedMessage module="workforce" id="workforce.application.reject" />
-                          
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
+                    </AccordionDetails>
+                  </Accordion>
+                );
+              })}
             </CardContent>
           </Card>
-
-          {/* Final Comment Section */}
-          {/* <Grid container spacing={2} style={{ marginTop: 12 }}>
-            <Grid item xs={12} sm={8}>
-              <TextField
-                label="Comment"
-                fullWidth
-                variant="outlined"
-                size="small"
-                multiline
-                rows={2}
-                value={comment}
-                onChange={this.handleCommentChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4} style={{ display: "flex", gap: 8 }}>
-              <Button variant="contained" color="primary" fullWidth onClick={this.handleVerify}>
-                Verify
-              </Button>
-              <Button variant="outlined" color="error" fullWidth onClick={this.handleReject}>
-                Reject
-              </Button>
-            </Grid>
-          </Grid> */}
         </Grid>
 
         {/* Preview Modal */}
-        <Dialog
-          open={!!preview}
-          onClose={this.handlePreviewClose}
-          maxWidth="md"
-          fullWidth
-        >
+        <Dialog open={!!preview} onClose={this.handlePreviewClose} maxWidth="md" fullWidth>
           <DialogContent style={{ position: "relative" }}>
-            <IconButton
-              onClick={this.handlePreviewClose}
-              style={{ position: "absolute", top: 8, right: 8 }}
-            >
+            <IconButton onClick={this.handlePreviewClose} style={{ position: "absolute", top: 8, right: 8 }}>
               <CloseIcon />
             </IconButton>
             {preview?.type === "image" ? (
-              <img
-                src={preview.src}
-                alt="Full Preview"
-                style={{ width: "100%" }}
-              />
+              <img src={preview.src} alt="Full Preview" style={{ width: "100%" }} />
             ) : preview?.type === "pdf" ? (
               <Document file={preview.src}>
                 <Page pageNumber={1} />
@@ -382,10 +317,21 @@ class VerifyApplicationPage extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state, props) => ({
   application: state.workforce.application,
+  applicationUuid: props.match.params.application_uuid,
+  documents: state.workforce.document,
 });
 
-export default connect(mapStateToProps)(
-  withStyles(styles)(VerifyApplicationPage)
-);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      fetchApplication,
+      fetchWorkforceDocument,
+      journalize,
+      coreConfirm,
+    },
+    dispatch
+  );
+
+export default withModulesManager(withHistory(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(VerifyApplicationPage))));
