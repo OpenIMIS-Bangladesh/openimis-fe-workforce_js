@@ -54,6 +54,15 @@ class AddWorkforceEmployeePage extends Component {
     }
   }
 
+  toggleSecondaryCalendar = () => {
+    const isSecondaryCalendarEnabled = true;
+    const { dispatch } = this.props;
+    dispatch({ type: "CORE_CALENDAR_TYPE_TOGGLE", payload: { isSecondaryCalendarEnabled } });
+  };
+  componentDidMount() {
+    // this.toggleSecondaryCalendar()
+  }
+
   save = async () => {
     const { stateEdited } = this.state;
     const { dispatch } = this.props;
@@ -215,7 +224,7 @@ class AddWorkforceEmployeePage extends Component {
                     value={stateEdited.deathDate || ""}
                     readOnly={stateEdited.lifeStatus !== "Deceased"}
                     onChange={(v) => this.updateAttribute("deathDate", v)}
-                    // readOnly={isSaved}
+                  // readOnly={isSaved}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
