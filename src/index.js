@@ -55,6 +55,7 @@ import OrganizationPicker from "./pickers/OrganizationPicker";
 import CompanyPicker from "./pickers/CompanyPicker";
 import OfficePicker from "./pickers/OfficePicker";
 import FactoryPicker from "./pickers/FactoryPicker";
+import DatePicker from "./pickers/DatePicker";
 import UnitDesignationPage from "./pages/organization-unit-designation/UnitDesignationPage";
 import UnitDesignationsPage from "./pages/organization-unit-designation/UnitDesignationsPage";
 import OrganizationEmployeesPage from "./pages/organization-employee/OrganizationEmployeesPage";
@@ -99,7 +100,7 @@ import VerifyApplicationPage from "./pages/application-process/VerifyApplication
 
 
 const DEFAULT_CONFIG = {
-  "translations": [{ key: "fr", messages: messages_bn },{ key: "en", messages: messages_en } ],
+  "translations": [{ key: "fr", messages: messages_bn }, { key: "en", messages: messages_en }],
   reducers: [{ key: "workforce", reducer }],
 
   refs: [
@@ -182,6 +183,7 @@ const DEFAULT_CONFIG = {
     { key: "workforceOrganization.CompanyPicker", ref: CompanyPicker },
     { key: "workforceOrganization.OfficePicker", ref: OfficePicker },
     { key: "workforceOrganization.FactoryPicker", ref: FactoryPicker },
+    { key: "workforce.DatePicker", ref: DatePicker }
   ],
 
   "core.Router": [
@@ -272,12 +274,12 @@ const DEFAULT_CONFIG = {
       component: ApplicationProcessPage,
     },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS, component: ActionsApplicationPage },
-   {
+    {
       path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS}/:application_uuid`,
       component: ActionsApplicationPage,
     },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND, component: ResendApplicationPage },
-   {
+    {
       path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND}/:application_uuid`,
       component: ResendApplicationPage,
     },

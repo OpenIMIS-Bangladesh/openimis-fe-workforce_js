@@ -171,7 +171,7 @@ class EditOrganizationEmployeePage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.organization.employee.joining_date"}
                     value={stateEdited.firstJoiningDate || ""}
                     onChange={(v) =>
