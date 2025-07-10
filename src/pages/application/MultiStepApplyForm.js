@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ApplicationTypeSelector from "./ApplicationTypeSelector";
 import MedicalAssistanceForm from "./applicationForms/MedicalAssistanceForm";
+import MaternalGrantForm from "./applicationForms/MaternalGrantForm";
 import MedicalDonationForm from "./applicationForms/MedicalDonationForm";
 import DisabilityForm from "./applicationForms/DisabilityForm";
 import EducationGrantForm from "./applicationForms/EducationGrantForm";
@@ -258,6 +259,59 @@ const MultiStepApplyForm = () => {
               </Paper>
             ) : (
               <MedicalAssistanceForm
+                modulesManager={modulesManager}
+                organizationType={organizationType}
+                parsedApplicationData={parsedApplicationData}
+                selectedApplicationType={selectedApplicationType}
+                applicationForSelf={applicationForSelf}
+              />
+            )}
+          </>
+        ) : selectedApplicationType === "maternalGrant" ? (
+          <>
+            <div className={classes.backButtonContainer}>
+              <IconButton onClick={handleBack} color="primary">
+                <ArrowBackIcon />
+              </IconButton>
+              <Typography variant="body1" className={classes.backText}>
+                {/* Back to Application Type */}
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.back.application.type"
+                />
+              </Typography>
+            </div>
+            {applicationForSelf === "" || isApplicationForSelfSelected ? (
+              <Paper className={classes.subPaper} elevation={0}>
+                <FormControl component="fieldset">
+                  <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
+                    {<FormattedMessage id="workforce.application.for" module="workforce"/>}
+                  </Typography>
+                  <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
+                    <FormControlLabel
+                      value="yes"
+                      control={<Radio color="primary" />}
+                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>}
+                    />
+                    <FormControlLabel
+                      value="no"
+                      control={<Radio color="primary" />}
+                      label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>}
+                    />
+                  </RadioGroup>
+                </FormControl>
+                <div className={classes.buttonContainer}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setIsApplicationForSelfSelected(false)}
+                  >
+                    <FormattedMessage module="workforce" id="workforce.next" />
+                  </Button>
+                </div>
+              </Paper>
+            ) : (
+              <MaternalGrantForm
                 modulesManager={modulesManager}
                 organizationType={organizationType}
                 parsedApplicationData={parsedApplicationData}

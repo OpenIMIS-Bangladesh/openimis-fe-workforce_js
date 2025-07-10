@@ -365,6 +365,8 @@
     "workforce.application.accident.": "অন্যান্য রোগ উল্লেখ করুন",
     "workforce.application.disease.name": "রোগের নাম",
     "workforce.application.disease.timeOfAccident": "দুর্ঘটনার সময়",
+    "workforce.application.disease.maternalHeading": "মাতৃত্ব সংক্রান্ত তথ্যঃ",
+    "workforce.application.disease.maternal.delivaryDate": "আনুমানিক প্রসবের তারিখ",
     "workforce.tracking.notfound": "কোনো আবেদন পাওয়া যায়নি",
 
 

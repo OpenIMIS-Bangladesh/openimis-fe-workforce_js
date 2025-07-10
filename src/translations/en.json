@@ -518,6 +518,9 @@
     "workforce.application.otherDieses.": "Mention other diseases",
     "workforce.application.disease.name": "Disease name",
     "workforce.application.disease.timeOfAccident": "Accident Time",
+    "workforce.application.disease.maternalHeading": "Maternity information",
+    "workforce.application.disease.maternal.delivaryDate": "Estimated delivery date",
+
 
     
 
