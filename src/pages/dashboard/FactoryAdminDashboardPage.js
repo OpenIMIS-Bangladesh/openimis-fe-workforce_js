@@ -35,7 +35,7 @@ import MultiStepApplyForm from "../application/MultiStepApplyForm";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
 import { useModulesManager, useTranslations, Autocomplete, useGraphqlQuery, decodeId } from "@openimis/fe-core";
-import { fetchApplication } from "../../actions";
+import { fetchApplicationsSummary } from "../../actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -173,20 +173,22 @@ const ApplicationStatus = () => {
   const [applicationData, setApplicationData] = useState(null);
   const [showResult, setShowResult] = useState(false);
 
-  const handleSearch = () => {
-    const filters = {
-      id: `eq:${trackingNumber}`,
-      "workforceEmployee.phoneNumber": `eq:${phoneNumber}`,
-    };
+const handleApplicationSearch = () => {
+const filters = {
+  trackingNumber: `eq:${trackingNumber}`,
+};
 
-    dispatch(
-      fetchApplication(mm, filters)
-    ).then((res) => {
-      const data = res.payload?.data?.workforceApplication?.edges?.[0]?.node;
-      setApplicationData(data);
-      setShowResult(true);
-    });
-  };
+
+ dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
+  const edges = res.payload?.data?.workforceApplication?.edges || [];
+  const matchedApp = edges
+    .map((e) => e.node)
+    .find((app) => app.trackingNumber === trackingNumber);
+
+  setApplicationData(matchedApp || null);
+  setShowResult(true);
+});
+};
   
   return (
       <Card style={{ marginTop: 0, padding: "32px", textAlign: "center" }}>
@@ -202,67 +204,65 @@ const ApplicationStatus = () => {
               variant="outlined"
               size="small"
               label={
-                <FormattedMessage module="workforce" id="workforce.employee.dependent.phone" />
-              }
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              style={{ marginBottom: 16 }}
-            />
-            <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              label={
                 <FormattedMessage module="workforce" id="workforce.application.tracking.number" />
               }
               value={trackingNumber}
               onChange={(e) => setTrackingNumber(e.target.value)}
               style={{ marginBottom: 16 }}
             />
-            <Button variant="contained" color="primary" fullWidth onClick={handleSearch}>
+            <Button variant="contained" color="primary" fullWidth onClick={handleApplicationSearch}>
               <FormattedMessage module="workforce" id="workforce.search.here" />
             </Button>
           </Grid>
         </Grid>
+      {showResult && (
+          applicationData ? (
+            <Box
+              mt={4}
+              p={3}
+              border={1}
+              borderColor="#ccc"
+              borderRadius={2}
+              textAlign="left"
+              maxWidth={800}
+              margin="32px auto 0"
+            >
+              <Typography variant="h6" gutterBottom style={{ textAlign: "center" }}>
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.tracking.summary"
+                  defaultMessage="ট্র্যাকিং সারাংশ"
+                />
+              </Typography>
 
-        {showResult && applicationData && (
-          <Box
-            mt={4}
-            p={3}
-            border={1}
-            borderColor="#ccc"
-            borderRadius={2}
-            textAlign="left"
-            maxWidth={800}
-            margin="32px auto 0"
-          >
-            <Typography variant="h6" gutterBottom style={{ textAlign: "center" }}>
+              <Grid container style={{ marginTop: 16 }} spacing={2}>
+                <Grid item xs={6}>
+                  <Typography>
+                    <strong><FormattedMessage module="workforce" id="workforce.application.tracking.number" />:</strong> {applicationData.trackingNumber}
+                  </Typography>
+                  <Typography>
+                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.currentStatus" />:</strong> {applicationData.status}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography>
+                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.applicationType" />:</strong> {applicationData.applicationType}
+                  </Typography>
+                  <Typography>
+                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.applicationDate" />:</strong> {applicationData.dateCreated || "-"}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Box>
+          ) : (
+            <Typography color="error" style={{ marginTop: 32 }}>
               <FormattedMessage
                 module="workforce"
-                id="workforce.tracking.summary"
-                defaultMessage="ট্র্যাকিং সারাংশ"
+                id="workforce.tracking.notfound"
+                defaultMessage="কোনো আবেদন পাওয়া যায়নি।"
               />
             </Typography>
-
-            <Grid container style={{ marginTop: 16 }} spacing={2}>
-              <Grid item xs={6}>
-                <Typography>
-                  <strong>ট্র্যাকিং নম্বর:</strong> 
-                </Typography>
-                <Typography>
-                  <strong>বর্তমান অবস্থা:</strong> {applicationData.status}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography>
-                  <strong>আবেদনের বিষয়:</strong> {applicationData.applicationType}
-                </Typography>
-                <Typography>
-                  <strong>আবেদনের তারিখ:</strong> {applicationData?.dateCreated || "-"}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
+          )
         )}
       </CardContent>
     </Card>

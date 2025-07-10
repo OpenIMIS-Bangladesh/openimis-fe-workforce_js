@@ -86,7 +86,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
   return (
     <Box mt={2}>
       <Paper className={classes.paper} elevation={0}>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="subtitle1" style={{ fontWeight: "bold", textAlign: "center", width: "100%" }} gutterBottom>
           <FormattedMessage id="workforce.application.disease.maternalHeading" />
         </Typography>
 
