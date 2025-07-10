@@ -164,55 +164,53 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) =
     },
   });
 
-  console.log('upload files',applicationId)
+  console.log("upload files", applicationId);
 
   return (
     <div>
       <Paper className={classes.dropzone}>
-  <Box display="flex" alignItems="center" justifyContent="center" style={{ gap: "24px" }}>
-    
-    {/* Upload Option - only this part gets getRootProps */}
-    <Box {...getRootProps()} display="flex" alignItems="center" style={{ gap: "8px", cursor: "pointer" }}>
-      <input {...getInputProps()} />
-      <CloudUploadIcon className={classes.uploadIcon} />
-      <FormattedMessage module="workforce" id="workforce.application.steps.upload">
-        {(msg) => <Typography variant="body2">{msg}</Typography>}
-      </FormattedMessage>
-    </Box>
+        <Box display="flex" alignItems="center" justifyContent="center" style={{ gap: "24px" }}>
+          {/* Upload Option - only this part gets getRootProps */}
+          <Box {...getRootProps()} display="flex" alignItems="center" style={{ gap: "8px", cursor: "pointer" }}>
+            <input {...getInputProps()} />
+            <CloudUploadIcon className={classes.uploadIcon} />
+            <FormattedMessage module="workforce" id="workforce.application.steps.upload">
+              {(msg) => <Typography variant="body2">{msg}</Typography>}
+            </FormattedMessage>
+          </Box>
 
-    {/* Camera Option */}
-    <Box
-      onClick={() => {
-        if (/Mobi|Android/i.test(navigator.userAgent)) {
-          document.getElementById("cameraCaptureInput").click();
-        } else {
-          setWebcamOpen(true);
-        }
-      }}
-      style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}
-    >
-      <PhotoCameraIcon color="action" />
-      <FormattedMessage module="workforce" id="workforce.application.steps.capture">
-        {(msg) => <Typography variant="body2">{msg}</Typography>}
-      </FormattedMessage>
-    </Box>
+          {/* Camera Option */}
+          <Box
+            onClick={() => {
+              if (/Mobi|Android/i.test(navigator.userAgent)) {
+                document.getElementById("cameraCaptureInput").click();
+              } else {
+                setWebcamOpen(true);
+              }
+            }}
+            style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}
+          >
+            <PhotoCameraIcon color="action" />
+            <FormattedMessage module="workforce" id="workforce.application.steps.capture">
+              {(msg) => <Typography variant="body2">{msg}</Typography>}
+            </FormattedMessage>
+          </Box>
 
-    {/* Mobile capture input (only one!) */}
-    <input
-      id="cameraCaptureInput"
-      type="file"
-      accept="image/*"
-      capture="environment"
-      style={{ display: "none" }}
-      onChange={(e) => {
-        if (e.target.files && e.target.files.length > 0) {
-          onDrop(Array.from(e.target.files));
-        }
-      }}
-    />
-  </Box>
-</Paper>
-
+          {/* Mobile capture input (only one!) */}
+          <input
+            id="cameraCaptureInput"
+            type="file"
+            accept="image/*"
+            capture="environment"
+            style={{ display: "none" }}
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                onDrop(Array.from(e.target.files));
+              }
+            }}
+          />
+        </Box>
+      </Paper>
 
       <Dialog open={webcamOpen} onClose={() => setWebcamOpen(false)} maxWidth="sm" fullWidth>
         <DialogContent>
@@ -232,9 +230,23 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) =
         <Paper className={classes.fileList}>
           {files.map((file, index) => (
             <Box key={`${file.name}-${index}`} className={classes.fileItem}>
-              <Typography variant="body2" className={classes.fileName}>
+              <Typography
+                variant="body2"
+                className={classes.fileName}
+                onClick={() => {
+                  const fileUrl = file.url || URL.createObjectURL(file);
+                  const link = document.createElement("a");
+                  link.href = fileUrl;
+                  link.download = file.name;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                style={{ cursor: "pointer", textDecoration: "underline", color: "#005f67" }}
+              >
                 {file.name}
               </Typography>
+
               <IconButton onClick={() => removeFile(file.name)} size="small">
                 <DeleteIcon color="secondary" className={classes.deleteIcon} />
               </IconButton>
