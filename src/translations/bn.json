@@ -115,6 +115,7 @@
     "workforce.employee.application.status": "অবস্থা",
     "workforce.employee.application.revertNote": "প্রত্যাবর্তিত মন্তব্য",
     "workforce.employee.application.applicationDate": "আবেদনের তারিখ",
+    "workforce.employee.application.currentStatus": "বর্তমান অবস্থা",
     "workforce.employee.application.assignedBy": "দ্বারা নির্ধারিত",
     "workforce.employee.application.assignedDate": "নির্ধারিত তারিখ",
     "workforce.employee.application.citizenship": "নাগরিকত্",
@@ -364,6 +365,7 @@
     "workforce.application.accident.": "অন্যান্য রোগ উল্লেখ করুন",
     "workforce.application.disease.name": "রোগের নাম",
     "workforce.application.disease.timeOfAccident": "দুর্ঘটনার সময়",
+    "workforce.tracking.notfound": "কোনো আবেদন পাওয়া যায়নি",
 
 
 

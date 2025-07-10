@@ -237,6 +237,7 @@
     "workforce.employee.application.status": "Status",
     "workforce.employee.application.revertNote": "Revert Note",
     "workforce.employee.application.applicationDate": "Application Date",
+    "workforce.employee.application.currentStatus": "Current Status",
     "workforce.employee.application.assignedBy": "Assigned By",
     "workforce.employee.application.assignedDate": "Assigned Date",
     "workforce.employee.application.citizenship": "Citizenship",
@@ -299,6 +300,7 @@
     "workforce.employee.accident.info.dutyStatus": "Duty Status",
     "workforce.employee.accident.info.insideOutsideFactory": "Under what circumstances did the accident occur?",
     "workforce.employee.accident.info.reJoiningDate": "Re-Joining Date",
+    "workforce.tracking.notfound": "No applications found",
 
     "workforce.employee.accident.info.application.injuryType": "Injury Type",
     "workforce.employee.accident.info.application.dateOfAccident": "Date Of Accident",
