@@ -81,7 +81,7 @@ export function fetchDocumentType(mm, filters) {
 
 /// bank picker ///
 export function fetchBanksPick(mm, filters) {
-  const projections = ["id", "nameEn", "parent{id}"];
+  const projections = ["id", "nameEn","nameBn", "parent{id}"];
   const payload = formatPageQueryWithCount("banks", filters, projections);
   return graphql(payload, "WORKFORCE_BANKS_PICKER");
 }

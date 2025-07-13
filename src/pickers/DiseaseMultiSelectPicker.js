@@ -66,18 +66,18 @@ const DiseaseMultiSelectPicker = ({
   return (
     <>
       <FormControl fullWidth>
-        <InputLabel>
-          <FormattedMessage
-            id="workforce.application.disease.name"
-            defaultMessage="রোগের নাম"
-            module="workforce"
-          />
-        </InputLabel>
+      <InputLabel required>
+        <FormattedMessage
+          id="workforce.application.disease.name"
+          defaultMessage="রোগের নাম"
+          module="workforce"
+        />
+      </InputLabel>
         <Select
           multiple
           value={selectedDiseases}
-          onChange={handleSelectChange}
-          renderValue={renderSelectedValues}
+          onChange={onChange}
+          renderValue={(selected) => selected.join(", ")}
           required
         >
           {diseaseList.map((disease) => (
