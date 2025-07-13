@@ -101,6 +101,9 @@ import VerifyApplicationPage from "./pages/application-process/VerifyApplication
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: "fr", messages: messages_bn }, { key: "en", messages: messages_en }],
+  "DistrictPicker.selectThreshold": 100,
+  "RegionPicker.selectThreshold": 100,
+  "AutoSuggestion.limitDisplay": 100,
   reducers: [{ key: "workforce", reducer }],
 
   refs: [
