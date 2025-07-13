@@ -66,7 +66,7 @@ class ViewApplicationPage extends Component {
     super(props);
     this.state = {
       stateEdited: props.application || {},
-      workforceEmployee: props.application.workforceEmployee || {},
+      workforceEmployee: props?.application?.workforceEmployee || {},
       parseAccidentInfo:
         JSON.parse(props.application.employeeAccidentInfo) || {},
       parseBankInfo: JSON.parse(props.application.employeeBankInfo) || {},
@@ -96,7 +96,7 @@ class ViewApplicationPage extends Component {
   };
 
   render() {
-    const { classes, user_rights } = this.props;
+    const { classes, user_rights,application } = this.props;
     const {
       stateEdited,
       workforceEmployee,
@@ -106,7 +106,7 @@ class ViewApplicationPage extends Component {
       parseDependentInfo,
     } = this.state;
     const isSaveDisabled = false;
-    const AccidentInfo = parseAccidentInfo?.parseAccidentInfo;
+    const AccidentInfo = JSON.parse(parseAccidentInfo);
     const BankInfo = JSON.parse(parseBankInfo);
     const DependentInfo = JSON.parse(parseDependentInfo);
 
@@ -119,11 +119,11 @@ class ViewApplicationPage extends Component {
       employeeBankInfo: BankInfo,
       employeeDependentInfo: DependentInfo,
     };
-    console.log({ stateEdited });
-    console.log({ workforceEmployee });
-    console.log({ AccidentInfo });
-    console.log({ BankInfo });
-    console.log({ DependentInfo });
+    // console.log({ stateEdited });
+    // console.log({ workforceEmployee });
+    console.log({ application });
+    // console.log({ BankInfo });
+    // console.log({ DependentInfo });
 
     return (
       <div className={classes.container}>

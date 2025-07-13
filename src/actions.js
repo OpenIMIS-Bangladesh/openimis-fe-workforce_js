@@ -866,6 +866,25 @@ export function fetchApplicationPackage(mm, filters) {
   return graphql(payload, "WORKFORCE_APPLICATION_SUMMARY");
 }
 
+export function fetchDiseases(mm, filters) {
+  const projections = [
+    "id",
+    "grade",
+    "diseaseType",
+    "diseaseName",
+    "diseaseNo",
+    "minimumDonationAmount",
+    "maximumDonationAmount",
+    "status",
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceDiseases",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_DISEASES");
+}
+
 
 export function fetchWorkforceEmployee(mm, filters) {
   const present_location_projection =

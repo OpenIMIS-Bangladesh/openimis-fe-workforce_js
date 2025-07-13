@@ -307,6 +307,13 @@ function reducer(
     applications: [],
     applicationsPageInfo: { totalCount: 0 },
 
+    ///fetch diseases
+    fetchingDiseases: false,
+    errorDiseases: null,
+    fetchedDiseases: false,
+    diseases: [],
+    diseasesPageInfo: { totalCount: 0 },
+
     fetchingApplication: false,
     errorApplication: null,
     fetchedApplication: false,
@@ -1447,6 +1454,31 @@ function reducer(
         errorApplications: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_APPLICATIONS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
+    case "WORKFORCE_DISEASES_REQ":
+      return {
+        ...state,
+        fetchingDiseases: true,
+        fetchedDiseases: false,
+        diseases: [],
+        diseasesPageInfo: { totalCount: 0 },
+        errorDiseases: null,
+      };
+    case "WORKFORCE_DISEASES_RESP":
+      return {
+        ...state,
+        fetchingDiseases: false,
+        fetchedDiseases: true,
+        diseases: parseData(action.payload.data.workforceDiseases),
+        diseasesPageInfo: pageInfo(action.payload.data.workforceDiseases),
+        errorDiseases: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_DISEASES_ERR":
       return {
         ...state,
         fetching: false,

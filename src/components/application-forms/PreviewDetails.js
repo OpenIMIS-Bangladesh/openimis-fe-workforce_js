@@ -11,6 +11,7 @@ import {
     CardContent,
     Box,
   } from "@material-ui/core";
+  import {FormattedMessage} from "@openimis/fe-core";
 
 
   const styles = (theme) => ({
@@ -99,7 +100,7 @@ import {
           <Card className={classes.card}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                {formatKey(title)}
+                <FormattedMessage module="workforce" id={title} />
               </Typography>
               <Divider style={{ marginBottom: "10px" }} />
               <Grid container spacing={2}>
@@ -124,6 +125,7 @@ import {
       const contactFields = ["email", "phoneNumber", "presentAddress", "permanentAddress", "presentLocation", "permanentLocation"];
       const statusFields = ["birthDate", "deathDate", "lifeStatus", "maritalStatus","monthlyEarning"];
       const accidentFields = ["diseaseType", "diagnosisDate", "hospitalName", "admitDate","releaseDate","hospitalDoctorName"];
+      const childrenFields = ["nameEn","nameBn", "birthDate", "educationInstituteName","studyingClass","result","nid"];
     
       const pickFields = (fields) => {
         return fields.reduce((acc, field) => {
@@ -148,14 +150,16 @@ import {
       const contactInfo = pickFields(contactFields);
       const statusInfo = pickFields(statusFields);
       const accidentInfo = pickFields(accidentFields);
+      const childrenInfo = pickFields(childrenFields);
     
       return (
         <>
-          {renderSection("Personal Info", personalInfo)}
+          {renderSection("workforce.previewDetails.personalInfo", personalInfo)}
           {/* {renderSection("Organization Info", organizationInfo)} */}
-          {renderSection("Status Info", statusInfo)}
-          {renderSection("Accident Info", accidentInfo)}
-          {renderSection("Contact Info", contactInfo)}
+          {renderSection("workforce.previewDetails.statusInfo", statusInfo)}
+          {renderSection("workforce.previewDetails.accidentInfo", accidentInfo)}
+          {renderSection("workforce.previewDetails.contactInfo", contactInfo)}
+          {renderSection("workforce.previewDetails.childrenInfo", childrenInfo)}
         </>
       );
     };

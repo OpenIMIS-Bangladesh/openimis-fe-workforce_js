@@ -50,7 +50,7 @@ const diseaseOptions = [
   "Others", // Allow manual input if selected
 ];
 
-const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicationType }) => {
+const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applicationType }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
@@ -105,13 +105,12 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
           <Grid container spacing={1}>
             <Grid item xs={6} className={classes.item}>
               <DiseaseMultiSelectPicker
-                value={formData?.employeeAccidentInfo?.cronicDiseaseType || []}
-                selectedDiseases={selectedDiseases}
-                onChange={handleDiseaseChange}
-                required
-                readOnly={false}
+                selectedDiseases={formData?.employeeAccidentInfo?.cronicDiseaseType || []}
+                onChange={(value) => handleChange("cronicDiseaseType", value, "employeeAccidentInfo")}
+                onOtherDiseaseChange={(value) => handleChange("otherDisease", value, "employeeAccidentInfo")}
+                otherDiseaseValue={formData?.employeeAccidentInfo?.otherDisease || ""}
+                handleChange={handleChange}
               />
-              
             </Grid>
 
             {selectedDiseases.includes("অন্যান্য") && (
@@ -135,28 +134,36 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
             </Grid>
 
             <Grid item xs={6} className={classes.item}>
-              <TextInput   label={"workforce.employee.accident.info.doctorName"} value={formData?.employeeAccidentInfo?.doctorName || ""} onChange={(v) => handleChange("doctorName", v)} />
+              <TextInput
+                label={"workforce.employee.accident.info.doctorName"}
+                value={formData?.employeeAccidentInfo?.doctorName || ""}
+                onChange={(v) => handleChange("doctorName", v)}
+              />
             </Grid>
 
             <Grid item xs={12} className={classes.item}>
               <FormControl component="fieldset">
                 <FormLabel>
-                  <FormattedMessage
-                    id="workforce.application.accident.hospitalized"
-                    defaultMessage="হাসপাতালে ভর্তি হয়েছিলেন?"
-                    module="workforce"
+                  <FormattedMessage id="workforce.application.accident.hospitalized" defaultMessage="হাসপাতালে ভর্তি হয়েছিলেন?" module="workforce" />
+                </FormLabel>
+                <RadioGroup row value={isAdmitted} onChange={handleAdmittedChange}>
+                  <FormControlLabel
+                    value="yes"
+                    control={<Radio color="primary" />}
+                    label={<FormattedMessage id="workforce.application.permission.yes" module="workforce" />}
                   />
-                </FormLabel>                
-               <RadioGroup row value={isAdmitted} onChange={handleAdmittedChange}>
-                  <FormControlLabel value="yes" control={<Radio color="primary" />}    label={<FormattedMessage id="workforce.application.permission.yes" module="workforce" />}  />
-                  <FormControlLabel value="no" control={<Radio color="primary" />}    label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}  />
+                  <FormControlLabel
+                    value="no"
+                    control={<Radio color="primary" />}
+                    label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}
+                  />
                 </RadioGroup>
               </FormControl>
             </Grid>
 
             {isAdmitted === "yes" && (
               <>
-                 <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label={"workforce.employee.accident.info.hospitalName"}
                     value={formData?.employeeAccidentInfo?.hospitalName || ""}
@@ -208,7 +215,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                 applicationType={applicationType}
               />
             </Grid> */}
-              <Grid item xs={6} className={classes.item}>
+            <Grid item xs={6} className={classes.item}>
               <EmployeeAccidentTypePicker
                 value={formData?.employeeAccidentInfo?.accidentType || ""}
                 label={<FormattedMessage id="workforce.employee.accident.info.typeOfAccident" module="workforce" />}
@@ -217,7 +224,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                 readOnly={false}
               />
             </Grid>
-              <Grid item xs={6} className={classes.item}>
+            <Grid item xs={6} className={classes.item}>
               <TextInput
                 label={"workforce.application.accident.accidentPlace"}
                 value={formData?.employeeAccidentInfo?.accidentPlace || ""}
@@ -245,7 +252,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                 required
               />
             </Grid>
-          
+
             {/* <Grid item xs={6} className={classes.item}>
               <EmployeeDutyStatusPicker
                 value={formData?.employeeAccidentInfo?.dutyStatus || ""}
@@ -275,20 +282,24 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
             </Grid>
             <Grid item xs={12} className={classes.item}>
               <FormControl component="fieldset">
-              <FormLabel>
-                  <FormattedMessage
-                    id="workforce.application.accident.hospitalized"
-                    defaultMessage="হাসপাতালে ভর্তি হয়েছিলেন?"
-                    module="workforce"
-                  />
+                <FormLabel>
+                  <FormattedMessage id="workforce.application.accident.hospitalized" defaultMessage="হাসপাতালে ভর্তি হয়েছিলেন?" module="workforce" />
                 </FormLabel>
                 <RadioGroup row value={isAdmitted} onChange={handleAdmittedChange}>
-                  <FormControlLabel value="yes" control={<Radio color="primary" />}    label={<FormattedMessage id="workforce.application.permission.yes" module="workforce" />}  />
-                  <FormControlLabel value="no" control={<Radio color="primary" />}    label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}  />
+                  <FormControlLabel
+                    value="yes"
+                    control={<Radio color="primary" />}
+                    label={<FormattedMessage id="workforce.application.permission.yes" module="workforce" />}
+                  />
+                  <FormControlLabel
+                    value="no"
+                    control={<Radio color="primary" />}
+                    label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}
+                  />
                 </RadioGroup>
               </FormControl>
             </Grid>
-            
+
             {isAdmitted === "yes" && (
               <>
                 <Grid item xs={6} className={classes.item}>

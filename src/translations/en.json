@@ -521,10 +521,13 @@
     "workforce.application.disease.maternalHeading": "Maternity information",
     "workforce.application.disease.maternal.delivaryDate": "Delivery date",
 
+    "workforce.previewDetails.personalInfo": "Personal Info",
+    "workforce.previewDetails.statusInfo": "Status Info",
+    "workforce.previewDetails.accidentInfo": "Accident Info",
+    "workforce.previewDetails.contactInfo": "Contact Info",
+    "workforce.previewDetails.childrenInfo": "Children Info",
 
     
-
-
     "workforce.employee.nid_or_birth_certificate":"Nid/BirthCertificate No.",
 
     "workforce.office.dol":"Department of Labour(DOL)",

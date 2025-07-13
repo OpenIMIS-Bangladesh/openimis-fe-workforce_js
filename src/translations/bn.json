@@ -369,6 +369,11 @@
     "workforce.application.disease.maternal.delivaryDate": "প্রসবের তারিখ",
     "workforce.tracking.notfound": "কোনো আবেদন পাওয়া যায়নি",
 
+    "workforce.previewDetails.personalInfo": "ব্যক্তিগত তথ্য",
+    "workforce.previewDetails.statusInfo": "অবস্থা তথ্য",
+    "workforce.previewDetails.accidentInfo": "দুর্ঘটনার তথ্য",
+    "workforce.previewDetails.contactInfo": "যোগাযোগের তথ্য",
+    "workforce.previewDetails.childrenInfo": "সন্তানের তথ্য",
 
 
     "workforce.office.dol":"শ্রম অধিদপ্তর",
