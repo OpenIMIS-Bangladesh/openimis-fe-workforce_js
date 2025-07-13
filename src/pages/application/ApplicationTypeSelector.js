@@ -100,7 +100,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
                 label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce"/>}
               />
               <FormControlLabel
-                value="maternalGrant"
+                value="maternityGrant"
                 control={<Radio color="primary" />}
                 label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce"/>}
               />
@@ -136,7 +136,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
                 label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce"/>}
               />
               <FormControlLabel
-                value="maternalGrant"
+                value="maternityGrant"
                 control={<Radio color="primary" />}
                 label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce"/>}
               />

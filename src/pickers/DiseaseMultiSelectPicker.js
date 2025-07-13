@@ -35,7 +35,7 @@ const DiseaseMultiSelectPicker = ({ value = [], onChange, selectedDiseases, onOt
   return (
     <>
       <FormControl fullWidth>
-      <InputLabel>
+      <InputLabel required>
         <FormattedMessage
           id="workforce.application.disease.name"
           defaultMessage="রোগের নাম"
@@ -47,7 +47,7 @@ const DiseaseMultiSelectPicker = ({ value = [], onChange, selectedDiseases, onOt
           value={selectedDiseases}
           onChange={onChange}
           renderValue={(selected) => selected.join(", ")}
-          required
+          required={true}
         >
           {diseaseOptions.map((disease) => (
             <MenuItem key={disease} value={disease}>
