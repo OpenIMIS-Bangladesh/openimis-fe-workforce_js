@@ -81,7 +81,7 @@ export function fetchDocumentType(mm, filters) {
 
 /// bank picker ///
 export function fetchBanksPick(mm, filters) {
-  const projections = ["id", "nameEn", "parent{id}"];
+  const projections = ["id", "nameEn","nameBn", "parent{id}"];
   const payload = formatPageQueryWithCount("banks", filters, projections);
   return graphql(payload, "WORKFORCE_BANKS_PICKER");
 }
@@ -864,6 +864,25 @@ export function fetchApplicationPackage(mm, filters) {
     projections
   );
   return graphql(payload, "WORKFORCE_APPLICATION_SUMMARY");
+}
+
+export function fetchDiseases(mm, filters) {
+  const projections = [
+    "id",
+    "grade",
+    "diseaseType",
+    "diseaseName",
+    "diseaseNo",
+    "minimumDonationAmount",
+    "maximumDonationAmount",
+    "status",
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceDiseases",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_DISEASES");
 }
 
 

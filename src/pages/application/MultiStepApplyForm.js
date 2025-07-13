@@ -267,7 +267,7 @@ const MultiStepApplyForm = () => {
               />
             )}
           </>
-        ) : selectedApplicationType === "maternalGrant" ? (
+        ) : selectedApplicationType === "maternityGrant" ? (
           <>
             <div className={classes.backButtonContainer}>
               <IconButton onClick={handleBack} color="primary">

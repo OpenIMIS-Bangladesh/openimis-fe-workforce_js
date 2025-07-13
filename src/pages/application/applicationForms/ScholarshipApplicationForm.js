@@ -173,10 +173,11 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
         applicationForSelf: applicationForSelf,
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
+        grantAmount:parsedApplicationData?.grantAmount||parsedApplicationData?.employeeAccidentInfo.grantAmount,
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
         dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || {},
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || {},
-        employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData.employeeAccidentInfo || {},
+        employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         employeeChildrenInfo: parsedApplicationData?.employeeChildrenInfo || employeeData.employeeChildrenInfo || {},
       });
     }
@@ -326,8 +327,8 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
-      employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
-      employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+      employeeDependentInfo: JSON.stringify(formData.dependent) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+      employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),
       status: WORKFORCE_STATUS.NEW,
     };

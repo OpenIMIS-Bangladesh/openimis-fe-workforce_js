@@ -9,12 +9,7 @@ import {
   Box,
   Typography,
 } from "@material-ui/core";
-import {
-  useModulesManager,
-  formatMutation,
-  decodeId,
-  FormattedMessage,
-} from "@openimis/fe-core";
+import {FormattedMessage,formatMutation,decodeId,useModulesManager} from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -201,9 +196,10 @@ const MedicalAssistanceForm = ({
         applicationForSelf: applicationForSelf,
         organizationType:parsedApplicationData?.organizationType || organizationType,
         applicationType:parsedApplicationData?.applicationType || selectedApplicationType,
+        grantAmount:parsedApplicationData?.grantAmount||parsedApplicationData?.employeeAccidentInfo.grantAmount,
         dependents:parsedApplicationData?.employeeDependentInfo ||employeeData.dependents ||{},
         employeeBankInfo:parsedApplicationData?.employeeBankInfo ||employeeData?.employeeBankInfo ||{},
-        employeeAccidentInfo:parsedApplicationData?.employeeAccidentInfo ||employeeData.employeeAccidentInfo ||{},
+        employeeAccidentInfo:parsedApplicationData?.employeeAccidentInfo ||employeeData?.employeeAccidentInfo ||{},
         metadata:parsedApplicationData?.metadata || employeeData?.metadata || {},
       });
     }
@@ -285,12 +281,13 @@ const MedicalAssistanceForm = ({
         factory: formData.factory,
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
+        grantAmount:formData?.employeeAccidentInfo.grantAmount,
         employeeDesignationInfo: JSON.stringify(
           formData.employeeDesignationInfo
         ),
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
-        employeeDependentInfo: JSON.stringify(formData.dependents),
-        employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo),
+        employeeDependentInfo: JSON.stringify(formData.dependent),
+        employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         status: WORKFORCE_STATUS.DRAFT,
       };
 
@@ -340,6 +337,7 @@ const MedicalAssistanceForm = ({
           organizationType || parsedApplicationData?.organizationType,
         applicationType:
           selectedApplicationType || parsedApplicationData?.applicationType,
+        grantAmount:formData?.employeeAccidentInfo.grantAmount,
         employeeBankInfo:
           JSON.stringify(formData.employeeBankInfo) ||
           JSON.stringify(parsedApplicationData?.employeeBankInfo),
@@ -347,7 +345,7 @@ const MedicalAssistanceForm = ({
           JSON.stringify(formData.dependents) ||
           JSON.stringify(parsedApplicationData?.employeeDependentInfo),
         employeeAccidentInfo:
-          JSON.stringify(formData.employeeAccidentInfo) ||
+          JSON.stringify(formData?.employeeAccidentInfo) ||
           JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
         status: WORKFORCE_STATUS.DRAFT,
       };
@@ -399,6 +397,7 @@ const MedicalAssistanceForm = ({
         organizationType || parsedApplicationData?.organizationType,
       applicationType:
         selectedApplicationType || parsedApplicationData?.applicationType,
+      grantAmount:formData?.employeeAccidentInfo.grantAmount,
       employeeBankInfo:
         JSON.stringify(formData.employeeBankInfo) ||
         JSON.stringify(parsedApplicationData?.employeeBankInfo),
@@ -406,7 +405,7 @@ const MedicalAssistanceForm = ({
         JSON.stringify(formData.dependents) ||
         JSON.stringify(parsedApplicationData?.employeeDependentInfo),
       employeeAccidentInfo:
-        JSON.stringify(formData.employeeAccidentInfo) ||
+        JSON.stringify(formData?.employeeAccidentInfo) ||
         JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       status: WORKFORCE_STATUS.NEW,
     };
