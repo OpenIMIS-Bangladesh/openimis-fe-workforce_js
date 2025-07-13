@@ -43,15 +43,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const steps = [
-//   "Labour Details",
-//   "Location",
-//   "Accident Info",
-//   "Upload Documents",
-//   "Dependent",
-//   "Account info",
-// ];
-
 const steps = [
   "workforce.application.steps.aidReason",
   "workforce.application.steps.employeeDetails",
@@ -188,6 +179,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         factory: employeeData.factory || null,
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
+        grantAmount:parsedApplicationData?.grantAmount||parsedApplicationData.employeeAccidentInfo.grantAmount,
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
         dependents: parsedApplicationData?.employeeDependentInfo || employeeData?.dependents || {},
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || {},
@@ -259,6 +251,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         factory: formData.factory,
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
+        grantAmount:formData.employeeAccidentInfo.grantAmount,
         employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependent),
@@ -298,6 +291,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         factory: formData.factory,
         organizationType: organizationType || parsedApplicationData?.organizationType,
         applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+        grantAmount:formData?.employeeAccidentInfo.grantAmount,
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
         employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
@@ -341,6 +335,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
       factory: formData.factory,
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+        grantAmount:formData.employeeAccidentInfo.grantAmount,
       employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
       employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
       employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),

@@ -201,6 +201,7 @@ const MaternalGrantForm = ({
         applicationForSelf: applicationForSelf,
         organizationType:parsedApplicationData?.organizationType || organizationType,
         applicationType:parsedApplicationData?.applicationType || selectedApplicationType,
+        grantAmount:parsedApplicationData?.grantAmount||parsedApplicationData.employeeAccidentInfo.grantAmount,
         dependents:parsedApplicationData?.employeeDependentInfo ||employeeData.dependents ||{},
         employeeBankInfo:parsedApplicationData?.employeeBankInfo ||employeeData?.employeeBankInfo ||{},
         employeeAccidentInfo:parsedApplicationData?.employeeAccidentInfo ||employeeData.employeeAccidentInfo ||{},
@@ -266,15 +267,6 @@ const MaternalGrantForm = ({
           `Update Workforce Employee ${workforceEmployeeData.nameEn}`
         )
       );
-      // if (workforceEmployeeData?.id) {
-      // }else{
-      //   await dispatch(
-      //     createWorkforceEmployee(
-      //       workforceEmployeeData,
-      //       `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-      //     )
-      //   );
-      // }
     } else if (nextStep === 3) {
       console.log("Create application formData:", formData);
       const createApplicationData = {
@@ -285,6 +277,7 @@ const MaternalGrantForm = ({
         factory: formData.factory,
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
+        grantAmount:formData.employeeAccidentInfo.grantAmount,
         employeeDesignationInfo: JSON.stringify(
           formData.employeeDesignationInfo
         ),
@@ -340,6 +333,7 @@ const MaternalGrantForm = ({
           organizationType || parsedApplicationData?.organizationType,
         applicationType:
           selectedApplicationType || parsedApplicationData?.applicationType,
+        grantAmount:formData?.employeeAccidentInfo.grantAmount,
         employeeBankInfo:
           JSON.stringify(formData.employeeBankInfo) ||
           JSON.stringify(parsedApplicationData?.employeeBankInfo),
@@ -399,6 +393,8 @@ const MaternalGrantForm = ({
         organizationType || parsedApplicationData?.organizationType,
       applicationType:
         selectedApplicationType || parsedApplicationData?.applicationType,
+        grantAmount:formData.employeeAccidentInfo.grantAmount,
+      
       employeeBankInfo:
         JSON.stringify(formData.employeeBankInfo) ||
         JSON.stringify(parsedApplicationData?.employeeBankInfo),

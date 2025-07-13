@@ -109,7 +109,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 onChange={(value) => handleChange("cronicDiseaseType", value, "employeeAccidentInfo")}
                 onOtherDiseaseChange={(value) => handleChange("otherDisease", value, "employeeAccidentInfo")}
                 otherDiseaseValue={formData?.employeeAccidentInfo?.otherDisease || ""}
-                handleChange={handleChange}
+                handleChange={(key, value) => handleChange(key, value, null)} 
               />
             </Grid>
 

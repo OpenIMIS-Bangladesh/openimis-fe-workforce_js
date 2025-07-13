@@ -213,6 +213,7 @@ export function formatApplicationeGQL(application) {
   ${application?.organizationId ? `organizationId: "${decodeId(application?.organizationId?.id)}"` : ""}
   ${application?.organizationType ? `organizationType: "${formatGQLString(application?.organizationType)}"` : ""}
   ${application?.applicationType ? `applicationType: "${formatGQLString(application?.applicationType)}"` : ""}
+  ${application?.grantAmount ? `grantAmount: "${(application?.grantAmount)}"` : ""}
   ${application?.status ? `status: "${application?.status}"` : ""}
   ${application?.trackingNumber ? `trackingNumber: "${application?.trackingNumber}"` : ""}
   ${application?.employeeDependentInfo ? `employeeDependentInfo: ${escapeQuotes(application?.employeeDependentInfo)}` : ""}
@@ -226,7 +227,6 @@ export function formatApplicationeGQL(application) {
   ${application?.cfApplicationSummaryId ? `cfApplicationSummaryId: "${(application?.cfApplicationSummaryId)}"` : ""}
   ${application?.eisApplicationSummaryId ? `eisApplicationSummaryId: "${(application?.eisApplicationSummaryId)}"` : ""}
   ${application?.blwfApplicationSummaryId ? `blwfApplicationSummaryId: "${(application?.blwfApplicationSummaryId)}"` : ""}
-  ${application?.grantAmount ? `grantAmount: "${(application?.grantAmount)}"` : ""}
 `;
 }
 ///application movement ////

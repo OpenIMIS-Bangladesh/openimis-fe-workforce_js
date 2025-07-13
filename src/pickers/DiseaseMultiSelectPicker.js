@@ -44,40 +44,40 @@ const DiseaseMultiSelectPicker = ({
     return selectedNames.join(", ");
   };
 
-  const handleSelectChange = (event) => {
-    const selected = Array.from(new Set(event.target.value));
-    onChange(selected);
+ const handleSelectChange = (event) => {
+  const selected = Array.from(new Set(event.target.value));
+  onChange(selected); // updates cronicDiseaseType inside employeeAccidentInfo
 
-    // ✅ Calculate total minimumDonationAmount
-    const totalAmount = selected
-      .filter((id) => id !== OTHER_ID)
-      .map((id) => {
-        const found = diseaseList.find((d) => d.id === id);
-        return found?.minimumDonationAmount || 0;
-      })
-      .reduce((sum, val) => sum + val, 0);
+  const totalAmount = selected
+    .filter((id) => id !== OTHER_ID)
+    .map((id) => {
+      const found = diseaseList.find((d) => d.id === id);
+      return found?.minimumDonationAmount || 0;
+    })
+    .reduce((sum, val) => sum + val, 0);
 
-    // ✅ Update grantAmount using handleChange
-    if (handleChange) {
-      handleChange("grantAmount", totalAmount);
-    }
-  };
+  // ✅ update grantAmount in the root formData
+  if (handleChange) {
+    handleChange("grantAmount", totalAmount); // parent already null from wrapper
+  }
+};
+
 
   return (
     <>
       <FormControl fullWidth>
-      <InputLabel required>
-        <FormattedMessage
-          id="workforce.application.disease.name"
-          defaultMessage="রোগের নাম"
-          module="workforce"
-        />
-      </InputLabel>
+        <InputLabel>
+          <FormattedMessage
+            id="workforce.application.disease.name"
+            defaultMessage="রোগের নাম"
+            module="workforce"
+          />
+        </InputLabel>
         <Select
           multiple
           value={selectedDiseases}
-          onChange={onChange}
-          renderValue={(selected) => selected.join(", ")}
+          onChange={handleSelectChange}
+          renderValue={renderSelectedValues}
           required
         >
           {diseaseList.map((disease) => (

@@ -211,6 +211,7 @@ const DisabilityForm = ({
           parsedApplicationData?.organizationType || organizationType,
         applicationType:
           parsedApplicationData?.applicationType || selectedApplicationType,
+        grantAmount:parsedApplicationData?.grantAmount||parsedApplicationData.employeeAccidentInfo.grantAmount,
         metadata:
           parsedApplicationData?.metadata || employeeData?.metadata || {},
         dependents:
@@ -285,15 +286,6 @@ const DisabilityForm = ({
           `Update Workforce Employee ${workforceEmployeeData.nameEn}`
         )
       );
-      // if (workforceEmployeeData?.id) {
-      // }else{
-      //         await dispatch(
-      //           createWorkforceEmployee(
-      //             workforceEmployeeData,
-      //             `Update Workforce Employee ${workforceEmployeeData.nameEn}`
-      //           )
-      //         );
-      // }
     } else if (nextStep === 4) {
       console.log("Create application formData:", formData);
       const createApplicationData = {
@@ -305,6 +297,7 @@ const DisabilityForm = ({
         factory: formData.factory,
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
+        grantAmount:formData.employeeAccidentInfo.grantAmount,
         employeeDesignationInfo: JSON.stringify(
           formData.employeeDesignationInfo
         ),
@@ -328,6 +321,7 @@ const DisabilityForm = ({
           parsedApplicationData?.workforceEmployee?.id,
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
+        grantAmount:formData?.employeeAccidentInfo.grantAmount,
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
       }
@@ -376,6 +370,7 @@ const DisabilityForm = ({
           organizationType || parsedApplicationData?.organizationType,
         applicationType:
           selectedApplicationType || parsedApplicationData?.applicationType,
+        grantAmount:formData?.employeeAccidentInfo.grantAmount,
         employeeBankInfo:
           JSON.stringify(formData.employeeBankInfo) ||
           JSON.stringify(parsedApplicationData?.employeeBankInfo),
@@ -411,6 +406,8 @@ const DisabilityForm = ({
         organizationType || parsedApplicationData?.organizationType,
       applicationType:
         selectedApplicationType || parsedApplicationData?.applicationType,
+        grantAmount:formData.employeeAccidentInfo.grantAmount,
+
       employeeBankInfo:
         JSON.stringify(formData.employeeBankInfo) ||
         JSON.stringify(parsedApplicationData?.employeeBankInfo),
