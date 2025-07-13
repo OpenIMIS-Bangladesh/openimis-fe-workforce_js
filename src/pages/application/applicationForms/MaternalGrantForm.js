@@ -201,10 +201,10 @@ const MaternalGrantForm = ({
         applicationForSelf: applicationForSelf,
         organizationType:parsedApplicationData?.organizationType || organizationType,
         applicationType:parsedApplicationData?.applicationType || selectedApplicationType,
-        grantAmount:parsedApplicationData?.grantAmount||parsedApplicationData.employeeAccidentInfo.grantAmount,
+        grantAmount:parsedApplicationData?.grantAmount||parsedApplicationData?.employeeAccidentInfo.grantAmount,
         dependents:parsedApplicationData?.employeeDependentInfo ||employeeData.dependents ||{},
         employeeBankInfo:parsedApplicationData?.employeeBankInfo ||employeeData?.employeeBankInfo ||{},
-        employeeAccidentInfo:parsedApplicationData?.employeeAccidentInfo ||employeeData.employeeAccidentInfo ||{},
+        employeeAccidentInfo:parsedApplicationData?.employeeAccidentInfo ||employeeData?.employeeAccidentInfo ||{},
         metadata:parsedApplicationData?.metadata || employeeData?.metadata || {},
       });
     }
@@ -277,13 +277,13 @@ const MaternalGrantForm = ({
         factory: formData.factory,
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
-        grantAmount:formData.employeeAccidentInfo.grantAmount,
+        grantAmount:formData?.employeeAccidentInfo.grantAmount,
         employeeDesignationInfo: JSON.stringify(
           formData.employeeDesignationInfo
         ),
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents),
-        employeeAccidentInfo: JSON.stringify(formData.employeeAccidentInfo),
+        employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         status: WORKFORCE_STATUS.DRAFT,
       };
 
@@ -341,7 +341,7 @@ const MaternalGrantForm = ({
           JSON.stringify(formData.dependents) ||
           JSON.stringify(parsedApplicationData?.employeeDependentInfo),
         employeeAccidentInfo:
-          JSON.stringify(formData.employeeAccidentInfo) ||
+          JSON.stringify(formData?.employeeAccidentInfo) ||
           JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
         status: WORKFORCE_STATUS.DRAFT,
       };
@@ -393,7 +393,7 @@ const MaternalGrantForm = ({
         organizationType || parsedApplicationData?.organizationType,
       applicationType:
         selectedApplicationType || parsedApplicationData?.applicationType,
-        grantAmount:formData.employeeAccidentInfo.grantAmount,
+        grantAmount:formData?.employeeAccidentInfo.grantAmount,
       
       employeeBankInfo:
         JSON.stringify(formData.employeeBankInfo) ||
@@ -402,7 +402,7 @@ const MaternalGrantForm = ({
         JSON.stringify(formData.dependents) ||
         JSON.stringify(parsedApplicationData?.employeeDependentInfo),
       employeeAccidentInfo:
-        JSON.stringify(formData.employeeAccidentInfo) ||
+        JSON.stringify(formData?.employeeAccidentInfo) ||
         JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       status: WORKFORCE_STATUS.NEW,
     };
