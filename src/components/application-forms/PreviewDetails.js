@@ -77,7 +77,7 @@ import {
     
       return (
         <Box pl={1}>
-          {Object.entries(obj).filter(([k]) => !["id", "parent"].includes(k)).map(([k, v], i) => (
+          {Object.entries(obj).filter(([k]) => !["id", "parent","cronicDiseaseType"].includes(k)).map(([k, v], i) => (
             <Typography variant="body2" key={i}>
               <b>{formatKey(k)}:</b> {renderValue(v)}
             </Typography>
@@ -91,7 +91,7 @@ import {
       if (!data || typeof data !== "object") return null;
     
       const filteredEntries = Object.entries(data)
-        .filter(([k]) => !["id", "uuid", "parent", "workforceEmployer"].includes(k));
+        .filter(([k]) => !["id", "uuid", "parent", "workforceEmployer","cronicDiseaseType"].includes(k));
     
       if (filteredEntries.length === 0) return null; // 🚀 Don't render empty objects
     
@@ -124,7 +124,7 @@ import {
       const personalFields = ["nameEn","nameBn","fatherNameEn","fatherNameBn", "motherNameEn","motherNameBn", "spouseName", "citizenship", "nid", "birthCertificate", "birthDate", "insuranceNumber", "gender"];
       const contactFields = ["email", "phoneNumber", "presentAddress", "permanentAddress", "presentLocation", "permanentLocation"];
       const statusFields = ["birthDate", "deathDate", "lifeStatus", "maritalStatus","monthlyEarning"];
-      const accidentFields = ["diseaseType", "diagnosisDate", "hospitalName", "admitDate","releaseDate","hospitalDoctorName"];
+      const accidentFields = [ "diagnosisDate", "hospitalName", "admitDate","releaseDate","hospitalDoctorName"];
       const childrenFields = ["nameEn","nameBn", "birthDate", "educationInstituteName","studyingClass","result","nid"];
     
       const pickFields = (fields) => {
@@ -215,7 +215,7 @@ import {
         } else if (typeof value === "object") {
           return renderSection( key, value);
         } else {
-          return renderSection("Application Info", { [key]: value });
+          return renderSection("workforce.previewDetails.othersInfo", { [key]: value });
         }
   
         return null;

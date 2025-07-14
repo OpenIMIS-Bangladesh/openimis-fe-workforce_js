@@ -419,15 +419,7 @@ import {
             <VerifiedUserIcon />
           </IconButton>
         </Tooltip>
- 
-        {/* <Tooltip title="Forward">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => component.handleOpenForwardModal(application)}
-          >
-            <ForwardIcon />
-          </IconButton>
-        </Tooltip> */}
+
         <Tooltip title="Revert">
           <IconButton
             disabled={application?.isHistory}
