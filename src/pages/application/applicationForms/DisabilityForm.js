@@ -502,6 +502,8 @@ const DisabilityForm = ({
     );
   }
 
+  console.log({formData})
+
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>

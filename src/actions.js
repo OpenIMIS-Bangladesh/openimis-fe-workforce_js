@@ -67,6 +67,8 @@ export function fetchDocumentType(mm, filters) {
     "fieldId",
     "applicationType",
     "documentType",
+    "applicationFor",
+    "organizationType",
     "status",
     "nameEn",
     "nameBn",

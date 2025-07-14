@@ -1,22 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Grid,
-  Box,
-  Paper,
-  Typography,
-  Divider,
-  IconButton,
-} from "@material-ui/core";
+import { Grid, Box, Paper, Typography, Divider, IconButton } from "@material-ui/core";
 // import { TextInput } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  useTranslations,
-  useModulesManager,
-  TextInput,
-  useHistory,
-  FormattedMessage,
-  PublishedComponent,
-} from "@openimis/fe-core";
+import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import CompanyPicker from "../../pickers/CompanyPicker";
@@ -44,33 +30,69 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDetailsForm2 = ({
-  handleChange,
-  formData,
-  setFormData,
-  selectedApplicationType,
-  applicationId
-}) => {
+const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApplicationType, applicationId }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
-  const { formatMessage } = useTranslations(
-    "core.RegistrationPage",
-    modulesManager
-  );
+  const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    return dispatch(
-      fetchDocumentType(modulesManager, [
-        `applicationType:"${selectedApplicationType}"`,
-      ])
-    );
+    if (formData?.applicationForSelf === "yes") {
+      return dispatch(
+        fetchDocumentType(modulesManager, [
+          `applicationFor: "self"`,
+          `applicationType:"${selectedApplicationType}"`,
+          `organizationType:"${formData.organizationType}"`,
+        ])
+      );
+    } else if (formData.applicationType === "disabilityAssistance") {
+      if (formData.metadata.disabilityType === "permanent") {
+        return dispatch(
+          fetchDocumentType(modulesManager, [
+            `applicationFor: "permanent_isability"`,
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
+      }else {
+        return dispatch(
+          fetchDocumentType(modulesManager, [
+            `applicationFor: "temporary_disability"`,
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
+      }
+    }else if (formData.applicationType === "financialAssistance"){
+      if (formData.metadata.deathType === "normalDeath") {
+        return dispatch(
+        fetchDocumentType(modulesManager, [
+          `applicationFor: "normal_death"`,
+          `applicationType:"${selectedApplicationType}"`,
+          `organizationType:"${formData.organizationType}"`,
+        ])
+      );
+      }else {
+        return dispatch(
+        fetchDocumentType(modulesManager, [
+          `applicationType:"${selectedApplicationType}"`,
+          `organizationType:"${formData.organizationType}"`,
+        ])
+      );
+      }
+    } else {
+      return dispatch(
+        fetchDocumentType(modulesManager, [
+          `applicationFor: "dependent"`,
+          `applicationType:"${selectedApplicationType}"`,
+          `organizationType:"${formData.organizationType}"`,
+        ])
+      );
+    }
   }, []);
 
-  const isLoading = useSelector(
-    (state) => state.workforce[`fetchingDocumentType`]
-  );
+  const isLoading = useSelector((state) => state.workforce[`fetchingDocumentType`]);
   const data = useSelector((state) => state.workforce[`documentType`] ?? []);
   const error = useSelector((state) => state.workforce["errorDocumentType"]);
 
@@ -79,9 +101,7 @@ const EmployeeDetailsForm2 = ({
   const handleFileChange = (fieldKey, files) => {
     setUploadedFiles((prevFiles) => {
       // Check if fieldKey already exists
-      const existingIndex = prevFiles.findIndex(
-        (item) => item.fieldKey === fieldKey
-      );
+      const existingIndex = prevFiles.findIndex((item) => item.fieldKey === fieldKey);
 
       if (existingIndex !== -1) {
         // Update existing entry
@@ -101,10 +121,7 @@ const EmployeeDetailsForm2 = ({
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={0}>
             <Box mb={4} textAlign="center" fontWeight="bold">
-              <FormattedMessage
-                id="workforce.application.header.document"
-                module="workforce"
-              />
+              <FormattedMessage id="workforce.application.header.document" module="workforce" />
             </Box>
             <Grid container className={classes.item} spacing={2}>
               {/* <Grid item xs={6} className={classes.item}>
@@ -153,12 +170,7 @@ const EmployeeDetailsForm2 = ({
               {data.map((document, index) => (
                 <Grid item xs={12} className={classes.item} key={document.fieldId}>
                   <Typography>আপলোড {document.nameBn} </Typography>
-                  <FileUploader
-                    fieldKey={document.fieldId}
-                    onFileChange={handleChange}
-                    applicationId={applicationId}
-                    documentType={document.documentType}
-                  />
+                  <FileUploader fieldKey={document.fieldId} onFileChange={handleChange} applicationId={applicationId} documentType={document.documentType} />
                 </Grid>
               ))}
               {/* <Grid item xs={6} className={classes.item}>
@@ -185,7 +197,7 @@ const EmployeeDetailsForm2 = ({
                   readOnly={false}
                 />
               </Grid> */}
-{/* 
+              {/* 
               <Grid item xs={12} className={classes.item}>
                 <FactoryPicker
                   value={formData?.factory?.id}
