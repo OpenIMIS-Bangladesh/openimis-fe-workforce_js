@@ -747,7 +747,6 @@ export function fetchApplication(mm, filters) {
     "cfApplicationSummary{id}",
     "eisApplicationSummary{id}",
     "blwfApplicationSummary{id}",
-    "grantMoney{id,grantMoney}",
     "grantAmount"
   ];
   const payload = formatPageQueryWithCount(

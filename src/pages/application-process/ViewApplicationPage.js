@@ -11,24 +11,17 @@ import {
   Box,
 } from "@material-ui/core";
 import {
-  TextInput,
-  journalize,
-  PublishedComponent,
   FormattedMessage,
+  journalize,
 } from "@openimis/fe-core";
-import { updateOrganizationEmployee } from "../../actions";
-import {
-  EMPTY_STRING,
-  MODULE_NAME,
-  WORKFORCE_USER_TYPE,
-} from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
+
 import PreviewDetails from "../../components/application-forms/PreviewDetails";
-import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 import ForwardApplicationAdminModal from "../../components/application-process/modals/ForwardApplicationAdminModal";
+import { WORKFORCE_USER_TYPE } from "../../constants";
+import { getUserTypeFromRights } from "../../utils/utils";
 
 const styles = (theme) => ({
-  // paper: theme.paper.paper,
   paper: {
     padding: theme.spacing(1),
     width: "100%",
@@ -43,14 +36,9 @@ const styles = (theme) => ({
     fontSize: "medium",
     fontWeight: "bold",
   },
-  tableTitle: theme.table.title,
-  item: theme.paper.item,
-  fullHeight: {
-    height: "100%",
-  },
   overrideReadOnly: {
     "& .Mui-disabled": {
-      color: `${theme.palette.text.primary} !important`, // Ensures text remains default color
+      color: `${theme.palette.text.primary} !important`,
     },
   },
   buttonContainer: {
@@ -67,25 +55,35 @@ class ViewApplicationPage extends Component {
     this.state = {
       stateEdited: props.application || {},
       workforceEmployee: props?.application?.workforceEmployee || {},
-      parseAccidentInfo:
-        JSON.parse(props.application.employeeAccidentInfo) || {},
-      parseBankInfo: JSON.parse(props.application.employeeBankInfo) || {},
-      parseDependentInfo:
-        JSON.parse(props.application.employeeDependentInfo) || {},
-      isSaved: false,
       isForwardModalOpen: false,
     };
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.application !== this.props.application) {
-      this.setState({ workforceEmployee: this.props.application });
+      this.setState({
+        workforceEmployee: this.props.application?.workforceEmployee || {},
+        stateEdited: this.props.application || {},
+      });
     }
 
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.dispatch(journalize(this.props.mutation));
     }
   }
+
+  // ✅ Safe JSON parser
+  safeParse = (data) => {
+    if (typeof data === "string") {
+      try {
+        return JSON.parse(data);
+      } catch (e) {
+        console.warn("Failed to parse JSON:", data);
+        return {};
+      }
+    }
+    return data || {};
+  };
 
   handleOpenForwardModal = () => {
     this.setState({ isForwardModalOpen: true });
@@ -96,74 +94,70 @@ class ViewApplicationPage extends Component {
   };
 
   render() {
-    const { classes, user_rights,application } = this.props;
-    const {
-      stateEdited,
-      workforceEmployee,
-      isSaved,
-      parseAccidentInfo,
-      parseBankInfo,
-      parseDependentInfo,
-    } = this.state;
-    const isSaveDisabled = false;
-    const AccidentInfo = JSON.parse(parseAccidentInfo);
-    const BankInfo = JSON.parse(parseBankInfo);
-    const DependentInfo = JSON.parse(parseDependentInfo);
+    const { classes, user_rights, application } = this.props;
+    const { stateEdited, workforceEmployee, isForwardModalOpen } = this.state;
 
     const user_type = getUserTypeFromRights(user_rights);
 
+    const bankInfo = this.safeParse(stateEdited?.employeeBankInfo)
+    const AccidentInfo = this.safeParse(stateEdited?.employeeAccidentInfo)
+    const dependentInfo = this.safeParse(stateEdited?.employeeDependentInfo)
+    const childrenInfo = this.safeParse(stateEdited?.employeeChildrenInfo)
+    const metaInfo = this.safeParse(stateEdited?.employeeChildrenInfo)
+
+    // ✅ Safely parse nested stringified objects
     const formData = {
       ...stateEdited,
       workforceEmployee: workforceEmployee,
-      employeeAccidentInfo: AccidentInfo,
-      employeeBankInfo: BankInfo,
-      employeeDependentInfo: DependentInfo,
+      employeeAccidentInfo: this.safeParse(AccidentInfo),
+      employeeBankInfo: this.safeParse(bankInfo),
+      employeeDependentInfo: this.safeParse(dependentInfo),
+      employeeChildrenInfo: this.safeParse(childrenInfo),
+      metadata: this.safeParse(metaInfo),
     };
-    // console.log({ stateEdited });
-    // console.log({ workforceEmployee });
-    console.log({ application });
-    // console.log({ BankInfo });
-    // console.log({ DependentInfo });
 
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>
           <PreviewDetails formData={formData} />
+
           {user_type === WORKFORCE_USER_TYPE.ADMIN && (
             <>
-            <div className={classes.buttonContainer}>
-              <Button
-                variant="outlined"
-                style={{ backgroundColor: "#D10000", color: "white" }}
-              >
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.reject"
-                />
-              </Button>
-              <Button variant="contained" color="primary">
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.approve"
-                />
-              </Button>
-              {/* <Button
-                variant="contained"
-                color="secondary"
-                onClick={this.handleOpenForwardModal}
-              >
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.employee.application.forwardTo"
-                />
-              </Button> */}
-            </div>
-            <ForwardApplicationAdminModal
-            open={this.state.isForwardModalOpen}
-            onClose={this.handleCloseForwardModal}
-            application={this.props.application}
-          />
-          </>
+              <div className={classes.buttonContainer}>
+                <Button
+                  variant="outlined"
+                  style={{ backgroundColor: "#D10000", color: "white" }}
+                >
+                  <FormattedMessage
+                    module="workforce"
+                    id="workforce.application.reject"
+                  />
+                </Button>
+                <Button variant="contained" color="primary">
+                  <FormattedMessage
+                    module="workforce"
+                    id="workforce.application.approve"
+                  />
+                </Button>
+                {/* Optional Forward Button */}
+                {/* <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={this.handleOpenForwardModal}
+                >
+                  <FormattedMessage
+                    module="workforce"
+                    id="workforce.employee.application.forwardTo"
+                  />
+                </Button> */}
+              </div>
+
+              <ForwardApplicationAdminModal
+                open={isForwardModalOpen}
+                onClose={this.handleCloseForwardModal}
+                application={application}
+              />
+            </>
           )}
         </Box>
       </div>

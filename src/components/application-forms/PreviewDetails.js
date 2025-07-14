@@ -212,6 +212,12 @@ import {
           if (value.length > 0 && typeof value[0] === "object") {
             return renderArraySection(key, value);
           }
+        } else if (key === "employeeAccidentInfo") {
+          return renderSection("workforce.previewDetails.accidentInfo", { [key]: value });
+        }else if (key === "employeeChildrenInfo") {
+          return renderSection("workforce.previewDetails.childrenInfo", { [key]: value });
+        }else if (key === "employeeBankInfo") {
+          return renderSection("workforce.previewDetails.bankInfo", { [key]: value });
         } else if (typeof value === "object") {
           return renderSection( key, value);
         } else {
