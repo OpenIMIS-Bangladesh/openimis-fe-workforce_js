@@ -10,16 +10,16 @@ import {
   Button,
   Box,
 } from "@material-ui/core";
-import {
-  FormattedMessage,
-  journalize,
-} from "@openimis/fe-core";
+import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage } from "@openimis/fe-core";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 
 import PreviewDetails from "../../components/application-forms/PreviewDetails";
 import ForwardApplicationAdminModal from "../../components/application-process/modals/ForwardApplicationAdminModal";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserTypeFromRights } from "../../utils/utils";
+import { fetchWorkforceDocument } from "../../actions";
+import { bindActionCreators } from "redux";
+import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 
 const styles = (theme) => ({
   paper: {
@@ -93,8 +93,13 @@ class ViewApplicationPage extends Component {
     this.setState({ isForwardModalOpen: false });
   };
 
+  componentDidMount() {
+      const { dispatch, modulesManager, application } = this.props;
+      this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${application?.id}"`]);
+  }
+
   render() {
-    const { classes, user_rights, application } = this.props;
+    const { classes, user_rights, application,documents } = this.props;
     const { stateEdited, workforceEmployee, isForwardModalOpen } = this.state;
 
     const user_type = getUserTypeFromRights(user_rights);
@@ -119,7 +124,23 @@ class ViewApplicationPage extends Component {
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>
-          <PreviewDetails formData={formData} />
+          <Grid container spacing={2}>
+            <Grid item xs={7} >
+              <PreviewDetails formData={formData} />
+            </Grid>
+            <Grid item xs={5} >
+{documents?.map((file, index) => (
+  <DocumentReviewAccordion
+    key={index}
+    file={file}
+    index={index}
+    onCommentChange={this.handleFileCommentChange}
+    onVerify={this.handleFileVerify}
+    onReject={this.handleFileReject}
+  />
+))}          
+  </Grid>
+          </Grid>
 
           {user_type === WORKFORCE_USER_TYPE.ADMIN && (
             <>
@@ -168,8 +189,18 @@ class ViewApplicationPage extends Component {
 const mapStateToProps = (state) => ({
   application: state.workforce.application,
   user_rights: state.core?.user?.i_user?.rights || {},
+  documents: state.workforce.document,
+  // applicationUuid: props.match.params.application_uuid,
 });
 
-export default connect(mapStateToProps)(
-  withStyles(styles)(ViewApplicationPage)
-);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      fetchWorkforceDocument,
+      journalize,
+      coreConfirm,
+    },
+    dispatch
+  );
+
+export default withModulesManager(withHistory(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ViewApplicationPage))));

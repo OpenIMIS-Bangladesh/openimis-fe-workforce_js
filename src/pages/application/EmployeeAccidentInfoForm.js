@@ -24,6 +24,8 @@ import EmployeeDutyStatusPicker from "../../pickers/EmployeeDutyStatusPicker";
 import EmployeeInsideOutsideFactoryPicker from "../../pickers/EmployeeInsideOutsideFactoryPicker";
 import DiseaseMultiSelectPicker from "../../pickers/DiseaseMultiSelectPicker";
 import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
+// import CustomDateTimePicker from "../../pickers/CustomDateTimePicker";
+import CustomTimePicker from "../../pickers/CustomTimePicker";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -109,7 +111,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 onChange={(value) => handleChange("cronicDiseaseType", value, "employeeAccidentInfo")}
                 onOtherDiseaseChange={(value) => handleChange("otherDisease", value, "employeeAccidentInfo")}
                 otherDiseaseValue={formData?.employeeAccidentInfo?.otherDisease || ""}
-                handleChange={(key, value) => handleChange(key, value, null)} 
+                handleChange={(key, value) => handleChange(key, value, null)}
               />
             </Grid>
 
@@ -241,15 +243,21 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 readOnly={false}
                 required
               />
+              {/* <CustomDateTimePicker isDateTime value={formData?.employeeAccidentInfo?.accidentDate || ""} label="দুর্ঘটনার সময়" onChange={(v) => handleChange("accidentDate", v)} /> */}
             </Grid>
             <Grid item xs={6} className={classes.item}>
-              <PublishedComponent
+              {/* <PublishedComponent
                 pubRef="core.DatePicker"
                 label={"workforce.employee.accident.info.timeOfAccident"}
                 value={formData?.employeeAccidentInfo?.accidentTime || ""}
                 onChange={(v) => handleChange("accidentTime", v)}
                 readOnly={false}
                 required
+              /> */}
+              <CustomTimePicker
+                label={"workforce.employee.accident.info.timeOfAccident"}
+                value={formData?.employeeAccidentInfo?.accidentTime || ""}
+                onChange={(value) => handleChange("accidentTime", value)}
               />
             </Grid>
 

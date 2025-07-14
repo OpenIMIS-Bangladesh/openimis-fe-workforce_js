@@ -529,6 +529,9 @@
     "workforce.previewDetails.othersInfo": "Others Info",
     "workforce.previewDetails.bankInfo": "Bank Info",
 
+    "workforce.timePicker.hour": "hour",
+    "workforce.timePicker.minute": "minute",
+
     
     "workforce.employee.nid_or_birth_certificate":"Nid/BirthCertificate No.",
 

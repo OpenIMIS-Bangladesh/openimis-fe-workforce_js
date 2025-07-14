@@ -377,6 +377,9 @@
     "workforce.previewDetails.othersInfo": "অন্যান্য তথ্য",
     "workforce.previewDetails.bankInfo": "ব্যাংক তথ্য",
 
+    "workforce.timePicker.hour": "ঘণ্টা",
+    "workforce.timePicker.minute": "মিনিট",
+
 
     "workforce.office.dol":"শ্রম অধিদপ্তর",
     "workforce.office.dife":"কলকারখানা ও প্রতিষ্ঠান পরিদর্শন অধিদপ্তর",
