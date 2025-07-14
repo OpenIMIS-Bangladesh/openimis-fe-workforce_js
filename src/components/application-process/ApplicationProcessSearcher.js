@@ -317,6 +317,7 @@ class ApplicationProcessSearcher extends Component {
           const updateApplicationData = {
             id: decodeId(application.id),
             status: WORKFORCE_STATUS.APPROVED_BY_DG,
+            grantAmount: this.state.editedGrantMoney,
           };
 
           try {
@@ -356,6 +357,7 @@ class ApplicationProcessSearcher extends Component {
           const updateApplicationData = {
             id: decodeId(application.id),
             status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
+            grantAmount: this.state.editedGrantMoney,
           };
 
           try {

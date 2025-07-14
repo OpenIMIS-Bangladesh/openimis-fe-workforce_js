@@ -215,7 +215,7 @@ import {
         } else if (typeof value === "object") {
           return renderSection( key, value);
         } else {
-          return renderSection("Application Info", { [key]: value });
+          return renderSection("workforce.previewDetails.othersInfo", { [key]: value });
         }
   
         return null;
