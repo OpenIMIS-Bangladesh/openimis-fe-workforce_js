@@ -248,7 +248,7 @@ const AssignEmployeeDesignation = ({
                         </TableCell>
                         <TableCell className={classes.tableCell} style={{ width: "30%" }}>
                           <PublishedComponent
-                            pubRef="core.DatePicker"
+                            pubRef="workforce.DatePicker"
                             label={"Assign Date"}
                             onChange={(v) => setAssignDate(v)}
                             readOnly={disabledAssignButton ? true : false}
@@ -298,7 +298,7 @@ const AssignEmployeeDesignation = ({
                             <>
                               <TableCell className={classes.tableCell} style={{ width: "30%" }}>
                                 <PublishedComponent
-                                  pubRef="core.DatePicker"
+                                  pubRef="workforce.DatePicker"
                                   label={"Assign Date"}
                                   onChange={(v) => setAssignDate(v)}
                                   readOnly={disabledAssignButton?true:false}

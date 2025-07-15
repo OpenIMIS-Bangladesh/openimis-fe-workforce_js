@@ -143,7 +143,7 @@ const WorkforceEmployeeDesignaitonInfo = ({
                           <TableCell>{row?.position}</TableCell>
                           <TableCell>
                             <PublishedComponent
-                              pubRef="core.DatePicker"
+                              pubRef="workforce.DatePicker"
                               label={"Release Date"}
                               onChange={(v) => setReleaseDate(v)}
                               readOnly={false}

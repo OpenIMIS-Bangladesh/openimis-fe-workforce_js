@@ -137,7 +137,7 @@ const EmployeeDesignationInfo = ({
                           <TableCell>{row?.designation?.nameBn}</TableCell>
                           <TableCell>
                             <PublishedComponent
-                              pubRef="core.DatePicker"
+                              pubRef="workforce.DatePicker"
                               label={"Release Date"}
                               onChange={(v) => setReleaseDate(v)}
                               readOnly={false}

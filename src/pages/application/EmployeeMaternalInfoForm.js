@@ -79,7 +79,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
           <Grid container spacing={1}>
             <Grid item xs={6} className={classes.item}>
               <PublishedComponent
-                pubRef="core.DatePicker"
+                pubRef="workforce.DatePicker"
                 label={"workforce.application.disease.maternal.delivaryDate"}
                 value={formData?.employeeAccidentInfo?.diagnosisDate || ""}
                 onChange={(v) => handleChange("diagnosisDate", v)}
@@ -115,7 +115,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.accident.info.admitDate"}
                     value={formData?.employeeAccidentInfo?.admitDate || ""}
                     onChange={(v) => handleChange("admitDate", v)}
@@ -125,7 +125,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.accident.info.releaseDate"}
                     value={formData?.employeeAccidentInfo?.releaseDate || ""}
                     onChange={(v) => handleChange("releaseDate", v)}

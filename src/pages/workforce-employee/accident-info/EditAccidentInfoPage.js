@@ -121,7 +121,7 @@ class EditAccidentInfoPage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.accident.info.dateOfAccident"}
                     value={stateEdited.accidentDate || ""}
                     onChange={(v) => this.updateAttribute("accidentDate", v)}
@@ -130,7 +130,7 @@ class EditAccidentInfoPage extends Component {
                 </Grid>
                <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.accident.info.timeOfAccident"}
                     value={stateEdited.accidentTime || ""}
                     onChange={(v) => this.updateAttribute("accidentTime", v)}
@@ -183,7 +183,7 @@ class EditAccidentInfoPage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.accident.info.reJoiningDate"}
                     value={stateEdited.reJoiningDate || ""}
                     onChange={(v) => this.updateAttribute("reJoiningDate", v)}

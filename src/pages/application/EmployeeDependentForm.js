@@ -71,7 +71,7 @@ const EmployeeDependentForm = ({
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.birthdate"}
                     value={formData?.dependents?.birthDate || ""}
                     onChange={(v) =>
@@ -94,7 +94,7 @@ const EmployeeDependentForm = ({
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.deathdate"}
                     value={formData?.dependents?.deathDate || ""}
                     readOnly={formData?.dependents?.lifeStatus === "Deceased" ? false : true}

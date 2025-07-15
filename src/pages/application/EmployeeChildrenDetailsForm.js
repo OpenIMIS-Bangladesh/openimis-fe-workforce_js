@@ -76,7 +76,7 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <PublishedComponent
-                  pubRef="core.DatePicker"
+                  pubRef="workforce.DatePicker"
                   label={"workforce.employee.birthdate"}
                   value={formData?.employeeChildrenInfo?.birthDate || ""}
                   onChange={(v) => handleChange("birthDate", v)}

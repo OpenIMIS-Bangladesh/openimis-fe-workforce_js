@@ -152,7 +152,7 @@ class EditWorkforceEmployeePage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.birthdate"}
                     value={stateEdited.birthDate || ""}
                     onChange={(v) => this.updateAttribute("birthDate", v)}
@@ -204,7 +204,7 @@ class EditWorkforceEmployeePage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.deathdate"}
                     value={stateEdited.deathDate || ""}
                     readOnly={stateEdited.lifeStatus ==="Deceased" ? false:true}
@@ -229,7 +229,7 @@ class EditWorkforceEmployeePage extends Component {
                   </Grid>
                   <Grid item xs={6} className={classes.item}>
                     <PublishedComponent
-                      pubRef="core.DatePicker"
+                      pubRef="workforce.DatePicker"
                       label={"workforce.employee.joindate"}
                       value={stateEdited.joinDate || ""}
                       onChange={(v) => this.updateAttribute("joinDate", v)}

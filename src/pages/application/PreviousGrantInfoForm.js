@@ -58,7 +58,7 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData }) => {
             <Grid container className={classes.item} spacing={2}>
               <Grid item xs={6} className={classes.item}>
                 <PublishedComponent
-                  pubRef="core.DatePicker"
+                  pubRef="workforce.DatePicker"
                   label={"workforce.application.dateofReceipt"}
                   value={formData.dateofReceipt || ""}
                   onChange={(v) => handleChange("dateofReceipt", v,"previousGrantInfo")}

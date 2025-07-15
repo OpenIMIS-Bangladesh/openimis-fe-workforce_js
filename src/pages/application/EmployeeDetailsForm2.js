@@ -234,7 +234,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
 
               {/* <Grid item xs={12} className={classes.item}>
                 <PublishedComponent
-                  pubRef="core.DatePicker"
+                  pubRef="workforce.DatePicker"
                   label={"workforce.employee.joindate"}
                   value={formData?.workforceEmployee.joinDate || ""}
                   onChange={(v) =>

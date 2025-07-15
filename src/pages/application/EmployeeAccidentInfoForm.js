@@ -127,7 +127,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
 
             <Grid item xs={6} className={classes.item}>
               <PublishedComponent
-                pubRef="core.DatePicker"
+                pubRef="workforce.DatePicker"
                 label={"workforce.application.accident.dateOfDiagnosis"}
                 value={formData?.employeeAccidentInfo?.diagnosisDate || ""}
                 onChange={(v) => handleChange("diagnosisDate", v)}
@@ -175,7 +175,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.accident.info.admitDate"}
                     value={formData?.employeeAccidentInfo?.admitDate || ""}
                     onChange={(v) => handleChange("admitDate", v)}
@@ -185,7 +185,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.accident.info.releaseDate"}
                     value={formData?.employeeAccidentInfo?.releaseDate || ""}
                     onChange={(v) => handleChange("releaseDate", v)}
@@ -227,7 +227,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <PublishedComponent
-                pubRef="core.DatePicker"
+                pubRef="workforce.DatePicker"
                 label={"workforce.employee.accident.info.dateOfAccident"}
                 value={formData?.employeeAccidentInfo?.accidentDate || ""}
                 onChange={(v) => handleChange("accidentDate", v)}
@@ -238,7 +238,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
             </Grid>
             <Grid item xs={6} className={classes.item}>
               {/* <PublishedComponent
-                pubRef="core.DatePicker"
+                pubRef="workforce.DatePicker"
                 label={"workforce.employee.accident.info.timeOfAccident"}
                 value={formData?.employeeAccidentInfo?.accidentTime || ""}
                 onChange={(v) => handleChange("accidentTime", v)}
@@ -262,7 +262,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <PublishedComponent
-                pubRef="core.DatePicker"
+                pubRef="workforce.DatePicker"
                 label={"workforce.employee.accident.info.reJoiningDate"}
                 value={formData?.employeeAccidentInfo?.reJoiningDate || ""}
                 onChange={(v) => handleChange("reJoiningDate", v)}
@@ -301,7 +301,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.accident.info.admitDate"}
                     value={formData?.employeeAccidentInfo?.admitDate || ""}
                     onChange={(v) => handleChange("admitDate", v)}
@@ -311,7 +311,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.accident.info.releaseDate"}
                     value={formData?.employeeAccidentInfo?.releaseDate || ""}
                     onChange={(v) => handleChange("releaseDate", v)}

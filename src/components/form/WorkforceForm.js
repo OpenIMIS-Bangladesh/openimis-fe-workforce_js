@@ -91,7 +91,7 @@ const WorkforceForm = ({
 
                   {field.type === "date" && (
                     <PublishedComponent
-                      pubRef="core.DatePicker"
+                      pubRef="workforce.DatePicker"
                       label={field.label}
                       value={field.value || stateEdited[field.key] || ""}
                       onChange={(v) => updateAttribute(field.key, v)}

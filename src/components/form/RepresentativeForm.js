@@ -130,7 +130,7 @@ const RepresentativeForm = ({
               {/* Birth Date */}
               <Grid item xs={6} className={classes.item}>
                 <PublishedComponent
-                  pubRef="core.DatePicker"
+                  pubRef="workforce.DatePicker"
                   label="workforce.representative.birthDate"
                   value={stateEdited.dateOfIncident}
                   required={false}

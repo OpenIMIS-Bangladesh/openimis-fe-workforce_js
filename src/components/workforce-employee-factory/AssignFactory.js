@@ -180,7 +180,7 @@ const AssignFactory = ({
                             style={{ width: "30%" }}
                           >
                             <PublishedComponent
-                              pubRef="core.DatePicker"
+                              pubRef="workforce.DatePicker"
                               label={"Assign Date"}
                               onChange={(v) => setAssignDate(v)}
                               readOnly={false}

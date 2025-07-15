@@ -199,7 +199,7 @@ class AddServicesPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.services.join.date"}
                     value={stateEdited.joinDate || ""}
                     onChange={(v) => this.updateAttribute("joinDate", v)}
@@ -208,7 +208,7 @@ class AddServicesPage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.services.resignation.date"}
                     value={stateEdited.resignationDate || ""}
                     onChange={(v) => this.updateAttribute("resignationDate", v)}

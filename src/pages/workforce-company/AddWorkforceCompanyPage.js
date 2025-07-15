@@ -250,7 +250,7 @@ class AddWorkforceCompanyPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.company.foundation_date"}
                     value={stateEdited.foundationDate || ""}
                     onChange={(v) => this.updateAttribute("foundationDate", v)}
@@ -291,7 +291,7 @@ class AddWorkforceCompanyPage extends Component {
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.company.establishment_date"}
                     value={stateEdited.establishmentDate || ""}
                     onChange={(v) =>
