@@ -120,7 +120,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 <TextInput
                   label={"workforce.application.accident.otherDieses"}
                   value={formData?.employeeAccidentInfo?.otherDisease || ""}
-                  onChange={(v) => handleChange("otherDisease", v)}
+                  onChange={(v) => handleChange("cronicDiseaseType", v)}
                 />
               </Grid>
             )}
@@ -208,15 +208,6 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
         {/* Keep your accident section as is */}
         {selectedOption === "accident" && (
           <Grid container spacing={2}>
-            {/* <Grid item xs={6} className={classes.item}>
-              <EmployeeInjuryTypePicker
-                value={formData?.employeeAccidentInfo?.injuryType || ""}
-                label={<FormattedMessage id="workforce.employee.accident.info.injuryType" module="workforce" />}
-                onChange={(v) => handleChange("injuryType", v)}
-                readOnly={false}
-                applicationType={applicationType}
-              />
-            </Grid> */}
             <Grid item xs={6} className={classes.item}>
               <EmployeeAccidentTypePicker
                 value={formData?.employeeAccidentInfo?.accidentType || ""}
@@ -260,16 +251,6 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 onChange={(value) => handleChange("accidentTime", value)}
               />
             </Grid>
-
-            {/* <Grid item xs={6} className={classes.item}>
-              <EmployeeDutyStatusPicker
-                value={formData?.employeeAccidentInfo?.dutyStatus || ""}
-                label={<FormattedMessage id="workforce.employee.accident.info.dutyStatus" module="workforce" />}
-                required
-                onChange={(v) => handleChange("dutyStatus", v)}
-                readOnly={false}
-              />
-            </Grid> */}
             <Grid item xs={6} className={classes.item}>
               <EmployeeInsideOutsideFactoryPicker
                 value={formData?.employeeAccidentInfo?.inOutsideFactory || ""}

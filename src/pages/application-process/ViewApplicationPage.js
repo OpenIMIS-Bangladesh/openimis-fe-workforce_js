@@ -120,7 +120,7 @@ class ViewApplicationPage extends Component {
       employeeChildrenInfo: this.safeParse(childrenInfo),
       metadata: this.safeParse(metaInfo),
     };
-
+    console.log({formData})
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>
