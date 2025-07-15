@@ -39,7 +39,7 @@ import { conditionalEnToBn } from "./utils";
           ""
         ),
       (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
+      (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => "Akij",
       (application) => application.applicationType,
@@ -130,7 +130,7 @@ import { conditionalEnToBn } from "./utils";
           ""
         ),
       (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
+      (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => "Akij",
       (application) => application.applicationType,
@@ -202,7 +202,7 @@ import { conditionalEnToBn } from "./utils";
   export const itemFormattersApplicant = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
+      (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => "Akij",
       (application) => application.applicationType,
@@ -300,7 +300,7 @@ import { conditionalEnToBn } from "./utils";
           ""
         ),
       (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
+      (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => "Akij",
       (application) => application.applicationType,
@@ -380,7 +380,7 @@ import { conditionalEnToBn } from "./utils";
           ""
         ),
       (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
+      (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => "Akij",
       (application) => application.applicationType, 
@@ -532,7 +532,7 @@ import { conditionalEnToBn } from "./utils";
           ""
         ),
       (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
+      (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.applicationType,
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
