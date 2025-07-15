@@ -101,12 +101,24 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Applicant Name</TableCell>
-                <TableCell>Application Type</TableCell>
-                <TableCell align="right">Approved Amount</TableCell>
-                <TableCell>Account No</TableCell>
-                <TableCell>Bank Name</TableCell>
-                <TableCell>Branch</TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.applicantName" defaultMessage="আবেদনকারীর নাম" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.applicationType" defaultMessage="আবেদনের ধরণ" />
+                </TableCell>
+                <TableCell align="right">
+                  <FormattedMessage id="workforce.table.approvedAmount" defaultMessage="অনুমোদিত পরিমাণ" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.accountNo" defaultMessage="অ্যাকাউন্ট নম্বর" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.bankName" defaultMessage="ব্যাংকের নাম" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.branch" defaultMessage="শাখা" />
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -126,7 +138,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
                 )
               })}
               <TableRow>
-                <TableCell colSpan={2}><strong>Total</strong></TableCell>
+                <TableCell colSpan={2}><strong><FormattedMessage id="workforce.table.totalAmount" defaultMessage="মোট পরিমাণ" /></strong></TableCell>
                 <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
                 <TableCell colSpan={3} />
               </TableRow>
@@ -136,13 +148,13 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
         <Divider />
         <DialogActions className={classes.noPrint}>
           <Button onClick={onClose} variant="outlined" color="primary">
-            Close
+            <FormattedMessage id="workforce.table.close" defaultMessage="বন্ধ করুন" />
           </Button>
           <Button onClick={() => window.print()} variant="contained" color="primary">
-            Print Summary
+          <FormattedMessage id="workforce.table.printSUmmary" defaultMessage="মুদ্রণের সারাংশ" />
           </Button>
           <Button onClick={() => handleForward()} variant="contained" color="primary">
-            Forward To Director
+           <FormattedMessage id="workforce.table.forwardToDirector" defaultMessage="পরিচালকের কাছে ফরোয়ার্ড করুন" />
             <ForwardIcon />
           </Button>
         </DialogActions>
@@ -152,18 +164,30 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle disableTypography>
-          <Typography variant="h6">Bank Payment Advice (BFTN)</Typography>
+          <Typography variant="h6">  <FormattedMessage id="workforce.table.bftn"  /></Typography>
         </DialogTitle>
         <DialogContent dividers>
           <Table>
             <TableHead>
-              <TableRow>
-                <TableCell>Applicant Name</TableCell>
-                <TableCell>Application Type</TableCell>
-                <TableCell align="right">Approved Amount</TableCell>
-                <TableCell>Account No</TableCell>
-                <TableCell>Bank Name</TableCell>
-                <TableCell>Branch</TableCell>
+               <TableRow>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.applicantName" defaultMessage="আবেদনকারীর নাম" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.applicationType" defaultMessage="আবেদনের ধরণ" />
+                </TableCell>
+                <TableCell align="right">
+                  <FormattedMessage id="workforce.table.approvedAmount" defaultMessage="অনুমোদিত পরিমাণ" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.accountNo" defaultMessage="অ্যাকাউন্ট নম্বর" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.bankName" defaultMessage="ব্যাংকের নাম" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.branch" defaultMessage="শাখা" />
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -183,7 +207,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
                 )
               })}
               <TableRow>
-                <TableCell colSpan={2}><strong>Total</strong></TableCell>
+                <TableCell colSpan={2}><strong><FormattedMessage id="workforce.table.totalAmount" defaultMessage="মোট পরিমাণ" /></strong></TableCell>
                 <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
                 <TableCell colSpan={3} />
               </TableRow>
@@ -193,10 +217,10 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
         <Divider />
         <DialogActions className={classes.noPrint}>
         <Button onClick={onClose} variant="outlined" color="primary">
-          Close
+             <FormattedMessage id="workforce.table.close" />
         </Button>
         <Button onClick={() => window.print()} variant="contained" color="primary">
-          Print Advice
+            <FormattedMessage id="workforce.table.printAdvice" />
         </Button>
       </DialogActions>
 
@@ -206,18 +230,30 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle disableTypography>
-          <Typography variant="h6">Bank Payment Advice (BFTN)</Typography>
+          <Typography variant="h6"> <FormattedMessage id="workforce.table.bftn" /></Typography>
         </DialogTitle>
         <DialogContent dividers>
           <Table>
             <TableHead>
-              <TableRow>
-                <TableCell>Applicant Name</TableCell>
-                <TableCell>Application Type</TableCell>
-                <TableCell align="right">Approved Amount</TableCell>
-                <TableCell>Account No</TableCell>
-                <TableCell>Bank Name</TableCell>
-                <TableCell>Branch</TableCell>
+                 <TableRow>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.applicantName" defaultMessage="আবেদনকারীর নাম" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.applicationType" defaultMessage="আবেদনের ধরণ" />
+                </TableCell>
+                <TableCell align="right">
+                  <FormattedMessage id="workforce.table.approvedAmount" defaultMessage="অনুমোদিত পরিমাণ" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.accountNo" defaultMessage="অ্যাকাউন্ট নম্বর" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.bankName" defaultMessage="ব্যাংকের নাম" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.branch" defaultMessage="শাখা" />
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -237,7 +273,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
                 )
               })}
               <TableRow>
-                <TableCell colSpan={2}><strong>Total</strong></TableCell>
+                <TableCell colSpan={2}><strong><FormattedMessage id="workforce.table.totalAmount" defaultMessage="মোট পরিমাণ" /></strong></TableCell>
                 <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
                 <TableCell colSpan={3} />
               </TableRow>
@@ -247,10 +283,10 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
         <Divider />
         <DialogActions className={classes.noPrint}>
           <Button onClick={onClose} variant="outlined" color="primary">
-            Close
+              <FormattedMessage id="workforce.table.close" defaultMessage="বন্ধ করুন" />
           </Button>
           <Button onClick={() => window.print()} variant="contained" color="primary">
-            Print Advice
+              <FormattedMessage id="workforce.table.printAdvice"  />
           </Button>
         </DialogActions>
       </Dialog>
