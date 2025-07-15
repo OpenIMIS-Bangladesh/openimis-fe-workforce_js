@@ -510,18 +510,18 @@ class ApplicationProcessSearcher extends Component {
     const { locale } = this.props;
 
     return userType === WORKFORCE_USER_TYPE.APPLICANT
-      ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+      ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.CHECKER
-      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this,locale)
+      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.ASSOCIATION
-      ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+      ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.APPROVER
-      ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+      ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
-      ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+      ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
-      ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this)
-      : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this);
+      ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale);
   };
 
   sorts = () => [];

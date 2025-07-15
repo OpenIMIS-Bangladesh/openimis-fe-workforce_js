@@ -368,6 +368,7 @@
     "workforce.application.disease.maternalHeading": "মাতৃত্ব সংক্রান্ত তথ্যঃ",
     "workforce.application.disease.maternal.delivaryDate": "প্রসবের তারিখ",
     "workforce.tracking.notfound": "কোনো আবেদন পাওয়া যায়নি",
+    "workforce.application.modal.header": "নির্বাচিত আবেদনের সারাংশ",
 
     "workforce.previewDetails.personalInfo": "ব্যক্তিগত তথ্য",
     "workforce.previewDetails.statusInfo": "অবস্থা তথ্য",

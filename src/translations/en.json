@@ -520,6 +520,7 @@
     "workforce.application.disease.timeOfAccident": "Accident Time",
     "workforce.application.disease.maternalHeading": "Maternity information",
     "workforce.application.disease.maternal.delivaryDate": "Delivery date",
+    "workforce.application.modal.header": "Selected Application Summary",
 
     "workforce.previewDetails.personalInfo": "Personal Info",
     "workforce.previewDetails.statusInfo": "Status Info",

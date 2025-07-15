@@ -95,7 +95,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle disableTypography>
-          <Typography variant="h6">Selected Application Summary</Typography>
+          <Typography variant="h6"><FormattedMessage module="workforce" id="workforce.application.modal.header" /></Typography>
         </DialogTitle>
         <DialogContent dividers>
           <Table>

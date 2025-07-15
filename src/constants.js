@@ -64,8 +64,6 @@ export const WORKFORCE_STATUS = {
   MEETING_CREATED: "meeting_created",
 
 };
-export const LANGUAGE_BN = 'bn';
-export const LANGUAGE_EN = 'en';
 export const STATUS_MAP_BN  = {
   active: "সক্রিয়",
   inactive: "নিষ্ক্রিয়",
