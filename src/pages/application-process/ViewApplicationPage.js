@@ -1,15 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-  Grid,
-  Paper,
-  Typography,
-  Divider,
-  IconButton,
-  Card,
-  Button,
-  Box,
-} from "@material-ui/core";
+import { Grid, Paper, Typography, Divider, IconButton, Card, Button, Box } from "@material-ui/core";
 import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage } from "@openimis/fe-core";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 
@@ -94,21 +85,21 @@ class ViewApplicationPage extends Component {
   };
 
   componentDidMount() {
-      const { dispatch, modulesManager, application } = this.props;
-      this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${application?.id}"`]);
+    const { dispatch, modulesManager, application } = this.props;
+    this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${application?.id}"`]);
   }
 
   render() {
-    const { classes, user_rights, application,documents } = this.props;
+    const { classes, user_rights, application, documents } = this.props;
     const { stateEdited, workforceEmployee, isForwardModalOpen } = this.state;
 
     const user_type = getUserTypeFromRights(user_rights);
 
-    const bankInfo = this.safeParse(stateEdited?.employeeBankInfo)
-    const AccidentInfo = this.safeParse(stateEdited?.employeeAccidentInfo)
-    const dependentInfo = this.safeParse(stateEdited?.employeeDependentInfo)
-    const childrenInfo = this.safeParse(stateEdited?.employeeChildrenInfo)
-    const metaInfo = this.safeParse(stateEdited?.employeeChildrenInfo)
+    const bankInfo = this.safeParse(stateEdited?.employeeBankInfo);
+    const AccidentInfo = this.safeParse(stateEdited?.employeeAccidentInfo);
+    const dependentInfo = this.safeParse(stateEdited?.employeeDependentInfo);
+    const childrenInfo = this.safeParse(stateEdited?.employeeChildrenInfo);
+    const metaInfo = this.safeParse(stateEdited?.employeeChildrenInfo);
 
     // ✅ Safely parse nested stringified objects
     const formData = {
@@ -120,45 +111,36 @@ class ViewApplicationPage extends Component {
       employeeChildrenInfo: this.safeParse(childrenInfo),
       metadata: this.safeParse(metaInfo),
     };
-    console.log({formData})
+    console.log({ formData });
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>
           <Grid container spacing={2}>
-            <Grid item xs={7} >
+            <Grid item xs={12}>
               <PreviewDetails formData={formData} />
             </Grid>
-            <Grid item xs={5} >
-{documents?.map((file, index) => (
-  <DocumentReviewAccordion
-    key={index}
-    file={file}
-    index={index}
-    onCommentChange={this.handleFileCommentChange}
-    onVerify={this.handleFileVerify}
-    onReject={this.handleFileReject}
-  />
-))}          
-  </Grid>
+            <Grid item xs={12}>
+              {documents?.map((file, index) => (
+                <DocumentReviewAccordion
+                  key={index}
+                  file={file}
+                  index={index}
+                  onCommentChange={this.handleFileCommentChange}
+                  onVerify={this.handleFileVerify}
+                  onReject={this.handleFileReject}
+                />
+              ))}
+            </Grid>
           </Grid>
 
           {user_type === WORKFORCE_USER_TYPE.ADMIN && (
             <>
               <div className={classes.buttonContainer}>
-                <Button
-                  variant="outlined"
-                  style={{ backgroundColor: "#D10000", color: "white" }}
-                >
-                  <FormattedMessage
-                    module="workforce"
-                    id="workforce.application.reject"
-                  />
+                <Button variant="outlined" style={{ backgroundColor: "#D10000", color: "white" }}>
+                  <FormattedMessage module="workforce" id="workforce.application.reject" />
                 </Button>
                 <Button variant="contained" color="primary">
-                  <FormattedMessage
-                    module="workforce"
-                    id="workforce.application.approve"
-                  />
+                  <FormattedMessage module="workforce" id="workforce.application.approve" />
                 </Button>
                 {/* Optional Forward Button */}
                 {/* <Button
@@ -173,11 +155,7 @@ class ViewApplicationPage extends Component {
                 </Button> */}
               </div>
 
-              <ForwardApplicationAdminModal
-                open={isForwardModalOpen}
-                onClose={this.handleCloseForwardModal}
-                application={application}
-              />
+              <ForwardApplicationAdminModal open={isForwardModalOpen} onClose={this.handleCloseForwardModal} application={application} />
             </>
           )}
         </Box>

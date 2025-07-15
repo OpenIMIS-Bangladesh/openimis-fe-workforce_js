@@ -28,25 +28,26 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
   export const itemAdminFormatters = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) =>
-        application.workforceEmployee ? (
+        application?.workforceEmployee ? (
           <Checkbox
-            checked={component.state.selectedApplicationIds.includes(application.id)}
-            onChange={component.handleCheckboxChange(application.id)}
+            checked={component.state.selectedApplicationIds.includes(application?.id)}
+            onChange={component.handleCheckboxChange(application?.id)}
             color="primary"
           />
         ) : (
           ""
         ),
-      (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => "Akij",
-      (application) => application.applicationType,
+      (application) => application?.trackingNumber,
+      (application) => application?.dateCreated.split("T")[0],
+      (application) => application?.workforceEmployee?.firstNameBn,
+      (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
+      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+
       (application) => "Nafi",
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
-      return statusMap[application.status] || application.status;},
+      return statusMap[application?.status] || application?.status;},
       isShowHistory() ? application?.version : null,
     ];
 
@@ -60,7 +61,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.process.view",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -76,7 +77,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.process.actions",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -119,24 +120,25 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
   export const itemFormattersDirector = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) =>
-        application.workforceEmployee ? (
+        application?.workforceEmployee ? (
           <Checkbox
-            checked={component.state.selectedApplicationIds.includes(application.id)}
-            onChange={component.handleCheckboxChange(application.id)}
+            checked={component.state.selectedApplicationIds.includes(application?.id)}
+            onChange={component.handleCheckboxChange(application?.id)}
             color="primary"
           />
         ) : (
           ""
         ),
-      (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => "Akij",
-      (application) => application.applicationType,
+      (application) => application?.trackingNumber,
+      (application) => application?.dateCreated.split("T")[0],
+      (application) => application?.workforceEmployee?.firstNameBn,
+(application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
+      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+
       (application) => "Nafi",
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       // (application) => application?.grantAmount,
-      (application) => application.status,
+      (application) => application?.status,
       isShowHistory() ? application?.version : null,
     ];
 
@@ -150,7 +152,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.process.view",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -166,7 +168,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.process.actions",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -200,14 +202,15 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
 
   export const itemFormattersApplicant = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
-      (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => "Akij",
-      (application) => application.applicationType,
+      (application) => application?.trackingNumber,
+      (application) => application?.dateCreated.split("T")[0],
+      (application) => application?.workforceEmployee?.firstNameBn,
+(application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
+      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
-      return statusMap[application.status] || application.status;},
+      return statusMap[application?.status] || application?.status;},
       isShowHistory() ? application?.version : null,
     ];
 
@@ -223,7 +226,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.process.view",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -239,7 +242,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.process.actions",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -255,7 +258,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.process.resend",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -273,7 +276,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.application",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -289,24 +292,25 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
   export const itemFormattersChecker = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) =>
-        application.workforceEmployee ? (
+        application?.workforceEmployee ? (
           <Checkbox
-            checked={component.state.selectedApplicationIds.includes(application.id)}
-            onChange={component.handleCheckboxChange(application.id)}
+            checked={component.state.selectedApplicationIds.includes(application?.id)}
+            onChange={component.handleCheckboxChange(application?.id)}
             color="primary"
           />
         ) : (
           ""
         ),
-      (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => "Akij",
-      (application) => application.applicationType,
+      (application) => application?.trackingNumber,
+      (application) => application?.dateCreated.split("T")[0],
+      (application) => application?.workforceEmployee?.firstNameBn,
+(application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
+      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+
       (application) => application?.grantAmount,
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
-      return statusMap[application.status] || application.status;},
+      return statusMap[application?.status] || application?.status;},
       isShowHistory() ? application?.version : null,
     ];
 
@@ -320,7 +324,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.process.view",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -337,7 +341,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.verify",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -369,25 +373,26 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
    export const itemFormattersAssociation = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) =>
-        application.workforceEmployee ? (
+        application?.workforceEmployee ? (
           <Checkbox
-            checked={component.state.selectedApplicationIds.includes(application.id)}
-            onChange={component.handleCheckboxChange(application.id)}
+            checked={component.state.selectedApplicationIds.includes(application?.id)}
+            onChange={component.handleCheckboxChange(application?.id)}
             color="primary"
           />
         ) : (
           ""
         ),
-      (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => "Akij",
-      (application) => application.applicationType, 
-      (application) => application.grantAmount, 
+      (application) => application?.trackingNumber,
+      (application) => application?.dateCreated.split("T")[0],
+      (application) => application?.workforceEmployee?.firstNameBn,
+(application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
+      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+ 
+      (application) => application?.grantAmount, 
       // (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
-      return statusMap[application.status] || application.status;},
+      return statusMap[application?.status] || application?.status;},
       isShowHistory() ? application?.version : null,
     ];
 
@@ -401,7 +406,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.process.view",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -418,7 +423,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.verify",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -442,23 +447,23 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
   export const itemFormattersFactoryAdmin = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) =>
-        application.workforceEmployee ? (
+        application?.workforceEmployee ? (
           <Checkbox
-            checked={component.state.selectedApplicationIds.includes(application.id)}
-            onChange={component.handleCheckboxChange(application.id)}
+            checked={component.state.selectedApplicationIds.includes(application?.id)}
+            onChange={component.handleCheckboxChange(application?.id)}
             color="primary"
           />
         ) : (
           ""
         ),
-      (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => "Akij",
-      (application) => application.applicationType,
+      (application) => application?.trackingNumber,
+      (application) => application?.dateCreated.split("T")[0],
+      (application) => application?.workforceEmployee?.firstNameBn,
+      (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
+      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
-      return statusMap[application.status] || application.status;},
+      return statusMap[application?.status] || application?.status;},
       isShowHistory() ? application?.version : null,
     ];
 
@@ -472,7 +477,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.process.view",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -489,7 +494,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.verify",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -521,23 +526,24 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
   export const itemFormattersApprover = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
         (application) =>
-        application.workforceEmployee ? (
+        application?.workforceEmployee ? (
           <Checkbox
-            checked={component.state.selectedApplicationIds.includes(application.id)}
-            onChange={component.handleCheckboxChange(application.id)}
+            checked={component.state.selectedApplicationIds.includes(application?.id)}
+            onChange={component.handleCheckboxChange(application?.id)}
             color="primary"
           />
         ) : (
           ""
         ),
-      (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
-      (application) => application.workforceEmployee?.firstNameBn,
-      (application) => application.applicationType,
+      (application) => application?.trackingNumber,
+      (application) => application?.dateCreated.split("T")[0],
+      (application) => application?.workforceEmployee?.firstNameBn,
+      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
-      return statusMap[application.status] || application.status;},      
+      return statusMap[application?.status] || application?.status;},      
       isShowHistory() ? application?.version : null,
     ];
 
@@ -551,7 +557,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.process.view",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}
@@ -568,7 +574,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
                 modulesManager,
                 history,
                 "workforce.route.applications.application.verify",
-                [decodeId(application.id)],
+                [decodeId(application?.id)],
                 false
               );
             }}

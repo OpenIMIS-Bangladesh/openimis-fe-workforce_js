@@ -686,6 +686,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "organizationType",
     "applicationType",
     "status",
+    "employeeFactory{id,nameEn,nameBn}",
     "trackingNumber",
     "employeeDependentInfo",
     "employeeBankInfo",
@@ -696,7 +697,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "cfApplicationSummary{id}",
     "eisApplicationSummary{id}",
     "blwfApplicationSummary{id}",
-    "grantMoney {id,grantMoney}",
+    "grantMoney {id,grantMoney,applicationTypeNameEn,applicationTypeNameBn}",
     "grantAmount"
 
   ];
