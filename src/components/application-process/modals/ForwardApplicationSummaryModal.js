@@ -19,6 +19,7 @@ import {
   formatMutation,
   decodeId,
   FormattedMessage,
+  PublishedComponent
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import DistrictOfficePicker from "../../../pickers/DistrictOfficePicker";
@@ -385,21 +386,15 @@ const handleSave = async () => {
               />
             </Grid>
             {/* Meeting Date Field */}
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="মিটিং এর তারিখ"
-                variant="outlined"
-                type="date"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                value={formData?.meetingDate || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, meetingDate: e.target.value })
-                }
-              />
-            </Grid>
+           <Grid item xs={6} className={classes.item}>
+            <PublishedComponent
+              pubRef="workforce.DatePicker"
+              label="মিটিং এর তারিখ"
+              value={formData?.meetingDate || ""}
+              onChange={(v) => setFormData({ ...formData, meetingDate: v })}
+              readOnly={false}
+            />
+          </Grid>
           </Grid>
         </Paper>
 
