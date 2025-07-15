@@ -398,6 +398,8 @@
     "workforce.employee.aid.reason.info.maternity":"মাতৃত্বকালীন রোগের জন্য",
     "workforce.employee.aid.reason.info.accident":"দুর্ঘটনার বিবরণ",
 
-    "workforce.account.selection.type":"অ্যাকাউন্টের ধরণ নির্বাচন করুন"
+    "workforce.account.selection.type":"অ্যাকাউন্টের ধরণ নির্বাচন করুন",
+
+    "calendar.clearButton": "মুছে ফেলুন"
 
 }

@@ -79,7 +79,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <PublishedComponent
-                  pubRef="core.DatePicker"
+                  pubRef="workforce.DatePicker"
                   label={"workforce.employee.birthdate"}
                   value={formData?.workforceEmployee.birthDate || ""}
                   onChange={(v) => handleChange("birthDate", v)}

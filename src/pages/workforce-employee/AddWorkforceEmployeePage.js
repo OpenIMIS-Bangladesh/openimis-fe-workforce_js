@@ -167,7 +167,7 @@ class AddWorkforceEmployeePage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={"workforce.employee.birthdate"}
                     value={stateEdited.birthDate || ""}
                     onChange={(v) => this.updateAttribute("birthDate", v)}
