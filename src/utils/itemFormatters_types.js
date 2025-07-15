@@ -197,7 +197,7 @@ import { LANGUAGE_BN,LANGUAGE_EN,STATUS_MAP_BN,STATUS_MAP_EN } from "../constant
     return formatters;
   };
 
-  export const itemFormattersApplicant = (isShowHistory,modulesManager,history,component) => {
+  export const itemFormattersApplicant = (isShowHistory,modulesManager,history,component,) => {
     const formatters = [
       (application) => application.trackingNumber,
       (application) => application.dateCreated.split("T")[0],
@@ -285,7 +285,7 @@ import { LANGUAGE_BN,LANGUAGE_EN,STATUS_MAP_BN,STATUS_MAP_EN } from "../constant
     ));
     return formatters;
   };
-  export const itemFormattersChecker = (isShowHistory,modulesManager,history,component) => {
+  export const itemFormattersChecker = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) =>
         application.workforceEmployee ? (
@@ -304,7 +304,10 @@ import { LANGUAGE_BN,LANGUAGE_EN,STATUS_MAP_BN,STATUS_MAP_EN } from "../constant
       (application) => application.applicationType,
       (application) => application?.grantAmount,
       // (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
-      (application) => application.status,
+       (application) => {
+      const statusMap = locale === "bn" ? STATUS_MAP_BN : STATUS_MAP_EN;
+      return statusMap[application.status] || application.status;
+    },
       isShowHistory() ? application?.version : null,
     ];
 

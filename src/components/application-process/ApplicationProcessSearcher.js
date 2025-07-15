@@ -507,10 +507,12 @@ class ApplicationProcessSearcher extends Component {
 
   itemFormatters = () => {
     const userType = getUserTypeFromRights(this.props.userRights);
+    const { locale } = this.props;
+
     return userType === WORKFORCE_USER_TYPE.APPLICANT
       ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this)
       : userType === WORKFORCE_USER_TYPE.CHECKER
-      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this)
+      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this,locale)
       : userType === WORKFORCE_USER_TYPE.ASSOCIATION
       ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this)
       : userType === WORKFORCE_USER_TYPE.APPROVER
@@ -1107,6 +1109,7 @@ const mapStateToProps = (state) => ({
   organizationEmployee: state.workforce.organizationEmployee,
   workforceEmployeesFactoryId: state.workforce.workforceEmployee?.edges?.[0]?.employeeDesignationEmployeeId?.edges?.[0]?.node?.workforceFactory?.id ?? null,
   workforceEmployee: state.workforce.workforceEmployee,
+  locale: state.core?.user?.i_user?.language || "en",  
 });
 
 const mapDispatchToProps = (dispatch) =>
