@@ -280,12 +280,10 @@ const DEFAULT_CONFIG = {
     },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS, component: ActionsApplicationPage },
     {
-    {
       path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS}/:application_uuid`,
       component: ActionsApplicationPage,
     },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND, component: ResendApplicationPage },
-    {
     {
       path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND}/:application_uuid`,
       component: ResendApplicationPage,
