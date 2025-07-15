@@ -95,11 +95,13 @@ import ActionsApplicationPage from "./pages/application-process/ActionsApplicati
 import ResendApplicationPage from "./pages/application-process/ResendApplicationPage";
 import WorkforceEmployeeDesignationPage from "./pages/workforce-employee-designation/WorkforceEmployeeDesignationPage";
 import VerifyApplicationPage from "./pages/application-process/VerifyApplicationPage";
+import LoginHeader from "./pages/login/LoginHeader";
+import LoginForm from "./pages/login/LoginForm";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
 const DEFAULT_CONFIG = {
-  "translations": [{ key: "fr", messages: messages_bn },{ key: "en", messages: messages_en } ],
+  "translations": [{ key: "fr", messages: messages_bn }, { key: "en", messages: messages_en }],
   reducers: [{ key: "workforce", reducer }],
 
   refs: [
@@ -272,12 +274,12 @@ const DEFAULT_CONFIG = {
       component: ApplicationProcessPage,
     },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS, component: ActionsApplicationPage },
-   {
+    {
       path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS}/:application_uuid`,
       component: ActionsApplicationPage,
     },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND, component: ResendApplicationPage },
-   {
+    {
       path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND}/:application_uuid`,
       component: ResendApplicationPage,
     },
@@ -293,6 +295,8 @@ const DEFAULT_CONFIG = {
   "core.MainMenu": [WorkforceMainMenu],
 
   "core.LoginPage": RegistrationButton,
+  "core.LoginPageLogo": LoginHeader,
+  "core.LoginPageForm": LoginForm,
   "core.AppBar": NotificationBar,
   "home.HomePage.Blocks": DashboardRelay,
 };
