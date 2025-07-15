@@ -22,9 +22,10 @@ import {
   Tooltip,
   Checkbox,
 } from "@material-ui/core";
+import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
+
   
-  
-  export const itemAdminFormatters = (isShowHistory,modulesManager,history,component) => {
+  export const itemAdminFormatters = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) =>
         application.workforceEmployee ? (
@@ -43,8 +44,9 @@ import {
       (application) => application.applicationType,
       (application) => "Nafi",
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
-      // (application) => application?.grantAmount,
-      (application) => application.status,
+      (application) => {
+      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+      return statusMap[application.status] || application.status;},
       isShowHistory() ? application?.version : null,
     ];
 
@@ -114,7 +116,7 @@ import {
     ));
     return formatters;
   };
-  export const itemFormattersDirector = (isShowHistory,modulesManager,history,component) => {
+  export const itemFormattersDirector = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) =>
         application.workforceEmployee ? (
@@ -196,14 +198,16 @@ import {
     return formatters;
   };
 
-  export const itemFormattersApplicant = (isShowHistory,modulesManager,history,component) => {
+  export const itemFormattersApplicant = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) => application.trackingNumber,
       (application) => application.dateCreated.split("T")[0],
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => "Akij",
       (application) => application.applicationType,
-      (application) => application.status,
+      (application) => {
+      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+      return statusMap[application.status] || application.status;},
       isShowHistory() ? application?.version : null,
     ];
 
@@ -282,7 +286,7 @@ import {
     ));
     return formatters;
   };
-  export const itemFormattersChecker = (isShowHistory,modulesManager,history,component) => {
+  export const itemFormattersChecker = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) =>
         application.workforceEmployee ? (
@@ -300,8 +304,9 @@ import {
       (application) => "Akij",
       (application) => application.applicationType,
       (application) => application?.grantAmount,
-      // (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
-      (application) => application.status,
+      (application) => {
+      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+      return statusMap[application.status] || application.status;},
       isShowHistory() ? application?.version : null,
     ];
 
@@ -361,7 +366,7 @@ import {
     ));
     return formatters;
   };
-   export const itemFormattersAssociation = (isShowHistory,modulesManager,history,component) => {
+   export const itemFormattersAssociation = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) =>
         application.workforceEmployee ? (
@@ -380,7 +385,9 @@ import {
       (application) => application.applicationType, 
       (application) => application.grantAmount, 
       // (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
-      (application) => application.status,
+      (application) => {
+      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+      return statusMap[application.status] || application.status;},
       isShowHistory() ? application?.version : null,
     ];
 
@@ -432,7 +439,7 @@ import {
     ));
     return formatters;
   };
-  export const itemFormattersFactoryAdmin = (isShowHistory,modulesManager,history,component) => {
+  export const itemFormattersFactoryAdmin = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
       (application) =>
         application.workforceEmployee ? (
@@ -449,7 +456,9 @@ import {
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => "Akij",
       (application) => application.applicationType,
-      (application) => application.status,
+      (application) => {
+      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+      return statusMap[application.status] || application.status;},
       isShowHistory() ? application?.version : null,
     ];
 
@@ -509,7 +518,7 @@ import {
     ));
     return formatters;
   };
-  export const itemFormattersApprover = (isShowHistory,modulesManager,history,component) => {
+  export const itemFormattersApprover = (isShowHistory,modulesManager,history,component,locale = "en") => {
     const formatters = [
         (application) =>
         application.workforceEmployee ? (
@@ -526,7 +535,9 @@ import {
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => application.applicationType,
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
-      (application) => application.status,
+      (application) => {
+      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+      return statusMap[application.status] || application.status;},      
       isShowHistory() ? application?.version : null,
     ];
 
