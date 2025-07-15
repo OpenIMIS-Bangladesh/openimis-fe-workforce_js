@@ -132,7 +132,7 @@ export default function LoginForm() {
                 aria-label="Login type"
                 TabIndicatorProps={{ style: { backgroundColor: "#006273" } }}
             >
-                <Tab label="সাধারণ লগইন" {...loginTypeTabChange(0)} />
+                <Tab label="সুবিধাভোগী লগইন" {...loginTypeTabChange(0)} />
                 <Tab label="এডমিন লগইন" {...loginTypeTabChange(1)} />
             </Tabs>
             <SharedTabPanel value={loginType} index={0}>
@@ -225,7 +225,7 @@ export default function LoginForm() {
                         <Button
                             fullWidth
                             type="button"
-                            disabled={!(credentials.username && credentials.password)}
+                            disabled={!(credentials.username && /[a-zA-Z]/.test(credentials.username) && credentials.password)}
                             color="primary"
                             variant="contained"
                             onClick={() => onSubmit()}
