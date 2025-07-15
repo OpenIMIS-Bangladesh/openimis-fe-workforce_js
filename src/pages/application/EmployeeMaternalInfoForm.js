@@ -18,11 +18,6 @@ import {
   FormGroup,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import EmployeeInjuryTypePicker from "../../pickers/EmployeeInjuryTypePicker";
-import EmployeeAccidentTypePicker from "../../pickers/EmployeeAccidentTypePicker";
-import EmployeeDutyStatusPicker from "../../pickers/EmployeeDutyStatusPicker";
-import EmployeeInsideOutsideFactoryPicker from "../../pickers/EmployeeInsideOutsideFactoryPicker";
-import DiseaseMultiSelectPicker from "../../pickers/DiseaseMultiSelectPicker";
 import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,18 +32,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const diseaseOptions = [
-  "Diabetes",
-  "Hypertension",
-  "Asthma",
-  "Heart Disease",
-  "Kidney Disease",
-  "Cancer",
-  "Tuberculosis",
-  "Arthritis",
-  "Stroke",
-  "Others", // Allow manual input if selected
-];
 
 const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicationType }) => {
   const classes = useStyles();

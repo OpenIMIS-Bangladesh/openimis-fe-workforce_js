@@ -219,7 +219,7 @@
     "workforce.application.steps.treatment.info":"চিকিৎসার তথ্য",
     "workforce.application.steps.upload.documents":"প্রমাণপত্র আপলোড",
     "workforce.application.steps.upload":"আপলোড",
-    "workforce.application.steps.capture":"ক্যাপচার",
+    "workforce.application.steps.capture":"ছবি তুলুন",
     "workforce.application.steps.dependent":"নির্ভরশীল",
     "workforce.application.steps.account.info": "অ্যাকাউন্ট তথ্য",
     "workforce.application.steps.aidReason":"আর্থিক সহায়তা কারণ",
@@ -371,11 +371,11 @@
 
     "workforce.previewDetails.personalInfo": "ব্যক্তিগত তথ্য",
     "workforce.previewDetails.statusInfo": "অবস্থা তথ্য",
-    "workforce.previewDetails.accidentInfo": "দুর্ঘটনার তথ্য",
+    "workforce.previewDetails.employeeAccidentInfo": "দুর্ঘটনার তথ্য",
     "workforce.previewDetails.contactInfo": "যোগাযোগের তথ্য",
-    "workforce.previewDetails.childrenInfo": "সন্তানের তথ্য",
+    "workforce.previewDetails.employeeChildrenInfo": "সন্তানের তথ্য",
     "workforce.previewDetails.othersInfo": "অন্যান্য তথ্য",
-    "workforce.previewDetails.bankInfo": "ব্যাংক তথ্য",
+    "workforce.previewDetails.employeeBankInfo": "ব্যাংক তথ্য",
 
     "workforce.timePicker.hour": "ঘণ্টা",
     "workforce.timePicker.minute": "মিনিট",

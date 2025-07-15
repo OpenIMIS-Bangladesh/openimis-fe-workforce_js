@@ -124,6 +124,42 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               <FormattedMessage id="workforce.application.header.document" module="workforce" />
             </Box>
             <Grid container className={classes.item} spacing={2}>
+              <Grid item xs={6} className={classes.item}>
+                <CompanyPicker
+                  value={formData?.company?.id}
+                  label={
+                    <FormattedMessage
+                      id="workforce.employee.workforce_employer"
+                      module="workforce"
+                    />
+                  }
+                  
+                  onChange={(v) => {
+                    handleChange("company", v, "employeeDesignation");
+                    handleChange("company", v);
+                  }}
+                  readOnly={false}
+                />
+              </Grid>
+              
+              <Grid item xs={6} className={classes.item}>
+                <FactoryPicker
+                  value={formData?.factory?.id}
+                  label={
+                    <FormattedMessage
+                      id="workforce.employee.workforce_factory"
+                      module="workforce"
+                    />
+                  }
+                  
+                  companyId={formData?.company?.id}
+                  onChange={(v) => {
+                    handleChange("factory", v, "employeeDesignation");
+                    handleChange("factory", v);
+                  }}
+                  readOnly={false}
+                />
+              </Grid>
               {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.nid"
@@ -180,42 +216,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                   onFileChange={handleChange}
                 />
               </Grid> */}
-              {/* <Grid item xs={12} className={classes.item}>
-                <CompanyPicker
-                  value={formData?.company?.id}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.workforce_employer"
-                      module="workforce"
-                    />
-                  }
-                  
-                  onChange={(v) => {
-                    handleChange("company", v, "employeeDesignation");
-                    handleChange("company", v);
-                  }}
-                  readOnly={false}
-                />
-              </Grid> */}
-              {/* 
-              <Grid item xs={12} className={classes.item}>
-                <FactoryPicker
-                  value={formData?.factory?.id}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.workforce_factory"
-                      module="workforce"
-                    />
-                  }
-                  
-                  companyId={formData?.company?.id}
-                  onChange={(v) => {
-                    handleChange("factory", v, "employeeDesignation");
-                    handleChange("factory", v);
-                  }}
-                  readOnly={false}
-                />
-              </Grid> */}
+              
 
               {/* {selectedApplicationType ===
                 ("financialAssistance" || "disabilityAssistance") && (
