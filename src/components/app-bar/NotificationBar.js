@@ -9,7 +9,7 @@ import { WORKFORCE_USER_TYPE } from "../../constants";
 import { fetchWorkforceApplicationStatusCount } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  useHistory,
+  useHistory,FormattedMessage
 } from "@openimis/fe-core";
 
 const styles = (theme) => ({
@@ -80,7 +80,7 @@ const NotificationBar = ({ classes }) => {
           <Badge badgeContent={data.pending || 0} color="primary">
             <HourglassEmptyIcon color="yellow" />
           </Badge>
-          <Typography className={classes.label}>Pending</Typography>
+          <Typography className={classes.label}><FormattedMessage module="workforce" id="workforce.application.process.pending" /></Typography>
         </Box>
       </Tooltip>
 
@@ -90,7 +90,7 @@ const NotificationBar = ({ classes }) => {
           <Badge badgeContent={data.rejected || 0} color="primary">
             <RestorePageIcon color="red" />
           </Badge>
-          <Typography className={classes.label}>Rejected</Typography>
+          <Typography className={classes.label}><FormattedMessage module="workforce" id="workforce.application.process.rejected" /></Typography>
         </Box>
       </Tooltip>
 
@@ -100,7 +100,7 @@ const NotificationBar = ({ classes }) => {
           <Badge badgeContent={data.approved || 0} color="primary">
             <VerifiedUserIcon style={{ color: "#4caf50" }} />
           </Badge>
-          <Typography className={classes.label}>Approved</Typography>
+          <Typography className={classes.label}>  <FormattedMessage module="workforce" id="workforce.application.process.approved" /></Typography>
         </Box>
       </Tooltip>
     </Box>

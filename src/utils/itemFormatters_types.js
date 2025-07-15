@@ -23,6 +23,7 @@ import {
   Checkbox,
 } from "@material-ui/core";
 import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
+import { conditionalEnToBn } from "./utils";
 
   
   export const itemAdminFormatters = (isShowHistory,modulesManager,history,component,locale = "en") => {
@@ -38,7 +39,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
           ""
         ),
       (application) => application?.trackingNumber,
-      (application) => application?.dateCreated.split("T")[0],
+      (application) => conditionalEnToBn(application?.dateCreated.split("T")[0],locale),
       (application) => application?.workforceEmployee?.firstNameBn,
       (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
       (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
@@ -130,7 +131,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
           ""
         ),
       (application) => application?.trackingNumber,
-      (application) => application?.dateCreated.split("T")[0],
+      (application) => conditionalEnToBn(application?.dateCreated.split("T")[0],locale),
       (application) => application?.workforceEmployee?.firstNameBn,
 (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
       (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
@@ -208,6 +209,11 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
 (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
       (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
 
+      (application) => application.trackingNumber,
+      (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => "Akij",
+      (application) => application.applicationType,
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;},
@@ -302,12 +308,12 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
           ""
         ),
       (application) => application?.trackingNumber,
-      (application) => application?.dateCreated.split("T")[0],
+      (application) => conditionalEnToBn(application?.dateCreated.split("T")[0],locale),
       (application) => application?.workforceEmployee?.firstNameBn,
 (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
       (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
 
-      (application) => application?.grantAmount,
+      (application) => conditionalEnToBn(application?.grantAmount,locale), 
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;},
@@ -389,6 +395,12 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
       (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
  
       (application) => application?.grantAmount, 
+      (application) => application.trackingNumber,
+      (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => "Akij",
+      (application) => application.applicationType, 
+      (application) => conditionalEnToBn(application?.grantAmount,locale), 
       // (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
@@ -461,6 +473,11 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
       (application) => application?.workforceEmployee?.firstNameBn,
       (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
       (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+      (application) => application.trackingNumber,
+      (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => "Akij",
+      (application) => application.applicationType,
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;},
@@ -540,6 +557,10 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
       (application) => application?.workforceEmployee?.firstNameBn,
       (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
 
+      (application) => application.trackingNumber,
+      (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
+      (application) => application.workforceEmployee?.firstNameBn,
+      (application) => application.applicationType,
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
