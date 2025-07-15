@@ -22,7 +22,8 @@ import {
   Tooltip,
   Checkbox,
 } from "@material-ui/core";
-  
+import { LANGUAGE_BN,LANGUAGE_EN,STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
+
   
   export const itemAdminFormatters = (isShowHistory,modulesManager,history,component) => {
     const formatters = [
@@ -203,7 +204,9 @@ import {
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => "Akij",
       (application) => application.applicationType,
-      (application) => application.status,
+      (application) => {
+        const statusMap = LANGUAGE_BN === "bn" ? STATUS_MAP_BN : STATUS_MAP_EN;
+        return statusMap[application.status] || application.status;},
       isShowHistory() ? application?.version : null,
     ];
 
