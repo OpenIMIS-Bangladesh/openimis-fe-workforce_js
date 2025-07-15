@@ -23,6 +23,7 @@ import {
   Checkbox,
 } from "@material-ui/core";
 import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
+import { conditionalEnToBn } from "./utils";
 
   
   export const itemAdminFormatters = (isShowHistory,modulesManager,history,component,locale = "en") => {
@@ -452,7 +453,7 @@ import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
           ""
         ),
       (application) => application.trackingNumber,
-      (application) => application.dateCreated.split("T")[0],
+      (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
       (application) => application.workforceEmployee?.firstNameBn,
       (application) => "Akij",
       (application) => application.applicationType,

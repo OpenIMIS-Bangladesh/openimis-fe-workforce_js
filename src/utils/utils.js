@@ -19,17 +19,17 @@ export function isEmptyObject(obj) {
 }
 
 export const safeApplicationId = (applicationId, parsedApplicationData) => {
-    console.clear();
-    console.log("applicationId", applicationId);
-    console.log("parsedApplicationData", parsedApplicationData);
-    if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
-      return decodeId(applicationId[0].id);
-    } else if (parsedApplicationData && parsedApplicationData.id) {
-      return parsedApplicationData.id;
-    } else {
-      return null;
-    }
-  };
+  console.clear();
+  console.log("applicationId", applicationId);
+  console.log("parsedApplicationData", parsedApplicationData);
+  if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
+    return decodeId(applicationId[0].id);
+  } else if (parsedApplicationData && parsedApplicationData.id) {
+    return parsedApplicationData.id;
+  } else {
+    return null;
+  }
+};
 
 export function getUserType() {
   const reduxState = useSelector((state) => state);
@@ -41,18 +41,18 @@ export function getUserTypeFromRights(user_rights) {
   let user_type = WORKFORCE_USER_TYPE.APPLICANT;
   if (user_rights.includes(812001)) {
     user_type = WORKFORCE_USER_TYPE.CHECKER;
-  }else if (user_rights.includes(813001)) {
+  } else if (user_rights.includes(813001)) {
     user_type = WORKFORCE_USER_TYPE.APPROVER;
-  }else if (user_rights.includes(814001)) {
+  } else if (user_rights.includes(814001)) {
     user_type = WORKFORCE_USER_TYPE.FACTORY_ADMIN;
-  }else if (user_rights.includes(815001)) {
+  } else if (user_rights.includes(815001)) {
     user_type = WORKFORCE_USER_TYPE.DIRECTOR;
-  }else if (user_rights.includes(816001)) {
+  } else if (user_rights.includes(816001)) {
     user_type = WORKFORCE_USER_TYPE.ASSOCIATION;
-  }else if(!isEmptyObject(user_rights)) {
+  } else if (!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }
-  
+
   return user_type;
 }
 
@@ -68,16 +68,16 @@ const safeParse = (str) => {
 };
 
 export const getParsedApplication = (modulesManager, filters) => {
-  console.log('hello from getParsedApplication',filters)
+  console.log('hello from getParsedApplication', filters)
   return async (dispatch, getState) => {
     try {
       // Dispatch the fetch action and wait for it to complete
       await dispatch(fetchApplication(modulesManager, filters));
-      
+
       // Get the current state after the fetch completes
       const state = getState();
       const rawData = state.workforce.application;
-      
+
       if (!rawData) {
         console.warn("No application data found in Redux store");
         return null;
@@ -92,7 +92,7 @@ export const getParsedApplication = (modulesManager, filters) => {
         employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
         employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo) || {},
         employeeChildrenInfo: safeParse(rawData.employeeChildrenInfo) || {},
-        metadata:safeParse(rawData.metadata) ||{}
+        metadata: safeParse(rawData.metadata) || {}
       };
 
       return parsedData;
@@ -102,3 +102,33 @@ export const getParsedApplication = (modulesManager, filters) => {
     }
   };
 };
+
+export const enToBn = (num, type = '') => {
+  const en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+  let bnNum = '';
+  for (const digit of num) {
+    const index = en.indexOf(digit);
+    bnNum += index !== -1 ? bn[index] : digit;
+  }
+  return bnNum;
+};
+
+export const bnToEn = (num) => {
+  const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+  const en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  let enNum = '';
+  for (const digit of num) {
+    const index = bn.indexOf(digit);
+    enNum += index !== -1 ? en[index] : digit;
+  }
+  return enNum;
+};
+
+export const conditionalEnToBn = (num, locale, type = '') => {
+  if (locale === 'en') {
+    return num;
+  } else {
+    return enToBn(num, type);
+  }
+}
