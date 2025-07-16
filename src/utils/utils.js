@@ -103,7 +103,14 @@ export const getParsedApplication = (modulesManager, filters) => {
   };
 };
 
-export const enToBn = (num, type = '') => {
+export const isEmpty = (value) => {
+  if (typeof (value) == 'undefined' || value == '' || value == null || value == 0) {
+    return true;
+  }
+  return false;
+}
+
+export const enToBn = (input, type = '') => {
   var numbers = {
     0: '০', 1: '১', 2: '২', 3: '৩', 4: '৪', 5: '৫', 6: '৬', 7: '৭', 8: '৮', 9: '৯'
   };
@@ -125,14 +132,7 @@ export const enToBn = (num, type = '') => {
   return output;
 };
 
-export const isEmpty = (value) => {
-  if (typeof (value) == 'undefined' || value == '' || value == null || value == 0) {
-    return true;
-  }
-  return false;
-}
-
-export const bnToEn = (num) => {
+export const bnToEn = (input) => {
   var numbers = {
     '০': 0, '১': 1, '২': 2, '৩': 3, '৪': 4, '৫': 5, '৬': 6, '৭': 7, '৮': 8, '৯': 9,
     '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9
