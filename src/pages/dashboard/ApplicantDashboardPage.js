@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { FormattedMessage } from "@openimis/fe-core";
 import {
@@ -175,24 +175,23 @@ const ApplicationStatus = () => {
   const [trackingNumber, setTrackingNumber] = useState("");
   const [applicationData, setApplicationData] = useState(null);
   const [showResult, setShowResult] = useState(false);
-  const history = useHistory();
 
-  const handleApplicationSearch = () => {
-    const filters = {
-      trackingNumber: `eq:${trackingNumber}`,
-    };
+const handleApplicationSearch = () => {
+const filters = {
+  trackingNumber: `eq:${trackingNumber}`,
+};
 
 
-    dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
-      const edges = res.payload?.data?.workforceApplication?.edges || [];
-      const matchedApp = edges
-        .map((e) => e.node)
-        .find((app) => app.trackingNumber === trackingNumber);
+ dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
+  const edges = res.payload?.data?.workforceApplication?.edges || [];
+  const matchedApp = edges
+    .map((e) => e.node)
+    .find((app) => app.trackingNumber === trackingNumber);
 
-      setApplicationData(matchedApp || null);
-      setShowResult(true);
-    });
-  };
+  setApplicationData(matchedApp || null);
+  setShowResult(true);
+});
+};
 
 
   return (
@@ -220,7 +219,7 @@ const ApplicationStatus = () => {
             </Button>
           </Grid>
         </Grid>
-        {showResult && (
+ {showResult && (
           applicationData ? (
             <Box
               mt={4}
@@ -306,16 +305,9 @@ const RevertApplication = () => {
 
 const ApplicantDashboard = () => {
   const classes = useStyles();
-  const [selectedMenu, setSelectedMenu] = useState(() => {
-    const hash = window.location.hash.substring(1);
-    return SidebarMenu.some(item => item.id === hash) ? hash : "pendingApplications";
-  });
+  const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
 
   const renderContent = () => {
-    useEffect(() => {
-      window.history.pushState(null, "", `#${selectedMenu}`);
-    }, [selectedMenu]);
-
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
