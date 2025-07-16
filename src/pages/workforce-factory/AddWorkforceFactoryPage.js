@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Grid, Paper, Typography, Divider, IconButton, FormControlLabel, Checkbox } from "@material-ui/core";
+import { Grid, Paper, Typography, Divider, IconButton, FormControlLabel, Checkbox,FormControl,InputLabel,Select,MenuItem  } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
 import { createRepresentative, fetchRepresentativeByClientMutationId, createWorkforceFactory } from "../../actions";
 import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation } from "@openimis/fe-core";
@@ -80,6 +80,7 @@ class AddWorkforceFactoryPage extends Component {
         email: stateEdited.email,
         website: stateEdited.website,
         address: stateEdited.address,
+        associationType: stateEdited.associationType,
         location: stateEdited.location,
         status: WORKFORCE_STATUS.DRAFT,
         isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
@@ -98,6 +99,7 @@ class AddWorkforceFactoryPage extends Component {
       email: stateEdited.email,
       website: stateEdited.website,
       address: stateEdited.address,
+      associationType: stateEdited.associationType,
       location: stateEdited.location,
       status: WORKFORCE_STATUS.DRAFT,
       isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
@@ -229,7 +231,23 @@ class AddWorkforceFactoryPage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-
+               <Grid item xs={6} className={classes.item}>
+                <FormControl fullWidth>
+                  <InputLabel id="association-type-label">Association Type</InputLabel>
+                  <Select
+                    labelId="association-type-label"
+                    value={stateEdited.associationType || ""}
+                    onChange={(e) => this.updateAttribute("associationType", e.target.value)}
+                    label="Association Type"
+                    readOnly={isSaved}
+                    disabled={isSaved}
+                    required
+                  >
+                    <MenuItem value="BGMEA">BGMEA</MenuItem>
+                    <MenuItem value="BKMEA">BKMEA</MenuItem>
+                  </Select>
+                </FormControl>
+               </Grid>
                 <Grid item xs={12} className={classes.item}>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
