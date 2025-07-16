@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, Box, Paper, Button, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useTranslations, FormattedMessage, useModuleManager, historyPush,useHistory} from "@openimis/fe-core";
+import { useTranslations, FormattedMessage, useModuleManager, historyPush, useHistory } from "@openimis/fe-core";
 import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import WorkforceEmployeePicker from "../../pickers/WorkforceEmployeePicker";
@@ -26,10 +26,14 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect, selectedApplication
   const [isExportOriented, setIsExportOriented] = useState("");
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
- const history = useHistory()
+   const selectedEmployee = useSelector((state) => state.selectedEmployee);
+  // const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const history = useHistory();
   const handleEmployeeChange = (employee) => {
-    setSelectedEmployee(employee?.id || null);
+    dispatch({
+      type: "SET_SELECTED_EMPLOYEE",
+      payload: employee,
+    });
     console.log("Selected employee:", employee);
   };
   // const modulesManager = useModuleManager()
@@ -57,7 +61,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect, selectedApplication
     onSelect(selectedApplicationType, value);
   };
 
-  console.log({ user_type });
+  console.log({ selectedEmployee });
 
   return (
     <Paper className={classes.paper} elevation={0}>
@@ -78,11 +82,11 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect, selectedApplication
           </Grid>
           <Grid item xs={3}>
             <Button
-                        variant="contained"
-                        color="primary"
-              onClick={() =>{historyPush( modulesManager,
-                history,
-                "workforce.route.employees.employee")}}
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                historyPush(modulesManager, history, "workforce.route.employees.employee");
+              }}
             >
               Add Employee
             </Button>

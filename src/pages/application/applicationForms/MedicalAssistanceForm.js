@@ -129,6 +129,8 @@ const MedicalAssistanceForm = ({
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
   });
 
+  console.log(reduxState.workforce.selectedEmployee)
+
   useEffect(() => {
     if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
       setFormData((prev) => ({
@@ -139,11 +141,19 @@ const MedicalAssistanceForm = ({
   }, [applicationId]);
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
-    dispatch(
-      fetchWorkforceEmployee(modulesManager, [
-        `relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`,
-      ])
-    );
+    if (reduxState.workforce.selectedEmployee) {
+      dispatch(
+        fetchWorkforceEmployee(modulesManager, [
+          `id: "${decodeId(reduxState.workforce.selectedEmployee.id)}"`,
+        ])
+      );
+    }else{
+      dispatch(
+        fetchWorkforceEmployee(modulesManager, [
+          `relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`,
+        ])
+      );
+    }
   };
 
   useEffect(() => {

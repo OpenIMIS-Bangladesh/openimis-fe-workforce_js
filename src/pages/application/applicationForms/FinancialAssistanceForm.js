@@ -119,8 +119,20 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
 
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
-    dispatch(fetchWorkforceEmployee(modulesManager, [`relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`]));
-  };
+if (reduxState.workforce.selectedEmployee) {
+      dispatch(
+        fetchWorkforceEmployee(modulesManager, [
+          `id: "${decodeId(reduxState.workforce.selectedEmployee.id)}"`,
+        ])
+      );
+    }else{
+      dispatch(
+        fetchWorkforceEmployee(modulesManager, [
+          `relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`,
+        ])
+      );
+    }
+    };
 
   useEffect(() => {
     if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {

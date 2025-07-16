@@ -144,11 +144,19 @@ const MaternalGrantForm = ({
   }, [applicationId]);
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
-    dispatch(
-      fetchWorkforceEmployee(modulesManager, [
-        `relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`,
-      ])
-    );
+    if (reduxState.workforce.selectedEmployee) {
+          dispatch(
+            fetchWorkforceEmployee(modulesManager, [
+              `id: "${decodeId(reduxState.workforce.selectedEmployee.id)}"`,
+            ])
+          );
+        }else{
+          dispatch(
+            fetchWorkforceEmployee(modulesManager, [
+              `relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`,
+            ])
+          );
+        }
   };
 
   useEffect(() => {
