@@ -62,7 +62,7 @@ const EmployeeLocationForm = ({ handleChange,formData, setFormData }) => {
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
-                  value={formData?.workforceEmployee.presentLocation || null}
+                  value={formData?.workforceEmployee.presentLocation.id || null}
                   onChange={(presentLocation) =>
                     handleChange( "presentLocation", presentLocation )
                   }
@@ -84,7 +84,7 @@ const EmployeeLocationForm = ({ handleChange,formData, setFormData }) => {
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
-                  value={formData?.workforceEmployee.permanentLocation || null}
+                  value={formData?.workforceEmployee.permanentLocation.id || null}
                   onChange={(permanentLocation) =>
                     handleChange(
                       "permanentLocation", permanentLocation
