@@ -125,9 +125,16 @@ export const enToBn = (num, type = '') => {
   return output;
 };
 
+export const isEmpty = (value) => {
+  if (typeof (value) == 'undefined' || value == '' || value == null || value == 0) {
+    return true;
+  }
+  return false;
+}
+
 export const bnToEn = (num) => {
   var numbers = {
-    '০': 0, '১': 1, '২': 2, '৩': 3, '৪': 4, '৫': 5, '৬': 6, '৭': 7, '৮': 8, '৯': 9, 
+    '০': 0, '১': 1, '২': 2, '৩': 3, '৪': 4, '৫': 5, '৬': 6, '৭': 7, '৮': 8, '৯': 9,
     '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9
   };
   var output = '';
@@ -135,7 +142,7 @@ export const bnToEn = (num) => {
   if (typeof (input) == 'number') {
     input = input.toString();
   }
-  if (isEmpty(input)) {
+  if (empty(input)) {
     return input;
   }
   for (var i = 0; i < input.length; ++i) {
