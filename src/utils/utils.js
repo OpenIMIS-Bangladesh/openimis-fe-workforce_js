@@ -103,26 +103,56 @@ export const getParsedApplication = (modulesManager, filters) => {
   };
 };
 
-export const enToBn = (num, type = '') => {
-  const en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-  const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-  let bnNum = '';
-  for (const digit of num) {
-    const index = en.indexOf(digit);
-    bnNum += index !== -1 ? bn[index] : digit;
+export const isEmpty = (value) => {
+  if (typeof (value) == 'undefined' || value == '' || value == null || value == 0) {
+    return true;
   }
-  return bnNum;
+  return false;
+}
+
+export const enToBn = (input, type = '') => {
+  var numbers = {
+    0: '০', 1: '১', 2: '২', 3: '৩', 4: '৪', 5: '৫', 6: '৬', 7: '৭', 8: '৮', 9: '৯'
+  };
+  var output = '';
+
+  if (typeof (input) == 'number') {
+    input = input.toString();
+  }
+  if (isEmpty(input.length)) {
+    return input;
+  }
+  for (var i = 0; i < input.length; ++i) {
+    if (numbers.hasOwnProperty(input[i])) {
+      output += numbers[input[i]];
+    } else {
+      output += input[i];
+    }
+  }
+  return output;
 };
 
-export const bnToEn = (num) => {
-  const bn = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-  const en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-  let enNum = '';
-  for (const digit of num) {
-    const index = bn.indexOf(digit);
-    enNum += index !== -1 ? en[index] : digit;
+export const bnToEn = (input) => {
+  var numbers = {
+    '০': 0, '১': 1, '২': 2, '৩': 3, '৪': 4, '৫': 5, '৬': 6, '৭': 7, '৮': 8, '৯': 9,
+    '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9
+  };
+  var output = '';
+
+  if (typeof (input) == 'number') {
+    input = input.toString();
   }
-  return enNum;
+  if (empty(input)) {
+    return input;
+  }
+  for (var i = 0; i < input.length; ++i) {
+    if (numbers.hasOwnProperty(input[i])) {
+      output += numbers[input[i]];
+    } else {
+      output += input[i];
+    }
+  }
+  return output;
 };
 
 export const conditionalEnToBn = (num, locale, type = '') => {
