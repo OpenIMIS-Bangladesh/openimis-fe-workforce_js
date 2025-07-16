@@ -42,7 +42,7 @@ import { conditionalEnToBn } from "./utils";
       (application) => conditionalEnToBn(application?.dateCreated.split("T")[0],locale),
       (application) => application?.workforceEmployee?.firstNameBn,
       (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
-      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+      (application) => locale === "en" ? application?.grantMoney?.applicationTypeNameEn:application?.grantMoney?.applicationTypeNameBn,
 
       (application) => "Nafi",
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
@@ -134,7 +134,7 @@ import { conditionalEnToBn } from "./utils";
       (application) => conditionalEnToBn(application?.dateCreated.split("T")[0],locale),
       (application) => application?.workforceEmployee?.firstNameBn,
       (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
-      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+      (application) => locale === "en" ? application?.grantMoney?.applicationTypeNameEn:application?.grantMoney?.applicationTypeNameBn,
 
       (application) => "Nafi",
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
@@ -208,7 +208,7 @@ import { conditionalEnToBn } from "./utils";
       (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
       (application) => application.workforceEmployee?.firstNameBn,
        (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
-      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+      (application) => locale === "en" ? application?.grantMoney?.applicationTypeNameEn:application?.grantMoney?.applicationTypeNameBn,
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;},
@@ -306,7 +306,7 @@ import { conditionalEnToBn } from "./utils";
       (application) => conditionalEnToBn(application?.dateCreated.split("T")[0],locale),
       (application) => application?.workforceEmployee?.firstNameBn,
       (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
-      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+      (application) => locale === "en" ? application?.grantMoney?.applicationTypeNameEn:application?.grantMoney?.applicationTypeNameBn,
       (application) => conditionalEnToBn(application?.grantAmount,locale), 
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
@@ -386,7 +386,7 @@ import { conditionalEnToBn } from "./utils";
       (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
       (application) => application.workforceEmployee?.firstNameBn,
        (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
-      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn, 
+      (application) => locale === "en" ? application?.grantMoney?.applicationTypeNameEn:application?.grantMoney?.applicationTypeNameBn, 
       (application) => conditionalEnToBn(application?.grantAmount,locale), 
       // (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => {
@@ -459,7 +459,7 @@ import { conditionalEnToBn } from "./utils";
       (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
       (application) => application.workforceEmployee?.firstNameBn,
        (application) => locale === "en" ? application?.employeeFactory?.nameEn:application?.employeeFactory?.nameBn,
-      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+      (application) => locale === "en" ? application?.grantMoney?.applicationTypeNameEn:application?.grantMoney?.applicationTypeNameBn,
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;},
@@ -537,7 +537,7 @@ import { conditionalEnToBn } from "./utils";
       (application) => application.trackingNumber,
       (application) => conditionalEnToBn(application.dateCreated.split("T")[0],locale),
       (application) => application.workforceEmployee?.firstNameBn,
-      (application) => locale === "en" ? application?.grantMoney.applicationTypeNameEn:application?.grantMoney.applicationTypeNameBn,
+      (application) => locale === "en" ? application?.grantMoney?.applicationTypeNameEn:application?.grantMoney?.applicationTypeNameBn,
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
