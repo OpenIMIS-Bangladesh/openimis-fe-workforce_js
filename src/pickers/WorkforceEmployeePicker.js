@@ -60,7 +60,7 @@ const WorkforceEmployeePicker = ({
       options={data}
       isLoading={isLoading}
       value={selectedOption}
-      getOptionLabel={(option) => locale === "en" ? option.nameEn : option.nameBn}
+      getOptionLabel={(option) => locale === "en" ? option.firstNameEn : option.firstNameBn}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}

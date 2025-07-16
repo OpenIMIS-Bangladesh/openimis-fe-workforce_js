@@ -345,11 +345,18 @@ function reducer(
     ////workforce otp id ///
     workforceOtpId: "",
 
+    selectedEmployee: null,
+
     workforceApplicationStatusCount: {}
   },
   action
 ) {
   switch (action.type) {
+    case "SET_SELECTED_EMPLOYEE":
+      return {
+        ...state,
+        selectedEmployee: action.payload,
+      };
     case "WORKFORCE_ORGANIZATIONS_REQ":
       return {
         ...state,

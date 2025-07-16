@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Typography,
-  Paper,
-} from "@material-ui/core";
+import { useSelector, useDispatch } from "react-redux";
+import { FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, Box, Paper, Button, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useTranslations, FormattedMessage } from "@openimis/fe-core";
+import { useTranslations, FormattedMessage, useModuleManager, historyPush,useHistory} from "@openimis/fe-core";
 import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
+import WorkforceEmployeePicker from "../../pickers/WorkforceEmployeePicker";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -27,9 +22,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationType,parsedApplicationData }) => {
+const ApplicationTypeSelector = ({ modulesManager, onSelect, selectedApplicationType, parsedApplicationData }) => {
   const [isExportOriented, setIsExportOriented] = useState("");
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+ const history = useHistory()
+  const handleEmployeeChange = (employee) => {
+    setSelectedEmployee(employee?.id || null);
+    console.log("Selected employee:", employee);
+  };
+  // const modulesManager = useModuleManager()
   const user_type = getUserType();
 
   useEffect(() => {
@@ -45,42 +48,62 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
   const handleApplicationTypeChange = (event) => {
     const value = event.target.value;
     // setSelectedApplicationType(value);
-    onSelect(value, isExportOriented); 
-    
+    onSelect(value, isExportOriented);
   };
 
   const handleExportOrientedChange = (event) => {
     const value = event.target.value;
     setIsExportOriented(value);
-    onSelect(selectedApplicationType, value); 
+    onSelect(selectedApplicationType, value);
   };
 
-  console.log({user_type})
+  console.log({ user_type });
 
   return (
     <Paper className={classes.paper} elevation={0}>
       {user_type != WORKFORCE_USER_TYPE.APPLICANT && (
-        <div> Hello behenchod</div>
+        <Grid container alignItems="center" spacing={2}>
+          <Grid item xs={9}>
+            <WorkforceEmployeePicker
+              modulesManager={modulesManager}
+              value={selectedEmployee}
+              onChange={handleEmployeeChange}
+              required={true}
+              readOnly={false}
+              withLabel={true}
+              withPlaceholder={true}
+              label="Select Employee"
+              placeholder="Type to search employee"
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <Button
+                        variant="contained"
+                        color="primary"
+              onClick={() =>{historyPush( modulesManager,
+                history,
+                "workforce.route.employees.employee")}}
+            >
+              Add Employee
+            </Button>
+          </Grid>
+        </Grid>
       )}
       <FormControl component="fieldset">
         {/* New Export-Oriented Company Question */}
         <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
-          {<FormattedMessage id="workforce.application.company.type" module="workforce"/>}
+          {<FormattedMessage id="workforce.application.company.type" module="workforce" />}
         </Typography>
         <RadioGroup value={isExportOriented} onChange={handleExportOrientedChange}>
           <FormControlLabel
             value="yes"
             control={<Radio color="primary" />}
-            label={
-              <FormattedMessage id="workforce.application.permission.yes" module="workforce"/>
-            }
+            label={<FormattedMessage id="workforce.application.permission.yes" module="workforce" />}
           />
           <FormControlLabel
             value="no"
             control={<Radio color="primary" />}
-            label={
-              <FormattedMessage id="workforce.application.permission.no" module="workforce"/>
-            }
+            label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}
           />
         </RadioGroup>
 
@@ -88,7 +111,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
         {isExportOriented === "yes" ? (
           <>
             <Typography variant="h6" className={classes.title}>
-              {<FormattedMessage id="workforce.application.type.title" module="workforce"/>}
+              {<FormattedMessage id="workforce.application.type.title" module="workforce" />}
             </Typography>
             <RadioGroup value={selectedApplicationType} onChange={handleApplicationTypeChange}>
               <FormControlLabel
@@ -99,34 +122,31 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
               <FormControlLabel
                 value="scholarship"
                 control={<Radio color="primary" />}
-                label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce"/>}
+                label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce" />}
               />
               <FormControlLabel
                 value="financialAssistance"
                 control={<Radio color="primary" />}
-                label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce"/>}
+                label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce" />}
               />
               <FormControlLabel
                 value="maternityGrant"
                 control={<Radio color="primary" />}
-                label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce"/>}
+                label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce" />}
               />
-               <FormControlLabel
+              <FormControlLabel
                 value="disabilityAssistance"
                 control={<Radio color="primary" />}
-                label={<FormattedMessage id="workforce.application.type.medical.disability" module="workforce"/>}
+                label={<FormattedMessage id="workforce.application.type.medical.disability" module="workforce" />}
               />
             </RadioGroup>
           </>
         ) : isExportOriented === "no" ? (
           <>
             <Typography variant="h6" className={classes.title}>
-              {<FormattedMessage id="workforce.application.type.title" module="workforce"/>}
+              {<FormattedMessage id="workforce.application.type.title" module="workforce" />}
             </Typography>
-            <RadioGroup
-              value={selectedApplicationType}
-              onChange={handleApplicationTypeChange}
-            >
+            <RadioGroup value={selectedApplicationType} onChange={handleApplicationTypeChange}>
               <FormControlLabel
                 value="medicalDonation"
                 control={<Radio color="primary" />}
@@ -135,17 +155,17 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
               <FormControlLabel
                 value="educationGrant"
                 control={<Radio color="primary" />}
-                label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce"/>}
+                label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce" />}
               />
               <FormControlLabel
                 value="deadlyGrant"
                 control={<Radio color="primary" />}
-                label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce"/>}
+                label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce" />}
               />
               <FormControlLabel
                 value="maternityGrant"
                 control={<Radio color="primary" />}
-                label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce"/>}
+                label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce" />}
               />
             </RadioGroup>
           </>
