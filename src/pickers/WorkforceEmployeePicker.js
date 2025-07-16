@@ -13,20 +13,18 @@ const WorkforceEmployeePicker = ({
   value,
   label,
   placeholder,
-  filterOptions,
   filterSelectedOptions,
   multiple,
 }) => {
-  const [searchString, setSearchString] = useState(null);
+  const [searchString, setSearchString] = useState("");
   const { formatMessage } = useTranslations("workforce");
-
   const dispatch = useDispatch();
 
   useEffect(() => {
-    return dispatch(fetchWorkforceEmployeesSummary(modulesManager, ""));
+    dispatch(fetchWorkforceEmployeesSummary(modulesManager, ""));
   }, []);
 
-  const fetchBanks = () => {
+  const fetchEmployees = () => {
     dispatch(fetchWorkforceEmployeesSummary(modulesManager, ""));
   };
 
@@ -41,11 +39,25 @@ const WorkforceEmployeePicker = ({
   );
 
   const selectedOption = useMemo(
-        () => data.find((option) => option.id === value) || null,
-        [value]
-      )
-  console.log({selectedOption})
-  const locale = useSelector((state) => state.core?.user?.i_user?.language || "en");
+    () => data.find((option) => option.id === value) || null,
+    [value, data]
+  );
+
+  const locale = useSelector(
+    (state) => state.core?.user?.i_user?.language || "en"
+  );
+
+  const customFilterOptions = (options, { inputValue }) => {
+    const lowerInput = inputValue.toLowerCase();
+    return options.filter((opt) => {
+      return (
+        opt.nid?.toLowerCase().includes(lowerInput) ||
+        opt.phoneNumber?.toLowerCase().includes(lowerInput) ||
+        opt.firstNameBn?.toLowerCase().includes(lowerInput) ||
+        opt.firstNameEn?.toLowerCase().includes(lowerInput)
+      );
+    });
+  };
 
   return (
     <Autocomplete
@@ -60,12 +72,14 @@ const WorkforceEmployeePicker = ({
       options={data}
       isLoading={isLoading}
       value={selectedOption}
-      getOptionLabel={(option) => locale === "en" ? option.firstNameEn : option.firstNameBn}
+      getOptionLabel={(option) =>
+        locale === "en" ? option.firstNameEn : option.firstNameBn
+      }
       onChange={(option) => onChange(option, option ? `${option}` : null)}
-      filterOptions={filterOptions}
+      filterOptions={customFilterOptions}
       filterSelectedOptions={filterSelectedOptions}
-      onInputChange={setSearchString}
-      onOpen={fetchBanks}
+      onInputChange={(text) => setSearchString(text)}
+      onOpen={fetchEmployees}
     />
   );
 };

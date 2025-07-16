@@ -485,7 +485,12 @@
     "admin.menu.products": "Products",
     "admin.menu.usersProfiles": "Users Profiles",
 
+    "workforce.application.employee.selector": "Select Employee",
+    "workforce.application.add.employee": "Add Employee",
+
+
     "workforce.application.header.labour": "Labour Details Form",
+    "workforce.application.header.employeeSelector.note": "Select the relevant officer or employee easily using their name, National ID (NID), or mobile number to apply.",
     "workforce.application.header.labour.note": "The following information must be filled as per (NID), otherwise the application will be considered rejected.",
     "workforce.application.header.location": "Location Form",
     "workforce.application.header.child": "Children Details Form",

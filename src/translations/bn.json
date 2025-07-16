@@ -331,8 +331,12 @@
     "admin.menu.products": "পণ্য",
     "admin.menu.usersProfiles": "ব্যবহারকারীদের প্রোফাইল",
 
+    "workforce.application.employee.selector": "কর্মচারী নির্বাচন করুন",
+    "workforce.application.add.employee": "কর্মচারী যোগ করুন",
+
     "workforce.application.header.labour": "শ্রমিক বিবরণ ফরম",
     "workforce.application.header.labour.note": "নীচের তথ্যগুলি (NID) অনুসারে পূরণ করতে হবে, অন্যথায় আবেদনটি বাতিল বলে বিবেচিত হবে।",
+    "workforce.application.header.employeeSelector.note": "নাম, জাতীয় পরিচয়পত্র নম্বর (NID) অথবা মোবাইল নম্বর ব্যবহার করে সহজেই আবেদন করার জন্য সংশ্লিষ্ট কর্মকর্তা বা কর্মচারীকে খুঁজে নিন।",
     "workforce.application.header.location": "ঠিকানা ফরম",
     "workforce.application.header.child": "সন্তানের তথ্য ফরম",
     "workforce.application.header.document": "প্রমাণপত্র আপলোড ফরম",

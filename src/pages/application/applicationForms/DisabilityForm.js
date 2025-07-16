@@ -441,7 +441,7 @@ const DisabilityForm = ({
     return (
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={0}>
-          <PreviewDetails formData={formData} />
+          <PreviewDetails formData={formData} language={reduxState.core?.user?.i_user?.language}/>
           <div className={classes.buttonContainer}>
             <Button
               variant="outlined"

@@ -89,9 +89,9 @@ const banglaLabels = {
   scholarshipFor: "স্কলারশিপের উদ্দেশ্য"
 };
 
-const PreviewDetails = ({ formData = {}, classes, language = "bn" }) => {
+const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
   const formatKey = (key) => {
-    if (language === "bn" && banglaLabels[key]) return banglaLabels[key];
+    if (language === "fr" && banglaLabels[key]) return banglaLabels[key];
     return String(key)
       .replace(/_/g, " ")
       .replace(/([A-Z])/g, " $1")

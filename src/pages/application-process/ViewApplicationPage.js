@@ -90,7 +90,7 @@ class ViewApplicationPage extends Component {
   }
 
   render() {
-    const { classes, user_rights, application, documents } = this.props;
+    const { classes, user_rights, application, documents,locale } = this.props;
     const { stateEdited, workforceEmployee, isForwardModalOpen } = this.state;
 
     const user_type = getUserTypeFromRights(user_rights);
@@ -117,7 +117,7 @@ class ViewApplicationPage extends Component {
         <Box p={0} className={classes.paper}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <PreviewDetails formData={formData} />
+              <PreviewDetails formData={formData} language={locale}/>
             </Grid>
             <Grid item xs={12}>
               {documents?.map((file, index) => (
@@ -168,6 +168,8 @@ const mapStateToProps = (state) => ({
   application: state.workforce.application,
   user_rights: state.core?.user?.i_user?.rights || {},
   documents: state.workforce.document,
+  locale: state.core?.user?.i_user?.language || "en",  
+
   // applicationUuid: props.match.params.application_uuid,
 });
 

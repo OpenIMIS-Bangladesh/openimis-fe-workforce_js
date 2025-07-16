@@ -26,7 +26,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect, selectedApplication
   const [isExportOriented, setIsExportOriented] = useState("");
   const classes = useStyles();
   const dispatch = useDispatch();
-   const selectedEmployee = useSelector((state) => state.selectedEmployee);
+  const selectedEmployee = useSelector((state) => state.selectedEmployee);
   // const [selectedEmployee, setSelectedEmployee] = useState(null);
   const history = useHistory();
   const handleEmployeeChange = (employee) => {
@@ -66,32 +66,37 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect, selectedApplication
   return (
     <Paper className={classes.paper} elevation={0}>
       {user_type != WORKFORCE_USER_TYPE.APPLICANT && (
-        <Grid container alignItems="center" spacing={2}>
-          <Grid item xs={9}>
-            <WorkforceEmployeePicker
-              modulesManager={modulesManager}
-              value={selectedEmployee}
-              onChange={handleEmployeeChange}
-              required={true}
-              readOnly={false}
-              withLabel={true}
-              withPlaceholder={true}
-              label="Select Employee"
-              placeholder="Type to search employee"
-            />
+        <Box>
+          <Typography style={{textAlign:"center",color:"red",fontWeight:"bold",marginBottom:8}}>
+          <FormattedMessage id="workforce.application.header.employeeSelector.note" module="workforce" />
+          </Typography>
+          <Grid container alignItems="center" spacing={2}>
+            <Grid item xs={8}>
+              <WorkforceEmployeePicker
+                modulesManager={modulesManager}
+                value={selectedEmployee}
+                onChange={handleEmployeeChange}
+                required={true}
+                readOnly={false}
+                withLabel={true}
+                withPlaceholder={true}
+                label={<FormattedMessage module="workforce" id="workforce.application.employee.selector" />}
+                placeholder="Type to search employee"
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  historyPush(modulesManager, history, "workforce.route.employees.employee");
+                }}
+              >
+                <FormattedMessage module="workforce" id="workforce.application.add.employee" />
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={3}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                historyPush(modulesManager, history, "workforce.route.employees.employee");
-              }}
-            >
-              Add Employee
-            </Button>
-          </Grid>
-        </Grid>
+        </Box>
       )}
       <FormControl component="fieldset">
         {/* New Export-Oriented Company Question */}
