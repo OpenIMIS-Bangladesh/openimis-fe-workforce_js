@@ -96,6 +96,7 @@ class WorkforceFactorySearcher extends Component {
   };
 
   headers = () => [
+    "workforce.factory.associationType",
     "workforce.factory.name.en",
     "workforce.factory.name.bn",
     "workforce.factory.phone",
@@ -112,6 +113,7 @@ class WorkforceFactorySearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
+      (workforcefactory) => workforcefactory.associationType,
       (workforcefactory) => workforcefactory.nameEn,
       (workforcefactory) => workforcefactory.nameBn,
       (workforcefactory) => workforcefactory.phoneNumber,

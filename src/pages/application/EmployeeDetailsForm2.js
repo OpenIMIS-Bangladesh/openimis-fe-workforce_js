@@ -135,7 +135,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                   }
                   
                   onChange={(v) => {
-                    handleChange("company", v, "employeeDesignation");
+                    // handleChange("company", v);
                     handleChange("company", v);
                   }}
                   readOnly={false}
@@ -154,7 +154,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                   
                   companyId={formData?.company?.id}
                   onChange={(v) => {
-                    handleChange("factory", v, "employeeDesignation");
+                    // handleChange("factory", v, "employeeDesignation");
                     handleChange("factory", v);
                   }}
                   readOnly={false}

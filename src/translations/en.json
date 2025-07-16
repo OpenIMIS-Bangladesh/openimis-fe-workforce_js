@@ -147,6 +147,7 @@
     "workforce.factory.addNewTooltip": "Add Workforce Factory",
     "workforce.factory.name.en": "Workforce Factory Name En",
     "workforce.factory.name.bn": "Workforce Factory Name Bn",
+    "workforce.factory.associationType": "Workforce Factory Assocition Type",
     "workforce.factory.location": "Workforce Factory Location",
     "workforce.factory.address": "Workforce Factory Address",
     "workforce.factory.phone": "Workforce Factory Phone",

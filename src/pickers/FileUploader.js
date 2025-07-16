@@ -106,10 +106,10 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) =
           url: responseData.file_url,
           workforceApplicationId: safeApplicationId(applicationId),
           documentType: documentType,
-
           holder: "57",
           holderType: "user",
         };
+        console.log("create document data",createDocumentData)
         dispatch(createWorkforceDocument(createDocumentData, `Created workforce document `));
       }
     } catch (error) {

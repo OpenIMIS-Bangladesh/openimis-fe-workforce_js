@@ -9,6 +9,8 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, FormattedMessage } from "@openimis/fe-core";
+import { getUserType, getUserTypeFromRights } from "../../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -28,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationType,parsedApplicationData }) => {
   const [isExportOriented, setIsExportOriented] = useState("");
   const classes = useStyles();
+  const user_type = getUserType();
 
   useEffect(() => {
     if (parsedApplicationData) {
@@ -52,9 +55,13 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect,selectedApplicationT
     onSelect(selectedApplicationType, value); 
   };
 
+  console.log({user_type})
+
   return (
     <Paper className={classes.paper} elevation={0}>
-
+      {user_type != WORKFORCE_USER_TYPE.APPLICANT && (
+        <div> Hello behenchod</div>
+      )}
       <FormControl component="fieldset">
         {/* New Export-Oriented Company Question */}
         <Typography variant="h6" className={`${classes.title} ${classes.section}`}>

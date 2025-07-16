@@ -8,6 +8,7 @@ import {
   IconButton,
   FormControlLabel,
   Checkbox,
+  FormControl,InputLabel,Select,MenuItem
 } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
 import {
@@ -123,6 +124,7 @@ class EditWorkforceFactoryPage extends Component {
         phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
         email: stateEdited?.email || stateEdited.email,
         address: stateEdited?.address || stateEdited.address,
+        associationType: stateEdited?.associationType || stateEdited.associationType,
         website: stateEdited?.website || stateEdited.website,
         location: stateEdited?.location || stateEdited.location,
         workforceRepresentativeId: stateEdited.workforceRepresentative.id,
@@ -143,6 +145,7 @@ class EditWorkforceFactoryPage extends Component {
       phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
       email: stateEdited?.email || stateEdited.email,
       address: stateEdited?.address || stateEdited.address,
+      associationType: stateEdited?.associationType || stateEdited.associationType,
       website: stateEdited?.website || stateEdited.website,
       location: stateEdited?.location || stateEdited.location,
       workforceRepresentativeId: stateEdited.workforceRepresentative.id,
@@ -286,7 +289,23 @@ class EditWorkforceFactoryPage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-
+                <Grid item xs={6} className={classes.item}>
+                  <FormControl fullWidth>
+                    <InputLabel id="association-type-label">Association Type</InputLabel>
+                    <Select
+                      labelId="association-type-label"
+                      value={stateEdited.associationType || ""}
+                      onChange={(e) => this.updateAttribute("associationType", e.target.value)}
+                      label="Association Type"
+                      readOnly={isSaved}
+                      disabled={isSaved}
+                      required
+                    >
+                      <MenuItem value="BGMEA">BGMEA</MenuItem>
+                      <MenuItem value="BKMEA">BKMEA</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
                 <Grid item xs={12} className={classes.item}>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
