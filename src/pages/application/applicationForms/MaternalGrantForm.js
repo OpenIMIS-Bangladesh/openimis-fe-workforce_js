@@ -36,6 +36,8 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import { getParsedApplication, safeApplicationId } from "../../../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../../../constants";
+import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -77,6 +79,7 @@ const MaternalGrantForm = ({
   const [showPreview, setShowPreview] = useState(false);
   const reduxState = useSelector((state) => state);
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
+  const user_type = getUserType();
 
   const [formData, setFormData] = useState({
     workforceEmployee: {
@@ -390,6 +393,12 @@ const MaternalGrantForm = ({
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
+    const submittedBy =
+        user_type === WORKFORCE_USER_TYPE.APPLICANT
+          ? "applicant"
+          : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+          ? "factory_admin"
+          : "UNKNOWN";
     const updateApplicationData = {
       id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId:
@@ -413,6 +422,7 @@ const MaternalGrantForm = ({
         JSON.stringify(formData?.employeeAccidentInfo) ||
         JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       status: WORKFORCE_STATUS.NEW,
+      submittedBy
     };
 
     console.log("hello i am from submit", updateApplicationData);

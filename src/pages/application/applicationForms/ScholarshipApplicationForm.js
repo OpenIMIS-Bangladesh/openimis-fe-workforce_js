@@ -24,6 +24,8 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import { safeApplicationId } from "../../../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../../../constants";
+import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -60,6 +62,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
     nid: formData?.workforceEmployee?.nid || "",
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
   });
+  const user_type = getUserType();
 
   const [formData, setFormData] = useState({
     workforceEmployee: {
@@ -329,6 +332,12 @@ if (reduxState.workforce.selectedEmployee) {
   };
 
   const handleSubmit = () => {
+    const submittedBy =
+        user_type === WORKFORCE_USER_TYPE.APPLICANT
+          ? "applicant"
+          : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+          ? "factory_admin"
+          : "UNKNOWN";
     const updateApplicationData = {
       // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
       id: safeApplicationId(applicationId, parsedApplicationData),
@@ -342,6 +351,7 @@ if (reduxState.workforce.selectedEmployee) {
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),
       status: WORKFORCE_STATUS.NEW,
+      submittedBy
     };
     console.log({ updateApplicationData });
     dispatch(updateApplication(updateApplicationData, `update workforce application`));
