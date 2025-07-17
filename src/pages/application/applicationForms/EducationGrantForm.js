@@ -38,6 +38,7 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import { getParsedApplication } from "../../../utils/utils";
+import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -492,18 +493,18 @@ const EducationGrantForm = ({
     },
     ...(applicationForSelf === "no"
       ? [
-          {
-            label: "workforce.application.steps.dependent",
-            content: (
-              <EmployeeDependentForm
-                dependents={formData.dependents}
-                handleDependentChange={handleDependentChange}
-                addDependent={addDependent}
-                removeDependent={removeDependent}
-              />
-            ),
-          },
-        ]
+        {
+          label: "workforce.application.steps.dependent",
+          content: (
+            <EmployeeDependentForm
+              dependents={formData.dependents}
+              handleDependentChange={handleDependentChange}
+              addDependent={addDependent}
+              removeDependent={removeDependent}
+            />
+          ),
+        },
+      ]
       : []),
     {
       label: "workforce.application.steps.previousGrantInfo",
@@ -584,18 +585,7 @@ const EducationGrantForm = ({
   }
 
   if (isSubmitted) {
-    return (
-      <div className={classes.container}>
-        <Paper className={classes.paper} elevation={0}>
-          <Typography variant="h5" align="center" color="primary">
-            <FormattedMessage
-              module="workforce"
-              id="workforce.success.message"
-            />
-          </Typography>
-        </Paper>
-      </div>
-    );
+    return <ApplicationFormSubmitted />;
   }
 
   return (

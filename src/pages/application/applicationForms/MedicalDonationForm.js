@@ -15,6 +15,7 @@ import { formatApplicationeGQL } from "../../../utils/format_gql";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import { WORKFORCE_STATUS } from "../../../constants";
+import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -417,17 +418,10 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
     );
   }
 
-  if (isSubmitted) {
-    return (
-      <div className={classes.container}>
-        <Paper className={classes.paper} elevation={0}>
-          <Typography variant="h5" align="center" color="primary">
-            <FormattedMessage module="workforce" id="workforce.success.message" />
-          </Typography>
-        </Paper>
-      </div>
-    );
-  }
+    if (isSubmitted) {
+      return <ApplicationFormSubmitted />;
+    }
+  
 
   return (
     <div className={classes.container}>

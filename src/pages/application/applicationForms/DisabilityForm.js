@@ -38,6 +38,7 @@ import PreviewDetails from "../../../components/application-forms/PreviewDetails
 import { safeApplicationId } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
+import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -506,18 +507,7 @@ const DisabilityForm = ({
   }
 
   if (isSubmitted) {
-    return (
-      <div className={classes.container}>
-        <Paper className={classes.paper} elevation={0}>
-          <Typography variant="h5" align="center" color="primary">
-            <FormattedMessage
-              module="workforce"
-              id="workforce.success.message"
-            />
-          </Typography>
-        </Paper>
-      </div>
-    );
+    return <ApplicationFormSubmitted />;
   }
 
   console.log({formData})
