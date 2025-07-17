@@ -1,5 +1,3 @@
-// components/DocumentReviewAccordion.js
-
 import React from "react";
 import {
   Accordion,
@@ -12,7 +10,18 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { FormattedMessage } from "@openimis/fe-core";
-import { Document, Page } from "react-pdf";
+import { Document, Page, pdfjs } from "react-pdf";
+
+// Set up PDF worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
+const getFileType = (url = "") => {
+  const lowerUrl = url.toLowerCase();
+  if (/\.(jpg|jpeg|png|gif)$/i.test(lowerUrl)) return "image";
+  if (lowerUrl.endsWith(".pdf")) return "pdf";
+  if (lowerUrl.endsWith(".docx")) return "docx";
+  return "unsupported";
+};
 
 const DocumentReviewAccordion = ({
   file,
@@ -21,8 +30,7 @@ const DocumentReviewAccordion = ({
   onVerify,
   onReject,
 }) => {
-  const isPDF = file?.url?.toLowerCase().endsWith(".pdf");
-  const type = isPDF ? "pdf" : "image";
+  const type = getFileType(file?.url);
 
   return (
     <Accordion>
@@ -30,7 +38,14 @@ const DocumentReviewAccordion = ({
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
             <Typography>
-              {file?.documentType} {type === "pdf" ? "(PDF)" : "(Image)"}
+              {file?.documentType}{" "}
+              {type === "pdf"
+                ? "(PDF)"
+                : type === "image"
+                ? "(Image)"
+                : type === "docx"
+                ? "(DOCX)"
+                : "(Unsupported)"}
             </Typography>
           </Grid>
           <Grid item>
@@ -51,16 +66,32 @@ const DocumentReviewAccordion = ({
       <AccordionDetails>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            {type === "image" ? (
+            {type === "image" && (
               <img
                 src={file.url}
                 alt="preview"
                 style={{ width: "100%", maxHeight: 300, objectFit: "contain" }}
               />
-            ) : (
+            )}
+
+            {type === "pdf" && (
               <Document file={file.url}>
-                <Page pageNumber={1} />
+                <Page pageNumber={1} width={600} />
               </Document>
+            )}
+
+            {type === "docx" && (
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => window.open(file.url, "_blank")}
+              >
+                Open DOCX in New Tab
+              </Button>
+            )}
+
+            {type === "unsupported" && (
+              <Typography color="error">Unsupported file type</Typography>
             )}
           </Grid>
 
@@ -88,7 +119,7 @@ const DocumentReviewAccordion = ({
             </Button>
             <Button
               variant="outlined"
-              color="error"
+              color="secondary"
               onClick={() => onReject(index)}
               fullWidth
             >

@@ -18,6 +18,9 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
+import { pdfjs } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
 import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage } from "@openimis/fe-core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { bindActionCreators } from "redux";
@@ -113,7 +116,7 @@ class VerifyApplicationPage extends Component {
 
   componentDidMount() {
     const { dispatch, modulesManager, applicationUuid } = this.props;
-    this.props.fetchApplication(modulesManager,[`id:"${applicationUuid}"`])
+    this.props.fetchApplication(modulesManager, [`id:"${applicationUuid}"`]);
     this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${applicationUuid}"`]);
   }
 
@@ -162,7 +165,7 @@ class VerifyApplicationPage extends Component {
   };
 
   render() {
-    const { classes, applicationUuid, documents,application } = this.props;
+    const { classes, applicationUuid, documents, application } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType } = this.state;
 
     console.log({ mah_boob: application });
@@ -237,7 +240,7 @@ class VerifyApplicationPage extends Component {
                         <Grid item>
                           <Typography>
                             {/* Document #{index + 1} {type === "pdf" ? "(PDF)" : "(Image)"} */}
-                            {file.documentType } {type === "pdf" ? "(PDF)" : "(Image)"}
+                            {file.documentType} {type === "pdf" ? "(PDF)" : "(Image)"}
                           </Typography>
                         </Grid>
                         <Grid item>
@@ -250,21 +253,36 @@ class VerifyApplicationPage extends Component {
                     <AccordionDetails>
                       <Grid container spacing={2}>
                         <Grid item xs={12}>
-                          {type === "image" ? (
-                            <img
-                              src={file.url}
-                              alt="preview"
-                              style={{
-                                width: "100%",
-                                maxHeight: 300,
-                                objectFit: "contain",
-                              }}
-                            />
-                          ) : (
-                            <Document file={file.url}>
-                              <Page pageNumber={1} />
-                            </Document>
-                          )}
+                          {(() => {
+                            const fileUrl = file.url?.toLowerCase() || "";
+                            if (/\.(jpg|jpeg|png|gif)$/i.test(fileUrl)) {
+                              return (
+                                <img
+                                  src={file.url}
+                                  alt="preview"
+                                  style={{
+                                    width: "100%",
+                                    maxHeight: 300,
+                                    objectFit: "contain",
+                                  }}
+                                />
+                              );
+                            } else if (fileUrl.endsWith(".pdf")) {
+                              return (
+                                <Document file={file.url}>
+                                  <Page pageNumber={1} width={600} />
+                                </Document>
+                              );
+                            } else if (fileUrl.endsWith(".docx")) {
+                              return (
+                                <Button variant="outlined" color="primary" onClick={() => window.open(file.url, "_blank")}>
+                                  Open DOCX in New Tab
+                                </Button>
+                              );
+                            } else {
+                              return <Typography color="error">Unsupported file format</Typography>;
+                            }
+                          })()}
                         </Grid>
 
                         <Grid item xs={12}>
@@ -284,7 +302,7 @@ class VerifyApplicationPage extends Component {
                           <Button variant="contained" color="primary" onClick={() => this.handleFileVerify(index)} fullWidth>
                             <FormattedMessage module="workforce" id="workforce.application.verify" />
                           </Button>
-                          <Button variant="outlined" color="error" onClick={() => this.handleFileReject(index)} fullWidth>
+                          <Button variant="outlined" color="secondary" onClick={() => this.handleFileReject(index)} fullWidth>
                             <FormattedMessage module="workforce" id="workforce.application.reject" />
                           </Button>
                         </Grid>
