@@ -151,6 +151,27 @@ class ApplicationProcessFilter extends Component {
             </Grid>
           }
         />
+        <ControlledField
+          module={MODULE_NAME}
+          id="workforce.application.submittedBy"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.application.submittedBy"
+                name="submittedBy"
+                value={this._filterValue("submittedBy")}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'submittedBy',
+                    value: v,
+                    filter: `submittedBy: "${v}"`,
+                  },
+                ])}
+              />
+            </Grid>
+          }
+        />
         <Contributions
           filters={filters}
           onChangeFilters={onChangeFilters}

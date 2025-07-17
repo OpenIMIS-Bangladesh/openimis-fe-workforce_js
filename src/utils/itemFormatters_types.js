@@ -139,7 +139,9 @@ import { conditionalEnToBn } from "./utils";
       (application) => "Nafi",
       (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
       // (application) => application?.grantAmount,
-      (application) => application?.status,
+      (application) => {
+      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+      return statusMap[application?.status] || application?.status;},
       isShowHistory() ? application?.version : null,
     ];
 
