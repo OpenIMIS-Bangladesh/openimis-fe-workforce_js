@@ -31,6 +31,7 @@ export const ApplicationFormSubmitted = (form_type = '') => {
 
     setTimeout(() => {
         history.push("/home");
+        window.location.reload();
     }, 2000);
 
     return (
