@@ -700,7 +700,8 @@ export function fetchApplicationsSummary(mm, filters) {
     "eisApplicationSummary{id}",
     "blwfApplicationSummary{id}",
     "grantMoney {id,grantMoney,applicationTypeNameEn,applicationTypeNameBn}",
-    "grantAmount"
+    "grantAmount",
+    "submittedBy",
 
   ];
   const payload = formatPageQueryWithCount(
@@ -752,7 +753,8 @@ export function fetchApplication(mm, filters) {
     "cfApplicationSummary{id}",
     "eisApplicationSummary{id}",
     "blwfApplicationSummary{id}",
-    "grantAmount"
+    "grantAmount",
+    "submittedBy",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
