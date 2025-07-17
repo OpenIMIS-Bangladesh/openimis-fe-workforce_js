@@ -162,3 +162,29 @@ export const conditionalEnToBn = (num, locale, type = '') => {
     return enToBn(num, type);
   }
 }
+
+export const getApplicationDataFromLocalStorage = () => {
+  let application = localStorage.getItem('application')
+  if (application) {
+    return JSON.parse(application)
+  } else {
+    const mvi_data = {
+      "employeeDependentInfo": {},
+      "employeeAccidentInfo": {},
+      "employeeChildrenInfo": {},
+      "metadata": {},
+    }
+    localStorage.setItem('application', JSON.stringify(mvi_data))
+    return mvi_data
+  }
+}
+
+export const setApplicationDataToLocalStorage = (key, value) => {
+  const application_data = getApplicationDataFromLocalStorage() || {};
+  if (application_data[key] === undefined) {
+    application_data[key] = value;
+  } else {
+    application_data[key] = value;
+  }
+  localStorage.setItem('application', JSON.stringify(application_data));
+}

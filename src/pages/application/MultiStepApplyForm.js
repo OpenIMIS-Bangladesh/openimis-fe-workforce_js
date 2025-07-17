@@ -27,7 +27,7 @@ import DisabilityForm from "./applicationForms/DisabilityForm";
 import EducationGrantForm from "./applicationForms/EducationGrantForm";
 import FinancialAssistanceForm from "./applicationForms/FinancialAssistanceForm";
 import ScholarshipApplicationForm from "./applicationForms/ScholarshipApplicationForm";
-import { getParsedApplication } from "../../utils/utils";
+import { getApplicationDataFromLocalStorage, getParsedApplication, setApplicationDataToLocalStorage } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -77,39 +77,55 @@ const MultiStepApplyForm = () => {
   const [showForm, setShowForm] = useState(false);
   const [applicationForSelf, setApplicationForSelf] = useState("");
   const [organizationType, setOrganizationType] = useState("" || parsedApplicationData?.organizationType);
-  const [selectedApplicationType, setSelectedApplicationType] = useState("" ||parsedApplicationData?.applicationType);
+  const [selectedApplicationType, setSelectedApplicationType] = useState("" || parsedApplicationData?.applicationType);
   const [isApplicationForSelfSelected, setIsApplicationForSelfSelected] = useState(true);
 
-  useEffect(async () => {
+  useEffect(() => {
     const fetchData = async () => {
       const filters = [`id: "${application_uuid}"`];
       const parsedData = await dispatch(
         getParsedApplication(modulesManager, filters)
       );
       setParsedApplicationData(parsedData); // <- parsed data will now be set correctly
+
+      const new_application_data = getApplicationDataFromLocalStorage();
+
+      if (!parsedData && new_application_data) {
+        setParsedApplicationData({ ...new_application_data })
+      }
     };
     fetchData();
   }, []);
 
   useEffect(() => {
-  if (!parsedApplicationData?.employeeDependentInfo) return;
+    if (!parsedApplicationData?.employeeDependentInfo) return;
 
-  const isEmptyDependent =
-    Object.keys(parsedApplicationData.employeeDependentInfo).length === 0;
+    const isEmptyDependent =
+      Object.keys(parsedApplicationData.employeeDependentInfo).length === 0;
 
-  setApplicationForSelf(isEmptyDependent ? "yes" : "no");
-  setSelectedApplicationType(parsedApplicationData?.applicationType);
-  setOrganizationType(parsedApplicationData?.organizationType);
-}, [parsedApplicationData]);
+    setApplicationForSelf(isEmptyDependent ? "yes" : "no");
+    const new_application_data = getApplicationDataFromLocalStorage();
 
+    if (new_application_data?.applicationFor) {
+      setApplicationForSelf(new_application_data?.applicationFor);
+    }
+
+    setSelectedApplicationType(parsedApplicationData?.applicationType || new_application_data?.applicationType || "");
+    setOrganizationType(parsedApplicationData?.organizationType || new_application_data?.organizationType || "");
+  }, [parsedApplicationData]);
 
   const handleSelection = (applicationType, exportStatus) => {
     setSelectedApplicationType(applicationType);
+    let orgExportStatus = '';
     if (exportStatus === "yes") {
       setOrganizationType("cf");
+      orgExportStatus = 'cf';
     } else if (exportStatus === "no") {
+      orgExportStatus = 'blwf';
       setOrganizationType("blwf");
     }
+    setApplicationDataToLocalStorage("organizationType", orgExportStatus);
+    setApplicationDataToLocalStorage("applicationType", applicationType);
   };
 
   const handleBack = () => {
@@ -119,6 +135,7 @@ const MultiStepApplyForm = () => {
 
   const handleApplicationFor = (event) => {
     const value = event.target.value;
+    setApplicationDataToLocalStorage("applicationFor", value);
     setApplicationForSelf(value);
     // setIsApplicationForSelfSelected(false)
     // onSelect(selectedApplicationType, value); // Pass both selections
@@ -232,18 +249,18 @@ const MultiStepApplyForm = () => {
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
                   <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
-                    {<FormattedMessage id="workforce.application.for" module="workforce"/>}
+                    {<FormattedMessage id="workforce.application.for" module="workforce" />}
                   </Typography>
                   <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
                     <FormControlLabel
                       value="yes"
                       control={<Radio color="primary" />}
-                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>}
+                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce" />}
                     />
                     <FormControlLabel
                       value="no"
                       control={<Radio color="primary" />}
-                      label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>}
+                      label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce" />}
                     />
                   </RadioGroup>
                 </FormControl>
@@ -285,18 +302,18 @@ const MultiStepApplyForm = () => {
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
                   <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
-                    {<FormattedMessage id="workforce.application.for" module="workforce"/>}
+                    {<FormattedMessage id="workforce.application.for" module="workforce" />}
                   </Typography>
                   <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
                     <FormControlLabel
                       value="yes"
                       control={<Radio color="primary" />}
-                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>}
+                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce" />}
                     />
                     <FormControlLabel
                       value="no"
                       control={<Radio color="primary" />}
-                      label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>}
+                      label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce" />}
                     />
                   </RadioGroup>
                 </FormControl>
@@ -447,7 +464,7 @@ const MultiStepApplyForm = () => {
                 <FormControl component="fieldset">
                   {/* New Export-Oriented Company Question */}
                   <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
-                    {<FormattedMessage id="workforce.application.for" module="workforce"/>}
+                    {<FormattedMessage id="workforce.application.for" module="workforce" />}
                   </Typography>
                   <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
                     <FormControlLabel
