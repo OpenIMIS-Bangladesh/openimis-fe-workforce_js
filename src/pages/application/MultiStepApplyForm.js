@@ -112,6 +112,11 @@ const MultiStepApplyForm = () => {
 
     setSelectedApplicationType(parsedApplicationData?.applicationType || new_application_data?.applicationType || "");
     setOrganizationType(parsedApplicationData?.organizationType || new_application_data?.organizationType || "");
+
+    if (new_application_data?.applicationType) {
+      setShowForm(true);
+    }
+
   }, [parsedApplicationData]);
 
   const handleSelection = (applicationType, exportStatus) => {

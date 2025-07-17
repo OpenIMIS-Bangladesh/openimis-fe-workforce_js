@@ -188,3 +188,8 @@ export const setApplicationDataToLocalStorage = (key, value) => {
   }
   localStorage.setItem('application', JSON.stringify(application_data));
 }
+
+export const dconsole = (message) => {
+  console.clear();
+  console.log(message);
+}
