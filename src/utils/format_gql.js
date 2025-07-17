@@ -122,19 +122,19 @@ export function formatWorkforceOfficeGQL(office) {
 
 export function formatWorkforceFactoryGQL(factory) {
   return `
-    ${factory?.id ? `id: "${formatGQLString(factory.id)}"` : ""}
-    ${factory.company ? `workforceEmployerId: "${formatGQLString(factory.company)}"` : ""}
-    ${factory.nameEn ? `nameEn: "${formatGQLString(factory.nameEn)}"` : ""}
-    ${factory.nameBn ? `nameBn: "${formatGQLString(factory.nameBn)}"` : ""}
-    ${factory.phoneNumber ? `phoneNumber: "${formatGQLString(factory.phoneNumber)}"` : ""}
-    ${factory.email ? `email: "${formatGQLString(factory.email)}"` : ""}
-    ${factory.website ? `website: "${factory.website}"` : ""}
-    ${factory.address ? `address: "${factory.address}"` : ""}
-    ${factory.associationType ? `associationType: "${factory.associationType}"` : ""}
-    ${factory.location.id ? `locationId: "${decodeId(factory.location.id)}"` : ""}
-    ${factory.status ? `status: "${factory.status}"` : ""}
-    ${factory.workforceRepresentativeId ? `workforceRepresentativeId: "${decodeId(factory.workforceRepresentativeId)}"` : ""}
-    ${factory.isSameCompanyRepresentative ? `isSameCompanyRepresentative: "${factory.isSameCompanyRepresentative}"` : ""}
+    ${factory?.id ? `id: "${formatGQLString(factory?.id)}"` : ""}
+    ${factory?.company ? `workforceEmployerId: "${formatGQLString(factory?.company)}"` : ""}
+    ${factory?.nameEn ? `nameEn: "${formatGQLString(factory?.nameEn)}"` : ""}
+    ${factory?.nameBn ? `nameBn: "${formatGQLString(factory?.nameBn)}"` : ""}
+    ${factory?.phoneNumber ? `phoneNumber: "${formatGQLString(factory?.phoneNumber)}"` : ""}
+    ${factory?.email ? `email: "${formatGQLString(factory?.email)}"` : ""}
+    ${factory?.website ? `website: "${factory?.website}"` : ""}
+    ${factory?.address ? `address: "${factory?.address}"` : ""}
+    ${factory?.associationType ? `associationType: "${factory?.associationType}"` : ""}
+    ${factory?.location?.id ? `locationId: "${decodeId(factory?.location.id)}"` : ""}
+    ${factory?.status ? `status: "${factory?.status}"` : ""}
+    ${factory?.workforceRepresentativeId ? `workforceRepresentativeId: "${decodeId(factory?.workforceRepresentativeId)}"` : ""}
+    ${factory?.isSameCompanyRepresentative ? `isSameCompanyRepresentative: "${factory?.isSameCompanyRepresentative}"` : ""}
   `;
 }
 
@@ -415,6 +415,7 @@ export function formatWorkforceDocumentGQL(workforceDocumentType) {
   return `
     ${workforceDocumentType?.id ? `id: "${workforceDocumentType?.id}"` : ""}
     ${workforceDocumentType?.workforceApplicationId ? `workforceApplicationId: "${workforceDocumentType?.workforceApplicationId}"` : ""}
+    ${workforceDocumentType?.factoryId ? `factoryId: "${workforceDocumentType?.factoryId}"` : ""}
     ${workforceDocumentType?.path ? `path: "${workforceDocumentType?.path}"` : ""}
     ${workforceDocumentType?.url ? `url: "${workforceDocumentType?.url}"` : ""}
 

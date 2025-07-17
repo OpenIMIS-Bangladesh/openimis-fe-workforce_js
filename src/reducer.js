@@ -63,6 +63,7 @@ function reducer(
     fetchedApplicationIdByClientMutationId: null,
     fetchedApplicationSummaryIdByClientMutationId: null,
     fetchedWorkforceOrganizationByDesignationId: null,
+    fetchedWorkforceFactoryId: null,
     verifyNidDetails: null,
 
     ///organizations employee states
@@ -347,11 +348,18 @@ function reducer(
 
     selectedEmployee: null,
 
+    uploadFile:null,
+
     workforceApplicationStatusCount: {}
   },
   action
 ) {
   switch (action.type) {
+    case "SET_UPLOAD_FILE_DATA":
+      return {
+        ...state,
+        uploadFile: action.payload,
+      };
     case "SET_SELECTED_EMPLOYEE":
       return {
         ...state,
@@ -1385,6 +1393,14 @@ function reducer(
         ...state,
         fetchedWorkforceOrganizationByDesignationId: parseData(
           action.payload.data.workforceOrganizationEmployeeDesignations.designation.id
+        ),
+      };
+
+    case "WORKFORCE_FACTORY_BY_FACTORY_MUTATION_ID_RESP":
+      return {
+        ...state,
+        fetchedWorkforceFactoryId: parseData(
+          action.payload.data.workforceEmployerFactories
         ),
       };
     case "WORKFORCE_VERIFY_NID_RESP":

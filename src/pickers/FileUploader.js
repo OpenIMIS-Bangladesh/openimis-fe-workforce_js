@@ -76,6 +76,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) =
   const dispatch = useDispatch();
 
   // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
+  console.log({applicationId})
 
   const uploadFileToApi = async (file) => {
     const formData = new FormData();
@@ -88,29 +89,31 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) =
       const response = await fetch("/api/workforce/document/upload", {
         method: "POST",
         credentials: "include",
-        // headers: {
-        //   'Content-Type': 'application/json',
-        //   // DO NOT set "Content-Type" manually for FormData, browser handles it correctly
-        // },
         body: formData,
       });
 
       if (!response.ok) {
         const errorData = await response.json();
         console.error(`Upload failed for ${file.name}:`, errorData);
-      } else {
-        const responseData = await response.json();
-        console.log(`Upload successful for ${file.name}:`, responseData);
-        const createDocumentData = {
-          path: responseData.file_path,
-          url: responseData.file_url,
-          workforceApplicationId: safeApplicationId(applicationId),
-          documentType: documentType,
-          holder: "57",
-          holderType: "user",
-        };
-        console.log("create document data",createDocumentData)
-        dispatch(createWorkforceDocument(createDocumentData, `Created workforce document `));
+      }
+      const responseData = await response.json();
+      console.log(`Upload successful for ${file.name}:`, responseData);
+      const createDocumentData = {
+        path: responseData.file_path,
+        url: responseData.file_url,
+        // workforceApplicationId: safeApplicationId(applicationId),
+        documentType: documentType,
+        holder: "57",
+        holderType: "user",
+      };
+
+      dispatch({
+        type: "SET_UPLOAD_FILE_DATA",
+        payload: createDocumentData,
+      });
+      if (!applicationId ==="temp-id" ||!applicationId ==="") {
+        console.log("create document data", createDocumentData);
+        dispatch(createWorkforceDocument({...createDocumentData,workforceApplicationId: safeApplicationId(applicationId)}, `Created workforce document `));
       }
     } catch (error) {
       console.error(`Upload error for ${file.name}:`, error);

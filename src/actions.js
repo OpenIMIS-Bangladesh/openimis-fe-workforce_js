@@ -1153,21 +1153,6 @@ export function createWorkforceDocument(
     formatWorkforceDocumentGQL(workforceDocumentType),
     clientMutationLabel
   );
-
-  //   const mutation = `mutation {
-  //   createWorkforceUser(
-  //     nameBn: "${workforceDocumentType.firstNameBn}",
-  //     firstNameEn: "${workforceDocumentType.firstNameEn}",
-  //     lastNameEn: " ",
-  //     nid: "${workforceDocumentType.NID}",
-  //     phoneNumber: "${workforceDocumentType.mobile}",
-  //     status: "${WORKFORCE_STATUS.ACTIVE}",
-  //     username: "",
-  //     password: "${workforceDocumentType.password}",
-  //   ) {
-  //     internalId
-  //   }
-  // }`
   const requestedDateTime = new Date();
   return graphql(
     mutation.payload,
@@ -2151,6 +2136,21 @@ export function updateApplicationSummary(applicationSummary, clientMutationLabel
   );
 }
 
+export function fetchFactoryByClientMutationId(mm, clientMutationId) {
+  const payload = `{
+  workforceEmployerFactories(
+    clientMutationId: "${clientMutationId}"
+  ) {
+    edges {
+      node {
+        id
+      }
+    }
+  }
+}
+`;
+  return graphql(payload, "WORKFORCE_FACTORY_BY_FACTORY_MUTATION_ID_RESP");
+}
 export function fetchRepresentativeByClientMutationId(mm, clientMutationId) {
   const payload = `{
   workforceRepresentatives(
@@ -2278,6 +2278,9 @@ export function fetchWorkforceApplicationStatusCount() {
     totalCount
   }
   approvedForDirector:workforceApplication(statusIn: ["${WORKFORCE_STATUS.APPROVED_BY_DIRECTOR}"]){
+    totalCount
+  }
+  new:workforceApplication(statusIn: ["${WORKFORCE_STATUS.NEW}"]){
     totalCount
   }
 }`
