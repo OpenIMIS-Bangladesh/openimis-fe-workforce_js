@@ -539,6 +539,10 @@
     "workforce.table.totalAmount": "Total Amount",
     "workforce.table.printAdvice": "Print Advice",
     "workforce.table.bftn": "Bank Payment Advice (BFTN)",
+    "search.title": "Search Criteria",
+    "resetFilterTooltip": "Reset Filters",
+    "refreshFilterTooltip": "Search",
+
 
     "workforce.previewDetails.personalInfo": "Personal Info",
     "workforce.previewDetails.statusInfo": "Status Info",

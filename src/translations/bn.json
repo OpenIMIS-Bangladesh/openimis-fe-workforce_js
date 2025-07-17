@@ -385,6 +385,10 @@
     "workforce.table.totalAmount": "মোট পরিমাণ",
     "workforce.table.printAdvice": "প্রিন্ট পরামর্শ",
     "workforce.table.bftn": "ব্যাংক পেমেন্ট পরামর্শ (BFTN)",
+    "search.title": "অনুসন্ধানের মানদণ্ড",
+    "resetFilterTooltip": "ফিল্টার রিসেট করুন",
+    "refreshFilterTooltip": "অনুসন্ধান করুন",
+
 
     "workforce.previewDetails.personalInfo": "ব্যক্তিগত তথ্য",
     "workforce.previewDetails.statusInfo": "অবস্থা তথ্য",
