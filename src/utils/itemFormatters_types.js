@@ -22,7 +22,7 @@ import {
   Tooltip,
   Checkbox,
 } from "@material-ui/core";
-import { STATUS_MAP_BN,STATUS_MAP_EN } from "../constants";
+import { STATUS_MAP_BN,STATUS_MAP_EN,WORKFORCE_USER_TYPE_MAP_EN,WORKFORCE_USER_TYPE_MAP_BN } from "../constants";
 import { conditionalEnToBn } from "./utils";
 
   
@@ -463,6 +463,9 @@ import { conditionalEnToBn } from "./utils";
       (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;},
+      (application) => {
+      const userTypeMap = locale === "en" ? WORKFORCE_USER_TYPE_MAP_EN : WORKFORCE_USER_TYPE_MAP_BN;
+      return userTypeMap[application?.submittedBy] || application?.submittedBy;},
       isShowHistory() ? application?.version : null,
     ];
 
