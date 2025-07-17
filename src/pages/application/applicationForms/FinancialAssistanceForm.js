@@ -24,6 +24,9 @@ import ApplicationReason from "../FormsComponents/FinancialAssistance/Applicatio
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import { safeApplicationId } from "../../../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../../../constants";
+import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
+import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -70,6 +73,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
   });
 
   const reduxState = useSelector((state) => state);
+  const user_type = getUserType();
 
   const [formData, setFormData] = useState({
     workforceEmployee: {
@@ -339,6 +343,12 @@ if (reduxState.workforce.selectedEmployee) {
   };
 
   const handleSubmit = () => {
+      const submittedBy =
+        user_type === WORKFORCE_USER_TYPE.APPLICANT
+          ? "applicant"
+          : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+          ? "factory_admin"
+          : "UNKNOWN";
     const updateApplicationData = {
       // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
       id: safeApplicationId(applicationId, parsedApplicationData),
@@ -353,6 +363,7 @@ if (reduxState.workforce.selectedEmployee) {
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),
       status: WORKFORCE_STATUS.NEW,
+      submittedBy
     };
     console.log({ updateApplicationData });
     dispatch(updateApplication(updateApplicationData, `update workforce application`));
@@ -417,15 +428,7 @@ if (reduxState.workforce.selectedEmployee) {
   }
 
   if (isSubmitted) {
-    return (
-      <div className={classes.container}>
-        <Paper className={classes.paper} elevation={0}>
-          <Typography variant="h5" align="center" color="primary">
-            <FormattedMessage module="workforce" id="workforce.success.message" />
-          </Typography>
-        </Paper>
-      </div>
-    );
+    return <ApplicationFormSubmitted />;
   }
 
   console.log({ tazwer: formData });

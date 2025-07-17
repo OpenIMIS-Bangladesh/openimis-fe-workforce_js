@@ -36,6 +36,9 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import { getParsedApplication, safeApplicationId } from "../../../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../../../constants";
+import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
+import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -77,6 +80,7 @@ const MaternalGrantForm = ({
   const [showPreview, setShowPreview] = useState(false);
   const reduxState = useSelector((state) => state);
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
+  const user_type = getUserType();
 
   const [formData, setFormData] = useState({
     workforceEmployee: {
@@ -390,6 +394,12 @@ const MaternalGrantForm = ({
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
+    const submittedBy =
+        user_type === WORKFORCE_USER_TYPE.APPLICANT
+          ? "applicant"
+          : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+          ? "factory_admin"
+          : "UNKNOWN";
     const updateApplicationData = {
       id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId:
@@ -413,6 +423,7 @@ const MaternalGrantForm = ({
         JSON.stringify(formData?.employeeAccidentInfo) ||
         JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       status: WORKFORCE_STATUS.NEW,
+      submittedBy
     };
 
     console.log("hello i am from submit", updateApplicationData);
@@ -564,20 +575,10 @@ const MaternalGrantForm = ({
     );
   }
 
-  if (isSubmitted) {
-    return (
-      <div className={classes.container}>
-        <Paper className={classes.paper} elevation={0}>
-          <Typography variant="h5" align="center" color="primary">
-            <FormattedMessage
-              module="workforce"
-              id="workforce.success.message"
-            />
-          </Typography>
-        </Paper>
-      </div>
-    );
-  }
+    if (isSubmitted) {
+      return <ApplicationFormSubmitted />;
+    }
+  
 
   return (
     <div className={classes.container}>

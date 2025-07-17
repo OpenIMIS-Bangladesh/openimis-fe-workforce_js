@@ -42,6 +42,7 @@
     "workforce.employee.application.factoryName",
     "workforce.employee.application.applicationType",
     "workforce.employee.application.status",
+    "workforce.application.submittedBy",
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerChecker = (component) => [

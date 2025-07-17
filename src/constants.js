@@ -154,3 +154,22 @@ export const WORKFORCE_USER_TYPE = {
   DIRECTOR: "director",
   ASSOCIATION: "association",
 };
+export const WORKFORCE_USER_TYPE_MAP_EN= {
+  admin: "Admin",
+  checker: "Checker",
+  approver: "Approver",
+  applicant: "Applicant",
+  factory_admin: "Factory Admin",
+  director: "Director",
+  association: "Association",
+};
+export const WORKFORCE_USER_TYPE_MAP_BN = {
+  admin: "অ্যাডমিন",
+  checker: "চেকার",
+  approver: "অনুমোদনকারী",
+  applicant: "আবেদনকারী",
+  factory_admin: "ফ্যাক্টরি অ্যাডমিন",
+  director: "পরিচালক",
+  association: "অ্যাসোসিয়েশন",
+
+};

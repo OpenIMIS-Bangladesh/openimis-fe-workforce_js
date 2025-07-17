@@ -224,6 +224,7 @@ export function formatApplicationeGQL(application) {
   ${application?.employeeChildrenInfo ? `employeeChildrenInfo: ${escapeQuotes(application?.employeeChildrenInfo)}` : ""}
   ${application?.employeeDesignationInfo ? `employeeDesignationInfo: ${escapeQuotes(application?.employeeDesignationInfo)}` : ""}
   ${application?.isSubmitted ? `isSubmitted: "${(application?.isSubmitted)}"` : ""}
+  ${application?.submittedBy ? `submittedBy: "${(application?.submittedBy)}"` : ""}
   ${application?.employeeFactoryId ? `employeeFactoryId: "${(application?.employeeFactoryId)}"` : ""}
   ${application?.cfApplicationSummaryId ? `cfApplicationSummaryId: "${(application?.cfApplicationSummaryId)}"` : ""}
   ${application?.eisApplicationSummaryId ? `eisApplicationSummaryId: "${(application?.eisApplicationSummaryId)}"` : ""}
