@@ -8,8 +8,9 @@ import {
   createWorkforceFactory,
   fetchFactoryByClientMutationId,
   createWorkforceDocument,
+  fetchInfoIdByClientMutationId,
 } from "../../actions";
-import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation, decodeId } from "@openimis/fe-core";
+import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation } from "@openimis/fe-core";
 
 import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
@@ -17,6 +18,7 @@ import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 import CompanyPicker from "../../pickers/CompanyPicker";
 import FileUploader from "../../pickers/FileUploader";
+import { getInfoId } from "../../utils/utils";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -61,6 +63,52 @@ class AddWorkforceFactoryPage extends Component {
 
     let representativeId = EMPTY_STRING;
 
+    const handleFactoryAndDocument = async (workforceFactoryData) => {
+      try {
+        const res = await dispatch(
+          createWorkforceFactory(
+            workforceFactoryData,
+            `Created Workforce Factory ${workforceFactoryData.nameEn}`
+          )
+        );
+
+        const clientMutationId = res?.meta?.clientMutationId;
+
+        if (!clientMutationId) {
+          console.warn("No clientMutationId returned from createWorkforceFactory");
+          return;
+        }
+
+        const fetchRes = await dispatch(
+          fetchInfoIdByClientMutationId(
+            this.props.modulesManger,
+            "workforceEmployerFactories",
+            clientMutationId,
+            "WORKFORCE_INFO_ID_BY_CLIENT_MUTATION_ID_RESP"
+          )
+        );
+
+        let factoryId = getInfoId(fetchRes, "workforceEmployerFactories");
+
+        if (!factoryId && this.props.factoryId) {
+          factoryId = this.props.factoryId;
+        }
+
+        if (factoryId) {
+          await dispatch(
+            createWorkforceDocument(
+              { ...this.props.uploadFile, factoryId },
+              `Created workforce document`
+            )
+          );
+        } else {
+          console.warn("Factory ID not found after fetch, document not created.");
+        }
+      } catch (error) {
+        console.error("Error in handleFactoryAndDocument:", error);
+      }
+    };
+
     if (!this.state.isSameRepresentative) {
       const representativeData = {
         type: "organization",
@@ -84,36 +132,8 @@ class AddWorkforceFactoryPage extends Component {
       const representativeClientMutationId = representativeMutation.clientMutationId;
 
       await dispatch(createRepresentative(representativeMutation, `Created Representative ${representativeData.nameEn}`));
-
       await dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
-
-      const representativeId = this.props.representativeId[0].id;
-
-      const workforceFactoryData = {
-        company: stateEdited?.company.id || stateEdited.company.id,
-        nameBn: stateEdited.titleBn,
-        nameEn: stateEdited.title,
-        phoneNumber: stateEdited.phone,
-        email: stateEdited.email,
-        website: stateEdited.website,
-        address: stateEdited.address,
-        associationType: stateEdited.associationType,
-        location: stateEdited.location,
-        status: WORKFORCE_STATUS.DRAFT,
-        isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
-        workforceRepresentativeId: representativeId,
-        workforceFactory: stateEdited.workforceFactory,
-      };
-
-      await dispatch(createWorkforceFactory(workforceFactoryData, `Created Workforce Factory ${workforceFactoryData.nameEn}`));
-      // .then((res)=>{
-      //    console.log(res)
-
-      // })
-      await dispatch(fetchFactoryByClientMutationId(this.props.modulesManger, res?.meta?.clientMutationId));
-      const factoryId = this.props.factoryId;
-      console.log("i am from factory mutation", factoryId);
-      await dispatch(createWorkforceDocument({ ...this.props.uploadFile, factoryId: decodeId(factoryId) }, `Created workforce document `));
+      representativeId = this.props.representativeId[0]?.id || EMPTY_STRING;
     }
 
     const workforceFactoryData = {
@@ -132,15 +152,7 @@ class AddWorkforceFactoryPage extends Component {
       workforceFactory: stateEdited.workforceFactory,
     };
 
-    await dispatch(createWorkforceFactory(workforceFactoryData, `Created Workforce Factory ${workforceFactoryData.nameEn}`)).then((res) => {
-      console.log(res);
-      dispatch(fetchFactoryByClientMutationId(this.props.modulesManger, res?.meta?.clientMutationId)).then((resId) => {
-        const factoryId = this.props.factoryId;
-        console.log("i am from factory mutation", factoryId);
-        dispatch(createWorkforceDocument({ ...this.props.uploadFile, factoryId: decodeId(factoryId) }, `Created workforce document `));
-      });
-    });
-
+    await handleFactoryAndDocument(workforceFactoryData);
     this.setState({ isSaved: true });
   };
 

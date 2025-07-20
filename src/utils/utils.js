@@ -6,6 +6,7 @@ import {
   formatMutation,
   decodeId,
   FormattedMessage,
+  parseData
 } from "@openimis/fe-core";
 
 export function isBase64Encoded(str) {
@@ -162,3 +163,19 @@ export const conditionalEnToBn = (num, locale, type = '') => {
     return enToBn(num, type);
   }
 }
+
+export const getInfoId = (resp, dataKey) => {
+  let id = null;
+  if (resp?.payload?.data) {
+    const data = parseData(resp.payload.data[dataKey]).map(
+      (info) => ({
+        ...info,
+        id: decodeId(info.id),
+      })
+    )?.[0];
+
+    id = data?.id;
+  }
+
+  return id;
+};
