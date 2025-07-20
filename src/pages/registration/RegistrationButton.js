@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   inlineButton: {
     fontSize: "0.875rem",
     fontWeight: "bold",
-    padding: theme.spacing(0.3),
+    padding: theme.spacing(0.5),
     // minWidth: "unset",
     textTransform: "none",
     marginLeft: theme.spacing(1),
@@ -44,7 +44,7 @@ const RegistrationButton = () => {
   return (
     <Box className={classes.container}>
       <Typography varient="p" className={classes.title}><FormattedMessage module="workforce" id={"workforce.registration.desclaimer"} /></Typography>
-      <Button className={classes.inlineButton}  onClick={redirectToRegistrationPage}>{formatMessage("Register")}</Button>
+      <Button className={classes.inlineButton}  onClick={redirectToRegistrationPage}><FormattedMessage module="workforce" id={"workforce.register.button"} /></Button>
     </Box>
   );
 };

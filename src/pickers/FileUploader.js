@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   dropzone: {
     border: "2px dashed #005f67",
     backgroundColor: "#eefbff",
-    padding: theme.spacing(1),
+    padding: theme.spacing(0.3),
     textAlign: "center",
     cursor: "pointer",
     borderRadius: 8,

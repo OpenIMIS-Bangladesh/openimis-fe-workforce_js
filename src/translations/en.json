@@ -157,9 +157,9 @@
     "workforce.factory.representative": "Workforce Factory Representative",
 
     "workforce.employee.addNewTooltip": "Add Workforce Employee",
-    "workforce.employee.workforce_employer": "Workforce Employer/Company",
-    "workforce.employee.workforce_office": "Workforce Office",
-    "workforce.employee.workforce_factory": "Workforce Factory",
+    "workforce.employee.workforce_employer": "Employer/Company",
+    "workforce.employee.workforce_office": "Office",
+    "workforce.employee.workforce_factory": "Factory",
     "workforce.employee.first.name.en": "First Name En",
     "workforce.employee.last.name.en": "Last Name En",
     "workforce.employee.first.name.bn": "First Name Bn",
@@ -369,6 +369,7 @@
     "workforce.application.employee.children.bankNameOrAcNo":"Bank Name and AC No (if have)",
     "workforce.application.employee.children.nidOrBirthRegistry":"NID or Birth Registration Certificate",
 
+    "workforce.application.steps.deademployee.applicant.Details":"Applicant's information on behalf of the deceased worker",
     "workforce.application.steps.employeeDetails":"Labour Details",
     "workforce.application.steps.location":"Location",
     "workforce.application.steps.accident.info":"Accident Info",
@@ -551,6 +552,8 @@
     "workforce.previewDetails.employeeChildrenInfo": "Children Info",
     "workforce.previewDetails.othersInfo": "Others Info",
     "workforce.previewDetails.employeeBankInfo": "Bank Info",
+    "workforce.previewDetails.company": "Company Info",
+    "workforce.previewDetails.factory": "Factory Info",
 
     "workforce.timePicker.hour": "hour",
     "workforce.timePicker.minute": "minute",
@@ -570,6 +573,11 @@
     "workforce.employee.aid.reason.info.accident":"Description of the accident",
 
     "workforce.account.selection.type":"Select Account Type",
+
+    "core.LoginPage.forgotPassword": "পাসওয়ার্ড ভুলে গেছেন?",
+    "core.ForgotPasswordPage.pageTitle": "পাসওয়ার্ড ভুলে গেছেন?",
+
+    "workforce.register.button":"নিবন্ধন করুন",
 
     "calendar.clearButton": "Clear"
 

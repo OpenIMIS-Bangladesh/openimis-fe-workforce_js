@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
   },
+  flex: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
 }));
 
 const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApplicationType, applicationId }) => {
@@ -55,7 +59,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `organizationType:"${formData.organizationType}"`,
           ])
         );
-      }else {
+      } else {
         return dispatch(
           fetchDocumentType(modulesManager, [
             `applicationFor: "temporary_disability"`,
@@ -64,22 +68,17 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           ])
         );
       }
-    }else if (formData.applicationType === "financialAssistance"){
+    } else if (formData.applicationType === "financialAssistance") {
       if (formData.metadata.deathType === "normalDeath") {
         return dispatch(
-        fetchDocumentType(modulesManager, [
-          `applicationFor: "normal_death"`,
-          `applicationType:"${selectedApplicationType}"`,
-          `organizationType:"${formData.organizationType}"`,
-        ])
-      );
-      }else {
-        return dispatch(
-        fetchDocumentType(modulesManager, [
-          `applicationType:"${selectedApplicationType}"`,
-          `organizationType:"${formData.organizationType}"`,
-        ])
-      );
+          fetchDocumentType(modulesManager, [
+            `applicationFor: "normal_death"`,
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
+      } else {
+        return dispatch(fetchDocumentType(modulesManager, [`applicationType:"${selectedApplicationType}"`, `organizationType:"${formData.organizationType}"`]));
       }
     } else {
       return dispatch(
@@ -127,13 +126,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               <Grid item xs={6} className={classes.item}>
                 <CompanyPicker
                   value={formData?.company?.id}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.workforce_employer"
-                      module="workforce"
-                    />
-                  }
-                  
+                  label={<FormattedMessage id="workforce.employee.workforce_employer" module="workforce" />}
                   onChange={(v) => {
                     // handleChange("company", v);
                     handleChange("company", v);
@@ -141,17 +134,11 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                   readOnly={false}
                 />
               </Grid>
-              
+
               <Grid item xs={6} className={classes.item}>
                 <FactoryPicker
                   value={formData?.factory?.id}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.workforce_factory"
-                      module="workforce"
-                    />
-                  }
-                  
+                  label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
                   companyId={formData?.company?.id}
                   onChange={(v) => {
                     // handleChange("factory", v, "employeeDesignation");
@@ -202,13 +189,17 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                   readOnly={false}
                 />
               </Grid> */}
-
               {data.map((document, index) => (
-                <Grid item xs={12} className={classes.item} key={document.fieldId}>
-                  <Typography>আপলোড {document.nameBn} </Typography>
-                  <FileUploader fieldKey={document.fieldId} onFileChange={handleChange} applicationId={applicationId} documentType={document.documentType} />
+                <Grid container spacing={2} alignItems="center" style={{ marginBottom: "5px", borderBottom: "1px solid #fff" }} key={document.fieldId}>
+                  <Grid item xs={6}>
+                    <Typography>{document.nameBn}</Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FileUploader fieldKey={document.fieldId} onFileChange={handleChange} applicationId={applicationId} documentType={document.documentType} />
+                  </Grid>
                 </Grid>
               ))}
+
               {/* <Grid item xs={6} className={classes.item}>
                 <Typography>Upload Birth Certificate </Typography>
                 <FileUploader
@@ -216,7 +207,6 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                   onFileChange={handleChange}
                 />
               </Grid> */}
-              
 
               {/* {selectedApplicationType ===
                 ("financialAssistance" || "disabilityAssistance") && (

@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 const steps = [
   "workforce.application.steps.aidReason",
-  "workforce.application.steps.employeeDetails",
+  "workforce.application.steps.deademployee.applicant.Details",
   "workforce.application.steps.deathLabourDetails",
   "workforce.application.steps.location",
   "workforce.application.steps.account.info",

@@ -34,9 +34,9 @@
     "workforce.employee.accident.info.insideOutsideFactory": "কোন পরিস্থিতিতে দুর্ঘটনা হয়েছে?",
     "workforce.employee.accident.info.reJoiningDate": "সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদানের তারিখ",
 
-    "workforce.employee.workforce_employer": "কর্মশক্তি নিয়োগকর্তা/কোম্পানী",
-    "workforce.employee.workforce_office": "কর্মশক্তি অফিস",
-    "workforce.employee.workforce_factory": "কর্মশক্তি কারখানা",
+    "workforce.employee.workforce_employer": "নিয়োগকর্তা/কোম্পানী",
+    "workforce.employee.workforce_office": "অফিস",
+    "workforce.employee.workforce_factory": "কারখানা",
     "workforce.employee.first.name.en": "প্রথম নাম (ইংরেজি)",
     "workforce.employee.last.name.en": "শেষ নাম (ইংরেজি)",
     "workforce.employee.first.name.bn": "প্রথম নাম (বাংলা)",
@@ -213,6 +213,7 @@
     "workforce.employee.account.info.mobileNumber": "মোবাইল নম্বর",
 
 
+    "workforce.application.steps.deademployee.applicant.Details":"মৃত শ্রমিকের পক্ষে আবেদনকারীর তথ্য",
     "workforce.application.steps.employeeDetails":"শ্রমিকের বিবরণ",
     "workforce.application.steps.location":"ঠিকানা",
     "workforce.application.steps.accident.info":"দুর্ঘটনার তথ্য",
@@ -334,7 +335,7 @@
     "workforce.application.employee.selector": "কর্মচারী নির্বাচন করুন",
     "workforce.application.add.employee": "কর্মচারী যোগ করুন",
 
-    "workforce.application.header.labour": "শ্রমিক বিবরণ ফরম",
+    "workforce.application.header.labour": "শ্রমিকের বিবরণ ফরম",
     "workforce.application.header.labour.note": "নীচের তথ্যগুলি (NID) অনুসারে পূরণ করতে হবে, অন্যথায় আবেদনটি বাতিল বলে বিবেচিত হবে।",
     "workforce.application.header.employeeSelector.note": "নাম, জাতীয় পরিচয়পত্র নম্বর (NID) অথবা মোবাইল নম্বর ব্যবহার করে সহজেই আবেদন করার জন্য সংশ্লিষ্ট কর্মকর্তা বা কর্মচারীকে খুঁজে নিন।",
     "workforce.application.header.location": "ঠিকানা ফরম",
@@ -398,6 +399,8 @@
     "workforce.previewDetails.employeeChildrenInfo": "সন্তানের তথ্য",
     "workforce.previewDetails.othersInfo": "অন্যান্য তথ্য",
     "workforce.previewDetails.employeeBankInfo": "ব্যাংক তথ্য",
+    "workforce.previewDetails.company": "কোম্পানির তথ্য",
+    "workforce.previewDetails.factory": "কারখানার তথ্য",
 
     "workforce.timePicker.hour": "ঘণ্টা",
     "workforce.timePicker.minute": "মিনিট",
@@ -414,12 +417,14 @@
 
     "workforce.employee.nid_or_birth_certificate":"জাতীয় পরিচয়পত্র/জন্ম নিবন্ধনপত্র নং",
 
-    "workforce.employee.accident.info.title":"চিকিৎসার কারন",
+    "workforce.employee.accident.info.title":"চিকিৎসার বিবরণ",
     "workforce.employee.aid.reason.info.cronic":"রোগের বিবরণ",
     "workforce.employee.aid.reason.info.maternity":"মাতৃত্বকালীন রোগের জন্য",
     "workforce.employee.aid.reason.info.accident":"দুর্ঘটনার বিবরণ",
 
     "workforce.account.selection.type":"অ্যাকাউন্টের ধরণ নির্বাচন করুন",
+
+    "workforce.register.button":"নিবন্ধন করুন",
 
     "calendar.clearButton": "মুছে ফেলুন"
 

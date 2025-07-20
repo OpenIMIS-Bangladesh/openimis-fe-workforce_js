@@ -156,6 +156,31 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   readOnly={false}
                 />
               </Grid>
+
+              <Grid item xs={6} className={classes.item}>
+                              <CompanyPicker
+                                value={formData?.company?.id}
+                                label={<FormattedMessage id="workforce.employee.workforce_employer" module="workforce" />}
+                                onChange={(v) => {
+                                  // handleChange("company", v);
+                                  handleChange("company", v);
+                                }}
+                                readOnly={false}
+                              />
+                            </Grid>
+              
+                            <Grid item xs={6} className={classes.item}>
+                              <FactoryPicker
+                                value={formData?.factory?.id}
+                                label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
+                                companyId={formData?.company?.id}
+                                onChange={(v) => {
+                                  // handleChange("factory", v, "employeeDesignation");
+                                  handleChange("factory", v);
+                                }}
+                                readOnly={false}
+                              />
+                            </Grid>
               {/* <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <EmployeeLifeStatusPicker
                   value={formData?.workforceEmployee.lifeStatus || ""}
