@@ -111,7 +111,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType }) =
         type: "SET_UPLOAD_FILE_DATA",
         payload: createDocumentData,
       });
-      if (!applicationId ==="temp-id" ||!applicationId ==="") {
+      if (applicationId) {
         console.log("create document data", createDocumentData);
         dispatch(createWorkforceDocument({...createDocumentData,workforceApplicationId: safeApplicationId(applicationId)}, `Created workforce document `));
       }
