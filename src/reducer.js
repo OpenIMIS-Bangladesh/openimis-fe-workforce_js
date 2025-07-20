@@ -348,7 +348,7 @@ function reducer(
 
     selectedEmployee: null,
 
-    uploadFile:null,
+    uploadFile: null,
 
     workforceApplicationStatusCount: {}
   },
@@ -413,7 +413,7 @@ function reducer(
         )?.[0],
         errorOrganization: formatGraphQLError(action.payload),
       };
-      
+
     case "WORKFORCE_DOCUMENT_REQ":
       return {
         ...state,
@@ -1402,6 +1402,10 @@ function reducer(
         fetchedWorkforceFactoryId: parseData(
           action.payload.data.workforceEmployerFactories
         ),
+      };
+    case "WORKFORCE_INFO_ID_BY_CLIENT_MUTATION_ID_RESP":
+      return {
+        ...state,
       };
     case "WORKFORCE_VERIFY_NID_RESP":
       return {

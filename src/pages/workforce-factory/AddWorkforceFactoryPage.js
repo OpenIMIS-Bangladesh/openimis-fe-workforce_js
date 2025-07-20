@@ -1,8 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Grid, Paper, Typography, Divider, IconButton, FormControlLabel, Checkbox,FormControl,InputLabel,Select,MenuItem  } from "@material-ui/core";
+import { Grid, Paper, Typography, Divider, IconButton, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
-import { createRepresentative, fetchRepresentativeByClientMutationId, createWorkforceFactory } from "../../actions";
+import {
+  createRepresentative,
+  fetchRepresentativeByClientMutationId,
+  createWorkforceFactory,
+  fetchFactoryByClientMutationId,
+  createWorkforceDocument,
+  fetchInfoIdByClientMutationId,
+} from "../../actions";
 import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation } from "@openimis/fe-core";
 
 import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
@@ -11,6 +18,7 @@ import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 import CompanyPicker from "../../pickers/CompanyPicker";
 import FileUploader from "../../pickers/FileUploader";
+import { getInfoId } from "../../utils/utils";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -36,13 +44,70 @@ class AddWorkforceFactoryPage extends Component {
     if (!submittingMutation && prevProps.submittingMutation !== submittingMutation) {
       dispatch(journalize(mutation));
     }
+
+    console.log("ff", this.props)
+
+    if (
+      prevProps.factoryId !== this.props.factoryId &&
+      this.props.factoryId // ensure not null
+    ) {
+      const factoryId = this.props.factoryId;
+      console.log("fff", factoryId)
+      this.props.dispatch(createWorkforceDocument({ ...this.props.uploadFile, factoryId }, `Created workforce document`));
+    }
   }
 
   save = async () => {
     const { stateEdited } = this.state;
-    const { dispatch } = this.props;
+    const { dispatch, mutation, uploadFile } = this.props;
 
     let representativeId = EMPTY_STRING;
+
+    const handleFactoryAndDocument = async (workforceFactoryData) => {
+      try {
+        const res = await dispatch(
+          createWorkforceFactory(
+            workforceFactoryData,
+            `Created Workforce Factory ${workforceFactoryData.nameEn}`
+          )
+        );
+
+        const clientMutationId = res?.meta?.clientMutationId;
+
+        if (!clientMutationId) {
+          console.warn("No clientMutationId returned from createWorkforceFactory");
+          return;
+        }
+
+        const fetchRes = await dispatch(
+          fetchInfoIdByClientMutationId(
+            this.props.modulesManger,
+            "workforceEmployerFactories",
+            clientMutationId,
+            "WORKFORCE_INFO_ID_BY_CLIENT_MUTATION_ID_RESP"
+          )
+        );
+
+        let factoryId = getInfoId(fetchRes, "workforceEmployerFactories");
+
+        if (!factoryId && this.props.factoryId) {
+          factoryId = this.props.factoryId;
+        }
+
+        if (factoryId) {
+          await dispatch(
+            createWorkforceDocument(
+              { ...this.props.uploadFile, factoryId },
+              `Created workforce document`
+            )
+          );
+        } else {
+          console.warn("Factory ID not found after fetch, document not created.");
+        }
+      } catch (error) {
+        console.error("Error in handleFactoryAndDocument:", error);
+      }
+    };
 
     if (!this.state.isSameRepresentative) {
       const representativeData = {
@@ -67,28 +132,8 @@ class AddWorkforceFactoryPage extends Component {
       const representativeClientMutationId = representativeMutation.clientMutationId;
 
       await dispatch(createRepresentative(representativeMutation, `Created Representative ${representativeData.nameEn}`));
-
       await dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
-
-      const representativeId = this.props.representativeId[0].id;
-
-      const workforceFactoryData = {
-        company: stateEdited?.company.id || stateEdited.company.id,
-        nameBn: stateEdited.titleBn,
-        nameEn: stateEdited.title,
-        phoneNumber: stateEdited.phone,
-        email: stateEdited.email,
-        website: stateEdited.website,
-        address: stateEdited.address,
-        associationType: stateEdited.associationType,
-        location: stateEdited.location,
-        status: WORKFORCE_STATUS.DRAFT,
-        isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
-        workforceRepresentativeId: representativeId,
-        workforceFactory: stateEdited.workforceFactory,
-      };
-
-      await dispatch(createWorkforceFactory(workforceFactoryData, `Created Workforce Factory ${workforceFactoryData.nameEn}`));
+      representativeId = this.props.representativeId[0]?.id || EMPTY_STRING;
     }
 
     const workforceFactoryData = {
@@ -107,8 +152,7 @@ class AddWorkforceFactoryPage extends Component {
       workforceFactory: stateEdited.workforceFactory,
     };
 
-    await dispatch(createWorkforceFactory(workforceFactoryData, `Created Workforce Factory ${workforceFactoryData.nameEn}`));
-
+    await handleFactoryAndDocument(workforceFactoryData);
     this.setState({ isSaved: true });
   };
 
@@ -123,7 +167,7 @@ class AddWorkforceFactoryPage extends Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, mutation } = this.props;
     const { stateEdited, isSaved, isSameRepresentative } = this.state;
     const isSaveDisabled = false;
 
@@ -231,23 +275,23 @@ class AddWorkforceFactoryPage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-               <Grid item xs={6} className={classes.item}>
-                <FormControl fullWidth>
-                  <InputLabel id="association-type-label">Association Type</InputLabel>
-                  <Select
-                    labelId="association-type-label"
-                    value={stateEdited.associationType || ""}
-                    onChange={(e) => this.updateAttribute("associationType", e.target.value)}
-                    label="Association Type"
-                    readOnly={isSaved}
-                    disabled={isSaved}
-                    required
-                  >
-                    <MenuItem value="BGMEA">BGMEA</MenuItem>
-                    <MenuItem value="BKMEA">BKMEA</MenuItem>
-                  </Select>
-                </FormControl>
-               </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <FormControl fullWidth>
+                    <InputLabel id="association-type-label">Association Type</InputLabel>
+                    <Select
+                      labelId="association-type-label"
+                      value={stateEdited.associationType || ""}
+                      onChange={(e) => this.updateAttribute("associationType", e.target.value)}
+                      label="Association Type"
+                      readOnly={isSaved}
+                      disabled={isSaved}
+                      required
+                    >
+                      <MenuItem value="BGMEA">BGMEA</MenuItem>
+                      <MenuItem value="BKMEA">BKMEA</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
                 <Grid item xs={12} className={classes.item}>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
@@ -354,6 +398,8 @@ const mapStateToProps = (state) => ({
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   representativeId: state.workforce.fetchedRepresentativeByClientMutationId,
+  factoryId: state.workforce.fetchedWorkforceFactoryId,
+  uploadFile: state.workforce.uploadFile,
 });
 
 export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceFactoryPage));
