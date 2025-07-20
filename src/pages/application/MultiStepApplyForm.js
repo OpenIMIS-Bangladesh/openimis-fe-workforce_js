@@ -211,6 +211,7 @@ const MultiStepApplyForm = () => {
                 organizationType={organizationType}
                 selectedApplicationType={selectedApplicationType}
                 applicationForSelf={applicationForSelf}
+                parsedApplicationData={parsedApplicationData}
               />
             )}
           </>
@@ -404,6 +405,7 @@ const MultiStepApplyForm = () => {
                 organizationType={organizationType}
                 selectedApplicationType={selectedApplicationType}
                 applicationForSelf={applicationForSelf}
+                parsedApplicationData={parsedApplicationData}
               />
             )}
           </>

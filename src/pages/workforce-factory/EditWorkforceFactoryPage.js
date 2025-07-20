@@ -267,7 +267,7 @@ class EditWorkforceFactoryPage extends Component {
                   <FileUploader
                     fieldKey="associationCertificate"
                     onFileChange={(v)=>this.updateAttribute("associationCertificate",v)}
-                    applicationId={this.props.applicationId || "temp-id"} // Replace with real application/factory ID
+                    // applicationId={this.props.applicationId || "temp-id"} // Replace with real application/factory ID
                     documentType="ASSOCIATION_MEMBERSHIP_CERTIFICATE" // Use your documentType enum or string
                   />
                 </Grid>
