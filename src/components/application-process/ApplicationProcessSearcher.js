@@ -157,7 +157,7 @@ class ApplicationProcessSearcher extends Component {
       if (revertedApplication) {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
-          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, 'orderBy: ["-dateCreated"]']
+          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, `statusIn: ["revert","revert_to_applicant","revert_to_checker"], orderBy: ["-dateCreated"]`]
           // prms
         );
       } else if (this.props.applicationStatus) {
@@ -169,7 +169,7 @@ class ApplicationProcessSearcher extends Component {
       } else {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
-          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, 'statusIn: ["new", "revert_to_applicant"]', 'orderBy: ["-dateCreated"]']
+          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, 'statusIn: ["new"]', 'orderBy: ["-dateCreated"]']
           // prms
         );
       }
@@ -510,7 +510,7 @@ class ApplicationProcessSearcher extends Component {
     const { locale } = this.props;
 
     return userType === WORKFORCE_USER_TYPE.APPLICANT
-      ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.CHECKER
       ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.ASSOCIATION
