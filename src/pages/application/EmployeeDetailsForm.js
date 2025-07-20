@@ -144,7 +144,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.nid_or_birth_certificate"
-                  value={formData?.workforceEmployee?.nid || formData?.workforceEmployee?.birthCertificateNo || nidOrBcn.nid}
+                  value={formData?.workforceEmployee?.nid || formData?.workforceEmployee?.birthCertificateNo || nidOrBcn?.nid ||""}
                   formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
                   inputProps={{ maxLength: 17 }}
                   onChange={(v) => {

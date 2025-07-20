@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplicationType, applicationForSelf }) => {
+const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplicationType, applicationForSelf,parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
   const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
@@ -191,7 +191,7 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
     console.log({ formData });
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
-    if (nextStep === 0 || nextStep === 1) {
+    if (nextStep === 1 || nextStep === 2) {
       const workforceEmployeeData = {
         nameEn: formData?.workforceEmployee?.nameEn,
         nameBn: formData?.workforceEmployee?.nameBn,
@@ -227,7 +227,7 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
       //     `update workforce application ${formData.firstNameEn}`
       //   )
       // );
-    } else if (nextStep === 2) {
+    } else if (nextStep === 3) {
       console.log("Create application formData:", formData);
       const createApplicationData = {
         workforceEmployeeId: formData.id,
