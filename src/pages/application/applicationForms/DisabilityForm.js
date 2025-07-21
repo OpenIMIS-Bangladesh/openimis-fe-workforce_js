@@ -217,8 +217,8 @@ const DisabilityForm = ({
           presentLocation: employeeData.presentLocation || "",
           presentAddress: employeeData.presentAddress || "",
         },
-        company: employeeData.company || null,
-        factory: employeeData.factory || null,
+        company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || null,
         organizationType:
           parsedApplicationData?.organizationType || organizationType,
         applicationType:
@@ -300,13 +300,13 @@ const DisabilityForm = ({
       );
     } else if (nextStep === 4) {
       console.log("Create application formData:", formData);
-      const createApplicationData = {
+      const updateApplicationData = {
         id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
         workforceEmployeeId:
           formData?.workforceEmployee?.id ||
           parsedApplicationData?.workforceEmployee?.id,
-        company: formData.company,
-        factory: formData.factory,
+        company: formData?.workforceEmployee?.company?.id,
+        factory: decodeId(formData?.workforceEmployee?.factory?.id),
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
         grantAmount:formData?.employeeAccidentInfo.grantAmount,
@@ -318,10 +318,10 @@ const DisabilityForm = ({
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
       };
-      console.log({ createApplicationData });
+      console.log({ updateApplicationData });
       dispatch(
         updateApplication(
-          createApplicationData,
+          updateApplicationData,
           `update workforce application ${formData.firstNameEn}`
         )
       );
@@ -333,6 +333,8 @@ const DisabilityForm = ({
           parsedApplicationData?.workforceEmployee?.id,
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
+        company: formData?.workforceEmployee?.company?.id,
+        factory: decodeId(formData?.workforceEmployee?.factory?.id),
         grantAmount:formData?.employeeAccidentInfo.grantAmount,
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
@@ -376,8 +378,8 @@ const DisabilityForm = ({
         workforceEmployeeId:
           formData?.workforceEmployee.id ||
           parsedApplicationData?.workforceEmployee?.id,
-        company: formData.company,
-        factory: formData.factory,
+        company: formData?.workforceEmployee?.company?.id,
+        factory: decodeId(formData?.workforceEmployee?.factory?.id),
         organizationType:
           organizationType || parsedApplicationData?.organizationType,
         applicationType:
@@ -418,8 +420,8 @@ const DisabilityForm = ({
       workforceEmployeeId:
         formData?.workforceEmployee.id ||
         parsedApplicationData?.workforceEmployee?.id,
-      company: formData.company,
-      factory: formData.factory,
+      company: formData?.workforceEmployee?.company?.id,
+      factory: decodeId(formData?.workforceEmployee?.factory?.id),
       organizationType:
         organizationType || parsedApplicationData?.organizationType,
       applicationType:

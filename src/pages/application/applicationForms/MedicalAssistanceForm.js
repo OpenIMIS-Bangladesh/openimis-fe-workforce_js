@@ -116,7 +116,7 @@ const MedicalAssistanceForm = ({
     organizationType: "",
     applicationType: "",
     applicationForSelf: applicationForSelf,
-    dependent: {},
+    dependents: {},
     employeeBankInfo: {
       bank: null,
       branch: null,
@@ -132,8 +132,6 @@ const MedicalAssistanceForm = ({
     nid: formData?.workforceEmployee?.nid || "",
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
   });
-
-  console.log(reduxState.workforce.selectedEmployee)
 
   useEffect(() => {
     if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
@@ -205,8 +203,8 @@ const MedicalAssistanceForm = ({
           presentLocation: employeeData.presentLocation || "",
           presentAddress: employeeData.presentAddress || "",
         },
-        company: employeeData.company || null,
-        factory: employeeData.factory || null,
+        company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || null,
         applicationForSelf: applicationForSelf,
         organizationType:parsedApplicationData?.organizationType || organizationType,
         applicationType:parsedApplicationData?.applicationType || selectedApplicationType,
@@ -289,10 +287,9 @@ const MedicalAssistanceForm = ({
     //   console.log("Create application formData:", formData);
     //   const createApplicationData = {
     //     workforceEmployeeId:
-    //       formData?.workforceEmployee?.id ||
-    //       parsedApplicationData?.workforceEmployee?.id,
-    //     company: formData.company,
-    //     factory: formData.factory,
+    //       formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
+    //     company: formData?.workforceEmployee?.company?.id,
+    //     factory: decodeId(formData?.workforceEmployee?.factory?.id),
     //     organizationType: formData.organizationType,
     //     applicationType: formData.applicationType,
     //     grantAmount:formData?.employeeAccidentInfo.grantAmount,
@@ -300,7 +297,7 @@ const MedicalAssistanceForm = ({
     //       formData.employeeDesignationInfo
     //     ),
     //     employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
-    //     employeeDependentInfo: JSON.stringify(formData.dependent),
+    //     employeeDependentInfo: JSON.stringify(formData.dependents),
     //     employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
     //     status: WORKFORCE_STATUS.DRAFT,
     //   };
@@ -338,15 +335,15 @@ const MedicalAssistanceForm = ({
     //     );
     //   }
     // } else {
-    //   console.clear();
+    //   // console.clear();
     //   console.log(applicationId);
     //   const updateApplicationData = {
     //   id: safeApplicationId(applicationId, parsedApplicationData),
     //     workforceEmployeeId:
     //       formData?.workforceEmployee.id ||
     //       parsedApplicationData?.workforceEmployee?.id,
-    //     company: formData.company,
-    //     factory: decodeId(formData?.factory),
+    //     company: formData?.workforceEmployee?.company?.id,
+    //     factory: decodeId(formData?.workforceEmployee?.factory?.id),
     //     organizationType:
     //       organizationType || parsedApplicationData?.organizationType,
     //     applicationType:
@@ -356,7 +353,7 @@ const MedicalAssistanceForm = ({
     //       JSON.stringify(formData.employeeBankInfo) ||
     //       JSON.stringify(parsedApplicationData?.employeeBankInfo),
     //     employeeDependentInfo:
-    //       JSON.stringify(formData.dependent) ||
+    //       JSON.stringify(formData.dependents) ||
     //       JSON.stringify(parsedApplicationData?.employeeDependentInfo),
     //     employeeAccidentInfo:
     //       JSON.stringify(formData?.employeeAccidentInfo) ||
@@ -412,8 +409,8 @@ const MedicalAssistanceForm = ({
       workforceEmployeeId:
         formData?.workforceEmployee.id ||
         parsedApplicationData?.workforceEmployee?.id,
-      company: formData.company,
-      factory: formData?.factory,
+      company: formData?.workforceEmployee?.company?.id,
+      factory: decodeId(formData?.workforceEmployee?.factory?.id),
       organizationType:
         organizationType || parsedApplicationData?.organizationType,
       applicationType:
@@ -505,10 +502,11 @@ const MedicalAssistanceForm = ({
             label: "workforce.application.steps.dependent",
             content: (
               <EmployeeDependentForm
-                formData={formData}
-                handleChange={handleChange}
-                addDependent={addDependent}
-                removeDependent={removeDependent}
+                // formData={formData}
+                dependents={formData.dependents}
+              handleDependentChange={handleDependentChange}
+              addDependent={addDependent}
+              removeDependent={removeDependent}
               />
             ),
           },

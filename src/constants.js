@@ -60,6 +60,7 @@ export const WORKFORCE_STATUS = {
   REVERT:"revert",
   FORWARD_TO_ASSOCIATION:"forward_to_association",
   FORWARD_TO_CF_SECTION:"forward_to_cf_section",
+  FORWARD_TO_DOCTOR:"forward_to_doctor",
   SELECTED: "selected",
   MEETING_CREATED: "meeting_created",
 
@@ -100,6 +101,7 @@ export const STATUS_MAP_BN  = {
   revert: "ফেরত",
   forward_to_association: "অ্যাসোসিয়েশনের কাছে প্রেরণ",
   forward_to_cf_section: "সিএফ শাখায় প্রেরণ",
+  forward_to_doctor: "ডক্টরের কাছে প্রেরণ",
   selected: "নির্বাচিত",
   meeting_created: "সভা তৈরি হয়েছে"
 
@@ -140,6 +142,7 @@ export const STATUS_MAP_EN = {
   revert: "Revert",
   forward_to_association: "Forward to Association",
   forward_to_cf_section: "Forward to CF Section",
+  forward_to_doctor: "Forward to Doctor",
   selected: "Selected",
   meeting_created: "Meeting Created"
 };
@@ -153,6 +156,7 @@ export const WORKFORCE_USER_TYPE = {
   FACTORY_ADMIN: "factory_admin",
   DIRECTOR: "director",
   ASSOCIATION: "association",
+  SECTION_ADMIN: "section_admin",
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
   admin: "Admin",
@@ -162,6 +166,7 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   factory_admin: "Factory Admin",
   director: "Director",
   association: "Association",
+  section_admin: "Section Admin",
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
   admin: "অ্যাডমিন",
@@ -171,5 +176,6 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   factory_admin: "ফ্যাক্টরি অ্যাডমিন",
   director: "পরিচালক",
   association: "অ্যাসোসিয়েশন",
+  section_admin: "সেকশন অ্যাডমিন",
 
 };
