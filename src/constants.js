@@ -37,6 +37,7 @@ export const WORKFORCE_STATUS = {
   ARCHIVED: "archived",
   APPROVED_BY_DG: "approved_by_dg",
   APPROVED_BY_DIRECTOR: "approved_by_director",
+  APPROVED_BY_DOCTOR: "approved_by_doctor",
   REJECTED: "rejected",
   DEACTIVATED: "deactivated",
   REINSTATED: "reinstated",
@@ -78,6 +79,7 @@ export const STATUS_MAP_BN  = {
   archived: "আর্কাইভকৃত",
   approved_by_dg: "মহাপরিচালক দ্বারা অনুমোদিত",
   approved_by_director: "পরিচালক দ্বারা অনুমোদিত",
+  approved_by_doctor: "ডাক্তার দ্বারা অনুমোদিত",
   rejected: "প্রত্যাখ্যাত",
   deactivated: "নিষ্ক্রিয় করা হয়েছে",
   reinstated: "পুনর্বহাল",
@@ -119,6 +121,7 @@ export const STATUS_MAP_EN = {
   archived: "Archived",
   approved_by_dg: "Approved by DG",
   approved_by_director: "Approved by Director",
+  approved_by_doctor: "Approved by Doctor",
   rejected: "Rejected",
   deactivated: "Deactivated",
   reinstated: "Reinstated",
@@ -157,6 +160,7 @@ export const WORKFORCE_USER_TYPE = {
   DIRECTOR: "director",
   ASSOCIATION: "association",
   SECTION_ADMIN: "section_admin",
+  DOCTOR: "doctor",
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
   admin: "Admin",
@@ -167,6 +171,7 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   director: "Director",
   association: "Association",
   section_admin: "Section Admin",
+  doctor: "Doctor",
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
   admin: "অ্যাডমিন",
@@ -177,5 +182,6 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   director: "পরিচালক",
   association: "অ্যাসোসিয়েশন",
   section_admin: "সেকশন অ্যাডমিন",
+  doctor: "ডাক্তার",
 
 };
