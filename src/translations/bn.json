@@ -34,7 +34,7 @@
     "workforce.employee.accident.info.insideOutsideFactory": "কোন পরিস্থিতিতে দুর্ঘটনা হয়েছে?",
     "workforce.employee.accident.info.reJoiningDate": "সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদানের তারিখ",
 
-    "workforce.employee.workforce_employer": "নিয়োগকর্তা/কোম্পানী",
+    "workforce.employee.workforce_employer": "নিয়োগকারী কোম্পানির নাম",
     "workforce.employee.workforce_office": "অফিস",
     "workforce.employee.workforce_factory": "কারখানা",
     "workforce.employee.first.name.en": "প্রথম নাম (ইংরেজি)",
