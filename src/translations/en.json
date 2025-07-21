@@ -254,7 +254,7 @@
     "workforce.employee.application.totalAmount":"Total amount applied for:",
     "workforce.employee.application.tk":"Taka",
     "workforce.employee.application.forwardToAssociation":"Send considered applications to the Association office",
-    "workforce.employee.application.forwardToCF":"Send considered applications to the CF Section Office",
+    "workforce.employee.application.forwardToSelectionOffice":"Send considered applications to the Selection Office",
     "workforce.employee.application.provideMeetingInfo":"Provide meeting information",
     "workforce.employee.application.createMeetingSheet":"Create Meeting Sheet",
     "workforce.employee.application.bulkForward":"Bulk Forward",
@@ -402,6 +402,7 @@
     "workforce.application.reasons.maternalWelfare": "Maternity welfare for female workers in the informal sector",
 
     "workforce.employee.application.forward":"Forward",
+    "workforce.employee.application.forwardToDoctor":"Forward To Doctor",
 
     "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন।",
     "workforce.registration.title":"উপকারভোগী নিবন্ধন ফর্ম",

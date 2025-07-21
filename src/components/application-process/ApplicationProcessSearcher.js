@@ -645,6 +645,55 @@ class ApplicationProcessSearcher extends Component {
       }
     }
   };
+  handleBulkSelectedbySectionAdmin = async () => {
+    const { selectedApplicationIds } = this.state;
+    const { updateApplication, createApplicationMovement } = this.props;
+
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to forward these applications?")) {
+      try {
+        await Promise.all(
+          selectedApplicationIds.map(async (id) => {
+            const decodedId = decodeId(id);
+
+            const updateApplicationData = {
+              id: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR,
+            };
+
+            const createApplicationMovementData = {
+              applicationId: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR,
+              note: "আবেদন নির্বাচন করা হয়েছে",
+              action: "forward_to_doctor",
+            };
+
+            await updateApplication(updateApplicationData, "update workforce application");
+            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+          })
+        );
+
+        this.setState({
+          serverResponse: {
+            status: "SUCCESS",
+            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+          },
+        });
+      } catch (error) {
+        console.error("Bulk selection failed:", error);
+        this.setState({
+          serverResponse: {
+            status: "ERROR",
+            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+          },
+        });
+      }
+    }
+  };
   handleBulkSelectedbyFactoryAdmin = async () => {
     const { selectedApplicationIds } = this.state;
     const { updateApplication, createApplicationMovement } = this.props;
@@ -887,20 +936,39 @@ class ApplicationProcessSearcher extends Component {
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
         />
-        {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN ? (
-          <Box
-            style={{
-              marginTop: 10,
-              display: "flex",
-              gap: 2,
-              justifyContent: "space-between",
-            }}
-          >
-            <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpen: true })}>
-              <FormattedMessage module="workforce" id="workforce.employee.application.createMeetingSheet" />
-            </Button>
-          </Box>
-        ) : null}
+          {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN ? (
+            <Box
+              style={{
+                marginTop: 10,
+                display: "flex",
+                gap: 10,
+                justifyContent: "space-between",
+              }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => this.setState({ forwardModalOpen: true })}
+              >
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.employee.application.createMeetingSheet"
+                />
+              </Button>
+
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.handleBulkSelectedbySectionAdmin}
+              >
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.employee.application.forwardToDoctor"
+                />
+              </Button>
+            </Box>
+          ) : null}
+
         {userType === WORKFORCE_USER_TYPE.APPROVER ? (
           <Box
             style={{
@@ -1039,7 +1107,7 @@ class ApplicationProcessSearcher extends Component {
                 />
               </>
             );
-          } else if (userType === WORKFORCE_USER_TYPE.CHECKER) {
+          } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
             return (
               <>
                 <ForwardApplicationCheckerMoal
