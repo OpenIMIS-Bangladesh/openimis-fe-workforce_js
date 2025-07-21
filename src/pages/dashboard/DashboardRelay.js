@@ -8,6 +8,7 @@ import AssociationDashboardPage from "./AssociationDashboardPage";
 import ApproverDashboardPage from "./ApproverDashboardPage";
 import FactoryAdminDashboardPage from "./FactoryAdminDashboardPage";
 import SectionAdminDashboardPage from "./SectionAdminDashboardPage";
+import DoctorDashboardPage from "./DoctorDashboardPage";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 
 const DashboardRelay = () => {
@@ -20,6 +21,8 @@ console.log(user_type)
     return <CheckerDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
     return <SectionAdminDashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.DOCTOR) {
+    return <DoctorDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.APPROVER) {
     return <ApproverDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.ADMIN) {
