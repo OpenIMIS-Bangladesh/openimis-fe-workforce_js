@@ -208,8 +208,8 @@ const MaternalGrantForm = ({
           presentLocation: employeeData.presentLocation || "",
           presentAddress: employeeData.presentAddress || "",
         },
-        company: employeeData.company || null,
-        factory: employeeData.factory || null,
+        company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || null,
         applicationForSelf: applicationForSelf,
         organizationType:parsedApplicationData?.organizationType || organizationType,
         applicationType:parsedApplicationData?.applicationType || selectedApplicationType,
@@ -285,8 +285,8 @@ const MaternalGrantForm = ({
         workforceEmployeeId:
           formData?.workforceEmployee?.id ||
           parsedApplicationData?.workforceEmployee?.id,
-        company: formData.company,
-        factory: formData.factory,
+        company: formData?.workforceEmployee?.company?.id,
+        factory: decodeId(formData?.workforceEmployee?.factory?.id),
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
         grantAmount:formData?.employeeAccidentInfo.grantAmount,
@@ -339,8 +339,8 @@ const MaternalGrantForm = ({
         workforceEmployeeId:
           formData?.workforceEmployee.id ||
           parsedApplicationData?.workforceEmployee?.id,
-        company: formData.company,
-        factory: formData.factory,
+        company: formData?.workforceEmployee?.company?.id,
+        factory: decodeId(formData?.workforceEmployee?.factory?.id),
         organizationType:
           organizationType || parsedApplicationData?.organizationType,
         applicationType:
@@ -405,8 +405,8 @@ const MaternalGrantForm = ({
       workforceEmployeeId:
         formData?.workforceEmployee.id ||
         parsedApplicationData?.workforceEmployee?.id,
-      company: formData.company,
-      factory: formData.factory,
+      company: formData?.workforceEmployee?.company?.id,
+      factory: decodeId(formData?.workforceEmployee?.factory?.id),
       organizationType:
         organizationType || parsedApplicationData?.organizationType,
       applicationType:

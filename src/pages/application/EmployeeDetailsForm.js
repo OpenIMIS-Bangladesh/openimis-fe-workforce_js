@@ -7,6 +7,8 @@ import clsx from "clsx";
 import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
+import CompanyPicker from "../../pickers/CompanyPicker";
+import FactoryPicker from "../../pickers/FactoryPicker";
 // import CustomDateTimePicker from "../../pickers/CustomDatePicker";
 
 const useStyles = makeStyles((theme) => ({
@@ -54,18 +56,21 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
             <Box mb={4} color="red">
               <FormattedMessage id="workforce.application.header.labour.note" module="workforce" />
             </Box>
-              
-                {/* <p><b>Personal Info </b></p> */}
-                <Typography><b><FormattedMessage id="workforce.application.labourHeadingOne" module="workforce" /></b></Typography> 
+
+            {/* <p><b>Personal Info </b></p> */}
+            <Typography>
+              <b>
+                <FormattedMessage id="workforce.application.labourHeadingOne" module="workforce" />
+              </b>
+            </Typography>
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
-              
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.name.bn"
                   value={formData?.workforceEmployee.nameBn || ""}
                   onChange={(v) => handleChange("nameBn", v)}
                   required
-                  readOnly={ false}
+                  readOnly={false}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
@@ -74,7 +79,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   value={formData?.workforceEmployee.nameEn || ""}
                   onChange={(v) => handleChange("nameEn", v)}
                   required
-                  readOnly={ false}
+                  readOnly={false}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
@@ -83,7 +88,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   label={"workforce.employee.birthdate"}
                   value={formData?.workforceEmployee.birthDate || ""}
                   onChange={(v) => handleChange("birthDate", v)}
-                  readOnly={ false}
+                  readOnly={false}
                 />
                 {/* <CustomDateTimePicker value={formData?.workforceEmployee.birthDate || "birthDate"} onChange={(v) => {handleChange("birthDate", v);console.log(v)}}/> */}
               </Grid>
@@ -102,7 +107,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   value={formData?.workforceEmployee.phoneNumber || ""}
                   onChange={(v) => handleChange("phoneNumber", v)}
                   type={"number"}
-                  readOnly={ false}
+                  readOnly={false}
                 />
               </Grid>
 
@@ -112,7 +117,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   value={formData?.workforceEmployee.email || ""}
                   onChange={(v) => handleChange("email", v)}
                   type={"email"}
-                  readOnly={ false}
+                  readOnly={false}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
@@ -144,7 +149,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.nid_or_birth_certificate"
-                  value={formData?.workforceEmployee?.nid || formData?.workforceEmployee?.birthCertificateNo || nidOrBcn?.nid ||""}
+                  value={formData?.workforceEmployee?.nid || formData?.workforceEmployee?.birthCertificateNo || nidOrBcn?.nid || ""}
                   formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
                   inputProps={{ maxLength: 17 }}
                   onChange={(v) => {
@@ -158,29 +163,29 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               </Grid>
 
               <Grid item xs={6} className={classes.item}>
-                              <CompanyPicker
-                                value={formData?.company?.id}
-                                label={<FormattedMessage id="workforce.employee.workforce_employer" module="workforce" />}
-                                onChange={(v) => {
-                                  // handleChange("company", v);
-                                  handleChange("company", v);
-                                }}
-                                readOnly={false}
-                              />
-                            </Grid>
-              
-                            <Grid item xs={6} className={classes.item}>
-                              <FactoryPicker
-                                value={formData?.factory?.id}
-                                label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
-                                companyId={formData?.company?.id}
-                                onChange={(v) => {
-                                  // handleChange("factory", v, "employeeDesignation");
-                                  handleChange("factory", v);
-                                }}
-                                readOnly={false}
-                              />
-                            </Grid>
+                <CompanyPicker
+                  value={formData?.workforceEmployee?.company?.id}
+                  label={<FormattedMessage id="workforce.employee.workforce_employer" module="workforce" />}
+                  onChange={(v) => {
+                    // handleChange("company", v);
+                    handleChange("company", v);
+                  }}
+                  readOnly={false}
+                />
+              </Grid>
+
+              <Grid item xs={6} className={classes.item}>
+                <FactoryPicker
+                  value={formData?.workforceEmployee?.factory?.id}
+                  label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
+                  companyId={formData?.workforceEmployee?.company?.id}
+                  onChange={(v) => {
+                    // handleChange("factory", v, "employeeDesignation");
+                    handleChange("factory", v);
+                  }}
+                  readOnly={false}
+                />
+              </Grid>
               {/* <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <EmployeeLifeStatusPicker
                   value={formData?.workforceEmployee.lifeStatus || ""}
@@ -207,18 +212,20 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   />
                 </Grid>
               ) : null}
-
             </Grid>
-                {/* <p><b>Family Info</b></p> */}
-                <Typography><b><FormattedMessage id="workforce.application.labourHeadingTwo" module="workforce" /></b></Typography> 
+            {/* <p><b>Family Info</b></p> */}
+            <Typography>
+              <b>
+                <FormattedMessage id="workforce.application.labourHeadingTwo" module="workforce" />
+              </b>
+            </Typography>
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
-              
-               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
+              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.fathers_name.en"
                   value={formData?.workforceEmployee.fatherNameEn || ""}
                   onChange={(v) => handleChange("fatherNameEn", v)}
-                  readOnly={ false}
+                  readOnly={false}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
@@ -226,7 +233,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   label="workforce.employee.fathers_name.bn"
                   value={formData?.workforceEmployee.fatherNameBn || ""}
                   onChange={(v) => handleChange("fatherNameBn", v)}
-                  readOnly={ false}
+                  readOnly={false}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
@@ -234,7 +241,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   label="workforce.employee.mothers_name.en"
                   value={formData?.workforceEmployee.motherNameEn || ""}
                   onChange={(v) => handleChange("motherNameEn", v)}
-                  readOnly={ false}
+                  readOnly={false}
                   required
                 />
               </Grid>
@@ -243,7 +250,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   label="workforce.employee.mothers_name.bn"
                   value={formData?.workforceEmployee.motherNameBn || ""}
                   onChange={(v) => handleChange("motherNameBn", v)}
-                  readOnly={ false}
+                  readOnly={false}
                   required
                 />
               </Grid>
@@ -260,7 +267,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   label="workforce.employee.spouse.name.bn"
                   value={formData?.workforceEmployee.spouseNameBn || ""}
                   onChange={(v) => handleChange("spouseNameBn", v)}
-                  readOnly={ false}
+                  readOnly={false}
                 />
               </Grid>
             </Grid>

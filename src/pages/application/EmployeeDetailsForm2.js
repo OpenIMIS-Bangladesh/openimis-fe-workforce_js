@@ -123,7 +123,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               <FormattedMessage id="workforce.application.header.document" module="workforce" />
             </Box>
             <Grid container className={classes.item} spacing={2}>
-              <Grid item xs={6} className={classes.item}>
+              {/* <Grid item xs={6} className={classes.item}>
                 <CompanyPicker
                   value={formData?.company?.id}
                   label={<FormattedMessage id="workforce.employee.workforce_employer" module="workforce" />}
@@ -146,7 +146,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                   }}
                   readOnly={false}
                 />
-              </Grid>
+              </Grid> */}
               {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.nid"
