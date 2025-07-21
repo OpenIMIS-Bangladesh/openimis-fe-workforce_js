@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Button, Box, Grid, LinearProgress } from "@material-ui/core";
+import { Button, Box, Grid, LinearProgress, InputLabel } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { TextInput } from "@openimis/fe-core";
 import { useAuthentication, useHistory } from "@openimis/fe-core";
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import SharedTabPanel from "../../components/shared/TabPanel";
+import OtpInput from "react-otp-input";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -24,6 +25,23 @@ const useStyles = makeStyles((theme) => ({
         width: "45%",
         padding: theme.spacing(2),
     },
+    otpInput: {
+        width: "100% !important",
+        height: "2.2rem",
+        margin: "0 .8rem",
+        fontSize: "2rem",
+        borderRadius: 8,
+        border: "1px solid #006273",
+        color: "#00668f",
+        background: "transparent !important",
+        textAlign: "center",
+        outline: "none",
+        fontSize: "inherit",
+        transition: "border-color 0.2s ease-in-out",
+        "&:focus": {
+            borderColor: "#1976d2", // MUI primary color
+        },
+    }
 }));
 
 const errorMessages = {
@@ -156,12 +174,14 @@ export default function LoginForm() {
                     {isOtpSent && (
                         <>
                             <Grid item style={{ marginTop: "1rem" }}>
-                                <TextInput
-                                    required
-                                    label="ওটিপি"
-                                    fullWidth
-                                    defaultValue=""
+                                <InputLabel required fullWidth shrink style={{ marginBottom: 8 }}>ওটিপি কোড</InputLabel>
+                                <OtpInput
+                                    value={credentials.password}
                                     onChange={(otp) => setInput('otp', otp)}
+                                    numInputs={5}
+                                    renderSeparator={<span>-</span>}
+                                    inputStyle={classes.otpInput}
+                                    renderInput={(props) => <input {...props} />}
                                 />
                             </Grid>
 
