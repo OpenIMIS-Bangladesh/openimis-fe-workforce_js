@@ -1791,6 +1791,16 @@ function reducer(
     case "BANK_UPDATE_BANK_RESP":
       return dispatchMutationResp(state, "updateBank", action);
 
+    case "EDUCATION_INFO_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "EDUCATION_INFO_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "EDUCATION_INFO_CREATE_EDUCATION_RESP":
+      return dispatchMutationResp(state, "createWorkforceEducation", action);
+    case "EDUCATION_INFO_UPDATE_EDUCATION_RESP":
+      return dispatchMutationResp(state, "updateWorkforceEducation", action);
+
     case "APPLICATION_MUTATION_REQ": {
       return dispatchMutationReq(state, action);
     }

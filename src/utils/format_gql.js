@@ -67,6 +67,21 @@ export function formatBankGQL(bank) {
     ${bank?.type ? `type: "${formatGQLString(bank.type)}"` : ""}
   `;
 }
+export function formatEducationInfoGQL(education) {
+  console.log({ education });
+  return `
+    ${education?.id ? `id: "${(education?.id)}"` : ""}
+    ${education?.applicationId ? `applicationId: "${(education?.applicationId)}"` : ""}
+    ${education?.educationLevel ? `educationLevel: "${(education?.educationLevel)}"` : ""}
+    ${education?.educationBoard ? `educationBoard: "${(education?.educationBoard)}"` : ""}
+    ${education?.passingYear ? `passingYear: "${(education?.passingYear)}"` : ""}
+    ${education?.locationId ? `locationId: "${decodeId(education?.locationId.id)}"` : ""}
+    ${education?.rollNumber ? `rollNumber: "${(education?.rollNumber)}"` : ""}
+    ${education?.registrationNumber ? `registrationNumber: "${(education?.registrationNumber)}"` : ""}
+    ${education?.result ? `result: "${(education?.result)}"` : ""}
+    ${education?.institution ? `institution: "${(education?.institution)}"` : ""}
+  `;
+}
 
 export function formatApplicationSummaryGQL(applicationSummary) {
   return `

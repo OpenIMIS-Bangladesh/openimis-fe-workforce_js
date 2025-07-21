@@ -37,13 +37,13 @@ const FactoryPicker = ({
     (state) => state.workforce["errorWorkforceFactoriesPick"]
   );
 
-  const filteredFactories = useMemo(() => {
-    return data.filter(factory => decodeId(factory.workforceEmployer.id) === companyId);
-  }, [data, companyId]);
+  // const data = useMemo(() => {
+  //   return data.filter(factory => decodeId(factory.workforceEmployer.id) === companyId);
+  // }, [data, companyId]);
 
   
    const selectedOption = useMemo(
-      () => filteredFactories.find((option) => option.id === value) || null,
+      () => data.find((option) => option.id === value) || null,
       [value]
     )
 
@@ -57,7 +57,7 @@ const FactoryPicker = ({
       withLabel={withLabel}
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
-      options={filteredFactories}
+      options={data}
       isLoading={isLoading}
       value={selectedOption}
       getOptionLabel={(option) => `${option.nameEn}`}

@@ -28,7 +28,8 @@ import {
   formatApplicationMovementGQL,
   formatFactoryEmployeeAssignDesignationGQL,
   formatApplicationSummaryGQL,
-  formatWorkforceDocumentGQL
+  formatWorkforceDocumentGQL,
+  formatEducationInfoGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 
@@ -2060,6 +2061,26 @@ export function updateApplication(application, clientMutationLabel) {
       "APPLICATION_UPDATE_APPLICATION_RESP",
       "APPLICATION_MUTATION_ERR",
     ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+
+export function createEducationInfo(education, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceEducation",
+    formatEducationInfoGQL(education),
+    clientMutationLabel
+  );
+
+  console.log({ mutation });
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["EDUCATION_INFO_MUTATION_REQ", "EDUCATION_INFO_CREATE_EDUCATION_RESP", "EDUCATION_INFO_MUTATION_ERR"],
     {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
