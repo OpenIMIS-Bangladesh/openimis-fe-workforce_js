@@ -42,6 +42,8 @@ export function getUserTypeFromRights(user_rights) {
   let user_type = WORKFORCE_USER_TYPE.APPLICANT;
   if (user_rights.includes(812001)) {
     user_type = WORKFORCE_USER_TYPE.CHECKER;
+  }else if (user_rights.includes(817001)) {
+    user_type = WORKFORCE_USER_TYPE.SECTION_ADMIN;
   } else if (user_rights.includes(813001)) {
     user_type = WORKFORCE_USER_TYPE.APPROVER;
   } else if (user_rights.includes(814001)) {

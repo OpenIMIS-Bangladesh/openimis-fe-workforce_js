@@ -153,6 +153,7 @@ export const WORKFORCE_USER_TYPE = {
   FACTORY_ADMIN: "factory_admin",
   DIRECTOR: "director",
   ASSOCIATION: "association",
+  SECTION_ADMIN: "section_admin",
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
   admin: "Admin",
@@ -162,6 +163,7 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   factory_admin: "Factory Admin",
   director: "Director",
   association: "Association",
+  section_admin: "Section Admin",
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
   admin: "অ্যাডমিন",
@@ -171,5 +173,6 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   factory_admin: "ফ্যাক্টরি অ্যাডমিন",
   director: "পরিচালক",
   association: "অ্যাসোসিয়েশন",
+  section_admin: "সেকশন অ্যাডমিন",
 
 };

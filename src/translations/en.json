@@ -450,6 +450,7 @@
     "workforce.application.recent":"Recent Activity",
     "workforce.application.checked":"Checked Applications",
     "workforce.checker.dashboard":"Central Fund Section Dashboard",
+    "workforce.section.admin.dashboard":"Central Fund Section Admin Dashboard",
     "workforce.association.dashboard":"Association Dashboard",
     "workforce.applicant.dashboard":"Applicant Dashboard",
     "workforce.factory_admin.dashboard":"Factory Admin Dashboard",
