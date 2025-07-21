@@ -357,6 +357,27 @@
     "workforce.application.permission.yes":"Yes",
     "workforce.application.permission.no":"No",
 
+    "workforce.application.educationInfo.boards.barisal":"Barisal",
+    "workforce.application.educationInfo.boards.chattogram":"Chattogram",
+    "workforce.application.educationInfo.boards.cumilla":"Cumilla",
+    "workforce.application.educationInfo.boards.dhaka":"Dhaka",
+    "workforce.application.educationInfo.boards.dinajpur":"Dinajpur",
+    "workforce.application.educationInfo.boards.jashore":"Jashore",
+    "workforce.application.educationInfo.boards.mymensingh":"Mymensingh",
+    "workforce.application.educationInfo.boards.rajshahi":"Rajshahi",
+    "workforce.application.educationInfo.boards.sylhet":"Sylhet",
+
+
+    "workforce.application.educationInfo.passingYear":"Passing Year",
+    "workforce.application.educationInfo.rollNo":"Roll No",
+    "workforce.application.educationInfo.regNo":"Registration No",
+    "workforce.application.educationInfo.cgpa":"CGPA/GPA",
+    "workforce.application.educationInfo.board":"Education Board",
+    "workforce.application.educationInfo.university":"University / Institute Name",
+    "workforce.application.steps.underGraduate":"Under Graduate",
+    "workforce.application.steps.postGraduate":"Post Graduate",
+
+
     "workforce.financial.assistance.normalDeath":"Normal Death",
     "workforce.financial.assistance.accidentalDeath":"Accidental Death",
 
