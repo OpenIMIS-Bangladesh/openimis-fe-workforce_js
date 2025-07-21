@@ -32,11 +32,12 @@ import {
   itemFormattersApprover,
   itemFormattersChecker,
   itemFormattersSectionAdmin,
+  itemFormattersDoctor,
   itemFormattersFactoryAdmin,
   itemFormattersDirector,
 } from "../../utils/itemFormatters_types";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
-import { headerApplicant, headerApprover, headerChecker, headerSectionAdmin, headerAssociation, headersAdmin, headerFactoryAdmin, headerDirector } from "../../utils/headers_types";
+import { headerApplicant, headerApprover, headerChecker,headerDoctor, headerSectionAdmin, headerAssociation, headersAdmin, headerFactoryAdmin, headerDirector } from "../../utils/headers_types";
 
 const styles = (theme) => ({
   paper: {
@@ -138,11 +139,14 @@ class ApplicationProcessSearcher extends Component {
       if (summaryId) {
         filter = [`statusIn: ["forward_to_cf_section","meeting_created"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${summaryId}"`];
       } else {
-        filter = [`statusIn: ["forward_to_cf_section"], orderBy: ["-dateCreated"]`];
+        filter = [`statusIn: ["forward_to_cf_section","approved_by_doctor"], orderBy: ["-dateCreated"]`];
       }
 
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, filter);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) {
+      this.setState({ displayVersion: showHistoryFilter });
+      this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_doctor"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ASSOCIATION) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]']);
@@ -395,6 +399,47 @@ class ApplicationProcessSearcher extends Component {
       );
     }
   };
+  handleApprovalByDoctor = async (application) => {
+    const { selectedApplication } = this.state;
+
+    if (window.confirm("Are you sure you want to approve this application?")) {
+      this.setState(
+        {
+          selectedApplication: {
+            ...selectedApplication,
+            isHistory: true,
+          },
+        },
+        async () => {
+          const updateApplicationData = {
+            id: decodeId(application.id),
+            status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
+            grantAmount: this.state.editedGrantMoney,
+          };
+
+          try {
+            await this.props.updateApplication(updateApplicationData, "update workforce application");
+
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদন অনুমোদন করা হয়েছে!",
+              },
+            });
+            window.location.reload();
+          } catch (error) {
+            console.error("Approval failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
+              },
+            });
+          }
+        }
+      );
+    }
+  };
   handleSelected = async (application) => {
     const { selectedApplication } = this.state;
 
@@ -508,6 +553,8 @@ class ApplicationProcessSearcher extends Component {
       ? headerChecker(this)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
       ? headerSectionAdmin(this)
+      : userType === WORKFORCE_USER_TYPE.DOCTOR
+      ? headerDoctor(this)
       : userType === WORKFORCE_USER_TYPE.ASSOCIATION
       ? headerAssociation(this)
       : userType === WORKFORCE_USER_TYPE.APPROVER
@@ -529,6 +576,8 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
       ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      : userType === WORKFORCE_USER_TYPE.DOCTOR
+      ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.ASSOCIATION
       ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.APPROVER
