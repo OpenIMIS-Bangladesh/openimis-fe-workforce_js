@@ -115,7 +115,36 @@ const SidebarMenu = [
       <FormattedMessage module="workforce" id="workforce.application.pending" />
     ),
     icon: <HourglassFullTwoToneIcon />,
-  },  
+  },
+  // {
+  //   id: "checkedApplications",
+  //   text: (
+  //     <FormattedMessage module="workforce" id="workforce.application.checked" />
+  //   ),
+  //   icon: <CheckCircleOutlineTwoToneIcon />,
+  // },
+  {
+      id: "revertedApplication",
+      text: (
+        <FormattedMessage module="workforce" id="workforce.application.reverted" />
+      ),
+      icon: <RestorePageIcon  />,
+    },
+  {
+      id: "pendingMeetingSheet",
+      text: (
+        <FormattedMessage module="workforce" id="workforce.employee.application.pendingMeetingSheet" />
+      ),
+      icon: <HourglassFullTwoToneIcon  />,
+    },
+  // {
+  //   id: "applicationStatus",
+  //   text: (
+  //     <FormattedMessage module="workforce" id="workforce.application.status" />
+  //   ),
+  //   icon: <AssignmentIcon  />,
+  // },
+   
 ];
 
 // ----------- Components to Render in Main Content -----------
@@ -125,7 +154,7 @@ const FiledApplications = () =>{
   return (
   <>
     <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.checker.dashboard" />
+      <FormattedMessage module="workforce" id="workforce.section.admin.dashboard" />
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
@@ -197,6 +226,67 @@ const ApplicationStatus = () => {
   );
 };
 
+
+const RevertApplication = () => {
+  const classes = useStyles()
+  return (
+  <>
+    <Typography variant="h5" gutterBottom>
+      <FormattedMessage module="workforce" id="workforce.application.reverted" />
+    </Typography>
+   <Card className={classes.tableContainer}>
+       <CardContent>
+             <ApplicationProcessSearcher
+                revertedApplication={true}
+              />
+            </CardContent>
+      </Card>
+
+    {/* Pagination */}
+    <div className={classes.pagination}>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.back" />
+      </Button>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.next" />
+      </Button>
+    </div>
+  </>
+)}
+
+const PendingMeetingSheet = ({ summaryData = [] }) => {
+  console.log("summary data", summaryData);
+  const classes = useStyles()
+  return (
+    <>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.section.admin.dashboard" />
+      </Typography>
+
+      {/* Render each summaryData item as an accordion */}
+      {summaryData.map((item, index) => (
+        <Accordion key={index} defaultExpanded={false} className={classes.accordion}>
+          <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon  className="material-icons"/>}>
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography variant="body2" color="textSecondary" style={{ marginLeft: 'auto' }}>
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.AccordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                <ApplicationProcessSearcher summaryId={item.id} />
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+    </>
+  );
+};
+
 const Others = () => (
   <Typography variant="h5">
     <FormattedMessage module="workforce" id="workforce.others" />
@@ -205,7 +295,7 @@ const Others = () => (
 
 // ------------------------------------------------------------
 
-const CheckerDashboard = () => {
+const SectionAdminDashboard = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
@@ -221,6 +311,10 @@ const CheckerDashboard = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
+      case "revertedApplication":
+        return <RevertApplication />;
+      case "pendingMeetingSheet":
+        return <PendingMeetingSheet summaryData={data} />;
       default:
         return <FiledApplications />;
     }
@@ -257,4 +351,4 @@ const CheckerDashboard = () => {
   );
 };
 
-export default CheckerDashboard;
+export default SectionAdminDashboard;
