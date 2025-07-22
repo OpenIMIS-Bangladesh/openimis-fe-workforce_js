@@ -61,6 +61,8 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
   const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
   const classes = useStyles();
   const dispatch = useDispatch();
+    const [expanded, setExpanded] = useState(0);
+  
   const [activeStep, setActiveStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
@@ -114,7 +116,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
     isSubmitted: "no",
     organizationType: "",
     applicationType: "",
-    dependent: {},
+    dependents: [{}],
     employeeBankInfo: {},
     employeeAccidentInfo: {},
     metadata: {},
@@ -197,7 +199,7 @@ if (reduxState.workforce.selectedEmployee) {
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount:parsedApplicationData?.grantAmount||parsedApplicationData?.employeeAccidentInfo.grantAmount,
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
-        dependents: parsedApplicationData?.employeeDependentInfo || employeeData?.dependents || {},
+        dependents: parsedApplicationData?.employeeDependentInfo || employeeData?.dependents || [{}],
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || {},
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
       });
@@ -270,7 +272,7 @@ if (reduxState.workforce.selectedEmployee) {
         grantAmount:formData?.employeeAccidentInfo.grantAmount,
         employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
-        employeeDependentInfo: JSON.stringify(formData.dependent),
+        employeeDependentInfo: JSON.stringify(formData.dependents),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
@@ -322,22 +324,39 @@ if (reduxState.workforce.selectedEmployee) {
 
   const handleDependentChange = (index, key, value) => {
     setFormData((prev) => {
-      const updatedDependents = [...prev.dependents];
+      const dependentsArr = Array.isArray(prev.dependents)
+        ? prev.dependents
+        : prev.dependents ? [prev.dependents] : [{}];
+      const updatedDependents = [...dependentsArr];
       updatedDependents[index] = { ...updatedDependents[index], [key]: value };
       return { ...prev, dependents: updatedDependents };
     });
   };
 
   const addDependent = () => {
-    setFormData((prev) => ({
+  setFormData((prev) => {
+    const dependentsArr = Array.isArray(prev.dependents)
+      ? prev.dependents
+      : prev.dependents ? [prev.dependents] : [{}];
+    const newDependents = [...dependentsArr, {}];
+
+    // Set accordion to expand the new dependent
+    setExpanded(newDependents.length - 1);
+
+    return {
       ...prev,
-      dependents: [...prev.dependent, {}],
-    }));
-  };
+      dependents: newDependents,
+    };
+  });
+};
+
 
   const removeDependent = (index) => {
     setFormData((prev) => {
-      const updatedDependents = prev.dependents.filter((_, i) => i !== index);
+      const dependentsArr = Array.isArray(prev.dependents)
+        ? prev.dependents
+        : prev.dependents ? [prev.dependents] : [{}];
+      const updatedDependents = dependentsArr.filter((_, i) => i !== index);
       return { ...prev, dependents: updatedDependents };
     });
   };
@@ -455,7 +474,16 @@ if (reduxState.workforce.selectedEmployee) {
           />
         ) : activeStep === 1 ? (
           <Box mt={0}>
-            <EmployeeDependentForm dependents={formData} handleChange={handleChange} addDependent={addDependent} removeDependent={removeDependent} />
+            <EmployeeDependentForm
+                            // formData={formData}
+                          applicationType={formData.applicationType}
+                          dependents={formData.dependents}
+                          handleDependentChange={handleDependentChange}
+                          addDependent={addDependent}
+                          removeDependent={removeDependent}
+                          expanded={expanded}
+                          setExpanded={setExpanded}
+                          />
           </Box>
         ) : activeStep === 2 ? (
           <Box mt={0}>

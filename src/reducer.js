@@ -524,7 +524,7 @@ function reducer(
         fetchingBanksPick: false,
         fetchedBanksPick: true,
         banksPick: parseData(
-          action.payload.data.banks
+          action.payload.data.workforceBanks
         ),
         errorBanksPick: formatGraphQLError(action.payload),
       };
@@ -575,7 +575,7 @@ function reducer(
         fetchinBranchPick: false,
         fetcheBranchPick: true,
         branchPick: parseData(
-          action.payload.data.banks
+          action.payload.data.workforceBanks
         ),
         erroBranchPick: formatGraphQLError(action.payload),
       };

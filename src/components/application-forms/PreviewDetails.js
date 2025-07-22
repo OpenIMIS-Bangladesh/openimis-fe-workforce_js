@@ -41,10 +41,12 @@ const banglaLabels = {
   fatherNameBn: "পিতার নাম (বাংলা)",
   motherNameEn: "মাতার নাম (ইংরেজি)",
   motherNameBn: "মাতার নাম (বাংলা)",
-  spouseName: "স্বামী/স্ত্রীর নাম",
+  spouseNameEn: "স্বামীর / স্ত্রীর নাম (ইংরেজি)",
+  spouseNameBn: "স্বামী/স্ত্রীর নাম (বাংলা)",
   citizenship: "নাগরিকত্ব",
   nid: "এনআইডি",
   birthCertificate: "জন্ম সনদ",
+  birthCertificateNo: "জন্ম সনদ নম্বর",
   birthDate: "জন্ম তারিখ",
   insuranceNumber: "ইনসুরেন্স নম্বর",
   gender: "লিঙ্গ",
@@ -207,18 +209,18 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
   if (!employeeData || typeof employeeData !== "object") return null;
 
   const personalFields = [
-    "nameEn", "nameBn", "fatherNameEn", "fatherNameBn",
-    "motherNameEn", "motherNameBn", "spouseName", "spouseNameEn", "spouseNameBn",
-    "citizenship", "nid", "birthCertificate", "birthCertificateNo",
-    "birthDate", "insuranceNumber", "gender"
-  ];
+  "nameEn", "nameBn", "fatherNameEn", "fatherNameBn",
+  "motherNameEn", "motherNameBn", "spouseName", "spouseNameEn", "spouseNameBn",
+  "citizenship", "nid", "birthCertificate", "birthCertificateNo",
+  "birthDate", "insuranceNumber", "gender",
+  "maritalStatus", "lifeStatus", "deathDate", "monthlyEarning"
+];
+
   const contactFields = [
     "email", "phoneNumber", "presentAddress", "permanentAddress",
     "presentLocation", "permanentLocation"
   ];
-  const statusFields = [
-    "birthDate", "deathDate", "lifeStatus", "maritalStatus", "monthlyEarning"
-  ];
+  const statusFields = [];
   const accidentFields = [
     "diagnosisDate", "hospitalName", "admitDate", "releaseDate", "hospitalDoctorName"
   ];

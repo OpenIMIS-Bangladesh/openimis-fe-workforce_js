@@ -75,6 +75,8 @@ const MaternalGrantForm = ({
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
+    const [expanded, setExpanded] = useState(0);
+  
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -121,7 +123,7 @@ const MaternalGrantForm = ({
     organizationType: "",
     applicationType: "",
     applicationForSelf: applicationForSelf,
-    dependent: {},
+    dependents: {},
     employeeBankInfo: {
       bank: null,
       branch: null,
@@ -379,11 +381,21 @@ const MaternalGrantForm = ({
   };
 
   const addDependent = () => {
-    setFormData((prev) => ({
+  setFormData((prev) => {
+    const dependentsArr = Array.isArray(prev.dependents)
+      ? prev.dependents
+      : prev.dependents ? [prev.dependents] : [{}];
+    const newDependents = [...dependentsArr, {}];
+
+    // Set accordion to expand the new dependents
+    setExpanded(newDependents.length - 1);
+
+    return {
       ...prev,
-      dependents: [...prev.dependents, {}],
-    }));
-  };
+      dependents: newDependents,
+    };
+  });
+};
 
   const removeDependent = (index) => {
     setFormData((prev) => {
@@ -499,10 +511,14 @@ const MaternalGrantForm = ({
             label: "workforce.application.steps.dependent",
             content: (
               <EmployeeDependentForm
-                formData={formData}
-                handleChange={handleChange}
-                addDependent={addDependent}
-                removeDependent={removeDependent}
+                // formData={formData}
+              applicationType={formData.applicationType}
+              dependents={formData.dependents}
+              handleDependentChange={handleDependentChange}
+              addDependent={addDependent}
+              removeDependent={removeDependent}
+              expanded={expanded}
+              setExpanded={setExpanded}
               />
             ),
           },

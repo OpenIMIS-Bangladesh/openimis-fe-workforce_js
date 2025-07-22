@@ -24,7 +24,7 @@ const BranchPicker = ({
 
   useEffect(() => {
     if (bankId) {
-      dispatch(fetchBranchPick(modulesManager, [`type:"branch"`])); // Fetching branches
+      dispatch(fetchBranchPick(modulesManager, [`type:"branch",bankCode: "${bankId}"`])); // Fetching branches
     }
   }, [bankId]); // Runs only when bankId changes
 
@@ -39,13 +39,13 @@ const BranchPicker = ({
   );
 
   // Filtering branches that belong to the selected bank
-  const branches = useMemo(() => {
-    return allData.filter((branch) => branch?.parent?.id === bankId); // Assuming `parentBankId` links branches to banks
-  }, [allData, bankId]);
+  // const branches = useMemo(() => {
+  //   return allData.filter((branch) => branch?.parent?.id === bankId); // Assuming `parentBankId` links branches to banks
+  // }, [allData, bankId]);
 
   const selectedOption = useMemo(
-    () => branches.find((option) => option.id === value) || null,
-    [value, branches]
+    () => allData.find((option) => option.id === value) || null,
+    [value, allData]
   );
 
   console.log({allData})
@@ -60,7 +60,7 @@ const BranchPicker = ({
       withLabel={withLabel}
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
-      options={branches} // Using filtered branches
+      options={allData} // Using filtered branches
       isLoading={isLoading}
       value={selectedOption}
       getOptionLabel={(option) => `${option.nameEn}`}
