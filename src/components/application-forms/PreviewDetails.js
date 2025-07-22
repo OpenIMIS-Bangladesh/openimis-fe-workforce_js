@@ -269,7 +269,7 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
   const filteredItems = educations.filter(item => item && typeof item === "object");
 
   return (
-    <Grid item xs={12} className={classes.cardGridItem} key="educations">
+    <Grid item xs={6} className={classes.cardGridItem} key="educations">
       <Card className={classes.card}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
@@ -278,9 +278,9 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
           <Divider style={{ marginBottom: "10px" }} />
           {filteredItems.map((edu, index) => (
             <Box key={index} mb={2} pl={1}>
-              <Typography variant="subtitle2" gutterBottom>
+              {/* <Typography variant="subtitle2" gutterBottom>
                 <FormattedMessage module="workforce" id="workforce.previewDetails.education" defaultMessage="Education" /> #{index + 1}
-              </Typography>
+              </Typography> */}
               <Grid container spacing={2}>
                 {Object.entries(edu).map(([key, value], idx) => (
                   key !== "id" && (

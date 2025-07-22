@@ -429,6 +429,8 @@
   "workforce.previewDetails.employeeBankInfo": "ব্যাংক তথ্য",
   "workforce.previewDetails.company": "কোম্পানির তথ্য",
   "workforce.previewDetails.factory": "শ্রমিকের কর্মরত প্রতিষ্ঠান / কারখানারর তথ্য",
+  "workforce.previewDetails.educations":"নিজের/সন্তানের শিক্ষাগত যোগ্যতা",
+
 
   "workforce.timePicker.hour": "ঘণ্টা",
   "workforce.timePicker.minute": "মিনিট",
