@@ -506,7 +506,7 @@ const MedicalAssistanceForm = ({
               <EmployeeDependentForm
                 // formData={formData}
                 dependents={formData.dependents}
-              handleChange={handleChange}
+              handleDependentChange={handleDependentChange}
               addDependent={addDependent}
               removeDependent={removeDependent}
               />
