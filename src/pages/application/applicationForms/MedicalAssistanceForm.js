@@ -377,22 +377,33 @@ const MedicalAssistanceForm = ({
 
   const handleDependentChange = (index, key, value) => {
     setFormData((prev) => {
-      const updatedDependents = [...prev.dependents];
+      const dependentsArr = Array.isArray(prev.dependents)
+        ? prev.dependents
+        : prev.dependents ? [prev.dependents] : [{}];
+      const updatedDependents = [...dependentsArr];
       updatedDependents[index] = { ...updatedDependents[index], [key]: value };
       return { ...prev, dependents: updatedDependents };
     });
   };
 
   const addDependent = () => {
-    setFormData((prev) => ({
-      ...prev,
-      dependents: [...prev.dependents, {}],
-    }));
+    setFormData((prev) => {
+      const dependentsArr = Array.isArray(prev.dependents)
+        ? prev.dependents
+        : prev.dependents ? [prev.dependents] : [{}];
+      return {
+        ...prev,
+        dependents: [...dependentsArr, {}],
+      };
+    });
   };
 
   const removeDependent = (index) => {
     setFormData((prev) => {
-      const updatedDependents = prev.dependents.filter((_, i) => i !== index);
+      const dependentsArr = Array.isArray(prev.dependents)
+        ? prev.dependents
+        : prev.dependents ? [prev.dependents] : [{}];
+      const updatedDependents = dependentsArr.filter((_, i) => i !== index);
       return { ...prev, dependents: updatedDependents };
     });
   };
