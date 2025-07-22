@@ -49,6 +49,9 @@
     "menu.workforce.branch": "Branches",
     "menu.workforce.employee.factory": "Employee Factories",
 
+  "workforce.employee.designation":"Designation",
+
+
     "workforce.employee.present_location": "Present Location",
     "workforce.employee.permanent_location": "Permanent Location",
 
@@ -581,6 +584,7 @@
     "workforce.previewDetails.employeeBankInfo": "Bank Info",
     "workforce.previewDetails.company": "Company Info",
     "workforce.previewDetails.factory": "Factory Info",
+    "workforce.previewDetails.educations":"Education info",
 
     "workforce.timePicker.hour": "hour",
     "workforce.timePicker.minute": "minute",

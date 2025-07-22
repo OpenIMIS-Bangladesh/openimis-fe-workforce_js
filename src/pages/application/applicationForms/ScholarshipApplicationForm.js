@@ -214,7 +214,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
     console.log({ formData });
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
-    if (nextStep === 2 || nextStep === 3) {
+    if (nextStep === 1 || (nextStep === 2 && applicationForSelf ==="no") || (nextStep === 3 && applicationForSelf ==="yes")) {
       const workforceEmployeeData = {
         nameEn: formData?.workforceEmployee?.nameEn,
         nameBn: formData?.workforceEmployee?.nameBn,
@@ -249,12 +249,11 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
       //   await dispatch(createWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
       // }
     } else if (nextStep === 4) {
-      console.log("Create application formData:", formData);
       const updateApplicationData = {
         id: safeApplicationId(applicationId, parsedApplicationData),
         workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
         company: formData?.workforceEmployee?.company?.id,
-        factory: decodeId(formData?.workforceEmployee?.factory?.id),
+        factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
         employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
@@ -265,26 +264,11 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
         status: WORKFORCE_STATUS.DRAFT,
       };
 
-      console.log({ updateApplication });
+      console.log({ updateApplicationData });
 
-      // if (!parsedApplicationData) {
-      //   const applicationMutation = await formatMutation(
-      //     "createWorkforceApplication",
-      //     formatApplicationeGQL(createApplicationData),
-      //     `Created application ${formData.workforceEmployee.nameEn}`
-      //   );
-      //   const applicationClientMutationId = applicationMutation.clientMutationId;
-      //   console.log("applicationClientMutationId", applicationClientMutationId);
-      //   await dispatch(createApplication(applicationMutation, `Created workforce application ${formData.firstNameEn}`));
-
-      //   await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
-      // } else {
-      //   const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
-      //   dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
-      // }
       console.log("i am from first update", updateApplicationData);
       dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
-    } else if (nextStep === 1) {
+    } else if ((nextStep === 2 && applicationForSelf ==="yes") || (nextStep === 3 && applicationForSelf ==="no")) {
       const createApplicationData = {
         workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
         organizationType: formData.organizationType,
@@ -307,33 +291,33 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
         await dispatch(createApplication(applicationMutation, `Created workforce application ${formData.firstNameEn}`));
 
         // await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
-         const fetchRes = await dispatch(
-                          fetchInfoIdByClientMutationId(
-                            modulesManager,
-                            "workforceApplication",
-                            applicationClientMutationId,
-                            "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID"
-                          )
-                        );
+        const fetchRes = await dispatch(
+          fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
+        );
         let applicationgetId = getInfoId(fetchRes, "workforceApplication");
-        console.log("hello there",applicationgetId)
+        console.log("hello there", applicationgetId);
         if (!applicationgetId && applicationId) {
           applicationgetId = applicationId;
         }
 
-        const createEducation ={
-          applicationId:applicationgetId,
-          educationLevel:formData?.metadata?.scholarshipFor,
-          educationBoard:formData?.metadata?.board,
-          passingYear:formData?.metadata?.passingYear,
-          rollNumber:formData?.metadata?.rollNo,
-          registrationNumber:formData?.metadata?.regNo,
-          result:formData?.metadata?.cgpa,
-          institution:formData?.metadata?.university
-        }
+        const createEducation = {
+          applicationId: applicationgetId,
+          educationLevel: formData?.metadata?.scholarshipFor,
+          educationBoard: formData?.metadata?.board,
+          passingYear: formData?.metadata?.passingYear,
+          rollNumber: formData?.metadata?.rollNo,
+          registrationNumber: formData?.metadata?.regNo,
+          result: formData?.metadata?.cgpa,
+          institution: formData?.metadata?.university,
+          childBirthDate:formData?.metadata?.birthDate,
+          childNameEn:formData?.metadata?.nameEn,
+          childNameBn:formData?.metadata?.nameBn,
+          childNidNo:formData?.metadata?.nid,
+          childBirthCertificateNo:formData?.metadata?.nid,
+          studyClass:formData?.metadata?.studyingClass,
+        };
 
         await dispatch(createEducationInfo(createEducation, `Created workforce education Info`));
-
       } else {
         const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
         console.log("i am from update", updateApplicationData);
@@ -344,7 +328,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
         id: safeApplicationId(applicationId, parsedApplicationData),
         workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
         company: formData?.workforceEmployee?.company?.id,
-        factory: decodeId(formData?.workforceEmployee?.factory?.id),
+        factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
         organizationType: organizationType || parsedApplicationData?.organizationType,
         applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
@@ -390,7 +374,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
       id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
       company: formData?.workforceEmployee?.company?.id,
-      factory: decodeId(formData?.workforceEmployee?.factory?.id),
+      factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
@@ -411,17 +395,6 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
 
   const steps = [
     {
-      label: "workforce.application.steps.select",
-      content: (
-        <ScholarshipApplicationCheckbox
-          handleChange={(key, value) => handleChange(key, value, "metadata")}
-          setSelectedScholarshipOption={setSelectedScholarshipOption}
-          selectedScholarshipOption={selectedScholarshipOption}
-          formData={formData}
-        />
-      ),
-    },
-    {
       label: "workforce.application.steps.employeeDetails",
       content: (
         <EmployeeDetailsForm
@@ -432,6 +405,22 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
         />
       ),
     },
+    ...(applicationForSelf === "yes"
+      ? [
+          {
+            label: "workforce.application.steps.education.details",
+            content: (
+              <ScholarshipApplicationCheckbox
+                handleChange={(key, value) => handleChange(key, value, "metadata")}
+                setSelectedScholarshipOption={setSelectedScholarshipOption}
+                selectedScholarshipOption={selectedScholarshipOption}
+                formData={formData}
+                applicationForSelf={applicationForSelf}
+              />
+            ),
+          },
+        ]
+      : []),
     {
       label: "workforce.application.steps.location",
       content: (
@@ -440,6 +429,32 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
         </Box>
       ),
     },
+    ...(applicationForSelf === "no"
+      ? [
+          {
+            label: "workforce.application.steps.childInfo",
+            content: (
+              <ScholarshipApplicationCheckbox
+                handleChange={(key, value) => handleChange(key, value, "metadata")}
+                setSelectedScholarshipOption={setSelectedScholarshipOption}
+                selectedScholarshipOption={selectedScholarshipOption}
+                formData={formData}
+                applicationForSelf={applicationForSelf}
+              />
+            ),
+          },
+          // {
+          //   label: "workforce.application.steps.dependent",
+          //   content: (
+          //     <Box mt={0}>
+          //       {formData?.applicationForSelf === "no" && (
+          //         <EmployeeDependentForm formData={formData} handleChange={handleChange} addDependent={addDependent} removeDependent={removeDependent} />
+          //       )}
+          //     </Box>
+          //   ),
+          // },
+        ]
+      : []),
     {
       label: "workforce.application.steps.account.info",
       content: (
@@ -461,30 +476,6 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
         </Box>
       ),
     },
-    ...(applicationForSelf === "no"
-      ? [
-          {
-            label: "workforce.application.steps.childInfo",
-            content: (
-              <Box mt={0}>
-                {formData?.applicationForSelf === "no" && (
-                  <EmployeeChildrenDetailsForm handleChange={(key, value) => handleChange(key, value, "employeeChildrenInfo")} formData={formData} />
-                )}
-              </Box>
-            ),
-          },
-          {
-            label: "workforce.application.steps.dependent",
-            content: (
-              <Box mt={0}>
-                {formData?.applicationForSelf === "no" && (
-                  <EmployeeDependentForm formData={formData} handleChange={handleChange} addDependent={addDependent} removeDependent={removeDependent} />
-                )}
-              </Box>
-            ),
-          },
-        ]
-      : []),
   ];
 
   if (showPreview) {

@@ -79,6 +79,18 @@ const banglaLabels = {
   reJoiningDate: "পুনঃযোগদানের তারিখ",
   educationInstituteName: "শিক্ষা প্রতিষ্ঠানের নাম",
   studyingClass: "অধ্যয়নরত শ্রেণী",
+    educationLevel: "শিক্ষার স্তর",
+  childNameEn: "শিশুর নাম (ইংরেজি)",
+  childNameBn: "শিশুর নাম (বাংলা)",
+  childBirthDate: "জন্ম তারিখ",
+  childBirthCertificateNo: "জন্ম সনদ নম্বর",
+  childNidNo: "এনআইডি নম্বর",
+  institution: "শিক্ষা প্রতিষ্ঠান",
+  studyClass: "শ্রেণি",
+  educationBoard: "বোর্ড",
+  passingYear: "পাসিং বছর",
+  rollNumber: "রোল নম্বর",
+  registrationNumber: "রেজিস্ট্রেশন নম্বর",
   result: "ফলাফল",
   diagnosisDate: "রোগ নির্ণয়ের তারিখ",
   otherInfo: "অন্যান্য তথ্য",
@@ -251,6 +263,44 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
     return renderSection("workforce.previewDetails.othersInfo", primitiveFields);
   };
 
+  const renderEducationsSection = (educations) => {
+  if (!Array.isArray(educations) || educations.length === 0) return null;
+
+  const filteredItems = educations.filter(item => item && typeof item === "object");
+
+  return (
+    <Grid item xs={12} className={classes.cardGridItem} key="educations">
+      <Card className={classes.card}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            <FormattedMessage module="workforce" id="workforce.previewDetails.educations" defaultMessage="Educations" />
+          </Typography>
+          <Divider style={{ marginBottom: "10px" }} />
+          {filteredItems.map((edu, index) => (
+            <Box key={index} mb={2} pl={1}>
+              <Typography variant="subtitle2" gutterBottom>
+                <FormattedMessage module="workforce" id="workforce.previewDetails.education" defaultMessage="Education" /> #{index + 1}
+              </Typography>
+              <Grid container spacing={2}>
+                {Object.entries(edu).map(([key, value], idx) => (
+                  key !== "id" && (
+                    <Grid item xs={12} sm={6} key={idx}>
+                      <Typography variant="body2">
+                        <b>{formatKey(key)}:</b> {renderValue(value)}
+                      </Typography>
+                    </Grid>
+                  )
+                ))}
+              </Grid>
+            </Box>
+          ))}
+        </CardContent>
+      </Card>
+    </Grid>
+  );
+};
+
+
   const renderDynamicSections = () => {
     return Object.entries(formData).map(([key, value]) => {
       if (!value || ["id", "uuid", "parent", "applicationType", "organizationType", "applicationForSelf"].includes(key)) return null;
@@ -258,6 +308,10 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
       if (key === "workforceEmployee") {
         return renderWorkforceEmployeeSections(value);
       }
+
+       if (key === "educations") {
+      return renderEducationsSection(value);
+    }
 
       if (Array.isArray(value) && value.length > 0 && typeof value[0] === "object") {
         return renderArraySection(key, value);

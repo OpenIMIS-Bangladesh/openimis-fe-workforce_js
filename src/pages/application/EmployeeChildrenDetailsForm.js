@@ -86,15 +86,6 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
-                  label="workforce.application.employee.children.educationInstituteName"
-                  value={formData?.employeeChildrenInfo?.educationInstituteName || ""}
-                  onChange={(v) => handleChange("educationInstituteName", v)}
-                  readOnly={false}
-                  required
-                />
-              </Grid>
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
                   label="workforce.application.employee.children.studyingClass"
                   value={formData?.employeeChildrenInfo?.studyingClass || ""}
                   onChange={(v) => handleChange("studyingClass", v)}
@@ -104,11 +95,11 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <TextInput
-                  label="workforce.application.employee.children.result"
-                  value={formData?.employeeChildrenInfo?.result || ""}
-                  onChange={(v) => handleChange("result", v)}
+                  label="workforce.application.employee.children.educationInstituteName"
+                  value={formData?.employeeChildrenInfo?.educationInstituteName || ""}
+                  onChange={(v) => handleChange("educationInstituteName", v)}
                   readOnly={false}
-                  
+                  required
                 />
               </Grid>
               <Grid item xs={12} className={classes.item}>
@@ -121,6 +112,17 @@ const EmployeeChildrenDetailsForm = ({ handleChange, formData, setFormData }) =>
                   required
                 />
               </Grid>
+              
+              <Grid item xs={6} className={classes.item}>
+                <TextInput
+                  label="workforce.application.employee.children.result"
+                  value={formData?.employeeChildrenInfo?.result || ""}
+                  onChange={(v) => handleChange("result", v)}
+                  readOnly={false}
+                  
+                />
+              </Grid>
+              
             </Grid>
             <Divider />
           </Paper>

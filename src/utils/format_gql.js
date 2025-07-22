@@ -78,6 +78,12 @@ export function formatEducationInfoGQL(education) {
     ${education?.locationId ? `locationId: "${decodeId(education?.locationId.id)}"` : ""}
     ${education?.rollNumber ? `rollNumber: "${(education?.rollNumber)}"` : ""}
     ${education?.registrationNumber ? `registrationNumber: "${(education?.registrationNumber)}"` : ""}
+    ${education?.childNidNo ? `childNidNo: "${(education?.childNidNo)}"` : ""}
+    ${education?.childNameEn ? `childNameEn: "${(education?.childNameEn)}"` : ""}
+    ${education?.childNameBn ? `childNameBn: "${(education?.childNameBn)}"` : ""}
+    ${education?.childBirthDate ? `childBirthDate: "${(education?.childBirthDate)}"` : ""}
+    ${education?.childBirthCertificateNo ? `childBirthCertificateNo: "${(education?.childBirthCertificateNo)}"` : ""}
+    ${education?.studyClass ? `studyClass: "${(education?.studyClass)}"` : ""}
     ${education?.result ? `result: "${(education?.result)}"` : ""}
     ${education?.institution ? `institution: "${(education?.institution)}"` : ""}
   `;

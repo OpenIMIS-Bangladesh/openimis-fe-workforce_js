@@ -20,7 +20,6 @@ export function isEmptyObject(obj) {
 }
 
 export const safeApplicationId = (applicationId, parsedApplicationData) => {
-  console.clear();
   console.log("applicationId", applicationId);
   console.log("parsedApplicationData", parsedApplicationData);
   if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {

@@ -447,7 +447,6 @@ const MultiStepApplyForm = () => {
             {applicationForSelf === "" ? (
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
-                  {/* New Export-Oriented Company Question */}
                   <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
                     {<FormattedMessage id="workforce.application.for" module="workforce"/>}
                   </Typography>
@@ -455,25 +454,24 @@ const MultiStepApplyForm = () => {
                     <FormControlLabel
                       value="yes"
                       control={<Radio color="primary" />}
-                      label={
-                        <FormattedMessage
-                          id="workforce.application.for.type.self"
-                          module="workforce"
-                        />
-                      }
+                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>}
                     />
                     <FormControlLabel
                       value="no"
                       control={<Radio color="primary" />}
-                      label={
-                        <FormattedMessage
-                          id="workforce.application.for.type.dependent"
-                          module="workforce"
-                        />
-                      }
+                      label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>}
                     />
                   </RadioGroup>
                 </FormControl>
+                <div className={classes.buttonContainer}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setIsApplicationForSelfSelected(false)}
+                  >
+                    <FormattedMessage module="workforce" id="workforce.next" />
+                  </Button>
+                </div>
               </Paper>
             ) : (
               <ScholarshipApplicationForm

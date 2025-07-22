@@ -1476,7 +1476,12 @@ function reducer(
         ...state,
         fetchingApplications: false,
         fetchedApplications: true,
-        applications: parseData(action.payload.data.workforceApplication),
+        applications: parseData(action.payload.data.workforceApplication).map(
+          (application) => ({
+            ...application,
+            educations: parseData(application.educations),
+          })
+        ),
         applicationsPageInfo: pageInfo(action.payload.data.workforceApplication),
         errorApplications: formatGraphQLError(action.payload),
       };
@@ -1554,6 +1559,7 @@ function reducer(
           (application) => ({
             ...application,
             id: decodeId(application.id),
+            educations:parseData(application.educations)
           })
         )?.[0],
         errorApplication: formatGraphQLError(action.payload),

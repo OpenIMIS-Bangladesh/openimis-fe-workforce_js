@@ -290,7 +290,7 @@ const MedicalAssistanceForm = ({
         workforceEmployeeId:
           formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
         company: formData?.workforceEmployee?.company?.id,
-        factory: decodeId(formData?.workforceEmployee?.factory?.id),
+        factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
         organizationType: formData.organizationType,
         applicationType: formData.applicationType,
         grantAmount:formData?.employeeAccidentInfo.grantAmount,
@@ -345,7 +345,7 @@ const MedicalAssistanceForm = ({
           formData?.workforceEmployee.id ||
           parsedApplicationData?.workforceEmployee?.id,
         company: formData?.workforceEmployee?.company?.id,
-        factory: decodeId(formData?.workforceEmployee?.factory?.id),
+        factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
         organizationType:
           organizationType || parsedApplicationData?.organizationType,
         applicationType:
@@ -412,7 +412,7 @@ const MedicalAssistanceForm = ({
         formData?.workforceEmployee.id ||
         parsedApplicationData?.workforceEmployee?.id,
       company: formData?.workforceEmployee?.company?.id,
-      factory: decodeId(formData?.workforceEmployee?.factory?.id),
+      factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
       organizationType:
         organizationType || parsedApplicationData?.organizationType,
       applicationType:

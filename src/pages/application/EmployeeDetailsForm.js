@@ -138,14 +138,14 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   readOnly={false}
                 />
               </Grid>
-              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
+              {/* <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.position"
                   value={formData?.workforceEmployee.position || ""}
                   onChange={(v) => handleChange("position", v)}
                   readOnly={false}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.nid_or_birth_certificate"
@@ -174,6 +174,14 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                 />
               </Grid> */}
 
+              <Grid item xs={6} className={classes.item}>
+                <TextInput
+                  label="workforce.employee.designation"
+                  value={formData?.workforceEmployee.position || ""}
+                  onChange={(v) => handleChange("position", v)}
+                  readOnly={false}
+                />
+              </Grid>
               <Grid item xs={6} className={classes.item}>
                 <FactoryPicker
                   value={formData?.workforceEmployee?.factory?.id}
