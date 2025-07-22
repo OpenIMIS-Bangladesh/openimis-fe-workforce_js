@@ -3,7 +3,7 @@
     "location.RegionPicker.label": "বিভাগ",
     "location.DistrictPicker.label": "জেলা",
     "location.Location2Picker.label": "উপজেলা/থানা",
-    "location.Location3Picker.label": "ইউনিয়ন",
+    "location.Location3Picker.label": "ইউনিয়ন/ওয়ার্ড",
     "location.Location4Picker.label": "পোস্ট অফিস",
     "location.locationType.0": "বিভাগ",
     "location.locationType.0.placeholder": "বিভাগ খুজুন...",
