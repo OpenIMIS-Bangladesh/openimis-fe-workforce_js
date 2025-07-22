@@ -1801,6 +1801,16 @@ function reducer(
     case "EDUCATION_INFO_UPDATE_EDUCATION_RESP":
       return dispatchMutationResp(state, "updateWorkforceEducation", action);
 
+    case "DEPENDENT_INFO_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "DEPENDENT_INFO_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "DEPENDENT_INFO_CREATE_DEPENDENT_RESP":
+      return dispatchMutationResp(state, "createWorkforceDependentInfo", action);
+    case "DEPENDENT_INFO_UPDATE_DEPENDENT_RESP":
+      return dispatchMutationResp(state, "updateWorkforceDependentInfo", action);
+
     case "APPLICATION_MUTATION_REQ": {
       return dispatchMutationReq(state, action);
     }

@@ -221,6 +221,44 @@ export function formatWorkforceEmployeeGQL(employee) {
   `;
 }
 
+export function formatWorkforceDependentGQL(employee) {
+  return `
+    ${employee?.id ? `id: "${formatGQLString(employee.id)}"` : ""}
+    ${employee.company ? `workforceEmployerId: "${employee.company}"` : ""}
+    ${employee.factory ? `workforceFactoryId: "${employee.factory}"` : ""}
+    ${employee.firstNameBn ? `firstNameBn: "${formatGQLString(employee.firstNameBn)}"` : ""}
+    ${employee.lastNameBn ? `lastNameBn: "${formatGQLString(employee.lastNameBn)}"` : ""}
+    ${employee.firstNameEn ? `firstNameEn: "${formatGQLString(employee.firstNameEn)}"` : ""}
+    ${employee.lastNameEn ? `lastNameEn: "${formatGQLString(employee.lastNameEn)}"` : ""}
+    ${employee.otherName ? `otherName: "${formatGQLString(employee.otherName)}"` : ""}
+    ${employee.phoneNumber ? `phoneNumber: "${formatGQLString(employee.phoneNumber)}"` : ""}
+    ${employee.email ? `email: "${formatGQLString(employee.email)}"` : ""}
+    ${employee.birthDate ? `birthDate: "${employee.birthDate}"` : ""}
+    ${employee.joinDate ? `joinDate: "${employee.joinDate}"` : ""}
+    ${employee.deathDate ? `deathDate: "${employee.deathDate}"` : ""}
+    ${employee.gender ? `gender: "${employee.gender}"` : ""}
+    ${employee.birthCertificateNo ? `birthCertificateNo: "${employee.birthCertificateNo}"` : ""}
+    ${employee.nid ? `nid: "${employee.nid}"` : ""}
+    ${employee.insuranceNumber ? `insuranceNumber: "${employee.insuranceNumber}"` : ""}
+    ${employee.passportNo ? `passportNo: "${employee.passportNo}"` : ""}
+    ${employee.permanentAddress ? `permanentAddress: "${employee.permanentAddress}"` : ""}
+    ${employee.presentAddress ? `presentAddress: "${employee.presentAddress}"` : ""}
+    ${employee.position ? `position: "${employee.position}"` : ""}
+    ${employee.monthlyEarning ? `monthlyEarning: "${employee.monthlyEarning}"` : ""}
+    ${employee.fatherNameBn ? `fatherNameBn: "${employee.fatherNameBn}"` : ""}
+    ${employee.fatherNameEn ? `fatherNameEn: "${employee.fatherNameEn}"` : ""}
+    ${employee.motherNameBn ? `motherNameBn: "${employee.motherNameBn}"` : ""}
+    ${employee.motherNameEn ? `motherNameEn: "${employee.motherNameEn}"` : ""}
+    ${employee.spouseNameBn ? `spouseNameBn: "${employee.spouseNameBn}"` : ""}
+    ${employee.spouseNameEn ? `spouseNameEn: "${employee.spouseNameEn}"` : ""}
+    ${employee.maritalStatus ? `maritalStatus: "${employee.maritalStatus}"` : ""}
+    ${employee.relationship ? `relationship: "${employee.relationship}"` : ""}
+    ${employee.presentLocation.id ? `presentLocationId: "${decodeId(employee.presentLocation.id)}"` : ""}
+    ${employee.permanentLocation.id ? `permanentLocationId: "${decodeId(employee.permanentLocation.id)}"` : ""}
+    ${employee.status ? `status: "${employee.status}"` : ""}
+  `;
+}
+
 ///application   ////
 export function formatApplicationeGQL(application) {
   return `

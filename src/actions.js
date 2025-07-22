@@ -2069,6 +2069,26 @@ export function updateApplication(application, clientMutationLabel) {
   );
 }
 
+export function createDependentInfo(education, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceDependentInfo",
+    formatEducationInfoGQL(education),
+    clientMutationLabel
+  );
+
+  console.log({ mutation });
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["EDUCATION_INFO_MUTATION_REQ", "EDUCATION_INFO_CREATE_EDUCATION_RESP", "EDUCATION_INFO_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+
 export function createEducationInfo(education, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceEducation",
