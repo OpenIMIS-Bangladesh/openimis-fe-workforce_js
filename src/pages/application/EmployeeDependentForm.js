@@ -43,8 +43,12 @@ const EmployeeDependentForm = ({
   addDependent,
   removeDependent,
 }) => {
+  // Normalize dependents to always be an array
+  const normalizedDependents = Array.isArray(dependents)
+    ? dependents
+    : dependents ? [dependents] : [{}];
+
   const classes = useStyles();
-  // const [dependents, setDependents] = useState([{}]);
   const [expanded, setExpanded] = useState(0);
   const modulesManager = useModulesManager();
 
@@ -56,13 +60,13 @@ const EmployeeDependentForm = ({
 
 
   const isFirstDependentValid =
-    dependents?.[0]?.nid && dependents?.[0]?.nameEn;
+    normalizedDependents?.[0]?.nid && normalizedDependents?.[0]?.nameEn;
 
   console.log({dependents})
 
   return (
     <Box mt={1}>
-      {dependents?.map((formData, index) => (
+      {normalizedDependents?.map((formData, index) => (
         <Accordion
           key={index}
           expanded={expanded === index}

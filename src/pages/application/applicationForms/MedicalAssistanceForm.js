@@ -503,7 +503,7 @@ const MedicalAssistanceForm = ({
           {
             label: "workforce.application.steps.dependent",
             content: (
-              <ApplicantInfoForm
+              <EmployeeDependentForm
                 // formData={formData}
                 dependents={formData.dependents}
               handleChange={handleChange}
