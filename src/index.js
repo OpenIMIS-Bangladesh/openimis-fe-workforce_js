@@ -45,7 +45,8 @@ import {
   ROUTE_HOME,
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS,
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND,
-  ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION
+  ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION,
+  ROUTE_ADMINISTRATIVE_LOGIN
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -98,6 +99,7 @@ import WorkforceEmployeeDesignationPage from "./pages/workforce-employee-designa
 import VerifyApplicationPage from "./pages/application-process/VerifyApplicationPage";
 import LoginHeader from "./pages/login/LoginHeader";
 import LoginForm from "./pages/login/LoginForm";
+import LoginFormAdministrative from "./pages/login/LoginFormAdministrative";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -295,6 +297,7 @@ const DEFAULT_CONFIG = {
 
   "core.UnauthenticatedRouter": [
     { path: ROUTE_WORKFORCE_REGISTRATION, component: RegistrationPage },
+    { path: ROUTE_ADMINISTRATIVE_LOGIN, component: LoginFormAdministrative },
   ],
 
   "core.MainMenu": [WorkforceMainMenu],
