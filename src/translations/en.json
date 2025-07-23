@@ -586,6 +586,25 @@
     "workforce.previewDetails.factory": "Factory Info",
     "workforce.previewDetails.educations":"Educational info of Self / Child",
     "workforce.previewDetails.employeeDependentInfo":"Employee Dependent Info",
+    "workforce.previewDetails.dependent":"Dependent Info",
+
+    "workforce.application.death.reason":"Death Reason",
+    "workforce.application.other.death.reason":"Specify other causes of death",
+    "workforce.application.other.desease.reason":"Specify other diseases",
+
+    "workforce.application.deathReason.heart_disease": "Heart Disease",
+"workforce.application.deathReason.stroke": "Stroke",
+"workforce.application.deathReason.old_age": "Old Age",
+"workforce.application.deathReason.cancer": "Cancer",
+"workforce.application.deathReason.diabetes": "Diabetes",
+"workforce.application.deathReason.liver_failure": "Liver Failure",
+"workforce.application.deathReason.kidney_failure": "Kidney Failure",
+"workforce.application.deathReason.asthma": "Asthma / Breathing Problem",
+"workforce.application.deathReason.pneumonia": "Pneumonia",
+"workforce.application.deathReason.chronic": "Chronic Disease",
+"workforce.application.deathReason.OTHER_OPTION": "Others",
+    
+
 
     "workforce.timePicker.hour": "hour",
     "workforce.timePicker.minute": "minute",

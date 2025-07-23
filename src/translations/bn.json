@@ -254,7 +254,7 @@
   "workforce.application.steps.account.info": "অ্যাকাউন্ট তথ্য",
   "workforce.application.steps.aidReason": "আর্থিক সহায়তা কারণ",
   "workforce.application.steps.childInfo": "সন্তানের তথ্য",
-  "workforce.application.steps.deathLabourDetails": "মৃত শ্রমিক বিবরণ",
+  "workforce.application.steps.deathLabourDetails": "মৃত শ্রমিকের বিবরণ",
   "workforce.application.steps.education.details": "শিক্ষাগত যোগ্যতার বিবরণ",
   "workforce.application.steps.select": "নির্বাচন করুন",
   "workforce.application.steps.ssc": "এস.এস.সি. বা সমমান",
@@ -432,7 +432,23 @@
   "workforce.previewDetails.educations":"নিজের/সন্তানের শিক্ষাগত যোগ্যতা",
     "workforce.previewDetails.employeeDependentInfo":"নির্ভরশীল সদস্যদের তথ্য",
 
+    "workforce.previewDetails.dependent":"নির্ভরশীলের তথ্য",
 
+    "workforce.application.death.reason":"অন্যান্য মৃত্যুর কারণ নির্দিষ্ট করুন",
+    "workforce.application.other.death.reason":"অন্যান্য মৃত্যুর কারণ নির্দিষ্ট করুন ",
+    "workforce.application.other.desease.reason":"অন্যান্য রোগ নির্দিষ্ট করুন ",
+
+    "workforce.application.deathReason.heart_disease": "হৃদরোগ",
+"workforce.application.deathReason.stroke": "স্ট্রোক",
+"workforce.application.deathReason.old_age": "বার্ধক্যজনিত মৃত্যু",
+"workforce.application.deathReason.cancer": "ক্যান্সার",
+"workforce.application.deathReason.diabetes": "ডায়াবেটিস",
+"workforce.application.deathReason.liver_failure": "লিভার ফেইলিওর",
+"workforce.application.deathReason.kidney_failure": "কিডনি ফেইলিওর",
+"workforce.application.deathReason.asthma": "অ্যাজমা / শ্বাসকষ্ট",
+"workforce.application.deathReason.pneumonia": "নিউমোনিয়া",
+"workforce.application.deathReason.chronic": "দীর্ঘমেয়াদি রোগ",
+"workforce.application.deathReason.OTHER_OPTION": "অন্যান্য",
 
   "workforce.timePicker.hour": "ঘণ্টা",
   "workforce.timePicker.minute": "মিনিট",
