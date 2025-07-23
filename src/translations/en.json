@@ -373,6 +373,9 @@
     "workforce.application.educationInfo.boards.mymensingh":"Mymensingh",
     "workforce.application.educationInfo.boards.rajshahi":"Rajshahi",
     "workforce.application.educationInfo.boards.sylhet":"Sylhet",
+    "workforce.application.educationInfo.boards.madrasha_board":"Madrasha Board",
+    "workforce.application.educationInfo.boards.technical_board":"Technical Education Board (BTEB)",
+    "workforce.application.educationInfo.boards.open_board":"Open Board (BOB)",
 
 
     "workforce.application.educationInfo.passingYear":"Passing Year",

@@ -29,6 +29,9 @@ const BoardPicker = ({
     "workforce.application.educationInfo.boards.sylhet",
     "workforce.application.educationInfo.boards.jashore",
     "workforce.application.educationInfo.boards.mymensingh",
+    "workforce.application.educationInfo.boards.madrasha_board",
+    "workforce.application.educationInfo.boards.technical_board",
+    "workforce.application.educationInfo.boards.open_board",
 ];
 
   // Find the selected option

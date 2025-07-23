@@ -162,6 +162,9 @@
   "workforce.application.educationInfo.boards.mymensingh": "ময়মনসিংহ",
   "workforce.application.educationInfo.boards.rajshahi": "রাজশাহী",
   "workforce.application.educationInfo.boards.sylhet": "সিলেট",
+  "workforce.application.educationInfo.boards.madrasha_board":"মাদ্রাসা বোর্ড",
+    "workforce.application.educationInfo.boards.technical_board":"কারিগরি বোর্ড",
+    "workforce.application.educationInfo.boards.open_board":"উন্মুক্ত বোর্ড",
 
   "workforce.application.educationInfo.passingYear": "পাসের বছর",
   "workforce.application.educationInfo.rollNo": "রোল নম্বর",
