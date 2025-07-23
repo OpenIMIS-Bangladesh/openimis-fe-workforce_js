@@ -1,4 +1,5 @@
 export const ROUTE_HOME = "home";
+export const ROUTE_ADMINISTRATIVE_LOGIN = "administrative/login";
 export const ROUTE_WORKFORCE_ORGANIZATIONS = "workforce/organizations";
 export const ROUTE_WORKFORCE_ORGANIZATIONS_UNITS = "workforce/organizations/units";
 export const ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS = "workforce/organizations/unit/designations";

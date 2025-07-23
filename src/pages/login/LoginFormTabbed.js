@@ -53,7 +53,7 @@ const errorMessages = {
 const getErrorMessage = (messageKey) => {
     return errorMessages[messageKey] || messageKey;
 };
-export default function LoginForm() {
+export default function LoginFormTabbed() {
     const classes = useStyles();
     const [credentials, setCredentials] = useState({});
     const [mobileNumber, setMobileNumber] = useState("");
@@ -144,67 +144,117 @@ export default function LoginForm() {
                 </Box>
             )}
 
-            <>
-                <Grid item style={{ marginTop: "1rem" }}>
-                    <TextInput
-                        required
-                        label="মোবাইল নাম্বার"
-                        fullWidth
-                        defaultValue=""
-                        onChange={(mobileNumber) => setInput('mobile_number', mobileNumber)}
-                    />
-                </Grid>
-
-                {serverResponse?.message && (
+            <Tabs
+                value={loginType}
+                onChange={(e, value) => setLoginType(value)}
+                aria-label="Login type"
+                TabIndicatorProps={{ style: { backgroundColor: "#006273" } }}
+            >
+                <Tab label="সুবিধাভোগী লগইন" {...loginTypeTabChange(0)} />
+                <Tab label="এডমিন লগইন" {...loginTypeTabChange(1)} />
+            </Tabs>
+            <SharedTabPanel value={loginType} index={0}>
+                <>
                     <Grid item style={{ marginTop: "1rem" }}>
-                        <Box color="error.main">{getErrorMessage(serverResponse.message)}</Box>
+                        <TextInput
+                            required
+                            label="মোবাইল নাম্বার"
+                            fullWidth
+                            defaultValue=""
+                            onChange={(mobileNumber) => setInput('mobile_number', mobileNumber)}
+                        />
                     </Grid>
-                )}
 
-                {isOtpSent && (
-                    <>
+                    {serverResponse?.message && (
                         <Grid item style={{ marginTop: "1rem" }}>
-                            <InputLabel required fullWidth shrink style={{ marginBottom: 8 }}>ওটিপি কোড</InputLabel>
-                            <OtpInput
-                                value={credentials.password}
-                                onChange={(otp) => setInput('otp', otp)}
-                                numInputs={5}
-                                renderSeparator={<span>-</span>}
-                                inputStyle={classes.otpInput}
-                                renderInput={(props) => <input {...props} />}
-                            />
+                            <Box color="error.main">{getErrorMessage(serverResponse.message)}</Box>
                         </Grid>
+                    )}
 
+                    {isOtpSent && (
+                        <>
+                            <Grid item style={{ marginTop: "1rem" }}>
+                                <InputLabel required fullWidth shrink style={{ marginBottom: 8 }}>ওটিপি কোড</InputLabel>
+                                <OtpInput
+                                    value={credentials.password}
+                                    onChange={(otp) => setInput('otp', otp)}
+                                    numInputs={5}
+                                    renderSeparator={<span>-</span>}
+                                    inputStyle={classes.otpInput}
+                                    renderInput={(props) => <input {...props} />}
+                                />
+                            </Grid>
+
+                            <Grid item style={{ marginTop: "1rem" }}>
+                                <Button
+                                    fullWidth
+                                    type="button"
+                                    disabled={!(credentials.username && credentials.password)}
+                                    color="primary"
+                                    variant="contained"
+                                    onClick={() => onSubmit()}
+                                >
+                                    লগইন
+                                </Button>
+                            </Grid>
+                        </>
+                    )}
+
+                    {!isOtpSent && (
                         <Grid item style={{ marginTop: "1rem" }}>
                             <Button
                                 fullWidth
                                 type="button"
-                                disabled={!(credentials.username && credentials.password)}
+                                disabled={mobileNumber.length !== 11}
                                 color="primary"
                                 variant="contained"
-                                onClick={() => onSubmit()}
+                                onClick={() => sendOtp()}
                             >
-                                লগইন
+                                ওটিপি প্রেরণ করুন
                             </Button>
                         </Grid>
-                    </>
-                )}
-
-                {!isOtpSent && (
+                    )}
+                </>
+            </SharedTabPanel>
+            <SharedTabPanel value={loginType} index={1}>
+                <>
+                    <Grid item style={{ marginTop: "1rem" }}>
+                        <TextInput
+                            required
+                            label="ইউজারনেম"
+                            fullWidth
+                            defaultValue={credentials.username}
+                            onChange={(username) => setCredentials({ ...credentials, username })}
+                        />
+                    </Grid>
+                    <Grid item style={{ marginTop: "1rem" }}>
+                        <TextInput
+                            required
+                            type="password"
+                            label="পাসওয়ার্ড"
+                            fullWidth
+                            onChange={(password) => setCredentials({ ...credentials, password })}
+                        />
+                    </Grid>
+                    {serverResponse?.message && (
+                        <Grid item style={{ marginTop: "1rem" }}>
+                            <Box color="error.main">{getErrorMessage(serverResponse.message)}</Box>
+                        </Grid>
+                    )}
                     <Grid item style={{ marginTop: "1rem" }}>
                         <Button
                             fullWidth
                             type="button"
-                            disabled={mobileNumber.length !== 11}
+                            disabled={!(credentials.username && /[a-zA-Z]/.test(credentials.username) && credentials.password)}
                             color="primary"
                             variant="contained"
-                            onClick={() => sendOtp()}
+                            onClick={() => onSubmit()}
                         >
-                            ওটিপি প্রেরণ করুন
+                            লগইন
                         </Button>
                     </Grid>
-                )}
-            </>
+                </>
+            </SharedTabPanel>
         </>
     )
 }
