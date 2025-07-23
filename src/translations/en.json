@@ -359,6 +359,7 @@
     "workforce.application.for":"Application for whom?",
     "workforce.application.for.type.self":"Self",
     "workforce.application.for.type.dependent":"Dependent",
+    "workforce.application.for.type.dependent.mother":"For the wife in case of a male worker",
     "workforce.application.reason.type":"Purpose for financial aid?",
     "workforce.application.permission.yes":"Yes",
     "workforce.application.permission.no":"No",
