@@ -585,6 +585,7 @@
     "workforce.previewDetails.company": "Company Info",
     "workforce.previewDetails.factory": "Factory Info",
     "workforce.previewDetails.educations":"Educational info of Self / Child",
+    "workforce.previewDetails.employeeDependentInfo":"Employee Dependent Info",
 
     "workforce.timePicker.hour": "hour",
     "workforce.timePicker.minute": "minute",

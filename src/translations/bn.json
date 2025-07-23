@@ -430,6 +430,8 @@
   "workforce.previewDetails.company": "কোম্পানির তথ্য",
   "workforce.previewDetails.factory": "শ্রমিকের কর্মরত প্রতিষ্ঠান / কারখানারর তথ্য",
   "workforce.previewDetails.educations":"নিজের/সন্তানের শিক্ষাগত যোগ্যতা",
+    "workforce.previewDetails.employeeDependentInfo":"নির্ভরশীল সদস্যদের তথ্য",
+
 
 
   "workforce.timePicker.hour": "ঘণ্টা",

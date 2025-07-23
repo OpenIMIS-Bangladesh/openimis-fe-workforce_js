@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Grid,
-  Paper,
-  Typography,
-  Divider,
-  Card,
-  CardContent,
-  Box,
-} from "@material-ui/core";
+import { Grid, Paper, Typography, Divider, Card, CardContent, Box } from "@material-ui/core";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { FormattedMessage } from "@openimis/fe-core";
@@ -81,7 +73,7 @@ const banglaLabels = {
   reJoiningDate: "পুনঃযোগদানের তারিখ",
   educationInstituteName: "শিক্ষা প্রতিষ্ঠানের নাম",
   studyingClass: "অধ্যয়নরত শ্রেণী",
-    educationLevel: "শিক্ষার স্তর",
+  educationLevel: "শিক্ষার স্তর",
   childNameEn: "শিশুর নাম (ইংরেজি)",
   childNameBn: "শিশুর নাম (বাংলা)",
   childBirthDate: "জন্ম তারিখ",
@@ -100,7 +92,9 @@ const banglaLabels = {
   reasonforReceipt: "গ্রহণের কারণ",
   disabilityType: "প্রতিবন্ধিতার ধরণ",
   deathType: "মৃত্যুর ধরণ",
-  scholarshipFor: "স্কলারশিপের উদ্দেশ্য"
+  scholarshipFor: "স্কলারশিপের উদ্দেশ্য",
+  employeeDependentInfo: "নির্ভরশীল সদস্যদের তথ্য",
+
 };
 
 const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
@@ -148,9 +142,7 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
 
   const renderSection = (title, data) => {
     if (!data || typeof data !== "object") return null;
-    const filteredEntries = Object.entries(data).filter(
-      ([k]) => !["id", "uuid", "parent", "workforceEmployer", "cronicDiseaseType"].includes(k)
-    );
+    const filteredEntries = Object.entries(data).filter(([k]) => !["id", "uuid", "parent", "workforceEmployer", "cronicDiseaseType"].includes(k));
     if (filteredEntries.length === 0) return null;
 
     return (
@@ -178,9 +170,7 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
 
   const renderArraySection = (title, arrayData) => {
     if (!Array.isArray(arrayData) || arrayData.length === 0) return null;
-    const nonEmptyItems = arrayData.filter(
-      (item) => item && typeof item === "object" && Object.keys(item).length > 0
-    );
+    const nonEmptyItems = arrayData.filter((item) => item && typeof item === "object" && Object.keys(item).length > 0);
     if (nonEmptyItems.length === 0) return null;
 
     return (
@@ -206,56 +196,63 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
   };
 
   const renderWorkforceEmployeeSections = (employeeData) => {
-  if (!employeeData || typeof employeeData !== "object") return null;
+    if (!employeeData || typeof employeeData !== "object") return null;
 
-  const personalFields = [
-  "nameEn", "nameBn", "fatherNameEn", "fatherNameBn",
-  "motherNameEn", "motherNameBn", "spouseName", "spouseNameEn", "spouseNameBn",
-  "citizenship", "nid", "birthCertificate", "birthCertificateNo",
-  "birthDate", "insuranceNumber", "gender",
-  "maritalStatus", "lifeStatus", "deathDate", "monthlyEarning"
-];
+    const personalFields = [
+      "nameEn",
+      "nameBn",
+      "fatherNameEn",
+      "fatherNameBn",
+      "motherNameEn",
+      "motherNameBn",
+      "spouseName",
+      "spouseNameEn",
+      "spouseNameBn",
+      "citizenship",
+      "nid",
+      "birthCertificate",
+      "birthCertificateNo",
+      "birthDate",
+      "insuranceNumber",
+      "gender",
+      "maritalStatus",
+      "lifeStatus",
+      "deathDate",
+      "monthlyEarning",
+    ];
 
-  const contactFields = [
-    "email", "phoneNumber", "presentAddress", "permanentAddress",
-    "presentLocation", "permanentLocation"
-  ];
-  const statusFields = [];
-  const accidentFields = [
-    "diagnosisDate", "hospitalName", "admitDate", "releaseDate", "hospitalDoctorName"
-  ];
+    const contactFields = ["email", "phoneNumber", "presentAddress", "permanentAddress", "presentLocation", "permanentLocation"];
+    const statusFields = [];
+    const accidentFields = ["diagnosisDate", "hospitalName", "admitDate", "releaseDate", "hospitalDoctorName"];
 
-  const pickFields = (fields) =>
-    fields.reduce((acc, field) => {
-      if (employeeData[field] !== undefined) acc[field] = employeeData[field];
-      return acc;
-    }, {});
+    const pickFields = (fields) =>
+      fields.reduce((acc, field) => {
+        if (employeeData[field] !== undefined) acc[field] = employeeData[field];
+        return acc;
+      }, {});
 
-  const personalInfo = pickFields(personalFields);
-  const contactInfo = pickFields(contactFields);
-  const statusInfo = pickFields(statusFields);
-  const accidentInfo = pickFields(accidentFields);
-  const childrenInfo = formData?.employeeChildrenInfo;
+    const personalInfo = pickFields(personalFields);
+    const contactInfo = pickFields(contactFields);
+    const statusInfo = pickFields(statusFields);
+    const accidentInfo = pickFields(accidentFields);
+    const childrenInfo = formData?.employeeChildrenInfo;
 
-  return (
-    <>
-      {renderSection("workforce.previewDetails.personalInfo", personalInfo)}
-      {renderSection("workforce.previewDetails.statusInfo", statusInfo)}
-      {renderSection("workforce.previewDetails.accidentInfo", accidentInfo)}
-      {renderSection("workforce.previewDetails.contactInfo", contactInfo)}
-      {childrenInfo && Object.keys(childrenInfo).length > 0 &&
-        renderSection("workforce.previewDetails.employeeChildrenInfo", childrenInfo)}
-    </>
-  );
-};
-
+    return (
+      <>
+        {renderSection("workforce.previewDetails.personalInfo", personalInfo)}
+        {renderSection("workforce.previewDetails.statusInfo", statusInfo)}
+        {renderSection("workforce.previewDetails.accidentInfo", accidentInfo)}
+        {renderSection("workforce.previewDetails.contactInfo", contactInfo)}
+        {childrenInfo && Object.keys(childrenInfo).length > 0 && renderSection("workforce.previewDetails.employeeChildrenInfo", childrenInfo)}
+      </>
+    );
+  };
 
   const renderOthersInfoSection = () => {
     const primitiveFields = Object.entries(formData)
       .filter(
         ([key, value]) =>
-          typeof value !== "object" &&
-          !["id", "uuid", "parent", "applicationType", "organizationType", "applicationForSelf", "workforceEmployee"].includes(key)
+          typeof value !== "object" && !["id", "uuid", "parent", "applicationType", "organizationType", "applicationForSelf", "workforceEmployee"].includes(key)
       )
       .reduce((acc, [key, value]) => {
         acc[key] = value;
@@ -266,42 +263,77 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
   };
 
   const renderEducationsSection = (educations) => {
-  if (!Array.isArray(educations) || educations.length === 0) return null;
+    if (!Array.isArray(educations) || educations.length === 0) return null;
 
-  const filteredItems = educations.filter(item => item && typeof item === "object");
+    const filteredItems = educations.filter((item) => item && typeof item === "object");
 
-  return (
-    <Grid item xs={6} className={classes.cardGridItem} key="educations">
-      <Card className={classes.card}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            <FormattedMessage module="workforce" id="workforce.previewDetails.educations" defaultMessage="Educations" />
-          </Typography>
-          <Divider style={{ marginBottom: "10px" }} />
-          {filteredItems.map((edu, index) => (
-            <Box key={index} mb={2} pl={1}>
-              {/* <Typography variant="subtitle2" gutterBottom>
+    return (
+      <Grid item xs={6} className={classes.cardGridItem} key="educations">
+        <Card className={classes.card}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              <FormattedMessage module="workforce" id="workforce.previewDetails.educations" defaultMessage="Educations" />
+            </Typography>
+            <Divider style={{ marginBottom: "10px" }} />
+            {filteredItems.map((edu, index) => (
+              <Box key={index} mb={2} pl={1}>
+                {/* <Typography variant="subtitle2" gutterBottom>
                 <FormattedMessage module="workforce" id="workforce.previewDetails.education" defaultMessage="Education" /> #{index + 1}
               </Typography> */}
-              <Grid container spacing={2}>
-                {Object.entries(edu).map(([key, value], idx) => (
-                  key !== "id" && (
+                <Grid container spacing={2}>
+                  {Object.entries(edu).map(
+                    ([key, value], idx) =>
+                      key !== "id" && (
+                        <Grid item xs={12} sm={6} key={idx}>
+                          <Typography variant="body2">
+                            <b>{formatKey(key)}:</b> {renderValue(value)}
+                          </Typography>
+                        </Grid>
+                      )
+                  )}
+                </Grid>
+              </Box>
+            ))}
+          </CardContent>
+        </Card>
+      </Grid>
+    );
+  };
+
+  const renderDependentsSection = (dependents) => {
+    if (!Array.isArray(dependents) || dependents.length === 0) return null;
+
+    const filteredItems = dependents.filter((dep) => dep && typeof dep === "object");
+
+    return (
+      <Grid item xs={6} className={classes.cardGridItem} key="employeeDependentInfo">
+        <Card className={classes.card}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              <FormattedMessage module="workforce" id="workforce.previewDetails.employeeDependentInfo" defaultMessage={formatKey("employeeDependentInfo")} />
+            </Typography>
+            <Divider style={{ marginBottom: "10px" }} />
+            {filteredItems.map((dep, index) => (
+              <Box key={index} mb={2} pl={1}>
+                <Typography variant="subtitle2" gutterBottom>
+                  <FormattedMessage module="workforce" id="workforce.previewDetails.dependent" defaultMessage={`Dependent #${index + 1}`} />
+                </Typography>
+                <Grid container spacing={2}>
+                  {Object.entries(dep).map(([key, value], idx) => (
                     <Grid item xs={12} sm={6} key={idx}>
                       <Typography variant="body2">
                         <b>{formatKey(key)}:</b> {renderValue(value)}
                       </Typography>
                     </Grid>
-                  )
-                ))}
-              </Grid>
-            </Box>
-          ))}
-        </CardContent>
-      </Card>
-    </Grid>
-  );
-};
-
+                  ))}
+                </Grid>
+              </Box>
+            ))}
+          </CardContent>
+        </Card>
+      </Grid>
+    );
+  };
 
   const renderDynamicSections = () => {
     return Object.entries(formData).map(([key, value]) => {
@@ -311,9 +343,14 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
         return renderWorkforceEmployeeSections(value);
       }
 
-       if (key === "educations") {
-      return renderEducationsSection(value);
-    }
+      if (key === "educations") {
+        return renderEducationsSection(value);
+      }
+
+      if (key === "employeeDependentInfo") {
+  return renderDependentsSection(value);
+}
+
 
       if (Array.isArray(value) && value.length > 0 && typeof value[0] === "object") {
         return renderArraySection(key, value);
