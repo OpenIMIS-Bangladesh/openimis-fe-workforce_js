@@ -309,14 +309,14 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
       <Grid item xs={6} className={classes.cardGridItem} key="employeeDependentInfo">
         <Card className={classes.card}>
           <CardContent>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" gutterBottom >
               <FormattedMessage module="workforce" id="workforce.previewDetails.employeeDependentInfo" defaultMessage={formatKey("employeeDependentInfo")} />
             </Typography>
             <Divider style={{ marginBottom: "10px" }} />
             {filteredItems.map((dep, index) => (
               <Box key={index} mb={2} pl={1}>
-                <Typography variant="subtitle2" gutterBottom>
-                  <FormattedMessage module="workforce" id="workforce.previewDetails.dependent" defaultMessage={`Dependent #${index + 1}`} />
+                <Typography variant="body2" gutterBottom style={{textAlign:"center",fontWeight:"bold"}}>
+                  <FormattedMessage module="workforce" id="workforce.previewDetails.dependent" defaultMessage={`Dependent #${index + 1}`} />  {index+1}
                 </Typography>
                 <Grid container spacing={2}>
                   {Object.entries(dep).map(([key, value], idx) => (
