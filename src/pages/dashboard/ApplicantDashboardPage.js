@@ -130,14 +130,15 @@ const FiledApplications = () => {
   const username = useSelector((state) => state.core.user.username);
   return (
     <>
-      <Typography variant="h5" gutterBottom>
+      <ApplicationProcessSearcher dynamicTableTitle= {"workforce.applicant.dashboard"}/>
+      {/* <Typography variant="h5" gutterBottom>
         <FormattedMessage module="workforce" id="workforce.applicant.dashboard" />
       </Typography>
       <Card className={classes.tableContainer}>
         <CardContent>
           <ApplicationProcessSearcher />
         </CardContent>
-      </Card>
+      </Card> */}
     </>
   );
 }
@@ -146,14 +147,15 @@ const DraftApplications = () => {
   const classes = useStyles()
   return (
     <>
-      <Typography variant="h5" gutterBottom>
+      <ApplicationProcessSearcher applicationStatus={"draft"} dynamicTableTitle= {"workforce.application.draft_applications"} />
+      {/* <Typography variant="h5" gutterBottom>
         <FormattedMessage module="workforce" id="workforce.applicant.dashboard" />
       </Typography>
       <Card className={classes.tableContainer}>
         <CardContent>
           <ApplicationProcessSearcher applicationStatus={"draft"} />
         </CardContent>
-      </Card>
+      </Card> */}
     </>
   );
 }
@@ -279,16 +281,17 @@ const RevertApplication = () => {
   const classes = useStyles()
   return (
     <>
-      <Typography variant="h5" gutterBottom>
+      <ApplicationProcessSearcher
+        revertedApplication={true}
+        dynamicTableTitle= {"workforce.application.reverted"}
+      />
+      {/* <Typography variant="h5" gutterBottom>
         <FormattedMessage module="workforce" id="workforce.application.reverted" />
       </Typography>
       <Card className={classes.tableContainer}>
         <CardContent>
-          <ApplicationProcessSearcher
-            revertedApplication={true}
-          />
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Pagination */}
       <div className={classes.pagination}>

@@ -86,6 +86,7 @@ class ApplicationProcessSearcher extends Component {
       selectedApplicationIds: [],
       revertByChecker: false,
       revertByFactoryAdmin: false,
+      dynamicTableTitle: "",
       officeData: {
         cf: {
           suboffices: {
@@ -116,8 +117,12 @@ class ApplicationProcessSearcher extends Component {
   }
 
   fetch = async (prms) => {
-    const { applicationType, userRights, revertedApplication, userName, workforceEmployeesFactoryId } = this.props;
+    const { applicationType, userRights, revertedApplication, userName, workforceEmployeesFactoryId, dynamicTableTitle } = this.props;
     const { showHistoryFilter } = this.state;
+    if(dynamicTableTitle)
+    {
+      this.dynamicTableTitle= dynamicTableTitle;
+    }
     this.props.fetchOrganizationEmployee(this.props.modulesManager, [`username:"${userName}"`]);
     console.clear();
     await this.fetchApplicant();
@@ -970,7 +975,7 @@ class ApplicationProcessSearcher extends Component {
           fetchingItems={fetchingApplications}
           fetchedItems={fetchedApplications}
           errorItems={errorApplications}
-          tableTitle={<FormattedMessage module={MODULE_NAME} id="workforce.employee.application.process" />}
+          tableTitle={<FormattedMessage module={MODULE_NAME} id={this.dynamicTableTitle?this.dynamicTableTitle:"workforce.employee.application.process"} />}
           rowsPerPageOptions={this.rowsPerPageOptions}
           defaultPageSize={this.defaultPageSize}
           fetch={this.fetch}
