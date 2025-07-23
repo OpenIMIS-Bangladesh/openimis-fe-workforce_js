@@ -353,11 +353,21 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
   };
 
   const addDependent = () => {
-    setFormData((prev) => ({
+  setFormData((prev) => {
+    const dependentsArr = Array.isArray(prev.dependents)
+      ? prev.dependents
+      : prev.dependents ? [prev.dependents] : [{}];
+    const newDependents = [...dependentsArr, {}];
+
+    // Set accordion to expand the new dependent
+    setExpanded(newDependents.length - 1);
+
+    return {
       ...prev,
-      dependents: [...prev.dependents, {}],
-    }));
-  };
+      dependents: newDependents,
+    };
+  });
+};
 
   const removeDependent = (index) => {
     setFormData((prev) => {

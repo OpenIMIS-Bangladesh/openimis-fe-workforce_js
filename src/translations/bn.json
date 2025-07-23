@@ -47,7 +47,7 @@
 
   "workforce.employee.workforce_employer": "নিয়োগকারী কোম্পানির নাম",
   "workforce.employee.workforce_office": "অফিস",
-  "workforce.employee.workforce_factory": "শ্রমিকের কর্মরত প্রতিষ্ঠান / কারখানা",
+  "workforce.employee.workforce_factory": "শ্রমিকের কর্মরত প্রতিষ্ঠান / কারখানার নাম",
   "workforce.employee.first.name.en": "প্রথম নাম (ইংরেজি)",
   "workforce.employee.last.name.en": "শেষ নাম (ইংরেজি)",
   "workforce.employee.first.name.bn": "প্রথম নাম (বাংলা)",
@@ -426,7 +426,7 @@
   "workforce.previewDetails.contactInfo": "যোগাযোগের তথ্য",
   "workforce.previewDetails.employeeChildrenInfo": "সন্তানের তথ্য",
   "workforce.previewDetails.othersInfo": "অন্যান্য তথ্য",
-  "workforce.previewDetails.employeeBankInfo": "ব্যাংক তথ্য",
+  "workforce.previewDetails.employeeBankInfo": "ব্যাংকের তথ্য",
   "workforce.previewDetails.company": "কোম্পানির তথ্য",
   "workforce.previewDetails.factory": "শ্রমিকের কর্মরত প্রতিষ্ঠান / কারখানারর তথ্য",
   "workforce.previewDetails.educations":"নিজের/সন্তানের শিক্ষাগত যোগ্যতা",

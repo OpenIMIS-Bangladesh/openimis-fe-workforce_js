@@ -23,11 +23,11 @@ const BanksPicker = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    return dispatch(fetchBanksPick(modulesManager, [`type:"bank"`]));
+    return dispatch(fetchBanksPick(modulesManager, [`type:"main"`]));
   }, []);
 
   const fetchBanks = () => {
-    dispatch(fetchBanksPick(modulesManager, [`type:"bank"`]));
+    dispatch(fetchBanksPick(modulesManager, [`type:"main"`]));
   };
 
   const isLoading = useSelector(
@@ -60,7 +60,8 @@ const BanksPicker = ({
       options={data}
       isLoading={isLoading}
       value={selectedOption}
-      getOptionLabel={(option) => locale === "en" ? option.nameEn : option.nameBn}
+      // getOptionLabel={(option) => locale === "en" ? option.nameEn : option.nameBn}
+      getOptionLabel={(option) => option.nameEn }
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}
