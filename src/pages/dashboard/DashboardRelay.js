@@ -4,6 +4,7 @@ import { getUserType, isEmptyObject } from "../../utils/utils";
 import ApplicantDashboard from "./ApplicantDashboardPage";
 import DashboardPage from "./DashboardPage";
 import CheckerDashboardPage from "./CheckerDashboardPage";
+import CheckerTwoDashboardPage from "./CheckerTwoDashboardPage";
 import AssociationDashboardPage from "./AssociationDashboardPage";
 import ApproverDashboardPage from "./ApproverDashboardPage";
 import FactoryAdminDashboardPage from "./FactoryAdminDashboardPage";
@@ -19,6 +20,8 @@ console.log(user_type)
  
   } else if (user_type === WORKFORCE_USER_TYPE.CHECKER) {
     return <CheckerDashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.CHECKER_TWO) {
+    return <CheckerTwoDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
     return <SectionAdminDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.DOCTOR) {

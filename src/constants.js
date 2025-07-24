@@ -154,6 +154,7 @@ export const STATUS_MAP_EN = {
 export const WORKFORCE_USER_TYPE = {
   ADMIN: "admin",
   CHECKER: "checker",
+  CHECKER_TWO: "checker_two",
   APPROVER: "approver",
   APPLICANT: "applicant",
   FACTORY_ADMIN: "factory_admin",
@@ -165,6 +166,7 @@ export const WORKFORCE_USER_TYPE = {
 export const WORKFORCE_USER_TYPE_MAP_EN= {
   admin: "Admin",
   checker: "Checker",
+  checker_two: "Checker Two",
   approver: "Approver",
   applicant: "Applicant",
   factory_admin: "Factory Admin",
@@ -176,6 +178,7 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
 export const WORKFORCE_USER_TYPE_MAP_BN = {
   admin: "অ্যাডমিন",
   checker: "চেকার",
+  checker_two: "চেকার ২",
   approver: "অনুমোদনকারী",
   applicant: "আবেদনকারী",
   factory_admin: "ফ্যাক্টরি অ্যাডমিন",
