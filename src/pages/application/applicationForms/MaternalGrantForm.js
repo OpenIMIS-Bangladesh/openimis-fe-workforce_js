@@ -298,6 +298,7 @@ const MaternalGrantForm = ({
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
+        metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
       };
 
@@ -357,6 +358,7 @@ const MaternalGrantForm = ({
         employeeAccidentInfo:
           JSON.stringify(formData?.employeeAccidentInfo) ||
           JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+        metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
       };
 
@@ -434,6 +436,8 @@ const MaternalGrantForm = ({
       employeeAccidentInfo:
         JSON.stringify(formData?.employeeAccidentInfo) ||
         JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+        metadata: JSON.stringify(formData.metadata),
+
       status: WORKFORCE_STATUS.NEW,
       submittedBy
     };
@@ -454,6 +458,7 @@ const MaternalGrantForm = ({
           handleChange={(key, value) =>
             handleChange(key, value, "workforceEmployee")
           }
+          setFormData={handleChange}
           setNidOrBcn={setNidOrBcn}
           nidOrBcn={nidOrBcn}
           formData={formData}

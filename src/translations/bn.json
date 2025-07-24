@@ -393,6 +393,7 @@
   "workforce.application.nidVerify.error": "আপনার তথ্যটি LIMS থেকে যাচাই করা সম্ভব হয়নি",
   "workforce.application.labourHeadingOne": "আবেদনকারীর ব্যক্তিগত তথ্য",
   "workforce.application.labourHeadingTwo": "আবেদনকারীর পারিবারিক তথ্য",
+    "workforce.application.labourDetails.spouse": "প্রসূতি স্ত্রীর তথ্য",
   "workforce.application.account.bank": "ব্যাংকের মাধ্যমে সহায়তা পেতে চান?",
   "workforce.application.account.mobile": "মোবাইল ব্যাংকিংয়ের মাধ্যমে সহায়তা পেতে চান?",
   "workforce.application.account.mobile.operator": "মোবাইল ব্যাংকিং অপারেটর",
@@ -439,6 +440,8 @@
   "workforce.previewDetails.factory": "শ্রমিকের কর্মরত প্রতিষ্ঠান / কারখানারর তথ্য",
   "workforce.previewDetails.educations":"নিজের/সন্তানের শিক্ষাগত যোগ্যতা",
     "workforce.previewDetails.employeeDependentInfo":"নির্ভরশীল সদস্যদের তথ্য",
+    "workforce.previewDetails.metadata":"আবেদনের প্রয়োজনীয় তথ্য",
+
 
     "workforce.previewDetails.dependent":"নির্ভরশীলের তথ্য",
 

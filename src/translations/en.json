@@ -557,6 +557,7 @@
     "workforce.application.nidVerify.error": "Your information has  been failed to verified from LIMS",
     "workforce.application.labourHeadingOne": "Personal information",
     "workforce.application.labourHeadingTwo": "Family information",
+    "workforce.application.labourDetails.spouse": "Maternity Wife Information",
     "workforce.application.account.bank": "Want to get help through the bank?",
     "workforce.application.account.mobile": "Want to get assistance through mobile banking?",
     "workforce.application.account.mobile.operator": "Mobile banking operator",
@@ -603,6 +604,7 @@
     "workforce.previewDetails.educations":"Educational info of Self / Child",
     "workforce.previewDetails.employeeDependentInfo":"Employee Dependent Info",
     "workforce.previewDetails.dependent":"Dependent Info",
+    "workforce.previewDetails.metadata":"Needed info about application",
 
     "workforce.application.death.reason":"Death Reason",
     "workforce.application.other.death.reason":"Specify other causes of death",

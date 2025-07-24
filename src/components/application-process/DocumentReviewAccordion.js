@@ -92,7 +92,7 @@ const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onRej
             <Button variant="contained" color="primary" onClick={() => onVerify(index)} fullWidth>
               <FormattedMessage module="workforce" id="workforce.application.verify" />
             </Button>
-            <Button variant="outlined" color="secondary" onClick={() => onReject(index)} fullWidth>
+            <Button variant="outlined" color="error" onClick={() => onReject(index)} fullWidth>
               <FormattedMessage module="workforce" id="workforce.application.reject" />
             </Button>
           </Grid>

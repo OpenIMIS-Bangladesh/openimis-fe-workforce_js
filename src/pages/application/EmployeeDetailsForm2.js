@@ -123,30 +123,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               <FormattedMessage id="workforce.application.header.document" module="workforce" />
             </Box>
             <Grid container className={classes.item} spacing={2}>
-              {/* <Grid item xs={6} className={classes.item}>
-                <CompanyPicker
-                  value={formData?.company?.id}
-                  label={<FormattedMessage id="workforce.employee.workforce_employer" module="workforce" />}
-                  onChange={(v) => {
-                    // handleChange("company", v);
-                    handleChange("company", v);
-                  }}
-                  readOnly={false}
-                />
-              </Grid>
-
-              <Grid item xs={6} className={classes.item}>
-                <FactoryPicker
-                  value={formData?.factory?.id}
-                  label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
-                  companyId={formData?.company?.id}
-                  onChange={(v) => {
-                    // handleChange("factory", v, "employeeDesignation");
-                    handleChange("factory", v);
-                  }}
-                  readOnly={false}
-                />
-              </Grid> */}
+            
               {/* <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.nid"
@@ -190,7 +167,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                 />
               </Grid> */}
               {data.map((document, index) => (
-                <Grid container spacing={2} alignItems="center" style={{ marginBottom: "5px", borderBottom: "1px solid #fff" }} key={document.fieldId}>
+                <Grid container spacing={2} alignItems="center" style={{ marginBottom: "5px", border: "1px solid #fff" }} key={document.fieldId}>
                   <Grid item xs={6}>
                     <Typography>{document.nameBn}</Typography>
                   </Grid>
