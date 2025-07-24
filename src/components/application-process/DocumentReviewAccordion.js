@@ -14,13 +14,14 @@ const getFileType = (url = "") => {
   return "unsupported";
 };
 
-const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onReject }) => {
+const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onReject,locale }) => {
   const type = getFileType(file?.url);
   const [numPages, setNumPages] = useState(null);
 
   const handlePDFLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
   };
+  console.log(file)
 
   return (
     <Accordion>

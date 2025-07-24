@@ -281,6 +281,9 @@
   "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন",
 
   "workforce.employee.details": "শ্রমিকের বিবরণ",
+    "workforce.employee.upload.factory.document":"অনুপস্থিত ফ্যাক্টরির ডকুমেন্ট আপলোড করুন",
+    "workforce.employee.document":"ডকুমেন্ট সমূহ",
+
   "workforce.employee.application.details": "শ্রমিকের আবেদন বিবরণ",
 
   "workforce.next": "পরবর্তী",
@@ -368,7 +371,7 @@
   "workforce.application.employee.selector": "কর্মচারী নির্বাচন করুন",
   "workforce.application.add.employee": "কর্মচারী যোগ করুন",
 
-  "workforce.application.header.labour": "শ্রমিকের বিবরণ ফরম",
+  "workforce.application.header.labour": "আবেদনকারী শ্রমিকের তথ্য",
   "workforce.application.header.labour.note": "নীচের তথ্যগুলি (NID) অনুসারে পূরণ করতে হবে, অন্যথায় আবেদনটি বাতিল বলে বিবেচিত হবে।",
   "workforce.application.header.employeeSelector.note": "নাম, জাতীয় পরিচয়পত্র নম্বর (NID) অথবা মোবাইল নম্বর ব্যবহার করে সহজেই আবেদন করার জন্য সংশ্লিষ্ট কর্মকর্তা বা কর্মচারীকে খুঁজে নিন।",
   "workforce.application.header.location": "ঠিকানা ফরম",
@@ -387,8 +390,8 @@
   "workforce.application.nidVerify.loading": "আপনার তথ্যাটি LIMS থেকে যাচাই করা হচ্ছে",
   "workforce.application.nidVerify.success": "আপনার তথ্যাটি LIMS থেকে সফলভাবে যাচাই করা হয়েছে",
   "workforce.application.nidVerify.error": "আপনার তথ্যটি LIMS থেকে যাচাই করা সম্ভব হয়নি",
-  "workforce.application.labourHeadingOne": "ব্যক্তিগত তথ্য",
-  "workforce.application.labourHeadingTwo": "পারিবারিক তথ্য",
+  "workforce.application.labourHeadingOne": "আবেদনকারীর ব্যক্তিগত তথ্য",
+  "workforce.application.labourHeadingTwo": "আবেদনকারীর পারিবারিক তথ্য",
   "workforce.application.account.bank": "ব্যাংকের মাধ্যমে সহায়তা পেতে চান?",
   "workforce.application.account.mobile": "মোবাইল ব্যাংকিংয়ের মাধ্যমে সহায়তা পেতে চান?",
   "workforce.application.account.mobile.operator": "মোবাইল ব্যাংকিং অপারেটর",
@@ -453,6 +456,16 @@
 "workforce.application.deathReason.pneumonia": "নিউমোনিয়া",
 "workforce.application.deathReason.chronic": "দীর্ঘমেয়াদি রোগ",
 "workforce.application.deathReason.OTHER_OPTION": "অন্যান্য",
+
+
+"workforce.accident.type.fire_accident": "অগ্নি দুর্ঘটনা",
+  "workforce.accident.type.boiler_explosion": "বয়লার বিস্ফোরণ",
+  "workforce.accident.type.burn_injury": "পোড়া আঘাত",
+  "workforce.accident.type.machinery": "যন্ত্রপাতি",
+  "workforce.accident.type.electric_shock": "বৈদ্যুতিক শক",
+  "workforce.accident.type.heavy_object_fall": "ভারী ওজন পতন",
+  "workforce.accident.type.road_accident": "সড়ক দুর্ঘটনা",
+  "workforce.accident.type.others": "অন্যান্য",
 
   "workforce.timePicker.hour": "ঘণ্টা",
   "workforce.timePicker.minute": "মিনিট",

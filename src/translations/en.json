@@ -364,6 +364,15 @@
     "workforce.application.permission.yes":"Yes",
     "workforce.application.permission.no":"No",
 
+    "workforce.accident.type.fire_accident": "Fire Accident",
+"workforce.accident.type.boiler_explosion": "Boiler Explosion",
+"workforce.accident.type.burn_injury": "Burn Injury",
+"workforce.accident.type.machinery": "Machinery",
+"workforce.accident.type.electric_shock": "Electric Shock",
+"workforce.accident.type.heavy_object_fall": "Heavy Object Fall",
+"workforce.accident.type.road_accident": "Road Accident",
+"workforce.accident.type.others": "Others",
+
     "workforce.application.educationInfo.boards.barisal":"Barisal",
     "workforce.application.educationInfo.boards.chattogram":"Chattogram",
     "workforce.application.educationInfo.boards.cumilla":"Cumilla",
@@ -439,6 +448,8 @@
     "workforce.registration.title":"উপকারভোগী নিবন্ধন ফর্ম",
 
     "workforce.employee.details":"Employee Details",
+    "workforce.employee.upload.factory.document":"Upload Missing Factory Documents",
+    "workforce.employee.document":"Documents",
     "workforce.employee.application.details":"Employee Application Details",
     "workforce.next":"Next",
     "workforce.back":"Back",

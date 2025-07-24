@@ -14,6 +14,7 @@ import {
   Divider,
   Accordion,
   AccordionSummary,
+  CardHeader,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { withTheme, withStyles } from "@material-ui/core/styles";
@@ -24,7 +25,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage } from "@openimis/fe-core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { bindActionCreators } from "redux";
-import { fetchApplication, fetchWorkforceDocument } from "../../actions";
+import { fetchApplication, fetchDocumentType, fetchWorkforceDocument } from "../../actions";
+import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
+import FileUploader from "../../pickers/FileUploader";
 
 const styles = (theme) => ({
   paper: {
@@ -114,9 +117,16 @@ class VerifyApplicationPage extends Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { dispatch, modulesManager, applicationUuid } = this.props;
-    this.props.fetchApplication(modulesManager, [`id:"${applicationUuid}"`]);
+    await this.props.fetchApplication(modulesManager, [`id:"${applicationUuid}"`]);
+
+    const { application } = this.props;
+    const applicationType = application?.applicationType;
+    const organizationType = application?.organizationType
+    if (applicationType && organizationType) {
+      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`,`organizationType:"${organizationType}"`,]);
+    }
     this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${applicationUuid}"`]);
   }
 
@@ -165,10 +175,10 @@ class VerifyApplicationPage extends Component {
   };
 
   render() {
-    const { classes, applicationUuid, documents, application } = this.props;
+    const { classes, applicationUuid, documents, application,documentType,locale } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType } = this.state;
 
-    console.log({ mah_boob: application });
+    console.log({ mah_boob: documents });
 
     return (
       <Grid container spacing={3} className={classes.rootGrid}>
@@ -222,14 +232,31 @@ class VerifyApplicationPage extends Component {
               </Typography>
             </CardContent>
           </Card>
+
+          <Card variant="outlined" mt={2} className={classes.cardSpacing}>
+            <CardContent>
+               <Typography variant="h6">
+                <b>
+                  <FormattedMessage module="workforce" id="workforce.employee.upload.factory.document" />
+                </b>
+              </Typography>
+              <Divider />
+              {documentType?.map((document, index) => (
+                <>
+                  <Typography>{document.nameBn} </Typography>
+                  <FileUploader fieldKey={document.fieldId}  applicationId={applicationUuid} documentType={document.documentType} />
+                </>
+              ))}
+            </CardContent>
+          </Card>
         </Grid>
 
         {/* Document Viewer */}
         <Grid item xs={12} md={8} className={classes.rightGrid}>
           <Card variant="outlined" className={classes.cardSpacing}>
             <CardContent>
-              <Typography variant="h6">Documents</Typography>
-              {documents?.map((file, index) => {
+              <Typography variant="h6"><FormattedMessage module="workforce" id="workforce.employee.document"/></Typography>
+              {/* {documents?.map((file, index) => {
                 const isPDF = file.url?.toLowerCase().endsWith(".pdf");
                 const type = isPDF ? "pdf" : "image";
 
@@ -239,7 +266,6 @@ class VerifyApplicationPage extends Component {
                       <Grid container alignItems="center" justifyContent="space-between">
                         <Grid item>
                           <Typography>
-                            {/* Document #{index + 1} {type === "pdf" ? "(PDF)" : "(Image)"} */}
                             {file.documentType} {type === "pdf" ? "(PDF)" : "(Image)"}
                           </Typography>
                         </Grid>
@@ -310,7 +336,18 @@ class VerifyApplicationPage extends Component {
                     </AccordionDetails>
                   </Accordion>
                 );
-              })}
+              })} */}
+              {documents?.map((file, index) => (
+                <DocumentReviewAccordion
+                  key={index}
+                  file={file}
+                  index={index}
+                  onCommentChange={this.handleFileCommentChange}
+                  onVerify={this.handleFileVerify}
+                  onReject={this.handleFileReject}
+                  locale={locale}
+                />
+              ))}
             </CardContent>
           </Card>
         </Grid>
@@ -339,6 +376,8 @@ const mapStateToProps = (state, props) => ({
   application: state.workforce.application,
   applicationUuid: props.match.params.application_uuid,
   documents: state.workforce.document,
+  documentType: state.workforce.documentType,
+  locale: state.core?.user?.i_user?.language || "en",  
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -346,6 +385,7 @@ const mapDispatchToProps = (dispatch) =>
     {
       fetchApplication,
       fetchWorkforceDocument,
+      fetchDocumentType,
       journalize,
       coreConfirm,
     },

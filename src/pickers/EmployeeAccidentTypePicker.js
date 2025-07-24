@@ -20,7 +20,16 @@ const EmployeeAccidentTypePicker = ({
 
   // Adjust the options to match the EMPLOYEE_ACCIDENT_TYPE format
   // const EMPLOYEE_ACCIDENT_TYPE = ["Fire Accident", "Boiler Explosion","Burn Injury","Machinery","Electric Shock","Heavy Weight Fall","Commuting RTA","RTA","Others"];
-  const EMPLOYEE_ACCIDENT_TYPE = ["অগ্নি দুর্ঘটনা", "বয়লার বিস্ফোরণ","পোড়া আঘাত","যন্ত্রপাতি","বৈদ্যুতিক শক","ভারী ওজন পতন","সড়ক যাতায়াত","অন্যান্য"];
+  const EMPLOYEE_ACCIDENT_TYPE = [
+    "workforce.accident.type.fire_accident",
+"workforce.accident.type.boiler_explosion",
+"workforce.accident.type.burn_injury",
+"workforce.accident.type.machinery",
+"workforce.accident.type.electric_shock",
+"workforce.accident.type.heavy_object_fall",
+"workforce.accident.type.road_accident",
+"workforce.accident.type.others",
+  ];
 
   // Find the selected option
   const selectedOption = useMemo(
@@ -40,7 +49,7 @@ const EmployeeAccidentTypePicker = ({
       isLoading={false} // Set to false if not loading data dynamically
       options={EMPLOYEE_ACCIDENT_TYPE}
       value={selectedOption}
-      getOptionLabel={(option) => option} // Since options are strings, return the string directly
+      getOptionLabel={(option) => formatMessage(option) } // Since options are strings, return the string directly
       onChange={(option) => onChange(option, option ?? null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}
