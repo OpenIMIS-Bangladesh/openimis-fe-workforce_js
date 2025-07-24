@@ -129,16 +129,8 @@ class ApplicationProcessSearcher extends Component {
     await this.fetchApplicant();
     console.log(this.props);
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
-      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
-      let filter = [];
-      if (summaryId) {
-        filter = [`statusIn: ["forward_to_cf_section","meeting_created"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${summaryId}"`];
-      } else {
-        filter = [`statusIn: ["forward_to_cf_section"], orderBy: ["-dateCreated"]`];
-      }
-
       this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(this.props.modulesManager, filter);
+      this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_cf_section"]', 'applicationTypeIn: ["schoolarship","medicalAssistance","maternityGrant"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
       const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
       let filter = [];
@@ -155,7 +147,7 @@ class ApplicationProcessSearcher extends Component {
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_doctor"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER_TWO) {
       this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_cf_section"]','applicationType: ["disabilityAssistance","financialAssistance"]', 'orderBy: ["-dateCreated"]']);
+      this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_cf_section"]','applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ASSOCIATION) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]']);
