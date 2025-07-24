@@ -31,13 +31,14 @@ import {
   itemFormattersAssociation,
   itemFormattersApprover,
   itemFormattersChecker,
+  itemFormattersCheckerTwo,
   itemFormattersSectionAdmin,
   itemFormattersDoctor,
   itemFormattersFactoryAdmin,
   itemFormattersDirector,
 } from "../../utils/itemFormatters_types";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
-import { headerApplicant, headerApprover, headerChecker,headerDoctor, headerSectionAdmin, headerAssociation, headersAdmin, headerFactoryAdmin, headerDirector } from "../../utils/headers_types";
+import { headerApplicant, headerApprover, headerChecker,headerCheckerTwo,headerDoctor, headerSectionAdmin, headerAssociation, headersAdmin, headerFactoryAdmin, headerDirector } from "../../utils/headers_types";
 
 const styles = (theme) => ({
   paper: {
@@ -128,16 +129,8 @@ class ApplicationProcessSearcher extends Component {
     await this.fetchApplicant();
     console.log(this.props);
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
-      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
-      let filter = [];
-      if (summaryId) {
-        filter = [`statusIn: ["forward_to_cf_section","meeting_created"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${summaryId}"`];
-      } else {
-        filter = [`statusIn: ["forward_to_cf_section"], orderBy: ["-dateCreated"]`];
-      }
-
       this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(this.props.modulesManager, filter);
+      this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_cf_section"]', 'applicationTypeIn: ["schoolarship","medicalAssistance","maternityGrant"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
       const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
       let filter = [];
@@ -152,6 +145,9 @@ class ApplicationProcessSearcher extends Component {
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_doctor"]', 'orderBy: ["-dateCreated"]']);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER_TWO) {
+      this.setState({ displayVersion: showHistoryFilter });
+      this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_cf_section"]','applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ASSOCIATION) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]']);
@@ -556,6 +552,8 @@ class ApplicationProcessSearcher extends Component {
       ? headerApplicant(this)
       : userType === WORKFORCE_USER_TYPE.CHECKER
       ? headerChecker(this)
+      : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
+      ? headerCheckerTwo(this)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
       ? headerSectionAdmin(this)
       : userType === WORKFORCE_USER_TYPE.DOCTOR
@@ -579,6 +577,8 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.CHECKER
       ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
+      ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
       ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.DOCTOR

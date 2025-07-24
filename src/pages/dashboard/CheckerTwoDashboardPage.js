@@ -125,7 +125,7 @@ const FiledApplications = () =>{
   return (
   <>
     <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.checker1.dashboard" />
+      <FormattedMessage module="workforce" id="workforce.checker2.dashboard" />
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
@@ -205,7 +205,7 @@ const Others = () => (
 
 // ------------------------------------------------------------
 
-const CheckerDashboard = () => {
+const CheckerTwoDashboardPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
@@ -257,4 +257,4 @@ const CheckerDashboard = () => {
   );
 };
 
-export default CheckerDashboard;
+export default CheckerTwoDashboardPage;
