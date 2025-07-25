@@ -73,6 +73,7 @@
   "workforce.employee.spouse.name.bn": "স্বামী/স্ত্রীর নাম (বাংলা)",
   "workforce.employee.spouse.name.en": "স্বামী/স্ত্রীর নাম (ইংরেজি)",
   "workforce.employee.marital_status": "বৈবাহিক অবস্থা",
+    "workforce.employee.percentage_of_cf_grant": "সিএফ অনুদানের শতকরা হার",
   "workforce.employee.position": "বর্তমান ঠিকানা",
   "workforce.employee.monthly_earning": "মাসিক আয়",
   "workforce.employee.reference_salary": "রেফারেন্স বেতন",
@@ -493,6 +494,20 @@
   "workforce.account.selection.type": "অ্যাকাউন্টের ধরণ নির্বাচন করুন",
 
   "workforce.register.button": "নিবন্ধন করুন",
+
+  "workforce.relation.father": "পিতা",
+  "workforce.relation.mother": "মাতা",
+  "workforce.relation.wife": "স্ত্রী",
+  "workforce.relation.husband": "স্বামী",
+  "workforce.relation.son": "পুত্র",
+  "workforce.relation.daughter": "কন্যা",
+  "workforce.relation.brother": "ভাই",
+  "workforce.relation.sister": "বোন",
+  "workforce.relation.grand_daughter": "নাতনি",
+  "workforce.relation.grand_son": "নাতি",
+  "workforce.relation.grand_father": "দাদা",
+  "workforce.relation.grand_mother": "দাদি",
+    "workforce.employee.relation.picker": "সম্পর্কের ধরন নির্বাচন করুন",
 
   "calendar.clearButton": "মুছে ফেলুন"
 }

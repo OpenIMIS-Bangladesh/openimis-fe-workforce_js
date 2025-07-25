@@ -4,6 +4,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextInput, PublishedComponent, FormattedMessage, useTranslations, useModulesManager } from "@openimis/fe-core";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
+import RelationWithWorkerPicker from "../../pickers/RelationWithWorkerPicker";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -30,6 +31,12 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
 
   const isFirstDependentValid = normalizedDependents?.[0]?.nid && normalizedDependents?.[0]?.nameEn;
 
+  const getRelationAwareLabel = (formData,labelKey) => {
+    return applicationType === "financialAssistance" && formData?.relationType
+      ? `${formatMessage(formData.relationType)}র ${formatMessage(labelKey)}`
+      : formatMessage(labelKey);
+  };
+
   console.log({ dependents });
 
   return (
@@ -37,19 +44,33 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
       {normalizedDependents?.map((formData, index) => (
         <Accordion key={index} expanded={expanded === index} onChange={(_, isExpanded) => setExpanded(isExpanded ? index : false)}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Box>
-              <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                <FormattedMessage id="workforce.application.header.dependent" module="workforce" />
-              </Typography>
-              <Typography>{formData.nameEn ? formData.nameEn : ""}</Typography>
-            </Box>
+            <Grid container spacing={0} alignItems="center">
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
+                  <FormattedMessage id="workforce.application.header.dependent" module="workforce" />
+                </Typography>
+                <Typography>{formData.nameEn || ""}</Typography>
+              </Grid>
+              
+            </Grid>
           </AccordionSummary>
           <AccordionDetails>
+            
             <Paper className={classes.paper} elevation={0}>
               <Grid container className={classes.item} spacing={2}>
+                {applicationType === "financialAssistance" && (
+                <Grid item xs={12}>
+                  <RelationWithWorkerPicker
+                    value={formData?.relationType || ""}
+                    required
+                    onChange={(v) => handleDependentChange(index, "relationType", v)}
+                    readOnly={false}
+                  />
+                </Grid>
+              )}
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.name.bn"
+                    label={getRelationAwareLabel(formData,"workforce.employee.name.bn")}
                     value={formData.nameBn || ""}
                     onChange={(v) => handleDependentChange(index, "nameBn", v)}
                     required
@@ -58,7 +79,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.name.en"
+                    label={getRelationAwareLabel(formData,"workforce.employee.name.en")}
                     value={formData.nameEn || ""}
                     onChange={(v) => handleDependentChange(index, "nameEn", v)}
                     required
@@ -91,7 +112,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.fathers_name.en"
+                    label={getRelationAwareLabel(formData,"workforce.employee.fathers_name.en")}
                     value={formData.fatherNameEn || ""}
                     onChange={(v) => handleDependentChange(index, "fatherNameEn", v)}
                     readOnly={false}
@@ -99,7 +120,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.fathers_name.bn"
+                    label={getRelationAwareLabel(formData,"workforce.employee.fathers_name.bn")}
                     value={formData.fatherNameBn || ""}
                     onChange={(v) => handleDependentChange(index, "fatherNameBn", v)}
                     readOnly={false}
@@ -108,7 +129,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.mothers_name.en"
+                    label={getRelationAwareLabel(formData,"workforce.employee.mothers_name.en")}
                     value={formData.motherNameEn || ""}
                     onChange={(v) => handleDependentChange(index, "motherNameEn", v)}
                     readOnly={false}
@@ -116,7 +137,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.mothers_name.bn"
+                    label={getRelationAwareLabel(formData,"workforce.employee.mothers_name.bn")}
                     value={formData.motherNameBn || ""}
                     onChange={(v) => handleDependentChange(index, "motherNameBn", v)}
                     readOnly={false}
@@ -125,7 +146,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.nid"
+                    label={getRelationAwareLabel(formData,"workforce.employee.nid")}
                     value={formData.nid || ""}
                     onChange={(v) => handleDependentChange(index, "nid", v)}
                     type={"number"}
@@ -136,7 +157,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="core.DatePicker"
-                    label={"workforce.employee.birthdate"}
+                    label={getRelationAwareLabel(formData,"workforce.employee.birthdate")}
                     value={formData.birthDate || ""}
                     onChange={(v) => handleDependentChange(index, "birthDate", v)}
                     readOnly={false}
@@ -146,14 +167,14 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                 <Grid item xs={6} className={classes.item}>
                   <EmployeeGenderPicker
                     value={formData.gender || ""}
-                    label={<FormattedMessage id="workforce.employee.gender" module="workforce" />}
+                    label={getRelationAwareLabel(formData,"workforce.employee.gender")}
                     onChange={(v) => handleDependentChange(index, "gender", v)}
                     readOnly={false}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.phone"
+                    label={getRelationAwareLabel(formData,"workforce.employee.phone")}
                     value={formData.phoneNumber || ""}
                     onChange={(v) => handleDependentChange(index, "phoneNumber", v)}
                     type={"number"}
@@ -163,7 +184,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.email"
+                    label={getRelationAwareLabel(formData,"workforce.employee.email")}
                     value={formData.email || ""}
                     onChange={(v) => handleDependentChange(index, "email", v)}
                     type={"email"}
@@ -172,7 +193,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.occupation"
+                    label={getRelationAwareLabel(formData,"workforce.employee.occupation")}
                     value={formData.occupation || ""}
                     onChange={(v) => handleDependentChange(index, "occupation", v)}
                     type={"email"}
@@ -182,7 +203,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.birth_certificate_no"
+                    label={getRelationAwareLabel(formData,"workforce.employee.birth_certificate_no")}
                     value={formData.birthCertificateNo || ""}
                     onChange={(v) => handleDependentChange(index, "birthCertificateNo", v)}
                     type={"number"}
@@ -192,7 +213,16 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.marital_status"
+                    label={getRelationAwareLabel(formData,"workforce.employee.marital_status")}
+                    value={formData.maritalStatus || ""}
+                    onChange={(v) => handleDependentChange(index, "maritalStatus", v)}
+                    readOnly={false}
+                  />
+                </Grid>
+
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label={getRelationAwareLabel(formData,"workforce.employee.percentage_of_cf_grant")}
                     value={formData.maritalStatus || ""}
                     onChange={(v) => handleDependentChange(index, "maritalStatus", v)}
                     readOnly={false}
@@ -212,7 +242,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.present_location"
+                    label={getRelationAwareLabel(formData,"workforce.employee.present_location")}
                     value={formData.presentAddress || ""}
                     onChange={(v) => handleDependentChange(index, "presentAddress", v)}
                     readOnly={false}
@@ -232,7 +262,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.permanent_location"
+                    label={getRelationAwareLabel(formData,"workforce.employee.permanent_location")}
                     value={formData.permanentAddress || ""}
                     onChange={(v) => handleDependentChange(index, "permanentAddress", v)}
                     readOnly={false}
@@ -242,19 +272,19 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                 {/* <Grid item xs={11} className={classes.item} /> */}
                 <Divider style={{ margin: "16px 0" }} />
                 {applicationType === "financialAssistance" && (
-                <Grid item xs={12} className={classes.buttonContainer}>
-                  <Button
-                    variant="contained"
-                    style={{
-                      backgroundColor: applicationType !== "financialAssistance" || dependents.length === 1 ? "#B0B0B0" : "#d32f2f",
-                      color: "white",
-                    }}
-                    onClick={() => removeDependent(index)}
-                    disabled={applicationType !== "financialAssistance" || dependents.length === 1}
-                  >
-                    <FormattedMessage module="workforce" id="workforce.application.steps.skip" />
-                  </Button>
-                </Grid>
+                  <Grid item xs={12} className={classes.buttonContainer}>
+                    <Button
+                      variant="contained"
+                      style={{
+                        backgroundColor: applicationType !== "financialAssistance" || dependents.length === 1 ? "#B0B0B0" : "#d32f2f",
+                        color: "white",
+                      }}
+                      onClick={() => removeDependent(index)}
+                      disabled={applicationType !== "financialAssistance" || dependents.length === 1}
+                    >
+                      <FormattedMessage module="workforce" id="workforce.application.steps.skip" />
+                    </Button>
+                  </Grid>
                 )}
               </Grid>
             </Paper>

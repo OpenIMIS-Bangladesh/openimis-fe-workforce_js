@@ -69,7 +69,7 @@
     "workforce.bank.picker": "Bank",
     "workforce.branch.picker": "Branch",
     "workforce.organization.unit.picker": "Unit",
-    "workforce.employee.relation.picker": "Relation type",
+    "workforce.employee.relation.picker": "Select Relation type",
     "workforce.officeType.selector.picker": "Select Office",
     "workforce.EmployeeType.selector.picker": "Select Employee",
 
@@ -191,6 +191,7 @@
     "workforce.employee.spouse.name.bn": "Spouse Name Bn",
     "workforce.employee.spouse.name.en": "Spouse Name En",
     "workforce.employee.marital_status": "Marital Status",
+    "workforce.employee.percentage_of_cf_grant": "Percentage of CF grant",
     "workforce.employee.position": "Position",
     "workforce.employee.monthly_earning": "Mothly Earning",
     "workforce.employee.reference_salary": "Reference Salary",
@@ -645,6 +646,19 @@
 
     "core.LoginPage.forgotPassword": "পাসওয়ার্ড ভুলে গেছেন?",
     "core.ForgotPasswordPage.pageTitle": "পাসওয়ার্ড ভুলে গেছেন?",
+
+    "workforce.relation.father": "Father",
+  "workforce.relation.mother": "Mother",
+  "workforce.relation.wife": "Wife",
+  "workforce.relation.husband": "Husband",
+  "workforce.relation.son": "Son",
+  "workforce.relation.daughter": "Daughter",
+  "workforce.relation.brother": "Brother",
+  "workforce.relation.sister": "Sister",
+  "workforce.relation.grand_daughter": "Grand Daughter",
+  "workforce.relation.grand_son": "Grand Son",
+  "workforce.relation.grand_father": "Grand Father",
+  "workforce.relation.grand_mother": "Grand Mother",
 
     "workforce.register.button":"নিবন্ধন করুন",
 

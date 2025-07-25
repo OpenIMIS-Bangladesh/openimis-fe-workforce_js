@@ -19,7 +19,20 @@ const RelationWithWorkerPicker = ({
   const { formatMessage } = useTranslations("workforce");
 
   // Adjust the options to match the EMPLOYEE_RELATION format
-  const EMPLOYEE_RELATION = ["spouse", "orphan","parant","other","guardian"];
+  const EMPLOYEE_RELATION = [
+  "workforce.relation.father",
+  "workforce.relation.mother",
+  "workforce.relation.wife",
+  "workforce.relation.husband",
+  "workforce.relation.son",
+  "workforce.relation.daughter",
+  "workforce.relation.brother",
+  "workforce.relation.sister",
+  "workforce.relation.grand_daughter",
+  "workforce.relation.grand_son",
+  "workforce.relation.grand_father",
+  "workforce.relation.grand_mother"
+  ];
 
   // Find the selected option
   const selectedOption = useMemo(
@@ -38,7 +51,7 @@ const RelationWithWorkerPicker = ({
       isLoading={false} // Set to false if not loading data dynamically
       options={EMPLOYEE_RELATION}
       value={selectedOption}
-      getOptionLabel={(option) => option} // Since options are strings, return the string directly
+      getOptionLabel={(option) => formatMessage(option)} // Since options are strings, return the string directly
       onChange={(option) => onChange(option, option ?? null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}
