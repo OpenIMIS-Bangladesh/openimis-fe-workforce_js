@@ -1960,6 +1960,15 @@ export function fetchBank(mm, filters) {
   const payload = formatPageQueryWithCount("banks", filters, projections);
   return graphql(payload, "WORKFORCE_BANK");
 }
+export function fetchEmployeeDependent(mm, filters) {
+  const location_projection =
+    "location" + mm.getProjection("location.Location.FlatProjection");
+  const projections = [
+    "id",
+  ];
+  const payload = formatPageQueryWithCount("workforceEmployeeDependent", filters, projections);
+  return graphql(payload, "WORKFORCE_DEPENDENT");
+}
 
 export function fetchBanksBranchSummary(mm, filters) {
   const location_projection =

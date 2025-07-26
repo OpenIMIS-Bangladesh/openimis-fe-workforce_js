@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { TextInput, PublishedComponent, FormattedMessage, useTranslations, useModulesManager } from "@openimis/fe-core";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import RelationWithWorkerPicker from "../../pickers/RelationWithWorkerPicker";
+import FileUploader from "../../pickers/FileUploader";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -240,7 +241,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                     split={true}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={12} className={classes.item}>
                   <TextInput
                     label={getRelationAwareLabel(formData,"workforce.employee.present_location")}
                     value={formData.presentAddress || ""}
@@ -260,7 +261,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                     split={true}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={12} className={classes.item}>
                   <TextInput
                     label={getRelationAwareLabel(formData,"workforce.employee.permanent_location")}
                     value={formData.permanentAddress || ""}
@@ -268,6 +269,14 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                     readOnly={false}
                   />
                 </Grid>
+                  <Grid item xs={6}>
+                    <Typography>{formatMessage("workforce.uploadFile.dependent.photo")}</Typography>
+                    <FileUploader fieldKey={'dependentPhoto'}   onFileChange={(field, value) => handleDependentChange(index, field, value)}  documentType={'dependent photo'} />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography>{formatMessage("workforce.uploadFile.dependent.nid_or_birthCcertificate")}</Typography>
+                    <FileUploader fieldKey={'dependentNid'}   onFileChange={(field, value) => handleDependentChange(index, field, value)}  documentType={'dependent nid'} />
+                  </Grid>
 
                 {/* <Grid item xs={11} className={classes.item} /> */}
                 <Divider style={{ margin: "16px 0" }} />

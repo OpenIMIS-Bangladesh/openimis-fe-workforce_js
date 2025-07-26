@@ -246,6 +246,12 @@ function reducer(
     bank: null,
     bankPageInfo: { totalCount: 0 },
 
+    fetchingWorkforceDependent: false,
+    errorWorkforceDependent: null,
+    fetchedWorkforceDependent: false,
+    workforceDependent: null,
+    workforceDocumentPageInfo: { totalCount: 0 },
+
     submittingMutation: false,
     mutation: {},
 
@@ -513,7 +519,7 @@ function reducer(
     case "WORKFORCE_BANKS_PICKER_REQ":
       return {
         ...state,
-        fetchingBanksPick: true,
+        fetchingWorkforceDocumentsPick: true,
         fetchedBanksPick: false,
         banksPick: [],
         errorBanksPick: null,
@@ -521,7 +527,7 @@ function reducer(
     case "WORKFORCE_BANKS_PICKER_RESP":
       return {
         ...state,
-        fetchingBanksPick: false,
+        fetchingWorkforceDocumentsPick: false,
         fetchedBanksPick: true,
         banksPick: parseData(
           action.payload.data.workforceBanks
@@ -1417,7 +1423,7 @@ function reducer(
     case "WORKFORCE_BANKS_REQ":
       return {
         ...state,
-        fetchingBanks: true,
+        fetchingWorkforceDocuments: true,
         fetchedBanks: false,
         banks: [],
         banksPageInfo: { totalCount: 0 },
@@ -1426,7 +1432,7 @@ function reducer(
     case "WORKFORCE_BANKS_RESP":
       return {
         ...state,
-        fetchingBanks: false,
+        fetchingWorkforceDocuments: false,
         fetchedBanks: true,
         banks: parseData(action.payload.data.banks),
         banksPageInfo: pageInfo(action.payload.data.banks),
@@ -1459,6 +1465,28 @@ function reducer(
           })
         )?.[0],
         errorBank: formatGraphQLError(action.payload),
+      };
+
+    case "WORKFORCE_DEPENDENT_REQ":
+      return {
+        ...state,
+        fetchingWorkforceDependent: true,
+        fetchedWorkforceDependent: false,
+        workforceDependent: null,
+        errorWorkforceDependent: null,
+      };
+    case "WORKFORCE_DEPENDENT_RESP":
+      return {
+        ...state,
+        fetchingWorkforceDependent: false,
+        fetchedWorkforceDependent: true,
+        workforceDependent: parseData(action.payload.data.workforceEmployeeDependent).map(
+          (workforceDependent) => ({
+            ...workforceDependent,
+            id: decodeId(workforceDependent.id),
+          })
+        )?.[0],
+        errorWorkforceDependent: formatGraphQLError(action.payload),
       };
 
     /// Application actions////

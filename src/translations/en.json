@@ -660,6 +660,9 @@
   "workforce.relation.grand_father": "Grand Father",
   "workforce.relation.grand_mother": "Grand Mother",
 
+   "workforce.uploadFile.dependent.photo": "Dependent's Photo",
+  "workforce.uploadFile.dependent.nid_or_birthCcertificate": "Dependent's NID or Birth Certificate Photo",
+
     "workforce.register.button":"নিবন্ধন করুন",
 
     "calendar.clearButton": "Clear"

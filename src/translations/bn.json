@@ -509,5 +509,8 @@
   "workforce.relation.grand_mother": "দাদি",
     "workforce.employee.relation.picker": "সম্পর্কের ধরন নির্বাচন করুন",
 
+    "workforce.uploadFile.dependent.photo": "নির্ভরশীলের ছবি",
+  "workforce.uploadFile.dependent.nid_or_birthCcertificate": "নির্ভরশীলের জাতীয় পরিচয়পত্র বা জন্মসনদের ছবি",
+
   "calendar.clearButton": "মুছে ফেলুন"
 }
