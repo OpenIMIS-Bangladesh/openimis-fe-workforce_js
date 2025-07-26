@@ -303,11 +303,12 @@ if (reduxState.workforce.selectedEmployee) {
 
                 await dispatch(fetchEmployeeDependent(modulesManager,[`workforceApplication_Id:"${applicationgetId}"`]))
                       .then((res)=>{
-                        const dependentId = res?.data?.workforceEmployeeDependent?.edges[0]?.node?.id
+                        const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id
+
                         console.log({dependentId})
                          dispatch(
                             createWorkforceDocument(
-                              { ...uploadFile,workforceApplicationId:applicationgetId, workforceDependentId:dependentId },
+                              { ...uploadFile,workforceApplicationId:applicationgetId, workforceDependentId:decodeId(dependentId) },
                               `Created workforce document`
                             )
                           );
