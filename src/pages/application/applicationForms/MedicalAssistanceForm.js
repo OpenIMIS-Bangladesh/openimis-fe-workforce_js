@@ -19,8 +19,10 @@ import EmployeeDependentForm from "../EmployeeDependentForm";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import {
   createApplication,
+  createWorkforceDocument,
   createWorkforceEmployee,
   fetchApplicationId,
+  fetchEmployeeDependent,
   fetchWorkforceEmployee,
   updateApplication,
   updateWorkforceEmployee,
@@ -68,6 +70,7 @@ const MedicalAssistanceForm = ({
   const applicationId = useSelector(
     (state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []
   );
+  const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const classes = useStyles();
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(0);
@@ -337,6 +340,19 @@ const MedicalAssistanceForm = ({
           )
         );
       }
+    }else if (nextStep === 4){
+      const fetchedApplicationId = { id :safeApplicationId(applicationId, parsedApplicationData)}
+      await dispatch(fetchEmployeeDependent(modulesManager,[`workforceApplication_Id:"${fetchedApplicationId.id}"`]))
+                            .then((res)=>{
+                              const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id
+                              console.log({dependentId})
+                               dispatch(
+                                  createWorkforceDocument(
+                                    { ...uploadFile,workforceApplicationId:fetchedApplicationId.id, workforceDependentId:decodeId(dependentId) },
+                                    `Created workforce document`
+                                  )
+                                );
+                            })
     } else {
       // console.clear();
       console.log(applicationId);

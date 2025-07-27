@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Box,
   Paper,
-  Typography,
   Divider,
-  IconButton,
+  Checkbox,
+  FormControlLabel,
 } from "@material-ui/core";
-// import { TextInput } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   useTranslations,
@@ -18,93 +17,106 @@ import {
   PublishedComponent,
 } from "@openimis/fe-core";
 
-
 const useStyles = makeStyles((theme) => ({
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    // height: "100vh",
-  },
   paper: {
     padding: theme.spacing(2),
   },
-  buttonContainer: {
-    marginTop: theme.spacing(2),
-    display: "flex",
-    justifyContent: "space-between",
+  item: {
+    marginBottom: theme.spacing(2),
   },
 }));
 
-const EmployeeLocationForm = ({ handleChange,formData, setFormData }) => {
+const EmployeeLocationForm = ({ handleChange, formData }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
-  const { formatMessage } = useTranslations(
-    "core.RegistrationPage",
-    modulesManager
-  );
+  const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
 
-//   const handleChange = (key, value) => {
-//     setFormData((prev) => ({ ...prev, [key]: value }));
-//   };
+  const [sameAsPresent, setSameAsPresent] = useState(false);
+
+  useEffect(() => {
+    if (sameAsPresent) {
+      const presentLocation = formData?.workforceEmployee?.presentLocation || null;
+      const presentAddress = formData?.workforceEmployee?.presentAddress || "";
+
+      handleChange("permanentLocation", presentLocation);
+      handleChange("permanentAddress", presentAddress);
+    }
+  }, [sameAsPresent, formData?.workforceEmployee?.presentLocation, formData?.workforceEmployee?.presentAddress]);
+
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Paper className={classes.paper} elevation={0}>
-             <Box mb={4} textAlign="center" fontWeight="bold">
+            <Box mb={4} textAlign="center" fontWeight="bold">
               <FormattedMessage id="workforce.application.header.location" module="workforce" />
             </Box>
-            <Grid container className={classes.item} spacing={2}>
-            <Grid item xs={12} className={classes.item}>
+
+            <Grid container spacing={2}>
+              {/* Present Location */}
+              <Grid item xs={12}>
                 <p>{formatMessage("workforce.employee.present_location")}</p>
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
-                  value={formData?.workforceEmployee.presentLocation || null}
-                  onChange={(presentLocation) =>
-                    handleChange( "presentLocation", presentLocation )
-                  }
+                  value={formData?.workforceEmployee?.presentLocation || null}
+                  onChange={(presentLocation) => handleChange("presentLocation", presentLocation)}
                   readOnly={false}
                   required
                   split={true}
                 />
               </Grid>
-              <Grid item xs={12} className={classes.item}>
+
+              <Grid item xs={12}>
                 <TextInput
                   label="workforce.employee.present_address"
-                  value={formData?.workforceEmployee.presentAddress || ""}
-                  onChange={(v) => handleChange( "presentAddress", v )}
+                  value={formData?.workforceEmployee?.presentAddress || ""}
+                  onChange={(v) => handleChange("presentAddress", v)}
                   readOnly={false}
                 />
               </Grid>
-              <Grid item xs={12} className={classes.item}>
+
+              {/* Checkbox */}
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      color="primary"
+                      checked={sameAsPresent}
+                      onChange={(e) => setSameAsPresent(e.target.checked)}
+                    />
+                  }
+                  label={
+                    <FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />
+                  }
+                />
+              </Grid>
+
+              {/* Permanent Location */}
+              <Grid item xs={12}>
                 <p>{formatMessage("workforce.employee.permanent_location")}</p>
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
-                  value={formData?.workforceEmployee.permanentLocation || null}
-                  onChange={(permanentLocation) =>
-                    handleChange(
-                      "permanentLocation", permanentLocation
-                    )
-                  }
-                  readOnly={false}
+                  value={formData?.workforceEmployee?.permanentLocation || null}
+                  onChange={(permanentLocation) => handleChange("permanentLocation", permanentLocation)}
+                  readOnly={sameAsPresent}
                   required
                   split={true}
                 />
               </Grid>
-              <Grid item xs={12} className={classes.item}>
+
+              <Grid item xs={12}>
                 <TextInput
                   label="workforce.employee.permanent_address"
-                  value={formData?.workforceEmployee.permanentAddress || ""}
-                  onChange={(v) => handleChange( "permanentAddress", v )}
-                  readOnly={false}
+                  value={formData?.workforceEmployee?.permanentAddress || ""}
+                  onChange={(v) => handleChange("permanentAddress", v)}
+                  readOnly={sameAsPresent}
                 />
               </Grid>
-              
             </Grid>
+
             <Divider />
           </Paper>
         </Grid>

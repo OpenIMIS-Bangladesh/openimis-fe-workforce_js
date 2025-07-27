@@ -167,9 +167,9 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                 />
               </Grid> */}
               {data.map((document, index) => (
-                <Grid container spacing={2} alignItems="center" style={{ marginBottom: "5px", border: "1px solid #fff" }} key={document.fieldId}>
+                <Grid container spacing={2} alignItems="center" style={{ marginBottom: "12px", border: "1px solid #006273" }} key={document.fieldId}>
                   <Grid item xs={6}>
-                    <Typography>{document.nameBn}</Typography>
+                    <Typography>{index+1}. {document.nameBn}</Typography>
                   </Grid>
                   <Grid item xs={6}>
                     <FileUploader fieldKey={document.fieldId} onFileChange={handleChange} applicationId={applicationId} documentType={document.documentType} />

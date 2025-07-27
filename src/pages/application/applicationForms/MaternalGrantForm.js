@@ -510,25 +510,25 @@ const MaternalGrantForm = ({
         />
       ),
     },
-    ...(applicationForSelf === "no"
-      ? [
-          {
-            label: "workforce.application.steps.dependent",
-            content: (
-              <EmployeeDependentForm
-                // formData={formData}
-              applicationType={formData.applicationType}
-              dependents={formData.dependents}
-              handleDependentChange={handleDependentChange}
-              addDependent={addDependent}
-              removeDependent={removeDependent}
-              expanded={expanded}
-              setExpanded={setExpanded}
-              />
-            ),
-          },
-        ]
-      : []),
+    // ...(applicationForSelf === "no"
+    //   ? [
+    //       {
+    //         label: "workforce.application.steps.dependent",
+    //         content: (
+    //           <EmployeeDependentForm
+    //             // formData={formData}
+    //           applicationType={formData.applicationType}
+    //           dependents={formData.dependents}
+    //           handleDependentChange={handleDependentChange}
+    //           addDependent={addDependent}
+    //           removeDependent={removeDependent}
+    //           expanded={expanded}
+    //           setExpanded={setExpanded}
+    //           />
+    //         ),
+    //       },
+    //     ]
+    //   : []),
   ];
 
   console.log({ tazwer: reduxState.core.user.id });

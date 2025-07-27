@@ -314,17 +314,6 @@ if (reduxState.workforce.selectedEmployee) {
                           );
                       })
                 
-                if (dependentId?.id) {
-                          await dispatch(
-                            createWorkforceDocument(
-                              { ...uploadFile, workforceDependentId:dependentId?.id },
-                              `Created workforce document`
-                            )
-                          );
-                        } else {
-                          console.warn("Factory ID not found after fetch, document not created.");
-                        }
-                
                 // const createEducation = {
                 //   applicationId: applicationgetId,
                 //   educationLevel: formData?.metadata?.scholarshipFor,

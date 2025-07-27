@@ -68,8 +68,10 @@
   "workforce.employee.passport_no": "পাসপোর্ট নং",
   "workforce.employee.fathers_name.bn": "পিতার নাম (বাংলা)",
   "workforce.employee.fathers_name.en": "পিতার নাম (ইংরেজি)",
+  "workforce.employee.fathers_name": "পিতার নাম",
   "workforce.employee.mothers_name.bn": "মাতার নাম (বাংলা)",
   "workforce.employee.mothers_name.en": "মাতার নাম (ইংরেজি)",
+  "workforce.employee.mothers_name": "মাতার নাম",
   "workforce.employee.spouse.name.bn": "স্বামী/স্ত্রীর নাম (বাংলা)",
   "workforce.employee.spouse.name.en": "স্বামী/স্ত্রীর নাম (ইংরেজি)",
   "workforce.employee.marital_status": "বৈবাহিক অবস্থা",
@@ -499,7 +501,7 @@
   "workforce.relation.mother": "মাতা",
   "workforce.relation.wife": "স্ত্রী",
   "workforce.relation.husband": "স্বামী",
-  "workforce.relation.son": "পুত্র",
+  "workforce.relation.son": "ছেলে",
   "workforce.relation.daughter": "কন্যা",
   "workforce.relation.brother": "ভাই",
   "workforce.relation.sister": "বোন",
@@ -511,6 +513,7 @@
 
     "workforce.uploadFile.dependent.photo": "নির্ভরশীলের ছবি",
   "workforce.uploadFile.dependent.nid_or_birthCcertificate": "নির্ভরশীলের জাতীয় পরিচয়পত্র বা জন্মসনদের ছবি",
+  "workforce.employee.sameAsPresent": "বর্তমান ঠিকানার অনুরূপ",
 
   "calendar.clearButton": "মুছে ফেলুন"
 }
