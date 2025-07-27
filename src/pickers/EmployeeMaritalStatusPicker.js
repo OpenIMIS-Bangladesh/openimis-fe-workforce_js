@@ -19,7 +19,7 @@ const EmployeeMaritalStatusPicker = ({
   const { formatMessage } = useTranslations("workforce");
 
   // Adjust the options to match the EMPLOYEE_MARITAL_STATUS format
-  const EMPLOYEE_MARITAL_STATUS = ["Single", "Married", "Widow", "Widower", "Remarried"];
+  const EMPLOYEE_MARITAL_STATUS = ["workforce.marital_status.single", "workforce.marital_status.married", "workforce.marital_status.widow", "workforce.marital_status.widower", "workforce.marital_status.remarried"];
 
   // Find the selected option
   const selectedOption = useMemo(
@@ -39,7 +39,7 @@ const EmployeeMaritalStatusPicker = ({
       isLoading={false} // Set to false if not loading data dynamically
       options={EMPLOYEE_MARITAL_STATUS}
       value={selectedOption}
-      getOptionLabel={(option) => option} // Since options are strings, return the string directly
+      getOptionLabel={(option) => formatMessage(option) } // Since options are strings, return the string directly
       onChange={(option) => onChange(option, option ?? null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}

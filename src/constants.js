@@ -5,15 +5,15 @@ export const WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY = "workforce.MainMenu";
 
 export const WORKFORCE_GENDER = [
   {
-    name: "Male",
+    name: "workforce.gender.male",
     id: "M",
   },
   {
-    name: "Female",
+    name: "workforce.gender.female",
     id: "F",
   },
   {
-    name: "Other",
+    name: "workforce.gender.other",
     id: "O",
   },
 ];

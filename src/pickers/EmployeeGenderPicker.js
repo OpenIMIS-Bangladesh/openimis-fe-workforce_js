@@ -37,7 +37,7 @@ const EmployeeGenderPicker = ({
       isLoading={true}
       options={WORKFORCE_GENDER}
       value={selectedOption}
-      getOptionLabel={(option) => `${option.name}`}
+      getOptionLabel={(option) =>formatMessage(option.name)}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}

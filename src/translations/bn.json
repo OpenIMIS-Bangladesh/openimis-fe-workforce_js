@@ -493,6 +493,15 @@
   "workforce.employee.aid.reason.info.maternity": "মাতৃত্বকালীন রোগের জন্য",
   "workforce.employee.aid.reason.info.accident": "দুর্ঘটনার বিবরণ",
 
+  "workforce.gender.male": "পুরুষ",
+  "workforce.gender.female": "মহিলা",
+  "workforce.gender.other": "অন্যান্য",
+  "workforce.marital_status.single": "অবিবাহিত",
+  "workforce.marital_status.married": "বিবাহিত",
+  "workforce.marital_status.widow": "বিধবা",
+  "workforce.marital_status.widower": "বিধুর",
+  "workforce.marital_status.remarried": "পুনরায় বিবাহিত",
+
   "workforce.account.selection.type": "অ্যাকাউন্টের ধরণ নির্বাচন করুন",
 
   "workforce.register.button": "নিবন্ধন করুন",

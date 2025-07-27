@@ -664,6 +664,16 @@
   "workforce.uploadFile.dependent.nid_or_birthCcertificate": "Dependent's NID or Birth Certificate Photo",
   "workforce.employee.sameAsPresent": "Same as present location",
 
+  "workforce.gender.male":"Male",
+  "workforce.gender.female":"Female",
+  "workforce.gender.other":"Other",
+
+  "workforce.marital_status.single": "Single",
+  "workforce.marital_status.married": "Married",
+  "workforce.marital_status.widow": "Widow",
+  "workforce.marital_status.widower": "Widower",
+  "workforce.marital_status.remarried": "Remarried",
+
     "workforce.register.button":"নিবন্ধন করুন",
 
     "calendar.clearButton": "Clear"
