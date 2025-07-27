@@ -51,7 +51,7 @@ const CustomDetailedLocation = ({ locationType ="city", onChange, addressKey, da
 
       {locationType === "rural" && (
         <>
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <TextInput
               label="workforce.employee.rural.address"
               value={localData.ruralAddress || ""}
@@ -59,21 +59,13 @@ const CustomDetailedLocation = ({ locationType ="city", onChange, addressKey, da
               InputProps={{ margin: "dense" }}
               readOnly={readOnly}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Grid> */}
+
+          <Grid item xs={12} sm={4}>
             <TextInput
               label="workforce.employee.rural.house_name"
               value={localData.houseName || ""}
               onChange={(v) => updateField("houseName", v)}
-              InputProps={{ margin: "dense" }}
-              readOnly={readOnly}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextInput
-              label="workforce.employee.rural.village_road"
-              value={localData.villageRoad || ""}
-              onChange={(v) => updateField("villageRoad", v)}
               InputProps={{ margin: "dense" }}
               readOnly={readOnly}
             />
@@ -89,13 +81,23 @@ const CustomDetailedLocation = ({ locationType ="city", onChange, addressKey, da
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextInput
+              label="workforce.employee.rural.village_road"
+              value={localData.villageRoad || ""}
+              onChange={(v) => updateField("villageRoad", v)}
+              InputProps={{ margin: "dense" }}
+              readOnly={readOnly}
+            />
+          </Grid>
+          
+          {/* <Grid item xs={12} sm={4}>
+            <TextInput
               label="workforce.employee.rural.post_office"
               value={localData.postOffice || ""}
               onChange={(v) => updateField("postOffice", v)}
               InputProps={{ margin: "dense" }}
               readOnly={readOnly}
             />
-          </Grid>
+          </Grid> */}
         </>
       )}
     </Grid>

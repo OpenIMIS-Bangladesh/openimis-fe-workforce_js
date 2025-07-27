@@ -679,8 +679,8 @@
   "workforce.employee.city.apartment_number":"Appartment Number",
 
   "workforce.employee.rural.address": "Address (Rural)",
-  "workforce.employee.rural.house_name": "House / Holding Number",
-  "workforce.employee.rural.village_road": "Village / Road",
+  "workforce.employee.rural.house_name": "House",
+  "workforce.employee.rural.village_road": "Village",
   "workforce.employee.rural.para_mahalla": "Para / Mahalla",
   "workforce.employee.rural.post_office": "Post Office",
 

@@ -525,8 +525,8 @@
   "workforce.employee.city.apartment_number": "অ্যাপার্টমেন্ট নাম্বার",
 
   "workforce.employee.rural.address": "ঠিকানা (গ্রামীণ)",
-  "workforce.employee.rural.house_name": "বাড়ি / হোল্ডিং নাম্বার",
-  "workforce.employee.rural.village_road": "গ্রাম / রাস্তা",
+  "workforce.employee.rural.house_name": "বাড়ি",
+  "workforce.employee.rural.village_road": "গ্রাম",
   "workforce.employee.rural.para_mahalla": "পাড়া / মহল্লা",
   "workforce.employee.rural.post_office": "ডাকঘর",
 
