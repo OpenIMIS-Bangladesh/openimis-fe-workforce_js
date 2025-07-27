@@ -518,9 +518,19 @@
   "workforce.relation.grand_son": "নাতি",
   "workforce.relation.grand_father": "দাদা",
   "workforce.relation.grand_mother": "দাদি",
-    "workforce.employee.relation.picker": "সম্পর্কের ধরন নির্বাচন করুন",
+  "workforce.employee.relation.picker": "সম্পর্কের ধরন নির্বাচন করুন",
 
-    "workforce.uploadFile.dependent.photo": "নির্ভরশীলের ছবি",
+  "workforce.employee.city.road_no": "রোড নাম্বার",
+  "workforce.employee.city.house_name": "বাড়ির নাম",
+  "workforce.employee.city.apartment_number": "অ্যাপার্টমেন্ট নাম্বার",
+
+  "workforce.employee.rural.address": "ঠিকানা (গ্রামীণ)",
+  "workforce.employee.rural.house_name": "বাড়ি / হোল্ডিং নাম্বার",
+  "workforce.employee.rural.village_road": "গ্রাম / রাস্তা",
+  "workforce.employee.rural.para_mahalla": "পাড়া / মহল্লা",
+  "workforce.employee.rural.post_office": "ডাকঘর",
+
+  "workforce.uploadFile.dependent.photo": "নির্ভরশীলের ছবি",
   "workforce.uploadFile.dependent.nid_or_birthCcertificate": "নির্ভরশীলের জাতীয় পরিচয়পত্র বা জন্মসনদের ছবি",
   "workforce.employee.sameAsPresent": "বর্তমান ঠিকানার অনুরূপ",
 
