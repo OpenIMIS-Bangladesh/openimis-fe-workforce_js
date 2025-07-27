@@ -88,26 +88,6 @@ class ApplicationProcessSearcher extends Component {
       revertByChecker: false,
       revertByFactoryAdmin: false,
       dynamicTableTitle: "",
-      officeData: {
-        cf: {
-          suboffices: {
-            "Suboffice A": "রহিম উদ্দিন",
-            "Suboffice B": "করিমা বেগম",
-          },
-        },
-        blwf: {
-          suboffices: {
-            "Suboffice C": "সজল হোসেন",
-            "Suboffice D": "রাবেয়া খাতুন",
-          },
-        },
-        "EIS PILOT": {
-          suboffices: {
-            "Suboffice E": "মাহফুজ রহমান",
-            "Suboffice F": "নুসরাত জাহান",
-          },
-        },
-      },
     };
     this.rowsPerPageOptions = [10, 20, 50, 100];
     this.defaultPageSize = 10;
@@ -1119,7 +1099,6 @@ class ApplicationProcessSearcher extends Component {
                 open={forwardModalOpen}
                 onClose={this.handleCloseForwardModal}
                 selectedApplication={selectedApplication}
-                officeData={this.state.officeData}
                 onSubmitForward={this.handleForwardSubmit}
               />
             );
@@ -1130,7 +1109,6 @@ class ApplicationProcessSearcher extends Component {
                   open={forwardModalOpen}
                   onClose={this.handleCloseForwardModal}
                   selectedApplication={selectedApplication}
-                  officeData={this.state.officeData}
                   onSubmitForward={this.handleForwardSubmit}
                 />
                 <GenerateBFTN
@@ -1208,7 +1186,6 @@ class ApplicationProcessSearcher extends Component {
                   open={forwardModalOpen}
                   onClose={this.handleCloseForwardModal}
                   selectedApplication={selectedApplication}
-                  officeData={this.state.officeData}
                   onSubmitForward={this.handleForwardSubmit}
                 />
                 <GenerateBFTN
