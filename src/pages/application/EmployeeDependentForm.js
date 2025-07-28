@@ -38,6 +38,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
       ? `${formatMessage(formData.relationType)}র ${formatMessage(labelKey)}`
       : formatMessage(labelKey);
   };
+   const [sameAsPresent, setSameAsPresent] = useState({});
 
   // Sync permanent fields when checkbox is checked
   useEffect(() => {
@@ -50,16 +51,14 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
   }, [sameAsPresent, normalizedDependents]);
 
   console.log({ dependents });
-
-   const [sameAsPresent, setSameAsPresent] = useState(false);
   
     useEffect(() => {
       if (sameAsPresent) {
         const presentLocation = formData?.presentLocation || null;
         const presentAddress = formData?.presentAddress || "";
   
-        handleChange("permanentLocation", presentLocation);
-        handleChange("permanentAddress", presentAddress);
+        handleDependentChange("permanentLocation", presentLocation);
+        handleDependentChange("permanentAddress", presentAddress);
       }
     }, [sameAsPresent, formData?.presentLocation, formData?.presentAddress]);
   
@@ -280,7 +279,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                 <Grid item xs={12}>
                   <CustomDetailedLocation
                     locationType={isCityLocation(formData?.presentLocation) ? "city" : "rural"}
-                    onChange={handleChange}
+                    onChange={handleDependentChange}
                     addressKey="presentAddress"
                     data={formData}
                     readOnly={false}
@@ -323,7 +322,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                 <Grid item xs={12}>
                   <CustomDetailedLocation
                     locationType={isCityLocation(formData?.permanentAddress) ? "city" : "rural"}
-                    onChange={handleChange}
+                    onChange={handleDependentChange}
                     addressKey="permanentAddress"
                     data={formData}
                     readOnly={false}
