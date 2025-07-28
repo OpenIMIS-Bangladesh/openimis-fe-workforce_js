@@ -6,6 +6,7 @@ import { TextInput, PublishedComponent, FormattedMessage, useTranslations, useMo
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import RelationWithWorkerPicker from "../../pickers/RelationWithWorkerPicker";
 import FileUploader from "../../pickers/FileUploader";
+import CustomDetailedLocation from "../../components/application-forms/CustomDetailedLocation";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDependentForm = ({ applicationType, dependents, handleDependentChange, addDependent, removeDependent, expanded, setExpanded }) => {
+const EmployeeDependentForm = ({ applicationType, dependents, handleDependentChange, addDependent, removeDependent, expanded, setExpanded,formData,handleChange  }) => {
   // Normalize dependents to always be an array
   const normalizedDependents = Array.isArray(dependents) ? dependents : dependents ? [dependents] : [{}];
 
@@ -38,7 +39,6 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
       : formatMessage(labelKey);
   };
 
-  const [sameAsPresent, setSameAsPresent] = useState({});
   // Sync permanent fields when checkbox is checked
   useEffect(() => {
     normalizedDependents.forEach((formData, index) => {
@@ -50,6 +50,32 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
   }, [sameAsPresent, normalizedDependents]);
 
   console.log({ dependents });
+
+   const [sameAsPresent, setSameAsPresent] = useState(false);
+  
+    useEffect(() => {
+      if (sameAsPresent) {
+        const presentLocation = formData?.presentLocation || null;
+        const presentAddress = formData?.presentAddress || "";
+  
+        handleChange("permanentLocation", presentLocation);
+        handleChange("permanentAddress", presentAddress);
+      }
+    }, [sameAsPresent, formData?.presentLocation, formData?.presentAddress]);
+  
+    const isCityLocation = (locationObj) => {
+      let current = locationObj;
+  
+      while (current) {
+        if (current.name && current.name.includes("সিটি কর্পোরেশন")) {
+          return true; // it's a city
+        }
+        current = current.parent;
+      }
+  
+      return false; // not a city
+    };
+  
 
   return (
     <Box mt={1}>
@@ -252,10 +278,11 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextInput
-                    label={getRelationAwareLabel(formData, "workforce.employee.present_location")}
-                    value={formData.presentAddress || ""}
-                    onChange={(v) => handleDependentChange(index, "presentAddress", v)}
+                  <CustomDetailedLocation
+                    locationType={isCityLocation(formData?.presentLocation) ? "city" : "rural"}
+                    onChange={handleChange}
+                    addressKey="presentAddress"
+                    data={formData}
                     readOnly={false}
                   />
                 </Grid>
@@ -292,12 +319,14 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                     split={true}
                   />
                 </Grid>
+                
                 <Grid item xs={12}>
-                  <TextInput
-                    label={getRelationAwareLabel(formData, "workforce.employee.permanent_location")}
-                    value={formData.permanentAddress || ""}
-                    onChange={(v) => handleDependentChange(index, "permanentAddress", v)}
-                    readOnly={!!sameAsPresent[index]}
+                  <CustomDetailedLocation
+                    locationType={isCityLocation(formData?.permanentAddress) ? "city" : "rural"}
+                    onChange={handleChange}
+                    addressKey="permanentAddress"
+                    data={formData}
+                    readOnly={false}
                   />
                 </Grid>
 
