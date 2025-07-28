@@ -176,6 +176,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               </Grid>
               <Grid item xs={6} className={classes.item}>
                 <FactoryPicker
+                  required={true}
                   value={formData?.workforceEmployee?.factory?.id}
                   label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
                   companyId={formData?.workforceEmployee?.company?.id}
