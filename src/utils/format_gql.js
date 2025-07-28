@@ -205,8 +205,8 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee.nid ? `nid: "${employee.nid}"` : ""}
     ${employee.insuranceNumber ? `insuranceNumber: "${employee.insuranceNumber}"` : ""}
     ${employee.passportNo ? `passportNo: "${employee.passportNo}"` : ""}
-    ${employee.permanentAddress ? `permanentAddress: "${employee.permanentAddress}"` : ""}
-    ${employee.presentAddress ? `presentAddress: "${employee.presentAddress}"` : ""}
+    ${employee.permanentAddress ? `permanentAddress: ${escapeQuotes(employee.permanentAddress)}` : ""}
+    ${employee.presentAddress ? `presentAddress: ${escapeQuotes(employee.presentAddress)}` : ""}
     ${employee.position ? `position: "${employee.position}"` : ""}
     ${employee.monthlyEarning ? `monthlyEarning: "${employee.monthlyEarning}"` : ""}
     ${employee.fatherNameBn ? `fatherNameBn: "${employee.fatherNameBn}"` : ""}

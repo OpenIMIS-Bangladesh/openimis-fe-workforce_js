@@ -1,21 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  Grid,
-  Box,
-  Paper,
-  Divider,
-  Checkbox,
-  FormControlLabel,
-} from "@material-ui/core";
+import { Grid, Box, Paper, Divider, Checkbox, FormControlLabel } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  useTranslations,
-  useModulesManager,
-  TextInput,
-  useHistory,
-  FormattedMessage,
-  PublishedComponent,
-} from "@openimis/fe-core";
+import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
+import CustomDetailedLocation from "../../components/application-forms/CustomDetailedLocation";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,6 +31,19 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
     }
   }, [sameAsPresent, formData?.workforceEmployee?.presentLocation, formData?.workforceEmployee?.presentAddress]);
 
+  const isCityLocation = (locationObj) => {
+    let current = locationObj;
+
+    while (current) {
+      if (current.name && current.name.includes("সিটি কর্পোরেশন")) {
+        return true; // it's a city
+      }
+      current = current.parent;
+    }
+
+    return false; // not a city
+  };
+
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
@@ -68,28 +68,31 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextInput
                   label="workforce.employee.present_address"
                   value={formData?.workforceEmployee?.presentAddress || ""}
                   onChange={(v) => handleChange("presentAddress", v)}
                   readOnly={false}
                 />
+              </Grid> */}
+              {formData?.workforceEmployee?.presentLocation && (
+              <Grid item xs={12}>
+                <CustomDetailedLocation
+                  locationType={isCityLocation(formData?.workforceEmployee?.presentLocation) ? "city" : "rural"}
+                  onChange={handleChange}
+                  addressKey="presentAddress"
+                  data={formData}
+                  readOnly={false}
+                />
               </Grid>
+              )}
 
               {/* Checkbox */}
               <Grid item xs={12}>
                 <FormControlLabel
-                  control={
-                    <Checkbox
-                      color="primary"
-                      checked={sameAsPresent}
-                      onChange={(e) => setSameAsPresent(e.target.checked)}
-                    />
-                  }
-                  label={
-                    <FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />
-                  }
+                  control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
+                  label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
                 />
               </Grid>
 
@@ -107,14 +110,25 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextInput
                   label="workforce.employee.permanent_address"
                   value={formData?.workforceEmployee?.permanentAddress || ""}
                   onChange={(v) => handleChange("permanentAddress", v)}
                   readOnly={sameAsPresent}
                 />
+              </Grid> */}
+              {formData?.workforceEmployee?.permanentLocation &&(
+              <Grid item xs={12}>
+                <CustomDetailedLocation
+                  locationType={isCityLocation(formData?.workforceEmployee?.presentLocation) ? "city" : "rural"}
+                  onChange={handleChange}
+                  addressKey="permanentAddress"
+                  data={formData}
+                  readOnly={sameAsPresent}
+                />
               </Grid>
+              )}
             </Grid>
 
             <Divider />
