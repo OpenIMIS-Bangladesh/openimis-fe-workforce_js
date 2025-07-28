@@ -49,6 +49,7 @@ const BranchPicker = ({
   );
 
   console.log({allData})
+  const locale = useSelector((state) => state.core?.user?.i_user?.language || "en");
 
   return (
     <Autocomplete
@@ -63,7 +64,8 @@ const BranchPicker = ({
       options={allData} // Using filtered branches
       isLoading={isLoading}
       value={selectedOption}
-      getOptionLabel={(option) => `${option.nameEn}`}
+      // getOptionLabel={(option) => `${option.nameEn}`}
+      getOptionLabel={(option) => locale === "en" ? option.nameEn : option.nameBn}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}
