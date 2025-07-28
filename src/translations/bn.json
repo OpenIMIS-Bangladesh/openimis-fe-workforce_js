@@ -61,7 +61,7 @@
   "workforce.employee.gender": "লিঙ্গ",
   "workforce.employee.birthdate": "জন্ম তারিখ",
   "workforce.employee.joindate": "যোগদানের তারিখ",
-  "workforce.employee.deathdate": "মৃত্যুর তারিখ",
+  "workforce.employee.deathdate": "তারিখ",
   "workforce.employee.nid": "এনআইডি",
   "workforce.employee.employee_type": "টাইপ",
   "workforce.employee.birth_certificate_no": "জন্ম সনদ নং",
