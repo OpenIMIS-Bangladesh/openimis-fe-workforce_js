@@ -361,6 +361,7 @@
     "workforce.application.for":"Application for whom?",
     "workforce.application.for.type.self":"Self",
     "workforce.application.for.type.dependent":"Dependent",
+  "workforce.application.for.type.dependent.children": "For Children",
     "workforce.application.for.type.dependent.mother":"For the wife in case of a male worker",
     "workforce.application.reason.type":"Purpose for financial aid?",
     "workforce.application.permission.yes":"Yes",
@@ -557,8 +558,8 @@
     "workforce.application.nidVerify.loading": "Your information is verifing from LIMS",
      "workforce.application.nidVerify.success": "Your information has been successfully verified from LIMS",
     "workforce.application.nidVerify.error": "Your information has  been failed to verified from LIMS",
-    "workforce.application.labourHeadingOne": "Personal information",
-    "workforce.application.labourHeadingTwo": "Family information",
+    "workforce.application.labourHeadingOne": "Worker Personal information",
+    "workforce.application.labourHeadingTwo": "Worker Family information",
     "workforce.application.labourDetails.spouse": "Maternity Wife Information",
     "workforce.application.account.bank": "Want to get help through the bank?",
     "workforce.application.account.mobile": "Want to get assistance through mobile banking?",
@@ -675,15 +676,21 @@
   "workforce.marital_status.widower": "Widower",
   "workforce.marital_status.remarried": "Remarried",
 
-  "workforce.employee.city.road_no":"Road Number",
-  "workforce.employee.city.house_name":"House Name",
+  "workforce.employee.city.road_no":"Road Number / Road Name",
+  "workforce.employee.city.house_name":"House Number/ House Name",
   "workforce.employee.city.apartment_number":"Appartment Number",
 
   "workforce.employee.rural.address": "Address (Rural)",
-  "workforce.employee.rural.house_name": "House",
-  "workforce.employee.rural.village_road": "Village",
+  "workforce.employee.rural.house_name": "House / Holding Number",
+  "workforce.employee.rural.village_road": "Village / Road",
   "workforce.employee.rural.para_mahalla": "Para / Mahalla",
   "workforce.employee.rural.post_office": "Post Office",
+
+  "workforce.dead":"Dead",
+  "workforce.account.entry":"",
+
+  "workforce.employee.accident.info.hasRejoined":"Have you rejoined the workplace after recovery?",
+
 
     "workforce.register.button":"নিবন্ধন করুন",
 

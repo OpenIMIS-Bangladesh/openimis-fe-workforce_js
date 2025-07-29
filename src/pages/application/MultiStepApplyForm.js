@@ -459,7 +459,7 @@ const MultiStepApplyForm = () => {
                     <FormControlLabel
                       value="no"
                       control={<Radio color="primary" />}
-                      label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>}
+                      label={<FormattedMessage id="workforce.application.for.type.dependent.children" module="workforce"/>}
                     />
                   </RadioGroup>
                 </FormControl>

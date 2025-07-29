@@ -41,10 +41,12 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
   const history = useHistory();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
+  const getDeathLabel = ( labelKey) => {
+    return formData.applicationType === "financialAssistance" 
+      ? `${formatMessage("workforce.dead")} ${formatMessage(labelKey)}`
+      : formatMessage(labelKey);
+  };
 
-  const employeeData = useSelector((state) => state.workforce[`workforceEmployee`] ?? []);
-
-  console.log("hello bangladesh", formData);
   return (
     <Box>
       <Grid container spacing={2}>
@@ -60,7 +62,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
             {/* <p><b>Personal Info </b></p> */}
             <Typography>
               <b>
-                <FormattedMessage id="workforce.application.labourHeadingOne" module="workforce" />
+                {getDeathLabel("workforce.application.labourHeadingOne")}
               </b>
             </Typography>
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
@@ -217,7 +219,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
             {/* <p><b>Family Info</b></p> */}
             <Typography>
               <b>
-                <FormattedMessage id="workforce.application.labourHeadingTwo" module="workforce" />
+                {getDeathLabel("workforce.application.labourHeadingTwo")}
               </b>
             </Typography>
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>

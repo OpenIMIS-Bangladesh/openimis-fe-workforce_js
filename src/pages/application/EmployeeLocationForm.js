@@ -44,6 +44,12 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
     return false; // not a city
   };
 
+  const getDeathLabel = ( labelKey) => {
+    return formData.applicationType === "financialAssistance" 
+      ? `${formatMessage("workforce.dead")} ${formatMessage(labelKey)}`
+      : formatMessage(labelKey);
+  };
+
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
@@ -56,7 +62,7 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
             <Grid container spacing={2}>
               {/* Present Location */}
               <Grid item xs={12}>
-                <p>{formatMessage("workforce.employee.present_location")}</p>
+                <b>{getDeathLabel("workforce.employee.present_location")}</b>
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
@@ -88,17 +94,11 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
               </Grid>
               )}
 
-              {/* Checkbox */}
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
-                  label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
-                />
-              </Grid>
+              
 
               {/* Permanent Location */}
               <Grid item xs={12}>
-                <p>{formatMessage("workforce.employee.permanent_location")}</p>
+                <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
@@ -129,6 +129,14 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
                 />
               </Grid>
               )}
+
+              {/* Checkbox */}
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
+                  label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
+                />
+              </Grid>
             </Grid>
 
             <Divider />

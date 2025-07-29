@@ -60,6 +60,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
   const [selectedOption, setSelectedOption] = useState(formData?.employeeAccidentInfo?.accidentType || "disease");
   const [selectedDiseases, setSelectedDiseases] = useState(formData?.employeeAccidentInfo?.cronicDiseaseType || []);
   const [isAdmitted, setIsAdmitted] = useState(formData?.employeeAccidentInfo?.admitted || "no");
+  const [hasRejoined, setHasRejoined] = useState(formData?.employeeAccidentInfo?.hasRejoined || "no");
 
   const handleOptionChange = (event) => {
     const newValue = event.target.value;
@@ -71,6 +72,11 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
         accidentType: newValue,
       },
     }));
+  };
+  const handleHasRejoinedChange = (event) => {
+    const value = event.target.value;
+    setHasRejoined(value);
+    handleChange("hasRejoined", value, "employeeAccidentInfo");
   };
 
   const handleDiseaseChange = (event) => {
@@ -260,15 +266,42 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 readOnly={false}
               />
             </Grid>
-            <Grid item xs={6} className={classes.item}>
-              <PublishedComponent
-                pubRef="workforce.DatePicker"
-                label={"workforce.employee.accident.info.reJoiningDate"}
-                value={formData?.employeeAccidentInfo?.reJoiningDate || ""}
-                onChange={(v) => handleChange("reJoiningDate", v)}
-                readOnly={false}
-              />
+            <Grid item xs={12} className={classes.item}>
+              <FormControl component="fieldset">
+                <FormLabel>
+                  <FormattedMessage
+                    id="workforce.employee.accident.info.hasRejoined"
+                    defaultMessage="আপনি কি সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদান করেছেন?"
+                    module="workforce"
+                  />
+                </FormLabel>
+                <RadioGroup row value={hasRejoined} onChange={handleHasRejoinedChange}>
+                  <FormControlLabel
+                    value="yes"
+                    control={<Radio color="primary" />}
+                    label={<FormattedMessage id="workforce.application.permission.yes" module="workforce" />}
+                  />
+                  <FormControlLabel
+                    value="no"
+                    control={<Radio color="primary" />}
+                    label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}
+                  />
+                </RadioGroup>
+              </FormControl>
             </Grid>
+
+            {hasRejoined === "yes" && (
+              <Grid item xs={6} className={classes.item}>
+                <PublishedComponent
+                  pubRef="workforce.DatePicker"
+                  label={"workforce.employee.accident.info.reJoiningDate"}
+                  value={formData?.employeeAccidentInfo?.reJoiningDate || ""}
+                  onChange={(v) => handleChange("reJoiningDate", v)}
+                  readOnly={false}
+                />
+              </Grid>
+            )}
+
             <Grid item xs={12} className={classes.item}>
               <FormControl component="fieldset">
                 <FormLabel>

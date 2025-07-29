@@ -482,7 +482,7 @@ export function formatWorkforceDocumentGQL(workforceDocumentType) {
     ${workforceDocumentType?.url ? `url: "${workforceDocumentType?.url}"` : ""}
 
     ${workforceDocumentType?.documentType ? `documentType: "${formatGQLString(workforceDocumentType?.documentType)}"` : ""}
-    ${workforceDocumentType?.holderType ? `holderType: "${formatGQLString(workforceDocumentType?.holderType)}"` : ""}
+    ${workforceDocumentType?.holderType ? `holderType: "${workforceDocumentType?.holderType}"` : ""}
     ${workforceDocumentType?.holder ? `holder: "${formatGQLString(workforceDocumentType?.holder)}"` : ""}
     ${workforceDocumentType?.verifierId ? `verifierId: "${formatGQLString(workforceDocumentType?.verifierId)}"` : ""}
     ${workforceDocumentType?.approverId ? `approverId: "${formatGQLString(workforceDocumentType?.approverId)}"` : ""}

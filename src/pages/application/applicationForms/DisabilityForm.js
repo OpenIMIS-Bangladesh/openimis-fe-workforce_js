@@ -86,6 +86,8 @@ const DisabilityForm = ({
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
+    const [expanded, setExpanded] = useState(0);
+  
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
@@ -140,7 +142,7 @@ const DisabilityForm = ({
     organizationType: "",
     applicationType: "",
     dependents: {},
-    employeeBankInfo: {},
+    employeeBankInfo: [{}],
     employeeAccidentInfo: {},
     metadata: {},
     id: "",
@@ -233,7 +235,7 @@ const DisabilityForm = ({
         employeeBankInfo:
           parsedApplicationData?.employeeBankInfo ||
           employeeData?.employeeBankInfo ||
-          {},
+          [{}],
         employeeAccidentInfo:
           parsedApplicationData?.employeeAccidentInfo ||
           employeeData?.employeeAccidentInfo ||
@@ -450,6 +452,31 @@ const DisabilityForm = ({
     // setIsSubmitted(true);
   };
 
+  const handleArrayFieldChange = (fieldKey, index, key, value) => {
+  setFormData((prev) => {
+    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
+    items[index] = { ...items[index], [key]: value };
+    return { ...prev, [fieldKey]: items };
+  });
+};
+
+const addArrayFieldItem = (fieldKey, defaultItem = {}) => {
+  setFormData((prev) => {
+    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
+    const updated = [...items, defaultItem];
+    setExpanded?.(updated.length - 1); // optional chaining
+    return { ...prev, [fieldKey]: updated };
+  });
+};
+
+const removeArrayFieldItem = (fieldKey, index) => {
+  setFormData((prev) => {
+    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [];
+    const updated = items.filter((_, i) => i !== index);
+    return { ...prev, [fieldKey]: updated };
+  });
+};
+
   if (showPreview) {
     return (
       <div className={classes.container}>
@@ -556,11 +583,22 @@ const DisabilityForm = ({
         ) : activeStep === 3 ? (
           <Box mt={0}>
             <EmployeeAccountInfoForm
-              handleChange={(key, value) =>
-                handleChange(key, value, "employeeBankInfo")
-              }
-              formData={formData}
-            />
+  accounts={formData.employeeBankInfo}
+  handleChange={(index, key, value) =>
+    handleArrayFieldChange("employeeBankInfo", index, key, value)
+  }
+  addItem={() =>
+    addArrayFieldItem("employeeBankInfo", {
+      accountHolderName: "",
+      bankName: "",
+      accountNumber: "",
+      branchName: "",
+    })
+  }
+  removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
+  expanded={expanded}
+  setExpanded={setExpanded}
+/>
           </Box>
         ) : activeStep === 4 ? (
           <Box mt={0}>

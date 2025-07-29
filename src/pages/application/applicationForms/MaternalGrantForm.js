@@ -124,13 +124,7 @@ const MaternalGrantForm = ({
     applicationType: "",
     applicationForSelf: applicationForSelf,
     dependents: {},
-    employeeBankInfo: {
-      bank: null,
-      branch: null,
-      accountHolderName: "",
-      routingNumber: "",
-      accountNumber: "",
-    },
+    employeeBankInfo: [{}],
     employeeAccidentInfo: {},
     id: "",
   });
@@ -217,7 +211,7 @@ const MaternalGrantForm = ({
         applicationType:parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount:parsedApplicationData?.grantAmount||parsedApplicationData?.employeeAccidentInfo.grantAmount,
         dependents:parsedApplicationData?.employeeDependentInfo ||employeeData.dependents ||{},
-        employeeBankInfo:parsedApplicationData?.employeeBankInfo ||employeeData?.employeeBankInfo ||{},
+        employeeBankInfo:parsedApplicationData?.employeeBankInfo ||employeeData?.employeeBankInfo ||[{}],
         employeeAccidentInfo:parsedApplicationData?.employeeAccidentInfo ||employeeData?.employeeAccidentInfo ||{},
         metadata:parsedApplicationData?.metadata || employeeData?.metadata || {},
       });
@@ -374,37 +368,30 @@ const MaternalGrantForm = ({
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
-  const handleDependentChange = (index, key, value) => {
-    setFormData((prev) => {
-      const updatedDependents = [...prev.dependents];
-      updatedDependents[index] = { ...updatedDependents[index], [key]: value };
-      return { ...prev, dependents: updatedDependents };
-    });
-  };
-
-  const addDependent = () => {
+ const handleArrayFieldChange = (fieldKey, index, key, value) => {
   setFormData((prev) => {
-    const dependentsArr = Array.isArray(prev.dependents)
-      ? prev.dependents
-      : prev.dependents ? [prev.dependents] : [{}];
-    const newDependents = [...dependentsArr, {}];
-
-    // Set accordion to expand the new dependents
-    setExpanded(newDependents.length - 1);
-
-    return {
-      ...prev,
-      dependents: newDependents,
-    };
+    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
+    items[index] = { ...items[index], [key]: value };
+    return { ...prev, [fieldKey]: items };
   });
 };
 
-  const removeDependent = (index) => {
-    setFormData((prev) => {
-      const updatedDependents = prev.dependents.filter((_, i) => i !== index);
-      return { ...prev, dependents: updatedDependents };
-    });
-  };
+const addArrayFieldItem = (fieldKey, defaultItem = {}) => {
+  setFormData((prev) => {
+    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
+    const updated = [...items, defaultItem];
+    setExpanded?.(updated.length - 1); // optional chaining
+    return { ...prev, [fieldKey]: updated };
+  });
+};
+
+const removeArrayFieldItem = (fieldKey, index) => {
+  setFormData((prev) => {
+    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [];
+    const updated = items.filter((_, i) => i !== index);
+    return { ...prev, [fieldKey]: updated };
+  });
+};
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
@@ -480,11 +467,22 @@ const MaternalGrantForm = ({
       label: "workforce.application.steps.account.info",
       content: (
         <EmployeeAccountInfoForm
-          handleChange={(key, value) =>
-            handleChange(key, value, "employeeBankInfo")
-          }
-          formData={formData}
-        />
+  accounts={formData.employeeBankInfo}
+  handleChange={(index, key, value) =>
+    handleArrayFieldChange("employeeBankInfo", index, key, value)
+  }
+  addItem={() =>
+    addArrayFieldItem("employeeBankInfo", {
+      accountHolderName: "",
+      bankName: "",
+      accountNumber: "",
+      branchName: "",
+    })
+  }
+  removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
+  expanded={expanded}
+  setExpanded={setExpanded}
+/>
       ),
     },
     {

@@ -55,6 +55,8 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
+    const [expanded, setExpanded] = useState(0);
+  
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedScholarshipOption, setSelectedScholarshipOption] = useState("");
   const [showVerifyNid, setShowVerifyNid] = useState(false);
@@ -110,7 +112,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
     applicationType: "",
     applicationForSelf: applicationForSelf,
     dependent: {},
-    employeeBankInfo: {},
+    employeeBankInfo: [{}],
     employeeChildrenInfo: {},
     metadata: {},
     id: "",
@@ -186,7 +188,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
         dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || {},
-        employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || {},
+        employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         employeeChildrenInfo: parsedApplicationData?.employeeChildrenInfo || employeeData.employeeChildrenInfo || {},
       });
@@ -344,37 +346,30 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
-  const handleDependentChange = (index, key, value) => {
-    setFormData((prev) => {
-      const updatedDependents = [...prev.dependents];
-      updatedDependents[index] = { ...updatedDependents[index], [key]: value };
-      return { ...prev, dependents: updatedDependents };
-    });
-  };
-
-  const addDependent = () => {
+  const handleArrayFieldChange = (fieldKey, index, key, value) => {
   setFormData((prev) => {
-    const dependentsArr = Array.isArray(prev.dependents)
-      ? prev.dependents
-      : prev.dependents ? [prev.dependents] : [{}];
-    const newDependents = [...dependentsArr, {}];
-
-    // Set accordion to expand the new dependent
-    setExpanded(newDependents.length - 1);
-
-    return {
-      ...prev,
-      dependents: newDependents,
-    };
+    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
+    items[index] = { ...items[index], [key]: value };
+    return { ...prev, [fieldKey]: items };
   });
 };
 
-  const removeDependent = (index) => {
-    setFormData((prev) => {
-      const updatedDependents = prev.dependents.filter((_, i) => i !== index);
-      return { ...prev, dependents: updatedDependents };
-    });
-  };
+const addArrayFieldItem = (fieldKey, defaultItem = {}) => {
+  setFormData((prev) => {
+    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
+    const updated = [...items, defaultItem];
+    setExpanded?.(updated.length - 1); // optional chaining
+    return { ...prev, [fieldKey]: updated };
+  });
+};
+
+const removeArrayFieldItem = (fieldKey, index) => {
+  setFormData((prev) => {
+    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [];
+    const updated = items.filter((_, i) => i !== index);
+    return { ...prev, [fieldKey]: updated };
+  });
+};
 
   const handleSubmit = () => {
     const submittedBy =
@@ -469,7 +464,23 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
       label: "workforce.application.steps.account.info",
       content: (
         <Box mt={0}>
-          <EmployeeAccountInfoForm handleChange={(key, value) => handleChange(key, value, "employeeBankInfo")} formData={formData} />
+          <EmployeeAccountInfoForm
+  accounts={formData.employeeBankInfo}
+  handleChange={(index, key, value) =>
+    handleArrayFieldChange("employeeBankInfo", index, key, value)
+  }
+  addItem={() =>
+    addArrayFieldItem("employeeBankInfo", {
+      accountHolderName: "",
+      bankName: "",
+      accountNumber: "",
+      branchName: "",
+    })
+  }
+  removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
+  expanded={expanded}
+  setExpanded={setExpanded}
+/>
         </Box>
       ),
     },

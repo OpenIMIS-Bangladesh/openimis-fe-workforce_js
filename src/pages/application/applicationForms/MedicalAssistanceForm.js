@@ -109,13 +109,7 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
     applicationType: "",
     applicationForSelf: applicationForSelf,
     dependents: [{}],
-    employeeBankInfo: {
-      bank: null,
-      branch: null,
-      accountHolderName: "",
-      routingNumber: "",
-      accountNumber: "",
-    },
+    employeeBankInfo:[{}],
     employeeAccidentInfo: {},
     id: "",
   });
@@ -207,7 +201,7 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
         applicationType:parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount:parsedApplicationData?.grantAmount||parsedApplicationData?.employeeAccidentInfo.grantAmount,
         dependents:parsedApplicationData?.employeeDependentInfo ||employeeData.dependents ||{},
-        employeeBankInfo:parsedApplicationData?.employeeBankInfo ||employeeData?.employeeBankInfo ||{},
+        employeeBankInfo:parsedApplicationData?.employeeBankInfo ||employeeData?.employeeBankInfo ||[{}],
         employeeAccidentInfo:parsedApplicationData?.employeeAccidentInfo ||employeeData?.employeeAccidentInfo ||{},
         metadata:parsedApplicationData?.metadata || employeeData?.metadata || {},
       });
@@ -379,43 +373,30 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
-  const handleDependentChange = (index, key, value) => {
-    setFormData((prev) => {
-      const dependentsArr = Array.isArray(prev.dependents)
-        ? prev.dependents
-        : prev.dependents ? [prev.dependents] : [{}];
-      const updatedDependents = [...dependentsArr];
-      updatedDependents[index] = { ...updatedDependents[index], [key]: value };
-      return { ...prev, dependents: updatedDependents };
-    });
-  };
-
-  const addDependent = () => {
+  const handleArrayFieldChange = (fieldKey, index, key, value) => {
   setFormData((prev) => {
-    const dependentsArr = Array.isArray(prev.dependents)
-      ? prev.dependents
-      : prev.dependents ? [prev.dependents] : [{}];
-    const newDependents = [...dependentsArr, {}];
+    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
+    items[index] = { ...items[index], [key]: value };
+    return { ...prev, [fieldKey]: items };
+  });
+};
 
-      // Set accordion to expand the new dependent
-      setExpanded(newDependents.length - 1);
+const addArrayFieldItem = (fieldKey, defaultItem = {}) => {
+  setFormData((prev) => {
+    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
+    const updated = [...items, defaultItem];
+    setExpanded?.(updated.length - 1); // optional chaining
+    return { ...prev, [fieldKey]: updated };
+  });
+};
 
-      return {
-        ...prev,
-        dependents: newDependents,
-      };
-    });
-  };
-
-  const removeDependent = (index) => {
-    setFormData((prev) => {
-      const dependentsArr = Array.isArray(prev.dependents)
-        ? prev.dependents
-        : prev.dependents ? [prev.dependents] : [{}];
-      const updatedDependents = dependentsArr.filter((_, i) => i !== index);
-      return { ...prev, dependents: updatedDependents };
-    });
-  };
+const removeArrayFieldItem = (fieldKey, index) => {
+  setFormData((prev) => {
+    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [];
+    const updated = items.filter((_, i) => i !== index);
+    return { ...prev, [fieldKey]: updated };
+  });
+};
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
@@ -477,12 +458,13 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
             label: "workforce.application.steps.dependent",
             content: (
               <EmployeeDependentForm
-                // formData={formData}
                 applicationType={formData.applicationType}
                 dependents={formData.dependents}
-                handleDependentChange={handleDependentChange}
-                addDependent={addDependent}
-                removeDependent={removeDependent}
+                handleChange={(index, key, value) =>
+                  handleArrayFieldChange("dependents", index, key, value)
+                }
+                addItem={() => addArrayFieldItem("dependents", { fullName: "", relationship: "" })}
+                removeItem={(index) => removeArrayFieldItem("dependents", index)}
                 expanded={expanded}
                 setExpanded={setExpanded}
               />
@@ -500,7 +482,32 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
         />
       ),
     },
-    
+     {
+      label: "workforce.application.steps.account.info",
+      content: <EmployeeAccountInfoForm
+  accounts={formData.employeeBankInfo}
+  handleChange={(index, key, value) =>
+    handleArrayFieldChange("employeeBankInfo", index, key, value)
+  }
+  addItem={() =>
+    addArrayFieldItem("employeeBankInfo", {
+      accountHolderName: "",
+      bankName: "",
+      accountNumber: "",
+      branchName: "",
+    })
+  }
+  removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
+  expanded={expanded}
+  setExpanded={setExpanded}
+/>,
+    },
+    {
+      label: "workforce.application.steps.upload.documents",
+      content: (
+        <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={selectedApplicationType} applicationId={applicationId} />
+      ),
+    },
     
   ];
 

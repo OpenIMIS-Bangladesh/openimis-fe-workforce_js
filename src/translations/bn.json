@@ -230,6 +230,7 @@
   "workforce.application.for": "কার জন্য আবেদন?",
   "workforce.application.for.type.self": "নিজের জন্য",
   "workforce.application.for.type.dependent": "নির্ভরশীলদের জন্য",
+  "workforce.application.for.type.dependent.children": "সন্তানের জন্য",
   "workforce.application.for.type.dependent.mother": "পুরুষ শ্রমিকের ক্ষেত্রে স্ত্রীর জন্য",
 
   "workforce.financial.assistance.normalDeath": "স্বাভাবিক মৃত্যু",
@@ -347,7 +348,7 @@
     "workforce.application.myself":"আমার আবেদনগুলি",
 
   "core.LanguageQuickPicker.dialog.title": "ভাষা নিশ্চিত করুন",
-  "core.LanguageQuickPicker.dialog.message": "তুমি ভাষাটি ইংরেজিতে পরিবর্তন করতে চলেছো। তুমি কি এগিয়ে যেতে চাও?",
+  "core.LanguageQuickPicker.dialog.message": "আপনি ভাষাটি ইংরেজিতে করতে চলেছেন। আপনি কি এগিয়ে যেতে চান?",
   "core.LanguageQuickPicker.dialog.confirm": "নিশ্চিত করুন",
   "core.LanguageQuickPicker.dialog.cancel": "বাতিল করুন",
 
@@ -382,7 +383,7 @@
   "workforce.application.header.location": "ঠিকানা",
   "workforce.application.header.child": "সন্তানের তথ্য",
   "workforce.application.header.document": "প্রমাণপত্র আপলোড",
-  "workforce.application.header.dependent": "নির্ভরশীল",
+  "workforce.application.header.dependent": "যার জন্য আবেদন, তার বিবরণ",
   "workforce.application.header.account": "অ্যাকাউন্ট তথ্য",
   "workforce.application.header.previousGrant": "পূর্ববর্তী অনুদান তথ্য",
   "workforce.application.header.other": "অন্যান্য তথ্য",
@@ -395,8 +396,8 @@
   "workforce.application.nidVerify.loading": "আপনার তথ্যাটি LIMS থেকে যাচাই করা হচ্ছে",
   "workforce.application.nidVerify.success": "আপনার তথ্যাটি LIMS থেকে সফলভাবে যাচাই করা হয়েছে",
   "workforce.application.nidVerify.error": "আপনার তথ্যটি LIMS থেকে যাচাই করা সম্ভব হয়নি",
-  "workforce.application.labourHeadingOne": "আবেদনকারীর ব্যক্তিগত তথ্য",
-  "workforce.application.labourHeadingTwo": "আবেদনকারীর পারিবারিক তথ্য",
+  "workforce.application.labourHeadingOne": "শ্রমিকের ব্যক্তিগত তথ্য",
+  "workforce.application.labourHeadingTwo": "শ্রমিকের পারিবারিক তথ্য",
     "workforce.application.labourDetails.spouse": "প্রসূতি স্ত্রীর তথ্য",
   "workforce.application.account.bank": "ব্যাংকের মাধ্যমে সহায়তা পেতে চান?",
   "workforce.application.account.mobile": "মোবাইল ব্যাংকিংয়ের মাধ্যমে সহায়তা পেতে চান?",
@@ -521,15 +522,20 @@
   "workforce.relation.grand_mother": "দাদি",
   "workforce.employee.relation.picker": "সম্পর্কের ধরন নির্বাচন করুন",
 
-  "workforce.employee.city.road_no": "রোড নাম্বার",
-  "workforce.employee.city.house_name": "বাড়ির নাম",
+  "workforce.employee.city.road_no": "রোড নাম্বার / রোডের নাম",
+  "workforce.employee.city.house_name": "বাসা নম্বর / বাসার নাম",
   "workforce.employee.city.apartment_number": "অ্যাপার্টমেন্ট নাম্বার",
 
   "workforce.employee.rural.address": "ঠিকানা (গ্রামীণ)",
-  "workforce.employee.rural.house_name": "বাড়ি",
-  "workforce.employee.rural.village_road": "গ্রাম",
+  "workforce.employee.rural.house_name": "বাসা / হোল্ডিং নম্বর",
+  "workforce.employee.rural.village_road": "গ্রাম / রাস্তা",
   "workforce.employee.rural.para_mahalla": "পাড়া / মহল্লা",
   "workforce.employee.rural.post_office": "ডাকঘর",
+
+  "workforce.employee.accident.info.hasRejoined":"আপনি কি সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদান করেছেন?",
+
+  "workforce.dead":"মৃত",
+  "workforce.account.entry":"",
 
   "workforce.uploadFile.dependent.photo": "নির্ভরশীলের ছবি",
   "workforce.uploadFile.dependent.nid_or_birthCcertificate": "নির্ভরশীলের জাতীয় পরিচয়পত্র বা জন্মসনদের ছবি",
