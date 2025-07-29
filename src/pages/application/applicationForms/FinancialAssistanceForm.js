@@ -5,6 +5,7 @@ import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
+import ApplicantDetailsForm from "../ApplicantDetailsForm";
 import EmployeeDetailsForm2 from "../EmployeeDetailsForm2";
 import EmployeeLocationForm from "../EmployeeLocationForm";
 import EmployeeDependentForm from "../EmployeeDependentForm";
@@ -54,12 +55,14 @@ const steps = [
   "workforce.application.steps.deademployee.applicant.Details",
   "workforce.application.steps.deathLabourDetails",
   "workforce.application.steps.location",
+  "workforce.application.steps.prosurders",
   "workforce.application.steps.account.info",
   "workforce.application.steps.upload.documents",
 ];
 
 const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApplicationType, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
+  const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
 
   const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
@@ -84,6 +87,38 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
 
   const [formData, setFormData] = useState({
     workforceEmployee: {
+      nameEn: "",
+      nameBn: "",
+      lastNameEn: "",
+      position: "",
+      fatherNameEn: "",
+      fatherNameBn: "",
+      motherNameEn: "",
+      motherNameBn: "",
+      spouseNameEn: "",
+      spouseNameBn: "",
+      phoneNumber: "",
+      email: "",
+      birthDate: "",
+      deathDate: "",
+      joinDate: "",
+      nid: "",
+      birthCertificateNo: "",
+      insuranceNumber: "",
+      lifeStatus: "",
+      gender: "",
+      maritalStatus: "",
+      monthlyEarning: "",
+      uploadedNidFile: [],
+      citizenship: "",
+      uploadedBirthCertificateFile: [],
+      permanentAddress: "",
+      permanentLocation: "",
+      presentLocation: "",
+      presentAddress: "",
+      organizationId: "",
+    },
+    workforceApplicant: {
       nameEn: "",
       nameBn: "",
       lastNameEn: "",
@@ -516,17 +551,13 @@ if (reduxState.workforce.selectedEmployee) {
             deathType={deathType}
           />
         ) : activeStep === 1 ? (
-          <Box mt={0}>
-            <EmployeeDependentForm
-                            // formData={formData}
-                          applicationType={formData.applicationType}
-                          dependents={formData.dependents}
-                          handleDependentChange={handleDependentChange}
-                          addDependent={addDependent}
-                          removeDependent={removeDependent}
-                          expanded={expanded}
-                          setExpanded={setExpanded}
-                          />
+           <Box mt={0}>
+            <ApplicantDetailsForm
+              handleChange={(key, value) => handleChange(key, value, "workforceApplicant")}
+              formData={formData}
+              setNidOrBcn={setNidOrBcn}
+              nidOrBcn={nidOrBcn}
+            />
           </Box>
         ) : activeStep === 2 ? (
           <Box mt={0}>
@@ -542,6 +573,19 @@ if (reduxState.workforce.selectedEmployee) {
             <EmployeeLocationForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />
           </Box>
         ) : activeStep === 4 ? (
+           <Box mt={0}>
+            <EmployeeDependentForm
+              // formData={formData}
+            applicationType={formData.applicationType}
+            dependents={formData.dependents}
+            handleDependentChange={handleDependentChange}
+            addDependent={addDependent}
+            removeDependent={removeDependent}
+            expanded={expanded}
+            setExpanded={setExpanded}
+            />
+          </Box>
+        ) : activeStep === 5 ? (
           <Box mt={0}>
             <EmployeeAccountInfoForm handleChange={(key, value) => handleChange(key, value, "employeeBankInfo")} formData={formData} />
           </Box>

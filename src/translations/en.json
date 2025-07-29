@@ -49,7 +49,8 @@
     "menu.workforce.branch": "Branches",
     "menu.workforce.employee.factory": "Employee Factories",
 
-  "workforce.employee.designation":"Designation",
+   "workforce.employee.designation":"Designation",
+    "workforce.employee.relationWithApplicant":"Applicant's relationship to the deceased worker",
 
 
     "workforce.employee.present_location": "Present Location",
@@ -414,6 +415,7 @@
     "workforce.application.steps.deademployee.applicant.Details":"Applicant's information on behalf of the deceased worker",
     "workforce.application.steps.employeeDetails":"Labour Details",
     "workforce.application.steps.location":"Location",
+    "workforce.application.steps.prosurders":"Information of Prosurders",
     "workforce.application.steps.accident.info":"Accident Info",
     "workforce.application.steps.treatment.info":"Treatment Info",
     "workforce.application.steps.upload.documents":"Upload Documents",

@@ -202,6 +202,7 @@
   "menu.workforce.documents": "নথিপত্র",
 
   "workforce.employee.designation":"পদবী",
+  "workforce.employee.relationWithApplicant":"মৃত শ্রমিকের সাথে আবেদনকারীর সম্পর্ক",
 
   "workforce.employee.accident.info.application.injuryType": "ক্ষতি ধরন",
   "workforce.employee.accident.info.application.dateOfAccident": "দুর্ঘটনার তারিখ",
@@ -253,6 +254,7 @@
   "workforce.application.steps.deademployee.applicant.Details": "মৃত শ্রমিকের পক্ষে আবেদনকারীর তথ্য",
   "workforce.application.steps.employeeDetails": "শ্রমিকের বিবরণ",
   "workforce.application.steps.location": "ঠিকানা",
+  "workforce.application.steps.prosurders": "পৌষ্যদের তথ্য",
   "workforce.application.steps.accident.info": "দুর্ঘটনার তথ্য",
   "workforce.application.steps.treatment.info": "চিকিৎসার তথ্য",
   "workforce.application.steps.upload.documents": "প্রমাণপত্র আপলোড",
@@ -487,7 +489,7 @@
   "workforce.EmployeeType.selector.picker": "কর্মচারী নির্বাচন করুন",
   "workforce.tracking.summary": "ট্র্যাকিং সারাংশ",
 
-  "workforce.employee.nid_or_birth_certificate": "জাতীয় পরিচয়পত্র/জন্ম নিবন্ধনপত্র নং",
+  "workforce.employee.nid_or_birth_certificate": "জাতীয় পরিচয়পত্র/জন্ম নিবন্ধন নং",
 
   "workforce.employee.accident.info.title": "চিকিৎসার বিবরণ",
   "workforce.employee.aid.reason.info.cronic": "রোগের বিবরণ",
