@@ -56,7 +56,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
             {/* <p><b>Personal Info </b></p> */}
             <Typography>
               <b>
-                <FormattedMessage id="workforce.application.labourHeadingOne" module="workforce" />
+                <FormattedMessage id="workforce.applicant.labourHeadingOne" module="workforce" />
               </b>
             </Typography>
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
@@ -149,7 +149,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
             {/* <p><b>Family Info</b></p> */}
             <Typography>
               <b>
-                <FormattedMessage id="workforce.application.labourHeadingTwo" module="workforce" />
+                <FormattedMessage id="workforce.applicant.labourHeadingTwo" module="workforce" />
               </b>
             </Typography>
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>

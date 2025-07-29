@@ -508,19 +508,8 @@ const removeArrayFieldItem = (fieldKey, index) => {
             deathType={deathType}
           />
         ) : activeStep === 1 ? (
-          <Box mt={0}>
-            <EmployeeDependentForm
-  applicationType={formData.applicationType}
-  dependents={formData.dependents}
-  handleChange={(index, key, value) =>
-    handleArrayFieldChange("dependents", index, key, value)
-  }
-  addItem={() => addArrayFieldItem("dependents", { fullName: "", relationship: "" })}
-  removeItem={(index) => removeArrayFieldItem("dependents", index)}
-  expanded={expanded}
-  setExpanded={setExpanded}
-/>
-           <Box mt={0}>
+          
+             <Box mt={0}>
             <ApplicantDetailsForm
               handleChange={(key, value) => handleChange(key, value, "workforceApplicant")}
               formData={formData}
@@ -544,16 +533,17 @@ const removeArrayFieldItem = (fieldKey, index) => {
         ) : activeStep === 4 ? (
            <Box mt={0}>
             <EmployeeDependentForm
-              // formData={formData}
-            applicationType={formData.applicationType}
-            dependents={formData.dependents}
-            handleDependentChange={handleDependentChange}
-            addDependent={addDependent}
-            removeDependent={removeDependent}
-            expanded={expanded}
-            setExpanded={setExpanded}
-            />
-          </Box>
+  applicationType={formData.applicationType}
+  dependents={formData.dependents}
+  handleChange={(index, key, value) =>
+    handleArrayFieldChange("dependents", index, key, value)
+  }
+  addItem={() => addArrayFieldItem("dependents", { fullName: "", relationship: "" })}
+  removeItem={(index) => removeArrayFieldItem("dependents", index)}
+  expanded={expanded}
+  setExpanded={setExpanded}
+/>
+</Box>
         ) : activeStep === 5 ? (
           <Box mt={0}>
   <EmployeeAccountInfoForm

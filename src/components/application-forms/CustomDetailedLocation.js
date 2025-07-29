@@ -46,6 +46,15 @@ const CustomDetailedLocation = ({ locationType ="city", onChange, addressKey, da
               readOnly={readOnly}
             />
           </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextInput
+              // label="workforce.employee.city.extra_info"
+              value={localData.apartmentNumber || ""}
+              onChange={(v) => updateField("extraInfo", v)}
+              InputProps={{ margin: "dense" }}
+              readOnly={readOnly}
+            />
+          </Grid>
         </>
       )}
 
@@ -84,6 +93,15 @@ const CustomDetailedLocation = ({ locationType ="city", onChange, addressKey, da
               label="workforce.employee.rural.village_road"
               value={localData.villageRoad || ""}
               onChange={(v) => updateField("villageRoad", v)}
+              InputProps={{ margin: "dense" }}
+              readOnly={readOnly}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextInput
+              // label="workforce.employee.city.extra_info"
+              value={localData.apartmentNumber || ""}
+              onChange={(v) => updateField("extraInfo", v)}
               InputProps={{ margin: "dense" }}
               readOnly={readOnly}
             />

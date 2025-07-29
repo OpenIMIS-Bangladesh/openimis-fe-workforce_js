@@ -400,6 +400,8 @@
   "workforce.application.nidVerify.error": "আপনার তথ্যটি LIMS থেকে যাচাই করা সম্ভব হয়নি",
   "workforce.application.labourHeadingOne": "শ্রমিকের ব্যক্তিগত তথ্য",
   "workforce.application.labourHeadingTwo": "শ্রমিকের পারিবারিক তথ্য",
+  "workforce.applicant.labourHeadingOne": "আবেদনকারীর ব্যক্তিগত তথ্য",
+  "workforce.applicant.labourHeadingTwo": "আবেদনকারীর পারিবারিক তথ্য",
     "workforce.application.labourDetails.spouse": "প্রসূতি স্ত্রীর তথ্য",
   "workforce.application.account.bank": "ব্যাংকের মাধ্যমে সহায়তা পেতে চান?",
   "workforce.application.account.mobile": "মোবাইল ব্যাংকিংয়ের মাধ্যমে সহায়তা পেতে চান?",
