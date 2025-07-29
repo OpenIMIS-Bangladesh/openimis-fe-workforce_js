@@ -60,8 +60,8 @@ const BanksPicker = ({
       options={data}
       isLoading={isLoading}
       value={selectedOption}
-      // getOptionLabel={(option) => locale === "en" ? option.nameEn : option.nameBn}
-      getOptionLabel={(option) => option.nameEn }
+      getOptionLabel={(option) => locale === "en" ? option.nameEn : option.nameBn}
+      // getOptionLabel={(option) => option.nameEn }
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}
