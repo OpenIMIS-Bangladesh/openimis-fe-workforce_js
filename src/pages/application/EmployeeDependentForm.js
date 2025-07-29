@@ -259,8 +259,8 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleDependentCha
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label={getRelationAwareLabel(formData, "workforce.employee.percentage_of_cf_grant")}
-                    value={formData.maritalStatus || ""}
-                    onChange={(v) => handleDependentChange(index, "maritalStatus", v)}
+                    value={formData.percentageOfCF || ""}
+                    onChange={(v) => handleDependentChange(index, "percentageOfCF", v)}
                     readOnly={false}
                   />
                 </Grid>
