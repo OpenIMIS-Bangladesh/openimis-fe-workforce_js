@@ -100,6 +100,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   readOnly={false}
                 />
               </Grid>
+            {formData.applicationType !=="financialAssistance" &&(
+                <>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.phone"
@@ -109,7 +111,6 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   readOnly={false}
                 />
               </Grid>
-
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.email"
@@ -119,6 +120,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   readOnly={false}
                 />
               </Grid>
+              </>
+               )}
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.citizenship"
@@ -275,9 +278,9 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
 
             {(formData.applicationType ==="maternityGrant" && formData.applicationForSelf ==="no") && (
               <>
-              <Typography>
+              <Typography style={{ marginTop: 16 }}>
               <b>
-                <FormattedMessage id="workforce.application.labourDetails.spouse" module="workforce" />
+                <FormattedMessage  id="workforce.application.labourDetails.spouse" module="workforce" />
               </b>
             </Typography>
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>

@@ -575,7 +575,7 @@
     "workforce.application.disease.name": "Disease name",
     "workforce.application.disease.timeOfAccident": "Accident Time",
     "workforce.application.disease.maternalHeading": "Maternity information",
-    "workforce.application.disease.maternal.delivaryDate": "Delivery date",
+    "workforce.application.disease.maternal.delivaryDate": "Possible date of birth",
     "workforce.application.modal.header": "Selected Application Summary",
     "workforce.table.applicantName": "Applicant Name",
     "workforce.table.applicationType": "Application Type",
