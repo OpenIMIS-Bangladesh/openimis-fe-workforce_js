@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Grid, Box, Paper, Typography, Divider, FormControl, FormControlLabel, Radio, RadioGroup, MenuItem } from "@material-ui/core";
+import { Grid, Box, Paper, Typography, Divider, FormControl, FormControlLabel, Radio, RadioGroup, MenuItem, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import BranchPicker from "../../pickers/BranchPicker";
 import MobileBankingPicker from "../../pickers/MobileBankingPicker";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -142,12 +143,29 @@ const EmployeeAccountInfoForm = ({ handleChange, formData, setFormData }) => {
                 </Grid>
                 <Grid container spacing={2}>
                   <Grid item xs={6} className={classes.item}>
-                    <TextInput
-                      label="workforce.employee.account.info.accountHolderName"
-                      value={formData?.employeeBankInfo?.accountHolderName || ""}
-                      onChange={(v) => handleChange("accountHolderName", v, "employeeBankInfo")}
-                      required
-                      readOnly={false}
+                    <Autocomplete
+                      options={formData?.dependents || []}
+                      getOptionLabel={(option) => option?.nameBn || ""}
+                      onChange={(e, selected) => {
+                        handleChange("accountHolderName", selected?.nameBn || "", "employeeBankInfo");
+                      }}
+                      value={
+                        formData?.employeeBankInfo?.accountHolderName
+                          ? formData.dependents?.find(d => d.nameBn === formData.employeeBankInfo.accountHolderName)
+                          : null
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label={
+                          <FormattedMessage
+                            module="workforce"
+                            id="workforce.employee.account.info.accountHolderName"
+                          />}
+                          variant="outlined"
+                          required
+                        />
+                      )}
                     />
                   </Grid>
                   <Grid item xs={6} className={classes.item}>
