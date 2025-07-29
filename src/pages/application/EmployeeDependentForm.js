@@ -208,17 +208,18 @@ const EmployeeDependentForm = ({
                   />
                 </Grid>
 
-                {/* ✅ Same as Present Location Checkbox */}
+                
+
+                {/* ✅ Permanent Location (conditional readOnly) */}
+                <Grid item xs={12}>
+                  <p>{formatMessage("workforce.employee.permanent_location")}</p>
+                  {/* ✅ Same as Present Location Checkbox */}
                 <Grid item xs={12}>
                   <FormControlLabel
                     control={<Checkbox color="primary" checked={!!sameAsPresent[index]} onChange={(e) => setSameAsPresent(e.target.checked)} />}
                     label={formatMessage("workforce.employee.sameAsPresent")}
                   />
                 </Grid>
-
-                {/* ✅ Permanent Location (conditional readOnly) */}
-                <Grid item xs={12}>
-                  <p>{formatMessage("workforce.employee.permanent_location")}</p>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}

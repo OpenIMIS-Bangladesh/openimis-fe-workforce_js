@@ -99,6 +99,13 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
               {/* Permanent Location */}
               <Grid item xs={12}>
                 <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
+                {/* Checkbox */}
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
+                  label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
+                />
+              </Grid>
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
@@ -130,13 +137,7 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
               </Grid>
               )}
 
-              {/* Checkbox */}
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
-                  label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
-                />
-              </Grid>
+              
             </Grid>
 
             <Divider />
