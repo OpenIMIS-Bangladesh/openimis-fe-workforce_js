@@ -25,6 +25,7 @@ import {
 } from "@openimis/fe-core";
 import BranchPicker from "../../pickers/BranchPicker";
 import MobileBankingPicker from "../../pickers/MobileBankingPicker";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const useStyles = makeStyles((theme) => ({
   paper: {

@@ -4,12 +4,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import clsx from "clsx";
-import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
-import CompanyPicker from "../../pickers/CompanyPicker";
-import FactoryPicker from "../../pickers/FactoryPicker";
-// import CustomDateTimePicker from "../../pickers/CustomDatePicker";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -28,25 +24,23 @@ const useStyles = makeStyles((theme) => ({
   item: theme.paper.item,
   overrideReadOnly: {
     "& .MuiInputBase-root.Mui-disabled": {
-      color: "#808080 !important", // Text value color (gray)
+      color: "#808080 !important", 
     },
     "& .MuiFormLabel-root.Mui-disabled": {
-      color: `${theme.palette.text.primary} !important`, // Label color (black or customize as needed)
+      color: `${theme.palette.text.primary} !important`, 
     },
   },
 }));
 
-const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, setNidOrBcn }) => {
+const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, setNidOrBcn }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
-  const getDeathLabel = ( labelKey) => {
-    return formData.applicationType === "financialAssistance" 
-      ? `${formatMessage("workforce.dead")} ${formatMessage(labelKey)}`
-      : formatMessage(labelKey);
-  };
 
+  const applicantData = useSelector((state) => state.workforce[`workforceApplicant`] ?? []);
+
+  console.log("hello bangladesh", formData);
   return (
     <Box>
       <Grid container spacing={2}>
@@ -62,14 +56,14 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
             {/* <p><b>Personal Info </b></p> */}
             <Typography>
               <b>
-                {getDeathLabel("workforce.application.labourHeadingOne")}
+                <FormattedMessage id="workforce.application.labourHeadingOne" module="workforce" />
               </b>
             </Typography>
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.name.bn"
-                  value={formData?.workforceEmployee.nameBn || ""}
+                  value={formData?.workforceApplicant?.nameBn || ""}
                   onChange={(v) => handleChange("nameBn", v)}
                   required
                   readOnly={false}
@@ -78,67 +72,37 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.name.en"
-                  value={formData?.workforceEmployee.nameEn || ""}
+                  value={formData?.workforceApplicant?.nameEn || ""}
                   onChange={(v) => handleChange("nameEn", v)}
                   required
-                  readOnly={false}
-                />
-              </Grid>
-              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                <PublishedComponent
-                  pubRef="workforce.DatePicker"
-                  label={"workforce.employee.birthdate"}
-                  value={formData?.workforceEmployee.birthDate || ""}
-                  onChange={(v) => handleChange("birthDate", v)}
                   readOnly={false}
                 />
               </Grid>
 
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <EmployeeGenderPicker
-                  value={formData?.workforceEmployee?.gender}
+                  value={formData?.workforceApplicant?.gender}
                   label={<FormattedMessage id="workforce.employee.gender" module="workforce" />}
                   onChange={(v) => handleChange("gender", v)}
                   readOnly={false}
                 />
               </Grid>
-            {formData.applicationType !=="financialAssistance" &&(
-                <>
+                      
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.phone"
-                  value={formData?.workforceEmployee.phoneNumber || ""}
+                  value={formData?.workforceApplicant?.phoneNumber || ""}
                   onChange={(v) => handleChange("phoneNumber", v)}
                   type={"number"}
                   readOnly={false}
                 />
-              </Grid>
-              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                <TextInput
-                  label="workforce.employee.email"
-                  value={formData?.workforceEmployee.email || ""}
-                  onChange={(v) => handleChange("email", v)}
-                  type={"email"}
-                  readOnly={false}
-                />
-              </Grid>
-              </>
-               )}
+              </Grid>    
+           
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.citizenship"
-                  value={formData?.workforceEmployee.citizenship || ""}
+                  value={formData?.workforceApplicant?.citizenship || ""}
                   onChange={(v) => handleChange("citizenship", v)}
-                  readOnly={false}
-                />
-              </Grid>
-
-              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                <EmployeeMaritalStatusPicker
-                  value={formData?.workforceEmployee.maritalStatus || ""}
-                  label={<FormattedMessage id="workforce.employee.marital_status" module="workforce" />}
-                  required
-                  onChange={(v) => handleChange("maritalStatus", v)}
                   readOnly={false}
                 />
               </Grid>
@@ -146,7 +110,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.employee.nid_or_birth_certificate"
-                  value={formData?.workforceEmployee?.nid || formData?.workforceEmployee?.birthCertificateNo || nidOrBcn?.nid || ""}
+                  value={formData?.workforceApplicant?.nid || formData?.workforceApplicant?.birthCertificateNo || nidOrBcn?.nid || ""}
                   formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
                   inputProps={{ maxLength: 17 }}
                   onChange={(v) => {
@@ -159,59 +123,22 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                 />
               </Grid>
 
-              {/* <Grid item xs={6} className={classes.item}>
-                <CompanyPicker
-                  value={formData?.workforceEmployee?.company?.id}
-                  label={<FormattedMessage id="workforce.employee.workforce_employer" module="workforce" />}
-                  onChange={(v) => {
-                    // handleChange("company", v);
-                    handleChange("company", v);
-                  }}
-                  readOnly={false}
-                />
-              </Grid> */}
-
               <Grid item xs={6} className={classes.item}>
                 <TextInput
-                  label="workforce.employee.designation"
-                  value={formData?.workforceEmployee.position || ""}
-                  onChange={(v) => handleChange("position", v)}
+                  label="workforce.employee.relationWithApplicant"
+                  value={formData?.workforceApplicant?.relationWithApplicant || ""}
+                  onChange={(v) => handleChange("relationWithApplicant", v)}
                   readOnly={false}
-                />
-              </Grid>
-              <Grid item xs={6} className={classes.item}>
-                <FactoryPicker
-                  required={true}
-                  value={formData?.workforceEmployee?.factory?.id}
-                  label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
-                  companyId={formData?.workforceEmployee?.company?.id}
-                  onChange={(v) => {
-                    // handleChange("factory", v, "employeeDesignation");
-                    handleChange("factory", v);
-                  }}
-                  readOnly={false}
-                />
-              </Grid>
-              {/* <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                <EmployeeLifeStatusPicker
-                  value={formData?.workforceEmployee.lifeStatus || ""}
-                  label={
-                    <FormattedMessage
-                      id="workforce.employee.lifeStatus"
-                      module="workforce"
-                    />
-                  }
                   required
-                  onChange={(v) => handleChange("lifeStatus", v)}
-                  readOnly={true}
                 />
-              </Grid> */}
+              </Grid>
+         
               {formData.applicationType === ("deadlyGrant" || "financialAssistance") ? (
                 <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                   <PublishedComponent
                     pubRef="workforce.DatePicker"
                     label={"workforce.employee.deathdate"}
-                    value={formData?.workforceEmployee.deathDate || ""}
+                    value={formData?.workforceApplicant?.deathDate || ""}
                     readOnly={false}
                     onChange={(v) => handleChange("deathDate", v)}
                     // readOnly={true}
@@ -222,14 +149,14 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
             {/* <p><b>Family Info</b></p> */}
             <Typography>
               <b>
-                {getDeathLabel("workforce.application.labourHeadingTwo")}
+                <FormattedMessage id="workforce.application.labourHeadingTwo" module="workforce" />
               </b>
             </Typography>
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.fathers_name.en"
-                  value={formData?.workforceEmployee.fatherNameEn || ""}
+                  value={formData?.workforceApplicant?.fatherNameEn || ""}
                   onChange={(v) => handleChange("fatherNameEn", v)}
                   readOnly={false}
                 />
@@ -237,7 +164,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.fathers_name.bn"
-                  value={formData?.workforceEmployee.fatherNameBn || ""}
+                  value={formData?.workforceApplicant?.fatherNameBn || ""}
                   onChange={(v) => handleChange("fatherNameBn", v)}
                   readOnly={false}
                 />
@@ -245,7 +172,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.mothers_name.en"
-                  value={formData?.workforceEmployee.motherNameEn || ""}
+                  value={formData?.workforceApplicant?.motherNameEn || ""}
                   onChange={(v) => handleChange("motherNameEn", v)}
                   readOnly={false}
                   required
@@ -254,7 +181,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.mothers_name.bn"
-                  value={formData?.workforceEmployee.motherNameBn || ""}
+                  value={formData?.workforceApplicant?.motherNameBn || ""}
                   onChange={(v) => handleChange("motherNameBn", v)}
                   readOnly={false}
                   required
@@ -263,7 +190,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.spouse.name.en"
-                  value={formData?.workforceEmployee.spouseNameEn || ""}
+                  value={formData?.workforceApplicant?.spouseNameEn || ""}
                   onChange={(v) => handleChange("spouseNameEn", v)}
                   readOnly={false}
                 />
@@ -271,7 +198,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.spouse.name.bn"
-                  value={formData?.workforceEmployee.spouseNameBn || ""}
+                  value={formData?.workforceApplicant?.spouseNameBn || ""}
                   onChange={(v) => handleChange("spouseNameBn", v)}
                   readOnly={false}
                 />
@@ -354,4 +281,4 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
   );
 };
 
-export default EmployeeDetailsForm;
+export default ApplicantDetailsForm;
