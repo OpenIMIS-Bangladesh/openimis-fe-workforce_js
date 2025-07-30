@@ -229,6 +229,20 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
     );
   };
 
+  const isFileUploadField = (value) => {
+  return (
+    Array.isArray(value) &&
+    value.length > 0 &&
+    value.every(
+      (item) =>
+        typeof item === "object" &&
+        item !== null &&
+        ("path" in item || "relativePath" in item)
+    )
+  );
+};
+
+
   const renderWorkforceEmployeeSections = (employeeData) => {
     if (!employeeData || typeof employeeData !== "object") return null;
 
@@ -323,22 +337,29 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
   const renderDynamicSections = () => {
     return Object.entries(formData).map(([key, value]) => {
       if (!value || ["id", "uuid", "parent", "applicationType", "organizationType", "applicationForSelf"].includes(key)) return null;
+      if (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value) &&
+    !isFileUploadField(value)
+  ) {
+    // Render nested object section (like dependents, bankInfo, etc.)
+    if (key === "workforceEmployee" || key === "workforceApplicant") {
+      return renderWorkforceEmployeeSections(value);
+    }
 
-      if (key === "workforceEmployee" || key === "workforceApplicant") {
-        return renderWorkforceEmployeeSections(value);
-      }
+    if (key === "employeeDependentInfo" || key === "dependents") {
+      return renderDependentsSection(value);
+    }
 
-      if (key === "employeeDependentInfo" || key === "dependents") {
-        return renderDependentsSection(value);
-      }
+    if (Array.isArray(value) && value.length > 0 && typeof value[0] === "object") {
+      return renderArraySection(key, value);
+    }
 
-      if (Array.isArray(value) && value.length > 0 && typeof value[0] === "object") {
-        return renderArraySection(key, value);
-      }
-
-      if (typeof value === "object" && value !== null) {
-        return renderSection(`workforce.previewDetails.${key}`, value);
-      }
+    if (typeof value === "object" && value !== null) {
+      return renderSection(`workforce.previewDetails.${key}`, value);
+    }
+  }
 
       return null;
     });

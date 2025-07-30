@@ -76,6 +76,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
   const [showPreview, setShowPreview] = useState(false);
   const [deathType, setDeathType] = useState("");
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
+  const [clientMutationId,setClientMutationId] = useState('')
   const [nidOrBcn, setNidOrBcn] = useState({
     nid: formData?.workforceEmployee?.nid || "",
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
@@ -268,7 +269,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
       await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
     } else if (nextStep === 1) {
       const createApplicationData = {
-        workforceEmployeeId:reduxState.core.user.id,
+        workforceEmployeeId: employeeData?.id || reduxState.core.user.id || "",
         company: formData?.workforceEmployee?.company?.id,
         factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
         organizationType: formData.organizationType,
@@ -276,7 +277,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         grantAmount: formData?.employeeAccidentInfo.grantAmount,
         employeeDesignationInfo: JSON.stringify(formData?.employeeDesignationInfo),
         employeeBankInfo: JSON.stringify(formData?.employeeBankInfo),
-        employeeDependentInfo: JSON.stringify(formData?.dependents),
+        // employeeDependentInfo: JSON.stringify(formData?.dependents),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData?.metadata),
         status: WORKFORCE_STATUS.DRAFT,
@@ -290,6 +291,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
           `Created application `
         );
         const applicationClientMutationId = applicationMutation.clientMutationId;
+        setClientMutationId(applicationClientMutationId)
         console.log("applicationClientMutationId", applicationClientMutationId);
         await dispatch(createApplication(applicationMutation, `Created workforce application `));
 
@@ -321,12 +323,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         console.log("i am from update", updateApplicationData);
         dispatch(updateApplication(updateApplicationData, `update workforce application `));
       }
-    } else if (nextStep === 2) {
-      const createApplicationData = {
-        // workforceEmployeeId:decodeId(formData?.workforceEmployee?.id) || decodeId(parsedApplicationData?.workforceEmployee?.id),
-        deathType: formData?.deathType,
-      };
-    } else {
+    } else if (nextStep === 5) {
       const updateApplicationData = {
         // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
         id: safeApplicationId(applicationId, parsedApplicationData),
@@ -342,6 +339,45 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
       };
+      dispatch(updateApplication(updateApplicationData, `update workforce application`));
+      const fetchRes = await dispatch(
+          fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", clientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
+        );
+        let applicationgetId = getInfoId(fetchRes, "workforceApplication");
+        console.log("hello there", applicationgetId);
+        if (!applicationgetId && applicationId) {
+          applicationgetId = applicationId;
+        }
+
+        await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${applicationgetId}"`])).then((res) => {
+          const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
+
+          console.log({ dependentId });
+          if (uploadFile) {
+            dispatch(
+              createWorkforceDocument(
+                { ...uploadFile, workforceApplicationId: applicationgetId, workforceDependentId: decodeId(dependentId) },
+                `Created workforce document`
+              )
+            );
+          }
+        });
+    } else {
+      const updateApplicationData = {
+        // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+        id: safeApplicationId(applicationId, parsedApplicationData),
+        workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id|| reduxState.core.user.id,
+        company: formData?.workforceEmployee?.company?.id,
+        factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
+        organizationType: organizationType || parsedApplicationData?.organizationType,
+        applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+        grantAmount: formData?.employeeAccidentInfo.grantAmount,
+        employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
+        // employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+        employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+        metadata: JSON.stringify(formData.metadata),
+        status: WORKFORCE_STATUS.DRAFT,
+      }
       dispatch(updateApplication(updateApplicationData, `update workforce application`));
     }
   };
