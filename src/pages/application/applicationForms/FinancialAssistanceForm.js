@@ -268,7 +268,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
       await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
     } else if (nextStep === 1) {
       const createApplicationData = {
-        workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
+        workforceEmployeeId:reduxState.core.user.id,
         company: formData?.workforceEmployee?.company?.id,
         factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
         organizationType: formData.organizationType,
@@ -330,7 +330,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
       const updateApplicationData = {
         // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
         id: safeApplicationId(applicationId, parsedApplicationData),
-        workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
+        workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id|| reduxState.core.user.id,
         company: formData?.workforceEmployee?.company?.id,
         factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
         organizationType: organizationType || parsedApplicationData?.organizationType,

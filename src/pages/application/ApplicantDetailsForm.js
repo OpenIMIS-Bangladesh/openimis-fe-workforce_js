@@ -5,6 +5,7 @@ import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMes
 import { useSelector, useDispatch } from "react-redux";
 import clsx from "clsx";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
+import CustomDetailedLocation from "../../components/application-forms/CustomDetailedLocation";
 
 const useStyles = makeStyles((theme) => ({
   container: {
