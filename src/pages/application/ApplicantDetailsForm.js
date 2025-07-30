@@ -5,7 +5,6 @@ import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMes
 import { useSelector, useDispatch } from "react-redux";
 import clsx from "clsx";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
-import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -95,6 +94,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   onChange={(v) => handleChange("phoneNumber", v)}
                   type={"number"}
                   readOnly={false}
+                  required
                 />
               </Grid>    
            
@@ -132,19 +132,6 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   required
                 />
               </Grid>
-         
-              {formData.applicationType === ("deadlyGrant" || "financialAssistance") ? (
-                <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                  <PublishedComponent
-                    pubRef="workforce.DatePicker"
-                    label={"workforce.employee.deathdate"}
-                    value={formData?.workforceApplicant?.deathDate || ""}
-                    readOnly={false}
-                    onChange={(v) => handleChange("deathDate", v)}
-                    // readOnly={true}
-                  />
-                </Grid>
-              ) : null}
             </Grid>
             {/* <p><b>Family Info</b></p> */}
             <Typography>
@@ -204,75 +191,6 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                 />
               </Grid>
             </Grid>
-
-            {(formData.applicationType ==="maternityGrant" && formData.applicationForSelf ==="no") && (
-              <>
-              <Typography style={{ marginTop: 16 }}>
-              <b>
-                <FormattedMessage  id="workforce.application.labourDetails.spouse" module="workforce" />
-              </b>
-            </Typography>
-            <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
-              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                <TextInput
-                  label="workforce.child.name.en"
-                  value={formData?.metadata?.spouseEn || ""}
-                  onChange={(v) => setFormData("spouseEn", v, "metadata")}
-                  required
-                  readOnly={false}
-                />
-              </Grid>
-              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                <TextInput
-                  label="workforce.child.name.bn"
-                  value={formData?.metadata?.spouseBn || ""}
-                  onChange={(v) => setFormData("spouseBn", v, "metadata")}
-                  required
-                  readOnly={false}
-                />
-              </Grid>
-              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                <TextInput
-                  label="workforce.employee.fathers_name.en"
-                  value={formData?.metadata?.fatherNameEn || ""}
-                  onChange={(v) => setFormData("spouseFatherNameEn", v,"metadata")}
-                  readOnly={false}
-                />
-              </Grid>
-              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                <TextInput
-                  label="workforce.employee.mothers_name.en"
-                  value={formData?.metadata?.motherNameEn || ""}
-                  onChange={(v) => setFormData("spouseMotherNameEn", v,"metadata")}
-                  readOnly={false}
-                  required
-                />
-              </Grid>
-              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                <TextInput
-                  label="workforce.application.employee.children.nidOrBirthRegistry"
-                  value={formData?.metadata?.spouseNid || ""}
-                  onChange={(v) => setFormData("spouseNid", v, "metadata")}
-                  type={"number"}
-                  readOnly={false}
-                  required
-                />
-              </Grid>
-              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                <PublishedComponent
-                  pubRef="workforce.DatePicker"
-                  label={"workforce.employee.birthdate"}
-                  value={formData?.metadata?.spouseBirthDate || ""}
-                  onChange={(v) => setFormData("spouseBirthDate", v, "metadata")}
-                  readOnly={false}
-                  required
-                />
-              </Grid>
-              
-            </Grid>
-              </>
-            )}
-            
             <Divider />
           </Paper>
         </Grid>
