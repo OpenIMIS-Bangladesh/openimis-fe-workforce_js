@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EmployeeAccountInfoForm = ({
+  formdata,
   accounts,
   handleChange,
   addItem,
@@ -78,7 +79,14 @@ const EmployeeAccountInfoForm = ({
       const initialAccounts = Array(accountCount).fill({});
       setShowAccounts(initialAccounts);
       setExpanded(0); // ✅ Open first accordion after data loads
+    }else if(formdata?.dependents.length>0){
+      console.log("hello murad")
+      const accountCount = formdata?.dependents.length;
+      const initialAccounts = Array(accountCount).fill({});
+      setShowAccounts(initialAccounts);
+      setExpanded(0); 
     }
+
   } else {
     setShowAccounts([{}]);
     setExpanded(0); // ✅ Ensure first accordion is open in default case too
