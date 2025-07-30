@@ -157,7 +157,7 @@ const EmployeeDependentForm = ({
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={getRelationAwareLabel(formData, "workforce.employee.birthdate")}
                     value={formData.birthDate || ""}
                     onChange={(v) => handleChange(index, "birthDate", v)}
