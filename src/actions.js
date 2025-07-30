@@ -1965,6 +1965,8 @@ export function fetchEmployeeDependent(mm, filters) {
     "location" + mm.getProjection("location.Location.FlatProjection");
   const projections = [
     "id",
+    "nameBn",
+        "nameEn"
   ];
   const payload = formatPageQueryWithCount("workforceEmployeeDependent", filters, projections);
   return graphql(payload, "WORKFORCE_DEPENDENT");

@@ -93,7 +93,11 @@ const EmployeeDependentForm = ({
             <Grid container spacing={0} alignItems="center">
               <Grid item xs={12}>
                 <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                  <FormattedMessage id="workforce.application.header.dependent" module="workforce" />
+                  {applicationType === "financialAssistance" ? (
+                    <FormattedMessage id="workforce.previewDetails.dependent" module="workforce" />
+                  ) : (
+                    <FormattedMessage id="workforce.application.header.dependent" module="workforce" />
+                  )}
                 </Typography>
                 <Typography>{formData.nameEn || ""}</Typography>
               </Grid>
@@ -208,18 +212,16 @@ const EmployeeDependentForm = ({
                   />
                 </Grid>
 
-                
-
                 {/* ✅ Permanent Location (conditional readOnly) */}
                 <Grid item xs={12}>
-                  <p>{formatMessage("workforce.employee.permanent_location")}</p>
+                  <b>{formatMessage("workforce.employee.permanent_location")}</b>
                   {/* ✅ Same as Present Location Checkbox */}
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={<Checkbox color="primary" checked={!!sameAsPresent[index]} onChange={(e) => setSameAsPresent(e.target.checked)} />}
-                    label={formatMessage("workforce.employee.sameAsPresent")}
-                  />
-                </Grid>
+                  <Grid item xs={12}>
+                    <FormControlLabel
+                      control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
+                      label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
+                    />
+                  </Grid>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull={true}
@@ -251,11 +253,7 @@ const EmployeeDependentForm = ({
                 </Grid>
                 <Grid item xs={6}>
                   <Typography>{formatMessage("workforce.uploadFile.dependent.nid_or_birthCcertificate")}</Typography>
-                  <FileUploader
-                    fieldKey={"dependentNid"}
-                    onFileChange={(field, value) => handleChange(index, field, value)}
-                    documentType={"dependent nid"}
-                  />
+                  <FileUploader fieldKey={"dependentNid"} onFileChange={(field, value) => handleChange(index, field, value)} documentType={"dependent nid"} />
                 </Grid>
 
                 {/* <Grid item xs={11} className={classes.item} /> */}

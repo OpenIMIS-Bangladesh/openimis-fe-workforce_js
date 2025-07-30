@@ -46,7 +46,7 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
 
   const getDeathLabel = ( labelKey) => {
     return formData.applicationType === "financialAssistance" 
-      ? `${formatMessage("workforce.dead")} ${formatMessage(labelKey)}`
+      ? `${formatMessage("workforce.dead")} শ্রমিকের  ${formatMessage(labelKey)}`
       : formatMessage(labelKey);
   };
 

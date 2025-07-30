@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   Box,
@@ -22,10 +22,14 @@ import {
   PublishedComponent,
   useTranslations,
   useModulesManager,
+  decodeId
 } from "@openimis/fe-core";
 import BranchPicker from "../../pickers/BranchPicker";
 import MobileBankingPicker from "../../pickers/MobileBankingPicker";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchDependent, fetchEmployeeDependent } from "../../actions";
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -46,25 +50,79 @@ const EmployeeAccountInfoForm = ({
   removeItem,
   expanded,
   setExpanded,
+  applicationId
 }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
+  const [loading, setLoading] = useState(false);
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
+  const dispatch = useDispatch();
 
-  const handleAccountChange = (index, key, value, nestedKey = null) => {
-    if (nestedKey) {
-      handleChange(index, key, {
-        ...accounts[index]?.[key],
-        [nestedKey]: value,
-      });
-    } else {
-      handleChange(index, key, value);
+  const [showAccounts, setShowAccounts] = useState([{}]); // Local array to control visible accounts
+
+  const dependent = useSelector((state) => state.workforce.workforceDependent);
+
+  useEffect(() => {
+    if (applicationId && applicationId[0]?.id) {
+      setLoading(true);
+      dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0].id)}"`]));
+      setLoading(false)
     }
+  }, [applicationId]);
+  
+
+  useEffect(() => {
+    if (applicationId && applicationId[0]?.id) {
+      if (dependent?.length > 0) {
+        const accountCount = dependent.length;
+        const initialAccounts = Array(accountCount).fill({}); // create empty accounts
+        setShowAccounts(initialAccounts);
+      }
+    } else {
+      setShowAccounts([{}]);
+    }
+  }, [dependent, applicationId]);
+
+  if (loading) return <b>Loading ...</b>;
+
+ const handleAccountChange = (index, key, value, nestedKey = null) => {
+  console.log(dependent)
+  const isDependent = Array.isArray(dependent) && dependent.length > 0;
+  const dependentId = isDependent ? dependent?.[index]?.id : null;
+
+  const baseAccount = {
+    ...(accounts[index] || {}),
+    applicant_type: isDependent ? "dependent" : "applicant",
+    ...(isDependent && { id: dependentId }),
   };
 
+  if (nestedKey) {
+    handleChange(index, key, {
+      ...(baseAccount[key] || {}),
+      [nestedKey]: value,
+    });
+  } else {
+    handleChange(index, key, value);
+  }
+
+  // Always ensure applicant_type is set
+  handleChange(index, "applicant_type", (isDependent) ? "dependent" : "applicant");
+
+  // Only set id if dependent exists
+  if (isDependent && dependentId ) {
+    handleChange(index, "id", dependentId);
+  }
+};
+
+
+
+  const allowAdd = !applicationId || !applicationId[0]?.id;
+console.log({applicationId})
+console.log({dependent})
   return (
-    <Box mt={1}>
-      {accounts.map((account, index) => {
+     <Box mt={1}>
+      {showAccounts.map((_, index) => {
+        const account = accounts[index] || {};
         const accountType = account?.accountType || "bank";
 
         return (
@@ -73,9 +131,9 @@ const EmployeeAccountInfoForm = ({
             expanded={expanded === index}
             onChange={() => setExpanded(expanded === index ? false : index)}
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                <FormattedMessage id="workforce.account.entry" defaultMessage={`Bank Account ${index + 1}`} />
+                <FormattedMessage id="workforce.previewDetails.employeeBankInfo" defaultMessage={`Bank Account ${index + 1}`} />
               </Typography>
             </AccordionSummary>
 
@@ -156,7 +214,7 @@ const EmployeeAccountInfoForm = ({
                           <Grid item xs={6} className={classes.item}>
                             <TextInput
                               label="workforce.employee.account.info.accountHolderName"
-                              value={account?.accountHolderName || ""}
+                              value={account?.accountHolderName ||dependent?.[index]?.nameBn || ""}
                               onChange={(v) => handleAccountChange(index, "accountHolderName", v)}
                               required
                               readOnly={false}
@@ -185,16 +243,16 @@ const EmployeeAccountInfoForm = ({
                     )}
 
                     <Divider style={{ margin: "16px 0" }} />
-                    <Box className={classes.buttonContainer}>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => removeItem(index)}
-                        disabled={accounts.length === 1}
-                      >
-                        <FormattedMessage id="workforce.account.remove" defaultMessage="Remove Account" />
-                      </Button>
-                    </Box>
+                     <Box className={classes.buttonContainer}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => removeItem(index)}
+                  disabled={showAccounts.length === 1 || !allowAdd}
+                >
+                  <FormattedMessage id="workforce.application.steps.skip" defaultMessage="Remove Account" />
+                </Button>
+              </Box>
                   </Paper>
                 </Grid>
               </Grid>
@@ -202,9 +260,11 @@ const EmployeeAccountInfoForm = ({
           </Accordion>
         );
       })}
-      <Button variant="contained" color="primary" onClick={addItem}>
-        <FormattedMessage id="workforce.account.add" defaultMessage="Add Account" />
-      </Button>
+      {/* {allowAdd && (
+        <Button variant="contained" color="primary" onClick={addItem}>
+          <FormattedMessage id="workforce.account.add" defaultMessage="Add Account" />
+        </Button>
+      )} */}
     </Box>
   );
 };

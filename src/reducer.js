@@ -249,7 +249,7 @@ function reducer(
     fetchingWorkforceDependent: false,
     errorWorkforceDependent: null,
     fetchedWorkforceDependent: false,
-    workforceDependent: null,
+    workforceDependent: [],
     workforceDocumentPageInfo: { totalCount: 0 },
 
     submittingMutation: false,
@@ -1480,12 +1480,7 @@ function reducer(
         ...state,
         fetchingWorkforceDependent: false,
         fetchedWorkforceDependent: true,
-        workforceDependent: parseData(action.payload.data.workforceEmployeeDependent).map(
-          (workforceDependent) => ({
-            ...workforceDependent,
-            id: decodeId(workforceDependent.id),
-          })
-        )?.[0],
+        workforceDependent: parseData(action.payload.data.workforceEmployeeDependent),
         errorWorkforceDependent: formatGraphQLError(action.payload),
       };
 
