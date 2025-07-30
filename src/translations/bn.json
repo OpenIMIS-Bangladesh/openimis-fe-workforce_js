@@ -542,7 +542,7 @@
   "workforce.account.entry":"",
 
   "workforce.uploadFile.dependent.photo": "নির্ভরশীলের ছবি",
-  "workforce.uploadFile.dependent.nid_or_birthCcertificate": "নির্ভরশীলের জাতীয় পরিচয়পত্র বা জন্মসনদের ছবি",
+  "workforce.uploadFile.dependent.nid_or_birthCcertificate": "জাতীয় পরিচয়পত্র বা জন্মসনদের ছবি",
   "workforce.employee.sameAsPresent": "বর্তমান ঠিকানার অনুরূপ",
 
   "calendar.clearButton": "মুছে ফেলুন"
