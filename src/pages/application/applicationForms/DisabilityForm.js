@@ -63,7 +63,7 @@ const steps = [
   "workforce.application.steps.employeeDetails",
   "workforce.application.steps.location",
   "workforce.application.steps.account.info",
-  "workforce.application.steps.treatment.info",
+  "workforce.application.disabilityInfo",
   "workforce.application.steps.upload.documents",
 ];
 

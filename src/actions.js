@@ -685,7 +685,7 @@ export function fetchApplicationsSummary(mm, filters) {
     present_location_projection +
     permanent_location_projection +
     "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
-    "applicantInfo",   
+    // "applicantInfo",   
     "dateCreated",
     "organizationType",
     "applicationType",
@@ -742,7 +742,7 @@ export function fetchApplication(mm, filters) {
   const projections = [
     "id",
     "workforceEmployee{" + present_location_projection + permanent_location_projection + ",id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
-    "applicantInfo",   
+    // "applicantInfo",   
     "organizationType",
     "applicationType",
     "status",
