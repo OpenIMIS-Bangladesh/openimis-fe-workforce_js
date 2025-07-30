@@ -38,6 +38,7 @@ const EmployeeDependentForm = ({
   const classes = useStyles();
   // const [expanded, setExpanded] = useState(0);
   const modulesManager = useModulesManager();
+  const normalizedDependents = Array.isArray(dependents) ? dependents : dependents ? [dependents] : [];
 
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
 
@@ -51,7 +52,6 @@ const EmployeeDependentForm = ({
   const [sameAsPresent, setSameAsPresent] = useState([]);
 
   // Sync permanent fields when checkbox is checked
-  const normalizedDependents = Array.isArray(dependents) ? dependents : dependents ? [dependents] : [];
 
   // Initialize sameAsPresent for each dependent (or single entry)
   useEffect(() => {
@@ -70,14 +70,15 @@ const EmployeeDependentForm = ({
     });
 
     if (isChecked) {
-      const presentLocation = formData?.presentLocation || null;
-      const presentAddress = formData?.presentAddress || "";
+      
+      const presentLocation = formData?.dependents[index].presentLocation || null;
+      const presentAddress = formData?.dependents[index]?.presentAddress || "";
 
-      handleChange(`permanentLocation[${index}]`, presentLocation);
-      handleChange(`permanentAddress[${index}]`, presentAddress);
+      handleChange(index,`permanentLocation`, presentLocation);
+      handleChange(index,`permanentAddress`, presentAddress);
     } else {
-      handleChange(`permanentLocation[${index}]`, null);
-      handleChange(`permanentAddress[${index}]`, "");
+      handleChange(index,`permanentLocation[${index}]`, null);
+      handleChange(index,`permanentAddress[${index}]`, "");
     }
   };
 
@@ -252,7 +253,7 @@ const EmployeeDependentForm = ({
                     onChange={handleChange}
                     addressKey="permanentAddress"
                     data={formData}
-                    readOnly={false}
+                    readOnly={!!sameAsPresent[index]}
                   />
                 </Grid>
 
@@ -280,6 +281,7 @@ const EmployeeDependentForm = ({
                         color: "white",
                       }}
                       onClick={() => removeItem(index)}
+                      disabled={applicationType !== "financialAssistance" || dependents.length === 1}
                     >
                       <FormattedMessage module="workforce" id="workforce.application.steps.skip" />
                     </Button>

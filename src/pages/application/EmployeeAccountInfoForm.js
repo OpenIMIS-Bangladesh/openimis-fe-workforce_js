@@ -72,16 +72,19 @@ const EmployeeAccountInfoForm = ({
   
 
   useEffect(() => {
-    if (applicationId && applicationId[0]?.id) {
-      if (dependent?.length > 0) {
-        const accountCount = dependent.length;
-        const initialAccounts = Array(accountCount).fill({}); // create empty accounts
-        setShowAccounts(initialAccounts);
-      }
-    } else {
-      setShowAccounts([{}]);
+  if (applicationId && applicationId[0]?.id) {
+    if (dependent?.length > 0) {
+      const accountCount = dependent.length;
+      const initialAccounts = Array(accountCount).fill({});
+      setShowAccounts(initialAccounts);
+      setExpanded(0); // ✅ Open first accordion after data loads
     }
-  }, [dependent, applicationId]);
+  } else {
+    setShowAccounts([{}]);
+    setExpanded(0); // ✅ Ensure first accordion is open in default case too
+  }
+}, [dependent, applicationId]);
+
 
   if (loading) return <b>Loading ...</b>;
 

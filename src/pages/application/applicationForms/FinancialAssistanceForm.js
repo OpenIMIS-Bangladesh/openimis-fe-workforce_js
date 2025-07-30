@@ -68,7 +68,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [expanded, setExpanded] = useState(1);
+  const [expanded, setExpanded] = useState(0);
 
   const [activeStep, setActiveStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
