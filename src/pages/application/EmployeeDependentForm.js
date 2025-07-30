@@ -33,7 +33,7 @@ const EmployeeDependentForm = ({
   // handleChange,
 }) => {
   // Normalize dependents to always be an array
-  const normalizedDependents = Array.isArray(dependents) ? dependents : dependents ? [dependents] : [{}];
+  // const normalizedDependents = Array.isArray(dependents) ? dependents : dependents ? [dependents] : [{}];
 
   const classes = useStyles();
   // const [expanded, setExpanded] = useState(0);
@@ -51,28 +51,41 @@ const EmployeeDependentForm = ({
   const [sameAsPresent, setSameAsPresent] = useState([]);
 
   // Sync permanent fields when checkbox is checked
+ const normalizedDependents = Array.isArray(dependents)
+    ? dependents
+    : dependents
+    ? [dependents]
+    : [];
+
+  // Initialize sameAsPresent for each dependent (or single entry)
   useEffect(() => {
-    sameAsPresent.forEach((isChecked, index) => {
-      if (isChecked) {
-        const presentLoc = normalizedDependents[index]?.presentLocation || null;
-        const presentAddr = normalizedDependents[index]?.presentAddress || "";
-        handleChange(index, "permanentLocation", presentLoc);
-        handleChange(index, "permanentAddress", presentAddr);
-      }
+    if (Array.isArray(normalizedDependents)) {
+      setSameAsPresent((prev) =>
+        normalizedDependents.map((_, index) => prev?.[index] || false)
+      );
+    }
+  }, [dependents]);
+
+  const handleCheckboxChange = (index, e) => {
+    const isChecked = e.target.checked;
+
+    setSameAsPresent((prev) => {
+      const updated = [...(prev || [])];
+      updated[index] = isChecked;
+      return updated;
     });
-  }, [sameAsPresent, normalizedDependents]);
 
-  console.log({ dependents });
-
-  useEffect(() => {
-    if (sameAsPresent) {
+    if (isChecked) {
       const presentLocation = formData?.presentLocation || null;
       const presentAddress = formData?.presentAddress || "";
 
-      handleChange("permanentLocation", presentLocation);
-      handleChange("permanentAddress", presentAddress);
+      handleChange(`permanentLocation[${index}]`, presentLocation);
+      handleChange(`permanentAddress[${index}]`, presentAddress);
+    } else {
+      handleChange(`permanentLocation[${index}]`, null);
+      handleChange(`permanentAddress[${index}]`, "");
     }
-  }, [sameAsPresent, formData?.presentLocation, formData?.presentAddress]);
+  };
 
   const isCityLocation = (locationObj) => {
     let current = locationObj;
@@ -218,27 +231,20 @@ const EmployeeDependentForm = ({
                 <Grid item xs={12}>
                   <b>{formatMessage("workforce.employee.permanent_location")}</b>
                   {/* ✅ Same as Present Location Checkbox */}
-                  <Grid item xs={12}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          color="primary"
-                          checked={!!sameAsPresent[index]}
-                          onChange={(e) => {
-                            const updated = [...sameAsPresent];
-                            updated[index] = e.target.checked;
-                            setSameAsPresent(updated);
-
-                            if (e.target.checked) {
-                              handleChange(index, "permanentLocation", formData.presentLocation || null);
-                              handleChange(index, "permanentAddress", formData.presentAddress || "");
-                            }
-                          }}
-                        />
-                      }
-                      label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
-                    />
-                  </Grid>
+                  {normalizedDependents.map((_, index) => (
+        <Grid item xs={12} key={index}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                checked={sameAsPresent?.[index] || false}
+                onChange={(e) => handleCheckboxChange(index, e)}
+              />
+            }
+            label={formatMessage("workforce.employee.sameAsPresent")}
+          />
+        </Grid>
+      ))}
 
                   <Grid item xs={12}>
                     <PublishedComponent
