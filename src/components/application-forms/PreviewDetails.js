@@ -1,5 +1,13 @@
 import React from "react";
-import { Grid, Paper, Typography, Divider, Card, CardContent, Box } from "@material-ui/core";
+import {
+  Grid,
+  Paper,
+  Typography,
+  Divider,
+  Card,
+  CardContent,
+  Box,
+} from "@material-ui/core";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { FormattedMessage } from "@openimis/fe-core";
@@ -27,6 +35,7 @@ const styles = (theme) => ({
 });
 
 const banglaLabels = {
+  // same as your original banglaLabels object...
   nameEn: "নাম (ইংরেজি)",
   nameBn: "নাম (বাংলা)",
   fatherNameEn: "পিতার নাম (ইংরেজি)",
@@ -86,7 +95,6 @@ const banglaLabels = {
   rollNumber: "রোল নম্বর",
   registrationNumber: "রেজিস্ট্রেশন নম্বর",
   result: "ফলাফল",
-  diagnosisDate: "রোগ নির্ণয়ের তারিখ",
   otherInfo: "অন্যান্য তথ্য",
   dateofReceipt: "গ্রহণের তারিখ",
   reasonforReceipt: "গ্রহণের কারণ",
@@ -94,16 +102,39 @@ const banglaLabels = {
   deathType: "মৃত্যুর ধরণ",
   scholarshipFor: "স্কলারশিপের উদ্দেশ্য",
   employeeDependentInfo: "নির্ভরশীল সদস্যদের তথ্য",
-
+  employeeBankInfo:"শ্রমিকের ব্যাংক তথ্য",
+  applicant_type:"আবেদনকারীর ধরণ",
+  bankCode:"ব্যাংক কোড",
+  bank:"ব্যাংক",
+  educations:"শিক্ষাগত তথ্য",
+spouseBn:"স্বামী/স্ত্রীর নাম (বাংলা)",
+spouseEn:"স্বামী/স্ত্রীর নাম (ইংরেজি)",
+spouseFatherNameEn:"স্বামী/স্ত্রীর পিতার নাম (ইংরেজি)",
+spouseFatherNameBn:"স্বামী/স্ত্রীর পিতার নাম (বাংলা)",
+spouseBirthDate:"স্বামী/স্ত্রীর জন্ম তারিখ",
+spouseNid:"স্বামী/স্ত্রীর এনআইডি",
 };
 
 const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
   const formatKey = (key) => {
-    if (language === "fr" && banglaLabels[key]) return banglaLabels[key];
-    return String(key)
+    const cleanKey = key.split(".").pop();
+    if (["fr", "bangla", "bd"].includes(language) && banglaLabels[cleanKey]) {
+      return banglaLabels[cleanKey];
+    }
+    return cleanKey
       .replace(/_/g, " ")
       .replace(/([A-Z])/g, " $1")
       .replace(/^./, (str) => str.toUpperCase());
+  };
+
+  const parseIfJson = (val) => {
+    if (typeof val === "string") {
+      try {
+        const parsed = JSON.parse(val);
+        if (typeof parsed === "object") return parsed;
+      } catch {}
+    }
+    return val;
   };
 
   const renderValue = (value) => {
@@ -115,6 +146,9 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
               {typeof item === "object" ? renderNestedObject(item) : item}
             </Box>
           ));
+    } else if (typeof value === "string" && value.trim().startsWith("{")) {
+      const parsed = parseIfJson(value);
+      return typeof parsed === "object" ? renderNestedObject(parsed) : parsed;
     } else if (typeof value === "object" && value !== null) {
       if ("code" in value && "name" in value) {
         return `${value.name} (${value.code})`;
@@ -199,29 +233,17 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
     if (!employeeData || typeof employeeData !== "object") return null;
 
     const personalFields = [
-      "nameEn",
-      "nameBn",
-      "fatherNameEn",
-      "fatherNameBn",
-      "motherNameEn",
-      "motherNameBn",
-      "spouseName",
-      "spouseNameEn",
-      "spouseNameBn",
-      "citizenship",
-      "nid",
-      "birthCertificate",
-      "birthCertificateNo",
-      "birthDate",
-      "insuranceNumber",
-      "gender",
-      "maritalStatus",
-      "lifeStatus",
-      "deathDate",
-      "monthlyEarning",
+      "nameEn", "nameBn", "fatherNameEn", "fatherNameBn", "motherNameEn", "motherNameBn",
+      "spouseName", "spouseNameEn", "spouseNameBn", "citizenship", "nid", "birthCertificate",
+      "birthCertificateNo", "birthDate", "insuranceNumber", "gender", "maritalStatus",
+      "lifeStatus", "deathDate", "monthlyEarning"
     ];
 
-    const contactFields = ["email", "phoneNumber", "presentAddress", "permanentAddress", "presentLocation", "permanentLocation"];
+    const contactFields = [
+      "email", "phoneNumber", "presentAddress", "permanentAddress",
+      "presentLocation", "permanentLocation"
+    ];
+
     const statusFields = [];
     const accidentFields = ["diagnosisDate", "hospitalName", "admitDate", "releaseDate", "hospitalDoctorName"];
 
@@ -243,60 +265,9 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
         {renderSection("workforce.previewDetails.statusInfo", statusInfo)}
         {renderSection("workforce.previewDetails.accidentInfo", accidentInfo)}
         {renderSection("workforce.previewDetails.contactInfo", contactInfo)}
-        {childrenInfo && Object.keys(childrenInfo).length > 0 && renderSection("workforce.previewDetails.employeeChildrenInfo", childrenInfo)}
+        {childrenInfo && Object.keys(childrenInfo).length > 0 &&
+          renderSection("workforce.previewDetails.employeeChildrenInfo", childrenInfo)}
       </>
-    );
-  };
-
-  const renderOthersInfoSection = () => {
-    const primitiveFields = Object.entries(formData)
-      .filter(
-        ([key, value]) =>
-          typeof value !== "object" && !["id", "uuid", "parent", "applicationType", "organizationType", "applicationForSelf", "workforceEmployee"].includes(key)
-      )
-      .reduce((acc, [key, value]) => {
-        acc[key] = value;
-        return acc;
-      }, {});
-
-    return renderSection("workforce.previewDetails.othersInfo", primitiveFields);
-  };
-
-  const renderEducationsSection = (educations) => {
-    if (!Array.isArray(educations) || educations.length === 0) return null;
-
-    const filteredItems = educations.filter((item) => item && typeof item === "object");
-
-    return (
-      <Grid item xs={6} className={classes.cardGridItem} key="educations">
-        <Card className={classes.card}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              <FormattedMessage module="workforce" id="workforce.previewDetails.educations" defaultMessage="Educations" />
-            </Typography>
-            <Divider style={{ marginBottom: "10px" }} />
-            {filteredItems.map((edu, index) => (
-              <Box key={index} mb={2} pl={1}>
-                {/* <Typography variant="subtitle2" gutterBottom>
-                <FormattedMessage module="workforce" id="workforce.previewDetails.education" defaultMessage="Education" /> #{index + 1}
-              </Typography> */}
-                <Grid container spacing={2}>
-                  {Object.entries(edu).map(
-                    ([key, value], idx) =>
-                      key !== "id" && (
-                        <Grid item xs={12} sm={6} key={idx}>
-                          <Typography variant="body2">
-                            <b>{formatKey(key)}:</b> {renderValue(value)}
-                          </Typography>
-                        </Grid>
-                      )
-                  )}
-                </Grid>
-              </Box>
-            ))}
-          </CardContent>
-        </Card>
-      </Grid>
     );
   };
 
@@ -309,14 +280,14 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
       <Grid item xs={6} className={classes.cardGridItem} key="employeeDependentInfo">
         <Card className={classes.card}>
           <CardContent>
-            <Typography variant="h6" gutterBottom >
+            <Typography variant="h6" gutterBottom>
               <FormattedMessage module="workforce" id="workforce.previewDetails.employeeDependentInfo" defaultMessage={formatKey("employeeDependentInfo")} />
             </Typography>
             <Divider style={{ marginBottom: "10px" }} />
             {filteredItems.map((dep, index) => (
               <Box key={index} mb={2} pl={1}>
-                <Typography variant="body2" gutterBottom style={{textAlign:"center",fontWeight:"bold"}}>
-                  <FormattedMessage module="workforce" id="workforce.previewDetails.dependent" defaultMessage={`Dependent #${index + 1}`} />  {index+1}
+                <Typography variant="body2" gutterBottom style={{ textAlign: "center", fontWeight: "bold" }}>
+                  <FormattedMessage module="workforce" id="workforce.previewDetails.dependent" defaultMessage={`Dependent #${index + 1}`} />
                 </Typography>
                 <Grid container spacing={2}>
                   {Object.entries(dep).map(([key, value], idx) => (
@@ -335,22 +306,31 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
     );
   };
 
+  const renderOthersInfoSection = () => {
+    const primitiveFields = Object.entries(formData)
+      .filter(
+        ([key, value]) =>
+          typeof value !== "object" &&
+          !["id", "uuid", "parent", "applicationType", "organizationType", "applicationForSelf", "workforceEmployee", "workforceApplicant"].includes(key)
+      )
+      .reduce((acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      }, {});
+    return renderSection("workforce.previewDetails.othersInfo", primitiveFields);
+  };
+
   const renderDynamicSections = () => {
     return Object.entries(formData).map(([key, value]) => {
       if (!value || ["id", "uuid", "parent", "applicationType", "organizationType", "applicationForSelf"].includes(key)) return null;
 
-      if (key === "workforceEmployee") {
+      if (key === "workforceEmployee" || key === "workforceApplicant") {
         return renderWorkforceEmployeeSections(value);
       }
 
-      if (key === "educations") {
-        return renderEducationsSection(value);
+      if (key === "employeeDependentInfo" || key === "dependents") {
+        return renderDependentsSection(value);
       }
-
-      if (key === "employeeDependentInfo") {
-  return renderDependentsSection(value);
-}
-
 
       if (Array.isArray(value) && value.length > 0 && typeof value[0] === "object") {
         return renderArraySection(key, value);

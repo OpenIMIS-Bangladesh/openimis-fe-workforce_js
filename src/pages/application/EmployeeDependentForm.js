@@ -280,7 +280,6 @@ const EmployeeDependentForm = ({
                         color: "white",
                       }}
                       onClick={() => removeItem(index)}
-                      disabled={applicationType !== "financialAssistance" || dependents.length === 1}
                     >
                       <FormattedMessage module="workforce" id="workforce.application.steps.skip" />
                     </Button>

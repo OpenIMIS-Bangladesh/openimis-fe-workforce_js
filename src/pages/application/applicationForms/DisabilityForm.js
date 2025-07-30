@@ -303,7 +303,7 @@ const DisabilityForm = ({
     } else if (nextStep === 4) {
       console.log("Create application formData:", formData);
       const updateApplicationData = {
-        id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+        id: safeApplicationId(applicationId, parsedApplicationData),
         workforceEmployeeId:
           formData?.workforceEmployee?.id ||
           parsedApplicationData?.workforceEmployee?.id,
@@ -567,7 +567,7 @@ const removeArrayFieldItem = (fieldKey, index) => {
         ) : activeStep === 1 ? (
           <Box mt={0}>
             <EmployeeDetailsForm
-              handleChange={handleChange}
+              handleChange={(key, value) => handleChange(key, value, "workforceEmployee")}
               formData={formData}
               setNidOrBcn={setNidOrBcn}
               nidOrBcn={nidOrBcn}
@@ -576,7 +576,7 @@ const removeArrayFieldItem = (fieldKey, index) => {
         ) : activeStep === 2 ? (
           <Box mt={0}>
             <EmployeeLocationForm
-              handleChange={handleChange}
+              handleChange={(key, value) => handleChange(key, value, "workforceEmployee")}
               formData={formData}
             />
           </Box>
