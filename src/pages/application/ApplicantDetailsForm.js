@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Grid, Box, Paper, Typography, Divider, IconButton } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { Grid, Box, Paper, Typography, Divider, IconButton,FormControlLabel,Checkbox  } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
@@ -23,10 +23,10 @@ const useStyles = makeStyles((theme) => ({
   item: theme.paper.item,
   overrideReadOnly: {
     "& .MuiInputBase-root.Mui-disabled": {
-      color: "#808080 !important", 
+      color: "#808080 !important",
     },
     "& .MuiFormLabel-root.Mui-disabled": {
-      color: `${theme.palette.text.primary} !important`, 
+      color: `${theme.palette.text.primary} !important`,
     },
   },
 }));
@@ -36,8 +36,32 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
   const history = useHistory();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
+    const [sameAsPresent, setSameAsPresent] = useState(false);
+  
 
   const applicantData = useSelector((state) => state.workforce[`workforceApplicant`] ?? []);
+  const isCityLocation = (locationObj) => {
+    let current = locationObj;
+
+    while (current) {
+      if (current.name && current.name.includes("সিটি কর্পোরেশন")) {
+        return true; // it's a city
+      }
+      current = current.parent;
+    }
+
+    return false; // not a city
+  };
+
+  useEffect(() => {
+      if (sameAsPresent) {
+        const presentLocation = formData?.workforceEmployee?.presentLocation || null;
+        const presentAddress = formData?.workforceEmployee?.presentAddress || "";
+  
+        handleChange("permanentLocation", presentLocation);
+        handleChange("permanentAddress", presentAddress);
+      }
+    }, [sameAsPresent, formData?.workforceEmployee?.presentLocation, formData?.workforceEmployee?.presentAddress]);
 
   console.log("hello bangladesh", formData);
   return (
@@ -86,7 +110,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   readOnly={false}
                 />
               </Grid>
-                      
+
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.phone"
@@ -96,8 +120,8 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   readOnly={false}
                   required
                 />
-              </Grid>    
-           
+              </Grid>
+
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.citizenship"
@@ -190,6 +214,68 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   readOnly={false}
                 />
               </Grid>
+            </Grid>
+
+            <Grid container spacing={2}>
+              {/* Present Location */}
+              <Grid item xs={12}>
+                <b>{formatMessage("workforce.employee.present_location")}</b>
+                <PublishedComponent
+                  pubRef="location.DetailedLocation"
+                  withNull={true}
+                  value={formData?.workforceApplicant?.presentLocation || null}
+                  onChange={(presentLocation) => handleChange("presentLocation", presentLocation)}
+                  readOnly={false}
+                  required
+                  split={true}
+                />
+              </Grid>
+
+              
+              {formData?.workforceApplicant?.presentLocation && (
+                <Grid item xs={12}>
+                  <CustomDetailedLocation
+                    locationType={isCityLocation(formData?.workforceApplicant?.presentLocation) ? "city" : "rural"}
+                    onChange={handleChange}
+                    addressKey="presentAddress"
+                    data={formData}
+                    readOnly={false}
+                  />
+                </Grid>
+              )}
+
+              {/* Permanent Location */}
+              <Grid item xs={12}>
+                <b>{formatMessage("workforce.employee.permanent_location")}</b>
+                {/* Checkbox */}
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
+                    label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
+                  />
+                </Grid>
+                <PublishedComponent
+                  pubRef="location.DetailedLocation"
+                  withNull={true}
+                  value={formData?.workforceApplicant?.permanentLocation || null}
+                  onChange={(permanentLocation) => handleChange("permanentLocation", permanentLocation)}
+                  readOnly={sameAsPresent}
+                  required
+                  split={true}
+                />
+              </Grid>
+
+              {formData?.workforceApplicant?.permanentLocation && (
+                <Grid item xs={12}>
+                  <CustomDetailedLocation
+                    locationType={isCityLocation(formData?.workforceApplicant?.presentLocation) ? "city" : "rural"}
+                    onChange={handleChange}
+                    addressKey="permanentAddress"
+                    data={formData}
+                    readOnly={sameAsPresent}
+                  />
+                </Grid>
+              )}
             </Grid>
             <Divider />
           </Paper>

@@ -120,8 +120,6 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
     workforceApplicant: {
       nameEn: "",
       nameBn: "",
-      lastNameEn: "",
-      position: "",
       fatherNameEn: "",
       fatherNameBn: "",
       motherNameEn: "",
@@ -129,20 +127,10 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
       spouseNameEn: "",
       spouseNameBn: "",
       phoneNumber: "",
-      email: "",
       birthDate: "",
-      deathDate: "",
-      joinDate: "",
       nid: "",
       birthCertificateNo: "",
-      insuranceNumber: "",
-      lifeStatus: "",
       gender: "",
-      maritalStatus: "",
-      monthlyEarning: "",
-      uploadedNidFile: [],
-      citizenship: "",
-      uploadedBirthCertificateFile: [],
       permanentAddress: "",
       permanentLocation: "",
       presentLocation: "",
@@ -191,41 +179,30 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
       // When employeeData is fetched, set it into the form state
       setFormData({
         id: parsedApplicationData?.id || "",
-        workforceEmployee: {
+        workforceApplicant: {
           id: employeeData?.id || reduxState.core.user.id || "",
-          organization: employeeData.organization,
-          nameEn: employeeData.firstNameEn || "",
-          nameBn: employeeData.firstNameBn || "",
-          lastNameEn: " ",
-          position: employeeData.position || "",
-          fatherNameEn: employeeData.fatherNameEn || "",
-          fatherNameBn: employeeData.fatherNameBn || "",
-          motherNameEn: employeeData.motherNameEn || "",
-          motherNameBn: employeeData.motherNameBn || "",
-          spouseNameEn: employeeData.spouseNameEn || "",
-          spouseNameBn: employeeData.spouseNameBn || "",
-          phoneNumber: employeeData.phoneNumber || "",
-          email: employeeData.email || "",
-          citizenship: employeeData.citizenship || "",
-          birthDate: employeeData.birthDate || "",
-          deathDate: employeeData.deathDate || "",
-          joinDate: employeeData.joinDate || "",
-          nid: employeeData.nid || "",
-          birthCertificateNo: employeeData.birthCertificateNo || "",
-          insuranceNumber: employeeData.insuranceNumber || "",
-          lifeStatus: employeeData.lifeStatus || "",
-          gender: employeeData.gender || "",
-          maritalStatus: employeeData.maritalStatus || "",
-          monthlyEarning: employeeData.monthlyEarning || "",
-          uploadedNidFile: employeeData.uploadedNidFile || [],
-          uploadedBirthCertificateFile: employeeData.uploadedBirthCertificateFile || [],
-          permanentAddress: employeeData.permanentAddress || "",
-          permanentLocation: employeeData.permanentLocation || "",
-          presentLocation: employeeData.presentLocation || "",
-          presentAddress: employeeData.presentAddress || "",
+          organization: employeeData?.organization,
+          nameEn: employeeData?.firstNameEn || "",
+          nameBn: employeeData?.firstNameBn || "",
+
+          fatherNameEn: employeeData?.fatherNameEn || "",
+          fatherNameBn: employeeData?.fatherNameBn || "",
+          motherNameEn: employeeData?.motherNameEn || "",
+          motherNameBn: employeeData?.motherNameBn || "",
+          spouseNameEn: employeeData?.spouseNameEn || "",
+          spouseNameBn: employeeData?.spouseNameBn || "",
+          phoneNumber: employeeData?.phoneNumber || "",
+          
+          nid: employeeData?.nid || "",
+          birthCertificateNo: employeeData?.birthCertificateNo || "",
+          
+          permanentAddress: employeeData?.permanentAddress || "",
+          permanentLocation: employeeData?.permanentLocation || "",
+          presentLocation: employeeData?.presentLocation || "",
+          presentAddress: employeeData?.presentAddress || "",
         },
-        company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || null,
+        company: employeeData?.company || formData?.workforceEmployee?.company?.id || null,
+        factory: employeeData?.factory || formData?.workforceEmployee?.factory?.id || null,
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
@@ -310,11 +287,11 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         const applicationMutation = await formatMutation(
           "createWorkforceApplication",
           formatApplicationeGQL(createApplicationData),
-          `Created application ${formData.workforceEmployee.nameEn}`
+          `Created application `
         );
         const applicationClientMutationId = applicationMutation.clientMutationId;
         console.log("applicationClientMutationId", applicationClientMutationId);
-        await dispatch(createApplication(applicationMutation, `Created workforce application ${formData.firstNameEn}`));
+        await dispatch(createApplication(applicationMutation, `Created workforce application `));
 
         // await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
         const fetchRes = await dispatch(
@@ -342,7 +319,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
       } else {
         const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
         console.log("i am from update", updateApplicationData);
-        dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
+        dispatch(updateApplication(updateApplicationData, `update workforce application `));
       }
     } else if (nextStep === 2) {
       const createApplicationData = {
@@ -365,7 +342,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
       };
-      dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
+      dispatch(updateApplication(updateApplicationData, `update workforce application`));
     }
   };
 

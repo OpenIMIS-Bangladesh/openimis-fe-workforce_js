@@ -51,18 +51,12 @@ const EmployeeDependentForm = ({
   const [sameAsPresent, setSameAsPresent] = useState([]);
 
   // Sync permanent fields when checkbox is checked
- const normalizedDependents = Array.isArray(dependents)
-    ? dependents
-    : dependents
-    ? [dependents]
-    : [];
+  const normalizedDependents = Array.isArray(dependents) ? dependents : dependents ? [dependents] : [];
 
   // Initialize sameAsPresent for each dependent (or single entry)
   useEffect(() => {
     if (Array.isArray(normalizedDependents)) {
-      setSameAsPresent((prev) =>
-        normalizedDependents.map((_, index) => prev?.[index] || false)
-      );
+      setSameAsPresent((prev) => normalizedDependents.map((_, index) => prev?.[index] || false));
     }
   }, [dependents]);
 
@@ -232,19 +226,13 @@ const EmployeeDependentForm = ({
                   <b>{formatMessage("workforce.employee.permanent_location")}</b>
                   {/* ✅ Same as Present Location Checkbox */}
                   {normalizedDependents.map((_, index) => (
-        <Grid item xs={12} key={index}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                color="primary"
-                checked={sameAsPresent?.[index] || false}
-                onChange={(e) => handleCheckboxChange(index, e)}
-              />
-            }
-            label={formatMessage("workforce.employee.sameAsPresent")}
-          />
-        </Grid>
-      ))}
+                    <Grid item xs={12} key={index}>
+                      <FormControlLabel
+                        control={<Checkbox color="primary" checked={sameAsPresent?.[index] || false} onChange={(e) => handleCheckboxChange(index, e)} />}
+                        label={formatMessage("workforce.employee.sameAsPresent")}
+                      />
+                    </Grid>
+                  ))}
 
                   <Grid item xs={12}>
                     <PublishedComponent
