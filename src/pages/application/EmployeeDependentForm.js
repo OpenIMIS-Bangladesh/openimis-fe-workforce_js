@@ -240,20 +240,18 @@ const EmployeeDependentForm = ({
                     />
                   </Grid>
 
-
-            
-                <Grid item xs={12}>
-                  <PublishedComponent
-                    pubRef="location.DetailedLocation"
-                    withNull={true}
-                    value={formData.permanentLocation || null}
-                    onChange={(v) => handleChange(index, "permanentLocation", v)}
-                    readOnly={!!sameAsPresent[index]}
-                    required
-                    split={true}
-                  />
+                  <Grid item xs={12}>
+                    <PublishedComponent
+                      pubRef="location.DetailedLocation"
+                      withNull={true}
+                      value={formData.permanentLocation || null}
+                      onChange={(v) => handleChange(index, "permanentLocation", v)}
+                      readOnly={!!sameAsPresent[index]}
+                      required
+                      split={true}
+                    />
+                  </Grid>
                 </Grid>
-
                 <Grid item xs={12}>
                   <CustomDetailedLocation
                     locationType={isCityLocation(formData?.permanentAddress) ? "city" : "rural"}
@@ -275,7 +273,6 @@ const EmployeeDependentForm = ({
                 <Grid item xs={6}>
                   <Typography>{formatMessage("workforce.uploadFile.dependent.nid_or_birthCcertificate")}</Typography>
                   <FileUploader fieldKey={"dependentNid"} onFileChange={(field, value) => handleChange(index, field, value)} documentType={"dependent nid"} />
-                </Grid>
                 </Grid>
 
                 {/* <Grid item xs={11} className={classes.item} /> */}
