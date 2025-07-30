@@ -53,6 +53,16 @@ const errorMessages = {
 const getErrorMessage = (messageKey) => {
     return errorMessages[messageKey] || messageKey;
 };
+
+
+const getMyCookie= (name) =>{
+  return document.cookie.split("; ").reduce((prev, current) => {
+    const [key, value] = current.split("=");
+    return key === name ? decodeURIComponent(value) : prev;
+  }, null);
+};
+
+
 export default function LoginForm() {
     const classes = useStyles();
     const [credentials, setCredentials] = useState({});
@@ -63,6 +73,24 @@ export default function LoginForm() {
     const [serverResponse, setServerResponse] = useState({ loginStatus: "", message: null });
     const history = useHistory();
     const [loginType, setLoginType] = useState(0);
+  
+
+
+    const checkAdmin = () => {
+        console.log("Checking if user is admin...");
+        const userType = getMyCookie("userType");
+
+        if (userType == 'administrative') {
+            history.push("/administrative/login");
+        }
+    };
+
+    useEffect(() => {
+        checkAdmin();
+    }, []);
+
+
+
 
     const handleLoginError = (errorMessage) => {
         setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: errorMessage });
@@ -81,6 +109,9 @@ export default function LoginForm() {
         setAuthenticating(true);
 
         try {
+            const cookieexpires = `; expires=${-1}`;
+            document.cookie = `userType=${encodeURIComponent('')}${cookieexpires}; path=/`;
+
             const response = await auth.login(credentials);
 
             if (response.payload?.errors?.length) {

@@ -54,6 +54,14 @@ const redirectToForgotPassword = (e) => {
     e.preventDefault();
     history.push("/forgot_password");
 };
+
+const getMyCookie= (name) =>{
+  return document.cookie.split("; ").reduce((prev, current) => {
+    const [key, value] = current.split("=");
+    return key === name ? decodeURIComponent(value) : prev;
+  }, null);
+};
+
 export default function LoginFormAdministrative() {
     const classes = useStyles();
     const modulesManager = useModulesManager();
@@ -63,6 +71,11 @@ export default function LoginFormAdministrative() {
     const [isAuthenticating, setAuthenticating] = useState(false);
     const [serverResponse, setServerResponse] = useState({ loginStatus: "", message: null });
     const history = useHistory();
+
+    
+
+
+
 
     const handleLoginError = (errorMessage) => {
         setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: errorMessage });
@@ -82,6 +95,8 @@ export default function LoginFormAdministrative() {
         setAuthenticating(true);
 
         try {
+            const cookieexpires = `; expires=${new Date(Date.now() + 864e5).toUTCString()}`;
+            document.cookie = `userType=${encodeURIComponent('administrative')}${cookieexpires}; path=/`;
             const response = await auth.login(credentials);
 
             if (response.payload?.errors?.length) {
