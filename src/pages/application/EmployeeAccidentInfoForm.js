@@ -95,7 +95,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
     <Box mt={2}>
       <Paper className={classes.paper} elevation={0}>
         <Typography variant="h6" gutterBottom>
-          <FormattedMessage id="workforce.employee.accident.info.title" />
+          {applicationType === "disabilityAssistance"?<FormattedMessage id="workforce.application.disabilityDetails" />:<FormattedMessage id="workforce.employee.accident.info.title" />}
         </Typography>
 
         <RadioGroup column value={formData?.employeeAccidentInfo?.accidentType || "disease"} onChange={handleOptionChange}>

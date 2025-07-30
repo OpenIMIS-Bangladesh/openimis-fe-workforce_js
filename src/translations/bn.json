@@ -319,6 +319,8 @@
 
     "workforce.application.id":"অ্যাপ্লিকেশন আইডি",
     "workforce.application.date":"আবেদনের তারিখ",
+    "workforce.application.disabilityInfo":"অক্ষমতার তথ্য",
+    "workforce.application.disabilityDetails":"অক্ষমতার কারণ",
     "workforce.application.expected.date":"সেবা প্রদানের সম্ভাব্য তারিখ",
     "workforce.application.reverted":"প্রত্যাবর্তিত আবেদনসমূহ",
     "workforce.application.draft":"খসড়া আবেদনসমূহ",
