@@ -278,6 +278,7 @@ export function formatApplicationeGQL(application) {
   ${application?.trackingNumber ? `trackingNumber: "${application?.trackingNumber}"` : ""}
   ${application?.employeeDependentInfo ? `employeeDependentInfo: ${escapeQuotes(application?.employeeDependentInfo)}` : ""}
   ${application?.employeeBankInfo ? `employeeBankInfo: ${escapeQuotes(application?.employeeBankInfo)}` : ""}
+  ${application?.employeeApplicantInfo ? `applicantInfo: ${escapeQuotes(application?.employeeApplicantInfo)}` : ""}
   ${application?.employeeAccidentInfo ? `employeeAccidentInfo: ${escapeQuotes(application?.employeeAccidentInfo)}` : ""}
   ${application?.metadata ? `metadata: ${escapeQuotes(application?.metadata)}` : ""}
   ${application?.employeeChildrenInfo ? `employeeChildrenInfo: ${escapeQuotes(application?.employeeChildrenInfo)}` : ""}

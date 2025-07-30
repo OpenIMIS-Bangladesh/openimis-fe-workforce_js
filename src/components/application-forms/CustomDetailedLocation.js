@@ -49,7 +49,7 @@ const CustomDetailedLocation = ({ locationType ="city", onChange, addressKey, da
           <Grid item xs={12} sm={4}>
             <TextInput
               // label="workforce.employee.city.extra_info"
-              value={localData.apartmentNumber || ""}
+              value={localData.extraInfo || ""}
               onChange={(v) => updateField("extraInfo", v)}
               InputProps={{ margin: "dense" }}
               readOnly={readOnly}
@@ -100,7 +100,7 @@ const CustomDetailedLocation = ({ locationType ="city", onChange, addressKey, da
           <Grid item xs={12} sm={4}>
             <TextInput
               // label="workforce.employee.city.extra_info"
-              value={localData.apartmentNumber || ""}
+              value={localData.extraInfo || ""}
               onChange={(v) => updateField("extraInfo", v)}
               InputProps={{ margin: "dense" }}
               readOnly={readOnly}

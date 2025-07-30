@@ -33,7 +33,7 @@ const EmployeeDependentForm = ({
   // handleChange,
 }) => {
   // Normalize dependents to always be an array
-  const normalizedDependents = Array.isArray(dependents) ? dependents : dependents ? [dependents] : [{}];
+  // const normalizedDependents = Array.isArray(dependents) ? dependents : dependents ? [dependents] : [{}];
 
   const classes = useStyles();
   // const [expanded, setExpanded] = useState(0);
@@ -48,29 +48,44 @@ const EmployeeDependentForm = ({
       ? `${formatMessage(formData.relationType)}র ${formatMessage(labelKey)}`
       : formatMessage(labelKey);
   };
-  const [sameAsPresent, setSameAsPresent] = useState(false);
+  const [sameAsPresent, setSameAsPresent] = useState([]);
 
   // Sync permanent fields when checkbox is checked
+ const normalizedDependents = Array.isArray(dependents)
+    ? dependents
+    : dependents
+    ? [dependents]
+    : [];
+
+  // Initialize sameAsPresent for each dependent (or single entry)
   useEffect(() => {
-    normalizedDependents.forEach((formData, index) => {
-      if (sameAsPresent[index]) {
-        handleChange(index, "permanentLocation", formData.presentLocation || null);
-        handleChange(index, "permanentAddress", formData.presentAddress || "");
-      }
+    if (Array.isArray(normalizedDependents)) {
+      setSameAsPresent((prev) =>
+        normalizedDependents.map((_, index) => prev?.[index] || false)
+      );
+    }
+  }, [dependents]);
+
+  const handleCheckboxChange = (index, e) => {
+    const isChecked = e.target.checked;
+
+    setSameAsPresent((prev) => {
+      const updated = [...(prev || [])];
+      updated[index] = isChecked;
+      return updated;
     });
-  }, [sameAsPresent, normalizedDependents]);
 
-  console.log({ dependents });
-
-  useEffect(() => {
-    if (sameAsPresent) {
+    if (isChecked) {
       const presentLocation = formData?.presentLocation || null;
       const presentAddress = formData?.presentAddress || "";
 
-      handleChange("permanentLocation", presentLocation);
-      handleChange("permanentAddress", presentAddress);
+      handleChange(`permanentLocation[${index}]`, presentLocation);
+      handleChange(`permanentAddress[${index}]`, presentAddress);
+    } else {
+      handleChange(`permanentLocation[${index}]`, null);
+      handleChange(`permanentAddress[${index}]`, "");
     }
-  }, [sameAsPresent, formData?.presentLocation, formData?.presentAddress]);
+  };
 
   const isCityLocation = (locationObj) => {
     let current = locationObj;
@@ -93,7 +108,11 @@ const EmployeeDependentForm = ({
             <Grid container spacing={0} alignItems="center">
               <Grid item xs={12}>
                 <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                  <FormattedMessage id="workforce.application.header.dependent" module="workforce" />
+                  {applicationType === "financialAssistance" ? (
+                    <FormattedMessage id="workforce.previewDetails.dependent" module="workforce" />
+                  ) : (
+                    <FormattedMessage id="workforce.application.header.dependent" module="workforce" />
+                  )}
                 </Typography>
                 <Typography>{formData.nameEn || ""}</Typography>
               </Grid>
@@ -151,7 +170,7 @@ const EmployeeDependentForm = ({
 
                 <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
-                    pubRef="core.DatePicker"
+                    pubRef="workforce.DatePicker"
                     label={getRelationAwareLabel(formData, "workforce.employee.birthdate")}
                     value={formData.birthDate || ""}
                     onChange={(v) => handleChange(index, "birthDate", v)}
@@ -208,29 +227,37 @@ const EmployeeDependentForm = ({
                   />
                 </Grid>
 
-                
-
                 {/* ✅ Permanent Location (conditional readOnly) */}
                 <Grid item xs={12}>
-                  <p>{formatMessage("workforce.employee.permanent_location")}</p>
+                  <b>{formatMessage("workforce.employee.permanent_location")}</b>
                   {/* ✅ Same as Present Location Checkbox */}
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={<Checkbox color="primary" checked={!!sameAsPresent[index]} onChange={(e) => setSameAsPresent(e.target.checked)} />}
-                    label={formatMessage("workforce.employee.sameAsPresent")}
-                  />
-                </Grid>
-                  <PublishedComponent
-                    pubRef="location.DetailedLocation"
-                    withNull={true}
-                    value={formData.permanentLocation || null}
-                    onChange={(v) => handleChange(index, "permanentLocation", v)}
-                    readOnly={!!sameAsPresent[index]}
-                    required
-                    split={true}
-                  />
-                </Grid>
+                  {normalizedDependents.map((_, index) => (
+        <Grid item xs={12} key={index}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                checked={sameAsPresent?.[index] || false}
+                onChange={(e) => handleCheckboxChange(index, e)}
+              />
+            }
+            label={formatMessage("workforce.employee.sameAsPresent")}
+          />
+        </Grid>
+      ))}
 
+                  <Grid item xs={12}>
+                    <PublishedComponent
+                      pubRef="location.DetailedLocation"
+                      withNull={true}
+                      value={formData.permanentLocation || null}
+                      onChange={(v) => handleChange(index, "permanentLocation", v)}
+                      readOnly={!!sameAsPresent[index]}
+                      required
+                      split={true}
+                    />
+                  </Grid>
+                </Grid>
                 <Grid item xs={12}>
                   <CustomDetailedLocation
                     locationType={isCityLocation(formData?.permanentAddress) ? "city" : "rural"}
@@ -251,11 +278,7 @@ const EmployeeDependentForm = ({
                 </Grid>
                 <Grid item xs={6}>
                   <Typography>{formatMessage("workforce.uploadFile.dependent.nid_or_birthCcertificate")}</Typography>
-                  <FileUploader
-                    fieldKey={"dependentNid"}
-                    onFileChange={(field, value) => handleChange(index, field, value)}
-                    documentType={"dependent nid"}
-                  />
+                  <FileUploader fieldKey={"dependentNid"} onFileChange={(field, value) => handleChange(index, field, value)} documentType={"dependent nid"} />
                 </Grid>
 
                 {/* <Grid item xs={11} className={classes.item} /> */}
