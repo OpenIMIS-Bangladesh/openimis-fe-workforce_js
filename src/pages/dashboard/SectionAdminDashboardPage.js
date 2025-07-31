@@ -36,6 +36,7 @@ import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutline
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -116,20 +117,20 @@ const SidebarMenu = [
     ),
     icon: <HourglassFullTwoToneIcon />,
   },
-  // {
-  //   id: "checkedApplications",
-  //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.application.checked" />
-  //   ),
-  //   icon: <CheckCircleOutlineTwoToneIcon />,
-  // },
   {
-      id: "revertedApplication",
-      text: (
-        <FormattedMessage module="workforce" id="workforce.application.reverted" />
-      ),
-      icon: <RestorePageIcon  />,
-    },
+    id: "revertedApplication",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.reverted" />
+    ),
+    icon: <RestorePageIcon  />,
+  },
+  {
+    id: "rejectedApplication",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.rejectedApplication" />
+    ),
+    icon: <CancelIcon />,
+  },
   {
       id: "pendingMeetingSheet",
       text: (
@@ -137,13 +138,6 @@ const SidebarMenu = [
       ),
       icon: <HourglassFullTwoToneIcon  />,
     },
-  // {
-  //   id: "applicationStatus",
-  //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.application.status" />
-  //   ),
-  //   icon: <AssignmentIcon  />,
-  // },
    
 ];
 
@@ -182,51 +176,6 @@ const checkedApplications = () => (
   </Typography>
 );
 
-const ApplicationStatus = () => {
-  const classes = useStyles();
-
-  return (
-    <Card style={{ marginTop: 0, padding: "32px", textAlign: "center" }}>
-      <CardContent>
-        <Typography variant="h5" gutterBottom>
-          <FormattedMessage module="workforce" id="workforce.application.status" />
-        </Typography>
-
-        <Grid container spacing={2} justifyContent="center" style={{ marginTop: 16 }}>
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              label={<FormattedMessage module="workforce" id="workforce.employee.dependent.phone" />}
-              style={{
-                marginBottom: 16,
-              }}
-            />
-            <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              label={<FormattedMessage module="workforce" id="workforce.application.tracking.number" />}
-              style={{
-                marginBottom: 16,
-              }}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-            >
-              <FormattedMessage module="workforce" id="workforce.search.here" />
-            </Button>
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-  );
-};
-
-
 const RevertApplication = () => {
   const classes = useStyles()
   return (
@@ -253,7 +202,26 @@ const RevertApplication = () => {
     </div>
   </>
 )}
-
+const RejectApplication = () => {
+  const classes = useStyles()
+  return (
+    <>
+      <ApplicationProcessSearcher
+        rejectedApplication={true}
+        dynamicTableTitle= {"workforce.application.rejectedApplication"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
 const PendingMeetingSheet = ({ summaryData = [] }) => {
   console.log("summary data", summaryData);
   const classes = useStyles()
@@ -287,12 +255,6 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
   );
 };
 
-const Others = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.others" />
-  </Typography>
-);
-
 // ------------------------------------------------------------
 
 const SectionAdminDashboard = () => {
@@ -313,6 +275,8 @@ const SectionAdminDashboard = () => {
         return <FiledApplications />;
       case "revertedApplication":
         return <RevertApplication />;
+      case "rejectedApplication":
+        return <RejectApplication />;
       case "pendingMeetingSheet":
         return <PendingMeetingSheet summaryData={data} />;
       default:

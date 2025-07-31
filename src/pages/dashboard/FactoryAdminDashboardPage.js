@@ -32,6 +32,7 @@ import ApplicationProcessSearcher from "../../components/application-process/App
 import { useSelector, useDispatch } from "react-redux";
 import { useModulesManager, useTranslations, Autocomplete, useGraphqlQuery, decodeId } from "@openimis/fe-core";
 import { fetchApplicationsSummary } from "../../actions";
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -103,6 +104,13 @@ const SidebarMenu = [
       <FormattedMessage module="workforce" id="workforce.application.reverted" />
     ),
     icon: <RestorePageIcon  />,
+  },
+  {
+    id: "rejectedApplication",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.rejectedApplication" />
+    ),
+    icon: <CancelIcon />,
   },
   {
     id: "applicationStatus",
@@ -285,6 +293,26 @@ const RevertApplication = () => {
     </div>
   </>
 )}
+const RejectApplication = () => {
+  const classes = useStyles()
+  return (
+    <>
+      <ApplicationProcessSearcher
+        rejectedApplication={true}
+        dynamicTableTitle= {"workforce.application.rejectedApplication"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
 
 const Others = () => (
   <Typography variant="h5">
@@ -306,6 +334,8 @@ const FactoryAdminDashboard = () => {
         return <MultiStepApplyForm />;
       case "revertedApplication":
         return <RevertApplication />;
+      case "rejectedApplication":
+        return <RejectApplication />;
       case "applicationStatus":
         return <ApplicationStatus />;
       default:
