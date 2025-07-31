@@ -20,6 +20,7 @@ import DescriptionIcon from "@material-ui/icons/Description";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import RestorePageIcon from '@material-ui/icons/RestorePage';
+import CancelIcon from '@material-ui/icons/Cancel';
 import DraftsIcon from '@material-ui/icons/Drafts';
 import MultiStepApplyForm from "../application/MultiStepApplyForm";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
@@ -98,13 +99,13 @@ const SidebarMenu = [
     ),
     icon: <RestorePageIcon />,
   },
-  // {
-  //   id: "recentApplications",
-  //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.application.recent" />
-  //   ),
-  //   icon: <DoneAllIcon />,
-  // },
+  {
+    id: "rejectedApplication",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.rejectedApplication" />
+    ),
+    icon: <CancelIcon />,
+  },
   {
     id: "applicationStatus",
     text: (
@@ -131,14 +132,6 @@ const FiledApplications = () => {
   return (
     <>
       <ApplicationProcessSearcher dynamicTableTitle= {"workforce.applicant.dashboard"}/>
-      {/* <Typography variant="h5" gutterBottom>
-        <FormattedMessage module="workforce" id="workforce.applicant.dashboard" />
-      </Typography>
-      <Card className={classes.tableContainer}>
-        <CardContent>
-          <ApplicationProcessSearcher />
-        </CardContent>
-      </Card> */}
     </>
   );
 }
@@ -148,14 +141,6 @@ const DraftApplications = () => {
   return (
     <>
       <ApplicationProcessSearcher applicationStatus={"draft"} dynamicTableTitle= {"workforce.application.draft_applications"} />
-      {/* <Typography variant="h5" gutterBottom>
-        <FormattedMessage module="workforce" id="workforce.applicant.dashboard" />
-      </Typography>
-      <Card className={classes.tableContainer}>
-        <CardContent>
-          <ApplicationProcessSearcher applicationStatus={"draft"} />
-        </CardContent>
-      </Card> */}
     </>
   );
 }
@@ -285,13 +270,6 @@ const RevertApplication = () => {
         revertedApplication={true}
         dynamicTableTitle= {"workforce.application.reverted"}
       />
-      {/* <Typography variant="h5" gutterBottom>
-        <FormattedMessage module="workforce" id="workforce.application.reverted" />
-      </Typography>
-      <Card className={classes.tableContainer}>
-        <CardContent>
-        </CardContent>
-      </Card> */}
 
       {/* Pagination */}
       <div className={classes.pagination}>
@@ -305,7 +283,26 @@ const RevertApplication = () => {
     </>
   )
 }
-
+const RejectApplication = () => {
+  const classes = useStyles()
+  return (
+    <>
+      <ApplicationProcessSearcher
+        rejectedApplication={true}
+        dynamicTableTitle= {"workforce.application.rejectedApplication"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
 
 const ApplicantDashboard = () => {
   const classes = useStyles();
@@ -326,6 +323,8 @@ const ApplicantDashboard = () => {
         return <MultiStepApplyForm />;
       case "revertedApplication":
         return <RevertApplication />;
+      case "rejectedApplication":
+        return <RejectApplication />;
       case "applicationStatus":
         return <ApplicationStatus />;
       case "draftApplications":

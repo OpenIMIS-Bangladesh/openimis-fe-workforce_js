@@ -115,7 +115,7 @@ export const itemAdminFormatters = (
           <CheckIcon />
         </IconButton>
       </Tooltip>
-
+{/* 
       <Tooltip title="Reject">
         <span>
           <IconButton
@@ -130,7 +130,7 @@ export const itemAdminFormatters = (
             <CloseIcon />
           </IconButton>
         </span>
-      </Tooltip>
+      </Tooltip> */}
     </div>
   ));
   return formatters;
@@ -228,7 +228,7 @@ export const itemFormattersDirector = (
           <CheckIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Reject">
+      {/* <Tooltip title="Reject">
         <span>
           <IconButton
             onClick={() => component.handleReject(application)}
@@ -241,7 +241,7 @@ export const itemFormattersDirector = (
             <CloseIcon />
           </IconButton>
         </span>
-      </Tooltip>
+      </Tooltip> */}
     </div>
   ));
   return formatters;
@@ -628,6 +628,15 @@ export const itemFormattersSectionAdmin = (
         >
           <UndoIcon />
         </IconButton>
+      </Tooltip>
+      <Tooltip title="Reject">
+        <span>
+          <IconButton
+            onClick={() => component.handleReject(application)}
+          >
+            <CloseIcon />
+          </IconButton>
+        </span>
       </Tooltip>
     </div>
   ));
@@ -1019,6 +1028,15 @@ export const itemFormattersApprover = (
         >
           <UndoIcon />
         </IconButton>
+      </Tooltip>
+      <Tooltip title="Reject">
+        <span>
+          <IconButton
+            onClick={() => component.handleReject(application)}
+          >
+            <CloseIcon />
+          </IconButton>
+        </span>
       </Tooltip>
       <Tooltip title="Selected">
         <IconButton
