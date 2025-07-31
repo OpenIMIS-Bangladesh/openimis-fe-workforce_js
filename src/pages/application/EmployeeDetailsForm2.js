@@ -54,7 +54,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
       if (formData.metadata.disabilityType === "permanent") {
         return dispatch(
           fetchDocumentType(modulesManager, [
-            `applicationFor: "permanent_isability"`,
+            `applicationFor: "permanent_disability"`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
           ])
