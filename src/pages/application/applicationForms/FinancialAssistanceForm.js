@@ -69,7 +69,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
   const classes = useStyles();
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(0);
-
+  const [isDependentSaved,setIsDependentSaved] = useState(false)
   const [activeStep, setActiveStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
@@ -333,7 +333,8 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
       };
-      dispatch(updateApplication(updateApplicationData, `update workforce application`));
+      dispatch(updateApplication(updateApplicationData, `update workforce application`))
+      .then(res => setIsDependentSaved(true))
       if (uploadFile) {
         await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0]?.id)}"`])).then((res) => {
           const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
@@ -528,6 +529,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
           </Box>
         ) : activeStep === 4 ? (
           <Box mt={0}>
+            
             <EmployeeDependentForm
               applicationType={formData.applicationType}
               dependents={formData.dependents}
@@ -537,9 +539,11 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
               expanded={expanded}
               setExpanded={setExpanded}
             />
+            
           </Box>
         ) : activeStep === 5 ? (
           <Box mt={0}>
+            {!isDependentSaved ? <b>loading ...</b>:(
             <EmployeeAccountInfoForm
               formdata={formData}
               accounts={formData.employeeBankInfo}
@@ -557,6 +561,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
               setExpanded={setExpanded}
               applicationId={applicationId}
             />
+            )}
           </Box>
         ) : (
           <Box mt={0}>
