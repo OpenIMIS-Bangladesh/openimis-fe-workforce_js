@@ -691,6 +691,10 @@
   "workforce.employee.rural.para_mahalla": "Para / Mahalla",
   "workforce.employee.rural.post_office": "Post Office",
 
+  "workforce.applicant.labourHeadingOne": "Applicant's personal info",
+  "workforce.applicant.labourHeadingTwo": "Applicant's family info",
+  "workforce.previewDetails.applicantInfo": "Applicant info",
+
   "workforce.dead":"Dead",
   "workforce.account.entry":"",
 

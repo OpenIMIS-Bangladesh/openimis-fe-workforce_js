@@ -73,25 +73,11 @@ const EmployeeAccountInfoForm = ({
   
 
   useEffect(() => {
-  if (applicationId && applicationId[0]?.id) {
-    if (dependent?.length > 0) {
-      const accountCount = dependent.length;
-      const initialAccounts = Array(accountCount).fill({});
-      setShowAccounts(initialAccounts);
-      setExpanded(0); // ✅ Open first accordion after data loads
-    }else if(formdata?.dependents.length>0){
-      console.log("hello murad")
-      const accountCount = formdata?.dependents.length;
-      const initialAccounts = Array(accountCount).fill({});
-      setShowAccounts(initialAccounts);
-      setExpanded(0); 
-    }
-
-  } else {
-    setShowAccounts([{}]);
-    setExpanded(0); // ✅ Ensure first accordion is open in default case too
+  if (dependent?.length > 0) {
+    setExpanded(0);
   }
-}, [dependent, applicationId]);
+}, [dependent]);
+
 
 
   if (loading) return <b>Loading ...</b>;
@@ -116,10 +102,8 @@ const EmployeeAccountInfoForm = ({
     handleChange(index, key, value);
   }
 
-  // Always ensure applicant_type is set
   handleChange(index, "applicant_type", (isDependent) ? "dependent" : "applicant");
 
-  // Only set id if dependent exists
   if (isDependent && dependentId ) {
     handleChange(index, "id", dependentId);
   }
@@ -132,21 +116,24 @@ console.log({applicationId})
 console.log({dependent})
   return (
      <Box mt={1}>
-      {showAccounts.map((_, index) => {
-        const account = accounts[index] || {};
-        const accountType = account?.accountType || "bank";
+      {(dependent?.length > 0 ? dependent : [{}]).map((_, index) => {
+    const account = accounts[index] || {};
+    const accountType = account?.accountType || "bank";
 
         return (
-          <Accordion
-            key={index}
-            expanded={expanded === index}
-            onChange={() => setExpanded(expanded === index ? false : index)}
-          >
-             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                <FormattedMessage id="workforce.previewDetails.employeeBankInfo" defaultMessage={`Bank Account ${index + 1}`} />
-              </Typography>
-            </AccordionSummary>
+           <Accordion
+        key={index}
+        expanded={expanded === index}
+        onChange={() => setExpanded(expanded === index ? false : index)}
+      >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
+            <FormattedMessage
+              id="workforce.previewDetails.employeeBankInfo"
+              defaultMessage={`Bank Account ${index + 1}`}
+            />
+          </Typography>
+        </AccordionSummary>
 
             <AccordionDetails>
               <Grid container spacing={2}>

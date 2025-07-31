@@ -226,14 +226,14 @@ const EmployeeDependentForm = ({
                 <Grid item xs={12}>
                   <b>{formatMessage("workforce.employee.permanent_location")}</b>
                   {/* ✅ Same as Present Location Checkbox */}
-                  {normalizedDependents.map((_, index) => (
-                    <Grid item xs={12} key={index}>
+                
+                    <Grid item xs={12} >
                       <FormControlLabel
                         control={<Checkbox color="primary" checked={sameAsPresent?.[index] || false} onChange={(e) => handleCheckboxChange(index, e)} />}
                         label={formatMessage("workforce.employee.sameAsPresent")}
                       />
                     </Grid>
-                  ))}
+     
 
                   <Grid item xs={12}>
                     <PublishedComponent

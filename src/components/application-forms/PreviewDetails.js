@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Grid,
-  Paper,
-  Typography,
-  Divider,
-  Card,
-  CardContent,
-  Box,
-} from "@material-ui/core";
+import { Grid, Paper, Typography, Divider, Card, CardContent, Box } from "@material-ui/core";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { FormattedMessage } from "@openimis/fe-core";
@@ -102,17 +94,19 @@ const banglaLabels = {
   deathType: "মৃত্যুর ধরণ",
   scholarshipFor: "স্কলারশিপের উদ্দেশ্য",
   employeeDependentInfo: "নির্ভরশীল সদস্যদের তথ্য",
-  employeeBankInfo:"শ্রমিকের ব্যাংক তথ্য",
-  applicant_type:"আবেদনকারীর ধরণ",
-  bankCode:"ব্যাংক কোড",
-  bank:"ব্যাংক",
-  educations:"শিক্ষাগত তথ্য",
-spouseBn:"স্বামী/স্ত্রীর নাম (বাংলা)",
-spouseEn:"স্বামী/স্ত্রীর নাম (ইংরেজি)",
-spouseFatherNameEn:"স্বামী/স্ত্রীর পিতার নাম (ইংরেজি)",
-spouseFatherNameBn:"স্বামী/স্ত্রীর পিতার নাম (বাংলা)",
-spouseBirthDate:"স্বামী/স্ত্রীর জন্ম তারিখ",
-spouseNid:"স্বামী/স্ত্রীর এনআইডি",
+  employeeBankInfo: "শ্রমিকের ব্যাংক তথ্য",
+  applicant_type: "আবেদনকারীর ধরণ",
+  bankCode: "ব্যাংক কোড",
+  bank: "ব্যাংক",
+  educations: "শিক্ষাগত তথ্য",
+  spouseBn: "স্বামী/স্ত্রীর নাম (বাংলা)",
+  spouseEn: "স্বামী/স্ত্রীর নাম (ইংরেজি)",
+  spouseFatherNameEn: "স্বামী/স্ত্রীর পিতার নাম (ইংরেজি)",
+  spouseFatherNameBn: "স্বামী/স্ত্রীর পিতার নাম (বাংলা)",
+  spouseBirthDate: "স্বামী/স্ত্রীর জন্ম তারিখ",
+  spouseNid: "স্বামী/স্ত্রীর এনআইডি",
+  applicantInfo: "আবেদনকারীর তথ্য",
+  relationWithApplicant: "আবেদনকারীর সাথে সম্পর্ক",
 };
 
 const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
@@ -230,33 +224,38 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
   };
 
   const isFileUploadField = (value) => {
-  return (
-    Array.isArray(value) &&
-    value.length > 0 &&
-    value.every(
-      (item) =>
-        typeof item === "object" &&
-        item !== null &&
-        ("path" in item || "relativePath" in item)
-    )
-  );
-};
-
+    return (
+      Array.isArray(value) && value.length > 0 && value.every((item) => typeof item === "object" && item !== null && ("path" in item || "relativePath" in item))
+    );
+  };
 
   const renderWorkforceEmployeeSections = (employeeData) => {
     if (!employeeData || typeof employeeData !== "object") return null;
 
     const personalFields = [
-      "nameEn", "nameBn", "fatherNameEn", "fatherNameBn", "motherNameEn", "motherNameBn",
-      "spouseName", "spouseNameEn", "spouseNameBn", "citizenship", "nid", "birthCertificate",
-      "birthCertificateNo", "birthDate", "insuranceNumber", "gender", "maritalStatus",
-      "lifeStatus", "deathDate", "monthlyEarning"
+      "nameEn",
+      "nameBn",
+      "fatherNameEn",
+      "fatherNameBn",
+      "motherNameEn",
+      "motherNameBn",
+      "spouseName",
+      "spouseNameEn",
+      "spouseNameBn",
+      "citizenship",
+      "nid",
+      "birthCertificate",
+      "birthCertificateNo",
+      "birthDate",
+      "insuranceNumber",
+      "gender",
+      "maritalStatus",
+      "lifeStatus",
+      "deathDate",
+      "monthlyEarning",
     ];
 
-    const contactFields = [
-      "email", "phoneNumber", "presentAddress", "permanentAddress",
-      "presentLocation", "permanentLocation"
-    ];
+    const contactFields = ["email", "phoneNumber", "presentAddress", "permanentAddress", "presentLocation", "permanentLocation"];
 
     const statusFields = [];
     const accidentFields = ["diagnosisDate", "hospitalName", "admitDate", "releaseDate", "hospitalDoctorName"];
@@ -279,8 +278,7 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
         {renderSection("workforce.previewDetails.statusInfo", statusInfo)}
         {renderSection("workforce.previewDetails.accidentInfo", accidentInfo)}
         {renderSection("workforce.previewDetails.contactInfo", contactInfo)}
-        {childrenInfo && Object.keys(childrenInfo).length > 0 &&
-          renderSection("workforce.previewDetails.employeeChildrenInfo", childrenInfo)}
+        {childrenInfo && Object.keys(childrenInfo).length > 0 && renderSection("workforce.previewDetails.employeeChildrenInfo", childrenInfo)}
       </>
     );
   };
@@ -325,7 +323,7 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
       .filter(
         ([key, value]) =>
           typeof value !== "object" &&
-          !["id", "uuid", "parent", "applicationType", "organizationType", "applicationForSelf", "workforceEmployee", "workforceApplicant"].includes(key)
+          !["id", "uuid", "parent", "applicationType", "organizationType", "applicationForSelf", "workforceEmployee", "workforceApplicant","applicantInfo"].includes(key)
       )
       .reduce((acc, [key, value]) => {
         acc[key] = value;
@@ -336,30 +334,32 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
 
   const renderDynamicSections = () => {
     return Object.entries(formData).map(([key, value]) => {
-      if (!value || ["id", "uuid", "parent", "applicationType", "organizationType", "applicationForSelf"].includes(key)) return null;
-      if (
-    typeof value === "object" &&
-    value !== null &&
-    !Array.isArray(value) &&
-    !isFileUploadField(value)
-  ) {
-    // Render nested object section (like dependents, bankInfo, etc.)
-    if (key === "workforceEmployee" || key === "workforceApplicant") {
-      return renderWorkforceEmployeeSections(value);
-    }
+      if (!value || ["id", "uuid", "parent", "applicationType", "organizationType", "applicationForSelf","applicantInfo"].includes(key)) return null;
+      if (typeof value === "object" && value !== null && !Array.isArray(value) && !isFileUploadField(value)) {
+        // Render nested object section (like dependents, bankInfo, etc.)
+        if (key === "workforceEmployee" || key === "workforceApplicant") {
+          return renderWorkforceEmployeeSections(value);
+        }
 
-    if (key === "employeeDependentInfo" || key === "dependents") {
-      return renderDependentsSection(value);
-    }
+        if (key === "applicantInfo") {
+          const parsedApplicant = parseIfJson(value);
+          if (typeof parsedApplicant === "object" && parsedApplicant !== null) {
+            return renderSection("workforce.previewDetails.applicantInfo", parsedApplicant);
+          }
+        }
 
-    if (Array.isArray(value) && value.length > 0 && typeof value[0] === "object") {
-      return renderArraySection(key, value);
-    }
+        if (key === "employeeDependentInfo" || key === "dependents") {
+          return renderDependentsSection(value);
+        }
 
-    if (typeof value === "object" && value !== null) {
-      return renderSection(`workforce.previewDetails.${key}`, value);
-    }
-  }
+        if (Array.isArray(value) && value.length > 0 && typeof value[0] === "object") {
+          return renderArraySection(key, value);
+        }
+
+        if (typeof value === "object" && value !== null) {
+          return renderSection(`workforce.previewDetails.${key}`, value);
+        }
+      }
 
       return null;
     });
