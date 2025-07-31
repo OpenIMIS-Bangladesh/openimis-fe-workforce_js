@@ -321,12 +321,38 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         console.log("i am from update", updateApplicationData);
         dispatch(updateApplication(updateApplicationData, `update workforce application `));
       }
-    } else if (nextStep === 2) {
-      const createApplicationData = {
-        // workforceEmployeeId:decodeId(formData?.workforceEmployee?.id) || decodeId(parsedApplicationData?.workforceEmployee?.id),
-        deathType: formData?.deathType,
+    }else if(nextStep ===5){
+      const updateApplicationData = {
+        // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+        id: safeApplicationId(applicationId, parsedApplicationData),
+        workforceEmployeeId: employeeData?.id || reduxState.core.user.id,
+        company: formData?.workforceEmployee?.company?.id,
+        factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
+        organizationType: organizationType || parsedApplicationData?.organizationType,
+        applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+        grantAmount: formData?.employeeAccidentInfo.grantAmount,
+        employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
+        employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+        employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+        metadata: JSON.stringify(formData.metadata),
+        status: WORKFORCE_STATUS.DRAFT,
       };
-    } else {
+      dispatch(updateApplication(updateApplicationData, `update workforce application`));
+
+      await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0]?.id)}"`])).then((res) => {
+          const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
+
+          console.log({ dependentId });
+          if (uploadFile) {
+            dispatch(
+              createWorkforceDocument(
+                { ...uploadFile, workforceApplicationId: decodeId(applicationId[0]?.id), workforceDependentId: decodeId(dependentId) },
+                `Created workforce document`
+              )
+            );
+          }
+        });
+    }else {
       const updateApplicationData = {
         // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
         id: safeApplicationId(applicationId, parsedApplicationData),

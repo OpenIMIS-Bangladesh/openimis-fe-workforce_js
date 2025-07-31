@@ -79,13 +79,14 @@ const EmployeeAccountInfoForm = ({
       const initialAccounts = Array(accountCount).fill({});
       setShowAccounts(initialAccounts);
       setExpanded(0); // ✅ Open first accordion after data loads
-    }else if(formdata?.dependents.length>0){
-      console.log("hello murad")
-      const accountCount = formdata?.dependents.length;
-      const initialAccounts = Array(accountCount).fill({});
-      setShowAccounts(initialAccounts);
-      setExpanded(0); 
     }
+    // else if(formdata?.dependents.length>0){
+    //   console.log("hello murad")
+    //   const accountCount = formdata?.dependents.length;
+    //   const initialAccounts = Array(accountCount).fill({});
+    //   setShowAccounts(initialAccounts);
+    //   setExpanded(0); 
+    // }
 
   } else {
     setShowAccounts([{}]);
@@ -116,10 +117,8 @@ const EmployeeAccountInfoForm = ({
     handleChange(index, key, value);
   }
 
-  // Always ensure applicant_type is set
   handleChange(index, "applicant_type", (isDependent) ? "dependent" : "applicant");
 
-  // Only set id if dependent exists
   if (isDependent && dependentId ) {
     handleChange(index, "id", dependentId);
   }
