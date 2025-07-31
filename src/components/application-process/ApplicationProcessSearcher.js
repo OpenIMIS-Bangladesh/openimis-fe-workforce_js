@@ -111,17 +111,29 @@ class ApplicationProcessSearcher extends Component {
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_cf_section"]', 'applicationTypeIn: ["schoolarship","medicalAssistance","maternityGrant"]', 'orderBy: ["-dateCreated"]']);
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
-      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
-      let filter = [];
-      if (summaryId) {
-        filter = [`statusIn: ["forward_to_cf_section","meeting_created"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${summaryId}"`];
-      } else {
-        filter = [`statusIn: ["forward_to_cf_section","approved_by_doctor"], orderBy: ["-dateCreated"]`];
-      }
+   } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
+        this.setState({ displayVersion: showHistoryFilter });
 
-      this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(this.props.modulesManager, filter);
+        let filter = [];
+
+        if (rejectedApplication) {
+          filter = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]'];
+        } else if (revertedApplication) {
+          filter = ['statusIn: ["revert","revert_to_applicant","revert_to_checker"]', 'orderBy: ["-dateCreated"]'];
+        } else {
+          const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+          if (summaryId) {
+            filter = [
+              'statusIn: ["forward_to_cf_section","meeting_created"]',
+              'orderBy: ["-dateCreated"]',
+              `cfApplicationSummary_Id:"${summaryId}"`
+            ];
+          } else {
+            filter = ['statusIn: ["forward_to_cf_section","approved_by_doctor"]', 'orderBy: ["-dateCreated"]'];
+          }
+        }
+
+        this.props.fetchApplicationsSummary(this.props.modulesManager, filter);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_doctor"]', 'orderBy: ["-dateCreated"]']);
@@ -132,8 +144,17 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]']);
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
-      this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]']);
+      if (revertedApplication) {
+        this.props.fetchApplicationsSummary(
+          this.props.modulesManager,
+          [`statusIn: ["revert","revert_to_applicant"], orderBy: ["-dateCreated"]`]
+        );
+      } else {
+        this.props.fetchApplicationsSummary(
+          this.props.modulesManager,
+        ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]']
+        );
+      }
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, [
@@ -563,7 +584,7 @@ class ApplicationProcessSearcher extends Component {
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
       ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
-      ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication)
       : userType === WORKFORCE_USER_TYPE.DOCTOR
       ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.ASSOCIATION
