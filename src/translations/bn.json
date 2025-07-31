@@ -338,6 +338,7 @@
     "workforce.application.approve":"অনুমোদন",
     "workforce.application.verify":"যাচাই",
     "workforce.application.reject":"বাতিল",
+    "workforce.application.rejectedApplication":"বাতিলকৃত আবেদনসমূহ",
     "workforce.application.recent":"সাম্প্রতিক কার্যকলাপ",
     "workforce.application.checked":"পরীক্ষিত আবেদন",
     "workforce.checker1.dashboard":"সেন্ট্রাল ফান্ড কল্যাণ শাখা-১ ড্যাশবোর্ড",

@@ -98,7 +98,7 @@ class ApplicationProcessSearcher extends Component {
   }
 
   fetch = async (prms) => {
-    const { applicationType, userRights, revertedApplication, userName, workforceEmployeesFactoryId, dynamicTableTitle } = this.props;
+    const { applicationType, userRights, revertedApplication,rejectedApplication, userName, workforceEmployeesFactoryId, dynamicTableTitle } = this.props;
     const { showHistoryFilter } = this.state;
     if(dynamicTableTitle)
     {
@@ -149,13 +149,16 @@ class ApplicationProcessSearcher extends Component {
         )}"`,
       ]);
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
-      console.log(this.props.workforceEmployee);
       this.setState({ displayVersion: showHistoryFilter });
       if (revertedApplication) {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
           [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, `statusIn: ["revert","revert_to_applicant","revert_to_checker"], orderBy: ["-dateCreated"]`]
-          // prms
+        );
+      } else if (rejectedApplication) {
+        this.props.fetchApplicationsSummary(
+          this.props.modulesManager,
+          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, `statusIn: ["rejected"], orderBy: ["-dateCreated"]`]
         );
       } else if (this.props.applicationStatus) {
         this.props.fetchApplicationsSummary(
@@ -554,7 +557,7 @@ class ApplicationProcessSearcher extends Component {
     const { locale } = this.props;
 
     return userType === WORKFORCE_USER_TYPE.APPLICANT
-      ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication)
+      ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication, this.rejectedApplication)
       : userType === WORKFORCE_USER_TYPE.CHECKER
       ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
@@ -568,7 +571,7 @@ class ApplicationProcessSearcher extends Component {
       : userType === WORKFORCE_USER_TYPE.APPROVER
       ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
-      ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
       ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale);

@@ -27,10 +27,6 @@ import DescriptionIcon from "@material-ui/icons/Description";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import RestorePageIcon from '@material-ui/icons/RestorePage';
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
-import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
-import DoneAllIcon from '@material-ui/icons/DoneAll';
 import MultiStepApplyForm from "../application/MultiStepApplyForm";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
@@ -41,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     padding: theme.spacing(2),
-    height: '100vh', // assuming 64px header/appbar, adjust as needed
+    height: '100vh',
     overflow: 'hidden',
   },
   sidebar: {
@@ -108,13 +104,6 @@ const SidebarMenu = [
     ),
     icon: <RestorePageIcon  />,
   },
-  // {
-  //   id: "recentApplications",
-  //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.application.recent" />
-  //   ),
-  //   icon: <DoneAllIcon />,
-  // },
   {
     id: "applicationStatus",
     text: (

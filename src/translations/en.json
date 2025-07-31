@@ -484,6 +484,7 @@
     "workforce.application.draft_applications":"Draft Applications",
     "workforce.application.draft":"Draft Applications",
     "workforce.application.reverted":"Reverted Application",
+    "workforce.application.rejectedApplication":"Rejected Application",
     "workforce.application.steps.taken":"Measures taken",
 
     "workforce.application.filed":"Applications filed",
