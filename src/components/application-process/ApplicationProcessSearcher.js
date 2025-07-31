@@ -149,6 +149,11 @@ class ApplicationProcessSearcher extends Component {
           this.props.modulesManager,
           [`statusIn: ["revert","revert_to_applicant"], orderBy: ["-dateCreated"]`]
         );
+      } else if (rejectedApplication) {
+      this.props.fetchApplicationsSummary(
+        this.props.modulesManager,
+        [`statusIn: ["rejected"], orderBy: ["-dateCreated"]`]
+      );
       } else {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
