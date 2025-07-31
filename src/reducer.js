@@ -1472,7 +1472,7 @@ function reducer(
         ...state,
         fetchingWorkforceDependent: true,
         fetchedWorkforceDependent: false,
-        workforceDependent: null,
+        workforceDependent: [],
         errorWorkforceDependent: null,
       };
     case "WORKFORCE_DEPENDENT_RESP":

@@ -70,6 +70,7 @@ const EmployeeAccountInfoForm = ({
       setLoading(false)
     }
   }, [applicationId]);
+  if (loading) return <b>Loading ...</b>;
   
 
   useEffect(() => {
@@ -80,7 +81,6 @@ const EmployeeAccountInfoForm = ({
 
 
 
-  if (loading) return <b>Loading ...</b>;
 
  const handleAccountChange = (index, key, value, nestedKey = null) => {
   console.log(dependent)

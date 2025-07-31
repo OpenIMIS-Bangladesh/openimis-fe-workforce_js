@@ -262,36 +262,59 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
       };
       console.log({ createApplicationData });
       if (!parsedApplicationData) {
-        const applicationMutation = formatMutation("createWorkforceApplication", formatApplicationeGQL(createApplicationData), `Created application`);
+        const applicationMutation = await formatMutation("createWorkforceApplication", formatApplicationeGQL(createApplicationData), `Created application `);
         const applicationClientMutationId = applicationMutation.clientMutationId;
         console.log("applicationClientMutationId", applicationClientMutationId);
         await dispatch(createApplication(applicationMutation, `Created workforce application `));
 
-        await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
-      } else {
-        const updateApplicationData = {
-          id: parsedApplicationData?.id,
-          ...createApplicationData,
-        };
-        console.log("i am from update", updateApplicationData);
-        dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
-      }
-    } else if (nextStep === 4) {
-      const fetchedApplicationId = { id: safeApplicationId(applicationId, parsedApplicationData) };
-      await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${fetchedApplicationId.id}"`])).then((res) => {
-        const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-        console.log({ dependentId });
-        console.log({ dependentId });
-        if (uploadFile) {
-          dispatch(
-            createWorkforceDocument(
-              { ...uploadFile, workforceApplicationId: fetchedApplicationId.id, workforceDependentId: decodeId(dependentId) },
-              `Created workforce document`
-            )
-          );
+        // await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
+        const fetchRes = await dispatch(
+          fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
+        );
+        let applicationgetId = getInfoId(fetchRes, "workforceApplication");
+        console.log("hello there", applicationgetId);
+        if (!applicationgetId && applicationId) {
+          applicationgetId = applicationId;
         }
-      });
-    } else {
+
+        if (applicationForSelf === "yes") {
+          await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${applicationgetId}"`])).then((res) => {
+            const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
+  
+            console.log({ dependentId });
+            if (uploadFile) {
+              dispatch(
+                createWorkforceDocument(
+                  { ...uploadFile, workforceApplicationId: applicationgetId, workforceDependentId: decodeId(dependentId) },
+                  `Created workforce document`
+                )
+              );
+            }
+          });
+        }
+      } else {
+        const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
+        console.log("i am from update", updateApplicationData);
+        dispatch(updateApplication(updateApplicationData, `update workforce application `));
+      }
+    } 
+    // else if (nextStep === 4) {
+    //   const fetchedApplicationId = { id: safeApplicationId(applicationId, parsedApplicationData) };
+    //   await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${fetchedApplicationId.id}"`])).then((res) => {
+    //     const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
+    //     console.log({ dependentId });
+    //     console.log({ dependentId });
+    //     if (uploadFile) {
+    //       dispatch(
+    //         createWorkforceDocument(
+    //           { ...uploadFile, workforceApplicationId: fetchedApplicationId.id, workforceDependentId: decodeId(dependentId) },
+    //           `Created workforce document`
+    //         )
+    //       );
+    //     }
+    //   });
+    // } 
+    else {
       // console.clear();
       console.log(applicationId);
       const updateApplicationData = {
