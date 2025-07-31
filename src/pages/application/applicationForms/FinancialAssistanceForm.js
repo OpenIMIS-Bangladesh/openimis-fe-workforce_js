@@ -192,10 +192,10 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
           spouseNameEn: employeeData?.spouseNameEn || "",
           spouseNameBn: employeeData?.spouseNameBn || "",
           phoneNumber: employeeData?.phoneNumber || "",
-          
+
           nid: employeeData?.nid || "",
           birthCertificateNo: employeeData?.birthCertificateNo || "",
-          
+
           permanentAddress: employeeData?.permanentAddress || "",
           permanentLocation: employeeData?.permanentLocation || "",
           presentLocation: employeeData?.presentLocation || "",
@@ -212,9 +212,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
       });
     }
-  }, [employeeData]); 
-
-  
+  }, [employeeData]);
 
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {
@@ -270,7 +268,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
       await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
     } else if (nextStep === 1) {
       const createApplicationData = {
-        workforceEmployeeId: employeeData?.id || reduxState.core.user.id|| "",
+        workforceEmployeeId: employeeData?.id || reduxState.core.user.id || "",
         company: formData?.workforceEmployee?.company?.id,
         factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
         organizationType: formData.organizationType,
@@ -286,11 +284,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
 
       console.log({ createApplicationData });
       if (!parsedApplicationData) {
-        const applicationMutation = await formatMutation(
-          "createWorkforceApplication",
-          formatApplicationeGQL(createApplicationData),
-          `Created application `
-        );
+        const applicationMutation = await formatMutation("createWorkforceApplication", formatApplicationeGQL(createApplicationData), `Created application `);
         const applicationClientMutationId = applicationMutation.clientMutationId;
         console.log("applicationClientMutationId", applicationClientMutationId);
         await dispatch(createApplication(applicationMutation, `Created workforce application `));
@@ -323,7 +317,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         console.log("i am from update", updateApplicationData);
         dispatch(updateApplication(updateApplicationData, `update workforce application `));
       }
-    }else if(nextStep ===5){
+    } else if (nextStep === 5) {
       const updateApplicationData = {
         // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
         id: safeApplicationId(applicationId, parsedApplicationData),
@@ -340,21 +334,21 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         status: WORKFORCE_STATUS.DRAFT,
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application`));
-
-      await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0]?.id)}"`])).then((res) => {
+      if (uploadFile) {
+        await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0]?.id)}"`])).then((res) => {
           const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
 
           console.log({ dependentId });
-          if (uploadFile) {
-            dispatch(
-              createWorkforceDocument(
-                { ...uploadFile, workforceApplicationId: decodeId(applicationId[0]?.id), workforceDependentId: decodeId(dependentId) },
-                `Created workforce document`
-              )
-            );
-          }
+
+          dispatch(
+            createWorkforceDocument(
+              { ...uploadFile, workforceApplicationId: decodeId(applicationId[0]?.id), workforceDependentId: decodeId(dependentId) },
+              `Created workforce document`
+            )
+          );
         });
-    }else {
+      }
+    } else {
       const updateApplicationData = {
         // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
         id: safeApplicationId(applicationId, parsedApplicationData),
@@ -547,7 +541,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         ) : activeStep === 5 ? (
           <Box mt={0}>
             <EmployeeAccountInfoForm
-            formdata={formData}
+              formdata={formData}
               accounts={formData.employeeBankInfo}
               handleChange={(index, key, value) => handleArrayFieldChange("employeeBankInfo", index, key, value)}
               addItem={() =>

@@ -16,20 +16,12 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  FormattedMessage,
-  TextInput,
-  PublishedComponent,
-  useTranslations,
-  useModulesManager,
-  decodeId
-} from "@openimis/fe-core";
+import { FormattedMessage, TextInput, PublishedComponent, useTranslations, useModulesManager, decodeId } from "@openimis/fe-core";
 import BranchPicker from "../../pickers/BranchPicker";
 import MobileBankingPicker from "../../pickers/MobileBankingPicker";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDependent, fetchEmployeeDependent } from "../../actions";
-
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,16 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeAccountInfoForm = ({
-  formdata,
-  accounts,
-  handleChange,
-  addItem,
-  removeItem,
-  expanded,
-  setExpanded,
-  applicationId
-}) => {
+const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, removeItem, expanded, setExpanded, applicationId }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const [loading, setLoading] = useState(false);
@@ -67,73 +50,60 @@ const EmployeeAccountInfoForm = ({
     if (applicationId && applicationId[0]?.id) {
       setLoading(true);
       dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0].id)}"`]));
-      setLoading(false)
+      setLoading(false);
     }
   }, [applicationId]);
   if (loading) return <b>Loading ...</b>;
-  
 
   useEffect(() => {
-  if (dependent?.length > 0) {
-    setExpanded(0);
-  }
-}, [dependent]);
+    if (dependent?.length > 0) {
+      setExpanded(0);
+    }
+  }, [dependent]);
 
+  const handleAccountChange = (index, key, value, nestedKey = null) => {
+    console.log(dependent);
+    const isDependent = Array.isArray(dependent) && dependent.length > 0;
+    const dependentId = isDependent ? dependent?.[index]?.id : null;
 
+    const baseAccount = {
+      ...(accounts[index] || {}),
+      applicant_type: isDependent ? "dependent" : "applicant",
+      ...(isDependent && { id: dependentId }),
+    };
 
+    if (nestedKey) {
+      handleChange(index, key, {
+        ...(baseAccount[key] || {}),
+        [nestedKey]: value,
+      });
+    } else {
+      handleChange(index, key, value);
+    }
 
- const handleAccountChange = (index, key, value, nestedKey = null) => {
-  console.log(dependent)
-  const isDependent = Array.isArray(dependent) && dependent.length > 0;
-  const dependentId = isDependent ? dependent?.[index]?.id : null;
+    handleChange(index, "applicant_type", isDependent ? "dependent" : "applicant");
 
-  const baseAccount = {
-    ...(accounts[index] || {}),
-    applicant_type: isDependent ? "dependent" : "applicant",
-    ...(isDependent && { id: dependentId }),
+    if (isDependent && dependentId) {
+      handleChange(index, "id", dependentId);
+    }
   };
 
-  if (nestedKey) {
-    handleChange(index, key, {
-      ...(baseAccount[key] || {}),
-      [nestedKey]: value,
-    });
-  } else {
-    handleChange(index, key, value);
-  }
-
-  handleChange(index, "applicant_type", (isDependent) ? "dependent" : "applicant");
-
-  if (isDependent && dependentId ) {
-    handleChange(index, "id", dependentId);
-  }
-};
-
-
-
   const allowAdd = !applicationId || !applicationId[0]?.id;
-console.log({applicationId})
-console.log({dependent})
+  console.log({ applicationId });
+  console.log({ dependent });
   return (
-     <Box mt={1}>
-      {(dependent?.length > 0 ? dependent : [{}]).map((_, index) => {
-    const account = accounts[index] || {};
-    const accountType = account?.accountType || "bank";
+    <Box mt={1}>
+      {(dependent?.length > 0 ? dependent : [{}]).map((dependentValue, index) => {
+        const account = accounts[index] || {};
+        const accountType = account?.accountType || "bank";
 
         return (
-           <Accordion
-        key={index}
-        expanded={expanded === index}
-        onChange={() => setExpanded(expanded === index ? false : index)}
-      >
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-            <FormattedMessage
-              id="workforce.previewDetails.employeeBankInfo"
-              defaultMessage={`Bank Account ${index + 1}`}
-            />
-          </Typography>
-        </AccordionSummary>
+          <Accordion key={index} expanded={expanded === index} onChange={() => setExpanded(expanded === index ? false : index)}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
+                {dependentValue?.nameBn}  {<FormattedMessage id="workforce.previewDetails.employeeBankInfo" defaultMessage={`Bank Account ${index + 1}`} />}
+              </Typography>
+            </AccordionSummary>
 
             <AccordionDetails>
               <Grid container spacing={2}>
@@ -143,11 +113,7 @@ console.log({dependent})
                       <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
                         <FormattedMessage id="workforce.account.selection.type" defaultMessage="Select Account Type" />
                       </Typography>
-                      <RadioGroup
-                        row
-                        value={accountType}
-                        onChange={(e) => handleAccountChange(index, "accountType", e.target.value)}
-                      >
+                      <RadioGroup row value={accountType} onChange={(e) => handleAccountChange(index, "accountType", e.target.value)}>
                         <FormControlLabel
                           value="bank"
                           control={<Radio color="primary" />}
@@ -212,7 +178,7 @@ console.log({dependent})
                           <Grid item xs={6} className={classes.item}>
                             <TextInput
                               label="workforce.employee.account.info.accountHolderName"
-                              value={account?.accountHolderName ||dependent?.[index]?.nameBn || ""}
+                              value={account?.accountHolderName || dependent?.[index]?.nameBn || ""}
                               onChange={(v) => handleAccountChange(index, "accountHolderName", v)}
                               required
                               readOnly={false}
@@ -241,16 +207,11 @@ console.log({dependent})
                     )}
 
                     <Divider style={{ margin: "16px 0" }} />
-                     <Box className={classes.buttonContainer}>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => removeItem(index)}
-                  disabled={showAccounts.length === 1 || !allowAdd}
-                >
-                  <FormattedMessage id="workforce.application.steps.skip" defaultMessage="Remove Account" />
-                </Button>
-              </Box>
+                    <Box className={classes.buttonContainer}>
+                      <Button variant="contained" color="secondary" onClick={() => removeItem(index)} disabled={showAccounts.length === 1 || !allowAdd}>
+                        <FormattedMessage id="workforce.application.steps.skip" defaultMessage="Remove Account" />
+                      </Button>
+                    </Box>
                   </Paper>
                 </Grid>
               </Grid>
