@@ -10,6 +10,7 @@ import FactoryPicker from "../../pickers/FactoryPicker";
 import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import FileUploader from "../../pickers/FileUploader";
 import { fetchDocumentType } from "../../actions";
 
@@ -48,7 +49,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           `orderBy: ["documentTypeNo"]`,
           `applicationFor: "self"`,
           `applicationType:"${selectedApplicationType}"`,
-          `organizationType:"${formData.organizationType}"`
+          `organizationType:"${formData.organizationType}"`,
         ])
       );
     } else if (formData.applicationType === "disabilityAssistance") {
@@ -104,20 +105,28 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
 
   const handleFileChange = (fieldKey, files) => {
     setUploadedFiles((prevFiles) => {
-      // Check if fieldKey already exists
       const existingIndex = prevFiles.findIndex((item) => item.fieldKey === fieldKey);
-
       if (existingIndex !== -1) {
-        // Update existing entry
         const updatedFiles = [...prevFiles];
         updatedFiles[existingIndex] = { fieldKey, files };
         return updatedFiles;
       } else {
-        // Add new entry
         return [...prevFiles, { fieldKey, files }];
       }
     });
+
+    // Optionally also update `formData` if needed
+    if (setFormData) {
+      setFormData((prev) => ({
+        ...prev,
+        uploadedDocs: {
+          ...(prev.uploadedDocs || {}),
+          [fieldKey]: files,
+        },
+      }));
+    }
   };
+
   console.log({ fahim: data });
   return (
     <Box mt={1}>
@@ -128,93 +137,29 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               <FormattedMessage id="workforce.application.header.document" module="workforce" />
             </Box>
             <Grid container className={classes.item} spacing={2}>
-            
-              {/* <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.employee.nid"
-                  value={formData?.workforceEmployee.nid || ""}
-                  onChange={(v) =>
-                    handleChange("nid", v, "employeeDesignation")
-                  }
-                  type={"number"}
-                  required
-                  readOnly={false}
-                />
-              </Grid>
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.employee.birth_certificate_no"
-                  value={formData?.workforceEmployee.birthCertificateNo || ""}
-                  onChange={(v) =>
-                    handleChange("birthCertificateNo", v, "employeeDesignation")
-                  }
-                  type={"number"}
-                  readOnly={false}
-                />
-              </Grid> */}
-              {/* <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.employee.nid_or_birth_certificate"
-                  value={
-                    formData?.workforceEmployee.nid ||
-                    formData?.workforceEmployee.birthCertificateNo ||
-                    ""
-                  }
-                  formatInput={(val) =>(val || "").toString().replace(/\D/g, "").slice(0, 17)}
-                  inputProps={{ maxLength: 17 }}
-                  onChange={(v) => {
-                    handleChange("nid", v, "workforceEmployee")
-                  
-                  }}
-                  type="number"
-                  required
-                  readOnly={false}
-                />
-              </Grid> */}
               {data.map((document, index) => (
                 <Grid container spacing={2} alignItems="center" style={{ marginBottom: "12px", border: "1px solid #006273" }} key={document.fieldId}>
-                  <Grid item xs={6}>
-                    <Typography>{index+1}. {document.nameBn}</Typography>
+                  <Grid item xs={5}>
+                    <Typography>
+                      {index + 1}. {document.nameBn}
+                    </Typography>
                   </Grid>
-                  <Grid item xs={6}>
-                    <FileUploader fieldKey={document.fieldId} onFileChange={handleChange} applicationId={applicationId} documentType={document.documentType} />
+                  <Grid item xs={6} >
+                    <FileUploader
+                      fieldKey={document.fieldId}
+                      onFileChange={handleFileChange}
+                      applicationId={applicationId}
+                      documentType={document.documentType}
+                    />
+                    
                   </Grid>
+                  {uploadedFiles.find((item) => item.fieldKey === document.fieldId && item.files.length > 0) && (
+                    <Grid item xs={1}>
+                      <CheckCircleIcon style={{ color: "green" }} />
+                      </Grid>
+                    )}
                 </Grid>
               ))}
-
-              {/* <Grid item xs={6} className={classes.item}>
-                <Typography>Upload Birth Certificate </Typography>
-                <FileUploader
-                  fieldKey="uploadedBirthCertificateFile"
-                  onFileChange={handleChange}
-                />
-              </Grid> */}
-
-              {/* {selectedApplicationType ===
-                ("financialAssistance" || "disabilityAssistance") && (
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.employee.monthly_earning"
-                    value={formData?.workforceEmployee.monthlyEarning || ""}
-                    onChange={(v) =>
-                      handleChange("monthlyEarning", v, "employeeDesignation")
-                    }
-                    readOnly={false}
-                  />
-                </Grid>
-              )} */}
-
-              {/* <Grid item xs={12} className={classes.item}>
-                <PublishedComponent
-                  pubRef="workforce.DatePicker"
-                  label={"workforce.employee.joindate"}
-                  value={formData?.workforceEmployee.joinDate || ""}
-                  onChange={(v) =>
-                    handleChange("joinDate", v, "employeeDesignation")
-                  }
-                  readOnly={false}
-                />
-              </Grid> */}
             </Grid>
             <Divider />
           </Paper>
