@@ -117,13 +117,13 @@ const SidebarMenu = [
     ),
     icon: <HourglassFullTwoToneIcon />,
   },
-  {
-    id: "revertedApplication",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.application.reverted" />
-    ),
-    icon: <RestorePageIcon  />,
-  },
+  // {
+  //   id: "revertedApplication",
+  //   text: (
+  //     <FormattedMessage module="workforce" id="workforce.application.reverted" />
+  //   ),
+  //   icon: <RestorePageIcon  />,
+  // },
   {
     id: "rejectedApplication",
     text: (

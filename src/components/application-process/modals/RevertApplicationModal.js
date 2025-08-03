@@ -129,11 +129,11 @@ const RevertApplicationModal = ({
     if (revertByChecker) {
       const updateApplicationData = {
         id: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.REVERT_TO_APPLICANT,
+        status: WORKFORCE_STATUS.REVERT,
       };
       const createApplicationMovementData = {
         applicationId: decodeId(selectedApplication.id),
-        status: WORKFORCE_STATUS.REVERT_TO_APPLICANT,
+        status: WORKFORCE_STATUS.REVERT,
         note: "আবেদন ফেরত পাঠানো হয়েছে",
         revertNote: editorContent,
       };

@@ -618,6 +618,8 @@ export const itemFormattersSectionAdmin = (
             <ForwardIcon />
           </IconButton>
         </Tooltip> */}
+      {!component.props.revertedApplication && (
+      <>
       <Tooltip title="Revert">
         <IconButton
           disabled={application?.isHistory}
@@ -638,6 +640,26 @@ export const itemFormattersSectionAdmin = (
           </IconButton>
         </span>
       </Tooltip>
+      </>
+    )}
+        {component.props.revertedApplication && (
+        <Tooltip title="Resend">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.process.resend",
+                [decodeId(application?.id)],
+                false
+              );
+            }}
+          >
+            <RestorePageIcon />
+          </IconButton>
+        </Tooltip>
+      )}
     </div>
   ));
   return formatters;
@@ -824,7 +846,7 @@ export const itemFormattersAssociation = (
           <VerifiedUserIcon />
         </IconButton>
       </Tooltip>
-
+    {!component.props.revertedApplication && (
       <Tooltip title="Revert">
         <IconButton
           disabled={application?.isHistory}
@@ -836,6 +858,25 @@ export const itemFormattersAssociation = (
           <UndoIcon />
         </IconButton>
       </Tooltip>
+       )}
+       {component.props.revertedApplication && (
+        <Tooltip title="Resend">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.process.resend",
+                [decodeId(application?.id)],
+                false
+              );
+            }}
+          >
+            <RestorePageIcon />
+          </IconButton>
+        </Tooltip>
+      )}
     </div>
   ));
   return formatters;
@@ -921,7 +962,8 @@ export const itemFormattersFactoryAdmin = (
           <VerifiedUserIcon />
         </IconButton>
       </Tooltip>
-
+ {!component.props.revertedApplication && (
+  <>
       <Tooltip title="ফরওয়ার্ড">
         <IconButton
           disabled={application?.isHistory}
@@ -930,6 +972,7 @@ export const itemFormattersFactoryAdmin = (
           <ForwardIcon />
         </IconButton>
       </Tooltip>
+
       <Tooltip title="রিভার্ট">
         <IconButton
           disabled={application?.isHistory}
@@ -941,6 +984,26 @@ export const itemFormattersFactoryAdmin = (
           <UndoIcon />
         </IconButton>
       </Tooltip>
+      </>
+    )}
+     {component.props.revertedApplication && (
+        <Tooltip title="Resend">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.process.resend",
+                [decodeId(application?.id)],
+                false
+              );
+            }}
+          >
+            <RestorePageIcon />
+          </IconButton>
+        </Tooltip>
+      )}
     </div>
   ));
   return formatters;
