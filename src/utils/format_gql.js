@@ -491,6 +491,7 @@ export function formatWorkforceDocumentGQL(workforceDocumentType) {
     ${workforceDocumentType?.approvalDate ? `approvalDate: "${formatGQLString(workforceDocumentType?.approvalDate)}"` : ""}
     ${workforceDocumentType?.remarks ? `remarks: "${formatGQLString(workforceDocumentType?.remarks)}"` : ""}
     ${workforceDocumentType?.status ? `status: "${formatGQLString(workforceDocumentType?.status)}"` : ""}
+    ${workforceDocumentType?.note ? `note: "${formatGQLString(workforceDocumentType?.note)}"` : ""}
   `;
 }
 

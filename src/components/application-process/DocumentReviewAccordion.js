@@ -14,7 +14,7 @@ const getFileType = (url = "") => {
   return "unsupported";
 };
 
-const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onReject,locale }) => {
+const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onReject, locale }) => {
   const type = getFileType(file?.url);
   const [numPages, setNumPages] = useState(null);
 
@@ -61,6 +61,9 @@ const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onRej
                 </Document>
               </div>
             )}
+            {/* {type === "pdf" && (
+              <iframe title="PDF Viewer" src={file.url} width="100%" height="500px" frameBorder="0" style={{ border: "1px solid #ccc" }}></iframe>
+            )} */}
 
             {type === "docx" && (
               <iframe

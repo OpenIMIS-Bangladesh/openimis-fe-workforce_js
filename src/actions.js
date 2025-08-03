@@ -1180,31 +1180,16 @@ export function updateWorkforceDocument(
   clientMutationLabel
 ) {
   const mutation = formatMutation(
-    "createWorkforceDocument",
+    "updateWorkforceDocument",
     formatWorkforceDocumentGQL(workforceDocumentType),
     clientMutationLabel
   );
-
-  //   const mutation = `mutation {
-  //   createWorkforceUser(
-  //     nameBn: "${workforceDocumentType.firstNameBn}",
-  //     firstNameEn: "${workforceDocumentType.firstNameEn}",
-  //     lastNameEn: " ",
-  //     nid: "${workforceDocumentType.NID}",
-  //     phoneNumber: "${workforceDocumentType.mobile}",
-  //     status: "${WORKFORCE_STATUS.ACTIVE}",
-  //     username: "",
-  //     password: "${workforceDocumentType.password}",
-  //   ) {
-  //     internalId
-  //   }
-  // }`
   const requestedDateTime = new Date();
   return graphql(
-    mutation,
+    mutation.payload,
     [
       "DOCUMENT_MUTATION_REQ",
-      "DOCUMENT_CREATE_DOCUMENT_RESP",
+      "DOCUMENT_UPDATE_DOCUMENT_RESP",
       "DOCUMENT_MUTATION_ERR",
     ],
     {
