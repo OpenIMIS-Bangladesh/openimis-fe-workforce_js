@@ -142,7 +142,17 @@ class ApplicationProcessSearcher extends Component {
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_cf_section"]','applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ASSOCIATION) {
       this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]']);
+      if (revertedApplication) {
+        this.props.fetchApplicationsSummary(
+          this.props.modulesManager,
+          [`statusIn: ["revert","revert_to_applicant"], orderBy: ["-dateCreated"]`]
+        );
+      } else {
+        this.props.fetchApplicationsSummary(
+          this.props.modulesManager,
+        ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]']
+        );
+      }
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
       if (revertedApplication) {
         this.props.fetchApplicationsSummary(
@@ -1159,6 +1169,18 @@ class ApplicationProcessSearcher extends Component {
                   onSubmitForward={this.handleForwardSubmit}
                   organizationEmployee={organizationEmployee}
                 />
+                <RevertApplicationModal
+                  open={revertModalOpen}
+                  onClose={this.handleCloseRevertModal}
+                  revertByChecker={revertByChecker}
+                  selectedApplication={this.state.selectedApplication}
+                  onSubmitRevert={this.handleRevertSubmit}
+                />
+              </>
+            );
+          } else if (userType === WORKFORCE_USER_TYPE.ASSOCIATION) {
+            return (
+              <>
                 <RevertApplicationModal
                   open={revertModalOpen}
                   onClose={this.handleCloseRevertModal}
