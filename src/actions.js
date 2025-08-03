@@ -1140,6 +1140,7 @@ export function fetchWorkforceDocument(mm, filters) {
     "documentType",
     "holderType",
     "holder",
+    "note",
     "workforceApplication{id}"
   ];
   const payload = formatPageQueryWithCount(

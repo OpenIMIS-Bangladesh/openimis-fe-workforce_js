@@ -3,6 +3,8 @@ import { Accordion, AccordionSummary, AccordionDetails, Grid, Typography, TextFi
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { FormattedMessage } from "@openimis/fe-core";
 import { Document, Page, pdfjs } from "react-pdf";
+import { getUserType } from "../../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../../constants";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -16,12 +18,13 @@ const getFileType = (url = "") => {
 
 const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onReject, locale }) => {
   const type = getFileType(file?.url);
+  const user_type = getUserType();
   const [numPages, setNumPages] = useState(null);
 
   const handlePDFLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
   };
-  console.log(file)
+  console.log(file);
 
   return (
     <Accordion>
@@ -51,7 +54,7 @@ const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onRej
                   overflow: "auto",
                   border: "1px solid #ccc",
                   padding: "8px",
-                  textAlign:"center"
+                  textAlign: "center",
                 }}
               >
                 <Document file={file.url} onLoadSuccess={handlePDFLoadSuccess}>
@@ -86,19 +89,21 @@ const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onRej
               size="small"
               multiline
               rows={2}
-              value={file.comment || ""}
+              value={file.note || ""}
               onChange={(e) => onCommentChange(index, e.target.value)}
             />
           </Grid>
 
-          <Grid item xs={12} style={{ display: "flex", gap: 8 }}>
-            <Button variant="contained" color="primary" onClick={() => onVerify(index)} fullWidth>
-              <FormattedMessage module="workforce" id="workforce.application.verify" />
-            </Button>
-            <Button variant="outlined" color="error" onClick={() => onReject(index)} fullWidth>
-              <FormattedMessage module="workforce" id="workforce.application.reject" />
-            </Button>
-          </Grid>
+          {user_type != WORKFORCE_USER_TYPE.APPLICANT && (
+            <Grid item xs={12} style={{ display: "flex", gap: 8 }}>
+              <Button variant="contained" color="primary" onClick={() => onVerify(index)} fullWidth>
+                <FormattedMessage module="workforce" id="workforce.application.verify" />
+              </Button>
+              <Button variant="outlined" color="error" onClick={() => onReject(index)} fullWidth>
+                <FormattedMessage module="workforce" id="workforce.application.reject" />
+              </Button>
+            </Grid>
+          )}
         </Grid>
       </AccordionDetails>
     </Accordion>
