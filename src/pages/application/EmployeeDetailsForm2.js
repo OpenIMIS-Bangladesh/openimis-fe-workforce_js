@@ -45,15 +45,17 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
     if (formData?.applicationForSelf === "yes") {
       return dispatch(
         fetchDocumentType(modulesManager, [
+          `orderBy: ["documentTypeNo"]`,
           `applicationFor: "self"`,
           `applicationType:"${selectedApplicationType}"`,
-          `organizationType:"${formData.organizationType}"`,
+          `organizationType:"${formData.organizationType}"`
         ])
       );
     } else if (formData.applicationType === "disabilityAssistance") {
       if (formData.metadata.disabilityType === "permanent") {
         return dispatch(
           fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
             `applicationFor: "permanent_disability"`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
@@ -62,6 +64,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
       } else {
         return dispatch(
           fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
             `applicationFor: "temporary_disability"`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
@@ -72,6 +75,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
       if (formData.metadata.deathType === "normalDeath") {
         return dispatch(
           fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
             `applicationFor: "normal_death"`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
@@ -83,6 +87,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
     } else {
       return dispatch(
         fetchDocumentType(modulesManager, [
+          `orderBy: ["documentTypeNo"]`,
           `applicationFor: "dependent"`,
           `applicationType:"${selectedApplicationType}"`,
           `organizationType:"${formData.organizationType}"`,
