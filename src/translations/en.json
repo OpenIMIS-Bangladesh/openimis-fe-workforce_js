@@ -392,7 +392,9 @@
 
 
     "workforce.application.educationInfo.passingYear":"Passing Year",
+  "workforce.application.educationInfo.admissionYear": "Admission Year",
     "workforce.application.educationInfo.rollNo":"Roll No",
+    "workforce.application.educationInfo.IdNo":"Id No",
     "workforce.application.educationInfo.regNo":"Registration No",
     "workforce.application.educationInfo.cgpa":"CGPA/GPA",
     "workforce.application.educationInfo.board":"Education Board",
@@ -408,10 +410,13 @@
     "workforce.disability.permanent":"Permanent disability",
 
     "workforce.application.employee.children.studyingClass":"Studying Class/Division",
+    "workforce.application.employee.children.studyingSemester":"Studying Semester/Year",
+    "workforce.application.employee.children.studyingSubject":"Studying Subject/Division",
     "workforce.application.employee.children.educationInstituteName":"Education Institute Name",
     "workforce.application.employee.children.result":"Result",
     "workforce.application.employee.children.bankNameOrAcNo":"Bank Name and AC No (if have)",
     "workforce.application.employee.children.nidOrBirthRegistry":"NID or Birth Registration Certificate",
+
 
     "workforce.application.steps.deademployee.applicant.Details":"Applicant's information on behalf of the deceased worker",
     "workforce.application.steps.employeeDetails":"Labour Details",
@@ -428,6 +433,7 @@
     "workforce.application.steps.childInfo":"Children Info",
     "workforce.application.steps.deathLabourDetails":"Death Labour Details",
     "workforce.application.steps.select":"Select",
+  "workforce.application.steps.worker.extraInfo": "Worker Extra Info",
     "workforce.application.steps.ssc":"S.S.C or Equvalent",
     "workforce.application.steps.hsc":"H.S.C or Equvalent",
     "workforce.application.steps.skip":"Skip",
@@ -694,6 +700,14 @@
   "workforce.applicant.labourHeadingOne": "Applicant's personal info",
   "workforce.applicant.labourHeadingTwo": "Applicant's family info",
   "workforce.previewDetails.applicantInfo": "Applicant info",
+
+  "workforce.applicant.workInfo.title": "Required Information for Workers in Formal/Informal Sectors",
+  "workforce.applicant.workInfo.formal.institution_name": "Institution Name",
+  "workforce.applicant.workInfo.formal.institution_address": "Institution Address",
+  "workforce.applicant.workInfo.informal.current_occupation": "Current Occupation",
+  "workforce.applicant.workInfo.informal.workplace": "Workplace",
+  "workforce.applicant.workInfo.formal": "Formal",
+  "workforce.applicant.workInfo.informal": "Informal",
 
   "workforce.dead":"Dead",
   "workforce.account.entry":"",

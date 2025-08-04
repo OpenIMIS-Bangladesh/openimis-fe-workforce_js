@@ -43,10 +43,6 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData }) => {
     modulesManager,
   );
 
-  const employeeData = useSelector(
-    (state) => state.workforce[`workforceEmployee`] ?? []
-  )
-
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
@@ -60,8 +56,8 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData }) => {
                 <PublishedComponent
                   pubRef="workforce.DatePicker"
                   label={"workforce.application.dateofReceipt"}
-                  value={formData.dateofReceipt || ""}
-                  onChange={(v) => handleChange("dateofReceipt", v,"previousGrantInfo")}
+                  value={formData?.previousGrantInfo?.dateofReceipt || ""}
+                  onChange={(v) => handleChange("dateofReceipt", v,"metadata")}
                   readOnly={false}
                   
                 />
@@ -70,8 +66,8 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={6} className={classes.item}>
                 <TextInput
                   label="workforce.application.grantAmount"
-                  value={formData.grantAmount || ""}
-                  onChange={(v) => handleChange("grantAmount", v,"previousGrantInfo")}
+                  value={formData?.previousGrantInfo?.grantAmount || ""}
+                  onChange={(v) => handleChange("grantAmount", v,"metadata")}
                   readOnly={false}
                   
                 />
@@ -79,8 +75,8 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData }) => {
               <Grid item xs={12} className={classes.item}>
                 <TextInput
                   label="workforce.application.reasonforReceipt"
-                  value={formData.reasonforReceipt || ""}
-                  onChange={(v) => handleChange("reasonforReceipt", v,"previousGrantInfo")}
+                  value={formData?.previousGrantInfo?.reasonforReceipt || ""}
+                  onChange={(v) => handleChange("reasonforReceipt", v,"metadata")}
                   readOnly={false}
                   
                 />

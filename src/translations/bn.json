@@ -171,7 +171,9 @@
     "workforce.application.educationInfo.boards.open_board":"উন্মুক্ত বোর্ড",
 
   "workforce.application.educationInfo.passingYear": "পাসের বছর",
+  "workforce.application.educationInfo.admissionYear": "ভর্তির বছর",
   "workforce.application.educationInfo.rollNo": "রোল নম্বর",
+  "workforce.application.educationInfo.IdNo":"আইডি নম্বর",
   "workforce.application.educationInfo.regNo": "রেজিস্ট্রেশন নম্বর",
   "workforce.application.educationInfo.cgpa": "সিজিপিএ / জিপিএ  ",
   "workforce.application.educationInfo.board": "শিক্ষা বোর্ড",
@@ -241,6 +243,8 @@
   "workforce.disability.permanent": "স্থায়ী অক্ষমতা",
 
   "workforce.application.employee.children.studyingClass": "অধ্যয়নরত শ্রেণী/বিভাগ",
+  "workforce.application.employee.children.studyingSemester": "অধ্যয়নরত সেমিস্টার/বছর",
+    "workforce.application.employee.children.studyingSubject":"অধ্যয়নরত বিষয়/বিভাগ",
   "workforce.application.employee.children.educationInstituteName": "শিক্ষা প্রতিষ্ঠানের নাম",
   "workforce.application.employee.children.result": "ফলাফল",
   "workforce.application.employee.children.bankNameOrAcNo": "ব্যাংকের নাম এবং অ্যাকাউন্ট নম্বর (যদি থাকে)",
@@ -268,6 +272,7 @@
   "workforce.application.steps.deathLabourDetails": "মৃত শ্রমিকের বিবরণ",
   "workforce.application.steps.education.details": "শিক্ষাগত যোগ্যতার বিবরণ",
   "workforce.application.steps.select": "নির্বাচন করুন",
+  "workforce.application.steps.worker.extraInfo": "শ্রমিকের কর্মস্থলের তথ্য",
   "workforce.application.steps.ssc": "এস.এস.সি. বা সমমান",
   "workforce.application.steps.hsc": "এইচ.এস.সি. বা সমমান",
   "workforce.application.steps.skip": "বাদ দিন",
@@ -540,7 +545,15 @@
   "workforce.employee.rural.para_mahalla": "পাড়া / মহল্লা",
   "workforce.employee.rural.post_office": "ডাকঘর",
 
-  "workforce.employee.accident.info.hasRejoined":"আপনি কি সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদান করেছেন?",
+  "workforce.applicant.workInfo.title": "প্রাতিষ্ঠানিক/ অপ্রাতিষ্ঠানিক খাতে কর্মরত শ্রমিকের ক্ষেত্রে প্রয়োজনীয় তথ্যাবলী",
+  "workforce.applicant.workInfo.formal.institution_name": "প্রতিষ্ঠানের নাম",
+  "workforce.applicant.workInfo.formal.institution_address": "প্রতিষ্ঠানের ঠিকানা",
+  "workforce.applicant.workInfo.informal.current_occupation": "বর্তমান পেশা",
+  "workforce.applicant.workInfo.informal.workplace": "কর্মস্থল",
+  "workforce.applicant.workInfo.formal": "প্রাতিষ্ঠানিক",
+  "workforce.applicant.workInfo.informal": "অপ্রাতিষ্ঠানিক",
+
+  "workforce.employee.accident.info.hasRejoined":"আপনি কি সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে  যোগদান করেছেন?",
 
   "workforce.dead":"মৃত",
   "workforce.account.entry":"",

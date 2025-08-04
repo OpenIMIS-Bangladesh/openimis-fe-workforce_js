@@ -3,7 +3,8 @@ import { FormControl, FormControlLabel, Radio, RadioGroup, Typography, Paper } f
 import { makeStyles } from "@material-ui/core/styles";
 import {
     useTranslations,
-    FormattedMessage
+    FormattedMessage,
+    useModulesManager
   } from "@openimis/fe-core";
 
 const useStyles = makeStyles((theme) => ({     
@@ -21,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MedicalDonationCheckbox = ({ modulesManager,onSelect }) => {
+const MedicalDonationCheckbox = ({ handleChange,formData }) => {
+  const modulesManager = useModulesManager()
   const [selectedDonationOption, setselectedDonationOption] = useState("");
   const [isExportOriented, setIsExportOriented] = useState("");
   const { formatMessage } = useTranslations(
@@ -31,9 +33,10 @@ const MedicalDonationCheckbox = ({ modulesManager,onSelect }) => {
 
   const classes = useStyles();
 
-  const handleExportOrientedChange = (event) => {
+  const handleDonationReason = (event) => {
     const value = event.target.value;
     setIsExportOriented(value);
+    handleChange("donationReason",value)
   };
 
   return (
@@ -41,7 +44,7 @@ const MedicalDonationCheckbox = ({ modulesManager,onSelect }) => {
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
           <FormattedMessage module="workforce" id="workforce.application.steps.reasonsforSeekingFinancialAssistance" />
         </Typography>
-        <RadioGroup value={isExportOriented} onChange={handleExportOrientedChange}>
+        <RadioGroup value={isExportOriented} onChange={handleDonationReason}>
           <FormControlLabel
             value="physicalMentalDisability"
             control={<Radio color="primary" />}
@@ -52,7 +55,7 @@ const MedicalDonationCheckbox = ({ modulesManager,onSelect }) => {
               />
             }
           />
-          <FormControlLabel
+          {/* <FormControlLabel
             value="accidentalDeath"
             control={<Radio color="primary" />}
             label={
@@ -61,7 +64,7 @@ const MedicalDonationCheckbox = ({ modulesManager,onSelect }) => {
                 id="workforce.application.reasons.accidentalDeath"
               />
             }
-          />
+          /> */}
           <FormControlLabel
             value="curativeTreatment"
             control={<Radio color="primary" />}
@@ -72,7 +75,7 @@ const MedicalDonationCheckbox = ({ modulesManager,onSelect }) => {
               />
             }
           />
-          <FormControlLabel
+          {/* <FormControlLabel
             value="deathbodyRefinement"
             control={<Radio color="primary" />}
             label={
@@ -91,7 +94,7 @@ const MedicalDonationCheckbox = ({ modulesManager,onSelect }) => {
                 id="workforce.application.reasons.maternalWelfare"
               />
             }
-          />
+          /> */}
         </RadioGroup>
       </FormControl>
   );

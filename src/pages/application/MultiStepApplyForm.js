@@ -1,21 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  useModulesManager,
-  formatMutation,
-  decodeId,
-  FormattedMessage,
-  useParams,
-} from "@openimis/fe-core";
-import {
-  Paper,
-  Button,
-  IconButton,
-  Typography,
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-} from "@material-ui/core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage, useParams } from "@openimis/fe-core";
+import { Paper, Button, IconButton, Typography, FormControl, FormControlLabel, Radio, RadioGroup } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
@@ -70,38 +55,34 @@ const useStyles = makeStyles((theme) => ({
 
 const MultiStepApplyForm = () => {
   const classes = useStyles();
-  const modulesManager = useModulesManager()
+  const modulesManager = useModulesManager();
   const { application_uuid } = useParams();
   const dispatch = useDispatch();
   const [parsedApplicationData, setParsedApplicationData] = useState();
   const [showForm, setShowForm] = useState(false);
   const [applicationForSelf, setApplicationForSelf] = useState("");
   const [organizationType, setOrganizationType] = useState("" || parsedApplicationData?.organizationType);
-  const [selectedApplicationType, setSelectedApplicationType] = useState("" ||parsedApplicationData?.applicationType);
+  const [selectedApplicationType, setSelectedApplicationType] = useState("" || parsedApplicationData?.applicationType);
   const [isApplicationForSelfSelected, setIsApplicationForSelfSelected] = useState(true);
 
   useEffect(async () => {
     const fetchData = async () => {
       const filters = [`id: "${application_uuid}"`];
-      const parsedData = await dispatch(
-        getParsedApplication(modulesManager, filters)
-      );
+      const parsedData = await dispatch(getParsedApplication(modulesManager, filters));
       setParsedApplicationData(parsedData); // <- parsed data will now be set correctly
     };
     fetchData();
   }, []);
 
   useEffect(() => {
-  if (!parsedApplicationData?.employeeDependentInfo) return;
+    if (!parsedApplicationData?.employeeDependentInfo) return;
 
-  const isEmptyDependent =
-    Object.keys(parsedApplicationData.employeeDependentInfo).length === 0;
+    const isEmptyDependent = Object.keys(parsedApplicationData.employeeDependentInfo).length === 0;
 
-  setApplicationForSelf(isEmptyDependent ? "yes" : "no");
-  setSelectedApplicationType(parsedApplicationData?.applicationType);
-  setOrganizationType(parsedApplicationData?.organizationType);
-}, [parsedApplicationData]);
-
+    setApplicationForSelf(isEmptyDependent ? "yes" : "no");
+    setSelectedApplicationType(parsedApplicationData?.applicationType);
+    setOrganizationType(parsedApplicationData?.organizationType);
+  }, [parsedApplicationData]);
 
   const handleSelection = (applicationType, exportStatus) => {
     setSelectedApplicationType(applicationType);
@@ -157,53 +138,33 @@ const MultiStepApplyForm = () => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.back.application.type"
-                />
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             {applicationForSelf === "" ? (
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
-                  {/* New Export-Oriented Company Question */}
-                  <Typography
-                    variant="h6"
-                    className={`${classes.title} ${classes.section}`}
-                  >
-                    {
-                      <FormattedMessage
-                        id="workforce.application.for"
-                        module="workforce"
-                      />
-                    }
+                  <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
+                    {<FormattedMessage id="workforce.application.for" module="workforce" />}
                   </Typography>
-                  <RadioGroup
-                    value={applicationForSelf}
-                    onChange={handleApplicationFor}
-                  >
+                  <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
                     <FormControlLabel
                       value="yes"
                       control={<Radio color="primary" />}
-                      label={
-                        <FormattedMessage
-                          id="workforce.application.for.type.self"
-                          module="workforce"
-                        />
-                      }
+                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce" />}
                     />
                     <FormControlLabel
                       value="no"
                       control={<Radio color="primary" />}
-                      label={
-                        <FormattedMessage
-                          id="workforce.application.for.type.dependent"
-                          module="workforce"
-                        />
-                      }
+                      label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce" />}
                     />
                   </RadioGroup>
                 </FormControl>
+                <div className={classes.buttonContainer}>
+                  <Button variant="contained" color="primary" onClick={() => setIsApplicationForSelfSelected(false)}>
+                    <FormattedMessage module="workforce" id="workforce.next" />
+                  </Button>
+                </div>
               </Paper>
             ) : (
               <MedicalDonationForm
@@ -223,37 +184,30 @@ const MultiStepApplyForm = () => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.back.application.type"
-                />
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             {applicationForSelf === "" || isApplicationForSelfSelected ? (
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
                   <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
-                    {<FormattedMessage id="workforce.application.for" module="workforce"/>}
+                    {<FormattedMessage id="workforce.application.for" module="workforce" />}
                   </Typography>
                   <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
                     <FormControlLabel
                       value="yes"
                       control={<Radio color="primary" />}
-                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>}
+                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce" />}
                     />
                     <FormControlLabel
                       value="no"
                       control={<Radio color="primary" />}
-                      label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce"/>}
+                      label={<FormattedMessage id="workforce.application.for.type.dependent" module="workforce" />}
                     />
                   </RadioGroup>
                 </FormControl>
                 <div className={classes.buttonContainer}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setIsApplicationForSelfSelected(false)}
-                  >
+                  <Button variant="contained" color="primary" onClick={() => setIsApplicationForSelfSelected(false)}>
                     <FormattedMessage module="workforce" id="workforce.next" />
                   </Button>
                 </div>
@@ -276,37 +230,30 @@ const MultiStepApplyForm = () => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.back.application.type"
-                />
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             {applicationForSelf === "" || isApplicationForSelfSelected ? (
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
                   <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
-                    {<FormattedMessage id="workforce.application.for" module="workforce"/>}
+                    {<FormattedMessage id="workforce.application.for" module="workforce" />}
                   </Typography>
                   <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
                     <FormControlLabel
                       value="yes"
                       control={<Radio color="primary" />}
-                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>}
+                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce" />}
                     />
                     <FormControlLabel
                       value="no"
                       control={<Radio color="primary" />}
-                      label={<FormattedMessage id="workforce.application.for.type.dependent.mother" module="workforce"/>}
+                      label={<FormattedMessage id="workforce.application.for.type.dependent.mother" module="workforce" />}
                     />
                   </RadioGroup>
                 </FormControl>
                 <div className={classes.buttonContainer}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setIsApplicationForSelfSelected(false)}
-                  >
+                  <Button variant="contained" color="primary" onClick={() => setIsApplicationForSelfSelected(false)}>
                     <FormattedMessage module="workforce" id="workforce.next" />
                   </Button>
                 </div>
@@ -329,10 +276,7 @@ const MultiStepApplyForm = () => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.back.application.type"
-                />
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             <DisabilityForm
@@ -351,53 +295,33 @@ const MultiStepApplyForm = () => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.back.application.type"
-                />
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             {applicationForSelf === "" ? (
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
-                  {/* New Export-Oriented Company Question */}
-                  <Typography
-                    variant="h6"
-                    className={`${classes.title} ${classes.section}`}
-                  >
-                    {
-                      <FormattedMessage
-                        id="workforce.application.for"
-                        module="workforce"
-                      />
-                    }
+                  <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
+                    {<FormattedMessage id="workforce.application.for" module="workforce" />}
                   </Typography>
-                  <RadioGroup
-                    value={applicationForSelf}
-                    onChange={handleApplicationFor}
-                  >
+                  <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
                     <FormControlLabel
                       value="yes"
                       control={<Radio color="primary" />}
-                      label={
-                        <FormattedMessage
-                          id="workforce.application.for.type.self"
-                          module="workforce"
-                        />
-                      }
+                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce" />}
                     />
                     <FormControlLabel
                       value="no"
                       control={<Radio color="primary" />}
-                      label={
-                        <FormattedMessage
-                          id="workforce.application.for.type.dependent"
-                          module="workforce"
-                        />
-                      }
+                      label={<FormattedMessage id="workforce.application.for.type.dependent.children" module="workforce" />}
                     />
                   </RadioGroup>
                 </FormControl>
+                <div className={classes.buttonContainer}>
+                  <Button variant="contained" color="primary" onClick={() => setIsApplicationForSelfSelected(false)}>
+                    <FormattedMessage module="workforce" id="workforce.next" />
+                  </Button>
+                </div>
               </Paper>
             ) : (
               <EducationGrantForm
@@ -417,10 +341,7 @@ const MultiStepApplyForm = () => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.back.application.type"
-                />
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             <FinancialAssistanceForm
@@ -438,37 +359,30 @@ const MultiStepApplyForm = () => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.back.application.type"
-                />
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             {applicationForSelf === "" ? (
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
                   <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
-                    {<FormattedMessage id="workforce.application.for" module="workforce"/>}
+                    {<FormattedMessage id="workforce.application.for" module="workforce" />}
                   </Typography>
                   <RadioGroup value={applicationForSelf} onChange={handleApplicationFor}>
                     <FormControlLabel
                       value="yes"
                       control={<Radio color="primary" />}
-                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce"/>}
+                      label={<FormattedMessage id="workforce.application.for.type.self" module="workforce" />}
                     />
                     <FormControlLabel
                       value="no"
                       control={<Radio color="primary" />}
-                      label={<FormattedMessage id="workforce.application.for.type.dependent.children" module="workforce"/>}
+                      label={<FormattedMessage id="workforce.application.for.type.dependent.children" module="workforce" />}
                     />
                   </RadioGroup>
                 </FormControl>
                 <div className={classes.buttonContainer}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setIsApplicationForSelfSelected(false)}
-                  >
+                  <Button variant="contained" color="primary" onClick={() => setIsApplicationForSelfSelected(false)}>
                     <FormattedMessage module="workforce" id="workforce.next" />
                   </Button>
                 </div>
@@ -491,10 +405,7 @@ const MultiStepApplyForm = () => {
               </IconButton>
               <Typography variant="body1" className={classes.backText}>
                 {/* Back to Application Type */}
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.back.application.type"
-                />
+                <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
             <FinancialAssistanceForm

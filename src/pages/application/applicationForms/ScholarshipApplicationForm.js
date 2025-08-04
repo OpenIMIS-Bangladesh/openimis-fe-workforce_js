@@ -310,6 +310,8 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
           educationBoard: formData?.metadata?.board,
           passingYear: formData?.metadata?.passingYear,
           rollNumber: formData?.metadata?.rollNo,
+          admissionYear: formData?.employeeChildrenInfo?.admissionYear,
+          IdNumber: formData?.employeeChildrenInfo?.idNo,
           registrationNumber: formData?.metadata?.regNo,
           result: formData?.metadata?.cgpa,
           institution: formData?.metadata?.university,

@@ -182,7 +182,7 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
-        dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || {},
+        dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || [{}],
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
@@ -243,10 +243,6 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
       console.log("Update Submitting formData:", workforceEmployeeData);
       await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
     } else if (nextStep === 3) {
-      console.log("Create application formData:", formData);
-      console.clear();
-      console.log("dddddddddddddd", formData?.workforceEmployee?.factory?.id);
-
       const createApplicationData = {
         workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
         company: formData?.workforceEmployee?.company?.id,
@@ -277,10 +273,10 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
           applicationgetId = applicationId;
         }
 
-        if (applicationForSelf === "yes") {
+        if (applicationForSelf === "no") {
           await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${applicationgetId}"`])).then((res) => {
             const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-  
+
             console.log({ dependentId });
             if (uploadFile) {
               dispatch(
@@ -297,7 +293,7 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
         console.log("i am from update", updateApplicationData);
         dispatch(updateApplication(updateApplicationData, `update workforce application `));
       }
-    } 
+    }
     // else if (nextStep === 4) {
     //   const fetchedApplicationId = { id: safeApplicationId(applicationId, parsedApplicationData) };
     //   await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${fetchedApplicationId.id}"`])).then((res) => {
@@ -313,7 +309,7 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
     //       );
     //     }
     //   });
-    // } 
+    // }
     else {
       // console.clear();
       console.log(applicationId);

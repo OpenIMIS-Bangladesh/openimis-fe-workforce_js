@@ -83,7 +83,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           ])
         );
       } else {
-        return dispatch(fetchDocumentType(modulesManager, [`applicationType:"${selectedApplicationType}"`, `organizationType:"${formData.organizationType}"`]));
+        return dispatch(fetchDocumentType(modulesManager, [`orderBy: ["documentTypeNo"]`,`applicationType:"${selectedApplicationType}"`, `organizationType:"${formData.organizationType}"`]));
       }
     } else {
       return dispatch(
