@@ -22,7 +22,7 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FileUploader from "../../pickers/FileUploader";
-import { updateApplication } from "../../actions";
+import { updateApplication,fetchApplicationMovementsSummary } from "../../actions";
 import { bindActionCreators } from "redux";
 import { WORKFORCE_STATUS } from "../../constants";
 
@@ -97,6 +97,8 @@ class ResendApplicationPage extends Component {
       mockFiles: mockFiles,
       fileStates: mockFiles,
       resendFile: null,
+      revertNotes: [],
+
       // fileStates: mockFiles.map((file) => ({
       //   ...file,
       //   comment: "",
@@ -104,6 +106,13 @@ class ResendApplicationPage extends Component {
       // })),
     };
   }
+//   componentDidMount() {
+//   if (this.props.applicationUuid) {
+//     this.fetchApplicationMovement();
+//    this.props.fetchApplicationMovementsSummary(this.props.modulesManager, [`applicationId: "${this.props.applicationUuid}"`])
+//   }
+// }
+
 
   componentDidUpdate(prevProps) {
     if (prevProps.application !== this.props.application) {
@@ -180,14 +189,29 @@ handleResendDocument = async () => {
   }
 };
 
+fetchApplicationMovement = async () => {
+  const { modulesManager, applicationUuid } = this.props;
+  const filters = [`applicationId: "${applicationUuid}"`];
+
+  try {
+    const response = await fetchApplicationMovementsSummary(modulesManager, filters);
+    const movements = response?.data?.workforceApplicationMovement?.items || [];
+
+    const revertNotes = movements
+      .filter(m => m.revertNote)
+      .map(m => m.revertNote);
+
+    this.setState({ revertNotes });
+  } catch (error) {
+    console.error("Failed to load revert notes", error);
+  }
+};
 
 
   render() {
     const { classes, applicationUuid } = this.props;
-    const { stateEdited, preview, fileStates, comment, applicationType } =
-      this.state;
-
-    // console.log({ applicationUuid });
+    const { stateEdited, preview, fileStates, comment, applicationType,revertNotes } = this.state;
+    console.log({ "revertNotes":revertNotes });
 
     return (
       <Grid container spacing={3} className={classes.rootGrid}>
@@ -362,6 +386,18 @@ handleResendDocument = async () => {
             </Button>
           </DialogContent>
         </Dialog>
+      {/* {revertNotes?.length > 0 && (
+        <Card variant="outlined" className={classes.cardSpacing}>
+          <CardContent>
+            <Typography variant="h6">Revert Notes</Typography>
+            {revertNotes.map((note, idx) => (
+              <Typography key={idx} style={{ marginTop: 8 }}>
+                • {note}
+              </Typography>
+            ))}
+          </CardContent>
+        </Card>
+      )} */}
       </Grid>
     );
   }
@@ -371,6 +407,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       updateApplication,
+      fetchApplicationMovementsSummary
     },
     dispatch
   );
