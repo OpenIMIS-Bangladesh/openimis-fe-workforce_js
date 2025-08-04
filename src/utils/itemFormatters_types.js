@@ -411,26 +411,6 @@ export const itemFormattersChecker = (
           <VerifiedUserIcon />
         </IconButton>
       </Tooltip>
-      {/* 
-        <Tooltip title="Forward">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => component.handleOpenForwardModal(application)}
-          >
-            <ForwardIcon />
-          </IconButton>
-        </Tooltip>
-      {/* <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            component.handleOpenRevertModal(application);
-            component.setState({ revertByChecker: true });
-          }}
-        >
-          <UndoIcon />
-        </IconButton>
-      </Tooltip> */}
     </div>
   ));
   return formatters;
@@ -510,26 +490,6 @@ export const itemFormattersCheckerTwo = (
           <VerifiedUserIcon />
         </IconButton>
       </Tooltip>
-      {/* 
-        <Tooltip title="Forward">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => component.handleOpenForwardModal(application)}
-          >
-            <ForwardIcon />
-          </IconButton>
-        </Tooltip>
-      {/* <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            component.handleOpenRevertModal(application);
-            component.setState({ revertByChecker: true });
-          }}
-        >
-          <UndoIcon />
-        </IconButton>
-      </Tooltip> */}
     </div>
   ));
   return formatters;
@@ -755,17 +715,6 @@ export const itemFormattersDoctor = (
             <ForwardIcon />
           </IconButton>
         </Tooltip> */}
-      <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            component.handleOpenRevertModal(application);
-            component.setState({ revertByChecker: true });
-          }}
-        >
-          <UndoIcon />
-        </IconButton>
-      </Tooltip>
     </div>
   ));
   return formatters;
@@ -859,24 +808,6 @@ export const itemFormattersAssociation = (
         </IconButton>
       </Tooltip>
        )}
-       {component.props.revertedApplication && (
-        <Tooltip title="Resend">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                modulesManager,
-                history,
-                "workforce.route.applications.application.process.resend",
-                [decodeId(application?.id)],
-                false
-              );
-            }}
-          >
-            <RestorePageIcon />
-          </IconButton>
-        </Tooltip>
-      )}
     </div>
   ));
   return formatters;
