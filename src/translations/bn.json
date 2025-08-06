@@ -562,6 +562,6 @@
   "workforce.uploadFile.dependent.nid_or_birthCcertificate": "জাতীয় পরিচয়পত্র বা জন্মসনদের ছবি",
   "workforce.employee.sameAsPresent": "বর্তমান ঠিকানার অনুরূপ",
 
-  "calendar.clearButton": "মুছে ফেলুন"
+  "calendar.clearButton": "মুছে ফেলুন",
   "core.Autocomplete.placeholder": "নির্বাচন করুন..."
 }
