@@ -22,7 +22,7 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
   const checkIfCity = (location) => {
     let current = location;
     while (current) {
-      if (current.name?.includes("সিটি কর্পোরেশন")) {
+      if (current.name?.includes("সিটি কর্পোরেশন"|| "পৌরসভা")) {
         return true;
       }
       current = current.parent;
