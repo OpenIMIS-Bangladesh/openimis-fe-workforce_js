@@ -105,7 +105,6 @@ class ApplicationProcessSearcher extends Component {
       this.dynamicTableTitle= dynamicTableTitle;
     }
     this.props.fetchOrganizationEmployee(this.props.modulesManager, [`username:"${userName}"`]);
-    console.clear();
     await this.fetchApplicant();
     console.log(this.props);
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
@@ -132,6 +131,8 @@ class ApplicationProcessSearcher extends Component {
             filter = ['statusIn: ["forward_to_cf_section","approved_by_doctor"]', 'orderBy: ["-dateCreated"]'];
           }
         }
+        const finalFilters = prms?.length ? prms : filter;
+        this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
         this.props.fetchApplicationsSummary(this.props.modulesManager, filter);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) {
@@ -142,6 +143,7 @@ class ApplicationProcessSearcher extends Component {
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_cf_section"]','applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ASSOCIATION) {
       this.setState({ displayVersion: showHistoryFilter });
+        let filters = [];
       if (revertedApplication) {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
@@ -153,23 +155,25 @@ class ApplicationProcessSearcher extends Component {
         ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]']
         );
       }
+      const finalFilters = prms?.length ? prms : filters;
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
-      if (revertedApplication) {
-        this.props.fetchApplicationsSummary(
-          this.props.modulesManager,
-          [`statusIn: ["revert","revert_to_applicant"], orderBy: ["-dateCreated"]`]
-        );
-      } else if (rejectedApplication) {
-      this.props.fetchApplicationsSummary(
-        this.props.modulesManager,
-        [`statusIn: ["rejected"], orderBy: ["-dateCreated"]`]
-      );
-      } else {
-        this.props.fetchApplicationsSummary(
-          this.props.modulesManager,
-        ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]']
-        );
-      }
+        this.setState({ displayVersion: showHistoryFilter });
+
+        let filters = [];
+
+        if (revertedApplication) {
+          filters = ['statusIn: ["revert","revert_to_applicant"]', 'orderBy: ["-dateCreated"]'];
+        } else if (rejectedApplication) {
+          filters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]'];
+        } else {
+          filters = ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]'];
+        }
+
+        const finalFilters = prms?.length ? prms : filters;
+        this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+
+
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, [
@@ -972,14 +976,14 @@ class ApplicationProcessSearcher extends Component {
     const count = applicationsPageInfo.totalCount;
     const userType = getUserTypeFromRights(userRights);
 
-    const filterPane = ({ filters, onChangeFilters }) => (
+    const filterPane = ({ filters, onChangeFilters }) =>{ 
+      return (
       <ApplicationProcessFilter
         filters={filters}
         onChangeFilters={onChangeFilters}
         setShowHistoryFilter={(showHistoryFilter) => this.setState({ showHistoryFilter })}
       />
-    );
-
+    )};
     return (
       <>
         <Searcher

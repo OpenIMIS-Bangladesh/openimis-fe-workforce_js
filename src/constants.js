@@ -188,3 +188,58 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   doctor: "ডাক্তার",
 
 };
+
+export const statusOptions = [
+  { value: "active", label: "সক্রিয়" },
+  { value: "inactive", label: "নিষ্ক্রিয়" },
+  { value: "pending", label: "অপেক্ষমাণ" },
+  { value: "draft", label: "খসড়া" },
+  { value: "initial", label: "প্রাথমিক" },
+  { value: "suspended", label: "বহিষ্কৃত" },
+  { value: "terminated", label: "বাতিল" },
+  { value: "on_leave", label: "ছুটিতে" },
+  { value: "completed", label: "সম্পন্ন" },
+  { value: "archived", label: "আর্কাইভকৃত" },
+  { value: "approved_by_dg", label: "মহাপরিচালক দ্বারা অনুমোদিত" },
+  { value: "approved_by_director", label: "পরিচালক দ্বারা অনুমোদিত" },
+  { value: "approved_by_doctor", label: "ডাক্তার দ্বারা অনুমোদিত" },
+  { value: "rejected", label: "প্রত্যাখ্যাত" },
+  { value: "deactivated", label: "নিষ্ক্রিয় করা হয়েছে" },
+  { value: "reinstated", label: "পুনর্বহাল" },
+  { value: "under_review", label: "পর্যালোচনায় রয়েছে" },
+  { value: "escalated", label: "উর্ধ্বে প্রেরিত" },
+  { value: "waiting_for_input", label: "ইনপুটের জন্য অপেক্ষা" },
+  { value: "on_hold", label: "স্থগিত" },
+  { value: "canceled", label: "বাতিল করা হয়েছে" },
+  { value: "expired", label: "মেয়াদোত্তীর্ণ" },
+  { value: "disabled", label: "অক্ষম" },
+  { value: "reassigned", label: "পুনরায় বরাদ্দকৃত" },
+  { value: "resigned", label: "পদত্যাগ করেছেন" },
+  { value: "forward_to_dg", label: "মহাপরিচালকের কাছে প্রেরণ" },
+  { value: "forward_to_director", label: "পরিচালকের কাছে প্রেরণ" },
+  { value: "forward_to_comiitee", label: "কমিটির কাছে প্রেরণ" },
+  { value: "second_forward", label: "দ্বিতীয় দফা প্রেরণ" },
+  { value: "third_forward", label: "তৃতীয় দফা প্রেরণ" },
+  { value: "new", label: "নতুন" },
+  { value: "revert_to_applicant", label: "আবেদনকারীর কাছে ফেরত" },
+  { value: "revert_to_checker", label: "যাচাইকরণকারীর কাছে ফেরত" },
+  { value: "revert", label: "আবেদন ফেরত পাঠানো হয়েছে" },
+  { value: "forward_to_association", label: "অ্যাসোসিয়েশনের কাছে প্রেরণ" },
+  { value: "forward_to_cf_section", label: "সিএফ শাখায় প্রেরণ" },
+  { value: "forward_to_doctor", label: "ডক্টরের কাছে প্রেরণ" },
+  { value: "selected", label: "নির্বাচিত" },
+  { value: "meeting_created", label: "সভা তৈরি হয়েছে" },
+];
+
+export const applicationTypeOptions = [
+  { value: "medicalAssistance", label: "চিকিৎসা অনুদান" },
+  { value: "scholarship", label: "শিক্ষাবৃত্তির আবেদন" },
+  { value: "financialAssistance", label: "মৃত্যুজনিত অনুদান" },
+  { value: "maternityGrant", label: "মাতৃত্বজনিত অনুদান" },
+  { value: "disabilityAssistance", label: "স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তা" },
+];
+
+export const submittedByOptions = [
+  { value: "applicant", label: "আবেদনকারী" },
+  { value: "factory_admin", label: "ফ্যাক্টরি অ্যাডমিন" },
+];

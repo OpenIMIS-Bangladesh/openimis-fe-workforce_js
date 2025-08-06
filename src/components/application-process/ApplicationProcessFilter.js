@@ -3,7 +3,7 @@
 import React, { Component } from "react";
 import _debounce from "lodash/debounce";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { Grid, Checkbox, FormControlLabel } from "@material-ui/core";
+import { Grid, Checkbox, FormControlLabel ,Select,FormControl,InputLabel,MenuItem } from "@material-ui/core";
 import {
   withModulesManager,
   Contributions,
@@ -12,9 +12,9 @@ import {
   PublishedComponent,
   decodeId,
   formatMessage,
+  FormattedMessage
 } from "@openimis/fe-core";
-import { MODULE_NAME } from "../../constants";
-
+import { MODULE_NAME, statusOptions,applicationTypeOptions,submittedByOptions } from "../../constants";
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
   dialogContent: theme.dialog.content,
@@ -67,108 +67,105 @@ class ApplicationProcessFilter extends Component {
     const { classes, filters, onChangeFilters } = this.props;
     return (
       <Grid container className={classes.form}>
-        {/* <ControlledField
-          module={MODULE_NAME}
-          id="workforce.employee.application.nid"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.employee.application.nid"
-                name="nid"
-                value={this._filterValue("nid")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'nid',
-                    value: v,
-                    filter: `nid: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        /> */}
-        {/* <ControlledField
-          module={MODULE_NAME}
-          id="workforce.employee.application.phone"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.employee.application.phone"
-                name="address"
-                value={this._filterValue("phoneNumber")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'phoneNumber',
-                    value: v,
-                    filter: `phoneNumber: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        /> */}
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.employee.application.status"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
+      <ControlledField
+        module={MODULE_NAME}
+        id="workforce.employee.application.status"
+        field={
+          <Grid item xs={3} className={classes.item}>
+            <FormControl variant="outlined" fullWidth>
+              <InputLabel>
+                <FormattedMessage
+                  id="workforce.employee.application.status"
+                  defaultMessage="Status"
+                />
+              </InputLabel>
+              <Select
                 label="workforce.employee.application.status"
-                name="status"
-                value={this._filterValue("status")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'status',
-                    value: v,
-                    filter: `status: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.employee.application.applicationType"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
+                value={this._filterValue("status") || ""}
+                onChange={(e) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "status",
+                      value: e.target.value,
+                      filter: `statusIn: ["${e.target.value}"]`,
+                    },
+                  ])
+                }
+              >             
+                {statusOptions.map((opt) => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        }
+      />
+
+      <ControlledField
+        module={MODULE_NAME}
+        id="workforce.employee.application.applicationType"
+        field={
+          <Grid item xs={3} className={classes.item}>
+            <FormControl variant="outlined" fullWidth>
+              <InputLabel>
+                <FormattedMessage
+                  id="workforce.employee.application.applicationType"
+                  defaultMessage="Application Type"
+                />
+              </InputLabel>
+              <Select
                 label="workforce.employee.application.applicationType"
-                name="applicationType"
-                value={this._filterValue("applicationType")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'applicationType',
-                    value: v,
-                    filter: `applicationType: "${v}"`,
-                  },
-                ])}
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
+                value={this._filterValue("applicationType") || ""}
+                onChange={(e) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "applicationType",
+                      value: e.target.value,
+                      filter: `applicationTypeIn: ["${e.target.value}"]`,
+                    },
+                  ])
+                }
+              >
+                {applicationTypeOptions.map((opt) => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        }
+      />
+
+     <ControlledField mt={3}
           module={MODULE_NAME}
           id="workforce.application.submittedBy"
           field={
             <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.application.submittedBy"
-                name="submittedBy"
-                value={this._filterValue("submittedBy")}
-                onChange={(v) => this.debouncedOnChangeFilter([
-                  {
-                    id: 'submittedBy',
-                    value: v,
-                    filter: `submittedBy: "${v}"`,
-                  },
-                ])}
-              />
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel><FormattedMessage id="workforce.application.submittedBy" defaultMessage="Submitted By" /></InputLabel>
+                <Select
+                  label="workforce.application.submittedBy"
+                  value={this._filterValue("submittedBy") || ""}
+                  onChange={(e) =>
+                    this.debouncedOnChangeFilter([
+                      {
+                        id: "submittedBy",
+                        value: e.target.value,
+                        filter: `submittedBy: "${e.target.value}"`,
+                      },
+                    ])
+                  }
+                >
+                  {submittedByOptions.map((opt) => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
           }
         />
