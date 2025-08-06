@@ -233,7 +233,7 @@ export const statusOptions = [
 
 export const applicationTypeOptions = [
   { value: "medicalAssistance", label: "চিকিৎসা অনুদান" },
-  { value: "scholarship", label: "শিক্ষাবৃত্তির আবেদন" },
+  { value: "scholarship", label: "শিক্ষা অনুদান" },
   { value: "financialAssistance", label: "মৃত্যুজনিত অনুদান" },
   { value: "maternityGrant", label: "মাতৃত্বজনিত অনুদান" },
   { value: "disabilityAssistance", label: "স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তা" },

@@ -133,8 +133,6 @@ class ApplicationProcessSearcher extends Component {
         }
         const finalFilters = prms?.length ? prms : filter;
         this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
-
-        this.props.fetchApplicationsSummary(this.props.modulesManager, filter);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_doctor"]', 'orderBy: ["-dateCreated"]']);

@@ -154,7 +154,7 @@ class ApplicationProcessFilter extends Component {
                       {
                         id: "submittedBy",
                         value: e.target.value,
-                        filter: `submittedBy: "${e.target.value}"`,
+                        filter: `submittedByIn: "${e.target.value}"`,
                       },
                     ])
                   }
