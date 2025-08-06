@@ -7,6 +7,7 @@ import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import RelationWithWorkerPicker from "../../pickers/RelationWithWorkerPicker";
 import FileUploader from "../../pickers/FileUploader";
 import CustomDetailedLocation from "../../components/application-forms/CustomDetailedLocation";
+import CustomDependentLocation from "../../components/application-forms/CustomDependentLocation";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -126,21 +127,21 @@ const EmployeeDependentForm = ({
                         const employee = formdata?.workforceEmployee;
                         if (v === "workforce.relation.son" || v === "workforce.relation.daughter") {
                           if (employee) {
-                            handleChange(index, "fatherNameEn", employee.nameEn );
-                            handleChange(index, "fatherNameBn", employee.nameBn );
-                            handleChange(index, "presentLocation", employee.presentLocation );
-                            handleChange(index, "permanentLocation", employee.presentLocation ); // assuming same
+                            handleChange(index, "fatherNameEn", employee.nameEn);
+                            handleChange(index, "fatherNameBn", employee.nameBn);
+                            handleChange(index, "presentLocation", employee.presentLocation);
+                            handleChange(index, "permanentLocation", employee.presentLocation); // assuming same
                             handleChange(index, "presentAddress", employee.presentAddress);
-                            handleChange(index, "permanentAddress", employee.presentAddress );
+                            handleChange(index, "permanentAddress", employee.presentAddress);
                           }
-                        }else{
+                        } else {
                           if (employee) {
-                            handleChange(index, "fatherNameEn", "" );
-                            handleChange(index, "fatherNameBn", "" );
+                            handleChange(index, "fatherNameEn", "");
+                            handleChange(index, "fatherNameBn", "");
                             handleChange(index, "presentLocation", null);
-                            handleChange(index, "permanentLocation",null ); // assuming same
+                            handleChange(index, "permanentLocation", null); // assuming same
                             handleChange(index, "presentAddress", "");
-                            handleChange(index, "permanentAddress","");
+                            handleChange(index, "permanentAddress", "");
                           }
                         }
                       }}
@@ -235,11 +236,11 @@ const EmployeeDependentForm = ({
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <CustomDetailedLocation
-                    locationType={isCityLocation(dependent?.presentLocation) ? "city" : "rural"}
-                    onChange={handleChange}
+                  <CustomDependentLocation
+                    location={dependent?.presentLocation}
+                    onChange={(key, value) => handleChange(index, key, value)}
                     addressKey="presentAddress"
-                    data={dependent}
+                    data={dependent?.presentAddress}
                     readOnly={false}
                   />
                 </Grid>
@@ -260,8 +261,8 @@ const EmployeeDependentForm = ({
                     <PublishedComponent
                       pubRef="location.DetailedLocation"
                       withNull={true}
-                      value={dependents[index].permanentLocation || null}
-                      onChange={(v) => handleChange(index, "permanentLocation", v)}
+                      value={dependents?.[index]?.permanentLocation || null}
+                      onChange={(key, value) => handleChange(index, key, value)}
                       readOnly={!!sameAsPresent[index]}
                       required
                       split={true}
@@ -269,11 +270,11 @@ const EmployeeDependentForm = ({
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                  <CustomDetailedLocation
-                    locationType={isCityLocation(dependents?.[index]?.permanentAddress) ? "city" : "rural"}
-                    onChange={handleChange}
+                  <CustomDependentLocation
+                    location={dependents?.[index]?.permanentLocation}
+                    onChange={(key, value) => handleChange(index, key, value)}
                     addressKey="permanentAddress"
-                    data={dependent}
+                    data={dependent?.permanentAddress}
                     readOnly={!!sameAsPresent[index]}
                   />
                 </Grid>

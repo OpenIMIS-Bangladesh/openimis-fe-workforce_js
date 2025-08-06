@@ -1,48 +1,44 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
 import { TextInput } from "@openimis/fe-core";
 
-const CustomDetailedLocation = ({
-  locationType = "city",
-  onChange,
-  addressKey,
-  data = {},
-  readOnly,
-}) => {
-  const [localData, setLocalData] = useState({});
-  const firstRender = useRef(true);
+const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnly }) => {
+  const [locationType, setLocationType] = useState("rural"); // Default
+  const [localData, setLocalData] = useState(data || {});
 
-  // Parse and initialize from passed `data` once on mount or when `data` changes (external)
+  // Update internal state when external data changes
   useEffect(() => {
-    if (typeof data === "string") {
-      try {
-        const parsed = JSON.parse(data);
-        setLocalData(parsed || {});
-      } catch (err) {
-        console.error("Invalid JSON in data prop:", err);
-        setLocalData({});
-      }
-    } else if (typeof data === "object" && data !== null) {
-      setLocalData(data);
-    } else {
-      setLocalData({});
+    if (data) { 
+        setLocalData(JSON.parse(data) || {});
     }
   }, [data]);
 
-  // Update parent only when localData changes by user input (not initial mount)
+  // Determine if location is city or rural
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
+    const isCity = checkIfCity(location);
+    setLocationType(isCity ? "city" : "rural");
+  }, [location]);
+
+  const checkIfCity = (location) => {
+    let current = location;
+    while (current) {
+      if (current.name?.includes("সিটি কর্পোরেশন")) {
+        return true;
+      }
+      current = current.parent;
     }
-    onChange?.(addressKey, JSON.stringify(localData));
-  }, [localData]); // Only trigger on localData change
+    return false;
+  };
 
   const updateField = (key, value) => {
-    setLocalData((prev) => ({
-      ...prev,
+    const updatedData = {
+      ...localData,
       [key]: value,
-    }));
+    };
+    setLocalData(updatedData);
+    if (onChange) {
+      onChange(addressKey, updatedData);
+    }
   };
 
   return (
@@ -54,7 +50,6 @@ const CustomDetailedLocation = ({
               label="workforce.employee.city.road_no"
               value={localData.roadName || ""}
               onChange={(v) => updateField("roadName", v)}
-              InputProps={{ margin: "dense" }}
               readOnly={readOnly}
             />
           </Grid>
@@ -63,7 +58,6 @@ const CustomDetailedLocation = ({
               label="workforce.employee.city.house_name"
               value={localData.houseName || ""}
               onChange={(v) => updateField("houseName", v)}
-              InputProps={{ margin: "dense" }}
               readOnly={readOnly}
             />
           </Grid>
@@ -72,21 +66,19 @@ const CustomDetailedLocation = ({
               label="workforce.employee.city.apartment_number"
               value={localData.apartmentNumber || ""}
               onChange={(v) => updateField("apartmentNumber", v)}
-              InputProps={{ margin: "dense" }}
               readOnly={readOnly}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextInput
+            //   label="workforce.employee.city.extra_info"
               value={localData.extraInfo || ""}
               onChange={(v) => updateField("extraInfo", v)}
-              InputProps={{ margin: "dense" }}
               readOnly={readOnly}
             />
           </Grid>
         </>
       )}
-
       {locationType === "rural" && (
         <>
           <Grid item xs={12} sm={4}>
@@ -94,7 +86,6 @@ const CustomDetailedLocation = ({
               label="workforce.employee.rural.house_name"
               value={localData.houseName || ""}
               onChange={(v) => updateField("houseName", v)}
-              InputProps={{ margin: "dense" }}
               readOnly={readOnly}
             />
           </Grid>
@@ -103,7 +94,6 @@ const CustomDetailedLocation = ({
               label="workforce.employee.rural.para_mahalla"
               value={localData.paraMahalla || ""}
               onChange={(v) => updateField("paraMahalla", v)}
-              InputProps={{ margin: "dense" }}
               readOnly={readOnly}
             />
           </Grid>
@@ -112,15 +102,14 @@ const CustomDetailedLocation = ({
               label="workforce.employee.rural.village_road"
               value={localData.villageRoad || ""}
               onChange={(v) => updateField("villageRoad", v)}
-              InputProps={{ margin: "dense" }}
               readOnly={readOnly}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextInput
+            //   label="workforce.employee.rural.extra_info"
               value={localData.extraInfo || ""}
               onChange={(v) => updateField("extraInfo", v)}
-              InputProps={{ margin: "dense" }}
               readOnly={readOnly}
             />
           </Grid>
@@ -130,4 +119,4 @@ const CustomDetailedLocation = ({
   );
 };
 
-export default CustomDetailedLocation;
+export default CustomDependentLocation;
