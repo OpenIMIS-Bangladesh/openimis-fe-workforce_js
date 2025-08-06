@@ -9,6 +9,7 @@ import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
 import CompanyPicker from "../../pickers/CompanyPicker";
 import FactoryPicker from "../../pickers/FactoryPicker";
+import CountryPicker from "../../pickers/CountryPicker";
 // import CustomDateTimePicker from "../../pickers/CustomDatePicker";
 
 const useStyles = makeStyles((theme) => ({
@@ -41,9 +42,12 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
   const history = useHistory();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
+  const reduxState = useSelector((state) => state);
   const getDeathLabel = (labelKey) => {
     return formData.applicationType === "financialAssistance" ? `${formatMessage("workforce.dead")} ${formatMessage(labelKey)}` : formatMessage(labelKey);
   };
+
+  const locale = reduxState?.core?.user?.i_user?.language
 
   return (
     <Box>
@@ -120,12 +124,22 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   </Grid>
                 </>
               )}
-              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
+              {/* <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.citizenship"
                   value={formData?.workforceEmployee?.citizenship || ""}
                   onChange={(v) => handleChange("citizenship", v)}
                   readOnly={false}
+                />
+              </Grid> */}
+              <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
+                <CountryPicker
+                  label={formatMessage("workforce.employee.citizenship")}
+                  value={formData?.workforceEmployee?.citizenship || ""}
+                  onChange={(v) => handleChange("citizenship", v)}
+                  readOnly={false}
+                  required
+                  language={locale === "fr"?"bn":"en"}
                 />
               </Grid>
 

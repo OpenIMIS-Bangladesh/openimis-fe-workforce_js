@@ -61,26 +61,26 @@ const EmployeeDependentForm = ({
   }, [dependents]);
 
   const handleCheckboxChange = (index, e) => {
-    const isChecked = e.target.checked;
+  const isChecked = e.target.checked;
 
-    setSameAsPresent((prev) => {
-      const updated = [...(prev || [])];
-      updated[index] = isChecked;
-      return updated;
-    });
+  setSameAsPresent((prev) => {
+    const updated = [...(prev || [])];
+    updated[index] = isChecked;
+    return updated;
+  });
 
-    if (isChecked) {
-      
-      const presentLocation = formData?.dependents[index].presentLocation || null;
-      const presentAddress = formData?.dependents[index]?.presentAddress || "";
+  if (isChecked) {
+    const presentLocation = dependents?.[index]?.presentLocation || null;
+    const presentAddress = dependents?.[index]?.presentAddress || "";
 
-      handleChange(index,`permanentLocation`, presentLocation);
-      handleChange(index,`permanentAddress`, presentAddress);
-    } else {
-      handleChange(index,`permanentLocation[${index}]`, null);
-      handleChange(index,`permanentAddress[${index}]`, "");
-    }
-  };
+    handleChange(index, "permanentLocation", presentLocation);
+    handleChange(index, "permanentAddress", presentAddress);
+  } else {
+    handleChange(index, "permanentLocation", null);
+    handleChange(index, "permanentAddress", "");
+  }
+};
+
 
   const isCityLocation = (locationObj) => {
     let current = locationObj;
@@ -239,7 +239,7 @@ const EmployeeDependentForm = ({
                     <PublishedComponent
                       pubRef="location.DetailedLocation"
                       withNull={true}
-                      value={formData.permanentLocation || null}
+                      value={dependents[index].permanentLocation || null}
                       onChange={(v) => handleChange(index, "permanentLocation", v)}
                       readOnly={!!sameAsPresent[index]}
                       required
@@ -249,7 +249,7 @@ const EmployeeDependentForm = ({
                 </Grid>
                 <Grid item xs={12}>
                   <CustomDetailedLocation
-                    locationType={isCityLocation(formData?.permanentAddress) ? "city" : "rural"}
+                    locationType={isCityLocation(dependents?.[index]?.permanentAddress) ? "city" : "rural"}
                     onChange={handleChange}
                     addressKey="permanentAddress"
                     data={formData}

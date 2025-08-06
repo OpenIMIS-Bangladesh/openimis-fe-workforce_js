@@ -56,13 +56,13 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
 
   useEffect(() => {
       if (sameAsPresent) {
-        const presentLocation = formData?.workforceEmployee?.presentLocation || null;
-        const presentAddress = formData?.workforceEmployee?.presentAddress || "";
+        const presentLocation = formData?.workforceApplicant?.presentLocation || null;
+        const presentAddress = formData?.workforceApplicant?.presentAddress || "";
   
         handleChange("permanentLocation", presentLocation);
         handleChange("permanentAddress", presentAddress);
       }
-    }, [sameAsPresent, formData?.workforceEmployee?.presentLocation, formData?.workforceEmployee?.presentAddress]);
+    }, [sameAsPresent, formData?.workforceApplicant?.presentLocation, formData?.workforceApplicant?.presentAddress]);
 
   console.log("hello bangladesh", formData);
   return (

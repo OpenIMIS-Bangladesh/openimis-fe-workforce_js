@@ -45,6 +45,7 @@
     "dist"
   ],
   "dependencies": {
+    "i18n-iso-countries": "^7.14.0",
     "quill": "^2.0.3",
     "react-dropzone": "^14.3.5",
     "react-multi-date-picker": "^4.5.2",

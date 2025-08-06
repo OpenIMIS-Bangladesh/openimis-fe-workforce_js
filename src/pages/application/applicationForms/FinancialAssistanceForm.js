@@ -398,7 +398,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
 
   const handleSubmit = () => {
     const submittedBy =
-      user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
+    user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
     const updateApplicationData = {
       // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
       id: safeApplicationId(applicationId, parsedApplicationData),
