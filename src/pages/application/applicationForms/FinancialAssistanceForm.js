@@ -538,6 +538,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
               removeItem={(index) => removeArrayFieldItem("dependents", index)}
               expanded={expanded}
               setExpanded={setExpanded}
+              formdata={formData}
             />
             
           </Box>
