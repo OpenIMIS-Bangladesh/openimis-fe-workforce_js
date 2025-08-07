@@ -76,9 +76,12 @@ const EmployeeDependentForm = ({
 
       handleChange(index, "permanentLocation", presentLocation);
       handleChange(index, "permanentAddress", presentAddress);
+      handleChange(index, "isChecked", isChecked);
     } else {
       handleChange(index, "permanentLocation", null);
       handleChange(index, "permanentAddress", "");
+      handleChange(index, "isChecked", isChecked);
+
     }
   };
 
@@ -252,7 +255,7 @@ const EmployeeDependentForm = ({
 
                   <Grid item xs={12}>
                     <FormControlLabel
-                      control={<Checkbox color="primary" checked={sameAsPresent?.[index] || false} onChange={(e) => handleCheckboxChange(index, e)} />}
+                      control={<Checkbox color="primary" checked={sameAsPresent?.[index] ||dependent?.isChecked || false} onChange={(e) => handleCheckboxChange(index, e)} />}
                       label={formatMessage("workforce.employee.sameAsPresent")}
                     />
                   </Grid>
