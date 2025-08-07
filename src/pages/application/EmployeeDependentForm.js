@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Grid, Box, Paper, Button, Typography, Divider, Accordion, AccordionSummary, AccordionDetails, FormControlLabel, Checkbox } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextInput, PublishedComponent, FormattedMessage, useTranslations, useModulesManager } from "@openimis/fe-core";
-import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import RelationWithWorkerPicker from "../../pickers/RelationWithWorkerPicker";
 import FileUploader from "../../pickers/FileUploader";
-import CustomDetailedLocation from "../../components/application-forms/CustomDetailedLocation";
 import CustomDependentLocation from "../../components/application-forms/CustomDependentLocation";
 
 const useStyles = makeStyles((theme) => ({
@@ -22,78 +20,50 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDependentForm = ({
-  applicationType,
-  dependents,
-  handleChange,
-  addItem,
-  removeItem,
-  expanded,
-  setExpanded,
-  formdata,
-  // handleChange,
-}) => {
-  // Normalize dependents to always be an array
-  // const normalizedDependents = Array.isArray(dependents) ? dependents : dependents ? [dependents] : [{}];
-
+const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addItem, removeItem, expanded, setExpanded, formdata }) => {
   const classes = useStyles();
-  // const [expanded, setExpanded] = useState(0);
   const modulesManager = useModulesManager();
-  const normalizedDependents = Array.isArray(dependents) ? dependents : dependents ? [dependents] : [];
-
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
 
-  const isFirstDependentValid = normalizedDependents?.[0]?.nid && normalizedDependents?.[0]?.nameEn;
+  const normalizedDependents = useMemo(() => (Array.isArray(dependents) ? dependents : dependents ? [dependents] : []), [dependents]);
 
-  const getRelationAwareLabel = (dependent, labelKey) => {
-    return applicationType === "financialAssistance" && dependent?.relationType
-      ? `${formatMessage(dependent.relationType)}র ${formatMessage(labelKey)}`
-      : formatMessage(labelKey);
-  };
   const [sameAsPresent, setSameAsPresent] = useState([]);
 
-  // Sync permanent fields when checkbox is checked
-
-  // Initialize sameAsPresent for each dependent (or single entry)
   useEffect(() => {
     if (Array.isArray(normalizedDependents)) {
       setSameAsPresent((prev) => normalizedDependents.map((_, index) => prev?.[index] || false));
     }
-  }, [dependents]);
+  }, [normalizedDependents]);
 
-  const handleCheckboxChange = (index, e) => {
-    const isChecked = e.target.checked;
+  const handleCheckboxChange = useCallback(
+    (index, e) => {
+      const isChecked = e.target.checked;
 
-    setSameAsPresent((prev) => {
-      const updated = [...(prev || [])];
-      updated[index] = isChecked;
-      return updated;
-    });
+      setSameAsPresent((prev) => {
+        const updated = [...(prev || [])];
+        updated[index] = isChecked;
+        return updated;
+      });
 
-    if (isChecked) {
       const presentLocation = dependents?.[index]?.presentLocation || null;
       const presentAddress = dependents?.[index]?.presentAddress || "";
 
-      handleChange(index, "permanentLocation", presentLocation);
-      handleChange(index, "permanentAddress", presentAddress);
-    } else {
-      handleChange(index, "permanentLocation", null);
-      handleChange(index, "permanentAddress", "");
-    }
-  };
+      handleChange(index, "permanentLocation", isChecked ? presentLocation : null);
+      handleChange(index, "permanentAddress", isChecked ? presentAddress : "");
+    },
+    [dependents, handleChange]
+  );
 
-  const isCityLocation = (locationObj) => {
-    let current = locationObj;
+  const getRelationAwareLabel = useCallback(
+    (dependent, labelKey) => {
+      return applicationType === "financialAssistance" && dependent?.relationType
+        ? `${formatMessage(dependent.relationType)}র ${formatMessage(labelKey)}`
+        : formatMessage(labelKey);
+    },
+    [applicationType, formatMessage]
+  );
 
-    while (current) {
-      if (current.name && current.name.includes("সিটি কর্পোরেশন")) {
-        return true; // it's a city
-      }
-      current = current.parent;
-    }
-
-    return false; // not a city
-  };
+  const isFirstDependentValid = useMemo(() => normalizedDependents?.[0]?.nid && normalizedDependents?.[0]?.nameEn, [normalizedDependents]);
 
   return (
     <Box mt={1}>
@@ -115,7 +85,7 @@ const EmployeeDependentForm = ({
           </AccordionSummary>
           <AccordionDetails>
             <Paper className={classes.paper} elevation={0}>
-              <Grid container className={classes.item} spacing={2}>
+              <Grid container spacing={2}>
                 {applicationType === "financialAssistance" && (
                   <Grid item xs={12}>
                     <RelationWithWorkerPicker
@@ -123,135 +93,120 @@ const EmployeeDependentForm = ({
                       required
                       onChange={(v) => {
                         handleChange(index, "relationType", v);
-
                         const employee = formdata?.workforceEmployee;
-                        if (v === "workforce.relation.son" || v === "workforce.relation.daughter") {
-                          if (employee) {
-                            handleChange(index, "fatherNameEn", employee.nameEn);
-                            handleChange(index, "fatherNameBn", employee.nameBn);
-                            handleChange(index, "presentLocation", employee.presentLocation);
-                            handleChange(index, "permanentLocation", employee.presentLocation); // assuming same
-                            handleChange(index, "presentAddress", employee.presentAddress);
-                            handleChange(index, "permanentAddress", employee.presentAddress);
-                          }
+                        if (["workforce.relation.son", "workforce.relation.daughter"].includes(v) && employee) {
+                          handleChange(index, "fatherNameEn", employee.nameEn);
+                          handleChange(index, "fatherNameBn", employee.nameBn);
+                          handleChange(index, "presentLocation", employee.presentLocation);
+                          handleChange(index, "permanentLocation", employee.presentLocation);
+                          handleChange(index, "presentAddress", employee.presentAddress);
+                          handleChange(index, "permanentAddress", employee.presentAddress);
                         } else {
-                          if (employee) {
-                            handleChange(index, "fatherNameEn", "");
-                            handleChange(index, "fatherNameBn", "");
-                            handleChange(index, "presentLocation", null);
-                            handleChange(index, "permanentLocation", null); // assuming same
-                            handleChange(index, "presentAddress", "");
-                            handleChange(index, "permanentAddress", "");
-                          }
+                          handleChange(index, "fatherNameEn", "");
+                          handleChange(index, "fatherNameBn", "");
+                          handleChange(index, "presentLocation", null);
+                          handleChange(index, "permanentLocation", null);
+                          handleChange(index, "presentAddress", "");
+                          handleChange(index, "permanentAddress", "");
                         }
                       }}
                       readOnly={false}
                     />
                   </Grid>
                 )}
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6}>
                   <TextInput
                     label={getRelationAwareLabel(dependent, "workforce.employee.name.bn")}
                     value={dependent.nameBn || ""}
                     onChange={(v) => handleChange(index, "nameBn", v)}
                     required
-                    readOnly={false}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6}>
                   <TextInput
                     label={getRelationAwareLabel(dependent, "workforce.employee.name.en")}
                     value={dependent.nameEn || ""}
                     onChange={(v) => handleChange(index, "nameEn", v)}
                     required
-                    readOnly={false}
                   />
                 </Grid>
 
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6}>
                   <TextInput
                     label={getRelationAwareLabel(dependent, "workforce.employee.fathers_name")}
                     value={dependent.fatherNameEn || ""}
                     onChange={(v) => handleChange(index, "fatherNameEn", v)}
-                    readOnly={false}
                   />
                 </Grid>
-
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6}>
                   <TextInput
                     label={getRelationAwareLabel(dependent, "workforce.employee.mothers_name")}
                     value={dependent.motherNameEn || ""}
                     onChange={(v) => handleChange(index, "motherNameEn", v)}
-                    readOnly={false}
                   />
                 </Grid>
 
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6}>
                   <PublishedComponent
                     pubRef="workforce.DatePicker"
                     label={getRelationAwareLabel(dependent, "workforce.employee.birthdate")}
                     value={dependent.birthDate || ""}
                     onChange={(v) => handleChange(index, "birthDate", v)}
-                    readOnly={false}
                   />
                 </Grid>
 
-                <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6}>
                   <TextInput
                     label={getRelationAwareLabel(dependent, "workforce.application.employee.children.nidOrBirthRegistry")}
                     value={dependent.nid || ""}
                     onChange={(v) => handleChange(index, "nid", v)}
-                    type={"number"}
+                    type="number"
                     required
-                    readOnly={false}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+
+                <Grid item xs={6}>
                   <TextInput
                     label={getRelationAwareLabel(dependent, "workforce.employee.phone")}
                     value={dependent.phoneNumber || ""}
                     onChange={(v) => handleChange(index, "phoneNumber", v)}
-                    type={"number"}
-                    readOnly={false}
+                    type="number"
                   />
                 </Grid>
+
                 {formdata?.organizationType === "cf" && (
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label={formatMessage("workforce.employee.percentage_of_cf_grant")}
-                    value={dependent.maritalStatus || ""}
-                    onChange={(v) => handleChange(index, "maritalStatus", v)}
-                    readOnly={false}
-                  />
-                </Grid>
-                ) }
+                  <Grid item xs={6}>
+                    <TextInput
+                      label={formatMessage("workforce.employee.percentage_of_cf_grant")}
+                      value={dependent.maritalStatus || ""}
+                      onChange={(v) => handleChange(index, "maritalStatus", v)}
+                    />
+                  </Grid>
+                )}
+
                 <Grid item xs={12}>
                   <b>{formatMessage("workforce.employee.present_location")}</b>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
-                    withNull={true}
+                    withNull
                     value={dependent.presentLocation || null}
                     onChange={(v) => handleChange(index, "presentLocation", v)}
-                    readOnly={false}
                     required
-                    split={true}
+                    split
                   />
                 </Grid>
+
                 <Grid item xs={12}>
                   <CustomDependentLocation
                     location={dependent?.presentLocation}
                     onChange={(key, value) => handleChange(index, key, value)}
                     addressKey="presentAddress"
                     data={dependent?.presentAddress}
-                    readOnly={false}
                   />
                 </Grid>
 
-                {/* ✅ Permanent Location (conditional readOnly) */}
                 <Grid item xs={12}>
                   <b>{formatMessage("workforce.employee.permanent_location")}</b>
-                  {/* ✅ Same as Present Location Checkbox */}
-
                   <Grid item xs={12}>
                     <FormControlLabel
                       control={<Checkbox color="primary" checked={sameAsPresent?.[index] || false} onChange={(e) => handleCheckboxChange(index, e)} />}
@@ -259,18 +214,17 @@ const EmployeeDependentForm = ({
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <PublishedComponent
-                      pubRef="location.DetailedLocation"
-                      withNull={true}
-                      value={dependents?.[index]?.permanentLocation || null}
-                      onChange={(key, value) => handleChange(index, key, value)}
-                      readOnly={!!sameAsPresent[index]}
-                      required
-                      split={true}
-                    />
-                  </Grid>
+                  <PublishedComponent
+                    pubRef="location.DetailedLocation"
+                    withNull
+                    value={dependents?.[index]?.permanentLocation || null}
+                    onChange={(v) => handleChange(index, "permanentLocation", v)}
+                    readOnly={!!sameAsPresent[index]}
+                    required
+                    split
+                  />
                 </Grid>
+
                 <Grid item xs={12}>
                   <CustomDependentLocation
                     location={dependents?.[index]?.permanentLocation}
@@ -283,19 +237,14 @@ const EmployeeDependentForm = ({
 
                 <Grid item xs={6}>
                   <Typography>{formatMessage("workforce.uploadFile.dependent.photo")}</Typography>
-                  <FileUploader
-                    fieldKey={"dependentPhoto"}
-                    onFileChange={(field, value) => handleChange(index, field, value)}
-                    documentType={"dependent photo"}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography>{formatMessage("workforce.uploadFile.dependent.nid_or_birthCcertificate")}</Typography>
-                  <FileUploader fieldKey={"dependentNid"} onFileChange={(field, value) => handleChange(index, field, value)} documentType={"dependent nid"} />
+                  <FileUploader fieldKey="dependentPhoto" onFileChange={(field, value) => handleChange(index, field, value)} documentType="dependent photo" />
                 </Grid>
 
-                {/* <Grid item xs={11} className={classes.item} /> */}
-                <Divider style={{ margin: "16px 0" }} />
+                <Grid item xs={6}>
+                  <Typography>{formatMessage("workforce.uploadFile.dependent.nid_or_birthCcertificate")}</Typography>
+                  <FileUploader fieldKey="dependentNid" onFileChange={(field, value) => handleChange(index, field, value)} documentType="dependent nid" />
+                </Grid>
+
                 {applicationType === "financialAssistance" && (
                   <Grid item xs={12} className={classes.buttonContainer}>
                     <Button
@@ -316,6 +265,7 @@ const EmployeeDependentForm = ({
           </AccordionDetails>
         </Accordion>
       ))}
+
       {applicationType === "financialAssistance" && (
         <Button variant="contained" color="primary" onClick={addItem} disabled={!isFirstDependentValid}>
           <FormattedMessage module="workforce" id="workforce.application.steps.dependentAdd" />
