@@ -127,7 +127,7 @@ const FiledApplications = () =>{
   return (
   <>
     <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.association.dashboard" />
+      <FormattedMessage module="workforce" id="workforce.bgmea.association.dashboard" />
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
@@ -191,7 +191,7 @@ const Others = () => (
 
 // ------------------------------------------------------------
 
-const AssociationDashboard = () => {
+const BGMEAAssociationDashboard = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
@@ -245,4 +245,4 @@ const AssociationDashboard = () => {
   );
 };
 
-export default AssociationDashboard;
+export default BGMEAAssociationDashboard;

@@ -159,7 +159,8 @@ export const WORKFORCE_USER_TYPE = {
   APPLICANT: "applicant",
   FACTORY_ADMIN: "factory_admin",
   DIRECTOR: "director",
-  ASSOCIATION: "association",
+  BGMEA_ASSOCIATION: "bgmea_association",
+  BKMEA_ASSOCIATION: "bkmea_association",
   SECTION_ADMIN: "section_admin",
   DOCTOR: "doctor",
 };
@@ -171,7 +172,8 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   applicant: "Applicant",
   factory_admin: "Factory Admin",
   director: "Director",
-  association: "Association",
+  bgmea_association: "BGMEA Association",
+  bkmea_association: "BKMEA Association",
   section_admin: "Section Admin",
   doctor: "Doctor",
 };
@@ -183,7 +185,8 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   applicant: "আবেদনকারী",
   factory_admin: "ফ্যাক্টরি অ্যাডমিন",
   director: "পরিচালক",
-  association: "অ্যাসোসিয়েশন",
+  bgmea_association: "বিজিএমইএ অ্যাসোসিয়েশন",
+  bkmea_association: "বিকেএমইএ অ্যাসোসিয়েশন",
   section_admin: "সেকশন অ্যাডমিন",
   doctor: "ডাক্তার",
 
