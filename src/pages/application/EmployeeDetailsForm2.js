@@ -83,8 +83,41 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           ])
         );
       } else {
-        return dispatch(fetchDocumentType(modulesManager, [`orderBy: ["documentTypeNo"]`,`applicationType:"${selectedApplicationType}"`, `organizationType:"${formData.organizationType}"`]));
+        return dispatch(
+          fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
       }
+    } else if (formData.applicationType === "deadlyGrant") {
+        return dispatch(
+          fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
+            `applicationFor: "normal_death"`,
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
+    } else if (formData.applicationType === "maternityGrant" && formData.organizationType === "blwf") {
+      formData?.applicationForSelf === "yes"
+        ? dispatch(
+            fetchDocumentType(modulesManager, [
+              `orderBy: ["documentTypeNo"]`,
+              `applicationFor: "self"`,
+              `applicationType:"${selectedApplicationType}"`,
+              `organizationType:"${formData.organizationType}"`,
+            ])
+          )
+        : dispatch(
+            fetchDocumentType(modulesManager, [
+              `orderBy: ["documentTypeNo"]`,
+              `applicationFor: "dependent"`,
+              `applicationType:"${selectedApplicationType}"`,
+              `organizationType:"${formData.organizationType}"`,
+            ])
+          );
     } else {
       return dispatch(
         fetchDocumentType(modulesManager, [
@@ -144,20 +177,19 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                       {index + 1}. {document.nameBn}
                     </Typography>
                   </Grid>
-                  <Grid item xs={6} >
+                  <Grid item xs={6}>
                     <FileUploader
                       fieldKey={document.fieldId}
                       onFileChange={handleFileChange}
                       applicationId={applicationId}
                       documentType={document.documentType}
                     />
-                    
                   </Grid>
                   {uploadedFiles.find((item) => item.fieldKey === document.fieldId && item.files.length > 0) && (
                     <Grid item xs={1}>
                       <CheckCircleIcon style={{ color: "green" }} />
-                      </Grid>
-                    )}
+                    </Grid>
+                  )}
                 </Grid>
               ))}
             </Grid>

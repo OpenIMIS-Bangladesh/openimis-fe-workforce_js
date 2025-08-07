@@ -108,7 +108,7 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
                 {/* Checkbox */}
                 <Grid item xs={12}>
                   <FormControlLabel
-                    control={<Checkbox color="primary" checked={sameAsPresent ||formData?.workforceEmployee?.isChecked} onChange={(e) => {setSameAsPresent(e.target.checked);handleChange("isChecked", e.target.checked)}} />}
+                    control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
                     label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
                   />
                 </Grid>

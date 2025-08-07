@@ -97,7 +97,6 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
       presentLocation: "",
       presentAddress: "",
       organizationId: "",
-      isChecked:false
     },
     company: null,
     factory: null,

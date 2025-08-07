@@ -76,12 +76,9 @@ const EmployeeDependentForm = ({
 
       handleChange(index, "permanentLocation", presentLocation);
       handleChange(index, "permanentAddress", presentAddress);
-      handleChange(index, "isChecked", isChecked);
     } else {
       handleChange(index, "permanentLocation", null);
       handleChange(index, "permanentAddress", "");
-      handleChange(index, "isChecked", isChecked);
-
     }
   };
 
@@ -218,6 +215,7 @@ const EmployeeDependentForm = ({
                     readOnly={false}
                   />
                 </Grid>
+                {formdata?.organizationType === "cf" && (
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label={formatMessage("workforce.employee.percentage_of_cf_grant")}
@@ -226,6 +224,7 @@ const EmployeeDependentForm = ({
                     readOnly={false}
                   />
                 </Grid>
+                ) }
                 <Grid item xs={12}>
                   <b>{formatMessage("workforce.employee.present_location")}</b>
                   <PublishedComponent
@@ -255,7 +254,7 @@ const EmployeeDependentForm = ({
 
                   <Grid item xs={12}>
                     <FormControlLabel
-                      control={<Checkbox color="primary" checked={sameAsPresent?.[index] ||dependent?.isChecked || false} onChange={(e) => handleCheckboxChange(index, e)} />}
+                      control={<Checkbox color="primary" checked={sameAsPresent?.[index] || false} onChange={(e) => handleCheckboxChange(index, e)} />}
                       label={formatMessage("workforce.employee.sameAsPresent")}
                     />
                   </Grid>

@@ -273,6 +273,7 @@
   "workforce.application.steps.education.details": "শিক্ষাগত যোগ্যতার বিবরণ",
   "workforce.application.steps.select": "নির্বাচন করুন",
   "workforce.application.steps.worker.extraInfo": "শ্রমিকের কর্মস্থলের তথ্য",
+  "workforce.application.steps.dead.worker.extraInfo": "মৃত শ্রমিকের কর্মস্থলের তথ্য",
   "workforce.application.steps.ssc": "এস.এস.সি. বা সমমান",
   "workforce.application.steps.hsc": "এইচ.এস.সি. বা সমমান",
   "workforce.application.steps.skip": "বাদ দিন",
@@ -389,6 +390,7 @@
 
   "workforce.application.header.labour": "আবেদনকারী শ্রমিকের তথ্য",
   "workforce.application.header.labour.note": "নীচের তথ্যগুলি (NID) অনুসারে পূরণ করতে হবে, অন্যথায় আবেদনটি বাতিল বলে বিবেচিত হবে।",
+  "workforce.application.header.blwf.education.note": "সরকারি মেডিক্যাল কলেজ অথবা সরকারি কৃষি বা প্রযুক্তি বিশ্ববিদ্যালয় অথবা সরকারি অন্যান্য বিশ্ববিদ্যালয়ের উচ্চ শিক্ষা (স্নাতক)-এর শিক্ষার্থী এর জন্য আবেদনটি প্রযোজ্য।",
   "workforce.application.header.employeeSelector.note": "নাম, জাতীয় পরিচয়পত্র নম্বর (NID) অথবা মোবাইল নম্বর ব্যবহার করে সহজেই আবেদন করার জন্য সংশ্লিষ্ট কর্মকর্তা বা কর্মচারীকে খুঁজে নিন।",
   "workforce.application.header.location": "ঠিকানা",
   "workforce.application.header.child": "সন্তানের তথ্য",

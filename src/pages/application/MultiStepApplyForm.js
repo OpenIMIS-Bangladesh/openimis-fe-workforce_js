@@ -13,6 +13,7 @@ import EducationGrantForm from "./applicationForms/EducationGrantForm";
 import FinancialAssistanceForm from "./applicationForms/FinancialAssistanceForm";
 import ScholarshipApplicationForm from "./applicationForms/ScholarshipApplicationForm";
 import { getParsedApplication } from "../../utils/utils";
+import DeadlyGrantForm from "./applicationForms/DeadlyGrantForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -298,7 +299,7 @@ const MultiStepApplyForm = () => {
                 <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
-            {applicationForSelf === "" ? (
+            {/* {applicationForSelf === "" ? (
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
                   <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
@@ -323,7 +324,7 @@ const MultiStepApplyForm = () => {
                   </Button>
                 </div>
               </Paper>
-            ) : (
+            ) : ( */}
               <EducationGrantForm
                 modulesManager={modulesManager}
                 organizationType={organizationType}
@@ -331,7 +332,7 @@ const MultiStepApplyForm = () => {
                 applicationForSelf={applicationForSelf}
                 parsedApplicationData={parsedApplicationData}
               />
-            )}
+            {/* )} */}
           </>
         ) : selectedApplicationType === "financialAssistance" ? (
           <>
@@ -408,7 +409,7 @@ const MultiStepApplyForm = () => {
                 <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
-            <FinancialAssistanceForm
+            <DeadlyGrantForm
               modulesManager={modulesManager}
               organizationType={organizationType}
               parsedApplicationData={parsedApplicationData}
