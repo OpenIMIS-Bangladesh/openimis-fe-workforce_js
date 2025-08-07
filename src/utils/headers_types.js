@@ -20,7 +20,6 @@
     "workforce.employee.application.verifier",
     "workforce.employee.application.moneyAmount",
     "workforce.employee.application.status",
-    "workforce.employee.application.applicationDate",
     component.isShowHistory() ? "workforce.version" : "",
   ];
 

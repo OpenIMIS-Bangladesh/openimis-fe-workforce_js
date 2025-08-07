@@ -109,68 +109,187 @@ class ApplicationProcessSearcher extends Component {
     console.log(this.props);
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_cf_section"]', 'applicationTypeIn: ["schoolarship","medicalAssistance","maternityGrant"]', 'orderBy: ["-dateCreated"]']);
-   } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
-        this.setState({ displayVersion: showHistoryFilter });
 
-        let filter = [];
+      const defaultStatusFilters = [
+        'statusIn: ["forward_to_cf_section"]',
+        'applicationTypeIn: ["schoolarship","medicalAssistance","maternityGrant"]'
+      ];
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
 
-        if (rejectedApplication) {
-          filter = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]'];
-        } else if (revertedApplication) {
-          filter = ['statusIn: ["revert","revert_to_applicant","revert_to_checker"]', 'orderBy: ["-dateCreated"]'];
-        } else {
-          const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
-          if (summaryId) {
-            filter = [
-              'statusIn: ["forward_to_cf_section","meeting_created"]',
-              'orderBy: ["-dateCreated"]',
-              `cfApplicationSummary_Id:"${summaryId}"`
-            ];
-          } else {
-            filter = ['statusIn: ["forward_to_cf_section","approved_by_doctor"]', 'orderBy: ["-dateCreated"]'];
-          }
+      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
+      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
+      const hasAppTypeIn = prms?.some(f => f.includes("applicationTypeIn"));
+
+      let finalFilters = [];
+
+      if (prms?.length) {
+        finalFilters = [...prms];
+
+        if (!hasStatusIn) {
+          finalFilters = [...defaultStatusFilters.slice(0, 1), ...finalFilters];
         }
-        const finalFilters = prms?.length ? prms : filter;
-        this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+
+        if (!hasAppTypeIn) {
+          finalFilters = [...finalFilters, defaultStatusFilters[1]];
+        }
+
+        if (!hasOrderBy) {
+          finalFilters.push(orderByFilter);
+        }
+      } else {
+        finalFilters = [...defaultStatusFilters, orderByFilter];
+      }
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+
+   } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
+      this.setState({ displayVersion: showHistoryFilter });
+
+      let defaultStatusFilters = [];
+      let additionalFilters = [];
+
+      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+
+      if (rejectedApplication) {
+        defaultStatusFilters.push('statusIn: ["rejected"]');
+      } else if (revertedApplication) {
+        defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]');
+      } else if (summaryId) {
+        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created"]');
+        additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+      } else {
+        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor"]');
+      }
+
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
+      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
+
+      let finalFilters = [];
+
+      if (prms?.length) {
+        finalFilters = [...prms];
+
+        if (!hasStatusIn) {
+          finalFilters = [...defaultStatusFilters, ...finalFilters];
+        }
+
+        if (!hasOrderBy) {
+          finalFilters.push(orderByFilter);
+        }
+
+        if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
+          finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+        }
+      } else {
+        finalFilters = [...defaultStatusFilters, ...additionalFilters, orderByFilter];
+      }
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_doctor"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER_TWO) {
+      if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
       this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_cf_section"]','applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'orderBy: ["-dateCreated"]']);
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ASSOCIATION) {
-      this.setState({ displayVersion: showHistoryFilter });
-        let filters = [];
-      if (revertedApplication) {
-        this.props.fetchApplicationsSummary(
-          this.props.modulesManager,
-          [`statusIn: ["revert","revert_to_applicant"], orderBy: ["-dateCreated"]`]
-        );
+
+      const defaultFilters = [
+        'statusIn: ["forward_to_cf_section"]',
+        'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
+        'orderBy: ["-dateCreated"]',
+      ];
+
+      let finalFilters = [];
+
+      if (prms?.length) {
+        const hasStatusIn = prms.some(f => f.includes("statusIn"));
+        const hasOrderBy = prms.some(f => f.includes("orderBy"));
+        const hasAppTypeIn = prms.some(f => f.includes("applicationTypeIn"));
+
+        finalFilters = [...prms];
+
+        if (!hasStatusIn) {
+          finalFilters.unshift(defaultFilters[0]);
+        }
+        if (!hasAppTypeIn) {
+          finalFilters.push(defaultFilters[1]);
+        }
+        if (!hasOrderBy) {
+          finalFilters.push(defaultFilters[2]);
+        }
       } else {
-        this.props.fetchApplicationsSummary(
-          this.props.modulesManager,
-        ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]']
-        );
+        finalFilters = [...defaultFilters];
       }
-      const finalFilters = prms?.length ? prms : filters;
+
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
-    } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
-        this.setState({ displayVersion: showHistoryFilter });
+    }
 
-        let filters = [];
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ASSOCIATION) {
+     this.setState({ displayVersion: showHistoryFilter });
 
-        if (revertedApplication) {
-          filters = ['statusIn: ["revert","revert_to_applicant"]', 'orderBy: ["-dateCreated"]'];
-        } else if (rejectedApplication) {
-          filters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]'];
-        } else {
-          filters = ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]'];
+      let defaultStatusFilters = [];
+
+      if (revertedApplication) {
+        defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant"]');
+      } else {
+        defaultStatusFilters.push('statusIn: ["forward_to_association"]');
+      }
+
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
+      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
+
+      let finalFilters = [];
+
+      if (prms?.length) {
+        finalFilters = [...prms];
+
+        if (!hasStatusIn) {
+          finalFilters = [...defaultStatusFilters, ...finalFilters];
         }
 
-        const finalFilters = prms?.length ? prms : filters;
-        this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+        if (!hasOrderBy) {
+          finalFilters.push(orderByFilter);
+        }
+      } else {
+        finalFilters = [...defaultStatusFilters, orderByFilter];
+      }
 
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+
+
+    } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+      this.setState({ displayVersion: showHistoryFilter });
+
+      let defaultFilters = [];
+
+      if (revertedApplication) {
+        defaultFilters = [
+          'statusIn: ["revert", "revert_to_applicant"]',
+          'orderBy: ["-dateCreated"]',
+        ];
+      } else if (rejectedApplication) {
+        defaultFilters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]'];
+      } else if (this.props.applicationStatus) {
+        defaultFilters = ['statusIn: ["draft"]', 'orderBy: ["-dateCreated"]'];
+      } else {
+        defaultFilters = ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]'];
+      }
+
+      const hasStatusIn = prms?.some((f) => f.includes("statusIn"));
+
+      let finalFilters = [];
+
+      if (prms?.length) {
+        finalFilters = hasStatusIn ? prms : [...defaultFilters.filter(f => f.startsWith("statusIn")), ...prms];
+      } else {
+        finalFilters = defaultFilters;
+      }
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
@@ -977,6 +1096,7 @@ class ApplicationProcessSearcher extends Component {
     const filterPane = ({ filters, onChangeFilters }) =>{ 
       return (
       <ApplicationProcessFilter
+        userRights={userRights}
         filters={filters}
         onChangeFilters={onChangeFilters}
         setShowHistoryFilter={(showHistoryFilter) => this.setState({ showHistoryFilter })}

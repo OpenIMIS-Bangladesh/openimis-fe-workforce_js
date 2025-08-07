@@ -107,18 +107,18 @@ const SidebarMenu = [
     icon: <CancelIcon />,
   },
   {
-    id: "applicationStatus",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.application.status" />
-    ),
-    icon: <AssignmentIcon />,
-  },
-  {
     id: "draftApplications",
     text: (
       <FormattedMessage module="workforce" id="workforce.application.draft_applications" />
     ),
     icon: <DraftsIcon />,
+  },
+  {
+    id: "applicationStatus",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.status" />
+    ),
+    icon: <AssignmentIcon />,
   },
 
 
