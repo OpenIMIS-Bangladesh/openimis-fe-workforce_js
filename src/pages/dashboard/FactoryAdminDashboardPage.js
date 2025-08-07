@@ -33,6 +33,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useModulesManager, useTranslations, Autocomplete, useGraphqlQuery, decodeId } from "@openimis/fe-core";
 import { fetchApplicationsSummary } from "../../actions";
 import CancelIcon from '@material-ui/icons/Cancel';
+import DraftsIcon from '@material-ui/icons/Drafts';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -113,12 +114,20 @@ const SidebarMenu = [
     icon: <CancelIcon />,
   },
   {
+    id: "draftApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.draft_applications" />
+    ),
+    icon: <DraftsIcon />,
+  },
+   {
     id: "applicationStatus",
     text: (
       <FormattedMessage module="workforce" id="workforce.application.status" />
     ),
     icon: <AssignmentIcon  />,
   },
+  
   
    
 ];
@@ -161,6 +170,16 @@ const newApplications = () => (
       <FormattedMessage module="workforce" id="workforce.new.application" />
     </Typography>
 );
+
+const DraftApplications = () => {
+  const classes = useStyles()
+  return (
+    <>
+      <ApplicationProcessSearcher applicationStatus={"draft"} dynamicTableTitle= {"workforce.application.draft_applications"} />
+    </>
+  );
+}
+
 
 const ApplicationStatus = () => {
   const dispatch = useDispatch();
@@ -336,6 +355,8 @@ const FactoryAdminDashboard = () => {
         return <RevertApplication />;
       case "rejectedApplication":
         return <RejectApplication />;
+      case "draftApplications":
+        return <DraftApplications />;
       case "applicationStatus":
         return <ApplicationStatus />;
       default:
