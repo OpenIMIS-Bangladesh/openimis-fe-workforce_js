@@ -55,7 +55,6 @@ export const itemAdminFormatters = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
 
-    (application) => "Nafi",
     (application) => (
       <TextInput
         value={application?.grantAmount}
@@ -87,7 +86,7 @@ export const itemAdminFormatters = (
           <TabIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="History">
+      {/* <Tooltip title="History">
         <IconButton
           disabled={application?.isHistory}
           onClick={() => {
@@ -102,14 +101,12 @@ export const itemAdminFormatters = (
         >
           <HistoryIcon />
         </IconButton>
-      </Tooltip>
+      </Tooltip> */}
       <Tooltip title="Approve">
         <IconButton
           disabled={
             application?.isHistory ||
-            application?.status === "approved_by_dg" ||
-            application?.status === "forward_to_director"
-          }
+            application?.status === "approved_by_dg"}
           onClick={() => component.handleApproval(application)}
         >
           <CheckIcon />
@@ -168,13 +165,8 @@ export const itemFormattersDirector = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
 
-    (application) => "Nafi",
-    (application) => (
-      <TextInput
-        value={application?.grantAmount}
-        onChange={(v) => component.setState({ editedGrantMoney: v })}
-      />
-    ),
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
+
     // (application) => application?.grantAmount,
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
@@ -199,22 +191,6 @@ export const itemFormattersDirector = (
           }}
         >
           <TabIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="History">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.process.actions",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <HistoryIcon />
         </IconButton>
       </Tooltip>
       <Tooltip title="Approve">
@@ -656,7 +632,12 @@ export const itemFormattersDoctor = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
-    (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) => (
+      <TextInput
+        value={application?.grantAmount}
+        onChange={(v) => component.setState({ editedGrantMoney: v })}
+      />
+    ),
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -967,12 +948,7 @@ export const itemFormattersApprover = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
-    (application) => (
-      <TextInput
-        value={application?.grantAmount}
-        onChange={(v) => component.setState({ editedGrantMoney: v })}
-      />
-    ),
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
