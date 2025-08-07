@@ -1096,6 +1096,7 @@ class ApplicationProcessSearcher extends Component {
     const filterPane = ({ filters, onChangeFilters }) =>{ 
       return (
       <ApplicationProcessFilter
+        userRights={userRights}
         filters={filters}
         onChangeFilters={onChangeFilters}
         setShowHistoryFilter={(showHistoryFilter) => this.setState({ showHistoryFilter })}

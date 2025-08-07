@@ -14,7 +14,7 @@ import {
   formatMessage,
   FormattedMessage
 } from "@openimis/fe-core";
-import { MODULE_NAME, statusOptions,applicationTypeOptions,submittedByOptions } from "../../constants";
+import { MODULE_NAME, statusOptions,applicationTypeOptions,submittedByOptions,WORKFORCE_USER_TYPE } from "../../constants";
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
   dialogContent: theme.dialog.content,
@@ -26,6 +26,7 @@ const styles = (theme) => ({
   },
   paperDivider: theme.paper.divider,
 });
+import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 
 const APPLICATION_PROCESS_FILTER_CONTRIBUTION_KEY =
   "application.process.Filter";
@@ -65,6 +66,7 @@ class ApplicationProcessFilter extends Component {
 
   render() {
     const { classes, filters, onChangeFilters } = this.props;
+    const userType = getUserTypeFromRights(this.props.userRights);
     return (
       <Grid container className={classes.form}>
       <ControlledField
@@ -138,7 +140,7 @@ class ApplicationProcessFilter extends Component {
           </Grid>
         }
       />
-
+ {userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN &&(
      <ControlledField mt={3}
           module={MODULE_NAME}
           id="workforce.application.submittedBy"
@@ -169,6 +171,7 @@ class ApplicationProcessFilter extends Component {
             </Grid>
           }
         />
+    )}
         <Contributions
           filters={filters}
           onChangeFilters={onChangeFilters}
