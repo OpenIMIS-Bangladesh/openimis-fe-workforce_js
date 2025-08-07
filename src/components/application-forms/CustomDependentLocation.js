@@ -7,11 +7,20 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
   const [localData, setLocalData] = useState(data || {});
 
   // Update internal state when external data changes
-  useEffect(() => {
-    if (data) { 
-        setLocalData(JSON.parse(data) || {});
+ useEffect(() => {
+  if (data) {
+    try {
+      const parsedData = typeof data === "string" ? JSON.parse(data) : data;
+      setLocalData(parsedData || {});
+    } catch (error) {
+      console.error("Invalid address JSON:", error);
+      setLocalData({});
     }
-  }, [data]);
+  } else {
+    setLocalData({});
+  }
+}, [data]);
+  
 
   // Determine if location is city or rural
   useEffect(() => {

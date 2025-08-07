@@ -101,7 +101,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
           <Accordion key={index} expanded={expanded === index} onChange={() => setExpanded(expanded === index ? false : index)}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                {dependentValue?.nameBn} এর  {<FormattedMessage id="workforce.previewDetails.employeeBankInfo" defaultMessage={`Bank Account ${index + 1}`} />}
+                {dependentValue?.nameBn} {dependentValue?.nameBn && "এর"}  {<FormattedMessage id="workforce.previewDetails.employeeBankInfo" defaultMessage={`Bank Account ${index + 1}`} />}
               </Typography>
             </AccordionSummary>
 
