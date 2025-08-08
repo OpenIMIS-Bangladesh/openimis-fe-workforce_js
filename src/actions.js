@@ -704,6 +704,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "grantMoney {id,grantMoney,applicationTypeNameEn,applicationTypeNameBn}",
     "grantAmount",
     "submittedBy",
+    "associationType",
 
   ];
   const payload = formatPageQueryWithCount(
@@ -759,6 +760,7 @@ export function fetchApplication(mm, filters) {
     "blwfApplicationSummary{id}",
     "grantAmount",
     "submittedBy",
+    "associationType",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",

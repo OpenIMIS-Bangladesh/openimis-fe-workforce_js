@@ -54,7 +54,9 @@ export function getUserTypeFromRights(user_rights) {
   } else if (user_rights.includes(815001)) {
     user_type = WORKFORCE_USER_TYPE.DIRECTOR;
   } else if (user_rights.includes(816001)) {
-    user_type = WORKFORCE_USER_TYPE.ASSOCIATION;
+    user_type = WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION;
+  } else if (user_rights.includes(821001)) {
+    user_type = WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION;
   } else if (!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }
