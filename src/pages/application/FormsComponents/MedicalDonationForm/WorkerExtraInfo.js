@@ -44,6 +44,10 @@ const WorkerExtraInfo = ({ handleChange, formData }) => {
   };
 
   return (
+    <>
+    <Typography mb={4} style={{textAlign:"center",fontWeight:"bold",fontSize:"small",margin:"15px"}}>
+                          <FormattedMessage id="workforce.application.steps.worker.extraInfo" module="workforce" />
+      </Typography>
       <FormControl component="fieldset" readOnly={false}>
         {/* প্রাতিষ্ঠানিক / অপ্রাতিষ্ঠানিক নির্বাচন */}
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
@@ -106,6 +110,7 @@ const WorkerExtraInfo = ({ handleChange, formData }) => {
           </Grid>
         )}
       </FormControl>
+    </>
   );
 };
 

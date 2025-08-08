@@ -57,9 +57,9 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
             {/* <Box textAlign="center" fontWeight="bold">
               <FormattedMessage id="workforce.application.header.labour" module="workforce" />
             </Box> */}
-            <Box mb={4} color="red">
-              <FormattedMessage id="workforce.application.header.labour.note" module="workforce" />
-            </Box>
+            <Typography style={{color:"red",textAlign:"center",fontWeight:"bold",fontSize:"small",marginBottom:"20px"}}>
+                    <FormattedMessage id="workforce.application.header.labour.note" module="workforce" />
+            </Typography>
 
             {/* <p><b>Personal Info </b></p> */}
             <Typography>
@@ -231,8 +231,10 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                 </Grid>
               ) : null}
             </Grid>
+
+            <Divider style={{margin:"25px 0px"}}/>
             {/* <p><b>Family Info</b></p> */}
-            <Typography>
+            <Typography style={{marginTop:4}}>
               <b>{getDeathLabel("workforce.application.labourHeadingTwo")}</b>
             </Typography>
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>

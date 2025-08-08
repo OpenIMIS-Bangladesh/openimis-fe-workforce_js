@@ -35,7 +35,7 @@ const EducationInfoForm = ({ modulesManager, handleChange, formData, application
 
   return (
     <FormControl component="fieldset" className={classes.formSection}>
-      <Typography mb={4} style={{color:"red",textAlign:"center",fontWeight:"bold"}}>
+      <Typography mb={4} style={{color:"red",textAlign:"center",fontWeight:"bold",fontSize:"small",margin:"15px"}}>
         <FormattedMessage id="workforce.application.header.blwf.education.note" module="workforce" />
       </Typography>
       <Grid container spacing={2} className={classes.section}>

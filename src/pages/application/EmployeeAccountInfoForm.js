@@ -93,6 +93,9 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
   console.log({ dependent });
   return (
     <Box mt={1}>
+      <Typography mb={4} style={{textAlign:"center",fontWeight:"bold",fontSize:"small",margin:"15px"}}>
+                      <FormattedMessage id="workforce.application.steps.account.info" module="workforce" />
+      </Typography>
       {(dependent?.length > 0 ? dependent : [{}]).map((dependentValue, index) => {
         const account = accounts[index] || {};
         const accountType = account?.accountType || "bank";

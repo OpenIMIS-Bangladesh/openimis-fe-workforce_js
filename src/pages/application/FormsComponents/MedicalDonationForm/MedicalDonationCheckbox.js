@@ -40,6 +40,10 @@ const MedicalDonationCheckbox = ({ handleChange,formData }) => {
   };
 
   return (
+    <>
+      <Typography mb={4} style={{textAlign:"center",fontWeight:"bold",fontSize:"small",margin:"15px"}}>
+            <FormattedMessage id="workforce.application.steps.select" module="workforce" />
+      </Typography>
       <FormControl component="fieldset">
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
           <FormattedMessage module="workforce" id="workforce.application.steps.reasonsforSeekingFinancialAssistance" />
@@ -97,6 +101,7 @@ const MedicalDonationCheckbox = ({ handleChange,formData }) => {
           /> */}
         </RadioGroup>
       </FormControl>
+    </>
   );
 };
 

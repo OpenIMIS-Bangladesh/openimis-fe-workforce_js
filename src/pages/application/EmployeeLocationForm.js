@@ -104,6 +104,9 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
 
               {/* Permanent Location */}
               <Grid item xs={12}>
+                <Divider sstyle={{marginY:"25px 0px"}}/>
+                </Grid>
+              <Grid item xs={12}>
                 <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
                 {/* Checkbox */}
                 <Grid item xs={12}>
