@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const WorkerExtraInfo = ({ handleChange, formData }) => {
+const WorkerWorkPlaceInfo = ({ handleChange, formData }) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
   const classes = useStyles();
@@ -114,4 +114,4 @@ const WorkerExtraInfo = ({ handleChange, formData }) => {
   );
 };
 
-export default WorkerExtraInfo;
+export default WorkerWorkPlaceInfo;

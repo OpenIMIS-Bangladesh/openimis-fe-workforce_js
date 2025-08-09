@@ -43,7 +43,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (formData?.applicationForSelf === "yes") {
+    if (formData?.applicationForSelf === "yes"&& formData.organizationType === "cf") {
       return dispatch(
         fetchDocumentType(modulesManager, [
           `orderBy: ["documentTypeNo"]`,
@@ -95,29 +95,91 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
         return dispatch(
           fetchDocumentType(modulesManager, [
             `orderBy: ["documentTypeNo"]`,
-            `applicationFor: "normal_death"`,
+            `applicationForIn: ["normal_death","normal_death_institutional","normal_death_institutional_on_work"]`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
           ])
         );
+    } else if (formData.applicationType === "medicalDonation" && formData.applicationForSelf ==="yes"&& formData.organizationType === "blwf") {
+      if (formData.workerType === "formal") {
+        return dispatch(
+          fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
+            'applicationForIn: ["self","self_institutional"]',
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
+      }else{
+        return dispatch(
+          fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
+            `applicationForIn: ["self","self_non_institutional"]`,
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
+      }
+    }else if (formData.applicationType === "medicalDonation" && formData.applicationForSelf ==="no"&& formData.organizationType === "blwf") {
+      if (formData.workerType === "formal") {
+        return dispatch(
+          fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
+            `applicationForIn: ["dependent","dependent_institutional"]`,
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
+      }else{
+        return dispatch(
+          fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
+            `applicationForIn: ["dependent","dependent_non_institutional"]`,
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
+      }
     } else if (formData.applicationType === "maternityGrant" && formData.organizationType === "blwf") {
-      formData?.applicationForSelf === "yes"
-        ? dispatch(
-            fetchDocumentType(modulesManager, [
-              `orderBy: ["documentTypeNo"]`,
-              `applicationFor: "self"`,
-              `applicationType:"${selectedApplicationType}"`,
-              `organizationType:"${formData.organizationType}"`,
-            ])
-          )
-        : dispatch(
-            fetchDocumentType(modulesManager, [
-              `orderBy: ["documentTypeNo"]`,
-              `applicationFor: "dependent"`,
-              `applicationType:"${selectedApplicationType}"`,
-              `organizationType:"${formData.organizationType}"`,
-            ])
-          );
+      if (formData.workerType === "formal") {
+        return dispatch(
+          fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
+            `applicationForIn: ["self","self_institutional"]`,
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
+      }else{
+        return dispatch(
+          fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
+            `applicationForIn: ["self","self_non_institutional"]`,
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
+      }
+    }else if (formData.applicationType === "educationGrant" && formData.organizationType === "blwf") {
+      if (formData.workerType === "formal") {
+        return dispatch(
+          fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
+            `applicationForIn: ["dependent","dependent_institutional"]`,
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
+      }else{
+        return dispatch(
+          fetchDocumentType(modulesManager, [
+            `orderBy: ["documentTypeNo"]`,
+            `applicationForIn: ["dependent","dependent_non_institutional"]`,
+            `applicationType:"${selectedApplicationType}"`,
+            `organizationType:"${formData.organizationType}"`,
+          ])
+        );
+      }
     } else {
       return dispatch(
         fetchDocumentType(modulesManager, [

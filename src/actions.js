@@ -75,7 +75,7 @@ export function fetchDocumentType(mm, filters) {
     "nameBn",
   ];
   const payload = formatPageQueryWithCount(
-    "workforceDocumentType",
+    "workforceDocumentTypes",
     filters,
     projections
   );

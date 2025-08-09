@@ -190,7 +190,7 @@ const EducationGrantForm = ({ modulesManager, organizationType, selectedApplicat
         otherInfo: employeeData.otherInfo || {},
       });
     }
-  }, [employeeData]); // Trigger this useEffect when `employeeData` changes.
+  }, [employeeData?.id, parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {

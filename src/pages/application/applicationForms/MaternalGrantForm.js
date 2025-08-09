@@ -39,6 +39,7 @@ import { getParsedApplication, safeApplicationId } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
+import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -275,7 +276,7 @@ const MaternalGrantForm = ({
           `Update Workforce Employee ${workforceEmployeeData.nameEn}`
         )
       );
-    } else if (nextStep === 3) {
+    } else if ((nextStep === 3 && formData.organizationType === "cf")||(nextStep === 4 && formData.organizationType === "blwf")) {
       console.log("Create application formData:", formData);
       const createApplicationData = {
         workforceEmployeeId:
@@ -463,6 +464,16 @@ const removeArrayFieldItem = (fieldKey, index) => {
         />
       ),
     },
+    ...(formData.organizationType === "blwf"
+      ? [
+          {
+            label: "workforce.application.steps.worker.extraInfo",
+            content: (
+              <WorkerExtraInfo handleChange={handleChange} formData={formData} />
+            ),
+          },
+        ]
+      : []),
     {
       label: "workforce.application.steps.account.info",
       content: (
@@ -508,25 +519,7 @@ const removeArrayFieldItem = (fieldKey, index) => {
         />
       ),
     },
-    // ...(applicationForSelf === "no"
-    //   ? [
-    //       {
-    //         label: "workforce.application.steps.dependent",
-    //         content: (
-    //           <EmployeeDependentForm
-    //             // formData={formData}
-    //           applicationType={formData.applicationType}
-    //           dependents={formData.dependents}
-    //           handleDependentChange={handleDependentChange}
-    //           addDependent={addDependent}
-    //           removeDependent={removeDependent}
-    //           expanded={expanded}
-    //           setExpanded={setExpanded}
-    //           />
-    //         ),
-    //       },
-    //     ]
-    //   : []),
+    
   ];
 
   console.log({ tazwer: reduxState.core.user.id });

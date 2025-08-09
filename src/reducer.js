@@ -505,7 +505,7 @@ function reducer(
         fetchingDocumentType: false,
         fetchedDocumentType: true,
         documentType: parseData(
-          action.payload.data.workforceDocumentType
+          action.payload.data.workforceDocumentTypes
         ),
         errorDocumentType: formatGraphQLError(action.payload),
       };

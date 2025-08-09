@@ -211,7 +211,7 @@ const DeadlyGrantForm = ({ modulesManager, organizationType, selectedApplication
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
       });
     }
-  }, [employeeData]);
+  }, [employeeData?.id, parsedApplicationData]);
 
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {
