@@ -225,6 +225,7 @@ class AddWorkforceFactoryPage extends Component {
                     value={stateEdited.titleBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     readOnly={isSaved}
+                    required
                   />
                 </Grid>
 
@@ -248,13 +249,23 @@ class AddWorkforceFactoryPage extends Component {
                   />
                 </Grid>
 
-                <Grid item xs={6} className={classes.item}>
-                  <Typography>Upload Association Membership Certificate</Typography>
+               <Grid item xs={6} className={classes.item}>
+                  <Typography>
+                    Upload Association Membership Certificate <span style={{ color: 'red' }}>*</span>
+                  </Typography>
+
                   <FileUploader
                     fieldKey="associationCertificate"
-                    onFileChange={(v)=>this.updateAttribute("associationCertificate",v)}
-                    // applicationId={this.props.applicationId || "temp-id"} // Replace with real application/factory ID
-                    documentType="ASSOCIATION_MEMBERSHIP_CERTIFICATE" // Use your documentType enum or string
+                    onFileChange={(v) => this.updateAttribute("associationCertificate", v)}
+                    documentType="ASSOCIATION_MEMBERSHIP_CERTIFICATE"
+                  />
+                  <input
+                    type="file"
+                    style={{ display: 'none' }}
+                    required
+                    onInvalid={(e) => e.target.setCustomValidity("Please upload the certificate")}
+                    onInput={(e) => e.target.setCustomValidity("")}
+                    value={stateEdited?.associationCertificate ? "dummy" : ""}
                   />
                 </Grid>
 
@@ -277,7 +288,7 @@ class AddWorkforceFactoryPage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <FormControl fullWidth>
-                    <InputLabel id="association-type-label">Association Type</InputLabel>
+                    <InputLabel required id="association-type-label">Association Type</InputLabel>
                     <Select
                       labelId="association-type-label"
                       value={stateEdited.associationType || ""}
@@ -285,7 +296,7 @@ class AddWorkforceFactoryPage extends Component {
                       label="Association Type"
                       readOnly={isSaved}
                       disabled={isSaved}
-                      required
+                    
                     >
                       <MenuItem value="BGMEA">BGMEA</MenuItem>
                       <MenuItem value="BKMEA">BKMEA</MenuItem>
