@@ -241,7 +241,6 @@ const DEFAULT_CONFIG = {
 
 
     { path: ROUTE_WORKFORCE_FACTORIES, component: OrganizationFactoriesPage },
-    { path: ROUTE_WORKFORCE_FACTORIES_FACTORY, component: OrganizationFactoryPage },
     { path: `${ROUTE_WORKFORCE_FACTORIES_FACTORY}/:workforce_factory_uuid`, component: OrganizationFactoryPage },
 
     { path: ROUTE_WORKFORCE_EMPLOYEES, component: WorkforceEmployeesPage },
@@ -298,6 +297,8 @@ const DEFAULT_CONFIG = {
   "core.UnauthenticatedRouter": [
     { path: ROUTE_WORKFORCE_REGISTRATION, component: RegistrationPage },
     { path: ROUTE_ADMINISTRATIVE_LOGIN, component: LoginFormAdministrative },
+    { path: ROUTE_WORKFORCE_FACTORIES_FACTORY, component: OrganizationFactoryPage },
+
   ],
 
   "core.MainMenu": [WorkforceMainMenu],
