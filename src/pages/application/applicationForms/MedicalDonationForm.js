@@ -212,113 +212,113 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
     console.log({ formData });
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
-    // if (nextStep === 2 || nextStep === 3) {
-    //   const workforceEmployeeData = {
-    //     nameEn: formData?.workforceEmployee?.nameEn,
-    //     nameBn: formData?.workforceEmployee?.nameBn,
-    //     lastNameEn: "",
-    //     phoneNumber: formData?.workforceEmployee?.phoneNumber,
-    //     email: formData?.workforceEmployee?.email,
-    //     gender: formData?.workforceEmployee?.gender?.id,
-    //     birthDate: formData?.workforceEmployee?.birthDate,
-    //     deathDate: formData?.workforceEmployee?.deathDate,
-    //     lifeStatus: formData?.workforceEmployee?.lifeStatus,
-    //     permanentAddress: formData?.workforceEmployee?.permanentAddress,
-    //     presentAddress: formData?.workforceEmployee?.presentAddress,
-    //     position: formData?.workforceEmployee?.position,
-    //     monthlyEarning: formData?.workforceEmployee?.monthlyEarning,
-    //     insuranceNumber: " ",
-    //     fatherNameBn: formData?.workforceEmployee?.fatherNameBn,
-    //     fatherNameEn: formData?.workforceEmployee?.fatherNameEn,
-    //     motherNameBn: formData?.workforceEmployee?.motherNameBn,
-    //     motherNameEn: formData?.workforceEmployee?.motherNameEn,
-    //     spouseNameBn: formData?.workforceEmployee?.spouseNameBn,
-    //     spouseNameEn: formData?.workforceEmployee?.spouseNameEn,
-    //     citizenship: formData?.workforceEmployee?.citizenship,
-    //     maritalStatus: formData?.workforceEmployee?.maritalStatus,
-    //     presentLocation: formData?.workforceEmployee?.presentLocation,
-    //     permanentLocation: formData?.workforceEmployee?.permanentLocation,
-    //     id: formData?.workforceEmployee?.id || reduxState.core.user.id,
-    //   };
-    //   console.log("Update Submitting formData:", formData);
-    //   await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
-    //   // dispatch(
-    //   //   updateApplication(
-    //   //     formData,
-    //   //     `update workforce application ${formData.firstNameEn}`
-    //   //   )
-    //   // );
-    // } else if (nextStep === 1) {
-    //   console.log("Create application formData:", formData);
-    //   const createApplicationData = {
-    //     workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
-    //     company: formData?.workforceEmployee?.company?.id,
-    //     factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
-    //     organizationType: formData.organizationType,
-    //     applicationType: formData.applicationType,
-    //     grantAmount: formData?.employeeAccidentInfo.grantAmount,
-    //     employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
-    //     employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
-    //     employeeDependentInfo: JSON.stringify(formData.dependents),
-    //     employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
-    //     metadata: JSON.stringify(formData?.metadata),
-    //     status: WORKFORCE_STATUS.DRAFT,
-    //   };
-    //   console.log({ createApplicationData });
-    //   if (!parsedApplicationData) {
-    //     const applicationMutation = await formatMutation("createWorkforceApplication", formatApplicationeGQL(createApplicationData), `Created application `);
-    //     const applicationClientMutationId = applicationMutation.clientMutationId;
-    //     console.log("applicationClientMutationId", applicationClientMutationId);
-    //     await dispatch(createApplication(applicationMutation, `Created workforce application `));
+    if (nextStep === 2 || nextStep === 3) {
+      const workforceEmployeeData = {
+        nameEn: formData?.workforceEmployee?.nameEn,
+        nameBn: formData?.workforceEmployee?.nameBn,
+        lastNameEn: "",
+        phoneNumber: formData?.workforceEmployee?.phoneNumber,
+        email: formData?.workforceEmployee?.email,
+        gender: formData?.workforceEmployee?.gender?.id,
+        birthDate: formData?.workforceEmployee?.birthDate,
+        deathDate: formData?.workforceEmployee?.deathDate,
+        lifeStatus: formData?.workforceEmployee?.lifeStatus,
+        permanentAddress: formData?.workforceEmployee?.permanentAddress,
+        presentAddress: formData?.workforceEmployee?.presentAddress,
+        position: formData?.workforceEmployee?.position,
+        monthlyEarning: formData?.workforceEmployee?.monthlyEarning,
+        insuranceNumber: " ",
+        fatherNameBn: formData?.workforceEmployee?.fatherNameBn,
+        fatherNameEn: formData?.workforceEmployee?.fatherNameEn,
+        motherNameBn: formData?.workforceEmployee?.motherNameBn,
+        motherNameEn: formData?.workforceEmployee?.motherNameEn,
+        spouseNameBn: formData?.workforceEmployee?.spouseNameBn,
+        spouseNameEn: formData?.workforceEmployee?.spouseNameEn,
+        citizenship: formData?.workforceEmployee?.citizenship,
+        maritalStatus: formData?.workforceEmployee?.maritalStatus,
+        presentLocation: formData?.workforceEmployee?.presentLocation,
+        permanentLocation: formData?.workforceEmployee?.permanentLocation,
+        id: formData?.workforceEmployee?.id || reduxState.core.user.id,
+      };
+      console.log("Update Submitting formData:", formData);
+      await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
+      // dispatch(
+      //   updateApplication(
+      //     formData,
+      //     `update workforce application ${formData.firstNameEn}`
+      //   )
+      // );
+    } else if (nextStep === 1) {
+      console.log("Create application formData:", formData);
+      const createApplicationData = {
+        workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
+        company: formData?.workforceEmployee?.company?.id,
+        factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
+        organizationType: formData.organizationType,
+        applicationType: formData.applicationType,
+        grantAmount: formData?.employeeAccidentInfo.grantAmount,
+        employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
+        employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
+        employeeDependentInfo: JSON.stringify(formData.dependents),
+        employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
+        metadata: JSON.stringify(formData?.metadata),
+        status: WORKFORCE_STATUS.DRAFT,
+      };
+      console.log({ createApplicationData });
+      if (!parsedApplicationData) {
+        const applicationMutation = await formatMutation("createWorkforceApplication", formatApplicationeGQL(createApplicationData), `Created application `);
+        const applicationClientMutationId = applicationMutation.clientMutationId;
+        console.log("applicationClientMutationId", applicationClientMutationId);
+        await dispatch(createApplication(applicationMutation, `Created workforce application `));
 
-    //     const fetchRes = await dispatch(
-    //       fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
-    //     );
-    //     let applicationgetId = getInfoId(fetchRes, "workforceApplication");
-    //     console.log("hello there", applicationgetId);
-    //     if (!applicationgetId && applicationId) {
-    //       applicationgetId = applicationId;
-    //     }
+        const fetchRes = await dispatch(
+          fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
+        );
+        let applicationgetId = getInfoId(fetchRes, "workforceApplication");
+        console.log("hello there", applicationgetId);
+        if (!applicationgetId && applicationId) {
+          applicationgetId = applicationId;
+        }
 
-    //     if (applicationForSelf === "no") {
-    //       await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${applicationgetId}"`])).then((res) => {
-    //         const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
+        if (applicationForSelf === "no") {
+          await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${applicationgetId}"`])).then((res) => {
+            const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
 
-    //         console.log({ dependentId });
-    //         if (uploadFile) {
-    //           dispatch(
-    //             createWorkforceDocument(
-    //               { ...uploadFile, workforceApplicationId: applicationgetId, workforceDependentId: decodeId(dependentId) },
-    //               `Created workforce document`
-    //             )
-    //           );
-    //         }
-    //       });
-    //     }
-    //   } else {
-    //     const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
-    //     console.log("i am from update", updateApplicationData);
-    //     dispatch(updateApplication(updateApplicationData, `update workforce application `));
-    //   }
-    // } else {
-    //   const updateApplicationData = {
-    //     id: safeApplicationId(applicationId, parsedApplicationData),
-    //     workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
-    //     company: formData?.workforceEmployee?.company?.id,
-    //     factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
-    //     organizationType: organizationType || parsedApplicationData?.organizationType,
-    //     applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
-    //     grantAmount: formData?.employeeAccidentInfo.grantAmount,
-    //     employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
-    //     employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
-    //     employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
-    //     metadata: JSON.stringify(formData?.metadata),
-    //     status: WORKFORCE_STATUS.DRAFT,
-    //   };
+            console.log({ dependentId });
+            if (uploadFile) {
+              dispatch(
+                createWorkforceDocument(
+                  { ...uploadFile, workforceApplicationId: applicationgetId, workforceDependentId: decodeId(dependentId) },
+                  `Created workforce document`
+                )
+              );
+            }
+          });
+        }
+      } else {
+        const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
+        console.log("i am from update", updateApplicationData);
+        dispatch(updateApplication(updateApplicationData, `update workforce application `));
+      }
+    } else {
+      const updateApplicationData = {
+        id: safeApplicationId(applicationId, parsedApplicationData),
+        workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
+        company: formData?.workforceEmployee?.company?.id,
+        factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
+        organizationType: organizationType || parsedApplicationData?.organizationType,
+        applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+        grantAmount: formData?.employeeAccidentInfo.grantAmount,
+        employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
+        employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+        employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+        metadata: JSON.stringify(formData?.metadata),
+        status: WORKFORCE_STATUS.DRAFT,
+      };
 
-    //   console.log("i am from accident info", updateApplicationData);
-    //   dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
-    // }
+      console.log("i am from accident info", updateApplicationData);
+      dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
+    }
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
