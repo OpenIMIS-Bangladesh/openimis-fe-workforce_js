@@ -1293,6 +1293,16 @@ class ApplicationProcessSearcher extends Component {
                 selectedApplication={selectedApplication}
                 onSubmitForward={this.handleForwardSubmit}
               />
+            );}
+          else if (userType === WORKFORCE_USER_TYPE.DOCTOR) {
+            return (
+                <RevertApplicationModal
+                  open={revertModalOpen}
+                  onClose={this.handleCloseRevertModal}
+                  revertByChecker={revertByChecker}
+                  selectedApplication={this.state.selectedApplication}
+                  onSubmitRevert={this.handleRevertSubmit}
+                />
             );
           } else if (userType === WORKFORCE_USER_TYPE.ADMIN) {
             return (

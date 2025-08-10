@@ -687,6 +687,14 @@ export const itemFormattersDoctor = (
           <CheckIcon />
         </IconButton>
       </Tooltip>
+       <Tooltip title="Revert">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => component.handleOpenRevertModal(application)}
+        >
+          <UndoIcon />
+        </IconButton>
+      </Tooltip>
       {/* 
         <Tooltip title="Forward">
           <IconButton
