@@ -41,8 +41,10 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
     let current = locationObj;
 
     while (current) {
-      if (current.name && current.name.includes("সিটি কর্পোরেশন" || "পৌরসভা")) {
+      if (current.name && current.name.includes("সিটি কর্পোরেশন")) {
         return true; 
+      }else if (current.name?.includes("পৌরসভা")) {
+        return true
       }
       current = current.parent;
     }
