@@ -149,7 +149,7 @@ class AddWorkforceFactoryPage extends Component {
       status: WORKFORCE_STATUS.DRAFT,
       // isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
       isSameCompanyRepresentative: "0",
-      workforceRepresentativeId: representativeId,
+      // workforceRepresentativeId: representativeId,
       workforceFactory: stateEdited.workforceFactory,
     };
 
