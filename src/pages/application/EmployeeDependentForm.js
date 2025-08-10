@@ -63,6 +63,49 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
     [applicationType, formatMessage]
   );
 
+  const onPickerChange=(v,index) => {
+  handleChange(index, "relationType", v);
+  
+  const employee = formdata?.workforceEmployee;
+
+  handleChange(index, "fatherNameEn", "");
+  handleChange(index, "fatherNameBn", "");
+  handleChange(index, "motherNameEn", "");
+  handleChange(index, "motherNameBn", "");
+  handleChange(index, "nameEn", "");
+  handleChange(index, "nameBn", "");
+  handleChange(index, "presentLocation", null);
+  handleChange(index, "permanentLocation", null);
+  handleChange(index, "presentAddress", "");
+  handleChange(index, "permanentAddress", "");
+
+  if (["workforce.relation.son", "workforce.relation.daughter"].includes(v) && employee) {
+    handleChange(index, "fatherNameEn", employee.nameEn);
+    handleChange(index, "fatherNameBn", employee.nameBn);
+    handleChange(index, "presentLocation", employee.presentLocation);
+    handleChange(index, "permanentLocation", employee.presentLocation);
+    handleChange(index, "presentAddress", employee.presentAddress);
+    handleChange(index, "permanentAddress", employee.presentAddress);
+
+  } else if (["workforce.relation.father"].includes(v) && employee) {
+    handleChange(index, "nameEn", employee.fatherNameEn);
+    handleChange(index, "nameBn", employee.fatherNameBn);
+    handleChange(index, "presentLocation", employee.presentLocation);
+    handleChange(index, "permanentLocation", employee.presentLocation);
+    handleChange(index, "presentAddress", employee.presentAddress);
+    handleChange(index, "permanentAddress", employee.presentAddress);
+
+  } else if (["workforce.relation.mother"].includes(v) && employee) {
+    handleChange(index, "nameEn", employee.motherNameEn);
+    handleChange(index, "nameBn", employee.motherNameBn);
+    handleChange(index, "presentLocation", employee.presentLocation);
+    handleChange(index, "permanentLocation", employee.presentLocation);
+    handleChange(index, "presentAddress", employee.presentAddress);
+    handleChange(index, "permanentAddress", employee.presentAddress);
+  }
+}
+
+
   const isFirstDependentValid = useMemo(() => normalizedDependents?.[0]?.nid && normalizedDependents?.[0]?.nameEn, [normalizedDependents]);
 
   return (
@@ -91,39 +134,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     <RelationWithWorkerPicker
                       value={dependent?.relationType || ""}
                       required
-                      onChange={(v) => {
-                        handleChange(index, "relationType", v);
-                        const employee = formdata?.workforceEmployee;
-                        if (["workforce.relation.son", "workforce.relation.daughter"].includes(v) && employee) {
-                          handleChange(index, "fatherNameEn", employee.nameEn);
-                          handleChange(index, "fatherNameBn", employee.nameBn);
-                          handleChange(index, "presentLocation", employee.presentLocation);
-                          handleChange(index, "permanentLocation", employee.presentLocation);
-                          handleChange(index, "presentAddress", employee.presentAddress);
-                          handleChange(index, "permanentAddress", employee.presentAddress);
-                        }else if (["workforce.relation.father", "workforce.relation.mother"].includes(v) && employee) {
-                          handleChange(index, "nameEn", employee.fatherNameBn);
-                          handleChange(index, "nameBn", employee.fatherNameEn);
-                          handleChange(index, "presentLocation", employee.presentLocation);
-                          handleChange(index, "permanentLocation", employee.presentLocation);
-                          handleChange(index, "presentAddress", employee.presentAddress);
-                          handleChange(index, "permanentAddress", employee.presentAddress);
-                        }else if (["workforce.relation.mother"].includes(v) && employee) {
-                          handleChange(index, "nameEn", employee.motherNameEn);
-                          handleChange(index, "nameBn", employee.motherNameBn);
-                          handleChange(index, "presentLocation", employee.presentLocation);
-                          handleChange(index, "permanentLocation", employee.presentLocation);
-                          handleChange(index, "presentAddress", employee.presentAddress);
-                          handleChange(index, "permanentAddress", employee.presentAddress);
-                        } else {
-                          handleChange(index, "fatherNameEn", "");
-                          handleChange(index, "fatherNameBn", "");
-                          handleChange(index, "presentLocation", null);
-                          handleChange(index, "permanentLocation", null);
-                          handleChange(index, "presentAddress", "");
-                          handleChange(index, "permanentAddress", "");
-                        }
-                      }}
+                      onChange={(v) => onPickerChange(v,index)}
                       readOnly={false}
                     />
                   </Grid>

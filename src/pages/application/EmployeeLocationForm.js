@@ -139,7 +139,7 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
               {formData?.workforceEmployee?.permanentLocation && (
                 <Grid item xs={12}>
                   <CustomDetailedLocation
-                    locationType={isCityLocation(formData?.workforceEmployee?.presentLocation) ? "city" : "rural"}
+                    locationType={isCityLocation(formData?.workforceEmployee?.permanentLocation) ? "city" : "rural"}
                     onChange={handleChange}
                     addressKey="permanentAddress"
                     data={formData?.workforceEmployee?.permanentAddress}
