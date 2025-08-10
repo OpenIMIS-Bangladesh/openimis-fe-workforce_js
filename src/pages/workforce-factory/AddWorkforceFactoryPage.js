@@ -137,7 +137,7 @@ class AddWorkforceFactoryPage extends Component {
     }
 
     const workforceFactoryData = {
-      company: stateEdited?.company?.id ?? null,
+      company: stateEdited?.company?.id ?? "",
       nameBn: stateEdited.titleBn,
       nameEn: stateEdited.title,
       phoneNumber: stateEdited.phone,

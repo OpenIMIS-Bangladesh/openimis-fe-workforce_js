@@ -144,7 +144,7 @@ export function formatWorkforceOfficeGQL(office) {
 export function formatWorkforceFactoryGQL(factory) {
   return `
     ${factory?.id ? `id: "${formatGQLString(factory?.id)}"` : ""}
-    ${factory?.company ? `workforceEmployerId: "${formatGQLString(factory?.company)}"` : ""}
+    ${factory?.company?.id ? `workforceEmployerId: "${(factory?.company.id)}"` : ""}
     ${factory?.nameEn ? `nameEn: "${formatGQLString(factory?.nameEn)}"` : ""}
     ${factory?.nameBn ? `nameBn: "${formatGQLString(factory?.nameBn)}"` : ""}
     ${factory?.phoneNumber ? `phoneNumber: "${formatGQLString(factory?.phoneNumber)}"` : ""}
