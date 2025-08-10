@@ -434,6 +434,7 @@ const MedicalAssistanceForm = ({ modulesManager, organizationType, selectedAppli
       content: (
         <EmployeeAccountInfoForm
           accounts={formData.employeeBankInfo}
+          formdata={formData}
           handleChange={(index, key, value) => handleArrayFieldChange("employeeBankInfo", index, key, value)}
           addItem={() =>
             addArrayFieldItem("employeeBankInfo", {

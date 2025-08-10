@@ -101,6 +101,20 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                           handleChange(index, "permanentLocation", employee.presentLocation);
                           handleChange(index, "presentAddress", employee.presentAddress);
                           handleChange(index, "permanentAddress", employee.presentAddress);
+                        }else if (["workforce.relation.father", "workforce.relation.mother"].includes(v) && employee) {
+                          handleChange(index, "nameEn", employee.fatherNameBn);
+                          handleChange(index, "nameBn", employee.fatherNameEn);
+                          handleChange(index, "presentLocation", employee.presentLocation);
+                          handleChange(index, "permanentLocation", employee.presentLocation);
+                          handleChange(index, "presentAddress", employee.presentAddress);
+                          handleChange(index, "permanentAddress", employee.presentAddress);
+                        }else if (["workforce.relation.mother"].includes(v) && employee) {
+                          handleChange(index, "nameEn", employee.motherNameEn);
+                          handleChange(index, "nameBn", employee.motherNameBn);
+                          handleChange(index, "presentLocation", employee.presentLocation);
+                          handleChange(index, "permanentLocation", employee.presentLocation);
+                          handleChange(index, "presentAddress", employee.presentAddress);
+                          handleChange(index, "permanentAddress", employee.presentAddress);
                         } else {
                           handleChange(index, "fatherNameEn", "");
                           handleChange(index, "fatherNameBn", "");

@@ -467,6 +467,7 @@ const DisabilityForm = ({ modulesManager, organizationType, selectedApplicationT
           <Box mt={0}>
             <EmployeeAccountInfoForm
               accounts={formData.employeeBankInfo}
+              formdata={formData}
               handleChange={(index, key, value) => handleArrayFieldChange("employeeBankInfo", index, key, value)}
               addItem={() =>
                 addArrayFieldItem("employeeBankInfo", {

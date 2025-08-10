@@ -89,7 +89,7 @@ const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onRej
               size="small"
               multiline
               rows={2}
-              value={file.note || ""}
+              value={file.note  || ""}
               onChange={(e) => onCommentChange(index, e.target.value)}
             />
           </Grid>

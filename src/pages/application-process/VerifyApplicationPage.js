@@ -28,6 +28,8 @@ import { bindActionCreators } from "redux";
 import { fetchApplication, fetchDocumentType, fetchWorkforceDocument, updateWorkforceDocument } from "../../actions";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import FileUploader from "../../pickers/FileUploader";
+import { getUserTypeFromRights } from "../../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../../constants";
 
 const styles = (theme) => ({
   paper: {
@@ -96,7 +98,7 @@ class VerifyApplicationPage extends Component {
       // stateEdited: props.application?.workforceEmployee || {},
       isSaved: false,
       preview: null,
-      comment: "",
+      note: "",
       mockFiles: mockFiles,
       fileStates: mockFiles,
       // fileStates: mockFiles.map((file) => ({
@@ -143,7 +145,7 @@ class VerifyApplicationPage extends Component {
   handleFileCommentChange = (index, value) => {
     this.setState((prevState) => {
       const updatedFiles = [...prevState.fileStates];
-      updatedFiles[index].comment = value;
+      updatedFiles[index].note = value;
       return { fileStates: updatedFiles };
     });
   };
@@ -158,7 +160,7 @@ class VerifyApplicationPage extends Component {
       ...file,
       id:decodeId(file.id),
       status: "verified",
-      note: file.comment,
+      note: file.note,
     };
     console.log({ payload });
     this.props.updateWorkforceDocument(payload,`update workforce document`); // 👈 dispatch here
@@ -177,7 +179,7 @@ class VerifyApplicationPage extends Component {
       ...file,
       id:decodeId(file.id),
       status: "rejected",
-      note: file.comment,
+      note: file.note,
     };
     console.log({ payload });
 
@@ -191,9 +193,9 @@ class VerifyApplicationPage extends Component {
   };
 
   render() {
-    const { classes, applicationUuid, documents, application, documentType, locale } = this.props;
+    const { classes, applicationUuid, documents, application, documentType, locale,user_rights } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType } = this.state;
-
+    const user_type = getUserTypeFromRights(user_rights);
     console.log({ mah_boob: documents });
 
     return (
@@ -248,7 +250,7 @@ class VerifyApplicationPage extends Component {
               </Typography>
             </CardContent>
           </Card>
-
+          {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && (
           <Card variant="outlined" mt={2} className={classes.cardSpacing}>
             <CardContent>
               <Typography variant="h6">
@@ -265,6 +267,7 @@ class VerifyApplicationPage extends Component {
               ))}
             </CardContent>
           </Card>
+          )}
         </Grid>
 
         {/* Document Viewer */}
@@ -315,6 +318,7 @@ const mapStateToProps = (state, props) => ({
   applicationUuid: props.match.params.application_uuid,
   documents: state.workforce.document,
   documentType: state.workforce.documentType,
+  user_rights: state.core?.user?.i_user?.rights || {},
   locale: state.core?.user?.i_user?.language || "en",
 });
 

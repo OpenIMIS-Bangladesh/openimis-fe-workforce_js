@@ -417,6 +417,7 @@ const EducationGrantForm = ({ modulesManager, organizationType, selectedApplicat
       content: (
         <EmployeeAccountInfoForm
           accounts={formData.employeeBankInfo}
+          formdata={formData}
           handleChange={(index, key, value) => handleArrayFieldChange("employeeBankInfo", index, key, value)}
           addItem={() =>
             addArrayFieldItem("employeeBankInfo", {

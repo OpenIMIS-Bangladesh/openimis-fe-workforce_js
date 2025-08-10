@@ -104,7 +104,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
           <Accordion key={index} expanded={expanded === index} onChange={() => setExpanded(expanded === index ? false : index)}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                {dependentValue?.nameBn} {dependentValue?.nameBn && "এর"}  {<FormattedMessage id="workforce.previewDetails.employeeBankInfo" defaultMessage={`Bank Account ${index + 1}`} />}
+                {dependentValue?.nameBn || formdata?.workforceEmployee?.nameBn } {(dependentValue?.nameBn ||formdata?.workforceEmployee?.nameBn) && "এর"}  {<FormattedMessage id="workforce.previewDetails.employeeBankInfo" defaultMessage={`Bank Account ${index + 1}`} />}
               </Typography>
             </AccordionSummary>
 
@@ -181,10 +181,10 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                           <Grid item xs={6} className={classes.item}>
                             <TextInput
                               label="workforce.employee.account.info.accountHolderName"
-                              value={account?.accountHolderName || dependent?.[index]?.nameBn || ""}
+                              value={account?.accountHolderName || dependent?.[index]?.nameBn || formdata?.workforceEmployee?.nameBn ||""}
                               onChange={(v) => handleAccountChange(index, "accountHolderName", v)}
                               required
-                              readOnly={false}
+                              readOnly={(account?.accountHolderName || dependent?.[index]?.nameBn ||formdata?.workforceEmployee?.nameBn)?true:false}
                             />
                           </Grid>
                           <Grid item xs={6} className={classes.item}>

@@ -55,8 +55,8 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
   const classes = useStyles();
   const dispatch = useDispatch();
   const [activeStep, setActiveStep] = useState(0);
-    const [expanded, setExpanded] = useState(0);
-  
+  const [expanded, setExpanded] = useState(0);
+
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedScholarshipOption, setSelectedScholarshipOption] = useState("");
   const [showVerifyNid, setShowVerifyNid] = useState(false);
@@ -216,7 +216,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
     console.log({ formData });
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
-    if (nextStep === 1 || (nextStep === 2 && applicationForSelf ==="no") || (nextStep === 3 && applicationForSelf ==="yes")) {
+    if (nextStep === 1 || (nextStep === 2 && applicationForSelf === "no") || (nextStep === 3 && applicationForSelf === "yes")) {
       const workforceEmployeeData = {
         nameEn: formData?.workforceEmployee?.nameEn,
         nameBn: formData?.workforceEmployee?.nameBn,
@@ -270,7 +270,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
 
       console.log("i am from first update", updateApplicationData);
       dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
-    } else if ((nextStep === 2 && applicationForSelf ==="yes") || (nextStep === 3 && applicationForSelf ==="no")) {
+    } else if ((nextStep === 2 && applicationForSelf === "yes") || (nextStep === 3 && applicationForSelf === "no")) {
       const createApplicationData = {
         workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
         organizationType: formData.organizationType,
@@ -315,12 +315,12 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
           registrationNumber: formData?.metadata?.regNo,
           result: formData?.metadata?.cgpa,
           institution: formData?.metadata?.university,
-          childBirthDate:formData?.metadata?.birthDate,
-          childNameEn:formData?.metadata?.nameEn,
-          childNameBn:formData?.metadata?.nameBn,
-          childNidNo:formData?.metadata?.nid,
-          childBirthCertificateNo:formData?.metadata?.nid,
-          studyClass:formData?.metadata?.studyingClass,
+          childBirthDate: formData?.metadata?.birthDate,
+          childNameEn: formData?.metadata?.nameEn,
+          childNameBn: formData?.metadata?.nameBn,
+          childNidNo: formData?.metadata?.nid,
+          childBirthCertificateNo: formData?.metadata?.nid,
+          studyClass: formData?.metadata?.studyingClass,
         };
 
         await dispatch(createEducationInfo(createEducation, `Created workforce education Info`));
@@ -351,29 +351,29 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
   const handleArrayFieldChange = (fieldKey, index, key, value) => {
-  setFormData((prev) => {
-    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
-    items[index] = { ...items[index], [key]: value };
-    return { ...prev, [fieldKey]: items };
-  });
-};
+    setFormData((prev) => {
+      const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
+      items[index] = { ...items[index], [key]: value };
+      return { ...prev, [fieldKey]: items };
+    });
+  };
 
-const addArrayFieldItem = (fieldKey, defaultItem = {}) => {
-  setFormData((prev) => {
-    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
-    const updated = [...items, defaultItem];
-    setExpanded?.(updated.length - 1); // optional chaining
-    return { ...prev, [fieldKey]: updated };
-  });
-};
+  const addArrayFieldItem = (fieldKey, defaultItem = {}) => {
+    setFormData((prev) => {
+      const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
+      const updated = [...items, defaultItem];
+      setExpanded?.(updated.length - 1); // optional chaining
+      return { ...prev, [fieldKey]: updated };
+    });
+  };
 
-const removeArrayFieldItem = (fieldKey, index) => {
-  setFormData((prev) => {
-    const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [];
-    const updated = items.filter((_, i) => i !== index);
-    return { ...prev, [fieldKey]: updated };
-  });
-};
+  const removeArrayFieldItem = (fieldKey, index) => {
+    setFormData((prev) => {
+      const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [];
+      const updated = items.filter((_, i) => i !== index);
+      return { ...prev, [fieldKey]: updated };
+    });
+  };
 
   const handleSubmit = () => {
     const submittedBy =
@@ -469,22 +469,21 @@ const removeArrayFieldItem = (fieldKey, index) => {
       content: (
         <Box mt={0}>
           <EmployeeAccountInfoForm
-  accounts={formData.employeeBankInfo}
-  handleChange={(index, key, value) =>
-    handleArrayFieldChange("employeeBankInfo", index, key, value)
-  }
-  addItem={() =>
-    addArrayFieldItem("employeeBankInfo", {
-      accountHolderName: "",
-      bankName: "",
-      accountNumber: "",
-      branchName: "",
-    })
-  }
-  removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
-  expanded={expanded}
-  setExpanded={setExpanded}
-/>
+            accounts={formData.employeeBankInfo}
+            formdata={formData}
+            handleChange={(index, key, value) => handleArrayFieldChange("employeeBankInfo", index, key, value)}
+            addItem={() =>
+              addArrayFieldItem("employeeBankInfo", {
+                accountHolderName: "",
+                bankName: "",
+                accountNumber: "",
+                branchName: "",
+              })
+            }
+            removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
+            expanded={expanded}
+            setExpanded={setExpanded}
+          />
         </Box>
       ),
     },

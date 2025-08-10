@@ -46,7 +46,9 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
 
     while (current) {
       if (current.name && current.name.includes("সিটি কর্পোরেশন")) {
-        return true; // it's a city
+        return true; 
+      }else if (current.name?.includes("পৌরসভা")) {
+        return true
       }
       current = current.parent;
     }
