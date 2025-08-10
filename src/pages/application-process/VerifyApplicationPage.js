@@ -98,7 +98,7 @@ class VerifyApplicationPage extends Component {
       // stateEdited: props.application?.workforceEmployee || {},
       isSaved: false,
       preview: null,
-      comment: "",
+      note: "",
       mockFiles: mockFiles,
       fileStates: mockFiles,
       // fileStates: mockFiles.map((file) => ({
@@ -145,7 +145,7 @@ class VerifyApplicationPage extends Component {
   handleFileCommentChange = (index, value) => {
     this.setState((prevState) => {
       const updatedFiles = [...prevState.fileStates];
-      updatedFiles[index].comment = value;
+      updatedFiles[index].note = value;
       return { fileStates: updatedFiles };
     });
   };
@@ -160,7 +160,7 @@ class VerifyApplicationPage extends Component {
       ...file,
       id:decodeId(file.id),
       status: "verified",
-      note: file.comment,
+      note: file.note,
     };
     console.log({ payload });
     this.props.updateWorkforceDocument(payload,`update workforce document`); // 👈 dispatch here
@@ -179,7 +179,7 @@ class VerifyApplicationPage extends Component {
       ...file,
       id:decodeId(file.id),
       status: "rejected",
-      note: file.comment,
+      note: file.note,
     };
     console.log({ payload });
 
