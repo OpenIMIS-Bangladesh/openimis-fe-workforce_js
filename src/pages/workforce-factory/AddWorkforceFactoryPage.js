@@ -189,7 +189,6 @@ class AddWorkforceFactoryPage extends Component {
                   <CompanyPicker
                     value={stateEdited?.company?.id}
                     label={<FormattedMessage id="workforce.employee.workforce_employer" module="workforce" />}
-                    required
                     onChange={(v) => this.updateAttribute("company", v)}
                     readOnly={isSaved}
                   />
@@ -251,7 +250,7 @@ class AddWorkforceFactoryPage extends Component {
 
                <Grid item xs={6} className={classes.item}>
                   <Typography>
-                    Upload Association Membership Certificate <span style={{ color: 'red' }}>*</span>
+                    Upload Association Membership Certificate <span>*</span>
                   </Typography>
 
                   <FileUploader
@@ -259,13 +258,13 @@ class AddWorkforceFactoryPage extends Component {
                     onFileChange={(v) => this.updateAttribute("associationCertificate", v)}
                     documentType="ASSOCIATION_MEMBERSHIP_CERTIFICATE"
                   />
-                  <input
+                 <input
+                    key={stateEdited?.associationCertificate ? 'hasFile' : 'noFile'}
                     type="file"
                     style={{ display: 'none' }}
                     required
                     onInvalid={(e) => e.target.setCustomValidity("Please upload the certificate")}
                     onInput={(e) => e.target.setCustomValidity("")}
-                    value={stateEdited?.associationCertificate ? "dummy" : ""}
                   />
                 </Grid>
 
