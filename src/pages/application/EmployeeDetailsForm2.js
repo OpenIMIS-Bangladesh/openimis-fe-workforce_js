@@ -265,6 +265,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                       onFileChange={handleFileChange}
                       applicationId={applicationId}
                       documentType={document.documentType}
+                      document={document}
                     />
                   </Grid>
                   {uploadedFiles.find((item) => item.fieldKey === document.fieldId && item.files.length > 0) && (
