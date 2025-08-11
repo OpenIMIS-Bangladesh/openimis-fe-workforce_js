@@ -566,6 +566,7 @@
   "workforce.employee.sameAsPresent": "বর্তমান ঠিকানার অনুরূপ",
 
   "core.LoginPage.loginBtn": "লগইন",
+  "core.error.required":"এই তথ্যটি  আবশ্যক",
 
 
   "calendar.clearButton": "মুছে ফেলুন",

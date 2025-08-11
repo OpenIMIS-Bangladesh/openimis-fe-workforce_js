@@ -716,6 +716,7 @@
 
   "workforce.dead":"Dead",
   "workforce.account.entry":"",
+  "core.error.required":"Required field",
 
   "workforce.employee.accident.info.hasRejoined":"Have you rejoined the workplace after recovery?",
 

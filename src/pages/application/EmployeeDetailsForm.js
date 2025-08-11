@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, Box, Paper, Typography, Divider, IconButton } from "@material-ui/core";
+import { Grid, Box, Paper, Typography, Divider, IconButton,FormHelperText  } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, setNidOrBcn }) => {
+const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, setNidOrBcn,errors }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -48,7 +48,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
   };
 
   const locale = reduxState?.core?.user?.i_user?.language
-
+console.log({errors})
   return (
     <Box>
       <Grid container spacing={2}>
@@ -72,6 +72,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   value={formData?.workforceEmployee?.nameBn || ""}
                   onChange={(v) => handleChange("nameBn", v)}
                   required
+                  error={!!errors.nameBn}
+                  helperText={errors.nameBn}
                   readOnly={false}
                 />
               </Grid>
@@ -81,6 +83,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   value={formData?.workforceEmployee?.nameEn || ""}
                   onChange={(v) => handleChange("nameEn", v)}
                   required
+                  error={!!errors.nameEn}
+                  helperText={errors.nameEn}
                   readOnly={false}
                 />
               </Grid>
@@ -139,8 +143,10 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   onChange={(v) => handleChange("citizenship", v)}
                   readOnly={false}
                   required
+                  
                   language={locale === "fr"?"bn":"en"}
                 />
+                {errors.citizenship && <FormHelperText error>{errors.citizenship}</FormHelperText>}
               </Grid>
 
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
@@ -151,6 +157,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   onChange={(v) => handleChange("maritalStatus", v)}
                   readOnly={false}
                 />
+                {errors.maritalStatus && <FormHelperText error>{errors.maritalStatus}</FormHelperText>}
               </Grid>
 
               <Grid item xs={6} className={classes.item}>
@@ -165,6 +172,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   }}
                   type="number"
                   required
+                  error={!!errors.nid}
+                  helperText={errors.nid}
                   readOnly={false}
                 />
               </Grid>
@@ -202,6 +211,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                     }}
                     readOnly={false}
                   />
+                  {errors.factory && <FormHelperText error>{errors.factory}</FormHelperText>}
                 </Grid>
               )}
               {/* <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
@@ -226,7 +236,6 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                     value={formData?.workforceEmployee?.deathDate || ""}
                     readOnly={false}
                     onChange={(v) => handleChange("deathDate", v)}
-                    // readOnly={true}
                   />
                 </Grid>
               ) : null}
@@ -261,6 +270,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   onChange={(v) => handleChange("motherNameEn", v)}
                   readOnly={false}
                   required
+                  error={!!errors.motherNameEn}
+  helperText={errors.motherNameEn}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
@@ -270,6 +281,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   onChange={(v) => handleChange("motherNameBn", v)}
                   readOnly={false}
                   required
+                  error={!!errors.motherNameBn}
+  helperText={errors.motherNameBn}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>

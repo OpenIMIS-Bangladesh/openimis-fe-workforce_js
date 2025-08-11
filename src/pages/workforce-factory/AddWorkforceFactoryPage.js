@@ -97,7 +97,7 @@ class AddWorkforceFactoryPage extends Component {
         if (factoryId) {
           await dispatch(
             createWorkforceDocument(
-              { ...this.props.uploadFile, factoryId, holderType:"factory"},
+              { ...this.props.uploadFile, factoryId, holderType:"factory",documentType:"factory_membership_certificate"},
               `Created workforce document`
             )
           );

@@ -186,3 +186,26 @@ export const getInfoId = (resp, dataKey) => {
 
   return id;
 };
+
+
+export const validateForm = (emp,formatMessage,formData) => {
+  // const emp = formData?.workforceEmployee || {};
+  const errs = {};
+
+  if (!emp.nameBn) errs.nameBn = formatMessage("core.error.required");
+  if (!emp.nameEn) errs.nameEn = formatMessage("core.error.required");
+  if (!emp.birthDate) errs.birthDate = formatMessage("core.error.required");
+  if (!emp.gender) errs.gender = formatMessage("core.error.required");
+  if (!emp.maritalStatus) errs.maritalStatus = formatMessage("core.error.required");
+  if (!emp.citizenship) errs.citizenship = formatMessage("core.error.required");
+
+  if (!emp.nid && !emp.birthCertificateNo) {
+    errs.nid = formatMessage("core.error.required");
+  }
+
+  if (formData.applicationType === "deadlyGrant" && !emp.deathDate) {
+    errs.deathDate = formatMessage("core.error.required");
+  }
+
+  return errs;
+};
