@@ -252,7 +252,7 @@ class AddWorkforceFactoryPage extends Component {
 
                <Grid item xs={6} className={classes.item}>
                   <Typography>
-                    Upload Association Membership Certificate <span>*</span>
+                    <FormattedMessage id="workforce.factory.uploadMembershipCertificate" module="workforce" /> <span>*</span>
                   </Typography>
 
                   <FileUploader
@@ -289,7 +289,7 @@ class AddWorkforceFactoryPage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <FormControl fullWidth>
-                    <InputLabel required id="association-type-label">Association Type</InputLabel>
+                    <InputLabel required id="association-type-label"><FormattedMessage id="workforce.factory.associationType" module="workforce" /></InputLabel>
                     <Select
                       labelId="association-type-label"
                       value={stateEdited.associationType || ""}
@@ -320,7 +320,7 @@ class AddWorkforceFactoryPage extends Component {
                   {!isSameRepresentative && (
                     <Grid item xs={12} className={classes.item}>
                       <WorkforceForm
-                        title="Workforce Representative Info"
+                        title="workforce.representative.title"
                         stateEdited={stateEdited}
                         isSaved={isSaved}
                         updateAttribute={this.updateAttribute}
