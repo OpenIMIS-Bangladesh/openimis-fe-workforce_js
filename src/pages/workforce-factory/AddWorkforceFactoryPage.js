@@ -147,6 +147,7 @@ class AddWorkforceFactoryPage extends Component {
       associationType: stateEdited.associationType,
       location: stateEdited.location,
       status: WORKFORCE_STATUS.DRAFT,
+      holderType: "factory",
       // isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
       isSameCompanyRepresentative: "0",
       // workforceRepresentativeId: representativeId,
