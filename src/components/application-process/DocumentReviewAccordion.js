@@ -32,7 +32,7 @@ const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onRej
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
             <Typography>
-              {file?.documentType} {type === "pdf" ? "(PDF)" : type === "image" ? "(Image)" : type === "docx" ? "(DOCX)" : "(Unsupported)"}
+              {locale ==="en"?file?.nameEn :file?.nameBn} {type === "pdf" ? "(PDF)" : type === "image" ? "(Image)" : type === "docx" ? "(DOCX)" : "(Unsupported)"}
             </Typography>
           </Grid>
           <Grid item>

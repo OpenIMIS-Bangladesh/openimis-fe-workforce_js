@@ -128,6 +128,7 @@ class ViewApplicationPage extends Component {
                   onCommentChange={this.handleFileCommentChange}
                   onVerify={this.handleFileVerify}
                   onReject={this.handleFileReject}
+                  locale={locale}
                 />
               ))}
             </Grid>

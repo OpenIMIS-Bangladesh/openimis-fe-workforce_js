@@ -261,7 +261,7 @@ class VerifyApplicationPage extends Component {
               <Divider />
               {documentType?.map((document, index) => (
                 <>
-                  <Typography>{document.nameBn} </Typography>
+                  <Typography>{document.nameBn}</Typography>
                   <FileUploader fieldKey={document.fieldId} applicationId={applicationUuid} documentType={document.documentType} />
                 </>
               ))}

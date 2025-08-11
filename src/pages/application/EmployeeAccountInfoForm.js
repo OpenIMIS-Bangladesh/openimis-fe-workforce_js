@@ -47,6 +47,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
   const dependent = useSelector((state) => state.workforce.workforceDependent);
 
   useEffect(() => {
+    console.log('abc',applicationId)
     if (applicationId && applicationId[0]?.id) {
       setLoading(true);
       dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0].id)}"`]));

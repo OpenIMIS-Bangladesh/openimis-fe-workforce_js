@@ -280,19 +280,16 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
           applicationgetId = applicationId;
         }
 
-        if (applicationForSelf === "no") {
+        if (applicationForSelf === "no" && uploadFile) {
           await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${applicationgetId}"`])).then((res) => {
             const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-
             console.log({ dependentId });
-            if (uploadFile) {
               dispatch(
                 createWorkforceDocument(
                   { ...uploadFile, workforceApplicationId: applicationgetId, workforceDependentId: decodeId(dependentId) },
                   `Created workforce document`
                 )
               );
-            }
           });
         }
       } else {

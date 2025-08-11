@@ -64,7 +64,8 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
 
-  const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
+  let applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? null);
+  // const dependentId = useSelector((state) => state.workforce["workforceDependent"] ?? []);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -287,31 +288,22 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         const applicationMutation = await formatMutation("createWorkforceApplication", formatApplicationeGQL(createApplicationData), `Created application `);
         const applicationClientMutationId = applicationMutation.clientMutationId;
         console.log("applicationClientMutationId", applicationClientMutationId);
-        await dispatch(createApplication(applicationMutation, `Created workforce application `));
-
-        // await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
-        const fetchRes = await dispatch(
-          fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
-        );
-        let applicationgetId = getInfoId(fetchRes, "workforceApplication");
-        console.log("hello there", applicationgetId);
-        if (!applicationgetId && applicationId) {
-          applicationgetId = applicationId;
-        }
-
-        await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${applicationgetId}"`])).then((res) => {
-          const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-
-          console.log({ dependentId });
-          if (uploadFile) {
-            dispatch(
-              createWorkforceDocument(
-                { ...uploadFile, workforceApplicationId: applicationgetId, workforceDependentId: decodeId(dependentId) },
-                `Created workforce document`
-              )
-            );
+        await dispatch(createApplication(applicationMutation, `Created workforce application `))
+        .then(res =>{
+          // await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
+          const fetchRes = dispatch(
+            fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
+          );
+          let applicationgetId = getInfoId(fetchRes, "workforceApplication");
+          console.log("hello there", applicationgetId);
+          if (!applicationgetId && applicationId) {
+            applicationgetId = applicationId;
+          }else{
+            applicationId = applicationgetId
           }
-        });
+        })
+
+
       } else {
         const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
         console.log("i am from update", updateApplicationData);
@@ -335,20 +327,18 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application`))
       .then(res => setIsDependentSaved(true))
-      if (uploadFile) {
-        await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0]?.id)}"`])).then((res) => {
-          const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-
-          console.log({ dependentId });
-
+      await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0]?.id)}"`])).then((res) => {
+        const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
+        console.log({ dependentId });
+        if (uploadFile) {
           dispatch(
             createWorkforceDocument(
               { ...uploadFile, workforceApplicationId: decodeId(applicationId[0]?.id), workforceDependentId: decodeId(dependentId) },
               `Created workforce document`
             )
           );
+        }
         });
-      }
     } else {
       const updateApplicationData = {
         // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
