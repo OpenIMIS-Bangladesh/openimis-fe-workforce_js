@@ -77,7 +77,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,docu
   const dispatch = useDispatch();
 
   // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
-  console.log({applicationId})
+  console.log({document})
 
   const uploadFileToApi = async (file) => {
     const formData = new FormData();
@@ -102,7 +102,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,docu
       const createDocumentData = {
         path: responseData.file_path,
         url: responseData.file_url,
-        workforceDocumentTypeId:document.workforceDocumentTypeId,
+        workforceDocumentTypeId:decodeId(document.id),
         // workforceApplicationId: safeApplicationId(applicationId),
         documentType: documentType,
         holder: "57",
