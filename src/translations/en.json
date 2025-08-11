@@ -481,6 +481,7 @@
     "workforce.application.process.pending": "Pending",
     "workforce.application.process.approved": "Approved",
     "workforce.application.process.rejected": "Rejected",
+    "workforce.application.process.reverted": "Reverted",
 
     "workforce.application.id":"Application id",
     "workforce.application.date":"Application Date",

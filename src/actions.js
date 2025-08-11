@@ -2342,7 +2342,52 @@ export function fetchWorkforceApplicationStatusCount() {
   approvedForDirector:workforceApplication(statusIn: ["${WORKFORCE_STATUS.APPROVED_BY_DIRECTOR}"]){
     totalCount
   }
-  new:workforceApplication(statusIn: ["${WORKFORCE_STATUS.NEW}"]){
+  pendingForFactoryAdmin:workforceApplication(statusIn: ["${WORKFORCE_STATUS.NEW}"]){
+    totalCount
+  }
+  rejectedForFactoryAdmin:workforceApplication(statusIn: ["${WORKFORCE_STATUS.REJECTED}"]){
+    totalCount
+  }
+  revertedForFactoryAdmin:workforceApplication(statusIn: ["${WORKFORCE_STATUS.REVERT}"]){
+    totalCount
+  }
+  pendingForBGMEAAssociation:workforceApplication(statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION}"]){
+    totalCount
+  }
+  rejectedForBGMEAAssociation:workforceApplication(statusIn: ["${WORKFORCE_STATUS.REJECTED}"]){
+    totalCount
+  }
+  revertedForBGMEAAssociation:workforceApplication(statusIn: ["${WORKFORCE_STATUS.REVERT}"]){
+    totalCount
+  }
+  pendingForBKMEAAssociation:workforceApplication(statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION}"]){
+    totalCount
+  }
+  rejectedForBKMEAAssociation:workforceApplication(statusIn: ["${WORKFORCE_STATUS.REJECTED}"]){
+    totalCount
+  }
+  revertedForBKMEAAssociation:workforceApplication(statusIn: ["${WORKFORCE_STATUS.REVERT}"]){
+    totalCount
+  }
+  pendingForSectionAdmin:workforceApplication(statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_CF_SECTION}"]){
+    totalCount
+  }
+  rejectedForSectionAdmin:workforceApplication(statusIn: ["${WORKFORCE_STATUS.REJECTED}"]){
+    totalCount
+  }
+  revertedForSectionAdmin:workforceApplication(statusIn: ["${WORKFORCE_STATUS.REVERT}"]){
+    totalCount
+  }
+    pendingForChecker:workforceApplication(statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_CF_SECTION}"]){
+    totalCount
+  }
+    pendingForCheckerTwo:workforceApplication(statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_CF_SECTION}"]){
+    totalCount
+  }
+    pendingForDoctor:workforceApplication(statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_DOCTOR}"]){
+    totalCount
+  }
+    pendingForApprover:workforceApplication(statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_COMIITEE}"]){
     totalCount
   }
 }`
