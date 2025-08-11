@@ -480,6 +480,7 @@ export function formatWorkforceDocumentGQL(workforceDocumentType) {
     ${workforceDocumentType?.workforceApplicationId ? `workforceApplicationId: "${workforceDocumentType?.workforceApplicationId}"` : ""}
     ${workforceDocumentType?.factoryId ? `factoryId: "${workforceDocumentType?.factoryId}"` : ""}
     ${workforceDocumentType?.workforceDependentId ? `workforceDependentId: "${workforceDocumentType?.workforceDependentId}"` : ""}
+    ${workforceDocumentType?.workforceDocumentTypeId ? `workforceDocumentTypeId: "${workforceDocumentType?.workforceDocumentTypeId}"` : ""}
     ${workforceDocumentType?.path ? `path: "${workforceDocumentType?.path}"` : ""}
     ${workforceDocumentType?.url ? `url: "${workforceDocumentType?.url}"` : ""}
 

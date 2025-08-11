@@ -24,7 +24,7 @@ const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onRej
   const handlePDFLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
   };
-  console.log(file);
+  console.log("done",file);
 
   return (
     <Accordion>
@@ -32,7 +32,7 @@ const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onRej
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
             <Typography>
-              {file?.documentType} {type === "pdf" ? "(PDF)" : type === "image" ? "(Image)" : type === "docx" ? "(DOCX)" : "(Unsupported)"}
+              {locale ==="en"?file?.workforceDocumentType?.nameEn :file?.workforceDocumentType?.nameBn} {type === "pdf" ? "(PDF)" : type === "image" ? "(Image)" : type === "docx" ? "(DOCX)" : "(Unsupported)"}
             </Typography>
           </Grid>
           <Grid item>
