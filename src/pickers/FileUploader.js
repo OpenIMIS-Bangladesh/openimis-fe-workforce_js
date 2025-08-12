@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,document }) => {
+const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,documentProp }) => {
   const classes = useStyles();
   const [webcamOpen, setWebcamOpen] = useState(false);
   const webcamRef = useRef(null);
@@ -77,7 +77,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,docu
   const dispatch = useDispatch();
 
   // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
-  console.log({document})
+  console.log({documentProp})
 
   const uploadFileToApi = async (file) => {
     const formData = new FormData();
@@ -102,7 +102,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,docu
       const createDocumentData = {
         path: responseData.file_path,
         url: responseData.file_url,
-        workforceDocumentTypeId:decodeId(document.id),
+        workforceDocumentTypeId:decodeId(documentProp.id),
         // workforceApplicationId: safeApplicationId(applicationId),
         documentType: documentType,
         holder: "57",
