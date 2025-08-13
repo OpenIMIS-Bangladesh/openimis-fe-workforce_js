@@ -291,45 +291,17 @@ class ApplicationsProcessPage extends Component {
             </TabPanel>
 
             <TabPanel value={value} index={3}>
-              {rejectedSummaries.map((item, index) => (
-                <Accordion
-                  key={index}
-                  expanded={this.state.expanded === item.id}
-                  onChange={this.handleAccordionChange(item.id)}
-                  className={classes.accordion}
-                >
-                  <AccordionSummary
-                    className={classes.accordionSummary}
-                    expandIcon={<ExpandMoreIcon className="material-icons" />}
-                  >
-                    <Typography variant="subtitle1" style={{ flex: 1 }}>
-                      <strong>{item.name}</strong>
-                    </Typography>
-                    <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
-                      {item.meetingDate} | {item.month} {item.year}
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails className={classes.accordionDetails}>
-                    <Card style={{ width: "100%" }}>
-                      <CardContent>
-                        {this.state.expanded === item.id && (
-                          <ApplicationProcessSearcher
-                            summaryId={item.id}
-                            cacheFiltersKey="rejected"
-                            onDoubleClick={this.onDoubleClick}
-                          />
-                        )}
-                      </CardContent>
-                    </Card>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
-              <GenerateBFTN
-                open={openGenerateBFTN}
-                onClose={this.handleCloseBFTN}
-                applications={applications}
-                userRights={rights}
-              />
+            <ApplicationProcessSearcher
+              cacheFiltersKey="rejected"
+              rejectedApplication={true}
+              onDoubleClick={this.onDoubleClick}
+            />
+            <GenerateBFTN
+              open={openGenerateBFTN}
+              onClose={this.handleCloseBFTN}
+              applications={applications}
+              userRights={rights}
+            />
             </TabPanel>
           </>
         ) : (

@@ -112,22 +112,24 @@ export const itemAdminFormatters = (
           <CheckIcon />
         </IconButton>
       </Tooltip>
-{/* 
+
       <Tooltip title="Reject">
         <span>
           <IconButton
-            onClick={() => component.handleReject(application)}
+            onClick={() => component.handleRejectByDG(application)}
             disabled={
               application?.isHistory ||
               application?.status === "approved_by_dg" ||
-              application?.status === "forward_to_director"
+              application?.status === "forward_to_director"||
+              application?.status === "rejected_by_dg"
+
             }
             color="error"
           >
             <CloseIcon />
           </IconButton>
         </span>
-      </Tooltip> */}
+      </Tooltip>
     </div>
   ));
   return formatters;

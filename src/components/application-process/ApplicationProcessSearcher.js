@@ -372,15 +372,27 @@ class ApplicationProcessSearcher extends Component {
           // prms
         );
       }
-    }else {
+    } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(this.props.modulesManager, [
-        `statusIn: ["forward_to_director","approved_by_director","approved_by_dg"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(
-          this.props.summaryId
-        )}"`,
-      ]);
-    }
-  };
+
+      let filters = [];
+
+      if (rejectedApplication) {
+        filters.push('statusIn: ["rejected","rejected_by_dg"]');
+      } else {
+        filters.push(
+          `statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]`
+        );
+        filters.push(`cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`);
+      }
+
+      filters.push(`orderBy: ["-dateCreated"]`);
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, filters);
+
+      }
+      };
+
 
   rowIdentifier = (r) => r.uuid;
 
@@ -475,6 +487,54 @@ class ApplicationProcessSearcher extends Component {
             status: WORKFORCE_STATUS.REJECTED,
             note: "আবেদন বাতিল করা হয়েছে",
             action: "rejected",
+          };
+
+          try {
+            await this.props.updateApplication(updateApplicationData, "update workforce application");
+
+            await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদন বাতিল করা হয়েছে!",
+              },
+            });
+            window.location.reload();
+          } catch (error) {
+            console.error("Approval failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "আবেদন বাতিল ব্যর্থ হয়েছে!",
+              },
+            });
+          }
+        }
+      );
+    }
+  };
+  handleRejectByDG = async (application) => {
+    const { selectedApplication } = this.state;
+
+    if (window.confirm("Are you sure you want to final reject this application?")) {
+      this.setState(
+        {
+          selectedApplication: {
+            ...selectedApplication,
+            isHistory: true,
+          },
+        },
+        async () => {
+          const updateApplicationData = {
+            id: decodeId(application.id),
+            status: WORKFORCE_STATUS.REJECTED_BY_DG,
+          };
+
+          const createApplicationMovementData = {
+            applicationId: decodeId(application.id),
+            status: WORKFORCE_STATUS.REJECTED_BY_DG,
+            note: "আবেদন ডিজি কর্তৃক বাতিল করা হয়েছে",
+            action: "rejected_by_dg",
           };
 
           try {
@@ -772,8 +832,8 @@ class ApplicationProcessSearcher extends Component {
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
-      ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
-      : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale);
+      ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication)
+      : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.rejectedApplication);
   };
 
   sorts = () => [];
