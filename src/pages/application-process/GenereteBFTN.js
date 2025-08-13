@@ -160,7 +160,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
         </DialogActions>
       </Dialog>
     );
-  } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN) {
+  } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle disableTypography>
@@ -171,23 +171,44 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
             <TableHead>
                <TableRow>
                 <TableCell>
-                  <FormattedMessage id="workforce.table.applicantName" defaultMessage="আবেদনকারীর নাম" />
+                  <FormattedMessage id="SL No"  />
                 </TableCell>
                 <TableCell>
+                  <FormattedMessage id="M: S: no"  />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="Date"  />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="Sender A/C No"  />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="Receiver's Routing Number "  />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="Sender's Routing Number "/>
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.applicantName"  />
+                </TableCell>
+                {/* <TableCell>
                   <FormattedMessage id="workforce.table.applicationType" defaultMessage="আবেদনের ধরণ" />
+                </TableCell> */}
+                <TableCell>
+                  <FormattedMessage id="workforce.table.accountNo"  />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="Type(C/D)"  />
                 </TableCell>
                 <TableCell align="right">
-                  <FormattedMessage id="workforce.table.approvedAmount" defaultMessage="অনুমোদিত পরিমাণ" />
+                  <FormattedMessage id="workforce.table.approvedAmount"  />
                 </TableCell>
-                <TableCell>
-                  <FormattedMessage id="workforce.table.accountNo" defaultMessage="অ্যাকাউন্ট নম্বর" />
-                </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <FormattedMessage id="workforce.table.bankName" defaultMessage="ব্যাংকের নাম" />
                 </TableCell>
                 <TableCell>
                   <FormattedMessage id="workforce.table.branch" defaultMessage="শাখা" />
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -195,14 +216,21 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights,status,summ
                 const parseBankInfo = JSON.parse(row.employeeBankInfo)
                 const bankInfo = JSON.parse(parseBankInfo)
                 console.log(bankInfo)
-                return (
+                return (                   
                   <TableRow key={index}>
-                    <TableCell>{row.workforceEmployee?.firstNameBn}</TableCell>
-                    <TableCell>{row.applicationType}</TableCell>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{row?.dateCreated}</TableCell>
+                    <TableCell>4426336001034</TableCell>
+                    <TableCell>200275714</TableCell>
+                    <TableCell>{row?.workforceEmployee?.routingNumber}</TableCell>
+                    <TableCell>{row?.workforceEmployee?.firstNameBn}</TableCell>
+                    <TableCell>{row?.workforceEmployee?.accountNumber}</TableCell>
+                    {/* <TableCell>{row.applicationType}</TableCell> */}
+                    <TableCell></TableCell>   
                     <TableCell align="right">{row.grantAmount}</TableCell>
-                    <TableCell>{bankInfo.accountNumber}</TableCell>
-                    <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
-                    <TableCell>{bankInfo?.branch?.nameEn}</TableCell>
+                    {/* <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
+                    <TableCell>{bankInfo?.branch?.nameEn}</TableCell> */}
                   </TableRow>
                 )
               })}

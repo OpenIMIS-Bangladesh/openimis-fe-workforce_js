@@ -155,7 +155,7 @@ class ApplicationProcessSearcher extends Component {
   } else if (revertedApplication) {
     defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]');
   } else if (summaryId) {
-    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created"]');
+    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]');
     additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
   } else {
     defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor"]');
@@ -1263,6 +1263,9 @@ class ApplicationProcessSearcher extends Component {
                   id="workforce.employee.application.forwardToDoctor"
                 />
               </Button>
+               <IconButton onClick={this.handleOpenBFTN}>
+              <PrintIcon />
+            </IconButton>
             </Box>
           ) : null}
 
@@ -1446,6 +1449,13 @@ class ApplicationProcessSearcher extends Component {
                   onClose={this.handleCloseForwardModal}
                   selectedApplication={this.state.selectedApplication}
                   selectedApplicationIds={this.state.selectedApplicationIds}
+                />
+                 <GenerateBFTN
+                  open={openGenerateBFTN}
+                  onClose={this.handleCloseBFTN}
+                  applications={applications}
+                  status={"approved_by_dg"}
+                  userRights={userRights}
                 />
               </>
             );

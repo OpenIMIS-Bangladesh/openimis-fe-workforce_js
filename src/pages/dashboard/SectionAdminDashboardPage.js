@@ -140,6 +140,14 @@ const SidebarMenu = [
       icon: <HourglassFullTwoToneIcon  />,
   },
   {
+    id: "approveMeetingSheet",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.employee.application.approveMeetingSheet"
+      />
+    ),
+    icon: <CheckCircleOutlineTwoToneIcon />,
+  },
+  {
     id: "applicationStatus",
     text: (
       <FormattedMessage module="workforce" id="workforce.application.status" />
@@ -178,6 +186,54 @@ const FiledApplications = () =>{
     </div>
   </>
 );}
+
+const ApprovedApplications = ({ summaryData = [] }) => {
+  const classes = useStyles();
+  const [expanded, setExpanded] = useState(null);
+
+  const handleChange = (panelId) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panelId : null);
+  };
+  console.log("clear")
+  console.log("summary data", summaryData);
+  return (
+    <div className={classes.accordionPadding}>
+        {summaryData         
+          .map((item, index) => (
+            <Accordion
+              key={index}
+              expanded={expanded === item.id}
+              onChange={handleChange(item.id)}
+              className={classes.accordion}
+            >
+              <AccordionSummary
+                className={classes.accordionSummary}
+                expandIcon={<ExpandMoreIcon className="material-icons" />}
+              >
+                <Typography variant="subtitle1" style={{ flex: 1 }}>
+                  <strong>{item.name}</strong>
+                </Typography>
+                <Typography
+                  variant="body2"
+                  style={{ marginLeft: "auto", color: "#015C63" }}
+                >
+                  {item.meetingDate} | {item.month} {item.year}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className={classes.accordionDetails}>
+                <Card style={{ width: "100%" }}>
+                  <CardContent>
+                    {expanded === item.id && (
+                      <ApplicationProcessSearcher summaryId={item.id} />
+                    )}
+                  </CardContent>
+                </Card>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+    </div>
+  );
+};
 
 const ApplicationStatus = () => {
   const dispatch = useDispatch();
@@ -345,7 +401,7 @@ const SectionAdminDashboard = () => {
   const modulesManager = useModulesManager()
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
  useEffect(() => {
-      return dispatch(fetchSummaryApplications(modulesManager,['status:"meeting_created"']));
+      return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"']));
     }, []);
   const data = useSelector(
       (state) => state.workforce[`applicationsSummary`] ?? []
@@ -361,6 +417,8 @@ const SectionAdminDashboard = () => {
         return <RejectApplication />;
       case "pendingMeetingSheet":
         return <PendingMeetingSheet summaryData={data} />;
+      case "approveMeetingSheet":
+        return <ApprovedApplications summaryData={data} />;
       case "applicationStatus":
         return <ApplicationStatus />;
       default:
