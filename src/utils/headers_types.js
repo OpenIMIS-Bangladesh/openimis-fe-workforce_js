@@ -72,6 +72,7 @@
     "workforce.employee.application.factoryName",
     "workforce.employee.application.applicationType",
     "workforce.employee.application.moneyAmount",
+    "workforce.employee.application.nid",
     "workforce.employee.application.status",
     component.isShowHistory() ? "workforce.version" : "",
   ];

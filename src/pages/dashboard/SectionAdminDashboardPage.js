@@ -1,6 +1,6 @@
 import React, { useState,useEffect} from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { FormattedMessage,useModulesManager } from "@openimis/fe-core";
+import { FormattedMessage,useModulesManager,useHistory } from "@openimis/fe-core";
 import {
   Grid,
   List,
@@ -26,6 +26,7 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { fetchSummaryApplications } from "../../actions";
+import { fetchApplicationsSummary } from "../../actions";
 import RestorePageIcon from '@material-ui/icons/RestorePage';
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
@@ -137,7 +138,15 @@ const SidebarMenu = [
         <FormattedMessage module="workforce" id="workforce.employee.application.pendingMeetingSheet" />
       ),
       icon: <HourglassFullTwoToneIcon  />,
-    },
+  },
+  {
+    id: "applicationStatus",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.status" />
+    ),
+    icon: <AssignmentIcon />,
+  },
+
    
 ];
 
@@ -169,6 +178,79 @@ const FiledApplications = () =>{
     </div>
   </>
 );}
+
+const ApplicationStatus = () => {
+  const dispatch = useDispatch();
+  const mm = useModulesManager();
+  const [nid, setNid] = useState("");
+  const [showResult, setShowResult] = useState(false);
+  const [applicationData, setApplicationData] = useState(null);
+  const classes = useStyles()
+  const [hasResults, setHasResults] = useState(true);
+
+  const handleApplicationSearch = () => {
+  const filters = [`workforceEmployee_Nid: "${nid}"`];
+  
+  dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
+    const edges = res.payload?.data?.workforceApplication?.edges || [];
+    setApplicationData(edges.map((e) => e.node));
+    setShowResult(true);
+  });
+};
+
+  return (
+    <Card>
+      <CardContent>
+        <Typography variant="h5" gutterBottom>
+          <FormattedMessage module="workforce" id="workforce.application.status" />
+        </Typography>
+
+        <Grid container spacing={2} justifyContent="center" style={{ marginTop: 16, padding: "32px", textAlign: "center" }}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              size="small"
+              label={
+                <FormattedMessage module="workforce" id="workforce.representative.nid" />
+              }
+              value={nid}
+              onChange={(e) => setNid(e.target.value)}
+              style={{ marginBottom: 16 }}
+            />
+            <Button variant="contained" color="primary" fullWidth onClick={handleApplicationSearch}>
+              <FormattedMessage module="workforce" id="workforce.search.here" />
+            </Button>
+          </Grid>
+        </Grid>
+
+       {showResult && (
+          <>
+            <Card className={classes.tableContainer} style={{ marginTop: 10 }}>
+              <CardContent>
+                <ApplicationProcessSearcher
+                  nidFilters={[`workforceEmployee_Nid: "${nid}"`]}
+                  onDataLoaded={(data) => setHasResults(data && data.length > 0)}
+                />
+              </CardContent>
+            </Card>
+
+            {!hasResults && (
+              <Typography color="error" style={{ marginTop: 32 }}>
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.tracking.notfound"
+                  defaultMessage="কোনো আবেদন পাওয়া যায়নি।"
+                />
+              </Typography>
+            )}
+          </>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
 
 const checkedApplications = () => (
   <Typography variant="h5">
@@ -279,6 +361,8 @@ const SectionAdminDashboard = () => {
         return <RejectApplication />;
       case "pendingMeetingSheet":
         return <PendingMeetingSheet summaryData={data} />;
+      case "applicationStatus":
+        return <ApplicationStatus />;
       default:
         return <FiledApplications />;
     }

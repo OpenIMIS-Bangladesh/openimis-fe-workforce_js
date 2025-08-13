@@ -142,51 +142,62 @@ class ApplicationProcessSearcher extends Component {
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
-      this.setState({ displayVersion: showHistoryFilter });
+} else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
+  this.setState({ displayVersion: showHistoryFilter });
 
-      let defaultStatusFilters = [];
-      let additionalFilters = [];
+  let defaultStatusFilters = [];
+  let additionalFilters = [];
 
-      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+  const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
 
-      if (rejectedApplication) {
-        defaultStatusFilters.push('statusIn: ["rejected"]');
-      } else if (revertedApplication) {
-        defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]');
-      } else if (summaryId) {
-        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created"]');
-        additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
-      } else {
-        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor"]');
-      }
+  if (rejectedApplication) {
+    defaultStatusFilters.push('statusIn: ["rejected"]');
+  } else if (revertedApplication) {
+    defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]');
+  } else if (summaryId) {
+    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created"]');
+    additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+  } else {
+    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor"]');
+  }
 
-      const orderByFilter = 'orderBy: ["-dateCreated"]';
+  const orderByFilter = 'orderBy: ["-dateCreated"]';
 
-      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
-      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
+  const nidFilters = this.props.nidFilters || [];
 
-      let finalFilters = [];
+  let finalFilters = [];
 
-      if (prms?.length) {
-        finalFilters = [...prms];
+  if (nidFilters.length) {
+    // If NID search is present, ignore default status filters
+    finalFilters = [...nidFilters];
 
-        if (!hasStatusIn) {
-          finalFilters = [...defaultStatusFilters, ...finalFilters];
-        }
+    // Optionally add orderBy if not already present
+    if (!finalFilters.some(f => f.includes("orderBy"))) {
+      finalFilters.push(orderByFilter);
+    }
 
-        if (!hasOrderBy) {
-          finalFilters.push(orderByFilter);
-        }
+    // Keep summaryId filter if present
+    if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
+      finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+    }
+  } else if (prms?.length) {
+    finalFilters = [...prms];
 
-        if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
-          finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
-        }
-      } else {
-        finalFilters = [...defaultStatusFilters, ...additionalFilters, orderByFilter];
-      }
+    const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
+    const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
 
-      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+    if (!hasStatusIn) {
+      finalFilters = [...defaultStatusFilters, ...finalFilters];
+    }
+    if (!hasOrderBy) finalFilters.push(orderByFilter);
+    if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
+      finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+    }
+  } else {
+    finalFilters = [...defaultStatusFilters, ...additionalFilters, orderByFilter];
+  }
+
+  this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) {
       this.setState({ displayVersion: showHistoryFilter });
@@ -751,7 +762,7 @@ class ApplicationProcessSearcher extends Component {
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
       ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
-      ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication)
+      ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.DOCTOR
       ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION
