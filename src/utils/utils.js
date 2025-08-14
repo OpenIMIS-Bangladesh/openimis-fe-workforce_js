@@ -209,3 +209,19 @@ export const validateForm = (emp,formatMessage,formData) => {
 
   return errs;
 };
+
+export const validateRequiredFields = (containerRef, formatMessage) => {
+  const fields = containerRef.current.querySelectorAll("[required]");
+  console.log({fields})
+  const errors = {};
+  
+  fields.forEach((field) => {
+    const value = field.value?.trim?.() || "";
+    if (!value && field.tagName !== "DIV" && (!field?.id.includes("mui") || !field?.id.includes("input"))) {
+      errors[field.id || field.name] = formatMessage("core.error.required");
+      console.warn(`Validation failed for field: ${field.id || field.name}`);
+    }
+  });
+
+  return errors;
+};

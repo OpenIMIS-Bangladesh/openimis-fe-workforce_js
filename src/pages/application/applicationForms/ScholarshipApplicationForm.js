@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Stepper, Step, StepLabel, Paper, Box, Typography } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage,useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
 import EmployeeDetailsForm2 from "../EmployeeDetailsForm2";
@@ -25,7 +25,7 @@ import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
-import { getInfoId, safeApplicationId } from "../../../utils/utils";
+import { getInfoId, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -48,9 +48,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ScholarshipApplicationForm = ({ modulesManager, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
+const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
+  const modulesManager= useModulesManager()
+      const { formatMessage } = useTranslations("workforce");
+      const stepRef =useRef(null)
+      const [errors,setErrors] = useState({})
   const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -193,7 +197,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
         employeeChildrenInfo: parsedApplicationData?.employeeChildrenInfo || employeeData.employeeChildrenInfo || {},
       });
     }
-  }, [employeeData]); // Trigger this useEffect when `employeeData` changes.
+  }, [employeeData?.id, parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {
@@ -214,6 +218,10 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
 
   const handleNext = async () => {
     console.log({ formData });
+    const newErrors = validateRequiredFields(stepRef, formatMessage);
+        setErrors(newErrors);
+    
+        if (Object.keys(newErrors).length === 0 ){
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
     if (nextStep === 1 || (nextStep === 2 && applicationForSelf === "no") || (nextStep === 3 && applicationForSelf === "yes")) {
@@ -345,6 +353,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
     }
+  }
     // setActiveStep((prevStep) => prevStep + 1);
   };
 
@@ -411,6 +420,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
           formData={formData}
           setNidOrBcn={setNidOrBcn}
           nidOrBcn={nidOrBcn}
+          errors={errors}
         />
       ),
     },
@@ -425,6 +435,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
                 selectedScholarshipOption={selectedScholarshipOption}
                 formData={formData}
                 applicationForSelf={applicationForSelf}
+                errors={errors}
               />
             ),
           },
@@ -433,9 +444,8 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
     {
       label: "workforce.application.steps.location",
       content: (
-        <Box mt={0}>
           <EmployeeLocationForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />
-        </Box>
+
       ),
     },
     ...(applicationForSelf === "no"
@@ -449,6 +459,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
                 selectedScholarshipOption={selectedScholarshipOption}
                 formData={formData}
                 applicationForSelf={applicationForSelf}
+                errors={errors}
               />
             ),
           },
@@ -467,7 +478,6 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
     {
       label: "workforce.application.steps.account.info",
       content: (
-        <Box mt={0}>
           <EmployeeAccountInfoForm
             accounts={formData.employeeBankInfo}
             formdata={formData}
@@ -483,21 +493,21 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
             removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
             expanded={expanded}
             setExpanded={setExpanded}
+            errors={errors}
           />
-        </Box>
       ),
     },
     {
       label: "workforce.application.steps.upload.documents",
       content: (
-        <Box mt={0}>
+
           <EmployeeDetailsForm2
             handleChange={handleChange}
             formData={formData}
             selectedApplicationType={selectedApplicationType}
             applicationId={applicationId}
           />
-        </Box>
+
       ),
     },
   ];
@@ -574,7 +584,7 @@ const ScholarshipApplicationForm = ({ modulesManager, organizationType, selected
           ))}
         </Stepper>
 
-        {steps[activeStep].content}
+        <Box mt={0} ref={stepRef}>{steps[activeStep].content}</Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">

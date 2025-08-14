@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useTranslations, Autocomplete } from "@openimis/fe-core";
 
 const EmployeeInsideOutsideFactoryPicker = ({
+  id,
   modulesManager,
   onChange,
   readOnly,
@@ -30,6 +31,7 @@ const EmployeeInsideOutsideFactoryPicker = ({
 
   return (
     <Autocomplete
+    id={id}
       multiple={false}
       required={required}
       placeholder={placeholder ?? ""}

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Stepper, Step, StepLabel, Paper, Box, Typography } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage,useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -25,7 +25,7 @@ import NidVerification from "../../../components/application-forms/NidVerificati
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
-import { getInfoId, getUserType, safeApplicationId } from "../../../utils/utils";
+import { getInfoId, getUserType, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
 
@@ -47,9 +47,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
+const MedicalDonationForm = ({  organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
+  const modulesManager= useModulesManager()
+    const { formatMessage } = useTranslations("workforce");
+    const stepRef =useRef(null)
+    const [errors,setErrors] = useState({})
   const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
     const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const classes = useStyles();
@@ -210,6 +214,10 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
 
   const handleNext = async () => {
     console.log({ formData });
+    const newErrors = validateRequiredFields(stepRef, formatMessage);
+        setErrors(newErrors);
+    
+        if (Object.keys(newErrors).length === 0 ){
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
     if (nextStep === 2 || nextStep === 3) {
@@ -316,6 +324,7 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
       console.log("i am from accident info", updateApplicationData);
       dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
     }
+  }
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -374,7 +383,7 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
   const steps = [
     {
       label: "workforce.application.steps.select",
-      content: <MedicalDonationCheckbox handleChange={(key, value) => handleChange(key, value, "metadata")} formData={formData} />,
+      content: <MedicalDonationCheckbox errors={errors} handleChange={(key, value) => handleChange(key, value, "metadata")} formData={formData} />,
     },
     {
       label: "workforce.application.steps.employeeDetails",
@@ -384,6 +393,7 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
           setNidOrBcn={setNidOrBcn}
           nidOrBcn={nidOrBcn}
           formData={formData}
+          errors={errors}
         />
       ),
     },
@@ -393,7 +403,7 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
     },
     {
       label: "workforce.application.steps.worker.extraInfo",
-      content: <WorkerExtraInfo handleChange={handleChange} formData={formData} />,
+      content: <WorkerExtraInfo errors={errors} handleChange={handleChange} formData={formData} />,
     },
     ...(applicationForSelf === "no"
       ? [
@@ -408,6 +418,7 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
                 removeItem={(index) => removeArrayFieldItem("dependents", index)}
                 expanded={expanded}
                 setExpanded={setExpanded}
+                errors={errors}
               />
             ),
           },
@@ -420,6 +431,7 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
           handleChange={(key, value) => handleChange(key, value, "employeeAccidentInfo")}
           formData={formData}
           setFormData={setFormData}
+          errors={errors}
         />
       ),
     },
@@ -441,6 +453,7 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
           removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
           expanded={expanded}
           setExpanded={setExpanded}
+          errors={errors}
         />
       ),
     },
@@ -524,7 +537,7 @@ const MedicalDonationForm = ({ modulesManager, organizationType, selectedApplica
           ))}
         </Stepper>
 
-        <Box mt={0}>{steps[activeStep].content}</Box>
+        <Box mt={0} ref={stepRef}>{steps[activeStep].content}</Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">

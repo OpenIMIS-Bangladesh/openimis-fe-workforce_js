@@ -16,6 +16,7 @@ import {
   Select,
   InputLabel,
   FormGroup,
+  FormHelperText
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import EmployeeInjuryTypePicker from "../../pickers/EmployeeInjuryTypePicker";
@@ -52,7 +53,7 @@ const diseaseOptions = [
   "Others", // Allow manual input if selected
 ];
 
-const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applicationType }) => {
+const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applicationType,errors }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
@@ -116,12 +117,15 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
           <Grid container spacing={1}>
             <Grid item xs={6} className={classes.item}>
               <DiseaseMultiSelectPicker
+              id="cronicDiseaseType"
                 selectedDiseases={formData?.employeeAccidentInfo?.cronicDiseaseType || []}
                 onChange={(value) => handleChange("cronicDiseaseType", value, "employeeAccidentInfo")}
                 onOtherDiseaseChange={(value) => handleChange("otherDisease", value, "employeeAccidentInfo")}
                 otherDiseaseValue={formData?.employeeAccidentInfo?.otherDisease || ""}
                 handleChange={(key, value) => handleChange(key, value, null)}
+                required={true}
               />
+              {errors.cronicDiseaseType && <FormHelperText error>{errors.cronicDiseaseType}</FormHelperText>}
             </Grid>
 
             {selectedDiseases.includes("অন্যান্য") && (
@@ -219,19 +223,24 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
           <Grid container spacing={2}>
             <Grid item xs={6} className={classes.item}>
               <EmployeeAccidentTypePicker
+                id="accidentType"
                 value={formData?.employeeAccidentInfo?.accidentType || ""}
                 label={<FormattedMessage id="workforce.employee.accident.info.typeOfAccident" module="workforce" />}
                 required
                 onChange={(v) => handleChange("accidentType", v)}
                 readOnly={false}
               />
+              {errors.accidentType && <FormHelperText error>{errors.accidentType}</FormHelperText>}
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <TextInput
+              id="accidentPlace"
                 label={"workforce.application.accident.accidentPlace"}
                 value={formData?.employeeAccidentInfo?.accidentPlace || ""}
                 onChange={(v) => handleChange("accidentPlace", v)}
                 required
+                 error={!!errors.accidentPlace}
+            helperText={errors.accidentPlace}
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
@@ -262,12 +271,14 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <EmployeeInsideOutsideFactoryPicker
+                id="inOutsideFactory"
                 value={formData?.employeeAccidentInfo?.inOutsideFactory || ""}
                 label={<FormattedMessage id="workforce.employee.accident.info.insideOutsideFactory" module="workforce" />}
                 required
                 onChange={(v) => handleChange("inOutsideFactory", v)}
                 readOnly={false}
               />
+              {errors.inOutsideFactory && <FormHelperText error>{errors.inOutsideFactory}</FormHelperText>}
             </Grid>
             <Grid item xs={12} className={classes.item}>
               <FormControl component="fieldset">

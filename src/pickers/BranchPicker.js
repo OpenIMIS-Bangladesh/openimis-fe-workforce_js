@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchBanksPick, fetchBranchPick } from "../actions";
 
 const BranchPicker = ({
+  id,
   modulesManager,
   onChange,
   readOnly,
@@ -53,6 +54,7 @@ const BranchPicker = ({
 
   return (
     <Autocomplete
+    id={id}
       multiple={multiple}
       required={required}
       placeholder={placeholder ?? ""}

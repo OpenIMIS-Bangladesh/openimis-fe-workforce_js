@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PreviousGrantInfoForm = ({ handleChange, formData, setFormData }) => {
+const PreviousGrantInfoForm = ({ handleChange, formData, setFormData,errors }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -65,20 +65,25 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData }) => {
             
               <Grid item xs={6} className={classes.item}>
                 <TextInput
+                id="grantAmount"
                   label="workforce.application.grantAmount"
                   value={formData?.previousGrantInfo?.grantAmount || ""}
                   onChange={(v) => handleChange("grantAmount", v,"metadata")}
                   readOnly={false}
-                  
+                  required
+                  error={!!errors.grantAmount}
+            helperText={errors.grantAmount}
                 />
               </Grid>
               <Grid item xs={12} className={classes.item}>
                 <TextInput
+                id="reasonforReceipt"
                   label="workforce.application.reasonforReceipt"
                   value={formData?.previousGrantInfo?.reasonforReceipt || ""}
                   onChange={(v) => handleChange("reasonforReceipt", v,"metadata")}
                   readOnly={false}
-                  
+                  error={!!errors.reasonforReceipt}
+            helperText={errors.reasonforReceipt}
                 />
               </Grid>
             </Grid>

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useTranslations, Autocomplete } from "@openimis/fe-core";
 
 const RelationWithWorkerPicker = ({
+  id,
   modulesManager,
   onChange,
   readOnly,
@@ -41,6 +42,7 @@ const RelationWithWorkerPicker = ({
   );
   return (
     <Autocomplete
+    id={id}
       multiple={false}
       required={required}
       placeholder={placeholder ?? ""}

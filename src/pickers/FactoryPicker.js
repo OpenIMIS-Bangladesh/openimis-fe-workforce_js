@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchFactoriesPick } from "../actions";
 
 const FactoryPicker = ({
+  id,
   modulesManager,
   onChange,
   readOnly,
@@ -49,6 +50,7 @@ const FactoryPicker = ({
 
   return (
     <Autocomplete
+    id={id}
       multiple={multiple}
       required={required}
       placeholder={placeholder ?? ""}

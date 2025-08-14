@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Stepper, Step, StepLabel, Paper, Box, Typography } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage,useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -22,7 +22,7 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReasonForDisability from "../FormsComponents/Disability/ApplicationReasonForDisability";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
-import { safeApplicationId } from "../../../utils/utils";
+import { safeApplicationId, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -54,11 +54,13 @@ const steps = [
   "workforce.application.steps.upload.documents",
 ];
 
-const DisabilityForm = ({ modulesManager, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
+const DisabilityForm = ({ organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
-  console.log({ organizationType });
-  console.log({ selectedApplicationType });
+   const modulesManager= useModulesManager()
+      const { formatMessage } = useTranslations("workforce");
+      const stepRef =useRef(null)
+      const [errors,setErrors] = useState({})
   const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -198,7 +200,7 @@ const DisabilityForm = ({ modulesManager, organizationType, selectedApplicationT
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
       });
     }
-  }, [employeeData]); // Trigger this useEffect when `employeeData` changes.
+  }, [employeeData?.id, parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {
@@ -219,6 +221,10 @@ const DisabilityForm = ({ modulesManager, organizationType, selectedApplicationT
 
   const handleNext = async () => {
     console.log({ formData });
+     const newErrors = validateRequiredFields(stepRef, formatMessage);
+        setErrors(newErrors);
+    
+        if (Object.keys(newErrors).length === 0 ){
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
     if (nextStep === 2 || nextStep === 3) {
@@ -312,6 +318,7 @@ const DisabilityForm = ({ modulesManager, organizationType, selectedApplicationT
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
     }
+  }
     // setActiveStep((prevStep) => prevStep + 1);
   };
 
@@ -443,28 +450,30 @@ const DisabilityForm = ({ modulesManager, organizationType, selectedApplicationT
             </Step>
           ))}
         </Stepper>
+        <Box mt={0} ref={stepRef}>
         {activeStep === 0 ? (
           <ApplicationReasonForDisability
             modulesManager={modulesManager}
             setDeathType={setDeathType}
             handleChange={(key, value) => handleChange(key, value, "metadata")}
             deathType={deathType}
+            errors={errors}
           />
         ) : activeStep === 1 ? (
-          <Box mt={0}>
+     
             <EmployeeDetailsForm
               handleChange={(key, value) => handleChange(key, value, "workforceEmployee")}
               formData={formData}
               setNidOrBcn={setNidOrBcn}
               nidOrBcn={nidOrBcn}
+              errors={errors}
             />
-          </Box>
         ) : activeStep === 2 ? (
-          <Box mt={0}>
+          
             <EmployeeLocationForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />
-          </Box>
+    
         ) : activeStep === 3 ? (
-          <Box mt={0}>
+      
             <EmployeeAccountInfoForm
               accounts={formData.employeeBankInfo}
               formdata={formData}
@@ -480,27 +489,27 @@ const DisabilityForm = ({ modulesManager, organizationType, selectedApplicationT
               removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
               expanded={expanded}
               setExpanded={setExpanded}
+              errors={errors}
             />
-          </Box>
         ) : activeStep === 4 ? (
-          <Box mt={0}>
+       
             <EmployeeAccidentInfoForm
               handleChange={(key, value) => handleChange(key, value, "employeeAccidentInfo")}
               formData={formData}
               setFormData={setFormData}
               applicationType={"disabilityAssistance"}
+              errors={errors}
             />
-          </Box>
         ) : (
-          <Box mt={0}>
             <EmployeeDetailsForm2
               selectedApplicationType={selectedApplicationType}
               handleChange={handleChange}
               formData={formData}
               applicationId={applicationId}
+         
             />
-          </Box>
         )}
+        </Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">

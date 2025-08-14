@@ -18,9 +18,11 @@ import { fetchDiseases } from "../actions";
 const OTHER_ID = "OTHER_OPTION";
 
 const DiseaseMultiSelectPicker = ({
+  id,
   selectedDiseases = [],
   onChange,
   onOtherDiseaseChange,
+  required,
   otherDiseaseValue,
   handleChange, // ✅ handleChange(key, value, parent)
 }) => {
@@ -78,7 +80,8 @@ const DiseaseMultiSelectPicker = ({
           value={selectedDiseases}
           onChange={handleSelectChange}
           renderValue={renderSelectedValues}
-          required={true}
+          required={required}
+          inputProps={{id}}
         >
           {diseaseList.map((disease) => (
             <MenuItem key={disease.id} value={disease.id}>

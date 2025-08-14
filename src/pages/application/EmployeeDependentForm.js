@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Grid, Box, Paper, Button, Typography, Divider, Accordion, AccordionSummary, AccordionDetails, FormControlLabel, Checkbox } from "@material-ui/core";
+import { Grid, Box, Paper, Button, Typography, Divider, Accordion, AccordionSummary, AccordionDetails, FormControlLabel, Checkbox,FormHelperText  } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextInput, PublishedComponent, FormattedMessage, useTranslations, useModulesManager } from "@openimis/fe-core";
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addItem, removeItem, expanded, setExpanded, formdata }) => {
+const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addItem, removeItem, expanded, setExpanded, formdata,errors }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
@@ -132,27 +132,35 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                 {applicationType === "financialAssistance" && (
                   <Grid item xs={12}>
                     <RelationWithWorkerPicker
+                    id="relationType"
                       value={dependent?.relationType || ""}
                       required
                       onChange={(v) => onPickerChange(v,index)}
                       readOnly={false}
                     />
+                    {errors.relationType && <FormHelperText error>{errors.relationType}</FormHelperText>}
                   </Grid>
                 )}
                 <Grid item xs={6}>
                   <TextInput
+                  id="nameBn"
                     label={getRelationAwareLabel(dependent, "workforce.employee.name.bn")}
                     value={dependent.nameBn || ""}
                     onChange={(v) => handleChange(index, "nameBn", v)}
                     required
+                    error={!!errors.nameBn}
+            helperText={errors.nameBn}
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <TextInput
+                  id="nameEn"
                     label={getRelationAwareLabel(dependent, "workforce.employee.name.en")}
                     value={dependent.nameEn || ""}
                     onChange={(v) => handleChange(index, "nameEn", v)}
                     required
+                    error={!!errors.nameEn}
+            helperText={errors.nameEn}
                   />
                 </Grid>
 
@@ -182,11 +190,14 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
 
                 <Grid item xs={6}>
                   <TextInput
+                  id="nid"
                     label={getRelationAwareLabel(dependent, "workforce.application.employee.children.nidOrBirthRegistry")}
                     value={dependent.nid || ""}
                     onChange={(v) => handleChange(index, "nid", v)}
                     type="number"
                     required
+                    error={!!errors.nid}
+            helperText={errors.nid}
                   />
                 </Grid>
 

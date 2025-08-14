@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const WorkerExtraInfo = ({ handleChange, formData }) => {
+const WorkerExtraInfo = ({ handleChange, formData,errors }) => {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
   const classes = useStyles();
@@ -71,18 +71,26 @@ const WorkerExtraInfo = ({ handleChange, formData }) => {
           <Grid container spacing={2} className={classes.section}>
             <Grid item xs={6}>
               <TextInput
+                id="instituteName"
                 readOnly={false}
                 label={formatMessage("workforce.applicant.workInfo.formal.institution_name")}
                 value={formData.instituteName || ""}
+                required
                 onChange={(e) => handleChange("instituteName", e)}
+                error={!!errors.instituteName}
+            helperText={errors.instituteName}
               />
             </Grid>
             <Grid item xs={6}>
               <TextInput
+              id="instituteAddress"
                 readOnly={false}
                 label={formatMessage("workforce.applicant.workInfo.formal.institution_address")}
                 value={formData.instituteAddress || ""}
+                required
                 onChange={(e) => handleChange("instituteAddress", e)}
+                error={!!errors.instituteAddress}
+            helperText={errors.instituteAddress}
               />
             </Grid>
           </Grid>
@@ -93,18 +101,26 @@ const WorkerExtraInfo = ({ handleChange, formData }) => {
           <Grid container spacing={2} className={classes.section}>
             <Grid item xs={6}>
               <TextInput
+              id="aboutWork"
                 readOnly={false}
                 label={formatMessage("workforce.applicant.workInfo.informal.current_occupation")}
                 value={formData.aboutWork || ""}
+                required
                 onChange={(e) => handleChange("aboutWork", e)}
+                error={!!errors.aboutWork}
+            helperText={errors.aboutWork}
               />
             </Grid>
             <Grid item xs={6}>
               <TextInput
+              id="workingPlace"
                 readOnly={false}
                 label={formatMessage("workforce.applicant.workInfo.informal.workplace")}
                 value={formData.workingPlace || ""}
+                required
                 onChange={(e) => handleChange("workingPlace", e)}
+                error={!!errors.workingPlace}
+            helperText={errors.workingPlace}
               />
             </Grid>
           </Grid>

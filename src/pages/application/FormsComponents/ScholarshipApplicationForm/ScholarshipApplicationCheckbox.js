@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, FormControlLabel, Radio, RadioGroup, Typography, Paper, Grid } from "@material-ui/core";
+import { FormControl, FormControlLabel, Radio, RadioGroup, Typography, Paper, Grid,FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextInput, useTranslations, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import BoardPicker from "../../../../pickers/BoardPicker";
@@ -30,6 +30,7 @@ const ScholarshipApplicationCheckbox = ({
   setSelectedScholarshipOption,
   formData,
   applicationForSelf,
+  errors
 }) => {
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
 
@@ -47,30 +48,39 @@ const ScholarshipApplicationCheckbox = ({
           <>
             <Grid item xs={6} className={classes.item}>
               <TextInput
+              id="nameEn"
                 label="workforce.child.name.en"
                 value={formData?.employeeChildrenInfo?.nameEn || ""}
                 onChange={(v) => handleChange("nameEn", v, "metadata")}
                 required
+                error={!!errors.nameEn}
+            helperText={errors.nameEn}
                 readOnly={false}
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <TextInput
+              id="nameBn"
                 label="workforce.child.name.bn"
                 value={formData?.employeeChildrenInfo?.nameBn || ""}
                 onChange={(v) => handleChange("nameBn", v, "metadata")}
                 required
                 readOnly={false}
+                error={!!errors.nameBn}
+            helperText={errors.nameBn}
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <TextInput
+              id="nid"
                 label="workforce.application.employee.children.nidOrBirthRegistry"
                 value={formData?.employeeChildrenInfo?.nid || ""}
                 onChange={(v) => handleChange("nid", v, "metadata")}
                 type={"number"}
                 readOnly={false}
                 required
+                error={!!errors.nid}
+            helperText={errors.nid}
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
@@ -80,7 +90,7 @@ const ScholarshipApplicationCheckbox = ({
                 value={formData?.employeeChildrenInfo?.birthDate || ""}
                 onChange={(v) => handleChange("birthDate", v, "metadata")}
                 readOnly={false}
-                required
+                // required
               />
             </Grid>
           </>
@@ -118,23 +128,29 @@ const ScholarshipApplicationCheckbox = ({
         {formData?.metadata?.scholarshipFor === "underGraduate" || formData?.metadata?.scholarshipFor === "postGraduate" ? (
           <Grid item xs={6}>
             <TextInput
+            id="university"
               label="workforce.application.educationInfo.university"
-              value={formData?.metadata?.cgpa || ""}
+              value={formData?.metadata?.university || ""}
               onChange={(v) => handleChange("university", v, "metadata")}
               type="text"
               required
               readOnly={false}
+              error={!!errors.university}
+            helperText={errors.university}
             />
           </Grid>
         ) : (
           <Grid item xs={6}>
             <BoardPicker
+            id="board"
               value={formData?.metadata?.board || ""}
               label={<FormattedMessage id="workforce.application.educationInfo.board" module="workforce" />}
               required
               onChange={(v) => handleChange("board", v, "metadata")}
               readOnly={false}
+              
             />
+            {errors.board && <FormHelperText error>{errors.board}</FormHelperText>}
           </Grid>
         )}
         <Grid item xs={6}>
@@ -147,6 +163,7 @@ const ScholarshipApplicationCheckbox = ({
             readOnly={false}
           /> */}
           <YearPicker
+          id="passingYear"
             label={
               formData?.metadata?.scholarshipFor === "underGraduate"
                 ? formatMessage("workforce.application.educationInfo.admissionYear")
@@ -156,59 +173,75 @@ const ScholarshipApplicationCheckbox = ({
             onChange={(v) => handleChange("passingYear", v, "metadata")}
             required
           />
+          {errors.passingYear && <FormHelperText error>{errors.passingYear}</FormHelperText>}
         </Grid>
 
         {formData?.metadata?.scholarshipFor === "underGraduate" ? (
           <Grid item xs={6}>
             <TextInput
+            id="idNo"
               label="workforce.application.educationInfo.IdNo"
-              value={formData?.employeeChildrenInfo?.rollNo || ""}
+              value={formData?.employeeChildrenInfo?.idNo || ""}
               onChange={(v) => handleChange("idNo", v)}
               type="number"
               required
               readOnly={false}
+              error={!!errors.idNo}
+            helperText={errors.idNo}
             />
           </Grid>
         ) : (
           <Grid item xs={6}>
             <TextInput
+            id={"rollNo"}
               label="workforce.application.educationInfo.rollNo"
               value={formData?.metadata?.rollNo || ""}
               onChange={(v) => handleChange("rollNo", v, "metadata")}
               type="number"
               required
               readOnly={false}
+              error={!!errors.rollNo}
+            helperText={errors.rollNo}
             />
           </Grid>
         )}
         <Grid item xs={6}>
           <TextInput
+          id="regNo"
             label="workforce.application.educationInfo.regNo"
             value={formData?.metadata?.regNo || ""}
             onChange={(v) => handleChange("regNo", v, "metadata")}
             type="number"
             required
             readOnly={false}
+            error={!!errors.regNo}
+            helperText={errors.regNo}
           />
         </Grid>
 
         <Grid item xs={6} className={classes.item}>
           <TextInput
+            id="studyingClass"
             label={formData?.metadata?.scholarshipFor === "underGraduate"?formatMessage("workforce.application.employee.children.studyingSemester"):formatMessage("workforce.application.employee.children.studyingClass")}
             value={formData?.metadata?.studyingClass || ""}
             onChange={(v) => handleChange("studyingClass", v, "metadata")}
             readOnly={false}
             required={formData?.metadata?.scholarshipFor === "underGraduate" || formData?.metadata?.scholarshipFor === "postGraduate" ? true : false}
+            error={!!errors.studyingClass}
+            helperText={errors.studyingClass}
           />
         </Grid>
         <Grid item xs={6}>
           <TextInput
+          id="cgpa"
             label="workforce.application.educationInfo.cgpa"
             value={formData?.metadata?.cgpa || ""}
             onChange={(v) => handleChange("cgpa", v, "metadata")}
             // type="text"
             required
             readOnly={false}
+            error={!!errors.cgpa}
+            helperText={errors.cgpa}
           />
         </Grid>
       </Grid>

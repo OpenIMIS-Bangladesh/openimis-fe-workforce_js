@@ -10,6 +10,7 @@ countries.registerLocale(enLocale);
 countries.registerLocale(bnLocale);
 
 const CountryPicker = ({
+  id,
   label = "Country",
   value,
   onChange,
@@ -41,6 +42,7 @@ const CountryPicker = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={readOnly}
+        inputProps={{id}}
       >
         {countryList.map((country) => (
           <MenuItem key={country.value} value={country.value}>
