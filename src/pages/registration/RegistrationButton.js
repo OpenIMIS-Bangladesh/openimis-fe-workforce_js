@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/styles";
-import { Button, Box, Grid, Paper, LinearProgress,Typography } from "@material-ui/core";
-import { useTranslations, useModulesManager, TextInput, useHistory,FormattedMessage } from "@openimis/fe-core";
+import { Button, Box, Divider, Typography } from "@material-ui/core";
+import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage } from "@openimis/fe-core";
 
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
@@ -10,12 +10,12 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
     display: "inline-block",
     // flexWrap:"wrap",
-    alignItems:"center",
+    alignItems: "center",
   },
-  title:{
-    fontSize:'small',
+  title: {
+    fontSize: 'small',
     // fontWeight:500,
-    display:'inline'
+    display: 'inline'
   },
   inlineButton: {
     fontSize: "0.875rem",
@@ -24,7 +24,17 @@ const useStyles = makeStyles((theme) => ({
     // minWidth: "unset",
     textTransform: "none",
     marginLeft: theme.spacing(1),
-    backgroundColor:"#B2D0D5",
+    backgroundColor: "#B2D0D5",
+    display: "inline", // crucial to stay inline
+  },
+  factoryRegistrationButton: {
+    fontSize: "0.875rem",
+    fontWeight: "bold",
+    padding: theme.spacing(0.5),
+    // minWidth: "unset",
+    textTransform: "none",
+    marginLeft: theme.spacing(1),
+    backgroundColor: "#b2dee6ff",
     display: "inline", // crucial to stay inline
   },
   paper: theme.paper.paper,
@@ -42,10 +52,17 @@ const RegistrationButton = () => {
   };
 
   return (
-    <Box className={classes.container}>
-      <Typography varient="p" className={classes.title}><FormattedMessage module="workforce" id={"workforce.registration.desclaimer"} /></Typography>
-      <Button className={classes.inlineButton}  onClick={redirectToRegistrationPage}><FormattedMessage module="workforce" id={"workforce.register.button"} /></Button>
-    </Box>
+    <>
+      <Box className={classes.container}>
+        <Typography varient="p" className={classes.title}><FormattedMessage module="workforce" id={"workforce.registration.desclaimer"} /></Typography>
+        <Button className={classes.inlineButton} onClick={redirectToRegistrationPage}><FormattedMessage module="workforce" id={"workforce.register.button"} /></Button>
+      </Box>
+      <Divider style={{ margin: "1em 0" }} />
+      <Box className={classes.container}>
+        {/* <Typography varient="p" className={classes.title}><FormattedMessage module="workforce" id={"workforce.registration.desclaimer"} /></Typography> */}
+        <Button className={classes.factoryRegistrationButton} onClick={redirectToRegistrationPage}><FormattedMessage module="workforce" id={"workforce.register.factory.button"} /></Button>
+      </Box>
+    </>
   );
 };
 

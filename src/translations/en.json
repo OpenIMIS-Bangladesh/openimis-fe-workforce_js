@@ -722,8 +722,8 @@
   "workforce.employee.accident.info.hasRejoined":"Have you rejoined the workplace after recovery?",
 
 
-    "workforce.register.button":"নিবন্ধন করুন",
+  "workforce.register.button":"নিবন্ধন করুন",
+  "workforce.register.factory.button": "ফ্যাক্টরি নিবন্ধন করুন",
 
     "calendar.clearButton": "Clear"
-
 }
