@@ -40,6 +40,8 @@ export const ROUTE_WORKFORCE_DOCUMENTS = "workforce/documents";
 export const ROUTE_WORKFORCE_BANKS_BANK = "workforce/banks/bank"
 
 export const ROUTE_WORKFORCE_REGISTRATION = "registration"
+export const ROUTE_WORKFORCE_FACTORY_REGISTRATION = "registration/factory"
+
 export const ROUTE_WORKFORCE_APPLICATION = "workforce/application"
 export const ROUTE_WORKFORCE_APPLICATIONS_PROCESS = "workforce/applications/process"
 export const ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS = "workforce/applications/application/view"

@@ -51,6 +51,11 @@ const RegistrationButton = () => {
     history.push("/registration");
   };
 
+  const redirectToFactoryRegistrationPage = (e) => {
+    e.preventDefault();
+    history.push("/registration/factory");
+  };
+
   return (
     <>
       <Box className={classes.container}>
@@ -60,7 +65,7 @@ const RegistrationButton = () => {
       <Divider style={{ margin: "1em 0" }} />
       <Box className={classes.container}>
         {/* <Typography varient="p" className={classes.title}><FormattedMessage module="workforce" id={"workforce.registration.desclaimer"} /></Typography> */}
-        <Button className={classes.factoryRegistrationButton} onClick={redirectToRegistrationPage}><FormattedMessage module="workforce" id={"workforce.register.factory.button"} /></Button>
+        <Button className={classes.factoryRegistrationButton} onClick={redirectToFactoryRegistrationPage}><FormattedMessage module="workforce" id={"workforce.register.factory.button"} /></Button>
       </Box>
     </>
   );

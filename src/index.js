@@ -46,7 +46,8 @@ import {
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS,
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND,
   ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION,
-  ROUTE_ADMINISTRATIVE_LOGIN
+  ROUTE_ADMINISTRATIVE_LOGIN,
+  ROUTE_WORKFORCE_FACTORY_REGISTRATION
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -87,11 +88,7 @@ import MultiStepApplyForm from "./pages/application/MultiStepApplyForm";
 import ApplicationsProcessPage from "./pages/application-process/ApplicationsProcessPage";
 import RegistrationButton from "./pages/registration/RegistrationButton";
 import ApplicationProcessPage from "./pages/application-process/ApplicationProcessPage";
-import DashboardPage from "./pages/dashboard/DashboardPage";
 import DashboardRelay from "./pages/dashboard/DashboardRelay";
-import ApplicantDashboardPage from "./pages/dashboard/ApplicantDashboardPage";
-import CheckerDashboardPage from "./pages/dashboard/CheckerDashboardPage";
-import ApproverDashboardPage from "./pages/dashboard/ApproverDashboardPage";
 import NotificationBar from "./components/app-bar/NotificationBar";
 import ActionsApplicationPage from "./pages/application-process/ActionsApplicationPage";
 import ResendApplicationPage from "./pages/application-process/ResendApplicationPage";
@@ -100,6 +97,7 @@ import VerifyApplicationPage from "./pages/application-process/VerifyApplication
 import LoginHeader from "./pages/login/LoginHeader";
 import LoginForm from "./pages/login/LoginForm";
 import LoginFormAdministrative from "./pages/login/LoginFormAdministrative";
+import FactoryRegistrationPage from "./pages/registration/factory/FactoryRegistrationPage";
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -297,7 +295,7 @@ const DEFAULT_CONFIG = {
   "core.UnauthenticatedRouter": [
     { path: ROUTE_WORKFORCE_REGISTRATION, component: RegistrationPage },
     { path: ROUTE_ADMINISTRATIVE_LOGIN, component: LoginFormAdministrative },
-    { path: ROUTE_WORKFORCE_FACTORIES_FACTORY, component: OrganizationFactoryPage },
+    { path: ROUTE_WORKFORCE_FACTORY_REGISTRATION, component: FactoryRegistrationPage },
 
   ],
 
