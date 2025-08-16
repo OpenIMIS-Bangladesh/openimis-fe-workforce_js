@@ -77,7 +77,6 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,docu
   const dispatch = useDispatch();
 
   // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
-  console.log({documentProp})
 
   const uploadFileToApi = async (file) => {
     const formData = new FormData();

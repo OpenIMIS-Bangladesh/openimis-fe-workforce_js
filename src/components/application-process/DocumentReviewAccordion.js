@@ -24,7 +24,7 @@ const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onRej
   const handlePDFLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
   };
-  console.log("done",file);
+  
 
   return (
     <Accordion>

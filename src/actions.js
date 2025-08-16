@@ -73,6 +73,7 @@ export function fetchDocumentType(mm, filters) {
     "status",
     "nameEn",
     "nameBn",
+    "mandatoryForApplicant"
   ];
   const payload = formatPageQueryWithCount(
     "workforceDocumentTypes",
@@ -1144,7 +1145,7 @@ export function fetchWorkforceDocument(mm, filters) {
     "holder",
     "note",
     "workforceApplication{id}",
-    "workforceDocumentType{id,nameBn,nameEn,documentType}"
+    "workforceDocumentType{id,nameBn,nameEn,documentType,mandatoryForApplicant}"
   ];
   const payload = formatPageQueryWithCount(
     "workforceDocuments",
