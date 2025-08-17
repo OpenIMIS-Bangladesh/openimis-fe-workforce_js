@@ -198,8 +198,8 @@ class VerifyApplicationPage extends Component {
     const { classes, applicationUuid, documents, application, documentType, locale, user_rights } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType } = this.state;
     const user_type = getUserTypeFromRights(user_rights);
-    console.log({ mah_boob: documentType });
-    console.log({ my_boob: fileStates });
+    // console.log({ mah_boob: documentType });
+    // console.log({ my_boob: fileStates });
     const filteredDocumentTypes = documentType?.filter((doc) => {
       console.log("doc",doc);
       const matchedFile = fileStates?.find((file) => {

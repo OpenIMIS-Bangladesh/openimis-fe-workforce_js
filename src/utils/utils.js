@@ -100,7 +100,9 @@ export const getParsedApplication = (modulesManager, filters) => {
         employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
         employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo) || {},
         employeeChildrenInfo: safeParse(rawData.employeeChildrenInfo) || {},
-        metadata: safeParse(rawData.metadata) || {}
+        metadata: safeParse(rawData.metadata) || {},
+        applicantInfo: safeParse(rawData.applicantInfo) || {},
+
       };
 
       return parsedData;

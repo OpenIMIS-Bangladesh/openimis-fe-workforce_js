@@ -1158,6 +1158,10 @@ class ApplicationProcessSearcher extends Component {
     this.setState({ openGenerateBFTN: true });
   };
 
+  onCheckBoxSelect = (selection) => {
+    this.setState({selectedApplication: selection });
+  };
+
   rowDisabled = (selection, i) => !!i.validityTo;
 
   rowLocked = (selection, i) => !!i.clientMutationId;
@@ -1204,12 +1208,14 @@ class ApplicationProcessSearcher extends Component {
         setShowHistoryFilter={(showHistoryFilter) => this.setState({ showHistoryFilter })}
       />
     )};
+
+    console.log({faltu:selectedApplication})
     return (
       <>
         <Searcher
           module={MODULE_NAME}
-          // selectWithCheckbox={true}
-          // withSelection={true}
+          selectWithCheckbox={getUserTypeFromRights(userRights) !== WORKFORCE_USER_TYPE.APPLICANT ? true:false}
+          withSelection={getUserTypeFromRights(userRights) !== WORKFORCE_USER_TYPE.APPLICANT ? true:false}
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT ? null : filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
@@ -1232,6 +1238,7 @@ class ApplicationProcessSearcher extends Component {
           rowLocked={this.rowLocked}
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
+          onCheckBoxSelect={this.onCheckBoxSelect}
         />
           {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN ? (
             <Box
