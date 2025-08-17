@@ -15,6 +15,7 @@ import {
   Accordion,
   AccordionSummary,
   CardHeader,
+  Box
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { withTheme, withStyles } from "@material-ui/core/styles";
@@ -100,7 +101,7 @@ class VerifyApplicationPage extends Component {
       preview: null,
       note: "",
       mockFiles: mockFiles,
-      fileStates: mockFiles ||[],
+      fileStates: mockFiles || [],
       // fileStates: mockFiles.map((file) => ({
       //   ...file,
       //   comment: "",
@@ -114,7 +115,7 @@ class VerifyApplicationPage extends Component {
       this.setState({ stateEdited: this.props.application });
     }
     if (prevProps.documents !== this.props.documents) {
-      this.setState({ fileStates: this.props.documents ||[] });
+      this.setState({ fileStates: this.props.documents || [] });
     }
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.dispatch(journalize(this.props.mutation));
@@ -200,20 +201,26 @@ class VerifyApplicationPage extends Component {
     console.log({ mah_boob: documentType });
     console.log({ my_boob: fileStates });
     const filteredDocumentTypes = documentType?.filter((doc) => {
-      const existsInFileStates = fileStates?.some((file) => file?.workforceDocumentType?.id === doc?.id && file?.workforceDocumentType?.mandatoryForApplicant === false);
+      console.log("doc",doc);
+      const matchedFile = fileStates?.find((file) => {
+        console.log("fileStates",file);
+        return file?.workforceDocumentType?.id !== doc?.id  && file?.workforceDocumentType?.mandatoryForApplicant === false;
+      });
 
-      return existsInFileStates ;
+      // Only return docs where a matching file exists
+      // and the documentType itself is NOT mandatory
+      return matchedFile || doc?.mandatoryForApplicant === false;
     });
-//     const filteredDocumentTypes = documentType.filter((doc) => {
-//   console.log("Checking doc:", doc);
-//   const existsInFileStates = fileStates?.some((file) => {
-//     console.log("Comparing", file.workforceDocumentType?.id, "with", doc.id);
-//     return file.workforceDocumentType?.id === doc.id;
-//   });
-//   return existsInFileStates;
-// });
+    //     const filteredDocumentTypes = documentType.filter((doc) => {
+    //   console.log("Checking doc:", doc);
+    //   const existsInFileStates = fileStates?.some((file) => {
+    //     console.log("Comparing", file.workforceDocumentType?.id, "with", doc.id);
+    //     return file.workforceDocumentType?.id === doc.id;
+    //   });
+    //   return existsInFileStates;
+    // });
 
-console.log("filteredDocumentTypes", filteredDocumentTypes);
+    console.log("filteredDocumentTypes", filteredDocumentTypes);
     console.log({ filteredDocumentTypes });
     return (
       <Grid container spacing={3} className={classes.rootGrid}>
@@ -276,15 +283,11 @@ console.log("filteredDocumentTypes", filteredDocumentTypes);
                   </b>
                 </Typography>
                 <Divider />
-                {documentType?.map((document, index) => (
-                  <>
-                    {document.mandatoryForApplicant === false && (
-                      <>
+                {filteredDocumentTypes?.map((document, index) => (
+                      <Box style={{marginTop:"10px"}}>
                         <Typography>{document.nameBn}</Typography>
                         <FileUploader fieldKey={document.fieldId} applicationId={applicationUuid} documentType={document.documentType} />
-                      </>
-                    )}
-                  </>
+                      </Box>
                 ))}
               </CardContent>
             </Card>
