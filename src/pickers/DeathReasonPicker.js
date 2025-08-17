@@ -66,7 +66,7 @@ const DeathReasonPicker = ({
             <FormattedMessage
               module="workforce"
               id="workforce.application.other.death.reason"
-              defaultMessage="অন্যান্য মৃত্যুর কারণ নির্দিষ্ট করুন"
+              defaultMessage="মৃত্যুর কারণ নির্দিষ্ট করুন"
             />
           }
           value={otherDiseaseValue || ""}

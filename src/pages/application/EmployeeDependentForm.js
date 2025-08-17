@@ -129,7 +129,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
           <AccordionDetails>
             <Paper className={classes.paper} elevation={0}>
               <Grid container spacing={2}>
-                {applicationType === "financialAssistance" && (
+                {/* {applicationType === "financialAssistance" && ( */}
                   <Grid item xs={12}>
                     <RelationWithWorkerPicker
                       value={dependent?.relationType || ""}
@@ -138,7 +138,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       readOnly={false}
                     />
                   </Grid>
-                )}
+                {/* )} */}
                 <Grid item xs={6}>
                   <TextInput
                     label={getRelationAwareLabel(dependent, "workforce.employee.name.bn")}

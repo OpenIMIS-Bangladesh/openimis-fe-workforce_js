@@ -239,8 +239,8 @@
   "workforce.financial.assistance.normalDeath": "স্বাভাবিক মৃত্যু",
   "workforce.financial.assistance.accidentalDeath": "দুর্ঘটনাজনিত মৃত্যু",
 
-  "workforce.disability.partial": "আংশিক অক্ষমতা",
-  "workforce.disability.permanent": "স্থায়ী অক্ষমতা",
+  "workforce.disability.partial": "আংশিক স্থায়ী অক্ষমতা",
+  "workforce.disability.permanent": "সম্পূর্ণ স্থায়ী অক্ষমতা",
 
   "workforce.application.employee.children.studyingClass": "অধ্যয়নরত শ্রেণী/বিভাগ",
   "workforce.application.employee.children.studyingSemester": "অধ্যয়নরত সেমিস্টার/বছর",
@@ -467,9 +467,9 @@
 
   "workforce.previewDetails.dependent":"নির্ভরশীলের তথ্য",
 
-  "workforce.application.death.reason":"অন্যান্য মৃত্যুর কারণ নির্দিষ্ট করুন",
-  "workforce.application.other.death.reason":"অন্যান্য মৃত্যুর কারণ নির্দিষ্ট করুন ",
-  "workforce.application.other.desease.reason":"অন্যান্য রোগ নির্দিষ্ট করুন ",
+  "workforce.application.death.reason":"মৃত্যুর কারণ নির্দিষ্ট করুন",
+  "workforce.application.other.death.reason":"মৃত্যুর কারণ নির্দিষ্ট করুন ",
+  "workforce.application.other.desease.reason":"রোগ নির্দিষ্ট করুন ",
 
     "workforce.application.deathReason.heart_disease": "হৃদরোগ",
 "workforce.application.deathReason.stroke": "স্ট্রোক",
