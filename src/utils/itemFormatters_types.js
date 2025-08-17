@@ -986,7 +986,7 @@ export const itemFormattersApprover = (
         </IconButton>
       </Tooltip>
 
-      <Tooltip title="Veify">
+      {/* <Tooltip title="Veify">
         <IconButton
           disabled={application?.isHistory}
           onClick={() => {
@@ -1001,15 +1001,15 @@ export const itemFormattersApprover = (
         >
           <VerifiedUserIcon />
         </IconButton>
-      </Tooltip>
-      <Tooltip title="Revert">
+      </Tooltip> */}
+      {/* <Tooltip title="Revert">
         <IconButton
           disabled={application?.isHistory}
           onClick={() => component.handleOpenRevertModal(application)}
         >
           <UndoIcon />
         </IconButton>
-      </Tooltip>
+      </Tooltip> */}
       <Tooltip title="Reject">
         <span>
           <IconButton
