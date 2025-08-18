@@ -76,6 +76,18 @@
     "workforce.employee.application.status",
     component.isShowHistory() ? "workforce.version" : "",
   ];
+  export const headerSectionTwoAdmin = (component) => [
+    "",
+    "workforce.application.tracking.number",
+    "workforce.employee.application.applicationDate",
+    "workforce.employee.name",
+    "workforce.employee.application.factoryName",
+    "workforce.employee.application.applicationType",
+    "workforce.employee.application.moneyAmount",
+    "workforce.employee.application.nid",
+    "workforce.employee.application.status",
+    component.isShowHistory() ? "workforce.version" : "",
+  ];
   export const headerDoctor = (component) => [
     "",
     "workforce.application.tracking.number",

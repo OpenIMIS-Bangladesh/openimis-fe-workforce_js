@@ -62,6 +62,8 @@ export const WORKFORCE_STATUS = {
   REVERT:"revert",
   FORWARD_TO_ASSOCIATION:"forward_to_association",
   FORWARD_TO_CF_SECTION:"forward_to_cf_section",
+  FORWARD_TO_CF_SECTION_ONE:"forward_to_cf_section_one",
+  FORWARD_TO_CF_SECTION_TWO:"forward_to_cf_section_two",
   FORWARD_TO_DOCTOR:"forward_to_doctor",
   SELECTED: "selected",
   MEETING_CREATED: "meeting_created",
@@ -105,6 +107,8 @@ export const STATUS_MAP_BN  = {
   revert: "আবেদন ফেরত পাঠানো হয়েছে",
   forward_to_association: "অ্যাসোসিয়েশনের কাছে প্রেরণ",
   forward_to_cf_section: "সিএফ শাখায় প্রেরণ",
+  forward_to_cf_section_one: "সিএফ শাখা-১ এ প্রেরণ",
+  forward_to_cf_section_two: "সিএফ শাখা-২ এ প্রেরণ",
   forward_to_doctor: "ডক্টরের কাছে প্রেরণ",
   selected: "নির্বাচিত",
   meeting_created: "সভা তৈরি হয়েছে"
@@ -148,6 +152,8 @@ export const STATUS_MAP_EN = {
   revert: "Application returned",
   forward_to_association: "Forward to Association",
   forward_to_cf_section: "Forward to CF Section",
+  forward_to_cf_section_one: "Forward to CF Section-1",
+  forward_to_cf_section_two: "Forward to CF Section-2",
   forward_to_doctor: "Forward to Doctor",
   selected: "Selected",
   meeting_created: "Meeting Created"
@@ -165,6 +171,7 @@ export const WORKFORCE_USER_TYPE = {
   BGMEA_ASSOCIATION: "bgmea_association",
   BKMEA_ASSOCIATION: "bkmea_association",
   SECTION_ADMIN: "section_admin",
+  SECTION_ADMIN_TWO: "section_admin_two",
   DOCTOR: "doctor",
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
@@ -178,6 +185,7 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   bgmea_association: "BGMEA Association",
   bkmea_association: "BKMEA Association",
   section_admin: "Section Admin",
+  section_admin_two: "Section Admin Two",
   doctor: "Doctor",
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
@@ -190,7 +198,8 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   director: "পরিচালক",
   bgmea_association: "বিজিএমইএ অ্যাসোসিয়েশন",
   bkmea_association: "বিকেএমইএ অ্যাসোসিয়েশন",
-  section_admin: "সেকশন অ্যাডমিন",
+  section_admin: "সেকশন-১ অ্যাডমিন",
+  section_admin_two: "সেকশন-২ অ্যাডমিন",
   doctor: "ডাক্তার",
 
 };
@@ -233,6 +242,8 @@ export const statusOptions = [
   { value: "revert", label: "আবেদন ফেরত পাঠানো হয়েছে" },
   { value: "forward_to_association", label: "অ্যাসোসিয়েশনের কাছে প্রেরণ" },
   { value: "forward_to_cf_section", label: "সিএফ শাখায় প্রেরণ" },
+  { value: "forward_to_cf_section_one", label: "সিএফ শাখা-১ এ প্রেরণ" },
+  { value: "forward_to_cf_section_two", label: "সিএফ শাখা-২ এ প্রেরণ" },
   { value: "forward_to_doctor", label: "ডক্টরের কাছে প্রেরণ" },
   { value: "selected", label: "নির্বাচিত" },
   { value: "meeting_created", label: "সভা তৈরি হয়েছে" },

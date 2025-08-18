@@ -165,7 +165,7 @@ const FiledApplications = () =>{
   return (
   <>
     <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.section1.admin.dashboard" />
+      <FormattedMessage module="workforce" id="workforce.section2.admin.dashboard" />
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
@@ -366,7 +366,7 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
   return (
     <>
       <Typography variant="h5" gutterBottom>
-        <FormattedMessage module="workforce" id="workforce.section1.admin.dashboard" />
+        <FormattedMessage module="workforce" id="workforce.section2.admin.dashboard" />
       </Typography>
 
       {/* Render each summaryData item as an accordion */}
@@ -395,7 +395,7 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
 
 // ------------------------------------------------------------
 
-const SectionAdminDashboard = () => {
+const SectionTwoAdminDashboardPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
@@ -457,4 +457,4 @@ const SectionAdminDashboard = () => {
   );
 };
 
-export default SectionAdminDashboard;
+export default SectionTwoAdminDashboardPage;
