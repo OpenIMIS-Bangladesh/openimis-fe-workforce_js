@@ -1,17 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Grid } from "@material-ui/core";
 import { TextInput } from "@openimis/fe-core";
+import { getThirdStepId } from "../../utils/utils";
+import PostOfficePicker from "../../pickers/PostOfficePicker";
 
-const CustomDetailedLocation = ({
-  locationType = "city",
-  onChange,
-  addressKey,
-  data = {},
-  readOnly,
-}) => {
+const CustomDetailedLocation = ({ locationType = "city", onChange, addressKey, data = {}, readOnly, locationData }) => {
   const [localData, setLocalData] = useState({});
   const firstRender = useRef(true);
-
+  const thirdStepId = getThirdStepId(locationData);
+  console.log({ thirdStepId });
   // Parse and initialize from passed `data` once on mount or when `data` changes (external)
   useEffect(() => {
     if (typeof data === "string") {
@@ -50,6 +47,16 @@ const CustomDetailedLocation = ({
       {locationType === "city" && (
         <>
           <Grid item xs={12} sm={4}>
+            <PostOfficePicker
+              value={localData.postOffice || null} 
+              label={"Post Office"}
+              locationId={thirdStepId}
+              onChange={(v) => updateField( "postOffice", v)}
+              required
+              readOnly={false}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
             <TextInput
               label="workforce.employee.city.road_no"
               value={localData.roadName || ""}
@@ -77,18 +84,23 @@ const CustomDetailedLocation = ({
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextInput
-              value={localData.extraInfo || ""}
-              onChange={(v) => updateField("extraInfo", v)}
-              InputProps={{ margin: "dense" }}
-              readOnly={readOnly}
-            />
+            <TextInput value={localData.extraInfo || ""} onChange={(v) => updateField("extraInfo", v)} InputProps={{ margin: "dense" }} readOnly={readOnly} />
           </Grid>
         </>
       )}
 
       {locationType === "rural" && (
         <>
+        <Grid item xs={12} sm={4}>
+            <PostOfficePicker
+              value={localData.postOffice || null} 
+              label={"Post Office"}
+              locationId={thirdStepId}
+              onChange={(v) => updateField( "postOffice", v)}
+              required
+              readOnly={false}
+            />
+          </Grid>
           <Grid item xs={12} sm={4}>
             <TextInput
               label="workforce.employee.rural.house_name"
@@ -117,12 +129,7 @@ const CustomDetailedLocation = ({
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextInput
-              value={localData.extraInfo || ""}
-              onChange={(v) => updateField("extraInfo", v)}
-              InputProps={{ margin: "dense" }}
-              readOnly={readOnly}
-            />
+            <TextInput value={localData.extraInfo || ""} onChange={(v) => updateField("extraInfo", v)} InputProps={{ margin: "dense" }} readOnly={readOnly} />
           </Grid>
         </>
       )}

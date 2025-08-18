@@ -41,6 +41,11 @@ function reducer(
     errorBanksPick: null,
     fetchedBanksPick: false,
     banksPick: [],
+    
+    fetchingPostOfficesPick: false,
+    errorPostOfficesPick: null,
+    fetchedPostOfficesPick: false,
+    postOfficesPick: [],
 
     fetchingWorkforceOtp: false,
     errorWorkforceOtp: null,
@@ -539,6 +544,29 @@ function reducer(
         ...state,
         fetching: false,
         errorBanksPick: formatServerError(action.payload),
+      };
+
+    case "WORKFORCE_POST_OFFICE_PICKER_REQ":
+      return {
+        ...state,
+        fetchingPostOfficesPick: true,
+        fetchedPostOfficesPick: false,
+        postOfficesPick: [],
+        errorPostOfficesPick: null,
+      };
+    case "WORKFORCE_POST_OFFICE_PICKER_RESP":
+      return {
+        ...state,
+        fetchingPostOfficesPick: false,
+        fetchedPostOfficesPick: true,
+        postOfficesPick: action.payload.data.workforcePostoffice,
+        errorPostOfficesPick: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_POST_OFFICE_PICKER_ERR":
+      return {
+        ...state,
+        fetching: false,
+        errorPostOfficesPick: formatServerError(action.payload),
       };
 
 
