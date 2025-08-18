@@ -33,12 +33,13 @@ import {
   itemFormattersChecker,
   itemFormattersCheckerTwo,
   itemFormattersSectionAdmin,
+  itemFormattersSectionTwoAdmin,
   itemFormattersDoctor,
   itemFormattersFactoryAdmin,
   itemFormattersDirector,
 } from "../../utils/itemFormatters_types";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
-import { headerApplicant, headerApprover, headerChecker,headerCheckerTwo,headerDoctor, headerSectionAdmin, headerAssociation, headersAdmin, headerFactoryAdmin, headerDirector } from "../../utils/headers_types";
+import { headerApplicant, headerApprover, headerChecker,headerCheckerTwo,headerDoctor, headerSectionAdmin, headerSectionTwoAdmin, headerAssociation, headersAdmin, headerFactoryAdmin, headerDirector } from "../../utils/headers_types";
 
 const styles = (theme) => ({
   paper: {
@@ -111,8 +112,8 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
 
       const defaultStatusFilters = [
-        'statusIn: ["forward_to_cf_section"]',
-        'applicationTypeIn: ["schoolarship","medicalAssistance","maternityGrant"]'
+        'statusIn: ["forward_to_cf_section_one"]',
+        'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]'
       ];
       const orderByFilter = 'orderBy: ["-dateCreated"]';
 
@@ -151,14 +152,70 @@ class ApplicationProcessSearcher extends Component {
   const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
 
   if (rejectedApplication) {
-    defaultStatusFilters.push('statusIn: ["rejected"]');
+    defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
   } else if (revertedApplication) {
-    defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]');
+    defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
   } else if (summaryId) {
-    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]');
+    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
     additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
   } else {
-    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor"]');
+    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+  }
+
+  const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+  const nidFilters = this.props.nidFilters || [];
+
+  let finalFilters = [];
+
+  if (nidFilters.length) {
+    // If NID search is present, ignore default status filters
+    finalFilters = [...nidFilters];
+
+    // Optionally add orderBy if not already present
+    if (!finalFilters.some(f => f.includes("orderBy"))) {
+      finalFilters.push(orderByFilter);
+    }
+
+    // Keep summaryId filter if present
+    if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
+      finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+    }
+  } else if (prms?.length) {
+    finalFilters = [...prms];
+
+    const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
+    const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
+
+    if (!hasStatusIn) {
+      finalFilters = [...defaultStatusFilters, ...finalFilters];
+    }
+    if (!hasOrderBy) finalFilters.push(orderByFilter);
+    if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
+      finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+    }
+  } else {
+    finalFilters = [...defaultStatusFilters, ...additionalFilters, orderByFilter];
+  }
+
+  this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+} else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
+  this.setState({ displayVersion: showHistoryFilter });
+
+  let defaultStatusFilters = [];
+  let additionalFilters = [];
+
+  const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+
+  if (rejectedApplication) {
+    defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
+  } else if (revertedApplication) {
+    defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
+  } else if (summaryId) {
+    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
+    additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+  } else {
+    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
   }
 
   const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -206,7 +263,7 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
 
       const defaultFilters = [
-        'statusIn: ["forward_to_cf_section"]',
+        'statusIn: ["forward_to_cf_section_two"]',
         'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
         'orderBy: ["-dateCreated"]',
       ];
@@ -798,6 +855,8 @@ class ApplicationProcessSearcher extends Component {
       ? headerCheckerTwo(this)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
       ? headerSectionAdmin(this)
+      : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
+      ? headerSectionTwoAdmin(this)
       : userType === WORKFORCE_USER_TYPE.DOCTOR
       ? headerDoctor(this)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION
@@ -823,6 +882,8 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
       ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
+      : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
+      ? itemFormattersSectionTwoAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.DOCTOR
       ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION
@@ -915,7 +976,7 @@ class ApplicationProcessSearcher extends Component {
             const createApplicationMovementData = {
               applicationId: decodedId,
               status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
-              note: "আবেদন নির্বাচন করা হয়েছে",
+              note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
               action: "forward_to_cf_section",
             };
 
@@ -941,7 +1002,7 @@ class ApplicationProcessSearcher extends Component {
       }
     }
   };
-  handleBulkSelectedbySectionAdmin = async () => {
+  handleBulkSelectedbySectionAdminToDoctor = async () => {
     const { selectedApplicationIds } = this.state;
     const { updateApplication, createApplicationMovement } = this.props;
 
@@ -966,6 +1027,55 @@ class ApplicationProcessSearcher extends Component {
               status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR,
               note: "আবেদন নির্বাচন করা হয়েছে",
               action: "forward_to_doctor",
+            };
+
+            await updateApplication(updateApplicationData, "update workforce application");
+            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+          })
+        );
+
+        this.setState({
+          serverResponse: {
+            status: "SUCCESS",
+            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+          },
+        });
+      } catch (error) {
+        console.error("Bulk selection failed:", error);
+        this.setState({
+          serverResponse: {
+            status: "ERROR",
+            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+          },
+        });
+      }
+    }
+  };
+  handleBulkSelectedbyChecker = async () => {
+    const { selectedApplicationIds } = this.state;
+    const { updateApplication, createApplicationMovement } = this.props;
+
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to forward these applications?")) {
+      try {
+        await Promise.all(
+          selectedApplicationIds.map(async (id) => {
+            const decodedId = decodeId(id);
+
+            const updateApplicationData = {
+              id: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+            };
+
+            const createApplicationMovementData = {
+              applicationId: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+              note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
+              action: "forward_to_cf_section",
             };
 
             await updateApplication(updateApplicationData, "update workforce application");
@@ -1015,6 +1125,104 @@ class ApplicationProcessSearcher extends Component {
               status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
               note: "আবেদন নির্বাচন করা হয়েছে",
               action: "forward_to_association",
+            };
+
+            await updateApplication(updateApplicationData, "update workforce application");
+            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+          })
+        );
+
+        this.setState({
+          serverResponse: {
+            status: "SUCCESS",
+            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+          },
+        });
+      } catch (error) {
+        console.error("Bulk selection failed:", error);
+        this.setState({
+          serverResponse: {
+            status: "ERROR",
+            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+          },
+        });
+      }
+    }
+  };
+  handleBulkSelectedbySectionAdmin = async () => {
+    const { selectedApplicationIds } = this.state;
+    const { updateApplication, createApplicationMovement } = this.props;
+
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to forward these applications?")) {
+      try {
+        await Promise.all(
+          selectedApplicationIds.map(async (id) => {
+            const decodedId = decodeId(id);
+
+            const updateApplicationData = {
+              id: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_ONE,
+            };
+
+            const createApplicationMovementData = {
+              applicationId: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_ONE,
+              note: "আবেদন সিএফ শাখা-১ এ প্রেরণ করা হয়েছে",
+              action: "forward_to_cf_section_one",
+            };
+
+            await updateApplication(updateApplicationData, "update workforce application");
+            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+          })
+        );
+
+        this.setState({
+          serverResponse: {
+            status: "SUCCESS",
+            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+          },
+        });
+      } catch (error) {
+        console.error("Bulk selection failed:", error);
+        this.setState({
+          serverResponse: {
+            status: "ERROR",
+            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+          },
+        });
+      }
+    }
+  };
+  handleBulkSelectedbySectionTwoAdmin = async () => {
+    const { selectedApplicationIds } = this.state;
+    const { updateApplication, createApplicationMovement } = this.props;
+
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to forward these applications?")) {
+      try {
+        await Promise.all(
+          selectedApplicationIds.map(async (id) => {
+            const decodedId = decodeId(id);
+
+            const updateApplicationData = {
+              id: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_TWO,
+            };
+
+            const createApplicationMovementData = {
+              applicationId: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_TWO,
+              note: "আবেদন সিএফ শাখা-২ এ প্রেরণ করা হয়েছে",
+              action: "forward_to_cf_section_two",
             };
 
             await updateApplication(updateApplicationData, "update workforce application");
@@ -1158,9 +1366,9 @@ class ApplicationProcessSearcher extends Component {
     this.setState({ openGenerateBFTN: true });
   };
 
-  onCheckBoxSelect = (selection) => {
-    this.setState({selectedApplication: selection });
-  };
+  // onCheckBoxSelect = (selection) => {
+  //   this.setState({selectedApplication: selection });
+  // };
 
   rowDisabled = (selection, i) => !!i.validityTo;
 
@@ -1214,8 +1422,8 @@ class ApplicationProcessSearcher extends Component {
       <>
         <Searcher
           module={MODULE_NAME}
-          selectWithCheckbox={getUserTypeFromRights(userRights) !== WORKFORCE_USER_TYPE.APPLICANT ? true:false}
-          withSelection={getUserTypeFromRights(userRights) !== WORKFORCE_USER_TYPE.APPLICANT ? true:false}
+          // selectWithCheckbox={getUserTypeFromRights(userRights) !== WORKFORCE_USER_TYPE.APPLICANT ? true:false}
+          // withSelection={getUserTypeFromRights(userRights) !== WORKFORCE_USER_TYPE.APPLICANT ? true:false}
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT ? null : filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
@@ -1238,7 +1446,7 @@ class ApplicationProcessSearcher extends Component {
           rowLocked={this.rowLocked}
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
-          onCheckBoxSelect={this.onCheckBoxSelect}
+          // onCheckBoxSelect={this.onCheckBoxSelect}
         />
           {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN ? (
             <Box
@@ -1249,6 +1457,9 @@ class ApplicationProcessSearcher extends Component {
                 justifyContent: "space-between",
               }}
             >
+            <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbySectionAdmin}>
+              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+            </Button>
               <Button
                 variant="contained"
                 color="primary"
@@ -1263,7 +1474,7 @@ class ApplicationProcessSearcher extends Component {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={this.handleBulkSelectedbySectionAdmin}
+                onClick={this.handleBulkSelectedbySectionAdminToDoctor}
               >
                 <FormattedMessage
                   module="workforce"
@@ -1273,6 +1484,58 @@ class ApplicationProcessSearcher extends Component {
                <IconButton onClick={this.handleOpenBFTN}>
               <PrintIcon />
             </IconButton>
+            </Box>
+          ) : null}
+          {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ? (
+            <Box
+              style={{
+                marginTop: 10,
+                display: "flex",
+                gap: 10,
+                justifyContent: "space-between",
+              }}
+            >
+            <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbySectionTwoAdmin}>
+              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => this.setState({ forwardModalOpen: true })}
+              >
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.employee.application.createMeetingSheet"
+                />
+              </Button>
+
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.handleBulkSelectedbySectionAdminToDoctor}
+              >
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.employee.application.forwardToDoctor"
+                />
+              </Button>
+               <IconButton onClick={this.handleOpenBFTN}>
+              <PrintIcon />
+            </IconButton>
+            </Box>
+          ) : null}
+          {userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO ? (
+            <Box
+              style={{
+                marginTop: 10,
+                display: "flex",
+                gap: 10,
+                justifyContent: "space-between",
+              }}
+            >
+            <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyChecker}>
+              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+            </Button>
             </Box>
           ) : null}
 
@@ -1435,6 +1698,38 @@ class ApplicationProcessSearcher extends Component {
               </>
             );
           } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
+            return (
+              <>
+                <ForwardApplicationCheckerMoal
+                  open={forwardModalOpen}
+                  onClose={this.handleCloseForwardModal}
+                  selectedApplication={selectedApplication}
+                  onSubmitForward={this.handleForwardSubmit}
+                  organizationEmployee={organizationEmployee}
+                />
+                <RevertApplicationModal
+                  open={revertModalOpen}
+                  onClose={this.handleCloseRevertModal}
+                  revertByChecker={revertByChecker}
+                  selectedApplication={this.state.selectedApplication}
+                  onSubmitRevert={this.handleRevertSubmit}
+                />
+                <ForwardApplicationSummaryModal
+                  open={forwardModalOpen}
+                  onClose={this.handleCloseForwardModal}
+                  selectedApplication={this.state.selectedApplication}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
+                />
+                 <GenerateBFTN
+                  open={openGenerateBFTN}
+                  onClose={this.handleCloseBFTN}
+                  applications={applications}
+                  status={"approved_by_dg"}
+                  userRights={userRights}
+                />
+              </>
+            );
+          } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
             return (
               <>
                 <ForwardApplicationCheckerMoal
