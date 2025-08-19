@@ -53,7 +53,7 @@
                 locationId={thirdStepId}
                 onChange={(v) => updateField( "postOffice", v)}
                 required
-                readOnly={false}
+                readOnly={readOnly}
               />
             </Grid>
             <Grid item xs={12} sm={4}>

@@ -66,7 +66,7 @@ const BanksPicker = ({
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}
       onInputChange={setSearchString}
-      onOpen={fetchBanks}
+      // onOpen={fetchBanks}
     />
   );
 };
