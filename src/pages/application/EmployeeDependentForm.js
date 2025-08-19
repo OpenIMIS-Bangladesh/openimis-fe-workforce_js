@@ -223,10 +223,11 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
 
                 <Grid item xs={12}>
                   <CustomDependentLocation
-                    location={dependent?.presentLocation}
+                    location={dependent?.[index]?.presentLocation}
                     onChange={(key, value) => handleChange(index, key, value)}
                     addressKey="presentAddress"
                     data={dependent?.presentAddress}
+                    locationData={dependent?.[index]?.presentLocation}
                   />
                 </Grid>
 
@@ -257,6 +258,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     addressKey="permanentAddress"
                     data={dependent?.permanentAddress}
                     readOnly={!!sameAsPresent[index]}
+                    locationData={dependent?.[index]?.permanentLocation}
                   />
                 </Grid>
 

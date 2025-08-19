@@ -1,20 +1,15 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { useTranslations, Autocomplete,decodeId } from "@openimis/fe-core";
+import { useTranslations, Autocomplete, decodeId } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
-import { 
-  fetchPostOfficesPick, 
-  // createPostOffice 
-} from "../actions"; // you'll need a create mutation action
+import { fetchPostOfficesPick } from "../actions";
 
-// Custom debounce implementation
+// Custom debounce hook
 const useDebounce = (callback, delay) => {
   const timer = useRef(null);
 
   const debouncedFn = useCallback(
     (...args) => {
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
+      if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(() => {
         callback(...args);
       }, delay);
@@ -42,39 +37,85 @@ const PostOfficePicker = ({
 }) => {
   const [searchString, setSearchString] = useState("");
   const { formatMessage } = useTranslations("workforce");
-  const locale = useSelector((state) => state.core?.user?.i_user?.language || "en");
+  const locale = useSelector(
+    (state) => state.core?.user?.i_user?.language || "en"
+  );
   const dispatch = useDispatch();
-  const id=locationId
 
   useEffect(() => {
-  if (locationId) {
-    dispatch(fetchPostOfficesPick(modulesManager, decodeId(locationId)));
-  }
-}, [dispatch, modulesManager, locationId]);
+    if (locationId) {
+      dispatch(fetchPostOfficesPick(modulesManager, decodeId(locationId)));
+    }
+  }, [locationId, modulesManager, dispatch]);
 
-  const isLoading = useSelector((state) => state.workforce[`fetchingPostOfficesPick`]);
-  const data = useSelector((state) => state.workforce[`postOfficesPick`] ?? []);
+  const isLoading = useSelector(
+    (state) => state.workforce[`fetchingPostOfficesPick`]
+  );
+  const fetchedData = useSelector(
+    (state) => state.workforce[`postOfficesPick`] ?? []
+  );
   const error = useSelector((state) => state.workforce["errorPostOfficesPick"]);
 
-  const selectedOption = useMemo(
-    () => data.find((option) => option.id === value) || null,
-    [value, data]
-  );
+  const selectedOption = useMemo(() => {
+    if (!value) return null;
+    if (typeof value === "string" || typeof value === "number") {
+      return fetchedData.find((option) => option.id === value) || null;
+    }
+    return value; 
+  }, [value, fetchedData]);
 
-  console.log("post office", data);
-  console.log("locale", locale);
 
-  const debouncedCreate = useDebounce((name) => {
-    if (!name || data.find((d) => d.nameEn === name || d.nameBn === name)) return;
+  const options = useMemo(() => {
+    let opts = [...fetchedData];
 
-    // dispatch(createPostOffice(modulesManager, { nameEn: name, nameBn: name }));
-  }, 1000);
+    if (selectedOption && !opts.find((o) => o.id === selectedOption.id)) {
+      opts = [...opts, selectedOption];
+    }
+
+    if (
+      searchString &&
+      !opts.find(
+        (o) =>
+          o.nameEn?.toLowerCase() === searchString.toLowerCase() ||
+          o.nameBn?.toLowerCase() === searchString.toLowerCase()
+      )
+    ) {
+      opts = [
+        ...opts,
+        { id: null, nameEn: searchString, nameBn: searchString },
+      ];
+    }
+
+    return opts;
+  }, [fetchedData, selectedOption, searchString]);
+
+
+  const debouncedHandleType = useDebounce((name) => {
+    if (!name) return;
+
+    const exists =
+      fetchedData.find(
+        (d) => d.nameEn?.toLowerCase() === name.toLowerCase() ||
+               d.nameBn?.toLowerCase() === name.toLowerCase()
+      ) || null;
+
+    if (exists) {
+      if (!selectedOption || selectedOption.id !== exists.id) {
+        onChange(exists);
+      }
+    } else {
+      if (!selectedOption || selectedOption.nameEn !== name) {
+        const newOption = { id: null, nameEn: name, nameBn: name };
+        onChange(newOption);
+      }
+    }
+  }, 800);
 
   useEffect(() => {
-    if (searchString && !data.find((d) => d.nameEn === searchString || d.nameBn === searchString)) {
-      debouncedCreate(searchString);
+    if (searchString) {
+      debouncedHandleType(searchString);
     }
-  }, [searchString, data, debouncedCreate]);
+  }, [searchString, debouncedHandleType]);
 
   return (
     <Autocomplete
@@ -86,19 +127,16 @@ const PostOfficePicker = ({
       withLabel={withLabel}
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
-      options={data}
+      options={options}  
       isLoading={isLoading}
       value={selectedOption}
-      getOptionLabel={(option) => (locale === "en" ? option?.nameEn : option?.nameBn)}
-      onChange={(option) => onChange(option, option ? option.id : null)}
+      getOptionLabel={(option) =>
+        locale === "en" ? option?.nameEn || "" : option?.nameBn || ""
+      }
+      onChange={(option) => onChange(option)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}
       onInputChange={(val) => setSearchString(val)}
-      onOpen={() => {
-    if (locationId) {
-      dispatch(fetchPostOfficesPick(modulesManager, decodeId(locationId)));
-    }
-  }}
     />
   );
 };

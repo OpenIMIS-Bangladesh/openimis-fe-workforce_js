@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
-import { TextInput } from "@openimis/fe-core";
+import { TextInput,FormattedMessage } from "@openimis/fe-core";
+import PostOfficePicker from "../../pickers/PostOfficePicker";
+import { getThirdStepId } from "../../utils/utils";
 
-const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnly }) => {
-  const [locationType, setLocationType] = useState("rural"); // Default
+const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnly,locationData }) => {
+  const [locationType, setLocationType] = useState("rural"); 
   const [localData, setLocalData] = useState(data || {});
-
+  const thirdStepId = getThirdStepId(locationData);
   // Update internal state when external data changes
- useEffect(() => {
-  if (data) {
-    try {
-      const parsedData = typeof data === "string" ? JSON.parse(data) : data;
-      setLocalData(parsedData || {});
-    } catch (error) {
-      console.error("Invalid address JSON:", error);
+  useEffect(() => {
+    if (data) {
+      try {
+        const parsedData = typeof data === "string" ? JSON.parse(data) : data;
+        setLocalData(parsedData || {});
+      } catch (error) {
+        console.error("Invalid address JSON:", error);
+        setLocalData({});
+      }
+    } else {
       setLocalData({});
     }
-  } else {
-    setLocalData({});
-  }
-}, [data]);
-  
+  }, [data]);
 
   // Determine if location is city or rural
   useEffect(() => {
@@ -33,8 +34,8 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
     while (current) {
       if (current.name?.includes("সিটি কর্পোরেশন")) {
         return true;
-      }else if (current.name?.includes("পৌরসভা")) {
-        return true
+      } else if (current.name?.includes("পৌরসভা")) {
+        return true;
       }
       current = current.parent;
     }
@@ -54,6 +55,16 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
 
   return (
     <Grid container spacing={1}>
+      <Grid item xs={12} sm={4}>
+        <PostOfficePicker
+          value={localData.postOffice}
+          label={<FormattedMessage id="workforce.select.postOffice" module="workforce" />}
+          locationId={thirdStepId}
+          onChange={(v) => updateField("postOffice", v)}
+          required
+          readOnly={readOnly}
+        />
+      </Grid>
       {locationType === "city" && (
         <>
           <Grid item xs={12} sm={4}>
@@ -82,7 +93,7 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextInput
-            //   label="workforce.employee.city.extra_info"
+              //   label="workforce.employee.city.extra_info"
               value={localData.extraInfo || ""}
               onChange={(v) => updateField("extraInfo", v)}
               readOnly={readOnly}
@@ -118,7 +129,7 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextInput
-            //   label="workforce.employee.rural.extra_info"
+              //   label="workforce.employee.rural.extra_info"
               value={localData.extraInfo || ""}
               onChange={(v) => updateField("extraInfo", v)}
               readOnly={readOnly}

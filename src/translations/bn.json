@@ -603,6 +603,7 @@
   "workforce.employee.application.beneficiaryReport": "সুবিধাভোগী কল্যাণ হিসাব",
 
   "workforce.previewDetails.uploadedBy.applicant":"আবেদনকারী দ্বারা প্রদত্ত",
-  "workforce.previewDetails.uploadedBy.factoryAdmin":"ফ্যাক্টরি অ্যাডমিন দ্বারা প্রদত্ত"
+  "workforce.previewDetails.uploadedBy.factoryAdmin":"ফ্যাক্টরি অ্যাডমিন দ্বারা প্রদত্ত",
+  "workforce.select.postOffice":"পোস্ট অফিস"
   
 }
