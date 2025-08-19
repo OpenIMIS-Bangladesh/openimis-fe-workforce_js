@@ -950,6 +950,8 @@ class ApplicationProcessSearcher extends Component {
             message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
           },
         });
+      }finally{
+        window.location.reload()
       }
     }
   };
@@ -999,6 +1001,8 @@ class ApplicationProcessSearcher extends Component {
             message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
           },
         });
+      } finally {
+        window.location.reload()
       }
     }
   };
@@ -1048,6 +1052,8 @@ class ApplicationProcessSearcher extends Component {
             message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
           },
         });
+      } finally{
+        window.location.reload()
       }
     }
   };
@@ -1097,6 +1103,8 @@ class ApplicationProcessSearcher extends Component {
             message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
           },
         });
+      }finally{
+        window.location.reload()
       }
     }
   };
@@ -1146,6 +1154,8 @@ class ApplicationProcessSearcher extends Component {
             message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
           },
         });
+      }finally{
+        window.location.reload()
       }
     }
   };
@@ -1195,6 +1205,8 @@ class ApplicationProcessSearcher extends Component {
             message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
           },
         });
+      }finally{
+        window.location.reload()
       }
     }
   };
@@ -1244,6 +1256,8 @@ class ApplicationProcessSearcher extends Component {
             message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
           },
         });
+      } finally{
+        window.location.reload()
       }
     }
   };
@@ -1300,6 +1314,8 @@ class ApplicationProcessSearcher extends Component {
             message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
           },
         });
+      } finally{
+        window.location.reload()
       }
     }
   };
@@ -1355,6 +1371,8 @@ class ApplicationProcessSearcher extends Component {
             message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
           },
         });
+      } finally{
+        window.location.reload()
       }
     }
   };

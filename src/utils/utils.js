@@ -236,7 +236,7 @@ export function getThirdStepId(location) {
   let current = location;
   let step = 0;
 
-  while (current?.parent && step < 2) {
+  while (current?.parent && step < 1) {
     current = current.parent;
     step++;
   }
