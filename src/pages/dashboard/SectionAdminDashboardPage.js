@@ -38,6 +38,7 @@ import DoneAllIcon from '@material-ui/icons/DoneAll';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
 import CancelIcon from '@material-ui/icons/Cancel';
+import BeneficiaryReport from "../reports/BeneficiaryReport";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -155,6 +156,14 @@ const SidebarMenu = [
     icon: <AssignmentIcon />,
   },
 
+  // {
+  //     id: "beneficiaryReportSheet",
+  //     text: (
+  //       <FormattedMessage module="workforce" id="workforce.employee.application.beneficiaryReportSheet" />
+  //     ),
+  //     icon: <HourglassFullTwoToneIcon  />,
+  // },
+
    
 ];
 
@@ -231,6 +240,19 @@ const ApprovedApplications = ({ summaryData = [] }) => {
               </AccordionDetails>
             </Accordion>
           ))}
+    </div>
+  );
+};
+
+
+const BeneficiaryReportSheet = () => {
+  // historyPush("/workforce/reports/beneficiary-report");
+  return (
+    <div>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.employee.application.beneficiaryReportSheet" />
+      </Typography>
+      <BeneficiaryReport />
     </div>
   );
 };
@@ -401,7 +423,7 @@ const SectionAdminDashboard = () => {
   const modulesManager = useModulesManager()
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
  useEffect(() => {
-      return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"']));
+      return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"', 'sectionTypeIn: ["section_one"]']));
     }, []);
   const data = useSelector(
       (state) => state.workforce[`applicationsSummary`] ?? []
@@ -421,6 +443,8 @@ const SectionAdminDashboard = () => {
         return <ApprovedApplications summaryData={data} />;
       case "applicationStatus":
         return <ApplicationStatus />;
+      case "beneficiaryReportSheet":
+        return <BeneficiaryReportSheet />;
       default:
         return <FiledApplications />;
     }

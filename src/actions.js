@@ -726,6 +726,7 @@ export function fetchSummaryApplications(mm, filters) {
     "meetingDate",
     "month",
     "year",
+    "sectionType",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationSummary",
@@ -870,6 +871,7 @@ export function fetchApplicationPackage(mm, filters) {
     "year",
     "month",
     "organizationType",
+    "sectionType",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationSummary",

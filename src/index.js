@@ -46,7 +46,8 @@ import {
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS,
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND,
   ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION,
-  ROUTE_ADMINISTRATIVE_LOGIN
+  ROUTE_ADMINISTRATIVE_LOGIN,
+  ROUTE_WORKFORCE_REPORTS_BENEFICIARY_REPORT
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -100,6 +101,8 @@ import VerifyApplicationPage from "./pages/application-process/VerifyApplication
 import LoginHeader from "./pages/login/LoginHeader";
 import LoginForm from "./pages/login/LoginForm";
 import LoginFormAdministrative from "./pages/login/LoginFormAdministrative";
+import BeneficiaryReport from "./pages/reports/BeneficiaryReport";
+
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
 
@@ -183,7 +186,9 @@ const DEFAULT_CONFIG = {
 
     { key: "workforce.route.banks", ref: ROUTE_WORKFORCE_BANKS },
     { key: "workforce.route.banks.bank", ref: ROUTE_WORKFORCE_BANKS_BANK },
-
+    { key: "workforce.route.banks.bank", ref: ROUTE_WORKFORCE_BANKS_BANK },
+    
+    { key: "workforce.route.reports.beneficiaryReport", ref: ROUTE_WORKFORCE_REPORTS_BENEFICIARY_REPORT },
 
     { key: "workforceOrganization.OrganizationPicker", ref: OrganizationPicker },
     { key: "workforce.BanksPicker", ref: BanksPicker },
@@ -292,6 +297,7 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_APPLICATIONS_PROCESS, component: ApplicationsProcessPage },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY, component: ApplicationProcessPage },
     { path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY}/:application_uuid`, component: VerifyApplicationPage },
+    { path: ROUTE_WORKFORCE_REPORTS_BENEFICIARY_REPORT, component: BeneficiaryReport },
   ],
 
   "core.UnauthenticatedRouter": [

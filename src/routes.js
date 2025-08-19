@@ -46,6 +46,7 @@ export const ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS = "workforce/
 export const ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY = "workforce/applications/application/verify"
 export const ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_ACTIONS = "workforce/applications/application/actions"
 export const ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND = "workforce/applications/application/resend"
+export const ROUTE_WORKFORCE_REPORTS_BENEFICIARY_REPORT = "workforce/reports/beneficiary-report";
 
 
 
