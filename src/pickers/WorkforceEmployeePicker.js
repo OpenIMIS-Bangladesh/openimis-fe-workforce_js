@@ -79,7 +79,7 @@ const WorkforceEmployeePicker = ({
       filterOptions={customFilterOptions}
       filterSelectedOptions={filterSelectedOptions}
       onInputChange={(text) => setSearchString(text)}
-      onOpen={fetchEmployees}
+      // onOpen={fetchEmployees}
     />
   );
 };
