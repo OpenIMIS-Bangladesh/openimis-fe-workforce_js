@@ -113,6 +113,24 @@ export const getParsedApplication = (modulesManager, filters) => {
   };
 };
 
+
+export const getParsedApplicationFromArray = (applications) => {
+    const returnArray= [];
+    if (!Array.isArray(applications)) return [];
+    applications.forEach((rawData) => {
+      const parsedData = {
+        ...rawData,
+        employeeDependentInfo: safeParse(rawData.employeeDependentInfo) || {},
+        employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
+        employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo) || {},
+        employeeChildrenInfo: safeParse(rawData.employeeChildrenInfo) || {},
+        metadata: safeParse(rawData.metadata) || {}
+      };
+      returnArray.push(parsedData);
+    });
+    return returnArray;
+};
+
 export const isEmpty = (value) => {
   if (typeof (value) == 'undefined' || value == '' || value == null || value == 0) {
     return true;

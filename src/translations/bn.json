@@ -599,6 +599,8 @@
   "workforce.representative.sameAsRepresentative": "প্রতিনিধির তথ্য কারখানার তথ্যের অনুরূপ",
   "workforce.representative.title": "প্রতিনিধির তথ্য",
   "workforce.factory.uploadMembershipCertificate": "কারখানার মেম্বারশিপ সার্টিফিকেট আপলোড করুন",
-  "workforce.employee.application.beneficiaryReport": "সুবিধাভোগী কল্যাণ হিসাব"
+  "workforce.employee.application.beneficiaryReportSheet": "সুবিধাভোগী কল্যাণ হিসাব",
+  "core.InternalServerErrorPage.title": "অভ্যন্তরীণ সার্ভার ত্রুটি",
+  "core.InternalServerErrorPage.description": "সার্ভারটি একটি অভ্যন্তরীণ ত্রুটি বা ভুল কনফিগারেশনের সম্মুখীন হয়েছে এবং পেইজটি অথবা সেকশনটি লোড করতে পারেনি।"
   
 }
