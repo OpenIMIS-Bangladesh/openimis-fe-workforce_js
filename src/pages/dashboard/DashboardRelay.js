@@ -10,6 +10,7 @@ import BKMEAAssociationDashboardPage from "./BKMEAAssociationDashboardPage";
 import ApproverDashboardPage from "./ApproverDashboardPage";
 import FactoryAdminDashboardPage from "./FactoryAdminDashboardPage";
 import SectionAdminDashboardPage from "./SectionAdminDashboardPage";
+import SectionTwoAdminDashboardPage from "./SectionTwoAdminDashboardPage";
 import DoctorDashboardPage from "./DoctorDashboardPage";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 
@@ -25,6 +26,8 @@ console.log(user_type)
     return <CheckerTwoDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
     return <SectionAdminDashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
+    return <SectionTwoAdminDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.DOCTOR) {
     return <DoctorDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.APPROVER) {

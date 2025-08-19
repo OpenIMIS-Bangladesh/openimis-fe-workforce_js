@@ -603,6 +603,137 @@ export const itemFormattersSectionAdmin = (
   ));
   return formatters;
 };
+export const itemFormattersSectionTwoAdmin = (
+  isShowHistory,
+  modulesManager,
+  history,
+  component,
+  locale = "en"
+) => {
+  const formatters = [
+    (application) =>
+      application?.workforceEmployee ? (
+        <Checkbox
+          checked={component.state.selectedApplicationIds.includes(
+            application?.id
+          )}
+          onChange={component.handleCheckboxChange(application?.id)}
+          color="primary"
+        />
+      ) : (
+        ""
+      ),
+    (application) => application?.trackingNumber,
+    (application) =>
+      conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
+    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      locale === "en"
+        ? application?.employeeFactory?.nameEn
+        : application?.employeeFactory?.nameBn,
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) => application?.workforceEmployee?.nid,
+    (application) => {
+      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+      return statusMap[application?.status] || application?.status;
+    },
+    isShowHistory() ? application?.version : null,
+  ];
+
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      <Tooltip title="View">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            historyPush(
+              modulesManager,
+              history,
+              "workforce.route.applications.application.process.view",
+              [decodeId(application?.id)],
+              false
+            );
+          }}
+        >
+          <TabIcon />
+        </IconButton>
+      </Tooltip>
+
+      <Tooltip title="Verify">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            historyPush(
+              modulesManager,
+              history,
+              "workforce.route.applications.application.verify",
+              [decodeId(application?.id)],
+              false
+            );
+          }}
+        >
+          <VerifiedUserIcon />
+        </IconButton>
+      </Tooltip>
+      {/* 
+        <Tooltip title="Forward">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => component.handleOpenForwardModal(application)}
+          >
+            <ForwardIcon />
+          </IconButton>
+        </Tooltip> */}
+      {!component.props.revertedApplication && (
+      <>
+      <Tooltip title="Revert">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            component.handleOpenRevertModal(application);
+            component.setState({ revertByChecker: true });
+          }}
+        >
+          <UndoIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Reject">
+        <span>
+          <IconButton
+            onClick={() => component.handleReject(application)}
+          >
+            <CloseIcon />
+          </IconButton>
+        </span>
+      </Tooltip>
+      </>
+    )}
+        {component.props.revertedApplication && (
+        <Tooltip title="Resend">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.process.resend",
+                [decodeId(application?.id)],
+                false
+              );
+            }}
+          >
+            <RestorePageIcon />
+          </IconButton>
+        </Tooltip>
+      )}
+    </div>
+  ));
+  return formatters;
+};
 export const itemFormattersDoctor = (
   isShowHistory,
   modulesManager,
@@ -986,7 +1117,7 @@ export const itemFormattersApprover = (
         </IconButton>
       </Tooltip>
 
-      <Tooltip title="Veify">
+      {/* <Tooltip title="Veify">
         <IconButton
           disabled={application?.isHistory}
           onClick={() => {
@@ -1001,15 +1132,15 @@ export const itemFormattersApprover = (
         >
           <VerifiedUserIcon />
         </IconButton>
-      </Tooltip>
-      <Tooltip title="Revert">
+      </Tooltip> */}
+      {/* <Tooltip title="Revert">
         <IconButton
           disabled={application?.isHistory}
           onClick={() => component.handleOpenRevertModal(application)}
         >
           <UndoIcon />
         </IconButton>
-      </Tooltip>
+      </Tooltip> */}
       <Tooltip title="Reject">
         <span>
           <IconButton

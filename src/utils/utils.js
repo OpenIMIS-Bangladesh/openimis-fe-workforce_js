@@ -45,6 +45,8 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.CHECKER_TWO;
   }else if (user_rights.includes(817001)) {
     user_type = WORKFORCE_USER_TYPE.SECTION_ADMIN;
+  }else if (user_rights.includes(821002)) {
+    user_type = WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO;
   }else if (user_rights.includes(818001)) {
     user_type = WORKFORCE_USER_TYPE.DOCTOR;
   } else if (user_rights.includes(813001)) {
@@ -100,7 +102,9 @@ export const getParsedApplication = (modulesManager, filters) => {
         employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
         employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo) || {},
         employeeChildrenInfo: safeParse(rawData.employeeChildrenInfo) || {},
-        metadata: safeParse(rawData.metadata) || {}
+        metadata: safeParse(rawData.metadata) || {},
+        applicantInfo: safeParse(rawData.applicantInfo) || {},
+
       };
 
       return parsedData;
@@ -109,6 +113,24 @@ export const getParsedApplication = (modulesManager, filters) => {
       throw error; // Re-throw to let caller handle it
     }
   };
+};
+
+
+export const getParsedApplicationFromArray = (applications) => {
+    const returnArray= [];
+    if (!Array.isArray(applications)) return [];
+    applications.forEach((rawData) => {
+      const parsedData = {
+        ...rawData,
+        employeeDependentInfo: safeParse(rawData.employeeDependentInfo) || {},
+        employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
+        employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo) || {},
+        employeeChildrenInfo: safeParse(rawData.employeeChildrenInfo) || {},
+        metadata: safeParse(rawData.metadata) || {}
+      };
+      returnArray.push(parsedData);
+    });
+    return returnArray;
 };
 
 export const isEmpty = (value) => {
@@ -209,6 +231,19 @@ export const validateForm = (emp,formatMessage,formData) => {
 
   return errs;
 };
+
+export function getThirdStepId(location) {
+  let current = location;
+  let step = 0;
+
+  while (current?.parent && step < 2) {
+    current = current.parent;
+    step++;
+  }
+
+  // after 2 jumps, we're at step 3
+  return current?.id || null;
+}
 
 export const validateRequiredFields = (containerRef, formatMessage) => {
   const fields = containerRef.current.querySelectorAll("[required]");

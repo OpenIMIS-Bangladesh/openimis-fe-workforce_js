@@ -178,7 +178,7 @@
   "workforce.application.educationInfo.cgpa": "সিজিপিএ / জিপিএ  ",
   "workforce.application.educationInfo.board": "শিক্ষা বোর্ড",
   "workforce.application.educationInfo.university": "বিশ্ববিদ্যালয় / ইনস্টিটিউটের নাম",
-  "workforce.application.steps.underGraduate": "অনার্স বা সমমান",
+  "workforce.application.steps.underGraduate": "স্নাতক বা সমমান",
   "workforce.application.steps.postGraduate": "মাস্টার্স বা সমমান",
 
   "menu.workforce": "কর্মশক্তি",
@@ -239,8 +239,8 @@
   "workforce.financial.assistance.normalDeath": "স্বাভাবিক মৃত্যু",
   "workforce.financial.assistance.accidentalDeath": "দুর্ঘটনাজনিত মৃত্যু",
 
-  "workforce.disability.partial": "আংশিক অক্ষমতা",
-  "workforce.disability.permanent": "স্থায়ী অক্ষমতা",
+  "workforce.disability.partial": "আংশিক স্থায়ী অক্ষমতা",
+  "workforce.disability.permanent": "সম্পূর্ণ স্থায়ী অক্ষমতা",
 
   "workforce.application.employee.children.studyingClass": "অধ্যয়নরত শ্রেণী/বিভাগ",
   "workforce.application.employee.children.studyingSemester": "অধ্যয়নরত সেমিস্টার/বছর",
@@ -350,7 +350,8 @@
     "workforce.application.checked":"পরীক্ষিত আবেদন",
     "workforce.checker1.dashboard":"সেন্ট্রাল ফান্ড কল্যাণ শাখা-১ ড্যাশবোর্ড",
     "workforce.checker2.dashboard":"সেন্ট্রাল ফান্ড কল্যাণ শাখা-২ ড্যাশবোর্ড",
-    "workforce.section.admin.dashboard":"শাখা অ্যাডমিনের ড্যাশবোর্ড",
+    "workforce.section1.admin.dashboard":"শাখা-১ অ্যাডমিনের ড্যাশবোর্ড",
+    "workforce.section2.admin.dashboard":"শাখা-২ অ্যাডমিনের ড্যাশবোর্ড",
     "workforce.section.doctor.dashboard":"ডক্টরের ড্যাশবোর্ড",
     "workforce.bgmea.association.dashboard":"বিজিএমইএ অ্যাসোসিয়েশনের ড্যাশবোর্ড",
     "workforce.bkmea.association.dashboard":"বিকেএমইএ অ্যাসোসিয়েশনের ড্যাশবোর্ড",
@@ -467,9 +468,9 @@
 
   "workforce.previewDetails.dependent":"নির্ভরশীলের তথ্য",
 
-  "workforce.application.death.reason":"অন্যান্য মৃত্যুর কারণ নির্দিষ্ট করুন",
-  "workforce.application.other.death.reason":"অন্যান্য মৃত্যুর কারণ নির্দিষ্ট করুন ",
-  "workforce.application.other.desease.reason":"অন্যান্য রোগ নির্দিষ্ট করুন ",
+  "workforce.application.death.reason":"মৃত্যুর কারণ নির্দিষ্ট করুন",
+  "workforce.application.other.death.reason":"মৃত্যুর কারণ নির্দিষ্ট করুন ",
+  "workforce.application.other.desease.reason":"রোগ নির্দিষ্ট করুন ",
 
     "workforce.application.deathReason.heart_disease": "হৃদরোগ",
 "workforce.application.deathReason.stroke": "স্ট্রোক",
@@ -599,6 +600,13 @@
   "workforce.representative.sameAsRepresentative": "প্রতিনিধির তথ্য কারখানার তথ্যের অনুরূপ",
   "workforce.representative.title": "প্রতিনিধির তথ্য",
   "workforce.factory.uploadMembershipCertificate": "কারখানার মেম্বারশিপ সার্টিফিকেট আপলোড করুন",
-  "workforce.employee.application.beneficiaryReport": "সুবিধাভোগী কল্যাণ হিসাব"
+  "workforce.employee.application.beneficiaryReportSheet": "সুবিধাভোগী কল্যাণ হিসাব",
+  "core.InternalServerErrorPage.title": "অভ্যন্তরীণ সার্ভার ত্রুটি",
+  "core.InternalServerErrorPage.description": "সার্ভারটি একটি অভ্যন্তরীণ ত্রুটি বা ভুল কনফিগারেশনের সম্মুখীন হয়েছে এবং পেইজটি অথবা সেকশনটি লোড করতে পারেনি।",
+  "workforce.employee.application.beneficiaryReport": "সুবিধাভোগী কল্যাণ হিসাব",
+
+  "workforce.previewDetails.uploadedBy.applicant":"আবেদনকারী দ্বারা প্রদত্ত",
+  "workforce.previewDetails.uploadedBy.factoryAdmin":"ফ্যাক্টরি অ্যাডমিন দ্বারা প্রদত্ত",
+  "workforce.select.postOffice":"পোস্ট অফিস"
   
 }

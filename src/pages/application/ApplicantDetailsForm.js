@@ -269,6 +269,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                     addressKey="presentAddress"
                     data={formData?.workforceApplicant?.presentAddress}
                     readOnly={false}
+                    locationData={formData?.workforceApplicant?.presentLocation}
                   />
                 </Grid>
               )}
@@ -302,6 +303,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                     addressKey="permanentAddress"
                     data={formData?.workforceApplicant?.permanentAddress}
                     readOnly={sameAsPresent}
+                    locationData={formData?.workforceApplicant?.permanentLocation}
                   />
                 </Grid>
               )}

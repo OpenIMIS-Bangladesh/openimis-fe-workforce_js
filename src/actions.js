@@ -4,6 +4,7 @@ import {
   formatPageQueryWithCount,
   formatPageQuery,
   formatQuery,
+  graphqlWithVariables
 } from "@openimis/fe-core";
 import {
   formatOrganizationEmployeeGQL,
@@ -73,6 +74,7 @@ export function fetchDocumentType(mm, filters) {
     "status",
     "nameEn",
     "nameBn",
+    "mandatoryForApplicant"
   ];
   const payload = formatPageQueryWithCount(
     "workforceDocumentTypes",
@@ -85,7 +87,7 @@ export function fetchDocumentType(mm, filters) {
 /// bank picker ///
 export function fetchBanksPick(mm, filters) {
   const projections = ["id", "nameEn", "nameBn", "parent{id},bankCode,routingNumber"];
-  const payload = formatPageQueryWithCount("workforceBanks", filters, projections);
+  const payload = formatPageQuery("workforceBanks", filters, projections);
   return graphql(payload, "WORKFORCE_BANKS_PICKER");
 }
 
@@ -97,7 +99,7 @@ export function fetchWorkforceOtp(mm, filters) {
 
 export function fetchBranchPick(mm, filters) {
   const projections = ["id", "nameEn","nameBn", "parent{id},bankCode,routingNumber"];
-  const payload = formatPageQueryWithCount("workforceBanks", filters, projections);
+  const payload = formatPageQuery("workforceBanks", filters, projections);
   return graphql(payload, "WORKFORCE_BRANCH_PICKER");
 }
 
@@ -725,6 +727,7 @@ export function fetchSummaryApplications(mm, filters) {
     "meetingDate",
     "month",
     "year",
+    "sectionType",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationSummary",
@@ -768,6 +771,23 @@ export function fetchApplication(mm, filters) {
     projections
   );
   return graphql(payload, "WORKFORCE_APPLICATION");
+}
+export function fetchWorkforceUserRoleWiseUser(mm, variables) {
+  return graphqlWithVariables(
+    `
+      query ($roleIds: [String!], $orderBy: [String]) {
+        workforceUserRole(roleIdIn: $roleIds, orderBy: $orderBy) {
+          id
+          roleId
+          userId
+          lastName
+          otherNames
+        }
+      }
+    `,
+    variables,
+    "ADMIN_WORKFORCE_ROLE_WISE_USER",
+  );
 }
 export function fetchApplicationMovementsSummary(mm, filters) {
   const projections = [
@@ -869,6 +889,7 @@ export function fetchApplicationPackage(mm, filters) {
     "year",
     "month",
     "organizationType",
+    "sectionType",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationSummary",
@@ -1144,7 +1165,7 @@ export function fetchWorkforceDocument(mm, filters) {
     "holder",
     "note",
     "workforceApplication{id}",
-    "workforceDocumentType{id,nameBn,nameEn,documentType}"
+    "workforceDocumentType{id,nameBn,nameEn,documentType,mandatoryForApplicant}"
   ];
   const payload = formatPageQueryWithCount(
     "workforceDocuments",
@@ -2276,6 +2297,21 @@ export function fetchOrganizationEmployeeDesignation(mm, clientMutationId) {
 }
 `;
   return graphql(payload, "WORKFORCE_ORGANIZATION_BY_DESIGNATION_MUTATION_ID");
+}
+export function fetchPostOfficesPick(mm, id) {
+  const payload = `{
+  workforcePostoffice(wCodeId: "${id}", orderBy: ["name_bn"]){
+    id
+    postCode
+    postOffice
+    nameEn
+    nameBn
+    wCode
+    status
+  }
+}
+`;
+  return graphql(payload, "WORKFORCE_POST_OFFICE_PICKER");
 }
 
 export function fetchWorkforceEmployeeDesignation(mm, filters) {

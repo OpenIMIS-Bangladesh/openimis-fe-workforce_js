@@ -15,6 +15,7 @@ import {
   Accordion,
   AccordionSummary,
   CardHeader,
+  Box
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { withTheme, withStyles } from "@material-ui/core/styles";
@@ -22,7 +23,7 @@ import { Document, Page } from "react-pdf";
 import { pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage,decodeId } from "@openimis/fe-core";
+import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage, decodeId } from "@openimis/fe-core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { bindActionCreators } from "redux";
 import { fetchApplication, fetchDocumentType, fetchWorkforceDocument, updateWorkforceDocument } from "../../actions";
@@ -100,7 +101,8 @@ class VerifyApplicationPage extends Component {
       preview: null,
       note: "",
       mockFiles: mockFiles,
-      fileStates: mockFiles,
+      fileStates: mockFiles || [],
+       uploadedFiles: [], 
       // fileStates: mockFiles.map((file) => ({
       //   ...file,
       //   comment: "",
@@ -114,8 +116,8 @@ class VerifyApplicationPage extends Component {
       this.setState({ stateEdited: this.props.application });
     }
     if (prevProps.documents !== this.props.documents) {
-    this.setState({ fileStates: this.props.documents });
-  }
+      this.setState({ fileStates: this.props.documents || [] });
+    }
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.dispatch(journalize(this.props.mutation));
     }
@@ -126,6 +128,7 @@ class VerifyApplicationPage extends Component {
     await this.props.fetchApplication(modulesManager, [`id:"${applicationUuid}"`]);
 
     const { application } = this.props;
+    console.log("verify applications", application);
     const applicationType = application?.applicationType;
     const organizationType = application?.organizationType;
     if (applicationType && organizationType) {
@@ -158,12 +161,12 @@ class VerifyApplicationPage extends Component {
     const file = this.state.fileStates[index];
     const payload = {
       ...file,
-      id:decodeId(file.id),
+      id: decodeId(file.id),
       status: "verified",
       note: file.note,
     };
-    console.log({ payload });
-    this.props.updateWorkforceDocument(payload,`update workforce document`); // 👈 dispatch here
+
+    this.props.updateWorkforceDocument(payload, `update workforce document`); // 👈 dispatch here
 
     // optionally update UI optimistically
     this.setState((prevState) => {
@@ -177,13 +180,13 @@ class VerifyApplicationPage extends Component {
     const file = this.state.fileStates[index];
     const payload = {
       ...file,
-      id:decodeId(file.id),
+      id: decodeId(file.id),
       status: "rejected",
       note: file.note,
     };
-    console.log({ payload });
+    // console.log({ payload });
 
-    this.props.updateWorkforceDocument(payload,`update workforce document`); // 👈 dispatch here
+    this.props.updateWorkforceDocument(payload, `update workforce document`); // 👈 dispatch here
 
     this.setState((prevState) => {
       const updated = [...prevState.fileStates];
@@ -192,12 +195,48 @@ class VerifyApplicationPage extends Component {
     });
   };
 
+  handleFileChange = (fieldKey, files) => {
+    this.setState((prevState) => {
+      const existingIndex = prevState.uploadedFiles.findIndex(
+        (item) => item.fieldKey === fieldKey
+      );
+
+      let updatedFiles = [...prevState.uploadedFiles];
+      if (existingIndex !== -1) {
+        updatedFiles[existingIndex] = { fieldKey, files };
+      } else {
+        updatedFiles.push({ fieldKey, files });
+      }
+
+      return { uploadedFiles: updatedFiles };
+    });
+  };
+
   render() {
-    const { classes, applicationUuid, documents, application, documentType, locale,user_rights } = this.props;
+    const { classes, applicationUuid, documents, application, documentType, locale, user_rights } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType } = this.state;
     const user_type = getUserTypeFromRights(user_rights);
-    console.log({ mah_boob: documents });
+    // console.log({ mah_boob: documentType });
+    // console.log({ my_boob: fileStates });
+    const filteredDocumentTypes = documentType?.filter((doc) => {
+      console.log("doc",doc);
+      const matchedFile = fileStates?.find((file) => {
+        console.log("fileStates",file);
+        return file?.workforceDocumentType?.id !== doc?.id  && file?.workforceDocumentType?.mandatoryForApplicant === false;
+      });
+      return matchedFile || doc?.mandatoryForApplicant === false;
+    });
+    //     const filteredDocumentTypes = documentType.filter((doc) => {
+    //   console.log("Checking doc:", doc);
+    //   const existsInFileStates = fileStates?.some((file) => {
+    //     console.log("Comparing", file.workforceDocumentType?.id, "with", doc.id);
+    //     return file.workforceDocumentType?.id === doc.id;
+    //   });
+    //   return existsInFileStates;
+    // });
 
+    console.log("filteredDocumentTypes", filteredDocumentTypes);
+    console.log({ applicationUuid });
     return (
       <Grid container spacing={3} className={classes.rootGrid}>
         {/* User Summary */}
@@ -251,22 +290,22 @@ class VerifyApplicationPage extends Component {
             </CardContent>
           </Card>
           {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && (
-          <Card variant="outlined" mt={2} className={classes.cardSpacing}>
-            <CardContent>
-              <Typography variant="h6">
-                <b>
-                  <FormattedMessage module="workforce" id="workforce.employee.upload.factory.document" />
-                </b>
-              </Typography>
-              <Divider />
-              {documentType?.map((document, index) => (
-                <>
-                  <Typography>{document.nameBn}</Typography>
-                  <FileUploader fieldKey={document.fieldId} applicationId={applicationUuid} documentType={document.documentType} />
-                </>
-              ))}
-            </CardContent>
-          </Card>
+            <Card variant="outlined" mt={2} className={classes.cardSpacing}>
+              <CardContent>
+                <Typography variant="h6">
+                  <b>
+                    <FormattedMessage module="workforce" id="workforce.employee.upload.factory.document" />
+                  </b>
+                </Typography>
+                <Divider />
+                {filteredDocumentTypes?.map((document, index) => (
+                      <Box style={{marginTop:"10px"}}>
+                        <Typography>{document.nameBn}</Typography>
+                        <FileUploader fieldKey={document.fieldId} applicationId={applicationUuid} onFileChange={this.handleFileChange} documentType={document.documentType} documentProp={document}  uploadedBy={"factoryAdmin"}/>
+                      </Box>
+                ))}
+              </CardContent>
+            </Card>
           )}
         </Grid>
 

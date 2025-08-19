@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,documentProp }) => {
+const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,documentProp,uploadedBy }) => {
   const classes = useStyles();
   const [webcamOpen, setWebcamOpen] = useState(false);
   const webcamRef = useRef(null);
@@ -77,7 +77,6 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,docu
   const dispatch = useDispatch();
 
   // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
-  console.log({documentProp})
 
   const uploadFileToApi = async (file) => {
     const formData = new FormData();
@@ -106,7 +105,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,docu
         // workforceApplicationId: safeApplicationId(applicationId),
         documentType: documentType,
         holder: "57",
-        holderType: "user",
+        holderType: uploadedBy||"appclicant",
       };
 
       dispatch({
@@ -115,7 +114,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,docu
       });
       if (applicationId) {
         console.log("create document data", createDocumentData);
-        dispatch(createWorkforceDocument({...createDocumentData,workforceApplicationId: safeApplicationId(applicationId)}, `Created workforce document `));
+        dispatch(createWorkforceDocument({...createDocumentData,workforceApplicationId: uploadedBy? applicationId:safeApplicationId(applicationId)}, `Created workforce document `));
       }
     } catch (error) {
       console.error(`Upload error for ${file.name}:`, error);

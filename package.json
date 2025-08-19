@@ -14,7 +14,8 @@
     "build": "rollup -c",
     "start": "rollup -c -w",
     "format": "prettier src -w",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "copyassets": "node copy-assets.js"
   },
   "peerDependency": {
     "react-intl": "^5.8.1"
@@ -45,6 +46,8 @@
     "dist"
   ],
   "dependencies": {
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
     "i18n-iso-countries": "^7.14.0",
     "quill": "^2.0.3",
     "react-dropzone": "^14.3.5",
@@ -53,6 +56,7 @@
     "react-pdf": "5.7.2",
     "react-quill": "^2.0.0",
     "react-webcam": "^7.2.0",
-    "recharts": "^2.15.2"
+    "recharts": "^2.15.2",
+    "xlsx": "^0.18.5"
   }
 }

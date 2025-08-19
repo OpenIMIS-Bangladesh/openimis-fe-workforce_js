@@ -510,7 +510,8 @@
     "workforce.application.checked":"Checked Applications",
     "workforce.checker1.dashboard":"Central Fund Welfare Section-1 Dashboard",
     "workforce.checker2.dashboard":"Central Fund Welfare Section-2 Dashboard",
-    "workforce.section.admin.dashboard":"Branch Admin Dashboard",
+    "workforce.section1.admin.dashboard":"Section-1 Admin Dashboard",
+    "workforce.section2.admin.dashboard":"Section-2 Admin Dashboard",
     "workforce.section.doctor.dashboard":"Doctor Dashboard",
     "workforce.bgmea.association.dashboard":"BGMEA Association Dashboard",
     "workforce.bkmea.association.dashboard":"BKMEA Association Dashboard",
@@ -721,9 +722,11 @@
 
   "workforce.employee.accident.info.hasRejoined":"Have you rejoined the workplace after recovery?",
 
+  "workforce.previewDetails.uploadedBy.applicant":"Uploaded by Applicant",
+  "workforce.previewDetails.uploadedBy.factoryAdmin":"Uploaded by Factory Admin",
 
     "workforce.register.button":"নিবন্ধন করুন",
-
+  "workforce.select.postOffice":"Post Office",
     "calendar.clearButton": "Clear"
 
 }

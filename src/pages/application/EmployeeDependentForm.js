@@ -129,7 +129,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
           <AccordionDetails>
             <Paper className={classes.paper} elevation={0}>
               <Grid container spacing={2}>
-                {applicationType === "financialAssistance" && (
+                {/* {applicationType === "financialAssistance" && ( */}
                   <Grid item xs={12}>
                     <RelationWithWorkerPicker
                     id="relationType"
@@ -140,7 +140,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     />
                     {errors.relationType && <FormHelperText error>{errors.relationType}</FormHelperText>}
                   </Grid>
-                )}
+                {/* )} */}
                 <Grid item xs={6}>
                   <TextInput
                   id="nameBn"
@@ -234,10 +234,11 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
 
                 <Grid item xs={12}>
                   <CustomDependentLocation
-                    location={dependent?.presentLocation}
+                    location={dependent?.[index]?.presentLocation}
                     onChange={(key, value) => handleChange(index, key, value)}
                     addressKey="presentAddress"
                     data={dependent?.presentAddress}
+                    locationData={dependent?.[index]?.presentLocation}
                   />
                 </Grid>
 
@@ -268,6 +269,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     addressKey="permanentAddress"
                     data={dependent?.permanentAddress}
                     readOnly={!!sameAsPresent[index]}
+                    locationData={dependent?.[index]?.permanentLocation}
                   />
                 </Grid>
 

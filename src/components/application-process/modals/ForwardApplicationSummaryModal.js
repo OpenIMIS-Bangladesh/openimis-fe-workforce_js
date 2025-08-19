@@ -36,6 +36,8 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ForwardAdminPanel from "./ForwardAdminPanel";
 import ForwardApplicationModal from "./ForwardApplicationModal";
 import { formatApplicationSummaryGQL } from "../../../utils/format_gql";
+import { getUserTypeFromRights } from "../../../utils/utils";
+import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../../constants";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -83,6 +85,7 @@ const ForwardApplicationSummaryModal = ({
   selectedApplication,
   selectedApplicationIds,
   onSubmitForward,
+  userRights
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -94,6 +97,7 @@ const ForwardApplicationSummaryModal = ({
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
   const data = useSelector((state) => state.workforce[`application`] ?? []);
+  const userType = getUserTypeFromRights(userRights);
   // const applicationSummaryId = useSelector((state) => state.workforce?.fetchedApplicationSummeryIdByClientMutationId);
   useEffect(() => {
     if (!open) {
@@ -145,6 +149,7 @@ const ForwardApplicationSummaryModal = ({
       year: formData?.year,
       month: formData?.month,
       organizationType: "cf",
+      sectionType: userType === "section_admin" ? "section_one" : "section_two",
       applicationData: JSON.stringify(selectedApplicationIds),
     };
 
@@ -208,6 +213,9 @@ const handleSave = async () => {
     year: Number(formData?.year),
     month: formData?.month,
     organizationType: "cf",
+         sectionType: userType === "section_admin" ? "section_one" : "section_two",
+
+
     applicationData: JSON.stringify(selectedApplicationIds),
   };
   const applicationSummeryMutation = formatMutation(

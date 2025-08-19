@@ -127,7 +127,7 @@ const ApplicationReason = ({ handleChange, formData,errors }) => {
             <Grid item xs={6}>
               <PublishedComponent
                 pubRef="workforce.DatePicker"
-                label={"workforce.employee.date"}
+                label={"workforce.employee.deathdate"}
                 value={formData?.metadata?.deathDate || ""}
                 onChange={(v) => handleChange("deathDate", v, "metadata")}
                 readOnly={false}
