@@ -106,7 +106,7 @@ useEffect(() => {
     setFormData({});
    return dispatch(
       fetchWorkforceUserRoleWiseUser(modulesManager, {
-        roleIdIn: ["32", "36"],
+        roleIds: ["32", "36"],
         orderBy: "id",
       })
     );
