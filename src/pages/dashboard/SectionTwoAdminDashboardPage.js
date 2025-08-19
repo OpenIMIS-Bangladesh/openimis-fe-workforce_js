@@ -401,7 +401,7 @@ const SectionTwoAdminDashboardPage = () => {
   const modulesManager = useModulesManager()
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
  useEffect(() => {
-      return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"']));
+      return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"', 'sectionTypeIn: ["section_two"]']));
     }, []);
   const data = useSelector(
       (state) => state.workforce[`applicationsSummary`] ?? []

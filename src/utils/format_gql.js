@@ -98,6 +98,7 @@ export function formatApplicationSummaryGQL(applicationSummary) {
     ${applicationSummary.meetingDate ? `meetingDate: "${applicationSummary.meetingDate}"` : ""}
     ${applicationSummary?.status ? `status: "${formatGQLString(applicationSummary.status)}"` : ""}
     ${applicationSummary?.year ? `year: ${applicationSummary.year}` : ""}
+    ${applicationSummary?.sectionType ? `sectionType: "${applicationSummary.sectionType}"` : ""}
     ${applicationSummary?.month ? `month: "${formatGQLString(applicationSummary.month)}"` : ""}
     ${applicationSummary?.organizationType ? `organizationType: "${formatGQLString(applicationSummary.organizationType)}"` : ""}
   `;

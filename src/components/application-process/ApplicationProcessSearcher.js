@@ -1719,6 +1719,7 @@ class ApplicationProcessSearcher extends Component {
                   onClose={this.handleCloseForwardModal}
                   selectedApplication={this.state.selectedApplication}
                   selectedApplicationIds={this.state.selectedApplicationIds}
+                  userRights={userRights}
                 />
                  <GenerateBFTN
                   open={openGenerateBFTN}
@@ -1751,6 +1752,7 @@ class ApplicationProcessSearcher extends Component {
                   onClose={this.handleCloseForwardModal}
                   selectedApplication={this.state.selectedApplication}
                   selectedApplicationIds={this.state.selectedApplicationIds}
+                  userRights={userRights}
                 />
                  <GenerateBFTN
                   open={openGenerateBFTN}
