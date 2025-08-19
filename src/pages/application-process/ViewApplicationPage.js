@@ -114,7 +114,9 @@ class ViewApplicationPage extends Component {
 
     const uploadByApplicant = documents?.filter((doc) => doc.holderType === "applicant");
     const uploadByFactoryAdmin = documents?.filter((doc) => doc.holderType === "factoryAdmin");
-    console.log({ formData });
+    console.log({ documents });
+    console.log({ uploadByApplicant });
+    console.log({ uploadByFactoryAdmin });
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>

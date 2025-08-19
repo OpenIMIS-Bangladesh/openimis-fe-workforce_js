@@ -105,7 +105,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,docu
         // workforceApplicationId: safeApplicationId(applicationId),
         documentType: documentType,
         holder: "57",
-        holderType: uploadedBy||"appclicant",
+        holderType: uploadedBy||"applicant",
       };
 
       dispatch({
