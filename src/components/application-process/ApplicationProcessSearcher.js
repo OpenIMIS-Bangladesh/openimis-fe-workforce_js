@@ -1436,6 +1436,7 @@ class ApplicationProcessSearcher extends Component {
     )};
 
     console.log({faltu:selectedApplication})
+    const disableButtons = this.props.disableButtons ? decodeId(this.props.disableButtons) : null;
     return (
       <>
         <Searcher
@@ -1475,33 +1476,38 @@ class ApplicationProcessSearcher extends Component {
                 justifyContent: "space-between",
               }}
             >
-            <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbySectionAdmin}>
-              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-            </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => this.setState({ forwardModalOpen: true })}
-              >
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.employee.application.createMeetingSheet"
-                />
-              </Button>
 
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.handleBulkSelectedbySectionAdminToDoctor}
-              >
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.employee.application.forwardToDoctor"
-                />
-              </Button>
-               <IconButton onClick={this.handleOpenBFTN}>
-              <PrintIcon />
-            </IconButton>
+              {disableButtons == 1 ? (
+                <IconButton onClick={this.handleOpenBFTN}>
+                  <PrintIcon />
+                </IconButton>
+              ) : (
+                <>
+                  <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbySectionAdmin}>
+                    <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => this.setState({ forwardModalOpen: true })}
+                  >
+                    <FormattedMessage
+                      module="workforce"
+                      id="workforce.employee.application.createMeetingSheet"
+                    />
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={this.handleBulkSelectedbySectionAdminToDoctor}
+                  >
+                    <FormattedMessage
+                      module="workforce"
+                      id="workforce.employee.application.forwardToDoctor"
+                    />
+                  </Button>
+                </>
+              )}
             </Box>
           ) : null}
           {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ? (

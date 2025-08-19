@@ -196,7 +196,7 @@ const FiledApplications = () =>{
   </>
 );}
 
-const ApprovedApplications = ({ summaryData = [] }) => {
+const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
 
@@ -233,7 +233,7 @@ const ApprovedApplications = ({ summaryData = [] }) => {
                 <Card style={{ width: "100%" }}>
                   <CardContent>
                     {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} />
+                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons}/>
                     )}
                   </CardContent>
                 </Card>
@@ -440,7 +440,7 @@ const SectionAdminDashboard = () => {
       case "pendingMeetingSheet":
         return <PendingMeetingSheet summaryData={data} />;
       case "approveMeetingSheet":
-        return <ApprovedApplications summaryData={data} />;
+        return <ApprovedApplications summaryData={data} disableButtons={1} />;
       case "applicationStatus":
         return <ApplicationStatus />;
       case "beneficiaryReportSheet":
