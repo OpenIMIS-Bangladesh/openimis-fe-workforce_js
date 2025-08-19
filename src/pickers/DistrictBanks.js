@@ -3,7 +3,7 @@ import { useTranslations, Autocomplete } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchBanksPick, fetchBranchPick } from "../actions";
 
-const BranchPicker = ({
+const DistrictBanks = ({
   modulesManager,
   onChange,
   readOnly,
@@ -17,17 +17,16 @@ const BranchPicker = ({
   filterSelectedOptions,
   multiple,
   bankId, // Receiving selected bank ID
-  districtName
 }) => {
   const { formatMessage } = useTranslations("workforce");
   const dispatch = useDispatch();
   const [searchString, setSearchString] = useState(null);
 
   useEffect(() => {
-    if (bankId && districtName) {
-      dispatch(fetchBranchPick(modulesManager, [`type:"branch",bankCode: "${bankId}",orderBy: "districtNameBn", districtNameBn: "${districtName}"`])); // Fetching branches
+    if (bankId) {
+      dispatch(fetchBranchPick(modulesManager, [`type:"branch",bankCode: "${bankId}",orderBy: "districtNameBn", getUnique: "true"`])); // Fetching branches
     }
-  }, [bankId,districtName]); // Runs only when bankId changes
+  }, [bankId]); // Runs only when bankId changes
 
   const isLoading = useSelector(
     (state) => state.workforce[`fetchingBranchPick`]
@@ -66,7 +65,7 @@ const BranchPicker = ({
       isLoading={isLoading}
       value={selectedOption}
       // getOptionLabel={(option) => `${option.nameEn}`}
-      getOptionLabel={(option) => locale === "en" ? option?.nameEn : option?.nameBn }
+      getOptionLabel={(option) => locale === "en" ? option?.districtNameEn : option?.districtNameBn}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}
@@ -75,4 +74,4 @@ const BranchPicker = ({
   );
 };
 
-export default BranchPicker;
+export default DistrictBanks;
