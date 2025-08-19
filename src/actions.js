@@ -86,7 +86,7 @@ export function fetchDocumentType(mm, filters) {
 /// bank picker ///
 export function fetchBanksPick(mm, filters) {
   const projections = ["id", "nameEn", "nameBn", "parent{id},bankCode,routingNumber"];
-  const payload = formatPageQueryWithCount("workforceBanks", filters, projections);
+  const payload = formatPageQuery("workforceBanks", filters, projections);
   return graphql(payload, "WORKFORCE_BANKS_PICKER");
 }
 
@@ -98,7 +98,7 @@ export function fetchWorkforceOtp(mm, filters) {
 
 export function fetchBranchPick(mm, filters) {
   const projections = ["id", "nameEn","nameBn", "parent{id},bankCode,routingNumber"];
-  const payload = formatPageQueryWithCount("workforceBanks", filters, projections);
+  const payload = formatPageQuery("workforceBanks", filters, projections);
   return graphql(payload, "WORKFORCE_BRANCH_PICKER");
 }
 
@@ -726,6 +726,7 @@ export function fetchSummaryApplications(mm, filters) {
     "meetingDate",
     "month",
     "year",
+    "sectionType",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationSummary",
@@ -870,6 +871,7 @@ export function fetchApplicationPackage(mm, filters) {
     "year",
     "month",
     "organizationType",
+    "sectionType",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationSummary",
@@ -2277,6 +2279,21 @@ export function fetchOrganizationEmployeeDesignation(mm, clientMutationId) {
 }
 `;
   return graphql(payload, "WORKFORCE_ORGANIZATION_BY_DESIGNATION_MUTATION_ID");
+}
+export function fetchPostOfficesPick(mm, id) {
+  const payload = `{
+  workforcePostoffice(wCodeId: "${id}", orderBy: ["name_bn"]){
+    id
+    postCode
+    postOffice
+    nameEn
+    nameBn
+    wCode
+    status
+  }
+}
+`;
+  return graphql(payload, "WORKFORCE_POST_OFFICE_PICKER");
 }
 
 export function fetchWorkforceEmployeeDesignation(mm, filters) {

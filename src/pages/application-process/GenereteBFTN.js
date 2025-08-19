@@ -321,7 +321,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
         </DialogActions>
       </Dialog>
     );
-  } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
+  } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle disableTypography>

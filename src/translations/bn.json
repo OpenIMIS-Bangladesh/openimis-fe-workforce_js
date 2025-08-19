@@ -178,7 +178,7 @@
   "workforce.application.educationInfo.cgpa": "সিজিপিএ / জিপিএ  ",
   "workforce.application.educationInfo.board": "শিক্ষা বোর্ড",
   "workforce.application.educationInfo.university": "বিশ্ববিদ্যালয় / ইনস্টিটিউটের নাম",
-  "workforce.application.steps.underGraduate": "অনার্স বা সমমান",
+  "workforce.application.steps.underGraduate": "স্নাতক বা সমমান",
   "workforce.application.steps.postGraduate": "মাস্টার্স বা সমমান",
 
   "menu.workforce": "কর্মশক্তি",
@@ -350,7 +350,8 @@
     "workforce.application.checked":"পরীক্ষিত আবেদন",
     "workforce.checker1.dashboard":"সেন্ট্রাল ফান্ড কল্যাণ শাখা-১ ড্যাশবোর্ড",
     "workforce.checker2.dashboard":"সেন্ট্রাল ফান্ড কল্যাণ শাখা-২ ড্যাশবোর্ড",
-    "workforce.section.admin.dashboard":"শাখা অ্যাডমিনের ড্যাশবোর্ড",
+    "workforce.section1.admin.dashboard":"শাখা-১ অ্যাডমিনের ড্যাশবোর্ড",
+    "workforce.section2.admin.dashboard":"শাখা-২ অ্যাডমিনের ড্যাশবোর্ড",
     "workforce.section.doctor.dashboard":"ডক্টরের ড্যাশবোর্ড",
     "workforce.bgmea.association.dashboard":"বিজিএমইএ অ্যাসোসিয়েশনের ড্যাশবোর্ড",
     "workforce.bkmea.association.dashboard":"বিকেএমইএ অ্যাসোসিয়েশনের ড্যাশবোর্ড",
@@ -601,6 +602,10 @@
   "workforce.factory.uploadMembershipCertificate": "কারখানার মেম্বারশিপ সার্টিফিকেট আপলোড করুন",
   "workforce.employee.application.beneficiaryReportSheet": "সুবিধাভোগী কল্যাণ হিসাব",
   "core.InternalServerErrorPage.title": "অভ্যন্তরীণ সার্ভার ত্রুটি",
-  "core.InternalServerErrorPage.description": "সার্ভারটি একটি অভ্যন্তরীণ ত্রুটি বা ভুল কনফিগারেশনের সম্মুখীন হয়েছে এবং পেইজটি অথবা সেকশনটি লোড করতে পারেনি।"
+  "core.InternalServerErrorPage.description": "সার্ভারটি একটি অভ্যন্তরীণ ত্রুটি বা ভুল কনফিগারেশনের সম্মুখীন হয়েছে এবং পেইজটি অথবা সেকশনটি লোড করতে পারেনি।",
+  "workforce.employee.application.beneficiaryReport": "সুবিধাভোগী কল্যাণ হিসাব",
+
+  "workforce.previewDetails.uploadedBy.applicant":"আবেদনকারী দ্বারা প্রদত্ত",
+  "workforce.previewDetails.uploadedBy.factoryAdmin":"ফ্যাক্টরি অ্যাডমিন দ্বারা প্রদত্ত"
   
 }

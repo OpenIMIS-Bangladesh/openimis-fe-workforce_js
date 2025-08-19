@@ -102,6 +102,7 @@ class VerifyApplicationPage extends Component {
       note: "",
       mockFiles: mockFiles,
       fileStates: mockFiles || [],
+       uploadedFiles: [], 
       // fileStates: mockFiles.map((file) => ({
       //   ...file,
       //   comment: "",
@@ -194,6 +195,23 @@ class VerifyApplicationPage extends Component {
     });
   };
 
+  handleFileChange = (fieldKey, files) => {
+    this.setState((prevState) => {
+      const existingIndex = prevState.uploadedFiles.findIndex(
+        (item) => item.fieldKey === fieldKey
+      );
+
+      let updatedFiles = [...prevState.uploadedFiles];
+      if (existingIndex !== -1) {
+        updatedFiles[existingIndex] = { fieldKey, files };
+      } else {
+        updatedFiles.push({ fieldKey, files });
+      }
+
+      return { uploadedFiles: updatedFiles };
+    });
+  };
+
   render() {
     const { classes, applicationUuid, documents, application, documentType, locale, user_rights } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType } = this.state;
@@ -206,9 +224,6 @@ class VerifyApplicationPage extends Component {
         console.log("fileStates",file);
         return file?.workforceDocumentType?.id !== doc?.id  && file?.workforceDocumentType?.mandatoryForApplicant === false;
       });
-
-      // Only return docs where a matching file exists
-      // and the documentType itself is NOT mandatory
       return matchedFile || doc?.mandatoryForApplicant === false;
     });
     //     const filteredDocumentTypes = documentType.filter((doc) => {
@@ -221,7 +236,7 @@ class VerifyApplicationPage extends Component {
     // });
 
     console.log("filteredDocumentTypes", filteredDocumentTypes);
-    console.log({ filteredDocumentTypes });
+    console.log({ applicationUuid });
     return (
       <Grid container spacing={3} className={classes.rootGrid}>
         {/* User Summary */}
@@ -286,7 +301,7 @@ class VerifyApplicationPage extends Component {
                 {filteredDocumentTypes?.map((document, index) => (
                       <Box style={{marginTop:"10px"}}>
                         <Typography>{document.nameBn}</Typography>
-                        <FileUploader fieldKey={document.fieldId} applicationId={applicationUuid} documentType={document.documentType} />
+                        <FileUploader fieldKey={document.fieldId} applicationId={applicationUuid} onFileChange={this.handleFileChange} documentType={document.documentType} documentProp={document}  uploadedBy={"factoryAdmin"}/>
                       </Box>
                 ))}
               </CardContent>

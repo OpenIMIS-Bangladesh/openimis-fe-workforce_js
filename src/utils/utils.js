@@ -45,6 +45,8 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.CHECKER_TWO;
   }else if (user_rights.includes(817001)) {
     user_type = WORKFORCE_USER_TYPE.SECTION_ADMIN;
+  }else if (user_rights.includes(821002)) {
+    user_type = WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO;
   }else if (user_rights.includes(818001)) {
     user_type = WORKFORCE_USER_TYPE.DOCTOR;
   } else if (user_rights.includes(813001)) {
@@ -229,3 +231,16 @@ export const validateForm = (emp,formatMessage,formData) => {
 
   return errs;
 };
+
+export function getThirdStepId(location) {
+  let current = location;
+  let step = 0;
+
+  while (current?.parent && step < 2) {
+    current = current.parent;
+    step++;
+  }
+
+  // after 2 jumps, we're at step 3
+  return current?.id || null;
+}
