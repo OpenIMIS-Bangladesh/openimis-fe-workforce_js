@@ -214,7 +214,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
                     withNull
-                    value={dependent.presentLocation || null}
+                    value={dependent?.[index]?.presentLocation || null}
                     onChange={(v) => handleChange(index, "presentLocation", v)}
                     required
                     split
@@ -226,7 +226,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     location={dependent?.[index]?.presentLocation}
                     onChange={(key, value) => handleChange(index, key, value)}
                     addressKey="presentAddress"
-                    data={dependent?.presentAddress}
+                    data={dependent?.[index]?.presentAddress}
                     locationData={dependent?.[index]?.presentLocation}
                   />
                 </Grid>
@@ -256,7 +256,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     location={dependents?.[index]?.permanentLocation}
                     onChange={(key, value) => handleChange(index, key, value)}
                     addressKey="permanentAddress"
-                    data={dependent?.permanentAddress}
+                    data={dependent?.[index]?.permanentAddress}
                     readOnly={!!sameAsPresent[index]}
                     locationData={dependent?.[index]?.permanentLocation}
                   />
