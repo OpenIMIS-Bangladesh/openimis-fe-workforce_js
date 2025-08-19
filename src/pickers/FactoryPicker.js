@@ -22,6 +22,9 @@ const FactoryPicker = ({
   const { formatMessage } = useTranslations("workforce");
 
   const dispatch = useDispatch();
+  const locale = useSelector(
+      (state) => state.core?.user?.i_user?.language || "en"
+    );
 
   useEffect(() => {
     return dispatch(fetchFactoriesPick(modulesManager, []));
@@ -60,7 +63,7 @@ const FactoryPicker = ({
       options={data}
       isLoading={isLoading}
       value={selectedOption}
-      getOptionLabel={(option) => `${option.nameEn}`}
+      getOptionLabel={(option) =>locale === "en" ? `${option.nameEn}`:`${option.nameBn}`}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}

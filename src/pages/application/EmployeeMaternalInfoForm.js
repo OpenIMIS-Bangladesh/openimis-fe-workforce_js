@@ -75,7 +75,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
 
         <Divider style={{ margin: "16px 0" }} />
 
-        {selectedOption === "disease" && (
+        {/* {selectedOption === "disease" && ( */}
           <Grid container spacing={1}>
             <Grid item xs={6} className={classes.item}>
               <PublishedComponent
@@ -87,7 +87,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
               />
             </Grid>
 
-            <Grid item xs={12} className={classes.item}>
+            {/* <Grid item xs={12} className={classes.item}>
               <FormControl component="fieldset">
                 <FormLabel>
                   <FormattedMessage
@@ -101,15 +101,16 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                   <FormControlLabel value="no" control={<Radio color="primary" />}    label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}  />
                 </RadioGroup>
               </FormControl>
-            </Grid>
+            </Grid> */}
 
-            {isAdmitted === "yes" && (
-              <>
+            {/* {isAdmitted === "yes" && (
+              <> */}
                  <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label={"workforce.employee.accident.info.hospitalName"}
                     value={formData?.employeeAccidentInfo?.hospitalName || ""}
                     onChange={(v) => handleChange("hospitalName", v)}
+                    required
                   />
                 </Grid>
 
@@ -120,6 +121,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                     value={formData?.employeeAccidentInfo?.admitDate || ""}
                     onChange={(v) => handleChange("admitDate", v)}
                     readOnly={false}
+                    required
                   />
                 </Grid>
 
@@ -130,6 +132,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                     value={formData?.employeeAccidentInfo?.releaseDate || ""}
                     onChange={(v) => handleChange("releaseDate", v)}
                     readOnly={false}
+                    required
                   />
                 </Grid>
 
@@ -138,12 +141,13 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                     label={"workforce.employee.accident.info.doctorName"}
                     value={formData?.employeeAccidentInfo?.hospitalDoctorName || ""}
                     onChange={(v) => handleChange("hospitalDoctorName", v)}
+                  
                   />
                 </Grid>
-              </>
-            )}
+              {/* </>
+            )} */}
           </Grid>
-        )}
+        {/* )} */}
       </Paper>
     </Box>
   );
