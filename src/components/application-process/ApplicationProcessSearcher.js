@@ -20,7 +20,6 @@ import PrintIcon from "@material-ui/icons/Print";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
 import ForwardApplicationFactoryAdminModal from "./modals/ForwardApplicationFactoryAdminModal";
-import ForwardApplicationSectionAdminModal from "./modals/ForwardApplicationSectionAdminModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
@@ -73,7 +72,6 @@ class ApplicationProcessSearcher extends Component {
       displayVersion: false,
       // 🆕 Modal state
       forwardModalOpen: false,
-      forwardModalOpenSA: false,
       revertModalOpen: false,
       selectedApplication: null,
       selectedUserId: "",
@@ -473,18 +471,13 @@ class ApplicationProcessSearcher extends Component {
     }
     return prms;
   };
-handleOpenForwardModal = (application) => {
-  this.setState({ forwardModalOpen: true, selectedApplication: application });
-};
+  handleOpenForwardModal = (application) => {
+    this.setState({ forwardModalOpen: true, selectedApplication: application });
+  };
 
-handleOpenForwardModalForSectionAdmin = (application) => {
-  this.setState({ forwardModalOpenSA: true, selectedApplication: application });
-};
-
-handleCloseForwardModal = () => {
-  this.setState({ forwardModalOpen: false, forwardModalOpenSA: false, selectedApplication: null });
-};
-
+  handleCloseForwardModal = () => {
+    this.setState({ forwardModalOpen: false, selectedApplication: null });
+  };
   handleOpenRevertModal = (application) => {
     this.setState({ revertModalOpen: true, selectedApplication: application });
   };
@@ -1384,7 +1377,6 @@ handleCloseForwardModal = () => {
   render() {
     const {
       forwardModalOpen,
-      forwardModalOpenSA,
       revertModalOpen,
       revertByChecker,
       revertByApprover,
@@ -1465,9 +1457,9 @@ handleCloseForwardModal = () => {
                 justifyContent: "space-between",
               }}
             >
-              <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
-                <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-              </Button>
+            <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbySectionAdmin}>
+              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+            </Button>
               <Button
                 variant="contained"
                 color="primary"
@@ -1503,7 +1495,7 @@ handleCloseForwardModal = () => {
                 justifyContent: "space-between",
               }}
             >
-            <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
+            <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbySectionTwoAdmin}>
               <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
             </Button>
               <Button
@@ -1708,11 +1700,12 @@ handleCloseForwardModal = () => {
           } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
             return (
               <>
-                 <ForwardApplicationSectionAdminModal
-                  open={forwardModalOpenSA}
+                <ForwardApplicationCheckerMoal
+                  open={forwardModalOpen}
                   onClose={this.handleCloseForwardModal}
                   selectedApplication={selectedApplication}
                   onSubmitForward={this.handleForwardSubmit}
+                  organizationEmployee={organizationEmployee}
                 />
                 <RevertApplicationModal
                   open={revertModalOpen}
@@ -1740,11 +1733,12 @@ handleCloseForwardModal = () => {
           } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
             return (
               <>
-               <ForwardApplicationSectionAdminModal
-                  open={forwardModalOpenSA}
+                <ForwardApplicationCheckerMoal
+                  open={forwardModalOpen}
                   onClose={this.handleCloseForwardModal}
                   selectedApplication={selectedApplication}
                   onSubmitForward={this.handleForwardSubmit}
+                  organizationEmployee={organizationEmployee}
                 />
                 <RevertApplicationModal
                   open={revertModalOpen}
