@@ -4,6 +4,7 @@ import {
   formatPageQueryWithCount,
   formatPageQuery,
   formatQuery,
+  graphqlWithVariables
 } from "@openimis/fe-core";
 import {
   formatOrganizationEmployeeGQL,
@@ -770,6 +771,23 @@ export function fetchApplication(mm, filters) {
     projections
   );
   return graphql(payload, "WORKFORCE_APPLICATION");
+}
+export function fetchWorkforceUserRoleWiseUser(mm, variables) {
+  return graphqlWithVariables(
+    `
+      query ($roleIds: [String!], $orderBy: [String]) {
+        workforceUserRole(roleIdIn: $roleIds, orderBy: $orderBy) {
+          id
+          roleId
+          userId
+          lastName
+          otherNames
+        }
+      }
+    `,
+    variables,
+    "ADMIN_WORKFORCE_ROLE_WISE_USER",
+  );
 }
 export function fetchApplicationMovementsSummary(mm, filters) {
   const projections = [
