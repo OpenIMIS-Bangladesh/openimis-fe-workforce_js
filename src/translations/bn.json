@@ -178,7 +178,7 @@
   "workforce.application.educationInfo.cgpa": "সিজিপিএ / জিপিএ  ",
   "workforce.application.educationInfo.board": "শিক্ষা বোর্ড",
   "workforce.application.educationInfo.university": "বিশ্ববিদ্যালয় / ইনস্টিটিউটের নাম",
-  "workforce.application.steps.underGraduate": "অনার্স বা সমমান",
+  "workforce.application.steps.underGraduate": "স্নাতক বা সমমান",
   "workforce.application.steps.postGraduate": "মাস্টার্স বা সমমান",
 
   "menu.workforce": "কর্মশক্তি",
@@ -600,6 +600,9 @@
   "workforce.representative.sameAsRepresentative": "প্রতিনিধির তথ্য কারখানার তথ্যের অনুরূপ",
   "workforce.representative.title": "প্রতিনিধির তথ্য",
   "workforce.factory.uploadMembershipCertificate": "কারখানার মেম্বারশিপ সার্টিফিকেট আপলোড করুন",
-  "workforce.employee.application.beneficiaryReport": "সুবিধাভোগী কল্যাণ হিসাব"
+  "workforce.employee.application.beneficiaryReport": "সুবিধাভোগী কল্যাণ হিসাব",
+
+  "workforce.previewDetails.uploadedBy.applicant":"আবেদনকারী দ্বারা প্রদত্ত",
+  "workforce.previewDetails.uploadedBy.factoryAdmin":"ফ্যাক্টরি অ্যাডমিন দ্বারা প্রদত্ত"
   
 }

@@ -213,3 +213,16 @@ export const validateForm = (emp,formatMessage,formData) => {
 
   return errs;
 };
+
+export function getThirdStepId(location) {
+  let current = location;
+  let step = 0;
+
+  while (current?.parent && step < 2) {
+    current = current.parent;
+    step++;
+  }
+
+  // after 2 jumps, we're at step 3
+  return current?.id || null;
+}

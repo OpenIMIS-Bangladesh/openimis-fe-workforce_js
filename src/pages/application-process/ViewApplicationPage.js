@@ -90,7 +90,7 @@ class ViewApplicationPage extends Component {
   }
 
   render() {
-    const { classes, user_rights, application, documents,locale } = this.props;
+    const { classes, user_rights, application, documents, locale } = this.props;
     const { stateEdited, workforceEmployee, isForwardModalOpen } = this.state;
 
     const user_type = getUserTypeFromRights(user_rights);
@@ -111,16 +111,42 @@ class ViewApplicationPage extends Component {
       employeeChildrenInfo: this.safeParse(childrenInfo),
       metadata: this.safeParse(metaInfo),
     };
+
+    const uploadByApplicant = documents?.filter((doc) => doc.holderType === "applicant");
+    const uploadByFactoryAdmin = documents?.filter((doc) => doc.holderType === "factoryAdmin");
     console.log({ formData });
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <PreviewDetails formData={formData} language={locale}/>
+              <PreviewDetails formData={formData} language={locale} />
             </Grid>
             <Grid item xs={12}>
-              {documents?.map((file, index) => (
+              {uploadByApplicant?.length > 0 && (
+                <Typography variant="body2" gutterBottom style={{ textAlign: "left", fontWeight: "bold" }}>
+                  <FormattedMessage module="workforce" id="workforce.previewDetails.uploadedBy.applicant" />
+                </Typography>
+              )}
+              {uploadByApplicant?.map((file, index) => (
+                <DocumentReviewAccordion
+                  key={index}
+                  file={file}
+                  index={index}
+                  onCommentChange={this.handleFileCommentChange}
+                  onVerify={this.handleFileVerify}
+                  onReject={this.handleFileReject}
+                  locale={locale}
+                />
+              ))}
+            </Grid>
+            <Grid item xs={12}>
+              {uploadByFactoryAdmin?.length > 0 && (
+                <Typography variant="body2" gutterBottom style={{ textAlign: "left", fontWeight: "bold" }}>
+                  <FormattedMessage module="workforce" id="workforce.previewDetails.uploadedBy.factoryAdmin" />
+                </Typography>
+              )}
+              {uploadByFactoryAdmin?.map((file, index) => (
                 <DocumentReviewAccordion
                   key={index}
                   file={file}
@@ -169,7 +195,7 @@ const mapStateToProps = (state) => ({
   application: state.workforce.application,
   user_rights: state.core?.user?.i_user?.rights || {},
   documents: state.workforce.document,
-  locale: state.core?.user?.i_user?.language || "en",  
+  locale: state.core?.user?.i_user?.language || "en",
 
   // applicationUuid: props.match.params.application_uuid,
 });

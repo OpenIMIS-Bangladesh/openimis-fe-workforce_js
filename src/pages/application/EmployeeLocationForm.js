@@ -58,6 +58,8 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
       : formatMessage(labelKey);
   };
 
+
+
   console.log(formData)
 
   return (
@@ -100,6 +102,7 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
                     addressKey="presentAddress"
                     data={formData?.workforceEmployee?.presentAddress}
                     readOnly={false}
+                    locationData={formData?.workforceEmployee?.presentLocation}
                   />
                 </Grid>
               )}
@@ -144,6 +147,7 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
                     addressKey="permanentAddress"
                     data={formData?.workforceEmployee?.permanentAddress}
                     readOnly={sameAsPresent}
+                    locationData={formData?.workforceEmployee?.permanentLocation}
                   />
                 </Grid>
               )}
