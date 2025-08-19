@@ -46,7 +46,7 @@ const PostOfficePicker = ({
     if (locationId) {
       dispatch(fetchPostOfficesPick(modulesManager, decodeId(locationId)));
     }
-  }, [locationId, modulesManager, dispatch]);
+  }, []);
 
   const isLoading = useSelector(
     (state) => state.workforce[`fetchingPostOfficesPick`]
