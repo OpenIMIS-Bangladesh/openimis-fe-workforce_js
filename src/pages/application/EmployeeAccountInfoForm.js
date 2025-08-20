@@ -171,7 +171,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                           </Grid>
                           <Grid item xs={6} className={classes.item}>
                             <DistrictBanks
-                              value={account?.branch?.id || ""}
+                              value={account?.district?.id || ""}
                               label={<FormattedMessage id="workforce.district.branch.picker" />}
                               bankId={account?.bank?.bankCode}
                               onChange={(v) => handleAccountChange(index, "district", v)}

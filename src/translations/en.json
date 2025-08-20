@@ -733,6 +733,8 @@
   "workforce.application.approve.message": "Are you sure you want to approve these applications?",
   "workforce.application.reject.message": "Are you sure you want to reject this application?",
   "workforce.confirm.modal.ok": "OK",
+  "workforce.financialAssistance.error.message":"An application has already been submitted for death",
+
   "workforce.confirm.modal.cancel": "CANCEL"
 
 }
