@@ -177,7 +177,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                           </Grid>
                           <Grid item xs={6} className={classes.item}>
                             <DistrictBanks
-                              value={account?.branch?.id || ""}
+                              value={account?.district?.id || ""}
                               label={<FormattedMessage id="workforce.district.branch.picker" />}
                               bankId={account?.bank?.bankCode}
                               onChange={(v) => handleAccountChange(index, "district", v)}
@@ -188,7 +188,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                           <Grid item xs={6} className={classes.item}>
                             <BranchPicker
                               id={"branch"}
-                              value={account?.branch?.id || ""}
+                              value={account?.branch || ""}
                               label={<FormattedMessage id="workforce.branch.picker" />}
                               bankId={account?.bank?.bankCode}
                               districtName={account?.district?.districtNameBn}
@@ -217,7 +217,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                               label="workforce.employee.account.info.routingNumber"
                               value={account?.branch?.routingNumber || ""}
                               onChange={(v) => handleAccountChange(index, "routingNumber", v)}
-                              readOnly={true}
+                              readOnly={false}
                               required
                                error={!!errors.routingNumber}
             helperText={errors.routingNumber}

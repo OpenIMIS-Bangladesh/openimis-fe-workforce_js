@@ -120,7 +120,7 @@ export const itemAdminFormatters = (
             disabled={
               application?.isHistory ||
               application?.status === "approved_by_dg" ||
-              application?.status === "forward_to_director"||
+              application?.status === "forward_to_director" ||
               application?.status === "rejected_by_dg"
 
             }
@@ -532,56 +532,60 @@ export const itemFormattersSectionAdmin = (
         </IconButton>
       </Tooltip>
 
-      <Tooltip title="Verify">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.verify",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <VerifiedUserIcon />
-        </IconButton>
-      </Tooltip>
-      {/* 
-        <Tooltip title="Forward">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => component.handleOpenForwardModal(application)}
-          >
-            <ForwardIcon />
-          </IconButton>
-        </Tooltip> */}
-      {!component.props.revertedApplication && (
-      <>
-      <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            component.handleOpenRevertModal(application);
-            component.setState({ revertByChecker: true });
-          }}
-        >
-          <UndoIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Reject">
-        <span>
-          <IconButton
-            onClick={() => component.handleReject(application)}
-          >
-            <CloseIcon />
-          </IconButton>
-        </span>
-      </Tooltip>
-      </>
-    )}
-        {component.props.revertedApplication && (
+      {component.props.disableButtons !== 1 && (
+        <>
+          <Tooltip title="Verify">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => {
+                historyPush(
+                  modulesManager,
+                  history,
+                  "workforce.route.applications.application.verify",
+                  [decodeId(application?.id)],
+                  false
+                );
+              }}
+            >
+              <VerifiedUserIcon />
+            </IconButton>
+          </Tooltip>
+          {/* 
+            <Tooltip title="Forward">
+              <IconButton
+                disabled={application?.isHistory}
+                onClick={() => component.handleOpenForwardModal(application)}
+              >
+                <ForwardIcon />
+              </IconButton>
+            </Tooltip> */}
+          {!component.props.revertedApplication && (
+            <>
+              <Tooltip title="Revert">
+                <IconButton
+                  disabled={application?.isHistory}
+                  onClick={() => {
+                    component.handleOpenRevertModal(application);
+                    component.setState({ revertByChecker: true });
+                  }}
+                >
+                  <UndoIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Reject">
+                <span>
+                  <IconButton
+                    onClick={() => component.handleReject(application)}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            </>
+          )}
+        </>
+      )}
+      {component.props.revertedApplication && (
         <Tooltip title="Resend">
           <IconButton
             disabled={application?.isHistory}
@@ -689,30 +693,30 @@ export const itemFormattersSectionTwoAdmin = (
           </IconButton>
         </Tooltip> */}
       {!component.props.revertedApplication && (
-      <>
-      <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            component.handleOpenRevertModal(application);
-            component.setState({ revertByChecker: true });
-          }}
-        >
-          <UndoIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Reject">
-        <span>
-          <IconButton
-            onClick={() => component.handleReject(application)}
-          >
-            <CloseIcon />
-          </IconButton>
-        </span>
-      </Tooltip>
-      </>
-    )}
-        {component.props.revertedApplication && (
+        <>
+          <Tooltip title="Revert">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => {
+                component.handleOpenRevertModal(application);
+                component.setState({ revertByChecker: true });
+              }}
+            >
+              <UndoIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Reject">
+            <span>
+              <IconButton
+                onClick={() => component.handleReject(application)}
+              >
+                <CloseIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </>
+      )}
+      {component.props.revertedApplication && (
         <Tooltip title="Resend">
           <IconButton
             disabled={application?.isHistory}
@@ -814,14 +818,14 @@ export const itemFormattersDoctor = (
           <VerifiedUserIcon />
         </IconButton>
       </Tooltip>
-       <Tooltip title="Approve">
+      <Tooltip title="Approve">
         <IconButton
           onClick={() => component.handleApprovalByDoctor(application)}
         >
           <CheckIcon />
         </IconButton>
       </Tooltip>
-       <Tooltip title="Revert">
+      <Tooltip title="Revert">
         <IconButton
           disabled={application?.isHistory}
           onClick={() => component.handleOpenRevertModal(application)}
@@ -918,19 +922,19 @@ export const itemFormattersAssociation = (
           <VerifiedUserIcon />
         </IconButton>
       </Tooltip>
-    {!component.props.revertedApplication && (
-      <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            component.handleOpenRevertModal(application);
-            component.setState({ revertByChecker: true });
-          }}
-        >
-          <UndoIcon />
-        </IconButton>
-      </Tooltip>
-       )}
+      {!component.props.revertedApplication && (
+        <Tooltip title="Revert">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              component.handleOpenRevertModal(application);
+              component.setState({ revertByChecker: true });
+            }}
+          >
+            <UndoIcon />
+          </IconButton>
+        </Tooltip>
+      )}
     </div>
   ));
   return formatters;
@@ -1016,31 +1020,31 @@ export const itemFormattersFactoryAdmin = (
           <VerifiedUserIcon />
         </IconButton>
       </Tooltip>
- {!component.props.revertedApplication && (
-  <>
-      <Tooltip title="ফরওয়ার্ড">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => component.handleOpenForwardModal(application)}
-        >
-          <ForwardIcon />
-        </IconButton>
-      </Tooltip>
+      {!component.props.revertedApplication && (
+        <>
+          <Tooltip title="ফরওয়ার্ড">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => component.handleOpenForwardModal(application)}
+            >
+              <ForwardIcon />
+            </IconButton>
+          </Tooltip>
 
-      <Tooltip title="রিভার্ট">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            component.handleOpenRevertModal(application);
-            component.setState({ revertByChecker: true });
-          }}
-        >
-          <UndoIcon />
-        </IconButton>
-      </Tooltip>
-      </>
-    )}
-     {component.props.revertedApplication && (
+          <Tooltip title="রিভার্ট">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => {
+                component.handleOpenRevertModal(application);
+                component.setState({ revertByChecker: true });
+              }}
+            >
+              <UndoIcon />
+            </IconButton>
+          </Tooltip>
+        </>
+      )}
+      {component.props.revertedApplication && (
         <Tooltip title="Resend">
           <IconButton
             disabled={application?.isHistory}

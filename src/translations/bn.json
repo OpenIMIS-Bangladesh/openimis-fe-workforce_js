@@ -606,6 +606,8 @@
   "core.InternalServerErrorPage.description": "সার্ভারটি একটি অভ্যন্তরীণ ত্রুটি বা ভুল কনফিগারেশনের সম্মুখীন হয়েছে এবং পেইজটি অথবা সেকশনটি লোড করতে পারেনি।",
   "workforce.employee.application.beneficiaryReport": "সুবিধাভোগী কল্যাণ হিসাব",
 
+  "workforce.financialAssistance.error.message":"মৃত্যুর জন্য ইতোমধ্যেই একটি আবেদন করা হয়েছে",
+
   "workforce.previewDetails.uploadedBy.applicant":"আবেদনকারী দ্বারা প্রদত্ত",
   "workforce.previewDetails.uploadedBy.factoryAdmin":"ফ্যাক্টরি অ্যাডমিন দ্বারা প্রদত্ত",
   "workforce.select.postOffice":"পোস্ট অফিস",
@@ -614,6 +616,10 @@
   "workforce.application.approve.message": "আপনি কি নির্বাচিত আবেদনসমূহ অনুমোদন করতে চান?",
   "workforce.application.reject.message": "আপনি কি নির্বাচিত আবেদনসমূহ বাতিল করতে চান?",
   "workforce.confirm.modal.ok": "এগিয়ে যান",
-  "workforce.confirm.modal.cancel": "বাতিল করুন"
+  "workforce.confirm.modal.cancel": "বাতিল করুন",
+  "workforce.modal.print": "প্রিন্ট করুন",
+  "workforce.modal.print.advice": "এডভাইস প্রিন্ট করুন",
+  "workforce.modal.excel": "এক্সেল ফাইল ডাউনলোড করুন",
+  "workforce.modal.close": "বন্ধ করুন"
   
 }

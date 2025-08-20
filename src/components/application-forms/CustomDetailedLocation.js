@@ -84,7 +84,7 @@
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextInput value={localData.extraInfo || ""} label="" onChange={(v) => updateField("extraInfo", v)} InputProps={{ margin: "dense" }} readOnly={readOnly} />
+              <TextInput value={localData.extraInfo || ""} label="&bsp;" onChange={(v) => updateField("extraInfo", v)} InputProps={{ margin: "dense" }} readOnly={readOnly} />
             </Grid>
           </>
         )}
@@ -129,7 +129,7 @@
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextInput value={localData.extraInfo || ""} label="" onChange={(v) => updateField("extraInfo", v)} InputProps={{ margin: "dense" }} readOnly={readOnly} />
+              <TextInput value={localData.extraInfo || ""} label="&bsp;" onChange={(v) => updateField("extraInfo", v)} InputProps={{ margin: "dense" }} readOnly={readOnly} />
             </Grid>
           </>
         )}
