@@ -321,7 +321,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         grantAmount: formData?.employeeAccidentInfo.grantAmount,
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
         
-        employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{') || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, '').replace(/"{/g, '{'),
+        employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}') || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
         
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData.metadata),
