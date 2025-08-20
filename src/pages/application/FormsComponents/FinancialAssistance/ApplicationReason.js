@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ApplicationReason = ({ handleChange, formData,errors }) => {
+const ApplicationReason = ({ handleChange, formData, errors }) => {
   const classes = useStyles();
   const { formatMessage } = useTranslations("core.RegistrationPage");
 
@@ -83,7 +83,7 @@ const ApplicationReason = ({ handleChange, formData,errors }) => {
                     />
                   }
                 />
-                
+
               </RadioGroup>
             </FormControl>
           </Grid>
@@ -91,8 +91,8 @@ const ApplicationReason = ({ handleChange, formData,errors }) => {
           {deathType === "normalDeath" && (
             <Grid item xs={6}>
               <DeathReasonPicker
-              id={"deathReason"}
-              required
+                id={"deathReason"}
+                required
                 selectedReason={formData?.metadata?.deathReason || ""}
                 handleChange={(key, value) => handleChange(key, value, "metadata")}
                 onOtherDiseaseChange={(value) => handleChange("otherReason", value, "metadata")}
@@ -105,7 +105,7 @@ const ApplicationReason = ({ handleChange, formData,errors }) => {
           {deathType === "accidentalDeath" && (
             <Grid item xs={6}>
               <EmployeeAccidentTypePicker
-              id="accidentReason"
+                id={"accidentReason"}
                 value={formData?.employeeAccidentInfo?.accidentType || ""}
                 label={
                   <FormattedMessage
@@ -117,7 +117,7 @@ const ApplicationReason = ({ handleChange, formData,errors }) => {
                 onChange={(v) => handleChange("accidentReason", v, "metadata")}
                 readOnly={false}
               />
-               {errors.accidentReason && <FormHelperText error>{errors.accidentReason}</FormHelperText>}
+              {errors.accidentReason && <FormHelperText error>{errors.accidentReason}</FormHelperText>}
             </Grid>
           )}
 
@@ -133,23 +133,24 @@ const ApplicationReason = ({ handleChange, formData,errors }) => {
                 readOnly={false}
                 required
               />
+              {errors.rdmp && <FormHelperText error>{errors.rdmp}</FormHelperText>}
             </Grid>
           )}
 
-          
 
-          
+
+
           {/* other: manual input */}
           {deathType === "other" && (
             <Grid item xs={6}>
               <TextInput
-              id="deathReason"
+                id={"deathReason"}
                 label="workforce.financial.assistance.deathReason"
                 value={formData?.metadata?.deathReason || ""}
                 onChange={(v) => handleChange("deathReason", v, "metadata")}
                 required
                 error={!!errors.deathReason}
-            helperText={errors.deathReason}
+                helperText={errors.deathReason}
               />
             </Grid>
           )}

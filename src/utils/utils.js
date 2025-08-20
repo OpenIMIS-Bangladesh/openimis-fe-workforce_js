@@ -41,13 +41,13 @@ export function getUserTypeFromRights(user_rights) {
   let user_type = WORKFORCE_USER_TYPE.APPLICANT;
   if (user_rights.includes(812001)) {
     user_type = WORKFORCE_USER_TYPE.CHECKER;
-  }else if (user_rights.includes(819001)) {
+  } else if (user_rights.includes(819001)) {
     user_type = WORKFORCE_USER_TYPE.CHECKER_TWO;
-  }else if (user_rights.includes(817001)) {
+  } else if (user_rights.includes(817001)) {
     user_type = WORKFORCE_USER_TYPE.SECTION_ADMIN;
-  }else if (user_rights.includes(821002)) {
+  } else if (user_rights.includes(821002)) {
     user_type = WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO;
-  }else if (user_rights.includes(818001)) {
+  } else if (user_rights.includes(818001)) {
     user_type = WORKFORCE_USER_TYPE.DOCTOR;
   } else if (user_rights.includes(813001)) {
     user_type = WORKFORCE_USER_TYPE.APPROVER;
@@ -117,20 +117,20 @@ export const getParsedApplication = (modulesManager, filters) => {
 
 
 export const getParsedApplicationFromArray = (applications) => {
-    const returnArray= [];
-    if (!Array.isArray(applications)) return [];
-    applications.forEach((rawData) => {
-      const parsedData = {
-        ...rawData,
-        employeeDependentInfo: safeParse(rawData.employeeDependentInfo) || {},
-        employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
-        employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo) || {},
-        employeeChildrenInfo: safeParse(rawData.employeeChildrenInfo) || {},
-        metadata: safeParse(rawData.metadata) || {}
-      };
-      returnArray.push(parsedData);
-    });
-    return returnArray;
+  const returnArray = [];
+  if (!Array.isArray(applications)) return [];
+  applications.forEach((rawData) => {
+    const parsedData = {
+      ...rawData,
+      employeeDependentInfo: safeParse(rawData.employeeDependentInfo) || {},
+      employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
+      employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo) || {},
+      employeeChildrenInfo: safeParse(rawData.employeeChildrenInfo) || {},
+      metadata: safeParse(rawData.metadata) || {}
+    };
+    returnArray.push(parsedData);
+  });
+  return returnArray;
 };
 
 export const isEmpty = (value) => {
@@ -210,7 +210,7 @@ export const getInfoId = (resp, dataKey) => {
 };
 
 
-export const validateForm = (emp,formatMessage,formData) => {
+export const validateForm = (emp, formatMessage, formData) => {
   // const emp = formData?.workforceEmployee || {};
   const errs = {};
 
@@ -247,12 +247,27 @@ export function getThirdStepId(location) {
 
 export const validateRequiredFields = (containerRef, formatMessage) => {
   const fields = containerRef.current.querySelectorAll("[required]");
-  console.log({fields})
+  console.log({ fields })
   const errors = {};
-  
+
   fields.forEach((field) => {
     const value = field.value?.trim?.() || "";
-    if (!value && field.tagName !== "DIV" && (!field?.id.includes("mui") || !field?.id.includes("input"))) {
+    // if (!value && field.tagName !== "DIV" && (!field?.id.includes("mui") || !field?.id.includes("input"))) {
+    //   errors[field.id || field.name] = formatMessage("core.error.required");
+    //   console.warn(`Validation failed for field: ${field.id || field.name}`);
+    // }
+    if (!value && field.tagName !== "DIV") {
+      // if (!field.id && field.parentElement?.classList.contains("rmdp-container")) {
+      //   field.id = "rdmp";
+      // }
+      if (
+        !field.id &&
+        field.parentElement.previousElementSibling?.classList &&
+        Array.from(field.parentElement.previousElementSibling.classList)
+          .some(c => c.startsWith("openIMISDatePicker-label"))
+      ) {
+        field.id = "rdmp";
+      }
       errors[field.id || field.name] = formatMessage("core.error.required");
       console.warn(`Validation failed for field: ${field.id || field.name}`);
     }
