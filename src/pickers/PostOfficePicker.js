@@ -58,10 +58,10 @@ const PostOfficePicker = ({
 
   const selectedOption = useMemo(() => {
     if (!value) return null;
-    if (typeof value === "string" || typeof value === "number") {
-      return fetchedData.find((option) => option.id === value) || null;
-    }
-    return value; 
+    // if (typeof value === "string" || typeof value === "number") {
+    //   return fetchedData.find((option) => option.id === value) || null;
+    // }
+   return value || null; 
   }, [value, fetchedData]);
 
 
@@ -82,7 +82,7 @@ const PostOfficePicker = ({
     ) {
       opts = [
         ...opts,
-        { id: null, nameEn: searchString, nameBn: searchString },
+        { id: '', nameEn: searchString, nameBn: searchString },
       ];
     }
 
