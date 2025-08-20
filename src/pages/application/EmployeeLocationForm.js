@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Grid, Box, Paper, Divider, Checkbox, FormControlLabel } from "@material-ui/core";
+import { Grid, Box, Paper, Divider, Checkbox, FormControlLabel, FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import CustomDetailedLocation from "../../components/application-forms/CustomDetailedLocation";
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeLocationForm = ({ handleChange, formData }) => {
+const EmployeeLocationForm = ({ handleChange, formData, errors }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -42,8 +42,8 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
 
     while (current) {
       if (current.name && current.name.includes("সিটি কর্পোরেশন")) {
-        return true; 
-      }else if (current.name?.includes("পৌরসভা")) {
+        return true;
+      } else if (current.name?.includes("পৌরসভা")) {
         return true
       }
       current = current.parent;
@@ -84,6 +84,7 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
                   required
                   split={true}
                 />
+                {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
               </Grid>
 
               {/* <Grid item xs={12}>
@@ -97,6 +98,7 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
               {formData?.workforceEmployee?.presentLocation && (
                 <Grid item xs={12}>
                   <CustomDetailedLocation
+                    id="permanentLocationCustomDetailedLocation"
                     locationType={isCityLocation(formData?.workforceEmployee?.presentLocation) ? "city" : "rural"}
                     onChange={handleChange}
                     addressKey="presentAddress"
@@ -109,8 +111,8 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
 
               {/* Permanent Location */}
               <Grid item xs={12}>
-                <Divider sstyle={{marginY:"25px 0px"}}/>
-                </Grid>
+                <Divider sstyle={{ marginY: "25px 0px" }} />
+              </Grid>
               <Grid item xs={12}>
                 <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
                 {/* Checkbox */}
@@ -129,6 +131,7 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
                   required
                   split={true}
                 />
+                {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
               </Grid>
 
               {/* <Grid item xs={12}>
@@ -142,6 +145,7 @@ const EmployeeLocationForm = ({ handleChange, formData }) => {
               {formData?.workforceEmployee?.permanentLocation && (
                 <Grid item xs={12}>
                   <CustomDetailedLocation
+                    id="permanentLocationCustomDetailedLocation"
                     locationType={isCityLocation(formData?.workforceEmployee?.permanentLocation) ? "city" : "rural"}
                     onChange={handleChange}
                     addressKey="permanentAddress"

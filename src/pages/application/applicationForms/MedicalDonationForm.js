@@ -399,7 +399,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
     },
     {
       label: "workforce.application.steps.location",
-      content: <EmployeeLocationForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />,
+      content: <EmployeeLocationForm errors={errors} handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />,
     },
     {
       label: "workforce.application.steps.worker.extraInfo",

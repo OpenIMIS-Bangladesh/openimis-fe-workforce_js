@@ -215,7 +215,7 @@ const MedicalAssistanceForm = ({  organizationType, selectedApplicationType, app
      const newErrors = validateRequiredFields(stepRef, formatMessage);
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length === 0 || activeStep===1){
+    if (Object.keys(newErrors).length === 0){
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
     if (nextStep === 1 || nextStep === 2) {
@@ -405,7 +405,7 @@ const MedicalAssistanceForm = ({  organizationType, selectedApplicationType, app
     },
     {
       label: "workforce.application.steps.location",
-      content: <EmployeeLocationForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />,
+      content: <EmployeeLocationForm errors={errors} handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />,
     },
     ...(applicationForSelf === "no"
       ? [

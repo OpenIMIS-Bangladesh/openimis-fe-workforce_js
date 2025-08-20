@@ -252,22 +252,24 @@ export const validateRequiredFields = (containerRef, formatMessage) => {
 
   fields.forEach((field) => {
     const value = field.value?.trim?.() || "";
-    // if (!value && field.tagName !== "DIV" && (!field?.id.includes("mui") || !field?.id.includes("input"))) {
-    //   errors[field.id || field.name] = formatMessage("core.error.required");
-    //   console.warn(`Validation failed for field: ${field.id || field.name}`);
-    // }
+
     if (!value && field.tagName !== "DIV") {
-      // if (!field.id && field.parentElement?.classList.contains("rmdp-container")) {
-      //   field.id = "rdmp";
-      // }
-      if (
-        !field.id &&
-        field.parentElement.previousElementSibling?.classList &&
-        Array.from(field.parentElement.previousElementSibling.classList)
-          .some(c => c.startsWith("openIMISDatePicker-label"))
-      ) {
+      if (!field.id && field.parentElement.previousElementSibling?.classList && Array.from(field.parentElement.previousElementSibling.classList).some(c => c.startsWith("openIMISDatePicker-label"))) {
         field.id = "rdmp";
       }
+
+      let parent = field.parentElement;
+      while (parent) {
+        if (
+          parent.classList &&
+          Array.from(parent.classList).some(c => c.startsWith("DetailedLocation-form"))
+        ) {
+          field.id = "detailedLocation";
+          break;
+        }
+        parent = parent.parentElement;
+      }
+
       errors[field.id || field.name] = formatMessage("core.error.required");
       console.warn(`Validation failed for field: ${field.id || field.name}`);
     }
