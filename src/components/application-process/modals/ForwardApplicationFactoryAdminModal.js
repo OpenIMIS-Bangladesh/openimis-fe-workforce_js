@@ -153,6 +153,14 @@ const ForwardApplicationFactoryAdminModal = ({
   setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
 };
 
+  useEffect(() => {
+    if (serverResponse?.status === "SUCCESS") {
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }
+  }, [serverResponse]);
+
   console.log({ aha: selectedApplication });
 
   return (

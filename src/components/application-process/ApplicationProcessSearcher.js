@@ -23,6 +23,7 @@ import ForwardApplicationFactoryAdminModal from "./modals/ForwardApplicationFact
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
+import ConfirmModal from "./modals/ConfirmModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement, updateApplicationSummary } from "../../actions";
 import {
@@ -89,6 +90,9 @@ class ApplicationProcessSearcher extends Component {
       revertByChecker: false,
       revertByFactoryAdmin: false,
       dynamicTableTitle: "",
+      confirmModalOpen: false,
+      confirmModalMessage: "",
+      confirmModalCallback: null,
     };
     this.rowsPerPageOptions = [10, 20, 50, 100];
     this.defaultPageSize = 10;
@@ -522,272 +526,281 @@ class ApplicationProcessSearcher extends Component {
     this.setState({ selectedApplicationIds: newSelected });
   };
 
-  handleReject = async (application) => {
+  handleReject = (application) => {
     const { selectedApplication } = this.state;
-
-    if (window.confirm("Are you sure you want to reject this application?")) {
-      this.setState(
-        {
-          selectedApplication: {
-            ...selectedApplication,
-            isHistory: true,
-          },
-        },
-        async () => {
-          const updateApplicationData = {
-            id: decodeId(application.id),
-            status: WORKFORCE_STATUS.REJECTED,
-          };
-
-          const createApplicationMovementData = {
-            applicationId: decodeId(application.id),
-            status: WORKFORCE_STATUS.REJECTED,
-            note: "আবেদন বাতিল করা হয়েছে",
-            action: "rejected",
-          };
-
-          try {
-            await this.props.updateApplication(updateApplicationData, "update workforce application");
-
-            await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
-            this.setState({
-              serverResponse: {
-                status: "SUCCESS",
-                message: "আবেদন বাতিল করা হয়েছে!",
-              },
-            });
-            window.location.reload();
-          } catch (error) {
-            console.error("Approval failed:", error);
-            this.setState({
-              serverResponse: {
-                status: "ERROR",
-                message: "আবেদন বাতিল ব্যর্থ হয়েছে!",
-              },
-            });
-          }
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.reject.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          this.setState({
+            selectedApplication: {
+              ...selectedApplication,
+              isHistory: true,
+            },
+          }, async () => {
+            const updateApplicationData = {
+              id: decodeId(application.id),
+              status: WORKFORCE_STATUS.REJECTED,
+            };
+            const createApplicationMovementData = {
+              applicationId: decodeId(application.id),
+              status: WORKFORCE_STATUS.REJECTED,
+              note: "আবেদন বাতিল করা হয়েছে",
+              action: "rejected",
+            };
+            try {
+              await this.props.updateApplication(updateApplicationData, "update workforce application");
+              await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
+              this.setState({
+                serverResponse: {
+                  status: "SUCCESS",
+                  message: "আবেদন বাতিল করা হয়েছে!",
+                },
+              });
+              window.location.reload();
+            } catch (error) {
+              console.error("Approval failed:", error);
+              this.setState({
+                serverResponse: {
+                  status: "ERROR",
+                  message: "আবেদন বাতিল ব্যর্থ হয়েছে!",
+                },
+              });
+            }
+          });
         }
-      );
-    }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+      }
+    });
   };
   handleRejectByDG = async (application) => {
     const { selectedApplication } = this.state;
-
-    if (window.confirm("Are you sure you want to final reject this application?")) {
-      this.setState(
-        {
-          selectedApplication: {
-            ...selectedApplication,
-            isHistory: true,
-          },
-        },
-        async () => {
-          const updateApplicationData = {
-            id: decodeId(application.id),
-            status: WORKFORCE_STATUS.REJECTED_BY_DG,
-          };
-
-          const createApplicationMovementData = {
-            applicationId: decodeId(application.id),
-            status: WORKFORCE_STATUS.REJECTED_BY_DG,
-            note: "আবেদন ডিজি কর্তৃক বাতিল করা হয়েছে",
-            action: "rejected_by_dg",
-          };
-
-          try {
-            await this.props.updateApplication(updateApplicationData, "update workforce application");
-
-            await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
-            this.setState({
-              serverResponse: {
-                status: "SUCCESS",
-                message: "আবেদন বাতিল করা হয়েছে!",
-              },
-            });
-            window.location.reload();
-          } catch (error) {
-            console.error("Approval failed:", error);
-            this.setState({
-              serverResponse: {
-                status: "ERROR",
-                message: "আবেদন বাতিল ব্যর্থ হয়েছে!",
-              },
-            });
-          }
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.reject.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          this.setState({
+            selectedApplication: {
+              ...selectedApplication,
+              isHistory: true,
+            },
+          }, async () => {
+            const updateApplicationData = {
+              id: decodeId(application.id),
+              status: WORKFORCE_STATUS.REJECTED_BY_DG,
+            };
+            const createApplicationMovementData = {
+              applicationId: decodeId(application.id),
+              status: WORKFORCE_STATUS.REJECTED_BY_DG,
+              note: "আবেদন ডিজি কর্তৃক বাতিল করা হয়েছে",
+              action: "rejected_by_dg",
+            };
+            try {
+              await this.props.updateApplication(updateApplicationData, "update workforce application");
+              await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
+              this.setState({
+                serverResponse: {
+                  status: "SUCCESS",
+                  message: "আবেদন বাতিল করা হয়েছে!",
+                },
+              });
+              window.location.reload();
+            } catch (error) {
+              console.error("Approval failed:", error);
+              this.setState({
+                serverResponse: {
+                  status: "ERROR",
+                  message: "আবেদন বাতিল ব্যর্থ হয়েছে!",
+                },
+              });
+            }
+          });
         }
-      );
-    }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+      }
+    });
   };
   handleApproval = async (application) => {
     const { selectedApplication } = this.state;
-
-    if (window.confirm("Are you sure you want to approve this application?")) {
-      this.setState(
-        {
-          selectedApplication: {
-            ...selectedApplication,
-            isHistory: true,
-          },
-        },
-        async () => {
-          const updateApplicationData = {
-            id: decodeId(application.id),
-            status: WORKFORCE_STATUS.APPROVED_BY_DG,
-            grantAmount: this.state.editedGrantMoney,
-          };
-
-          try {
-            await this.props.updateApplication(updateApplicationData, "update workforce application");
-            this.setState({
-              serverResponse: {
-                status: "SUCCESS",
-                message: "আবেদন অনুমোদন করা হয়েছে!",
-              },
-            });
-            window.location.reload();
-          } catch (error) {
-            console.error("Approval failed:", error);
-            this.setState({
-              serverResponse: {
-                status: "ERROR",
-                message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
-              },
-            });
-          }
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.approve.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          this.setState({
+            selectedApplication: {
+              ...selectedApplication,
+              isHistory: true,
+            },
+          }, async () => {
+            const updateApplicationData = {
+              id: decodeId(application.id),
+              status: WORKFORCE_STATUS.APPROVED_BY_DG,
+              grantAmount: this.state.editedGrantMoney,
+            };
+            try {
+              await this.props.updateApplication(updateApplicationData, "update workforce application");
+              this.setState({
+                serverResponse: {
+                  status: "SUCCESS",
+                  message: "আবেদন অনুমোদন করা হয়েছে!",
+                },
+              });
+              window.location.reload();
+            } catch (error) {
+              console.error("Approval failed:", error);
+              this.setState({
+                serverResponse: {
+                  status: "ERROR",
+                  message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
+                },
+              });
+            }
+          });
         }
-      );
-    }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+      }
+    });
   };
   handleApprovalByDirector = async (application) => {
     const { selectedApplication } = this.state;
-
-    if (window.confirm("Are you sure you want to approve this application?")) {
-      this.setState(
-        {
-          selectedApplication: {
-            ...selectedApplication,
-            isHistory: true,
-          },
-        },
-        async () => {
-          const updateApplicationData = {
-            id: decodeId(application.id),
-            status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
-            grantAmount: this.state.editedGrantMoney,
-          };
-
-          try {
-            await this.props.updateApplication(updateApplicationData, "update workforce application");
-
-            this.setState({
-              serverResponse: {
-                status: "SUCCESS",
-                message: "আবেদন অনুমোদন করা হয়েছে!",
-              },
-            });
-            window.location.reload();
-          } catch (error) {
-            console.error("Approval failed:", error);
-            this.setState({
-              serverResponse: {
-                status: "ERROR",
-                message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
-              },
-            });
-          }
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.approve.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          this.setState({
+            selectedApplication: {
+              ...selectedApplication,
+              isHistory: true,
+            },
+          }, async () => {
+            const updateApplicationData = {
+              id: decodeId(application.id),
+              status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
+              grantAmount: this.state.editedGrantMoney,
+            };
+            try {
+              await this.props.updateApplication(updateApplicationData, "update workforce application");
+              this.setState({
+                serverResponse: {
+                  status: "SUCCESS",
+                  message: "আবেদন অনুমোদন করা হয়েছে!",
+                },
+              });
+              window.location.reload();
+            } catch (error) {
+              console.error("Approval failed:", error);
+              this.setState({
+                serverResponse: {
+                  status: "ERROR",
+                  message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
+                },
+              });
+            }
+          });
         }
-      );
-    }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+      }
+    });
   };
   handleApprovalByDoctor = async (application) => {
     const { selectedApplication } = this.state;
-
-    if (window.confirm("Are you sure you want to approve this application?")) {
-      this.setState(
-        {
-          selectedApplication: {
-            ...selectedApplication,
-            isHistory: true,
-          },
-        },
-        async () => {
-          const updateApplicationData = {
-            id: decodeId(application.id),
-            status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
-            grantAmount: this.state.editedGrantMoney,
-          };
-
-          try {
-            await this.props.updateApplication(updateApplicationData, "update workforce application");
-
-            this.setState({
-              serverResponse: {
-                status: "SUCCESS",
-                message: "আবেদন অনুমোদন করা হয়েছে!",
-              },
-            });
-            window.location.reload();
-          } catch (error) {
-            console.error("Approval failed:", error);
-            this.setState({
-              serverResponse: {
-                status: "ERROR",
-                message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
-              },
-            });
-          }
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.approve.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          this.setState({
+            selectedApplication: {
+              ...selectedApplication,
+              isHistory: true,
+            },
+          }, async () => {
+            const updateApplicationData = {
+              id: decodeId(application.id),
+              status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
+              grantAmount: this.state.editedGrantMoney,
+            };
+            try {
+              await this.props.updateApplication(updateApplicationData, "update workforce application");
+              this.setState({
+                serverResponse: {
+                  status: "SUCCESS",
+                  message: "আবেদন অনুমোদন করা হয়েছে!",
+                },
+              });
+              window.location.reload();
+            } catch (error) {
+              console.error("Approval failed:", error);
+              this.setState({
+                serverResponse: {
+                  status: "ERROR",
+                  message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
+                },
+              });
+            }
+          });
         }
-      );
-    }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+      }
+    });
   };
   handleSelected = async (application) => {
     const { selectedApplication } = this.state;
-
-    if (window.confirm("Are you sure you want to select this application?")) {
-      this.setState(
-        {
-          selectedApplication: {
-            ...selectedApplication,
-            isHistory: true,
-          },
-        },
-        async () => {
-          const updateApplicationData = {
-            id: decodeId(application.id),
-            grantAmount: this.state.editedGrantMoney,
-            status: WORKFORCE_STATUS.SELECTED,
-          };
-
-          const createApplicationMovementData = {
-            applicationId: decodeId(application.id),
-            status: WORKFORCE_STATUS.SELECTED,
-            note: "আবেদন নির্বাচন করা হয়েছে",
-            action: "approved",
-          };
-
-          try {
-            await this.props.updateApplication(updateApplicationData, "update workforce application");
-
-            await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
-            this.setState({
-              serverResponse: {
-                status: "SUCCESS",
-                message: "আবেদন নির্বাচন করা হয়েছে!",
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.select.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          this.setState(
+            {
+              selectedApplication: {
+                ...selectedApplication,
+                isHistory: true,
               },
-            });
-            window.location.reload();
-          } catch (error) {
-            console.error("Approval failed:", error);
-            this.setState({
-              serverResponse: {
-                status: "ERROR",
-                message: "আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-              },
-            });
-          }
+            },
+            async () => {
+              const updateApplicationData = {
+                id: decodeId(application.id),
+                grantAmount: this.state.editedGrantMoney,
+                status: WORKFORCE_STATUS.SELECTED,
+              };
+
+              const createApplicationMovementData = {
+                applicationId: decodeId(application.id),
+                status: WORKFORCE_STATUS.SELECTED,
+                note: "আবেদন নির্বাচন করা হয়েছে",
+                action: "approved",
+              };
+
+              try {
+                await this.props.updateApplication(updateApplicationData, "update workforce application");
+                await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
+                this.setState({
+                  serverResponse: {
+                    status: "SUCCESS",
+                    message: "আবেদন নির্বাচন করা হয়েছে!",
+                  },
+                });
+                window.location.reload();
+              } catch (error) {
+                console.error("Approval failed:", error);
+                this.setState({
+                  serverResponse: {
+                    status: "ERROR",
+                    message: "আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+                  },
+                });
+              }
+            }
+          );
         }
-      );
-    }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+      }
+    });
   };
 
   handleForwardSubmit = (event) => {
@@ -905,419 +918,424 @@ class ApplicationProcessSearcher extends Component {
 
   handleBulkSelected = async () => {
     const { selectedApplicationIds } = this.state;
-    const { updateApplication, createApplicationMovement } = this.props;
-
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
     }
-
-    if (window.confirm("Are you sure you want to select these applications?")) {
-      try {
-        // Process each selected application
-        await Promise.all(
-          selectedApplicationIds.map(async (id) => {
-            const decodedId = decodeId(id);
-
-            const updateApplicationData = {
-              id: decodedId,
-              status: WORKFORCE_STATUS.SELECTED,
-            };
-
-            const createApplicationMovementData = {
-              applicationId: decodedId,
-              status: WORKFORCE_STATUS.SELECTED,
-              note: "আবেদন নির্বাচন করা হয়েছে",
-              action: "approved",
-            };
-
-            await updateApplication(updateApplicationData, "update workforce application");
-            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-          })
-        );
-
-        this.setState({
-          serverResponse: {
-            status: "SUCCESS",
-            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-          },
-        });
-      } catch (error) {
-        console.error("Bulk selection failed:", error);
-        this.setState({
-          serverResponse: {
-            status: "ERROR",
-            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-          },
-        });
-      }finally{
-        window.location.reload()
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.select.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          const { updateApplication, createApplicationMovement } = this.props;
+          try {
+            await Promise.all(
+              selectedApplicationIds.map(async (id) => {
+                const decodedId = decodeId(id);
+                const updateApplicationData = {
+                  id: decodedId,
+                  status: WORKFORCE_STATUS.SELECTED,
+                };
+                const createApplicationMovementData = {
+                  applicationId: decodedId,
+                  status: WORKFORCE_STATUS.SELECTED,
+                  note: "আবেদন নির্বাচন করা হয়েছে",
+                  action: "approved",
+                };
+                await updateApplication(updateApplicationData, "update workforce application");
+                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+              })
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+              },
+            });
+          } catch (error) {
+            console.error("Bulk selection failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+          } finally {
+            window.location.reload();
+          }
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
       }
-    }
+    });
   };
-  handleBulkSelectedbyAssociation = async () => {
+  handleBulkSelectedbyAssociation = () => {
     const { selectedApplicationIds } = this.state;
-    const { updateApplication, createApplicationMovement } = this.props;
-
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
     }
-
-    if (window.confirm("Are you sure you want to forward these applications?")) {
-      try {
-        await Promise.all(
-          selectedApplicationIds.map(async (id) => {
-            const decodedId = decodeId(id);
-
-            const updateApplicationData = {
-              id: decodedId,
-              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
-            };
-
-            const createApplicationMovementData = {
-              applicationId: decodedId,
-              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
-              note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
-              action: "forward_to_cf_section",
-            };
-
-            await updateApplication(updateApplicationData, "update workforce application");
-            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-          })
-        );
-
-        this.setState({
-          serverResponse: {
-            status: "SUCCESS",
-            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-          },
-        });
-      } catch (error) {
-        console.error("Bulk selection failed:", error);
-        this.setState({
-          serverResponse: {
-            status: "ERROR",
-            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-          },
-        });
-      } finally {
-        window.location.reload()
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.forward.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          const { updateApplication, createApplicationMovement } = this.props;
+          try {
+            await Promise.all(
+              selectedApplicationIds.map(async (id) => {
+                const decodedId = decodeId(id);
+                const updateApplicationData = {
+                  id: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+                };
+                const createApplicationMovementData = {
+                  applicationId: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+                  note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
+                  action: "forward_to_cf_section",
+                };
+                await updateApplication(updateApplicationData, "update workforce application");
+                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+              })
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+              },
+            });
+          } catch (error) {
+            console.error("Bulk selection failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+          } finally {
+            window.location.reload();
+          }
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
       }
-    }
+    });
   };
-  handleBulkSelectedbySectionAdminToDoctor = async () => {
+  handleBulkSelectedbySectionAdminToDoctor = () => {
     const { selectedApplicationIds } = this.state;
-    const { updateApplication, createApplicationMovement } = this.props;
-
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
     }
-
-    if (window.confirm("Are you sure you want to forward these applications?")) {
-      try {
-        await Promise.all(
-          selectedApplicationIds.map(async (id) => {
-            const decodedId = decodeId(id);
-
-            const updateApplicationData = {
-              id: decodedId,
-              status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR,
-            };
-
-            const createApplicationMovementData = {
-              applicationId: decodedId,
-              status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR,
-              note: "আবেদন নির্বাচন করা হয়েছে",
-              action: "forward_to_doctor",
-            };
-
-            await updateApplication(updateApplicationData, "update workforce application");
-            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-          })
-        );
-
-        this.setState({
-          serverResponse: {
-            status: "SUCCESS",
-            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-          },
-        });
-      } catch (error) {
-        console.error("Bulk selection failed:", error);
-        this.setState({
-          serverResponse: {
-            status: "ERROR",
-            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-          },
-        });
-      } finally{
-        window.location.reload()
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.forward.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          const { updateApplication, createApplicationMovement } = this.props;
+          try {
+            await Promise.all(
+              selectedApplicationIds.map(async (id) => {
+                const decodedId = decodeId(id);
+                const updateApplicationData = {
+                  id: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR,
+                };
+                const createApplicationMovementData = {
+                  applicationId: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR,
+                  note: "আবেদন নির্বাচন করা হয়েছে",
+                  action: "forward_to_doctor",
+                };
+                await updateApplication(updateApplicationData, "update workforce application");
+                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+              })
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+              },
+            });
+          } catch (error) {
+            console.error("Bulk selection failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+          } finally {
+            window.location.reload();
+          }
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
       }
-    }
+    });
   };
-  handleBulkSelectedbyChecker = async () => {
+  handleBulkSelectedbyChecker = () => {
     const { selectedApplicationIds } = this.state;
-    const { updateApplication, createApplicationMovement } = this.props;
-
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
     }
-
-    if (window.confirm("Are you sure you want to forward these applications?")) {
-      try {
-        await Promise.all(
-          selectedApplicationIds.map(async (id) => {
-            const decodedId = decodeId(id);
-
-            const updateApplicationData = {
-              id: decodedId,
-              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
-            };
-
-            const createApplicationMovementData = {
-              applicationId: decodedId,
-              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
-              note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
-              action: "forward_to_cf_section",
-            };
-
-            await updateApplication(updateApplicationData, "update workforce application");
-            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-          })
-        );
-
-        this.setState({
-          serverResponse: {
-            status: "SUCCESS",
-            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-          },
-        });
-      } catch (error) {
-        console.error("Bulk selection failed:", error);
-        this.setState({
-          serverResponse: {
-            status: "ERROR",
-            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-          },
-        });
-      }finally{
-        window.location.reload()
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.forward.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          const { updateApplication, createApplicationMovement } = this.props;
+          try {
+            await Promise.all(
+              selectedApplicationIds.map(async (id) => {
+                const decodedId = decodeId(id);
+                const updateApplicationData = {
+                  id: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+                };
+                const createApplicationMovementData = {
+                  applicationId: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+                  note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
+                  action: "forward_to_cf_section",
+                };
+                await updateApplication(updateApplicationData, "update workforce application");
+                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+              })
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+              },
+            });
+          } catch (error) {
+            console.error("Bulk selection failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+          } finally {
+            window.location.reload();
+          }
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
       }
-    }
+    });
   };
-  handleBulkSelectedbyFactoryAdmin = async () => {
+  handleBulkSelectedbyFactoryAdmin = () => {
     const { selectedApplicationIds } = this.state;
-    const { updateApplication, createApplicationMovement } = this.props;
-
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
     }
-
-    if (window.confirm("Are you sure you want to forward these applications?")) {
-      try {
-        await Promise.all(
-          selectedApplicationIds.map(async (id) => {
-            const decodedId = decodeId(id);
-
-            const updateApplicationData = {
-              id: decodedId,
-              status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
-            };
-
-            const createApplicationMovementData = {
-              applicationId: decodedId,
-              status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
-              note: "আবেদন নির্বাচন করা হয়েছে",
-              action: "forward_to_association",
-            };
-
-            await updateApplication(updateApplicationData, "update workforce application");
-            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-          })
-        );
-
-        this.setState({
-          serverResponse: {
-            status: "SUCCESS",
-            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-          },
-        });
-      } catch (error) {
-        console.error("Bulk selection failed:", error);
-        this.setState({
-          serverResponse: {
-            status: "ERROR",
-            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-          },
-        });
-      }finally{
-        window.location.reload()
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.forward.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          const { updateApplication, createApplicationMovement } = this.props;
+          try {
+            await Promise.all(
+              selectedApplicationIds.map(async (id) => {
+                const decodedId = decodeId(id);
+                const updateApplicationData = {
+                  id: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
+                };
+                const createApplicationMovementData = {
+                  applicationId: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
+                  note: "আবেদন নির্বাচন করা হয়েছে",
+                  action: "forward_to_association",
+                };
+                await updateApplication(updateApplicationData, "update workforce application");
+                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+              })
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+              },
+            });
+          } catch (error) {
+            console.error("Bulk selection failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+          } finally {
+            window.location.reload();
+          }
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
       }
-    }
+    });
   };
   handleBulkSelectedbySectionAdmin = async () => {
     const { selectedApplicationIds } = this.state;
-    const { updateApplication, createApplicationMovement } = this.props;
-
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
     }
-
-    if (window.confirm("Are you sure you want to forward these applications?")) {
-      try {
-        await Promise.all(
-          selectedApplicationIds.map(async (id) => {
-            const decodedId = decodeId(id);
-
-            const updateApplicationData = {
-              id: decodedId,
-              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_ONE,
-            };
-
-            const createApplicationMovementData = {
-              applicationId: decodedId,
-              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_ONE,
-              note: "আবেদন সিএফ শাখা-১ এ প্রেরণ করা হয়েছে",
-              action: "forward_to_cf_section_one",
-            };
-
-            await updateApplication(updateApplicationData, "update workforce application");
-            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-          })
-        );
-
-        this.setState({
-          serverResponse: {
-            status: "SUCCESS",
-            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-          },
-        });
-      } catch (error) {
-        console.error("Bulk selection failed:", error);
-        this.setState({
-          serverResponse: {
-            status: "ERROR",
-            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-          },
-        });
-      }finally{
-        window.location.reload()
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.forward.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          const { updateApplication, createApplicationMovement } = this.props;
+          try {
+            await Promise.all(
+              selectedApplicationIds.map(async (id) => {
+                const decodedId = decodeId(id);
+                const updateApplicationData = {
+                  id: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_ONE,
+                };
+                const createApplicationMovementData = {
+                  applicationId: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_ONE,
+                  note: "আবেদন সিএফ শাখা-১ এ প্রেরণ করা হয়েছে",
+                  action: "forward_to_cf_section_one",
+                };
+                await updateApplication(updateApplicationData, "update workforce application");
+                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+              })
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+              },
+            });
+          } catch (error) {
+            console.error("Bulk selection failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+          } finally {
+            window.location.reload();
+          }
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
       }
-    }
+    });
   };
   handleBulkSelectedbySectionTwoAdmin = async () => {
     const { selectedApplicationIds } = this.state;
-    const { updateApplication, createApplicationMovement } = this.props;
-
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
     }
-
-    if (window.confirm("Are you sure you want to forward these applications?")) {
-      try {
-        await Promise.all(
-          selectedApplicationIds.map(async (id) => {
-            const decodedId = decodeId(id);
-
-            const updateApplicationData = {
-              id: decodedId,
-              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_TWO,
-            };
-
-            const createApplicationMovementData = {
-              applicationId: decodedId,
-              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_TWO,
-              note: "আবেদন সিএফ শাখা-২ এ প্রেরণ করা হয়েছে",
-              action: "forward_to_cf_section_two",
-            };
-
-            await updateApplication(updateApplicationData, "update workforce application");
-            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-          })
-        );
-
-        this.setState({
-          serverResponse: {
-            status: "SUCCESS",
-            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-          },
-        });
-      } catch (error) {
-        console.error("Bulk selection failed:", error);
-        this.setState({
-          serverResponse: {
-            status: "ERROR",
-            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-          },
-        });
-      } finally{
-        window.location.reload()
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.forward.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          const { updateApplication, createApplicationMovement } = this.props;
+          try {
+            await Promise.all(
+              selectedApplicationIds.map(async (id) => {
+                const decodedId = decodeId(id);
+                const updateApplicationData = {
+                  id: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_TWO,
+                };
+                const createApplicationMovementData = {
+                  applicationId: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_TWO,
+                  note: "আবেদন সিএফ শাখা-২ এ প্রেরণ করা হয়েছে",
+                  action: "forward_to_cf_section_two",
+                };
+                await updateApplication(updateApplicationData, "update workforce application");
+                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+              })
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+              },
+            });
+          } catch (error) {
+            console.error("Bulk selection failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+          } finally {
+            window.location.reload();
+          }
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
       }
-    }
+    });
   };
-  handleBulkApproveByAdmin = async () => {
+  handleBulkApproveByAdmin = () => {
     const { selectedApplicationIds } = this.state;
-    const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
-
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
     }
-
-    if (window.confirm("Are you sure you want to approve these applications?")) {
-      try {
-        // Process each selected application
-        await Promise.all(
-          selectedApplicationIds.map(async (id) => {
-            const decodedId = decodeId(id);
-
-            const updateApplicationData = {
-              id: decodedId,
-              status: WORKFORCE_STATUS.APPROVED_BY_DG,
-            };
-
-            const createApplicationMovementData = {
-              applicationId: decodedId,
-              status: WORKFORCE_STATUS.APPROVED_BY_DG,
-              note: "আবেদন নির্বাচন করা হয়েছে",
-              action: "approved_by_dg",
-            };
-            const updateApplicationSummaryData = {
-              id: decodeId(this.props.summaryId),
-              status: WORKFORCE_STATUS.APPROVED_BY_DG,
-            };
-            await updateApplication(updateApplicationData, "update workforce application");
-            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-            await updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
-          })
-        );
-
-        this.setState({
-          serverResponse: {
-            status: "SUCCESS",
-            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-          },
-        });
-
-        window.location.reload();
-      } catch (error) {
-        console.error("Bulk selection failed:", error);
-        this.setState({
-          serverResponse: {
-            status: "ERROR",
-            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-          },
-        });
-      } finally{
-        window.location.reload()
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.approve.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
+          try {
+            await Promise.all(
+              selectedApplicationIds.map(async (id) => {
+                const decodedId = decodeId(id);
+                const updateApplicationData = {
+                  id: decodedId,
+                  status: WORKFORCE_STATUS.APPROVED_BY_DG,
+                };
+                const createApplicationMovementData = {
+                  applicationId: decodedId,
+                  status: WORKFORCE_STATUS.APPROVED_BY_DG,
+                  note: "আবেদন নির্বাচন করা হয়েছে",
+                  action: "approved_by_dg",
+                };
+                const updateApplicationSummaryData = {
+                  id: decodeId(this.props.summaryId),
+                  status: WORKFORCE_STATUS.APPROVED_BY_DG,
+                };
+                await updateApplication(updateApplicationData, "update workforce application");
+                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+                await updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
+              })
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+              },
+            });
+            window.location.reload();
+          } catch (error) {
+            console.error("Bulk selection failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+            window.location.reload();
+          }
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
       }
-    }
+    });
   };
   handleBulkApproveByDirector = async () => {
     const { selectedApplicationIds } = this.state;
@@ -1328,53 +1346,57 @@ class ApplicationProcessSearcher extends Component {
       return;
     }
 
-    if (window.confirm("Are you sure you want to approve these applications?")) {
-      try {
-        // Process each selected application
-        await Promise.all(
-          selectedApplicationIds.map(async (id) => {
-            const decodedId = decodeId(id);
-            const updateApplicationData = {
-              id: decodedId,
-              status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
-            };
-
-            const createApplicationMovementData = {
-              applicationId: decodedId,
-              status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
-              note: "আবেদন নির্বাচন করা হয়েছে",
-              action: "approved_by_DIRECTOR",
-            };
-
-            const updateApplicationSummaryData = {
-              id: decodeId(this.props.summaryId),
-              status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
-            };
-            console.log("summay row id", id);
-            await updateApplication(updateApplicationData, "update workforce application");
-            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-            await updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
-          })
-        );
-
-        this.setState({
-          serverResponse: {
-            status: "SUCCESS",
-            message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-          },
-        });
-      } catch (error) {
-        console.error("Bulk selection failed:", error);
-        this.setState({
-          serverResponse: {
-            status: "ERROR",
-            message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-          },
-        });
-      } finally{
-        window.location.reload()
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.approve.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          try {
+            const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
+            await Promise.all(
+              selectedApplicationIds.map(async (id) => {
+                const decodedId = decodeId(id);
+                const updateApplicationData = {
+                  id: decodedId,
+                  status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
+                };
+                const createApplicationMovementData = {
+                  applicationId: decodedId,
+                  status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
+                  note: "আবেদন নির্বাচন করা হয়েছে",
+                  action: "approved_by_DIRECTOR",
+                };
+                const updateApplicationSummaryData = {
+                  id: decodeId(this.props.summaryId),
+                  status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
+                };
+                console.log("summay row id", id);
+                await updateApplication(updateApplicationData, "update workforce application");
+                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+                await updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
+              })
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+              },
+            });
+          } catch (error) {
+            console.error("Bulk selection failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+          } finally {
+            window.location.reload();
+          }
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
       }
-    }
+    });
   };
 
   handleCloseBFTN = () => {
@@ -1391,6 +1413,15 @@ class ApplicationProcessSearcher extends Component {
   rowDisabled = (selection, i) => !!i.validityTo;
 
   rowLocked = (selection, i) => !!i.clientMutationId;
+
+  // Modal close handler for ConfirmModal
+  handleConfirmModalClose = (result) => {
+    if (this.state.confirmModalCallback) {
+      this.state.confirmModalCallback(result === 1);
+    } else {
+      this.setState({ confirmModalOpen: false });
+    }
+  };
 
   render() {
     const {
@@ -1438,7 +1469,7 @@ class ApplicationProcessSearcher extends Component {
     console.log({faltu:selectedApplication})
     const disableButtons = this.props.disableButtons ? decodeId(this.props.disableButtons) : null;
     return (
-      <>
+      <React.Fragment>
         <Searcher
           module={MODULE_NAME}
           // selectWithCheckbox={getUserTypeFromRights(userRights) !== WORKFORCE_USER_TYPE.APPLICANT ? true:false}
@@ -1825,7 +1856,12 @@ class ApplicationProcessSearcher extends Component {
 
           return null;
         })()}
-      </>
+      <ConfirmModal
+        open={this.state.confirmModalOpen}
+        message={this.state.confirmModalMessage}
+        onClose={this.handleConfirmModalClose}
+      />
+    </React.Fragment>
     );
   }
 }
