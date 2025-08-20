@@ -437,13 +437,13 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
         <Divider />
         <DialogActions className={classes.noPrint}>
           <Button onClick={onClose} variant="outlined" color="primary">
-            <FormattedMessage id="Close" />
+            <FormattedMessage id="workforce.modal.close" />
           </Button>
           <Button onClick={() => window.print()} variant="contained" color="primary">
-            <FormattedMessage id="Print Advice" />
+            <FormattedMessage id="workforce.modal.print.advice" />
           </Button>
           <Button onClick={exportToExcel} variant="contained" color="success">
-            Export to Excel
+            <FormattedMessage id="workforce.modal.excel" />
           </Button>
         </DialogActions>
 

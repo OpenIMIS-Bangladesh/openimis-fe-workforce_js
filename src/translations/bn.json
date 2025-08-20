@@ -616,6 +616,10 @@
   "workforce.application.approve.message": "আপনি কি নির্বাচিত আবেদনসমূহ অনুমোদন করতে চান?",
   "workforce.application.reject.message": "আপনি কি নির্বাচিত আবেদনসমূহ বাতিল করতে চান?",
   "workforce.confirm.modal.ok": "এগিয়ে যান",
-  "workforce.confirm.modal.cancel": "বাতিল করুন"
+  "workforce.confirm.modal.cancel": "বাতিল করুন",
+  "workforce.modal.print": "প্রিন্ট করুন",
+  "workforce.modal.print.advice": "এডভাইস প্রিন্ট করুন",
+  "workforce.modal.excel": "এক্সেল ফাইল ডাউনলোড করুন",
+  "workforce.modal.close": "বন্ধ করুন"
   
 }
