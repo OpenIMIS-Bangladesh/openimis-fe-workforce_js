@@ -11,6 +11,7 @@ import { getUserTypeFromRights } from "../../utils/utils";
 import { fetchWorkforceDocument } from "../../actions";
 import { bindActionCreators } from "redux";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
+import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
 
 const styles = (theme) => ({
   paper: {
@@ -123,6 +124,7 @@ class ViewApplicationPage extends Component {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <PreviewDetails formData={formData} language={locale} />
+              {/* <ApplicationViewPage application={formData} language={locale} /> */}
             </Grid>
             <Grid item xs={12}>
               {uploadByApplicant?.length > 0 && (
