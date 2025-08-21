@@ -265,10 +265,8 @@ const ApplicationStatus = () => {
   const [applicationData, setApplicationData] = useState(null);
   const classes = useStyles()
   const [hasResults, setHasResults] = useState(true);
-
   const handleApplicationSearch = () => {
   const filters = [`workforceEmployee_Nid: "${nid}"`];
-  
   dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
     const edges = res.payload?.data?.workforceApplication?.edges || [];
     setApplicationData(edges.map((e) => e.node));
@@ -297,7 +295,7 @@ const ApplicationStatus = () => {
               style={{ marginBottom: 16 }}
             />
             <Button variant="contained" color="primary" fullWidth onClick={handleApplicationSearch}>
-              <FormattedMessage module="workforce" id="workforce.search.here" />
+                <FormattedMessage module="workforce" id="workforce.search.here" />
             </Button>
           </Grid>
         </Grid>
@@ -309,6 +307,7 @@ const ApplicationStatus = () => {
                 <ApplicationProcessSearcher
                   nidFilters={[`workforceEmployee_Nid: "${nid}"`]}
                   onDataLoaded={(data) => setHasResults(data && data.length > 0)}
+                  disableButtons= {1}
                 />
               </CardContent>
             </Card>

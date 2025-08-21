@@ -287,6 +287,7 @@ const ApplicationStatus = () => {
                 <ApplicationProcessSearcher
                   nidFilters={[`workforceEmployee_Nid: "${nid}"`]}
                   onDataLoaded={(data) => setHasResults(data && data.length > 0)}
+                  disableButtons= {1}
                 />
               </CardContent>
             </Card>
