@@ -255,18 +255,26 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
+                id="fatherNameEn"
                   label="workforce.employee.fathers_name.en"
                   value={formData?.workforceEmployee?.fatherNameEn || ""}
                   onChange={(v) => handleChange("fatherNameEn", v)}
                   readOnly={false}
+                  required
+                  error={!!errors.fatherNameEn}
+            helperText={errors.fatherNameEn}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
+                id="fatherNameBn"
                   label="workforce.employee.fathers_name.bn"
                   value={formData?.workforceEmployee?.fatherNameBn || ""}
                   onChange={(v) => handleChange("fatherNameBn", v)}
                   readOnly={false}
+                  required
+                  error={!!errors.fatherNameBn}
+            helperText={errors.fatherNameBn}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>

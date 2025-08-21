@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid,FormHelperText } from "@material-ui/core";
 import { TextInput, FormattedMessage } from "@openimis/fe-core";
 import PostOfficePicker from "../../pickers/PostOfficePicker";
 import { getThirdStepId } from "../../utils/utils";
 
-const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnly, locationData }) => {
+const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnly, locationData,errors }) => {
   const [locationType, setLocationType] = useState("rural");
   const [localData, setLocalData] = useState(data || {});
   const thirdStepId = getThirdStepId(locationData);
@@ -66,6 +66,7 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
     <Grid container spacing={1}>
       <Grid item xs={12} sm={4}>
         <PostOfficePicker
+          id="postOffice"
           value={localData.postOffice}
           label={<FormattedMessage id="workforce.select.postOffice" module="workforce" />}
           locationId={thirdStepId}
@@ -73,6 +74,7 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
           required
           readOnly={readOnly}
         />
+        {errors?.postOffice && <FormHelperText error>{errors?.postOffice}</FormHelperText>}
       </Grid>
       {locationType === "city" && (
         <>

@@ -105,6 +105,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors }) => {
                     data={formData?.workforceEmployee?.presentAddress}
                     readOnly={false}
                     locationData={formData?.workforceEmployee?.presentLocation}
+                    errors={errors}
                   />
                 </Grid>
               )}

@@ -258,6 +258,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   required
                   split={true}
                 />
+                {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
               </Grid>
 
               
@@ -270,6 +271,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                     data={formData?.workforceApplicant?.presentAddress}
                     readOnly={false}
                     locationData={formData?.workforceApplicant?.presentLocation}
+                    errors={errors}
                   />
                 </Grid>
               )}
@@ -293,6 +295,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   required
                   split={true}
                 />
+                {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
               </Grid>
 
               {formData?.workforceApplicant?.permanentLocation && (
@@ -304,6 +307,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                     data={formData?.workforceApplicant?.permanentAddress}
                     readOnly={sameAsPresent}
                     locationData={formData?.workforceApplicant?.permanentLocation}
+                    errors={errors}
                   />
                 </Grid>
               )}

@@ -21,11 +21,12 @@ const useDebounce = (callback, delay) => {
 };
 
 const PostOfficePicker = ({
+  id="postOffice",
   locationId,
   modulesManager,
   onChange,
   readOnly,
-  required,
+  required =true,
   withLabel = true,
   withPlaceholder,
   value,
@@ -46,7 +47,7 @@ const PostOfficePicker = ({
     if (locationId) {
       dispatch(fetchPostOfficesPick(modulesManager, decodeId(locationId)));
     }
-  }, []);
+  }, [locationId]);
 
   const isLoading = useSelector(
     (state) => state.workforce[`fetchingPostOfficesPick`]
@@ -119,6 +120,7 @@ const PostOfficePicker = ({
 
   return (
     <Autocomplete
+      id={id}
       multiple={multiple}
       required={required}
       placeholder={placeholder ?? ""}

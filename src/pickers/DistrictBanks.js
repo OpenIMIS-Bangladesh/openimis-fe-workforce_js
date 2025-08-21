@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchBanksPick, fetchBranchPick } from "../actions";
 
 const DistrictBanks = ({
+  id="districtBank",
   modulesManager,
   onChange,
   readOnly,
@@ -53,6 +54,7 @@ const DistrictBanks = ({
 
   return (
     <Autocomplete
+      id={id}
       multiple={multiple}
       required={required}
       placeholder={placeholder ?? ""}

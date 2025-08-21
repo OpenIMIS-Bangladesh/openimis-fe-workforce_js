@@ -177,6 +177,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                           </Grid>
                           <Grid item xs={6} className={classes.item}>
                             <DistrictBanks
+                              id={"districtBank"}
                               value={account?.district?.id || ""}
                               label={<FormattedMessage id="workforce.district.branch.picker" />}
                               bankId={account?.bank?.bankCode}
@@ -184,6 +185,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                               required
                               readOnly={false}
                             />
+                            {errors.districtBank && <FormHelperText error>{errors.districtBank}</FormHelperText>}
                           </Grid>
                           <Grid item xs={6} className={classes.item}>
                             <BranchPicker

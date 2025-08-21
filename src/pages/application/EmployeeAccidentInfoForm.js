@@ -145,7 +145,9 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 value={formData?.employeeAccidentInfo?.diagnosisDate || ""}
                 onChange={(v) => handleChange("diagnosisDate", v)}
                 readOnly={false}
+                required
               />
+              {errors.rdmp && <FormHelperText error>{errors.rdmp}</FormHelperText>}
             </Grid>
 
             <Grid item xs={6} className={classes.item}>

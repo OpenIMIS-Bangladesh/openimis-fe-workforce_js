@@ -230,6 +230,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     required
                     split
                   />
+                  {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
                 </Grid>
 
                 <Grid item xs={12}>
@@ -239,6 +240,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     addressKey="presentAddress"
                     data={dependents?.[index]?.presentAddress}
                     locationData={dependents?.[index]?.presentLocation}
+                    errors={errors}
                   />
                 </Grid>
 
@@ -260,6 +262,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     required
                     split
                   />
+                  {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
                 </Grid>
 
                 <Grid item xs={12}>

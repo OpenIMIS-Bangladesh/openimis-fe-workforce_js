@@ -50,7 +50,7 @@ const BanksPicker = ({
 
   return (
     <Autocomplete
-    id={id}
+      id={id}
       multiple={multiple}
       required={required}
       placeholder={placeholder ?? ""}

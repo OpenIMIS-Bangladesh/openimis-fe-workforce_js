@@ -20,7 +20,7 @@ const useDebounce = (callback, delay) => {
 };
 
 const BranchPicker = ({
-  id,
+  id="branch",
   modulesManager,
   onChange,
   readOnly,
