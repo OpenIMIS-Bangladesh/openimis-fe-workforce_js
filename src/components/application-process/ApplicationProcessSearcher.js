@@ -20,6 +20,7 @@ import PrintIcon from "@material-ui/icons/Print";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
 import ForwardApplicationFactoryAdminModal from "./modals/ForwardApplicationFactoryAdminModal";
+import ForwardApplicationSectionAdminModal from "./modals/ForwardApplicationSectionAdminModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
@@ -37,9 +38,11 @@ import {
   itemFormattersDoctor,
   itemFormattersFactoryAdmin,
   itemFormattersDirector,
+  itemFormattersS1DeputyAsstDirector,
+  itemFormattersS2DeputyAsstDirector,
 } from "../../utils/itemFormatters_types";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
-import { headerApplicant, headerApprover, headerChecker,headerCheckerTwo,headerDoctor, headerSectionAdmin, headerSectionTwoAdmin, headerAssociation, headersAdmin, headerFactoryAdmin, headerDirector } from "../../utils/headers_types";
+import { headerApplicant, headerApprover, headerChecker,headerCheckerTwo,headerS1DeputyAsstDirector,headerS2DeputyAsstDirector,headerDoctor, headerSectionAdmin, headerSectionTwoAdmin, headerAssociation, headersAdmin, headerFactoryAdmin, headerDirector } from "../../utils/headers_types";
 
 const styles = (theme) => ({
   paper: {
@@ -72,6 +75,7 @@ class ApplicationProcessSearcher extends Component {
       displayVersion: false,
       // 🆕 Modal state
       forwardModalOpen: false,
+      forwardModalOpenSA: false,
       revertModalOpen: false,
       selectedApplication: null,
       selectedUserId: "",
@@ -143,63 +147,63 @@ class ApplicationProcessSearcher extends Component {
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
-} else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
-  this.setState({ displayVersion: showHistoryFilter });
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
+      this.setState({ displayVersion: showHistoryFilter });
 
-  let defaultStatusFilters = [];
-  let additionalFilters = [];
+      let defaultStatusFilters = [];
+      let additionalFilters = [];
 
-  const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
 
-  if (rejectedApplication) {
-    defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
-  } else if (revertedApplication) {
-    defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
-  } else if (summaryId) {
-    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
-    additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
-  } else {
-    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
-  }
+      if (rejectedApplication) {
+        defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+      } else if (revertedApplication) {
+        defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+      } else if (summaryId) {
+        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+        additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+      } else {
+        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+      }
 
-  const orderByFilter = 'orderBy: ["-dateCreated"]';
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
 
-  const nidFilters = this.props.nidFilters || [];
+      const nidFilters = this.props.nidFilters || [];
 
-  let finalFilters = [];
+      let finalFilters = [];
 
-  if (nidFilters.length) {
-    // If NID search is present, ignore default status filters
-    finalFilters = [...nidFilters];
+      if (nidFilters.length) {
+        // If NID search is present, ignore default status filters
+        finalFilters = [...nidFilters];
 
-    // Optionally add orderBy if not already present
-    if (!finalFilters.some(f => f.includes("orderBy"))) {
-      finalFilters.push(orderByFilter);
-    }
+        // Optionally add orderBy if not already present
+        if (!finalFilters.some(f => f.includes("orderBy"))) {
+          finalFilters.push(orderByFilter);
+        }
 
-    // Keep summaryId filter if present
-    if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
-      finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
-    }
-  } else if (prms?.length) {
-    finalFilters = [...prms];
+        // Keep summaryId filter if present
+        if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
+          finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+        }
+      } else if (prms?.length) {
+        finalFilters = [...prms];
 
-    const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
-    const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
+        const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
+        const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
 
-    if (!hasStatusIn) {
-      finalFilters = [...defaultStatusFilters, ...finalFilters];
-    }
-    if (!hasOrderBy) finalFilters.push(orderByFilter);
-    if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
-      finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
-    }
-  } else {
-    finalFilters = [...defaultStatusFilters, ...additionalFilters, orderByFilter];
-  }
+        if (!hasStatusIn) {
+          finalFilters = [...defaultStatusFilters, ...finalFilters];
+        }
+        if (!hasOrderBy) finalFilters.push(orderByFilter);
+        if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
+          finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+        }
+      } else {
+        finalFilters = [...defaultStatusFilters, ...additionalFilters, orderByFilter];
+      }
 
-  this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
-} else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
   this.setState({ displayVersion: showHistoryFilter });
 
   let defaultStatusFilters = [];
@@ -429,7 +433,7 @@ class ApplicationProcessSearcher extends Component {
           // prms
         );
       }
-    } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN) {
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
 
       let filters = [];
@@ -447,8 +451,8 @@ class ApplicationProcessSearcher extends Component {
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, filters);
 
-      }
-      };
+    }
+    };
 
 
   rowIdentifier = (r) => r.uuid;
@@ -473,6 +477,13 @@ class ApplicationProcessSearcher extends Component {
   };
   handleOpenForwardModal = (application) => {
     this.setState({ forwardModalOpen: true, selectedApplication: application });
+  };
+
+  handleOpenForwardModalForSectionAdmin = (application) => {
+    this.setState({ forwardModalOpenSA: true, selectedApplication: application });
+  };
+  handleCloseForwardModalForSectionAdmin = () => {
+    this.setState({ forwardModalOpenSA: false, selectedApplication: null });
   };
 
   handleCloseForwardModal = () => {
@@ -853,6 +864,10 @@ class ApplicationProcessSearcher extends Component {
       ? headerChecker(this)
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
       ? headerCheckerTwo(this)
+      : userType === WORKFORCE_USER_TYPE.headerS1DeputyAsstDirector
+      ? headerCheckerTwo(this)
+      : userType === WORKFORCE_USER_TYPE.headerS2DeputyAsstDirector
+      ? headerCheckerTwo(this)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
       ? headerSectionAdmin(this)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
@@ -879,6 +894,10 @@ class ApplicationProcessSearcher extends Component {
       : userType === WORKFORCE_USER_TYPE.CHECKER
       ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
+      ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      : userType === WORKFORCE_USER_TYPE.itemFormattersS1DeputyAsstDirector
+      ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      : userType === WORKFORCE_USER_TYPE.itemFormattersS2DeputyAsstDirector
       ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
       ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
@@ -1377,6 +1396,7 @@ class ApplicationProcessSearcher extends Component {
   render() {
     const {
       forwardModalOpen,
+      forwardModalOpenSA,
       revertModalOpen,
       revertByChecker,
       revertByApprover,
@@ -1457,9 +1477,9 @@ class ApplicationProcessSearcher extends Component {
                 justifyContent: "space-between",
               }}
             >
-            <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbySectionAdmin}>
-              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-            </Button>
+              <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
+                <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+              </Button>
               <Button
                 variant="contained"
                 color="primary"
@@ -1495,7 +1515,7 @@ class ApplicationProcessSearcher extends Component {
                 justifyContent: "space-between",
               }}
             >
-            <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbySectionTwoAdmin}>
+            <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
               <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
             </Button>
               <Button
@@ -1700,12 +1720,12 @@ class ApplicationProcessSearcher extends Component {
           } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
             return (
               <>
-                <ForwardApplicationCheckerMoal
-                  open={forwardModalOpen}
-                  onClose={this.handleCloseForwardModal}
-                  selectedApplication={selectedApplication}
+                 <ForwardApplicationSectionAdminModal
+                  open={forwardModalOpenSA}
+                  onClose={this.handleCloseForwardModalForSectionAdmin}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
-                  organizationEmployee={organizationEmployee}
+                  userRights={userRights}
                 />
                 <RevertApplicationModal
                   open={revertModalOpen}
@@ -1733,12 +1753,12 @@ class ApplicationProcessSearcher extends Component {
           } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
             return (
               <>
-                <ForwardApplicationCheckerMoal
-                  open={forwardModalOpen}
-                  onClose={this.handleCloseForwardModal}
+               <ForwardApplicationSectionAdminModal
+                  open={forwardModalOpenSA}
+                  onClose={this.handleCloseForwardModalForSectionAdmin}
                   selectedApplication={selectedApplication}
                   onSubmitForward={this.handleForwardSubmit}
-                  organizationEmployee={organizationEmployee}
+                  userRights={userRights}
                 />
                 <RevertApplicationModal
                   open={revertModalOpen}

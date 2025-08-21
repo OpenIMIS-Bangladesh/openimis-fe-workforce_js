@@ -354,6 +354,14 @@ function reducer(
     applicationSummary: null,
     applicationSummaryPageInfo: { totalCount: 0 },
 
+     // Admin workforce role-wise users
+    fetchingRoleWiseUsers: false,
+    errorRoleWiseUsers: null,
+    fetchedRoleWiseUsers: false,
+    roleWiseUsers: [],
+    roleWiseUsersPageInfo: { totalCount: 0 },
+
+
     ////workforce otp id ///
     workforceOtpId: "",
 
@@ -1396,6 +1404,38 @@ function reducer(
         }))?.[0],
         errorWorkforceEmployee: formatGraphQLError(action.payload),
       };
+
+            //// Admin workforce role-wise users ////
+      case "ADMIN_WORKFORCE_ROLE_WISE_USERS_REQ":
+        return {
+          ...state,
+          fetchingRoleWiseUsers: true,
+          fetchedRoleWiseUsers: false,
+          roleWiseUsers: [],
+          roleWiseUsersPageInfo: { totalCount: 0 },
+          errorRoleWiseUsers: null,
+        };
+
+      case "ADMIN_WORKFORCE_ROLE_WISE_USERS_RESP":
+        return {
+          ...state,
+          fetchingRoleWiseUsers: false,
+          fetchedRoleWiseUsers: true,
+          roleWiseUsers: action.payload.data.workforceUserRole,
+          roleWiseUsersPageInfo: pageInfo(action.payload.data.workforceUserRole),
+          errorRoleWiseUsers: formatGraphQLError(action.payload),
+        };
+
+      case "ADMIN_WORKFORCE_ROLE_WISE_USERS_ERR":
+        return {
+          ...state,
+          fetchingRoleWiseUsers: false,
+          fetchedRoleWiseUsers: false,
+          roleWiseUsers: [],
+          roleWiseUsersPageInfo: { totalCount: 0 },
+          errorRoleWiseUsers: formatServerError(action.payload),
+        };
+
 
     //end workforce employee
 

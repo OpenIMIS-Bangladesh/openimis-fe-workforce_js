@@ -173,6 +173,8 @@ export const WORKFORCE_USER_TYPE = {
   SECTION_ADMIN: "section_admin",
   SECTION_ADMIN_TWO: "section_admin_two",
   DOCTOR: "doctor",
+  SEC1_DEPUTI_ASST_DIRECTOR: "sec1_deputi_asst_director ",
+  SEC2_DEPUTI_ASST_DIRECTOR: "sec2_deputi_asst_director ",
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
   admin: "Admin",
@@ -187,6 +189,8 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   section_admin: "Section Admin",
   section_admin_two: "Section Admin Two",
   doctor: "Doctor",
+  sec1_deputi_asst_director: "Sec1 Deputi Asst Director",
+  sec2_deputi_asst_director: "Sec2 Deputi Asst Director",
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
   admin: "অ্যাডমিন",
@@ -201,6 +205,8 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   section_admin: "সেকশন-১ অ্যাডমিন",
   section_admin_two: "সেকশন-২ অ্যাডমিন",
   doctor: "ডাক্তার",
+  sec1_deputi_asst_director: "শাখা-১ উপ-সহকারী পরিচালক",
+  sec2_deputi_asst_director: "শাখা-২ উপ-সহকারী পরিচালক",
 
 };
 

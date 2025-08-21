@@ -5,6 +5,8 @@ import ApplicantDashboard from "./ApplicantDashboardPage";
 import DashboardPage from "./DashboardPage";
 import CheckerDashboardPage from "./CheckerDashboardPage";
 import CheckerTwoDashboardPage from "./CheckerTwoDashboardPage";
+import S1DeputyAsstDirectorDashboardPage from "./S1DeputyAsstDirectorDashboardPage";
+import S2DeputyAsstDirectorDashboardPage from "./S2DeputyAsstDirectorDashboardPage";
 import BGMEAAssociationDashboardPage from "./BGMEAAssociationDashboardPage";
 import BKMEAAssociationDashboardPage from "./BKMEAAssociationDashboardPage";
 import ApproverDashboardPage from "./ApproverDashboardPage";
@@ -24,6 +26,10 @@ console.log(user_type)
     return <CheckerDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.CHECKER_TWO) {
     return <CheckerTwoDashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR) {
+    return <S1DeputyAsstDirectorDashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR) {
+    return <S2DeputyAsstDirectorDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
     return <SectionAdminDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {

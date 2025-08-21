@@ -330,6 +330,8 @@ export function formatApplicationMovementGQL(application) {
   ${application?.isReverted ? `isReverted: "${(application?.isReverted)}"` : ""}
   ${application?.revertedById ? `revertedById: "${(application?.revertedById)}"` : ""}
   ${application?.revertingDate ? `revertingDate: "${(application?.revertingDate)}"` : ""}
+  ${application?.applicationFromId ? `applicationFromId: "${(application?.applicationFromId)}"` : ""}
+  ${application?.applicationToId ? `applicationToId: "${(application?.applicationToId)}"` : ""}
 `;
 }
 ///beneficiary registration   ////

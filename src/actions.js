@@ -786,7 +786,7 @@ export function fetchWorkforceUserRoleWiseUser(mm, variables) {
       }
     `,
     variables,
-    "ADMIN_WORKFORCE_ROLE_WISE_USER",
+["ADMIN_WORKFORCE_ROLE_WISE_USERS_REQ", "ADMIN_WORKFORCE_ROLE_WISE_USERS_RESP", "ADMIN_WORKFORCE_ROLE_WISE_USERS_ERR"]
   );
 }
 export function fetchApplicationMovementsSummary(mm, filters) {
@@ -824,6 +824,8 @@ export function fetchApplicationMovementsSummary(mm, filters) {
     "isReverted",
     "revertedById",
     "revertingDate",
+    "applicationFromId",
+    "applicationToId",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationMovement",
@@ -868,6 +870,8 @@ export function fetchApplicationMovement(mm, filters) {
     "isReverted",
     "revertedById",
     "revertingDate",
+    "applicationFromId",
+    "applicationToId",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationMovement",
