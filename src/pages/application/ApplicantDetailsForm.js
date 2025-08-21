@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Box, Paper, Typography, Divider, IconButton,FormControlLabel,Checkbox  } from "@material-ui/core";
+import { Grid, Box, Paper, Typography, Divider, IconButton,FormControlLabel,Checkbox ,FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, setNidOrBcn }) => {
+const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, setNidOrBcn,errors }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -88,20 +88,26 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
+                id="nameBn"
                   label="workforce.employee.name.bn"
                   value={formData?.workforceApplicant?.nameBn || ""}
                   onChange={(v) => handleChange("nameBn", v)}
                   required
                   readOnly={false}
+                  error={!!errors.nameBn}
+            helperText={errors.nameBn}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
+                id="nameEn"
                   label="workforce.employee.name.en"
                   value={formData?.workforceApplicant?.nameEn || ""}
                   onChange={(v) => handleChange("nameEn", v)}
                   required
                   readOnly={false}
+                  error={!!errors.nameEn}
+            helperText={errors.nameEn}
                 />
               </Grid>
 
@@ -116,12 +122,15 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
 
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
+                id="phoneNumber"
                   label="workforce.employee.phone"
                   value={formData?.workforceApplicant?.phoneNumber || ""}
                   onChange={(v) => handleChange("phoneNumber", v)}
                   type={"number"}
                   readOnly={false}
                   required
+                  error={!!errors.phoneNumber}
+            helperText={errors.phoneNumber}
                 />
               </Grid>
 
@@ -136,6 +145,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
 
               <Grid item xs={6} className={classes.item}>
                 <TextInput
+                id="nid"
                   label="workforce.employee.nid_or_birth_certificate"
                   value={formData?.workforceApplicant?.nid || formData?.workforceApplicant?.birthCertificateNo || nidOrBcn?.nid || ""}
                   formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
@@ -147,16 +157,21 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   type="number"
                   required
                   readOnly={false}
+                  error={!!errors.nid}
+            helperText={errors.nid}
                 />
               </Grid>
 
               <Grid item xs={6} className={classes.item}>
                 <TextInput
+                id="relationWithApplicant"
                   label="workforce.employee.relationWithApplicant"
                   value={formData?.workforceApplicant?.relationWithApplicant || ""}
                   onChange={(v) => handleChange("relationWithApplicant", v)}
                   readOnly={false}
                   required
+                  error={!!errors.relationWithApplicant}
+            helperText={errors.relationWithApplicant}
                 />
               </Grid>
             </Grid>
@@ -169,27 +184,38 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
+                id="fatherNameEn"
                   label="workforce.employee.fathers_name.en"
                   value={formData?.workforceApplicant?.fatherNameEn || ""}
                   onChange={(v) => handleChange("fatherNameEn", v)}
                   readOnly={false}
+                  required
+                error={!!errors.fatherNameEn}
+            helperText={errors.fatherNameEn}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
+                id="fatherNmaeBn"
                   label="workforce.employee.fathers_name.bn"
                   value={formData?.workforceApplicant?.fatherNameBn || ""}
                   onChange={(v) => handleChange("fatherNameBn", v)}
                   readOnly={false}
+                  required
+                  error={!!errors.fatherNameBn}
+            helperText={errors.fatherNameBn}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
+                id="motherNameEn"
                   label="workforce.employee.mothers_name.en"
                   value={formData?.workforceApplicant?.motherNameEn || ""}
                   onChange={(v) => handleChange("motherNameEn", v)}
                   readOnly={false}
                   required
+                  error={!!errors.motherNameEn}
+            helperText={errors.motherNameEn}
                 />
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
@@ -232,6 +258,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   required
                   split={true}
                 />
+                {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
               </Grid>
 
               
@@ -244,6 +271,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                     data={formData?.workforceApplicant?.presentAddress}
                     readOnly={false}
                     locationData={formData?.workforceApplicant?.presentLocation}
+                    errors={errors}
                   />
                 </Grid>
               )}
@@ -267,6 +295,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   required
                   split={true}
                 />
+                {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
               </Grid>
 
               {formData?.workforceApplicant?.permanentLocation && (
@@ -278,6 +307,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                     data={formData?.workforceApplicant?.permanentAddress}
                     readOnly={sameAsPresent}
                     locationData={formData?.workforceApplicant?.permanentLocation}
+                    errors={errors}
                   />
                 </Grid>
               )}

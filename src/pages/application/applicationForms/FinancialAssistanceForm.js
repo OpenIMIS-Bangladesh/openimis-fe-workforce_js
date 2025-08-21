@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Stepper, Step, StepLabel, Paper, Box, Typography } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage,useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -27,7 +27,7 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReason from "../FormsComponents/FinancialAssistance/ApplicationReason";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getInfoId, safeApplicationId } from "../../../utils/utils";
+import { getInfoId, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -60,10 +60,14 @@ const steps = [
   "workforce.application.steps.upload.documents",
 ];
 
-const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApplicationType, parsedApplicationData }) => {
+const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
 
+  const modulesManager= useModulesManager()
+      const { formatMessage } = useTranslations("workforce");
+      const stepRef =useRef(null)
+      const [errors,setErrors] = useState({})
   let applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? null);
   // const dependentId = useSelector((state) => state.workforce["workforceDependent"] ?? []);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
@@ -213,7 +217,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
       });
     }
-  }, [employeeData]);
+  }, [employeeData?.id, parsedApplicationData]);
 
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {
@@ -234,6 +238,10 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
 
   const handleNext = async () => {
     console.log({ formData });
+    const newErrors = validateRequiredFields(stepRef, formatMessage);
+        setErrors(newErrors);
+    
+        if (Object.keys(newErrors).length === 0 ){
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
     if (nextStep === 3 || nextStep === 4) {
@@ -277,7 +285,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         grantAmount: formData?.employeeAccidentInfo.grantAmount,
         employeeDesignationInfo: JSON.stringify(formData?.employeeDesignationInfo),
         employeeBankInfo: JSON.stringify(formData?.employeeBankInfo),
-        employeeDependentInfo: JSON.stringify(formData?.dependents),
+        employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}') || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData?.metadata),
         status: WORKFORCE_STATUS.DRAFT,
@@ -320,7 +328,9 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
         grantAmount: formData?.employeeAccidentInfo.grantAmount,
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
-        employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+        
+        employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}') || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
+        
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
@@ -350,13 +360,15 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
         applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
         grantAmount: formData?.employeeAccidentInfo.grantAmount,
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
-        employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+        // employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+        employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}') || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application`));
     }
+  }
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -400,7 +412,8 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
       grantAmount: formData?.employeeAccidentInfo.grantAmount,
       employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
       employeeApplicantInfo: JSON.stringify(formData.workforceApplicant) || JSON.stringify(parsedApplicationData?.workforceApplicant),
-      employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+      // employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+      employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}') || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),
       status: WORKFORCE_STATUS.NEW,
@@ -487,6 +500,7 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
             </Step>
           ))}
         </Stepper>
+        <Box mt={0} ref={stepRef}>
         {activeStep === 0 ? (
           <ApplicationReason
             modulesManager={modulesManager}
@@ -494,31 +508,34 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
             formData={formData}
             setDeathType={setDeathType}
             deathType={deathType}
+            errors={errors}
           />
         ) : activeStep === 1 ? (
-          <Box mt={0}>
+
             <ApplicantDetailsForm
               handleChange={(key, value) => handleChange(key, value, "workforceApplicant")}
               formData={formData}
               setNidOrBcn={setNidOrBcn}
               nidOrBcn={nidOrBcn}
+              errors={errors}
             />
-          </Box>
+
         ) : activeStep === 2 ? (
-          <Box mt={0}>
+          
             <EmployeeDetailsForm
               handleChange={(key, value) => handleChange(key, value, "workforceEmployee")}
               formData={formData}
               setNidOrBcn={setNidOrBcn}
               nidOrBcn={nidOrBcn}
+              errors={errors}
             />
-          </Box>
+       
         ) : activeStep === 3 ? (
-          <Box mt={0}>
+         
             <EmployeeLocationForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />
-          </Box>
+      
         ) : activeStep === 4 ? (
-          <Box mt={0}>
+
             
             <EmployeeDependentForm
               applicationType={formData.applicationType}
@@ -529,11 +546,11 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
               expanded={expanded}
               setExpanded={setExpanded}
               formdata={formData}
+              errors={errors}
             />
-            
-          </Box>
+
         ) : activeStep === 5 ? (
-          <Box mt={0}>
+          <>
             {!isDependentSaved ? <b>loading ...</b>:(
             <EmployeeAccountInfoForm
               formdata={formData}
@@ -551,19 +568,21 @@ const FinancialAssistanceForm = ({ modulesManager, organizationType, selectedApp
               expanded={expanded}
               setExpanded={setExpanded}
               applicationId={applicationId}
+              errors={errors}
             />
             )}
-          </Box>
+          </>
         ) : (
-          <Box mt={0}>
+
             <EmployeeDetailsForm2
               selectedApplicationType={selectedApplicationType}
               handleChange={handleChange}
               formData={formData}
               applicationId={applicationId}
             />
-          </Box>
+
         )}
+        </Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Stepper, Step, StepLabel, Paper, Box, Typography } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage,useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -26,7 +26,7 @@ import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getInfoId, getParsedApplication, getUserType, safeApplicationId } from "../../../utils/utils";
+import { getInfoId, getParsedApplication, getUserType, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 import EducationInfoForm from "../FormsComponents/EducationGrantFrom.js/EducationInfoForm";
 import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
@@ -57,9 +57,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EducationGrantForm = ({ modulesManager, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
+const EducationGrantForm = ({  organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
+   const modulesManager= useModulesManager()
+    const { formatMessage } = useTranslations("workforce");
+    const stepRef =useRef(null)
+    const [errors,setErrors] = useState({})
   const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -211,6 +215,10 @@ const EducationGrantForm = ({ modulesManager, organizationType, selectedApplicat
 
   const handleNext = async () => {
     console.log({ formData });
+    const newErrors = validateRequiredFields(stepRef, formatMessage);
+        setErrors(newErrors);
+    
+        if (Object.keys(newErrors).length === 0 ){
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
     if (nextStep === 1 || nextStep === 2) {
@@ -320,6 +328,7 @@ const EducationGrantForm = ({ modulesManager, organizationType, selectedApplicat
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
     }
+  }
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -378,7 +387,7 @@ const EducationGrantForm = ({ modulesManager, organizationType, selectedApplicat
   const steps = [
     {
       label: "workforce.application.steps.employeeDetails",
-      content: <EmployeeDetailsForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />,
+      content: <EmployeeDetailsForm errors={errors} handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />,
     },
     // ...(applicationForSelf === "yes"
     //   ? [
@@ -396,11 +405,11 @@ const EducationGrantForm = ({ modulesManager, organizationType, selectedApplicat
     //   : []),
     {
       label: "workforce.application.steps.location",
-      content: <EmployeeLocationForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />,
+      content: <EmployeeLocationForm  handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />,
     },
     {
       label: "workforce.application.steps.worker.extraInfo",
-      content: <WorkerExtraInfo handleChange={handleChange} formData={formData} />,
+      content: <WorkerExtraInfo errors={errors} handleChange={handleChange} formData={formData} />,
     },
     {
       label: "workforce.application.steps.childInfo",
@@ -408,6 +417,7 @@ const EducationGrantForm = ({ modulesManager, organizationType, selectedApplicat
         <EducationInfoForm
           handleChange={(key, value) => handleChange(key, value, "employeeChildrenInfo")}
           formData={formData}
+          errors={errors}
           applicationForSelf={applicationForSelf}
         />
       ),
@@ -430,12 +440,13 @@ const EducationGrantForm = ({ modulesManager, organizationType, selectedApplicat
           removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
           expanded={expanded}
           setExpanded={setExpanded}
+          errors={errors}
         />
       ),
     },
     {
       label: "workforce.application.steps.previousGrantInfo",
-      content: <PreviousGrantInfoForm handleChange={(key, value) => handleChange(key, value, "metadata")} formData={formData} />,
+      content: <PreviousGrantInfoForm errors={errors} handleChange={(key, value) => handleChange(key, value, "metadata")} formData={formData} />,
     },
     // {
     //   label: "workforce.application.steps.otherInfo",
@@ -532,7 +543,7 @@ const EducationGrantForm = ({ modulesManager, organizationType, selectedApplicat
             </Step>
           ))}
         </Stepper>
-        <Box mt={0}>{steps[activeStep].content}</Box>
+        <Box mt={0} ref={stepRef}>{steps[activeStep].content}</Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">

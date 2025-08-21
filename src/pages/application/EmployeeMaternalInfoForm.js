@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicationType }) => {
+const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicationType,required,errors }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);

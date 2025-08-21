@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useTranslations, Autocomplete } from "@openimis/fe-core";
 
 const EmployeeAccidentTypePicker = ({
+  id,
   modulesManager,
   onChange,
   readOnly,
@@ -39,6 +40,7 @@ const EmployeeAccidentTypePicker = ({
 
   return (
     <Autocomplete
+    id={id}
       multiple={false}
       required={required}
       placeholder={placeholder ?? ""}

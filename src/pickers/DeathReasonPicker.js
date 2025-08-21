@@ -26,9 +26,11 @@ const deathReasonKeys = [
 ];
 
 const DeathReasonPicker = ({
+  id,
   selectedReason = "",
   handleChange, // handleChange(key, value, parent)
   onOtherDiseaseChange,
+  required=true,
   otherDiseaseValue,
 }) => {
   const handleSelectChange = (event) => {
@@ -49,7 +51,8 @@ const DeathReasonPicker = ({
         <Select
           value={selectedReason}
           onChange={handleSelectChange}
-          required
+          required={required}
+          inputProps={{id}}
         >
           {deathReasonKeys.map((key) => (
             <MenuItem key={key} value={key}>

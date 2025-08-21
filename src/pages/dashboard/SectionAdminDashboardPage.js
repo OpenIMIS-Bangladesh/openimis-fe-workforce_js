@@ -196,7 +196,7 @@ const FiledApplications = () =>{
   </>
 );}
 
-const ApprovedApplications = ({ summaryData = [] }) => {
+const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
 
@@ -233,7 +233,7 @@ const ApprovedApplications = ({ summaryData = [] }) => {
                 <Card style={{ width: "100%" }}>
                   <CardContent>
                     {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} />
+                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons}/>
                     )}
                   </CardContent>
                 </Card>
@@ -265,10 +265,8 @@ const ApplicationStatus = () => {
   const [applicationData, setApplicationData] = useState(null);
   const classes = useStyles()
   const [hasResults, setHasResults] = useState(true);
-
   const handleApplicationSearch = () => {
   const filters = [`workforceEmployee_Nid: "${nid}"`];
-  
   dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
     const edges = res.payload?.data?.workforceApplication?.edges || [];
     setApplicationData(edges.map((e) => e.node));
@@ -297,7 +295,7 @@ const ApplicationStatus = () => {
               style={{ marginBottom: 16 }}
             />
             <Button variant="contained" color="primary" fullWidth onClick={handleApplicationSearch}>
-              <FormattedMessage module="workforce" id="workforce.search.here" />
+                <FormattedMessage module="workforce" id="workforce.search.here" />
             </Button>
           </Grid>
         </Grid>
@@ -309,6 +307,7 @@ const ApplicationStatus = () => {
                 <ApplicationProcessSearcher
                   nidFilters={[`workforceEmployee_Nid: "${nid}"`]}
                   onDataLoaded={(data) => setHasResults(data && data.length > 0)}
+                  disableButtons= {1}
                 />
               </CardContent>
             </Card>
@@ -440,7 +439,7 @@ const SectionAdminDashboard = () => {
       case "pendingMeetingSheet":
         return <PendingMeetingSheet summaryData={data} />;
       case "approveMeetingSheet":
-        return <ApprovedApplications summaryData={data} />;
+        return <ApprovedApplications summaryData={data} disableButtons={1} />;
       case "applicationStatus":
         return <ApplicationStatus />;
       case "beneficiaryReportSheet":

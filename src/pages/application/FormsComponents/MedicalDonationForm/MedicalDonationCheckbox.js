@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MedicalDonationCheckbox = ({ handleChange,formData }) => {
+const MedicalDonationCheckbox = ({ handleChange,formData,errors }) => {
   const modulesManager = useModulesManager()
   const [selectedDonationOption, setselectedDonationOption] = useState("");
   const [isExportOriented, setIsExportOriented] = useState("");

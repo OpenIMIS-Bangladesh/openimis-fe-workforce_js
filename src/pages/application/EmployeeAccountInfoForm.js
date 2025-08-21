@@ -13,6 +13,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Button,
+  FormHelperText
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
@@ -22,6 +23,7 @@ import MobileBankingPicker from "../../pickers/MobileBankingPicker";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDependent, fetchEmployeeDependent } from "../../actions";
+import DistrictBanks from "../../pickers/DistrictBanks";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, removeItem, expanded, setExpanded, applicationId }) => {
+const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, removeItem, expanded, setExpanded, applicationId,errors }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const [loading, setLoading] = useState(false);
@@ -47,7 +49,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
   const dependent = useSelector((state) => state.workforce.workforceDependent);
 
   useEffect(() => {
-    console.log('abc',applicationId)
+    console.log("abc", applicationId);
     if (applicationId && applicationId[0]?.id) {
       setLoading(true);
       dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0].id)}"`]));
@@ -94,8 +96,8 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
   console.log({ dependent });
   return (
     <Box mt={1}>
-      <Typography mb={4} style={{textAlign:"center",fontWeight:"bold",fontSize:"small",margin:"15px"}}>
-                      <FormattedMessage id="workforce.application.steps.account.info" module="workforce" />
+      <Typography mb={4} style={{ textAlign: "center", fontWeight: "bold", fontSize: "small", margin: "15px" }}>
+        <FormattedMessage id="workforce.application.steps.account.info" module="workforce" />
       </Typography>
       {(dependent?.length > 0 ? dependent : [{}]).map((dependentValue, index) => {
         const account = accounts[index] || {};
@@ -105,7 +107,8 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
           <Accordion key={index} expanded={expanded === index} onChange={() => setExpanded(expanded === index ? false : index)}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                {dependentValue?.nameBn} {dependentValue?.nameBn && "এর"}  {<FormattedMessage id="workforce.previewDetails.employeeBankInfo" defaultMessage={`Bank Account ${index + 1}`} />}
+                {dependentValue?.nameBn} {dependentValue?.nameBn && "এর"}{" "}
+                {<FormattedMessage id="workforce.previewDetails.employeeBankInfo" defaultMessage={`Bank Account ${index + 1}`} />}
               </Typography>
             </AccordionSummary>
 
@@ -135,6 +138,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                       <Grid container spacing={2}>
                         <Grid item xs={6} className={classes.item}>
                           <MobileBankingPicker
+                          id="bankingOptions"
                             value={account?.bankingOptions || ""}
                             label={<FormattedMessage id="workforce.application.account.mobile.operator" />}
                             onChange={(v) => handleAccountChange(index, "bankingOptions", v)}
@@ -144,19 +148,22 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                         </Grid>
                         <Grid item xs={6} className={classes.item}>
                           <TextInput
+                          id="accountNumber"
                             label="workforce.employee.account.info.mobileNumber"
                             value={account?.accountNumber || ""}
                             onChange={(v) => handleAccountChange(index, "accountNumber", v)}
                             required
                             readOnly={false}
+                             error={!!errors.accountNumber}
+            helperText={errors.accountNumber}
                           />
                         </Grid>
                       </Grid>
                     )}
 
-                    {accountType === "bank" && (
-                      <>
-                        <Grid container spacing={2}>
+                    <Grid container spacing={2}>
+                      {accountType === "bank" && (
+                        <>
                           <Grid item xs={6} className={classes.item}>
                             <PublishedComponent
                               pubRef="workforce.BanksPicker"
@@ -166,49 +173,73 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                               required
                               readOnly={false}
                             />
+                            {errors.bank && <FormHelperText error>{errors.bank}</FormHelperText>}
+                          </Grid>
+                          <Grid item xs={6} className={classes.item}>
+                            <DistrictBanks
+                              id={"districtBank"}
+                              value={account?.district?.id || ""}
+                              label={<FormattedMessage id="workforce.district.branch.picker" />}
+                              bankId={account?.bank?.bankCode}
+                              onChange={(v) => handleAccountChange(index, "district", v)}
+                              required
+                              readOnly={false}
+                            />
+                            {errors.districtBank && <FormHelperText error>{errors.districtBank}</FormHelperText>}
                           </Grid>
                           <Grid item xs={6} className={classes.item}>
                             <BranchPicker
-                              value={account?.branch?.id || ""}
+                              id={"branch"}
+                              value={account?.branch || ""}
                               label={<FormattedMessage id="workforce.branch.picker" />}
                               bankId={account?.bank?.bankCode}
+                              districtName={account?.district?.districtNameBn}
                               onChange={(v) => handleAccountChange(index, "branch", v)}
                               required
                               readOnly={false}
                             />
+                            {errors.branch && <FormHelperText error>{errors.branch}</FormHelperText>}
                           </Grid>
-                        </Grid>
-                        <Grid container spacing={2}>
+
                           <Grid item xs={6} className={classes.item}>
                             <TextInput
+                            id="accountHolderName"
                               label="workforce.employee.account.info.accountHolderName"
                               value={account?.accountHolderName || dependent?.[index]?.nameBn || ""}
                               onChange={(v) => handleAccountChange(index, "accountHolderName", v)}
                               required
                               readOnly={false}
+                               error={!!errors.accountHolderName}
+            helperText={errors.accountHolderName}
                             />
                           </Grid>
                           <Grid item xs={6} className={classes.item}>
                             <TextInput
+                            id="routingNumber"
                               label="workforce.employee.account.info.routingNumber"
                               value={account?.branch?.routingNumber || ""}
                               onChange={(v) => handleAccountChange(index, "routingNumber", v)}
-                              readOnly={true}
+                              readOnly={false}
                               required
+                               error={!!errors.routingNumber}
+            helperText={errors.routingNumber}
                             />
                           </Grid>
                           <Grid item xs={6} className={classes.item}>
                             <TextInput
+                            id="accountNumber"
                               label="workforce.employee.account.info.accountNumber"
                               value={account?.accountNumber || ""}
                               onChange={(v) => handleAccountChange(index, "accountNumber", v)}
                               required
                               readOnly={false}
+                               error={!!errors.accountNumber}
+            helperText={errors.accountNumber}
                             />
                           </Grid>
-                        </Grid>
-                      </>
-                    )}
+                        </>
+                      )}
+                    </Grid>
 
                     <Divider style={{ margin: "16px 0" }} />
                     <Box className={classes.buttonContainer}>

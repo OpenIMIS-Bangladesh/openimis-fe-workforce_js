@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Grid } from "@material-ui/core";
-import { TextInput,FormattedMessage } from "@openimis/fe-core";
+import React, { useEffect, useRef, useState } from "react";
+import { Grid,FormHelperText } from "@material-ui/core";
+import { TextInput, FormattedMessage } from "@openimis/fe-core";
 import PostOfficePicker from "../../pickers/PostOfficePicker";
 import { getThirdStepId } from "../../utils/utils";
 
-const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnly,locationData }) => {
-  const [locationType, setLocationType] = useState("rural"); 
+const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnly, locationData,errors }) => {
+  const [locationType, setLocationType] = useState("rural");
   const [localData, setLocalData] = useState(data || {});
   const thirdStepId = getThirdStepId(locationData);
+  const firstRender = useRef(true);
   // Update internal state when external data changes
   useEffect(() => {
     if (data) {
@@ -42,21 +43,30 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
     return false;
   };
 
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    onChange?.(addressKey, JSON.stringify(localData));
+  }, [localData]);
+
   const updateField = (key, value) => {
     const updatedData = {
       ...localData,
       [key]: value,
     };
     setLocalData(updatedData);
-    if (onChange) {
-      onChange(addressKey, updatedData);
-    }
+    // if (onChange) {
+    //   onChange(addressKey, updatedData);
+    // }
   };
 
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} sm={4}>
         <PostOfficePicker
+          id="postOffice"
           value={localData.postOffice}
           label={<FormattedMessage id="workforce.select.postOffice" module="workforce" />}
           locationId={thirdStepId}
@@ -64,6 +74,7 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
           required
           readOnly={readOnly}
         />
+        {errors?.postOffice && <FormHelperText error>{errors?.postOffice}</FormHelperText>}
       </Grid>
       {locationType === "city" && (
         <>
@@ -94,6 +105,7 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
           <Grid item xs={12} sm={4}>
             <TextInput
               //   label="workforce.employee.city.extra_info"
+              label="&bsp;"
               value={localData.extraInfo || ""}
               onChange={(v) => updateField("extraInfo", v)}
               readOnly={readOnly}
@@ -130,6 +142,7 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
           <Grid item xs={12} sm={4}>
             <TextInput
               //   label="workforce.employee.rural.extra_info"
+              label="&bsp;"
               value={localData.extraInfo || ""}
               onChange={(v) => updateField("extraInfo", v)}
               readOnly={readOnly}

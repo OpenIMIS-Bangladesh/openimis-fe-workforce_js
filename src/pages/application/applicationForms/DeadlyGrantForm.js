@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Stepper, Step, StepLabel, Paper, Box, Typography } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage,useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -62,9 +62,13 @@ const steps = [
   "workforce.application.steps.upload.documents",
 ];
 
-const DeadlyGrantForm = ({ modulesManager, organizationType, selectedApplicationType, parsedApplicationData }) => {
+const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
+  const modulesManager= useModulesManager()
+    const { formatMessage } = useTranslations("workforce");
+    const stepRef =useRef(null)
+    const [errors,setErrors] = useState({})
 
   const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
@@ -232,6 +236,10 @@ const DeadlyGrantForm = ({ modulesManager, organizationType, selectedApplication
 
   const handleNext = async () => {
     console.log({ formData });
+    const newErrors = validateRequiredFields(stepRef, formatMessage);
+        setErrors(newErrors);
+    
+        if (Object.keys(newErrors).length === 0 ){
     const nextStep = activeStep + 1;
     setActiveStep(nextStep);
     if (nextStep === 3 || nextStep === 4) {
@@ -365,6 +373,7 @@ const DeadlyGrantForm = ({ modulesManager, organizationType, selectedApplication
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application`));
     }
+  }
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -495,6 +504,7 @@ const DeadlyGrantForm = ({ modulesManager, organizationType, selectedApplication
             </Step>
           ))}
         </Stepper>
+        <Box mt={0} ref={stepRef}>
         {activeStep === 0 ? (
           <ApplicationReason
             modulesManager={modulesManager}
@@ -502,6 +512,7 @@ const DeadlyGrantForm = ({ modulesManager, organizationType, selectedApplication
             formData={formData}
             setDeathType={setDeathType}
             deathType={deathType}
+            errors={errors}
           />
         ) : activeStep === 1 ? (
           <Box mt={0}>
@@ -510,6 +521,7 @@ const DeadlyGrantForm = ({ modulesManager, organizationType, selectedApplication
               formData={formData}
               setNidOrBcn={setNidOrBcn}
               nidOrBcn={nidOrBcn}
+              errors={errors}
             />
           </Box>
         ) : activeStep === 2 ? (
@@ -519,6 +531,7 @@ const DeadlyGrantForm = ({ modulesManager, organizationType, selectedApplication
               formData={formData}
               setNidOrBcn={setNidOrBcn}
               nidOrBcn={nidOrBcn}
+              errors={errors}
             />
           </Box>
         ) : activeStep === 3 ? (
@@ -527,7 +540,7 @@ const DeadlyGrantForm = ({ modulesManager, organizationType, selectedApplication
           </Box>
         ) : activeStep === 4 ? (
           <Box mt={0}>
-            <WorkerExtraInfo handleChange={handleChange} formData={formData} />
+            <WorkerExtraInfo handleChange={handleChange} formData={formData} errors={errors}/>
           </Box>
         ) :activeStep === 5 ? (
           <Box mt={0}>
@@ -540,6 +553,7 @@ const DeadlyGrantForm = ({ modulesManager, organizationType, selectedApplication
               expanded={expanded}
               setExpanded={setExpanded}
               formdata={formData}
+              errors={errors}
             />
           </Box>
         ) : activeStep === 6 ? (
@@ -561,6 +575,7 @@ const DeadlyGrantForm = ({ modulesManager, organizationType, selectedApplication
               expanded={expanded}
               setExpanded={setExpanded}
               applicationId={applicationId}
+              errors={errors}
             />
             )}
           </Box>
@@ -574,6 +589,7 @@ const DeadlyGrantForm = ({ modulesManager, organizationType, selectedApplication
             />
           </Box>
         )}
+        </Box>
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">

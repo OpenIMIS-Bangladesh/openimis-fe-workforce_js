@@ -729,6 +729,18 @@
 
     "workforce.register.button":"নিবন্ধন করুন",
   "workforce.select.postOffice":"Post Office",
-    "calendar.clearButton": "Clear"
+    "calendar.clearButton": "Clear",
+  "workforce.application.forward.message": "Are you sure you want to forward these applications?",
+  "workforce.application.select.message": "Are you sure you want to select these applications?",
+  "workforce.application.approve.message": "Are you sure you want to approve these applications?",
+  "workforce.application.reject.message": "Are you sure you want to reject this application?",
+  "workforce.confirm.modal.ok": "OK",
+  "workforce.modal.print": "Print",
+  "workforce.modal.print.advice": "Print Advice",
+  "workforce.modal.excel": "Export Excel",
+  "workforce.modal.close": "Close",
+  "workforce.financialAssistance.error.message":"An application has already been submitted for death",
+
+  "workforce.confirm.modal.cancel": "CANCEL"
 
 }

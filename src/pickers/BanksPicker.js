@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchBanksPick } from "../actions";
 
 const BanksPicker = ({
+  id="bank",
   modulesManager,
   onChange,
   readOnly,
@@ -49,6 +50,7 @@ const BanksPicker = ({
 
   return (
     <Autocomplete
+      id={id}
       multiple={multiple}
       required={required}
       placeholder={placeholder ?? ""}

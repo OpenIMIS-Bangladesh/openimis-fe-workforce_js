@@ -98,7 +98,7 @@ export function fetchWorkforceOtp(mm, filters) {
 }
 
 export function fetchBranchPick(mm, filters) {
-  const projections = ["id", "nameEn","nameBn", "parent{id},bankCode,routingNumber"];
+  const projections = ["id", "nameEn","nameBn", "parent{id},bankCode,routingNumber","districtCode","districtNameEn","districtNameBn"];
   const payload = formatPageQuery("workforceBanks", filters, projections);
   return graphql(payload, "WORKFORCE_BRANCH_PICKER");
 }

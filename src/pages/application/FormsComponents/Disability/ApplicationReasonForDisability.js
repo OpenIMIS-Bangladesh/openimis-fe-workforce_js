@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ApplicationReasonForDisability = ({ modulesManager,handleChange,deathType, setDeathType }) => {
+const ApplicationReasonForDisability = ({ modulesManager,handleChange,deathType, setDeathType,errors }) => {
   const { formatMessage } = useTranslations(
       "core.RegistrationPage",
       modulesManager,

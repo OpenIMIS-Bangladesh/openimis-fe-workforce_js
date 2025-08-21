@@ -257,6 +257,13 @@ const handleSave = async () => {
 };
 
 
+useEffect(() => {
+  if (serverResponse?.status === "SUCCESS") {
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }
+  }, [serverResponse]);
 
   return (
     <Modal open={open} onClose={onClose}>

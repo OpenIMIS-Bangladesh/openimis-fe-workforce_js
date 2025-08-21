@@ -1,10 +1,10 @@
   import React, { useEffect, useState, useRef } from "react";
-  import { Grid } from "@material-ui/core";
+  import { Grid,FormHelperText } from "@material-ui/core";
   import { TextInput,FormattedMessage } from "@openimis/fe-core";
   import { getThirdStepId } from "../../utils/utils";
   import PostOfficePicker from "../../pickers/PostOfficePicker";
 
-  const CustomDetailedLocation = ({ locationType = "city", onChange, addressKey, data = {}, readOnly, locationData }) => {
+  const CustomDetailedLocation = ({ locationType = "city", onChange, addressKey, data = {}, readOnly, locationData,errors }) => {
     const [localData, setLocalData] = useState({});
     const firstRender = useRef(true);
     const thirdStepId = getThirdStepId(locationData);
@@ -48,13 +48,15 @@
           <>
             <Grid item xs={12} sm={4}>
               <PostOfficePicker
+                id="postOffice"
                 value={localData.postOffice} 
                 label={<FormattedMessage id="workforce.select.postOffice" module="workforce" />}
                 locationId={thirdStepId}
                 onChange={(v) => updateField( "postOffice", v)}
-                required
+                required={true}
                 readOnly={readOnly}
               />
+               {errors?.postOffice && <FormHelperText error>{errors?.postOffice}</FormHelperText>}
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextInput
@@ -84,7 +86,7 @@
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextInput value={localData.extraInfo || ""} label="" onChange={(v) => updateField("extraInfo", v)} InputProps={{ margin: "dense" }} readOnly={readOnly} />
+              <TextInput value={localData.extraInfo || ""} label="&bsp;" onChange={(v) => updateField("extraInfo", v)} InputProps={{ margin: "dense" }} readOnly={readOnly} />
             </Grid>
           </>
         )}
@@ -93,6 +95,7 @@
           <>
           <Grid item xs={12} sm={4}>
               <PostOfficePicker
+                id="postOffice"
                 value={localData.postOffice || null} 
                 label={<FormattedMessage id="workforce.select.postOffice" module="workforce" />}
                 locationId={thirdStepId}
@@ -100,6 +103,7 @@
                 required
                 readOnly={readOnly}
               />
+              {errors?.postOffice && <FormHelperText error>{errors?.postOffice}</FormHelperText>}
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextInput
@@ -129,7 +133,7 @@
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextInput value={localData.extraInfo || ""} label="" onChange={(v) => updateField("extraInfo", v)} InputProps={{ margin: "dense" }} readOnly={readOnly} />
+              <TextInput value={localData.extraInfo || ""} label="&bsp;" onChange={(v) => updateField("extraInfo", v)} InputProps={{ margin: "dense" }} readOnly={readOnly} />
             </Grid>
           </>
         )}

@@ -14,6 +14,8 @@ import FinancialAssistanceForm from "./applicationForms/FinancialAssistanceForm"
 import ScholarshipApplicationForm from "./applicationForms/ScholarshipApplicationForm";
 import { getParsedApplication } from "../../utils/utils";
 import DeadlyGrantForm from "./applicationForms/DeadlyGrantForm";
+import { fetchApplicationsSummary } from "../../actions";
+import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -65,6 +67,9 @@ const MultiStepApplyForm = () => {
   const [organizationType, setOrganizationType] = useState("" || parsedApplicationData?.organizationType);
   const [selectedApplicationType, setSelectedApplicationType] = useState("" || parsedApplicationData?.applicationType);
   const [isApplicationForSelfSelected, setIsApplicationForSelfSelected] = useState(true);
+  const [openErrorModal,setOpenErrorModal] = useState(false)
+  const reduxState = useSelector((state) => state);
+  const userName = reduxState.core.user.username
 
   useEffect(async () => {
     const fetchData = async () => {
@@ -106,12 +111,37 @@ const MultiStepApplyForm = () => {
     // onSelect(selectedApplicationType, value); // Pass both selections
   };
 
+  const handleNextButtonClicked = () => {
+  if (selectedApplicationType === "financialAssistance") {
+    dispatch(
+      fetchApplicationsSummary(modulesManager, [
+        `applicationType: "financialAssistance",workforceEmployee_Nid: "${userName}"`
+      ])
+    ).then((res) => {
+      const data = res?.payload?.data?.workforceApplication?.edges;
+
+      if (data && data.length > 0) {
+        // Data already exists → show error only
+        setOpenErrorModal(true);
+        return;
+      }
+
+      // No data found → show form
+      setShowForm(true);
+    });
+  } else {
+    setShowForm(true);
+  }
+};
+
   console.log({ applicationForSelf });
   console.log({ parsedApplicationData });
 
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={3}>
+        {openErrorModal && <Typography style={{color:"red",fontWeight:"bold",fontSize:"large"}}><FormattedMessage id="workforce.financialAssistance.error.message" module="workforce"/></Typography>}
+
         {!showForm ? (
           <>
             <ApplicationTypeSelector
@@ -124,7 +154,7 @@ const MultiStepApplyForm = () => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => setShowForm(true)}
+                onClick={() => handleNextButtonClicked()}
                 disabled={!selectedApplicationType || !organizationType} // Ensures both are selected
               >
                 <FormattedMessage module="workforce" id="workforce.next" />

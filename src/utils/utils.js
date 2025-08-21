@@ -41,17 +41,17 @@ export function getUserTypeFromRights(user_rights) {
   let user_type = WORKFORCE_USER_TYPE.APPLICANT;
   if (user_rights.includes(812001)) {
     user_type = WORKFORCE_USER_TYPE.CHECKER;
-  }else if (user_rights.includes(819001)) {
+  } else if (user_rights.includes(819001)) {
     user_type = WORKFORCE_USER_TYPE.CHECKER_TWO;
-  }else if (user_rights.includes(817001)) {
+  } else if (user_rights.includes(817001)) {
     user_type = WORKFORCE_USER_TYPE.SECTION_ADMIN;
-  }else if (user_rights.includes(821002)) {
+  } else if (user_rights.includes(821002)) {
     user_type = WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO;
   }else if (user_rights.includes(821003)) {
     user_type = WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR;
   }else if (user_rights.includes(821004)) {
     user_type = WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR;
-  }else if (user_rights.includes(818001)) {
+  } else if (user_rights.includes(818001)) {
     user_type = WORKFORCE_USER_TYPE.DOCTOR;
   } else if (user_rights.includes(813001)) {
     user_type = WORKFORCE_USER_TYPE.APPROVER;
@@ -121,20 +121,20 @@ export const getParsedApplication = (modulesManager, filters) => {
 
 
 export const getParsedApplicationFromArray = (applications) => {
-    const returnArray= [];
-    if (!Array.isArray(applications)) return [];
-    applications.forEach((rawData) => {
-      const parsedData = {
-        ...rawData,
-        employeeDependentInfo: safeParse(rawData.employeeDependentInfo) || {},
-        employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
-        employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo) || {},
-        employeeChildrenInfo: safeParse(rawData.employeeChildrenInfo) || {},
-        metadata: safeParse(rawData.metadata) || {}
-      };
-      returnArray.push(parsedData);
-    });
-    return returnArray;
+  const returnArray = [];
+  if (!Array.isArray(applications)) return [];
+  applications.forEach((rawData) => {
+    const parsedData = {
+      ...rawData,
+      employeeDependentInfo: safeParse(rawData.employeeDependentInfo) || {},
+      employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
+      employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo) || {},
+      employeeChildrenInfo: safeParse(rawData.employeeChildrenInfo) || {},
+      metadata: safeParse(rawData.metadata) || {}
+    };
+    returnArray.push(parsedData);
+  });
+  return returnArray;
 };
 
 export const isEmpty = (value) => {
@@ -214,7 +214,7 @@ export const getInfoId = (resp, dataKey) => {
 };
 
 
-export const validateForm = (emp,formatMessage,formData) => {
+export const validateForm = (emp, formatMessage, formData) => {
   // const emp = formData?.workforceEmployee || {};
   const errs = {};
 
@@ -240,7 +240,7 @@ export function getThirdStepId(location) {
   let current = location;
   let step = 0;
 
-  while (current?.parent && step < 2) {
+  while (current?.parent && step < 1) {
     current = current.parent;
     step++;
   }
@@ -248,3 +248,36 @@ export function getThirdStepId(location) {
   // after 2 jumps, we're at step 3
   return current?.id || null;
 }
+
+export const validateRequiredFields = (containerRef, formatMessage) => {
+  const fields = containerRef.current.querySelectorAll("[required]");
+  console.log({ fields })
+  const errors = {};
+
+  fields.forEach((field) => {
+    const value = field.value?.trim?.() || "";
+
+    if (!value && field.tagName !== "DIV") {
+      if (!field.id && field.parentElement.previousElementSibling?.classList && Array.from(field.parentElement.previousElementSibling.classList).some(c => c.startsWith("openIMISDatePicker-label"))) {
+        field.id = "rdmp";
+      }
+
+      let parent = field.parentElement;
+      while (parent) {
+        if (
+          parent.classList &&
+          Array.from(parent.classList).some(c => c.startsWith("DetailedLocation-form"))
+        ) {
+          field.id = "detailedLocation";
+          break;
+        }
+        parent = parent.parentElement;
+      }
+
+      errors[field.id || field.name] = formatMessage("core.error.required");
+      console.warn(`Validation failed for field: ${field.id || field.name}`);
+    }
+  });
+
+  return errors;
+};
