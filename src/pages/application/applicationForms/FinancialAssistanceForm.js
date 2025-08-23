@@ -411,7 +411,7 @@ const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, p
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       grantAmount: formData?.employeeAccidentInfo.grantAmount,
       employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
-      employeeApplicantInfo: JSON.stringify(formData.workforceApplicant) || JSON.stringify(parsedApplicationData?.workforceApplicant),
+      employeeApplicantInfo: JSON.stringify(formData.workforceApplicant).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}') || JSON.stringify(parsedApplicationData?.workforceApplicant).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
       // employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
       employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}') || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),

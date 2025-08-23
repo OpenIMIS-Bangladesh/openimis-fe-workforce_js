@@ -100,6 +100,7 @@ class ViewApplicationPage extends Component {
     const AccidentInfo = this.safeParse(stateEdited?.employeeAccidentInfo);
     const dependentInfo = this.safeParse(stateEdited?.employeeDependentInfo);
     const childrenInfo = this.safeParse(stateEdited?.employeeChildrenInfo);
+    const applicantInfo = this.safeParse(stateEdited?.applicantInfo);
     const metaInfo = this.safeParse(stateEdited?.employeeChildrenInfo);
 
     // ✅ Safely parse nested stringified objects
@@ -110,6 +111,7 @@ class ViewApplicationPage extends Component {
       employeeBankInfo: this.safeParse(bankInfo),
       employeeDependentInfo: this.safeParse(dependentInfo),
       employeeChildrenInfo: this.safeParse(childrenInfo),
+      applicantInfo: this.safeParse(applicantInfo),
       metadata: this.safeParse(metaInfo),
     };
 
@@ -123,10 +125,12 @@ class ViewApplicationPage extends Component {
         <Box p={0} className={classes.paper}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <PreviewDetails formData={formData} language={locale} />
+              {/* <PreviewDetails formData={formData} language={locale} /> */}
               {/* <ApplicationViewPage application={formData} language={locale} /> */}
+              <ApplicationViewPage application={formData} language={locale}   fileStates={documents}/>
+
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               {uploadByApplicant?.length > 0 && (
                 <Typography variant="body2" gutterBottom style={{ textAlign: "left", fontWeight: "bold" }}>
                   <FormattedMessage module="workforce" id="workforce.previewDetails.uploadedBy.applicant" />
@@ -143,8 +147,8 @@ class ViewApplicationPage extends Component {
                   locale={locale}
                 />
               ))}
-            </Grid>
-            <Grid item xs={12}>
+            </Grid> */}
+            {/* <Grid item xs={12}>
               {uploadByFactoryAdmin?.length > 0 && (
                 <Typography variant="body2" gutterBottom style={{ textAlign: "left", fontWeight: "bold" }}>
                   <FormattedMessage module="workforce" id="workforce.previewDetails.uploadedBy.factoryAdmin" />
@@ -161,7 +165,7 @@ class ViewApplicationPage extends Component {
                   locale={locale}
                 />
               ))}
-            </Grid>
+            </Grid> */}
           </Grid>
 
           {user_type === WORKFORCE_USER_TYPE.ADMIN && (

@@ -31,6 +31,7 @@ import DocumentReviewAccordion from "../../components/application-process/Docume
 import FileUploader from "../../pickers/FileUploader";
 import { getUserTypeFromRights } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
+import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
 
 const styles = (theme) => ({
   paper: {
@@ -103,11 +104,11 @@ class VerifyApplicationPage extends Component {
       mockFiles: mockFiles,
       fileStates: mockFiles || [],
        uploadedFiles: [], 
-      // fileStates: mockFiles.map((file) => ({
-      //   ...file,
-      //   comment: "",
-      //   status: null,
-      // })),
+      fileStates: mockFiles.map((file) => ({
+        ...file,
+        note: "",
+        status: null,
+      })),
     };
   }
 
@@ -128,7 +129,6 @@ class VerifyApplicationPage extends Component {
     await this.props.fetchApplication(modulesManager, [`id:"${applicationUuid}"`]);
 
     const { application } = this.props;
-    console.log("verify applications", application);
     const applicationType = application?.applicationType;
     const organizationType = application?.organizationType;
     if (applicationType && organizationType) {
@@ -146,15 +146,20 @@ class VerifyApplicationPage extends Component {
   };
 
   handleFileCommentChange = (index, value) => {
-    this.setState((prevState) => {
-      const updatedFiles = [...prevState.fileStates];
-      updatedFiles[index].note = value;
-      return { fileStates: updatedFiles };
-    });
-  };
+    console.log(index,value)
+  this.setState((prevState) => {
+    if (!prevState.fileStates || !prevState.fileStates[index]) {
+      return {};
+    }
+    const updatedFiles = [...prevState.fileStates];
+    updatedFiles[index] = { ...updatedFiles[index], note: value }; 
+    return { fileStates: updatedFiles };
+  });
+};
+
 
   handleCommentChange = (e) => {
-    this.setState({ comment: e.target.value });
+    this.setState({ note: e.target.value });
   };
 
   handleFileVerify = (index) => {
@@ -166,7 +171,7 @@ class VerifyApplicationPage extends Component {
       note: file.note,
     };
 
-    this.props.updateWorkforceDocument(payload, `update workforce document`); // 👈 dispatch here
+    this.props.updateWorkforceDocument(payload, `update workforce document`); 
 
     // optionally update UI optimistically
     this.setState((prevState) => {
@@ -184,7 +189,6 @@ class VerifyApplicationPage extends Component {
       status: "rejected",
       note: file.note,
     };
-    // console.log({ payload });
 
     this.props.updateWorkforceDocument(payload, `update workforce document`); // 👈 dispatch here
 
@@ -193,6 +197,18 @@ class VerifyApplicationPage extends Component {
       updated[index].status = "rejected";
       return { fileStates: updated };
     });
+  };
+
+  safeParse = (data) => {
+    if (typeof data === "string") {
+      try {
+        return JSON.parse(data);
+      } catch (e) {
+        console.warn("Failed to parse JSON:", data);
+        return {};
+      }
+    }
+    return data || {};
   };
 
   handleFileChange = (fieldKey, files) => {
@@ -218,30 +234,38 @@ class VerifyApplicationPage extends Component {
     const user_type = getUserTypeFromRights(user_rights);
     // console.log({ mah_boob: documentType });
     // console.log({ my_boob: fileStates });
+    const bankInfo = this.safeParse(application?.employeeBankInfo);
+    const AccidentInfo = this.safeParse(application?.employeeAccidentInfo);
+    const dependentInfo = this.safeParse(application?.employeeDependentInfo);
+    const childrenInfo = this.safeParse(application?.employeeChildrenInfo);
+    const applicantInfo = this.safeParse(application?.applicantInfo);
+    const metaInfo = this.safeParse(application?.employeeChildrenInfo);
+
+     const formData = {
+      ...application,
+      workforceEmployee: application?.workforceEmployee,
+      employeeAccidentInfo: this.safeParse(AccidentInfo),
+      employeeBankInfo: this.safeParse(bankInfo),
+      employeeDependentInfo: this.safeParse(dependentInfo),
+      employeeChildrenInfo: this.safeParse(childrenInfo),
+      applicantInfo: this.safeParse(applicantInfo),
+      metadata: this.safeParse(metaInfo),
+    };
     const filteredDocumentTypes = documentType?.filter((doc) => {
-      console.log("doc",doc);
       const matchedFile = fileStates?.find((file) => {
-        console.log("fileStates",file);
         return file?.workforceDocumentType?.id !== doc?.id  && file?.workforceDocumentType?.mandatoryForApplicant === false;
       });
       return matchedFile || doc?.mandatoryForApplicant === false;
     });
-    //     const filteredDocumentTypes = documentType.filter((doc) => {
-    //   console.log("Checking doc:", doc);
-    //   const existsInFileStates = fileStates?.some((file) => {
-    //     console.log("Comparing", file.workforceDocumentType?.id, "with", doc.id);
-    //     return file.workforceDocumentType?.id === doc.id;
-    //   });
-    //   return existsInFileStates;
-    // });
 
-    console.log("filteredDocumentTypes", filteredDocumentTypes);
-    console.log({ applicationUuid });
+
+    // console.log("filteredDocumentTypes", filteredDocumentTypes);
+    console.log({ fileStates });
     return (
       <Grid container spacing={3} className={classes.rootGrid}>
         {/* User Summary */}
-        <Grid item xs={12} md={4} className={classes.leftGrid}>
-          <Card variant="outlined" className={classes.cardSpacing}>
+        <Grid item xs={12} md={12} className={classes.leftGrid}>
+          {/* <Card variant="outlined" className={classes.cardSpacing}>
             <CardContent>
               <Typography variant="h6">
                 <b>
@@ -288,29 +312,33 @@ class VerifyApplicationPage extends Component {
                 <b>Birth Cert No:</b> {application?.workforceEmployee?.birthCertificateNo}
               </Typography>
             </CardContent>
-          </Card>
-          {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && (
-            <Card variant="outlined" mt={2} className={classes.cardSpacing}>
-              <CardContent>
-                <Typography variant="h6">
-                  <b>
-                    <FormattedMessage module="workforce" id="workforce.employee.upload.factory.document" />
-                  </b>
-                </Typography>
-                <Divider />
-                {filteredDocumentTypes?.map((document, index) => (
-                      <Box style={{marginTop:"10px"}}>
-                        <Typography>{document.nameBn}</Typography>
-                        <FileUploader fieldKey={document.fieldId} applicationId={applicationUuid} onFileChange={this.handleFileChange} documentType={document.documentType} documentProp={document}  uploadedBy={"factoryAdmin"}/>
-                      </Box>
-                ))}
-              </CardContent>
-            </Card>
+          </Card> */}
+          {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? (
+            // <Card variant="outlined" mt={2} className={classes.cardSpacing}>
+            //   <CardContent>
+            //     <Typography variant="h6">
+            //       <b>
+            //         <FormattedMessage module="workforce" id="workforce.employee.upload.factory.document" />
+            //       </b>
+            //     </Typography>
+            //     <Divider />
+            //     {filteredDocumentTypes?.map((document, index) => (
+            //           <Box style={{marginTop:"10px"}}>
+            //             <Typography>{document.nameBn}</Typography>
+            //             <FileUploader fieldKey={document.fieldId} applicationId={applicationUuid} onFileChange={this.handleFileChange} documentType={document.documentType} documentProp={document}  uploadedBy={"factoryAdmin"}/>
+            //           </Box>
+            //     ))}
+            //   </CardContent>
+            // </Card>
+            <ApplicationViewPage application={formData} language={locale} filteredDocumentTypes={filteredDocumentTypes} applicationUuid={applicationUuid} onFileChange={this.handleFileChange} fileStates={fileStates} handleCommentChange={this.handleFileCommentChange} handleFileVerify={this.handleFileVerify} handleFileReject={this.handleFileReject}/>
+          ):(
+            <ApplicationViewPage application={formData} language={locale} />
+
           )}
         </Grid>
 
         {/* Document Viewer */}
-        <Grid item xs={12} md={8} className={classes.rightGrid}>
+        {/* <Grid item xs={12} md={8} className={classes.rightGrid}>
           <Card variant="outlined" className={classes.cardSpacing}>
             <CardContent>
               <Typography variant="h6">
@@ -330,7 +358,7 @@ class VerifyApplicationPage extends Component {
               ))}
             </CardContent>
           </Card>
-        </Grid>
+        </Grid> */}
 
         {/* Preview Modal */}
         <Dialog open={!!preview} onClose={this.handlePreviewClose} maxWidth="md" fullWidth>

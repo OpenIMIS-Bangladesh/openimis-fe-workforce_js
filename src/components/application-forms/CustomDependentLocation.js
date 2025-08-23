@@ -105,7 +105,7 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
           <Grid item xs={12} sm={4}>
             <TextInput
               //   label="workforce.employee.city.extra_info"
-              label="&bsp;"
+              label="&nbsp;"
               value={localData.extraInfo || ""}
               onChange={(v) => updateField("extraInfo", v)}
               readOnly={readOnly}
@@ -142,7 +142,7 @@ const CustomDependentLocation = ({ location, onChange, addressKey, data, readOnl
           <Grid item xs={12} sm={4}>
             <TextInput
               //   label="workforce.employee.rural.extra_info"
-              label="&bsp;"
+              label="&nbsp;"
               value={localData.extraInfo || ""}
               onChange={(v) => updateField("extraInfo", v)}
               readOnly={readOnly}
