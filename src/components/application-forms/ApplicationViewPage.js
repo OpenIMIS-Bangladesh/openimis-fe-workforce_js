@@ -5,6 +5,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import FileUploader from "../../pickers/FileUploader";
 import DocumentReviewAccordion from "../application-process/DocumentReviewAccordion";
+import { banglaLabels } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,12 +62,16 @@ const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent"];
 /**
  * Convert key into a user-friendly label
  */
-const formatKey = (key) =>
-  key
+const formatKey = (key,language ="en") =>{
+  const cleanKey = key.split(".").pop();
+    if (["fr", "bangla", "bd"].includes(language) && banglaLabels[cleanKey]) {
+      return banglaLabels[cleanKey];
+    }
+  return  cleanKey
     .replace(/_/g, " ")
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/\b\w/g, (c) => c.toUpperCase());
-
+}
 /**
  * Try parsing JSON safely
  */
@@ -94,7 +99,7 @@ const isEmpty = (value) => {
 /**
  * Recursive renderer for objects & arrays in Grid format
  */
-const renderDetails = (data, classes, parentKey = "") => {
+const renderDetails = (data, classes, parentKey = "",language) => {
   if (!data) return null;
 
   // Handle arrays of objects
@@ -111,7 +116,7 @@ const renderDetails = (data, classes, parentKey = "") => {
         <Card key={idx} className={classes.nestedCard}>
           <CardContent>
             <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold", fontSize: "large" }}>
-              {formatKey(parentKey)} {idx + 1}
+              {formatKey(parentKey,language)} {idx + 1}
             </Typography>
             <Divider style={{ marginBottom: 12 }} />
 
@@ -120,7 +125,7 @@ const renderDetails = (data, classes, parentKey = "") => {
               {scalars.map(([key, value]) => (
                 <Grid item xs={6} key={key} className={classes.itemRow}>
                   <Typography variant="body1" className={classes.value}>
-                    <span className={classes.label}>{formatKey(key)}:</span> {value}
+                    <span className={classes.label}>{formatKey(key,language)}:</span> {value}
                   </Typography>
                 </Grid>
               ))}
@@ -139,7 +144,7 @@ const renderDetails = (data, classes, parentKey = "") => {
                     padding: 3,
                   }}
                 >
-                  {formatKey(key)}
+                  {formatKey(key,language)}
                 </Typography>
                 {renderDetails(value, classes, key)}
               </Box>
@@ -174,7 +179,7 @@ const renderDetails = (data, classes, parentKey = "") => {
         {scalars.map(([key, value]) => (
           <Grid item xs={6} key={key} className={classes.itemRow}>
             <Typography variant="body1" className={classes.value}>
-              <span className={classes.label}>{formatKey(key)}:</span> {value}
+              <span className={classes.label}>{formatKey(key,language)}:</span> {value}
             </Typography>
           </Grid>
         ))}
@@ -194,7 +199,7 @@ const renderDetails = (data, classes, parentKey = "") => {
                   padding: 3,
                 }}
               >
-                {formatKey(key)}
+                {formatKey(key,language)}
               </Typography>
               {renderDetails(parsedValue, classes, key)}
             </Grid>
@@ -209,7 +214,7 @@ const renderDetails = (data, classes, parentKey = "") => {
 
 const ApplicationViewPage = ({
   application,
-  locale,
+  language,
   filteredDocumentTypes,
   applicationUuid,
   onFileChange,
@@ -219,7 +224,6 @@ const ApplicationViewPage = ({
   handleFileReject,
 }) => {
   const classes = useStyles();
-  const [expanded, setExpanded] = useState(null);
   console.log({ view: application });
   // Sidebar summary fields
   const sidebarFields = useMemo(
@@ -234,7 +238,7 @@ const ApplicationViewPage = ({
     }),
     [application]
   );
-
+console.log(language)
   return (
     <Grid container spacing={3} className={classes.root}>
       {/* Sidebar */}
@@ -292,10 +296,10 @@ const ApplicationViewPage = ({
           return (
             <Accordion key={key} className={classes.accordion} style={{ background: `${"#B7D4D8"}` }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.sectionTitle}>{formatKey(key)}</Typography>
+                <Typography className={classes.sectionTitle}>{formatKey(key,language)}</Typography>
               </AccordionSummary>
               <AccordionDetails style={{ display: "block", background: `${"white"}` }}>
-                {renderDetails(parsedValue, classes, key)}
+                {renderDetails(parsedValue, classes, key,language)}
                 {fileStates && (
                   <>
                     <Typography variant="h6" style={{ marginTop: 3 }}>
@@ -314,7 +318,7 @@ const ApplicationViewPage = ({
                           onCommentChange={handleCommentChange}
                           onVerify={handleFileVerify}
                           onReject={handleFileReject}
-                          locale={locale}
+                          locale={language}
                         />
                       ))}
                   </>
@@ -341,7 +345,7 @@ const ApplicationViewPage = ({
                   onCommentChange={handleCommentChange}
                   onVerify={handleFileVerify}
                   onReject={handleFileReject}
-                  locale={locale}
+                  locale={language}
                 />
               ))}
           </>
