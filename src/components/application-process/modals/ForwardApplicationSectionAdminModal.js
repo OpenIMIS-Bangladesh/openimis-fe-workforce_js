@@ -85,7 +85,8 @@ const ForwardApplicationSectionAdminModal = ({
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
   const userType = getUserTypeFromRights(userRights);
-  
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
   const officers = useSelector(
   (state) =>
     state.workforce.roleWiseUsers || []
@@ -155,7 +156,7 @@ const handleForward = async () => {
     for (const encodedId of selectedApplicationIds) {
       const updateApplicationData = {
         id: decodeId(encodedId),
-        status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+        status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
       };
 
  await dispatch(
@@ -165,9 +166,10 @@ const handleForward = async () => {
 
       const createApplicationMovementData = {
         applicationId: decodeId(encodedId),
+        applicationFromId: loggedInUserId,
         applicationToId: formData.userId,
-        status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION, 
-        action: "forward_to_cf_section",
+        status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION, 
+        action: "forward_for_verification",
       };
 
       await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));

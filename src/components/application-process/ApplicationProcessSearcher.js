@@ -107,7 +107,7 @@ class ApplicationProcessSearcher extends Component {
   }
 
   fetch = async (prms) => {
-    const { applicationType, userRights, revertedApplication,rejectedApplication, userName, workforceEmployeesFactoryId, dynamicTableTitle } = this.props;
+    const { applicationType, userRights, revertedApplication,rejectedApplication, userName, workforceEmployeesFactoryId, dynamicTableTitle,loggedInUserId } = this.props;
     const { showHistoryFilter } = this.state;
     if(dynamicTableTitle)
     {
@@ -116,11 +116,10 @@ class ApplicationProcessSearcher extends Component {
     this.props.fetchOrganizationEmployee(this.props.modulesManager, [`username:"${userName}"`]);
     await this.fetchApplicant();
     console.log(this.props);
-    if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER) {
+    if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
 
       const defaultStatusFilters = [
-        'statusIn: ["forward_to_cf_section_one"]',
         'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]'
       ];
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -148,6 +147,9 @@ class ApplicationProcessSearcher extends Component {
       } else {
         finalFilters = [...defaultStatusFilters, orderByFilter];
       }
+      if (loggedInUserId) {
+        finalFilters.push(`applicationTo: "${loggedInUserId}"`);
+      }
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
@@ -167,7 +169,7 @@ class ApplicationProcessSearcher extends Component {
         defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
         additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
       } else {
-        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor","verified"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -223,7 +225,7 @@ class ApplicationProcessSearcher extends Component {
     defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
     additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
   } else {
-    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
+    defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor","verified"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
   }
 
   const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -267,7 +269,7 @@ class ApplicationProcessSearcher extends Component {
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_doctor"]', 'orderBy: ["-dateCreated"]']);
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER_TWO) {
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER_TWO || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
 
       const defaultFilters = [
@@ -297,7 +299,9 @@ class ApplicationProcessSearcher extends Component {
       } else {
         finalFilters = [...defaultFilters];
       }
-
+      if (loggedInUserId) {
+        finalFilters.push(`applicationTo: "${loggedInUserId}"`);
+      }
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
 
@@ -1109,13 +1113,13 @@ class ApplicationProcessSearcher extends Component {
                 const decodedId = decodeId(id);
                 const updateApplicationData = {
                   id: decodedId,
-                  status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+                  status: WORKFORCE_STATUS.VERIFIED,
                 };
                 const createApplicationMovementData = {
                   applicationId: decodedId,
-                  status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+                  status: WORKFORCE_STATUS.VERIFIED,
                   note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
-                  action: "forward_to_cf_section",
+                  action: "verified",
                 };
                 await updateApplication(updateApplicationData, "update workforce application");
                 await createApplicationMovement(createApplicationMovementData, "create workforce movement");
