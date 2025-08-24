@@ -339,15 +339,15 @@ const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, p
       .then(res => setIsDependentSaved(true))
       await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0]?.id)}"`])).then((res) => {
         const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-        console.log({ dependentId });
-        if (uploadFile) {
-          dispatch(
-            createWorkforceDocument(
-              { ...uploadFile, workforceApplicationId: decodeId(applicationId[0]?.id), workforceDependentId: decodeId(dependentId) },
-              `Created workforce document`
-            )
-          );
-        }
+        // console.log({ dependentId });
+        // if (uploadFile) {
+        //   dispatch(
+        //     createWorkforceDocument(
+        //       { ...uploadFile, workforceApplicationId: decodeId(applicationId[0]?.id), workforceDependentId: decodeId(dependentId) },
+        //       `Created workforce document`
+        //     )
+        //   );
+        // }
         });
     } else {
       const updateApplicationData = {
