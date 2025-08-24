@@ -275,7 +275,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               <Grid item xs={12} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   id="fatherNameBn"
-                  label="workforce.employee.fathers_name.bn"
+                  label="workforce.employee.fathers_name"
                   value={formData?.workforceEmployee?.fatherNameBn || ""}
                   onChange={(v) => handleChange("fatherNameBn", v)}
                   readOnly={false}
@@ -299,7 +299,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               <Grid item xs={12} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   id="motherNameBn"
-                  label="workforce.employee.mothers_name.bn"
+                  label="workforce.employee.mothers_name"
                   value={formData?.workforceEmployee?.motherNameBn || ""}
                   onChange={(v) => handleChange("motherNameBn", v)}
                   readOnly={false}
@@ -318,7 +318,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
               </Grid> */}
               <Grid item xs={12} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
-                  label="workforce.employee.spouse.name.bn"
+                  label="workforce.employee.spouse.name"
                   value={formData?.workforceEmployee?.spouseNameBn || ""}
                   onChange={(v) => handleChange("spouseNameBn", v)}
                   readOnly={false}
@@ -334,10 +334,10 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   </b>
                 </Typography>
                 <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
-                  <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
+                  <Grid item xs={12} className={clsx(classes.item, classes.overrideReadOnly)}>
                     <TextInput
                       id="spouseEn"
-                      label="workforce.child.name.en"
+                      label="workforce.spouse.name"
                       value={formData?.metadata?.spouseEn || ""}
                       onChange={(v) => setFormData("spouseEn", v, "metadata")}
                       required
@@ -346,7 +346,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                       helperText={errors.spouseEn}
                     />
                   </Grid>
-                  <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
+                  {/* <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                     <TextInput
                       id="spouseBn"
                       label="workforce.child.name.bn"
@@ -357,10 +357,10 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                       error={!!errors.spouseBn}
                       helperText={errors.spouseBn}
                     />
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                     <TextInput
-                      label="workforce.employee.fathers_name.en"
+                      label="workforce.employee.fathers_name"
                       value={formData?.metadata?.fatherNameEn || ""}
                       onChange={(v) => setFormData("spouseFatherNameEn", v, "metadata")}
                       readOnly={false}
@@ -368,7 +368,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   </Grid>
                   <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                     <TextInput
-                      label="workforce.employee.mothers_name.en"
+                      label="workforce.employee.mothers_name"
                       value={formData?.metadata?.motherNameEn || ""}
                       onChange={(v) => setFormData("spouseMotherNameEn", v, "metadata")}
                       readOnly={false}
