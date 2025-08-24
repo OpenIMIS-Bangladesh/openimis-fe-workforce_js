@@ -64,6 +64,28 @@
     "workforce.employee.application.status",
     component.isShowHistory() ? "workforce.version" : "",
   ];
+  export const headerS1DeputyAsstDirector = (component) => [
+    "",
+    "workforce.application.tracking.number",
+    "workforce.employee.application.applicationDate",
+    "workforce.employee.name",
+    "workforce.employee.application.factoryName",
+    "workforce.employee.application.applicationType",
+    "workforce.employee.application.moneyAmount",
+    "workforce.employee.application.status",
+    component.isShowHistory() ? "workforce.version" : "",
+  ];
+  export const headerS2DeputyAsstDirector = (component) => [
+    "",
+    "workforce.application.tracking.number",
+    "workforce.employee.application.applicationDate",
+    "workforce.employee.name",
+    "workforce.employee.application.factoryName",
+    "workforce.employee.application.applicationType",
+    "workforce.employee.application.moneyAmount",
+    "workforce.employee.application.status",
+    component.isShowHistory() ? "workforce.version" : "",
+  ];
   export const headerSectionAdmin = (component) => [
     "",
     "workforce.application.tracking.number",

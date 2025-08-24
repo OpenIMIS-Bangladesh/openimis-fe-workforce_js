@@ -62,6 +62,8 @@ export const WORKFORCE_STATUS = {
   REVERT:"revert",
   FORWARD_TO_ASSOCIATION:"forward_to_association",
   FORWARD_TO_CF_SECTION:"forward_to_cf_section",
+  FORWARD_FOR_VERIFICATION:"forward_for_verification",
+  VERIFIED:"verified",
   FORWARD_TO_CF_SECTION_ONE:"forward_to_cf_section_one",
   FORWARD_TO_CF_SECTION_TWO:"forward_to_cf_section_two",
   FORWARD_TO_DOCTOR:"forward_to_doctor",
@@ -107,6 +109,8 @@ export const STATUS_MAP_BN  = {
   revert: "আবেদন ফেরত পাঠানো হয়েছে",
   forward_to_association: "অ্যাসোসিয়েশনের কাছে প্রেরণ",
   forward_to_cf_section: "সিএফ শাখায় প্রেরণ",
+  forward_for_verification: "যাচাইয়ের জন্য প্রেরণ",
+  verified: "যাচাইকৃত",
   forward_to_cf_section_one: "সিএফ শাখা-১ এ প্রেরণ",
   forward_to_cf_section_two: "সিএফ শাখা-২ এ প্রেরণ",
   forward_to_doctor: "ডক্টরের কাছে প্রেরণ",
@@ -154,6 +158,8 @@ export const STATUS_MAP_EN = {
   forward_to_cf_section: "Forward to CF Section",
   forward_to_cf_section_one: "Forward to CF Section-1",
   forward_to_cf_section_two: "Forward to CF Section-2",
+  forward_for_verification: "Forward For Verification",
+  verified: "Verified",
   forward_to_doctor: "Forward to Doctor",
   selected: "Selected",
   meeting_created: "Meeting Created"
@@ -173,6 +179,8 @@ export const WORKFORCE_USER_TYPE = {
   SECTION_ADMIN: "section_admin",
   SECTION_ADMIN_TWO: "section_admin_two",
   DOCTOR: "doctor",
+  SEC1_DEPUTI_ASST_DIRECTOR: "sec1_deputi_asst_director ",
+  SEC2_DEPUTI_ASST_DIRECTOR: "sec2_deputi_asst_director ",
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
   admin: "Admin",
@@ -187,6 +195,8 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   section_admin: "Section Admin",
   section_admin_two: "Section Admin Two",
   doctor: "Doctor",
+  sec1_deputi_asst_director: "Sec1 Deputi Asst Director",
+  sec2_deputi_asst_director: "Sec2 Deputi Asst Director",
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
   admin: "অ্যাডমিন",
@@ -201,6 +211,8 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   section_admin: "সেকশন-১ অ্যাডমিন",
   section_admin_two: "সেকশন-২ অ্যাডমিন",
   doctor: "ডাক্তার",
+  sec1_deputi_asst_director: "শাখা-১ উপ-সহকারী পরিচালক",
+  sec2_deputi_asst_director: "শাখা-২ উপ-সহকারী পরিচালক",
 
 };
 

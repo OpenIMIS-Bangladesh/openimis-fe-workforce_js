@@ -26,6 +26,7 @@ import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchApplication, updateApplication, createApplicationMovement,fetchWorkforceUserRoleWiseUser } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
+import { getUserTypeFromRights } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -71,8 +72,9 @@ const ForwardApplicationSectionAdminModal = ({
   open,
   onClose,
   selectedApplication,
+  selectedApplicationIds,
   onSubmitForward,
-  organizationEmployee
+  userRights
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -82,10 +84,15 @@ const ForwardApplicationSectionAdminModal = ({
   const [serverResponse, setServerResponse] = useState(null);
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
+  const userType = getUserTypeFromRights(userRights);
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
   const officers = useSelector(
-    (state) => state.workforce.ADMIN_WORKFORCE_ROLE_WISE_USER || []
-  );
-  useEffect(() => {
+  (state) =>
+    state.workforce.roleWiseUsers || []
+);
+console.log("jjjjjjjjj",officers)
+useEffect(() => {
     if (!open) {
       setEditorContent("");
       setSubmitting(false);
@@ -104,14 +111,25 @@ const ForwardApplicationSectionAdminModal = ({
 useEffect(() => {
   if (open) {
     setFormData({});
-   return dispatch(
-      fetchWorkforceUserRoleWiseUser(modulesManager, {
-        roleIds: ["32", "36"],
-        orderBy: "id",
-      })
-    );
+
+    let roleIds = [];
+    if (userType === "section_admin") {
+      roleIds = ["17", "37"];
+    } else if (userType === "section_admin_two") {
+      roleIds = ["35", "38"];
+    }
+
+    if (roleIds.length > 0) {
+      return dispatch(
+        fetchWorkforceUserRoleWiseUser(modulesManager, {
+          roleIds,
+          orderBy: "id",
+        })
+      );
+    }
   }
-}, [open]);
+}, [open, userType]);
+
 
 
 
@@ -126,49 +144,42 @@ useEffect(() => {
       destinationOffice: formData,
     };
 
-    // try {
-    //   const response = await onSubmitForward(payload);
-    //   setServerResponse(response);
-    // } catch {
-    //   setServerResponse({ status: "ERROR", message: "সাবমিশনে ব্যর্থ হয়েছে!" });
-    // } finally {
-    //   setSubmitting(false);
-    // }
-
   };
 
- const handleForward = async () => {
-  const isAssociation = formData?.sendToAssociation;
+const handleForward = async () => {
+  try {
+    if (!formData?.userId) {
+      setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
+      return;
+    }
 
-  const updateApplicationData = {
-    id: decodeId(selectedApplication.id),
-    status: isAssociation
-      ? WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION
-      : WORKFORCE_STATUS.NEW,
-  };
+    for (const encodedId of selectedApplicationIds) {
+      const updateApplicationData = {
+        id: decodeId(encodedId),
+        status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
+      };
 
-  const createApplicationMovementData = {
-    applicationId: decodeId(selectedApplication.id),
-    status: isAssociation
-      ? WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION
-      : WORKFORCE_STATUS.NEW,
-    note: isAssociation
-      ? "সুপারিশসহ অ্যাসোসিয়েশনে পাঠানো হয়েছে"
-      : "আবেদনের প্রমাণপত্র যাচাই করা হয়েছে",
-  };
+ await dispatch(
+      updateApplication(updateApplicationData, `update workforce application`)
+    );
+   
 
-  await dispatch(
-    updateApplication(updateApplicationData, `update workforce application`)
-  );
+      const createApplicationMovementData = {
+        applicationId: decodeId(encodedId),
+        applicationFromId: loggedInUserId,
+        applicationToId: formData.userId,
+        status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION, 
+        action: "forward_for_verification",
+      };
 
-  await dispatch(
-    createApplicationMovement(
-      createApplicationMovementData,
-      `create workforce movement`
-    )
-  );
+      await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
+    }
 
-  setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+  } catch (error) {
+    console.error("Forwarding error:", error);
+    setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
+  }
 };
 
 useEffect(() => {
@@ -179,11 +190,12 @@ useEffect(() => {
     }
   }, [serverResponse]);
 
-  console.log({ aha: selectedApplication });
+
+  console.log({ newwwwwwwww: selectedApplicationIds });
 
   return (
     <Modal open={open} onClose={onClose}>
-      <form className={classes.modalContainer} onSubmit={handleSubmit}>
+      <form className={classes.modalContainer}>
         {/* Close button */}
         <Button onClick={onClose} className={classes.closeButton}>
           ✕
@@ -228,9 +240,6 @@ useEffect(() => {
 
         {/* Form Fields */}
         <Paper className={classes.sectionPaper} elevation={1}>
-
-
-
           <Grid container spacing={3} style={{ marginTop: 3 }}>
             <Typography
               variant="subtitle1"
@@ -245,22 +254,22 @@ useEffect(() => {
             </Typography>
               <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
-               <Select
-                  value={formData?.officerId || ""}
-                  onChange={(e) =>
-                    setFormData({ ...formData, officerId: e.target.value })
-                  }
-                  displayEmpty
-                >
-                  <MenuItem value="">
-                    <em>অফিসার নির্বাচন করুন</em>
+              <Select
+                value={formData?.userId || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, userId: e.target.value })
+                }
+                displayEmpty
+              >
+                <MenuItem value="">
+                  <em>অফিসার নির্বাচন করুন</em>
+                </MenuItem>
+                {officers.map((officer) => (
+                  <MenuItem key={officer.id} value={officer.userId}>
+                    {officer.otherNames}
                   </MenuItem>
-                  {officers.map((officer) => (
-                    <MenuItem key={officer.id} value={officer.userId}>
-                      {officer.otherNames} {officer.lastName}
-                    </MenuItem>
-                  ))}
-                </Select>
+                ))}
+              </Select>
               </FormControl>
             </Grid>
           </Grid>
@@ -276,7 +285,10 @@ useEffect(() => {
             variant="contained"
             color="primary"
             disabled={submitting}
-            onClick={handleForward}
+            onClick={async (e) => {
+            e.preventDefault();   
+            await handleForward(); 
+            }}
           >
             {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"}
           </Button>
