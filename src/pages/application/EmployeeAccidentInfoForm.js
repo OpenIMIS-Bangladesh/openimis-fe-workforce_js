@@ -183,9 +183,13 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
               <>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
+                    id="hospitalName"
                     label={"workforce.employee.accident.info.hospitalName"}
                     value={formData?.employeeAccidentInfo?.hospitalName || ""}
                     onChange={(v) => handleChange("hospitalName", v)}
+                    required
+                    error={!!errors.hospitalName}
+                    helperText={errors.hospitalName}
                   />
                 </Grid>
 
@@ -196,7 +200,9 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                     value={formData?.employeeAccidentInfo?.admitDate || ""}
                     onChange={(v) => handleChange("admitDate", v)}
                     readOnly={false}
+                    required
                   />
+                  {errors.rdmp && <FormHelperText error>{errors.rdmp}</FormHelperText>}
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
@@ -206,7 +212,9 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                     value={formData?.employeeAccidentInfo?.releaseDate || ""}
                     onChange={(v) => handleChange("releaseDate", v)}
                     readOnly={false}
+                    required
                   />
+                  {errors.rdmp && <FormHelperText error>{errors.rdmp}</FormHelperText>}
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
