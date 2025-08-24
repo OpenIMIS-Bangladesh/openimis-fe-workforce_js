@@ -15,6 +15,7 @@ import OtherInfoForm from "../OtherInfoForm";
 import {
   createApplication,
   createEducationInfo,
+  createWorkforceDocument,
   fetchApplicationId,
   fetchInfoIdByClientMutationId,
   fetchWorkforceEmployee,
@@ -77,6 +78,7 @@ const EducationGrantForm = ({  organizationType, selectedApplicationType, applic
     nid: formData?.workforceEmployee?.nid || "",
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
   });
+  const uploadFile = useSelector((state) => state.workforce.uploadFile);
 
   const user_type = getUserType();
   const reduxState = useSelector((state) => state);
@@ -360,6 +362,9 @@ const EducationGrantForm = ({  organizationType, selectedApplicationType, applic
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
+    uploadFile.map((file,index)=>{
+                  dispatch(createWorkforceDocument({...file,workforceApplicationId:safeApplicationId(applicationId)}, `Created workforce document `));
+                })
     const submittedBy =
       user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
     const updateApplicationData = {
@@ -454,7 +459,7 @@ const EducationGrantForm = ({  organizationType, selectedApplicationType, applic
     // },
     {
       label: "workforce.application.steps.upload.documents",
-      content: <EmployeeDetailsForm2 selectedApplicationType={selectedApplicationType} handleChange={handleChange} formData={formData} />,
+      content: <EmployeeDetailsForm2 selectedApplicationType={selectedApplicationType} handleChange={handleChange} formData={formData} formStepNo={"workforceDocument"}/>,
     },
     // ...(applicationForSelf === "no"
     //   ? [

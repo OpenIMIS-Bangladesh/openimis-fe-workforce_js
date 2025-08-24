@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Keys to hide from rendering
  */
-const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent"];
+const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent","code","type"];
 
 /**
  * Convert key into a user-friendly label
@@ -120,18 +120,16 @@ const renderDetails = (data, classes, parentKey = "",language) => {
             </Typography>
             <Divider style={{ marginBottom: 12 }} />
 
-            {/* Scalars first */}
             <Grid container spacing={2}>
               {scalars.map(([key, value]) => (
                 <Grid item xs={6} key={key} className={classes.itemRow}>
                   <Typography variant="body1" className={classes.value}>
-                    <span className={classes.label}>{formatKey(key,language)}:</span> {value}
+                    <span className={classes.label} style={{fontWeight:"bold"}}>{formatKey(key,language)}:</span> {value}
                   </Typography>
                 </Grid>
               ))}
             </Grid>
 
-            {/* Nested objects after */}
             {objects.map(([key, value]) => (
               <Box key={key} mt={2}>
                 <Typography
@@ -179,7 +177,7 @@ const renderDetails = (data, classes, parentKey = "",language) => {
         {scalars.map(([key, value]) => (
           <Grid item xs={6} key={key} className={classes.itemRow}>
             <Typography variant="body1" className={classes.value}>
-              <span className={classes.label}>{formatKey(key,language)}:</span> {value}
+              <span className={classes.label} style={{fontWeight:"bold"}}>{formatKey(key,language)}:</span> {value}
             </Typography>
           </Grid>
         ))}
@@ -228,13 +226,13 @@ const ApplicationViewPage = ({
   // Sidebar summary fields
   const sidebarFields = useMemo(
     () => ({
-      "Application Type": application.applicationType,
-      "Organization Type": application.organizationType,
-      "Tracking Number": application.trackingNumber,
-      Status: application.status,
-      "Submitted By": application.submittedBy,
-      "Grant Amount": application.grantAmount,
-      "Created Date": application?.dateCreated?.split("T")[0] || "—",
+      "ApplicationType": application.applicationType,
+      "OrganizationType": application.organizationType,
+      "TrackingNumber": application.trackingNumber,
+      "Status": application.status,
+      "SubmittedBy": application.submittedBy,
+      "GrantAmount": application.grantAmount,
+      "CreatedDate": application?.dateCreated?.split("T")[0] || "—",
     }),
     [application]
   );
@@ -245,14 +243,14 @@ console.log(language)
       <Grid item xs={12} md={4}>
         <Paper className={classes.sidebar}>
           <Typography variant="h6" gutterBottom style={{ fontWeight: "bold" }}>
-            Application Info
+            <FormattedMessage module="workforce" id="workforce.application.info" />
           </Typography>
           <Divider />
           <Box mt={2}>
             {Object.entries(sidebarFields).map(([label, value]) => (
               <Typography variant="body1" className={classes.value}>
                 <span className={classes.label} style={{ fontWeight: "bold" }}>
-                  {label}:
+                  {formatKey(label,language)}:
                 </span>{" "}
                 {value || "—"}
               </Typography>

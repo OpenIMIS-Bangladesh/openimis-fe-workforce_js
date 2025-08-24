@@ -13,6 +13,7 @@ import ScholarshipApplicationCheckbox from "../FormsComponents/ScholarshipApplic
 import {
   createApplication,
   createEducationInfo,
+  createWorkforceDocument,
   createWorkforceEmployee,
   fetchApplicationId,
   fetchInfoIdByClientMutationId,
@@ -71,6 +72,7 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
     nid: formData?.workforceEmployee?.nid || "",
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
   });
+   const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const user_type = getUserType();
 
   const [formData, setFormData] = useState({
@@ -385,6 +387,10 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
   };
 
   const handleSubmit = () => {
+    uploadFile.map((file,index)=>{
+          dispatch(createWorkforceDocument({...file,workforceApplicationId:safeApplicationId(applicationId)}, `Created workforce document `));
+        })
+
     const submittedBy =
       user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
     const updateApplicationData = {
@@ -505,7 +511,8 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
             handleChange={handleChange}
             formData={formData}
             selectedApplicationType={selectedApplicationType}
-            applicationId={applicationId}
+          
+            formStepNo={"workforceDocument"}
           />
 
       ),

@@ -739,6 +739,7 @@
   "workforce.modal.excel": "Export Excel",
   "workforce.modal.close": "Close",
   "workforce.financialAssistance.error.message":"An application has already been submitted for death",
+  "workforce.application.info":"Application Info",
 
   "workforce.confirm.modal.cancel": "CANCEL"
 

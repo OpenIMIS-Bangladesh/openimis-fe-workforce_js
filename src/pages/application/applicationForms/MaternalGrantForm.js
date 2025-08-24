@@ -11,6 +11,7 @@ import EmployeeDependentForm from "../EmployeeDependentForm";
 import EmployeeMaternalInfoForm from "../EmployeeMaternalInfoForm";
 import {
   createApplication,
+  createWorkforceDocument,
   createWorkforceEmployee,
   fetchApplicationId,
   fetchWorkforceEmployee,
@@ -64,6 +65,7 @@ const MaternalGrantForm = ({  organizationType, selectedApplicationType, applica
   const [showPreview, setShowPreview] = useState(false);
   const reduxState = useSelector((state) => state);
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
+  const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const user_type = getUserType();
 
   const [formData, setFormData] = useState({
@@ -333,6 +335,9 @@ const MaternalGrantForm = ({  organizationType, selectedApplicationType, applica
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
+    uploadFile.map((file,index)=>{
+              dispatch(createWorkforceDocument({...file,workforceApplicationId:safeApplicationId(applicationId)}, `Created workforce document `));
+            })
     const submittedBy =
       user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
     const updateApplicationData = {
@@ -421,7 +426,7 @@ const MaternalGrantForm = ({  organizationType, selectedApplicationType, applica
     {
       label: "workforce.application.steps.upload.documents",
       content: (
-        <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={selectedApplicationType} applicationId={applicationId} />
+        <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={selectedApplicationType}  formStepNo={"workforceDocument"}/>
       ),
     },
   ];

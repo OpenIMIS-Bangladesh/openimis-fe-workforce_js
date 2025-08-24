@@ -399,6 +399,10 @@ const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, p
   };
 
   const handleSubmit = () => {
+    uploadFile.map((file,index)=>{
+                  dispatch(createWorkforceDocument({...file,workforceApplicationId:safeApplicationId(applicationId)}, `Created workforce document `));
+                })
+
     const submittedBy =
     user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
     const updateApplicationData = {
@@ -578,7 +582,7 @@ const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, p
               selectedApplicationType={selectedApplicationType}
               handleChange={handleChange}
               formData={formData}
-              applicationId={applicationId}
+              formStepNo={"workforceDocument"}
             />
 
         )}

@@ -10,6 +10,7 @@ import EmployeeLocationForm from "../EmployeeLocationForm";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import {
   createApplication,
+  createWorkforceDocument,
   createWorkforceEmployee,
   fetchApplicationId,
   fetchWorkforceEmployee,
@@ -77,6 +78,7 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
   });
   const reduxState = useSelector((state) => state);
+  const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const user_type = getUserType();
 
   const [formData, setFormData] = useState({
@@ -326,6 +328,9 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
+     uploadFile.map((file,index)=>{
+                      dispatch(createWorkforceDocument({...file,workforceApplicationId:safeApplicationId(applicationId)}, `Created workforce document `));
+                    })
     const submittedBy =
       user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
     const updateApplicationData = {
@@ -505,8 +510,7 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
               selectedApplicationType={selectedApplicationType}
               handleChange={handleChange}
               formData={formData}
-              applicationId={applicationId}
-         
+              formStepNo={"workforceDocument"}
             />
         )}
         </Box>

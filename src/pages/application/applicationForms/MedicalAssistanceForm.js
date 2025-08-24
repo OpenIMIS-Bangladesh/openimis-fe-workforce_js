@@ -259,7 +259,7 @@ const MedicalAssistanceForm = ({  organizationType, selectedApplicationType, app
         grantAmount: formData?.employeeAccidentInfo.grantAmount,
         employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
-        employeeDependentInfo: JSON.stringify(formData.dependents),
+        employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         status: WORKFORCE_STATUS.DRAFT,
       };
@@ -298,24 +298,7 @@ const MedicalAssistanceForm = ({  organizationType, selectedApplicationType, app
         dispatch(updateApplication(updateApplicationData, `update workforce application `));
       }
     }
-    // else if (nextStep === 4) {
-    //   const fetchedApplicationId = { id: safeApplicationId(applicationId, parsedApplicationData) };
-    //   await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${fetchedApplicationId.id}"`])).then((res) => {
-    //     const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-    //     console.log({ dependentId });
-    //     console.log({ dependentId });
-    //     if (uploadFile) {
-    //       dispatch(
-    //         createWorkforceDocument(
-    //           { ...uploadFile, workforceApplicationId: fetchedApplicationId.id, workforceDependentId: decodeId(dependentId) },
-    //           `Created workforce document`
-    //         )
-    //       );
-    //     }
-    //   });
-    // }
     else {
-      // console.clear();
       console.log(applicationId);
       const updateApplicationData = {
         id: safeApplicationId(applicationId, parsedApplicationData),
@@ -326,7 +309,7 @@ const MedicalAssistanceForm = ({  organizationType, selectedApplicationType, app
         applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
         grantAmount: formData?.employeeAccidentInfo.grantAmount,
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
-        employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+        employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}') || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
         status: WORKFORCE_STATUS.DRAFT,
       };
@@ -366,6 +349,11 @@ const MedicalAssistanceForm = ({  organizationType, selectedApplicationType, app
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
+
+    uploadFile.map((file,index)=>{
+      dispatch(createWorkforceDocument({...file,workforceApplicationId:safeApplicationId(applicationId)}, `Created workforce document `));
+    })
+
     const submittedBy =
       user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
 
@@ -378,7 +366,7 @@ const MedicalAssistanceForm = ({  organizationType, selectedApplicationType, app
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       grantAmount: formData?.employeeAccidentInfo.grantAmount,
       employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
-      employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+      employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}') || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       status: WORKFORCE_STATUS.NEW,
       submittedBy,
@@ -386,9 +374,10 @@ const MedicalAssistanceForm = ({  organizationType, selectedApplicationType, app
 
     console.log("hello i am from submit", updateApplicationData);
     dispatch(updateApplication(updateApplicationData, `update workforce application `));
-    // setShowPreview(true);
-    // setIsSubmitted(true);
+
   };
+
+  console.log({murad:uploadFile})
 
   const steps = [
     {
@@ -462,7 +451,7 @@ const MedicalAssistanceForm = ({  organizationType, selectedApplicationType, app
     {
       label: "workforce.application.steps.upload.documents",
       content: (
-        <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={selectedApplicationType} applicationId={applicationId} />
+        <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={selectedApplicationType}  formStepNo={"workforceDocument"}/>
       ),
     },
   ];

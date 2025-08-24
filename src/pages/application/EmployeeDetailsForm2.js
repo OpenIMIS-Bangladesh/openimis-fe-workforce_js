@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApplicationType, applicationId }) => {
+const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApplicationType, applicationId,formStepNo }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -50,6 +50,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           `applicationFor: "self"`,
           `applicationType:"${selectedApplicationType}"`,
           `organizationType:"${formData.organizationType}"`,
+          `formStepNo:"${formStepNo}"`,
         ])
       );
     } else if (formData.applicationType === "disabilityAssistance") {
@@ -60,6 +61,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationFor: "permanent_disability"`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       } else {
@@ -69,6 +71,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationFor: "temporary_disability"`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       }
@@ -80,6 +83,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationFor: "normal_death"`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       } else {
@@ -88,6 +92,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `orderBy: ["documentTypeNo"]`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       }
@@ -98,6 +103,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationForIn: ["normal_death","normal_death_institutional","normal_death_institutional_on_work"]`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
     } else if (formData.applicationType === "medicalDonation" && formData.applicationForSelf ==="yes"&& formData.organizationType === "blwf") {
@@ -108,6 +114,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             'applicationForIn: ["self","self_institutional"]',
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       }else{
@@ -117,6 +124,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationForIn: ["self","self_non_institutional"]`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       }
@@ -128,6 +136,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationForIn: ["dependent","dependent_institutional"]`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       }else{
@@ -137,6 +146,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationForIn: ["dependent","dependent_non_institutional"]`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       }
@@ -148,6 +158,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationForIn: ["self","self_institutional"]`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       }else{
@@ -157,6 +168,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationForIn: ["self","self_non_institutional"]`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       }
@@ -168,6 +180,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationForIn: ["dependent","dependent_institutional"]`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       }else{
@@ -177,6 +190,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationForIn: ["dependent","dependent_non_institutional"]`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       }
@@ -188,6 +202,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationForIn: ["dependent","dependent_institutional"]`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       }else{
@@ -197,6 +212,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             `applicationForIn: ["dependent","dependent_non_institutional"]`,
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
+            `formStepNo:"${formStepNo}"`,
           ])
         );
       }
@@ -207,10 +223,11 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           `applicationFor: "dependent"`,
           `applicationType:"${selectedApplicationType}"`,
           `organizationType:"${formData.organizationType}"`,
+          `formStepNo:"${formStepNo}"`,
         ])
       );
     }
-  }, []);
+  }, [selectedApplicationType,formData.organizationType,formStepNo,formData.workerType,formData.metadata.disabilityType]);
 
   const isLoading = useSelector((state) => state.workforce[`fetchingDocumentType`]);
   const data = useSelector((state) => state.workforce[`documentType`] ?? []);

@@ -356,6 +356,10 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
+        uploadFile.map((file,index)=>{
+                  dispatch(createWorkforceDocument({...file,workforceApplicationId:safeApplicationId(applicationId)}, `Created workforce document `));
+                })
+
         const submittedBy =
           user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
     
@@ -459,7 +463,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
     },
     {
       label: "workforce.application.steps.upload.documents",
-      content: <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={selectedApplicationType} applicationId={applicationId} />,
+      content: <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={selectedApplicationType}  formStepNo={"workforceDocument"}/>,
     },
   ];
 
