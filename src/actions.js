@@ -102,6 +102,11 @@ export function fetchBranchPick(mm, filters) {
   const payload = formatPageQuery("workforceBanks", filters, projections);
   return graphql(payload, "WORKFORCE_BRANCH_PICKER");
 }
+export function fetchDistrictBanksPick(mm, filters) {
+  const projections = ["id", "nameEn","nameBn", "parent{id},bankCode,routingNumber","districtCode","districtNameEn","districtNameBn"];
+  const payload = formatPageQuery("workforceBanks", filters, projections);
+  return graphql(payload, "WORKFORCE_DISTRICT_BANKS_PICKER");
+}
 
 export function fetchOrganizationUnitsPick(mm, filters) {
   const projections = ["id", "nameEn", "nameBn"];
@@ -748,6 +753,7 @@ export function fetchApplication(mm, filters) {
     "workforceEmployee{" + present_location_projection + permanent_location_projection + ",id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
     "applicantInfo",   
     "organizationType",
+    "dateCreated",
     "applicationType",
     "status",
     "trackingNumber",
@@ -1169,7 +1175,8 @@ export function fetchWorkforceDocument(mm, filters) {
     "holder",
     "note",
     "workforceApplication{id}",
-    "workforceDocumentType{id,nameBn,nameEn,documentType,mandatoryForApplicant}"
+    "workforceDocumentType{id,nameBn,nameEn,documentType,mandatoryForApplicant,formStepNo}",
+
   ];
   const payload = formatPageQueryWithCount(
     "workforceDocuments",

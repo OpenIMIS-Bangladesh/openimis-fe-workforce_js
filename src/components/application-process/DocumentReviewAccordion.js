@@ -16,10 +16,11 @@ const getFileType = (url = "") => {
   return "unsupported";
 };
 
-const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onReject, locale }) => {
+const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, onReject, locale }) => {
   const type = getFileType(file?.url);
   const user_type = getUserType();
   const [numPages, setNumPages] = useState(null);
+  // const [expanded, setExpanded] = useState(null);
 
   const handlePDFLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
@@ -27,7 +28,7 @@ const DocumentReviewAccordion = ({ file, index, onCommentChange, onVerify, onRej
   
 
   return (
-    <Accordion>
+    <Accordion >
       <AccordionSummary expandIcon={<ExpandMoreIcon className="material-icons" />}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>

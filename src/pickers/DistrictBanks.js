@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslations, Autocomplete } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchBanksPick, fetchBranchPick } from "../actions";
+import { fetchBanksPick, fetchBranchPick, fetchDistrictBanksPick } from "../actions";
 
 const DistrictBanks = ({
   id="districtBank",
@@ -25,18 +25,18 @@ const DistrictBanks = ({
 
   useEffect(() => {
     if (bankId) {
-      dispatch(fetchBranchPick(modulesManager, [`type:"branch",bankCode: "${bankId}",orderBy: "districtNameBn", getUnique: "true"`])); // Fetching branches
+      dispatch(fetchDistrictBanksPick(modulesManager, [`type:"branch",bankCode: "${bankId}",orderBy: "districtNameBn", getUnique: "true"`])); // Fetching branches
     }
   }, [bankId]); // Runs only when bankId changes
 
   const isLoading = useSelector(
-    (state) => state.workforce[`fetchingBranchPick`]
+    (state) => state.workforce[`fetchinDistrictBanksPick`]
   );
   const allData = useSelector(
-    (state) => state.workforce[`branchPick`] ?? []
+    (state) => state.workforce[`districtBanksPick`] ?? []
   );
   const error = useSelector(
-    (state) => state.workforce["errorBranchPick"]
+    (state) => state.workforce["errorDistrictBanksPick"]
   );
 
   // Filtering branches that belong to the selected bank

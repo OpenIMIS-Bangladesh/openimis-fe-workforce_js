@@ -3,6 +3,7 @@ import { Grid, Box, Paper, Divider, Checkbox, FormControlLabel, FormHelperText }
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import CustomDetailedLocation from "../../components/application-forms/CustomDetailedLocation";
+import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeLocationForm = ({ handleChange, formData, errors }) => {
+const EmployeeLocationForm = ({ handleChange, formData, errors,applicationId }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -162,6 +163,8 @@ const EmployeeLocationForm = ({ handleChange, formData, errors }) => {
           </Paper>
         </Grid>
       </Grid>
+
+      <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"workforceEmployee"} />
     </Box>
   );
 };

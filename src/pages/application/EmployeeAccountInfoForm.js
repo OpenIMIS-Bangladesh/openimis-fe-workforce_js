@@ -24,6 +24,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDependent, fetchEmployeeDependent } from "../../actions";
 import DistrictBanks from "../../pickers/DistrictBanks";
+import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -104,6 +105,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
         const accountType = account?.accountType || "bank";
 
         return (
+          <>
           <Accordion key={index} expanded={expanded === index} onChange={() => setExpanded(expanded === index ? false : index)}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
@@ -252,6 +254,9 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
               </Grid>
             </AccordionDetails>
           </Accordion>
+          <EmployeeDetailsForm2 handleChange={handleChange} formData={formdata} selectedApplicationType={formdata.applicationType}  formStepNo={"employeeBankInfo"} />
+          </>
+
         );
       })}
       {/* {allowAdd && (
@@ -259,6 +264,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
           <FormattedMessage id="workforce.account.add" defaultMessage="Add Account" />
         </Button>
       )} */}
+
     </Box>
   );
 };

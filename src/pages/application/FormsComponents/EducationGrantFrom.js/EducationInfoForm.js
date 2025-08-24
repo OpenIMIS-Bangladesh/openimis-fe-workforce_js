@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { TextInput, useTranslations, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import BoardPicker from "../../../../pickers/BoardPicker";
 import YearPicker from "../../../../pickers/YearPicker";
+import EmployeeDetailsForm2 from "../../EmployeeDetailsForm2";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -34,6 +35,7 @@ const EducationInfoForm = ({ modulesManager, handleChange, formData, application
   };
 
   return (
+    <>
     <FormControl component="fieldset" className={classes.formSection}>
       <Typography mb={4} style={{ color: "red", textAlign: "center", fontWeight: "bold", fontSize: "small", margin: "15px" }}>
         <FormattedMessage id="workforce.application.header.blwf.education.note" module="workforce" />
@@ -175,6 +177,9 @@ const EducationInfoForm = ({ modulesManager, handleChange, formData, application
         </Grid>
       </Grid>
     </FormControl>
+      <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"educations"} />
+
+    </>
   );
 };
 

@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import clsx from "clsx";
 import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import CustomDetailedLocation from "../../components/application-forms/CustomDetailedLocation";
+import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -316,6 +317,8 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
           </Paper>
         </Grid>
       </Grid>
+      <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"applicantInfo"} />
+
     </Box>
   );
 };
