@@ -57,6 +57,11 @@ function reducer(
     fetchedBranchPick: false,
     branchPick: [],
 
+    fetchingDistrictBanksPick: false,
+    errorDistrictBanksPick: null,
+    fetchedDistrictBanksPick: false,
+    districtBanksPick: [],
+
     ///representative states
     fetchingRepresentatives: false,
     errorRepresentatives: null,
@@ -603,7 +608,7 @@ function reducer(
         branchPick: [],
         errorBranchPick: null,
       };
-    case "WORKFORCE_BRANCH_PICKER_RESP":
+      case "WORKFORCE_BRANCH_PICKER_RESP":
       return {
         ...state,
         fetchinBranchPick: false,
@@ -620,6 +625,31 @@ function reducer(
         errorBranchPick: formatServerError(action.payload),
       };
 
+ case "WORKFORCE_DISTRICT_BANKS_PICKER_RESP":
+      return {
+        ...state,
+        fetchinDistrictBanksPick: false,
+        fetcheDistrictBanksPick: true,
+        districtBanksPick: parseData(
+          action.payload.data.workforceBanks
+        ),
+        errorDistrictBanksPick: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_DISTRICT_BANKS_PICKER_ERR":
+      return {
+        ...state,
+        fetching: false,
+        errorDistrictBanksPick: formatServerError(action.payload),
+      };
+    case "WORKFORCE_DISTRICT_BANKS_PICKER_REQ":
+      return {
+        ...state,
+        fetchingDistrictBanksPick: true,
+        fetchedDistrictBanksPick: false,
+        districtBanksPick: [],
+        errorDistrictBanksPick: null,
+      };
+    
 
     case "WORKFORCE_ORGANIZATION_UNITS_PICKER_REQ":
       return {

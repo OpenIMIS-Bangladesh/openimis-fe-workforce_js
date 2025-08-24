@@ -102,6 +102,11 @@ export function fetchBranchPick(mm, filters) {
   const payload = formatPageQuery("workforceBanks", filters, projections);
   return graphql(payload, "WORKFORCE_BRANCH_PICKER");
 }
+export function fetchDistrictBanksPick(mm, filters) {
+  const projections = ["id", "nameEn","nameBn", "parent{id},bankCode,routingNumber","districtCode","districtNameEn","districtNameBn"];
+  const payload = formatPageQuery("workforceBanks", filters, projections);
+  return graphql(payload, "WORKFORCE_DISTRICT_BANKS_PICKER");
+}
 
 export function fetchOrganizationUnitsPick(mm, filters) {
   const projections = ["id", "nameEn", "nameBn"];
