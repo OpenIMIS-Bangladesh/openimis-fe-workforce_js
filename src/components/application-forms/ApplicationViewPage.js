@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import FileUploader from "../../pickers/FileUploader";
 import DocumentReviewAccordion from "../application-process/DocumentReviewAccordion";
 import { banglaLabels } from "../../constants";
+import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,8 +63,12 @@ const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent","code"
 /**
  * Convert key into a user-friendly label
  */
-const formatKey = (key,language ="en") =>{
+const formatKey = (key) =>{
+  const language = useSelector(state=>state.core?.user?.i_user?.language)
   const cleanKey = key.split(".").pop();
+  // console.clear()
+  console.log(language)
+  console.log(key)
     if (["fr", "bangla", "bd"].includes(language) && banglaLabels[cleanKey]) {
       return banglaLabels[cleanKey];
     }
