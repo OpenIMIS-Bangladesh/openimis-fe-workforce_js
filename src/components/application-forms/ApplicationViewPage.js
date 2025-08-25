@@ -63,8 +63,8 @@ const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent","code"
 /**
  * Convert key into a user-friendly label
  */
-const formatKey = (key) =>{
-  const language = useSelector(state=>state.core?.user?.i_user?.language)
+const formatKey = (key,language) =>{
+  
   const cleanKey = key.split(".").pop();
   // console.clear()
   console.log(language)
@@ -204,7 +204,7 @@ const renderDetails = (data, classes, parentKey = "",language) => {
               >
                 {formatKey(key,language)}
               </Typography>
-              {renderDetails(parsedValue, classes, key)}
+              {renderDetails(parsedValue, classes, key,language)}
             </Grid>
           );
         })}
@@ -217,7 +217,7 @@ const renderDetails = (data, classes, parentKey = "",language) => {
 
 const ApplicationViewPage = ({
   application,
-  language,
+  // language,
   filteredDocumentTypes,
   applicationUuid,
   onFileChange,
@@ -227,6 +227,7 @@ const ApplicationViewPage = ({
   handleFileReject,
 }) => {
   const classes = useStyles();
+  const language = useSelector(state=>state.core?.user?.i_user?.language)
   console.log({ view: application });
   // Sidebar summary fields
   const sidebarFields = useMemo(

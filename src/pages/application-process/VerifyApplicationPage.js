@@ -386,7 +386,7 @@ const mapStateToProps = (state, props) => ({
   documents: state.workforce.document,
   documentType: state.workforce.documentType,
   user_rights: state.core?.user?.i_user?.rights || {},
-  locale: state.core?.user?.i_user?.language || "en",
+  locale: state.core?.user?.i_user?.language ,
 });
 
 const mapDispatchToProps = (dispatch) =>
