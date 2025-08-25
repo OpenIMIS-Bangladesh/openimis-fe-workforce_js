@@ -890,10 +890,10 @@ class ApplicationProcessSearcher extends Component {
       ? headerChecker(this)
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
       ? headerCheckerTwo(this)
-      : userType === WORKFORCE_USER_TYPE.headerS1DeputyAsstDirector
-      ? headerCheckerTwo(this)
-      : userType === WORKFORCE_USER_TYPE.headerS2DeputyAsstDirector
-      ? headerCheckerTwo(this)
+      : userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR
+      ? headerS1DeputyAsstDirector(this)
+      : userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
+      ? headerS2DeputyAsstDirector(this)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
       ? headerSectionAdmin(this)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
@@ -921,10 +921,10 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
       ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
-      : userType === WORKFORCE_USER_TYPE.itemFormattersS1DeputyAsstDirector
-      ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
-      : userType === WORKFORCE_USER_TYPE.itemFormattersS2DeputyAsstDirector
-      ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      : userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR
+      ? itemFormattersS1DeputyAsstDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      : userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
+      ? itemFormattersS2DeputyAsstDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
       ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
