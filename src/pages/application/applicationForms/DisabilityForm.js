@@ -274,6 +274,7 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
       };
       console.log({ updateApplicationData });
       dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
@@ -287,6 +288,7 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
         grantAmount: formData?.employeeAccidentInfo.grantAmount,
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
       };
       if (!parsedApplicationData) {
         const applicationMutation = formatMutation("createWorkforceApplication", formatApplicationeGQL(createApplicationData), `Created application`);
@@ -317,6 +319,8 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
     }
@@ -348,6 +352,8 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),
       status: WORKFORCE_STATUS.NEW,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+
       submittedBy,
     };
 

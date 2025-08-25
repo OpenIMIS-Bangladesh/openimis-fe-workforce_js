@@ -264,6 +264,8 @@ const MaternalGrantForm = ({  organizationType, selectedApplicationType, applica
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+
       };
 
       console.log({ createApplicationData });
@@ -298,6 +300,8 @@ const MaternalGrantForm = ({  organizationType, selectedApplicationType, applica
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+        
       };
 
       console.log("i am from accident info", updateApplicationData);
@@ -353,7 +357,7 @@ const MaternalGrantForm = ({  organizationType, selectedApplicationType, applica
       employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),
-
+      applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
       status: WORKFORCE_STATUS.NEW,
       submittedBy,
     };

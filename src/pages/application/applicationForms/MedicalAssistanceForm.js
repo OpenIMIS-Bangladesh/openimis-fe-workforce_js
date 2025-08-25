@@ -262,6 +262,7 @@ const MedicalAssistanceForm = ({  organizationType, selectedApplicationType, app
         employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         status: WORKFORCE_STATUS.DRAFT,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
       };
       console.log({ createApplicationData });
       if (!parsedApplicationData) {
@@ -312,6 +313,7 @@ const MedicalAssistanceForm = ({  organizationType, selectedApplicationType, app
         employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}') || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
         status: WORKFORCE_STATUS.DRAFT,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
       };
 
       console.log("i am from accident info", updateApplicationData);
@@ -369,6 +371,7 @@ const MedicalAssistanceForm = ({  organizationType, selectedApplicationType, app
       employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}') || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, '').replace(/"{/g, '{').replace(/}"/g, '}'),
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       status: WORKFORCE_STATUS.NEW,
+      applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
       submittedBy,
     };
 
