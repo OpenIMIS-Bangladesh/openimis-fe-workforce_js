@@ -28,6 +28,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { fetchSummaryApplications } from "../../actions";
 import RestorePageIcon from '@material-ui/icons/RestorePage';
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -111,6 +112,13 @@ const SidebarMenu = [
     icon: <HourglassFullTwoToneIcon />,
   },
   {
+    id: "forwardedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.forwarded" /> 
+    ),
+    icon: <ArrowForwardIcon />,
+  },
+  {
       id: "revertedApplication",
       text: (
         <FormattedMessage module="workforce" id="workforce.application.reverted" />
@@ -183,6 +191,28 @@ const RevertApplication = () => {
 )}
 
 
+const ForwardedApplications = () => {
+  const classes = useStyles()
+  return (
+    <>
+      <ApplicationProcessSearcher
+        forwardedApplications={true}
+        disableButtons={1}
+        dynamicTableTitle= {"workforce.application.forwarded"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
+
 const Others = () => (
   <Typography variant="h5">
     <FormattedMessage module="workforce" id="workforce.others" />
@@ -207,6 +237,8 @@ const BKMEAAssociationDashboard = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
+      case "forwardedApplications":
+        return <ForwardedApplications />;
       case "revertedApplication":
         return <RevertApplication />;
       default:
