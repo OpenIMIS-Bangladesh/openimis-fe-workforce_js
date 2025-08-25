@@ -82,7 +82,7 @@ const RevertApplicationModal = ({
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
-
+  const userId = useSelector((state) => state.core?.user?.i_user?.id);
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
@@ -136,6 +136,10 @@ const RevertApplicationModal = ({
         status: WORKFORCE_STATUS.REVERT,
         note: "আবেদন ফেরত পাঠানো হয়েছে",
         revertNote: editorContent,
+        isReverted: true,
+        applicationFromId: userId,
+        applicationToId: decodeId(selectedApplication?.workforceEmployee?.relatedUser?.id),
+
       };
       await dispatch(
         updateApplication(updateApplicationData, `update workforce application`)
@@ -174,12 +178,12 @@ const RevertApplicationModal = ({
   useEffect(() => {
     if (serverResponse?.status === "SUCCESS") {
       setTimeout(() => {
-        window.location.reload();
+       
       }, 2000);
     }
   }, [serverResponse]);
 
-  console.log({ aha: selectedApplication });
+  console.log({ "revert application": selectedApplication });
 
   return (
     <Modal open={open} onClose={onClose}>
