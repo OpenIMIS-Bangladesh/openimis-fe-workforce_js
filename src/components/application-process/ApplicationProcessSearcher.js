@@ -1613,7 +1613,7 @@ class ApplicationProcessSearcher extends Component {
             </IconButton>
             </Box>
           ) : null}
-          {userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO ? (
+          {userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR? (
             <Box
               style={{
                 marginTop: 10,
@@ -1825,7 +1825,7 @@ class ApplicationProcessSearcher extends Component {
                <ForwardApplicationSectionAdminModal
                   open={forwardModalOpenSA}
                   onClose={this.handleCloseForwardModalForSectionAdmin}
-                  selectedApplication={selectedApplication}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
                 />
