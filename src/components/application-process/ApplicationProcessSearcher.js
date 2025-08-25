@@ -168,7 +168,8 @@ class ApplicationProcessSearcher extends Component {
       } else if (summaryId) {
         defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
         additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
-      } else {
+      }
+      else {
         defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor","verified"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
       }
 
@@ -418,6 +419,7 @@ class ApplicationProcessSearcher extends Component {
       ]);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
       this.setState({ displayVersion: showHistoryFilter });
+      const isApproved = this.props.isApproved ? this.props.isApproved : false;
       if (revertedApplication) {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
@@ -434,7 +436,14 @@ class ApplicationProcessSearcher extends Component {
           [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, `statusIn: ["draft"], orderBy: ["-dateCreated"]`]
           // prms
         );
-      } else {
+      } else if (isApproved) {
+        console.log('ekhane dhukse');
+        this.props.fetchApplicationsSummary(
+          this.props.modulesManager,
+          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, 'statusIn: ["approved_by_dg"]', 'orderBy: ["-dateCreated"]']
+          // prms
+        );
+      }else {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
           [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, 'statusIn: ["new"]', 'orderBy: ["-dateCreated"]']
@@ -1475,6 +1484,7 @@ class ApplicationProcessSearcher extends Component {
       userRights,
       userName,
       organizationEmployee,
+      isApproved
     } = this.props;
 
     const count = applicationsPageInfo.totalCount;

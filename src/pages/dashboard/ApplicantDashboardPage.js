@@ -22,6 +22,7 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import RestorePageIcon from '@material-ui/icons/RestorePage';
 import CancelIcon from '@material-ui/icons/Cancel';
 import DraftsIcon from '@material-ui/icons/Drafts';
+import CheckIcon from '@material-ui/icons/Check';
 import MultiStepApplyForm from "../application/MultiStepApplyForm";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
@@ -119,6 +120,13 @@ const SidebarMenu = [
       <FormattedMessage module="workforce" id="workforce.application.status" />
     ),
     icon: <AssignmentIcon />,
+  },
+  {
+    id: "approvedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.approve.applications" />
+    ),
+    icon: <CheckIcon />,
   },
 
 
@@ -304,6 +312,30 @@ const RejectApplication = () => {
   )
 }
 
+
+const ApprovedApplications = () => {
+  const classes = useStyles();
+  return (
+      <>
+        <ApplicationProcessSearcher
+          disableButtons={1}
+          isApproved={true}
+        />
+
+        {/* Pagination */}
+        <div className={classes.pagination}>
+          <Button>
+            <FormattedMessage module="workforce" id="workforce.back" />
+          </Button>
+          <Button>
+            <FormattedMessage module="workforce" id="workforce.next" />
+          </Button>
+        </div>
+      </>
+    )
+};
+
+
 const ApplicantDashboard = () => {
   const classes = useStyles();
   const [selectedMenu, setSelectedMenu] = useState(() => {
@@ -329,6 +361,8 @@ const ApplicantDashboard = () => {
         return <ApplicationStatus />;
       case "draftApplications":
         return <DraftApplications />;
+      case "approvedApplications":
+        return <ApprovedApplications/>;
       default:
         return <FiledApplications />;
     }
