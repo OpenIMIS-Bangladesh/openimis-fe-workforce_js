@@ -327,7 +327,7 @@ export function formatApplicationMovementGQL(application) {
   ${application?.deadlineDate ? `deadlineDate: "${(application?.deadlineDate)}"` : ""}
   ${application?.status ? `status: "${(application?.status)}"` : ""}
   ${application?.revertNote ? `revertNote: "${(application?.revertNote)}"` : ""}
-  ${application?.isReverted ? `isReverted: "${(application?.isReverted)}"` : ""}
+  ${application?.isReverted !== undefined ? `isReverted: ${application?.isReverted}` : ""}
   ${application?.revertedById ? `revertedById: "${(application?.revertedById)}"` : ""}
   ${application?.revertingDate ? `revertingDate: "${(application?.revertingDate)}"` : ""}
   ${application?.applicationFromId ? `applicationFromId: "${(application?.applicationFromId)}"` : ""}

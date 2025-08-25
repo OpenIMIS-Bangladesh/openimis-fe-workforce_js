@@ -429,7 +429,7 @@ class ApplicationProcessSearcher extends Component {
       if (revertedApplication) {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
-          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, `statusIn: ["revert","revert_to_applicant","revert_to_checker"], orderBy: ["-dateCreated"]`]
+          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, `statusIn: ["revert","revert_to_applicant"], orderBy: ["-dateCreated"]`]
         );
       } else if (rejectedApplication) {
         this.props.fetchApplicationsSummary(
@@ -908,6 +908,8 @@ class ApplicationProcessSearcher extends Component {
       ? headerDoctor(this)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION
       ? headerAssociation(this)
+      : userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+      ? headerAssociation(this)
       : userType === WORKFORCE_USER_TYPE.APPROVER
       ? headerApprover(this)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
@@ -938,6 +940,8 @@ class ApplicationProcessSearcher extends Component {
       : userType === WORKFORCE_USER_TYPE.DOCTOR
       ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION
+      ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      : userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
       ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.APPROVER
       ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
@@ -1651,7 +1655,7 @@ class ApplicationProcessSearcher extends Component {
             </IconButton>
           </Box>
         ) : null}
-        {userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ? (
+        {userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ? (
           <Box
             style={{
               marginTop: 10,
@@ -1784,7 +1788,7 @@ class ApplicationProcessSearcher extends Component {
                 />
               </>
             );
-          } else if (userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION) {
+          } else if (userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION) {
             return (
               <>
                 <RevertApplicationModal
