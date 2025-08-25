@@ -29,7 +29,7 @@ import { bindActionCreators } from "redux";
 import { fetchApplication, fetchDocumentType, fetchWorkforceDocument, updateWorkforceDocument } from "../../actions";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import FileUploader from "../../pickers/FileUploader";
-import { getUserTypeFromRights } from "../../utils/utils";
+import { getUserTypeFromRights, tryParse } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
 
@@ -132,8 +132,22 @@ class VerifyApplicationPage extends Component {
     const applicationType = application?.applicationType;
     const organizationType = application?.organizationType;
     const applicationFor = application?.applicationFor
-    if (applicationType && organizationType && applicationFor) {
-      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor:"${applicationFor}"`]);
+      const applicationForType= tryParse(application?.metadata)
+      const doubleParseApplicationFor = tryParse(applicationForType)
+    if (applicationType && organizationType && applicationFor !== "") {
+      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"${applicationFor}"`]);
+    }else if(applicationType==="disabilityAssistance"&& organizationType && applicationFor === "" ){
+      console.log({hello:doubleParseApplicationFor})
+      doubleParseApplicationFor.disabilityType ==="partial"?
+      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"temporary_disability"`]):
+      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"temporary_disability"`])
+    }else if(applicationType==="financialAssistance"&& organizationType && applicationFor === ""){
+      console.log({hello:doubleParseApplicationFor})
+      doubleParseApplicationFor.deathType ==="normalDeath"?
+      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"normal_death"`]):
+      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"accidental_death"`])
+    }else {
+      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`]);
     }
     this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${applicationUuid}"`]);
   }

@@ -70,7 +70,7 @@ export function getUserTypeFromRights(user_rights) {
   return user_type;
 }
 
-const safeParse = (str) => {
+export const safeParse = (str) => {
   try {
     if (!str) return null;
     const once = JSON.parse(str);     // first parse
@@ -79,6 +79,20 @@ const safeParse = (str) => {
     console.warn("Parsing failed for:", str);
     return null;
   }
+};
+
+export const tryParse = (value) => {
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      if (typeof parsed === "object" && parsed !== null) {
+        return parsed;
+      }
+    } catch {
+      return value;
+    }
+  }
+  return value;
 };
 
 export const getParsedApplication = (modulesManager, filters) => {

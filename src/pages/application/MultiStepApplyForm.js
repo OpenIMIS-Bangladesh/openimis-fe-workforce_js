@@ -63,7 +63,7 @@ const MultiStepApplyForm = () => {
   const dispatch = useDispatch();
   const [parsedApplicationData, setParsedApplicationData] = useState();
   const [showForm, setShowForm] = useState(false);
-  const [applicationForSelf, setApplicationForSelf] = useState("yes");
+  const [applicationForSelf, setApplicationForSelf] = useState("");
   const [organizationType, setOrganizationType] = useState("" || parsedApplicationData?.organizationType);
   const [selectedApplicationType, setSelectedApplicationType] = useState("" || parsedApplicationData?.applicationType);
   const [isApplicationForSelfSelected, setIsApplicationForSelfSelected] = useState(true);
