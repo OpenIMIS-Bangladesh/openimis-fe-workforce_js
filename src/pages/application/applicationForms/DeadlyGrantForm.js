@@ -27,7 +27,7 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReason from "../FormsComponents/FinancialAssistance/ApplicationReason";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getInfoId, safeApplicationId } from "../../../utils/utils";
+import { getInfoId, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -341,20 +341,20 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application`))
       .then(res => setIsDependentSaved(true))
-      if (uploadFile) {
-        await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0]?.id)}"`])).then((res) => {
-          const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
+      // if (uploadFile) {
+      //   await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0]?.id)}"`])).then((res) => {
+      //     const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
 
-          console.log({ dependentId });
+      //     console.log({ dependentId });
 
-          dispatch(
-            createWorkforceDocument(
-              { ...uploadFile, workforceApplicationId: decodeId(applicationId[0]?.id), workforceDependentId: decodeId(dependentId) },
-              `Created workforce document`
-            )
-          );
-        });
-      }
+      //     dispatch(
+      //       createWorkforceDocument(
+      //         { ...uploadFile, workforceApplicationId: decodeId(applicationId[0]?.id), workforceDependentId: decodeId(dependentId) },
+      //         `Created workforce document`
+      //       )
+      //     );
+      //   });
+      // }
     } else {
       const updateApplicationData = {
         // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,

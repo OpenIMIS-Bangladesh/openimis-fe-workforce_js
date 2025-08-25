@@ -10,6 +10,7 @@ import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPick
 import CompanyPicker from "../../pickers/CompanyPicker";
 import FactoryPicker from "../../pickers/FactoryPicker";
 import CountryPicker from "../../pickers/CountryPicker";
+import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 // import CustomDateTimePicker from "../../pickers/CustomDatePicker";
 
 const useStyles = makeStyles((theme) => ({
@@ -407,6 +408,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
           </Paper>
         </Grid>
       </Grid>
+      <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"workforceEmployee"} />
     </Box>
   );
 };

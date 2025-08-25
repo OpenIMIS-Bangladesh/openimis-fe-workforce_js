@@ -163,8 +163,6 @@ const EmployeeLocationForm = ({ handleChange, formData, errors,applicationId }) 
           </Paper>
         </Grid>
       </Grid>
-
-      <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"workforceEmployee"} />
     </Box>
   );
 };

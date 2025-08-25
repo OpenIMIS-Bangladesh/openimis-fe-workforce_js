@@ -44,10 +44,11 @@ const DistrictBanks = ({
   //   return allData.filter((branch) => branch?.parent?.id === bankId); // Assuming `parentBankId` links branches to banks
   // }, [allData, bankId]);
 
-  const selectedOption = useMemo(
-    () => allData.find((option) => option.id === value) || null,
-    [value, allData]
-  );
+  // const selectedOption = useMemo(
+  //   () => allData.find((option) => option.id === value) || null,
+  //   [value, allData]
+  // );
+const selectedOption = value || null;
 
   console.log({allData})
   const locale = useSelector((state) => state.core?.user?.i_user?.language || "en");

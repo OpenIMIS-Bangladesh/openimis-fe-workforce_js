@@ -14,7 +14,7 @@ import {
   TextField,
   MenuItem,
   Select,
-  InputLabel,
+  FormHelperText,
   FormGroup,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicationType,required,errors }) => {
+const EmployeeMaternalInfoForm = ({ handleChange, formData, setFormData,applicationType,required,errors }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
@@ -85,7 +85,9 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                 value={formData?.employeeAccidentInfo?.diagnosisDate || ""}
                 onChange={(v) => handleChange("diagnosisDate", v)}
                 readOnly={false}
+                required={formData?.applicationForSelf ==="yes"? true:false}
               />
+              {errors.rdmp && <FormHelperText error>{errors.rdmp}</FormHelperText>}
             </Grid>
 
             {/* <Grid item xs={12} className={classes.item}>
@@ -111,7 +113,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                     label={"workforce.employee.accident.info.hospitalName"}
                     value={formData?.employeeAccidentInfo?.hospitalName || ""}
                     onChange={(v) => handleChange("hospitalName", v)}
-                    required
+                    required={formData?.applicationForSelf ==="yes"? false:true}
                   />
                 </Grid>
 
@@ -122,8 +124,9 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                     value={formData?.employeeAccidentInfo?.admitDate || ""}
                     onChange={(v) => handleChange("admitDate", v)}
                     readOnly={false}
-                    required
+                    required={formData?.applicationForSelf ==="yes"? false:true}
                   />
+                  {errors.rdmp && <FormHelperText error>{errors.rdmp}</FormHelperText>}
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
@@ -133,8 +136,9 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
                     value={formData?.employeeAccidentInfo?.releaseDate || ""}
                     onChange={(v) => handleChange("releaseDate", v)}
                     readOnly={false}
-                    required
+                    required={formData?.applicationForSelf ==="yes"? false:true}
                   />
+                  {errors.rdmp && <FormHelperText error>{errors.rdmp}</FormHelperText>}
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
@@ -156,4 +160,4 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData,applicat
   );
 };
 
-export default EmployeeAccidentInfoForm;
+export default EmployeeMaternalInfoForm;
