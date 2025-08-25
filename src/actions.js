@@ -522,6 +522,7 @@ export function fetchWorkforceEmployeesSummary(mm, filters) {
     "employeeType",
     "lifeStatus",
     "deathDate",
+    "relatedUser{id}",
     present_location_projection,
     permanent_location_projection,
   ];
@@ -691,7 +692,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "workforceEmployee{" +
     present_location_projection +
     permanent_location_projection +
-    "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
+    "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate,relatedUser{id}}",
     "applicantInfo",   
     "dateCreated",
     "organizationType",
@@ -750,7 +751,7 @@ export function fetchApplication(mm, filters) {
 
   const projections = [
     "id",
-    "workforceEmployee{" + present_location_projection + permanent_location_projection + ",id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate}",
+    "workforceEmployee{" + present_location_projection + permanent_location_projection + ",id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate,relatedUser{id}}",
     "applicantInfo",   
     "organizationType",
     "dateCreated",
@@ -967,6 +968,7 @@ export function fetchWorkforceEmployee(mm, filters) {
     "employeeType",
     "lifeStatus",
     "deathDate",
+    "relatedUser{id}",
     present_location_projection,
     permanent_location_projection,
   ];
