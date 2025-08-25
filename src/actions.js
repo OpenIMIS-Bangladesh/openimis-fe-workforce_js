@@ -712,7 +712,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "grantAmount",
     "submittedBy",
     "associationType",
-
+    "applicationFor"
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
@@ -770,6 +770,7 @@ export function fetchApplication(mm, filters) {
     "grantAmount",
     "submittedBy",
     "associationType",
+    "applicationFor"
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",

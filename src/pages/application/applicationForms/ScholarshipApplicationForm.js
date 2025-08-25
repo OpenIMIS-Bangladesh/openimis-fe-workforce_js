@@ -274,6 +274,7 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
         employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
       };
 
       console.log({ updateApplicationData });
@@ -293,6 +294,7 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
         employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
       };
       if (!parsedApplicationData) {
         const applicationMutation = await formatMutation(
@@ -352,6 +354,7 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
         employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo) || JSON.stringify(parsedApplicationData?.employeeChildrenInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
     }
@@ -406,6 +409,7 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),
       status: WORKFORCE_STATUS.NEW,
+      applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
       submittedBy,
     };
     console.log({ updateApplicationData });

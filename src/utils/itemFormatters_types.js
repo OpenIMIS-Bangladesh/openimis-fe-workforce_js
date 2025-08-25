@@ -1012,7 +1012,7 @@ export const itemFormattersAssociation = (
 ) => {
   const formatters = [
     (application) =>
-      application?.workforceEmployee ? (
+      application?.workforceEmployee && component.props.disableButtons!==1 ? (
         <Checkbox
           checked={component.state.selectedApplicationIds.includes(
             application?.id
@@ -1063,35 +1063,40 @@ export const itemFormattersAssociation = (
         </IconButton>
       </Tooltip>
 
-      <Tooltip title="Verify">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.verify",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <VerifiedUserIcon />
-        </IconButton>
-      </Tooltip>
-      {!component.props.revertedApplication && (
-        <Tooltip title="Revert">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              component.handleOpenRevertModal(application);
-              component.setState({ revertByChecker: true });
-            }}
-          >
-            <UndoIcon />
-          </IconButton>
-        </Tooltip>
+      {component.props.disableButtons!==1 && (
+        <>
+          <Tooltip title="Verify">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => {
+                historyPush(
+                  modulesManager,
+                  history,
+                  "workforce.route.applications.application.verify",
+                  [decodeId(application?.id)],
+                  false
+                );
+              }}
+            >
+              <VerifiedUserIcon />
+            </IconButton>
+          </Tooltip>
+          {!component.props.revertedApplication && (
+            <Tooltip title="Revert">
+              <IconButton
+                disabled={application?.isHistory}
+                onClick={() => {
+                  component.handleOpenRevertModal(application);
+                  component.setState({ revertByChecker: true });
+                }}
+              >
+                <UndoIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+        </>
       )}
+
     </div>
   ));
   return formatters;

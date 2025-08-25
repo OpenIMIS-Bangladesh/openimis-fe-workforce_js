@@ -131,8 +131,9 @@ class VerifyApplicationPage extends Component {
     const { application } = this.props;
     const applicationType = application?.applicationType;
     const organizationType = application?.organizationType;
-    if (applicationType && organizationType) {
-      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`]);
+    const applicationFor = application?.applicationFor
+    if (applicationType && organizationType && applicationFor) {
+      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor:"${applicationFor}"`]);
     }
     this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${applicationUuid}"`]);
   }

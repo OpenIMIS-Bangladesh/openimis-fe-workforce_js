@@ -271,6 +271,8 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData?.metadata),
         status: WORKFORCE_STATUS.DRAFT,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+
       };
       console.log({ createApplicationData });
       if (!parsedApplicationData) {
@@ -319,6 +321,8 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData?.metadata),
         status: WORKFORCE_STATUS.DRAFT,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+        
       };
 
       console.log("i am from accident info", updateApplicationData);
@@ -376,6 +380,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
           employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
           metadata: JSON.stringify(formData?.metadata),
           status: WORKFORCE_STATUS.NEW,
+        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
           submittedBy,
         };
         console.log("hello i am from submit", updateApplicationData);

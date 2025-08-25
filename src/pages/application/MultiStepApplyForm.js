@@ -63,7 +63,7 @@ const MultiStepApplyForm = () => {
   const dispatch = useDispatch();
   const [parsedApplicationData, setParsedApplicationData] = useState();
   const [showForm, setShowForm] = useState(false);
-  const [applicationForSelf, setApplicationForSelf] = useState("");
+  const [applicationForSelf, setApplicationForSelf] = useState("yes");
   const [organizationType, setOrganizationType] = useState("" || parsedApplicationData?.organizationType);
   const [selectedApplicationType, setSelectedApplicationType] = useState("" || parsedApplicationData?.applicationType);
   const [isApplicationForSelfSelected, setIsApplicationForSelfSelected] = useState(true);
@@ -172,7 +172,7 @@ const MultiStepApplyForm = () => {
                 <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
-            {applicationForSelf === "" ? (
+            {applicationForSelf === "" || isApplicationForSelfSelected ?  (
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
                   <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
@@ -393,7 +393,7 @@ const MultiStepApplyForm = () => {
                 <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
-            {applicationForSelf === "" ? (
+            {applicationForSelf === ""|| isApplicationForSelfSelected  ? (
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
                   <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
