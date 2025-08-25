@@ -66,9 +66,6 @@ const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent","code"
 const formatKey = (key,language) =>{
   
   const cleanKey = key.split(".").pop();
-  // console.clear()
-  console.log(language)
-  console.log(key)
     if (["fr", "bangla", "bd"].includes(language) && banglaLabels[cleanKey]) {
       return banglaLabels[cleanKey];
     }
