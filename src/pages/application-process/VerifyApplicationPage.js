@@ -132,7 +132,7 @@ class VerifyApplicationPage extends Component {
     const applicationType = application?.applicationType;
     const organizationType = application?.organizationType;
     if (applicationType && organizationType) {
-      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`]);
+      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`]);
     }
     this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${applicationUuid}"`]);
   }
@@ -259,7 +259,7 @@ class VerifyApplicationPage extends Component {
     });
 
 
-    // console.log("filteredDocumentTypes", filteredDocumentTypes);
+    console.log("filteredDocumentTypes", filteredDocumentTypes);
     console.log({ fileStates });
     return (
       <Grid container spacing={3} className={classes.rootGrid}>
@@ -313,7 +313,7 @@ class VerifyApplicationPage extends Component {
               </Typography>
             </CardContent>
           </Card> */}
-          {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? (
+          {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes ? (
             // <Card variant="outlined" mt={2} className={classes.cardSpacing}>
             //   <CardContent>
             //     <Typography variant="h6">
@@ -386,7 +386,7 @@ const mapStateToProps = (state, props) => ({
   documents: state.workforce.document,
   documentType: state.workforce.documentType,
   user_rights: state.core?.user?.i_user?.rights || {},
-  locale: state.core?.user?.i_user?.language || "en",
+  locale: state.core?.user?.i_user?.language ,
 });
 
 const mapDispatchToProps = (dispatch) =>

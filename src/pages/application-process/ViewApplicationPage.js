@@ -203,7 +203,7 @@ const mapStateToProps = (state) => ({
   application: state.workforce.application,
   user_rights: state.core?.user?.i_user?.rights || {},
   documents: state.workforce.document,
-  locale: state.core?.user?.i_user?.language || "en",
+  locale: state.core?.user?.i_user?.language ,
 
   // applicationUuid: props.match.params.application_uuid,
 });

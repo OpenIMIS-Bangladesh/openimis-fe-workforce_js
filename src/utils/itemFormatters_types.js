@@ -530,8 +530,7 @@ export const itemFormattersS1DeputyAsstDirector = (
           <TabIcon />
         </IconButton>
       </Tooltip>
-
-      <Tooltip title="Verify">
+       <Tooltip title="Verify">
         <IconButton
           disabled={application?.isHistory}
           onClick={() => {

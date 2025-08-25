@@ -210,7 +210,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   readOnly={false}
                 />
               </Grid>
-              {/* {formData?.organizationType === "cf" && (
+              {formData?.organizationType === "cf" && (
                 <Grid item xs={6} className={classes.item}>
                   <FactoryPicker
                     id="factory"
@@ -226,7 +226,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   />
                   {errors.factory && <FormHelperText error>{errors.factory}</FormHelperText>}
                 </Grid>
-              )} */}
+              )}
               {/* <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <EmployeeLifeStatusPicker
                   value={formData?.workforceEmployee?.lifeStatus || ""}
