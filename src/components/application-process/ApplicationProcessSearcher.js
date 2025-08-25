@@ -313,7 +313,12 @@ class ApplicationProcessSearcher extends Component {
 
       if (revertedApplication) {
         defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant"]');
-      } else {
+      } 
+      else if(this.props.forwardedApplications)
+      {
+        defaultStatusFilters.push('statusIn: ["forward_to_cf_section"]','associationTypeIn: "BGMEA"');
+      }
+      else {
         defaultStatusFilters.push('statusIn: ["forward_to_association"]','associationTypeIn: "BGMEA"');
       }
 
@@ -346,7 +351,11 @@ class ApplicationProcessSearcher extends Component {
 
       if (revertedApplication) {
         defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant"]');
-      } else {
+      } 
+      else if (this.props.forwardedApplications) {
+        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","revert_to_applicant"]');
+      }
+      else {
         defaultStatusFilters.push('statusIn: ["forward_to_association"]', 'associationTypeIn: "BKMEA"');
       }
 
