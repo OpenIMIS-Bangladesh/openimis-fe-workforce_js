@@ -387,19 +387,25 @@ class ApplicationProcessSearcher extends Component {
         defaultFilters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]'];
       } else if (this.props.applicationStatus) {
         defaultFilters = ['statusIn: ["draft"]', 'orderBy: ["-dateCreated"]'];
+      } else if (this.props.submittedByApplicants) {
+        defaultFilters = ['statusIn: ["new"]','submittedByIn:["applicant"]', 'orderBy: ["-dateCreated"]'];
+      }
+      else if (this.props.forwardedApplications) {
+        defaultFilters = ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]'];
       } else {
         defaultFilters = ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]'];
       }
 
-      const hasStatusIn = prms?.some((f) => f.includes("statusIn"));
+      // const hasStatusIn = prms?.some((f) => f.includes("statusIn"));
 
       let finalFilters = [];
 
-      if (prms?.length) {
-        finalFilters = hasStatusIn ? prms : [...defaultFilters.filter(f => f.startsWith("statusIn")), ...prms];
-      } else {
-        finalFilters = defaultFilters;
-      }
+      // if (prms?.length) {
+      //   finalFilters = hasStatusIn ? prms : [...defaultFilters.filter(f => f.startsWith("statusIn")), ...prms];
+      // } else {
+      //   finalFilters = defaultFilters;
+      // }
+      finalFilters = defaultFilters;
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
@@ -1668,9 +1674,13 @@ class ApplicationProcessSearcher extends Component {
               justifyContent: "space-between",
             }}
           >
-            <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyFactoryAdmin}>
-              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-            </Button>
+            {disableButtons!==1 && (
+              <>
+                <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyFactoryAdmin}>
+                  <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                </Button>
+              </>
+            )}
           </Box>
         ) : null}
         {userType === WORKFORCE_USER_TYPE.ADMIN ? (

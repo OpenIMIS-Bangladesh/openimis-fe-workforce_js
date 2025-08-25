@@ -1106,7 +1106,7 @@ export const itemFormattersFactoryAdmin = (
 ) => {
   const formatters = [
     (application) =>
-      application?.workforceEmployee ? (
+      application?.workforceEmployee && component.props.disableButtons!==1 ? (
         <Checkbox
           checked={component.state.selectedApplicationIds.includes(
             application?.id
@@ -1161,65 +1161,69 @@ export const itemFormattersFactoryAdmin = (
           <TabIcon />
         </IconButton>
       </Tooltip>
-
-      <Tooltip title="যাচাই">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.verify",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <VerifiedUserIcon />
-        </IconButton>
-      </Tooltip>
-      {!component.props.revertedApplication && (
+      {component.props.disableButtons !== 1 && (
         <>
-          <Tooltip title="ফরওয়ার্ড">
-            <IconButton
-              disabled={application?.isHistory}
-              onClick={() => component.handleOpenForwardModal(application)}
-            >
-              <ForwardIcon />
-            </IconButton>
-          </Tooltip>
-
-          <Tooltip title="রিভার্ট">
+          <Tooltip title="যাচাই">
             <IconButton
               disabled={application?.isHistory}
               onClick={() => {
-                component.handleOpenRevertModal(application);
-                component.setState({ revertByChecker: true });
+                historyPush(
+                  modulesManager,
+                  history,
+                  "workforce.route.applications.application.verify",
+                  [decodeId(application?.id)],
+                  false
+                );
               }}
             >
-              <UndoIcon />
+              <VerifiedUserIcon />
             </IconButton>
           </Tooltip>
+          {!component.props.revertedApplication && (
+            <>
+              <Tooltip title="ফরওয়ার্ড">
+                <IconButton
+                  disabled={application?.isHistory}
+                  onClick={() => component.handleOpenForwardModal(application)}
+                >
+                  <ForwardIcon />
+                </IconButton>
+              </Tooltip>
+    
+              <Tooltip title="রিভার্ট">
+                <IconButton
+                  disabled={application?.isHistory}
+                  onClick={() => {
+                    component.handleOpenRevertModal(application);
+                    component.setState({ revertByChecker: true });
+                  }}
+                >
+                  <UndoIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
+          {component.props.revertedApplication && (
+            <Tooltip title="Resend">
+              <IconButton
+                disabled={application?.isHistory}
+                onClick={() => {
+                  historyPush(
+                    modulesManager,
+                    history,
+                    "workforce.route.applications.application.process.resend",
+                    [decodeId(application?.id)],
+                    false
+                  );
+                }}
+              >
+                <RestorePageIcon />
+              </IconButton>
+            </Tooltip>
+          )}
         </>
       )}
-      {component.props.revertedApplication && (
-        <Tooltip title="Resend">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                modulesManager,
-                history,
-                "workforce.route.applications.application.process.resend",
-                [decodeId(application?.id)],
-                false
-              );
-            }}
-          >
-            <RestorePageIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+
     </div>
   ));
   return formatters;

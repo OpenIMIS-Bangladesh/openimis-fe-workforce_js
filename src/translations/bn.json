@@ -366,6 +366,8 @@
     "workforce.approver.dashboard":"অ্যাসোসিয়েশন সিলেকশন কমিটি ড্যাশবোর্ড",
     "workforce.approver.noEntry":"কোন এন্ট্রি খুঁজে পাওয়া যায়নি",
     "workforce.application.myself":"সকল আবেদন",
+    "workforce.new.application.submittedbyapplicant":"আবেদনকারীর জমাকৃত আবেদন",
+    "workforce.application.forwarded":"সুপারিশকৃত আবেদন",
 
   "core.LanguageQuickPicker.dialog.title": "ভাষা নিশ্চিত করুন",
   "core.LanguageQuickPicker.dialog.message": "আপনি ভাষাটি ইংরেজিতে করতে চলেছেন। আপনি কি এগিয়ে যেতে চান?",

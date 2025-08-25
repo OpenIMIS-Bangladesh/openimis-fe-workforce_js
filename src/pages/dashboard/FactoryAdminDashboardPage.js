@@ -34,6 +34,8 @@ import { useModulesManager, useTranslations, Autocomplete, useGraphqlQuery, deco
 import { fetchApplicationsSummary } from "../../actions";
 import CancelIcon from '@material-ui/icons/Cancel';
 import DraftsIcon from '@material-ui/icons/Drafts';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   sidebar: {
     position: "sticky",
     top: 0,
-    height: "40vh",
+    height: "70vh",
     overflowY: "auto",
     backgroundColor: theme.palette.background.paper,
     borderRight: `1px solid ${theme.palette.divider}`,
@@ -98,6 +100,20 @@ const SidebarMenu = [
       <FormattedMessage module="workforce" id="workforce.new.application.factory" />
     ),
     icon: <AddCircleOutlineIcon />,
+  },
+  {
+    id: "submittedByApplicants",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.new.application.submittedbyapplicant" />
+    ),
+    icon: <VerifiedUserIcon />,
+  },
+  {
+    id: "forwardedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.forwarded" /> 
+    ),
+    icon: <ArrowForwardIcon />,
   },
   {
     id: "revertedApplication",
@@ -332,6 +348,47 @@ const RejectApplication = () => {
     </>
   )
 }
+const SubmittedByApplicants = () => {
+  const classes = useStyles()
+  return (
+    <>
+      <ApplicationProcessSearcher
+        submittedByApplicants={true}
+        dynamicTableTitle= {"workforce.new.application.submittedbyapplicant"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
+const ForwardedApplications = () => {
+  const classes = useStyles()
+  return (
+    <>
+      <ApplicationProcessSearcher
+        forwardedApplications={true}
+        disableButtons={1}
+        dynamicTableTitle= {"workforce.application.forwarded"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
 
 const Others = () => (
   <Typography variant="h5">
@@ -351,6 +408,10 @@ const FactoryAdminDashboard = () => {
         return <FiledApplications />;
       case "newApplications":
         return <MultiStepApplyForm />;
+      case "submittedByApplicants":
+        return <SubmittedByApplicants />;
+      case "forwardedApplications":
+        return <ForwardedApplications />;
       case "revertedApplication":
         return <RevertApplication />;
       case "rejectedApplication":
