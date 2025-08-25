@@ -95,7 +95,7 @@ const SidebarMenu = [
   {
     id: "newApplications",
     text: (
-      <FormattedMessage module="workforce" id="workforce.new.application" />
+      <FormattedMessage module="workforce" id="workforce.new.application.factory" />
     ),
     icon: <AddCircleOutlineIcon />,
   },
