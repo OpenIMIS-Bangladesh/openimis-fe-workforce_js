@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage, useParams } from "@openimis/fe-core";
-import { Paper, Button, IconButton, Typography, FormControl, FormControlLabel, Radio, RadioGroup } from "@material-ui/core";
+import { Paper, Button, IconButton, Typography, FormControl, FormControlLabel, Radio, RadioGroup,Snackbar  } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import MuiAlert from "@material-ui/lab/Alert"
 import { useDispatch, useSelector } from "react-redux";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ApplicationTypeSelector from "./ApplicationTypeSelector";
@@ -56,6 +57,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 const MultiStepApplyForm = () => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
@@ -79,6 +84,15 @@ const MultiStepApplyForm = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (openErrorModal) {
+      const timer = setTimeout(() => {
+        setOpenErrorModal(false);
+      }, 4000); // 4 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [openErrorModal]);
 
   useEffect(() => {
     if (!parsedApplicationData?.employeeDependentInfo) return;
@@ -140,7 +154,20 @@ const MultiStepApplyForm = () => {
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={3}>
-        {openErrorModal && <Typography style={{color:"red",fontWeight:"bold",fontSize:"large"}}><FormattedMessage id="workforce.financialAssistance.error.message" module="workforce"/></Typography>}
+        
+        <Snackbar
+          open={openErrorModal}
+          autoHideDuration={4000}
+          onClose={() => setOpenErrorModal(false)}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert severity="error" onClose={() => setOpenErrorModal(false)}>
+            <FormattedMessage
+              id="workforce.financialAssistance.error.message"
+              module="workforce"
+            />
+          </Alert>
+        </Snackbar>
 
         {!showForm ? (
           <>
