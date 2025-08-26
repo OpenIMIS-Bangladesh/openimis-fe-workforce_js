@@ -51,6 +51,8 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR;
   }else if (user_rights.includes(821004)) {
     user_type = WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR;
+  }else if (user_rights.includes(821005)) {
+    user_type = WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN;
   } else if (user_rights.includes(818001)) {
     user_type = WORKFORCE_USER_TYPE.DOCTOR;
   } else if (user_rights.includes(813001)) {

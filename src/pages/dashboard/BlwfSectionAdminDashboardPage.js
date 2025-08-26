@@ -25,8 +25,7 @@ import {
   AccordionDetails,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { fetchSummaryApplications } from "../../actions";
-import { fetchApplicationsSummary } from "../../actions";
+import { fetchApplicationsSummary,fetchSummaryApplications } from "../../actions";
 import RestorePageIcon from '@material-ui/icons/RestorePage';
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
@@ -38,6 +37,7 @@ import DoneAllIcon from '@material-ui/icons/DoneAll';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
 import CancelIcon from '@material-ui/icons/Cancel';
+import BeneficiaryReport from "../reports/BeneficiaryReport";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -155,6 +155,14 @@ const SidebarMenu = [
     icon: <AssignmentIcon />,
   },
 
+  // {
+  //     id: "beneficiaryReportSheet",
+  //     text: (
+  //       <FormattedMessage module="workforce" id="workforce.employee.application.beneficiaryReportSheet" />
+  //     ),
+  //     icon: <HourglassFullTwoToneIcon  />,
+  // },
+
    
 ];
 
@@ -165,7 +173,7 @@ const FiledApplications = () =>{
   return (
   <>
     <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.section2.admin.dashboard" />
+      <FormattedMessage module="workforce" id="workforce.blwf.section.admin.dashboard" />
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
@@ -187,7 +195,7 @@ const FiledApplications = () =>{
   </>
 );}
 
-const ApprovedApplications = ({ summaryData = [] }) => {
+const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
 
@@ -224,13 +232,26 @@ const ApprovedApplications = ({ summaryData = [] }) => {
                 <Card style={{ width: "100%" }}>
                   <CardContent>
                     {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} />
+                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons}/>
                     )}
                   </CardContent>
                 </Card>
               </AccordionDetails>
             </Accordion>
           ))}
+    </div>
+  );
+};
+
+
+const BeneficiaryReportSheet = () => {
+  // historyPush("/workforce/reports/beneficiary-report");
+  return (
+    <div>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.employee.application.beneficiaryReportSheet" />
+      </Typography>
+      <BeneficiaryReport />
     </div>
   );
 };
@@ -243,10 +264,8 @@ const ApplicationStatus = () => {
   const [applicationData, setApplicationData] = useState(null);
   const classes = useStyles()
   const [hasResults, setHasResults] = useState(true);
-
   const handleApplicationSearch = () => {
   const filters = [`workforceEmployee_Nid: "${nid}"`];
-  
   dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
     const edges = res.payload?.data?.workforceApplication?.edges || [];
     setApplicationData(edges.map((e) => e.node));
@@ -275,7 +294,7 @@ const ApplicationStatus = () => {
               style={{ marginBottom: 16 }}
             />
             <Button variant="contained" color="primary" fullWidth onClick={handleApplicationSearch}>
-              <FormattedMessage module="workforce" id="workforce.search.here" />
+                <FormattedMessage module="workforce" id="workforce.search.here" />
             </Button>
           </Grid>
         </Grid>
@@ -392,13 +411,13 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
 
 // ------------------------------------------------------------
 
-const SectionTwoAdminDashboardPage = () => {
+const BlwfSectionAdminDashboardPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
-  const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
+  const [selectedMenu, setSelectedMenu] = useState("pendingApplications");
  useEffect(() => {
-      return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"', 'sectionTypeIn: ["section_two"]','organizationType:"cf"']));
+      return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"','organizationType:"blwf"']));
     }, []);
   const data = useSelector(
       (state) => state.workforce[`applicationsSummary`] ?? []
@@ -413,11 +432,13 @@ const SectionTwoAdminDashboardPage = () => {
       case "rejectedApplication":
         return <RejectApplication />;
       case "pendingMeetingSheet":
-        return <PendingMeetingSheet />;
+        return <PendingMeetingSheet summaryData={data} />;
       case "approveMeetingSheet":
-        return <ApprovedApplications summaryData={data} />;
+        return <ApprovedApplications summaryData={data} disableButtons={1} />;
       case "applicationStatus":
         return <ApplicationStatus />;
+      case "beneficiaryReportSheet":
+        return <BeneficiaryReportSheet />;
       default:
         return <FiledApplications />;
     }
@@ -454,4 +475,4 @@ const SectionTwoAdminDashboardPage = () => {
   );
 };
 
-export default SectionTwoAdminDashboardPage;
+export default BlwfSectionAdminDashboardPage;

@@ -13,6 +13,7 @@ import ApproverDashboardPage from "./ApproverDashboardPage";
 import FactoryAdminDashboardPage from "./FactoryAdminDashboardPage";
 import SectionAdminDashboardPage from "./SectionAdminDashboardPage";
 import SectionTwoAdminDashboardPage from "./SectionTwoAdminDashboardPage";
+import BlwfSectionAdminDashboardPage from "./BlwfSectionAdminDashboardPage";
 import DoctorDashboardPage from "./DoctorDashboardPage";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 
@@ -34,6 +35,8 @@ console.log(user_type)
     return <SectionAdminDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
     return <SectionTwoAdminDashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
+    return <BlwfSectionAdminDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.DOCTOR) {
     return <DoctorDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.APPROVER) {

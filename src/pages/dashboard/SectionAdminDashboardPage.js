@@ -386,10 +386,6 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
   const classes = useStyles()
   return (
     <>
-      <Typography variant="h5" gutterBottom>
-        <FormattedMessage module="workforce" id="workforce.section1.admin.dashboard" />
-      </Typography>
-
       {/* Render each summaryData item as an accordion */}
       {summaryData.map((item, index) => (
         <Accordion key={index} defaultExpanded={false} className={classes.accordion}>
@@ -422,7 +418,7 @@ const SectionAdminDashboard = () => {
   const modulesManager = useModulesManager()
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
  useEffect(() => {
-      return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"', 'sectionTypeIn: ["section_one"]']));
+      return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"', 'sectionTypeIn: ["section_one"]','organizationType:"cf"']));
     }, []);
   const data = useSelector(
       (state) => state.workforce[`applicationsSummary`] ?? []
@@ -437,7 +433,7 @@ const SectionAdminDashboard = () => {
       case "rejectedApplication":
         return <RejectApplication />;
       case "pendingMeetingSheet":
-        return <PendingMeetingSheet summaryData={data} />;
+        return <PendingMeetingSheet />;
       case "approveMeetingSheet":
         return <ApprovedApplications summaryData={data} disableButtons={1} />;
       case "applicationStatus":
