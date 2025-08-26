@@ -57,6 +57,8 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.DOCTOR;
   } else if (user_rights.includes(813001)) {
     user_type = WORKFORCE_USER_TYPE.APPROVER;
+  } else if (user_rights.includes(821006)) {
+    user_type = WORKFORCE_USER_TYPE.BLWF_APPROVER;
   } else if (user_rights.includes(814001)) {
     user_type = WORKFORCE_USER_TYPE.FACTORY_ADMIN;
   } else if (user_rights.includes(815001)) {

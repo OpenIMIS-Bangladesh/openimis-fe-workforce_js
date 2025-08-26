@@ -32,6 +32,7 @@ import {
   itemFormattersApplicant,
   itemFormattersAssociation,
   itemFormattersApprover,
+  itemFormattersBlwfApprover,
   itemFormattersChecker,
   itemFormattersCheckerTwo,
   itemFormattersSectionAdmin,
@@ -44,7 +45,7 @@ import {
   itemFormattersBlwfSectionAdmin
 } from "../../utils/itemFormatters_types";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
-import { headerApplicant, headerApprover, headerChecker,headerCheckerTwo,headerS1DeputyAsstDirector,headerS2DeputyAsstDirector,headerDoctor, headerSectionAdmin, headerSectionTwoAdmin, headerAssociation, headersAdmin, 
+import { headerApplicant, headerApprover, headerBlwfApprover, headerChecker,headerCheckerTwo,headerS1DeputyAsstDirector,headerS2DeputyAsstDirector,headerDoctor, headerSectionAdmin, headerSectionTwoAdmin, headerAssociation, headersAdmin, 
 headerFactoryAdmin, headerDirector,headerBlwfSectionAdmin } from "../../utils/headers_types";
 
 const styles = (theme) => ({
@@ -487,6 +488,13 @@ class ApplicationProcessSearcher extends Component {
           this.props.summaryId
         )}"`,
       ]);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
+    this.setState({ displayVersion: showHistoryFilter });
+    this.props.fetchApplicationsSummary(this.props.modulesManager, [
+      `statusIn: ["forward_to_comiitee", "selected","forward_to_director"], organizationTypeIn: ["blwf"], orderBy: ["-dateCreated"],blwfApplicationSummary_Id:"${decodeId(
+        this.props.summaryId
+      )}"`,
+    ]);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
       this.setState({ displayVersion: showHistoryFilter });
       const isApproved = this.props.isApproved ? this.props.isApproved : false;
@@ -978,6 +986,8 @@ class ApplicationProcessSearcher extends Component {
       ? headerAssociation(this)
       : userType === WORKFORCE_USER_TYPE.APPROVER
       ? headerApprover(this)
+      : userType === WORKFORCE_USER_TYPE.BLWF_APPROVER
+      ? headerBlwfApprover(this)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? headerFactoryAdmin(this)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
@@ -1013,6 +1023,8 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.APPROVER
       ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      : userType === WORKFORCE_USER_TYPE.BLWF_APPROVER
+      ? itemFormattersBlwfApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
@@ -1715,7 +1727,7 @@ class ApplicationProcessSearcher extends Component {
             </Box>
           ) : null}
 
-        {userType === WORKFORCE_USER_TYPE.APPROVER ? (
+        {userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER ? (
           <Box
             style={{
               marginTop: 10,
@@ -1943,7 +1955,7 @@ class ApplicationProcessSearcher extends Component {
                 />
               </>
             );
-          } else if (userType === WORKFORCE_USER_TYPE.APPROVER) {
+          } else if (userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.APPROVER) {
             return (
               <>
                 <ForwardApplicationApproverModal

@@ -1467,3 +1467,106 @@ export const itemFormattersApprover = (
   ));
   return formatters;
 };
+export const itemFormattersBlwfApprover = (
+  isShowHistory,
+  modulesManager,
+  history,
+  component,
+  locale = "en"
+) => {
+  const formatters = [
+    (application) =>
+      application?.workforceEmployee ? (
+        <Checkbox
+          checked={component.state.selectedApplicationIds.includes(
+            application?.id
+          )}
+          onChange={component.handleCheckboxChange(application?.id)}
+          color="primary"
+        />
+      ) : (
+        ""
+      ),
+    (application) => application.trackingNumber,
+    (application) =>
+      conditionalEnToBn(application.dateCreated.split("T")[0], locale),
+    (application) => application.workforceEmployee?.firstNameBn,
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) => {
+      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+      return statusMap[application?.status] || application?.status;
+    },
+    isShowHistory() ? application?.version : null,
+  ];
+
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      <Tooltip title="View">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            historyPush(
+              modulesManager,
+              history,
+              "workforce.route.applications.application.process.view",
+              [decodeId(application?.id)],
+              false
+            );
+          }}
+        >
+          <TabIcon />
+        </IconButton>
+      </Tooltip>
+
+      {/* <Tooltip title="Veify">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            historyPush(
+              modulesManager,
+              history,
+              "workforce.route.applications.application.verify",
+              [decodeId(application?.id)],
+              false
+            );
+          }}
+        >
+          <VerifiedUserIcon />
+        </IconButton>
+      </Tooltip> */}
+      {/* <Tooltip title="Revert">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => component.handleOpenRevertModal(application)}
+        >
+          <UndoIcon />
+        </IconButton>
+      </Tooltip> */}
+      <Tooltip title="Reject">
+        <span>
+          <IconButton
+            onClick={() => component.handleReject(application)}
+          >
+            <CloseIcon />
+          </IconButton>
+        </span>
+      </Tooltip>
+      <Tooltip title="Selected">
+        <IconButton
+          disabled={
+            application?.isHistory ||
+            application?.status !== "forward_to_comiitee"
+          }
+          onClick={() => component.handleSelected(application)}
+        >
+          <CheckIcon />
+        </IconButton>
+      </Tooltip>
+    </div>
+  ));
+  return formatters;
+};

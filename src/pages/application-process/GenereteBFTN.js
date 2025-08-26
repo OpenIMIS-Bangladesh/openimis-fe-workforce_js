@@ -252,7 +252,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   };
 
 
-  if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
+  if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle disableTypography>

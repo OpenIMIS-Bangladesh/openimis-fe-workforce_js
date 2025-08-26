@@ -142,7 +142,7 @@ const FiledApplications = ({ summaryData = [], showSummaryBlock = true }) => {
       <Typography variant="h5" gutterBottom>
         <FormattedMessage
           module="workforce"
-          id="workforce.cf.approver.dashboard"
+          id="workforce.blwf.approver.dashboard"
         />
       </Typography>
 
@@ -243,14 +243,14 @@ const ApplicationStatus = () => {
 
 // ------------------------------------------------------------
 
-const ApproverDashboard = () => {
+const BlwfApproverDashboard = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
   const [selectedMenu, setSelectedMenu] = useState("pendingMeetingSheet"); // Default first menu
   useEffect(() => {
     return dispatch(
-      fetchSummaryApplications(modulesManager, ['status:"forward_to_comiitee"','organizationType:"cf"'])
+      fetchSummaryApplications(modulesManager, ['status:"forward_to_comiitee"','organizationType:"blwf"'])
     );
   }, []);
 
@@ -307,4 +307,4 @@ const ApproverDashboard = () => {
   );
 };
 
-export default ApproverDashboard;
+export default BlwfApproverDashboard;

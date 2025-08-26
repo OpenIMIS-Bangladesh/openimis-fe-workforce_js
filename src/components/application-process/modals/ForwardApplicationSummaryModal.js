@@ -148,8 +148,8 @@ const ForwardApplicationSummaryModal = ({
       meetingDate: formData?.meetingDate,
       year: formData?.year,
       month: formData?.month,
-      organizationType: "cf",
-      sectionType: userType === "section_admin" ? "section_one" : "section_two",
+      organizationType: userType === "approver" ? "cf" : userType === "blwf_approver" ? "blwf": null,      
+      sectionType: userType === "section_admin" ? "section_one" : userType === "section_admin_two" ? "section_two": null,
       applicationData: JSON.stringify(selectedApplicationIds),
     };
 

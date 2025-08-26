@@ -16,6 +16,7 @@ import SectionTwoAdminDashboardPage from "./SectionTwoAdminDashboardPage";
 import BlwfSectionAdminDashboardPage from "./BlwfSectionAdminDashboardPage";
 import DoctorDashboardPage from "./DoctorDashboardPage";
 import { WORKFORCE_USER_TYPE } from "../../constants";
+import BlwfApproverDashboard from "./BlwfApproverDashboardPage";
 
 const DashboardRelay = () => {
   const user_type = getUserType();
@@ -41,6 +42,8 @@ console.log(user_type)
     return <DoctorDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.APPROVER) {
     return <ApproverDashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
+    return <BlwfApproverDashboard />;
   } else if (user_type === WORKFORCE_USER_TYPE.ADMIN) {
     return <DashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.DIRECTOR) {

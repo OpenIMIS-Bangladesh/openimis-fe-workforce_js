@@ -522,7 +522,8 @@
     "workforce.bkmea.association.dashboard":"BKMEA Association Dashboard",
     "workforce.applicant.dashboard":"Applicant Dashboard",
     "workforce.factory_admin.dashboard":"Factory Admin Dashboard",
-    "workforce.approver.dashboard":"Selection Comiitee Dashboard",
+    "workforce.cf.approver.dashboard":"Central Fund Selection Comiitee Dashboard",
+    "workforce.blwf.approver.dashboard":"Blwf Selection Comiitee Dashboard",
     "workforce.approver.noEntry":"No entries found",
     "workforce.application.myself":"My Applications",
 
