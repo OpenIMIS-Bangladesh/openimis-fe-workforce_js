@@ -132,16 +132,16 @@ class VerifyApplicationPage extends Component {
     const applicationType = application?.applicationType;
     const organizationType = application?.organizationType;
     const applicationFor = application?.applicationFor;
-    const applicationForType = tryParse(application?.metadata);
-    const doubleParseApplicationFor = tryParse(applicationForType);
-    if (applicationType && organizationType && (applicationFor !== ""||null)) {
+    const applicationForType = this.safeParse(application?.metadata);
+    const doubleParseApplicationFor = this.safeParse(applicationForType);
+    if (applicationType !==("financialAssistance"||"disabilityAssistance") && organizationType && applicationFor !==(""||null)) {
       this.props.fetchDocumentType(modulesManager, [
         `applicationType:"${applicationType}"`,
         `organizationType:"${organizationType}"`,
         `mandatoryForApplicant: false`,
         `applicationFor_Icontains:"${applicationFor}"`,
       ]);
-    } else if (applicationType === "disabilityAssistance" && organizationType && (applicationFor === ""||null)) {
+    } else if (applicationType === "disabilityAssistance" && organizationType && applicationFor === (""||null)) {
       console.log({ hello: doubleParseApplicationFor });
       doubleParseApplicationFor.disabilityType === "partial"
         ? this.props.fetchDocumentType(modulesManager, [
@@ -156,8 +156,8 @@ class VerifyApplicationPage extends Component {
             `mandatoryForApplicant: false`,
             `applicationFor_Icontains:"temporary_disability"`,
           ]);
-    } else if (applicationType === "financialAssistance" && organizationType && (applicationFor === "" || null)) {
-      console.log({ hello: doubleParseApplicationFor });
+    } else if (applicationType === "financialAssistance" && organizationType) {
+      console.log({ helloFormFinance: doubleParseApplicationFor });
       doubleParseApplicationFor.deathType === "normalDeath"
         ? this.props.fetchDocumentType(modulesManager, [
             `applicationType:"${applicationType}"`,
@@ -280,7 +280,7 @@ class VerifyApplicationPage extends Component {
     const dependentInfo = this.safeParse(application?.employeeDependentInfo);
     const childrenInfo = this.safeParse(application?.employeeChildrenInfo);
     const applicantInfo = this.safeParse(application?.applicantInfo);
-    const metaInfo = this.safeParse(application?.employeeChildrenInfo);
+    const metaInfo = this.safeParse(application?.metadata);
 
     const formData = {
       ...application,
