@@ -141,7 +141,7 @@ class VerifyApplicationPage extends Component {
       doubleParseApplicationFor.disabilityType ==="partial"?
       this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"temporary_disability"`]):
       this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"temporary_disability"`])
-    }else if(applicationType==="financialAssistance"&& organizationType && applicationFor === ""){
+    }else if(applicationType==="financialAssistance"&& organizationType && (applicationFor === "" ||null)){
       console.log({hello:doubleParseApplicationFor})
       doubleParseApplicationFor.deathType ==="normalDeath"?
       this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"normal_death"`]):
