@@ -639,7 +639,7 @@ export const itemFormattersSectionAdmin = (
 ) => {
   const formatters = [
     (application) =>
-      application?.workforceEmployee ? (
+      application?.workforceEmployee && component.props.disableButtons!==1 ? (
         <Checkbox
           checked={component.state.selectedApplicationIds.includes(
             application?.id
@@ -1435,14 +1435,14 @@ export const itemFormattersApprover = (
           <VerifiedUserIcon />
         </IconButton>
       </Tooltip> */}
-      {/* <Tooltip title="Revert">
+      <Tooltip title="Revert">
         <IconButton
           disabled={application?.isHistory}
           onClick={() => component.handleOpenRevertModal(application)}
         >
           <UndoIcon />
         </IconButton>
-      </Tooltip> */}
+      </Tooltip>
       <Tooltip title="Reject">
         <span>
           <IconButton

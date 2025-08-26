@@ -168,12 +168,20 @@ class ApplicationProcessSearcher extends Component {
         defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
       } else if (revertedApplication) {
         defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
-      } else if (summaryId) {
-        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+      }
+      else if (this.props.sentForVerificationApplications) {
+        defaultStatusFilters.push('statusIn: ["forward_for_verification"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+      }
+      else if (this.props.verifiedApplications) {
+        defaultStatusFilters.push('statusIn: ["approved_by_doctor","verified"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+      }
+      else if (summaryId) {
+        defaultStatusFilters.push('applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+        // defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
         additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
       }
       else {
-        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor","verified"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+        defaultStatusFilters.push('statusIn: ["forward_to_cf_section"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -1592,6 +1600,7 @@ class ApplicationProcessSearcher extends Component {
 
     console.log({faltu:selectedApplication})
     const disableButtons = this.props.disableButtons ? decodeId(this.props.disableButtons) : null;
+    const meetingForwardButton = this.props.meetingForwardButton ? decodeId(this.props.meetingForwardButton) : null;
     return (
       <React.Fragment>
         <Searcher
@@ -1638,38 +1647,36 @@ class ApplicationProcessSearcher extends Component {
                 </IconButton>
               ) : (
                 <>
-                {userType !== WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => this.setState({ forwardModalOpenSA: true })}
-                  >
-                    <FormattedMessage
-                      module="workforce"
-                      id="workforce.employee.application.forward"
-                    />
-                  </Button>
+                  {meetingForwardButton==1? (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => this.setState({ forwardModalOpen: true })}
+                      >
+                        <FormattedMessage
+                          module="workforce"
+                          id="workforce.employee.application.createMeetingSheet"
+                        />
+                      </Button>
+                    </>
+                  ):(
+                    <>
+                      <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
+                        <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.handleBulkSelectedbySectionAdminToDoctor}
+                      >
+                        <FormattedMessage
+                          module="workforce"
+                          id="workforce.employee.application.forwardToDoctor"
+                        />
+                      </Button>
+                    </>
                   )}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => this.setState({ forwardModalOpen: true })}
-                  >
-                    <FormattedMessage
-                      module="workforce"
-                      id="workforce.employee.application.createMeetingSheet"
-                    />
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.handleBulkSelectedbySectionAdminToDoctor}
-                  >
-                    <FormattedMessage
-                      module="workforce"
-                      id="workforce.employee.application.forwardToDoctor"
-                    />
-                  </Button>
                 </>
               )}
             </Box>
@@ -1683,33 +1690,39 @@ class ApplicationProcessSearcher extends Component {
                 justifyContent: "space-between",
               }}
             >
-            <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
-              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-            </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => this.setState({ forwardModalOpen: true })}
-              >
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.employee.application.createMeetingSheet"
-                />
-              </Button>
-
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.handleBulkSelectedbySectionAdminToDoctor}
-              >
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.employee.application.forwardToDoctor"
-                />
-              </Button>
+            {meetingForwardButton==1?(
+              <>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => this.setState({ forwardModalOpen: true })}
+                >
+                  <FormattedMessage
+                    module="workforce"
+                    id="workforce.employee.application.createMeetingSheet"
+                  />
+                </Button>
+              </>
+            ):(
+              <>
+                <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
+                  <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.handleBulkSelectedbySectionAdminToDoctor}
+                >
+                  <FormattedMessage
+                    module="workforce"
+                    id="workforce.employee.application.forwardToDoctor"
+                  />
+                </Button>
+              </>
+            )}              
                <IconButton onClick={this.handleOpenBFTN}>
-              <PrintIcon />
-            </IconButton>
+                <PrintIcon />
+              </IconButton>
             </Box>
           ) : null}
           {userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR? (
