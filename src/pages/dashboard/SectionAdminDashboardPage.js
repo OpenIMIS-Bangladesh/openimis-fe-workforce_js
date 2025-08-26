@@ -38,6 +38,10 @@ import DoneAllIcon from '@material-ui/icons/DoneAll';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
 import CancelIcon from '@material-ui/icons/Cancel';
+// import GppMaybeIcon from '@material-ui/icons/GppMaybe';
+import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
+import AssignmentReturnedIcon from '@material-ui/icons/AssignmentReturned';
+import ForwardIcon from '@material-ui/icons/Forward';
 import BeneficiaryReport from "../reports/BeneficiaryReport";
 
 const useStyles = makeStyles((theme) => ({
@@ -50,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   sidebar: {
     position: "sticky",
     top: 0,
-    height: "40vh",
+    height: "70vh",
     backgroundColor: theme.palette.background.paper,
     borderRight: `1px solid ${theme.palette.divider}`,
     overflowY: "auto",
@@ -117,15 +121,29 @@ const SidebarMenu = [
     text: (
       <FormattedMessage module="workforce" id="workforce.application.pending" />
     ),
-    icon: <HourglassFullTwoToneIcon />,
+    icon: <AssignmentReturnedIcon />,
   },
   // {
-  //   id: "revertedApplication",
+  //   id: "revertedToApplication",
   //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.application.reverted" />
+  //     <FormattedMessage module="workforce" id="workforce.application.revertedto" />
   //   ),
   //   icon: <RestorePageIcon  />,
   // },
+  {
+    id: "sentForVerificationApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.sentforverification" />
+    ),
+    icon: <HourglassFullTwoToneIcon />,
+  },
+  {
+    id: "verifiedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.verified" />
+    ),
+    icon: <VerifiedUserIcon />,
+  },
   {
     id: "rejectedApplication",
     text: (
@@ -134,11 +152,26 @@ const SidebarMenu = [
     icon: <CancelIcon />,
   },
   {
-      id: "pendingMeetingSheet",
-      text: (
-        <FormattedMessage module="workforce" id="workforce.employee.application.pendingMeetingSheet" />
-      ),
-      icon: <HourglassFullTwoToneIcon  />,
+    id: "pendingMeetingSheet",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.employee.application.pendingMeetingSheet" />
+    ),
+    icon: <HourglassFullTwoToneIcon  />,
+  },
+  {
+    id: "revertedApplication",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.reverted" />
+    ),
+    icon: <RestorePageIcon  />,
+  },
+  {
+    id: "sentMeetingSheet",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.employee.application.sentMeetingSheet"
+      />
+    ),
+    icon: <ForwardIcon />,
   },
   {
     id: "approveMeetingSheet",
@@ -243,6 +276,108 @@ const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
     </div>
   );
 };
+const SentMeetingSheet = ({ summaryData = [], disableButtons=0 }) => {
+  const classes = useStyles();
+  const [expanded, setExpanded] = useState(null);
+
+  const handleChange = (panelId) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panelId : null);
+  };
+  console.log("clear")
+  console.log("summary data", summaryData);
+  return (
+    <div className={classes.accordionPadding}>
+        {summaryData         
+          .map((item, index) => (
+            <Accordion
+              key={index}
+              expanded={expanded === item.id}
+              onChange={handleChange(item.id)}
+              className={classes.accordion}
+            >
+              <AccordionSummary
+                className={classes.accordionSummary}
+                expandIcon={<ExpandMoreIcon className="material-icons" />}
+              >
+                <Typography variant="subtitle1" style={{ flex: 1 }}>
+                  <strong>{item.name}</strong>
+                </Typography>
+                <Typography
+                  variant="body2"
+                  style={{ marginLeft: "auto", color: "#015C63" }}
+                >
+                  {item.meetingDate} | {item.month} {item.year}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className={classes.accordionDetails}>
+                <Card style={{ width: "100%" }}>
+                  <CardContent>
+                    {expanded === item.id && (
+                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons}/>
+                    )}
+                  </CardContent>
+                </Card>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+    </div>
+  );
+};
+
+const SentForVerificationApplications = () =>{ 
+  const classes = useStyles()
+  return (
+  <>
+    <Typography variant="h5" gutterBottom>
+      <FormattedMessage module="workforce" id="workforce.application.sentforverification" />
+    </Typography>
+   <Card className={classes.tableContainer}>
+        <CardContent>
+            <ApplicationProcessSearcher
+              sentForVerificationApplications={true}
+              disableButtons={1}
+            />
+          </CardContent>
+      </Card>
+
+    {/* Pagination */}
+    <div className={classes.pagination}>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.back" />
+      </Button>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.next" />
+      </Button>
+    </div>
+  </>
+);}
+const VerifiedApplications = () =>{ 
+  const classes = useStyles()
+  return (
+  <>
+    <Typography variant="h5" gutterBottom>
+      <FormattedMessage module="workforce" id="workforce.application.verified" />
+    </Typography>
+   <Card className={classes.tableContainer}>
+        <CardContent>
+            <ApplicationProcessSearcher
+              verifiedApplications={true}
+              meetingForwardButton={1}
+            />
+          </CardContent>
+      </Card>
+
+    {/* Pagination */}
+    <div className={classes.pagination}>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.back" />
+      </Button>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.next" />
+      </Button>
+    </div>
+  </>
+);}
 
 
 const BeneficiaryReportSheet = () => {
@@ -273,6 +408,7 @@ const ApplicationStatus = () => {
     setShowResult(true);
   });
 };
+
 
   return (
     <Card>
@@ -361,6 +497,8 @@ const RevertApplication = () => {
     </div>
   </>
 )}
+
+
 const RejectApplication = () => {
   const classes = useStyles()
   return (
@@ -400,7 +538,7 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
           <AccordionDetails className={classes.AccordionDetails}>
             <Card style={{ width: "100%" }}>
               <CardContent>
-                <ApplicationProcessSearcher summaryId={item.id} />
+                <ApplicationProcessSearcher summaryId={item.id}/>
               </CardContent>
             </Card>
           </AccordionDetails>
@@ -418,24 +556,41 @@ const SectionAdminDashboard = () => {
   const modulesManager = useModulesManager()
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
  useEffect(() => {
-      return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"', 'sectionTypeIn: ["section_one"]','organizationType:"cf"']));
+      return dispatch(fetchSummaryApplications(modulesManager,['sectionTypeIn: ["section_one"]','organizationType:"cf"']));
     }, []);
+//  useEffect(() => {
+//       return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"', 'sectionTypeIn: ["section_one"]']));
+//     }, []);
   const data = useSelector(
       (state) => state.workforce[`applicationsSummary`] ?? []
     );
+
+  const pendingSummaryData = data.filter(d => d.status !== "approved_by_dg");
+  const approvedSummaryData = data.filter(d => d.status === "approved_by_dg");
+  const sentSummaryData = data.filter(d => d.status === "forward_to_comiitee");
+
+ 
 
   const renderContent = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
-      case "revertedApplication":
-        return <RevertApplication />;
+      // case "revertedToApplication":
+      //   return <RevertApplication />;
+      case "sentForVerificationApplications":
+        return <SentForVerificationApplications />;
+      case "verifiedApplications":
+        return <VerifiedApplications />;
       case "rejectedApplication":
         return <RejectApplication />;
+      case "revertedApplication":
+        return <RevertApplication />;
       case "pendingMeetingSheet":
-        return <PendingMeetingSheet />;
+        return <PendingMeetingSheet summaryData={pendingSummaryData} disableButtons={1} />;
+      case "sentMeetingSheet":
+        return <SentMeetingSheet summaryData={sentSummaryData} disableButtons={1} />;
       case "approveMeetingSheet":
-        return <ApprovedApplications summaryData={data} disableButtons={1} />;
+        return <ApprovedApplications summaryData={approvedSummaryData} disableButtons={1} />;
       case "applicationStatus":
         return <ApplicationStatus />;
       case "beneficiaryReportSheet":
