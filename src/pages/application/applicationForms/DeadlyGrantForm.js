@@ -62,7 +62,7 @@ const steps = [
   "workforce.application.steps.upload.documents",
 ];
 
-const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApplicationData }) => {
+const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApplicationData,applicationForSelf }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
   const modulesManager= useModulesManager()
@@ -287,7 +287,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData?.metadata),
         status: WORKFORCE_STATUS.DRAFT,
-        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+        applicationFor: applicationForSelf ==="yes" ?"self":applicationForSelf ===""?"":"dependent",
 
       };
 
@@ -340,7 +340,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
-        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+        applicationFor: applicationForSelf ==="yes" ?"self":applicationForSelf ===""?"":"dependent",
 
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application`))
@@ -374,7 +374,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
-        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+        applicationFor: applicationForSelf ==="yes" ?"self":applicationForSelf ===""?"":"dependent",
 
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application`));
@@ -431,7 +431,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),
       status: WORKFORCE_STATUS.NEW,
-        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+        applicationFor: applicationForSelf ==="yes" ?"self":applicationForSelf ===""?"":"dependent",
 
       submittedBy,
     };

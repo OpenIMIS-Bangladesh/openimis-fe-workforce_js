@@ -270,7 +270,7 @@ const EducationGrantForm = ({  organizationType, selectedApplicationType, applic
         employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
-        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+        applicationFor: applicationForSelf ==="yes" ?"self":applicationForSelf ===""?"":"dependent",
       };
       if (!parsedApplicationData) {
         const applicationMutation = await formatMutation(
@@ -328,7 +328,7 @@ const EducationGrantForm = ({  organizationType, selectedApplicationType, applic
         employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo) || JSON.stringify(parsedApplicationData?.employeeChildrenInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
-        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+        applicationFor: applicationForSelf ==="yes" ?"self":applicationForSelf ===""?"":"dependent",
       };
       dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
     }
@@ -382,7 +382,7 @@ const EducationGrantForm = ({  organizationType, selectedApplicationType, applic
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),
       status: WORKFORCE_STATUS.NEW,
-      applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+      applicationFor: applicationForSelf ==="yes" ?"self":applicationForSelf ===""?"":"dependent",
       submittedBy,
     };
     console.log({ updateApplicationData });

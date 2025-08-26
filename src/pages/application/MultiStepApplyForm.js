@@ -387,6 +387,7 @@ const MultiStepApplyForm = () => {
               organizationType={organizationType}
               parsedApplicationData={parsedApplicationData}
               selectedApplicationType={selectedApplicationType}
+              applicationForSelf={applicationForSelf}
             />
           </>
         ) : selectedApplicationType === "scholarship" ? (
@@ -451,6 +452,7 @@ const MultiStepApplyForm = () => {
               organizationType={organizationType}
               parsedApplicationData={parsedApplicationData}
               selectedApplicationType={selectedApplicationType}
+              applicationForSelf={applicationForSelf}
             />
           </>
         ) : (

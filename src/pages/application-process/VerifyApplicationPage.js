@@ -15,7 +15,7 @@ import {
   Accordion,
   AccordionSummary,
   CardHeader,
-  Box
+  Box,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { withTheme, withStyles } from "@material-ui/core/styles";
@@ -103,7 +103,7 @@ class VerifyApplicationPage extends Component {
       note: "",
       mockFiles: mockFiles,
       fileStates: mockFiles || [],
-       uploadedFiles: [], 
+      uploadedFiles: [],
       fileStates: mockFiles.map((file) => ({
         ...file,
         note: "",
@@ -131,23 +131,52 @@ class VerifyApplicationPage extends Component {
     const { application } = this.props;
     const applicationType = application?.applicationType;
     const organizationType = application?.organizationType;
-    const applicationFor = application?.applicationFor
-      const applicationForType= tryParse(application?.metadata)
-      const doubleParseApplicationFor = tryParse(applicationForType)
-    if (applicationType && organizationType && applicationFor !== "") {
-      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"${applicationFor}"`]);
-    }else if(applicationType==="disabilityAssistance"&& organizationType && applicationFor === "" ){
-      console.log({hello:doubleParseApplicationFor})
-      doubleParseApplicationFor.disabilityType ==="partial"?
-      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"temporary_disability"`]):
-      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"temporary_disability"`])
-    }else if(applicationType==="financialAssistance"&& organizationType && (applicationFor === "" ||null)){
-      console.log({hello:doubleParseApplicationFor})
-      doubleParseApplicationFor.deathType ==="normalDeath"?
-      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"normal_death"`]):
-      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`,`applicationFor_Icontains:"accidental_death"`])
-    }else {
-      this.props.fetchDocumentType(modulesManager, [`applicationType:"${applicationType}"`, `organizationType:"${organizationType}"`,`mandatoryForApplicant: false`]);
+    const applicationFor = application?.applicationFor;
+    const applicationForType = tryParse(application?.metadata);
+    const doubleParseApplicationFor = tryParse(applicationForType);
+    if (applicationType && organizationType && (applicationFor !== ""||null)) {
+      this.props.fetchDocumentType(modulesManager, [
+        `applicationType:"${applicationType}"`,
+        `organizationType:"${organizationType}"`,
+        `mandatoryForApplicant: false`,
+        `applicationFor_Icontains:"${applicationFor}"`,
+      ]);
+    } else if (applicationType === "disabilityAssistance" && organizationType && (applicationFor === ""||null)) {
+      console.log({ hello: doubleParseApplicationFor });
+      doubleParseApplicationFor.disabilityType === "partial"
+        ? this.props.fetchDocumentType(modulesManager, [
+            `applicationType:"${applicationType}"`,
+            `organizationType:"${organizationType}"`,
+            `mandatoryForApplicant: false`,
+            `applicationFor_Icontains:"temporary_disability"`,
+          ])
+        : this.props.fetchDocumentType(modulesManager, [
+            `applicationType:"${applicationType}"`,
+            `organizationType:"${organizationType}"`,
+            `mandatoryForApplicant: false`,
+            `applicationFor_Icontains:"temporary_disability"`,
+          ]);
+    } else if (applicationType === "financialAssistance" && organizationType && (applicationFor === "" || null)) {
+      console.log({ hello: doubleParseApplicationFor });
+      doubleParseApplicationFor.deathType === "normalDeath"
+        ? this.props.fetchDocumentType(modulesManager, [
+            `applicationType:"${applicationType}"`,
+            `organizationType:"${organizationType}"`,
+            `mandatoryForApplicant: false`,
+            `applicationFor_Icontains:"normal_death"`,
+          ])
+        : this.props.fetchDocumentType(modulesManager, [
+            `applicationType:"${applicationType}"`,
+            `organizationType:"${organizationType}"`,
+            `mandatoryForApplicant: false`,
+            `applicationFor_Icontains:"accidental_death"`,
+          ]);
+    } else {
+      this.props.fetchDocumentType(modulesManager, [
+        `applicationType:"${applicationType}"`,
+        `organizationType:"${organizationType}"`,
+        `mandatoryForApplicant: false`,
+      ]);
     }
     this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${applicationUuid}"`]);
   }
@@ -161,17 +190,16 @@ class VerifyApplicationPage extends Component {
   };
 
   handleFileCommentChange = (index, value) => {
-    console.log(index,value)
-  this.setState((prevState) => {
-    if (!prevState.fileStates || !prevState.fileStates[index]) {
-      return {};
-    }
-    const updatedFiles = [...prevState.fileStates];
-    updatedFiles[index] = { ...updatedFiles[index], note: value }; 
-    return { fileStates: updatedFiles };
-  });
-};
-
+    console.log(index, value);
+    this.setState((prevState) => {
+      if (!prevState.fileStates || !prevState.fileStates[index]) {
+        return {};
+      }
+      const updatedFiles = [...prevState.fileStates];
+      updatedFiles[index] = { ...updatedFiles[index], note: value };
+      return { fileStates: updatedFiles };
+    });
+  };
 
   handleCommentChange = (e) => {
     this.setState({ note: e.target.value });
@@ -186,7 +214,7 @@ class VerifyApplicationPage extends Component {
       note: file.note,
     };
 
-    this.props.updateWorkforceDocument(payload, `update workforce document`); 
+    this.props.updateWorkforceDocument(payload, `update workforce document`);
 
     // optionally update UI optimistically
     this.setState((prevState) => {
@@ -228,9 +256,7 @@ class VerifyApplicationPage extends Component {
 
   handleFileChange = (fieldKey, files) => {
     this.setState((prevState) => {
-      const existingIndex = prevState.uploadedFiles.findIndex(
-        (item) => item.fieldKey === fieldKey
-      );
+      const existingIndex = prevState.uploadedFiles.findIndex((item) => item.fieldKey === fieldKey);
 
       let updatedFiles = [...prevState.uploadedFiles];
       if (existingIndex !== -1) {
@@ -256,7 +282,7 @@ class VerifyApplicationPage extends Component {
     const applicantInfo = this.safeParse(application?.applicantInfo);
     const metaInfo = this.safeParse(application?.employeeChildrenInfo);
 
-     const formData = {
+    const formData = {
       ...application,
       workforceEmployee: application?.workforceEmployee,
       employeeAccidentInfo: this.safeParse(AccidentInfo),
@@ -266,7 +292,7 @@ class VerifyApplicationPage extends Component {
       applicantInfo: this.safeParse(applicantInfo),
       metadata: this.safeParse(metaInfo),
     };
-    console.log(documentType)
+    console.log(documentType);
     // const filteredDocumentTypes = documentType?.filter((doc) => {
     //   const matchedFile = fileStates?.find((file) => {
     //     return file?.workforceDocumentType?.id === doc?.id  && file?.workforceDocumentType?.mandatoryForApplicant === false;
@@ -274,17 +300,13 @@ class VerifyApplicationPage extends Component {
     //   return matchedFile
     // });
     const filteredDocumentTypes = documentType?.filter((doc) => {
-  // check if there’s already a file uploaded for this doc
-  const isUploaded = fileStates?.some(
-    (file) => file?.workforceDocumentType?.id === doc?.id
-  );
-  console.log({isUploaded})
+      // check if there’s already a file uploaded for this doc
+      const isUploaded = fileStates?.some((file) => file?.workforceDocumentType?.id === doc?.id);
+      console.log({ isUploaded });
 
-  // return docs that are not uploaded
-  return !isUploaded;
-});
-
-
+      // return docs that are not uploaded
+      return !isUploaded;
+    });
 
     console.log("filteredDocumentTypes", filteredDocumentTypes);
     console.log({ fileStates });
@@ -357,10 +379,19 @@ class VerifyApplicationPage extends Component {
             //     ))}
             //   </CardContent>
             // </Card>
-            <ApplicationViewPage application={formData} language={locale} filteredDocumentTypes={filteredDocumentTypes} applicationUuid={applicationUuid} onFileChange={this.handleFileChange} fileStates={fileStates} handleCommentChange={this.handleFileCommentChange} handleFileVerify={this.handleFileVerify} handleFileReject={this.handleFileReject}/>
-          ):(
+            <ApplicationViewPage
+              application={formData}
+              language={locale}
+              filteredDocumentTypes={filteredDocumentTypes}
+              applicationUuid={applicationUuid}
+              onFileChange={this.handleFileChange}
+              fileStates={fileStates}
+              handleCommentChange={this.handleFileCommentChange}
+              handleFileVerify={this.handleFileVerify}
+              handleFileReject={this.handleFileReject}
+            />
+          ) : (
             <ApplicationViewPage application={formData} language={locale} />
-
           )}
         </Grid>
 
@@ -413,7 +444,7 @@ const mapStateToProps = (state, props) => ({
   documents: state.workforce.document,
   documentType: state.workforce.documentType,
   user_rights: state.core?.user?.i_user?.rights || {},
-  locale: state.core?.user?.i_user?.language ,
+  locale: state.core?.user?.i_user?.language,
 });
 
 const mapDispatchToProps = (dispatch) =>

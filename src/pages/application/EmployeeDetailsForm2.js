@@ -43,7 +43,8 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (formData?.applicationType && formData?.organizationType) {
+    if (formData.applicationType && formData.organizationType) {
+      
       if (formData?.applicationForSelf === "yes"&& formData.organizationType === "cf") {
         return dispatch(
           fetchDocumentType(modulesManager, [
