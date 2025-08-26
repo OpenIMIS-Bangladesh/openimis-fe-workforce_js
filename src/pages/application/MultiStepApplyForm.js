@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage, useParams } from "@openimis/fe-core";
-import { Paper, Button, IconButton, Typography, FormControl, FormControlLabel, Radio, RadioGroup,Snackbar  } from "@material-ui/core";
+import { Paper, Button, IconButton, Typography, FormControl, FormControlLabel, Radio, RadioGroup, Snackbar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import MuiAlert from "@material-ui/lab/Alert"
+import MuiAlert from "@material-ui/lab/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ApplicationTypeSelector from "./ApplicationTypeSelector";
@@ -17,6 +17,7 @@ import { getParsedApplication } from "../../utils/utils";
 import DeadlyGrantForm from "./applicationForms/DeadlyGrantForm";
 import { fetchApplicationsSummary } from "../../actions";
 import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
+import CustomSnackbar from "../../components/shared/CustomSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -72,9 +73,9 @@ const MultiStepApplyForm = () => {
   const [organizationType, setOrganizationType] = useState("" || parsedApplicationData?.organizationType);
   const [selectedApplicationType, setSelectedApplicationType] = useState("" || parsedApplicationData?.applicationType);
   const [isApplicationForSelfSelected, setIsApplicationForSelfSelected] = useState(true);
-  const [openErrorModal,setOpenErrorModal] = useState(false)
+  const [openErrorModal, setOpenErrorModal] = useState(false);
   const reduxState = useSelector((state) => state);
-  const userName = reduxState.core.user.username
+  const userName = reduxState.core.user.username;
 
   useEffect(async () => {
     const fetchData = async () => {
@@ -84,15 +85,6 @@ const MultiStepApplyForm = () => {
     };
     fetchData();
   }, []);
-
-  useEffect(() => {
-    if (openErrorModal) {
-      const timer = setTimeout(() => {
-        setOpenErrorModal(false);
-      }, 4000); // 4 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [openErrorModal]);
 
   useEffect(() => {
     if (!parsedApplicationData?.employeeDependentInfo) return;
@@ -126,27 +118,23 @@ const MultiStepApplyForm = () => {
   };
 
   const handleNextButtonClicked = () => {
-  if (selectedApplicationType === "financialAssistance") {
-    dispatch(
-      fetchApplicationsSummary(modulesManager, [
-        `applicationType: "financialAssistance",workforceEmployee_Nid: "${userName}"`
-      ])
-    ).then((res) => {
-      const data = res?.payload?.data?.workforceApplication?.edges;
+    if (selectedApplicationType === "financialAssistance") {
+      dispatch(fetchApplicationsSummary(modulesManager, [`applicationType: "financialAssistance",workforceEmployee_Nid: "${userName}"`])).then((res) => {
+        const data = res?.payload?.data?.workforceApplication?.edges;
 
-      if (data && data.length > 0) {
-        // Data already exists → show error only
-        setOpenErrorModal(true);
-        return;
-      }
+        if (data && data.length > 0) {
+          // Data already exists → show error only
+          setOpenErrorModal(true);
+          return;
+        }
 
-      // No data found → show form
+        // No data found → show form
+        setShowForm(true);
+      });
+    } else {
       setShowForm(true);
-    });
-  } else {
-    setShowForm(true);
-  }
-};
+    }
+  };
 
   console.log({ applicationForSelf });
   console.log({ parsedApplicationData });
@@ -154,20 +142,12 @@ const MultiStepApplyForm = () => {
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={3}>
-        
-        <Snackbar
+        <CustomSnackbar
           open={openErrorModal}
-          autoHideDuration={4000}
           onClose={() => setOpenErrorModal(false)}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        >
-          <Alert severity="error" onClose={() => setOpenErrorModal(false)}>
-            <FormattedMessage
-              id="workforce.financialAssistance.error.message"
-              module="workforce"
-            />
-          </Alert>
-        </Snackbar>
+          type="error"
+          message={<FormattedMessage id="workforce.financialAssistance.error.message" module="workforce" />}
+        />
 
         {!showForm ? (
           <>
@@ -199,7 +179,7 @@ const MultiStepApplyForm = () => {
                 <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
-            {applicationForSelf === "" || isApplicationForSelfSelected ?  (
+            {applicationForSelf === "" || isApplicationForSelfSelected ? (
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
                   <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
@@ -382,13 +362,13 @@ const MultiStepApplyForm = () => {
                 </div>
               </Paper>
             ) : ( */}
-              <EducationGrantForm
-                modulesManager={modulesManager}
-                organizationType={organizationType}
-                selectedApplicationType={selectedApplicationType}
-                applicationForSelf={applicationForSelf}
-                parsedApplicationData={parsedApplicationData}
-              />
+            <EducationGrantForm
+              modulesManager={modulesManager}
+              organizationType={organizationType}
+              selectedApplicationType={selectedApplicationType}
+              applicationForSelf={applicationForSelf}
+              parsedApplicationData={parsedApplicationData}
+            />
             {/* )} */}
           </>
         ) : selectedApplicationType === "financialAssistance" ? (
@@ -420,7 +400,7 @@ const MultiStepApplyForm = () => {
                 <FormattedMessage module="workforce" id="workforce.back.application.type" />
               </Typography>
             </div>
-            {applicationForSelf === ""|| isApplicationForSelfSelected  ? (
+            {applicationForSelf === "" || isApplicationForSelfSelected ? (
               <Paper className={classes.subPaper} elevation={0}>
                 <FormControl component="fieldset">
                   <Typography variant="h6" className={`${classes.title} ${classes.section}`}>

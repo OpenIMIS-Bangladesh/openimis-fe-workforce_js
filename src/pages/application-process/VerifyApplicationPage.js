@@ -266,12 +266,24 @@ class VerifyApplicationPage extends Component {
       applicantInfo: this.safeParse(applicantInfo),
       metadata: this.safeParse(metaInfo),
     };
+    console.log(documentType)
+    // const filteredDocumentTypes = documentType?.filter((doc) => {
+    //   const matchedFile = fileStates?.find((file) => {
+    //     return file?.workforceDocumentType?.id === doc?.id  && file?.workforceDocumentType?.mandatoryForApplicant === false;
+    //   });
+    //   return matchedFile
+    // });
     const filteredDocumentTypes = documentType?.filter((doc) => {
-      const matchedFile = fileStates?.find((file) => {
-        return file?.workforceDocumentType?.id !== doc?.id  && file?.workforceDocumentType?.mandatoryForApplicant === false;
-      });
-      return matchedFile || doc?.mandatoryForApplicant === false;
-    });
+  // check if there’s already a file uploaded for this doc
+  const isUploaded = fileStates?.some(
+    (file) => file?.workforceDocumentType?.id === doc?.id
+  );
+  console.log({isUploaded})
+
+  // return docs that are not uploaded
+  return !isUploaded;
+});
+
 
 
     console.log("filteredDocumentTypes", filteredDocumentTypes);

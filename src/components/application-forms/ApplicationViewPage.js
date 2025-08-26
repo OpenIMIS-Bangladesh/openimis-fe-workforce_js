@@ -260,8 +260,8 @@ console.log(language)
             ))}
           </Box>
         </Paper>
-        {filteredDocumentTypes && (
-          <Typography variant="h6" style={{ marginTop: 4 }}>
+        {(filteredDocumentTypes && filteredDocumentTypes?.length>0) && (
+          <Typography variant="h6" style={{ marginTop: 6 }}>
             <b>
               <FormattedMessage module="workforce" id="workforce.employee.upload.factory.document" />
             </b>
