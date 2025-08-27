@@ -118,7 +118,7 @@ useEffect(() => {
     } else if (userType === "section_admin_two") {
       roleIds = ["36", "39"];
     } else if (userType === "blwf_section_admin") {
-      roleIds = ["39", "40"];
+      roleIds = ["42", "43"];
     }
 
     if (roleIds.length > 0) {
