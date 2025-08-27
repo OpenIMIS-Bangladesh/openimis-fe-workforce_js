@@ -488,14 +488,14 @@ class ApplicationProcessSearcher extends Component {
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, [
-        `statusIn: ["forward_to_comiitee", "selected","forward_to_director"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(
+        `organizationTypeIn: ["cf"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(
           this.props.summaryId
         )}"`,
       ]);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
     this.setState({ displayVersion: showHistoryFilter });
     this.props.fetchApplicationsSummary(this.props.modulesManager, [
-      `statusIn: ["forward_to_comiitee", "selected","forward_to_director"], organizationTypeIn: ["blwf"], orderBy: ["-dateCreated"],blwfApplicationSummary_Id:"${decodeId(
+      `organizationTypeIn: ["blwf"], orderBy: ["-dateCreated"],blwfApplicationSummary_Id:"${decodeId(
         this.props.summaryId
       )}"`,
     ]);
@@ -1743,12 +1743,17 @@ class ApplicationProcessSearcher extends Component {
               justifyContent: "space-between",
             }}
           >
-            <Button variant="contained" color="primary" onClick={this.handleBulkSelected}>
-              <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
-            </Button>
-            <IconButton onClick={this.handleOpenBFTN}>
-              <PrintIcon />
-            </IconButton>
+            {disableButtons!==1 && (
+              <>
+                <Button variant="contained" color="primary" onClick={this.handleBulkSelected}>
+                  <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
+                </Button>
+                <Button variant="contained" color="primary" onClick={this.handleOpenBFTN}>
+                  <PrintIcon /> &nbsp;
+                  <FormattedMessage module="workforce" id="workforce.employee.application.printAndForwardToDirector" />
+                </Button>
+              </>
+            )}
           </Box>
         ) : null}
         {userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ? (

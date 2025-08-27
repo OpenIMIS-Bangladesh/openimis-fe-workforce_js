@@ -159,6 +159,7 @@
   "workforce.employee.application.approveMeetingSheet": "অনুমোদিত আবেদন",
   "workforce.employee.application.bulkSelect": "বাল্ক নির্বাচন করুন",
   "workforce.employee.application.bulkApprove": "বাল্ক অনুমোদন করুন",
+  "workforce.employee.application.printAndForwardToDirector": "প্রিন্ট এবং পরিচালকের কাছে প্রেরণ",
 
   "workforce.application.educationInfo.boards.barisal": "বরিশাল",
   "workforce.application.educationInfo.boards.chattogram": "চট্টগ্রাম",
@@ -458,7 +459,7 @@
   "workforce.table.bankName": "ব্যাংকের নাম",
   "workforce.table.branch": "শাখা",
   "workforce.table.close": "বন্ধ করুন",
-  "workforce.table.printSUmmary": "মুদ্রণের সারাংশ",
+  "workforce.table.printSUmmary": "মিটিং পত্র প্রিন্ট",
   "workforce.table.forwardToDirector": "পরিচালকের কাছে ফরোয়ার্ড করুন",
   "workforce.table.totalAmount": "মোট পরিমাণ",
   "workforce.table.printAdvice": "প্রিন্ট এডভাইস",

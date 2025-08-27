@@ -60,6 +60,9 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   const [serverResponse, setServerResponse] = useState(null);
   const dispatch = useDispatch();
   const handleForward = async () => {
+    if (!window.confirm("আবেদনগুলো পরিচালকের কাছে প্রেরণ নিশ্চিত করছেন?")) {
+      return;
+    }
     const filteredApplications = applications.filter(
       (item) => String(item.status) === String(status)
     );
@@ -91,6 +94,10 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     );
 
     setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
   };
 
   const loadImageAsBuffer = async (url) => {

@@ -1373,7 +1373,7 @@ export const itemFormattersApprover = (
 ) => {
   const formatters = [
     (application) =>
-      application?.workforceEmployee ? (
+      application?.workforceEmployee && component.props.disableButtons!==1? (
         <Checkbox
           checked={component.state.selectedApplicationIds.includes(
             application?.id
@@ -1435,34 +1435,38 @@ export const itemFormattersApprover = (
           <VerifiedUserIcon />
         </IconButton>
       </Tooltip> */}
-      <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => component.handleOpenRevertModal(application)}
-        >
-          <UndoIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Reject">
-        <span>
-          <IconButton
-            onClick={() => component.handleReject(application)}
-          >
-            <CloseIcon />
-          </IconButton>
-        </span>
-      </Tooltip>
-      <Tooltip title="Selected">
-        <IconButton
-          disabled={
-            application?.isHistory ||
-            application?.status !== "forward_to_comiitee"
-          }
-          onClick={() => component.handleSelected(application)}
-        >
-          <CheckIcon />
-        </IconButton>
-      </Tooltip>
+      {component.props.disableButtons!==1 && (
+        <>
+          <Tooltip title="Revert">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => component.handleOpenRevertModal(application)}
+            >
+              <UndoIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Reject">
+            <span>
+              <IconButton
+                onClick={() => component.handleReject(application)}
+              >
+                <CloseIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+          <Tooltip title="Selected">
+            <IconButton
+              disabled={
+                application?.isHistory ||
+                application?.status !== "forward_to_comiitee"
+              }
+              onClick={() => component.handleSelected(application)}
+            >
+              <CheckIcon />
+            </IconButton>
+          </Tooltip>
+        </>
+      )}
     </div>
   ));
   return formatters;
