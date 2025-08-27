@@ -430,6 +430,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
                 addItem={() => addArrayFieldItem("dependents", { fullName: "", relationship: "" })}
                 removeItem={(index) => removeArrayFieldItem("dependents", index)}
                 expanded={expanded}
+                formdata={formData}
                 setExpanded={setExpanded}
                 errors={errors}
               />
