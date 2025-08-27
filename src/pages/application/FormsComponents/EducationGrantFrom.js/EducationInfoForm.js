@@ -111,7 +111,7 @@ const EducationInfoForm = ({ modulesManager, handleChange, formData, application
           <YearPicker
             id="admissionYear"
             label="workforce.application.educationInfo.admissionYear"
-            value={formData?.employeeChildrenInfo?.passingYear || ""}
+            value={formData?.employeeChildrenInfo?.admissionYear || ""}
             onChange={(v) => handleChange("admissionYear", v)}
             required
           />

@@ -71,6 +71,7 @@ const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, p
   let applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? null);
   // const dependentId = useSelector((state) => state.workforce["workforceDependent"] ?? []);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
+  const uploadDependentFile = useSelector((state) => state.workforce.uploadDependentFile);
   const classes = useStyles();
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(0);
@@ -342,7 +343,7 @@ const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, p
       .then(res => setIsDependentSaved(true))
       await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0]?.id)}"`])).then((res) => {
         const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-        // console.log({ dependentId });
+        console.log({ res });
         // if (uploadFile) {
         //   dispatch(
         //     createWorkforceDocument(

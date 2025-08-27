@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import { formatGQLString, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { createWorkforceDocument } from "../actions";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from "@material-ui/icons/Add";
 import { safeApplicationId } from "../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,documentProp,uploadedBy }) => {
+const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, documentProp, uploadedBy }) => {
   const classes = useStyles();
   const [webcamOpen, setWebcamOpen] = useState(false);
   const webcamRef = useRef(null);
@@ -101,20 +101,31 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,docu
       const createDocumentData = {
         path: responseData.file_path,
         url: responseData.file_url,
-        workforceDocumentTypeId:decodeId(documentProp.id),
+        workforceDocumentTypeId: decodeId(documentProp.id),
         // workforceApplicationId: safeApplicationId(applicationId),
         documentType: documentType,
         holder: "57",
-        holderType: uploadedBy||"applicant",
+        holderType: "applicant",
       };
-
-      dispatch({
-        type: "SET_UPLOAD_FILE_DATA",
-        payload: createDocumentData,
-      });
+      if (uploadedBy === "dependent") {
+        dispatch({
+          type: "SET_UPLOAD_DEPENDENT_FILE_DATA",
+          payload: {...createDocumentData,holderType:"applicant"},
+        });
+      }else{
+        dispatch({
+          type: "SET_UPLOAD_FILE_DATA",
+          payload: createDocumentData,
+        });
+      }
       if (applicationId) {
         console.log("create document data", createDocumentData);
-        dispatch(createWorkforceDocument({...createDocumentData,workforceApplicationId: uploadedBy? applicationId:safeApplicationId(applicationId)}, `Created workforce document `));
+        dispatch(
+          createWorkforceDocument(
+            { ...createDocumentData, workforceApplicationId: uploadedBy ? applicationId : safeApplicationId(applicationId) },
+            `Created workforce document `
+          )
+        );
       }
     } catch (error) {
       console.error(`Upload error for ${file.name}:`, error);
@@ -231,59 +242,54 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType,docu
       </Dialog>
 
       {files.length > 0 && (
-  <Paper className={classes.fileList}>
-    {files.map((file, index) => (
-      <Box key={`${file.name}-${index}`} className={classes.fileItem}>
-        <Typography
-          variant="body2"
-          className={classes.fileName}
-          onClick={() => {
-            const fileUrl = file.url || URL.createObjectURL(file);
-            const link = document.createElement("a");
-            link.href = fileUrl;
-            link.download = file.name;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }}
-          style={{ cursor: "pointer", textDecoration: "underline", color: "#005f67" }}
-        >
-          {file.name}
-        </Typography>
+        <Paper className={classes.fileList}>
+          {files.map((file, index) => (
+            <Box key={`${file.name}-${index}`} className={classes.fileItem}>
+              <Typography
+                variant="body2"
+                className={classes.fileName}
+                onClick={() => {
+                  const fileUrl = file.url || URL.createObjectURL(file);
+                  const link = document.createElement("a");
+                  link.href = fileUrl;
+                  link.download = file.name;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                style={{ cursor: "pointer", textDecoration: "underline", color: "#005f67" }}
+              >
+                {file.name}
+              </Typography>
 
-        <Box display="flex" alignItems="center">
-          <IconButton onClick={() => removeFile(file.name)} size="small">
-            <DeleteIcon color="secondary" className={classes.deleteIcon} />
-          </IconButton>
+              <Box display="flex" alignItems="center">
+                <IconButton onClick={() => removeFile(file.name)} size="small">
+                  <DeleteIcon color="secondary" className={classes.deleteIcon} />
+                </IconButton>
 
-          {/* ➕ Add icon (beside delete) */}
-          <IconButton
-            size="small"
-            onClick={() => document.getElementById(`additionalFileInput-${fieldKey}-${index}`).click()}
-          >
-            <AddIcon style={{ fontSize: "1.2rem", color: "#005f67" }} />
-          </IconButton>
+                {/* ➕ Add icon (beside delete) */}
+                <IconButton size="small" onClick={() => document.getElementById(`additionalFileInput-${fieldKey}-${index}`).click()}>
+                  <AddIcon style={{ fontSize: "1.2rem", color: "#005f67" }} />
+                </IconButton>
 
-          {/* Hidden input for upload */}
-          <input
-            id={`additionalFileInput-${fieldKey}-${index}`}
-            type="file"
-            multiple
-            hidden
-            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.gif"
-            onChange={(e) => {
-              if (e.target.files && e.target.files.length > 0) {
-                onDrop(Array.from(e.target.files));
-              }
-            }}
-          />
-        </Box>
-      </Box>
-    ))}
-  </Paper>
-)}
-
-
+                {/* Hidden input for upload */}
+                <input
+                  id={`additionalFileInput-${fieldKey}-${index}`}
+                  type="file"
+                  multiple
+                  hidden
+                  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.gif"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files.length > 0) {
+                      onDrop(Array.from(e.target.files));
+                    }
+                  }}
+                />
+              </Box>
+            </Box>
+          ))}
+        </Paper>
+      )}
     </div>
   );
 };

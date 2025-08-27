@@ -121,14 +121,10 @@ const MultiStepApplyForm = () => {
     if (selectedApplicationType === "financialAssistance") {
       dispatch(fetchApplicationsSummary(modulesManager, [`applicationType: "financialAssistance",workforceEmployee_Nid: "${userName}",status:"new"`])).then((res) => {
         const data = res?.payload?.data?.workforceApplication?.edges;
-
         if (data && data.length > 0) {
-          // Data already exists → show error only
           setOpenErrorModal(true);
           return;
         }
-
-        // No data found → show form
         setShowForm(true);
       });
     } else {
