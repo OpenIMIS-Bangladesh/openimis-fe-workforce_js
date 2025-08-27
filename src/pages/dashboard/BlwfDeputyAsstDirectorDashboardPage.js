@@ -118,7 +118,7 @@ const FiledApplications = () =>{
   return (
   <>
     <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.section2.deputy2.admin.dashboard" />
+      <FormattedMessage module="workforce" id="workforce.blwf.deputy.admin.dashboard" />
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
@@ -198,11 +198,11 @@ const Others = () => (
 
 // ------------------------------------------------------------
 
-const S2DeputyAsstDirectorDashboardPage = () => {
+const BlwfDeputyAsstDirectorDashboardPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
-  const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
+  const [selectedMenu, setSelectedMenu] = useState("pendingApplications");
  useEffect(() => {
       return dispatch(fetchSummaryApplications(modulesManager,['status:"meeting_created"']));
     }, []);
@@ -250,4 +250,4 @@ const S2DeputyAsstDirectorDashboardPage = () => {
   );
 };
 
-export default S2DeputyAsstDirectorDashboardPage;
+export default BlwfDeputyAsstDirectorDashboardPage;

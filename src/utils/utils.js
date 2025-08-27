@@ -67,6 +67,8 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION;
   } else if (user_rights.includes(821001)) {
     user_type = WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION;
+  } else if (user_rights.includes(812008)) {
+    user_type = WORKFORCE_USER_TYPE.BLWF_CHECKER;
   } else if (!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }

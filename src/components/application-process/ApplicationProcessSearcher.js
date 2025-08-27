@@ -155,6 +155,42 @@ class ApplicationProcessSearcher extends Component {
       }
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_CHECKER || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ) {
+      this.setState({ displayVersion: showHistoryFilter });
+
+      const defaultStatusFilters = [
+        'organizationTypeIn: ["blwf"]'
+      ];
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
+      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
+      const hasAppTypeIn = prms?.some(f => f.includes("applicationTypeIn"));
+
+      let finalFilters = [];
+
+      if (prms?.length) {
+        finalFilters = [...prms];
+
+        if (!hasStatusIn) {
+          finalFilters = [...defaultStatusFilters.slice(0, 1), ...finalFilters];
+        }
+
+        if (!hasAppTypeIn) {
+          finalFilters = [...finalFilters, defaultStatusFilters[1]];
+        }
+
+        if (!hasOrderBy) {
+          finalFilters.push(orderByFilter);
+        }
+      } else {
+        finalFilters = [...defaultStatusFilters, orderByFilter];
+      }
+      if (loggedInUserId) {
+        finalFilters.push(`applicationTo: "${loggedInUserId}"`);
+      }
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
@@ -191,15 +227,12 @@ class ApplicationProcessSearcher extends Component {
       let finalFilters = [];
 
       if (nidFilters.length) {
-        // If NID search is present, ignore default status filters
         finalFilters = [...nidFilters];
 
-        // Optionally add orderBy if not already present
         if (!finalFilters.some(f => f.includes("orderBy"))) {
           finalFilters.push(orderByFilter);
         }
 
-        // Keep summaryId filter if present
         if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
           finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
         }
@@ -992,6 +1025,10 @@ class ApplicationProcessSearcher extends Component {
       ? headerBlwfApprover(this)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? headerFactoryAdmin(this)
+      : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
+      ? headerChecker(this)
+      : userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
+      ? headerChecker(this)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
       ? headerDirector(this)
       : headersAdmin(this);
@@ -1029,6 +1066,10 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersBlwfApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication)
+      : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
+      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      : userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
+      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
       ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication)
       : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.rejectedApplication);
@@ -1719,7 +1760,8 @@ class ApplicationProcessSearcher extends Component {
               </IconButton>
             </Box>
           ) : null}
-          {userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR? (
+          {userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR 
+          || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR?  (
             <Box
               style={{
                 marginTop: 10,
