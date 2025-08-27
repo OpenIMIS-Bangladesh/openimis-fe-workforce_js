@@ -20,6 +20,7 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
+import CheckCircleOutlineTwoToneIcon from "@material-ui/icons/CheckCircleOutlineTwoTone";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { fetchSummaryApplications } from "../../actions";
 
@@ -108,16 +109,16 @@ const SidebarMenu = [
     ),
     icon: <HourglassFullTwoToneIcon />,
   },
-  // {
-  //   id: "approveMeetingSheet",
-  //   text: (
-  //     <FormattedMessage
-  //       module="workforce"
-  //       id="workforce.employee.application.approveMeetingSheet"
-  //     />
-  //   ),
-  //   icon: <CheckCircleOutlineTwoToneIcon />,
-  // },
+  {
+    id: "approveMeetingSheet",
+    text: (
+      <FormattedMessage
+        module="workforce"
+        id="workforce.application.forwarded"
+      />
+    ),
+    icon: <CheckCircleOutlineTwoToneIcon />,
+  },
   // {
   //   id: "applicationStatus",
   //   text: (
@@ -129,7 +130,7 @@ const SidebarMenu = [
 
 // ----------- Components to Render in Main Content -----------
 
-const FiledApplications = ({ summaryData = [], showSummaryBlock = true }) => {
+const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
 
@@ -172,7 +173,7 @@ const FiledApplications = ({ summaryData = [], showSummaryBlock = true }) => {
                 <Card style={{ width: "100%" }}>
                   <CardContent>
                     {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} />
+                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons} />
                     )}
                   </CardContent>
                 </Card>
@@ -250,25 +251,27 @@ const ApproverDashboard = () => {
   const [selectedMenu, setSelectedMenu] = useState("pendingMeetingSheet"); // Default first menu
   useEffect(() => {
     return dispatch(
-      fetchSummaryApplications(modulesManager, ['status:"forward_to_comiitee"','organizationType:"cf"'])
+      fetchSummaryApplications(modulesManager, ['organizationType:"cf"'])
     );
   }, []);
 
   const data = useSelector(
     (state) => state.workforce[`applicationsSummary`] ?? []
   );
-  console.log("hello i am approver", data);
+
+  const pendingSummaryData = data.filter(d => d.status === "forward_to_comiitee");
+  const sentSummaryData = data.filter(d => d.status === "forward_to_dg" || d.status ==='forward_to_director');
 
   const renderContent = () => {
     switch (selectedMenu) {
       case "pendingMeetingSheet":
         return (
-          <FiledApplications summaryData={data} showSummaryBlock={false} />
+          <FiledApplications summaryData={pendingSummaryData}/>
         );
       case "approveMeetingSheet":
-        return <FiledApplications summaryData={data} showSummaryBlock={true} />;
-      case "recentApplications":
-        return <FiledApplications />;
+        return <FiledApplications summaryData={sentSummaryData} disableButtons={1}/>;
+      // case "recentApplications":
+      //   return <FiledApplications />;
       case "applicationStatus":
         return <ApplicationStatus />;
       default:
