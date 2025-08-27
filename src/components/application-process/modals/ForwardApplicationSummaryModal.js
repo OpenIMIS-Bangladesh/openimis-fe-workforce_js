@@ -123,15 +123,6 @@ const ForwardApplicationSummaryModal = ({
       comment: editorContent,
       destinationOffice: formData,
     };
-
-    // try {
-    //   const response = await onSubmitForward(payload);
-    //   setServerResponse(response);
-    // } catch {
-    //   setServerResponse({ status: "ERROR", message: "সাবমিশনে ব্যর্থ হয়েছে!" });
-    // } finally {
-    //   setSubmitting(false);
-    // }
   };
 
   const handleForward = async () => {
@@ -148,7 +139,7 @@ const ForwardApplicationSummaryModal = ({
       meetingDate: formData?.meetingDate,
       year: formData?.year,
       month: formData?.month,
-      organizationType: userType === "approver" ? "cf" : userType === "blwf_approver" ? "blwf": null,      
+      organizationType: userType === "section_admin" ? "cf" : userType === "blwf_section_admin" ? "blwf": null,      
       sectionType: userType === "section_admin" ? "section_one" : userType === "section_admin_two" ? "section_two": null,
       applicationData: JSON.stringify(selectedApplicationIds),
     };
@@ -171,13 +162,6 @@ const ForwardApplicationSummaryModal = ({
           applicationSummaryId= response?.payload?.data?.workforceApplicationSummary?.edges?.[0]?.node?.id
           console.log({applicationSummaryId})
         })
-
-  // if (!createdSummaryId) {
-  //   setServerResponse({ status: "ERROR", message: "সারাংশ তৈরি ব্যর্থ হয়েছে!" });
-  //   return;
-  // }
-
-  // console.log(applicationSummaryId)
   console.log(decodeId(applicationSummaryId))
   if (!applicationSummaryId) {
     setServerResponse({ status: "ERROR", message: "সারাংশ তৈরি ব্যর্থ হয়েছে!" });
@@ -186,8 +170,12 @@ const ForwardApplicationSummaryModal = ({
   for (const encodedId of selectedApplicationIds) {
      const updateApplicationData = {
        id: decodeId(encodedId),
-       cfApplicationSummaryId: decodeId(applicationSummaryId),
-       status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+      ...(userType === "section_admin"
+      ? { cfApplicationSummaryId: decodeId(applicationSummaryId) }
+      : userType === "blwf_section_admin"
+      ? { blwfApplicationSummaryId: decodeId(applicationSummaryId) }
+      : {}),       
+      status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
      };
    
    await dispatch(
@@ -212,10 +200,8 @@ const handleSave = async () => {
     meetingDate: formData?.meetingDate,
     year: Number(formData?.year),
     month: formData?.month,
-    organizationType: "cf",
-         sectionType: userType === "section_admin" ? "section_one" : "section_two",
-
-
+    organizationType: userType === "section_admin" ? "cf" : userType === "blwf_section_admin" ? "blwf": null,      
+    sectionType: userType === "section_admin" ? "section_one" : userType === "section_admin_two" ? "section_two": null,
     applicationData: JSON.stringify(selectedApplicationIds),
   };
   const applicationSummeryMutation = formatMutation(
@@ -244,7 +230,11 @@ const handleSave = async () => {
   for (const encodedId of selectedApplicationIds) {
      const updateApplicationData = {
        id: decodeId(encodedId),
-       cfApplicationSummaryId: decodeId(applicationSummaryId),
+        ...(userType === "section_admin"
+      ? { cfApplicationSummaryId: decodeId(applicationSummaryId) }
+      : userType === "blwf_section_admin"
+      ? { blwfApplicationSummaryId: decodeId(applicationSummaryId) }
+      : {}),      
        status: WORKFORCE_STATUS.MEETING_CREATED,
      };
    

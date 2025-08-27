@@ -482,13 +482,7 @@ class ApplicationProcessSearcher extends Component {
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
-      this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(this.props.modulesManager, [
-        `statusIn: ["forward_to_director","approved_by_director","approved_by_dg"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(
-          this.props.summaryId
-        )}"`,
-      ]);
+ 
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, [
@@ -536,23 +530,21 @@ class ApplicationProcessSearcher extends Component {
           // prms
         );
       }
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN) {
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
+      const filtersBase = [
+        'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
+        'organizationTypeIn: ["cf","blwf"]',
+        'orderBy: ["-dateCreated"]',
+      ];
 
-      let filters = [];
+      const cfFilters = [...filtersBase, `cfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+      const blwfFilters = [...filtersBase, `blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
 
-      if (rejectedApplication) {
-        filters.push('statusIn: ["rejected","rejected_by_dg"]');
-      } else {
-        filters.push(
-          `statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]`
-        );
-        filters.push(`cfApplicationSummary_Id:"${decodeId(this.props.summaryId)}"`);
-      }
-
-      filters.push(`orderBy: ["-dateCreated"]`);
-
-      this.props.fetchApplicationsSummary(this.props.modulesManager, filters);
+      const [] = await Promise.all([
+        this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
+        this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
+      ]);
 
     }
     };
@@ -1968,7 +1960,7 @@ class ApplicationProcessSearcher extends Component {
                 />
               </>
             );
-          } else if (userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.APPROVER) {
+          } else if (userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
             return (
               <>
                 <ForwardApplicationApproverModal

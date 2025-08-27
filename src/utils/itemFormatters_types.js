@@ -905,7 +905,7 @@ export const itemFormattersBlwfSectionAdmin = (
 ) => {
   const formatters = [
     (application) =>
-      application?.workforceEmployee ? (
+      application?.workforceEmployee && component.props.disableButtons!==1 ? (
         <Checkbox
           checked={component.state.selectedApplicationIds.includes(
             application?.id
