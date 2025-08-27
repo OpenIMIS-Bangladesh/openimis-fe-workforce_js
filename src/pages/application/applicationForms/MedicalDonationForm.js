@@ -56,6 +56,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
     const [errors,setErrors] = useState({})
   const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
     const uploadFile = useSelector((state) => state.workforce.uploadFile);
+    const uploadDependentFile = useSelector((state) => state.workforce.uploadDependentFile);
   const classes = useStyles();
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(0);
@@ -290,18 +291,21 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
           applicationgetId = applicationId;
         }
 
-        // if (applicationForSelf === "no" && uploadFile) {
-        //   await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${applicationgetId}"`])).then((res) => {
-        //     const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-        //     console.log({ dependentId });
-        //       dispatch(
-        //         createWorkforceDocument(
-        //           { ...uploadFile, workforceApplicationId: applicationgetId, workforceDependentId: decodeId(dependentId) },
-        //           `Created workforce document`
-        //         )
-        //       );
-        //   });
-        // }
+        if (applicationForSelf === "no" && uploadDependentFile) {
+          await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${applicationgetId}"`])).then((res) => {
+            const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
+            console.log({ dependentId });
+            uploadDependentFile.map((file, index) => {
+                            dispatch(createWorkforceDocument({ ...file, workforceApplicationId: applicationgetId,workforceDependentId: decodeId(dependentId)  }, `Created workforce document `));
+                          });
+              // dispatch(
+              //   createWorkforceDocument(
+              //     { ...uploadFile, workforceApplicationId: applicationgetId, workforceDependentId: decodeId(dependentId) },
+              //     `Created workforce document`
+              //   )
+              // );
+          });
+        }
       } else {
         const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
         console.log("i am from update", updateApplicationData);
@@ -426,6 +430,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
                 addItem={() => addArrayFieldItem("dependents", { fullName: "", relationship: "" })}
                 removeItem={(index) => removeArrayFieldItem("dependents", index)}
                 expanded={expanded}
+                formdata={formData}
                 setExpanded={setExpanded}
                 errors={errors}
               />

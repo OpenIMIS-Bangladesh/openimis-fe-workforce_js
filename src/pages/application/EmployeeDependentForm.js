@@ -6,6 +6,7 @@ import { TextInput, PublishedComponent, FormattedMessage, useTranslations, useMo
 import RelationWithWorkerPicker from "../../pickers/RelationWithWorkerPicker";
 import FileUploader from "../../pickers/FileUploader";
 import CustomDependentLocation from "../../components/application-forms/CustomDependentLocation";
+import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -276,7 +277,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   />
                 </Grid>
 
-                <Grid item xs={6}>
+                {/* <Grid item xs={6}>
                   <Typography>{formatMessage("workforce.uploadFile.dependent.photo")}</Typography>
                   <FileUploader fieldKey="dependentPhoto" onFileChange={(field, value) => handleChange(index, field, value)} documentType="dependent photo" />
                 </Grid>
@@ -284,6 +285,9 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                 <Grid item xs={6}>
                   <Typography>{formatMessage("workforce.uploadFile.dependent.nid_or_birthCcertificate")}</Typography>
                   <FileUploader fieldKey="dependentNid" onFileChange={(field, value) => handleChange(index, field, value)} documentType="dependent nid" />
+                </Grid> */}
+                <Grid item xs={12}>
+                  <EmployeeDetailsForm2 handleChange={(key,value)=>handleChange(index,"attachments",value)} formData={formdata} selectedApplicationType={applicationType}  formStepNo={"employeeDependentInfo"} />
                 </Grid>
 
                 {applicationType === "financialAssistance" && (
