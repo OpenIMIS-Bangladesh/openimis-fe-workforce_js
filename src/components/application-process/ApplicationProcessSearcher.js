@@ -371,39 +371,39 @@ class ApplicationProcessSearcher extends Component {
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_doctor"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER_TWO || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
-
-      const defaultFilters = [
-        'statusIn: ["forward_to_cf_section_two"]',
-        'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
-        'orderBy: ["-dateCreated"]',
+      const defaultStatusFilters = [
+         'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
       ];
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
+      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
+      const hasAppTypeIn = prms?.some(f => f.includes("applicationTypeIn"));
 
       let finalFilters = [];
 
       if (prms?.length) {
-        const hasStatusIn = prms.some(f => f.includes("statusIn"));
-        const hasOrderBy = prms.some(f => f.includes("orderBy"));
-        const hasAppTypeIn = prms.some(f => f.includes("applicationTypeIn"));
-
         finalFilters = [...prms];
 
         if (!hasStatusIn) {
-          finalFilters.unshift(defaultFilters[0]);
+          finalFilters = [...defaultStatusFilters.slice(0, 1), ...finalFilters];
         }
+
         if (!hasAppTypeIn) {
-          finalFilters.push(defaultFilters[1]);
+          finalFilters = [...finalFilters, defaultStatusFilters[1]];
         }
+
         if (!hasOrderBy) {
-          finalFilters.push(defaultFilters[2]);
+          finalFilters.push(orderByFilter);
         }
       } else {
-        finalFilters = [...defaultFilters];
+        finalFilters = [...defaultStatusFilters, orderByFilter];
       }
       if (loggedInUserId) {
         finalFilters.push(`applicationTo: "${loggedInUserId}"`);
       }
-      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION) {
      this.setState({ displayVersion: showHistoryFilter });
@@ -565,7 +565,7 @@ class ApplicationProcessSearcher extends Component {
           // prms
         );
       }
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
       const filtersBase = [
         'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
@@ -578,6 +578,33 @@ class ApplicationProcessSearcher extends Component {
 
       const [] = await Promise.all([
         this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
+        this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
+      ]);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
+      this.setState({ displayVersion: showHistoryFilter });
+      const filtersBase = [
+        'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
+        'organizationTypeIn: ["cf"]',
+        'orderBy: ["-dateCreated"]',
+      ];
+
+      const cfFilters = [...filtersBase, `cfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+
+      const [] = await Promise.all([
+        this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
+      ]);
+
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR) {
+      this.setState({ displayVersion: showHistoryFilter });
+      const filtersBase = [
+        'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
+        'organizationTypeIn: ["blwf"]',
+        'orderBy: ["-dateCreated"]',
+      ];
+
+      const blwfFilters = [...filtersBase, `blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+
+      const [] = await Promise.all([
         this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
       ]);
 
@@ -1031,6 +1058,8 @@ class ApplicationProcessSearcher extends Component {
       ? headerChecker(this)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
       ? headerDirector(this)
+      : userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
+      ? headerDirector(this)
       : headersAdmin(this);
   };
 
@@ -1071,6 +1100,8 @@ class ApplicationProcessSearcher extends Component {
       : userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
       ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
+      ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication)
+      : userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
       ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication)
       : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.rejectedApplication);
   };
@@ -1847,7 +1878,7 @@ class ApplicationProcessSearcher extends Component {
             </IconButton>
           </Box>
         ) : null}
-        {userType === WORKFORCE_USER_TYPE.DIRECTOR ? (
+        {userType === WORKFORCE_USER_TYPE.DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR ? (
           <Box
             style={{
               marginTop: 10,

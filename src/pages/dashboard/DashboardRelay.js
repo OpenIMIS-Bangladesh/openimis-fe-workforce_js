@@ -49,6 +49,8 @@ console.log(user_type)
     return <DashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.DIRECTOR) {
     return <DashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.BLWF_DIRECTOR) {
+    return <DashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION) {
     return <BGMEAAssociationDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION) {
