@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Grid, Box, Paper, Typography, Divider, IconButton, FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
+import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent,decodeId } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import clsx from "clsx";
 import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
@@ -49,7 +49,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
   };
 
   const locale = reduxState?.core?.user?.i_user?.language
-
+console.log('formData from employee Details form',formData)
   return (
     <Box>
       <Grid container spacing={2}>
@@ -215,7 +215,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   <FactoryPicker
                     id="factory"
                     required={true}
-                    value={formData?.workforceEmployee?.factory?.id}
+                    value={ formData?.factory?.id || formData?.workforceEmployee?.factory?.id }
                     label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
                     companyId={formData?.workforceEmployee?.company?.id}
                     onChange={(v) => {

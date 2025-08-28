@@ -183,6 +183,10 @@ export const WORKFORCE_USER_TYPE = {
   DOCTOR: "doctor",
   SEC1_DEPUTI_ASST_DIRECTOR: "sec1_deputi_asst_director ",
   SEC2_DEPUTI_ASST_DIRECTOR: "sec2_deputi_asst_director ",
+  BLWF_CHECKER: "blwf_checker",
+  BLWF_DEPUTI_ASST_DIRECTOR: "blwf_deputi_asst_director",
+  BLWF_DIRECTOR: "blwf_director",
+
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
   admin: "Admin",
@@ -201,6 +205,9 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   doctor: "Doctor",
   sec1_deputi_asst_director: "Sec1 Deputi Asst Director",
   sec2_deputi_asst_director: "Sec2 Deputi Asst Director",
+  blwf_checker: "BLWF Checker",
+  blwf_deputi_asst_director: "BLWF Deputi Asst Director",
+  blwf_director: "BLWF Director",
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
   admin: "অ্যাডমিন",
@@ -219,6 +226,8 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   doctor: "ডাক্তার",
   sec1_deputi_asst_director: "শাখা-১ উপ-সহকারী পরিচালক",
   sec2_deputi_asst_director: "শাখা-২ উপ-সহকারী পরিচালক",
+  blwf_deputi_asst_director: "বিএলডাব্লিউএফ উপ-সহকারী পরিচালক",
+  blwf_director: "বিএলডাব্লিউএফ পরিচালক",
 
 };
 

@@ -58,9 +58,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const MultiStepApplyForm = () => {
   const classes = useStyles();

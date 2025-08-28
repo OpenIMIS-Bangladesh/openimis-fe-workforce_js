@@ -117,6 +117,8 @@ useEffect(() => {
       roleIds = ["17", "37"];
     } else if (userType === "section_admin_two") {
       roleIds = ["36", "39"];
+    } else if (userType === "blwf_section_admin") {
+      roleIds = ["42", "43"];
     }
 
     if (roleIds.length > 0) {
@@ -129,9 +131,6 @@ useEffect(() => {
     }
   }
 }, [open, userType]);
-
-
-
 
   const data = useSelector((state) => state.workforce[`application`] ?? []);
 
@@ -162,8 +161,6 @@ const handleForward = async () => {
  await dispatch(
       updateApplication(updateApplicationData, `update workforce application`)
     );
-   
-
       const createApplicationMovementData = {
         applicationId: decodeId(encodedId),
         applicationFromId: loggedInUserId,

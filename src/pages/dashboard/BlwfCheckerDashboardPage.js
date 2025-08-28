@@ -24,8 +24,16 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { fetchSummaryApplications } from "../../actions";
+import RestorePageIcon from '@material-ui/icons/RestorePage';
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
+import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -115,14 +123,15 @@ const SidebarMenu = [
 const FiledApplications = () =>{ 
   const classes = useStyles()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
   return (
   <>
     <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.section2.deputy2.admin.dashboard" />
+      <FormattedMessage module="workforce" id="workforce.blwf.checker.dashboard" />
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
-            <ApplicationProcessSearcher oggedInUserId={loggedInUserId}
+            <ApplicationProcessSearcher loggedInUserId={loggedInUserId}
                     
             />
           </CardContent>
@@ -198,11 +207,11 @@ const Others = () => (
 
 // ------------------------------------------------------------
 
-const S2DeputyAsstDirectorDashboardPage = () => {
+const BlwfCheckerDashboard = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
-  const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
+  const [selectedMenu, setSelectedMenu] = useState("pendingApplications");
  useEffect(() => {
       return dispatch(fetchSummaryApplications(modulesManager,['status:"meeting_created"']));
     }, []);
@@ -250,4 +259,4 @@ const S2DeputyAsstDirectorDashboardPage = () => {
   );
 };
 
-export default S2DeputyAsstDirectorDashboardPage;
+export default BlwfCheckerDashboard;

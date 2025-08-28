@@ -53,6 +53,8 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR;
   }else if (user_rights.includes(821005)) {
     user_type = WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN;
+  }else if (user_rights.includes(821007)) {
+    user_type = WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR;
   } else if (user_rights.includes(818001)) {
     user_type = WORKFORCE_USER_TYPE.DOCTOR;
   } else if (user_rights.includes(813001)) {
@@ -63,10 +65,14 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.FACTORY_ADMIN;
   } else if (user_rights.includes(815001)) {
     user_type = WORKFORCE_USER_TYPE.DIRECTOR;
+  } else if (user_rights.includes(812009)) {
+    user_type = WORKFORCE_USER_TYPE.BLWF_DIRECTOR;
   } else if (user_rights.includes(816001)) {
     user_type = WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION;
   } else if (user_rights.includes(821001)) {
     user_type = WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION;
+  } else if (user_rights.includes(812008)) {
+    user_type = WORKFORCE_USER_TYPE.BLWF_CHECKER;
   } else if (!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }
@@ -126,7 +132,6 @@ export const getParsedApplication = (modulesManager, filters) => {
         employeeChildrenInfo: safeParse(rawData.employeeChildrenInfo) || {},
         metadata: safeParse(rawData.metadata) || {},
         applicantInfo: safeParse(rawData.applicantInfo) || {},
-
       };
 
       return parsedData;

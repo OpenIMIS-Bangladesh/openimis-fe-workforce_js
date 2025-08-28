@@ -78,7 +78,7 @@ const WorkerExtraInfo = ({ handleChange, formData,errors }) => {
                 required
                 onChange={(e) => handleChange("instituteName", e)}
                 error={!!errors.instituteName}
-            helperText={errors.instituteName}
+                helperText={errors.instituteName}
               />
             </Grid>
             <Grid item xs={6}>

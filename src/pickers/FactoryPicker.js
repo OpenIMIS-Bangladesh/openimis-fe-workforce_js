@@ -50,7 +50,7 @@ const FactoryPicker = ({
       () => data.find((option) => option.id === value) || null,
       [value]
     )
-
+console.log("murad fake",value)
   return (
     <Autocomplete
     id={id}

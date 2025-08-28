@@ -198,7 +198,7 @@ const Others = () => (
 
 // ------------------------------------------------------------
 
-const CheckerTwoDashboardPage = () => {
+const S1DeputyAsstDirectorDashboardPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
@@ -250,4 +250,4 @@ const CheckerTwoDashboardPage = () => {
   );
 };
 
-export default CheckerTwoDashboardPage;
+export default S1DeputyAsstDirectorDashboardPage;

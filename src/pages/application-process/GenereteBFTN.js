@@ -488,7 +488,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
 
       </Dialog>
     );
-  } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
+  } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR) {
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle disableTypography>
