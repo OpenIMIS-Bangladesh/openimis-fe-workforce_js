@@ -101,7 +101,7 @@ class ViewApplicationPage extends Component {
     const dependentInfo = this.safeParse(stateEdited?.employeeDependentInfo);
     const childrenInfo = this.safeParse(stateEdited?.employeeChildrenInfo);
     const applicantInfo = this.safeParse(stateEdited?.applicantInfo);
-    const metaInfo = this.safeParse(stateEdited?.employeeChildrenInfo);
+    const metaInfo = this.safeParse(stateEdited?.metadata);
 
     // ✅ Safely parse nested stringified objects
     const formData = {
