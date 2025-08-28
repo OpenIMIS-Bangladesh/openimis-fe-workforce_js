@@ -121,13 +121,29 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       });
 
       // Load logos as buffers
-      const centralFundLogo = await loadImageAsBuffer('/front/workforce_assets/centralfund.png');
+
+      let logo= `/workforce_assets/centralfund.png`;
+      let organization= 'কেন্দ্রীয় তহবিল';
+      let address= '২১ তলা, ভবন#৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০';
+      let web= 'www.centralfund.gov.bd';
+      if(getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN)
+      {
+        logo= `/workforce_assets/blwf.png`;
+        organization= 'বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন';
+        address= '১৮ তলা, ভবন#৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০';
+        web= 'www.blwf.gov.bd';
+      }
+      // else if(getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_SECTION_ADMIN)
+      // {
+      //   logo= `workforce_assets/eis.png`;
+      // }
+      const renderLogo = await loadImageAsBuffer('/front'+logo);
       const bdGovLogo = await loadImageAsBuffer('/front/workforce_assets/bdgov.png');
 
       // Add logos to workbook
-      if (centralFundLogo) {
+      if (renderLogo) {
         const imageId1 = workbook.addImage({
-          buffer: centralFundLogo,
+          buffer: renderLogo,
           extension: 'png',
         });
         worksheet.addImage(imageId1, {
@@ -135,7 +151,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
           ext: { width: 120, height: 120 },
         });
       } else {
-        worksheet.getCell('A1').value = '[Central Fund Logo]';
+        worksheet.getCell('A1').value = '[Organization Logo]';
       }
 
       if (bdGovLogo) {
@@ -162,15 +178,15 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       worksheet.getCell('D2').alignment = { horizontal: 'center' };
 
       worksheet.mergeCells('D3:F3');
-      worksheet.getCell('D3').value = 'কেন্দ্রীয় তহবিল';
+      worksheet.getCell('D3').value = organization;
       worksheet.getCell('D3').alignment = { horizontal: 'center' };
 
       worksheet.mergeCells('D4:F4');
-      worksheet.getCell('D4').value = '২১ তলা, ভবন#৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০';
+      worksheet.getCell('D4').value = address;
       worksheet.getCell('D4').alignment = { horizontal: 'center' };
 
       worksheet.mergeCells('D5:F5');
-      worksheet.getCell('D5').value = 'www.centralfund.gov.bd';
+      worksheet.getCell('D5').value = web;
       worksheet.getCell('D5').alignment = { horizontal: 'center' };
 
       worksheet.mergeCells('A6:I6');
@@ -330,6 +346,21 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     );
   } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN || 
   getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
+    let logo= <img src={`workforce_assets/centralfund.png`} alt="Logo" style={{ width: "120px" }} />;
+    let organization= 'কেন্দ্রীয় তহবিল';
+    let address= '২১ তলা, ভবন#৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০';
+    let web= 'www.centralfund.gov.bd';
+    if(getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN)
+    {
+      logo= <img src={`workforce_assets/blwf.png`} alt="Logo" style={{ width: "120px" }} />;
+      organization= 'বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন';
+      address= '১৮ তলা, ভবন#৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০';
+      web= 'www.blwf.gov.bd';
+    }
+    // else if(getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_SECTION_ADMIN)
+    // {
+    //   logo= <img src={`workforce_assets/eis.png`} alt="Logo" style={{ width: "120px" }} />;
+    // }
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle disableTypography>
@@ -340,14 +371,14 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
             <TableHead style={{ fontWeight: "bold" }}>
               <TableRow>
                 <TableCell colSpan={2} style={{ textAlign: "left" }}>
-                  <img src={`workforce_assets/centralfund.png`} alt="Logo" style={{ width: "120px" }} />
+                  {logo}
                 </TableCell>
                 <TableCell colSpan={5} style={{ textAlign: "center" }}>
                   <h3 style={{ margin: 0 }}>গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</h3>
                   <p style={{ margin: 0 }}>শ্রম ও কর্মসংস্থান মন্ত্রণালয়</p>
-                  <p style={{ margin: 0 }}>কেন্দ্রীয় তহবিল</p>
-                  <p style={{ margin: 0 }}>২১ তলা, ভবন#৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০</p>
-                  <p style={{ margin: 0 }}>www.centralfund.gov.bd</p>
+                  <p style={{ margin: 0 }}>{organization}</p>
+                  <p style={{ margin: 0 }}>{address}</p>
+                  <p style={{ margin: 0 }}>{web}</p>
                 </TableCell>
                 <TableCell colSpan={2} style={{ textAlign: "right" }}>
                   <img src={`workforce_assets/bdgov.png`} alt="Logo" style={{ width: "120px" }} />
