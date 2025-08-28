@@ -371,39 +371,39 @@ class ApplicationProcessSearcher extends Component {
       this.props.fetchApplicationsSummary(this.props.modulesManager, ['statusIn: ["forward_to_doctor"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER_TWO || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
-
-      const defaultFilters = [
-        'statusIn: ["forward_to_cf_section_two"]',
-        'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
-        'orderBy: ["-dateCreated"]',
+      const defaultStatusFilters = [
+         'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
       ];
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
+      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
+      const hasAppTypeIn = prms?.some(f => f.includes("applicationTypeIn"));
 
       let finalFilters = [];
 
       if (prms?.length) {
-        const hasStatusIn = prms.some(f => f.includes("statusIn"));
-        const hasOrderBy = prms.some(f => f.includes("orderBy"));
-        const hasAppTypeIn = prms.some(f => f.includes("applicationTypeIn"));
-
         finalFilters = [...prms];
 
         if (!hasStatusIn) {
-          finalFilters.unshift(defaultFilters[0]);
+          finalFilters = [...defaultStatusFilters.slice(0, 1), ...finalFilters];
         }
+
         if (!hasAppTypeIn) {
-          finalFilters.push(defaultFilters[1]);
+          finalFilters = [...finalFilters, defaultStatusFilters[1]];
         }
+
         if (!hasOrderBy) {
-          finalFilters.push(defaultFilters[2]);
+          finalFilters.push(orderByFilter);
         }
       } else {
-        finalFilters = [...defaultFilters];
+        finalFilters = [...defaultStatusFilters, orderByFilter];
       }
       if (loggedInUserId) {
         finalFilters.push(`applicationTo: "${loggedInUserId}"`);
       }
-      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION) {
      this.setState({ displayVersion: showHistoryFilter });
