@@ -24,8 +24,16 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { fetchSummaryApplications } from "../../actions";
+import RestorePageIcon from '@material-ui/icons/RestorePage';
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
+import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -115,6 +123,7 @@ const SidebarMenu = [
 const FiledApplications = () =>{ 
   const classes = useStyles()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
   return (
   <>
     <Typography variant="h5" gutterBottom>
@@ -122,7 +131,7 @@ const FiledApplications = () =>{
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
-            <ApplicationProcessSearcher oggedInUserId={loggedInUserId}
+            <ApplicationProcessSearcher loggedInUserId={loggedInUserId}
                     
             />
           </CardContent>
