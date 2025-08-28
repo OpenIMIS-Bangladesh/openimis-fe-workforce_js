@@ -565,7 +565,7 @@ class ApplicationProcessSearcher extends Component {
           // prms
         );
       }
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
       const filtersBase = [
         'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
@@ -578,6 +578,33 @@ class ApplicationProcessSearcher extends Component {
 
       const [] = await Promise.all([
         this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
+        this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
+      ]);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
+      this.setState({ displayVersion: showHistoryFilter });
+      const filtersBase = [
+        'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
+        'organizationTypeIn: ["cf"]',
+        'orderBy: ["-dateCreated"]',
+      ];
+
+      const cfFilters = [...filtersBase, `cfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+
+      const [] = await Promise.all([
+        this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
+      ]);
+
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR) {
+      this.setState({ displayVersion: showHistoryFilter });
+      const filtersBase = [
+        'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
+        'organizationTypeIn: ["blwf"]',
+        'orderBy: ["-dateCreated"]',
+      ];
+
+      const blwfFilters = [...filtersBase, `blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+
+      const [] = await Promise.all([
         this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
       ]);
 
@@ -1031,6 +1058,8 @@ class ApplicationProcessSearcher extends Component {
       ? headerChecker(this)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
       ? headerDirector(this)
+      : userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
+      ? headerDirector(this)
       : headersAdmin(this);
   };
 
@@ -1071,6 +1100,8 @@ class ApplicationProcessSearcher extends Component {
       : userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
       ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
+      ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication)
+      : userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
       ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication)
       : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.rejectedApplication);
   };
@@ -1847,7 +1878,7 @@ class ApplicationProcessSearcher extends Component {
             </IconButton>
           </Box>
         ) : null}
-        {userType === WORKFORCE_USER_TYPE.DIRECTOR ? (
+        {userType === WORKFORCE_USER_TYPE.DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR ? (
           <Box
             style={{
               marginTop: 10,
