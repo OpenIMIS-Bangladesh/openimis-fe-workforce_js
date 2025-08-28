@@ -180,8 +180,8 @@ const MedicalAssistanceForm = ({ organizationType, selectedApplicationType, appl
           presentLocation: employeeData.presentLocation || "",
           presentAddress: employeeData.presentAddress || "",
         },
-        company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || null,
+        company: employeeData.company || formData?.workforceEmployee?.company?.id ||  null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id ||parsedApplicationData?.employeeFactory ||null,
         applicationForSelf: applicationForSelf,
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
@@ -190,6 +190,7 @@ const MedicalAssistanceForm = ({ organizationType, selectedApplicationType, appl
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
+        applicantInfo: parsedApplicationData?.applicantInfo || employeeData?.metadata || {},
       });
     }
   }, [employeeData?.id, parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.

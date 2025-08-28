@@ -1,20 +1,6 @@
 import React, { useEffect } from "react";
-import {
-  Grid,
-  Paper,
-  Typography,
-  Divider,
-  IconButton,
-  Card,
-  CardContent,
-  Box,
-} from "@material-ui/core";
-import {
-  useModulesManager,
-  formatMutation,
-  decodeId,
-  FormattedMessage,
-} from "@openimis/fe-core";
+import { Grid, Paper, Typography, Divider, IconButton, Card, CardContent, Box } from "@material-ui/core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { verifyNid } from "../../actions";
@@ -37,21 +23,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NidVerification = ({ formData, nidOrBcn, modulesManager,setDisableConfirmSubmit }) => {
-  console.log({ nidOrBcn })
+const NidVerification = ({ formData, nidOrBcn, modulesManager, setDisableConfirmSubmit }) => {
+  console.log({ nidOrBcn });
   const classes = useStyles();
   const dispatch = useDispatch();
   useEffect(() => {
     return dispatch(verifyNid(modulesManager, ""));
   }, []);
 
-  const data = useSelector(
-    (state) => state.workforce[`verifyNidDetails`]
-  );
+  const data = useSelector((state) => state.workforce[`verifyNidDetails`]);
 
-  console.log("verify nid",data)
+  console.log("verify nid", data);
   if (data?.error) {
-    setDisableConfirmSubmit(true)
+    setDisableConfirmSubmit(true);
   }
 
   return (
@@ -59,38 +43,65 @@ const NidVerification = ({ formData, nidOrBcn, modulesManager,setDisableConfirmS
       <Box p={0} className={classes.paper}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
-            <Card >
+            <Card>
               <CardContent>
-                <Typography variant="body1" className={classes.title}>
-                  {(data && !data.error) ? (
-                  <b style={{color:"#25D366"}}>
-                    ✅ <FormattedMessage module="workforce" id="workforce.application.nidVerify.success" />
-                  </b>
-                  ): (data && data?.error) ? (
-                    <b style={{color:"red"}}>
-                    ❌ <FormattedMessage module="workforce" id="workforce.application.nidVerify.error" />
-                  </b>
-                  ):(
-                  <b>
-                    <FormattedMessage module="workforce" id="workforce.application.nidVerify.loading" />
-                  </b>
+                {formData.organizationType !== "blwf" && (
+                  <Typography variant="body1" className={classes.title}>
+                    {data && !data.error ? (
+                      <b style={{ color: "#25D366" }}>
+                        ✅ <FormattedMessage module="workforce" id="workforce.application.nidVerify.success" />
+                      </b>
+                    ) : data && data?.error ? (
+                      <b style={{ color: "red" }}>
+                        ❌ <FormattedMessage module="workforce" id="workforce.application.nidVerify.error" />
+                      </b>
+                    ) : (
+                      <b>
+                        <FormattedMessage module="workforce" id="workforce.application.nidVerify.loading" />
+                      </b>
+                    )}
+                  </Typography>
                 )}
-                </Typography>
                 <Divider style={{ margin: "10px 0" }} />
                 <Grid container spacing={2}>
-                  {data && !data?.error ?(
+                  {data && !data?.error ? (
                     <Grid item xs={6}>
-                    <Typography>
-                      <b><FormattedMessage module="workforce" id="workforce.employee.name.en" />:</b> {data?.nameEN}<br />
-                      <b><FormattedMessage module="workforce" id="workforce.employee.name.bn" />:</b> {data?.nameBN}<br />
-                      <b><FormattedMessage module="workforce" id="workforce.employee.fathers_name.bn" />:</b> {data?.fatherNameBN}<br />
-                      <b><FormattedMessage module="workforce" id="workforce.employee.mothers_name.bn" />:</b> {data?.motherNameBN}<br />
-                      <b><FormattedMessage module="workforce" id="workforce.employee.birthdate" />:</b> {data?.dateOfBirth}<br />
-                      <b><FormattedMessage module="workforce" id="workforce.employee.nid" />:</b> {data?.nidNumber}<br />
-                    </Typography>
-                  </Grid>
-                  ):data && data?.error ? null: (<b>loading ...</b>)}
-                  
+                      <Typography>
+                        <b>
+                          <FormattedMessage module="workforce" id="workforce.employee.name.en" />:
+                        </b>{" "}
+                        {data?.nameEN}
+                        <br />
+                        <b>
+                          <FormattedMessage module="workforce" id="workforce.employee.name.bn" />:
+                        </b>{" "}
+                        {data?.nameBN}
+                        <br />
+                        <b>
+                          <FormattedMessage module="workforce" id="workforce.employee.fathers_name.bn" />:
+                        </b>{" "}
+                        {data?.fatherNameBN}
+                        <br />
+                        <b>
+                          <FormattedMessage module="workforce" id="workforce.employee.mothers_name.bn" />:
+                        </b>{" "}
+                        {data?.motherNameBN}
+                        <br />
+                        <b>
+                          <FormattedMessage module="workforce" id="workforce.employee.birthdate" />:
+                        </b>{" "}
+                        {data?.dateOfBirth}
+                        <br />
+                        <b>
+                          <FormattedMessage module="workforce" id="workforce.employee.nid" />:
+                        </b>{" "}
+                        {data?.nidNumber}
+                        <br />
+                      </Typography>
+                    </Grid>
+                  ) : data && data?.error ? null : (
+                    <b>loading ...</b>
+                  )}
                 </Grid>
               </CardContent>
             </Card>
