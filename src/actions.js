@@ -797,6 +797,44 @@ export function fetchWorkforceUserRoleWiseUser(mm, variables) {
 ["ADMIN_WORKFORCE_ROLE_WISE_USERS_REQ", "ADMIN_WORKFORCE_ROLE_WISE_USERS_RESP", "ADMIN_WORKFORCE_ROLE_WISE_USERS_ERR"]
   );
 }
+
+export function fetchApplicationWiseMovementList(mm, variables) {
+  return graphqlWithVariables(
+    `
+      query ($applicationId: String!, $orderBy: [String]) {
+        workforceApplicationMovement(applicationId: $applicationId, orderBy: $orderBy) {
+          edges {
+            node {
+              id
+              status
+              dateCreated
+              applicationFrom {
+                id
+                lastName
+                otherNames
+                loginName
+              }
+              applicationTo {
+                id
+                lastName
+                otherNames
+                loginName
+              }
+            }
+          }
+        }
+      }
+    `,
+    variables,
+    [
+      "WORKFORCE_APPLICATIONS_MOVEMENT_REQ",
+      "WORKFORCE_APPLICATIONS_MOVEMENT_RESP",
+      "WORKFORCE_APPLICATIONS_MOVEMENT_ERR",
+    ]
+  );
+}
+
+
 export function fetchApplicationMovementsSummary(mm, filters) {
   const projections = [
     "id",

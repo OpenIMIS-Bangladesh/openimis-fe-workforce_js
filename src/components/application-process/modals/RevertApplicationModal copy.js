@@ -24,6 +24,8 @@ import {
   fetchApplication,
   updateApplication,
   createApplicationMovement,
+  fetchApplicationWiseMovementList,
+  fetchApplicationWiseMovementUserList
 } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
 
@@ -76,7 +78,7 @@ const RevertPathSelector = ({ users, selectedUser, onChange }) => {
         gutterBottom
         style={{ fontWeight: "bold" }}
       >
-        ফেরত পাঠাতে চান কাকে নির্বাচন করুন:
+        আবেদন কাকে ফেরত পাঠাতে চান নির্বাচন করুন:
       </Typography>
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
@@ -106,6 +108,7 @@ const RevertPathSelector = ({ users, selectedUser, onChange }) => {
   );
 };
 
+
 const RevertApplicationModal = ({
   open,
   onClose,
@@ -120,6 +123,10 @@ const RevertApplicationModal = ({
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
   const [selectedRevertUser, setSelectedRevertUser] = useState(null);
+  const [movementsfromId, setMovementsfromId] = useState([]);
+  const [applicationFromUsers, setApplicationFromUsers] = useState([]);
+  const [movementUsers, setMovementUsers] = useState([]);
+
 
   // Load application details
   useEffect(() => {
@@ -138,13 +145,44 @@ const RevertApplicationModal = ({
     }
   }, [open]);
 
-  // Dummy users - replace with application movement history
-  const movementUsers = [
-    { id: "applicant001", name: selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী", role: "Applicant" },
-    { id: "factoryAdmin456", name: "Adnan", role: "Factory Admin" },
-    { id: "association", name: "Anwar", role: "Association" },
-    { id: "sectionAdmin", name: "Noor", role: "Section Admin" },
-  ];
+useEffect(() => {
+  if (open && selectedApplication?.id) {
+    const applicationId = decodeId(selectedApplication.id);
+
+    dispatch(
+      fetchApplicationWiseMovementList(modulesManager, {
+        applicationId,
+        orderBy: ["-dateCreated"],
+      })
+    ).then((res) => {
+      const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
+
+      // Collect all users from 'applicationFrom' and 'applicationTo'
+      const allUsers = edges.flatMap(({ node }) => {
+        const users = [];
+        if (node.applicationFrom) users.push(node.applicationFrom);
+        return users;
+      }).filter(Boolean); // remove nulls
+
+      // Build movementUsers array: static + dynamic
+      setMovementUsers([
+        {
+          id: "applicant001",
+          name: selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী",
+          role: "Applicant",
+        },
+        { id: "factoryAdmin456", name: "Adnan", role: "Factory Admin" },
+        { id: "association", name: "Anwar", role: "Association" },
+        ...allUsers.map((user, index) => ({
+          id: `sectionAdmin_${index}`,
+          name: user.loginName,
+          role: "Section Admin",
+        })),
+      ]);
+    }).catch((err) => console.error(err));
+  }
+}, [open, selectedApplication, modulesManager, dispatch]);
+
 
   const handleRevert = async () => {
     if (!selectedRevertUser) {
