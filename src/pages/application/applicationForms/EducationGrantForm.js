@@ -184,7 +184,7 @@ const EducationGrantForm = ({  organizationType, selectedApplicationType, applic
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || null,
-        factory: employeeData.factory || null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id ||parsedApplicationData?.employeeFactory ||null,
         applicationForSelf: applicationForSelf,
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,

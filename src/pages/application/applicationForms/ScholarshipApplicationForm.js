@@ -187,7 +187,7 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id ||parsedApplicationData?.employeeFactory ||null,
         applicationForSelf: applicationForSelf,
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,

@@ -192,14 +192,15 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id ||parsedApplicationData?.employeeFactory ||null,
+        applicationForSelf: applicationForSelf,
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
-        metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
-        dependents: parsedApplicationData?.employeeDependentInfo || employeeData?.dependents || {},
+        dependents: parsedApplicationData?.employeeDependentInfo || employeeData?.dependents || [{}],
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
+        metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
       });
     }
   }, [employeeData?.id, parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.
@@ -469,6 +470,7 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
             handleChange={(key, value) => handleChange(key, value, "metadata")}
             deathType={deathType}
             errors={errors}
+            formData={formData}
           />
         ) : activeStep === 1 ? (
      

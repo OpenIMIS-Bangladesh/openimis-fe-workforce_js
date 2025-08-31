@@ -1686,7 +1686,8 @@ function reducer(
           (application) => ({
             ...application,
             id: decodeId(application.id),
-            educations:parseData(application.educations)
+            educations:parseData(application.educations),
+            workforceEmployeeDependentApplication:parseData(application.workforceEmployeeDependentApplication)
           })
         )?.[0],
         errorApplication: formatGraphQLError(action.payload),

@@ -51,7 +51,7 @@ const ScholarshipApplicationCheckbox = ({
               <TextInput
               id="nameEn"
                 label="workforce.child.name.en"
-                value={formData?.employeeChildrenInfo?.nameEn || ""}
+                value={formData?.metadata?.nameEn || ""}
                 onChange={(v) => handleChange("nameEn", v, "metadata")}
                 required
                 error={!!errors.nameEn}
@@ -63,7 +63,7 @@ const ScholarshipApplicationCheckbox = ({
               <TextInput
               id="nameBn"
                 label="workforce.child.name.bn"
-                value={formData?.employeeChildrenInfo?.nameBn || ""}
+                value={formData?.metadata?.nameBn || ""}
                 onChange={(v) => handleChange("nameBn", v, "metadata")}
                 required
                 readOnly={false}
@@ -75,7 +75,7 @@ const ScholarshipApplicationCheckbox = ({
               <TextInput
               id="nid"
                 label="workforce.application.employee.children.nidOrBirthRegistry"
-                value={formData?.employeeChildrenInfo?.nid || ""}
+                value={formData?.metadata?.nid || ""}
                 onChange={(v) => handleChange("nid", v, "metadata")}
                 type={"number"}
                 readOnly={false}
@@ -88,7 +88,7 @@ const ScholarshipApplicationCheckbox = ({
               <PublishedComponent
                 pubRef="workforce.DatePicker"
                 label={"workforce.employee.birthdate"}
-                value={formData?.employeeChildrenInfo?.birthDate || ""}
+                value={formData?.metadata?.birthDate || ""}
                 onChange={(v) => handleChange("birthDate", v, "metadata")}
                 readOnly={false}
                 // required

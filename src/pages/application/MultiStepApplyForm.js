@@ -88,7 +88,7 @@ const MultiStepApplyForm = () => {
 
     const isEmptyDependent = Object.keys(parsedApplicationData.employeeDependentInfo).length === 0;
 
-    setApplicationForSelf(isEmptyDependent ? "yes" : "no");
+    setApplicationForSelf(parsedApplicationData?.applicationFor==="dependent"?"no":parsedApplicationData?.applicationFor==="self"?"yes":"");
     setSelectedApplicationType(parsedApplicationData?.applicationType);
     setOrganizationType(parsedApplicationData?.organizationType);
   }, [parsedApplicationData]);
