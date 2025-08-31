@@ -552,7 +552,6 @@ class ApplicationProcessSearcher extends Component {
           // prms
         );
       } else if (isApproved) {
-        console.log('ekhane dhukse');
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
           [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, 'statusIn: ["approved_by_dg"]', 'orderBy: ["-dateCreated"]']

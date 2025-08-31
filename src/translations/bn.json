@@ -374,8 +374,10 @@
     "workforce.application.myself":"সকল আবেদন",
     "workforce.new.application.submittedbyapplicant":"আবেদনকারীর জমাকৃত আবেদন",
     "workforce.application.forwarded":"সুপারিশকৃত আবেদন",
+    "workforce.application.approved":"অনুমোদিত আবেদন",
     "workforce.application.sentforverification":"যাচাইএর জন্য প্রেরিত আবেদন",
     "workforce.application.verified":"যাচাইকৃত আবেদন",
+    "workforce.application.dashboard":"ড্যাশবোর্ড",
     "workforce.blwf.checker.dashboard":"বিএলডাব্লিউএফ ডাটা এন্ট্রি অপারেটর ড্যাশবোর্ড",
     "workforce.blwf.deputy.admin.dashboard":"বিএলডাব্লিউএফ উপ-সহকারী পরিচালকের ড্যাশবোর্ড",
 

@@ -18,13 +18,20 @@ const styles = (theme) => ({
     justifyContent: "flex-start",
     alignItems: "center",
     padding: theme.spacing(1),
-    backgroundColor: "transparent", // 👈 Transparent background
-    gap: theme.spacing(2), // 👈 Reduced horizontal gap
+    backgroundColor: "transparent",
+    gap: theme.spacing(2),
   },
   item: {
     display: "flex",
     alignItems: "center",
-    gap: theme.spacing(0.5), // 👈 Tighter icon/text spacing
+    gap: theme.spacing(0.5),
+    cursor: "pointer",
+    padding: "7px",
+    borderRadius:"10px",
+    "&:hover": {
+      backgroundColor: "#517688",
+      color: "#fff",
+    },
   },
   label: {
     fontWeight: 500,
