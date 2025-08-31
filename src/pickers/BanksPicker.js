@@ -43,7 +43,7 @@ const BanksPicker = ({
 
   const selectedOption = useMemo(
         () => data.find((option) => option.id === value) || null,
-        [value]
+        [value,data]
       )
   console.log({selectedOption})
   const locale = useSelector((state) => state.core?.user?.i_user?.language || "en");

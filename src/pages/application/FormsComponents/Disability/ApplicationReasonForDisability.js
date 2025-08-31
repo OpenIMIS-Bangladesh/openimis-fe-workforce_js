@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ApplicationReasonForDisability = ({ modulesManager,handleChange,deathType, setDeathType,errors }) => {
+const ApplicationReasonForDisability = ({ modulesManager,handleChange,deathType, setDeathType,errors,formData }) => {
   const { formatMessage } = useTranslations(
       "core.RegistrationPage",
       modulesManager,
@@ -46,7 +46,7 @@ const ApplicationReasonForDisability = ({ modulesManager,handleChange,deathType,
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
           {<FormattedMessage id="workforce.application.reason.type" module="workforce"/>}
         </Typography>
-        <RadioGroup value={deathType} onChange={handleDeathTypeChange}>
+        <RadioGroup value={formData?.metadata?.disabilityType || deathType} onChange={handleDeathTypeChange}>
           <FormControlLabel value="partial" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.disability.partial" module="workforce"/>} />
           <FormControlLabel value="permanent" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.disability.permanent" module="workforce"/>} />
         </RadioGroup>

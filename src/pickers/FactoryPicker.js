@@ -48,12 +48,12 @@ const FactoryPicker = ({
   
    const selectedOption = useMemo(
       () => data.find((option) => option.id === value) || null,
-      [value]
+      [value,data]
     )
 console.log("murad fake",value)
   return (
     <Autocomplete
-    id={id}
+      id={id}
       multiple={multiple}
       required={required}
       placeholder={placeholder ?? ""}

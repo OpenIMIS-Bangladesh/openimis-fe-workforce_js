@@ -206,7 +206,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
           presentAddress: employeeData?.presentAddress || "",
         },
         company: employeeData?.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData?.factory || formData?.workforceEmployee?.factory?.id || null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id ||parsedApplicationData?.employeeFactory ||null,
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
@@ -214,6 +214,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
         dependents: parsedApplicationData?.employeeDependentInfo || employeeData?.dependents || [{}],
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
+        applicantInfo: parsedApplicationData?.applicantInfo || employeeData?.metadata || {},
       });
     }
   }, [employeeData?.id, parsedApplicationData]);

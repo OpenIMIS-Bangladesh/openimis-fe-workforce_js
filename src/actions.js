@@ -763,6 +763,7 @@ export function fetchApplication(mm, filters) {
     "employeeAccidentInfo",
     "employeeChildrenInfo",
     "educations{edges{node{id,childNameEn,childNameBn,childBirthDate,childBirthCertificateNo,childNidNo,studyClass,institution,educationLevel,educationBoard,passingYear,rollNumber,registrationNumber,result}}}",
+    "workforceEmployeeDependentApplication{edges{node{id,nameBn,nameEn,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,nid,birthDate,percentageOfCfGrant,phoneNumber,presentLocation {id},presentAddress,permanentLocation {id},permanentAddress}}}",
     "metadata",
     "employeeFactory{id}",
     "cfApplicationSummary{id}",

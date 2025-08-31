@@ -122,12 +122,25 @@ export const getParsedApplication = (modulesManager, filters) => {
       }
 
       console.log("Raw application data:", rawData);
+      const workforceDependentInfo = safeParse(rawData.employeeDependentInfo)
+      const dependentInfoWithId = workforceDependentInfo.map((dep,idx)=>{
+        const temp= {...dep,id:rawData.workforceEmployeeDependentApplication[idx].id}
+        return temp
+      })
+       const parsedDependentInfo = Array.isArray(rawData.workforceEmployeeDependentApplication)
+      ? rawData.workforceEmployeeDependentApplication.map((dep) => ({
+          ...dep,
+          presentAddress: safeParse(dep.presentAddress),
+          permanentAddress: safeParse(dep.permanentAddress),
+        }))
+      : rawData.workforceEmployeeDependentApplication;
 
       // Parse the JSON fields safely
       const parsedData = {
         ...rawData,
-        employeeDependentInfo: safeParse(rawData.employeeDependentInfo) || {},
-        employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
+        employeeDependentInfo: dependentInfoWithId ||[{}],
+        workforceEmployeeDependentApplication: parsedDependentInfo || [{}],
+        employeeBankInfo: safeParse(rawData.employeeBankInfo) || [{}],
         employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo) || {},
         employeeChildrenInfo: safeParse(rawData.employeeChildrenInfo) || {},
         metadata: safeParse(rawData.metadata) || {},
