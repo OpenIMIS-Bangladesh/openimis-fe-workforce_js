@@ -22,7 +22,7 @@ import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerMod
 import ForwardApplicationFactoryAdminModal from "./modals/ForwardApplicationFactoryAdminModal";
 import ForwardApplicationSectionAdminModal from "./modals/ForwardApplicationSectionAdminModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
-import RevertApplicationModal from "./modals/RevertApplicationModal";
+import RevertApplicationModal from "./modals/RevertApplicationModal copy";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
 import ConfirmModal from "./modals/ConfirmModal";
 import { WORKFORCE_STATUS } from "../../constants";
@@ -1914,7 +1914,9 @@ class ApplicationProcessSearcher extends Component {
                 onSubmitForward={this.handleForwardSubmit}
               />
             );}
-          else if (userType === WORKFORCE_USER_TYPE.DOCTOR) {
+          else if (userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO
+            || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
+          ) {
             return (
                 <RevertApplicationModal
                   open={revertModalOpen}

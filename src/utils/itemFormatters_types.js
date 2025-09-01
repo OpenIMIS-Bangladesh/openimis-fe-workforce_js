@@ -390,6 +390,14 @@ export const itemFormattersChecker = (
           <VerifiedUserIcon />
         </IconButton>
       </Tooltip>
+       <Tooltip title="Revert">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => component.handleOpenRevertModal(application)}
+        >
+          <UndoIcon />
+        </IconButton>
+      </Tooltip>
     </div>
   ));
   return formatters;
