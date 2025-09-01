@@ -318,21 +318,21 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
 
         const createEducation = {
           applicationId: applicationgetId,
-          educationLevel: formData?.metadata?.scholarshipFor,
-          educationBoard: formData?.metadata?.board,
-          passingYear: formData?.metadata?.passingYear,
-          rollNumber: formData?.metadata?.rollNo,
+          educationLevel: formData?.employeeChildrenInfo?.scholarshipFor,
+          educationBoard: formData?.employeeChildrenInfo?.board,
+          passingYear: formData?.employeeChildrenInfo?.passingYear,
+          rollNumber: formData?.employeeChildrenInfo?.rollNo,
           admissionYear: formData?.employeeChildrenInfo?.admissionYear,
           IdNumber: formData?.employeeChildrenInfo?.idNo,
-          registrationNumber: formData?.metadata?.regNo,
-          result: formData?.metadata?.cgpa,
-          institution: formData?.metadata?.university,
-          childBirthDate: formData?.metadata?.birthDate,
-          childNameEn: formData?.metadata?.nameEn,
-          childNameBn: formData?.metadata?.nameBn,
-          childNidNo: formData?.metadata?.nid,
-          childBirthCertificateNo: formData?.metadata?.nid,
-          studyClass: formData?.metadata?.studyingClass,
+          registrationNumber: formData?.employeeChildrenInfo?.regNo,
+          result: formData?.employeeChildrenInfo?.cgpa,
+          institution: formData?.employeeChildrenInfo?.university,
+          childBirthDate: formData?.employeeChildrenInfo?.birthDate,
+          childNameEn: formData?.employeeChildrenInfo?.nameEn,
+          childNameBn: formData?.employeeChildrenInfo?.nameBn,
+          childNidNo: formData?.employeeChildrenInfo?.nid,
+          childBirthCertificateNo: formData?.employeeChildrenInfo?.nid,
+          studyClass: formData?.employeeChildrenInfo?.studyingClass,
         };
 
         await dispatch(createEducationInfo(createEducation, `Created workforce education Info`));
@@ -407,6 +407,7 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
       employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
       employeeDependentInfo: JSON.stringify(formData.dependent) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+      employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo) || JSON.stringify(parsedApplicationData?.employeeChildrenInfo),
       metadata: JSON.stringify(formData.metadata),
       status: WORKFORCE_STATUS.NEW,
       applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
@@ -440,7 +441,7 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
             label: "workforce.application.steps.education.details",
             content: (
               <ScholarshipApplicationCheckbox
-                handleChange={(key, value) => handleChange(key, value, "metadata")}
+                handleChange={(key, value) => handleChange(key, value, "employeeChildrenInfo")}
                 setSelectedScholarshipOption={setSelectedScholarshipOption}
                 selectedScholarshipOption={selectedScholarshipOption}
                 formData={formData}
@@ -464,7 +465,7 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
             label: "workforce.application.steps.childInfo",
             content: (
               <ScholarshipApplicationCheckbox
-                handleChange={(key, value) => handleChange(key, value, "metadata")}
+                handleChange={(key, value) => handleChange(key, value, "employeeChildrenInfo")}
                 setSelectedScholarshipOption={setSelectedScholarshipOption}
                 selectedScholarshipOption={selectedScholarshipOption}
                 formData={formData}

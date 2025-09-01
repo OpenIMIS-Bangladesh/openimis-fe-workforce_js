@@ -398,5 +398,7 @@ export const banglaLabels = {
   SubmittedBy: "জমা দিয়েছেন",
   GrantAmount: "অনুদানের পরিমাণ",
   CreatedDate: "আবেদনের তারিখ",
-  metadata:"অন্যান্য তথ্য"
+  metadata:"অন্যান্য তথ্য",
+  employeeChildrenInfo:"শিক্ষাগত তথ্য",
+  applicationFor:"আবেদন কার জন্য"
 };
