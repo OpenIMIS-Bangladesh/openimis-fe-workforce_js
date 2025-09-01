@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Keys to hide from rendering
  */
-const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent","code","type","employeeFactory","associationType"];
+const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent","code","type","employeeFactory","associationType","applicationFor","workforceEmployeeDependentApplication"];
 
 /**
  * Convert key into a user-friendly label
@@ -236,6 +236,7 @@ const ApplicationViewPage = ({
       "SubmittedBy": application.submittedBy,
       "GrantAmount": application.grantAmount,
       "CreatedDate": application?.dateCreated?.split("T")[0] || "—",
+      "ApplicationFor":application?.applicationFor
     }),
     [application]
   );

@@ -39,7 +39,7 @@ const ScholarshipApplicationCheckbox = ({
 
   const handleselectedScholarshipOptionChange = (event) => {
     const value = event.target.value;
-    handleChange("scholarshipFor", value, "metadata");
+    handleChange("scholarshipFor", value);
   };
 
   return (<>
@@ -51,8 +51,8 @@ const ScholarshipApplicationCheckbox = ({
               <TextInput
               id="nameEn"
                 label="workforce.child.name.en"
-                value={formData?.metadata?.nameEn || ""}
-                onChange={(v) => handleChange("nameEn", v, "metadata")}
+                value={formData?.employeeChildrenInfo?.nameEn || ""}
+                onChange={(v) => handleChange("nameEn", v)}
                 required
                 error={!!errors.nameEn}
             helperText={errors.nameEn}
@@ -63,8 +63,8 @@ const ScholarshipApplicationCheckbox = ({
               <TextInput
               id="nameBn"
                 label="workforce.child.name.bn"
-                value={formData?.metadata?.nameBn || ""}
-                onChange={(v) => handleChange("nameBn", v, "metadata")}
+                value={formData?.employeeChildrenInfo?.nameBn || ""}
+                onChange={(v) => handleChange("nameBn", v)}
                 required
                 readOnly={false}
                 error={!!errors.nameBn}
@@ -75,8 +75,8 @@ const ScholarshipApplicationCheckbox = ({
               <TextInput
               id="nid"
                 label="workforce.application.employee.children.nidOrBirthRegistry"
-                value={formData?.metadata?.nid || ""}
-                onChange={(v) => handleChange("nid", v, "metadata")}
+                value={formData?.employeeChildrenInfo?.nid || ""}
+                onChange={(v) => handleChange("nid", v)}
                 type={"number"}
                 readOnly={false}
                 required
@@ -88,8 +88,8 @@ const ScholarshipApplicationCheckbox = ({
               <PublishedComponent
                 pubRef="workforce.DatePicker"
                 label={"workforce.employee.birthdate"}
-                value={formData?.metadata?.birthDate || ""}
-                onChange={(v) => handleChange("birthDate", v, "metadata")}
+                value={formData?.employeeChildrenInfo?.birthDate || ""}
+                onChange={(v) => handleChange("birthDate", v)}
                 readOnly={false}
                 // required
               />
@@ -101,7 +101,7 @@ const ScholarshipApplicationCheckbox = ({
         <FormattedMessage id="workforce.application.steps.select" module="workforce" />
       </Typography>
 
-      <RadioGroup value={formData?.metadata?.scholarshipFor || ""} onChange={handleselectedScholarshipOptionChange}>
+      <RadioGroup value={formData?.employeeChildrenInfo?.scholarshipFor || ""} onChange={handleselectedScholarshipOptionChange}>
         <FormControlLabel
           value="ssc"
           control={<Radio color="primary" />}
@@ -126,13 +126,13 @@ const ScholarshipApplicationCheckbox = ({
 
       {/* Additional Fields for Scholarship Info */}
       <Grid container spacing={2} className={classes.section}>
-        {formData?.metadata?.scholarshipFor === "underGraduate" || formData?.metadata?.scholarshipFor === "postGraduate" ? (
+        {formData?.employeeChildrenInfo?.scholarshipFor === "underGraduate" || formData?.employeeChildrenInfo?.scholarshipFor === "postGraduate" ? (
           <Grid item xs={6}>
             <TextInput
             id="university"
               label="workforce.application.educationInfo.university"
-              value={formData?.metadata?.university || ""}
-              onChange={(v) => handleChange("university", v, "metadata")}
+              value={formData?.employeeChildrenInfo?.university || ""}
+              onChange={(v) => handleChange("university", v)}
               type="text"
               required
               readOnly={false}
@@ -144,10 +144,10 @@ const ScholarshipApplicationCheckbox = ({
           <Grid item xs={6}>
             <BoardPicker
             id="board"
-              value={formData?.metadata?.board || ""}
+              value={formData?.employeeChildrenInfo?.board || ""}
               label={<FormattedMessage id="workforce.application.educationInfo.board" module="workforce" />}
               required
-              onChange={(v) => handleChange("board", v, "metadata")}
+              onChange={(v) => handleChange("board", v)}
               readOnly={false}
               
             />
@@ -166,18 +166,18 @@ const ScholarshipApplicationCheckbox = ({
           <YearPicker
           id="passingYear"
             label={
-              formData?.metadata?.scholarshipFor === "underGraduate"
+              formData?.employeeChildrenInfo?.scholarshipFor === "underGraduate"
                 ? formatMessage("workforce.application.educationInfo.admissionYear")
                 : formatMessage("workforce.application.educationInfo.passingYear")
             }
-            value={formData?.metadata?.passingYear || ""}
-            onChange={(v) => handleChange("passingYear", v, "metadata")}
+            value={formData?.employeeChildrenInfo?.passingYear || ""}
+            onChange={(v) => handleChange("passingYear", v)}
             required
           />
           {errors.passingYear && <FormHelperText error>{errors.passingYear}</FormHelperText>}
         </Grid>
 
-        {formData?.metadata?.scholarshipFor === "underGraduate" ? (
+        {formData?.employeeChildrenInfo?.scholarshipFor === "underGraduate" ? (
           <Grid item xs={6}>
             <TextInput
             id="idNo"
@@ -196,8 +196,8 @@ const ScholarshipApplicationCheckbox = ({
             <TextInput
             id={"rollNo"}
               label="workforce.application.educationInfo.rollNo"
-              value={formData?.metadata?.rollNo || ""}
-              onChange={(v) => handleChange("rollNo", v, "metadata")}
+              value={formData?.employeeChildrenInfo?.rollNo || ""}
+              onChange={(v) => handleChange("rollNo", v)}
               type="number"
               required
               readOnly={false}
@@ -210,8 +210,8 @@ const ScholarshipApplicationCheckbox = ({
           <TextInput
           id="regNo"
             label="workforce.application.educationInfo.regNo"
-            value={formData?.metadata?.regNo || ""}
-            onChange={(v) => handleChange("regNo", v, "metadata")}
+            value={formData?.employeeChildrenInfo?.regNo || ""}
+            onChange={(v) => handleChange("regNo", v)}
             type="number"
             required
             readOnly={false}
@@ -223,11 +223,11 @@ const ScholarshipApplicationCheckbox = ({
         <Grid item xs={6} className={classes.item}>
           <TextInput
             id="studyingClass"
-            label={formData?.metadata?.scholarshipFor === "underGraduate"?formatMessage("workforce.application.employee.children.studyingSemester"):formatMessage("workforce.application.employee.children.studyingClass")}
-            value={formData?.metadata?.studyingClass || ""}
-            onChange={(v) => handleChange("studyingClass", v, "metadata")}
+            label={formData?.employeeChildrenInfo?.scholarshipFor === "underGraduate"?formatMessage("workforce.application.employee.children.studyingSemester"):formatMessage("workforce.application.employee.children.studyingClass")}
+            value={formData?.employeeChildrenInfo?.studyingClass || ""}
+            onChange={(v) => handleChange("studyingClass", v)}
             readOnly={false}
-            required={formData?.metadata?.scholarshipFor === "underGraduate" || formData?.metadata?.scholarshipFor === "postGraduate" ? true : false}
+            required={formData?.employeeChildrenInfo?.scholarshipFor === "underGraduate" || formData?.employeeChildrenInfo?.scholarshipFor === "postGraduate" ? true : false}
             error={!!errors.studyingClass}
             helperText={errors.studyingClass}
           />
@@ -236,8 +236,8 @@ const ScholarshipApplicationCheckbox = ({
           <TextInput
           id="cgpa"
             label="workforce.application.educationInfo.cgpa"
-            value={formData?.metadata?.cgpa || ""}
-            onChange={(v) => handleChange("cgpa", v, "metadata")}
+            value={formData?.employeeChildrenInfo?.cgpa || ""}
+            onChange={(v) => handleChange("cgpa", v)}
             // type="text"
             required
             readOnly={false}
