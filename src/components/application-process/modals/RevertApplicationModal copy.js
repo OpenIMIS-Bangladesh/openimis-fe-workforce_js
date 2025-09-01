@@ -7,27 +7,28 @@ import {
   Grid,
   Divider,
   Paper,
-  Breadcrumbs,
-  Radio,
+  FormControl,
   FormControlLabel,
+  Radio,
+  RadioGroup,
 } from "@material-ui/core";
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
-import { useSelector, useDispatch } from "react-redux";
 import {
   useModulesManager,
+  formatMutation,
   decodeId,
   FormattedMessage,
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
-import ReactQuill from "react-quill";
+import DistrictOfficePicker from "../../../pickers/DistrictOfficePicker";
+import EmployeePicker from "../../../pickers/EmployeePicker";
+import { useSelector, useDispatch } from "react-redux";
 import {
   fetchApplication,
   updateApplication,
   createApplicationMovement,
-  fetchApplicationWiseMovementList,
-  fetchApplicationWiseMovementUserList
 } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
+import ReactQuill from "react-quill";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -69,72 +70,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// Breadcrumb Selector Component
-const RevertPathSelector = ({ users, selectedUser, onChange }) => {
-  return (
-    <Paper elevation={1} style={{ padding: "15px", marginBottom: "20px" }}>
-      <Typography
-        variant="subtitle1"
-        gutterBottom
-        style={{ fontWeight: "bold" }}
-      >
-        আবেদন কাকে ফেরত পাঠাতে চান নির্বাচন করুন:
-      </Typography>
-      <Breadcrumbs
-        separator={<NavigateNextIcon fontSize="small" />}
-        aria-label="breadcrumb"
-      >
-        {users.map((user) => (
-          <FormControlLabel
-            key={user.id}
-            value={user.id}
-            control={
-              <Radio
-                checked={selectedUser === user.id}
-                onChange={() => onChange(user.id)}
-              />
-            }
-            label={
-              <Typography
-                color={selectedUser === user.id ? "primary" : "inherit"}
-              >
-                {user.name} ({user.role})
-              </Typography>
-            }
-          />
-        ))}
-      </Breadcrumbs>
-    </Paper>
-  );
-};
-
-
 const RevertApplicationModal = ({
   open,
   onClose,
   selectedApplication,
+  revertByChecker,
+  revertByFactoryAdmin,
+  revertByApprover,
+  onSubmitForward,
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
   const userId = useSelector((state) => state.core?.user?.i_user?.id);
-
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
-  const [selectedRevertUser, setSelectedRevertUser] = useState(null);
-  const [movementsfromId, setMovementsfromId] = useState([]);
-  const [applicationFromUsers, setApplicationFromUsers] = useState([]);
-  const [movementUsers, setMovementUsers] = useState([]);
-
-
-  // Load application details
+  const [officeType, setOfficeType] = useState("");
+  const [formData, setFormData] = useState(null);
   useEffect(() => {
     if (!open) {
       setEditorContent("");
       setSubmitting(false);
       setServerResponse(null);
-      setSelectedRevertUser(null);
+      setFormData(null);
     }
     if (selectedApplication) {
       return dispatch(
@@ -145,88 +104,90 @@ const RevertApplicationModal = ({
     }
   }, [open]);
 
-useEffect(() => {
-  if (open && selectedApplication?.id) {
-    const applicationId = decodeId(selectedApplication.id);
+  const data = useSelector((state) => state.workforce[`application`] ?? []);
 
-    dispatch(
-      fetchApplicationWiseMovementList(modulesManager, {
-        applicationId,
-        orderBy: ["-dateCreated"],
-      })
-    ).then((res) => {
-      const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
-
-      // Collect all users from 'applicationFrom' and 'applicationTo'
-      const allUsers = edges.flatMap(({ node }) => {
-        const users = [];
-        if (node.applicationFrom) users.push(node.applicationFrom);
-        return users;
-      }).filter(Boolean); // remove nulls
-
-      // Build movementUsers array: static + dynamic
-      setMovementUsers([
-        {
-          id: "applicant001",
-          name: selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী",
-          role: "Applicant",
-        },
-        { id: "factoryAdmin456", name: "Adnan", role: "Factory Admin" },
-        { id: "association", name: "Anwar", role: "Association" },
-        ...allUsers.map((user, index) => ({
-          id: `sectionAdmin_${index}`,
-          name: user.loginName,
-          role: "Section Admin",
-        })),
-      ]);
-    }).catch((err) => console.error(err));
-  }
-}, [open, selectedApplication, modulesManager, dispatch]);
-
-
-  const handleRevert = async () => {
-    if (!selectedRevertUser) {
-      setServerResponse({
-        status: "ERROR",
-        message: "একজন ব্যবহারকারী নির্বাচন করুন!",
-      });
-      return;
-    }
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setSubmitting(true);
 
-    const updateApplicationData = {
-      id: decodeId(selectedApplication.id),
-      status: WORKFORCE_STATUS.REVERT,
+    const payload = {
+      comment: editorContent,
+      destinationOffice: formData,
     };
 
-    const createApplicationMovementData = {
-      applicationId: decodeId(selectedApplication.id),
-      status: WORKFORCE_STATUS.REVERT,
-      note: "আবেদন ফেরত পাঠানো হয়েছে",
-      revertNote: editorContent,
-      isReverted: true,
-      applicationFromId: userId,
-      applicationToId: selectedRevertUser, // chosen breadcrumb user
-    };
-
-    await dispatch(
-      updateApplication(updateApplicationData, `update workforce application`)
-    );
-    await dispatch(
-      createApplicationMovement(
-        createApplicationMovementData,
-        `create workforce movement`
-      )
-    );
-
-    setSubmitting(false);
-    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+    // try {
+    //   const response = await onSubmitForward(payload);
+    //   setServerResponse(response);
+    // } catch {
+    //   setServerResponse({ status: "ERROR", message: "সাবমিশনে ব্যর্থ হয়েছে!" });
+    // } finally {
+    //   setSubmitting(false);
+    // }
   };
+
+  const handleRevert = async (revertByChecker) => {
+    if (revertByChecker) {
+      const updateApplicationData = {
+        id: decodeId(selectedApplication.id),
+        status: WORKFORCE_STATUS.REVERT,
+      };
+      const createApplicationMovementData = {
+        applicationId: decodeId(selectedApplication.id),
+        status: WORKFORCE_STATUS.REVERT,
+        note: "আবেদন ফেরত পাঠানো হয়েছে",
+        revertNote: editorContent,
+        isReverted: true,
+        applicationFromId: userId,
+        applicationToId: decodeId(selectedApplication?.workforceEmployee?.relatedUser?.id),
+
+      };
+      await dispatch(
+        updateApplication(updateApplicationData, `update workforce application`)
+      );
+      await dispatch(
+        createApplicationMovement(
+          createApplicationMovementData,
+          `create workforce movement`
+        )
+      );
+      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+    }else {
+      const updateApplicationData = {
+        id: decodeId(selectedApplication.id),
+        status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
+      };
+      const createApplicationMovementData = {
+        applicationId: decodeId(selectedApplication.id),
+        status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
+        note: "আবেদন আপডেট করে পাঠানো হয়েছে",
+        revertNote: editorContent,
+      };
+      await dispatch(
+        updateApplication(updateApplicationData, `update workforce application`)
+      );
+      await dispatch(
+        createApplicationMovement(
+          createApplicationMovementData,
+          `create workforce movement`
+        )
+      );
+      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+    }
+  };
+
+  useEffect(() => {
+    if (serverResponse?.status === "SUCCESS") {
+      setTimeout(() => {
+       
+      }, 2000);
+    }
+  }, [serverResponse]);
+
+  console.log({ "revert application": selectedApplication });
 
   return (
     <Modal open={open} onClose={onClose}>
-      <form className={classes.modalContainer}>
+      <form className={classes.modalContainer} onSubmit={handleSubmit}>
         {/* Close button */}
         <Button onClick={onClose} className={classes.closeButton}>
           ✕
@@ -239,6 +200,20 @@ useEffect(() => {
           style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
         >
           আবেদন ফেরত পাঠান
+        </Typography>
+
+        <Typography
+          variant="body1"
+          color="textSecondary"
+          gutterBottom
+          style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}
+        >
+          {selectedApplication
+            ? `${
+                selectedApplication?.workforceEmployee?.firstNameBn ||
+                "আবেদনকারী"
+              } এর আবেদন ফেরত পাঠাতে চান?`
+            : "একটি আবেদন বেছে নিন।"}
         </Typography>
 
         {/* Response message */}
@@ -256,49 +231,82 @@ useEffect(() => {
 
         <Divider style={{ marginBottom: 15 }} />
 
-        {/* Applicant Info */}
+        {/* Form Fields */}
         <Paper className={classes.sectionPaper} elevation={1}>
-          <Typography variant="subtitle1" gutterBottom>
-            <b>আবেদনকারীর নাম :</b>{" "}
-            {selectedApplication?.workforceEmployee?.firstNameBn} <br />
-            <b>আবেদনের ধরন :</b> {selectedApplication?.applicationType} <br />
-            <b>জাতীয় পরিচয়পত্র :</b>{" "}
-            {selectedApplication?.workforceEmployee?.nid} <br />
-            <b>ফোন নম্বর :</b>{" "}
-            {selectedApplication?.workforceEmployee?.phoneNumber} <br />
-          </Typography>
+          <Grid container spacing={0} style={{ marginTop: 0 }}>
+            <Grid item xs={12} sm={12}>
+              {revertByChecker ? (
+                <>
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  style={{
+                    marginTop: 0,
+                    textAlign: "left",
+                  }}
+                >
+                  <b>আবেদনকারীর নাম : </b>{selectedApplication?.workforceEmployee?.firstNameBn} <br/>
+                  <b>আবেদনের ধরন : </b>{selectedApplication?.applicationType} <br/>
+                  <b>জাতীয় পরিচয়পত্র : </b>{selectedApplication?.workforceEmployee?.nid} <br/>
+                  <b>ফোন নম্বর : </b>{selectedApplication?.workforceEmployee?.phoneNumber} <br/>
+                </Typography>
+                </>
+              ) : (
+                <>
+                  <Typography
+                    variant="subtitle1"
+                    gutterBottom
+                    style={{
+                      fontWeight: "bold",
+                      marginTop: 3,
+                      textAlign: "center",
+                    }}
+                  >
+                    অফিসার নির্বাচন করুন
+                  </Typography>
+                  <EmployeePicker
+                    value={formData?.id}
+                    officeType={officeType}
+                    label={
+                      <FormattedMessage
+                        id="workforce.officer.selector.picker"
+                        module="workforce"
+                      />
+                    }
+                    modulesManager={modulesManager}
+                    required
+                    onChange={(v) => setFormData(v)}
+                  />
+                </>
+              )}
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+                style={{
+                  fontWeight: "bold",
+                  marginTop: 1,
+                  textAlign: "center",
+                }}
+              >
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.application.reasons.addComment"
+                />
+              </Typography>
+
+              <Box sx={{ width: "100%", mb: 7 }}>
+                <ReactQuill
+                  value={editorContent}
+                  onChange={setEditorContent}
+                  theme="snow"
+                  style={{ height: "150px" }}
+                />
+              </Box>
+            </Grid>
+          </Grid>
         </Paper>
-
-        {/* Breadcrumb User Selection */}
-        <RevertPathSelector
-          users={movementUsers}
-          selectedUser={selectedRevertUser}
-          onChange={setSelectedRevertUser}
-        />
-
-        {/* Comment Box */}
-        <Typography
-          variant="subtitle1"
-          gutterBottom
-          style={{
-            fontWeight: "bold",
-            marginTop: 1,
-            textAlign: "center",
-          }}
-        >
-          <FormattedMessage
-            module="workforce"
-            id="workforce.application.reasons.addComment"
-          />
-        </Typography>
-        <Box sx={{ width: "100%", mb: 7 }}>
-          <ReactQuill
-            value={editorContent}
-            onChange={setEditorContent}
-            theme="snow"
-            style={{ height: "150px" }}
-          />
-        </Box>
 
         {/* Action Buttons */}
         <div className={classes.buttonGroup}>
@@ -306,10 +314,11 @@ useEffect(() => {
             বাতিল করুন
           </Button>
           <Button
+            type="submit"
             variant="contained"
             color="primary"
             disabled={submitting}
-            onClick={handleRevert}
+            onClick={()=>handleRevert(revertByChecker)}
           >
             {submitting ? "ফেরত পাঠানো হচ্ছে..." : "ফেরত পাঠান"}
           </Button>

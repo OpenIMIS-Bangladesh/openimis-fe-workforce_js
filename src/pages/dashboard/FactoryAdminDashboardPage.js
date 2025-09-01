@@ -304,6 +304,8 @@ const filters = {
 
 const RevertApplication = () => {
   const classes = useStyles()
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  
   return (
   <>
     <Typography variant="h5" gutterBottom>
@@ -313,6 +315,7 @@ const RevertApplication = () => {
        <CardContent>
              <ApplicationProcessSearcher
                 revertedApplication={true}
+                loggedInUserId={loggedInUserId}
               />
             </CardContent>
       </Card>

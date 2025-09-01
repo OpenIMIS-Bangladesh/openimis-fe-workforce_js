@@ -22,7 +22,7 @@ import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerMod
 import ForwardApplicationFactoryAdminModal from "./modals/ForwardApplicationFactoryAdminModal";
 import ForwardApplicationSectionAdminModal from "./modals/ForwardApplicationSectionAdminModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
-import RevertApplicationModal from "./modals/RevertApplicationModal copy";
+import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
 import ConfirmModal from "./modals/ConfirmModal";
 import { WORKFORCE_STATUS } from "../../constants";
@@ -203,7 +203,13 @@ class ApplicationProcessSearcher extends Component {
       if (rejectedApplication) {
         defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
       } else if (revertedApplication) {
-        defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+        defaultStatusFilters.push(
+          'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]'
+        );
+
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       }
       else if (this.props.sentForVerificationApplications) {
         defaultStatusFilters.push('statusIn: ["forward_for_verification"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
@@ -265,7 +271,14 @@ class ApplicationProcessSearcher extends Component {
   if (rejectedApplication) {
     defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
   } else if (revertedApplication) {
-    defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
+    defaultStatusFilters.push(
+      'applicationTypeIn: ["disabilityAssistance","financialAssistance"]'
+    );
+
+    if (loggedInUserId) {
+      defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+    }
+  
   } else if (summaryId) {
     defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
     additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
@@ -410,9 +423,11 @@ class ApplicationProcessSearcher extends Component {
 
       let defaultStatusFilters = [];
 
-      if (revertedApplication) {
-        defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant"]');
-      } 
+      if (revertedApplication) {     
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }  
+      }
       else if(this.props.forwardedApplications)
       {
         defaultStatusFilters.push('statusIn: ["forward_to_cf_section"]','associationTypeIn: "BGMEA"');
@@ -448,9 +463,11 @@ class ApplicationProcessSearcher extends Component {
 
       let defaultStatusFilters = [];
 
-      if (revertedApplication) {
-        defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant"]');
-      } 
+       if (revertedApplication) {     
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }  
+      }
       else if (this.props.forwardedApplications) {
         defaultStatusFilters.push('statusIn: ["forward_to_cf_section","revert_to_applicant"]');
       }
@@ -488,9 +505,13 @@ class ApplicationProcessSearcher extends Component {
 
       if (revertedApplication) {
         defaultFilters = [
-          'statusIn: ["revert", "revert_to_applicant"]','organizationTypeIn: ["cf"]',
+          'organizationTypeIn: ["cf"]',
           'orderBy: ["-dateCreated"]',
         ];
+
+        if (loggedInUserId) {
+          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       } else if (rejectedApplication) {
         defaultFilters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
       } else if (this.props.applicationStatus) {
