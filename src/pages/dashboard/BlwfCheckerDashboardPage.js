@@ -149,62 +149,6 @@ const FiledApplications = () =>{
   </>
 );}
 
-const checkedApplications = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.new.application" />
-  </Typography>
-);
-
-const ApplicationStatus = () => {
-  const classes = useStyles();
-
-  return (
-    <Card style={{ marginTop: 0, padding: "32px", textAlign: "center" }}>
-      <CardContent>
-        <Typography variant="h5" gutterBottom>
-          <FormattedMessage module="workforce" id="workforce.application.status" />
-        </Typography>
-
-        <Grid container spacing={2} justifyContent="center" style={{ marginTop: 16 }}>
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              label={<FormattedMessage module="workforce" id="workforce.employee.dependent.phone" />}
-              style={{
-                marginBottom: 16,
-              }}
-            />
-            <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              label={<FormattedMessage module="workforce" id="workforce.application.tracking.number" />}
-              style={{
-                marginBottom: 16,
-              }}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-            >
-              <FormattedMessage module="workforce" id="workforce.search.here" />
-            </Button>
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-  );
-};
-
-const Others = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.others" />
-  </Typography>
-);
-
 // ------------------------------------------------------------
 
 const BlwfCheckerDashboard = () => {

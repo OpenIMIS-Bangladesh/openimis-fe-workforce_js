@@ -68,7 +68,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// Breadcrumb Selector Component
 const RevertPathSelector = ({ users, selectedUser, onChange }) => {
   return (
     <Paper elevation={1} style={{ padding: "15px", marginBottom: "20px" }}>
@@ -128,7 +127,6 @@ const RevertApplicationModal = ({
   const [movementUsers, setMovementUsers] = useState([]);
 
 
-  // Load application details
   useEffect(() => {
     if (!open) {
       setEditorContent("");
@@ -157,14 +155,12 @@ useEffect(() => {
     ).then((res) => {
       const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
 
-      // Collect all users from 'applicationFrom' and 'applicationTo'
       const allUsers = edges.flatMap(({ node }) => {
         const users = [];
         if (node.applicationFrom) users.push(node.applicationFrom);
         return users;
-      }).filter(Boolean); // remove nulls
+      }).filter(Boolean);
 
-      // Build movementUsers array: static + dynamic
       setMovementUsers([
         {
           id: "applicant001",
@@ -178,6 +174,8 @@ useEffect(() => {
           name: user.loginName,
           role: "Section Admin",
         })),
+        // { id: "doctor", name: "Dr. Raju", role: "Doctor" },
+        // { id: "approver", name: "Nadim", role: "Selection committee" },
       ]);
     }).catch((err) => console.error(err));
   }

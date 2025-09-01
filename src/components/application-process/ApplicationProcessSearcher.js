@@ -32,7 +32,6 @@ import {
   itemFormattersApplicant,
   itemFormattersAssociation,
   itemFormattersApprover,
-  itemFormattersBlwfApprover,
   itemFormattersChecker,
   itemFormattersCheckerTwo,
   itemFormattersSectionAdmin,
@@ -45,7 +44,7 @@ import {
   itemFormattersBlwfSectionAdmin
 } from "../../utils/itemFormatters_types";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
-import { headerApplicant, headerApprover, headerBlwfApprover, headerChecker,headerCheckerTwo,headerS1DeputyAsstDirector,headerS2DeputyAsstDirector,headerDoctor, headerSectionAdmin, headerSectionTwoAdmin, headerAssociation, headersAdmin, 
+import { headerApplicant, headerApprover, headerChecker,headerCheckerTwo,headerS1DeputyAsstDirector,headerS2DeputyAsstDirector,headerDoctor, headerSectionAdmin, headerSectionTwoAdmin, headerAssociation, headersAdmin, 
 headerFactoryAdmin, headerDirector,headerBlwfSectionAdmin } from "../../utils/headers_types";
 
 const styles = (theme) => ({
@@ -524,21 +523,7 @@ class ApplicationProcessSearcher extends Component {
       } else {
         defaultFilters = ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
       }
-
-      // const hasStatusIn = prms?.some((f) => f.includes("statusIn"));
-
-      let finalFilters = [];
-
-      // if (prms?.length) {
-      //   finalFilters = hasStatusIn ? prms : [...defaultFilters.filter(f => f.startsWith("statusIn")), ...prms];
-      // } else {
-      //   finalFilters = defaultFilters;
-      // }
-      finalFilters = defaultFilters;
-
-      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
-
- 
+      this.props.fetchApplicationsSummary(this.props.modulesManager, defaultFilters);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, [
@@ -570,19 +555,16 @@ class ApplicationProcessSearcher extends Component {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
           [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, `statusIn: ["draft"], orderBy: ["-dateCreated"]`]
-          // prms
         );
       } else if (isApproved) {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
           [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, 'statusIn: ["approved_by_dg"]', 'orderBy: ["-dateCreated"]']
-          // prms
         );
       }else {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
           [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, 'statusIn: ["new"]', 'orderBy: ["-dateCreated"]']
-          // prms
         );
       }
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN) {
@@ -1069,7 +1051,7 @@ class ApplicationProcessSearcher extends Component {
       : userType === WORKFORCE_USER_TYPE.APPROVER
       ? headerApprover(this)
       : userType === WORKFORCE_USER_TYPE.BLWF_APPROVER
-      ? headerBlwfApprover(this)
+      ? headerApprover(this)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? headerFactoryAdmin(this)
       : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
@@ -1112,7 +1094,7 @@ class ApplicationProcessSearcher extends Component {
       : userType === WORKFORCE_USER_TYPE.APPROVER
       ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.BLWF_APPROVER
-      ? itemFormattersBlwfApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication)
       : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
@@ -2074,18 +2056,17 @@ class ApplicationProcessSearcher extends Component {
                 />
                 <RevertApplicationModal
                   open={revertModalOpen}
-                  revertByChecker={revertByChecker}
                   onClose={this.handleCloseRevertModal}
+                  revertByChecker={revertByChecker}
                   selectedApplication={this.state.selectedApplication}
                   onSubmitRevert={this.handleRevertSubmit}
-                  userName={userName}
                 />
-                <ForwardApplicationAdminModal
+                {/* <ForwardApplicationAdminModal
                   open={forwardModalOpen}
                   onClose={this.handleCloseForwardModal}
                   selectedApplication={selectedApplication}
                   onSubmitForward={this.handleForwardSubmit}
-                />
+                /> */}
                 <GenerateBFTN
                   open={openGenerateBFTN}
                   onClose={this.handleCloseBFTN}
