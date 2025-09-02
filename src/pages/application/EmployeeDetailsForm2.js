@@ -99,15 +99,46 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           );
         }
       } else if (formData.applicationType === "deadlyGrant") {
+        if (formData.metadata.deathType === "normalDeath" && formData.workerType ==="formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
-              `applicationForIn: ["normal_death","normal_death_institutional","normal_death_institutional_on_work"]`,
+              `applicationFor: ["normal_death","normal_death_institutional","normal_death_institutional_on_work"]`,
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
             ])
           );
+        }else if(formData.metadata.deathType === "normalDeath" && formData.workerType ==="informal"){
+          return dispatch(
+            fetchDocumentType(modulesManager, [
+              `orderBy: ["documentTypeNo"]`,
+              `applicationFor: ["normal_death","normal_death_non_institutional"]`,
+              `applicationType:"${selectedApplicationType}"`,
+              `organizationType:"${formData.organizationType}"`,
+              `formStepNo:"${formStepNo}"`,
+            ])
+          );
+        } else {
+          return dispatch(
+            fetchDocumentType(modulesManager, [
+              `orderBy: ["documentTypeNo"]`,
+              `applicationFor: "accidental_death"`,
+              `applicationType:"${selectedApplicationType}"`,
+              `organizationType:"${formData.organizationType}"`,
+              `formStepNo:"${formStepNo}"`,
+            ])
+          );
+        }
+          // return dispatch(
+          //   fetchDocumentType(modulesManager, [
+          //     `orderBy: ["documentTypeNo"]`,
+          //     `applicationForIn: ["normal_death","normal_death_institutional","normal_death_institutional_on_work"]`,
+          //     `applicationType:"${selectedApplicationType}"`,
+          //     `organizationType:"${formData.organizationType}"`,
+          //     `formStepNo:"${formStepNo}"`,
+          //   ])
+          // );
       } else if (formData.applicationType === "medicalDonation" && formData.applicationForSelf ==="yes"&& formData.organizationType === "blwf") {
         if (formData.workerType === "formal") {
           return dispatch(

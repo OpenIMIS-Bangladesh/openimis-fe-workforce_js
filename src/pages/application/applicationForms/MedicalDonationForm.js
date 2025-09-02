@@ -29,6 +29,7 @@ import { ApplicationFormSubmitted } from "../../../components/shared/Application
 import { getInfoId, getUserType, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
+import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -385,7 +386,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
           employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
           metadata: JSON.stringify(formData?.metadata),
           status: WORKFORCE_STATUS.NEW,
-        applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
+          applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
           submittedBy,
         };
        const createApplicationMovementData = {
@@ -491,8 +492,9 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
 
   if (showPreview) {
     return (
-      <div className={classes.container}>
-        <Paper className={classes.paper} elevation={0}>
+      <div >
+          <ApplicationViewPage application={formData} language={"fr"} />
+        {/* <Paper className={classes.paper} elevation={0}>
           <PreviewDetails formData={formData} />
           <div className={classes.buttonContainer}>
             <Button
@@ -515,7 +517,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           </div>
-        </Paper>
+        </Paper> */}
       </div>
     );
   }
