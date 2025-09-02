@@ -19,6 +19,7 @@ import {
   fetchWorkforceEmployee,
   updateApplication,
   updateWorkforceEmployee,
+  createApplicationMovement
 } from "../../../actions";
 import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
@@ -364,7 +365,7 @@ const MedicalAssistanceForm = ({ organizationType, selectedApplicationType, appl
 
     const submittedBy =
       user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
-
+  try {
     const updateApplicationData = {
       id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
@@ -382,9 +383,20 @@ const MedicalAssistanceForm = ({ organizationType, selectedApplicationType, appl
       applicationFor: applicationForSelf === "yes" ? "self" : "dependent",
       submittedBy,
     };
-
+   const createApplicationMovementData = {
+      applicationId: safeApplicationId(applicationId,parsedApplicationData),
+      status: WORKFORCE_STATUS.NEW,
+      note: "একটি নতুন আবেদন করা হয়েছে",
+      applicationFromId: parseInt(reduxState.core.user.id),
+      applicationToId: 80,
+      toRoleId: 25,
+    };
     console.log("hello i am from submit", updateApplicationData);
     dispatch(updateApplication(updateApplicationData, `update workforce application `));
+    dispatch(createApplicationMovement(createApplicationMovementData,`create workforce movement`));
+  } catch (err) {
+    console.error("Submit failed:", err);
+  }
   };
 
   console.log({ murad: uploadFile });

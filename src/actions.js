@@ -873,6 +873,10 @@ export function fetchApplicationMovementsSummary(mm, filters) {
     "revertingDate",
     "applicationFromId",
     "applicationToId",
+    "toRoleId",
+    "fromRoleId",
+    "fromOfficeDesignationId",
+    "toOfficeDesignationId",
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplicationMovement",

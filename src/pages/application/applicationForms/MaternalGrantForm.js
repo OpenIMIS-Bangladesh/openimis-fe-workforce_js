@@ -17,6 +17,7 @@ import {
   fetchWorkforceEmployee,
   updateApplication,
   updateWorkforceEmployee,
+  createApplicationMovement
 } from "../../../actions";
 import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
@@ -362,10 +363,17 @@ const MaternalGrantForm = ({  organizationType, selectedApplicationType, applica
       submittedBy,
     };
 
-    console.log("hello i am from submit", updateApplicationData);
-    dispatch(updateApplication(updateApplicationData, `update workforce application `));
-    // setShowPreview(true);
-    // setIsSubmitted(true);
+    const createApplicationMovementData = {
+          applicationId: safeApplicationId(applicationId,parsedApplicationData),
+          status: WORKFORCE_STATUS.NEW,
+          note: "একটি নতুন আবেদন করা হয়েছে",
+          applicationFromId: parseInt(reduxState.core.user.id),
+          applicationToId: user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? 80 : user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ? 187 : null,
+          toRoleId: user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? 25 : user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ? 40 : null,
+        };
+        console.log("hello i am from submit", updateApplicationData);
+        dispatch(updateApplication(updateApplicationData, `update workforce application `));
+        dispatch(createApplicationMovement(createApplicationMovementData,`create workforce movement`));
   };
 
   const steps = [
