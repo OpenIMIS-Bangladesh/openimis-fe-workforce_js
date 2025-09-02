@@ -15,6 +15,7 @@ import {
   useModulesManager,
   TextInput
 } from "@openimis/fe-core";
+import EmployeeDetailsForm2 from "../../EmployeeDetailsForm2";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -125,6 +126,7 @@ const WorkerExtraInfo = ({ handleChange, formData,errors }) => {
             </Grid>
           </Grid>
         )}
+        <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData?.applicationType}  formStepNo={"institutionalInfo"} />
       </FormControl>
     </>
   );

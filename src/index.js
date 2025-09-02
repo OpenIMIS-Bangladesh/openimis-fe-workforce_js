@@ -314,6 +314,7 @@ const DEFAULT_CONFIG = {
   "core.LoginPageForm": LoginForm,
   "core.AppBar": NotificationBar,
   "home.HomePage.Blocks": DashboardRelay,
+  "core.showJournalSidebar":false
 };
 
 export const WorkforceModule = (cfg) => {

@@ -124,14 +124,14 @@ export const getParsedApplication = (modulesManager, filters) => {
       console.log("Raw application data:", rawData);
       const workforceDependentInfo = safeParse(rawData?.employeeDependentInfo)
       const dependentInfoWithId = workforceDependentInfo?.map((dep,idx)=>{
-        const temp= {...dep,id:rawData?.workforceEmployeeDependentApplication[idx].id}
+        const temp= {...dep,id:rawData?.workforceEmployeeDependentApplication?.[idx]?.id}
         return temp
       })
        const parsedDependentInfo = Array.isArray(rawData?.workforceEmployeeDependentApplication)
       ? rawData?.workforceEmployeeDependentApplication?.map((dep) => ({
           ...dep,
-          presentAddress: safeParse(dep.presentAddress),
-          permanentAddress: safeParse(dep.permanentAddress),
+          presentAddress: safeParse(dep?.presentAddress),
+          permanentAddress: safeParse(dep?.permanentAddress),
         }))
       : rawData?.workforceEmployeeDependentApplication;
 
