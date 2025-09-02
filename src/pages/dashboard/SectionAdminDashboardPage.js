@@ -355,6 +355,8 @@ const SentForVerificationApplications = () =>{
 );}
 const VerifiedApplications = () =>{ 
   const classes = useStyles()
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
   return (
   <>
     <Typography variant="h5" gutterBottom>
@@ -365,6 +367,7 @@ const VerifiedApplications = () =>{
             <ApplicationProcessSearcher
               verifiedApplications={true}
               meetingForwardButton={1}
+              loggedInUserId={loggedInUserId}
             />
           </CardContent>
       </Card>

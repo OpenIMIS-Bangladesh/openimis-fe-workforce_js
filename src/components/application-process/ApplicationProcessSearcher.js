@@ -1126,7 +1126,7 @@ class ApplicationProcessSearcher extends Component {
     await this.fetchOrganizationEmployeeDesignation(this.props.modulesManager, decodeId(userId));
   };
 
-  handleBulkSelected = async () => {
+  handleBulkSelectedByApprover = async () => {
     const { selectedApplicationIds } = this.state;
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
@@ -1854,7 +1854,7 @@ class ApplicationProcessSearcher extends Component {
           >
             {disableButtons!==1 && (
               <>
-                <Button variant="contained" color="primary" onClick={this.handleBulkSelected}>
+                <Button variant="contained" color="primary" onClick={this.handleBulkSelectedByApprover}>
                   <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
                 </Button>
                 <Button variant="contained" color="primary" onClick={this.handleOpenBFTN}>

@@ -31,6 +31,7 @@ import {
   fetchApplication,
   fetchApplicationPackage,
   fetchApplicationSummaryByClientMutationId,
+  createApplicationMovement
 } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
 import ForwardAdminPanel from "./ForwardAdminPanel";
@@ -98,6 +99,8 @@ const ForwardApplicationSummaryModal = ({
   const [formData, setFormData] = useState(null);
   const data = useSelector((state) => state.workforce[`application`] ?? []);
   const userType = getUserTypeFromRights(userRights);
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  console.log("SECTIONADMINEE",loggedInUserId)
   // const applicationSummaryId = useSelector((state) => state.workforce?.fetchedApplicationSummeryIdByClientMutationId);
   useEffect(() => {
     if (!open) {
@@ -177,9 +180,21 @@ const ForwardApplicationSummaryModal = ({
       : {}),       
       status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
      };
+    const createApplicationMovementData = {
+        applicationId: decodeId(encodedId),
+        status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+        note: "আবেদন কমিটির কাছে প্রেরণ হয়েছে",
+        action: "forward_to_comiitee",
+        applicationFromId: loggedInUserId,
+        applicationToId: 69,
+        toRoleId: 23,
+      };
    
    await dispatch(
      updateApplication(updateApplicationData, "update workforce application")
+   );
+   await dispatch(
+     createApplicationMovement(createApplicationMovementData, "update workforce movement")
    );
   }
 
