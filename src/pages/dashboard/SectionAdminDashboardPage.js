@@ -204,6 +204,8 @@ const SidebarMenu = [
 
 const FiledApplications = () =>{ 
   const classes = useStyles()
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
   return (
   <>
     <Typography variant="h5" gutterBottom>
@@ -212,7 +214,7 @@ const FiledApplications = () =>{
    <Card className={classes.tableContainer}>
         <CardContent>
             <ApplicationProcessSearcher
-                    
+               loggedInUserId={loggedInUserId}     
             />
           </CardContent>
       </Card>

@@ -20,6 +20,7 @@ import {
   fetchWorkforceEmployee,
   updateApplication,
   updateWorkforceEmployee,
+  createApplicationMovement
 } from "../../../actions";
 import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
@@ -426,11 +427,17 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
 
       submittedBy,
     };
-    console.log({ updateApplicationData });
-    dispatch(updateApplication(updateApplicationData, `update workforce application`));
-
-    // setShowPreview(true);
-    // setIsSubmitted(true);
+    const createApplicationMovementData = {
+          applicationId: safeApplicationId(applicationId,parsedApplicationData),
+          status: WORKFORCE_STATUS.NEW,
+          note: "একটি নতুন আবেদন করা হয়েছে",
+          applicationFromId: parseInt(reduxState.core.user.id),
+          applicationToId: 187,
+          toRoleId: 40,
+        };
+        console.log("hello i am from submit", updateApplicationData);
+        dispatch(updateApplication(updateApplicationData, `update workforce application `));
+        dispatch(createApplicationMovement(createApplicationMovementData,`create workforce movement`));
   };
 
   if (showPreview) {

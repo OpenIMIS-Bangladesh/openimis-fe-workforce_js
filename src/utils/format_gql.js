@@ -333,6 +333,10 @@ export function formatApplicationMovementGQL(application) {
   ${application?.revertingDate ? `revertingDate: "${(application?.revertingDate)}"` : ""}
   ${application?.applicationFromId ? `applicationFromId: "${(application?.applicationFromId)}"` : ""}
   ${application?.applicationToId ? `applicationToId: "${(application?.applicationToId)}"` : ""}
+  ${application?.toRoleId ? `toRoleId: "${(application?.toRoleId)}"` : ""}
+  ${application?.fromRoleId ? `fromRoleId: "${(application?.fromRoleId)}"` : ""}
+  ${application?.fromOfficeDesignationId ? `fromOfficeDesignationId: "${(application?.fromOfficeDesignationId)}"` : ""}
+  ${application?.toOfficeDesignationId ? `toOfficeDesignationId: "${(application?.toOfficeDesignationId)}"` : ""}
 `;
 }
 ///beneficiary registration   ////

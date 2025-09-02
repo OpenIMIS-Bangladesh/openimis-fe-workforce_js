@@ -874,6 +874,7 @@ class ApplicationProcessSearcher extends Component {
   };
   handleApprovalByDoctor = async (application) => {
     const { selectedApplication } = this.state;
+    const { loggedInUserId } = this.props;
     this.setState({
       confirmModalOpen: true,
       confirmModalMessage: "workforce.application.approve.message",
@@ -890,8 +891,19 @@ class ApplicationProcessSearcher extends Component {
               status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
               grantAmount: this.state.editedGrantMoney,
             };
+            const createApplicationMovementData = {
+              applicationId: decodeId(application.id),
+              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+              note: "আবেদন ডাক্তার দ্বারা অনুমোদন করা হয়েছে",
+              action: "forward_to_cf_section",
+              applicationFromId: loggedInUserId,
+              applicationToId: 139,
+              toRoleId: 32,
+            };
             try {
               await this.props.updateApplication(updateApplicationData, "update workforce application");
+              await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
+
               this.setState({
                 serverResponse: {
                   status: "SUCCESS",
@@ -1168,6 +1180,9 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkSelectedbyAssociation = () => {
     const { selectedApplicationIds } = this.state;
+    const { loggedInUserId } = this.props;
+        console.log("associationee",loggedInUserId);
+
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -1191,6 +1206,9 @@ class ApplicationProcessSearcher extends Component {
                   status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
                   note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
                   action: "forward_to_cf_section",
+                  applicationFromId: loggedInUserId,
+                  applicationToId: 139,
+                  toRoleId: 32,
                 };
                 await updateApplication(updateApplicationData, "update workforce application");
                 await createApplicationMovement(createApplicationMovementData, "create workforce movement");
@@ -1220,6 +1238,9 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkSelectedbySectionAdminToDoctor = () => {
     const { selectedApplicationIds } = this.state;
+    const { loggedInUserId } = this.props;
+        console.log("sectionadmineee",loggedInUserId);
+
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -1241,8 +1262,11 @@ class ApplicationProcessSearcher extends Component {
                 const createApplicationMovementData = {
                   applicationId: decodedId,
                   status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR,
-                  note: "আবেদন নির্বাচন করা হয়েছে",
+                  note: "আবেদন ডক্টরের কাছে প্রেরণ করা হয়েছে",
                   action: "forward_to_doctor",
+                  applicationFromId: loggedInUserId,
+                  applicationToId: 177,
+                  toRoleId: 33,
                 };
                 await updateApplication(updateApplicationData, "update workforce application");
                 await createApplicationMovement(createApplicationMovementData, "create workforce movement");
@@ -1272,6 +1296,7 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkSelectedbyChecker = () => {
     const { selectedApplicationIds } = this.state;
+    const { loggedInUserId } = this.props;
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -1293,8 +1318,11 @@ class ApplicationProcessSearcher extends Component {
                 const createApplicationMovementData = {
                   applicationId: decodedId,
                   status: WORKFORCE_STATUS.VERIFIED,
-                  note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
+                  note: "আবেদন যাচাইকৃত হয়েছে",
                   action: "verified",
+                  applicationFromId: loggedInUserId,
+                  applicationToId: 139,
+                  toRoleId: 32,
                 };
                 await updateApplication(updateApplicationData, "update workforce application");
                 await createApplicationMovement(createApplicationMovementData, "create workforce movement");
@@ -1324,6 +1352,9 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkSelectedbyFactoryAdmin = () => {
     const { selectedApplicationIds } = this.state;
+    const { loggedInUserId } = this.props;
+            console.log("FACTORYADMINWEEE",loggedInUserId);
+
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -1345,8 +1376,11 @@ class ApplicationProcessSearcher extends Component {
                 const createApplicationMovementData = {
                   applicationId: decodedId,
                   status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
-                  note: "আবেদন নির্বাচন করা হয়েছে",
+                  note: "অ্যাসোসিয়েশনের কাছে প্রেরণ",
                   action: "forward_to_association",
+                  applicationFromId: loggedInUserId,
+                  applicationToId: 93,
+                  toRoleId: 31,
                 };
                 await updateApplication(updateApplicationData, "update workforce application");
                 await createApplicationMovement(createApplicationMovementData, "create workforce movement");
@@ -1367,7 +1401,7 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
-            window.location.reload();
+            // window.location.reload();
           }
         }
         this.setState({ confirmModalOpen: false, confirmModalCallback: null });
