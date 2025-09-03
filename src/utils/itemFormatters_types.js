@@ -102,7 +102,7 @@ export const itemAdminFormatters = (
           <HistoryIcon />
         </IconButton>
       </Tooltip> */}
-      <Tooltip title="Approve">
+      {/* <Tooltip title="Approve">
         <IconButton
           disabled={
             application?.isHistory ||
@@ -111,7 +111,7 @@ export const itemAdminFormatters = (
         >
           <CheckIcon />
         </IconButton>
-      </Tooltip>
+      </Tooltip> */}
 
       <Tooltip title="Reject">
         <span>
@@ -195,7 +195,7 @@ export const itemFormattersDirector = (
           <TabIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Approve">
+      {/* <Tooltip title="Approve">
         <IconButton
           disabled={
             application?.isHistory ||
@@ -205,8 +205,8 @@ export const itemFormattersDirector = (
         >
           <CheckIcon />
         </IconButton>
-      </Tooltip>
-      {/* <Tooltip title="Reject">
+      </Tooltip> */}
+      <Tooltip title="Reject">
         <span>
           <IconButton
             onClick={() => component.handleReject(application)}
@@ -219,7 +219,7 @@ export const itemFormattersDirector = (
             <CloseIcon />
           </IconButton>
         </span>
-      </Tooltip> */}
+      </Tooltip>
     </div>
   ));
   return formatters;
@@ -1468,7 +1468,7 @@ export const itemFormattersApprover = (
               </IconButton>
             </span>
           </Tooltip>
-          <Tooltip title="Selected">
+          {/* <Tooltip title="Selected">
             <IconButton
               disabled={
                 application?.isHistory ||
@@ -1478,7 +1478,7 @@ export const itemFormattersApprover = (
             >
               <CheckIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
         </>
       )}
     </div>

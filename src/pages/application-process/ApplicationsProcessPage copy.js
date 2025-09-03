@@ -142,15 +142,6 @@ class ApplicationsProcessPage extends Component {
       item.status === "forward_to_director" || item.status === "approved_by_director" || item.status === "forward_to_dg"
     );
 
-    const directorSummaries = summaryData.filter(item =>
-      getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR && item.organizationType === "cf"
-    );
-
-    const blwfDirectorSummaries = summaryData.filter(item =>
-      getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR && item.organizationType === "blwf"
-    );
-
-
     return (
       <div className={classes.page}>
         <AppBar position="static">
@@ -167,7 +158,7 @@ class ApplicationsProcessPage extends Component {
               label={<FormattedMessage module="workforce" id="workforce.application.process.approved" />}
               {...this.a11yProps(2)}
             />
-            <Tab
+              <Tab
               label={<FormattedMessage module="workforce" id="workforce.application.process.rejected" />}
               {...this.a11yProps(3)}
             />
@@ -203,7 +194,7 @@ class ApplicationsProcessPage extends Component {
                             summaryId={item.id}
                             cacheFiltersKey="all"
                             onDoubleClick={this.onDoubleClick}
-                            loggedInUserId={loggedInUserId}
+                             loggedInUserId={loggedInUserId}
                           />
                         )}
                       </CardContent>
@@ -246,7 +237,7 @@ class ApplicationsProcessPage extends Component {
                             summaryId={item.id}
                             cacheFiltersKey="pending"
                             onDoubleClick={this.onDoubleClick}
-                            loggedInUserId={loggedInUserId}
+                             loggedInUserId={loggedInUserId}
                           />
                         )}
                       </CardContent>
@@ -289,7 +280,7 @@ class ApplicationsProcessPage extends Component {
                             summaryId={item.id}
                             cacheFiltersKey="approved"
                             onDoubleClick={this.onDoubleClick}
-                            loggedInUserId={loggedInUserId}
+                             loggedInUserId={loggedInUserId}
                           />
                         )}
                       </CardContent>
@@ -306,24 +297,25 @@ class ApplicationsProcessPage extends Component {
             </TabPanel>
 
             <TabPanel value={value} index={3}>
-              <ApplicationProcessSearcher
-                cacheFiltersKey="rejected"
-                rejectedApplication={true}
-                onDoubleClick={this.onDoubleClick}
-                loggedInUserId={loggedInUserId}
-              />
-              <GenerateBFTN
-                open={openGenerateBFTN}
-                onClose={this.handleCloseBFTN}
-                applications={applications}
-                userRights={rights}
-              />
+            <ApplicationProcessSearcher
+              cacheFiltersKey="rejected"
+              rejectedApplication={true}
+              onDoubleClick={this.onDoubleClick}
+               loggedInUserId={loggedInUserId}
+            />
+            <GenerateBFTN
+              open={openGenerateBFTN}
+              onClose={this.handleCloseBFTN}
+              applications={applications}
+              userRights={rights}
+            />
             </TabPanel>
           </>
-        ) : (getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR || getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR) ? (
+        ) : (
+          // Else part: Blank or fallback UI
           <>
             <TabPanel value={value} index={0}>
-              {(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR ? directorSummaries : blwfDirectorSummaries).map((item, index) => (
+              {allSummariesDirector.map((item, index) => (
                 <Accordion
                   key={index}
                   expanded={this.state.expanded === item.id}
@@ -366,7 +358,7 @@ class ApplicationsProcessPage extends Component {
             </TabPanel>
 
             <TabPanel value={value} index={1}>
-              {(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR ? directorSummaries.filter(item => item.status === "forward_to_director") : blwfDirectorSummaries.filter(item => item.status === "forward_to_director")).map((item, index) => (
+              {pendingSummariesDirector.map((item, index) => (
                 <Accordion
                   key={index}
                   expanded={this.state.expanded === item.id}
@@ -409,7 +401,7 @@ class ApplicationsProcessPage extends Component {
             </TabPanel>
 
             <TabPanel value={value} index={2}>
-              {(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR ? directorSummaries.filter(item => item.status === "approved_by_director") : blwfDirectorSummaries.filter(item => item.status === "approved_by_director")).map((item, index) => (
+              {approvedSummariesDirector.map((item, index) => (
                 <Accordion
                   key={index}
                   expanded={this.state.expanded === item.id}
@@ -452,7 +444,7 @@ class ApplicationsProcessPage extends Component {
             </TabPanel>
 
             <TabPanel value={value} index={3}>
-              {(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR ? directorSummaries.filter(item => item.status === "rejected") : blwfDirectorSummaries.filter(item => item.status === "rejected")).map((item, index) => (
+              {rejectedSummariesDirector.map((item, index) => (
                 <Accordion
                   key={index}
                   expanded={this.state.expanded === item.id}
@@ -494,8 +486,6 @@ class ApplicationsProcessPage extends Component {
               />
             </TabPanel>
           </>
-        ) : (
-          <></>
         )}
 
 
@@ -536,3 +526,4 @@ export default withModulesManager(
     ),
   ),
 );
+
