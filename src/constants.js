@@ -400,5 +400,11 @@ export const banglaLabels = {
   CreatedDate: "আবেদনের তারিখ",
   metadata:"অন্যান্য তথ্য",
   employeeChildrenInfo:"শিক্ষাগত তথ্য",
-  applicationFor:"আবেদন কার জন্য"
+  applicationFor:"আবেদন কার জন্য",
+   bank: "ব্যাংক",
+  district: "জেলা",
+  branch: "শাখা",
+  employeeBankInfo: "শ্রমিকের ব্যাংক তথ্য",
+  // New specific keys
+
 };

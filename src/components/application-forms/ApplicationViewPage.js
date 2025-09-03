@@ -64,7 +64,7 @@ const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent","code"
  * Convert key into a user-friendly label
  */
 const formatKey = (key,language) =>{
-  
+  console.log(language)
   const cleanKey = key.split(".").pop();
     if (["fr", "bangla", "bd"].includes(language) && banglaLabels[cleanKey]) {
       return banglaLabels[cleanKey];
@@ -146,7 +146,7 @@ const renderDetails = (data, classes, parentKey = "",language) => {
                 >
                   {formatKey(key,language)}
                 </Typography>
-                {renderDetails(value, classes, key)}
+                {renderDetails(value, classes, key,language)}
               </Box>
             ))}
           </CardContent>
@@ -240,7 +240,6 @@ const ApplicationViewPage = ({
     }),
     [application]
   );
-console.log(language)
   return (
     <Grid container spacing={3} className={classes.root}>
       {/* Sidebar */}
