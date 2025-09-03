@@ -492,10 +492,8 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
 
   if (showPreview) {
     return (
-      <div >
-          <ApplicationViewPage application={formData} language={"fr"} />
-        {/* <Paper className={classes.paper} elevation={0}>
-          <PreviewDetails formData={formData} />
+      <div>
+        <ApplicationViewPage application={formData} language={"fr"} />
           <div className={classes.buttonContainer}>
             <Button
               variant="outlined"
@@ -517,8 +515,34 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           </div>
-        </Paper> */}
       </div>
+      // <div >
+      //     <ApplicationViewPage application={formData} language={"fr"} />
+      //   <Paper className={classes.paper} elevation={0}>
+      //     <PreviewDetails formData={formData} />
+      //     <div className={classes.buttonContainer}>
+      //       <Button
+      //         variant="outlined"
+      //         color="error"
+      //         onClick={() => {
+      //           setShowPreview(false);
+      //         }}
+      //       >
+      //         <FormattedMessage module="workforce" id="workforce.back" />
+      //       </Button>
+      //       <Button
+      //         variant="contained"
+      //         color="primary"
+      //         onClick={() => {
+      //           setShowPreview(false);
+      //           setShowVerifyNid(true);
+      //         }}
+      //       >
+      //         <FormattedMessage module="workforce" id="workforce.submit" />
+      //       </Button>
+      //     </div>
+      //   </Paper>
+      // </div>
     );
   }
 
