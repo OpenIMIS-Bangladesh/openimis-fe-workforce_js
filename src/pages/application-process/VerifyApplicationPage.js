@@ -102,7 +102,6 @@ class VerifyApplicationPage extends Component {
       preview: null,
       note: "",
       mockFiles: mockFiles,
-      fileStates: mockFiles || [],
       uploadedFiles: [],
       fileStates: mockFiles.map((file) => ({
         ...file,

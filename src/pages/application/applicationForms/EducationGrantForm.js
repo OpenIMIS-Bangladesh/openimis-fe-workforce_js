@@ -32,6 +32,7 @@ import { getInfoId, getParsedApplication, getUserType, safeApplicationId, valida
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 import EducationInfoForm from "../FormsComponents/EducationGrantFrom.js/EducationInfoForm";
 import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
+import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -490,9 +491,8 @@ const EducationGrantForm = ({  organizationType, selectedApplicationType, applic
 
   if (showPreview) {
     return (
-      <div className={classes.container}>
-        <Paper className={classes.paper} elevation={0}>
-          <PreviewDetails formData={formData} />
+      <div>
+        <ApplicationViewPage application={formData} language={"fr"} />
           <div className={classes.buttonContainer}>
             <Button
               variant="outlined"
@@ -514,8 +514,33 @@ const EducationGrantForm = ({  organizationType, selectedApplicationType, applic
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           </div>
-        </Paper>
       </div>
+      // <div className={classes.container}>
+      //   <Paper className={classes.paper} elevation={0}>
+      //     <PreviewDetails formData={formData} />
+      //     <div className={classes.buttonContainer}>
+      //       <Button
+      //         variant="outlined"
+      //         color="error"
+      //         onClick={() => {
+      //           setShowPreview(false);
+      //         }}
+      //       >
+      //         <FormattedMessage module="workforce" id="workforce.back" />
+      //       </Button>
+      //       <Button
+      //         variant="contained"
+      //         color="primary"
+      //         onClick={() => {
+      //           setShowPreview(false);
+      //           setShowVerifyNid(true);
+      //         }}
+      //       >
+      //         <FormattedMessage module="workforce" id="workforce.submit" />
+      //       </Button>
+      //     </div>
+      //   </Paper>
+      // </div>
     );
   }
 

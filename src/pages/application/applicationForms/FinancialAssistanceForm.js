@@ -32,6 +32,7 @@ import { getInfoId, safeApplicationId, validateRequiredFields } from "../../../u
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
+import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -448,9 +449,8 @@ const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, p
 
   if (showPreview) {
     return (
-      <div className={classes.container}>
-        <Paper className={classes.paper} elevation={0}>
-          <PreviewDetails formData={formData} language={reduxState.core?.user?.i_user?.language} />
+      <div>
+        <ApplicationViewPage application={formData} language={"fr"} />
           <div className={classes.buttonContainer}>
             <Button
               variant="outlined"
@@ -472,8 +472,33 @@ const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, p
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           </div>
-        </Paper>
       </div>
+      // <div className={classes.container}>
+      //   <Paper className={classes.paper} elevation={0}>
+      //     <PreviewDetails formData={formData} language={reduxState.core?.user?.i_user?.language} />
+      //     <div className={classes.buttonContainer}>
+      //       <Button
+      //         variant="outlined"
+      //         color="error"
+      //         onClick={() => {
+      //           setShowPreview(false);
+      //         }}
+      //       >
+      //         <FormattedMessage module="workforce" id="workforce.back" />
+      //       </Button>
+      //       <Button
+      //         variant="contained"
+      //         color="primary"
+      //         onClick={() => {
+      //           setShowPreview(false);
+      //           setShowVerifyNid(true);
+      //         }}
+      //       >
+      //         <FormattedMessage module="workforce" id="workforce.submit" />
+      //       </Button>
+      //     </div>
+      //   </Paper>
+      // </div>
     );
   }
 
