@@ -18,6 +18,7 @@ import { fetchSummaryApplications } from "../../actions";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserTypeFromRights } from "../../utils/utils";
+import { useSelector, useDispatch } from "react-redux";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -109,6 +110,8 @@ class ApplicationsProcessPage extends Component {
     const { intl, classes, rights, applications, } = this.props;
     const { value, openGenerateBFTN } = this.state;
     const summaryData = this.props.summaryData || [];
+    const { loggedInUserId } = this.props;
+
     // console.clear();
     console.log('summary data', summaryData);
 
@@ -191,6 +194,7 @@ class ApplicationsProcessPage extends Component {
                             summaryId={item.id}
                             cacheFiltersKey="all"
                             onDoubleClick={this.onDoubleClick}
+                             loggedInUserId={loggedInUserId}
                           />
                         )}
                       </CardContent>
@@ -233,6 +237,7 @@ class ApplicationsProcessPage extends Component {
                             summaryId={item.id}
                             cacheFiltersKey="pending"
                             onDoubleClick={this.onDoubleClick}
+                             loggedInUserId={loggedInUserId}
                           />
                         )}
                       </CardContent>
@@ -275,6 +280,7 @@ class ApplicationsProcessPage extends Component {
                             summaryId={item.id}
                             cacheFiltersKey="approved"
                             onDoubleClick={this.onDoubleClick}
+                             loggedInUserId={loggedInUserId}
                           />
                         )}
                       </CardContent>
@@ -295,6 +301,7 @@ class ApplicationsProcessPage extends Component {
               cacheFiltersKey="rejected"
               rejectedApplication={true}
               onDoubleClick={this.onDoubleClick}
+               loggedInUserId={loggedInUserId}
             />
             <GenerateBFTN
               open={openGenerateBFTN}
@@ -334,6 +341,7 @@ class ApplicationsProcessPage extends Component {
                             summaryId={item.id}
                             cacheFiltersKey="all"
                             onDoubleClick={this.onDoubleClick}
+                            loggedInUserId={loggedInUserId}
                           />
                         )}
                       </CardContent>
@@ -376,6 +384,7 @@ class ApplicationsProcessPage extends Component {
                             summaryId={item.id}
                             cacheFiltersKey="pending"
                             onDoubleClick={this.onDoubleClick}
+                            loggedInUserId={loggedInUserId}
                           />
                         )}
                       </CardContent>
@@ -418,6 +427,7 @@ class ApplicationsProcessPage extends Component {
                             summaryId={item.id}
                             cacheFiltersKey="approved"
                             onDoubleClick={this.onDoubleClick}
+                            loggedInUserId={loggedInUserId}
                           />
                         )}
                       </CardContent>
@@ -460,6 +470,7 @@ class ApplicationsProcessPage extends Component {
                             summaryId={item.id}
                             cacheFiltersKey="rejected"
                             onDoubleClick={this.onDoubleClick}
+                            loggedInUserId={loggedInUserId}
                           />
                         )}
                       </CardContent>
@@ -498,6 +509,8 @@ const mapStateToProps = (state) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   applications: state.workforce.applications,
   summaryData: state.workforce.applicationsSummary ?? [],
+  loggedInUserId: state.core?.user?.i_user?.id,
+
 });
 
 const mapDispatchToProps = (dispatch) => ({

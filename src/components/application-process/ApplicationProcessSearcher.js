@@ -1128,6 +1128,7 @@ class ApplicationProcessSearcher extends Component {
 
   handleBulkSelectedByApprover = async () => {
     const { selectedApplicationIds } = this.state;
+    const { loggedInUserId } = this.props;
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -1151,6 +1152,8 @@ class ApplicationProcessSearcher extends Component {
                   status: WORKFORCE_STATUS.SELECTED,
                   note: "আবেদন নির্বাচন করা হয়েছে",
                   action: "approved",
+                  applicationFromId: loggedInUserId,
+                  applicationToId: loggedInUserId,
                 };
                 await updateApplication(updateApplicationData, "update workforce application");
                 await createApplicationMovement(createApplicationMovementData, "create workforce movement");
@@ -1181,8 +1184,6 @@ class ApplicationProcessSearcher extends Component {
   handleBulkSelectedbyAssociation = () => {
     const { selectedApplicationIds } = this.state;
     const { loggedInUserId } = this.props;
-        console.log("associationee",loggedInUserId);
-
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -1297,6 +1298,8 @@ class ApplicationProcessSearcher extends Component {
   handleBulkSelectedbyChecker = () => {
     const { selectedApplicationIds } = this.state;
     const { loggedInUserId } = this.props;
+    const userType = getUserTypeFromRights(this.props.userRights);
+
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -1321,8 +1324,8 @@ class ApplicationProcessSearcher extends Component {
                   note: "আবেদন যাচাইকৃত হয়েছে",
                   action: "verified",
                   applicationFromId: loggedInUserId,
-                  applicationToId: 139,
-                  toRoleId: 32,
+                  applicationToId: userType === WORKFORCE_USER_TYPE.CHECKER ? 139 : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ? 187 : null,
+                  toRoleId: userType === WORKFORCE_USER_TYPE.CHECKER ? 32 : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ? 40 : null,
                 };
                 await updateApplication(updateApplicationData, "update workforce application");
                 await createApplicationMovement(createApplicationMovementData, "create workforce movement");
@@ -1514,6 +1517,7 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkApproveByAdmin = () => {
     const { selectedApplicationIds } = this.state;
+    const { loggedInUserId } = this.props;
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -1535,8 +1539,11 @@ class ApplicationProcessSearcher extends Component {
                 const createApplicationMovementData = {
                   applicationId: decodedId,
                   status: WORKFORCE_STATUS.APPROVED_BY_DG,
-                  note: "আবেদন নির্বাচন করা হয়েছে",
+                  note: "আবেদন ডিজি দ্বারা অনুমোদন করা হয়েছে",
                   action: "approved_by_dg",
+                  applicationFromId: loggedInUserId,
+                  applicationToId: 1,
+                  toRoleId: 1,
                 };
                 const updateApplicationSummaryData = {
                   id: decodeId(this.props.summaryId),
@@ -1562,7 +1569,7 @@ class ApplicationProcessSearcher extends Component {
                 message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
               },
             });
-            window.location.reload();
+            // window.location.reload();
           }
         }
         this.setState({ confirmModalOpen: false, confirmModalCallback: null });
@@ -1572,7 +1579,7 @@ class ApplicationProcessSearcher extends Component {
   handleBulkApproveByDirector = async () => {
     const { selectedApplicationIds } = this.state;
     const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
-
+    const { loggedInUserId } = this.props;
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -1595,8 +1602,12 @@ class ApplicationProcessSearcher extends Component {
                 const createApplicationMovementData = {
                   applicationId: decodedId,
                   status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
-                  note: "আবেদন নির্বাচন করা হয়েছে",
+                  note: "আবেদন পরিচালক দ্বারা অনুমোদন করা হয়েছে",
                   action: "approved_by_DIRECTOR",
+                  applicationFromId: loggedInUserId,
+                  applicationToId: 1,
+                  toRoleId: 1,
+                  
                 };
                 const updateApplicationSummaryData = {
                   id: decodeId(this.props.summaryId),
@@ -1623,7 +1634,7 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
-            window.location.reload();
+            // window.location.reload();
           }
         }
         this.setState({ confirmModalOpen: false, confirmModalCallback: null });

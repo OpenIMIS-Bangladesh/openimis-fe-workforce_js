@@ -126,6 +126,8 @@ const SidebarMenu = [
 const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  
 
   const handleChange = (panelId) => (event, isExpanded) => {
     setExpanded(isExpanded ? panelId : null);
@@ -166,7 +168,7 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
                 <Card style={{ width: "100%" }}>
                   <CardContent>
                     {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons} />
+                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons} loggedInUserId={loggedInUserId} />
                     )}
                   </CardContent>
                 </Card>
