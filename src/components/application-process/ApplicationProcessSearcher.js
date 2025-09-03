@@ -1129,6 +1129,8 @@ class ApplicationProcessSearcher extends Component {
   handleBulkSelectedByApprover = async () => {
     const { selectedApplicationIds } = this.state;
     const { loggedInUserId } = this.props;
+    const userType = getUserTypeFromRights(this.props.userRights);
+
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -1152,8 +1154,6 @@ class ApplicationProcessSearcher extends Component {
                   status: WORKFORCE_STATUS.SELECTED,
                   note: "আবেদন নির্বাচন করা হয়েছে",
                   action: "approved",
-                  applicationFromId: loggedInUserId,
-                  applicationToId: loggedInUserId,
                 };
                 await updateApplication(updateApplicationData, "update workforce application");
                 await createApplicationMovement(createApplicationMovementData, "create workforce movement");
@@ -1174,7 +1174,7 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
-            window.location.reload();
+            // window.location.reload();
           }
         }
         this.setState({ confirmModalOpen: false, confirmModalCallback: null });
