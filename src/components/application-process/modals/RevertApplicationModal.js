@@ -157,9 +157,11 @@ useEffect(() => {
 
       const allUsers = edges.flatMap(({ node }) => {
         const users = [];
-        if (node.applicationFrom) users.push(node.applicationFrom);
+        if (node.applicationTo) users.push(node.applicationTo);
         return users;
       }).filter(Boolean);
+      
+      const roles = [ "Factory Admin","Association", "Section Admin", "Section User","Doctor","Section Admin", "Selection User"];
 
       setMovementUsers([
         {
@@ -167,15 +169,11 @@ useEffect(() => {
           name: selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী",
           role: "Applicant",
         },
-        { id: "factoryAdmin456", name: "Adnan", role: "Factory Admin" },
-        { id: "association", name: "Anwar", role: "Association" },
         ...allUsers.map((user, index) => ({
           id: user.id,
           name: user.loginName,
-          role: "Section Admin",
+          role: roles[index],
         })),
-        // { id: "doctor", name: "Dr. Raju", role: "Doctor" },
-        // { id: "approver", name: "Nadim", role: "Selection committee" },
       ]);
     }).catch((err) => console.error(err));
   }

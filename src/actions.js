@@ -802,8 +802,8 @@ export function fetchWorkforceUserRoleWiseUser(mm, variables) {
 export function fetchApplicationWiseMovementList(mm, variables) {
   return graphqlWithVariables(
     `
-      query ($applicationId: String!, $orderBy: [String]) {
-        workforceApplicationMovement(applicationId: $applicationId, orderBy: $orderBy) {
+      query ($applicationId: String) {
+        workforceApplicationMovement(applicationId: $applicationId) {
           edges {
             node {
               id
