@@ -1404,7 +1404,7 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
-            // window.location.reload();
+            window.location.reload();
           }
         }
         this.setState({ confirmModalOpen: false, confirmModalCallback: null });
@@ -1569,7 +1569,7 @@ class ApplicationProcessSearcher extends Component {
                 message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
               },
             });
-            // window.location.reload();
+            window.location.reload();
           }
         }
         this.setState({ confirmModalOpen: false, confirmModalCallback: null });
@@ -1634,7 +1634,7 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
-            // window.location.reload();
+            window.location.reload();
           }
         }
         this.setState({ confirmModalOpen: false, confirmModalCallback: null });
