@@ -5,8 +5,9 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import FileUploader from "../../pickers/FileUploader";
 import DocumentReviewAccordion from "../application-process/DocumentReviewAccordion";
-import { banglaLabels } from "../../constants";
+import { banglaLabels, WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
+import { getUserType } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,7 +65,6 @@ const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent","code"
  * Convert key into a user-friendly label
  */
 const formatKey = (key,language) =>{
-  console.log(language)
   const cleanKey = key.split(".").pop();
     if (["fr", "bangla", "bd"].includes(language) && banglaLabels[cleanKey]) {
       return banglaLabels[cleanKey];
@@ -226,6 +226,7 @@ const ApplicationViewPage = ({
   const classes = useStyles();
   const language = useSelector(state=>state.core?.user?.i_user?.language)
   console.log({ view: application });
+  const user_type = getUserType()
   // Sidebar summary fields
   const sidebarFields = useMemo(
     () => ({
@@ -260,14 +261,14 @@ const ApplicationViewPage = ({
             ))}
           </Box>
         </Paper>
-        {(filteredDocumentTypes && filteredDocumentTypes?.length>0) && (
+        {(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes && filteredDocumentTypes?.length>0) && (
           <Typography variant="h6" style={{ marginTop: 6 }}>
             <b>
               <FormattedMessage module="workforce" id="workforce.employee.upload.factory.document" />
             </b>
           </Typography>
         )}
-        {filteredDocumentTypes?.map((document, index) => (
+        {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && (filteredDocumentTypes?.map((document, index) => (
           <Box style={{ marginTop: "10px" }}>
             <Typography>{document.nameBn}</Typography>
             <FileUploader
@@ -279,7 +280,7 @@ const ApplicationViewPage = ({
               uploadedBy={"factoryAdmin"}
             />
           </Box>
-        ))}
+        )))}
       </Grid>
 
       {/* Details Section */}
