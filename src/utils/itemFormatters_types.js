@@ -112,7 +112,14 @@ export const itemAdminFormatters = (
           <CheckIcon />
         </IconButton>
       </Tooltip> */}
-
+        <Tooltip title="Revert">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => component.handleOpenRevertModal(application)}
+        >
+          <UndoIcon />
+        </IconButton>
+      </Tooltip>
       <Tooltip title="Reject">
         <span>
           <IconButton
@@ -206,6 +213,14 @@ export const itemFormattersDirector = (
           <CheckIcon />
         </IconButton>
       </Tooltip> */}
+        <Tooltip title="Revert">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => component.handleOpenRevertModal(application)}
+        >
+          <UndoIcon />
+        </IconButton>
+      </Tooltip>
       <Tooltip title="Reject">
         <span>
           <IconButton
