@@ -508,6 +508,7 @@
     "workforce.application.approve":"Approve",
     "workforce.application.reject":"Reject",
     "workforce.application.verify":"Verify",
+    "workforce.application.recommended":"Verify",
     "workforce.application.recent":"Recent Activity",
     "workforce.application.checked":"Checked Applications",
     "workforce.checker1.dashboard":"Welfare Section-1 Data Entry Operator Dashboard",
