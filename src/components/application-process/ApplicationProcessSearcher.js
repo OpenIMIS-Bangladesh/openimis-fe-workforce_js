@@ -333,7 +333,10 @@ class ApplicationProcessSearcher extends Component {
       if (rejectedApplication) {
         defaultStatusFilters.push('statusIn: ["rejected"]',  'organizationTypeIn: ["blwf"]');
       } else if (revertedApplication) {
-        defaultStatusFilters.push('statusIn: ["revert","revert_to_applicant","revert_to_checker"]',  'organizationTypeIn: ["blwf"]');
+        defaultStatusFilters.push('organizationTypeIn: ["blwf"]');
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       } else if (summaryId) {
         defaultStatusFilters.push('statusIn: ["forward_to_blwf_section","meeting_created","approved_by_dg"]',  'organizationTypeIn: ["blwf"]');
         additionalFilters.push(`blwfApplicationSummary_Id:"${summaryId}"`);
@@ -1098,21 +1101,21 @@ class ApplicationProcessSearcher extends Component {
        : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
       ? itemFormattersBlwfSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.DOCTOR
-      ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION
-      ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
       : userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-      ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
       : userType === WORKFORCE_USER_TYPE.APPROVER
-      ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
       : userType === WORKFORCE_USER_TYPE.BLWF_APPROVER
-      ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication)
       : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
-      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
       : userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
-      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
       ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication)
       : userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
