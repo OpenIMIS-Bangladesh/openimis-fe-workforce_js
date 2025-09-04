@@ -54,6 +54,7 @@ const NotificationBar = ({ classes }) => {
     (state) => state.workforce[`workforceApplicationStatusCount`]
   );
 
+  console.log("Status Count in NotificationBar:", status_count);
   const status_data = {
     pending: status_count?.pending?.totalCount || 0,
     rejected: status_count?.rejected?.totalCount || 0,
@@ -81,6 +82,7 @@ const NotificationBar = ({ classes }) => {
   }
 
   const data = [];
+  const approveLabel = user_type === WORKFORCE_USER_TYPE.DIRECTOR ? "workforce.application.process.forwarded":"workforce.application.process.approved";
 
   if (user_type === WORKFORCE_USER_TYPE.APPLICANT) {
     return (<></>)
@@ -127,7 +129,10 @@ const NotificationBar = ({ classes }) => {
           <>
       {/* Pending */}
       <Tooltip title="Pending Applications">
-        <Box className={classes.item} onClick={() => history.push("/workforce/applications/process?status=pending")}>
+        <Box className={classes.item} 
+        onClick={() => history.push("/home?status=pending")}
+        // onClick={() => history.push("/workforce/applications/process?status=pending")}
+          >
           <Badge badgeContent={data.pending || 0} color="primary">
             <HourglassEmptyIcon color="yellow" />
           </Badge>
@@ -137,7 +142,10 @@ const NotificationBar = ({ classes }) => {
 
       {/* In Progress */}
       <Tooltip title="Rejected Applications">
-        <Box className={classes.item} onClick={() => history.push("/workforce/applications/process?status=rejected")}>
+        <Box className={classes.item} 
+        // onClick={() => history.push("/workforce/applications/process?status=rejected")}
+        onClick={() => history.push("/home?status=rejected")}
+        >
           <Badge badgeContent={data.rejected || 0} color="primary">
             <RestorePageIcon color="red" />
           </Badge>
@@ -147,11 +155,15 @@ const NotificationBar = ({ classes }) => {
 
       {/* Verified */}
       <Tooltip title="Verified Applications">
-        <Box className={classes.item} onClick={() => history.push("/workforce/applications/process?status=approved")}>
+        <Box className={classes.item} 
+        onClick={() => history.push("/home?status=approved")}
+        // onClick={() => history.push("/workforce/applications/process?status=approved")}
+        >
           <Badge badgeContent={data.approved || 0} color="primary">
             <VerifiedUserIcon style={{ color: "#4caf50" }} />
           </Badge>
-          <Typography className={classes.label}>  <FormattedMessage module="workforce" id="workforce.application.process.approved" /></Typography>
+          <Typography className={classes.label}>  <FormattedMessage module="workforce" id={approveLabel} /></Typography>
+          {/* <Typography className={classes.label}>  <FormattedMessage module="workforce" id="workforce.application.process.approved" /></Typography> */}
         </Box>
       </Tooltip>
       </>

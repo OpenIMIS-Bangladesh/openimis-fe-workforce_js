@@ -41,7 +41,7 @@ import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import ApplicationSummaryPage from "../application-process/ApplicationSummaryPage";
+import ApplicationsProcessPage from "../application-process/ApplicationsProcessPage";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -378,27 +378,6 @@ const DashboardPage = () => {
   const [selectedMenu, setSelectedMenu] = useState("dashboard");
 
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const status = urlParams.get("status");
-  useEffect(() => {
-    if (status) {
-      switch (status) {
-        case "pending":
-          setSelectedMenu("waitingApplications");
-          break;
-        case "approved":
-          setSelectedMenu("approvedApplications");
-          break;
-        case "rejected":
-          setSelectedMenu("rejectedApplications");
-          break;
-        default:
-          setSelectedMenu("dashboard");
-      }
-    }
-  }, [status]);
-
-
   const renderContent = () => {
     switch (selectedMenu) {
       case "dashboard":
@@ -406,11 +385,11 @@ const DashboardPage = () => {
           <Dashboard/>
         );
       case "waitingApplications":
-        return <ApplicationSummaryPage status="pending"/>;
+        return <ApplicationsProcessPage location={{ search: "?status=pending" }}/>;
       case "rejectedApplications":
-        return <ApplicationSummaryPage status="rejected"/>;
+        return <ApplicationsProcessPage location={{ search: "?status=rejected" }}/>;
       case "approvedApplications":
-        return <ApplicationSummaryPage status="approved"/>;
+        return <ApplicationsProcessPage location={{ search: "?status=approved" }}/>;
       default:
         return <Dashboard />;
     }
@@ -419,7 +398,7 @@ const DashboardPage = () => {
   return (
     <div style={{ padding: theme.spacing(3) }}>
       <Grid container spacing={2} style={{ marginTop: theme.spacing(1) }}>
-        <Grid item xs={12} md={3}>
+        {/* <Grid item xs={12} md={3}>
           <Paper className={classes.sidebar}>
             <List>
               {SidebarMenu.map((item) => (
@@ -435,8 +414,8 @@ const DashboardPage = () => {
               ))}
             </List>
           </Paper>
-        </Grid>
-        <Grid item xs={12} md={9} className={classes.content}>
+        </Grid> */}
+        <Grid item xs={12} md={12}>
           {renderContent()}
         </Grid>
       </Grid>

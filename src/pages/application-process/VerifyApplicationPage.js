@@ -102,6 +102,7 @@ class VerifyApplicationPage extends Component {
       preview: null,
       note: "",
       mockFiles: mockFiles,
+      fileStates:mockFiles || [],
       uploadedFiles: [],
       fileStates: mockFiles.map((file) => ({
         ...file,
@@ -361,7 +362,7 @@ class VerifyApplicationPage extends Component {
               </Typography>
             </CardContent>
           </Card> */}
-          {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes ? (
+          {user_type !== WORKFORCE_USER_TYPE.APPLICANT && filteredDocumentTypes ? (
             // <Card variant="outlined" mt={2} className={classes.cardSpacing}>
             //   <CardContent>
             //     <Typography variant="h6">
@@ -390,7 +391,7 @@ class VerifyApplicationPage extends Component {
               handleFileReject={this.handleFileReject}
             />
           ) : (
-            <ApplicationViewPage application={formData} language={locale} />
+            <ApplicationViewPage application={formData} language={locale} fileStates={fileStates}/>
           )}
         </Grid>
 
