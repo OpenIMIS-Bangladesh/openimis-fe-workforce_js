@@ -326,6 +326,7 @@
   "workforce.application.process.death": "মৃত্যু",
   "workforce.application.process.disability": "অক্ষমতা",
   "workforce.application.process.pending": "অপেক্ষমান",
+  "workforce.application.process.forwarded": "সুপারিশকৃত",
   "workforce.application.process.approved": "অনুমোদিত",
   "workforce.application.process.rejected": "বাতিলকৃত",
   "workforce.application.process.reverted": "প্রত্যাবর্তিত",
