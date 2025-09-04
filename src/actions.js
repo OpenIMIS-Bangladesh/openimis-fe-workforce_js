@@ -774,13 +774,13 @@ export function fetchApplication(mm, filters) {
     "associationType",
     "applicationFor"
   ];
-  const filterArray = filters
-    ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)
-    : [];
+  // const filterArray = filters
+  //   ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)
+  //   : [];
 
   const payload = formatPageQueryWithCount(
     "workforceApplication",
-    filterArray,
+    filters,
     projections
   );
 
