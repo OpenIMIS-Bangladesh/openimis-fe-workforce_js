@@ -361,7 +361,7 @@ class VerifyApplicationPage extends Component {
               </Typography>
             </CardContent>
           </Card> */}
-          {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes ? (
+          {user_type !== WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes ? (
             // <Card variant="outlined" mt={2} className={classes.cardSpacing}>
             //   <CardContent>
             //     <Typography variant="h6">
