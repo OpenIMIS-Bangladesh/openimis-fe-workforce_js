@@ -172,22 +172,16 @@ const ApplicationStatus = () => {
   const [showResult, setShowResult] = useState(false);
   const history = useHistory();
 
-  const handleApplicationSearch = () => {
-    const filters = {
-      trackingNumber: `eq:${trackingNumber}`,
-    };
-
-
-    dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
-      const edges = res.payload?.data?.workforceApplication?.edges || [];
-      const matchedApp = edges
-        .map((e) => e.node)
-        .find((app) => app.trackingNumber === trackingNumber);
-
-      setApplicationData(matchedApp || null);
-      setShowResult(true);
-    });
-  };
+ const handleApplicationSearch = () => {
+ const filters = [`trackingNumber: "${trackingNumber}"`];
+   dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
+     const edges = res.payload?.data?.workforceApplication?.edges || [];
+     const matchedApp = edges[0]?.node || null;
+ 
+     setApplicationData(matchedApp);
+     setShowResult(true);
+   });
+ };
 
 
   return (

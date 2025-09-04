@@ -774,12 +774,17 @@ export function fetchApplication(mm, filters) {
     "associationType",
     "applicationFor"
   ];
+  const filterArray = filters
+    ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)
+    : [];
+
   const payload = formatPageQueryWithCount(
     "workforceApplication",
-    filters,
+    filterArray,
     projections
   );
-  return graphql(payload, "WORKFORCE_APPLICATION");
+
+  return graphql(payload, "WORKFORCE_APPLICATIONS");
 }
 export function fetchWorkforceUserRoleWiseUser(mm, variables) {
   return graphqlWithVariables(

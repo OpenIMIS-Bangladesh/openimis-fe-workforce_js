@@ -208,21 +208,17 @@ const ApplicationStatus = () => {
   const [showResult, setShowResult] = useState(false);
 
 const handleApplicationSearch = () => {
-const filters = {
-  trackingNumber: `eq:${trackingNumber}`,
+const filters = [`trackingNumber: "${trackingNumber}"`];
+  dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
+    const edges = res.payload?.data?.workforceApplication?.edges || [];
+    const matchedApp = edges[0]?.node || null;
+
+    setApplicationData(matchedApp);
+    setShowResult(true);
+  });
 };
 
 
- dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
-  const edges = res.payload?.data?.workforceApplication?.edges || [];
-  const matchedApp = edges
-    .map((e) => e.node)
-    .find((app) => app.trackingNumber === trackingNumber);
-
-  setApplicationData(matchedApp || null);
-  setShowResult(true);
-});
-};
   
   return (
       <Card style={{ marginTop: 0, padding: "32px", textAlign: "center" }}>
