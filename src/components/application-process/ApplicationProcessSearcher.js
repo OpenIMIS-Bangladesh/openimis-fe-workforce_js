@@ -1538,6 +1538,7 @@ class ApplicationProcessSearcher extends Component {
                 const updateApplicationData = {
                   id: decodedId,
                   status: WORKFORCE_STATUS.APPROVED_BY_DG,
+                  grantAmount: this.state.editedGrantMoney,
                 };
                 const createApplicationMovementData = {
                   applicationId: decodedId,
@@ -1601,6 +1602,7 @@ class ApplicationProcessSearcher extends Component {
                 const updateApplicationData = {
                   id: decodedId,
                   status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
+                  grantAmount: this.state.editedGrantMoney,
                 };
                 const createApplicationMovementData = {
                   applicationId: decodedId,

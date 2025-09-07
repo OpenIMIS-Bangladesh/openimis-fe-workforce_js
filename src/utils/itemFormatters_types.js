@@ -169,13 +169,17 @@ export const itemFormattersDirector = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
-    (application) =>
+      (application) =>
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
 
-    (application) => conditionalEnToBn(application?.grantAmount, locale),
-
+       (application) => (
+      <TextInput
+        value={application?.grantAmount}
+        onChange={(v) => component.setState({ editedGrantMoney: v })}
+      />
+    ),
     // (application) => application?.grantAmount,
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
