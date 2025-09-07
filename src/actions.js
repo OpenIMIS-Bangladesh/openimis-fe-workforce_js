@@ -784,7 +784,7 @@ export function fetchApplication(mm, filters) {
     projections
   );
 
-  return graphql(payload, "WORKFORCE_APPLICATIONS");
+  return graphql(payload, "WORKFORCE_APPLICATION");
 }
 export function fetchWorkforceUserRoleWiseUser(mm, variables) {
   return graphqlWithVariables(

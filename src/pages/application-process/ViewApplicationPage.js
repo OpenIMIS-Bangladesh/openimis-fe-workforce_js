@@ -93,6 +93,8 @@ class ViewApplicationPage extends Component {
   render() {
     const { classes, user_rights, application, documents, locale } = this.props;
     const { stateEdited, workforceEmployee, isForwardModalOpen } = this.state;
+    console.log('application data',stateEdited)
+
 
     const user_type = getUserTypeFromRights(user_rights);
 
