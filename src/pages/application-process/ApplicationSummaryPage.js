@@ -169,7 +169,7 @@ class ApplicationSummaryPage extends Component {
     return (
       <div>
       <Grid container spacing={2}>
-        <Grid item md={12}>
+        <Grid item xs={12} >
         {renderSummaryData.map((item, index) => (
             <Accordion
               key={index}

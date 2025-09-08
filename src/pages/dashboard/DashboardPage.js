@@ -53,11 +53,18 @@ const useStyles = makeStyles((theme) => ({
     position: "sticky",
     top: 0,
     height: "40vh",
+    // backgroundColor: theme.palette.background.paper,
+    // borderRight: `1px solid ${theme.palette.divider}`,
+    // overflowY: "auto",
+    // minWidth: 390,   // <-- force a stable width
+    // maxWidth: 390,   // (optional) prevent oversizing
     backgroundColor: theme.palette.background.paper,
     borderRight: `1px solid ${theme.palette.divider}`,
     overflowY: "auto",
+    // flexShrink: 0,   // <-- prevents collapsing
   },
   content: {
+    // flexGrow: 1,
     height: "100vh",
     overflowY: "auto",
     padding: theme.spacing(2),
@@ -417,9 +424,9 @@ const DashboardPage = () => {
   };
 
   return (
-    <div style={{ padding: theme.spacing(3) }}>
-      <Grid container spacing={2} style={{ marginTop: theme.spacing(1) }}>
-        <Grid item xs={12} md={3}>
+    <div className={classes.root}>
+      <Grid container spacing={2} className={classes.root}>
+        <Grid item xs={12} md={3} className={classes.sidebar}>
           <Paper className={classes.sidebar}>
             <List>
               {SidebarMenu.map((item) => (
