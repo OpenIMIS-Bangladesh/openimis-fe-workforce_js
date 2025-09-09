@@ -204,7 +204,7 @@ useEffect(() => {
           gutterBottom
           style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
         >
-          নিজ অফিসে পাঠান
+          কর্মবন্টন
         </Typography>
 
         <Typography

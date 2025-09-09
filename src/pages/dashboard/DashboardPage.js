@@ -6,6 +6,7 @@ import {
   ListItemIcon,
   ListItemText,
   Card,
+  CardHeader,
   CardContent,
   Typography,
   useTheme,
@@ -14,7 +15,8 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  TextField
+  TextField,
+  Box
 } from "@material-ui/core";
 
 import {
@@ -52,19 +54,12 @@ const useStyles = makeStyles((theme) => ({
   sidebar: {
     position: "sticky",
     top: 0,
-    height: "40vh",
+    height: "50vh",
     // backgroundColor: theme.palette.background.paper,
     // borderRight: `1px solid ${theme.palette.divider}`,
     // overflowY: "auto",
-    // minWidth: 390,   // <-- force a stable width
-    // maxWidth: 390,   // (optional) prevent oversizing
-    backgroundColor: theme.palette.background.paper,
-    borderRight: `1px solid ${theme.palette.divider}`,
-    overflowY: "auto",
-    // flexShrink: 0,   // <-- prevents collapsing
   },
   content: {
-    // flexGrow: 1,
     height: "100vh",
     overflowY: "auto",
     padding: theme.spacing(2),
@@ -209,62 +204,138 @@ const Dashboard = () =>{
 
     },
   }))(Badge);
+
+  const newCardStyles = makeStyles((theme) => ({
+    card: {
+      height: "100%",
+      borderRadius: "20px",
+      boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+      minHeight: "200px",
+    },
+    itemRow: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginBottom: theme.spacing(1),
+    },
+    value: {
+      fontWeight: 600,
+    },
+  }));
+
+  const newCard = {
+    height: "100%",
+    borderRadius: "20px",
+    boxShadow: theme.shadows[2],
+    color: "#000",
+    padding: "10px",
+  };
+
+  const classes = useStyles();
+
+  let applicationTypes=[];
+  if(user_type === WORKFORCE_USER_TYPE.BLWF_DIRECTOR){
+    applicationTypes=[
+      {en:'Medical Grant', bn: 'চিকিৎসা অনুদান', count: 1250},
+      {en:'Education Grant', bn: 'শিক্ষা অনুদান', count: 450},
+      {en:'Deadly Grant', bn: 'মৃত্যুজনিত অনুদান', count: 155},
+      {en:'Maternal Grant', bn: 'মাতৃত্বজনিত অনুদান', count: 123},
+    ]; 
+  }
+  else
+  {
+    applicationTypes=[
+      {en:'Medical Grant', bn: 'চিকিৎসা অনুদান', count: 120},
+      {en:'Education Grant', bn: 'শিক্ষা অনুদান', count: 80},
+      {en:'Deadly Grant', bn: 'মৃত্যুজনিত অনুদান', count: 45},
+      {en:'Maternal Grant', bn: 'মাতৃত্বজনিত অনুদান', count: 60},
+      {en:'Financial Assistance due to Permanent Disability', bn: 'স্থায়ী অক্ষমতা জনিত', count: 90},
+      {en:'Financial Assistance due to Partial Disability', bn: 'আংশিক অক্ষমতা জনিত', count: 75},
+    ];
+  }
+
+
+  let applicationCounts = [
+      {type: 'male', en:'Male Applicant', bn: 'পুরুষ আবেদনকারী', count: 570},
+      {type: 'female', en:'Female Applicant', bn: 'নারী আবেদনকারী', count: 1240},
+      {type: 'dependent', en:'Dependent Applicant', bn: 'নির্ভরশীল আবেদনকারী', count: 350},
+    ];
+
+  let totalApplicationCount=0;
+  applicationCounts.forEach(element => {
+    totalApplicationCount+=element.count;
+  });
   return (
     <>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={4}>
-          <Card
-            style={{ ...cardStyle, backgroundColor: COLORS[7], display: "flex", flexWrap: "wrap" }}
-          >
+        {/* Left Card */}
+        <Grid item xs={12} md={4}>
+          <Card style={newCard}>
             <CardContent>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-                <Typography variant="subtitle1" style={{ marginRight: 16 }}>
-                  Status -
-                </Typography>
-
-                <div style={{ display: 'flex', gap: '32px', alignItems: 'center', flexWrap: 'wrap' }}>
-                  <Button backgroundColor="transparent" border="1px solid" style={{ color: "white", padding: 0, minWidth: 'auto' }}>
-                    <StyledBadge onClick={() => history.push("workforce/applications/process?status=pending")} badgeContent={application_status_count?.pending || 0} color="secondary" className="cu"><span>Pending</span></StyledBadge>
-                  </Button>
-                  <Button backgroundColor="transparent" border="1px solid" style={{ color: "white", padding: 0, minWidth: 'auto' }}>
-                    <StyledBadge onClick={() => history.push("workforce/applications/process?status=rejected")} badgeContent={application_status_count?.rejected || 0} color="error"><span>Rejected</span></StyledBadge>
-                  </Button>
-                  <Button backgroundColor="transparent" border="1px solid" style={{ color: "white", padding: 0, minWidth: 'auto' }}>
-                    <StyledBadge onClick={() => history.push("workforce/applications/process?status=approved")} badgeContent={application_status_count?.approved || 0} color="primary"><span>Approved</span></StyledBadge>
-                  </Button>
-                </div>
-              </div>
-
-            </CardContent>
-
-          </Card>
-        </Grid>
-        {[
-          { title: "Total Dependent", count: 74, male: 31, female: 43 },
-          { title: "Total Injured Worker", count: 19, male: 18, female: 1 },
-          { title: "Total Deceased Worker", count: 28, male: 24, female: 4 },
-        ].map((item, index) => (
-          <Grid item xs={12} sm={4} key={index}>
-            <Card style={{ ...cardStyle, backgroundColor: COLORS[index] }}>
-              <CardContent>
-                <Typography variant="subtitle1">{item.title} - {item.count} (Male: {item.male} | Female: {item.female}) </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-        <Grid item xs={12} sm={4}>
-          <Card style={{ ...cardStyle, backgroundColor: COLORS[5] }}>
-            <CardContent>
-              <Typography variant="subtitle1">Total Benefit Amount - 55185000Tk</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <Card style={{ ...cardStyle, backgroundColor: COLORS[6] }}>
-            <CardContent>
-              <Typography variant="subtitle1">
-                Monthly Total Benefit Amount - 0.00TK (Disability Case: 0 | Deceased Case: 0 | Highest: 0.00 | Lowest: 0.00)
+              <Typography variant="h6" gutterBottom>
+                <HourglassFullTwoToneIcon style={{ verticalAlign: 'middle', marginRight: 8 }} />
+                আবেদন প্রকার
               </Typography>
+              <table cellPadding={"6px"} style={{ width: "100%" }}>
+                <tbody>
+                    {applicationTypes.map((type) => (
+                      <tr style={{paddingTop:"10px", paddingBottom:"10px"}}>
+                        <th style={{textAlign:"left"}}><Typography>{type.bn}</Typography></th>
+                        <td style={{textAlign:"right"}}><Typography>{type.count}</Typography></td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Middle Card */}
+        <Grid item xs={12} md={4}>
+          <Card style={newCard}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                <HourglassFullTwoToneIcon style={{ verticalAlign: 'middle', marginRight: 8 }} />
+                আবেদনকারীর বিবরণ
+              </Typography>
+              <Card style={{ ...newCard, margin: "10px",  padding:"0px" }}>
+                <CardContent>
+                    <Typography>মোট আবেদনকারী</Typography>
+                    <Typography variant="h5"><b>{totalApplicationCount}</b></Typography>
+                </CardContent>
+              </Card>
+              {applicationCounts.map((item) => (
+                <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
+                <CardContent>
+                    <Typography>{item.bn}</Typography>
+                    <Typography variant="h5"><b>{item.count}</b></Typography>
+                </CardContent>
+              </Card>
+              ))}
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Right Card */}
+        <Grid item xs={12} md={4}>
+          <Card style={newCard}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                <HourglassFullTwoToneIcon style={{ verticalAlign: 'middle', marginRight: 8 }} />
+                আর্থিক তথ্য
+              </Typography>
+                <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
+                  <CardContent>
+                      <Typography>মোট সুবিধা পরিমাণ</Typography>
+                      <Typography variant="h5"><b>৳ ৩,০০,০০,০০০</b></Typography>
+                  </CardContent>
+                </Card>
+                <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
+                  <CardContent>
+                      <Typography>মাসিক মোট সুবিধা</Typography>
+                      <Typography variant="h5"><b>৳ ৫,০০,০০০</b></Typography>
+                      <Typography>(সর্বোচ্চ: ৭.৫ লাখ | সর্বনিম্ন: ২.০ লাখ)</Typography>
+                  </CardContent>
+                </Card>
             </CardContent>
           </Card>
         </Grid>
@@ -413,11 +484,11 @@ const DashboardPage = () => {
           <Dashboard/>
         );
       case "waitingApplications":
-        return <ApplicationSummaryPage status="pending"/>;
+        return (<ApplicationSummaryPage status="pending"/>);
       case "rejectedApplications":
         return <ApplicationSummaryPage status="rejected"/>;
       case "approvedApplications":
-        return <ApplicationSummaryPage status="approved"/>;
+        return (<ApplicationSummaryPage status="approved"/>);
       default:
         return <Dashboard />;
     }
@@ -447,8 +518,9 @@ const DashboardPage = () => {
           {renderContent()}
         </Grid>
       </Grid>
-    </div>
-  );
+  </div>
+);
+
 };
 
 

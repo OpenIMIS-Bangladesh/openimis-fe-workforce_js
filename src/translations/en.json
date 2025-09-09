@@ -265,7 +265,7 @@
     "workforce.employee.application.totalAmount":"Total amount applied for:",
     "workforce.employee.application.tk":"Taka",
     "workforce.employee.application.forwardToAssociation":"Send considered applications to the Association office",
-    "workforce.employee.application.forwardToSelectionOffice":"Send considered applications to the Selection Office",
+    "workforce.employee.application.forwardToSelectionOffice":"Send considered applications to the Selection committee",
     "workforce.employee.application.provideMeetingInfo":"Provide meeting information",
     "workforce.employee.application.createMeetingSheet":"Create Meeting Sheet",
     "workforce.employee.application.bulkForward":"Bulk Forward",

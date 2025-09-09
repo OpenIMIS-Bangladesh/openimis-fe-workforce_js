@@ -1087,13 +1087,13 @@ class ApplicationProcessSearcher extends Component {
     return userType === WORKFORCE_USER_TYPE.APPLICANT
       ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication, this.rejectedApplication)
       : userType === WORKFORCE_USER_TYPE.CHECKER
-      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
-      ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR
-      ? itemFormattersS1DeputyAsstDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersS1DeputyAsstDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
-      ? itemFormattersS2DeputyAsstDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale)
+      ? itemFormattersS2DeputyAsstDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
       ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
@@ -1101,26 +1101,26 @@ class ApplicationProcessSearcher extends Component {
        : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
       ? itemFormattersBlwfSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.DOCTOR
-      ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
+      ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION
-      ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
+      ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-      ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
+      ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.APPROVER
-      ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
+      ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.BLWF_APPROVER
-      ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
+      ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication)
       : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
-      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
+      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
-      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication,)
+      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR
-      ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication)
+      ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
-      ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication)
-      : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.rejectedApplication);
+      ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication,this.revertedApplication)
+      : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.rejectedApplication,this.revertedApplication);
   };
 
   sorts = () => [];
@@ -1952,6 +1952,13 @@ class ApplicationProcessSearcher extends Component {
               status={"approved_by_director"}
               userRights={userRights}
             />
+             <RevertApplicationModal
+              open={revertModalOpen}
+              onClose={this.handleCloseRevertModal}
+              revertByChecker={revertByChecker}
+              selectedApplication={this.state.selectedApplication}
+              onSubmitRevert={this.handleRevertSubmit}
+            />
           </Box>
         ) : null}
 
@@ -1994,6 +2001,13 @@ class ApplicationProcessSearcher extends Component {
                   applications={applications}
                   status={"approved_by_dg"}
                   userRights={userRights}
+                />
+                 <RevertApplicationModal
+                  open={revertModalOpen}
+                  onClose={this.handleCloseRevertModal}
+                  revertByChecker={revertByChecker}
+                  selectedApplication={this.state.selectedApplication}
+                  onSubmitRevert={this.handleRevertSubmit}
                 />
               </>
             );

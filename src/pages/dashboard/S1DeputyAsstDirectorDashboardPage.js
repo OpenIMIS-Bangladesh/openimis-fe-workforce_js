@@ -123,7 +123,7 @@ const FiledApplications = () =>{
    <Card className={classes.tableContainer}>
         <CardContent>
             <ApplicationProcessSearcher oggedInUserId={loggedInUserId}
-                    
+                 revertedApplication={true}   
             />
           </CardContent>
       </Card>
