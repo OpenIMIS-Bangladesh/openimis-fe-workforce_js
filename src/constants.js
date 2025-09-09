@@ -405,7 +405,8 @@ export const banglaLabels = {
   district: "জেলা",
   branch: "শাখা",
   employeeBankInfo: "শ্রমিকের ব্যাংক তথ্য",
-  ApplicationFor:"আবেদনকারীর ধরন"
+  ApplicationFor:"আবেদনকারীর ধরন",
+  dependents:"নির্ভরশীল সদস্যদের তথ্য"
   // New specific keys
 
 };
