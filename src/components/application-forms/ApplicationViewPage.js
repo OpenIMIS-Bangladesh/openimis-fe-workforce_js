@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Keys to hide from rendering
  */
-const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent","code","type","employeeFactory","associationType","applicationFor","workforceEmployeeDependentApplication"];
+const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent","code","type","employeeFactory","associationType","applicationFor","workforceEmployeeDependentApplication","applicationForSelf","workerType","instituteName","instituteAddress"];
 
 /**
  * Convert key into a user-friendly label

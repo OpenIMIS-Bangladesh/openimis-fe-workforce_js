@@ -92,6 +92,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
+              `applicationFor: "accidental_death"`,
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
