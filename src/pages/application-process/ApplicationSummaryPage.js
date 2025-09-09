@@ -146,12 +146,12 @@ class ApplicationSummaryPage extends Component {
         renderSummaryData = summaryData.filter(item => item.status === "forward_to_dg" && item.organizationType==='blwf');
       }
     }
-    else
+    else if(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.ADMIN)
     {
       if(status === "pending")
       {
         renderSummaryData = summaryData.filter(item =>
-          item.status === "forward_to_dg"
+          item.status === "approved_by_director"
         );
       }
       else if(status === "rejected")

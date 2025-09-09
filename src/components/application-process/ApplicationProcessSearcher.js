@@ -1177,7 +1177,7 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
-            // window.location.reload();
+            window.location.reload();
           }
         }
         this.setState({ confirmModalOpen: false, confirmModalCallback: null });
@@ -1193,7 +1193,7 @@ class ApplicationProcessSearcher extends Component {
     }
     this.setState({
       confirmModalOpen: true,
-      confirmModalMessage: "workforce.application.forward.message",
+      confirmModalMessage: "workforce.application.forward.message.toSectionAdmin",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
           const { updateApplication, createApplicationMovement } = this.props;
@@ -1251,7 +1251,7 @@ class ApplicationProcessSearcher extends Component {
     }
     this.setState({
       confirmModalOpen: true,
-      confirmModalMessage: "workforce.application.forward.message",
+      confirmModalMessage: "workforce.application.forward.message.toDoctor",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
           const { updateApplication, createApplicationMovement } = this.props;
@@ -1309,7 +1309,7 @@ class ApplicationProcessSearcher extends Component {
     }
     this.setState({
       confirmModalOpen: true,
-      confirmModalMessage: "workforce.application.forward.message",
+      confirmModalMessage: "workforce.application.forward.message.toSectionAdmin",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
           const { updateApplication, createApplicationMovement } = this.props;
@@ -1367,7 +1367,7 @@ class ApplicationProcessSearcher extends Component {
     }
     this.setState({
       confirmModalOpen: true,
-      confirmModalMessage: "workforce.application.forward.message",
+      confirmModalMessage: "workforce.application.forward.message.toAssociation",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
           const { updateApplication, createApplicationMovement } = this.props;
@@ -1422,7 +1422,7 @@ class ApplicationProcessSearcher extends Component {
     }
     this.setState({
       confirmModalOpen: true,
-      confirmModalMessage: "workforce.application.forward.message",
+      confirmModalMessage: "workforce.application.forward.message.toSectionUser",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
           const { updateApplication, createApplicationMovement } = this.props;
@@ -1474,7 +1474,7 @@ class ApplicationProcessSearcher extends Component {
     }
     this.setState({
       confirmModalOpen: true,
-      confirmModalMessage: "workforce.application.forward.message",
+      confirmModalMessage: "workforce.application.forward.message.toSectionUser",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
           const { updateApplication, createApplicationMovement } = this.props;
