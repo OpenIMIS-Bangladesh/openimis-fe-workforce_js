@@ -160,7 +160,8 @@ useEffect(() => {
         if (node.applicationTo) users.push(node.applicationTo);
         return users;
       }).filter(Boolean);
-      
+              console.log("allUsers",allUsers)
+
       const roles = [ "Factory Admin","Association", "Section Admin", "Section User","Doctor","Section Admin", "Selection User"];
 
       setMovementUsers([
@@ -172,7 +173,7 @@ useEffect(() => {
         ...allUsers.map((user, index) => ({
           id: user.id,
           name: user.loginName,
-          role: roles[index],
+          role: user?.userRoles[0]?.role?.name,
         })),
       ]);
     }).catch((err) => console.error(err));

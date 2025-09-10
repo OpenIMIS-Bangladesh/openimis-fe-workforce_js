@@ -825,6 +825,12 @@ export function fetchApplicationWiseMovementList(mm, variables) {
                 lastName
                 otherNames
                 loginName
+                userRoles {
+                  role {
+                    id
+                    name
+                  }
+                }
               }
             }
           }
