@@ -11,6 +11,7 @@ import {
   fetchOrganizationEmployeeDesignation,
   fetchOrganizationEmployee,
   fetchFactoryEmployee,
+  fetchWorkforceDocument
 } from "../../actions";
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
@@ -46,6 +47,8 @@ import {
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
 import { headerApplicant, headerApprover, headerChecker,headerCheckerTwo,headerS1DeputyAsstDirector,headerS2DeputyAsstDirector,headerDoctor, headerSectionAdmin, headerSectionTwoAdmin, headerAssociation, headersAdmin, 
 headerFactoryAdmin, headerDirector,headerBlwfSectionAdmin } from "../../utils/headers_types";
+import CustomSnackbar from "../../components/shared/CustomSnackbar";
+
 
 const styles = (theme) => ({
   paper: {
@@ -1304,7 +1307,12 @@ class ApplicationProcessSearcher extends Component {
     const userType = getUserTypeFromRights(this.props.userRights);
 
     if (selectedApplicationIds.length === 0) {
-      alert("Please select at least one application.");
+      this.setState({
+        serverResponse: {
+          status: "ERROR",
+          message: "Please select at least one application.",
+        },
+      });
       return;
     }
     this.setState({
@@ -1314,26 +1322,62 @@ class ApplicationProcessSearcher extends Component {
         if (confirmed) {
           const { updateApplication, createApplicationMovement } = this.props;
           try {
-            await Promise.all(
-              selectedApplicationIds.map(async (id) => {
-                const decodedId = decodeId(id);
-                const updateApplicationData = {
-                  id: decodedId,
-                  status: WORKFORCE_STATUS.VERIFIED,
-                };
-                const createApplicationMovementData = {
-                  applicationId: decodedId,
-                  status: WORKFORCE_STATUS.VERIFIED,
-                  note: "আবেদন যাচাইকৃত হয়েছে",
-                  action: "verified",
-                  applicationFromId: loggedInUserId,
-                  applicationToId: userType === WORKFORCE_USER_TYPE.CHECKER ? 139 : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ? 187 : null,
-                  toRoleId: userType === WORKFORCE_USER_TYPE.CHECKER ? 32 : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ? 40 : null,
-                };
-                await updateApplication(updateApplicationData, "update workforce application");
-                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-              })
-            );
+            for (const id of selectedApplicationIds) {
+              const decodedId = decodeId(id);
+              const res = await this.props.fetchWorkforceDocument(
+                this.props.modulesManager,
+                [`workforceApplication_Id: "${decodedId}"`]
+              );
+              const documents =
+                res?.payload?.data?.workforceDocuments?.edges?.map(
+                  (edge) => edge.node
+                ) ?? [];
+
+              const allVerified = documents.every(
+                (doc) => doc.status?.toLowerCase() === "verified"
+              );
+
+              if (!allVerified) {
+                this.setState({
+                  serverResponse: {
+                    status: "ERROR",
+                    message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
+                  },
+                });
+                throw new Error("Stop bulk selection, docs not verified");
+              }
+              const updateApplicationData = {
+                id: decodedId,
+                status: WORKFORCE_STATUS.VERIFIED,
+              };
+              const createApplicationMovementData = {
+                applicationId: decodedId,
+                status: WORKFORCE_STATUS.VERIFIED,
+                note: "আবেদন যাচাইকৃত হয়েছে",
+                action: "verified",
+                applicationFromId: loggedInUserId,
+                applicationToId:
+                  userType === WORKFORCE_USER_TYPE.CHECKER
+                    ? 139
+                    : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
+                    ? 187
+                    : null,
+                toRoleId:
+                  userType === WORKFORCE_USER_TYPE.CHECKER
+                    ? 32
+                    : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
+                    ? 40
+                    : null,
+              };
+              await updateApplication(
+                updateApplicationData,
+                "update workforce application"
+              );
+              await createApplicationMovement(
+                createApplicationMovementData,
+                "create workforce movement"
+              );
+            }
             this.setState({
               serverResponse: {
                 status: "SUCCESS",
@@ -1348,14 +1392,13 @@ class ApplicationProcessSearcher extends Component {
                 message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
               },
             });
-          } finally {
-            window.location.reload();
           }
         }
         this.setState({ confirmModalOpen: false, confirmModalCallback: null });
-      }
+      },
     });
   };
+
   handleBulkSelectedbyFactoryAdmin = () => {
     const { selectedApplicationIds } = this.state;
     const { loggedInUserId } = this.props;
@@ -1858,6 +1901,13 @@ class ApplicationProcessSearcher extends Component {
             </Button>
             </Box>
           ) : null}
+          <CustomSnackbar
+            open={!!this.state.serverResponse}
+            onClose={() => this.setState({ serverResponse: null })}
+            autoHideDuration={5000}
+            type={this.state.serverResponse?.status?.toLowerCase() || "info"}
+            message={this.state.serverResponse?.message}
+          />
 
         {userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER ? (
           <Box
@@ -2186,6 +2236,7 @@ const mapDispatchToProps = (dispatch) =>
       createApplicationMovement,
       fetchOrganizationEmployee,
       fetchFactoryEmployee,
+      fetchWorkforceDocument,
       journalize,
       coreConfirm,
     },
