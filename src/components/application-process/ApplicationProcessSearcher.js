@@ -1389,7 +1389,7 @@ class ApplicationProcessSearcher extends Component {
             this.setState({
               serverResponse: {
                 status: "ERROR",
-                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+                message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
               },
             });
           }
