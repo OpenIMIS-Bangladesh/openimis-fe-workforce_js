@@ -1337,14 +1337,15 @@ class ApplicationProcessSearcher extends Component {
                 (doc) => doc.status?.toLowerCase() === "verified"
               );
 
-              if (!allVerified) {
+             if (!allVerified) {
                 this.setState({
                   serverResponse: {
                     status: "ERROR",
                     message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
                   },
+                  snackbarOpen: true,
                 });
-                throw new Error("Stop bulk selection, docs not verified");
+                return;
               }
               const updateApplicationData = {
                 id: decodedId,
@@ -1381,7 +1382,7 @@ class ApplicationProcessSearcher extends Component {
             this.setState({
               serverResponse: {
                 status: "SUCCESS",
-                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+                message: "সফলভাবে ফরওয়ার্ড করা হয়েছে!",
               },
             });
           } catch (error) {
@@ -1389,7 +1390,7 @@ class ApplicationProcessSearcher extends Component {
             this.setState({
               serverResponse: {
                 status: "ERROR",
-                message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
+                message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
               },
             });
           }
@@ -1904,7 +1905,7 @@ class ApplicationProcessSearcher extends Component {
           <CustomSnackbar
             open={!!this.state.serverResponse}
             onClose={() => this.setState({ serverResponse: null })}
-            autoHideDuration={5000}
+            autoHideDuration={4000}
             type={this.state.serverResponse?.status?.toLowerCase() || "info"}
             message={this.state.serverResponse?.message}
           />
