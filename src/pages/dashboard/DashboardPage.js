@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState  } from "react";
+import React, { use, useEffect, useState, useMemo} from "react";
 import {
   Grid,
   List,
@@ -11,29 +11,37 @@ import {
   Typography,
   useTheme,
   Button,
+  ButtonGroup,
   Paper,
   Accordion,
   AccordionSummary,
   AccordionDetails,
   TextField,
-  Box
+  Box,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableFooter,
+  Link,
 } from "@material-ui/core";
 
 import {
   useHistory,
 } from "@openimis/fe-core";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-} from "recharts";
+// import {
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   ResponsiveContainer,
+//   PieChart,
+//   Pie,
+//   Cell,
+//   Legend,
+// } from "recharts";
 import Badge from '@material-ui/core/Badge';
 import { withStyles } from '@material-ui/core/styles';
 import { makeStyles } from "@material-ui/core/styles";
@@ -42,26 +50,28 @@ import { useSelector, useDispatch } from "react-redux";
 import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
+import DescriptionIcon from '@material-ui/icons/Description';
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
+import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+import PersonIcon from '@material-ui/icons/Person';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ApplicationSummaryPage from "../application-process/ApplicationSummaryPage";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     padding: theme.spacing(2),
-    height: "calc(100vh - 64px)", // assuming 64px header/appbar, adjust as needed
+    height: "fit-content", // assuming 64px header/appbar, adjust as needed
     overflow: "hidden",
   },
   sidebar: {
     position: "sticky",
     top: 0,
     height: "50vh",
-    // backgroundColor: theme.palette.background.paper,
-    // borderRight: `1px solid ${theme.palette.divider}`,
-    // overflowY: "auto",
   },
   content: {
-    height: "100vh",
-    overflowY: "auto",
+    height: "fit-content",
     padding: theme.spacing(2),
   },
   tableContainer: {
@@ -143,84 +153,104 @@ const Dashboard = () =>{
     application_status_count.approved = application_status_count_data?.approved?.totalCount;
   }
 
-  // Sample data
-  const caseData = [
+  // Sample data (replace with API data)
+  const barData = [
+    { name: "জানু", চিকিৎসা: 12, মৃত্যু: 6, শিক্ষা: 3, মাতৃত্ব: 2, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 2 },
+    { name: "ফেব", চিকিৎসা: 15, মৃত্যু: 7, শিক্ষা: 4, মাতৃত্ব: 2, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 2 },
+    { name: "মার্চ", চিকিৎসা: 10, মৃত্যু: 5, শিক্ষা: 2, মাতৃত্ব: 1, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 1 },
+    { name: "এপ্রিল", চিকিৎসা: 18, মৃত্যু: 8, শিক্ষা: 6, মাতৃত্ব: 3, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 3 },
+    { name: "মে", চিকিৎসা: 11, মৃত্যু: 6, শিক্ষা: 2, মাতৃত্ব: 2, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 1 },
+    { name: "জুন", চিকিৎসা: 14, মৃত্যু: 7, শিক্ষা: 3, মাতৃত্ব: 2, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 2 },
+  ];
+
+
+  const pieData = [
+    { name: "প্রক্রিয়াধীন", value: 36, color: "#2E7D32" },
+    { name: "সভা কার্যতালিকায়", value: 25, color: "#CFD8DC" },
+    { name: "অনুমোদিত", value: 18, color: "#263238" },
+    { name: "বাতিল", value: 12, color: "#FF9800" },
+    { name: "পুনরায় খোলা", value: 6, color: "#FFD600" },
+    { name: "বন্ধ", value: 3, color: "#E91E63" },
+  ];
+
+  const tableRows = [
     {
-      month: "Jan",
-      Permanent_Total_Disability: 4,
-      Permanent_Partial_Disability: 8,
-      Death: 11,
+      type: "চিকিৎসা অনুদান",
+      total: 120,
+      approved: 100,
+      cancelled: 15,
+      processing: 5,
     },
     {
-      month: "Feb",
-      Permanent_Total_Disability: 0,
-      Permanent_Partial_Disability: 0,
-      Death: 0,
+      type: "শিক্ষা অনুদান",
+      total: 80,
+      approved: 70,
+      cancelled: 5,
+      processing: 5,
     },
     {
-      month: "Mar",
-      Permanent_Total_Disability: 2,
-      Permanent_Partial_Disability: 0,
-      Death: 3,
+      type: "মৃত্যুজনিত অনুদান",
+      total: 45,
+      approved: 40,
+      cancelled: 3,
+      processing: 2,
+    },
+    {
+      type: "মাতৃত্বজনিত অনুদান",
+      total: 60,
+      approved: 55,
+      cancelled: 2,
+      processing: 3,
+    },
+    {
+      type: "স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তা",
+      total: 90,
+      approved: 80,
+      cancelled: 8,
+      processing: 2,
     },
   ];
 
-  const statusData = [
-    { name: "Open", value: 12 },
-    { name: "Approved", value: 3 },
-    { name: "Further Query", value: 3 },
-    { name: "Reject", value: 3 },
-    { name: "closed", value: 3 },
-    { name: "Re-open", value: 3 },
-  ];
+  
 
-  const COLORS = [
-    "#3CA7B4",
-    "#00CCCC",
-    "#90B1BF",
-    "#007BFF",
-    "#007980",
-    "#FDACB9",
-    "#0295A0",
-    "#7D84AF",
-  ];
 
-  const cardStyle = {
-    height: "100%",
-    borderRadius: 12,
-    boxShadow: theme.shadows[2],
-    backgroundColor: theme.palette.background.paper,
-    color: "white",
+  const [timeRange, setTimeRange] = useState("৩ মাস");
+
+  const handleRangeChange = (event, newRange) => {
+    if (newRange !== null) {
+      setTimeRange(newRange);
+      // এখানে চাইলে API call দিয়ে data filter করতে পারো
+    }
   };
-  const StyledBadge = withStyles((theme) => ({
-    badge: {
-      border: `2px solid ${theme.palette.background.paper}`,
-      padding: '6px 6px',
-      fontSize: '0.75rem',
-      minWidth: '22px',
-      height: '22px',
-      marginLeft: theme.spacing(10),
-      right: -15,
 
-    },
-  }))(Badge);
+  const [filter, setFilter] = useState("সব");
 
-  const newCardStyles = makeStyles((theme) => ({
-    card: {
-      height: "100%",
-      borderRadius: "20px",
-      boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
-      minHeight: "200px",
-    },
-    itemRow: {
-      display: "flex",
-      justifyContent: "space-between",
-      marginBottom: theme.spacing(1),
-    },
-    value: {
-      fontWeight: 600,
-    },
-  }));
+  // totals computed from visible rows (if you later filter rows, apply filter logic here)
+  const totals = useMemo(() => {
+    return tableRows.reduce(
+      (acc, r) => {
+        acc.total += Number(r.total || 0);
+        acc.approved += Number(r.approved || 0);
+        acc.cancelled += Number(r.cancelled || 0);
+        acc.processing += Number(r.processing || 0);
+        return acc;
+      },
+      { total: 0, approved: 0, cancelled: 0, processing: 0 }
+    );
+  }, []);
+
+  // placeholder: when filter changes, you might fetch new rows. For demo we keep same rows.
+  const handleFilter = (f) => {
+    setFilter(f);
+    // TODO: fetch/filter data by `f` and `timeRange`
+  };
+
+  const handleTimeRange = (range) => {
+    setTimeRange(range);
+    // TODO: fetch/filter data by timeRange
+  };
+
+
 
   const newCard = {
     height: "100%",
@@ -230,7 +260,6 @@ const Dashboard = () =>{
     padding: "10px",
   };
 
-  const classes = useStyles();
 
   let applicationTypes=[];
   if(user_type === WORKFORCE_USER_TYPE.BLWF_DIRECTOR){
@@ -272,8 +301,8 @@ const Dashboard = () =>{
           <Card style={newCard}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                <HourglassFullTwoToneIcon style={{ verticalAlign: 'middle', marginRight: 8 }} />
                 আবেদন প্রকার
+                <DescriptionIcon style={{ verticalAlign: 'middle', marginRight: 8, float:"right"}} />
               </Typography>
               <table cellPadding={"6px"} style={{ width: "100%" }}>
                 <tbody>
@@ -294,19 +323,23 @@ const Dashboard = () =>{
           <Card style={newCard}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                <HourglassFullTwoToneIcon style={{ verticalAlign: 'middle', marginRight: 8 }} />
                 আবেদনকারীর বিবরণ
+                <PeopleAltIcon style={{ verticalAlign: 'middle', marginRight: 8, float:"right" }} />
               </Typography>
               <Card style={{ ...newCard, margin: "10px",  padding:"0px" }}>
                 <CardContent>
-                    <Typography>মোট আবেদনকারী</Typography>
+                    <Typography>মোট আবেদনকারী
+                      <PersonIcon style={{ verticalAlign: 'middle', marginLeft: 8, float:"right" }} />
+                    </Typography>
                     <Typography variant="h5"><b>{totalApplicationCount}</b></Typography>
                 </CardContent>
               </Card>
               {applicationCounts.map((item) => (
                 <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
                 <CardContent>
-                    <Typography>{item.bn}</Typography>
+                    <Typography>{item.bn}
+                      <PersonIcon style={{ verticalAlign: 'middle', marginLeft: 8, float:"right" }} />
+                    </Typography>
                     <Typography variant="h5"><b>{item.count}</b></Typography>
                 </CardContent>
               </Card>
@@ -320,8 +353,8 @@ const Dashboard = () =>{
           <Card style={newCard}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                <HourglassFullTwoToneIcon style={{ verticalAlign: 'middle', marginRight: 8 }} />
                 আর্থিক তথ্য
+                <LocalAtmIcon style={{ verticalAlign: 'middle', marginRight: 8, float:"right" }} />
               </Typography>
                 <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
                   <CardContent>
@@ -339,59 +372,205 @@ const Dashboard = () =>{
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Card style={{ ...cardStyle, backgroundColor: COLORS, height: 300 }}>
+
+        <Grid item xs={12} md={7}>
+          <Card style={newCard} sx={{ borderRadius: "16px", boxShadow: 3 }}>
+            <CardHeader
+              title="সময়ভিত্তিক অ্যাপ্লিকেশন"
+              subheader="মাসিক ডেটা ওভারভিউ - বিভাগ অনুসারে"
+              action={
+              <>
+                <Card style={{padding:"10px", borderRadius:"12px"}}>
+                  <Typography style={{ textAlign:"center", fontWeight:"bold" }}>সময়সীমা নির্বাচন করুন:</Typography>
+                  <ButtonGroup variant="outlined">
+                    {["৩ মাস", "৬ মাস", "৯ মাস", "১২ মাস"].map((label) => (
+                      <Button
+                        key={label}
+                        variant={timeRange === label ? "contained" : "outlined"}
+                        onClick={() => setTimeRange(label)}
+                      >
+                        {label}
+                      </Button>
+                    ))}
+                  </ButtonGroup>
+                </Card>
+              </>
+            }
+            />
             <CardContent>
-              <Typography variant="subtitle1">
-                Case Distribution by Month
-              </Typography>
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={caseData}>
-                  <XAxis dataKey="month" />
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={barData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar
-                    dataKey="Permanent_Total_Disability"
-                    stackId="a"
-                    fill="#64b5f6"
-                  />
-                  <Bar
-                    dataKey="Permanent_Partial_Disability"
-                    stackId="a"
-                    fill="#9575cd"
-                  />
-                  <Bar dataKey="Death" stackId="a" fill="#f44336" />
+                  <Bar dataKey="চিকিৎসা" stackId="a" fill="#009688" />
+                  <Bar dataKey="মৃত্যু" stackId="a" fill="#90CAF9" />
+                  <Bar dataKey="শিক্ষা" stackId="a" fill="#FBC02D" />
+                  <Bar dataKey="মাতৃত্ব" stackId="a" fill="#FF9800" />
+                  <Bar dataKey="স্থায়ী ও অস্থায়ী অক্ষমতা" stackId="a" fill="#212121" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={6}>
-          <Card style={{ ...cardStyle, backgroundColor: COLORS, height: 300 }}>
+        {/* Right Side - Pie Chart */}
+        <Grid item xs={12} md={5}>
+          <Card style={newCard} sx={{ borderRadius: "16px", boxShadow: 3 }}>
+            <CardHeader title="স্ট্যাটাস বিতরণ" subheader="অ্যাপ্লিকেশনের বর্তমান অবস্থা" />
             <CardContent>
-              <Typography variant="subtitle1">Status Breakdown</Typography>
-              <ResponsiveContainer width="100%" height={220}>
+              <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
-                    data={statusData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
+                    data={pieData}
                     dataKey="value"
+                    nameKey="name"
+                    innerRadius={60}
+                    outerRadius={100}
                     label
                   >
-                    {statusData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Legend />
+                  <Tooltip />
+                  <Legend 
+                    verticalAlign="bottom" 
+                    align="center"
+                    iconType="circle" // optional: circle, square, line
+                    layout="horizontal" 
+                  />
                 </PieChart>
               </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <Card style={newCard} sx={{ borderRadius: "12px", boxShadow: 2 }}>
+            <CardHeader
+              title={
+                <Box>
+                  <Typography variant="h6" component="div">
+                    অ্যাপ্লিকেশন প্রকার ম্যাট্রিক্স
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    বিস্তারিত অ্যাপ্লিকেশন প্রতিবেদন - ফান্ড প্রকার অনুসারে
+                  </Typography>
+                </Box>
+              }
+              action={
+                <>
+                  <Card style={{padding:"10px", borderRadius:"12px", paddingLeft:"30px", paddingRight:"30px"}}>
+                    <Typography style={{ textAlign:"center", fontWeight:"bold" }}>সময়সীমা নির্বাচন করুন:</Typography>
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <ButtonGroup variant="outlined">
+                        {["৩ মাস", "৬ মাস", "৯ মাস", "১২ মাস"].map((label) => (
+                          <Button
+                            key={label}
+                            variant={timeRange === label ? "contained" : "outlined"}
+                            onClick={() => handleTimeRange(label)}
+                          >
+                            {label}
+                          </Button>
+                        ))}
+                      </ButtonGroup>
+                    </Box>
+                  </Card>
+                </>
+              }
+            />
+            <CardContent>
+              {/* Filters row */}
+              <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
+                <Box>
+                  <ButtonGroup size="small" variant="outlined">
+                    {["সব", "CF", "BLWF"].map((l) => (
+                      <Button
+                        key={l}
+                        variant={filter === l ? "contained" : "outlined"}
+                        onClick={() => handleFilter(l)}
+                      >
+                        {l}
+                      </Button>
+                    ))}
+                  </ButtonGroup>
+                </Box>
+                <Box>
+                  <Typography variant="caption" color="textSecondary">
+                    তহবিল: <strong>{filter}</strong>
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Table */}
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={{ fontWeight: "bold" }}>অ্যাপ্লিকেশন প্রকার</TableCell>
+                    <TableCell align="right" style={{ fontWeight: "bold" }}>মোট অ্যাপ্লিকেশন</TableCell>
+                    <TableCell align="right" style={{ fontWeight: "bold" }}>অনুমোদিত</TableCell>
+                    <TableCell align="right" style={{ fontWeight: "bold" }}>বাতিল</TableCell>
+                    <TableCell align="right" style={{ fontWeight: "bold" }}>প্রক্রিয়াধীন</TableCell>
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>বিস্তারিত</TableCell>
+                  </TableRow>
+                </TableHead>
+
+                <TableBody>
+                  {tableRows.map((r, idx) => (
+                    <TableRow key={idx} hover>
+                      <TableCell>{r.type}</TableCell>
+                      <TableCell align="right">{r.total}</TableCell>
+                      <TableCell align="right">{r.approved}</TableCell>
+                      <TableCell align="right">{r.cancelled}</TableCell>
+                      <TableCell align="right">{r.processing}</TableCell>
+                      <TableCell align="center">
+                        <Link
+                          component="button"
+                          variant="body2"
+                          onClick={() => {
+                            // replace with real navigation
+                            console.log("বিস্তারিত:", r.type);
+                          }}
+                          sx={{ color: "#138a66" }}
+                        >
+                          বিস্তারিত দেখুন
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+
+                <TableFooter>
+                  <TableRow>
+                    <TableCell>
+                      <Typography variant="subtitle2">মোট=</Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="subtitle2" fontWeight="bold">
+                        {totals.total}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="subtitle2" fontWeight="bold">
+                        {totals.approved}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="subtitle2" fontWeight="bold">
+                        {totals.cancelled}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="subtitle2" fontWeight="bold">
+                        {totals.processing}
+                      </Typography>
+                    </TableCell>
+                    <TableCell />
+                  </TableRow>
+                </TableFooter>
+              </Table>
             </CardContent>
           </Card>
         </Grid>

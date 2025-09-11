@@ -30,10 +30,12 @@ const useStyles = makeStyles((theme) => ({
     width: "100%", // Ensures it doesn't overflow
     maxWidth: 650, // Restrict max width
     margin: "auto", // Centers the Paper component
+    minHeight: "fit-content", // Ensures a minimum height
   },
   paper: {
     padding: theme.spacing(1),
     width: "100%",
+    minHeight: "fit-content", // Ensures a minimum height
   },
   buttonContainer: {
     marginTop: theme.spacing(2),

@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     padding: theme.spacing(2),
-    height: '100vh', // assuming 64px header/appbar, adjust as needed
+    // height: '100vh', // assuming 64px header/appbar, adjust as needed
     overflow: 'hidden',
   },
   sidebar: {
@@ -47,8 +47,8 @@ const useStyles = makeStyles((theme) => ({
 
   },
   content: {
-    height: '100vh',
-    overflowY: 'auto',
+    height: 'fit-content',
+    // overflowY: 'auto',
     padding: theme.spacing(2),
   },
   tableContainer: {
