@@ -29,19 +29,8 @@ import {
 
 import {
   useHistory,
+  PublishedComponent,
 } from "@openimis/fe-core";
-// import {
-//   BarChart,
-//   Bar,
-//   XAxis,
-//   YAxis,
-//   Tooltip,
-//   ResponsiveContainer,
-//   PieChart,
-//   Pie,
-//   Cell,
-//   Legend,
-// } from "recharts";
 import Badge from '@material-ui/core/Badge';
 import { withStyles } from '@material-ui/core/styles';
 import { makeStyles } from "@material-ui/core/styles";
@@ -477,6 +466,22 @@ const Dashboard = () =>{
                         ))}
                       </ButtonGroup>
                     </Box>
+                    <Grid container spacing={1} style={{marginTop:"10px"}}>
+                      <Grid item xs={6} md={6}>
+                        <PublishedComponent
+                          pubRef="workforce.DatePicker"
+                          label={"তারিখ হতে"}
+                          style={{border:"1px solid #aaa", padding:"10px", borderRadius:"10px"}}
+                        />
+                      </Grid>
+                      <Grid item xs={6} md={6}>
+                        <PublishedComponent
+                          pubRef="workforce.DatePicker"
+                          label={"তারিখ পর্যন্ত"}
+                          // style={{border:"1px solid #aaa", padding:"10px", borderRadius:"10px"}}
+                        />
+                      </Grid>
+                    </Grid>
                   </Card>
                 </>
               }
