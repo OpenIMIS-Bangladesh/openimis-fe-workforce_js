@@ -2497,3 +2497,76 @@ export function fetchWorkforceApplicationStatusCount() {
 }`
   return graphql(payload, "WORKFORCE_APPLICATION_STATUS_COUNT");
 }
+
+
+
+
+export function fetchApplicationByDate(months, fromDate, toDate, organizationType) {
+  const APPLICATION_FIELDS = `
+    applicationType
+    applicationCount
+    approvedCount
+    rejectedCount
+  `;
+  const args = [];
+
+  if (organizationType) {
+    args.push(`organizationType: "${organizationType}"`);
+  }
+
+  if (months > 0) {
+    args.push(`lastMonths: "${months}"`);
+  } else if (fromDate && toDate) {
+    args.push(`dateBetween: ["${fromDate}", "${toDate}"]`);
+  }
+
+  const argString = args.length > 0 ? `(${args.join(", ")})` : "";
+
+  const payload = `
+    query {
+      workforceApplicationMatrix${argString} {
+        ${APPLICATION_FIELDS}
+      }
+    }
+  `;
+
+  return graphql(payload, "WORKFORCE_APPLICATIONS_BY_DATE");
+}
+
+
+export function fetchGenderWiseApplicationMatrixByDate(months, fromDate, toDate, organizationType) {
+  const GENDER_FIELDS = `
+    totalApplicant
+    totalDependent
+    maleApplicant
+    femaleApplicant
+    maleDependent
+    femaleDependent
+    totalBenefitAmount
+  `;
+
+  const args = [];
+
+  if (organizationType) {
+    args.push(`organizationType: "${organizationType}"`);
+  }
+  else if (months > 0) {
+    args.push(`lastMonths: "${months}"`);
+  } 
+
+  if (fromDate && toDate) {
+    args.push(`dateBetween: ["${fromDate}", "${toDate}"]`);
+  }
+
+  const argString = args.length > 0 ? `(${args.join(", ")})` : "";
+
+  const payload = `
+    query {
+      workforceGenderwiseMatrix${argString} {
+        ${GENDER_FIELDS}
+      }
+    }
+  `;
+
+  return graphql(payload, "GENDER_WISE_APPLICATION_MATRIX_BY_DATE");
+}
