@@ -73,6 +73,12 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION;
   } else if (user_rights.includes(812008)) {
     user_type = WORKFORCE_USER_TYPE.BLWF_CHECKER;
+  } else if (user_rights.includes(813000)) {
+    user_type = WORKFORCE_USER_TYPE.EIS_COORDINATOR;
+  } else if (user_rights.includes(813002)) {
+    user_type = WORKFORCE_USER_TYPE.EIS_OFFICER;
+  } else if (user_rights.includes(813003)) {
+    user_type = WORKFORCE_USER_TYPE.EIS_ADVISOR;
   } else if (!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }

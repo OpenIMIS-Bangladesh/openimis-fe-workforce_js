@@ -345,7 +345,8 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       </Dialog>
     );
   } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN || 
-  getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
+  getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+  || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COORDINATOR || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
     let logo= <img src={`workforce_assets/centralfund.png`} alt="Logo" style={{ width: "120px" }} />;
     let organization= 'কেন্দ্রীয় তহবিল';
     let address= '২১ তলা, ভবন#৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০';

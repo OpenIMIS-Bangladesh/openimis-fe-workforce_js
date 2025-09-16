@@ -616,8 +616,123 @@ class ApplicationProcessSearcher extends Component {
         this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
       ]);
 
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
+      this.setState({ displayVersion: showHistoryFilter });
+
+      let defaultStatusFilters = [];
+      let additionalFilters = [];
+
+      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+
+      if (rejectedApplication) {
+        defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
+      } else if (revertedApplication) {
+        defaultStatusFilters.push(
+          'applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]'
+        );
+
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
+      }
+      else if (this.props.sentForVerificationApplications) {
+        defaultStatusFilters.push('statusIn: ["forward_for_verification"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
+      }
+      else if (this.props.verifiedApplications) {
+        defaultStatusFilters.push('statusIn: ["approved_by_doctor","verified"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
+      }
+      else if (summaryId) {
+        defaultStatusFilters.push('applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
+        additionalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
+      }
+      else {
+        defaultStatusFilters.push('applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
+      }
+
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const nidFilters = this.props.nidFilters || [];
+
+      let finalFilters = [];
+
+      if (nidFilters.length) {
+        finalFilters = [...nidFilters];
+
+        if (!finalFilters.some(f => f.includes("orderBy"))) {
+          finalFilters.push(orderByFilter);
+        }
+
+        if (summaryId && !finalFilters.some(f => f.includes("eisApplicationSummary_Id"))) {
+          finalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
+        }
+      } else if (prms?.length) {
+        finalFilters = [...prms];
+
+        const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
+        const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
+
+        if (!hasStatusIn) {
+          finalFilters = [...defaultStatusFilters, ...finalFilters];
+        }
+        if (!hasOrderBy) finalFilters.push(orderByFilter);
+        if (summaryId && !finalFilters.some(f => f.includes("eisApplicationSummary_Id"))) {
+          finalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
+        }
+      } else {
+        finalFilters = [...defaultStatusFilters, ...additionalFilters, orderByFilter];
+      }
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_OFFICER) {
+      this.setState({ displayVersion: showHistoryFilter });
+
+      const defaultStatusFilters = [
+        'applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]'
+      ];
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
+      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
+      const hasAppTypeIn = prms?.some(f => f.includes("applicationTypeIn"));
+
+      let finalFilters = [];
+
+      if (prms?.length) {
+        finalFilters = [...prms];
+
+        if (!hasStatusIn) {
+          finalFilters = [...defaultStatusFilters.slice(0, 1), ...finalFilters];
+        }
+
+        if (!hasAppTypeIn) {
+          finalFilters = [...finalFilters, defaultStatusFilters[1]];
+        }
+
+        if (!hasOrderBy) {
+          finalFilters.push(orderByFilter);
+        }
+      } else {
+        finalFilters = [...defaultStatusFilters, orderByFilter];
+      }
+      if (loggedInUserId) {
+        finalFilters.push(`applicationTo: "${loggedInUserId}"`);
+      }
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
+      this.setState({ displayVersion: showHistoryFilter });
+      const filtersBase = [
+        'organizationTypeIn: ["eis"]',
+        'orderBy: ["-dateCreated"]',
+      ];
+
+      const Filters = [...filtersBase, `eisApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+
+      const [] = await Promise.all([
+        this.props.fetchApplicationsSummary(this.props.modulesManager, Filters),
+      ]);
     }
-    };
+}
 
 
   rowIdentifier = (r) => r.uuid;
@@ -1048,6 +1163,8 @@ class ApplicationProcessSearcher extends Component {
       ? headerApplicant(this)
       : userType === WORKFORCE_USER_TYPE.CHECKER
       ? headerChecker(this)
+      : userType === WORKFORCE_USER_TYPE.EIS_OFFICER
+      ? headerChecker(this)
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
       ? headerCheckerTwo(this)
       : userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR
@@ -1055,6 +1172,8 @@ class ApplicationProcessSearcher extends Component {
       : userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
       ? headerS2DeputyAsstDirector(this)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
+      ? headerSectionAdmin(this)
+      : userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
       ? headerSectionAdmin(this)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
       ? headerSectionTwoAdmin(this)
@@ -1076,9 +1195,7 @@ class ApplicationProcessSearcher extends Component {
       ? headerChecker(this)
       : userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
       ? headerChecker(this)
-      : userType === WORKFORCE_USER_TYPE.DIRECTOR
-      ? headerDirector(this)
-      : userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
+      : userType === WORKFORCE_USER_TYPE.DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
       ? headerDirector(this)
       : headersAdmin(this);
   };
@@ -1091,6 +1208,8 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication, this.rejectedApplication)
       : userType === WORKFORCE_USER_TYPE.CHECKER
       ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
+      : userType === WORKFORCE_USER_TYPE.EIS_OFFICER
+      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
       ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR
@@ -1099,9 +1218,11 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersS2DeputyAsstDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
       ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
+      : userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
+      ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
       ? itemFormattersSectionTwoAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
-       : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+      : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
       ? itemFormattersBlwfSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.DOCTOR
       ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
@@ -1305,19 +1426,26 @@ class ApplicationProcessSearcher extends Component {
     const { selectedApplicationIds } = this.state;
     const { loggedInUserId } = this.props;
     const userType = getUserTypeFromRights(this.props.userRights);
+    let confirmModalMessage = "";
+
+    if (userType === WORKFORCE_USER_TYPE.CHECKER) {
+      confirmModalMessage = "workforce.application.forward.message.toSectionAdmin";
+    } else if(userType === WORKFORCE_USER_TYPE.EIS_OFFICER) {
+      confirmModalMessage = "workforce.application.forward.message.toEisCoordinator";
+    }
 
     if (selectedApplicationIds.length === 0) {
       this.setState({
         serverResponse: {
           status: "ERROR",
-          message: "Please select at least one application.",
+          message: "Please select at least one application.",toEisCoordinator
         },
       });
       return;
     }
     this.setState({
       confirmModalOpen: true,
-      confirmModalMessage: "workforce.application.forward.message.toSectionAdmin",
+      confirmModalMessage,
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
           const { updateApplication, createApplicationMovement } = this.props;
@@ -1368,7 +1496,7 @@ class ApplicationProcessSearcher extends Component {
                     ? 32
                     : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
                     ? 40
-                    : null,
+                    : 42,
               };
               await updateApplication(
                 updateApplicationData,
@@ -1652,7 +1780,7 @@ class ApplicationProcessSearcher extends Component {
                   applicationId: decodedId,
                   status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
                   note: "আবেদন পরিচালক দ্বারা অনুমোদন করা হয়েছে",
-                  action: "approved_by_DIRECTOR",
+                  action: "approved_by_director",
                   applicationFromId: loggedInUserId,
                   applicationToId: 1,
                   toRoleId: 1,
@@ -1793,7 +1921,8 @@ class ApplicationProcessSearcher extends Component {
           reset={this.state.reset}
           // onCheckBoxSelect={this.onCheckBoxSelect}
         />
-          {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ? (
+          {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
+          || userType === WORKFORCE_USER_TYPE.EIS_ADVISOR ? (
             <Box
               style={{
                 marginTop: 10,
@@ -1827,16 +1956,18 @@ class ApplicationProcessSearcher extends Component {
                       <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
                         <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
                       </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={this.handleBulkSelectedbySectionAdminToDoctor}
-                      >
-                        <FormattedMessage
-                          module="workforce"
-                          id="workforce.employee.application.forwardToDoctor"
-                        />
-                      </Button>
+                  {![WORKFORCE_USER_TYPE.EIS_ADVISOR, WORKFORCE_USER_TYPE.EIS_COORDINATOR].includes(userType) && (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={this.handleBulkSelectedbySectionAdminToDoctor}
+                        >
+                          <FormattedMessage
+                            module="workforce"
+                            id="workforce.employee.application.forwardToDoctor"
+                          />
+                        </Button>
+                      )}
                     </>
                   )}
                 </>
@@ -1888,7 +2019,8 @@ class ApplicationProcessSearcher extends Component {
             </Box>
           ) : null}
           {userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR 
-          || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR?  (
+          || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
+          || userType === WORKFORCE_USER_TYPE.EIS_OFFICER?  (
             <Box
               style={{
                 marginTop: 10,
@@ -2027,7 +2159,7 @@ class ApplicationProcessSearcher extends Component {
             );}
           else if (userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO
             || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
-          ) {
+          || userType === WORKFORCE_USER_TYPE.EIS_OFFICER) {
             return (
                 <RevertApplicationModal
                   open={revertModalOpen}
@@ -2093,7 +2225,8 @@ class ApplicationProcessSearcher extends Component {
                 />
               </>
             );
-          } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
+          } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
+            || userType === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
             return (
               <>
                  <ForwardApplicationSectionAdminModal

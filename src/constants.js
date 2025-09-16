@@ -69,6 +69,7 @@ export const WORKFORCE_STATUS = {
   FORWARD_TO_DOCTOR:"forward_to_doctor",
   SELECTED: "selected",
   MEETING_CREATED: "meeting_created",
+  FORWARD_TO_EIS_ADVISOR: "forward_to_eis_advisor",
 
 };
 export const STATUS_MAP_BN  = {
@@ -115,7 +116,9 @@ export const STATUS_MAP_BN  = {
   forward_to_cf_section_two: "সিএফ শাখা-২ এ প্রেরণ",
   forward_to_doctor: "ডক্টরের কাছে প্রেরণ",
   selected: "নির্বাচিত",
-  meeting_created: "সভা তৈরি হয়েছে"
+  meeting_created: "সভা তৈরি হয়েছে",
+  forward_to_eis_advisor: "ইআইএস উপদেষ্টার কাছে প্রেরণ",
+
 
 };
 export const STATUS_MAP_EN = {
@@ -162,7 +165,9 @@ export const STATUS_MAP_EN = {
   verified: "Verified",
   forward_to_doctor: "Forward to Doctor",
   selected: "Selected",
-  meeting_created: "Meeting Created"
+  meeting_created: "Meeting Created",
+  forward_to_eis_advisor: "Forward to Eis Advisor",
+
 };
 
 
@@ -186,6 +191,9 @@ export const WORKFORCE_USER_TYPE = {
   BLWF_CHECKER: "blwf_checker",
   BLWF_DEPUTI_ASST_DIRECTOR: "blwf_deputi_asst_director",
   BLWF_DIRECTOR: "blwf_director",
+  EIS_COORDINATOR: "eis_coordinator",
+  EIS_OFFICER: "eis_officer",
+  EIS_ADVISOR: "eis_advisor",
 
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
@@ -208,6 +216,10 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   blwf_checker: "BLWF Checker",
   blwf_deputi_asst_director: "BLWF Deputi Asst Director",
   blwf_director: "BLWF Director",
+  eis_officer: "Eis Officer",
+  eis_coordinator: "Eis Coordinator",
+  eis_advisor: "Eis Advisor",
+
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
   admin: "অ্যাডমিন",
@@ -228,6 +240,9 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   sec2_deputi_asst_director: "শাখা-২ উপ-সহকারী পরিচালক",
   blwf_deputi_asst_director: "বিএলডাব্লিউএফ উপ-সহকারী পরিচালক",
   blwf_director: "বিএলডাব্লিউএফ পরিচালক",
+  eis_officer: "ইআইএস অফিসার",
+  eis_coordinator: "ইআইএস কোঅর্ডিনেটর",
+  eis_advisor: "ইআইএস উপদেষ্টা",
 
 };
 
@@ -274,6 +289,7 @@ export const statusOptions = [
   { value: "forward_to_doctor", label: "ডক্টরের কাছে প্রেরণ" },
   { value: "selected", label: "নির্বাচিত" },
   { value: "meeting_created", label: "সভা তৈরি হয়েছে" },
+  { value: "forward_to_eis_advisor", label: "ইআইএস উপদেষ্টার কাছে প্রেরণ" },
 ];
 
 export const applicationTypeOptions = [
@@ -290,7 +306,6 @@ export const submittedByOptions = [
 ];
 
 export const banglaLabels = {
-  // same as your original banglaLabels object...
   nameEn: "নাম (ইংরেজি)",
   nameBn: "নাম (বাংলা)",
   firstNameEn: "নাম (ইংরেজি)",
@@ -407,6 +422,5 @@ export const banglaLabels = {
   employeeBankInfo: "শ্রমিকের ব্যাংক তথ্য",
   ApplicationFor:"আবেদনকারীর ধরন",
   dependents:"নির্ভরশীল সদস্যদের তথ্য"
-  // New specific keys
 
 };

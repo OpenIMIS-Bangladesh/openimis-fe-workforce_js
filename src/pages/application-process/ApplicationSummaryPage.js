@@ -165,6 +165,25 @@ class ApplicationSummaryPage extends Component {
         renderSummaryData = summaryData.filter(item => item.status === "approved_by_dg");
       }
     }
+    else if(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.EIS_ADVISOR)
+    {
+      if(status === "pending")
+      {
+        renderSummaryData = summaryData.filter(item =>
+          item.status === "forward_to_eis_advisor" && item.organizationType==='eis'
+        );
+      }
+      else if(status === "rejected")
+      {
+        renderSummaryData = summaryData.filter(item =>
+          item.status === "rejected" && item.organizationType==='eis'
+        );
+      }
+      else if(status === "approved")
+      {
+        renderSummaryData = summaryData.filter(item => item.status === "approved_by_eis_director" && item.organizationType==='eis');
+      }
+    }
 
     return (
       <div>

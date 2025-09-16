@@ -137,12 +137,17 @@ const ForwardApplicationSummaryModal = ({
     return;
   }
     const createApplicationSummaryData = {
-      status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+      status:
+      userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
+      ? WORKFORCE_STATUS.MEETING_CREATED
+      : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+      ? WORKFORCE_STATUS.MEETING_CREATED
+      : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
       name: formData?.meetingName,
       meetingDate: formData?.meetingDate,
       year: formData?.year,
       month: formData?.month,
-      organizationType: userType === "section_admin" ? "cf" : userType === "blwf_section_admin" ? "blwf": null,      
+      organizationType: userType === "section_admin" ? "cf" : userType === "blwf_section_admin" ? "blwf": "eis",      
       sectionType: userType === "section_admin" ? "section_one" : userType === "section_admin_two" ? "section_two": null,
       applicationData: JSON.stringify(selectedApplicationIds),
     };
@@ -177,17 +182,27 @@ const ForwardApplicationSummaryModal = ({
       ? { cfApplicationSummaryId: decodeId(applicationSummaryId) }
       : userType === "blwf_section_admin"
       ? { blwfApplicationSummaryId: decodeId(applicationSummaryId) }
-      : {}),       
-      status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+      : {eisApplicationSummaryId: decodeId(applicationSummaryId)}),       
+      status:
+      userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
+      ? WORKFORCE_STATUS.MEETING_CREATED
+      : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+      ? WORKFORCE_STATUS.MEETING_CREATED
+      : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
      };
     const createApplicationMovementData = {
         applicationId: decodeId(encodedId),
-        status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+        status:
+        userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
+        ? WORKFORCE_STATUS.MEETING_CREATED
+        : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+        ? WORKFORCE_STATUS.MEETING_CREATED
+        : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
         note: "আবেদন কমিটির কাছে প্রেরণ হয়েছে",
         action: "forward_to_comiitee",
         applicationFromId: loggedInUserId,
-        applicationToId: 69,
-        toRoleId: 23,
+        applicationToId: userType === WORKFORCE_USER_TYPE.CHECKER ? 69 : 188,
+        toRoleId: userType === WORKFORCE_USER_TYPE.CHECKER ? 23 : 45,
       };
    
    await dispatch(
@@ -210,12 +225,17 @@ const handleSave = async () => {
     return;
   }
   const createApplicationSummarySheetData = {
-    status: WORKFORCE_STATUS.MEETING_CREATED,
+    status:
+    userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
+      ? WORKFORCE_STATUS.MEETING_CREATED
+      : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+      ? WORKFORCE_STATUS.MEETING_CREATED
+      : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
     name: formData?.meetingName,
     meetingDate: formData?.meetingDate,
     year: Number(formData?.year),
     month: formData?.month,
-    organizationType: userType === "section_admin" ? "cf" : userType === "blwf_section_admin" ? "blwf": null,      
+    organizationType: userType === "section_admin" ? "cf" : userType === "blwf_section_admin" ? "blwf": "eis",      
     sectionType: userType === "section_admin" ? "section_one" : userType === "section_admin_two" ? "section_two": null,
     applicationData: JSON.stringify(selectedApplicationIds),
   };
@@ -249,7 +269,7 @@ const handleSave = async () => {
       ? { cfApplicationSummaryId: decodeId(applicationSummaryId) }
       : userType === "blwf_section_admin"
       ? { blwfApplicationSummaryId: decodeId(applicationSummaryId) }
-      : {}),      
+      : {eisApplicationSummaryId: decodeId(applicationSummaryId)}),      
        status: WORKFORCE_STATUS.MEETING_CREATED,
      };
    

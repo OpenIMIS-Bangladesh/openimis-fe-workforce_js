@@ -19,6 +19,8 @@ import { WORKFORCE_USER_TYPE } from "../../constants";
 import BlwfApproverDashboard from "./BlwfApproverDashboardPage";
 import BlwfCheckerDashboard from "./BlwfCheckerDashboardPage";
 import BlwfDeputyAsstDirectorDashboardPage from "./BlwfDeputyAsstDirectorDashboardPage";
+import EisCoordinatorDashboardPage from "./EisCoordinatorDashboardPage";
+import EisOfficerDashboardPage from "./EisOfficerDashboardPage";
 
 const DashboardRelay = () => {
   const user_type = getUserType();
@@ -61,8 +63,13 @@ console.log(user_type)
     return <BlwfCheckerDashboard />;
   } else if (user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR) {
     return <BlwfDeputyAsstDirectorDashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
+    return <EisCoordinatorDashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) {
+    return <EisOfficerDashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
+    return <DashboardPage />;
   }
-
   return <></>;
 
 };
