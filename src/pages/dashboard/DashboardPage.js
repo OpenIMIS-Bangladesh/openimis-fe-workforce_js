@@ -37,7 +37,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { FormattedMessage, useModulesManager } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserType, getUserTypeFromRights } from "../../utils/utils";
-import { WORKFORCE_USER_TYPE } from "../../constants";
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
 import DescriptionIcon from '@material-ui/icons/Description';
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
@@ -46,17 +45,20 @@ import PersonIcon from '@material-ui/icons/Person';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ApplicationSummaryPage from "../application-process/ApplicationSummaryPage";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate } from "../../actions";
+import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN} from "../../constants";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     padding: theme.spacing(2),
     height: "fit-content", // assuming 64px header/appbar, adjust as needed
-    overflow: "hidden",
+    overflow: "visible",
   },
   sidebar: {
     position: "sticky",
-    top: 0,
+    top: 85,
     height: "50vh",
   },
   content: {
@@ -115,6 +117,18 @@ const useStyles = makeStyles((theme) => ({
     padding: "16px",
     borderTop: "1px solid #ddd",
   },
+  item: {
+    display: "flex",
+    alignItems: "center",
+    gap: theme.spacing(0.5),
+    cursor: "pointer",
+    padding: "7px",
+    borderRadius:"10px",
+    "&:hover": {
+      backgroundColor: "#517688",
+      color: "#fff",
+    },
+  },
 }));
 
 
@@ -122,9 +136,159 @@ const useStyles = makeStyles((theme) => ({
 
 
 const Dashboard = () =>{
+  const dispatch = useDispatch();
   const theme = useTheme();
   const history = useHistory();
   const user_type = getUserType();
+  const reduxState = useSelector((state) => state);
+  const locale = reduxState?.core?.user?.i_user?.language || 'en';
+
+  const applicationTypeNames= locale=='en'?APP_TYPE_DASHBOARD_EN:APP_TYPE_DASHBOARD_BN;
+  const applicantTypeNames= locale=='en'?APPLICANT_TYPE_EN:APPLICANT_TYPE_BN;
+  const buttonOptions = {
+    1: "১ মাস",
+    3: "৩ মাস",
+    6: "৬ মাস",
+    12: "১২ মাস",
+  };
+
+  const [months, setMonths] = useState(0);
+  const [filter, setFilter] = useState("সব");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  
+  const [graphMonths, setGraphMonths] = useState(0);
+  const [graphFromDate, setGraphFromDate] = useState("");
+  const [graphToDate, setGraphToDate] = useState("");
+
+  const handleFilter = (f) => {
+    setFilter(f);
+  };
+
+  const handleMonthChange = (month) => {
+    setMonths(month);
+    setFromDate("");
+    setToDate("");
+  };
+
+  const handleFromDateChange = (date) => {
+    setFromDate(date);
+    setMonths(0);
+  }
+
+  const handleToDateChange = (date) => {
+    setToDate(date);
+    setMonths(0);
+  }
+
+
+  const handleGraphMonthChange = (month) => {
+    setGraphMonths(month);
+    setGraphFromDate("");
+    setGraphToDate("");
+  };
+
+  const handleGraphFromDateChange = (date) => {
+    setGraphFromDate(date);
+    setGraphMonths(0);
+  }
+
+  const handleGraphToDateChange = (date) => {
+    setGraphToDate(date);
+    setGraphMonths(0);
+  }
+
+  const [tableRows, setTableRows] = useState([]);
+  // const [totals, setTotals] = useState({
+  //   total: 0,
+  //   approved: 0,
+  //   cancelled: 0,
+  //   processing: 0,
+  // });
+
+  const [applicationTypes, setApplicationTypes]=useState([]);
+  const [applicationCounts, setApplicationCounts]=useState([]);
+  const [totalBenefitAmount, setTotalBenefitAmount]=useState(0);
+
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const orgType = filter === "সব" ? "" : filter.toLowerCase();
+
+        let res = [];
+        await dispatch(fetchApplicationByDate(months, fromDate, toDate, orgType)).then((response) => {
+            res = response.payload?.data?.workforceApplicationMatrix || [];
+          });
+        // Map API response to table structure
+        const rows = res.map((item) => ({
+          type: applicationTypeNames[item.applicationType],
+          total: item.applicationCount,
+          approved: item.approvedCount,
+          cancelled: item.rejectedCount,
+          processing: item.applicationCount - (item.approvedCount + item.rejectedCount),
+        }));
+        let appTypes=[];
+
+        res.map((item) => {
+          appTypes.push({type: applicationTypeNames[item.applicationType], count: item.applicationCount});
+        });
+
+        setApplicationTypes(appTypes);
+        setTotalBenefitAmount(res.totalBenefitAmount || 0);
+
+        // Calculate totals
+        // const totalsCalc = rows.reduce(
+        //   (acc, r) => {
+        //     acc.total += Number(r.total);
+        //     acc.approved += Number(r.approved);
+        //     acc.cancelled += Number(r.cancelled);
+        //     acc.processing += Number(r.processing);
+        //     return acc;
+        //   },
+        //   { total: 0, approved: 0, cancelled: 0, processing: 0 }
+        // );
+
+        setTableRows(rows);
+        // setTotals(totalsCalc);
+      } catch (err) {
+        console.error("Failed to fetch data", err);
+      }
+    }
+
+    loadData();
+  }, [months, fromDate, toDate, filter]);
+
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const orgType = filter === "সব" ? "" : filter.toLowerCase();
+
+        let res = [];
+
+        await dispatch(fetchGenderWiseApplicationMatrixByDate(months, fromDate, toDate, orgType)).then((response) => {
+          console.log("API Response:", response); 
+            res = response.payload?.data?.workforceGenderwiseMatrix[0] || [];
+          });
+
+        const applicationCounts = [
+        { type: applicantTypeNames['totalApplicant'], count: res.totalApplicant },
+        { type: applicantTypeNames['maleApplicant'], count: res.maleApplicant },
+        { type: applicantTypeNames['femaleApplicant'], count: res.femaleApplicant },
+        { type: applicantTypeNames['totalDependent'], count: res.totalDependent },
+        // { type: applicantTypeNames['maleDependent'], count: res.maleDependent },
+        // { type: applicantTypeNames['femaleDependent'], count: res.femaleDependent },
+      ];
+        setApplicationCounts(applicationCounts);
+      } catch (err) {
+        console.error("Failed to fetch data", err);
+      }
+    }
+
+    loadData();
+  }, [months, fromDate, toDate, filter]);
+
 
   const application_status_count_data = useSelector(
     (state) => state.workforce[`workforceApplicationStatusCount`]
@@ -142,7 +306,7 @@ const Dashboard = () =>{
     application_status_count.approved = application_status_count_data?.approved?.totalCount;
   }
 
-  // Sample data (replace with API data)
+
   const barData = [
     { name: "জানু", চিকিৎসা: 12, মৃত্যু: 6, শিক্ষা: 3, মাতৃত্ব: 2, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 2 },
     { name: "ফেব", চিকিৎসা: 15, মৃত্যু: 7, শিক্ষা: 4, মাতৃত্ব: 2, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 2 },
@@ -162,83 +326,6 @@ const Dashboard = () =>{
     { name: "বন্ধ", value: 3, color: "#E91E63" },
   ];
 
-  const tableRows = [
-    {
-      type: "চিকিৎসা অনুদান",
-      total: 120,
-      approved: 100,
-      cancelled: 15,
-      processing: 5,
-    },
-    {
-      type: "শিক্ষা অনুদান",
-      total: 80,
-      approved: 70,
-      cancelled: 5,
-      processing: 5,
-    },
-    {
-      type: "মৃত্যুজনিত অনুদান",
-      total: 45,
-      approved: 40,
-      cancelled: 3,
-      processing: 2,
-    },
-    {
-      type: "মাতৃত্বজনিত অনুদান",
-      total: 60,
-      approved: 55,
-      cancelled: 2,
-      processing: 3,
-    },
-    {
-      type: "স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তা",
-      total: 90,
-      approved: 80,
-      cancelled: 8,
-      processing: 2,
-    },
-  ];
-
-  
-
-
-  const [timeRange, setTimeRange] = useState("৩ মাস");
-
-  const handleRangeChange = (event, newRange) => {
-    if (newRange !== null) {
-      setTimeRange(newRange);
-      // এখানে চাইলে API call দিয়ে data filter করতে পারো
-    }
-  };
-
-  const [filter, setFilter] = useState("সব");
-
-  // totals computed from visible rows (if you later filter rows, apply filter logic here)
-  const totals = useMemo(() => {
-    return tableRows.reduce(
-      (acc, r) => {
-        acc.total += Number(r.total || 0);
-        acc.approved += Number(r.approved || 0);
-        acc.cancelled += Number(r.cancelled || 0);
-        acc.processing += Number(r.processing || 0);
-        return acc;
-      },
-      { total: 0, approved: 0, cancelled: 0, processing: 0 }
-    );
-  }, []);
-
-  // placeholder: when filter changes, you might fetch new rows. For demo we keep same rows.
-  const handleFilter = (f) => {
-    setFilter(f);
-    // TODO: fetch/filter data by `f` and `timeRange`
-  };
-
-  const handleTimeRange = (range) => {
-    setTimeRange(range);
-    // TODO: fetch/filter data by timeRange
-  };
-
 
 
   const newCard = {
@@ -250,42 +337,50 @@ const Dashboard = () =>{
   };
 
 
-  let applicationTypes=[];
-  if(user_type === WORKFORCE_USER_TYPE.BLWF_DIRECTOR){
-    applicationTypes=[
-      {en:'Medical Grant', bn: 'চিকিৎসা অনুদান', count: 1250},
-      {en:'Education Grant', bn: 'শিক্ষা অনুদান', count: 450},
-      {en:'Deadly Grant', bn: 'মৃত্যুজনিত অনুদান', count: 155},
-      {en:'Maternal Grant', bn: 'মাতৃত্বজনিত অনুদান', count: 123},
-    ]; 
-  }
-  else
-  {
-    applicationTypes=[
-      {en:'Medical Grant', bn: 'চিকিৎসা অনুদান', count: 120},
-      {en:'Education Grant', bn: 'শিক্ষা অনুদান', count: 80},
-      {en:'Deadly Grant', bn: 'মৃত্যুজনিত অনুদান', count: 45},
-      {en:'Maternal Grant', bn: 'মাতৃত্বজনিত অনুদান', count: 60},
-      {en:'Financial Assistance due to Permanent Disability', bn: 'স্থায়ী অক্ষমতা জনিত', count: 90},
-      {en:'Financial Assistance due to Partial Disability', bn: 'আংশিক অক্ষমতা জনিত', count: 75},
-    ];
-  }
-
-
-  let applicationCounts = [
-      {type: 'male', en:'Male Applicant', bn: 'পুরুষ আবেদনকারী', count: 570},
-      {type: 'female', en:'Female Applicant', bn: 'নারী আবেদনকারী', count: 1240},
-      {type: 'dependent', en:'Dependent Applicant', bn: 'নির্ভরশীল আবেদনকারী', count: 350},
-    ];
-
-  let totalApplicationCount=0;
-  applicationCounts.forEach(element => {
-    totalApplicationCount+=element.count;
-  });
   return (
     <>
       <Grid container spacing={2}>
         {/* Left Card */}
+        <Grid item xs={12} md={12}>
+          <Card style={{...newCard, padding:"30px", borderRadius:"15px", overflow:"visible"}}>
+            <Grid container spacing={2} style={{marginBottom:"10px"}}>
+              <Grid item xs={12} md={12}>
+                <Typography style={{fontWeight:"bold" }}>সময়সীমা নির্বাচন করুন:</Typography>
+                <Box gap={2}>
+                  <ButtonGroup variant="outlined"  style={{display:"flex", margin:"auto", gap:"10px"}}>
+                    {Object.entries(buttonOptions).map(([key,label]) => (
+                      <Button
+                        key={key}
+                        variant={months === key ? "contained" : "outlined"}
+                        onClick={() => handleMonthChange(key)}
+                        style={{ border: "1px solid #aaa", borderRadius: "10px", width:"100%" }}
+                      >
+                        {label}
+                      </Button>
+                    ))}
+                  </ButtonGroup>
+                </Box>
+              </Grid>
+              <Grid item md={3} xs={3} style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                  <PublishedComponent
+                    pubRef="workforce.DatePicker"
+                    label={"তারিখ হতে"}
+                    onChange={(datevalue) => handleFromDateChange(datevalue)}
+                    width="100%"
+                    style={{ border: "1px solid #aaa", padding: "10px", borderRadius: "10px", width:"100%" }}
+                  />
+              </Grid>
+              <Grid item md={3} xs={3} style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                  <PublishedComponent
+                    pubRef="workforce.DatePicker"
+                    label={"তারিখ পর্যন্ত"}
+                    onChange={(datevalue) => handleToDateChange(datevalue)}
+                    style={{border:"1px solid #aaa", padding:"10px", borderRadius:"10px"}}
+                  />
+              </Grid>
+            </Grid>
+          </Card>
+        </Grid>
         <Grid item xs={12} md={4}>
           <Card style={newCard}>
             <CardContent>
@@ -297,7 +392,7 @@ const Dashboard = () =>{
                 <tbody>
                     {applicationTypes.map((type) => (
                       <tr style={{paddingTop:"10px", paddingBottom:"10px"}}>
-                        <th style={{textAlign:"left"}}><Typography>{type.bn}</Typography></th>
+                        <th style={{textAlign:"left"}}><Typography>{type.type}</Typography></th>
                         <td style={{textAlign:"right"}}><Typography>{type.count}</Typography></td>
                       </tr>
                     ))}
@@ -315,18 +410,10 @@ const Dashboard = () =>{
                 আবেদনকারীর বিবরণ
                 <PeopleAltIcon style={{ verticalAlign: 'middle', marginRight: 8, float:"right" }} />
               </Typography>
-              <Card style={{ ...newCard, margin: "10px",  padding:"0px" }}>
-                <CardContent>
-                    <Typography>মোট আবেদনকারী
-                      <PersonIcon style={{ verticalAlign: 'middle', marginLeft: 8, float:"right" }} />
-                    </Typography>
-                    <Typography variant="h5"><b>{totalApplicationCount}</b></Typography>
-                </CardContent>
-              </Card>
               {applicationCounts.map((item) => (
                 <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
                 <CardContent>
-                    <Typography>{item.bn}
+                    <Typography>{item.type}
                       <PersonIcon style={{ verticalAlign: 'middle', marginLeft: 8, float:"right" }} />
                     </Typography>
                     <Typography variant="h5"><b>{item.count}</b></Typography>
@@ -348,96 +435,23 @@ const Dashboard = () =>{
                 <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
                   <CardContent>
                       <Typography>মোট সুবিধা পরিমাণ</Typography>
-                      <Typography variant="h5"><b>৳ ৩,০০,০০,০০০</b></Typography>
+                      <Typography variant="h5"><b>৳ {Number(totalBenefitAmount).toLocaleString('bn')}</b></Typography>
                   </CardContent>
                 </Card>
-                <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
+                {/* <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
                   <CardContent>
                       <Typography>মাসিক মোট সুবিধা</Typography>
                       <Typography variant="h5"><b>৳ ৫,০০,০০০</b></Typography>
                       <Typography>(সর্বোচ্চ: ৭.৫ লাখ | সর্বনিম্ন: ২.০ লাখ)</Typography>
                   </CardContent>
-                </Card>
+                </Card> */}
             </CardContent>
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={7}>
-          <Card style={newCard} sx={{ borderRadius: "16px", boxShadow: 3 }}>
-            <CardHeader
-              title="সময়ভিত্তিক অ্যাপ্লিকেশন"
-              subheader="মাসিক ডেটা ওভারভিউ - বিভাগ অনুসারে"
-              action={
-              <>
-                <Card style={{padding:"10px", borderRadius:"12px"}}>
-                  <Typography style={{ textAlign:"center", fontWeight:"bold" }}>সময়সীমা নির্বাচন করুন:</Typography>
-                  <ButtonGroup variant="outlined">
-                    {["৩ মাস", "৬ মাস", "৯ মাস", "১২ মাস"].map((label) => (
-                      <Button
-                        key={label}
-                        variant={timeRange === label ? "contained" : "outlined"}
-                        onClick={() => setTimeRange(label)}
-                      >
-                        {label}
-                      </Button>
-                    ))}
-                  </ButtonGroup>
-                </Card>
-              </>
-            }
-            />
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={barData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="চিকিৎসা" stackId="a" fill="#009688" />
-                  <Bar dataKey="মৃত্যু" stackId="a" fill="#90CAF9" />
-                  <Bar dataKey="শিক্ষা" stackId="a" fill="#FBC02D" />
-                  <Bar dataKey="মাতৃত্ব" stackId="a" fill="#FF9800" />
-                  <Bar dataKey="স্থায়ী ও অস্থায়ী অক্ষমতা" stackId="a" fill="#212121" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </Grid>
 
-        {/* Right Side - Pie Chart */}
-        <Grid item xs={12} md={5}>
-          <Card style={newCard} sx={{ borderRadius: "16px", boxShadow: 3 }}>
-            <CardHeader title="স্ট্যাটাস বিতরণ" subheader="অ্যাপ্লিকেশনের বর্তমান অবস্থা" />
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    dataKey="value"
-                    nameKey="name"
-                    innerRadius={60}
-                    outerRadius={100}
-                    label
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend 
-                    verticalAlign="bottom" 
-                    align="center"
-                    iconType="circle" // optional: circle, square, line
-                    layout="horizontal" 
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </Grid>
         <Grid item xs={12} md={12}>
-          <Card style={newCard} sx={{ borderRadius: "12px", boxShadow: 2 }}>
+          <Card style={{...newCard, overflow:"visible"}} sx={{ borderRadius: "12px", boxShadow: 2 }}>
             <CardHeader
               title={
                 <Box>
@@ -448,42 +462,6 @@ const Dashboard = () =>{
                     বিস্তারিত অ্যাপ্লিকেশন প্রতিবেদন - ফান্ড প্রকার অনুসারে
                   </Typography>
                 </Box>
-              }
-              action={
-                <>
-                  <Card style={{padding:"10px", borderRadius:"12px", paddingLeft:"30px", paddingRight:"30px"}}>
-                    <Typography style={{ textAlign:"center", fontWeight:"bold" }}>সময়সীমা নির্বাচন করুন:</Typography>
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <ButtonGroup variant="outlined">
-                        {["৩ মাস", "৬ মাস", "৯ মাস", "১২ মাস"].map((label) => (
-                          <Button
-                            key={label}
-                            variant={timeRange === label ? "contained" : "outlined"}
-                            onClick={() => handleTimeRange(label)}
-                          >
-                            {label}
-                          </Button>
-                        ))}
-                      </ButtonGroup>
-                    </Box>
-                    <Grid container spacing={1} style={{marginTop:"10px"}}>
-                      <Grid item xs={6} md={6}>
-                        <PublishedComponent
-                          pubRef="workforce.DatePicker"
-                          label={"তারিখ হতে"}
-                          style={{border:"1px solid #aaa", padding:"10px", borderRadius:"10px"}}
-                        />
-                      </Grid>
-                      <Grid item xs={6} md={6}>
-                        <PublishedComponent
-                          pubRef="workforce.DatePicker"
-                          label={"তারিখ পর্যন্ত"}
-                          // style={{border:"1px solid #aaa", padding:"10px", borderRadius:"10px"}}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Card>
-                </>
               }
             />
             <CardContent>
@@ -547,7 +525,7 @@ const Dashboard = () =>{
                   ))}
                 </TableBody>
 
-                <TableFooter>
+                {/* <TableFooter>
                   <TableRow>
                     <TableCell>
                       <Typography variant="subtitle2">মোট=</Typography>
@@ -574,11 +552,102 @@ const Dashboard = () =>{
                     </TableCell>
                     <TableCell />
                   </TableRow>
-                </TableFooter>
+                </TableFooter> */}
               </Table>
             </CardContent>
           </Card>
         </Grid>
+
+        {/* <Grid item xs={12} md={7}>
+          <Card style={newCard} sx={{ borderRadius: "16px", boxShadow: 3 }}>
+            <CardHeader
+              title="সময়ভিত্তিক অ্যাপ্লিকেশন"
+              subheader="মাসিক ডেটা ওভারভিউ - বিভাগ অনুসারে"
+              action={
+              <>
+                <Card style={{padding:"10px", borderRadius:"12px"}}>
+                  <Typography style={{ textAlign:"center", fontWeight:"bold" }}>সময়সীমা নির্বাচন করুন:</Typography>
+                  <ButtonGroup variant="outlined" style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+                    {Object.entries(buttonOptions).map(([key, label]) => (
+                      <Button
+                        key={key}
+                        variant={graphMonths === key ? "contained" : "outlined"}
+                        onClick={() => handleGraphMonthChange(key)}
+                      >
+                        {label}
+                      </Button>
+                    ))}
+                  </ButtonGroup>
+                  <Grid container spacing={1} style={{marginTop:"10px"}}>
+                     <Grid item xs={6} md={6}>
+                        <PublishedComponent
+                          pubRef="workforce.DatePicker"
+                          label={"তারিখ হতে"}
+                          onChange={(datevalue) => handleGraphFromDateChange(datevalue)}
+                        />
+                      </Grid>
+                      <Grid item xs={6} md={6}>
+                        <PublishedComponent
+                          pubRef="workforce.DatePicker"
+                          label={"তারিখ পর্যন্ত"}
+                          onChange={(datevalue) => handleGraphToDateChange(datevalue)}
+                        />
+                      </Grid>
+                  </Grid>
+                </Card>
+              </>
+            }
+            />
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={barData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="চিকিৎসা" stackId="a" fill="#009688" />
+                  <Bar dataKey="মৃত্যু" stackId="a" fill="#90CAF9" />
+                  <Bar dataKey="শিক্ষা" stackId="a" fill="#FBC02D" />
+                  <Bar dataKey="মাতৃত্ব" stackId="a" fill="#FF9800" />
+                  <Bar dataKey="স্থায়ী ও অস্থায়ী অক্ষমতা" stackId="a" fill="#212121" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={5}>
+          <Card style={newCard} sx={{ borderRadius: "16px", boxShadow: 3 }}>
+            <CardHeader title="স্ট্যাটাস বিতরণ" subheader="অ্যাপ্লিকেশনের বর্তমান অবস্থা" />
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={60}
+                    outerRadius={100}
+                    label
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend 
+                    verticalAlign="bottom" 
+                    align="center"
+                    iconType="circle" // optional: circle, square, line
+                    layout="horizontal" 
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </Grid> */}
+        
       </Grid>
     </>
   );

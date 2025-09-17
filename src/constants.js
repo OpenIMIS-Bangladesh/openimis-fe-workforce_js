@@ -302,6 +302,48 @@ export const applicationTypeOptions = [
   { value: "disabilityAssistance", label: "স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তা" },
 ];
 
+
+export const APP_TYPE_DASHBOARD_EN = 
+{
+  medical:"Medical Assistance",
+  death:"Grant for Death",
+  educational:"Educational Grant",
+  maternityGrant:"Maternity Grant",
+  disabilityAssistance:"Grant for Disability",
+  total:"Total",
+};
+
+export const APP_TYPE_DASHBOARD_BN = 
+{
+  medical:"চিকিৎসা অনুদান",
+  death:"মৃত্যুজনিত অনুদান",
+  educational:"শিক্ষা অনুদান",
+  maternityGrant:"মাতৃত্বজনিত অনুদান",
+  disabilityAssistance:"স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তা",
+  total:"মোট",
+};
+
+
+export const APPLICANT_TYPE_EN = 
+{
+  totalApplicant: "Total Applicant",
+  totalDependent: "Total Dependent",
+  maleApplicant: "Male Applicant",
+  femaleApplicant: "Female Applicant",
+  maleDependent: "Male Dependent",
+  femaleDependent: "Female Dependent",
+};
+
+export const APPLICANT_TYPE_BN = 
+{
+  totalApplicant: "মোট আবেদনকারী",
+  totalDependent: "মোট নির্ভরশীল",
+  maleApplicant: "পুরুষ আবেদনকারী",
+  femaleApplicant: "মহিলা আবেদনকারী",
+  maleDependent: "পুরুষ নির্ভরশীল",
+  femaleDependent: "মহিলা নির্ভরশীল",
+};
+
 export const submittedByOptions = [
   { value: "applicant", label: "আবেদনকারী" },
   { value: "factory_admin", label: "ফ্যাক্টরি অ্যাডমিন" },
