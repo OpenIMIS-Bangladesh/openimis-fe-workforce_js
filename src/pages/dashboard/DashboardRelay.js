@@ -48,11 +48,7 @@ console.log(user_type)
     return <ApproverDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
     return <BlwfApproverDashboard />;
-  } else if (user_type === WORKFORCE_USER_TYPE.ADMIN) {
-    return <DashboardPage />;
-  } else if (user_type === WORKFORCE_USER_TYPE.DIRECTOR) {
-    return <DashboardPage />;
-  } else if (user_type === WORKFORCE_USER_TYPE.BLWF_DIRECTOR) {
+  } else if (user_type === WORKFORCE_USER_TYPE.ADMIN || user_type === WORKFORCE_USER_TYPE.DIRECTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DIRECTOR || user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
     return <DashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION) {
     return <BGMEAAssociationDashboardPage />;
@@ -68,8 +64,6 @@ console.log(user_type)
     return <EisCoordinatorDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) {
     return <EisOfficerDashboardPage />;
-  } else if (user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
-    return <DashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE) {
     return <EisCommitteeDashboardPage />;
   }
