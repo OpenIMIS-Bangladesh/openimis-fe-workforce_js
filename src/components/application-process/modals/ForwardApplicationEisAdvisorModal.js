@@ -11,9 +11,9 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
-  Checkbox, 
+  Checkbox,
   Select,
-  MenuItem
+  MenuItem,
 } from "@material-ui/core";
 import {
   useModulesManager,
@@ -24,7 +24,13 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchApplication, updateApplication, createApplicationMovement,fetchWorkforceUserRoleWiseUser } from "../../../actions";
+import {
+  fetchApplication,
+  updateApplication,
+  createApplicationMovement,
+  fetchWorkforceUserRoleWiseUser,
+  updateApplicationSummary
+} from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
 import { getUserTypeFromRights } from "../../../utils/utils";
 
@@ -68,13 +74,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ForwardApplicationSectionAdminModal = ({
+const ForwardApplicationEisAdvisorModal = ({
   open,
   onClose,
   selectedApplication,
   selectedApplicationIds,
   onSubmitForward,
-  userRights
+  userRights,
+  summaryId
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -87,12 +94,9 @@ const ForwardApplicationSectionAdminModal = ({
   const userType = getUserTypeFromRights(userRights);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
-  const officers = useSelector(
-  (state) =>
-    state.workforce.roleWiseUsers || []
-);
-console.log("jjjjjjjjj",officers)
-useEffect(() => {
+  const officers = useSelector((state) => state.workforce.roleWiseUsers || []);
+  console.log("jjjjjjjjj", officers);
+  useEffect(() => {
     if (!open) {
       setEditorContent("");
       setSubmitting(false);
@@ -108,31 +112,25 @@ useEffect(() => {
     }
   }, [open]);
 
-useEffect(() => {
-  if (open) {
-    setFormData({});
+  useEffect(() => {
+    if (open) {
+      setFormData({});
 
-    let roleIds = [];
-    if (userType === "section_admin") {
-      roleIds = ["17", "37"];
-    } else if (userType === "section_admin_two") {
-      roleIds = ["36", "39"];
-    } else if (userType === "blwf_section_admin") {
-      roleIds = ["42", "43"];
-    } else if (userType === "eis_coordinator") {
-      roleIds = ["47"];
-    }
+      let roleIds = [];
+      if (userType === "eis_advisor") {
+        roleIds = ["49"];
+      }
 
-    if (roleIds.length > 0) {
-      return dispatch(
-        fetchWorkforceUserRoleWiseUser(modulesManager, {
-          roleIds,
-          orderBy: "id",
-        })
-      );
+      if (roleIds.length > 0) {
+        return dispatch(
+          fetchWorkforceUserRoleWiseUser(modulesManager, {
+            roleIds,
+            orderBy: "id",
+          })
+        );
+      }
     }
-  }
-}, [open, userType]);
+  }, [open, userType]);
 
   const data = useSelector((state) => state.workforce[`application`] ?? []);
 
@@ -144,51 +142,73 @@ useEffect(() => {
       comment: editorContent,
       destinationOffice: formData,
     };
+  };
+  console.log("commitsummaryId",summaryId)
 
+  const handleForward = async () => {
+    try {
+      if (!formData?.userIds || formData.userIds.length === 0) {
+        setServerResponse({
+          status: "ERROR",
+          message: "অফিসার নির্বাচন করুন!",
+        });
+        return;
+      }
+
+      for (const encodedId of selectedApplicationIds) {
+        const updateApplicationData = {
+          id: decodeId(encodedId),
+          status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+        };
+
+        await dispatch(
+          updateApplication(
+            updateApplicationData,
+            `update workforce application`
+          )
+        );
+
+        for (const userId of formData.userIds) {
+          const createApplicationMovementData = {
+            applicationId: decodeId(encodedId),
+            applicationFromId: loggedInUserId,
+            applicationToId: userId,
+            status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+            action: "forward_to_committee",
+          };
+
+          await dispatch(
+            createApplicationMovement(
+              createApplicationMovementData,
+              "create workforce movement"
+            )
+          );
+
+          const updateApplicationSummaryData = {
+              id: summaryId,
+              status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+            };
+        
+            await dispatch(
+              updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary")
+            );
+        }
+      }
+
+      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+    } catch (error) {
+      console.error("Forwarding error:", error);
+      setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
+    }
   };
 
-const handleForward = async () => {
-  try {
-    if (!formData?.userId) {
-      setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
-      return;
-    }
-
-    for (const encodedId of selectedApplicationIds) {
-      const updateApplicationData = {
-        id: decodeId(encodedId),
-        status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
-      };
-
- await dispatch(
-      updateApplication(updateApplicationData, `update workforce application`)
-    );
-      const createApplicationMovementData = {
-        applicationId: decodeId(encodedId),
-        applicationFromId: loggedInUserId,
-        applicationToId: formData.userId,
-        status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION, 
-        action: "forward_for_verification",
-      };
-
-      await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
-    }
-
-    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
-  } catch (error) {
-    console.error("Forwarding error:", error);
-    setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
-  }
-};
-
-useEffect(() => {
-  if (serverResponse?.status === "SUCCESS") {
+  useEffect(() => {
+    if (serverResponse?.status === "SUCCESS") {
       setTimeout(() => {
         window.location.reload();
       }, 2000);
     }
   }, [serverResponse]);
-
 
   console.log({ newwwwwwwww: selectedApplicationIds });
 
@@ -216,9 +236,10 @@ useEffect(() => {
           style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}
         >
           {selectedApplication
-            ? `${selectedApplication.workforceEmployee?.firstNameBn ||
-            "আবেদনকারী"
-            } এর আবেদন ফরওয়ার্ড করতে চান?`
+            ? `${
+                selectedApplication.workforceEmployee?.firstNameBn ||
+                "আবেদনকারী"
+              } এর আবেদন ফরওয়ার্ড করতে চান?`
             : "একটি আবেদন বেছে নিন।"}
         </Typography>
 
@@ -251,24 +272,42 @@ useEffect(() => {
             >
               অফিসার নির্বাচন করুন
             </Typography>
-              <Grid item xs={12} sm={12}>
+            <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
-              <Select
-                value={formData?.userId || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, userId: e.target.value })
-                }
-                displayEmpty
-              >
-                <MenuItem value="">
-                  <em>অফিসার নির্বাচন করুন</em>
-                </MenuItem>
-                {officers.map((officer) => (
-                  <MenuItem key={officer.id} value={officer.userId}>
-                    {officer.otherNames}
-                  </MenuItem>
-                ))}
-              </Select>
+                <Select
+                  multiple
+                  value={formData?.userIds || []}
+                  onChange={(e) =>
+                    setFormData({ ...formData, userIds: e.target.value })
+                  }
+                  renderValue={(selected) =>
+                    officers
+                      .filter((officer) => selected.includes(officer.userId))
+                      .map((officer) => officer.otherNames)
+                      .join(", ")
+                  }
+                  displayEmpty
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        backgroundColor: "#fff", 
+                        color: "#000",
+                      },
+                    },
+                  }}
+                >
+                  {officers.map((officer) => (
+                    <MenuItem key={officer.id} value={officer.userId}>
+                      <Checkbox
+                        checked={formData?.userIds?.includes(officer.userId)}
+                        style={{ color: "#000" }} // checkbox tick color
+                      />
+                      <Typography style={{ color: "#000" }}>
+                        {officer.otherNames}
+                      </Typography>
+                    </MenuItem>
+                  ))}
+                </Select>
               </FormControl>
             </Grid>
           </Grid>
@@ -285,8 +324,8 @@ useEffect(() => {
             color="primary"
             disabled={submitting}
             onClick={async (e) => {
-            e.preventDefault();   
-            await handleForward(); 
+              e.preventDefault();
+              await handleForward();
             }}
           >
             {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"}
@@ -297,4 +336,4 @@ useEffect(() => {
   );
 };
 
-export default ForwardApplicationSectionAdminModal;
+export default ForwardApplicationEisAdvisorModal;

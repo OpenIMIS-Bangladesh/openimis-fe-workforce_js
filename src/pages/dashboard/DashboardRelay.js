@@ -21,6 +21,7 @@ import BlwfCheckerDashboard from "./BlwfCheckerDashboardPage";
 import BlwfDeputyAsstDirectorDashboardPage from "./BlwfDeputyAsstDirectorDashboardPage";
 import EisCoordinatorDashboardPage from "./EisCoordinatorDashboardPage";
 import EisOfficerDashboardPage from "./EisOfficerDashboardPage";
+import EisCommitteeDashboardPage from "./EisCommitteeDashboardPage"
 
 const DashboardRelay = () => {
   const user_type = getUserType();
@@ -69,6 +70,8 @@ console.log(user_type)
     return <EisOfficerDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
     return <DashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE) {
+    return <EisCommitteeDashboardPage />;
   }
   return <></>;
 

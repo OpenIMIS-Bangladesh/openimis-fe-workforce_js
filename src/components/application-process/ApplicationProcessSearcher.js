@@ -22,6 +22,7 @@ import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal"
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
 import ForwardApplicationFactoryAdminModal from "./modals/ForwardApplicationFactoryAdminModal";
 import ForwardApplicationSectionAdminModal from "./modals/ForwardApplicationSectionAdminModal";
+import ForwardApplicationEisAdvisorModal from "./modals/ForwardApplicationEisAdvisorModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
@@ -731,6 +732,13 @@ class ApplicationProcessSearcher extends Component {
       const [] = await Promise.all([
         this.props.fetchApplicationsSummary(this.props.modulesManager, Filters),
       ]);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COMMITTEE) {
+      this.setState({ displayVersion: showHistoryFilter });
+      this.props.fetchApplicationsSummary(this.props.modulesManager, [
+        `organizationTypeIn: ["eis"], orderBy: ["-dateCreated"],eisApplicationSummary_Id:"${decodeId(
+          this.props.summaryId
+        )}"`,
+      ]);
     }
 }
 
@@ -763,6 +771,9 @@ class ApplicationProcessSearcher extends Component {
     this.setState({ forwardModalOpenSA: true, selectedApplication: application });
   };
   handleCloseForwardModalForSectionAdmin = () => {
+    this.setState({ forwardModalOpenSA: false, selectedApplication: null });
+  };
+  handleCloseForwardModalForEisAdvisor = () => {
     this.setState({ forwardModalOpenSA: false, selectedApplication: null });
   };
 
@@ -1161,9 +1172,7 @@ class ApplicationProcessSearcher extends Component {
     const userType = getUserTypeFromRights(this.props.userRights);
     return userType === WORKFORCE_USER_TYPE.APPLICANT
       ? headerApplicant(this)
-      : userType === WORKFORCE_USER_TYPE.CHECKER
-      ? headerChecker(this)
-      : userType === WORKFORCE_USER_TYPE.EIS_OFFICER
+      : userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.EIS_OFFICER || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
       ? headerChecker(this)
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
       ? headerCheckerTwo(this)
@@ -1171,9 +1180,7 @@ class ApplicationProcessSearcher extends Component {
       ? headerS1DeputyAsstDirector(this)
       : userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
       ? headerS2DeputyAsstDirector(this)
-      : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
-      ? headerSectionAdmin(this)
-      : userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
+      : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
       ? headerSectionAdmin(this)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
       ? headerSectionTwoAdmin(this)
@@ -1181,20 +1188,12 @@ class ApplicationProcessSearcher extends Component {
       ? headerBlwfSectionAdmin(this)
       : userType === WORKFORCE_USER_TYPE.DOCTOR
       ? headerDoctor(this)
-      : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION
+      : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
       ? headerAssociation(this)
-      : userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-      ? headerAssociation(this)
-      : userType === WORKFORCE_USER_TYPE.APPROVER
-      ? headerApprover(this)
-      : userType === WORKFORCE_USER_TYPE.BLWF_APPROVER
+      : userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER
       ? headerApprover(this)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? headerFactoryAdmin(this)
-      : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
-      ? headerChecker(this)
-      : userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
-      ? headerChecker(this)
       : userType === WORKFORCE_USER_TYPE.DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
       ? headerDirector(this)
       : headersAdmin(this);
@@ -1206,9 +1205,7 @@ class ApplicationProcessSearcher extends Component {
 
     return userType === WORKFORCE_USER_TYPE.APPLICANT
       ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication, this.rejectedApplication)
-      : userType === WORKFORCE_USER_TYPE.CHECKER
-      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.EIS_OFFICER
+      : userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.EIS_OFFICER || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
       ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
       ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
@@ -1216,9 +1213,7 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersS1DeputyAsstDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
       ? itemFormattersS2DeputyAsstDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
-      ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
-      : userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
+      : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
       ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
       ? itemFormattersSectionTwoAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
@@ -1226,23 +1221,13 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersBlwfSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.DOCTOR
       ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION
+      : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
       ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-      ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.APPROVER
-      ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.BLWF_APPROVER
+      : userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER || userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE
       ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication)
-      : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
-      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
-      ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.DIRECTOR
-      ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
+      : userType === WORKFORCE_USER_TYPE.DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
       ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication,this.revertedApplication)
       : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.rejectedApplication,this.revertedApplication);
   };
@@ -2158,8 +2143,8 @@ class ApplicationProcessSearcher extends Component {
               />
             );}
           else if (userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO
-            || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
-          || userType === WORKFORCE_USER_TYPE.EIS_OFFICER) {
+          || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
+          || userType === WORKFORCE_USER_TYPE.EIS_OFFICER || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER) {
             return (
                 <RevertApplicationModal
                   open={revertModalOpen}
@@ -2225,8 +2210,7 @@ class ApplicationProcessSearcher extends Component {
                 />
               </>
             );
-          } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
-            || userType === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
+          } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
             return (
               <>
                  <ForwardApplicationSectionAdminModal
@@ -2235,6 +2219,40 @@ class ApplicationProcessSearcher extends Component {
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
+                />
+                <RevertApplicationModal
+                  open={revertModalOpen}
+                  onClose={this.handleCloseRevertModal}
+                  revertByChecker={revertByChecker}
+                  selectedApplication={this.state.selectedApplication}
+                  onSubmitRevert={this.handleRevertSubmit}
+                />
+                <ForwardApplicationSummaryModal
+                  open={forwardModalOpen}
+                  onClose={this.handleCloseForwardModal}
+                  selectedApplication={this.state.selectedApplication}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
+                  userRights={userRights}
+                />
+                 <GenerateBFTN
+                  open={openGenerateBFTN}
+                  onClose={this.handleCloseBFTN}
+                  applications={applications}
+                  status={"approved_by_dg"}
+                  userRights={userRights}
+                />
+              </>
+            );
+          } else if (userType === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
+            return (
+              <>
+                 <ForwardApplicationEisAdvisorModal
+                  open={forwardModalOpenSA}
+                  onClose={this.handleCloseForwardModalForEisAdvisor}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
+                  onSubmitForward={this.handleForwardSubmit}
+                  userRights={userRights}
+                  summaryId={decodeId(this.props.summaryId)}
                 />
                 <RevertApplicationModal
                   open={revertModalOpen}

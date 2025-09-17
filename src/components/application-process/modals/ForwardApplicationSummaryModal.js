@@ -201,8 +201,8 @@ const ForwardApplicationSummaryModal = ({
         note: "আবেদন কমিটির কাছে প্রেরণ হয়েছে",
         action: "forward_to_comiitee",
         applicationFromId: loggedInUserId,
-        applicationToId: userType === WORKFORCE_USER_TYPE.CHECKER ? 69 : 188,
-        toRoleId: userType === WORKFORCE_USER_TYPE.CHECKER ? 23 : 45,
+        applicationToId: userType === WORKFORCE_USER_TYPE.CHECKER ? 69 : 196,
+        toRoleId: userType === WORKFORCE_USER_TYPE.CHECKER ? 23 : 48,
       };
    
    await dispatch(
