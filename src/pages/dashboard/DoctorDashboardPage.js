@@ -28,6 +28,8 @@ import { fetchSummaryApplications } from "../../actions";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
+import { WORKFORCE_USER_TYPE} from "../../constants";
+import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -115,11 +117,17 @@ const SidebarMenu = [
 const FiledApplications = () =>{ 
   const classes = useStyles()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-  
+  const user_type = getUserType();
+
   return (
   <>
     <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.section.doctor.dashboard" />
+       {user_type === WORKFORCE_USER_TYPE.DOCTOR && (
+    <FormattedMessage module="workforce" id="workforce.section.cf.doctor.dashboard" />
+       )}
+       {user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR && (
+    <FormattedMessage module="workforce" id="workforce.section.blwf.doctor.dashboard" />
+       )}
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
@@ -147,10 +155,12 @@ const DoctorDashboard = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
-  const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
- useEffect(() => {
-      return dispatch(fetchSummaryApplications(modulesManager,['status:"meeting_created"']));
-    }, []);
+  const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); 
+  
+  
+//  useEffect(() => {
+//       return dispatch(fetchSummaryApplications(modulesManager,['status:"meeting_created"', 'organizationType:"cf"']));
+//     }, []);
   const data = useSelector(
       (state) => state.workforce[`applicationsSummary`] ?? []
     );

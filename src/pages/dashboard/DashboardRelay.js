@@ -42,7 +42,7 @@ console.log(user_type)
     return <SectionTwoAdminDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
     return <BlwfSectionAdminDashboardPage />;
-  } else if (user_type === WORKFORCE_USER_TYPE.DOCTOR) {
+  } else if (user_type === WORKFORCE_USER_TYPE.DOCTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR) {
     return <DoctorDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.APPROVER) {
     return <ApproverDashboardPage />;
