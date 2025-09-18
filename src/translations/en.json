@@ -761,6 +761,16 @@
   "workforce.selectAll": "Select All",
   "workforce.clearSelected": "Clear Selection",
 
-  "workforce.confirm.modal.cancel": "CANCEL"
+  "workforce.confirm.modal.cancel": "CANCEL",
+  "workforce.select.time.range": "Select Time Range",
+  "workforce.from.date": "From Date",
+  "workforce.to.date": "To Date",
+  "workforce.dashboard.application.types":"Application Types",
+  "workforce.dashboard.applicant.types":"Applicant Types",
+  "workforce.dashboard.financial.info":"Financial Info",
+  "workforce.application.dashboard": "Application Dashboard",
+  "workforce.application.approved":"Approved Applications",
+  "workforce.application.forwarded":"Recommended Applications",
+  "workforce.dashboard.total.beneficiary.amount":"Total Beneficiary Amount"
 
 }

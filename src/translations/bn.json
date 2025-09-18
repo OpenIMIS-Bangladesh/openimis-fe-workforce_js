@@ -657,6 +657,13 @@
   "workforce.selectAll": "Select All",
   "workforce.clearSelected": "Clear Selection",
 
-  "workforce.modal.close": "বন্ধ করুন"
+  "workforce.modal.close": "বন্ধ করুন",
+  "workforce.select.time.range": "সময়সীমা নির্বাচন করুন",
+  "workforce.from.date": "তারিখ হতে",
+  "workforce.to.date": "তারিখ পর্যন্ত",
+  "workforce.dashboard.application.types":"আবেদনের ধরণ",
+  "workforce.dashboard.applicant.types":"আবেদনকারীর বিবরণ",
+  "workforce.dashboard.financial.info":"আর্থিক তথ্য",
+  "workforce.dashboard.total.beneficiary.amount":"মোট সুবিধা পরিমাণ"
   
 }
