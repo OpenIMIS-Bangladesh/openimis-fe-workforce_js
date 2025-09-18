@@ -48,7 +48,7 @@ const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, o
           <Grid item xs={12}>
             {type === "image" && <img src={file.url} alt="preview" style={{ width: "100%", maxHeight: 300, objectFit: "contain" }} />}
 
-            {type === "pdf" && (
+            {/* {type === "pdf" && (
               <div
                 style={{
                   height: "500px",
@@ -64,6 +64,15 @@ const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, o
                   ))}
                 </Document>
               </div>
+            )} */}
+            {type === "pdf" && (
+              <iframe
+                title="PDF Viewer"
+                src={file.url}
+                width="100%"
+                height="600px"
+                style={{ border: "1px solid #ccc", borderRadius: 4 }}
+              />
             )}
             {/* {type === "pdf" && (
               <iframe title="PDF Viewer" src={file.url} width="100%" height="500px" frameBorder="0" style={{ border: "1px solid #ccc" }}></iframe>
