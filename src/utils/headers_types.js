@@ -1,5 +1,5 @@
   export const headersAdmin = (component) => [
-     "",
+    //  "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
@@ -10,7 +10,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerDirector = (component) => [
-     "",
+    //  "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
@@ -33,7 +33,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerFactoryAdmin = (component) => [
-    "",
+    // "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
@@ -44,7 +44,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerChecker = (component) => [
-    "",
+    // "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
@@ -55,7 +55,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerCheckerTwo = (component) => [
-    "",
+    // "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
@@ -66,7 +66,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerS1DeputyAsstDirector = (component) => [
-    "",
+    // "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
@@ -77,7 +77,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerS2DeputyAsstDirector = (component) => [
-    "",
+    // "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
@@ -88,7 +88,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerSectionAdmin = (component) => [
-    "",
+    // "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
@@ -100,7 +100,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerSectionTwoAdmin = (component) => [
-    "",
+    // "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
@@ -112,7 +112,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
    export const headerBlwfSectionAdmin = (component) => [
-    "",
+    // "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
@@ -123,7 +123,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerDoctor = (component) => [
-    "",
+    // "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
@@ -134,7 +134,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerAssociation = (component) => [
-    "",
+    // "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
@@ -145,7 +145,7 @@
     component.isShowHistory() ? "workforce.version" : "",
   ];
   export const headerApprover = (component) => [
-     "",
+    //  "",
     "workforce.application.tracking.number",
     "workforce.employee.application.applicationDate",
     "workforce.employee.name",
