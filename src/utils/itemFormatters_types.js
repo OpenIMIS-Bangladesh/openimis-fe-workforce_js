@@ -30,18 +30,18 @@ export const itemAdminFormatters = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee ? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee ? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
@@ -149,18 +149,18 @@ export const itemFormattersDirector = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee ? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee ? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
@@ -342,18 +342,18 @@ export const itemFormattersChecker = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee ? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee ? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
@@ -429,18 +429,18 @@ export const itemFormattersCheckerTwo = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee ? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee ? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
@@ -508,18 +508,18 @@ export const itemFormattersS1DeputyAsstDirector = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee ? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee ? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
@@ -586,18 +586,18 @@ export const itemFormattersS2DeputyAsstDirector = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee ? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee ? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
@@ -665,18 +665,18 @@ export const itemFormattersSectionAdmin = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee && component.props.disableButtons!==1 ? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee && component.props.disableButtons!==1 ? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
@@ -800,18 +800,18 @@ export const itemFormattersSectionTwoAdmin = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee ? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee ? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
@@ -931,18 +931,18 @@ export const itemFormattersBlwfSectionAdmin = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee && component.props.disableButtons!==1 ? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee && component.props.disableButtons!==1 ? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
@@ -1062,18 +1062,18 @@ export const itemFormattersDoctor = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee ? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee ? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
@@ -1173,18 +1173,18 @@ export const itemFormattersAssociation = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee && component.props.disableButtons!==1 ? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee && component.props.disableButtons!==1 ? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application.trackingNumber,
     (application) =>
       conditionalEnToBn(application.dateCreated.split("T")[0], locale),
@@ -1271,18 +1271,18 @@ export const itemFormattersFactoryAdmin = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee && component.props.disableButtons!==1 ? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee && component.props.disableButtons!==1 ? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application.trackingNumber,
     (application) =>
       conditionalEnToBn(application.dateCreated.split("T")[0], locale),
@@ -1402,18 +1402,18 @@ export const itemFormattersApprover = (
   locale = "en"
 ) => {
   const formatters = [
-    (application) =>
-      application?.workforceEmployee && component.props.disableButtons!==1? (
-        <Checkbox
-          checked={component.state.selectedApplicationIds.includes(
-            application?.id
-          )}
-          onChange={component.handleCheckboxChange(application?.id)}
-          color="primary"
-        />
-      ) : (
-        ""
-      ),
+    // (application) =>
+    //   application?.workforceEmployee && component.props.disableButtons!==1? (
+    //     <Checkbox
+    //       checked={component.state.selectedApplicationIds.includes(
+    //         application?.id
+    //       )}
+    //       onChange={component.handleCheckboxChange(application?.id)}
+    //       color="primary"
+    //     />
+    //   ) : (
+    //     ""
+    //   ),
     (application) => application.trackingNumber,
     (application) =>
       conditionalEnToBn(application.dateCreated.split("T")[0], locale),

@@ -3,7 +3,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { IconButton, Box, Button } from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
-import { coreConfirm, journalize, Searcher, withHistory, withModulesManager, FormattedMessage, decodeId } from "@openimis/fe-core";
+import { coreConfirm, journalize, withHistory, withModulesManager, FormattedMessage, decodeId } from "@openimis/fe-core";
 import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../constants";
 import {
   fetchApplicationsSummary,
@@ -48,6 +48,7 @@ import {
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
 import { headerApplicant, headerApprover, headerChecker,headerCheckerTwo,headerS1DeputyAsstDirector,headerS2DeputyAsstDirector,headerDoctor, headerSectionAdmin, headerSectionTwoAdmin, headerAssociation, headersAdmin, 
 headerFactoryAdmin, headerDirector,headerBlwfSectionAdmin } from "../../utils/headers_types";
+import Searcher from "../shared/searcher/Searcher";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
 
 
@@ -754,7 +755,7 @@ class ApplicationProcessSearcher extends Component {
 }
 
 
-  rowIdentifier = (r) => r.uuid;
+  rowIdentifier = (r) => r.id;
 
   isShowHistory = () => this.state.displayVersion;
 
@@ -1278,8 +1279,8 @@ class ApplicationProcessSearcher extends Component {
           const { updateApplication, createApplicationMovement } = this.props;
           try {
             await Promise.all(
-              selectedApplicationIds.map(async (id) => {
-                const decodedId = decodeId(id);
+              selectedApplicationIds.map(async (selectedItem) => {
+                const decodedId = decodeId(selectedItem?.id);
                 const updateApplicationData = {
                   id: decodedId,
                   status: WORKFORCE_STATUS.SELECTED,
@@ -1331,8 +1332,8 @@ class ApplicationProcessSearcher extends Component {
           const { updateApplication, createApplicationMovement } = this.props;
           try {
             await Promise.all(
-              selectedApplicationIds.map(async (id) => {
-                const decodedId = decodeId(id);
+              selectedApplicationIds.map(async (selectedItem) => {
+                const decodedId = decodeId(selectedItem?.id);
                 const updateApplicationData = {
                   id: decodedId,
                   status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
@@ -1388,8 +1389,8 @@ class ApplicationProcessSearcher extends Component {
           const { updateApplication, createApplicationMovement } = this.props;
           try {
             await Promise.all(
-              selectedApplicationIds.map(async (id) => {
-                const decodedId = decodeId(id);
+              selectedApplicationIds.map(async (selectedItem) => {
+                const decodedId = decodeId(selectedItem?.id);
                 const updateApplicationData = {
                   id: decodedId,
                   status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR,
@@ -1465,8 +1466,8 @@ class ApplicationProcessSearcher extends Component {
         if (confirmed) {
           const { updateApplication, createApplicationMovement } = this.props;
           try {
-            for (const id of selectedApplicationIds) {
-              const decodedId = decodeId(id);
+            for (const selectedItem of selectedApplicationIds) {
+              const decodedId = decodeId(selectedItem?.id);
               const res = await this.props.fetchWorkforceDocument(
                 this.props.modulesManager,
                 [`workforceApplication_Id: "${decodedId}"`]
@@ -1560,8 +1561,8 @@ class ApplicationProcessSearcher extends Component {
           const { updateApplication, createApplicationMovement } = this.props;
           try {
             await Promise.all(
-              selectedApplicationIds.map(async (id) => {
-                const decodedId = decodeId(id);
+              selectedApplicationIds.map(async (selectedItem) => {
+                const decodedId = decodeId(selectedItem?.id);
                 const updateApplicationData = {
                   id: decodedId,
                   status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
@@ -1615,8 +1616,8 @@ class ApplicationProcessSearcher extends Component {
           const { updateApplication, createApplicationMovement } = this.props;
           try {
             await Promise.all(
-              selectedApplicationIds.map(async (id) => {
-                const decodedId = decodeId(id);
+              selectedApplicationIds.map(async (selectedItem) => {
+                const decodedId = decodeId(selectedItem?.id);
                 const updateApplicationData = {
                   id: decodedId,
                   status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_ONE,
@@ -1667,8 +1668,8 @@ class ApplicationProcessSearcher extends Component {
           const { updateApplication, createApplicationMovement } = this.props;
           try {
             await Promise.all(
-              selectedApplicationIds.map(async (id) => {
-                const decodedId = decodeId(id);
+              selectedApplicationIds.map(async (selectedItem) => {
+                const decodedId = decodeId(selectedItem?.id);
                 const updateApplicationData = {
                   id: decodedId,
                   status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION_TWO,
@@ -1720,8 +1721,8 @@ class ApplicationProcessSearcher extends Component {
           const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
           try {
             await Promise.all(
-              selectedApplicationIds.map(async (id) => {
-                const decodedId = decodeId(id);
+              selectedApplicationIds.map(async (selectedItem) => {
+                const decodedId = decodeId(selectedItem?.id);
                 const updateApplicationData = {
                   id: decodedId,
                   status: WORKFORCE_STATUS.APPROVED_BY_DG,
@@ -1784,8 +1785,8 @@ class ApplicationProcessSearcher extends Component {
           try {
             const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
             await Promise.all(
-              selectedApplicationIds.map(async (id) => {
-                const decodedId = decodeId(id);
+              selectedApplicationIds.map(async (selectedItem) => {
+                const decodedId = decodeId(selectedItem?.id);
                 const updateApplicationData = {
                   id: decodedId,
                   status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
@@ -1841,9 +1842,9 @@ class ApplicationProcessSearcher extends Component {
     this.setState({ openGenerateBFTN: true });
   };
 
-  // onCheckBoxSelect = (selection) => {
-  //   this.setState({selectedApplication: selection });
-  // };
+  onCheckBoxSelect = (selection) => {
+    this.setState({selectedApplicationIds: selection });
+  };
 
   rowDisabled = (selection, i) => !!i.validityTo;
 
@@ -1869,6 +1870,7 @@ class ApplicationProcessSearcher extends Component {
       selectedApplication,
       openGenerateBFTN,
       showHistoryFilter,
+      selectedApplicationIds
     } = this.state;
     const totalMoneyAmount = applications?.reduce((acc, app) => {
       const amount = parseFloat(app.moneyAmount) || 0;
@@ -1903,15 +1905,15 @@ class ApplicationProcessSearcher extends Component {
       />
     )};
 
-    console.log({faltu:selectedApplication})
+    console.log({faltu:selectedApplicationIds})
     const disableButtons = this.props.disableButtons ? decodeId(this.props.disableButtons) : null;
     const meetingForwardButton = this.props.meetingForwardButton ? decodeId(this.props.meetingForwardButton) : null;
     return (
       <React.Fragment>
         <Searcher
           module={MODULE_NAME}
-          // selectWithCheckbox={getUserTypeFromRights(userRights) !== WORKFORCE_USER_TYPE.APPLICANT ? true:false}
-          // withSelection={getUserTypeFromRights(userRights) !== WORKFORCE_USER_TYPE.APPLICANT ? true:false}
+          selectWithCheckbox={getUserTypeFromRights(userRights) !== WORKFORCE_USER_TYPE.APPLICANT ? true:false}
+          withSelection={getUserTypeFromRights(userRights) !== WORKFORCE_USER_TYPE.APPLICANT ? "multiple":false}
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT ? null : filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
@@ -1935,6 +1937,8 @@ class ApplicationProcessSearcher extends Component {
           onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
           reset={this.state.reset}
           // onCheckBoxSelect={this.onCheckBoxSelect}
+          // onChangeSelectionIds={(ids) => console.log("Selected ids:", ids)}
+          onCheckBoxSelect={(ids) => this.onCheckBoxSelect(ids)}
         />
           {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
           || userType === WORKFORCE_USER_TYPE.EIS_ADVISOR ? (

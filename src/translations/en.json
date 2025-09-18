@@ -756,6 +756,10 @@
   "workforce.modal.close": "Close",
   "workforce.financialAssistance.error.message":"An application has already been submitted for death",
   "workforce.application.info":"Application Info",
+  "core.table.resultsLoading": "Loading...",
+
+  "workforce.selectAll": "Select All",
+  "workforce.clearSelected": "Clear Selection",
 
   "workforce.confirm.modal.cancel": "CANCEL"
 

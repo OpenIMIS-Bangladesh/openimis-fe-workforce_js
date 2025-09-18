@@ -1,4 +1,21 @@
 export const MODULE_NAME = "workforce";
+export const DEFAULT_DEBOUNCE_TIME = 500;
+export const ENTER_KEY = "Enter";
+
+export const EXPORT_FILE_FORMATS = {
+  // By default, the export file format is CSV
+  csv: "csv",
+  // The other available export file format is XLSX.
+  // It can be configured individually for each Searcher.
+  xlsx: "xlsx",
+};
+
+export const DEFAULT = {
+  IS_WORKER: false,
+  ENABLE_PUBLIC_PAGE: false,
+  SHOW_JOURNAL_SIDEBAR: true,
+  DISABLED_VISIBILITY_BOOST: false,
+}
 
 export const EMPTY_STRING = "";
 export const WORKFORCE_MAIN_MENU_CONTRIBUTION_KEY = "workforce.MainMenu";
