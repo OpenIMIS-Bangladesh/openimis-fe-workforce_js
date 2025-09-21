@@ -45,7 +45,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ApplicationSummaryPage from "../application-process/ApplicationSummaryPage";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate } from "../../actions";
+import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise } from "../../actions";
 import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN} from "../../constants";
 
 
@@ -145,19 +145,37 @@ const Dashboard = () =>{
 
   const applicationTypeNames= locale=='en'?APP_TYPE_DASHBOARD_EN:APP_TYPE_DASHBOARD_BN;
   const applicantTypeNames= locale=='en'?APPLICANT_TYPE_EN:APPLICANT_TYPE_BN;
-  const buttonOptions = {
-    1: "১ মাস",
-    3: "৩ মাস",
-    6: "৬ মাস",
-    12: "১২ মাস",
+  let buttonOptions={};
+  if (locale=='fr'){
+    
+    buttonOptions = {
+      1: "১ মাস",
+      3: "৩ মাস",
+      6: "৬ মাস",
+      12: "১২ মাস",
+    };
+  }
+  else
+  {
+    buttonOptions = {
+      1: "1 Month",
+      3: "3 Months",
+      6: "6 Months",
+      12: "12 Months",
+    };
+  } 
+
+  const getMonthName = (index, locale = "en-US") => {
+    const date = new Date(2000, index, 1);
+    return date.toLocaleString(locale, { month: "long" });
   };
 
   const [months, setMonths] = useState(0);
-  const [filter, setFilter] = useState("সব");
+  const [filter, setFilter] = useState(locale=='fr'?"সব":"All");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   
-  const [graphMonths, setGraphMonths] = useState(0);
+  const [graphMonths, setGraphMonths] = useState(6);
   const [graphFromDate, setGraphFromDate] = useState("");
   const [graphToDate, setGraphToDate] = useState("");
 
@@ -199,22 +217,25 @@ const Dashboard = () =>{
   }
 
   const [tableRows, setTableRows] = useState([]);
-  // const [totals, setTotals] = useState({
-  //   total: 0,
-  //   approved: 0,
-  //   cancelled: 0,
-  //   processing: 0,
-  // });
+  const [totals, setTotals] = useState({
+    total: 0,
+    approved: 0,
+    cancelled: 0,
+    processing: 0,
+  });
 
   const [applicationTypes, setApplicationTypes]=useState([]);
   const [applicationCounts, setApplicationCounts]=useState([]);
   const [totalBenefitAmount, setTotalBenefitAmount]=useState(0);
+  const [pieData, setPieData]=useState([]);
+  const [barData, setBarData]=useState([]);
+  
 
 
   useEffect(() => {
     async function loadData() {
       try {
-        const orgType = filter === "সব" ? "" : filter.toLowerCase();
+        const orgType = filter === "সব" || "All" ? "" : filter.toLowerCase();
 
         let res = [];
         await dispatch(fetchApplicationByDate(months, fromDate, toDate, orgType)).then((response) => {
@@ -223,10 +244,10 @@ const Dashboard = () =>{
         // Map API response to table structure
         const rows = res.map((item) => ({
           type: applicationTypeNames[item.applicationType],
-          total: item.applicationCount,
-          approved: item.approvedCount,
-          cancelled: item.rejectedCount,
-          processing: item.applicationCount - (item.approvedCount + item.rejectedCount),
+          total: Number(item.applicationCount),
+          approved: Number(item.approvedCount),
+          cancelled: Number(item.rejectedCount),
+          processing: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount)),
         }));
         let appTypes=[];
 
@@ -235,52 +256,56 @@ const Dashboard = () =>{
         });
 
         setApplicationTypes(appTypes);
-        setTotalBenefitAmount(res.totalBenefitAmount || 0);
+
 
         // Calculate totals
-        // const totalsCalc = rows.reduce(
-        //   (acc, r) => {
-        //     acc.total += Number(r.total);
-        //     acc.approved += Number(r.approved);
-        //     acc.cancelled += Number(r.cancelled);
-        //     acc.processing += Number(r.processing);
-        //     return acc;
-        //   },
-        //   { total: 0, approved: 0, cancelled: 0, processing: 0 }
-        // );
+        const totalsCalc = rows.reduce(
+          (acc, r) => {
+            acc.total += Number(r.total);
+            acc.approved += Number(r.approved);
+            acc.cancelled += Number(r.cancelled);
+            acc.processing += Number(r.processing);
+            return acc;
+          },
+          { total: 0, approved: 0, cancelled: 0, processing: 0 }
+        );
+        let approvedTotal=0;
+        let cancelledTotal=0;
+        let processingTotal=0;
+
+        rows.map((r)=>{
+          approvedTotal+=Number(r.approved);
+          cancelledTotal+=Number(r.cancelled);
+          processingTotal+=Number(r.processing);
+        });
+        
+        setPieData([
+          { name: locale=='fr'?"প্রক্রিয়াধীন":'Processing', value: processingTotal, color: "#6cdfdfff" },
+          { name: locale=='fr'?"অনুমোদিত":'Approved', value: approvedTotal, color: "#68b88cff" },
+          { name: locale=='fr'?"বাতিল":'Reverted', value: cancelledTotal, color: "#d48aa3ff" },
+        ]);
 
         setTableRows(rows);
-        // setTotals(totalsCalc);
-      } catch (err) {
-        console.error("Failed to fetch data", err);
-      }
-    }
+        setTotals(totalsCalc);
 
-    loadData();
-  }, [months, fromDate, toDate, filter]);
-
-
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const orgType = filter === "সব" ? "" : filter.toLowerCase();
-
-        let res = [];
+        let genderRes = [];
 
         await dispatch(fetchGenderWiseApplicationMatrixByDate(months, fromDate, toDate, orgType)).then((response) => {
-          console.log("API Response:", response); 
-            res = response.payload?.data?.workforceGenderwiseMatrix[0] || [];
+            genderRes = response.payload?.data?.workforceGenderwiseMatrix[0] || [];
           });
 
         const applicationCounts = [
-        { type: applicantTypeNames['totalApplicant'], count: res.totalApplicant },
-        { type: applicantTypeNames['maleApplicant'], count: res.maleApplicant },
-        { type: applicantTypeNames['femaleApplicant'], count: res.femaleApplicant },
-        { type: applicantTypeNames['totalDependent'], count: res.totalDependent },
-        // { type: applicantTypeNames['maleDependent'], count: res.maleDependent },
-        // { type: applicantTypeNames['femaleDependent'], count: res.femaleDependent },
-      ];
+          { type: applicantTypeNames['totalApplicant'], count: genderRes.totalApplicant },
+          { type: applicantTypeNames['maleApplicant'], count: genderRes.maleApplicant },
+          { type: applicantTypeNames['femaleApplicant'], count: genderRes.femaleApplicant },
+          { type: applicantTypeNames['totalDependent'], count: genderRes.totalDependent },
+          // { type: applicantTypeNames['maleDependent'], count: genderRes.maleDependent },
+          // { type: applicantTypeNames['femaleDependent'], count: genderRes.femaleDependent },
+        ];
         setApplicationCounts(applicationCounts);
+        setTotalBenefitAmount(genderRes.totalBenefitAmount || 0);
+        
+
       } catch (err) {
         console.error("Failed to fetch data", err);
       }
@@ -288,6 +313,41 @@ const Dashboard = () =>{
 
     loadData();
   }, [months, fromDate, toDate, filter]);
+
+  useEffect(() => {
+    console.log("graphMonths/From/To changed");
+    async function loadMonthWiseData() {
+      try {
+        let monthWiseRes = [];
+        await dispatch(fetchApplicationMonthWise(graphMonths)).then((response) => {
+            monthWiseRes = response.payload?.data?.workforceMonthwiseApplications || [];
+          });
+
+        console.log("monthWiseRes", monthWiseRes);
+
+        let barDataArray=[];
+        monthWiseRes.map((item) => {
+          barDataArray.push({
+            month: getMonthName(Number(item.month)-1),
+            [locale=='fr'?"চিকিৎসা":"Medical"]: item.medical,
+            [locale=='fr'?"মৃত্যু":"Death"]: item.death,
+            [locale=='fr'?"শিক্ষা":"Educational"]: item.educational,
+            [locale=='fr'?"মাতৃত্ব":"Maternity"]: item.maternityGrant,
+            [locale=='fr'?"স্থায়ী ও অস্থায়ী অক্ষমতা":"Permanent Or Curable Disability"]: item.disabilityAssistance,
+          });
+        });
+
+        setBarData(barDataArray);
+
+      } catch (err) {
+        console.error("Failed to fetch month wise data", err);
+      }
+    }
+    loadMonthWiseData();
+  }, [graphMonths, graphFromDate, graphToDate]);
+
+
+
 
 
   const application_status_count_data = useSelector(
@@ -307,24 +367,7 @@ const Dashboard = () =>{
   }
 
 
-  const barData = [
-    { name: "জানু", চিকিৎসা: 12, মৃত্যু: 6, শিক্ষা: 3, মাতৃত্ব: 2, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 2 },
-    { name: "ফেব", চিকিৎসা: 15, মৃত্যু: 7, শিক্ষা: 4, মাতৃত্ব: 2, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 2 },
-    { name: "মার্চ", চিকিৎসা: 10, মৃত্যু: 5, শিক্ষা: 2, মাতৃত্ব: 1, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 1 },
-    { name: "এপ্রিল", চিকিৎসা: 18, মৃত্যু: 8, শিক্ষা: 6, মাতৃত্ব: 3, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 3 },
-    { name: "মে", চিকিৎসা: 11, মৃত্যু: 6, শিক্ষা: 2, মাতৃত্ব: 2, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 1 },
-    { name: "জুন", চিকিৎসা: 14, মৃত্যু: 7, শিক্ষা: 3, মাতৃত্ব: 2, 'স্থায়ী ও অস্থায়ী অক্ষমতা': 2 },
-  ];
 
-
-  const pieData = [
-    { name: "প্রক্রিয়াধীন", value: 36, color: "#2E7D32" },
-    { name: "সভা কার্যতালিকায়", value: 25, color: "#CFD8DC" },
-    { name: "অনুমোদিত", value: 18, color: "#263238" },
-    { name: "বাতিল", value: 12, color: "#FF9800" },
-    { name: "পুনরায় খোলা", value: 6, color: "#FFD600" },
-    { name: "বন্ধ", value: 3, color: "#E91E63" },
-  ];
 
 
 
@@ -332,7 +375,7 @@ const Dashboard = () =>{
     height: "100%",
     borderRadius: "20px",
     boxShadow: theme.shadows[2],
-    color: "#000",
+    // color: "#000",
     padding: "10px",
   };
 
@@ -345,7 +388,7 @@ const Dashboard = () =>{
           <Card style={{...newCard, padding:"30px", borderRadius:"15px", overflow:"visible"}}>
             <Grid container spacing={2} style={{marginBottom:"10px"}}>
               <Grid item xs={12} md={12}>
-                <Typography style={{fontWeight:"bold" }}>সময়সীমা নির্বাচন করুন:</Typography>
+                <Typography style={{fontWeight:"bold" }}><FormattedMessage id="workforce.select.time.range"/></Typography>
                 <Box gap={2}>
                   <ButtonGroup variant="outlined"  style={{display:"flex", margin:"auto", gap:"10px"}}>
                     {Object.entries(buttonOptions).map(([key,label]) => (
@@ -364,7 +407,7 @@ const Dashboard = () =>{
               <Grid item md={3} xs={3} style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                   <PublishedComponent
                     pubRef="workforce.DatePicker"
-                    label={"তারিখ হতে"}
+                    label={"workforce.from.date"}
                     onChange={(datevalue) => handleFromDateChange(datevalue)}
                     width="100%"
                     style={{ border: "1px solid #aaa", padding: "10px", borderRadius: "10px", width:"100%" }}
@@ -373,7 +416,7 @@ const Dashboard = () =>{
               <Grid item md={3} xs={3} style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                   <PublishedComponent
                     pubRef="workforce.DatePicker"
-                    label={"তারিখ পর্যন্ত"}
+                    label={"workforce.to.date"}
                     onChange={(datevalue) => handleToDateChange(datevalue)}
                     style={{border:"1px solid #aaa", padding:"10px", borderRadius:"10px"}}
                   />
@@ -385,7 +428,7 @@ const Dashboard = () =>{
           <Card style={newCard}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                আবেদন প্রকার
+                <FormattedMessage id="workforce.dashboard.application.types"/>
                 <DescriptionIcon style={{ verticalAlign: 'middle', marginRight: 8, float:"right"}} />
               </Typography>
               <table cellPadding={"6px"} style={{ width: "100%" }}>
@@ -407,7 +450,7 @@ const Dashboard = () =>{
           <Card style={newCard}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                আবেদনকারীর বিবরণ
+                <FormattedMessage id="workforce.dashboard.applicant.types"/>
                 <PeopleAltIcon style={{ verticalAlign: 'middle', marginRight: 8, float:"right" }} />
               </Typography>
               {applicationCounts.map((item) => (
@@ -429,13 +472,13 @@ const Dashboard = () =>{
           <Card style={newCard}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                আর্থিক তথ্য
+                <FormattedMessage id="workforce.dashboard.financial.info"/>
                 <LocalAtmIcon style={{ verticalAlign: 'middle', marginRight: 8, float:"right" }} />
               </Typography>
                 <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
                   <CardContent>
-                      <Typography>মোট সুবিধা পরিমাণ</Typography>
-                      <Typography variant="h5"><b>৳ {Number(totalBenefitAmount).toLocaleString('bn')}</b></Typography>
+                      <Typography><FormattedMessage id="workforce.dashboard.total.beneficiary.amount" /></Typography>
+                      <Typography variant="h5"><b>৳ {locale=='fr'?Number(totalBenefitAmount).toLocaleString('bn'): Number(totalBenefitAmount).toLocaleString('en')}</b></Typography>
                   </CardContent>
                 </Card>
                 {/* <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
@@ -456,10 +499,10 @@ const Dashboard = () =>{
               title={
                 <Box>
                   <Typography variant="h6" component="div">
-                    অ্যাপ্লিকেশন প্রকার ম্যাট্রিক্স
+                     {locale=='fr'?"আবেদন প্রকার ম্যাট্রিক্স":"Application Type Matrix"}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    বিস্তারিত অ্যাপ্লিকেশন প্রতিবেদন - ফান্ড প্রকার অনুসারে
+                    {locale=='fr'?"বিস্তারিত আবেদনের প্রতিবেদন - ফান্ড প্রকার অনুসারে":"Detailed Application Report - By Fund Type"}
                   </Typography>
                 </Box>
               }
@@ -469,7 +512,7 @@ const Dashboard = () =>{
               <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
                 <Box>
                   <ButtonGroup size="small" variant="outlined">
-                    {["সব", "CF", "BLWF"].map((l) => (
+                    {[locale=='fr'?"সব":"All", "CF", "BLWF"].map((l) => (
                       <Button
                         key={l}
                         variant={filter === l ? "contained" : "outlined"}
@@ -482,7 +525,7 @@ const Dashboard = () =>{
                 </Box>
                 <Box>
                   <Typography variant="caption" color="textSecondary">
-                    তহবিল: <strong>{filter}</strong>
+                    {locale=='fr'?"তহবিল":"Fund"}: <strong>{filter}</strong>
                   </Typography>
                 </Box>
               </Box>
@@ -491,12 +534,12 @@ const Dashboard = () =>{
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell style={{ fontWeight: "bold" }}>অ্যাপ্লিকেশন প্রকার</TableCell>
-                    <TableCell align="right" style={{ fontWeight: "bold" }}>মোট অ্যাপ্লিকেশন</TableCell>
-                    <TableCell align="right" style={{ fontWeight: "bold" }}>অনুমোদিত</TableCell>
-                    <TableCell align="right" style={{ fontWeight: "bold" }}>বাতিল</TableCell>
-                    <TableCell align="right" style={{ fontWeight: "bold" }}>প্রক্রিয়াধীন</TableCell>
-                    <TableCell align="center" style={{ fontWeight: "bold" }}>বিস্তারিত</TableCell>
+                    <TableCell style={{ fontWeight: "bold" }}>{locale=='fr'?"মোট আবেদন":"Total Applications"}</TableCell>
+                    <TableCell align="right" style={{ fontWeight: "bold" }}>{locale=='fr'?"আবেদনের প্রকার":"Application Type"}</TableCell>
+                    <TableCell align="right" style={{ fontWeight: "bold" }}>{locale=='fr'?"অনুমোদিত/ সুপারিশকৃত":"Approved/ Recommended"}</TableCell>
+                    <TableCell align="right" style={{ fontWeight: "bold" }}>{locale=='fr'?"বাতিল/ ফেরত":"Reverted/ Rejected"}</TableCell>
+                    <TableCell align="right" style={{ fontWeight: "bold" }}>{locale=='fr'?"প্রক্রিয়াধীন":"Processing"}</TableCell>
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>{locale=='fr'?"বিস্তারিত":"Detail"}</TableCell>
                   </TableRow>
                 </TableHead>
 
@@ -518,17 +561,17 @@ const Dashboard = () =>{
                           }}
                           sx={{ color: "#138a66" }}
                         >
-                          বিস্তারিত দেখুন
+                          {locale=='fr'?"বিস্তারিত দেখুন":"See Detail"}
                         </Link>
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
 
-                {/* <TableFooter>
+                <TableFooter>
                   <TableRow>
                     <TableCell>
-                      <Typography variant="subtitle2">মোট=</Typography>
+                      <Typography variant="subtitle2">{locale=='fr'?"মোট":"Total"}</Typography>
                     </TableCell>
                     <TableCell align="right">
                       <Typography variant="subtitle2" fontWeight="bold">
@@ -552,21 +595,21 @@ const Dashboard = () =>{
                     </TableCell>
                     <TableCell />
                   </TableRow>
-                </TableFooter> */}
+                </TableFooter>
               </Table>
             </CardContent>
           </Card>
         </Grid>
 
-        {/* <Grid item xs={12} md={7}>
+        <Grid item xs={12} md={7}>
           <Card style={newCard} sx={{ borderRadius: "16px", boxShadow: 3 }}>
             <CardHeader
-              title="সময়ভিত্তিক অ্যাপ্লিকেশন"
-              subheader="মাসিক ডেটা ওভারভিউ - বিভাগ অনুসারে"
+              title={locale=='fr'?'মাসিক ডেটা ওভারভিউ':'Monthly Data Overview'}
+              subheader={locale=='fr'?'আবেদনের ধরণ অনুসারে':'By Application Type'}
               action={
               <>
                 <Card style={{padding:"10px", borderRadius:"12px"}}>
-                  <Typography style={{ textAlign:"center", fontWeight:"bold" }}>সময়সীমা নির্বাচন করুন:</Typography>
+                  <Typography style={{ textAlign:"center", fontWeight:"bold" }}><FormattedMessage id="workforce.select.time.range"/></Typography>
                   <ButtonGroup variant="outlined" style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
                     {Object.entries(buttonOptions).map(([key, label]) => (
                       <Button
@@ -578,7 +621,7 @@ const Dashboard = () =>{
                       </Button>
                     ))}
                   </ButtonGroup>
-                  <Grid container spacing={1} style={{marginTop:"10px"}}>
+                  {/* <Grid container spacing={1} style={{marginTop:"10px"}}>
                      <Grid item xs={6} md={6}>
                         <PublishedComponent
                           pubRef="workforce.DatePicker"
@@ -593,7 +636,7 @@ const Dashboard = () =>{
                           onChange={(datevalue) => handleGraphToDateChange(datevalue)}
                         />
                       </Grid>
-                  </Grid>
+                  </Grid> */}
                 </Card>
               </>
             }
@@ -602,15 +645,15 @@ const Dashboard = () =>{
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={barData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
+                  <XAxis dataKey="month" />
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="চিকিৎসা" stackId="a" fill="#009688" />
-                  <Bar dataKey="মৃত্যু" stackId="a" fill="#90CAF9" />
-                  <Bar dataKey="শিক্ষা" stackId="a" fill="#FBC02D" />
-                  <Bar dataKey="মাতৃত্ব" stackId="a" fill="#FF9800" />
-                  <Bar dataKey="স্থায়ী ও অস্থায়ী অক্ষমতা" stackId="a" fill="#212121" />
+                  <Bar dataKey={locale=='fr'?"চিকিৎসা":"Medical"} stackId="a" fill="#009688" />
+                  <Bar dataKey={locale=='fr'?"মৃত্যু":"Death"} stackId="a" fill="#90CAF9" />
+                  <Bar dataKey={locale=='fr'?"শিক্ষা":"Educational"} stackId="a" fill="#FBC02D" />
+                  <Bar dataKey={locale=='fr'?"মাতৃত্ব":"Maternity"} stackId="a" fill="#FF9800" />
+                  <Bar dataKey={locale=='fr'?"স্থায়ী ও অস্থায়ী অক্ষমতা":"Permanent Or Curable Disability"} stackId="a" fill="#212121" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -619,7 +662,7 @@ const Dashboard = () =>{
 
         <Grid item xs={12} md={5}>
           <Card style={newCard} sx={{ borderRadius: "16px", boxShadow: 3 }}>
-            <CardHeader title="স্ট্যাটাস বিতরণ" subheader="অ্যাপ্লিকেশনের বর্তমান অবস্থা" />
+            <CardHeader title={locale=='fr'?'আবেদনের অবস্থা':'Application Status'} subheader={locale=='fr'?'একনজরে আবেদনসমূহের অবস্থা':'Status At a Glance'} />
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
@@ -646,7 +689,7 @@ const Dashboard = () =>{
               </ResponsiveContainer>
             </CardContent>
           </Card>
-        </Grid> */}
+        </Grid>
         
       </Grid>
     </>

@@ -2534,6 +2534,39 @@ export function fetchApplicationByDate(months, fromDate, toDate, organizationTyp
 }
 
 
+export function fetchApplicationMonthWise(months) {
+  const APPLICATION_FIELDS = `
+    month
+    medical
+    educational
+    death
+    maternityGrant
+    disabilityAssistance
+  `;
+  const args = [];
+
+  // if (organizationType) {
+  //   args.push(`organizationType: "${organizationType}"`);
+  // }
+
+  if (months > 0) {
+    args.push(`monthsBetween: "${months}"`);
+  } 
+
+  const argString = args.length > 0 ? `(${args.join(", ")})` : "";
+
+  const payload = `
+    query {
+      workforceMonthwiseApplications${argString} {
+        ${APPLICATION_FIELDS}
+      }
+    }
+  `;
+
+  return graphql(payload, "WORKFORCE_APPLICATIONS_MONTH_WISE");
+}
+
+
 export function fetchGenderWiseApplicationMatrixByDate(months, fromDate, toDate, organizationType) {
   const GENDER_FIELDS = `
     totalApplicant
