@@ -109,8 +109,8 @@ class ResendApplicationPage extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, modulesManager, application } = this.props;
-    this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${application?.id}"`]);
+    const { dispatch, modulesManager, application,applicationUuid } = this.props;
+    this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${applicationUuid}"`]);
 
   // if (this.props.applicationUuid) {
   //   this.fetchApplicationMovement();
