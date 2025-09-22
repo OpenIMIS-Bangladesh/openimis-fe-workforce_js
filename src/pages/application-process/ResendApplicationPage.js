@@ -22,9 +22,10 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FileUploader from "../../pickers/FileUploader";
-import { updateApplication,fetchApplicationMovementsSummary } from "../../actions";
+import { updateApplication,fetchApplicationMovementsSummary, fetchWorkforceDocument } from "../../actions";
 import { bindActionCreators } from "redux";
 import { WORKFORCE_STATUS } from "../../constants";
+import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 
 const styles = (theme) => ({
   paper: {
@@ -106,12 +107,16 @@ class ResendApplicationPage extends Component {
       // })),
     };
   }
-//   componentDidMount() {
-//   if (this.props.applicationUuid) {
-//     this.fetchApplicationMovement();
-//    this.props.fetchApplicationMovementsSummary(this.props.modulesManager, [`applicationId: "${this.props.applicationUuid}"`])
-//   }
-// }
+
+  componentDidMount() {
+    const { dispatch, modulesManager, application } = this.props;
+    this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${application?.id}"`]);
+
+  // if (this.props.applicationUuid) {
+  //   this.fetchApplicationMovement();
+  //  this.props.fetchApplicationMovementsSummary(this.props.modulesManager, [`applicationId: "${this.props.applicationUuid}"`])
+  // }
+}
 
 
   componentDidUpdate(prevProps) {
@@ -141,31 +146,76 @@ class ResendApplicationPage extends Component {
   };
 
   handleFileCommentChange = (index, value) => {
-    this.setState((prevState) => {
-      const updatedFiles = [...prevState.fileStates];
-      updatedFiles[index].comment = value;
-      return { fileStates: updatedFiles };
-    });
-  };
-
-  handleFileVerify = (index) => {
-    this.setState((prevState) => {
-      const updated = [...prevState.fileStates];
-      updated[index].status = "verified";
-      return { fileStates: updated };
-    });
-  };
-
-  handleFileReject = (index) => {
-    this.setState((prevState) => {
-      const updated = [...prevState.fileStates];
-      updated[index].status = "rejected";
-      return { fileStates: updated };
-    });
-  };
+      console.log(index, value);
+      this.setState((prevState) => {
+        if (!prevState.fileStates || !prevState.fileStates[index]) {
+          return {};
+        }
+        const updatedFiles = [...prevState.fileStates];
+        updatedFiles[index] = { ...updatedFiles[index], note: value };
+        return { fileStates: updatedFiles };
+      });
+    };
+  
+    handleCommentChange = (e) => {
+      this.setState({ note: e.target.value });
+    };
+  
+    handleFileVerify = (index) => {
+      const file = this.state.fileStates[index];
+      const payload = {
+        ...file,
+        id: decodeId(file.id),
+        status: "verified",
+        note: file.note,
+      };
+  
+      this.props.updateWorkforceDocument(payload, `update workforce document`);
+  
+      // optionally update UI optimistically
+      this.setState((prevState) => {
+        const updated = [...prevState.fileStates];
+        updated[index].status = "verified";
+        return { fileStates: updated };
+      });
+    };
+  
+    handleFileReject = (index) => {
+      const file = this.state.fileStates[index];
+      const payload = {
+        ...file,
+        id: decodeId(file.id),
+        status: "rejected",
+        note: file.note,
+      };
+  
+      this.props.updateWorkforceDocument(payload, `update workforce document`); // 👈 dispatch here
+  
+      this.setState((prevState) => {
+        const updated = [...prevState.fileStates];
+        updated[index].status = "rejected";
+        return { fileStates: updated };
+      });
+    };
+  
 
   handleCommentChange = (e) => {
     this.setState({ comment: e.target.value });
+  };
+
+  handleFileChange = (fieldKey, files) => {
+    this.setState((prevState) => {
+      const existingIndex = prevState.uploadedFiles.findIndex((item) => item.fieldKey === fieldKey);
+
+      let updatedFiles = [...prevState.uploadedFiles];
+      if (existingIndex !== -1) {
+        updatedFiles[existingIndex] = { fieldKey, files };
+      } else {
+        updatedFiles.push({ fieldKey, files });
+      }
+
+      return { uploadedFiles: updatedFiles };
+    });
   };
 
 handleResendDocument = async () => {
@@ -209,7 +259,7 @@ fetchApplicationMovement = async () => {
 
 
   render() {
-    const { classes, applicationUuid } = this.props;
+    const { classes, applicationUuid,documents } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType,revertNotes } = this.state;
     console.log({ "revertNotes":revertNotes });
 
@@ -217,110 +267,18 @@ fetchApplicationMovement = async () => {
       <Grid container spacing={3} className={classes.rootGrid}>
         {/* Document Viewer */}
         <Grid item xs={12} className={classes.rightGrid}>
-          <Card variant="outlined" className={classes.cardSpacing}>
-            <CardContent>
-              <Typography variant="h6">Documents</Typography>
-              {fileStates.map((file, index) => (
-                <Accordion key={index}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon className="material-icons" />}
-                  >
-                    <Grid
-                      container
-                      alignItems="center"
-                      justifyContent="space-between"
-                    >
-                      <Grid item>
-                        <Typography>
-                          Document #{index + 1}{" "}
-                          {file.type === "pdf" ? "(PDF)" : "(Image)"}
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        {file.status === "verified" && (
-                          <Typography
-                            style={{ color: "green", fontWeight: "bold" }}
-                          >
-                            ✅ Verified
-                          </Typography>
-                        )}
-                        {file.status === "rejected" && (
-                          <Typography
-                            style={{ color: "red", fontWeight: "bold" }}
-                          >
-                            ❌ Rejected
-                          </Typography>
-                        )}
-                      </Grid>
-                    </Grid>
-                  </AccordionSummary>
-
-                  <AccordionDetails>
-                    <Grid container spacing={2}>
-                      {/* Left side: Document */}
-                      <Grid item xs={12} md={6}>
-                        {file.type === "image" ? (
-                          <img
-                            src={file.src}
-                            alt="preview"
-                            style={{
-                              width: "100%",
-                              maxHeight: 400,
-                              objectFit: "contain",
-                              borderRadius: 8,
-                            }}
-                          />
-                        ) : (
-                          <Document file={file.src}>
-                            <Page pageNumber={1} width={300} />
-                          </Document>
-                        )}
-                      </Grid>
-
-                      {/* Right side: Comment + Actions */}
-                      <Grid
-                        item
-                        xs={12}
-                        md={6}
-                        container
-                        spacing={2}
-                        direction="column"
-                      >
-                        <Grid item>
-                          <TextField
-                            label="Comment"
-                            fullWidth
-                            variant="outlined"
-                            size="small"
-                            multiline
-                            rows={4}
-                            value={file.comment}
-                            onChange={(e) =>
-                              this.handleFileCommentChange(
-                                index,
-                                e.target.value
-                              )
-                            }
-                          />
-                        </Grid>
-
-                        <Grid item>
-                          <Button
-                            variant="outlined"
-                            fullWidth
-                            color="default"
-                            onClick={() => this.handleOpenResendModal(index)}
-                          >
-                            🔁 Resend Document
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </AccordionDetails>
-                </Accordion>
+          
+          {documents?.map((file, index) => (
+                <DocumentReviewAccordion
+                  key={index}
+                  file={file}
+                  index={index}
+                  onCommentChange={this.handleFileCommentChange}
+                  onVerify={this.handleFileVerify}
+                  onReject={this.handleFileReject}
+                  locale={locale}
+                />
               ))}
-            </CardContent>
-          </Card>
         </Grid>
 
         {/* Preview Modal */}
@@ -407,7 +365,8 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       updateApplication,
-      fetchApplicationMovementsSummary
+      fetchApplicationMovementsSummary,
+      fetchWorkforceDocument
     },
     dispatch
   );
@@ -415,6 +374,7 @@ const mapDispatchToProps = (dispatch) =>
 const mapStateToProps = (state, props) => ({
   application: state.workforce.application,
   applicationUuid: props?.match?.params?.application_uuid,
+  documents: state.workforce.document,
 });
 
 export default withHistory(

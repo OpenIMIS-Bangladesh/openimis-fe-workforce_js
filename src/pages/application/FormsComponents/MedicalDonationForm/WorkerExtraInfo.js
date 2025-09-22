@@ -102,14 +102,14 @@ const WorkerExtraInfo = ({ handleChange, formData,errors }) => {
           <Grid container spacing={2} className={classes.section}>
             <Grid item xs={6}>
               <TextInput
-              id="aboutWork"
+                id="aboutWork"
                 readOnly={false}
                 label={formatMessage("workforce.applicant.workInfo.informal.current_occupation")}
                 value={formData.aboutWork || ""}
                 required
                 onChange={(e) => handleChange("aboutWork", e)}
                 error={!!errors.aboutWork}
-            helperText={errors.aboutWork}
+                helperText={errors.aboutWork}
               />
             </Grid>
             <Grid item xs={6}>
