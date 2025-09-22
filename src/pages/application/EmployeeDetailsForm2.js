@@ -100,7 +100,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           );
         }
       } else if (formData.applicationType === "deadlyGrant") {
-        if (formData.metadata.deathType === "normalDeath" && formData.workerType ==="formal") {
+        if (formData.metadata.deathType === "normalDeath" && formData.institutionInfo.workerType ==="formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -110,7 +110,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               `formStepNo:"${formStepNo}"`,
             ])
           );
-        }else if(formData.metadata.deathType === "normalDeath" && formData.workerType ==="informal"){
+        }else if(formData.metadata.deathType === "normalDeath" && formData.institutionInfo.workerType ==="informal"){
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -141,7 +141,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           //   ])
           // );
       } else if (formData.applicationType === "medicalDonation" && formData.applicationForSelf ==="yes"&& formData.organizationType === "blwf") {
-        if (formData.workerType === "formal") {
+        if (formData.institutionInfo.workerType === "formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -163,7 +163,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           );
         }
       }else if (formData.applicationType === "medicalDonation" && formData.applicationForSelf ==="no"&& formData.organizationType === "blwf") {
-        if (formData.workerType === "formal") {
+        if (formData?.institutionInfo?.workerType === "formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -185,7 +185,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           );
         }
       } else if (formData.applicationType === "maternityGrant" && formData.organizationType === "blwf" && formData.applicationForSelf === "yes") {
-        if (formData.workerType === "formal") {
+        if (formData.institutionInfo.workerType === "formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -207,7 +207,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           );
         }
       }else if (formData.applicationType === "maternityGrant" && formData.organizationType === "blwf" && formData.applicationForSelf === "no") {
-        if (formData.workerType === "formal") {
+        if (formData.institutionInfo.workerType === "formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -229,7 +229,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           );
         }
       }else if (formData.applicationType === "educationGrant" && formData.organizationType === "blwf") {
-        if (formData.workerType === "formal") {
+        if (formData.institutionInfo.workerType === "formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -262,7 +262,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
         );
       }
     }
-  }, [selectedApplicationType,formData?.organizationType,formStepNo,formData?.workerType,formData?.metadata?.disabilityType]);
+  }, [selectedApplicationType,formData?.organizationType,formStepNo,formData?.institutionInfo.workerType,formData?.metadata?.disabilityType]);
 
   const isLoading = useSelector((state) => state.workforce[`fetchingDocumentType`]);
   const data = useSelector((state) => state.workforce[`documentType`] ?? []);
