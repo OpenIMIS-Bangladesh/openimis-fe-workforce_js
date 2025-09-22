@@ -90,15 +90,20 @@ class ResendApplicationPage extends Component {
     ];
 
     this.state = {
-      applicationType: props?.application || {},
-      stateEdited: props.application?.workforceEmployee || {},
+      // applicationType: props?.application || {},
+      // stateEdited: props.application?.workforceEmployee || {},
       isSaved: false,
       preview: null,
-      comment: "",
+      note: "",
       mockFiles: mockFiles,
-      fileStates: mockFiles,
-      resendFile: null,
-      revertNotes: [],
+      
+      uploadedFiles: [],
+      fileStates: mockFiles.map((file) => ({
+        ...file,
+        note: "",
+        status: null,
+      })),
+      
 
       // fileStates: mockFiles.map((file) => ({
       //   ...file,
@@ -120,14 +125,16 @@ class ResendApplicationPage extends Component {
 
 
   componentDidUpdate(prevProps) {
-    if (prevProps.application !== this.props.application) {
-      this.setState({ stateEdited: this.props.application });
+      if (prevProps.application !== this.props.application) {
+        this.setState({ stateEdited: this.props.application });
+      }
+      if (prevProps.documents !== this.props.documents) {
+        this.setState({ fileStates: this.props.documents || [] });
+      }
+      if (prevProps.submittingMutation && !this.props.submittingMutation) {
+        this.props.dispatch(journalize(this.props.mutation));
+      }
     }
-
-    if (prevProps.submittingMutation && !this.props.submittingMutation) {
-      this.props.dispatch(journalize(this.props.mutation));
-    }
-  }
 
   handlePreviewOpen = (file) => {
     this.setState({ preview: file });
@@ -259,7 +266,7 @@ fetchApplicationMovement = async () => {
 
 
   render() {
-    const { classes, applicationUuid,documents } = this.props;
+    const { classes, applicationUuid,documents,locale } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType,revertNotes } = this.state;
     console.log({ "revertNotes":revertNotes });
 
@@ -282,7 +289,7 @@ fetchApplicationMovement = async () => {
         </Grid>
 
         {/* Preview Modal */}
-        <Dialog
+        {/* <Dialog
           open={!!preview}
           onClose={this.handlePreviewClose}
           maxWidth="md"
@@ -307,10 +314,10 @@ fetchApplicationMovement = async () => {
               </Document>
             ) : null}
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
 
         {/* file upload modal */}
-        <Dialog
+        {/* <Dialog
           open={this.state.resendFile !== null}
           onClose={this.handleCloseResendModal}
           maxWidth="sm"
@@ -324,12 +331,9 @@ fetchApplicationMovement = async () => {
               <CloseIcon />
             </IconButton>
 
-            {/* FileUploader goes here */}
             <Typography variant="h6" gutterBottom>
               Upload Replacement Document
             </Typography>
-
-            {/* Replace with your actual FileUploader component */}
 
             <FileUploader fieldKey="resend_document" />
             <Button
@@ -339,11 +343,10 @@ fetchApplicationMovement = async () => {
               fullWidth
               style={{ marginTop: 6 }}
             >
-              {/* Verify */}
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
       {/* {revertNotes?.length > 0 && (
         <Card variant="outlined" className={classes.cardSpacing}>
           <CardContent>
@@ -376,6 +379,7 @@ const mapStateToProps = (state, props) => ({
   application: state.workforce.application,
   applicationUuid: props?.match?.params?.application_uuid,
   documents: state.workforce.document,
+  locale: state.core?.user?.i_user?.language,
 });
 
 export default withHistory(

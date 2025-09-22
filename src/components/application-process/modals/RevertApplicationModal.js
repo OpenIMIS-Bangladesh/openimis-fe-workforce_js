@@ -162,7 +162,7 @@ useEffect(() => {
       }).filter(Boolean);
               console.log("allUsers",allUsers)
 
-      const roles = [ "Factory Admin","Association", "Section Admin", "Section User","Doctor","Section Admin", "Selection User"];
+      // const roles = [ "Factory Admin","Association", "Section Admin", "Section User","Doctor","Section Admin", "Selection User"];
 
       setMovementUsers([
         {
