@@ -22,7 +22,7 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FileUploader from "../../pickers/FileUploader";
-import { updateApplication,fetchApplicationMovementsSummary, fetchWorkforceDocument } from "../../actions";
+import { updateApplication,fetchApplicationMovementsSummary, fetchWorkforceDocument, updateWorkforceDocument } from "../../actions";
 import { bindActionCreators } from "redux";
 import { WORKFORCE_STATUS } from "../../constants";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
@@ -366,7 +366,8 @@ const mapDispatchToProps = (dispatch) =>
     {
       updateApplication,
       fetchApplicationMovementsSummary,
-      fetchWorkforceDocument
+      fetchWorkforceDocument,
+      updateWorkforceDocument
     },
     dispatch
   );
