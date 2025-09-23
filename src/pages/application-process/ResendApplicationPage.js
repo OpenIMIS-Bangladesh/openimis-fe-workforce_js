@@ -22,12 +22,7 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FileUploader from "../../pickers/FileUploader";
-import {
-  updateApplication,
-  fetchApplicationWiseMovementList,
-  fetchWorkforceDocument,
-  updateWorkforceDocument,
-} from "../../actions";
+import { updateApplication, fetchApplicationWiseMovementList, fetchWorkforceDocument, updateWorkforceDocument } from "../../actions";
 import { bindActionCreators } from "redux";
 import { WORKFORCE_STATUS } from "../../constants";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
@@ -56,8 +51,9 @@ const styles = (theme) => ({
     },
   },
   rootGrid: {
-    height: "calc(100vh - 64px)", // Adjust if you have AppBar
-    overflow: "hidden",
+    minHeight: "calc(100vh - 64px)",
+    overflowY: "auto",
+    paddingBottom: theme.spacing(4),
   },
   leftGrid: {
     position: "sticky",
@@ -118,11 +114,8 @@ class ResendApplicationPage extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, modulesManager, application, applicationUuid } =
-      this.props;
-    this.props.fetchWorkforceDocument(modulesManager, [
-      `workforceApplication_Id:"${applicationUuid}"`,
-    ]);
+    const { dispatch, modulesManager, application, applicationUuid } = this.props;
+    this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${applicationUuid}"`]);
 
     if (applicationUuid) {
       this.fetchApplicationMovement();
@@ -216,9 +209,7 @@ class ResendApplicationPage extends Component {
 
   handleFileChange = (fieldKey, files) => {
     this.setState((prevState) => {
-      const existingIndex = prevState.uploadedFiles.findIndex(
-        (item) => item.fieldKey === fieldKey
-      );
+      const existingIndex = prevState.uploadedFiles.findIndex((item) => item.fieldKey === fieldKey);
 
       let updatedFiles = [...prevState.uploadedFiles];
       if (existingIndex !== -1) {
@@ -242,54 +233,39 @@ class ResendApplicationPage extends Component {
     };
 
     try {
-      const result = await updateApplication(
-        updateApplicationData,
-        "update workforce application"
-      );
+      const result = await updateApplication(updateApplicationData, "update workforce application");
       console.log("GraphQL mutation result:", result);
     } catch (err) {
       console.error("Mutation error:", err);
     }
   };
-fetchApplicationMovement = async () => {
-  const { modulesManager, applicationUuid } = this.props;
+  fetchApplicationMovement = async () => {
+    const { modulesManager, applicationUuid } = this.props;
 
-  try {
-    const response = await this.props.fetchApplicationWiseMovementList(
-      modulesManager,
-      { applicationId: applicationUuid } // ✅ plain UUID, not nested object
-    );
+    try {
+      const response = await this.props.fetchApplicationWiseMovementList(
+        modulesManager,
+        { applicationId: applicationUuid } // ✅ plain UUID, not nested object
+      );
 
-    console.log("response", response);
+      console.log("response", response);
 
-    const movements =
-      response?.data?.workforceApplicationMovement?.edges?.map(
-        (e) => e.node
-      ) || [];
+      const movements = response?.data?.workforceApplicationMovement?.edges?.map((e) => e.node) || [];
 
-    const revertNotes = movements
-      .filter((m) => m.revertNote)
-      .map((m) => m.revertNote);
+      const revertNotes = movements.filter((m) => m.revertNote).map((m) => m.revertNote);
 
-    this.setState({ 
-      movements,   
-      revertNotes 
-    });
-  } catch (error) {
-    console.error("Failed to load revert notes", error);
-  }
-};
+      this.setState({
+        movements,
+        revertNotes,
+      });
+    } catch (error) {
+      console.error("Failed to load revert notes", error);
+    }
+  };
 
   render() {
     const { classes, applicationUuid, documents, locale } = this.props;
-    const {
-      stateEdited,
-      preview,
-      fileStates,
-      comment,
-      applicationType,
-      revertNotes,
-    } = this.state;
+    const { stateEdited, preview, fileStates, comment, applicationType, revertNotes } = this.state;
     console.log({ revertNotes: revertNotes });
 
     return (
@@ -369,41 +345,47 @@ fetchApplicationMovement = async () => {
           </DialogContent>
         </Dialog> */}
 
-{this.state.movements?.length > 0 && (
-  <Card variant="outlined" className={classes.cardSpacing} style={{ marginTop: 16 }}>
-    <CardContent>
-      <Typography variant="h6">Application Movements</Typography>
-      {this.state.movements.map((m, idx) => (
-        <div key={m.id || idx} style={{ marginTop: 12, paddingBottom: 8, borderBottom: "1px solid #eee" }}>
-          <Typography><b>Status:</b> {m.status}</Typography>
-          <Typography><b>From:</b> {m.applicationFrom?.loginName}</Typography>
-          <Typography><b>To:</b> {m.applicationTo?.loginName}</Typography>
-          <Typography><b>Role (To):</b> {m.applicationTo?.userRoles?.[0]?.role?.name}</Typography>
-          {m.revertNote && (
-            <Typography color="error"><b>Revert Note:</b> {m.revertNote}</Typography>
-          )}
-          <Typography variant="body2" color="textSecondary">
-            {new Date(m.dateCreated).toLocaleString()}
-          </Typography>
-        </div>
-      ))}
-    </CardContent>
-  </Card>
-)}
+        {this.state.movements?.length > 0 && (
+          <Card variant="outlined" className={classes.cardSpacing} style={{ marginTop: 16 }}>
+            <CardContent>
+              <Typography variant="h6">Application Movements</Typography>
+              {this.state.movements.map((m, idx) => (
+                <div key={m.id || idx} style={{ marginTop: 12, paddingBottom: 8, borderBottom: "1px solid #eee" }}>
+                  <Typography>
+                    <b>Status:</b> {m.status}
+                  </Typography>
+                  <Typography>
+                    <b>From:</b> {m.applicationFrom?.loginName}
+                  </Typography>
+                  <Typography>
+                    <b>To:</b> {m.applicationTo?.loginName}
+                  </Typography>
+                  <Typography>
+                    <b>Role (To):</b> {m.applicationTo?.userRoles?.[0]?.role?.name}
+                  </Typography>
+                  {m.revertNote && (
+                    <Typography color="error">
+                      <b>Revert Note:</b> {m.revertNote}
+                    </Typography>
+                  )}
+                  <Typography variant="body2" color="textSecondary">
+                    {new Date(m.dateCreated).toLocaleString()}
+                  </Typography>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
 
-        <Grid item xs={12}>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ marginTop: 16 }}
-                // onClick={this.handleForward}
-              >
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.application.forward"
-                  defaultMessage="Forward"
-                />
-              </Button>
+        <Grid item xs={12} className={classes.rootGrid}>
+          <Button
+            variant="contained"
+            // color="primary"
+            style={{ marginTop: 16 }}
+            // onClick={this.handleForward}
+          >
+            <FormattedMessage module="workforce" id="workforce.application.forward" defaultMessage="Forward" />
+          </Button>
         </Grid>
       </Grid>
     );
@@ -428,11 +410,4 @@ const mapStateToProps = (state, props) => ({
   locale: state.core?.user?.i_user?.language,
 });
 
-export default withHistory(
-  withModulesManager(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(withTheme(withStyles(styles)(ResendApplicationPage)))
-  )
-);
+export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(withTheme(withStyles(styles)(ResendApplicationPage)))));
