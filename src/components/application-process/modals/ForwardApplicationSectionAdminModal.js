@@ -156,7 +156,7 @@ const handleForward = async () => {
 
     for (const encodedId of selectedApplicationIds) {
       const updateApplicationData = {
-        id: decodeId(encodedId),
+        id: decodeId(encodedId?.id),
         status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
       };
 
@@ -164,7 +164,7 @@ const handleForward = async () => {
       updateApplication(updateApplicationData, `update workforce application`)
     );
       const createApplicationMovementData = {
-        applicationId: decodeId(encodedId),
+        applicationId: decodeId(encodedId?.id),
         applicationFromId: loggedInUserId,
         applicationToId: formData.userId,
         status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION, 

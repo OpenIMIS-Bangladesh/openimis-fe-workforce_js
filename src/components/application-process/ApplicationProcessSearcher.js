@@ -441,17 +441,23 @@ class ApplicationProcessSearcher extends Component {
 
       let defaultStatusFilters = [];
 
-      if (revertedApplication) {     
+     if (revertedApplication) {
+        defaultStatusFilters = [
+          'organizationTypeIn: ["cf"]',
+          'statusIn: ["revert"]',
+          'associationTypeIn: "BGMEA"'
+        ];
+
         if (loggedInUserId) {
           defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }  
+        }
       }
       else if(this.props.forwardedApplications)
       {
         defaultStatusFilters.push('statusIn: ["forward_to_cf_section"]','associationTypeIn: "BGMEA"');
       }
       else {
-        defaultStatusFilters.push('statusIn: ["forward_to_association"]','associationTypeIn: "BGMEA"');
+        defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]','associationTypeIn: "BGMEA"');
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -480,17 +486,22 @@ class ApplicationProcessSearcher extends Component {
      this.setState({ displayVersion: showHistoryFilter });
 
       let defaultStatusFilters = [];
+      if (revertedApplication) {
+        defaultStatusFilters = [
+          'organizationTypeIn: ["cf"]',
+          'statusIn: ["revert"]',
+          'associationTypeIn: "BKMEA"'
+        ];
 
-       if (revertedApplication) {     
         if (loggedInUserId) {
           defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }  
+        }
       }
       else if (this.props.forwardedApplications) {
-        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","revert_to_applicant"]');
+        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","revert_to_applicant", associationTypeIn: "BKMEA"]');
       }
       else {
-        defaultStatusFilters.push('statusIn: ["forward_to_association"]', 'associationTypeIn: "BKMEA"');
+        defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]', 'associationTypeIn: "BKMEA"');
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -525,6 +536,7 @@ class ApplicationProcessSearcher extends Component {
         defaultFilters = [
           'organizationTypeIn: ["cf"]',
           'orderBy: ["-dateCreated"]',
+          'statusIn: ["revert"]'
         ];
 
         if (loggedInUserId) {
