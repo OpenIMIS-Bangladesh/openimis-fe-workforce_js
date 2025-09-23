@@ -262,7 +262,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
         );
       }
     }
-  }, [selectedApplicationType,formData?.organizationType,formStepNo,formData?.institutionInfo.workerType,formData?.metadata?.disabilityType]);
+  }, [selectedApplicationType,formData?.organizationType,formStepNo,formData?.institutionInfo?.workerType,formData?.metadata?.disabilityType]);
 
   const isLoading = useSelector((state) => state.workforce[`fetchingDocumentType`]);
   const data = useSelector((state) => state.workforce[`documentType`] ?? []);
