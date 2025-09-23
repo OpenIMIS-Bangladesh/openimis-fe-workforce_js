@@ -177,7 +177,7 @@ const ForwardApplicationSummaryModal = ({
   }
   for (const encodedId of selectedApplicationIds) {
      const updateApplicationData = {
-       id: decodeId(encodedId),
+       id: decodeId(encodedId?.id),
       ...(userType === "section_admin"
       ? { cfApplicationSummaryId: decodeId(applicationSummaryId) }
       : userType === "blwf_section_admin"
@@ -191,7 +191,7 @@ const ForwardApplicationSummaryModal = ({
       : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
      };
     const createApplicationMovementData = {
-        applicationId: decodeId(encodedId),
+        applicationId: decodeId(encodedId?.id),
         status:
         userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
         ? WORKFORCE_STATUS.MEETING_CREATED
@@ -264,7 +264,7 @@ const handleSave = async () => {
   }
   for (const encodedId of selectedApplicationIds) {
      const updateApplicationData = {
-       id: decodeId(encodedId),
+       id: decodeId(encodedId?.id),
         ...(userType === "section_admin"
       ? { cfApplicationSummaryId: decodeId(applicationSummaryId) }
       : userType === "blwf_section_admin"

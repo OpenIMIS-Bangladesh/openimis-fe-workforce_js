@@ -157,7 +157,7 @@ const ForwardApplicationEisAdvisorModal = ({
 
       for (const encodedId of selectedApplicationIds) {
         const updateApplicationData = {
-          id: decodeId(encodedId),
+          id: decodeId(encodedId?.id),
           status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
         };
 
@@ -170,7 +170,7 @@ const ForwardApplicationEisAdvisorModal = ({
 
         for (const userId of formData.userIds) {
           const createApplicationMovementData = {
-            applicationId: decodeId(encodedId),
+            applicationId: decodeId(encodedId?.id),
             applicationFromId: loggedInUserId,
             applicationToId: userId,
             status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
