@@ -104,6 +104,7 @@ class ResendApplicationPage extends Component {
         note: "",
         status: null,
       })),
+      lastRevertMovement:[],
 
       // fileStates: mockFiles.map((file) => ({
       //   ...file,
@@ -239,33 +240,42 @@ class ResendApplicationPage extends Component {
       console.error("Mutation error:", err);
     }
   };
-  fetchApplicationMovement = async () => {
-    const { modulesManager, applicationUuid } = this.props;
+ fetchApplicationMovement = async () => {
+  const { modulesManager, applicationUuid } = this.props;
 
-    try {
-      const response = await this.props.fetchApplicationWiseMovementList(
-        modulesManager,
-        { applicationId: applicationUuid } // ✅ plain UUID, not nested object
-      );
+  try {
+    const response = await this.props.fetchApplicationWiseMovementList(
+      modulesManager,
+      { applicationId: applicationUuid }
+    );
 
-      console.log("response", response);
+    console.log("response", response);
 
-      const movements = response?.data?.workforceApplicationMovement?.edges?.map((e) => e.node) || [];
+    const movements =
+      response?.payload?.data?.workforceApplicationMovement?.edges?.map(
+        (e) => e.node
+      ) || [];
 
-      const revertNotes = movements.filter((m) => m.revertNote).map((m) => m.revertNote);
+    console.log("movements", movements);
 
-      this.setState({
-        movements,
-        revertNotes,
-      });
-    } catch (error) {
-      console.error("Failed to load revert notes", error);
-    }
-  };
+    const lastRevertMovement = [...movements]
+      .reverse()
+      .find((m) => m.revertNote);
+    console.log("lastRevertMovement", lastRevertMovement);
+
+    this.setState({
+      movements,
+      lastRevertMovement, // keep the whole object
+      revertNotes: lastRevertMovement ? [lastRevertMovement.revertNote] : [],
+    });
+  } catch (error) {
+    console.error("Failed to load revert notes", error);
+  }
+};
 
   render() {
     const { classes, applicationUuid, documents, locale } = this.props;
-    const { stateEdited, preview, fileStates, comment, applicationType, revertNotes } = this.state;
+    const { stateEdited, preview, fileStates, comment, applicationType, revertNotes,lastRevertMovement } = this.state;
     console.log({ revertNotes: revertNotes });
 
     return (
@@ -345,38 +355,16 @@ class ResendApplicationPage extends Component {
           </DialogContent>
         </Dialog> */}
 
-        {this.state.movements?.length > 0 && (
-          <Card variant="outlined" className={classes.cardSpacing} style={{ marginTop: 16 }}>
-            <CardContent>
-              <Typography variant="h6">Application Movements</Typography>
-              {this.state.movements.map((m, idx) => (
-                <div key={m.id || idx} style={{ marginTop: 12, paddingBottom: 8, borderBottom: "1px solid #eee" }}>
-                  <Typography>
-                    <b>Status:</b> {m.status}
-                  </Typography>
-                  <Typography>
-                    <b>From:</b> {m.applicationFrom?.loginName}
-                  </Typography>
-                  <Typography>
-                    <b>To:</b> {m.applicationTo?.loginName}
-                  </Typography>
-                  <Typography>
-                    <b>Role (To):</b> {m.applicationTo?.userRoles?.[0]?.role?.name}
-                  </Typography>
-                  {m.revertNote && (
-                    <Typography color="error">
-                      <b>Revert Note:</b> {m.revertNote}
-                    </Typography>
-                  )}
-                  <Typography variant="body2" color="textSecondary">
-                    {new Date(m.dateCreated).toLocaleString()}
-                  </Typography>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        )}
-
+        {lastRevertMovement && (
+            <Card variant="outlined" className={classes.cardSpacing} style={{ marginTop: 16 }}>
+              <CardContent>
+                <Typography variant="h6">Last Revert Movement</Typography>
+                <Typography><b>From:</b> {lastRevertMovement.applicationFrom?.loginName}</Typography>
+                <Typography><b>To:</b> {lastRevertMovement.applicationTo?.loginName}</Typography>
+                <Typography color="error"><b>Revert Note:</b> {lastRevertMovement.revertNote}</Typography>
+              </CardContent>
+            </Card>
+          )}
         <Grid item xs={12} className={classes.rootGrid}>
           <Button
             variant="contained"
