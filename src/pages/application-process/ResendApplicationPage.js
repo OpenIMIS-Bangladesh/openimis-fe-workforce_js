@@ -333,6 +333,7 @@ handleForward = async () => {
               onVerify={this.handleFileVerify}
               onReject={this.handleFileReject}
               locale={locale}
+              fromResend={true}
             />
           ))}
         </Grid>

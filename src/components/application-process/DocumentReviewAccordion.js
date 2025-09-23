@@ -5,6 +5,7 @@ import { FormattedMessage } from "@openimis/fe-core";
 import { Document, Page, pdfjs } from "react-pdf";
 import { getUserType } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
+import FileUploader from "../../pickers/FileUploader";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -16,7 +17,7 @@ const getFileType = (url = "") => {
   return "unsupported";
 };
 
-const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, onReject, locale }) => {
+const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, onReject, locale,fromResend = false }) => {
   const type = getFileType(file?.url);
   const user_type = getUserType();
   const [numPages, setNumPages] = useState(null);
@@ -26,7 +27,7 @@ const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, o
     setNumPages(numPages);
   };
   
-
+ console.log("from document review accordion",file)
   return (
     <Accordion >
       <AccordionSummary expandIcon={<ExpandMoreIcon className="material-icons" />}>
@@ -74,9 +75,6 @@ const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, o
                 style={{ border: "1px solid #ccc", borderRadius: 4 }}
               />
             )}
-            {/* {type === "pdf" && (
-              <iframe title="PDF Viewer" src={file.url} width="100%" height="500px" frameBorder="0" style={{ border: "1px solid #ccc" }}></iframe>
-            )} */}
 
             {type === "docx" && (
               <iframe
@@ -91,7 +89,7 @@ const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, o
             {type === "unsupported" && <Typography color="error">Unsupported file type</Typography>}
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={fromResend? 6: 12}>
             <TextField
               label="Comment"
               fullWidth
@@ -103,8 +101,20 @@ const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, o
               onChange={(e) => onCommentChange(index, e.target.value)}
             />
           </Grid>
+          {(fromResend && file.status==="rejected") && (
+            <Grid item xs={6}>
+            <Typography>{locale==="en"?file?.workforceDocumentType.nameEn:file?.workforceDocumentType.nameBn}</Typography>
+                        <FileUploader
+                          fieldKey={document.fieldId}
+                          // onFileChange={onFileChange}
+                          documentType={file.documentType}
+                          documentProp={file}
+                          // uploadedBy={"factoryAdmin"}
+                        />
+          </Grid>
+          )}
 
-          {user_type != WORKFORCE_USER_TYPE.APPLICANT && (
+          {user_type != WORKFORCE_USER_TYPE.APPLICANT ? (
             <Grid item xs={12} style={{ display: "flex", gap: 8 }}>
               <Button variant="contained" color="primary" onClick={() => onVerify(index)} fullWidth>
                 <FormattedMessage module="workforce" id="workforce.application.recommended" />
@@ -113,7 +123,16 @@ const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, o
                 <FormattedMessage module="workforce" id="workforce.application.reject" />
               </Button>
             </Grid>
-          )}
+          ):fromResend ? (
+            <Grid item xs={12} style={{ display: "flex", gap: 8 }}>
+              <Button variant="contained" color="primary" onClick={() => onVerify(index)} fullWidth>
+                <FormattedMessage module="workforce" id="workforce.application.recommended" />
+              </Button>
+              <Button variant="outlined" color="error" onClick={() => onReject(index)} fullWidth>
+                <FormattedMessage module="workforce" id="workforce.application.reject" />
+              </Button>
+            </Grid>
+          ):null}
         </Grid>
       </AccordionDetails>
     </Accordion>
