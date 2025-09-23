@@ -123,6 +123,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
       accountNumber: "",
     },
     employeeAccidentInfo: {},
+    institutionInfo: {},
     id: "",
   });
 
@@ -193,6 +194,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
         dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || [{}],
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
+        institutionInfo: parsedApplicationData?.institutionInfo || employeeData?.institutionInfo || {},
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
       });
     }
@@ -272,6 +274,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
+        institutionInfo: JSON.stringify(formData?.institutionInfo),
         metadata: JSON.stringify(formData?.metadata),
         status: WORKFORCE_STATUS.DRAFT,
         applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
@@ -325,6 +328,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+        institutionInfo: JSON.stringify(formData?.institutionInfo),
         metadata: JSON.stringify(formData?.metadata),
         status: WORKFORCE_STATUS.DRAFT,
         applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
@@ -384,6 +388,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
           employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
           employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
           employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+          institutionInfo: JSON.stringify(formData?.institutionInfo),
           metadata: JSON.stringify(formData?.metadata),
           status: WORKFORCE_STATUS.NEW,
           applicationFor: applicationForSelf ==="yes" ?"self":"dependent",
@@ -427,7 +432,7 @@ const MedicalDonationForm = ({  organizationType, selectedApplicationType, appli
     },
     {
       label: "workforce.application.steps.worker.extraInfo",
-      content: <WorkerExtraInfo errors={errors} handleChange={handleChange} formData={formData} />,
+      content: <WorkerExtraInfo errors={errors} handleChange={(key,value)=>handleChange(key,value,"institutionInfo")} formData={formData} />,
     },
     ...(applicationForSelf === "no"
       ? [

@@ -281,6 +281,7 @@ export function formatApplicationeGQL(application) {
   ${application?.employeeBankInfo ? `employeeBankInfo: ${escapeQuotes(application?.employeeBankInfo)}` : ""}
   ${application?.employeeApplicantInfo ? `applicantInfo: ${escapeQuotes(application?.employeeApplicantInfo)}` : ""}
   ${application?.employeeAccidentInfo ? `employeeAccidentInfo: ${escapeQuotes(application?.employeeAccidentInfo)}` : ""}
+  ${application?.institutionInfo ? `institutionInfo: ${escapeQuotes(application?.institutionInfo)}` : ""}
   ${application?.metadata ? `metadata: ${escapeQuotes(application?.metadata)}` : ""}
   ${application?.employeeChildrenInfo ? `employeeChildrenInfo: ${escapeQuotes(application?.employeeChildrenInfo)}` : ""}
   ${application?.employeeDesignationInfo ? `employeeDesignationInfo: ${escapeQuotes(application?.employeeDesignationInfo)}` : ""}

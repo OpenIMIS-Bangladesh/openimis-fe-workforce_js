@@ -155,6 +155,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
     dependents: [{}],
     employeeBankInfo: [{}],
     employeeAccidentInfo: {},
+    institutionInfo: {},
     metadata: {},
     id: "",
   });
@@ -213,6 +214,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
+        institutionInfo: parsedApplicationData?.institutionInfo || employeeData?.institutionInfo || {},
         dependents: parsedApplicationData?.employeeDependentInfo || employeeData?.dependents || [{}],
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
@@ -289,6 +291,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
         employeeBankInfo: JSON.stringify(formData?.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData?.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
+        institutionInfo: JSON.stringify(formData?.institutionInfo),
         metadata: JSON.stringify(formData?.metadata),
         status: WORKFORCE_STATUS.DRAFT,
         applicationFor: applicationForSelf ==="yes" ?"self":applicationForSelf ===""?"":"dependent",
@@ -329,6 +332,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+        institutionInfo: JSON.stringify(formData.institutionInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
         applicationFor: applicationForSelf ==="yes" ?"self":applicationForSelf ===""?"":"dependent",
@@ -365,6 +369,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
         employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
         employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+        institutionInfo: JSON.stringify(formData.institutionInfo),
         metadata: JSON.stringify(formData.metadata),
         status: WORKFORCE_STATUS.DRAFT,
         applicationFor: applicationForSelf ==="yes" ?"self":applicationForSelf ===""?"":"dependent",
@@ -422,6 +427,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
       employeeApplicantInfo: JSON.stringify(formData.workforceApplicant).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") || JSON.stringify(parsedApplicationData?.workforceApplicant).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
       employeeDependentInfo: JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") || JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+      institutionInfo: JSON.stringify(formData.institutionInfo),
       metadata: JSON.stringify(formData.metadata),
       status: WORKFORCE_STATUS.NEW,
         applicationFor: applicationForSelf ==="yes" ?"self":applicationForSelf ===""?"":"dependent",
@@ -575,7 +581,7 @@ const DeadlyGrantForm = ({  organizationType, selectedApplicationType, parsedApp
           </Box>
         ) : activeStep === 4 ? (
           <Box mt={0}>
-            <WorkerExtraInfo handleChange={handleChange} formData={formData} errors={errors}/>
+            <WorkerExtraInfo handleChange={(key,value)=>handleChange(key,value,"institutionInfo")} formData={formData} errors={errors}/>
           </Box>
         ) :activeStep === 5 ? (
           <Box mt={0}>

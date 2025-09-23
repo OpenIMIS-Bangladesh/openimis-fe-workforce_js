@@ -53,7 +53,7 @@ const WorkerWorkPlaceInfo = ({ handleChange, formData }) => {
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
           {formatMessage("workforce.applicant.workInfo.title")}
         </Typography>
-        <RadioGroup value={formData?.workerType} onChange={handleWorkerTypeChange}>
+        <RadioGroup value={formData?.institutionInfo?.workerType} onChange={handleWorkerTypeChange}>
           <FormControlLabel
             value="formal"
             control={<Radio color="primary" />}
@@ -67,7 +67,7 @@ const WorkerWorkPlaceInfo = ({ handleChange, formData }) => {
         </RadioGroup>
 
         {/* প্রাতিষ্ঠানিক ফিল্ড */}
-        {formData?.workerType === "formal" && (
+        {formData?.institutionInfo?.workerType === "formal" && (
           <Grid container spacing={2} className={classes.section}>
             <Grid item xs={6}>
               <TextInput
@@ -89,7 +89,7 @@ const WorkerWorkPlaceInfo = ({ handleChange, formData }) => {
         )}
 
         {/* অপ্রাতিষ্ঠানিক ফিল্ড */}
-        {formData?.workerType === "informal" && (
+        {formData?.institutionInfo?.workerType === "informal" && (
           <Grid container spacing={2} className={classes.section}>
             <Grid item xs={6}>
               <TextInput
