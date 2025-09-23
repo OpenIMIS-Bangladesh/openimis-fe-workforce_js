@@ -22,7 +22,12 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FileUploader from "../../pickers/FileUploader";
-import { updateApplication,fetchApplicationMovementsSummary, fetchWorkforceDocument, updateWorkforceDocument } from "../../actions";
+import {
+  updateApplication,
+  fetchApplicationWiseMovementList,
+  fetchWorkforceDocument,
+  updateWorkforceDocument,
+} from "../../actions";
 import { bindActionCreators } from "redux";
 import { WORKFORCE_STATUS } from "../../constants";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
@@ -96,14 +101,13 @@ class ResendApplicationPage extends Component {
       preview: null,
       note: "",
       mockFiles: mockFiles,
-      
+
       uploadedFiles: [],
       fileStates: mockFiles.map((file) => ({
         ...file,
         note: "",
         status: null,
       })),
-      
 
       // fileStates: mockFiles.map((file) => ({
       //   ...file,
@@ -114,27 +118,28 @@ class ResendApplicationPage extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, modulesManager, application,applicationUuid } = this.props;
-    this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${applicationUuid}"`]);
+    const { dispatch, modulesManager, application, applicationUuid } =
+      this.props;
+    this.props.fetchWorkforceDocument(modulesManager, [
+      `workforceApplication_Id:"${applicationUuid}"`,
+    ]);
 
-  // if (this.props.applicationUuid) {
-  //   this.fetchApplicationMovement();
-  //  this.props.fetchApplicationMovementsSummary(this.props.modulesManager, [`applicationId: "${this.props.applicationUuid}"`])
-  // }
-}
-
+    if (applicationUuid) {
+      this.fetchApplicationMovement();
+    }
+  }
 
   componentDidUpdate(prevProps) {
-      if (prevProps.application !== this.props.application) {
-        this.setState({ stateEdited: this.props.application });
-      }
-      if (prevProps.documents !== this.props.documents) {
-        this.setState({ fileStates: this.props.documents || [] });
-      }
-      if (prevProps.submittingMutation && !this.props.submittingMutation) {
-        this.props.dispatch(journalize(this.props.mutation));
-      }
+    if (prevProps.application !== this.props.application) {
+      this.setState({ stateEdited: this.props.application });
     }
+    if (prevProps.documents !== this.props.documents) {
+      this.setState({ fileStates: this.props.documents || [] });
+    }
+    if (prevProps.submittingMutation && !this.props.submittingMutation) {
+      this.props.dispatch(journalize(this.props.mutation));
+    }
+  }
 
   handlePreviewOpen = (file) => {
     this.setState({ preview: file });
@@ -153,58 +158,57 @@ class ResendApplicationPage extends Component {
   };
 
   handleFileCommentChange = (index, value) => {
-      console.log(index, value);
-      this.setState((prevState) => {
-        if (!prevState.fileStates || !prevState.fileStates[index]) {
-          return {};
-        }
-        const updatedFiles = [...prevState.fileStates];
-        updatedFiles[index] = { ...updatedFiles[index], note: value };
-        return { fileStates: updatedFiles };
-      });
+    console.log(index, value);
+    this.setState((prevState) => {
+      if (!prevState.fileStates || !prevState.fileStates[index]) {
+        return {};
+      }
+      const updatedFiles = [...prevState.fileStates];
+      updatedFiles[index] = { ...updatedFiles[index], note: value };
+      return { fileStates: updatedFiles };
+    });
+  };
+
+  handleCommentChange = (e) => {
+    this.setState({ note: e.target.value });
+  };
+
+  handleFileVerify = (index) => {
+    const file = this.state.fileStates[index];
+    const payload = {
+      ...file,
+      id: decodeId(file.id),
+      status: "verified",
+      note: file.note,
     };
-  
-    handleCommentChange = (e) => {
-      this.setState({ note: e.target.value });
+
+    this.props.updateWorkforceDocument(payload, `update workforce document`);
+
+    // optionally update UI optimistically
+    this.setState((prevState) => {
+      const updated = [...prevState.fileStates];
+      updated[index].status = "verified";
+      return { fileStates: updated };
+    });
+  };
+
+  handleFileReject = (index) => {
+    const file = this.state.fileStates[index];
+    const payload = {
+      ...file,
+      id: decodeId(file.id),
+      status: "rejected",
+      note: file.note,
     };
-  
-    handleFileVerify = (index) => {
-      const file = this.state.fileStates[index];
-      const payload = {
-        ...file,
-        id: decodeId(file.id),
-        status: "verified",
-        note: file.note,
-      };
-  
-      this.props.updateWorkforceDocument(payload, `update workforce document`);
-  
-      // optionally update UI optimistically
-      this.setState((prevState) => {
-        const updated = [...prevState.fileStates];
-        updated[index].status = "verified";
-        return { fileStates: updated };
-      });
-    };
-  
-    handleFileReject = (index) => {
-      const file = this.state.fileStates[index];
-      const payload = {
-        ...file,
-        id: decodeId(file.id),
-        status: "rejected",
-        note: file.note,
-      };
-  
-      this.props.updateWorkforceDocument(payload, `update workforce document`); // 👈 dispatch here
-  
-      this.setState((prevState) => {
-        const updated = [...prevState.fileStates];
-        updated[index].status = "rejected";
-        return { fileStates: updated };
-      });
-    };
-  
+
+    this.props.updateWorkforceDocument(payload, `update workforce document`); // 👈 dispatch here
+
+    this.setState((prevState) => {
+      const updated = [...prevState.fileStates];
+      updated[index].status = "rejected";
+      return { fileStates: updated };
+    });
+  };
 
   handleCommentChange = (e) => {
     this.setState({ comment: e.target.value });
@@ -212,7 +216,9 @@ class ResendApplicationPage extends Component {
 
   handleFileChange = (fieldKey, files) => {
     this.setState((prevState) => {
-      const existingIndex = prevState.uploadedFiles.findIndex((item) => item.fieldKey === fieldKey);
+      const existingIndex = prevState.uploadedFiles.findIndex(
+        (item) => item.fieldKey === fieldKey
+      );
 
       let updatedFiles = [...prevState.uploadedFiles];
       if (existingIndex !== -1) {
@@ -225,67 +231,82 @@ class ResendApplicationPage extends Component {
     });
   };
 
-handleResendDocument = async () => {
-  const { applicationUuid, updateApplication } = this.props;
+  handleResendDocument = async () => {
+    const { applicationUuid, updateApplication } = this.props;
 
-  console.log("UUID:", applicationUuid);
+    console.log("UUID:", applicationUuid);
 
-  const updateApplicationData = {
-    id: applicationUuid,
-    status: WORKFORCE_STATUS.NEW,
+    const updateApplicationData = {
+      id: applicationUuid,
+      status: WORKFORCE_STATUS.NEW,
+    };
+
+    try {
+      const result = await updateApplication(
+        updateApplicationData,
+        "update workforce application"
+      );
+      console.log("GraphQL mutation result:", result);
+    } catch (err) {
+      console.error("Mutation error:", err);
+    }
   };
-
-  try {
-    const result = await updateApplication(
-      updateApplicationData,
-      "update workforce application"
-    );
-    console.log("GraphQL mutation result:", result);
-  } catch (err) {
-    console.error("Mutation error:", err);
-  }
-};
-
 fetchApplicationMovement = async () => {
   const { modulesManager, applicationUuid } = this.props;
-  const filters = [`applicationId: "${applicationUuid}"`];
 
   try {
-    const response = await fetchApplicationMovementsSummary(modulesManager, filters);
-    const movements = response?.data?.workforceApplicationMovement?.items || [];
+    const response = await this.props.fetchApplicationWiseMovementList(
+      modulesManager,
+      { applicationId: applicationUuid } // ✅ plain UUID, not nested object
+    );
+
+    console.log("response", response);
+
+    const movements =
+      response?.data?.workforceApplicationMovement?.edges?.map(
+        (e) => e.node
+      ) || [];
 
     const revertNotes = movements
-      .filter(m => m.revertNote)
-      .map(m => m.revertNote);
+      .filter((m) => m.revertNote)
+      .map((m) => m.revertNote);
 
-    this.setState({ revertNotes });
+    this.setState({ 
+      movements,   
+      revertNotes 
+    });
   } catch (error) {
     console.error("Failed to load revert notes", error);
   }
 };
 
-
   render() {
-    const { classes, applicationUuid,documents,locale } = this.props;
-    const { stateEdited, preview, fileStates, comment, applicationType,revertNotes } = this.state;
-    console.log({ "revertNotes":revertNotes });
+    const { classes, applicationUuid, documents, locale } = this.props;
+    const {
+      stateEdited,
+      preview,
+      fileStates,
+      comment,
+      applicationType,
+      revertNotes,
+    } = this.state;
+    console.log({ revertNotes: revertNotes });
 
     return (
       <Grid container spacing={3} className={classes.rootGrid}>
         {/* Document Viewer */}
         <Grid item xs={12} className={classes.rightGrid}>
-          
           {documents?.map((file, index) => (
-                <DocumentReviewAccordion
-                  key={index}
-                  file={file}
-                  index={index}
-                  onCommentChange={this.handleFileCommentChange}
-                  onVerify={this.handleFileVerify}
-                  onReject={this.handleFileReject}
-                  locale={locale}
-                />
-              ))}
+            <DocumentReviewAccordion
+              key={index}
+              file={file}
+              index={index}
+              onCommentChange={this.handleFileCommentChange}
+              onVerify={this.handleFileVerify}
+              onReject={this.handleFileReject}
+              locale={locale}
+            />
+          ))}
         </Grid>
 
         {/* Preview Modal */}
@@ -347,18 +368,43 @@ fetchApplicationMovement = async () => {
             </Button>
           </DialogContent>
         </Dialog> */}
-      {/* {revertNotes?.length > 0 && (
-        <Card variant="outlined" className={classes.cardSpacing}>
-          <CardContent>
-            <Typography variant="h6">Revert Notes</Typography>
-            {revertNotes.map((note, idx) => (
-              <Typography key={idx} style={{ marginTop: 8 }}>
-                • {note}
-              </Typography>
-            ))}
-          </CardContent>
-        </Card>
-      )} */}
+
+{this.state.movements?.length > 0 && (
+  <Card variant="outlined" className={classes.cardSpacing} style={{ marginTop: 16 }}>
+    <CardContent>
+      <Typography variant="h6">Application Movements</Typography>
+      {this.state.movements.map((m, idx) => (
+        <div key={m.id || idx} style={{ marginTop: 12, paddingBottom: 8, borderBottom: "1px solid #eee" }}>
+          <Typography><b>Status:</b> {m.status}</Typography>
+          <Typography><b>From:</b> {m.applicationFrom?.loginName}</Typography>
+          <Typography><b>To:</b> {m.applicationTo?.loginName}</Typography>
+          <Typography><b>Role (To):</b> {m.applicationTo?.userRoles?.[0]?.role?.name}</Typography>
+          {m.revertNote && (
+            <Typography color="error"><b>Revert Note:</b> {m.revertNote}</Typography>
+          )}
+          <Typography variant="body2" color="textSecondary">
+            {new Date(m.dateCreated).toLocaleString()}
+          </Typography>
+        </div>
+      ))}
+    </CardContent>
+  </Card>
+)}
+
+        <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ marginTop: 16 }}
+                // onClick={this.handleForward}
+              >
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.application.forward"
+                  defaultMessage="Forward"
+                />
+              </Button>
+        </Grid>
       </Grid>
     );
   }
@@ -368,9 +414,9 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       updateApplication,
-      fetchApplicationMovementsSummary,
+      fetchApplicationWiseMovementList,
       fetchWorkforceDocument,
-      updateWorkforceDocument
+      updateWorkforceDocument,
     },
     dispatch
   );

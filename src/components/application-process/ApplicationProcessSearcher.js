@@ -525,7 +525,6 @@ class ApplicationProcessSearcher extends Component {
         defaultFilters = [
           'organizationTypeIn: ["cf"]',
           'orderBy: ["-dateCreated"]',
-          'statusIn: ["revert"]',
         ];
 
         if (loggedInUserId) {
