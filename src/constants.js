@@ -136,6 +136,7 @@ export const STATUS_MAP_BN  = {
   selected: "নির্বাচিত",
   meeting_created: "সভা তৈরি হয়েছে",
   forward_to_eis_advisor: "ইআইএস উপদেষ্টার কাছে প্রেরণ",
+  amended_application: "সংশোধিত আবেদন",
 
 
 };
@@ -185,6 +186,7 @@ export const STATUS_MAP_EN = {
   selected: "Selected",
   meeting_created: "Meeting Created",
   forward_to_eis_advisor: "Forward to Eis Advisor",
+  amended_application: "Amended Application",
 
 };
 
@@ -313,6 +315,7 @@ export const statusOptions = [
   { value: "selected", label: "নির্বাচিত" },
   { value: "meeting_created", label: "সভা তৈরি হয়েছে" },
   { value: "forward_to_eis_advisor", label: "ইআইএস উপদেষ্টার কাছে প্রেরণ" },
+  { value: "amended_application", label: "সংশোধিত আবেদন" },
 ];
 
 export const applicationTypeOptions = [

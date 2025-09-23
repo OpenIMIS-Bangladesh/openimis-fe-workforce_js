@@ -444,7 +444,8 @@ class ApplicationProcessSearcher extends Component {
      if (revertedApplication) {
         defaultStatusFilters = [
           'organizationTypeIn: ["cf"]',
-          'statusIn: ["revert"]'
+          'statusIn: ["revert"]',
+          'associationTypeIn: "BGMEA"'
         ];
 
         if (loggedInUserId) {
@@ -485,17 +486,22 @@ class ApplicationProcessSearcher extends Component {
      this.setState({ displayVersion: showHistoryFilter });
 
       let defaultStatusFilters = [];
+      if (revertedApplication) {
+        defaultStatusFilters = [
+          'organizationTypeIn: ["cf"]',
+          'statusIn: ["revert"]',
+          'associationTypeIn: "BKMEA"'
+        ];
 
-       if (revertedApplication) {     
         if (loggedInUserId) {
           defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }  
+        }
       }
       else if (this.props.forwardedApplications) {
-        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","revert_to_applicant"]');
+        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","revert_to_applicant", associationTypeIn: "BKMEA"]');
       }
       else {
-        defaultStatusFilters.push('statusIn: ["forward_to_association"]', 'associationTypeIn: "BKMEA"');
+        defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]', 'associationTypeIn: "BKMEA"');
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
