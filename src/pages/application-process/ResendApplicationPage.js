@@ -22,7 +22,7 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FileUploader from "../../pickers/FileUploader";
-import { updateApplication, fetchApplicationWiseMovementList, fetchWorkforceDocument, updateWorkforceDocument } from "../../actions";
+import { updateApplication, fetchApplicationWiseMovementList, fetchWorkforceDocument, updateWorkforceDocument,createApplicationMovement } from "../../actions";
 import { bindActionCreators } from "redux";
 import { WORKFORCE_STATUS } from "../../constants";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
@@ -257,11 +257,16 @@ class ResendApplicationPage extends Component {
       ) || [];
 
     console.log("movements", movements);
+    const clean = (html) => html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
+
 
     const lastRevertMovement = [...movements]
-      .reverse()
-      .find((m) => m.revertNote);
-    console.log("lastRevertMovement", lastRevertMovement);
+    .reverse()
+    .find((m) => m.revertNote);
+
+  if (lastRevertMovement) {
+    lastRevertMovement.revertNote = clean(lastRevertMovement.revertNote);
+}
 
     this.setState({
       movements,
@@ -272,6 +277,43 @@ class ResendApplicationPage extends Component {
     console.error("Failed to load revert notes", error);
   }
 };
+handleForward = async () => {
+  const { applicationUuid, updateApplication, lastRevertMovement } = this.props;
+  const { lastRevertMovement: stateRevertMovement } = this.state;
+
+  const targetMovement = lastRevertMovement || stateRevertMovement;
+  if (!targetMovement?.applicationFrom?.id) {
+    console.error("No valid fromId found in lastRevertMovement");
+    return;
+  }
+
+  const fromId = decodeId(targetMovement.applicationFrom.id);
+
+  const updateApplicationData = {
+    id: applicationUuid,
+    status: WORKFORCE_STATUS.AMMENDED_APPLICATION,
+  };
+
+  try {
+    const result = await updateApplication(updateApplicationData, "forward workforce application");
+    console.log("Application updated:", result);
+
+    const createApplicationMovementData = {
+      applicationId: applicationUuid,
+      applicationFromId: this.props.loggedInUserId,
+      applicationToId: fromId,
+      note: "amended application",
+      status: WORKFORCE_STATUS.AMMENDED_APPLICATION,
+    };
+
+    await this.props.createApplicationMovement(createApplicationMovementData, "create workforce application movement");
+    console.log("New movement inserted:", createApplicationMovementData);
+
+  } catch (err) {
+    console.error("Forward mutation error:", err);
+  }
+};
+
 
   render() {
     const { classes, applicationUuid, documents, locale } = this.props;
@@ -370,7 +412,7 @@ class ResendApplicationPage extends Component {
             variant="contained"
             // color="primary"
             style={{ marginTop: 16 }}
-            // onClick={this.handleForward}
+            onClick={this.handleForward}
           >
             <FormattedMessage module="workforce" id="workforce.application.forward" defaultMessage="Forward" />
           </Button>
@@ -387,6 +429,7 @@ const mapDispatchToProps = (dispatch) =>
       fetchApplicationWiseMovementList,
       fetchWorkforceDocument,
       updateWorkforceDocument,
+      createApplicationMovement,
     },
     dispatch
   );

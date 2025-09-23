@@ -87,6 +87,7 @@ export const WORKFORCE_STATUS = {
   SELECTED: "selected",
   MEETING_CREATED: "meeting_created",
   FORWARD_TO_EIS_ADVISOR: "forward_to_eis_advisor",
+  AMMENDED_APPLICATION: "amended_application",
 
 };
 export const STATUS_MAP_BN  = {
