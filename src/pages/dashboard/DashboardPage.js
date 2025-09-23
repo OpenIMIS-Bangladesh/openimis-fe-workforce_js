@@ -43,7 +43,9 @@ import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import PersonIcon from '@material-ui/icons/Person';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ApplicationSummaryPage from "../application-process/ApplicationSummaryPage";
+import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise } from "../../actions";
 import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN} from "../../constants";
@@ -133,6 +135,31 @@ const useStyles = makeStyles((theme) => ({
 
 
 
+
+
+const ReturnedApplications = () => {
+  const classes = useStyles();
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  return (
+    <>
+      <ApplicationProcessSearcher
+        returnedApplications={true}
+        loggedInUserId={loggedInUserId}
+        disableButtons={1}
+        dynamicTableTitle= {"workforce.application.returned"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+};
 
 
 const Dashboard = () =>{
@@ -743,7 +770,18 @@ const DashboardPage = () => {
       ),
       icon: <DashboardIcon />,
     },
+    {
+      id: "returnedApplications",
+      text: (
+        <FormattedMessage
+          module="workforce"
+          id="workforce.application.returned"
+        />
+      ),
+      icon: <DashboardIcon />,
+    },
   ];
+  
 
   const theme = useTheme();
   const classes = useStyles();
@@ -766,6 +804,9 @@ const DashboardPage = () => {
         case "rejected":
           setSelectedMenu("rejectedApplications");
           break;
+        case "returnedApplications":
+          setSelectedMenu("returnedApplications");
+          break;
         default:
           setSelectedMenu("dashboard");
       }
@@ -785,6 +826,8 @@ const DashboardPage = () => {
         return <ApplicationSummaryPage status="rejected"/>;
       case "approvedApplications":
         return (<ApplicationSummaryPage status="approved"/>);
+      case "returnedApplications":
+        return (<ReturnedApplications/>);
       default:
         return <Dashboard />;
     }

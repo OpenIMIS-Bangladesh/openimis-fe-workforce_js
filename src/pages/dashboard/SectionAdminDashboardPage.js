@@ -42,6 +42,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import AssignmentReturnedIcon from '@material-ui/icons/AssignmentReturned';
 import ForwardIcon from '@material-ui/icons/Forward';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import BeneficiaryReport from "../reports/BeneficiaryReport";
 
 const useStyles = makeStyles((theme) => ({
@@ -126,7 +127,7 @@ const SidebarMenu = [
   // {
   //   id: "revertedToApplication",
   //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.application.revertedto" />
+  //     <FormattedMessage module="workforce" id="workforce.application.returned" />
   //   ),
   //   icon: <RestorePageIcon  />,
   // },
@@ -166,6 +167,13 @@ const SidebarMenu = [
     icon: <RestorePageIcon  />,
   },
   {
+    id: "returnedApplication",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.returned" />
+    ),
+    icon: <ArrowBackIcon  />,
+  },
+  {
     id: "sentMeetingSheet",
     text: (
       <FormattedMessage module="workforce" id="workforce.employee.application.sentMeetingSheet"
@@ -202,6 +210,31 @@ const SidebarMenu = [
 
 // ----------- Components to Render in Main Content -----------
 
+
+const ReturnedApplications = () => {
+  const classes = useStyles();
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  return (
+    <>
+      <ApplicationProcessSearcher
+        returnedApplications={true}
+        loggedInUserId={loggedInUserId}
+        disableButtons={1}
+        dynamicTableTitle= {"workforce.application.returned"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
+
 const FiledApplications = () =>{ 
   const classes = useStyles()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
@@ -211,7 +244,7 @@ const FiledApplications = () =>{
     <Typography variant="h5" gutterBottom>
       <FormattedMessage module="workforce" id="workforce.section1.admin.dashboard" />
     </Typography>
-   <Card className={classes.tableContainer}>
+      <Card className={classes.tableContainer}>
         <CardContent>
             <ApplicationProcessSearcher
                loggedInUserId={loggedInUserId}     
@@ -593,6 +626,8 @@ const SectionAdminDashboard = () => {
         return <RejectApplication />;
       case "revertedApplication":
         return <RevertApplication />;
+      case "returnedApplication":
+        return <ReturnedApplications />;
       case "pendingMeetingSheet":
         return <PendingMeetingSheet summaryData={pendingSummaryData} disableButtons={1} />;
       case "sentMeetingSheet":

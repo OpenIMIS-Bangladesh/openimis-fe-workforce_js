@@ -219,6 +219,7 @@ useEffect(() => {
 
     setSubmitting(false);
     setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+    setTimeout(()=>{window.location.reload()},2000);
   };
 
   return (

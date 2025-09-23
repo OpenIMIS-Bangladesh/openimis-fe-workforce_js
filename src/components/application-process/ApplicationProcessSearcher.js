@@ -215,6 +215,12 @@ class ApplicationProcessSearcher extends Component {
           defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
       }
+      else if (this.props.returnedApplications) {
+        defaultStatusFilters = ['statusIn: ["revert"]'];
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+      }
       else if (this.props.sentForVerificationApplications) {
         defaultStatusFilters.push('statusIn: ["forward_for_verification"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
       }
@@ -283,7 +289,14 @@ class ApplicationProcessSearcher extends Component {
       defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
     }
   
-  } else if (summaryId) {
+  } 
+  else if (this.props.returnedApplications) {
+    defaultStatusFilters = ['statusIn: ["revert"]'];
+    if (loggedInUserId) {
+      defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+    }
+  }
+  else if (summaryId) {
     defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
     additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
   } else {
@@ -342,7 +355,14 @@ class ApplicationProcessSearcher extends Component {
         if (loggedInUserId) {
           defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
-      } else if (summaryId) {
+      }
+      else if (this.props.returnedApplications) {
+        defaultStatusFilters = ['statusIn: ["revert"]'];
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+      }
+      else if (summaryId) {
         defaultStatusFilters.push('statusIn: ["forward_to_blwf_section","meeting_created","approved_by_dg"]',  'organizationTypeIn: ["blwf"]');
         additionalFilters.push(`blwfApplicationSummary_Id:"${summaryId}"`);
       }else if (this.props.verifiedApplications) {
@@ -389,22 +409,40 @@ class ApplicationProcessSearcher extends Component {
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) {
       this.setState({ displayVersion: showHistoryFilter });
       let defaultStatusFilters = [];
-      if (loggedInUserId) {
+      if (this.props.returnedApplications) {
+        defaultStatusFilters = ['statusIn: ["revert"]'];
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+      }
+      else if (loggedInUserId) {
           defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
       this.props.fetchApplicationsSummary(this.props.modulesManager,defaultStatusFilters, ['organizationTypeIn: ["cf"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DOCTOR) {
       this.setState({ displayVersion: showHistoryFilter });
       let defaultStatusFilters = [];
-      if (loggedInUserId) {
+      if (this.props.returnedApplications) {
+        defaultStatusFilters = ['statusIn: ["revert"]'];
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+      }
+      else if (loggedInUserId) {
           defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
       this.props.fetchApplicationsSummary(this.props.modulesManager,defaultStatusFilters, ['organizationTypeIn: ["blwf"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER_TWO || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
-      const defaultStatusFilters = [
+      let defaultStatusFilters = [
          'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
       ];
+      if (this.props.returnedApplications) {
+        defaultStatusFilters.push('statusIn: ["revert"]');
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+      }
       const orderByFilter = 'orderBy: ["-dateCreated"]';
 
       const hasStatusIn = prms?.some(f => f.includes("statusIn"));
@@ -456,6 +494,12 @@ class ApplicationProcessSearcher extends Component {
       {
         defaultStatusFilters.push('statusIn: ["forward_to_cf_section"]','associationTypeIn: "BGMEA"');
       }
+      else if (this.props.returnedApplications) {
+        defaultStatusFilters = ['statusIn: ["revert"]','associationTypeIn: "BGMEA"'];
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+      }
       else {
         defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]','associationTypeIn: "BGMEA"');
       }
@@ -500,6 +544,12 @@ class ApplicationProcessSearcher extends Component {
       else if (this.props.forwardedApplications) {
         defaultStatusFilters.push('statusIn: ["forward_to_cf_section","revert_to_applicant", associationTypeIn: "BKMEA"]');
       }
+      else if (this.props.returnedApplications) {
+        defaultStatusFilters = ['statusIn: ["revert"]','associationTypeIn: "BKMEA"'];
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+      }
       else {
         defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]', 'associationTypeIn: "BKMEA"');
       }
@@ -542,7 +592,13 @@ class ApplicationProcessSearcher extends Component {
         if (loggedInUserId) {
           defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
-      } else if (rejectedApplication) {
+      } 
+      else if (this.props.returnedApplications) {
+        defaultFilters = ['status: "revert"', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
+        if (loggedInUserId) {
+          defaultFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+      }else if (rejectedApplication) {
         defaultFilters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
       } else if (this.props.applicationStatus) {
         defaultFilters = ['statusIn: ["draft"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
@@ -557,18 +613,49 @@ class ApplicationProcessSearcher extends Component {
       this.props.fetchApplicationsSummary(this.props.modulesManager, defaultFilters);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
       this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(this.props.modulesManager, [
-        `organizationTypeIn: ["cf"], orderBy: ["-dateCreated"],cfApplicationSummary_Id:"${decodeId(
-          this.props.summaryId
-        )}"`,
-      ]);
+      let filters = [
+          `organizationTypeIn: ["cf"]`,
+          `orderBy: ["-dateCreated"]`,
+        ];
+
+        if(this.props.summaryId)
+        {
+          filters.push(`cfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`);
+        }
+
+        if (this.props.returnedApplications) {
+          filters.push(`statusIn: ["revert"]`);
+          if(loggedInUserId)
+          {
+            filters.push(`applicationFrom: "${loggedInUserId}"`);
+          }
+        }
+        this.props.fetchApplicationsSummary(this.props.modulesManager, [
+          filters.join(", "),
+        ]);
+
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
-    this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchApplicationsSummary(this.props.modulesManager, [
-      `organizationTypeIn: ["blwf"], orderBy: ["-dateCreated"],blwfApplicationSummary_Id:"${decodeId(
-        this.props.summaryId
-      )}"`,
-    ]);
+      this.setState({ displayVersion: showHistoryFilter });
+      let filters = [
+        `organizationTypeIn: ["blwf"]`,
+        `orderBy: ["-dateCreated"]`,
+      ];
+
+      if(this.props.summaryId)
+      {
+        filters.push(`blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`);
+      }
+
+      if (this.props.returnedApplications) {
+        filters.push(`statusIn: ["revert"]`);
+        if(loggedInUserId)
+        {
+          filters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+      }
+      this.props.fetchApplicationsSummary(this.props.modulesManager, [
+        filters.join(", "),
+      ]);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPLICANT) {
       this.setState({ displayVersion: showHistoryFilter });
       const isApproved = this.props.isApproved ? this.props.isApproved : false;
@@ -600,46 +687,96 @@ class ApplicationProcessSearcher extends Component {
       }
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
-      const filtersBase = [
-        'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
-        'organizationTypeIn: ["cf","blwf"]',
-        'orderBy: ["-dateCreated"]',
-      ];
-
-      const cfFilters = [...filtersBase, `cfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
-      const blwfFilters = [...filtersBase, `blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
-
-      const [] = await Promise.all([
-        this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
-        this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
-      ]);
+      if(this.props.summaryId)
+      {
+        const filtersBase = [
+          'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
+          'organizationTypeIn: ["cf","blwf"]',
+          'orderBy: ["-dateCreated"]',
+        ];
+        
+  
+        const cfFilters = [...filtersBase, `cfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+        const blwfFilters = [...filtersBase, `blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+  
+        const [] = await Promise.all([
+          this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
+          this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
+        ]);
+      }
+      else if(this.props.returnedApplications)
+      {
+        const filtersBase = [
+          'statusIn: ["revert"]',
+          'orderBy: ["-dateCreated"]'
+        ];
+        if(loggedInUserId)
+        {
+          filtersBase.push(`applicationFrom:"${loggedInUserId}"`);
+        }
+        this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
+      }
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
-      const filtersBase = [
-        'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
-        'organizationTypeIn: ["cf"]',
-        'orderBy: ["-dateCreated"]',
-      ];
+      if(this.props.summaryId)
+      {
+        const filtersBase = [
+          'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
+          'organizationTypeIn: ["cf"]',
+          'orderBy: ["-dateCreated"]',
+        ];
+  
+        const cfFilters = [...filtersBase, `cfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+  
+        const [] = await Promise.all([
+          this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
+        ]);
+      }
+      else if(this.props.returnedApplications)
+      {
+        const filtersBase= [
+          'statusIn: ["revert"]',
+          'organizationTypeIn: ["cf"]',
+          'orderBy: ["-dateCreated"]',
+        ];
 
-      const cfFilters = [...filtersBase, `cfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
-
-      const [] = await Promise.all([
-        this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
-      ]);
+        if(loggedInUserId)
+        {
+          filtersBase.push(`applicationFrom:"${loggedInUserId}"`);
+        }
+        this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
+      }
 
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
-      const filtersBase = [
-        'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
-        'organizationTypeIn: ["blwf"]',
-        'orderBy: ["-dateCreated"]',
-      ];
+      if(this.props.summaryId)
+      {
+        const filtersBase = [
+          'statusIn: ["forward_to_director","approved_by_director","approved_by_dg"]',
+          'organizationTypeIn: ["blwf"]',
+          'orderBy: ["-dateCreated"]',
+        ];
+  
+        const blwfFilters = [...filtersBase, `blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+  
+        const [] = await Promise.all([
+          this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
+        ]);
+      }
+      else if(this.props.returnedApplications)
+      {
+        const filtersBase= [
+          'statusIn: ["revert"]',
+          'organizationTypeIn: ["cf"]',
+          'orderBy: ["-dateCreated"]',
+        ];
 
-      const blwfFilters = [...filtersBase, `blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
-
-      const [] = await Promise.all([
-        this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
-      ]);
+        if(loggedInUserId)
+        {
+          filtersBase.push(`applicationFrom:"${loggedInUserId}"`);
+        }
+        this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
+      }
 
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
       this.setState({ displayVersion: showHistoryFilter });
@@ -2128,6 +2265,7 @@ class ApplicationProcessSearcher extends Component {
           </Box>
         ) : null}
         {userType === WORKFORCE_USER_TYPE.ADMIN ? (
+          disableButtons!==1 && (
           <Box
             style={{
               marginTop: 10,
@@ -2143,37 +2281,40 @@ class ApplicationProcessSearcher extends Component {
               <PrintIcon />
             </IconButton>
           </Box>
+          )
         ) : null}
         {userType === WORKFORCE_USER_TYPE.DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR ? (
-          <Box
-            style={{
-              marginTop: 10,
-              display: "flex",
-              gap: 2,
-              justifyContent: "space-between",
-            }}
-          >
-            <Button variant="contained" color="primary" onClick={this.handleBulkApproveByDirector}>
-              <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
-            </Button>
-            <IconButton onClick={this.handleOpenBFTN}>
-              <PrintIcon />
-            </IconButton>
-            <GenerateBFTN
-              open={openGenerateBFTN}
-              onClose={this.handleCloseBFTN}
-              applications={applications}
-              status={"approved_by_director"}
-              userRights={userRights}
-            />
-             <RevertApplicationModal
-              open={revertModalOpen}
-              onClose={this.handleCloseRevertModal}
-              revertByChecker={revertByChecker}
-              selectedApplication={this.state.selectedApplication}
-              onSubmitRevert={this.handleRevertSubmit}
-            />
-          </Box>
+          disableButtons!==1 && (
+            <Box
+              style={{
+                marginTop: 10,
+                display: "flex",
+                gap: 2,
+                justifyContent: "space-between",
+              }}
+            >
+              <Button variant="contained" color="primary" onClick={this.handleBulkApproveByDirector}>
+                <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
+              </Button>
+              <IconButton onClick={this.handleOpenBFTN}>
+                <PrintIcon />
+              </IconButton>
+              <GenerateBFTN
+                open={openGenerateBFTN}
+                onClose={this.handleCloseBFTN}
+                applications={applications}
+                status={"approved_by_director"}
+                userRights={userRights}
+              />
+              <RevertApplicationModal
+                open={revertModalOpen}
+                onClose={this.handleCloseRevertModal}
+                revertByChecker={revertByChecker}
+                selectedApplication={this.state.selectedApplication}
+                onSubmitRevert={this.handleRevertSubmit}
+              />
+            </Box>
+          )
         ) : null}
 
         {(() => {
@@ -2202,6 +2343,7 @@ class ApplicationProcessSearcher extends Component {
             );
           } else if (userType === WORKFORCE_USER_TYPE.ADMIN) {
             return (
+              disableButtons!==1 && (
               <>
                 <ForwardApplicationAdminModal
                   open={forwardModalOpen}
@@ -2224,6 +2366,7 @@ class ApplicationProcessSearcher extends Component {
                   onSubmitRevert={this.handleRevertSubmit}
                 />
               </>
+              )
             );
           } else if (userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
             return (
@@ -2358,39 +2501,40 @@ class ApplicationProcessSearcher extends Component {
             );
           } else if (userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
             return (
-              <>
-                <ForwardApplicationApproverModal
-                  open={forwardModalOpen}
-                  onClose={this.handleCloseForwardModal}
-                  selectedApplication={selectedApplication}
-                  onSubmitForward={this.handleForwardSubmit}
-                  userName={userName}
-                />
-                <RevertApplicationModal
-                  open={revertModalOpen}
-                  onClose={this.handleCloseRevertModal}
-                  revertByChecker={revertByChecker}
-                  selectedApplication={this.state.selectedApplication}
-                  onSubmitRevert={this.handleRevertSubmit}
-                />
-                {/* <ForwardApplicationAdminModal
-                  open={forwardModalOpen}
-                  onClose={this.handleCloseForwardModal}
-                  selectedApplication={selectedApplication}
-                  onSubmitForward={this.handleForwardSubmit}
-                /> */}
-                <GenerateBFTN
-                  open={openGenerateBFTN}
-                  onClose={this.handleCloseBFTN}
-                  applications={applications}
-                  status={"selected"}
-                  summary_Id={decodeId(this.props.summaryId)}
-                  userRights={userRights}
-                />
-              </>
+              disableButtons!==1 && (
+                <>
+                  <ForwardApplicationApproverModal
+                    open={forwardModalOpen}
+                    onClose={this.handleCloseForwardModal}
+                    selectedApplication={selectedApplication}
+                    onSubmitForward={this.handleForwardSubmit}
+                    userName={userName}
+                  />
+                  <RevertApplicationModal
+                    open={revertModalOpen}
+                    onClose={this.handleCloseRevertModal}
+                    revertByChecker={revertByChecker}
+                    selectedApplication={this.state.selectedApplication}
+                    onSubmitRevert={this.handleRevertSubmit}
+                  />
+                  {/* <ForwardApplicationAdminModal
+                    open={forwardModalOpen}
+                    onClose={this.handleCloseForwardModal}
+                    selectedApplication={selectedApplication}
+                    onSubmitForward={this.handleForwardSubmit}
+                  /> */}
+                  <GenerateBFTN
+                    open={openGenerateBFTN}
+                    onClose={this.handleCloseBFTN}
+                    applications={applications}
+                    status={"selected"}
+                    summary_Id={decodeId(this.props.summaryId)}
+                    userRights={userRights}
+                  />
+                </>
+              )
             );
           }
-
           return null;
         })()}
       <ConfirmModal

@@ -86,57 +86,61 @@ export const itemAdminFormatters = (
           <TabIcon />
         </IconButton>
       </Tooltip>
-      {/* <Tooltip title="History">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.process.actions",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <HistoryIcon />
-        </IconButton>
-      </Tooltip> */}
-      {/* <Tooltip title="Approve">
-        <IconButton
-          disabled={
-            application?.isHistory ||
-            application?.status === "approved_by_dg"}
-          onClick={() => component.handleApproval(application)}
-        >
-          <CheckIcon />
-        </IconButton>
-      </Tooltip> */}
-        <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => component.handleOpenRevertModal(application)}
-        >
-          <UndoIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Reject">
-        <span>
+      {component.props.disableButtons!==1 && (
+        <>
+        {/* <Tooltip title="History">
           <IconButton
-            onClick={() => component.handleRejectByDG(application)}
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.process.actions",
+                [decodeId(application?.id)],
+                false
+              );
+            }}
+          >
+            <HistoryIcon />
+          </IconButton>
+        </Tooltip> */}
+        {/* <Tooltip title="Approve">
+          <IconButton
             disabled={
               application?.isHistory ||
-              application?.status === "approved_by_dg" ||
-              application?.status === "forward_to_director" ||
-              application?.status === "rejected_by_dg"
-
-            }
-            color="error"
+              application?.status === "approved_by_dg"}
+            onClick={() => component.handleApproval(application)}
           >
-            <CloseIcon />
+            <CheckIcon />
           </IconButton>
-        </span>
-      </Tooltip>
+        </Tooltip> */}
+          <Tooltip title="Revert">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => component.handleOpenRevertModal(application)}
+          >
+            <UndoIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Reject">
+          <span>
+            <IconButton
+              onClick={() => component.handleRejectByDG(application)}
+              disabled={
+                application?.isHistory ||
+                application?.status === "approved_by_dg" ||
+                application?.status === "forward_to_director" ||
+                application?.status === "rejected_by_dg"
+
+              }
+              color="error"
+            >
+              <CloseIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
+        </>
+      )}
     </div>
   ));
   return formatters;
@@ -206,39 +210,44 @@ export const itemFormattersDirector = (
           <TabIcon />
         </IconButton>
       </Tooltip>
-      {/* <Tooltip title="Approve">
-        <IconButton
-          disabled={
-            application?.isHistory ||
-            application?.status !== "forward_to_director"
-          }
-          onClick={() => component.handleApprovalByDirector(application)}
-        >
-          <CheckIcon />
-        </IconButton>
-      </Tooltip> */}
-        <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => component.handleOpenRevertModal(application)}
-        >
-          <UndoIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Reject">
-        <span>
-          <IconButton
-            onClick={() => component.handleReject(application)}
-            disabled={
-              application?.isHistory ||
-              application?.status !== "forward_to_director"
-            }
-            color="error"
-          >
-            <CloseIcon />
-          </IconButton>
-        </span>
-      </Tooltip>
+      {component.props.disableButtons!==1 && (
+        <>
+          {/* <Tooltip title="Approve">
+            <IconButton
+              disabled={
+                application?.isHistory ||
+                application?.status !== "forward_to_director"
+              }
+              onClick={() => component.handleApprovalByDirector(application)}
+            >
+              <CheckIcon />
+            </IconButton>
+          </Tooltip> */}
+            <Tooltip title="Revert">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => component.handleOpenRevertModal(application)}
+            >
+              <UndoIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Reject">
+            <span>
+              <IconButton
+                onClick={() => component.handleReject(application)}
+                disabled={
+                  application?.isHistory ||
+                  application?.status !== "forward_to_director"
+                }
+                color="error"
+              >
+                <CloseIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </>
+      )}
+      
     </div>
   ));
   return formatters;
