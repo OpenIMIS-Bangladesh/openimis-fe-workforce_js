@@ -338,9 +338,9 @@ class ResendApplicationPage extends Component {
   handleConfirmModalClose = (result) => {
     if (this.state.confirmModalCallback) {
       this.state.confirmModalCallback(result === 1);
-    } else {
-      this.setState({ confirmModalOpen: false });
     }
+    this.setState({ confirmModalOpen: false });
+    
   };
 
   render() {
@@ -366,66 +366,6 @@ class ResendApplicationPage extends Component {
             />
           ))}
         </Grid>
-
-        {/* Preview Modal */}
-        {/* <Dialog
-          open={!!preview}
-          onClose={this.handlePreviewClose}
-          maxWidth="md"
-          fullWidth
-        >
-          <DialogContent style={{ position: "relative" }}>
-            <IconButton
-              onClick={this.handlePreviewClose}
-              style={{ position: "absolute", top: 8, right: 8 }}
-            >
-              <CloseIcon />
-            </IconButton>
-            {preview?.type === "image" ? (
-              <img
-                src={preview.src}
-                alt="Full Preview"
-                style={{ width: "100%" }}
-              />
-            ) : preview?.type === "pdf" ? (
-              <Document file={preview.src}>
-                <Page pageNumber={1} />
-              </Document>
-            ) : null}
-          </DialogContent>
-        </Dialog> */}
-
-        {/* file upload modal */}
-        {/* <Dialog
-          open={this.state.resendFile !== null}
-          onClose={this.handleCloseResendModal}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogContent>
-            <IconButton
-              onClick={this.handleCloseResendModal}
-              style={{ position: "absolute", top: 8, right: 8 }}
-            >
-              <CloseIcon />
-            </IconButton>
-
-            <Typography variant="h6" gutterBottom>
-              Upload Replacement Document
-            </Typography>
-
-            <FileUploader fieldKey="resend_document" />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={ this.handleResendDocument }
-              fullWidth
-              style={{ marginTop: 6 }}
-            >
-              <FormattedMessage module="workforce" id="workforce.submit" />
-            </Button>
-          </DialogContent>
-        </Dialog> */}
 
         {lastRevertMovement && (
             <Card variant="outlined" className={classes.cardSpacing} style={{ marginTop: 16, paddingLeft: 24 }}>
