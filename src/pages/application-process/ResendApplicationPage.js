@@ -338,8 +338,9 @@ class ResendApplicationPage extends Component {
   handleConfirmModalClose = (result) => {
     if (this.state.confirmModalCallback) {
       this.state.confirmModalCallback(result === 1);
+    }else{
+      this.setState({ confirmModalOpen: false });
     }
-    this.setState({ confirmModalOpen: false });
     
   };
 

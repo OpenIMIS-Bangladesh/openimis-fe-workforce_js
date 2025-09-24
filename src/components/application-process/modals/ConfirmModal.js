@@ -13,7 +13,7 @@ const ConfirmModal = ({ open, message, onClose,onConfirm}) => {
   const modulesManager = useModulesManager()
  const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
   return (
-    <Modal open={open} onClose={() => onClose(0)}>
+    <Modal open={open} onClose={() => onClose()}>
       <Box
         sx={{
           position: "absolute",
@@ -44,7 +44,7 @@ const ConfirmModal = ({ open, message, onClose,onConfirm}) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => {onClose(0);onConfirm()}} // ok
+            onClick={() => {onClose();onConfirm()}} // ok
           >
             {<FormattedMessage id="workforce.confirm.modal.ok" module="workforce" /> || "Are you sure?"}
           </Button>
