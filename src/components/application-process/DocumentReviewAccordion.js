@@ -114,7 +114,7 @@ const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, o
           </Grid>
           )}
 
-          {user_type != WORKFORCE_USER_TYPE.APPLICANT ? (
+          {user_type != WORKFORCE_USER_TYPE.APPLICANT && (
             <Grid item xs={12} style={{ display: "flex", gap: 8 }}>
               <Button variant="contained" color="primary" onClick={() => onVerify(index)} fullWidth>
                 <FormattedMessage module="workforce" id="workforce.application.recommended" />
@@ -123,16 +123,7 @@ const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, o
                 <FormattedMessage module="workforce" id="workforce.application.reject" />
               </Button>
             </Grid>
-          ):fromResend ? (
-            <Grid item xs={12} style={{ display: "flex", gap: 8 }}>
-              <Button variant="contained" color="primary" onClick={() => onVerify(index)} fullWidth>
-                <FormattedMessage module="workforce" id="workforce.application.recommended" />
-              </Button>
-              <Button variant="outlined" color="error" onClick={() => onReject(index)} fullWidth>
-                <FormattedMessage module="workforce" id="workforce.application.reject" />
-              </Button>
-            </Grid>
-          ):null}
+          )}
         </Grid>
       </AccordionDetails>
     </Accordion>
