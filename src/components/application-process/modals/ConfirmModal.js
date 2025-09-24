@@ -30,7 +30,7 @@ const ConfirmModal = ({ open, message, onClose,onConfirm}) => {
       >
         <Typography variant="h6" gutterBottom>
           
-          {formatMessage(message) || "Are you sure?"}
+          {formatMessage(`${message}`) || "Are you sure?"}
         </Typography>
 
         <Box sx={{ mt: 3, display: "flex", justifyContent: "space-around" }}>
