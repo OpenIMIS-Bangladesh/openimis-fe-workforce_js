@@ -26,6 +26,7 @@ import {
 } from "@material-ui/core";
 import { fetchSummaryApplications } from "../../actions";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
 import { WORKFORCE_USER_TYPE} from "../../constants";
@@ -110,9 +111,40 @@ const SidebarMenu = [
     ),
     icon: <HourglassFullTwoToneIcon />,
   }, 
+  {
+    id: "returnedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.pending" />
+    ),
+    icon: <ArrowBackIcon />,
+  }, 
 ];
 
 // ----------- Components to Render in Main Content -----------
+
+const ReturnedApplications = () => {
+  const classes = useStyles();
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  return (
+    <>
+      <ApplicationProcessSearcher
+        returnedApplications={true}
+        loggedInUserId={loggedInUserId}
+        disableButtons={1}
+        dynamicTableTitle= {"workforce.application.returned"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
 
 const FiledApplications = () =>{ 
   const classes = useStyles()
@@ -169,6 +201,8 @@ const DoctorDashboard = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
+      case "returnedApplications":
+        return <ReturnedApplications />;
       default:
         return <FiledApplications />;
     }

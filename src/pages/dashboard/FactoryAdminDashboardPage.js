@@ -35,6 +35,7 @@ import { fetchApplicationsSummary } from "../../actions";
 import CancelIcon from '@material-ui/icons/Cancel';
 import DraftsIcon from '@material-ui/icons/Drafts';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 
 const useStyles = makeStyles((theme) => ({
@@ -121,6 +122,13 @@ const SidebarMenu = [
       <FormattedMessage module="workforce" id="workforce.application.reverted" />
     ),
     icon: <RestorePageIcon  />,
+  },
+  {
+    id: "returnedApplication",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.returned" />
+    ),
+    icon: <ArrowBackIcon  />,
   },
   {
     id: "rejectedApplication",
@@ -329,6 +337,32 @@ const RevertApplication = () => {
     </div>
   </>
 )}
+
+
+const ReturnedApplications = () => {
+  const classes = useStyles();
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  return (
+    <>
+      <ApplicationProcessSearcher
+        returnedApplications={true}
+        loggedInUserId={loggedInUserId}
+        disableButtons={1}
+        dynamicTableTitle= {"workforce.application.returned"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
+
 const RejectApplication = () => {
   const classes = useStyles()
   return (
@@ -391,6 +425,7 @@ const ForwardedApplications = () => {
   )
 }
 
+
 const Others = () => (
   <Typography variant="h5">
     <FormattedMessage module="workforce" id="workforce.others" />
@@ -415,6 +450,8 @@ const FactoryAdminDashboard = () => {
         return <ForwardedApplications />;
       case "revertedApplication":
         return <RevertApplication />;
+      case "returnedApplication":
+        return <ReturnedApplications />;
       case "rejectedApplication":
         return <RejectApplication />;
       case "draftApplications":

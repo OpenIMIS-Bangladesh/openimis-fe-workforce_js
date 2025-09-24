@@ -135,6 +135,8 @@ const ForwardApplicationAdminModal = ({
           `update workforce application ${selectedApplication.workforceEmployee.firstNameEn}`
         )
       );
+
+      setTimeout(()=>{window.location.reload()},2000);
     
   };
 
@@ -162,13 +164,7 @@ const ForwardApplicationAdminModal = ({
     );
   }
 
-  useEffect(() => {
-  if (serverResponse?.status === "SUCCESS") {
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    }
-  }, [serverResponse]);
+  
 
   return (
     <Modal open={open} onClose={onClose}>

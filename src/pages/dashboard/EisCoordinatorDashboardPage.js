@@ -126,7 +126,7 @@ const SidebarMenu = [
   // {
   //   id: "revertedToApplication",
   //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.application.revertedto" />
+  //     <FormattedMessage module="workforce" id="workforce.application.returned" />
   //   ),
   //   icon: <RestorePageIcon  />,
   // },
