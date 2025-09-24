@@ -323,7 +323,7 @@ class ResendApplicationPage extends Component {
       {
       confirmModalOpen: true,
       confirmModalMessage: "DONE",
-      confirmModalCallback: null,
+      confirmModalCallback: true,
       }
     )
 

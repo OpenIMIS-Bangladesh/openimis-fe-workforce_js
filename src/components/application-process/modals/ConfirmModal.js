@@ -44,7 +44,7 @@ const ConfirmModal = ({ open, message, onClose,onConfirm}) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => {onClose(1);onConfirm()}} // ok
+            onClick={() => {onClose(0);onConfirm()}} // ok
           >
             {<FormattedMessage id="workforce.confirm.modal.ok" module="workforce" /> || "Are you sure?"}
           </Button>
