@@ -1161,6 +1161,24 @@ export const itemFormattersDoctor = (
             <UndoIcon />
           </IconButton>
         </Tooltip>
+         {component.props.revertedApplication && (
+            <Tooltip title="Resend">
+              <IconButton
+                disabled={application?.isHistory}
+                onClick={() => {
+                  historyPush(
+                    modulesManager,
+                    history,
+                    "workforce.route.applications.application.process.resend",
+                    [decodeId(application?.id)],
+                    false
+                  );
+                }}
+              >
+                <RestorePageIcon />
+              </IconButton>
+            </Tooltip>
+          )}
       {/* 
         <Tooltip title="Forward">
           <IconButton
@@ -1262,6 +1280,24 @@ export const itemFormattersAssociation = (
                 }}
               >
                 <UndoIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+           {component.props.revertedApplication && (
+            <Tooltip title="Resend">
+              <IconButton
+                disabled={application?.isHistory}
+                onClick={() => {
+                  historyPush(
+                    modulesManager,
+                    history,
+                    "workforce.route.applications.application.process.resend",
+                    [decodeId(application?.id)],
+                    false
+                  );
+                }}
+              >
+                <RestorePageIcon />
               </IconButton>
             </Tooltip>
           )}
@@ -1496,6 +1532,24 @@ export const itemFormattersApprover = (
               </IconButton>
             </span>
           </Tooltip>
+           {component.props.revertedApplication && (
+            <Tooltip title="Resend">
+              <IconButton
+                disabled={application?.isHistory}
+                onClick={() => {
+                  historyPush(
+                    modulesManager,
+                    history,
+                    "workforce.route.applications.application.process.resend",
+                    [decodeId(application?.id)],
+                    false
+                  );
+                }}
+              >
+                <RestorePageIcon />
+              </IconButton>
+            </Tooltip>
+          )}
           {/* <Tooltip title="Selected">
             <IconButton
               disabled={
