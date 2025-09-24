@@ -647,6 +647,7 @@
   "workforce.application.select.message": "আপনি কি এই আবেদনসমূহ নির্বাচন করতে চান?",
   "workforce.application.approve.message": "আপনি কি নির্বাচিত আবেদনসমূহ অনুমোদন করতে চান?",
   "workforce.application.reject.message": "আপনি কি নির্বাচিত আবেদনসমূহ বাতিল করতে চান?",
+  "workforce.application.resent.message": "আপনি কি নির্বাচিত আবেদনসমূহ  করতে চান?",
   "workforce.confirm.modal.ok": "এগিয়ে যান",
   "workforce.confirm.modal.cancel": "বাতিল করুন",
   "workforce.modal.print": "প্রিন্ট করুন",

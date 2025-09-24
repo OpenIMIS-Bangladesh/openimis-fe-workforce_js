@@ -26,6 +26,7 @@ import { updateApplication, fetchApplicationWiseMovementList, fetchWorkforceDocu
 import { bindActionCreators } from "redux";
 import { WORKFORCE_STATUS } from "../../constants";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
+import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
 import { safeApplicationId } from "../../utils/utils";
 
 const styles = (theme) => ({
@@ -105,8 +106,10 @@ class ResendApplicationPage extends Component {
         note: "",
         status: null,
       })),
-      lastRevertMovement: [],
-
+      lastRevertMovement:[],
+      confirmModalOpen: false,
+      confirmModalMessage: "",
+      confirmModalCallback: null,
       // fileStates: mockFiles.map((file) => ({
       //   ...file,
       //   comment: "",
@@ -314,14 +317,29 @@ class ResendApplicationPage extends Component {
         status: WORKFORCE_STATUS.AMMENDED_APPLICATION,
       };
 
-      await this.props.createApplicationMovement(createApplicationMovementData, "create workforce application movement");
-      console.log("New movement inserted:", createApplicationMovementData);
+    await this.props.createApplicationMovement(createApplicationMovementData, "create workforce application movement");
+    console.log("New movement inserted:", createApplicationMovementData);
+    this.setState(
+      {
+      confirmModalOpen: true,
+      confirmModalMessage: "DONE",
+      confirmModalCallback: null,
+      }
+    )
 
       this.props.uploadFile.map((file, index) => {
         this.props.createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(this.props.applicationUuid) }, `Created workforce document `);
       });
     } catch (err) {
       console.error("Forward mutation error:", err);
+    }
+  };
+ 
+  handleConfirmModalClose = (result) => {
+    if (this.state.confirmModalCallback) {
+      this.state.confirmModalCallback(result === 1);
+    } else {
+      this.setState({ confirmModalOpen: false });
     }
   };
 
@@ -410,31 +428,31 @@ class ResendApplicationPage extends Component {
         </Dialog> */}
 
         {lastRevertMovement && (
-          <Card variant="outlined" className={classes.cardSpacing} style={{ marginTop: 16 }}>
-            <CardContent>
-              <Typography variant="h6">Last Revert Movement</Typography>
-              <Typography>
-                <b>From:</b> {lastRevertMovement.applicationFrom?.loginName}
-              </Typography>
-              <Typography>
-                <b>To:</b> {lastRevertMovement.applicationTo?.loginName}
-              </Typography>
-              <Typography color="error">
-                <b>Revert Note:</b> {lastRevertMovement.revertNote}
-              </Typography>
-            </CardContent>
-          </Card>
-        )}
-        <Grid item xs={12} className={classes.rootGrid}>
+            <Card variant="outlined" className={classes.cardSpacing} style={{ marginTop: 16, paddingLeft: 24 }}>
+              <CardContent>
+                <Typography variant="h6">Last Revert Movement</Typography>
+                <Typography><b>From:</b> {lastRevertMovement.applicationFrom?.loginName}</Typography>
+                <Typography><b>To:</b> {lastRevertMovement.applicationTo?.loginName}</Typography>
+                <Typography color="error"><b>Revert Note:</b> {lastRevertMovement.revertNote}</Typography>
+              </CardContent>
+            </Card>
+          )}
+        <Grid item xs={12} className={classes.rootGrid} style={{ paddingLeft: 24 }}>
           <Button
             variant="contained"
-            // color="primary"
+            color="primary"
             style={{ marginTop: 16 }}
-            onClick={this.handleForward}
+            onClick={() => this.setState({ confirmModalOpen: true })}
           >
-            <FormattedMessage module="workforce" id="workforce.application.forward" defaultMessage="Forward" />
+            <FormattedMessage module="workforce" id="workforce.employee.application.forward" defaultMessage="Forward" />
           </Button>
         </Grid>
+         <ConfirmModal
+          open={this.state.confirmModalOpen}
+          message={"workforce.application.forward.message"}
+          onClose={this.handleConfirmModalClose}
+          onConfirm={this.handleForward}
+      />
       </Grid>
     );
   }

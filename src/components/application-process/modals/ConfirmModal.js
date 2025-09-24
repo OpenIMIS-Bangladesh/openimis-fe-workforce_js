@@ -9,7 +9,7 @@ import {
 
 
 
-const ConfirmModal = ({ open, message, onClose }) => {
+const ConfirmModal = ({ open, message, onClose,onConfirm}) => {
   const modulesManager = useModulesManager()
  const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
   return (
@@ -44,7 +44,7 @@ const ConfirmModal = ({ open, message, onClose }) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => onClose(1)} // ok
+            onClick={() => {onClose(1);onConfirm()}} // ok
           >
             {<FormattedMessage id="workforce.confirm.modal.ok" module="workforce" /> || "Are you sure?"}
           </Button>
