@@ -1235,7 +1235,7 @@ export function fetchWorkforceDocument(mm, filters) {
     "holder",
     "note",
     "workforceApplication{id}",
-    "workforceDocumentType{id,nameBn,nameEn,documentType,mandatoryForApplicant,formStepNo}",
+    "workforceDocumentType{id,nameBn,nameEn,documentType,mandatoryForApplicant,formStepNo,fieldId}",
 
   ];
   const payload = formatPageQueryWithCount(

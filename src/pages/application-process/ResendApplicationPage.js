@@ -22,10 +22,11 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FileUploader from "../../pickers/FileUploader";
-import { updateApplication, fetchApplicationWiseMovementList, fetchWorkforceDocument, updateWorkforceDocument,createApplicationMovement } from "../../actions";
+import { updateApplication, fetchApplicationWiseMovementList, fetchWorkforceDocument, updateWorkforceDocument, createApplicationMovement, createWorkforceDocument } from "../../actions";
 import { bindActionCreators } from "redux";
 import { WORKFORCE_STATUS } from "../../constants";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
+import { safeApplicationId } from "../../utils/utils";
 
 const styles = (theme) => ({
   paper: {
@@ -104,7 +105,7 @@ class ResendApplicationPage extends Component {
         note: "",
         status: null,
       })),
-      lastRevertMovement:[],
+      lastRevertMovement: [],
 
       // fileStates: mockFiles.map((file) => ({
       //   ...file,
@@ -240,84 +241,93 @@ class ResendApplicationPage extends Component {
       console.error("Mutation error:", err);
     }
   };
- fetchApplicationMovement = async () => {
-  const { modulesManager, applicationUuid } = this.props;
 
-  try {
-    const response = await this.props.fetchApplicationWiseMovementList(
-      modulesManager,
-      { applicationId: applicationUuid }
-    );
+  handleFileChange = (fieldKey, files) => {
+    this.setState((prevState) => {
+      const existingIndex = prevState.uploadedFiles.findIndex((item) => item.fieldKey === fieldKey);
 
-    console.log("response", response);
+      let updatedFiles = [...prevState.uploadedFiles];
+      if (existingIndex !== -1) {
+        updatedFiles[existingIndex] = { fieldKey, files };
+      } else {
+        updatedFiles.push({ fieldKey, files });
+      }
 
-    const movements =
-      response?.payload?.data?.workforceApplicationMovement?.edges?.map(
-        (e) => e.node
-      ) || [];
-
-    console.log("movements", movements);
-    const clean = (html) => html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
-
-
-    const lastRevertMovement = [...movements]
-    .reverse()
-    .find((m) => m.revertNote);
-
-  if (lastRevertMovement) {
-    lastRevertMovement.revertNote = clean(lastRevertMovement.revertNote);
-}
-
-    this.setState({
-      movements,
-      lastRevertMovement, // keep the whole object
-      revertNotes: lastRevertMovement ? [lastRevertMovement.revertNote] : [],
+      return { uploadedFiles: updatedFiles };
     });
-  } catch (error) {
-    console.error("Failed to load revert notes", error);
-  }
-};
-handleForward = async () => {
-  const { applicationUuid, updateApplication, lastRevertMovement } = this.props;
-  const { lastRevertMovement: stateRevertMovement } = this.state;
-
-  const targetMovement = lastRevertMovement || stateRevertMovement;
-  if (!targetMovement?.applicationFrom?.id) {
-    console.error("No valid fromId found in lastRevertMovement");
-    return;
-  }
-
-  const fromId = decodeId(targetMovement.applicationFrom.id);
-
-  const updateApplicationData = {
-    id: applicationUuid,
-    status: WORKFORCE_STATUS.AMMENDED_APPLICATION,
   };
 
-  try {
-    const result = await updateApplication(updateApplicationData, "forward workforce application");
-    console.log("Application updated:", result);
+  fetchApplicationMovement = async () => {
+    const { modulesManager, applicationUuid } = this.props;
 
-    const createApplicationMovementData = {
-      applicationId: applicationUuid,
-      applicationFromId: this.props.loggedInUserId,
-      applicationToId: fromId,
-      note: "amended application",
+    try {
+      const response = await this.props.fetchApplicationWiseMovementList(modulesManager, { applicationId: applicationUuid });
+
+      console.log("response", response);
+
+      const movements = response?.payload?.data?.workforceApplicationMovement?.edges?.map((e) => e.node) || [];
+
+      console.log("movements", movements);
+      const clean = (html) => html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
+
+      const lastRevertMovement = [...movements].reverse().find((m) => m.revertNote);
+
+      if (lastRevertMovement) {
+        lastRevertMovement.revertNote = clean(lastRevertMovement.revertNote);
+      }
+
+      this.setState({
+        movements,
+        lastRevertMovement, // keep the whole object
+        revertNotes: lastRevertMovement ? [lastRevertMovement.revertNote] : [],
+      });
+    } catch (error) {
+      console.error("Failed to load revert notes", error);
+    }
+  };
+  handleForward = async () => {
+    const { applicationUuid, updateApplication, lastRevertMovement } = this.props;
+    const { lastRevertMovement: stateRevertMovement } = this.state;
+
+    const targetMovement = lastRevertMovement || stateRevertMovement;
+    if (!targetMovement?.applicationFrom?.id) {
+      console.error("No valid fromId found in lastRevertMovement");
+      return;
+    }
+
+    const fromId = decodeId(targetMovement.applicationFrom.id);
+
+    const updateApplicationData = {
+      id: applicationUuid,
       status: WORKFORCE_STATUS.AMMENDED_APPLICATION,
     };
 
-    await this.props.createApplicationMovement(createApplicationMovementData, "create workforce application movement");
-    console.log("New movement inserted:", createApplicationMovementData);
+    try {
+      const result = await updateApplication(updateApplicationData, "forward workforce application");
+      console.log("Application updated:", result);
 
-  } catch (err) {
-    console.error("Forward mutation error:", err);
-  }
-};
+      const createApplicationMovementData = {
+        applicationId: applicationUuid,
+        applicationFromId: this.props.loggedInUserId,
+        applicationToId: fromId,
+        note: "amended application",
+        status: WORKFORCE_STATUS.AMMENDED_APPLICATION,
+      };
 
+      await this.props.createApplicationMovement(createApplicationMovementData, "create workforce application movement");
+      console.log("New movement inserted:", createApplicationMovementData);
+
+      this.props.uploadFile.map((file, index) => {
+        this.props.createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(this.props.applicationUuid) }, `Created workforce document `);
+      });
+    } catch (err) {
+      console.error("Forward mutation error:", err);
+    }
+  };
 
   render() {
     const { classes, applicationUuid, documents, locale } = this.props;
-    const { stateEdited, preview, fileStates, comment, applicationType, revertNotes,lastRevertMovement } = this.state;
+    const { stateEdited, preview, fileStates, comment, applicationType, revertNotes, lastRevertMovement } = this.state;
     console.log({ revertNotes: revertNotes });
 
     return (
@@ -329,6 +339,7 @@ handleForward = async () => {
               key={index}
               file={file}
               index={index}
+              onFileChange={this.handleFileChange}
               onCommentChange={this.handleFileCommentChange}
               onVerify={this.handleFileVerify}
               onReject={this.handleFileReject}
@@ -399,15 +410,21 @@ handleForward = async () => {
         </Dialog> */}
 
         {lastRevertMovement && (
-            <Card variant="outlined" className={classes.cardSpacing} style={{ marginTop: 16 }}>
-              <CardContent>
-                <Typography variant="h6">Last Revert Movement</Typography>
-                <Typography><b>From:</b> {lastRevertMovement.applicationFrom?.loginName}</Typography>
-                <Typography><b>To:</b> {lastRevertMovement.applicationTo?.loginName}</Typography>
-                <Typography color="error"><b>Revert Note:</b> {lastRevertMovement.revertNote}</Typography>
-              </CardContent>
-            </Card>
-          )}
+          <Card variant="outlined" className={classes.cardSpacing} style={{ marginTop: 16 }}>
+            <CardContent>
+              <Typography variant="h6">Last Revert Movement</Typography>
+              <Typography>
+                <b>From:</b> {lastRevertMovement.applicationFrom?.loginName}
+              </Typography>
+              <Typography>
+                <b>To:</b> {lastRevertMovement.applicationTo?.loginName}
+              </Typography>
+              <Typography color="error">
+                <b>Revert Note:</b> {lastRevertMovement.revertNote}
+              </Typography>
+            </CardContent>
+          </Card>
+        )}
         <Grid item xs={12} className={classes.rootGrid}>
           <Button
             variant="contained"
@@ -439,6 +456,7 @@ const mapStateToProps = (state, props) => ({
   application: state.workforce.application,
   applicationUuid: props?.match?.params?.application_uuid,
   documents: state.workforce.document,
+  uploadFile: state.workforce.uploadFile,
   locale: state.core?.user?.i_user?.language,
 });
 

@@ -17,7 +17,7 @@ const getFileType = (url = "") => {
   return "unsupported";
 };
 
-const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, onReject, locale,fromResend = false }) => {
+const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, onReject, locale,onFileChange,fromResend = false }) => {
   const type = getFileType(file?.url);
   const user_type = getUserType();
   const [numPages, setNumPages] = useState(null);
@@ -105,8 +105,8 @@ const DocumentReviewAccordion = ({ file,key, index, onCommentChange, onVerify, o
             <Grid item xs={6}>
             <Typography>{locale==="en"?file?.workforceDocumentType.nameEn:file?.workforceDocumentType.nameBn}</Typography>
                         <FileUploader
-                          fieldKey={document.fieldId}
-                          // onFileChange={onFileChange}
+                          fieldKey={file.fieldId}
+                          onFileChange={onFileChange}
                           documentType={file.documentType}
                           documentProp={file}
                           // uploadedBy={"factoryAdmin"}
