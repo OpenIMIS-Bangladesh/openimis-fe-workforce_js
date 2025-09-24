@@ -2019,7 +2019,9 @@ class ApplicationProcessSearcher extends Component {
       selectedApplication,
       openGenerateBFTN,
       showHistoryFilter,
-      selectedApplicationIds
+      selectedApplicationIds,
+      confirmModalMessage,
+      confirmModalOpen
     } = this.state;
     const totalMoneyAmount = applications?.reduce((acc, app) => {
       const amount = parseFloat(app.moneyAmount) || 0;
@@ -2538,8 +2540,8 @@ class ApplicationProcessSearcher extends Component {
           return null;
         })()}
       <ConfirmModal
-        open={this.state.confirmModalOpen}
-        message={this.state.confirmModalMessage}
+        open={confirmModalOpen}
+        message={confirmModalMessage}
         onClose={this.handleConfirmModalClose}
       />
     </React.Fragment>
