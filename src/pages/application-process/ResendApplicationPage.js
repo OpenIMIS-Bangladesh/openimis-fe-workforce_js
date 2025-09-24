@@ -26,6 +26,7 @@ import { updateApplication, fetchApplicationWiseMovementList, fetchWorkforceDocu
 import { bindActionCreators } from "redux";
 import { WORKFORCE_STATUS } from "../../constants";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
+import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
 
 const styles = (theme) => ({
   paper: {
@@ -105,7 +106,9 @@ class ResendApplicationPage extends Component {
         status: null,
       })),
       lastRevertMovement:[],
-
+      confirmModalOpen: false,
+      confirmModalMessage: "",
+      confirmModalCallback: null,
       // fileStates: mockFiles.map((file) => ({
       //   ...file,
       //   comment: "",
@@ -308,12 +311,25 @@ handleForward = async () => {
 
     await this.props.createApplicationMovement(createApplicationMovementData, "create workforce application movement");
     console.log("New movement inserted:", createApplicationMovementData);
+    this.setState(
+      {
+      confirmModalOpen: true,
+      confirmModalMessage: "DONE",
+      confirmModalCallback: null,
+      }
+    )
 
   } catch (err) {
     console.error("Forward mutation error:", err);
   }
 };
-
+  handleConfirmModalClose = (result) => {
+    if (this.state.confirmModalCallback) {
+      this.state.confirmModalCallback(result === 1);
+    } else {
+      this.setState({ confirmModalOpen: false });
+    }
+  };
 
   render() {
     const { classes, applicationUuid, documents, locale } = this.props;
@@ -399,7 +415,7 @@ handleForward = async () => {
         </Dialog> */}
 
         {lastRevertMovement && (
-            <Card variant="outlined" className={classes.cardSpacing} style={{ marginTop: 16 }}>
+            <Card variant="outlined" className={classes.cardSpacing} style={{ marginTop: 16, paddingLeft: 24 }}>
               <CardContent>
                 <Typography variant="h6">Last Revert Movement</Typography>
                 <Typography><b>From:</b> {lastRevertMovement.applicationFrom?.loginName}</Typography>
@@ -408,16 +424,22 @@ handleForward = async () => {
               </CardContent>
             </Card>
           )}
-        <Grid item xs={12} className={classes.rootGrid}>
+        <Grid item xs={12} className={classes.rootGrid} style={{ paddingLeft: 24 }}>
           <Button
             variant="contained"
-            // color="primary"
+            color="primary"
             style={{ marginTop: 16 }}
-            onClick={this.handleForward}
+            onClick={() => this.setState({ confirmModalOpen: true })}
           >
-            <FormattedMessage module="workforce" id="workforce.application.forward" defaultMessage="Forward" />
+            <FormattedMessage module="workforce" id="workforce.employee.application.forward" defaultMessage="Forward" />
           </Button>
         </Grid>
+         <ConfirmModal
+          open={this.state.confirmModalOpen}
+          message={"workforce.application.forward.message"}
+          onClose={this.handleConfirmModalClose}
+          onConfirm={this.handleForward}
+      />
       </Grid>
     );
   }
