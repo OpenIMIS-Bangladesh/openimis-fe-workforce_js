@@ -87,11 +87,7 @@ const ForwardApplicationSummarySectionAdminModal = ({
   const userType = getUserTypeFromRights(userRights);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
-  const officers = useSelector(
-  (state) =>
-    state.workforce.roleWiseUsers || []
-);
-console.log("jjjjjjjjj",officers)
+
 useEffect(() => {
     if (!open) {
       setEditorContent("");
@@ -217,9 +213,10 @@ useEffect(() => {
 
         <Divider style={{ marginBottom: 24 }} />
 
-        {/* Form Fields */}
-        <Paper className={classes.sectionPaper} elevation={1}>
-          <Grid container spacing={3} style={{ marginTop: 3 }}>
+              {/* Form Fields */}
+      <Paper className={classes.sectionPaper} elevation={1}>
+        <Grid container spacing={3} style={{ marginTop: 3 }}>
+          <Grid item xs={12}>
             <Typography
               variant="subtitle1"
               gutterBottom
@@ -232,7 +229,60 @@ useEffect(() => {
               বোর্ড অনুমোদনপত্র এবং ব্যাংক কপি আপলোড করুন
             </Typography>
           </Grid>
-        </Paper>
+
+          {/* বোর্ড অনুমোদনপত্র upload */}
+          <Grid item xs={12} sm={6}>
+            <Typography variant="body2" gutterBottom>
+              বোর্ড অনুমোদনপত্র
+            </Typography>
+            <input
+              accept="application/pdf,image/*"
+              style={{ display: "none" }}
+              id="board-approval-upload"
+              type="file"
+              onChange={(e) =>
+                setFormData({ ...formData, boardApproval: e.target.files[0] })
+              }
+            />
+            <label htmlFor="board-approval-upload">
+              <Button variant="outlined" component="span" fullWidth>
+                ফাইল নির্বাচন করুন
+              </Button>
+            </label>
+            {formData?.boardApproval && (
+              <Typography variant="caption" color="primary">
+                নির্বাচিত: {formData.boardApproval.name}
+              </Typography>
+            )}
+          </Grid>
+
+          {/* ব্যাংক কপি upload */}
+          <Grid item xs={12} sm={6}>
+            <Typography variant="body2" gutterBottom>
+              ব্যাংক কপি
+            </Typography>
+            <input
+              accept="application/pdf,image/*"
+              style={{ display: "none" }}
+              id="bank-copy-upload"
+              type="file"
+              onChange={(e) =>
+                setFormData({ ...formData, bankCopy: e.target.files[0] })
+              }
+            />
+            <label htmlFor="bank-copy-upload">
+              <Button variant="outlined" component="span" fullWidth>
+                ফাইল নির্বাচন করুন
+              </Button>
+            </label>
+            {formData?.bankCopy && (
+              <Typography variant="caption" color="primary">
+                নির্বাচিত: {formData.bankCopy.name}
+              </Typography>
+            )}
+          </Grid>
+        </Grid>
+      </Paper>
 
         {/* Action Buttons */}
         <div className={classes.buttonGroup}>
