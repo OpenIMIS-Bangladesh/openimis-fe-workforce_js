@@ -632,9 +632,7 @@ class ApplicationProcessSearcher extends Component {
             filters.push(`applicationFrom: "${loggedInUserId}"`);
           }
         }
-        this.props.fetchApplicationsSummary(this.props.modulesManager, [
-          filters.join(", "),
-        ]);
+        this.props.fetchApplicationsSummary(this.props.modulesManager, filters);
 
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
       this.setState({ displayVersion: showHistoryFilter });
@@ -1556,7 +1554,7 @@ class ApplicationProcessSearcher extends Component {
                   action: "forward_to_doctor",
                   applicationFromId: loggedInUserId,
                   applicationToId: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
-                    ? 177
+                    ? 151
                     : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
                     ? 199
                     : null,
