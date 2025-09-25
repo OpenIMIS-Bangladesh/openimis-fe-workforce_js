@@ -50,6 +50,7 @@ import { headerApplicant, headerApprover, headerChecker,headerCheckerTwo,headerS
 headerFactoryAdmin, headerDirector,headerBlwfSectionAdmin } from "../../utils/headers_types";
 import Searcher from "../shared/searcher/Searcher";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
+import ForwardApplicationSummarySectionAdminModal from "./modals/ForwardApplicationSummarySectionAdminModal";
 
 
 const styles = (theme) => ({
@@ -1580,7 +1581,7 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
-            // window.location.reload();
+            window.location.reload();
           }
         }
         this.setState({ confirmModalOpen: false, confirmModalCallback: null });
@@ -1593,7 +1594,7 @@ class ApplicationProcessSearcher extends Component {
     const userType = getUserTypeFromRights(this.props.userRights);
     let confirmModalMessage = "";
 
-    if (userType === WORKFORCE_USER_TYPE.CHECKER) {
+    if (userType === (WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO || WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR || WORKFORCE_USER_TYPE.BLWF_CHECKER || BLWF_DEPUTI_ASST_DIRECTOR)) {
       confirmModalMessage = "workforce.application.forward.message.toSectionAdmin";
     } else if(userType === WORKFORCE_USER_TYPE.EIS_OFFICER) {
       confirmModalMessage = "workforce.application.forward.message.toEisCoordinator";
@@ -2101,10 +2102,22 @@ class ApplicationProcessSearcher extends Component {
             >
 
               {disableButtons == 1 ? (
-                <IconButton onClick={this.handleOpenBFTN}>
-                  <PrintIcon />
-                </IconButton>
-              ) : (
+                  <>
+                    <IconButton onClick={this.handleOpenBFTN}>
+                      <PrintIcon />
+                    </IconButton>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => this.setState({ forwardModalOpenSA: true })}
+                    >
+                      <FormattedMessage
+                        module="workforce"
+                        id="workforce.employee.application.forward"
+                      />
+                    </Button>
+                  </>
+                )  : (
                 <>
                   {meetingForwardButton==1? (
                     <>
@@ -2403,6 +2416,13 @@ class ApplicationProcessSearcher extends Component {
             return (
               <>
                  <ForwardApplicationSectionAdminModal
+                  open={forwardModalOpenSA}
+                  onClose={this.handleCloseForwardModalForSectionAdmin}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
+                  onSubmitForward={this.handleForwardSubmit}
+                  userRights={userRights}
+                />
+                 <ForwardApplicationSummarySectionAdminModal
                   open={forwardModalOpenSA}
                   onClose={this.handleCloseForwardModalForSectionAdmin}
                   selectedApplicationIds={this.state.selectedApplicationIds}
