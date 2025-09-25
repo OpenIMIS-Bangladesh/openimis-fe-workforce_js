@@ -2115,7 +2115,7 @@ class ApplicationProcessSearcher extends Component {
                     >
                       <FormattedMessage
                         module="workforce"
-                        id="workforce.employee.application.forward"
+                        id="workforce.employee.application.disburse"
                       />
                     </Button>
                   </>

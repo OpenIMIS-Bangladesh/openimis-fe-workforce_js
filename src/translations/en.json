@@ -473,6 +473,8 @@
     "workforce.submit":"Submit",
     "workforce.confirm.submit":"Confirm Submit",
     "workforce.success.message":"✅ Application submitted successfully!",
+    "workforce.employee.application.disburse":"Confirm disbursement",
+    "workforce.employee.application.approvalByBoard":"List of applications approved by the board",
 
     "workforce.representative.sameAsRepresentative": "Same as Company Representative",
 

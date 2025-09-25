@@ -1,32 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  Modal,
-  Box,
-  Typography,
-  Button,
-  Grid,
-  Divider,
-  Paper,
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Checkbox, 
-  Select,
-  MenuItem
-} from "@material-ui/core";
-import {
-  useModulesManager,
-  formatMutation,
-  decodeId,
-  FormattedMessage,
-} from "@openimis/fe-core";
+import { Modal, Box, Typography, Button, Grid, Divider, Paper } from "@material-ui/core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchApplication, updateApplication, createApplicationMovement,fetchWorkforceUserRoleWiseUser } from "../../../actions";
+import { fetchApplication, updateApplication, createApplicationMovement, fetchWorkforceUserRoleWiseUser } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
 import { getUserTypeFromRights } from "../../../utils/utils";
+import FileUploader from "../../../pickers/FileUploader";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -68,14 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ForwardApplicationSummarySectionAdminModal = ({
-  open,
-  onClose,
-  selectedApplication,
-  selectedApplicationIds,
-  onSubmitForward,
-  userRights
-}) => {
+const ForwardApplicationSummarySectionAdminModal = ({ open, onClose, selectedApplication, selectedApplicationIds, onSubmitForward, userRights }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
@@ -84,11 +58,11 @@ const ForwardApplicationSummarySectionAdminModal = ({
   const [serverResponse, setServerResponse] = useState(null);
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const userType = getUserTypeFromRights(userRights);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
-
-useEffect(() => {
+  useEffect(() => {
     if (!open) {
       setEditorContent("");
       setSubmitting(false);
@@ -96,19 +70,15 @@ useEffect(() => {
       setFormData(null);
     }
     if (selectedApplication) {
-      return dispatch(
-        fetchApplication(modulesManager, [
-          `id: "${decodeId(selectedApplication?.id)}"`,
-        ])
-      );
+      return dispatch(fetchApplication(modulesManager, [`id: "${decodeId(selectedApplication?.id)}"`]));
     }
   }, [open]);
 
-useEffect(() => {
-  if (open) {
-    setFormData({});
-  }
-}, [open]);
+  useEffect(() => {
+    if (open) {
+      setFormData({});
+    }
+  }, [open]);
 
   const data = useSelector((state) => state.workforce[`application`] ?? []);
 
@@ -120,51 +90,62 @@ useEffect(() => {
       comment: editorContent,
       destinationOffice: formData,
     };
-
   };
 
-const handleForward = async () => {
-  try {
-    if (!formData?.userId) {
-      setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
-      return;
+  const handleForward = async () => {
+    try {
+      if (!formData?.userId) {
+        setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
+        return;
+      }
+
+      for (const encodedId of selectedApplicationIds) {
+        const updateApplicationData = {
+          id: decodeId(encodedId?.id),
+          status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
+        };
+
+        await dispatch(updateApplication(updateApplicationData, `update workforce application`));
+        const createApplicationMovementData = {
+          applicationId: decodeId(encodedId?.id),
+          applicationFromId: loggedInUserId,
+          applicationToId: formData.userId,
+          status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
+          action: "forward_for_verification",
+        };
+
+        await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
+      }
+
+      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+    } catch (error) {
+      console.error("Forwarding error:", error);
+      setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
     }
+  };
 
-    for (const encodedId of selectedApplicationIds) {
-      const updateApplicationData = {
-        id: decodeId(encodedId?.id),
-        status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
-      };
+  const handleFileChange = (fieldKey, files) => {
+    setUploadedFiles((prevFiles) => {
+      const existingIndex = prevFiles.findIndex((item) => item.fieldKey === fieldKey);
 
- await dispatch(
-      updateApplication(updateApplicationData, `update workforce application`)
-    );
-      const createApplicationMovementData = {
-        applicationId: decodeId(encodedId?.id),
-        applicationFromId: loggedInUserId,
-        applicationToId: formData.userId,
-        status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION, 
-        action: "forward_for_verification",
-      };
+      let updatedFiles = [...prevFiles];
+      if (existingIndex !== -1) {
+        updatedFiles[existingIndex] = { fieldKey, files };
+      } else {
+        updatedFiles.push({ fieldKey, files });
+      }
 
-      await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
-    }
+      return updatedFiles;
+    });
+  };
 
-    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
-  } catch (error) {
-    console.error("Forwarding error:", error);
-    setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
-  }
-};
-
-useEffect(() => {
-  if (serverResponse?.status === "SUCCESS") {
+  useEffect(() => {
+    if (serverResponse?.status === "SUCCESS") {
       setTimeout(() => {
         window.location.reload();
       }, 2000);
     }
   }, [serverResponse]);
-
 
   console.log({ newwwwwwwww: selectedApplicationIds });
 
@@ -177,25 +158,8 @@ useEffect(() => {
         </Button>
 
         {/* Title */}
-        <Typography
-          variant="h5"
-          gutterBottom
-          style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
-        >
-          নথি আপলোড
-        </Typography>
-
-        <Typography
-          variant="body1"
-          color="textSecondary"
-          gutterBottom
-          style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}
-        >
-          {selectedApplication
-            ? `${selectedApplication.workforceEmployee?.firstNameBn ||
-            "আবেদনকারী"
-            } এর আবেদন ফরওয়ার্ড করতে চান?`
-            : "একটি আবেদন বেছে নিন।"}
+        <Typography variant="h5" gutterBottom style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}>
+          প্রয়োজনীয় প্রমান পত্র আপলোড করুন
         </Typography>
 
         {/* Response message */}
@@ -206,83 +170,57 @@ useEffect(() => {
               color: serverResponse.status === "SUCCESS" ? "green" : "red",
             }}
           >
-            {serverResponse.status === "SUCCESS" ? "✅" : "⚠️"}{" "}
-            {serverResponse.message}
+            {serverResponse.status === "SUCCESS" ? "✅" : "⚠️"} {serverResponse.message}
           </Typography>
         )}
 
         <Divider style={{ marginBottom: 24 }} />
 
-              {/* Form Fields */}
-      <Paper className={classes.sectionPaper} elevation={1}>
-        <Grid container spacing={3} style={{ marginTop: 3 }}>
-          <Grid item xs={12}>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              style={{
-                fontWeight: "bold",
-                marginTop: 3,
-                textAlign: "center",
-              }}
-            >
-              বোর্ড অনুমোদনপত্র এবং ব্যাংক কপি আপলোড করুন
-            </Typography>
-          </Grid>
-
-          {/* বোর্ড অনুমোদনপত্র upload */}
-          <Grid item xs={12} sm={6}>
-            <Typography variant="body2" gutterBottom>
-              বোর্ড অনুমোদনপত্র
-            </Typography>
-            <input
-              accept="application/pdf,image/*"
-              style={{ display: "none" }}
-              id="board-approval-upload"
-              type="file"
-              onChange={(e) =>
-                setFormData({ ...formData, boardApproval: e.target.files[0] })
-              }
-            />
-            <label htmlFor="board-approval-upload">
-              <Button variant="outlined" component="span" fullWidth>
-                ফাইল নির্বাচন করুন
-              </Button>
-            </label>
-            {formData?.boardApproval && (
-              <Typography variant="caption" color="primary">
-                নির্বাচিত: {formData.boardApproval.name}
+        {/* Form Fields */}
+        <Paper className={classes.sectionPaper} elevation={1}>
+          <Grid container spacing={3} style={{ marginTop: 3 }}>
+            <Grid item xs={12}>
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+                style={{
+                  fontWeight: "bold",
+                  marginTop: 3,
+                  textAlign: "center",
+                }}
+              >
+                <FormattedMessage id="workforce.previewDetails.uploadedBy.factoryAdmin" module="workforce" />
               </Typography>
-            )}
-          </Grid>
+            </Grid>
 
-          {/* ব্যাংক কপি upload */}
-          <Grid item xs={12} sm={6}>
-            <Typography variant="body2" gutterBottom>
-              ব্যাংক কপি
-            </Typography>
-            <input
-              accept="application/pdf,image/*"
-              style={{ display: "none" }}
-              id="bank-copy-upload"
-              type="file"
-              onChange={(e) =>
-                setFormData({ ...formData, bankCopy: e.target.files[0] })
-              }
-            />
-            <label htmlFor="bank-copy-upload">
-              <Button variant="outlined" component="span" fullWidth>
-                ফাইল নির্বাচন করুন
-              </Button>
-            </label>
-            {formData?.bankCopy && (
-              <Typography variant="caption" color="primary">
-                নির্বাচিত: {formData.bankCopy.name}
+            {/* বোর্ড অনুমোদনপত্র upload */}
+            <Grid item xs={12}>
+              <Typography variant="body2" gutterBottom style={{fontWeight:"bold"}}>
+                বোর্ড অনুমোদনপত্র
               </Typography>
-            )}
+              <FileUploader
+                fieldKey="approveCopy"
+                onFileChange={handleFileChange}
+                documentType="approveStatement" 
+                documentProp={{ id: 1, name: "Approval Copy" }} 
+              />
+            </Grid>
+
+            {/* ব্যাংক কপি upload */}
+            {/* <Grid item xs={12} sm={6}>
+              <Typography variant="body2" gutterBottom>
+                ব্যাংক কপি
+              </Typography>
+              
+              <FileUploader
+                fieldKey="bankCopy"
+                onFileChange={handleFileChange}
+                documentType="bankStatement" 
+                documentProp={{ id: 1, name: "Bank Copy" }} 
+              />
+            </Grid> */}
           </Grid>
-        </Grid>
-      </Paper>
+        </Paper>
 
         {/* Action Buttons */}
         <div className={classes.buttonGroup}>
@@ -295,11 +233,11 @@ useEffect(() => {
             color="primary"
             disabled={submitting}
             onClick={async (e) => {
-            e.preventDefault();   
-            await handleForward(); 
+              e.preventDefault();
+              await handleForward();
             }}
           >
-            {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"}
+            {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : <FormattedMessage id="workforce.submit" module="workforce"/> }
           </Button>
         </div>
       </form>
