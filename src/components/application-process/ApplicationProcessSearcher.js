@@ -1937,7 +1937,7 @@ class ApplicationProcessSearcher extends Component {
           try {
             const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
             await Promise.all(
-              selectedApplicationIds.map(async (selectedItem) => {
+              selectedApplicationIds?.map(async (selectedItem) => {
                 const decodedId = decodeId(selectedItem?.id);
                 const updateApplicationData = {
                   id: decodedId,
@@ -1958,7 +1958,7 @@ class ApplicationProcessSearcher extends Component {
                   id: decodeId(this.props.summaryId),
                   status: WORKFORCE_STATUS.APPROVED_BY_DIRECTOR,
                 };
-                console.log("summay row id", id);
+                // console.log("summay row id", id);
                 await updateApplication(updateApplicationData, "update workforce application");
                 await createApplicationMovement(createApplicationMovementData, "create workforce movement");
                 await updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
