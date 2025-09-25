@@ -85,6 +85,7 @@ class ApplicationProcessSearcher extends Component {
       // 🆕 Modal state
       forwardModalOpen: false,
       forwardModalOpenSA: false,
+      forwardModalOpenSummarySA:false,
       revertModalOpen: false,
       selectedApplication: null,
       selectedUserId: "",
@@ -934,6 +935,9 @@ class ApplicationProcessSearcher extends Component {
   };
   handleCloseForwardModalForSectionAdmin = () => {
     this.setState({ forwardModalOpenSA: false, selectedApplication: null });
+  };
+  handleCloseForwardModalForSummarySectionAdmin = () => {
+    this.setState({ forwardModalOpenSummarySA: false, selectedApplication: null });
   };
   handleCloseForwardModalForEisAdvisor = () => {
     this.setState({ forwardModalOpenSA: false, selectedApplication: null });
@@ -2109,7 +2113,7 @@ class ApplicationProcessSearcher extends Component {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => this.setState({ forwardModalOpenSA: true })}
+                      onClick={() => this.setState({ forwardModalOpenSummarySA: true })}
                     >
                       <FormattedMessage
                         module="workforce"
@@ -2423,8 +2427,8 @@ class ApplicationProcessSearcher extends Component {
                   userRights={userRights}
                 />
                  <ForwardApplicationSummarySectionAdminModal
-                  open={forwardModalOpenSA}
-                  onClose={this.handleCloseForwardModalForSectionAdmin}
+                  open={this.state.forwardModalOpenSummarySA}
+                  onClose={this.handleCloseForwardModalForSummarySectionAdmin}
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
