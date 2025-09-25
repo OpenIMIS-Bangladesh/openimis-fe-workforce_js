@@ -28,6 +28,7 @@ import { WORKFORCE_STATUS } from "../../constants";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
 import { safeApplicationId } from "../../utils/utils";
+import CustomConfirmModal from "../../components/shared/CustomConfirmModal";
 
 const styles = (theme) => ({
   paper: {
@@ -389,7 +390,7 @@ class ResendApplicationPage extends Component {
             <FormattedMessage module="workforce" id="workforce.employee.application.forward" defaultMessage="Forward" />
           </Button>
         </Grid>
-         <ConfirmModal
+         <CustomConfirmModal
           open={this.state.confirmModalOpen}
           message={"workforce.application.forward.message"}
           onClose={this.handleConfirmModalClose}
