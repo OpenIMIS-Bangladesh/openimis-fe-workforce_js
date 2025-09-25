@@ -9,11 +9,11 @@ import {
 
 
 
-const ConfirmModal = ({ open, message, onClose,onConfirm}) => {
+const ConfirmModal = ({ open, message, onClose }) => {
   const modulesManager = useModulesManager()
  const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
   return (
-    <Modal open={open} onClose={() => onClose()}>
+    <Modal open={open} onClose={() => onClose(0)}>
       <Box
         sx={{
           position: "absolute",
@@ -30,7 +30,7 @@ const ConfirmModal = ({ open, message, onClose,onConfirm}) => {
       >
         <Typography variant="h6" gutterBottom>
           
-          {formatMessage(`${message}`) || "Are you sure?"}
+          {<FormattedMessage id={`${message}`} module="workforce" /> || "Are you sure?"}
         </Typography>
 
         <Box sx={{ mt: 3, display: "flex", justifyContent: "space-around" }}>
@@ -44,7 +44,7 @@ const ConfirmModal = ({ open, message, onClose,onConfirm}) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => {onClose();onConfirm()}} // ok
+            onClick={() => onClose(1)} // ok
           >
             {<FormattedMessage id="workforce.confirm.modal.ok" module="workforce" /> || "Are you sure?"}
           </Button>
