@@ -136,6 +136,7 @@ const ForwardApplicationSummaryModal = ({
     });
     return;
   }
+  const ids = selectedApplicationIds.map(obj => obj.id)
     const createApplicationSummaryData = {
       status:
       userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
@@ -149,7 +150,7 @@ const ForwardApplicationSummaryModal = ({
       month: formData?.month,
       organizationType: userType === "section_admin" ? "cf" : userType === "blwf_section_admin" ? "blwf": "eis",      
       sectionType: userType === "section_admin" ? "section_one" : userType === "section_admin_two" ? "section_two": null,
-      applicationData: JSON.stringify(selectedApplicationIds),
+      applicationData: JSON.stringify(ids),
     };
 
   const applicationSummeryMutation = formatMutation(
@@ -170,7 +171,7 @@ const ForwardApplicationSummaryModal = ({
           applicationSummaryId= response?.payload?.data?.workforceApplicationSummary?.edges?.[0]?.node?.id
           console.log({applicationSummaryId})
         })
-  console.log(decodeId(applicationSummaryId))
+  // console.log(decodeId(applicationSummaryId))
   if (!applicationSummaryId) {
     setServerResponse({ status: "ERROR", message: "সারাংশ তৈরি ব্যর্থ হয়েছে!" });
     return;
@@ -224,6 +225,7 @@ const handleSave = async () => {
     });
     return;
   }
+  const ids = selectedApplicationIds.map(obj => obj.id)
   const createApplicationSummarySheetData = {
     status:
     userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
@@ -237,14 +239,16 @@ const handleSave = async () => {
     month: formData?.month,
     organizationType: userType === "section_admin" ? "cf" : userType === "blwf_section_admin" ? "blwf": "eis",      
     sectionType: userType === "section_admin" ? "section_one" : userType === "section_admin_two" ? "section_two": null,
-    applicationData: JSON.stringify(selectedApplicationIds),
+    applicationData: JSON.stringify(ids),
   };
+  console.log({createApplicationSummarySheetData})
   const applicationSummeryMutation = formatMutation(
     "createWorkforceApplicationSummary",
     formatApplicationSummaryGQL(createApplicationSummarySheetData),
     "create workforce application summary"
   )
   const applicationSummeryClientMutationId = applicationSummeryMutation.clientMutationId;
+  console.log({applicationSummeryClientMutationId})
   await dispatch(
     createApplicationSummary(
       applicationSummeryMutation,
