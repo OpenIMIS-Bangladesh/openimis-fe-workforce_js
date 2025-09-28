@@ -50,8 +50,9 @@ class ApplicationSummaryPage extends Component {
       value: props.value || 0,
       openGenerateBFTN: false,
       expanded: null,
-    }
-  }
+      reorderedData: null, // <-- store reordered data
+    };
+  } 
 
   handleCloseBFTN = () => {
     this.setState({ openGenerateBFTN: false })
@@ -88,7 +89,20 @@ class ApplicationSummaryPage extends Component {
   };
 
   handleAccordionChange = (panelId) => (event, isExpanded) => {
-    this.setState({ expanded: isExpanded ? panelId : null });
+    this.setState((prev) => {
+      if (isExpanded) {
+        // ✅ Reorder based on filtered renderSummaryData
+        const { renderSummaryData } = this;
+        const reordered = [
+          renderSummaryData.find((i) => i.id === panelId),
+          ...renderSummaryData.filter((i) => i.id !== panelId),
+        ];
+        return { expanded: panelId, reorderedData: reordered };
+      } else {
+        // Reset to original filtered order
+        return { expanded: null, reorderedData: null };
+      }
+    });
   };
   componentDidMount() {
     const { modulesManager, fetchSummaryApplications } = this.props;
@@ -97,11 +111,11 @@ class ApplicationSummaryPage extends Component {
 
 
   render() {
-    const { intl, classes, rights, applications, } = this.props;
-    const { value, openGenerateBFTN } = this.state;
-    const summaryData = this.props.summaryData || [];
-    const { loggedInUserId } = this.props;
-    const status = this.props.status || "";
+    const { classes, rights, applications, summaryData, loggedInUserId, status } = this.props;
+    const { value, openGenerateBFTN, expanded, reorderedData } = this.state;
+    // const summaryData = this.props.summaryData || [];
+    // const { loggedInUserId } = this.props;
+    // const status = this.props.status || "";
 
     // console.clear();
     console.log('status data', status);
@@ -185,65 +199,60 @@ class ApplicationSummaryPage extends Component {
       }
     }
 
+    this.renderSummaryData = renderSummaryData;
+
+    const dataToRender = reorderedData || renderSummaryData;
+
     return (
-      <div>
-      <Grid container spacing={2}>
-        <Grid item xs={12} >
-        {renderSummaryData.map((item, index) => (
-            <Accordion
-              key={index}
-              expanded={this.state.expanded === item.id}
-              onChange={this.handleAccordionChange(item.id)}
-              className={classes.accordion}
-            >
-              <AccordionSummary
-                className={classes.accordionSummary}
-                expandIcon={<ExpandMoreIcon className="material-icons" />}
+       <div>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            {dataToRender.map((item, index) => (
+              <Accordion
+                key={index}
+                expanded={expanded === item.id}
+                onChange={this.handleAccordionChange(item.id)}
+                className={classes.accordion}
               >
-                <Typography variant="subtitle1" style={{ flex: 1 }}>
-                  <strong>{item.name}</strong>
-                </Typography>
-                <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
-                  {item.meetingDate} | {item.month} {item.year}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.accordionDetails}>
-                <Card style={{ width: "100%" }}>
-                  <CardContent>
-                    {this.state.expanded === item.id && (
-                      <ApplicationProcessSearcher
-                        summaryId={item.id}
-                        cacheFiltersKey="pending"
-                        onDoubleClick={this.onDoubleClick}
-                        loggedInUserId={loggedInUserId}
-                      />
-                    )}
-                  </CardContent>
-                </Card>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-          <GenerateBFTN
-            open={openGenerateBFTN}
-            onClose={this.handleCloseBFTN}
-            applications={applications}
-            userRights={rights}
-          />
+                <AccordionSummary
+                  className={classes.accordionSummary}
+                  expandIcon={<ExpandMoreIcon className="material-icons" />}
+                >
+                  <Typography variant="subtitle1" style={{ flex: 1 }}>
+                    <strong>{item.name}</strong>
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    style={{ marginLeft: "auto", color: "#015C63" }}
+                  >
+                    {item.meetingDate} | {item.month} {item.year}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails className={classes.accordionDetails}>
+                  <Card style={{ width: "100%" }}>
+                    <CardContent>
+                      {expanded === item.id && (
+                        <ApplicationProcessSearcher
+                          summaryId={item.id}
+                          cacheFiltersKey="pending"
+                          onDoubleClick={this.onDoubleClick}
+                          loggedInUserId={loggedInUserId}
+                        />
+                      )}
+                    </CardContent>
+                  </Card>
+                </AccordionDetails>
+              </Accordion>
+            ))}
 
-
-        {withTooltip(
-          <div className={classes.fab}>
-            <Fab color="primary" onClick={this.onAdd} style={{ marginBottom: 10 }}>
-              <AddIcon />
-            </Fab>
-            <Fab color="primary" onClick={this.handleOpenBFTN}>
-              <PrintIcon />
-            </Fab>
-          </div>,
-          <FormattedMessage module={MODULE_NAME} id={"workforce.employee.application.addNewTooltip"} />,
-        )}
+            <GenerateBFTN
+              open={openGenerateBFTN}
+              onClose={this.handleCloseBFTN}
+              applications={applications}
+              userRights={rights}
+            />
+          </Grid>
         </Grid>
-      </Grid>
       </div>
     );
   }

@@ -161,13 +161,29 @@ const ReturnedApplications = () => {
 const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
+  const [currentData, setCurrentData] = useState(summaryData);
+  const [originalData] = useState(summaryData); // store original order
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-  
 
   const handleChange = (panelId) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panelId : null);
+    if (isExpanded) {
+      // move clicked item to top
+      setCurrentData((prev) => {
+        const idx = prev.findIndex((item) => item.id === panelId);
+        if (idx === -1) return prev;
+        const newList = [...prev];
+        const [selected] = newList.splice(idx, 1);
+        newList.unshift(selected);
+        return newList;
+      });
+      setExpanded(panelId);
+    } else {
+      // collapse and restore original order
+      setExpanded(null);
+      setCurrentData(originalData);
+    }
   };
-  console.log("summary data", summaryData);
+
   return (
     <div className={classes.accordionPadding}>
       <Typography variant="h5" gutterBottom>
@@ -177,42 +193,46 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
         />
       </Typography>
 
-        {summaryData         
-          .map((item, index) => (
-            <Accordion
-              key={index}
-              expanded={expanded === item.id}
-              onChange={handleChange(item.id)}
-              className={classes.accordion}
+      {currentData.map((item) => (
+        <Accordion
+          key={item.id}
+          expanded={expanded === item.id}
+          onChange={handleChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography
+              variant="body2"
+              style={{ marginLeft: "auto", color: "#015C63" }}
             >
-              <AccordionSummary
-                className={classes.accordionSummary}
-                expandIcon={<ExpandMoreIcon className="material-icons" />}
-              >
-                <Typography variant="subtitle1" style={{ flex: 1 }}>
-                  <strong>{item.name}</strong>
-                </Typography>
-                <Typography
-                  variant="body2"
-                  style={{ marginLeft: "auto", color: "#015C63" }}
-                >
-                  {item.meetingDate} | {item.month} {item.year}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.accordionDetails}>
-                <Card style={{ width: "100%" }}>
-                  <CardContent>
-                    {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons} loggedInUserId={loggedInUserId} />
-                    )}
-                  </CardContent>
-                </Card>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {expanded === item.id && (
+                  <ApplicationProcessSearcher
+                    summaryId={item.id}
+                    disableButtons={disableButtons}
+                    loggedInUserId={loggedInUserId}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
     </div>
   );
 };
+
 
 // ------------------------------------------------------------
 
