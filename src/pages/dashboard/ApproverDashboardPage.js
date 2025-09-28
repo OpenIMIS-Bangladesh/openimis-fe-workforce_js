@@ -22,6 +22,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import CheckCircleOutlineTwoToneIcon from "@material-ui/icons/CheckCircleOutlineTwoTone";
+import RestorePageIcon from "@material-ui/icons/RestorePage";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { fetchSummaryApplications } from "../../actions";
 
@@ -121,6 +122,16 @@ const SidebarMenu = [
     icon: <CheckCircleOutlineTwoToneIcon />,
   },
   {
+    id: "revertedApplications",
+    text: (
+      <FormattedMessage
+        module="workforce"
+        id="workforce.application.reverted"
+      />
+    ),
+    icon: <RestorePageIcon />,
+  },
+  {
     id: "returnedApplications",
     text: (
       <FormattedMessage
@@ -144,6 +155,29 @@ const ReturnedApplications = () => {
         loggedInUserId={loggedInUserId}
         disableButtons={1}
         dynamicTableTitle= {"workforce.application.returned"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
+const RevertedApplications = () => {
+  const classes = useStyles();
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  return (
+    <>
+      <ApplicationProcessSearcher
+        revertedApplications={true}
+        loggedInUserId={loggedInUserId}
+        disableButtons={1}
+        dynamicTableTitle= {"workforce.application.reverted"}
       />
       {/* Pagination */}
       <div className={classes.pagination}>
@@ -262,6 +296,8 @@ const ApproverDashboard = () => {
         );
       case "approveMeetingSheet":
         return <FiledApplications summaryData={sentSummaryData} disableButtons={1}/>;
+      case "revertedApplications":
+        return <RevertedApplications/>;
       case "returnedApplications":
         return <ReturnedApplications/>;
       default:

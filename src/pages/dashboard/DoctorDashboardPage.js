@@ -26,6 +26,8 @@ import {
 } from "@material-ui/core";
 import { fetchSummaryApplications } from "../../actions";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
+import ForwardIcon from '@material-ui/icons/Forward';
+import RestorePageIcon from '@material-ui/icons/RestorePage';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
@@ -112,15 +114,77 @@ const SidebarMenu = [
     icon: <HourglassFullTwoToneIcon />,
   }, 
   {
+    id: "forwardedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.forwarded" />
+    ),
+    icon: <ForwardIcon />,
+  }, 
+  {
+    id: "revertedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.reverted" />
+    ),
+    icon: <RestorePageIcon />,
+  }, 
+  {
     id: "returnedApplications",
     text: (
-      <FormattedMessage module="workforce" id="workforce.application.pending" />
+      <FormattedMessage module="workforce" id="workforce.application.returned" />
     ),
     icon: <ArrowBackIcon />,
   }, 
 ];
 
 // ----------- Components to Render in Main Content -----------
+
+const ForwardedApplications = () => {
+  const classes = useStyles();
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  return (
+    <>
+      <ApplicationProcessSearcher
+        forwardedApplications={true}
+        loggedInUserId={loggedInUserId}
+        disableButtons={1}
+        dynamicTableTitle= {"workforce.application.forwarded"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
+
+const RevertedApplications = () => {
+  const classes = useStyles();
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  return (
+    <>
+      <ApplicationProcessSearcher
+        revertedApplications={true}
+        loggedInUserId={loggedInUserId}
+        disableButtons={1}
+        dynamicTableTitle= {"workforce.application.reverted"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
 
 const ReturnedApplications = () => {
   const classes = useStyles();
@@ -149,18 +213,9 @@ const ReturnedApplications = () => {
 const FiledApplications = () =>{ 
   const classes = useStyles()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-  const user_type = getUserType();
 
   return (
   <>
-    <Typography variant="h5" gutterBottom>
-       {user_type === WORKFORCE_USER_TYPE.DOCTOR && (
-    <FormattedMessage module="workforce" id="workforce.section.cf.doctor.dashboard" />
-       )}
-       {user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR && (
-    <FormattedMessage module="workforce" id="workforce.section.blwf.doctor.dashboard" />
-       )}
-    </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
             <ApplicationProcessSearcher loggedInUserId={loggedInUserId}
@@ -189,6 +244,8 @@ const DoctorDashboard = () => {
   const modulesManager = useModulesManager()
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); 
   
+  const user_type = getUserType();
+  
   
 //  useEffect(() => {
 //       return dispatch(fetchSummaryApplications(modulesManager,['status:"meeting_created"', 'organizationType:"cf"']));
@@ -201,6 +258,10 @@ const DoctorDashboard = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
+      case "forwardedApplications":
+        return <ForwardedApplications />;
+      case "revertedApplications":
+        return <RevertedApplications />;
       case "returnedApplications":
         return <ReturnedApplications />;
       default:
@@ -232,6 +293,14 @@ const DoctorDashboard = () => {
 
         {/* Main Content */}
         <Grid item xs={12} md={9} className={classes.content}>
+          <Typography variant="h5" gutterBottom>
+            {user_type === WORKFORCE_USER_TYPE.DOCTOR && (
+              <FormattedMessage module="workforce" id="workforce.section.cf.doctor.dashboard" />
+            )}
+            {user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR && (
+              <FormattedMessage module="workforce" id="workforce.section.blwf.doctor.dashboard" />
+            )}
+          </Typography>
           {renderContent()}
         </Grid>
       </Grid>
