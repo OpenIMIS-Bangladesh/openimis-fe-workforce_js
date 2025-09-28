@@ -22,7 +22,6 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import CheckCircleOutlineTwoToneIcon from "@material-ui/icons/CheckCircleOutlineTwoTone";
-import RestorePageIcon from "@material-ui/icons/RestorePage";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { fetchSummaryApplications } from "../../actions";
 
@@ -122,16 +121,6 @@ const SidebarMenu = [
     icon: <CheckCircleOutlineTwoToneIcon />,
   },
   {
-    id: "revertedApplications",
-    text: (
-      <FormattedMessage
-        module="workforce"
-        id="workforce.application.reverted"
-      />
-    ),
-    icon: <RestorePageIcon />,
-  },
-  {
     id: "returnedApplications",
     text: (
       <FormattedMessage
@@ -168,46 +157,16 @@ const ReturnedApplications = () => {
     </>
   )
 }
-const RevertedApplications = () => {
-  const classes = useStyles();
-  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-  return (
-    <>
-      <ApplicationProcessSearcher
-        revertedApplications={true}
-        loggedInUserId={loggedInUserId}
-        disableButtons={1}
-        dynamicTableTitle= {"workforce.application.reverted"}
-      />
-      {/* Pagination */}
-      <div className={classes.pagination}>
-        <Button>
-          <FormattedMessage module="workforce" id="workforce.back" />
-        </Button>
-        <Button>
-          <FormattedMessage module="workforce" id="workforce.next" />
-        </Button>
-      </div>
-    </>
-  )
-}
 
 const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
   const [currentData, setCurrentData] = useState(summaryData);
-  const [originalData, setOriginalData] = useState(summaryData);
+  const [originalData] = useState(summaryData);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-
-  // keep originalData and currentData in sync when props change
-  useEffect(() => {
-    setCurrentData(summaryData);
-    setOriginalData(summaryData);
-  }, [summaryData]);
 
   const handleChange = (panelId) => (event, isExpanded) => {
     if (isExpanded) {
-      // move clicked item to top
       setCurrentData((prev) => {
         const idx = prev.findIndex((item) => item.id === panelId);
         if (idx === -1) return prev;
@@ -218,7 +177,6 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
       });
       setExpanded(panelId);
     } else {
-      // collapse and restore original order
       setExpanded(null);
       setCurrentData(originalData);
     }
@@ -229,7 +187,7 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
       <Typography variant="h5" gutterBottom>
         <FormattedMessage
           module="workforce"
-          id="workforce.cf.approver.dashboard"
+          id="workforce.eis.financial.dashboard"
         />
       </Typography>
 
@@ -274,17 +232,16 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
 };
 
 
-
 // ------------------------------------------------------------
 
-const ApproverDashboard = () => {
+const EisFinancialOfficerDashboard = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
-  const [selectedMenu, setSelectedMenu] = useState("pendingMeetingSheet"); // Default first menu
+  const [selectedMenu, setSelectedMenu] = useState("pendingMeetingSheet");
   useEffect(() => {
     return dispatch(
-      fetchSummaryApplications(modulesManager, ['organizationType:"cf"'])
+      fetchSummaryApplications(modulesManager, ['organizationType:"eis"'])
     );
   }, []);
 
@@ -292,7 +249,7 @@ const ApproverDashboard = () => {
     (state) => state.workforce[`applicationsSummary`] ?? []
   );
 
-  const pendingSummaryData = data.filter(d => d.status === "meeting_created");
+  const pendingSummaryData = data.filter(d => d.status === "forward_to_eis_financial_officer");
   const sentSummaryData = data.filter(d => d.status === "forward_to_dg" || d.status ==='forward_to_director');
 
   const renderContent = () => {
@@ -303,8 +260,6 @@ const ApproverDashboard = () => {
         );
       case "approveMeetingSheet":
         return <FiledApplications summaryData={sentSummaryData} disableButtons={1}/>;
-      case "revertedApplications":
-        return <RevertedApplications/>;
       case "returnedApplications":
         return <ReturnedApplications/>;
       default:
@@ -343,4 +298,4 @@ const ApproverDashboard = () => {
   );
 };
 
-export default ApproverDashboard;
+export default EisFinancialOfficerDashboard;

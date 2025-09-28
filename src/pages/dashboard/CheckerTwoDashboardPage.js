@@ -32,9 +32,10 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CheckCircleOutlineTwoToneIcon from '@material-ui/icons/CheckCircleOutlineTwoTone';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ForwardIcon from '@material-ui/icons/Forward';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -118,6 +119,20 @@ const SidebarMenu = [
     icon: <HourglassFullTwoToneIcon />,
   },  
   {
+    id: "forwardedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.forwarded" />
+    ),
+    icon: <ForwardIcon />,
+  },  
+  {
+    id: "revertedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.reverted" />
+    ),
+    icon: <RestorePageIcon />,
+  },  
+  {
     id: "returnedApplications",
     text: (
       <FormattedMessage module="workforce" id="workforce.application.returned" />
@@ -127,6 +142,7 @@ const SidebarMenu = [
 ];
 
 // ----------- Components to Render in Main Content -----------
+
 
 const ReturnedApplications = () => {
   const classes = useStyles();
@@ -155,15 +171,69 @@ const ReturnedApplications = () => {
 const FiledApplications = () =>{ 
   const classes = useStyles()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
   return (
   <>
-    <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.checker2.dashboard" />
-    </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
             <ApplicationProcessSearcher loggedInUserId={loggedInUserId}
-                   revertedApplication={true} 
+                filedApplications={true}    
+            />
+          </CardContent>
+      </Card>
+
+    {/* Pagination */}
+    <div className={classes.pagination}>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.back" />
+      </Button>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.next" />
+      </Button>
+    </div>
+  </>
+);}
+
+
+const ForwardedApplications = () =>{ 
+  const classes = useStyles()
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  return (
+  <>
+   <Card className={classes.tableContainer}>
+        <CardContent>
+            <ApplicationProcessSearcher 
+                loggedInUserId={loggedInUserId}
+                forwardedApplications={true}    
+            />
+          </CardContent>
+      </Card>
+
+    {/* Pagination */}
+    <div className={classes.pagination}>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.back" />
+      </Button>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.next" />
+      </Button>
+    </div>
+  </>
+);}
+
+
+const RevertedApplications = () =>{ 
+  const classes = useStyles()
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  return (
+  <>
+   <Card className={classes.tableContainer}>
+        <CardContent>
+            <ApplicationProcessSearcher 
+                loggedInUserId={loggedInUserId}
+                revertedApplications={true}    
             />
           </CardContent>
       </Card>
@@ -190,20 +260,16 @@ const checkedApplications = () => (
 
 const CheckerTwoDashboardPage = () => {
   const classes = useStyles();
-  const dispatch = useDispatch()
-  const modulesManager = useModulesManager()
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
- useEffect(() => {
-      return dispatch(fetchSummaryApplications(modulesManager,['status:"meeting_created"']));
-    }, []);
-  const data = useSelector(
-      (state) => state.workforce[`applicationsSummary`] ?? []
-    );
 
   const renderContent = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
+      case "forwardedApplications":
+        return <ForwardedApplications />;
+      case "revertedApplications":
+        return <RevertedApplications />;
       case "returnedApplications":
         return <ReturnedApplications />;
       default:
@@ -235,6 +301,9 @@ const CheckerTwoDashboardPage = () => {
 
         {/* Main Content */}
         <Grid item xs={12} md={9} className={classes.content}>
+          <Typography variant="h5" gutterBottom>
+            <FormattedMessage module="workforce" id="workforce.checker2.dashboard" />
+          </Typography>
           {renderContent()}
         </Grid>
       </Grid>

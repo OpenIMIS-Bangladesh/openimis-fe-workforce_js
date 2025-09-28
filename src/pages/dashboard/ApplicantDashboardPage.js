@@ -265,11 +265,13 @@ const ApplicationStatus = () => {
 
 
 const RevertApplication = () => {
-  const classes = useStyles()
+  const classes = useStyles();
+  const loggedInUserId= useSelector((state) => state.core?.user?.i_user?.id);
   return (
     <>
       <ApplicationProcessSearcher
         revertedApplication={true}
+        loggedInUserId= {loggedInUserId}
         dynamicTableTitle= {"workforce.application.reverted"}
       />
 

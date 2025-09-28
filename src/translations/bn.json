@@ -386,6 +386,7 @@
     "workforce.eis.coordinator.dashboard":"ইআইএস কোঅর্ডিনেটর এর ড্যাশবোর্ড",
     "workforce.eis.officer.dashboard":"ইআইএস অফিসার এর ড্যাশবোর্ড",
     "workforce.eis.committe.dashboard":"ইআইএস কমিটির ড্যাশবোর্ড",
+    "workforce.eis.financial.dashboard":"ইআইএস ফিনান্সিয়াল অফিসার এর ড্যাশবোর্ড",
 
 
   "core.LanguageQuickPicker.dialog.title": "ভাষা নিশ্চিত করুন",
@@ -647,6 +648,7 @@
   "workforce.application.forward.message.toSectionUser": "আপনি কি নির্বাচিত আবেদনসমূহ ডাটা এন্ট্রি অপারেটরে ফরওয়ার্ড করতে চান?",
   "workforce.application.forward.message.toDoctor": "আপনি কি নির্বাচিত আবেদনসমূহ ডক্টরের কাছে ফরওয়ার্ড করতে চান?",
   "workforce.application.forward.message.toEisCoordinator": "আপনি কি নির্বাচিত আবেদনসমূহ ইআইএস কোঅর্ডিনেটর এর কাছে ফরওয়ার্ড করতে চান?",
+  "workforce.application.forward.message.toEisCommittee": "আপনি কি নির্বাচিত আবেদনসমূহ ইআইএস কমিটির কাছে ফরওয়ার্ড করতে চান?",
   "workforce.application.select.message": "আপনি কি এই আবেদনসমূহ নির্বাচন করতে চান?",
   "workforce.application.approve.message": "আপনি কি নির্বাচিত আবেদনসমূহ অনুমোদন করতে চান?",
   "workforce.application.reject.message": "আপনি কি নির্বাচিত আবেদনসমূহ বাতিল করতে চান?",

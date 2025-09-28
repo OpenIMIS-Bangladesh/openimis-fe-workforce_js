@@ -364,7 +364,7 @@
     "workforce.application.for":"Application for whom?",
     "workforce.application.for.type.self":"Self",
     "workforce.application.for.type.dependent":"Dependent",
-  "workforce.application.for.type.dependent.children": "For Children",
+    "workforce.application.for.type.dependent.children": "For Children",
     "workforce.application.for.type.dependent.mother":"For the wife in case of a male worker",
     "workforce.application.reason.type":"Purpose for financial aid?",
     "workforce.application.permission.yes":"Yes",
@@ -477,7 +477,6 @@
     "workforce.employee.application.approvalByBoard":"List of applications approved by the board",
 
     "workforce.representative.sameAsRepresentative": "Same as Company Representative",
-
     "workforce.application.process.all": "All",
     "workforce.application.process.accidental": "Accidental",
     "workforce.application.process.death": "Death",
@@ -486,6 +485,7 @@
     "workforce.application.process.approved": "Approved",
     "workforce.application.process.rejected": "Rejected",
     "workforce.application.process.reverted": "Reverted",
+    "workforce.application.process.forwarded":"Recommended",
 
     "workforce.application.id":"Application id",
     "workforce.application.date":"Application Date",
@@ -535,7 +535,8 @@
     "workforce.blwf.deputy.admin.dashboard":"BLWF Admin-Assistant Director Dashboard",
     "workforce.eis.coordinator.dashboard":"Eis Coordinator Dashboard",
     "workforce.eis.officer.dashboard":"Eis Officer Dashboard",
-    "workforce.committe.dashboard":"Eis Committe Dashboard",
+    "workforce.eis.committe.dashboard":"Eis Committe Dashboard",
+    "workforce.eis.financial.dashboard":"Eis Financial Officer Dashboard",
 
 
     
@@ -749,6 +750,8 @@
   "workforce.application.forward.message.toSectionAdmin": "Are you sure you want to forward these applications to Section Admin?",
   "workforce.application.forward.message.toSectionUser": "Are you sure you want to forward these applications to Section Data Entry Operator?",
   "workforce.application.forward.message.toDoctor": "Are you sure you want to forward these applications to Doctor?",
+  "workforce.application.forward.message.toEisCoordinator": "Are you sure you want to forward these applications to Eis Coordinator?",
+  "workforce.application.forward.message.toEisCommittee": "Are you sure you want to forward these applications to Eis Committe?",
   "workforce.application.select.message": "Are you sure you want to select these applications?",
   "workforce.application.approve.message": "Are you sure you want to approve these applications?",
   "workforce.application.reject.message": "Are you sure you want to reject this application?",
