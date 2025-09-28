@@ -1706,7 +1706,7 @@ class ApplicationProcessSearcher extends Component {
     const userType = getUserTypeFromRights(this.props.userRights);
     let confirmModalMessage = "";
 
-    if (userType === WORKFORCE_USER_TYPE.CHECKER) {
+    if (userType === WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO || WORKFORCE_USER_TYPE.BLWF_CHECKER || WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR || WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR) {
       confirmModalMessage = "workforce.application.forward.message.toSectionAdmin";
     } else if(userType === WORKFORCE_USER_TYPE.EIS_OFFICER) {
       confirmModalMessage = "workforce.application.forward.message.toEisCoordinator";
