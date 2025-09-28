@@ -162,8 +162,14 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
   const [currentData, setCurrentData] = useState(summaryData);
-  const [originalData] = useState(summaryData); // store original order
+  const [originalData, setOriginalData] = useState(summaryData);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  // keep originalData and currentData in sync when props change
+  useEffect(() => {
+    setCurrentData(summaryData);
+    setOriginalData(summaryData);
+  }, [summaryData]);
 
   const handleChange = (panelId) => (event, isExpanded) => {
     if (isExpanded) {
@@ -232,6 +238,7 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
     </div>
   );
 };
+
 
 
 // ------------------------------------------------------------
