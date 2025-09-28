@@ -1494,7 +1494,7 @@ export const itemFormattersApprover = (
         </IconButton>
       </Tooltip>
 
-      {/* <Tooltip title="Veify">
+      <Tooltip title="Veify">
         <IconButton
           disabled={application?.isHistory}
           onClick={() => {
@@ -1509,7 +1509,7 @@ export const itemFormattersApprover = (
         >
           <VerifiedUserIcon />
         </IconButton>
-      </Tooltip> */}
+      </Tooltip>
       {component.props.disableButtons!==1 && (
         <>
         <Tooltip title="Revert">

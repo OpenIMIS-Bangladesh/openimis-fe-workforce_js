@@ -1366,7 +1366,7 @@ class ApplicationProcessSearcher extends Component {
       ? headerDoctor(this)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
       ? headerAssociation(this)
-      : userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER
+      : userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER || userType === WORKFORCE_USER_TYPE.EIS_FINANCIAL_OFFICER
       ? headerApprover(this)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? headerFactoryAdmin(this)
@@ -1399,7 +1399,7 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
       ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER || userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE
+      : userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER || userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.EIS_FINANCIAL_OFFICER
       ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
       ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication)
@@ -1986,6 +1986,67 @@ class ApplicationProcessSearcher extends Component {
       }
     });
   };
+  handleBulkSelectedbyEisCommittee = () => {
+    const { selectedApplicationIds } = this.state;
+    const { loggedInUserId } = this.props;
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
+    }
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.forward.message.toEisCoordinator",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
+          try {
+            await Promise.all(
+              selectedApplicationIds.map(async (selectedItem) => {
+                const decodedId = decodeId(selectedItem?.id);
+                const updateApplicationData = {
+                  id: decodedId,
+                  status: WORKFORCE_STATUS.APPROVED_BY_COMMITTEE,
+                };
+                const createApplicationMovementData = {
+                  applicationId: decodedId,
+                  status: WORKFORCE_STATUS.APPROVED_BY_DG,
+                  note: "আবেদন কমিটি দ্বারা অনুমোদন করা হয়েছে",
+                  action: "approved_by_committee",
+                  applicationFromId: loggedInUserId,
+                  applicationToId: 173,
+                  toRoleId: 42,
+                };
+                const updateApplicationSummaryData = {
+                  id: decodeId(this.props.summaryId),
+                  status: WORKFORCE_STATUS.APPROVED_BY_COMMITTEE,
+                };
+                await updateApplication(updateApplicationData, "update workforce application");
+                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+                await updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
+              })
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+              },
+            });
+            window.location.reload();
+          } catch (error) {
+            console.error("Bulk selection failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+            window.location.reload();
+          }
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+      }
+    });
+  };
 
   handleCloseBFTN = () => {
     this.setState({ openGenerateBFTN: false });
@@ -2297,6 +2358,20 @@ class ApplicationProcessSearcher extends Component {
             </IconButton>
           </Box>
           )
+        ) : null}
+         {userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
+          <Box
+            style={{
+              marginTop: 10,
+              display: "flex",
+              gap: 2,
+              justifyContent: "space-between",
+            }}
+          >
+            <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyEisCommittee}>
+              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+            </Button>
+          </Box>
         ) : null}
         {userType === WORKFORCE_USER_TYPE.DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR ? (
           disableButtons!==1 && (

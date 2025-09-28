@@ -564,7 +564,7 @@ const EisCoordinatorDashboardPage = () => {
     );
 
   const pendingSummaryData = data.filter(d => d.status !== "approved_by_dg");
-  const approvedSummaryData = data.filter(d => d.status === "approved_by_dg");
+  const approvedSummaryData = data.filter(d => d.status === "approved_by_committee");
   const sentSummaryData = data.filter(d => d.status === "forward_to_comiitee");
 
  

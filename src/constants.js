@@ -88,6 +88,7 @@ export const WORKFORCE_STATUS = {
   MEETING_CREATED: "meeting_created",
   FORWARD_TO_EIS_ADVISOR: "forward_to_eis_advisor",
   AMMENDED_APPLICATION: "amended_application",
+  APPROVED_BY_COMMITTEE: "approved_by_committee",
 
 };
 export const STATUS_MAP_BN  = {
@@ -137,6 +138,7 @@ export const STATUS_MAP_BN  = {
   meeting_created: "সভা তৈরি হয়েছে",
   forward_to_eis_advisor: "ইআইএস উপদেষ্টার কাছে প্রেরণ",
   amended_application: "সংশোধিত আবেদন",
+  approved_by_committee: "কমিটি দ্বারা অনুমোদিত",
 
 
 };
@@ -187,6 +189,7 @@ export const STATUS_MAP_EN = {
   meeting_created: "Meeting Created",
   forward_to_eis_advisor: "Forward to Eis Advisor",
   amended_application: "Amended Application",
+  approved_by_committee: "approved by committee",
 
 };
 
@@ -216,6 +219,7 @@ export const WORKFORCE_USER_TYPE = {
   EIS_ADVISOR: "eis_advisor",
   EIS_COMMITTEE: "eis_committee",
   BLWF_DOCTOR: "blwf_doctor",
+  EIS_FINANCIAL_OFFICER: "eis_financial_officer",
 
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
@@ -243,6 +247,7 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   eis_advisor: "Eis Advisor",
   eis_committee: "Eis Committee",
   blwf_doctor: "Blwf Doctor",
+  eis_financial_officer: "Eis Financial Officer",
 
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
@@ -268,6 +273,7 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   eis_coordinator: "ইআইএস কোঅর্ডিনেটর",
   eis_committee: "ইআইএস কমিটি",
   blwf_doctor: "অনুমোদনকারী ডাক্তার",
+  eis_financial_officer: "ইআইএস ফিনান্সিয়াল অফিসার",
 
 };
 
@@ -316,6 +322,7 @@ export const statusOptions = [
   { value: "meeting_created", label: "সভা তৈরি হয়েছে" },
   { value: "forward_to_eis_advisor", label: "ইআইএস উপদেষ্টার কাছে প্রেরণ" },
   { value: "amended_application", label: "সংশোধিত আবেদন" },
+  { value: "approved_by_committee", label: "কমিটি দ্বারা অনুমোদিত" },
 ];
 
 export const applicationTypeOptions = [
