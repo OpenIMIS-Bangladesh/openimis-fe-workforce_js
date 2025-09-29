@@ -34,6 +34,7 @@ class ApplicationsProcessPage extends Component {
       value: props.value || 0,
       openGenerateBFTN: false,
       expanded: null,
+      activeAccordion: { id: null, listKey: null },
       allSummariesView: [],
       pendingSummariesView: [],
       approvedSummariesView: [],
@@ -95,20 +96,29 @@ class ApplicationsProcessPage extends Component {
   };
 
   handleAccordionChange = (panelId, listKey) => (event, isExpanded) => {
-  if (isExpanded) {
-    this.setState((prevState) => {
-      const summaries = [...prevState[listKey]];
-      const idx = summaries.findIndex((s) => s.id === panelId);
-      if (idx > 0) {
-        const [item] = summaries.splice(idx, 1);
-        summaries.unshift(item); // move clicked to top
-      }
-      return { expanded: panelId, [listKey]: summaries };
-    });
-  } else {
-    this.setState({ expanded: null });
-  }
-};
+    if (isExpanded) {
+      this.setState({
+        expanded: panelId,
+        activeAccordion: { id: panelId, listKey },
+      });
+    } else {
+      this.setState({
+        expanded: null,
+        activeAccordion: { id: null, listKey: null },
+      });
+    }
+  };
+
+  reorderWithActiveOnTop = (list, listKey) => {
+    const { activeAccordion } = this.state;
+    if (activeAccordion.listKey !== listKey || !activeAccordion.id) {
+      return list; // return as is if no active accordion for this list
+    }
+    const clicked = list.find((item) => item.id === activeAccordion.id);
+    if (!clicked) return list;
+    const rest = list.filter((item) => item.id !== activeAccordion.id);
+    return [clicked, ...rest];
+  };
 
 
   componentDidMount() {
@@ -139,7 +149,7 @@ class ApplicationsProcessPage extends Component {
 
   render() {
     const { intl, classes, rights, applications } = this.props;
-    const { value, openGenerateBFTN } = this.state;
+    const { value, openGenerateBFTN, expanded } = this.state;
     const summaryData = this.props.summaryData || [];
     const { loggedInUserId } = this.props;
 
@@ -181,42 +191,44 @@ class ApplicationsProcessPage extends Component {
         {getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.ADMIN ? (
           <>
             <TabPanel value={value} index={0}>
-              {this.state.allSummariesView?.map((item, index) => (
-                <Accordion
-                  key={item.id}
-                  expanded={this.state.expanded === item.id}
-                  onChange={this.handleAccordionChange(item.id, "allSummariesView")}
-                  className={classes.accordion}
-                >
-                  <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon className="material-icons" />}>
-                    <Typography variant="subtitle1" style={{ flex: 1 }}>
-                      <strong>{item.name}</strong>
-                    </Typography>
-                    <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
-                      {item.meetingDate} | {item.month} {item.year}
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails className={classes.accordionDetails}>
-                    <Card style={{ width: "100%" }}>
-                      <CardContent>
-                        {this.state.expanded === item.id && (
-                          <ApplicationProcessSearcher
-                            summaryId={item.id}
-                            cacheFiltersKey="all"
-                            onDoubleClick={this.onDoubleClick}
-                            loggedInUserId={loggedInUserId}
-                          />
-                        )}
-                      </CardContent>
-                    </Card>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
-              <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
-            </TabPanel>
+          {this.reorderWithActiveOnTop(this.state.allSummariesView, "allSummariesView").map((item) => (
+            <Accordion
+              key={item.id}
+              expanded={expanded === item.id}
+              onChange={this.handleAccordionChange(item.id, "allSummariesView")}
+              className={classes.accordion}
+            >
+              <AccordionSummary
+                className={classes.accordionSummary}
+                expandIcon={<ExpandMoreIcon className="material-icons" />}
+              >
+                <Typography variant="subtitle1" style={{ flex: 1 }}>
+                  <strong>{item.name}</strong>
+                </Typography>
+                <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
+                  {item.meetingDate} | {item.month} {item.year}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className={classes.accordionDetails}>
+                <Card style={{ width: "100%" }}>
+                  <CardContent>
+                    {expanded === item.id && (
+                      <ApplicationProcessSearcher
+                        summaryId={item.id}
+                        cacheFiltersKey="all"
+                        onDoubleClick={this.onDoubleClick}
+                        loggedInUserId={this.props.loggedInUserId}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </TabPanel>
 
             <TabPanel value={value} index={1}>
-              {this.state.pendingSummariesView?.map((item, index) => (
+              {this.reorderWithActiveOnTop(this.state.pendingSummariesView,"pendingSummariesView")?.map((item, index) => (
                 <Accordion key={index} expanded={this.state.expanded === item.id} onChange={this.handleAccordionChange(item.id, "pendingSummariesView")} className={classes.accordion}>
                   <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon className="material-icons" />}>
                     <Typography variant="subtitle1" style={{ flex: 1 }}>
@@ -246,7 +258,7 @@ class ApplicationsProcessPage extends Component {
             </TabPanel>
 
             <TabPanel value={value} index={2}>
-              {this.state.approvedSummariesView?.map((item, index) => (
+              {this.reorderWithActiveOnTop(this.state.approvedSummariesView,"approvedSummariesView")?.map((item, index) => (
                 <Accordion key={index} expanded={this.state.expanded === item.id} onChange={this.handleAccordionChange(item.id,"approvedSummariesView")} className={classes.accordion}>
                   <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon className="material-icons" />}>
                     <Typography variant="subtitle1" style={{ flex: 1 }}>
@@ -288,7 +300,7 @@ class ApplicationsProcessPage extends Component {
         ) : getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR || getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR ? (
           <>
             <TabPanel value={value} index={0}>
-              {(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR ? directorSummaries : blwfDirectorSummaries)?.map((item, index) => (
+              {this.reorderWithActiveOnTop(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR ? directorSummaries : blwfDirectorSummaries,"directorAllSummariesView")?.map((item, index) => (
                 <Accordion key={index} expanded={this.state.expanded === item.id} onChange={this.handleAccordionChange(item.id)} className={classes.accordion}>
                   <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon className="material-icons" />}>
                     <Typography variant="subtitle1" style={{ flex: 1 }}>
@@ -318,9 +330,10 @@ class ApplicationsProcessPage extends Component {
             </TabPanel>
 
             <TabPanel value={value} index={1}>
-              {(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR
+              {this.reorderWithActiveOnTop(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR
                 ? directorSummaries.filter((item) => item.status === "forward_to_director")
-                : blwfDirectorSummaries.filter((item) => item.status === "forward_to_director")
+                : blwfDirectorSummaries.filter((item) => item.status === "forward_to_director"),
+                "directorAllSummariesView"
               ).map((item, index) => (
                 <Accordion key={index} expanded={this.state.expanded === item.id} onChange={this.handleAccordionChange(item.id)} className={classes.accordion}>
                   <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon className="material-icons" />}>
@@ -351,9 +364,10 @@ class ApplicationsProcessPage extends Component {
             </TabPanel>
 
             <TabPanel value={value} index={2}>
-              {(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR
+              {this.reorderWithActiveOnTop(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR
                 ? directorSummaries.filter((item) => item.status === "approved_by_director")
-                : blwfDirectorSummaries.filter((item) => item.status === "approved_by_director")
+                : blwfDirectorSummaries.filter((item) => item.status === "approved_by_director"),
+                "directorAllSummariesView"
               ).map((item, index) => (
                 <Accordion key={index} expanded={this.state.expanded === item.id} onChange={this.handleAccordionChange(item.id)} className={classes.accordion}>
                   <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon className="material-icons" />}>
@@ -384,9 +398,10 @@ class ApplicationsProcessPage extends Component {
             </TabPanel>
 
             <TabPanel value={value} index={3}>
-              {(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR
+              {this.reorderWithActiveOnTop(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR
                 ? directorSummaries.filter((item) => item.status === "rejected")
-                : blwfDirectorSummaries.filter((item) => item.status === "rejected")
+                : blwfDirectorSummaries.filter((item) => item.status === "rejected"),
+                "directorAllSummariesView"
               ).map((item, index) => (
                 <Accordion key={index} expanded={this.state.expanded === item.id} onChange={this.handleAccordionChange(item.id)} className={classes.accordion}>
                   <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon className="material-icons" />}>

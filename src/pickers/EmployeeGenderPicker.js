@@ -20,7 +20,7 @@ const EmployeeGenderPicker = ({
   const { formatMessage } = useTranslations("workforce");
 
   const selectedOption = useMemo(
-    () => WORKFORCE_GENDER.find((option) => option.id === value) || null,
+    () => WORKFORCE_GENDER.find((option) => option.name === value) || null,
     [value]
   )
 

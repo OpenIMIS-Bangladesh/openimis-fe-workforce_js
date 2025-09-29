@@ -64,7 +64,6 @@ const ForwardApplicationSummarySectionAdminModal = ({ open, onClose, selectedApp
   const userType = getUserTypeFromRights(userRights);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
-  console.log({summaryId})
 
   useEffect(() => {
     // if (!open) {
@@ -106,9 +105,10 @@ const ForwardApplicationSummarySectionAdminModal = ({ open, onClose, selectedApp
       //   setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
       //   return;
       // }
+      console.log({summaryId:decodeId(summaryId)})
 
       uploadFile?.map((file, index) => {
-            dispatch(createWorkforceDocument({ ...file, applicationSummaryId: safeApplicationId(summaryId) }, `Created workforce document `));
+            dispatch(createWorkforceDocument({ ...file, applicationSummaryId: decodeId(summaryId) }, `Created workforce document `));
           });
 
       // for (const encodedId of selectedApplicationIds) {

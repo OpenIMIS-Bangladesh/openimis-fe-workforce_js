@@ -5,9 +5,9 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import FileUploader from "../../pickers/FileUploader";
 import DocumentReviewAccordion from "../application-process/DocumentReviewAccordion";
-import { banglaLabels, WORKFORCE_USER_TYPE } from "../../constants";
+import { banglaLabels, STATUS_MAP_BN, WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserType } from "../../utils/utils";
+import { conditionalEnToBn, getUserType } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,21 +59,36 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Keys to hide from rendering
  */
-const hiddenKeys = ["id", "uuid", "__typename", "applicationId", "parent","code","type","employeeFactory","associationType","applicationFor","workforceEmployeeDependentApplication","applicationForSelf"];
+const hiddenKeys = [
+  "id",
+  "uuid",
+  "__typename",
+  "applicationId",
+  "parent",
+  "code",
+  "type",
+  "employeeFactory",
+  "associationType",
+  "applicationFor",
+  "workforceEmployeeDependentApplication",
+  "applicationForSelf",
+  "insuranceNumber",
+  "grantMoney"
+];
 
 /**
  * Convert key into a user-friendly label
  */
-const formatKey = (key,language) =>{
+const formatKey = (key, language) => {
   const cleanKey = key.split(".").pop();
-    if (["fr", "bangla", "bd"].includes(language) && banglaLabels[cleanKey]) {
-      return banglaLabels[cleanKey];
-    }
-  return  cleanKey
+  if (["fr", "bangla", "bd"].includes(language) && banglaLabels[cleanKey]) {
+    return banglaLabels[cleanKey];
+  }
+  return cleanKey
     .replace(/_/g, " ")
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/\b\w/g, (c) => c.toUpperCase());
-}
+};
 /**
  * Try parsing JSON safely
  */
@@ -101,7 +116,7 @@ const isEmpty = (value) => {
 /**
  * Recursive renderer for objects & arrays in Grid format
  */
-const renderDetails = (data, classes, parentKey = "",language) => {
+const renderDetails = (data, classes, parentKey = "", language) => {
   if (!data) return null;
 
   // Handle arrays of objects
@@ -118,7 +133,7 @@ const renderDetails = (data, classes, parentKey = "",language) => {
         <Card key={idx} className={classes.nestedCard}>
           <CardContent>
             <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold", fontSize: "large" }}>
-              {formatKey(parentKey,language)} {idx + 1}
+              {formatKey(parentKey, language)} {idx + 1}
             </Typography>
             <Divider style={{ marginBottom: 12 }} />
 
@@ -126,7 +141,10 @@ const renderDetails = (data, classes, parentKey = "",language) => {
               {scalars.map(([key, value]) => (
                 <Grid item xs={6} key={key} className={classes.itemRow}>
                   <Typography variant="body1" className={classes.value}>
-                    <span className={classes.label} style={{fontWeight:"bold"}}>{formatKey(key,language)}:</span> {value}
+                    <span className={classes.label} style={{ fontWeight: "bold" }}>
+                      {formatKey(key, language)}:
+                    </span>{" "}
+                    {value}
                   </Typography>
                 </Grid>
               ))}
@@ -144,9 +162,9 @@ const renderDetails = (data, classes, parentKey = "",language) => {
                     padding: 3,
                   }}
                 >
-                  {formatKey(key,language)}
+                  {formatKey(key, language)}
                 </Typography>
-                {renderDetails(value, classes, key,language)}
+                {renderDetails(value, classes, key, language)}
               </Box>
             ))}
           </CardContent>
@@ -179,7 +197,10 @@ const renderDetails = (data, classes, parentKey = "",language) => {
         {scalars.map(([key, value]) => (
           <Grid item xs={6} key={key} className={classes.itemRow}>
             <Typography variant="body1" className={classes.value}>
-              <span className={classes.label} style={{fontWeight:"bold"}}>{formatKey(key,language)}:</span> {value}
+              <span className={classes.label} style={{ fontWeight: "bold" }}>
+                {formatKey(key, language)}:
+              </span>{" "}
+              <FormattedMessage id={value} module={"workforce"} />
             </Typography>
           </Grid>
         ))}
@@ -199,9 +220,9 @@ const renderDetails = (data, classes, parentKey = "",language) => {
                   padding: 3,
                 }}
               >
-                {formatKey(key,language)}
+                {formatKey(key, language)}
               </Typography>
-              {renderDetails(parsedValue, classes, key,language)}
+              {renderDetails(parsedValue, classes, key, language)}
             </Grid>
           );
         })}
@@ -224,20 +245,20 @@ const ApplicationViewPage = ({
   handleFileReject,
 }) => {
   const classes = useStyles();
-  const language = useSelector(state=>state.core?.user?.i_user?.language)
+  const language = useSelector((state) => state.core?.user?.i_user?.language);
   console.log({ view: application });
-  const user_type = getUserType()
+  const user_type = getUserType();
   // Sidebar summary fields
   const sidebarFields = useMemo(
     () => ({
-      "ApplicationType": application.applicationType,
-      "OrganizationType": application.organizationType,
-      "TrackingNumber": application.trackingNumber,
-      "Status": application.status,
-      "SubmittedBy": application.submittedBy,
-      "GrantAmount": application.grantAmount,
-      "CreatedDate": application?.dateCreated?.split("T")[0] || "—",
-      "ApplicationFor":application?.applicationFor
+      ApplicationType: (language === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn) || application?.applicationType,
+      OrganizationType: application.organizationType,
+      TrackingNumber: application.trackingNumber,
+      Status: language==="en"?STATUS_MAP_EN[application.status]:STATUS_MAP_BN[application?.status],
+      SubmittedBy: application.submittedBy,
+      GrantAmount: conditionalEnToBn(application.grantAmount, language),
+      CreatedDate: conditionalEnToBn(application?.dateCreated?.split("T")[0] || "—", language),
+      ApplicationFor: application?.applicationFor,
     }),
     [application]
   );
@@ -254,33 +275,34 @@ const ApplicationViewPage = ({
             {Object.entries(sidebarFields).map(([label, value]) => (
               <Typography variant="body1" className={classes.value}>
                 <span className={classes.label} style={{ fontWeight: "bold" }}>
-                  {formatKey(label,language)}:
+                  {formatKey(label, language)}:
                 </span>{" "}
                 {value || "—"}
               </Typography>
             ))}
           </Box>
         </Paper>
-        {(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes && filteredDocumentTypes?.length>0) && (
+        {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes && filteredDocumentTypes?.length > 0 && (
           <Typography variant="h6" style={{ marginTop: 6 }}>
             <b>
               <FormattedMessage module="workforce" id="workforce.employee.upload.factory.document" />
             </b>
           </Typography>
         )}
-        {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && (filteredDocumentTypes?.map((document, index) => (
-          <Box style={{ marginTop: "10px" }}>
-            <Typography>{document.nameBn}</Typography>
-            <FileUploader
-              fieldKey={document.fieldId}
-              applicationId={applicationUuid}
-              onFileChange={onFileChange}
-              documentType={document.documentType}
-              documentProp={document}
-              uploadedBy={"factoryAdmin"}
-            />
-          </Box>
-        )))}
+        {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN &&
+          filteredDocumentTypes?.map((document, index) => (
+            <Box style={{ marginTop: "10px" }}>
+              <Typography>{document.nameBn}</Typography>
+              <FileUploader
+                fieldKey={document.fieldId}
+                applicationId={applicationUuid}
+                onFileChange={onFileChange}
+                documentType={document.documentType}
+                documentProp={document}
+                uploadedBy={"factoryAdmin"}
+              />
+            </Box>
+          ))}
       </Grid>
 
       {/* Details Section */}
@@ -298,10 +320,10 @@ const ApplicationViewPage = ({
           return (
             <Accordion key={key} className={classes.accordion} style={{ background: `${"#B7D4D8"}` }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.sectionTitle}>{formatKey(key,language)}</Typography>
+                <Typography className={classes.sectionTitle}>{formatKey(key, language)}</Typography>
               </AccordionSummary>
               <AccordionDetails style={{ display: "block", background: `${"white"}` }}>
-                {renderDetails(parsedValue, classes, key,language)}
+                {renderDetails(parsedValue, classes, key, language)}
                 {fileStates && (
                   <>
                     <Typography variant="h6" style={{ marginTop: 3 }}>

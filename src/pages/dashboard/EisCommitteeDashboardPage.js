@@ -126,13 +126,23 @@ const SidebarMenu = [
 const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
+  const [renderedData, setRenderedData] = useState(summaryData);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-  
 
   const handleChange = (panelId) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panelId : null);
+    if (isExpanded) {
+      // reorder so the clicked item goes to the top
+      setRenderedData((prev) => {
+        const clickedItem = prev.find((item) => item.id === panelId);
+        const rest = prev.filter((item) => item.id !== panelId);
+        return [clickedItem, ...rest];
+      });
+      setExpanded(panelId);
+    } else {
+      setExpanded(null);
+    }
   };
-  console.log("summary data", summaryData);
+
   return (
     <div className={classes.accordionPadding}>
       <Typography variant="h5" gutterBottom>
@@ -142,39 +152,42 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
         />
       </Typography>
 
-        {summaryData         
-          .map((item, index) => (
-            <Accordion
-              key={index}
-              expanded={expanded === item.id}
-              onChange={handleChange(item.id)}
-              className={classes.accordion}
+      {renderedData.map((item, index) => (
+        <Accordion
+          key={item.id}
+          expanded={expanded === item.id}
+          onChange={handleChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography
+              variant="body2"
+              style={{ marginLeft: "auto", color: "#015C63" }}
             >
-              <AccordionSummary
-                className={classes.accordionSummary}
-                expandIcon={<ExpandMoreIcon className="material-icons" />}
-              >
-                <Typography variant="subtitle1" style={{ flex: 1 }}>
-                  <strong>{item.name}</strong>
-                </Typography>
-                <Typography
-                  variant="body2"
-                  style={{ marginLeft: "auto", color: "#015C63" }}
-                >
-                  {item.meetingDate} | {item.month} {item.year}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.accordionDetails}>
-                <Card style={{ width: "100%" }}>
-                  <CardContent>
-                    {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons} loggedInUserId={loggedInUserId} />
-                    )}
-                  </CardContent>
-                </Card>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {expanded === item.id && (
+                  <ApplicationProcessSearcher
+                    summaryId={item.id}
+                    disableButtons={disableButtons}
+                    loggedInUserId={loggedInUserId}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
     </div>
   );
 };
