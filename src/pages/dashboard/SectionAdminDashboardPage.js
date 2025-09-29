@@ -1,6 +1,6 @@
 import React, { useState,useEffect} from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { FormattedMessage,useModulesManager,useHistory } from "@openimis/fe-core";
+import { FormattedMessage,useModulesManager,useHistory,decodeId } from "@openimis/fe-core";
 import {
   Grid,
   List,
@@ -25,7 +25,7 @@ import {
   AccordionDetails,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { fetchSummaryApplications } from "../../actions";
+import { fetchSummaryApplications, fetchWorkforceDocument } from "../../actions";
 import { fetchApplicationsSummary } from "../../actions";
 import RestorePageIcon from '@material-ui/icons/RestorePage';
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
@@ -268,10 +268,20 @@ const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
   const [renderedData, setRenderedData] = useState(summaryData);
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
+
+  useEffect(()=>{
+    if (expanded) {
+      dispatch(fetchWorkforceDocument(modulesManager, [`applicationSummaryId:"${expanded}"`]))
+    }
+  },[expanded])
+  const documents = useSelector(state=>state?.workforce?.document)
 
    const handleChange = (panelId) => (event, isExpanded) => {
     if (isExpanded) {
       // Move the clicked item to the top
+      console.log({panelId})
       const selectedItem = summaryData.find((item) => item.id === panelId);
       const others = summaryData.filter((item) => item.id !== panelId);
       setRenderedData([selectedItem, ...others]);
