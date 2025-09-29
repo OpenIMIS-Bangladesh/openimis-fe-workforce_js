@@ -346,7 +346,7 @@ const Dashboard = () =>{
     async function loadMonthWiseData() {
       try {
         let monthWiseRes = [];
-        await dispatch(fetchApplicationMonthWise(graphMonths)).then((response) => {
+        await dispatch(fetchApplicationMonthWise(graphMonths, 'eis')).then((response) => {
             monthWiseRes = response.payload?.data?.workforceMonthwiseApplications || [];
           });
 

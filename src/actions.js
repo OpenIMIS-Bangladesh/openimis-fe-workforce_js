@@ -2538,7 +2538,7 @@ export function fetchApplicationByDate(months, fromDate, toDate, organizationTyp
 }
 
 
-export function fetchApplicationMonthWise(months) {
+export function fetchApplicationMonthWise(months, organizationType) {
   const APPLICATION_FIELDS = `
     month
     medical
@@ -2549,9 +2549,9 @@ export function fetchApplicationMonthWise(months) {
   `;
   const args = [];
 
-  // if (organizationType) {
-  //   args.push(`organizationType: "${organizationType}"`);
-  // }
+  if (organizationType) {
+    args.push(`organizationType: "${organizationType}"`);
+  }
 
   if (months > 0) {
     args.push(`monthsBetween: "${months}"`);
