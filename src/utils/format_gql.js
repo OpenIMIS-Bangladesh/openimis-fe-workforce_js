@@ -487,6 +487,7 @@ export function formatWorkforceDocumentGQL(workforceDocumentType) {
   return `
     ${workforceDocumentType?.id ? `id: "${workforceDocumentType?.id}"` : ""}
     ${workforceDocumentType?.workforceApplicationId ? `workforceApplicationId: "${workforceDocumentType?.workforceApplicationId}"` : ""}
+    ${workforceDocumentType?.applicationSummaryId ? `applicationSummaryId: "${workforceDocumentType?.applicationSummaryId}"` : ""}
     ${workforceDocumentType?.factoryId ? `factoryId: "${workforceDocumentType?.factoryId}"` : ""}
     ${workforceDocumentType?.workforceDependentId ? `workforceDependentId: "${workforceDocumentType?.workforceDependentId}"` : ""}
     ${workforceDocumentType?.workforceDocumentTypeId ? `workforceDocumentTypeId: "${workforceDocumentType?.workforceDocumentTypeId}"` : ""}

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Box, Typography, Button, Grid, Divider, Paper } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage, useTranslations, useHistory } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchApplication, updateApplication, createApplicationMovement, fetchWorkforceUserRoleWiseUser } from "../../../actions";
+import { fetchApplication, updateApplication, createApplicationMovement, fetchWorkforceUserRoleWiseUser, fetchDocumentType, createWorkforceDocument } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
-import { getUserTypeFromRights } from "../../../utils/utils";
+import { getUserTypeFromRights, safeApplicationId } from "../../../utils/utils";
 import FileUploader from "../../../pickers/FileUploader";
 
 const useStyles = makeStyles((theme) => ({
@@ -49,10 +49,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ForwardApplicationSummarySectionAdminModal = ({ open, onClose, selectedApplication, selectedApplicationIds, onSubmitForward, userRights }) => {
+const ForwardApplicationSummarySectionAdminModal = ({ open, onClose, selectedApplication, selectedApplicationIds, onSubmitForward, userRights,summaryId }) => {
   const classes = useStyles();
-  const dispatch = useDispatch();
+  const history = useHistory();
   const modulesManager = useModulesManager();
+  const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
+  const dispatch = useDispatch();
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
@@ -61,26 +63,32 @@ const ForwardApplicationSummarySectionAdminModal = ({ open, onClose, selectedApp
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const userType = getUserTypeFromRights(userRights);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const uploadFile = useSelector((state) => state.workforce.uploadFile);
+  console.log({summaryId})
 
   useEffect(() => {
-    if (!open) {
-      setEditorContent("");
-      setSubmitting(false);
-      setServerResponse(null);
-      setFormData(null);
-    }
-    if (selectedApplication) {
-      return dispatch(fetchApplication(modulesManager, [`id: "${decodeId(selectedApplication?.id)}"`]));
-    }
+    // if (!open) {
+    //   setEditorContent("");
+    //   setSubmitting(false);
+    //   setServerResponse(null);
+    //   setFormData(null);
+    // }
+    // if (selectedApplication) {
+    //   return dispatch(fetchApplication(modulesManager, [`id: "${decodeId(selectedApplication?.id)}"`]));
+    // }
+    dispatch(fetchDocumentType(modulesManager, [`orderBy: ["documentTypeNo"]`, `applicationType:"section_admin"`]));
   }, [open]);
 
-  useEffect(() => {
-    if (open) {
-      setFormData({});
-    }
-  }, [open]);
+  // useEffect(() => {
+  //   if (open) {
+  //     setFormData({});
+  //   }
+  // }, [open]);
 
-  const data = useSelector((state) => state.workforce[`application`] ?? []);
+  // const data = useSelector((state) => state.workforce[`application`] ?? []);
+
+  const documentData = useSelector((state) => state.workforce[`documentType`] ?? []);
+  const locale = useSelector((state) => state.core?.user?.i_user?.language  ?? "en");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -94,28 +102,32 @@ const ForwardApplicationSummarySectionAdminModal = ({ open, onClose, selectedApp
 
   const handleForward = async () => {
     try {
-      if (!formData?.userId) {
-        setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
-        return;
-      }
+      // if (!formData?.userId) {
+      //   setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
+      //   return;
+      // }
 
-      for (const encodedId of selectedApplicationIds) {
-        const updateApplicationData = {
-          id: decodeId(encodedId?.id),
-          status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
-        };
+      uploadFile?.map((file, index) => {
+            dispatch(createWorkforceDocument({ ...file, applicationSummaryId: safeApplicationId(summaryId) }, `Created workforce document `));
+          });
 
-        await dispatch(updateApplication(updateApplicationData, `update workforce application`));
-        const createApplicationMovementData = {
-          applicationId: decodeId(encodedId?.id),
-          applicationFromId: loggedInUserId,
-          applicationToId: formData.userId,
-          status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
-          action: "forward_for_verification",
-        };
+      // for (const encodedId of selectedApplicationIds) {
+      //   const updateApplicationData = {
+      //     id: decodeId(encodedId?.id),
+      //     status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
+      //   };
 
-        await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
-      }
+      //   await dispatch(updateApplication(updateApplicationData, `update workforce application`));
+      //   const createApplicationMovementData = {
+      //     applicationId: decodeId(encodedId?.id),
+      //     applicationFromId: loggedInUserId,
+      //     applicationToId: formData.userId,
+      //     status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
+      //     action: "forward_for_verification",
+      //   };
+
+      //   await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
+      // }
 
       setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
     } catch (error) {
@@ -139,15 +151,15 @@ const ForwardApplicationSummarySectionAdminModal = ({ open, onClose, selectedApp
     });
   };
 
-  useEffect(() => {
-    if (serverResponse?.status === "SUCCESS") {
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    }
-  }, [serverResponse]);
+  // useEffect(() => {
+  //   if (serverResponse?.status === "SUCCESS") {
+  //     setTimeout(() => {
+  //       window.location.reload();
+  //     }, 2000);
+  //   }
+  // }, [serverResponse]);
 
-  console.log({ newwwwwwwww: selectedApplicationIds });
+  // console.log({ newwwwwwwww: selectedApplicationIds });
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -194,17 +206,19 @@ const ForwardApplicationSummarySectionAdminModal = ({ open, onClose, selectedApp
             </Grid>
 
             {/* বোর্ড অনুমোদনপত্র upload */}
-            <Grid item xs={12}>
-              <Typography variant="body2" gutterBottom style={{fontWeight:"bold"}}>
-                বোর্ড অনুমোদনপত্র
-              </Typography>
-              <FileUploader
-                fieldKey="approveCopy"
-                onFileChange={handleFileChange}
-                documentType="approveStatement" 
-                documentProp={{ id: 1, name: "Approval Copy" }} 
-              />
-            </Grid>
+            {documentData?.map((data, item) => (
+              <Grid item xs={12}>
+                <Typography variant="body2" gutterBottom style={{ fontWeight: "bold" }}>
+                  {locale ==="en"?data?.nameEn:data?.nameBn}
+                </Typography>
+                <FileUploader
+                  fieldKey={data?.fieldId}
+                  onFileChange={handleFileChange}
+                  documentType={data?.documentType}
+                  documentProp={data}
+                />
+              </Grid>
+            ))}
 
             {/* ব্যাংক কপি upload */}
             {/* <Grid item xs={12} sm={6}>
@@ -237,7 +251,7 @@ const ForwardApplicationSummarySectionAdminModal = ({ open, onClose, selectedApp
               await handleForward();
             }}
           >
-            {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : <FormattedMessage id="workforce.submit" module="workforce"/> }
+            {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : <FormattedMessage id="workforce.submit" module="workforce" />}
           </Button>
         </div>
       </form>

@@ -2615,6 +2615,7 @@ class ApplicationProcessSearcher extends Component {
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
+                  summaryId={this.props.summaryId}
                 />
                 <RevertApplicationModal
                   open={revertModalOpen}
