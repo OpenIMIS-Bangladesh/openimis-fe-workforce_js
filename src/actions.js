@@ -772,6 +772,7 @@ export function fetchApplication(mm, filters) {
     "eisApplicationSummary{id}",
     "blwfApplicationSummary{id}",
     "grantAmount",
+    "grantMoney {id,grantMoney,applicationTypeNameEn,applicationTypeNameBn}",
     "submittedBy",
     "associationType",
     "applicationFor"

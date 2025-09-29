@@ -239,7 +239,7 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
         lastNameEn: "",
         phoneNumber: formData?.workforceEmployee?.phoneNumber,
         email: formData?.workforceEmployee?.email,
-        gender: formData?.workforceEmployee?.gender?.id,
+        gender: formData?.workforceEmployee?.gender?.name,
         birthDate: formData?.workforceEmployee?.birthDate,
         deathDate: formData?.workforceEmployee?.deathDate,
         lifeStatus: formData?.workforceEmployee?.lifeStatus,
