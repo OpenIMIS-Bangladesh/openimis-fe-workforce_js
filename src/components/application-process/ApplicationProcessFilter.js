@@ -71,42 +71,6 @@ class ApplicationProcessFilter extends Component {
       <Grid container className={classes.form}>
       <ControlledField
         module={MODULE_NAME}
-        id="workforce.employee.application.status"
-        field={
-          <Grid item xs={3} className={classes.item}>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel>
-                <FormattedMessage
-                  id="workforce.employee.application.status"
-                  defaultMessage="Status"
-                />
-              </InputLabel>
-              <Select
-                label="workforce.employee.application.status"
-                value={this._filterValue("status") || ""}
-                onChange={(e) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "status",
-                      value: e.target.value,
-                      filter: `statusIn: ["${e.target.value}"]`,
-                    },
-                  ])
-                }
-              >             
-                {statusOptions.map((opt) => (
-                    <MenuItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        }
-      />
-
-      <ControlledField
-        module={MODULE_NAME}
         id="workforce.employee.application.applicationType"
         field={
           <Grid item xs={3} className={classes.item}>
@@ -131,6 +95,41 @@ class ApplicationProcessFilter extends Component {
                 }
               >
                 {applicationTypeOptions.map((opt) => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        }
+      />
+       <ControlledField
+        module={MODULE_NAME}
+        id="workforce.employee.application.status"
+        field={
+          <Grid item xs={3} className={classes.item}>
+            <FormControl variant="outlined" fullWidth>
+              <InputLabel>
+                <FormattedMessage
+                  id="workforce.employee.application.status"
+                  defaultMessage="Status"
+                />
+              </InputLabel>
+              <Select
+                label="workforce.employee.application.status"
+                value={this._filterValue("status") || ""}
+                onChange={(e) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "status",
+                      value: e.target.value,
+                      filter: `statusIn: ["${e.target.value}"]`,
+                    },
+                  ])
+                }
+              >             
+                {statusOptions.map((opt) => (
                     <MenuItem key={opt.value} value={opt.value}>
                       {opt.label}
                     </MenuItem>
