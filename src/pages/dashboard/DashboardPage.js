@@ -262,7 +262,8 @@ const Dashboard = () =>{
   useEffect(() => {
     async function loadData() {
       try {
-        const orgType = filter === "সব" || "All" ? "" : filter.toLowerCase();
+        const orgType = filter === "সব" ||filter === "All" ? "" : filter.toLowerCase();
+        console.log(orgType);
 
         let res = [];
         await dispatch(fetchApplicationByDate(months, fromDate, toDate, orgType)).then((response) => {
