@@ -601,6 +601,9 @@ class ApplicationProcessSearcher extends Component {
       }
       else {
         defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]','associationTypeIn: "BGMEA"');
+        if (loggedInUserId) {
+          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -651,6 +654,9 @@ class ApplicationProcessSearcher extends Component {
       }
       else {
         defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]', 'associationTypeIn: "BKMEA"');
+        if (loggedInUserId) {
+          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -707,7 +713,10 @@ class ApplicationProcessSearcher extends Component {
       else if (this.props.forwardedApplications) {
         defaultFilters = ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
       } else {
-        defaultFilters = ['statusIn: ["new"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
+        defaultFilters = ['statusIn: ["new","amended_application"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
+         if (loggedInUserId) {
+          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       }
       this.props.fetchApplicationsSummary(this.props.modulesManager, defaultFilters);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
