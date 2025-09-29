@@ -671,6 +671,7 @@
   "workforce.dashboard.application.types":"আবেদনের ধরণ",
   "workforce.dashboard.applicant.types":"আবেদনকারীর বিবরণ",
   "workforce.dashboard.financial.info":"আর্থিক তথ্য",
-  "workforce.dashboard.total.beneficiary.amount":"মোট সুবিধা পরিমাণ"
+  "workforce.dashboard.total.beneficiary.amount":"মোট সুবিধা পরিমাণ",
+  "core.roleManagement.label": "রোল ম্যানেজমেন্ট"
   
 }

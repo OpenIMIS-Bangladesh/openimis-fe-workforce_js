@@ -899,6 +899,7 @@ class ApplicationProcessSearcher extends Component {
         defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
       } else if (revertedApplication) {
         defaultStatusFilters.push(
+          // 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]'
           'statusIn: ["revert"],  applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]'
         );
 
@@ -917,7 +918,7 @@ class ApplicationProcessSearcher extends Component {
         additionalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
       }
       else {
-        defaultStatusFilters.push('statusIn: ["new"]','applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
+        defaultStatusFilters.push('applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -1471,7 +1472,7 @@ class ApplicationProcessSearcher extends Component {
       ? headerSectionTwoAdmin(this)
       : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
       ? headerBlwfSectionAdmin(this)
-      : userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR || userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+      : userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
       ? headerDoctor(this)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
       ? headerAssociation(this)
@@ -1504,7 +1505,7 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersSectionTwoAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
       ? itemFormattersBlwfSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
-      : userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR || userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+      : userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
       ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
       ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
@@ -2303,13 +2304,7 @@ class ApplicationProcessSearcher extends Component {
                           id="workforce.employee.application.createMeetingSheet"
                         />
                       </Button>
-                    </>
-                  ):(
-                    <>
-                      <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
-                        <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-                      </Button>
-                  {![WORKFORCE_USER_TYPE.EIS_ADVISOR].includes(userType) && (
+                      {![WORKFORCE_USER_TYPE.EIS_ADVISOR, WORKFORCE_USER_TYPE.EIS_COORDINATOR].includes(userType) && (
                         <Button
                           variant="contained"
                           color="primary"
@@ -2321,6 +2316,12 @@ class ApplicationProcessSearcher extends Component {
                           />
                         </Button>
                       )}
+                    </>
+                  ):(
+                    <>
+                      <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
+                        <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                      </Button>
                     </>
                   )}
                 </>
@@ -2348,12 +2349,6 @@ class ApplicationProcessSearcher extends Component {
                     id="workforce.employee.application.createMeetingSheet"
                   />
                 </Button>
-              </>
-            ):(
-              <>
-                <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
-                  <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-                </Button>
                 <Button
                   variant="contained"
                   color="primary"
@@ -2363,6 +2358,12 @@ class ApplicationProcessSearcher extends Component {
                     module="workforce"
                     id="workforce.employee.application.forwardToDoctor"
                   />
+                </Button>
+              </>
+            ):(
+              <>
+                <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
+                  <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
                 </Button>
               </>
             )}              
@@ -2530,7 +2531,7 @@ class ApplicationProcessSearcher extends Component {
             );}
           else if (userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR || userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO
           || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
-          || userType === WORKFORCE_USER_TYPE.EIS_OFFICER || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
+          || userType === WORKFORCE_USER_TYPE.EIS_OFFICER || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER) {
             return (
                 <RevertApplicationModal
                   open={revertModalOpen}
@@ -2614,7 +2615,6 @@ class ApplicationProcessSearcher extends Component {
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
-                  summaryId={this.props.summaryId}
                 />
                 <RevertApplicationModal
                   open={revertModalOpen}

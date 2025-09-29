@@ -778,6 +778,7 @@
   "workforce.application.dashboard": "Application Dashboard",
   "workforce.application.approved":"Approved Applications",
   "workforce.application.forwarded":"Recommended Applications",
-  "workforce.dashboard.total.beneficiary.amount":"Total Beneficiary Amount"
+  "workforce.dashboard.total.beneficiary.amount":"Total Beneficiary Amount",
+  "core.roleManagement.label": "Role Management"
 
 }

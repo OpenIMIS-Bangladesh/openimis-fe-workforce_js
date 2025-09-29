@@ -24,6 +24,7 @@ import EisOfficerDashboardPage from "./EisOfficerDashboardPage";
 import EisCommitteeDashboardPage from "./EisCommitteeDashboardPage"
 import EisApproverDashboard from "./EisFinancialOfficerDashboardPage";
 import EisFinancialOfficerDashboard from "./EisFinancialOfficerDashboardPage";
+import EISAdvisorDashboard from "./EISAdvisorDashboardPage";
 
 const DashboardRelay = () => {
   const user_type = getUserType();
@@ -50,7 +51,7 @@ console.log(user_type)
     return <ApproverDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
     return <BlwfApproverDashboard />;
-  } else if (user_type === WORKFORCE_USER_TYPE.ADMIN || user_type === WORKFORCE_USER_TYPE.DIRECTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DIRECTOR || user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
+  } else if (user_type === WORKFORCE_USER_TYPE.ADMIN || user_type === WORKFORCE_USER_TYPE.DIRECTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DIRECTOR) {
     return <DashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION) {
     return <BGMEAAssociationDashboardPage />;
@@ -70,6 +71,8 @@ console.log(user_type)
     return <EisCommitteeDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.EIS_FINANCIAL_OFFICER) {
     return <EisFinancialOfficerDashboard />;
+  } else if (user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
+    return <EISAdvisorDashboard />;
   }
   return <></>;
 

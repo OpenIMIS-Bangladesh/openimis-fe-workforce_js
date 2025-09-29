@@ -2587,11 +2587,10 @@ export function fetchGenderWiseApplicationMatrixByDate(months, fromDate, toDate,
   if (organizationType) {
     args.push(`organizationType: "${organizationType}"`);
   }
-  else if (months > 0) {
+  if (months > 0) {
     args.push(`lastMonths: "${months}"`);
   } 
-
-  if (fromDate && toDate) {
+  else if (fromDate && toDate) {
     args.push(`dateBetween: ["${fromDate}", "${toDate}"]`);
   }
 
