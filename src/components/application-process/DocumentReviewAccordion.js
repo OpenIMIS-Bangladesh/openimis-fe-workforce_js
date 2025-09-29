@@ -9,7 +9,7 @@ import FileUploader from "../../pickers/FileUploader";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-const getFileType = (url = "") => {
+export const getFileType = (url = "") => {
   const lowerUrl = url.toLowerCase();
   if (/\.(jpg|jpeg|png|gif)$/i.test(lowerUrl)) return "image";
   if (lowerUrl.endsWith(".pdf")) return "pdf";

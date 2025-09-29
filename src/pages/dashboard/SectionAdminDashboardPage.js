@@ -44,6 +44,7 @@ import AssignmentReturnedIcon from '@material-ui/icons/AssignmentReturned';
 import ForwardIcon from '@material-ui/icons/Forward';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import BeneficiaryReport from "../reports/BeneficiaryReport";
+import { getFileType } from "../../components/application-process/DocumentReviewAccordion";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -277,6 +278,7 @@ const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
     }
   },[expanded])
   const documents = useSelector(state=>state?.workforce?.document)
+  const type = getFileType(documents?.url);
 
    const handleChange = (panelId) => (event, isExpanded) => {
     if (isExpanded) {
@@ -328,6 +330,16 @@ const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
                 )}
               </CardContent>
             </Card>
+            {type === "image" && <img src={documents?.url} alt="preview" style={{ width: "100%", maxHeight: 300, objectFit: "contain" }} />}
+            {type === "pdf" && (
+              <iframe
+                title="PDF Viewer"
+                src={documents?.url}
+                width="100%"
+                height="600px"
+                style={{ border: "1px solid #ccc", borderRadius: 4 }}
+              />
+            )}
           </AccordionDetails>
         </Accordion>
       ))}
