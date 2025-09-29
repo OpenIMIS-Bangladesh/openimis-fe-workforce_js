@@ -300,6 +300,9 @@ const DoctorDashboard = () => {
             {user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR && (
               <FormattedMessage module="workforce" id="workforce.section.blwf.doctor.dashboard" />
             )}
+            {user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR && (
+              <FormattedMessage module="workforce" id="workforce.section.eis.doctor.dashboard" />
+            )}
           </Typography>
           {renderContent()}
         </Grid>

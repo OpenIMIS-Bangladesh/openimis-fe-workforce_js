@@ -220,6 +220,7 @@ export const WORKFORCE_USER_TYPE = {
   EIS_COMMITTEE: "eis_committee",
   BLWF_DOCTOR: "blwf_doctor",
   EIS_FINANCIAL_OFFICER: "eis_financial_officer",
+  EIS_DOCTOR: "eis_doctor",
 
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
@@ -248,6 +249,7 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   eis_committee: "Eis Committee",
   blwf_doctor: "Blwf Doctor",
   eis_financial_officer: "Eis Financial Officer",
+  eis_doctor: "Eis Doctor",
 
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
@@ -274,6 +276,7 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   eis_committee: "ইআইএস কমিটি",
   blwf_doctor: "অনুমোদনকারী ডাক্তার",
   eis_financial_officer: "ইআইএস ফিনান্সিয়াল অফিসার",
+  eis_doctor: "ইআইএস ডাক্তার",
 
 };
 
