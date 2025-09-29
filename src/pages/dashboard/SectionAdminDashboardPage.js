@@ -267,94 +267,120 @@ const FiledApplications = () =>{
 const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
+  const [renderedData, setRenderedData] = useState(summaryData);
 
-  const handleChange = (panelId) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panelId : null);
+   const handleChange = (panelId) => (event, isExpanded) => {
+    if (isExpanded) {
+      // Move the clicked item to the top
+      const selectedItem = summaryData.find((item) => item.id === panelId);
+      const others = summaryData.filter((item) => item.id !== panelId);
+      setRenderedData([selectedItem, ...others]);
+      setExpanded(panelId);
+    } else {
+      // Collapse → restore original order
+      setRenderedData(summaryData);
+      setExpanded(null);
+    }
   };
   console.log("clear")
   console.log("summary data", summaryData);
   return (
-    <div className={classes.accordionPadding}>
-        {summaryData         
-          .map((item, index) => (
-            <Accordion
-              key={index}
-              expanded={expanded === item.id}
-              onChange={handleChange(item.id)}
-              className={classes.accordion}
+     <div className={classes.accordionPadding}>
+      {renderedData.map((item) => (
+        <Accordion
+          key={item.id}
+          expanded={expanded === item.id}
+          onChange={handleChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography
+              variant="body2"
+              style={{ marginLeft: "auto", color: "#015C63" }}
             >
-              <AccordionSummary
-                className={classes.accordionSummary}
-                expandIcon={<ExpandMoreIcon className="material-icons" />}
-              >
-                <Typography variant="subtitle1" style={{ flex: 1 }}>
-                  <strong>{item.name}</strong>
-                </Typography>
-                <Typography
-                  variant="body2"
-                  style={{ marginLeft: "auto", color: "#015C63" }}
-                >
-                  {item.meetingDate} | {item.month} {item.year}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.accordionDetails}>
-                <Card style={{ width: "100%" }}>
-                  <CardContent>
-                    {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons}/>
-                    )}
-                  </CardContent>
-                </Card>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {expanded === item.id && (
+                  <ApplicationProcessSearcher
+                    summaryId={item.id}
+                    disableButtons={disableButtons}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
     </div>
   );
 };
 const SentMeetingSheet = ({ summaryData = [], disableButtons=0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
+  const [renderedData, setRenderedData] = useState(summaryData);
 
   const handleChange = (panelId) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panelId : null);
+    if (isExpanded) {
+      // Move the clicked item to the top
+      const selectedItem = summaryData?.find((item) => item.id === panelId);
+      const others = summaryData?.filter((item) => item.id !== panelId);
+      setRenderedData([selectedItem, ...others]);
+      setExpanded(panelId);
+    } else {
+      // Collapse → restore original order
+      setRenderedData(summaryData);
+      setExpanded(null);
+    }
   };
   console.log("clear")
   console.log("summary data", summaryData);
   return (
     <div className={classes.accordionPadding}>
-        {summaryData         
-          .map((item, index) => (
-            <Accordion
-              key={index}
-              expanded={expanded === item.id}
-              onChange={handleChange(item.id)}
-              className={classes.accordion}
+      {renderedData.map((item) => (
+        <Accordion
+          key={item.id}
+          expanded={expanded === item.id}
+          onChange={handleChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography
+              variant="body2"
+              style={{ marginLeft: "auto", color: "#015C63" }}
             >
-              <AccordionSummary
-                className={classes.accordionSummary}
-                expandIcon={<ExpandMoreIcon className="material-icons" />}
-              >
-                <Typography variant="subtitle1" style={{ flex: 1 }}>
-                  <strong>{item.name}</strong>
-                </Typography>
-                <Typography
-                  variant="body2"
-                  style={{ marginLeft: "auto", color: "#015C63" }}
-                >
-                  {item.meetingDate} | {item.month} {item.year}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.accordionDetails}>
-                <Card style={{ width: "100%" }}>
-                  <CardContent>
-                    {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons}/>
-                    )}
-                  </CardContent>
-                </Card>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {expanded === item.id && (
+                  <ApplicationProcessSearcher
+                    summaryId={item.id}
+                    disableButtons={disableButtons}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
     </div>
   );
 };
