@@ -2309,7 +2309,7 @@ class ApplicationProcessSearcher extends Component {
                       <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
                         <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
                       </Button>
-                  {![WORKFORCE_USER_TYPE.EIS_ADVISOR, WORKFORCE_USER_TYPE.EIS_COORDINATOR].includes(userType) && (
+                  {![WORKFORCE_USER_TYPE.EIS_ADVISOR].includes(userType) && (
                         <Button
                           variant="contained"
                           color="primary"
