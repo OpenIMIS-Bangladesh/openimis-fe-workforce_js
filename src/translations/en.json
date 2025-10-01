@@ -779,6 +779,15 @@
   "workforce.application.approved":"Approved Applications",
   "workforce.application.forwarded":"Recommended Applications",
   "workforce.dashboard.total.beneficiary.amount":"Total Beneficiary Amount",
-  "core.roleManagement.label": "Role Management"
+  "core.roleManagement.label": "Role Management",
+
+  "profile.otherNames": "Name Bn",
+  "profile.lastName": "Name En",
+  "view": "view",
+  "reject": "reject",
+  "resend": "resend",
+  "revert": "revert",
+  "forward": "forward",
+  "verify": "verify"
 
 }

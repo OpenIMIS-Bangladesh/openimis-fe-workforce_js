@@ -672,6 +672,15 @@
   "workforce.dashboard.applicant.types":"আবেদনকারীর বিবরণ",
   "workforce.dashboard.financial.info":"আর্থিক তথ্য",
   "workforce.dashboard.total.beneficiary.amount":"মোট সুবিধা পরিমাণ",
-  "core.roleManagement.label": "রোল ম্যানেজমেন্ট"
+  "core.roleManagement.label": "রোল ম্যানেজমেন্ট",
+
+  "profile.otherNames": "নাম ইংরেজি",
+  "profile.lastName": "নাম বাংলা",
+  "view": "দেখুন",
+  "reject": "প্রত্যাখ্যান",
+  "resend": "পুনরায় পাঠান",
+  "revert": "ফেরত দিন",
+  "forward": "অগ্রসর করুন",
+  "verify": "যাচাই করুন"
   
 }
