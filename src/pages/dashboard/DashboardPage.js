@@ -49,6 +49,7 @@ import ApplicationProcessSearcher from "../../components/application-process/App
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise } from "../../actions";
 import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN} from "../../constants";
+import AgingReportModal from "../reports/modals/AgingReportModal";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -251,6 +252,7 @@ const Dashboard = () =>{
     processing: 0,
   });
 
+  const [pendingApplicationTypes, setPendingApplicationTypes]=useState([]);
   const [applicationTypes, setApplicationTypes]=useState([]);
   const [applicationCounts, setApplicationCounts]=useState([]);
   const [totalBenefitAmount, setTotalBenefitAmount]=useState(0);
@@ -278,12 +280,17 @@ const Dashboard = () =>{
           processing: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount)),
         }));
         let appTypes=[];
+        let pendingAppTypes=[];
 
         res.map((item) => {
           appTypes.push({type: applicationTypeNames[item.applicationType], count: item.applicationCount});
+          pendingAppTypes.push({
+            type: applicationTypeNames[item.applicationType], count: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount))
+          });
         });
 
         setApplicationTypes(appTypes);
+        setPendingApplicationTypes(pendingAppTypes);
 
 
         // Calculate totals
@@ -408,6 +415,23 @@ const Dashboard = () =>{
   };
 
 
+  const [openModal, setOpenModal] = useState(false);
+
+
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+
+  const [selectedType, setSelectedType] = useState(null);
+
+  const handleOpenModal = (type) => {
+    setSelectedType(type);
+    setOpenModal(true);
+  };
+
+
   return (
     <>
       <Grid container spacing={2}>
@@ -452,23 +476,37 @@ const Dashboard = () =>{
             </Grid>
           </Card>
         </Grid>
+
+        {/* AT A GLANCE */}
+        {/* Left Card */}
         <Grid item xs={12} md={4}>
           <Card style={newCard}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                <FormattedMessage id="workforce.dashboard.application.types"/>
+                {/* <FormattedMessage id="workforce.dashboard.application.types"/> */}
+                {locale=='fr'?"প্রক্রিয়াধীন আবেদনসমূহ":"Pending Applications"}
                 <DescriptionIcon style={{ verticalAlign: 'middle', marginRight: 8, float:"right"}} />
               </Typography>
               <table cellPadding={"6px"} style={{ width: "100%" }}>
                 <tbody>
-                    {applicationTypes.map((type) => (
+                    {pendingApplicationTypes.map((type) => (
                       <tr style={{paddingTop:"10px", paddingBottom:"10px"}}>
                         <th style={{textAlign:"left"}}><Typography>{type.type}</Typography></th>
-                        <td style={{textAlign:"right"}}><Typography>{type.count}</Typography></td>
+                        <td style={{textAlign:"right"}}>
+                          <Link
+                            component="button"
+                            variant="body2"
+                            onClick={() => handleOpenModal(type)}
+                          >
+                            <Typography>{type.count}</Typography>
+                          </Link>
+                          </td>
                       </tr>
                     ))}
                 </tbody>
               </table>
+              {/* Attach modal here */}
+              <AgingReportModal open={openModal} onClose={handleCloseModal} data={selectedType}/>
             </CardContent>
           </Card>
         </Grid>
@@ -497,27 +535,52 @@ const Dashboard = () =>{
 
         {/* Right Card */}
         <Grid item xs={12} md={4}>
-          <Card style={newCard}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                <FormattedMessage id="workforce.dashboard.financial.info"/>
-                <LocalAtmIcon style={{ verticalAlign: 'middle', marginRight: 8, float:"right" }} />
-              </Typography>
-                <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
-                  <CardContent>
-                      <Typography><FormattedMessage id="workforce.dashboard.total.beneficiary.amount" /></Typography>
-                      <Typography variant="h5"><b>৳ {locale=='fr'?Number(totalBenefitAmount).toLocaleString('bn'): Number(totalBenefitAmount).toLocaleString('en')}</b></Typography>
-                  </CardContent>
-                </Card>
-                {/* <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
-                  <CardContent>
-                      <Typography>মাসিক মোট সুবিধা</Typography>
-                      <Typography variant="h5"><b>৳ ৫,০০,০০০</b></Typography>
-                      <Typography>(সর্বোচ্চ: ৭.৫ লাখ | সর্বনিম্ন: ২.০ লাখ)</Typography>
-                  </CardContent>
-                </Card> */}
-            </CardContent>
-          </Card>
+          <Grid container spacing={2} style={{marginBottom:"10px"}}>
+            <Grid item xs={12} md={12}>
+              <Card style={newCard}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    {/* <FormattedMessage id="workforce.dashboard.application.types"/> */}
+                    {locale=='fr'?"মোট আবেদন":"Total Applications"}
+                    <DescriptionIcon style={{ verticalAlign: 'middle', marginRight: 8, float:"right"}} />
+                  </Typography>
+                  <table cellPadding={"6px"} style={{ width: "100%" }}>
+                    <tbody>
+                        {applicationTypes.map((type) => (
+                          <tr style={{paddingTop:"10px", paddingBottom:"10px"}}>
+                            <th style={{textAlign:"left"}}><Typography>{type.type}</Typography></th>
+                            <td style={{textAlign:"right"}}><Typography>{type.count}</Typography></td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <Card style={newCard}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    <FormattedMessage id="workforce.dashboard.financial.info"/>
+                    <LocalAtmIcon style={{ verticalAlign: 'middle', marginRight: 8, float:"right" }} />
+                  </Typography>
+                    <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
+                      <CardContent>
+                          <Typography><FormattedMessage id="workforce.dashboard.total.beneficiary.amount" /></Typography>
+                          <Typography variant="h5"><b>৳ {locale=='fr'?Number(totalBenefitAmount).toLocaleString('bn'): Number(totalBenefitAmount).toLocaleString('en')}</b></Typography>
+                      </CardContent>
+                    </Card>
+                    {/* <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
+                      <CardContent>
+                          <Typography>মাসিক মোট সুবিধা</Typography>
+                          <Typography variant="h5"><b>৳ ৫,০০,০০০</b></Typography>
+                          <Typography>(সর্বোচ্চ: ৭.৫ লাখ | সর্বনিম্ন: ২.০ লাখ)</Typography>
+                      </CardContent>
+                    </Card> */}
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
         </Grid>
 
 
