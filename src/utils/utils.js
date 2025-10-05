@@ -203,10 +203,10 @@ export const enToBn = (input, type = '') => {
   if (typeof (input) == 'number') {
     input = input.toString();
   }
-  if (isEmpty(input.length)) {
+  if (isEmpty(input?.length)) {
     return input;
   }
-  for (var i = 0; i < input.length; ++i) {
+  for (var i = 0; i < input?.length; ++i) {
     if (numbers.hasOwnProperty(input[i])) {
       output += numbers[input[i]];
     } else {
@@ -229,7 +229,7 @@ export const bnToEn = (input) => {
   if (empty(input)) {
     return input;
   }
-  for (var i = 0; i < input.length; ++i) {
+  for (var i = 0; i < input?.length; ++i) {
     if (numbers.hasOwnProperty(input[i])) {
       output += numbers[input[i]];
     } else {
