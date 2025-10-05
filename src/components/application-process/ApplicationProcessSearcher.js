@@ -1308,21 +1308,25 @@ class ApplicationProcessSearcher extends Component {
             };
             const createApplicationMovementData = {
               applicationId: decodeId(application.id),
-              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+              status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
               note: "আবেদন ডাক্তার দ্বারা অনুমোদন করা হয়েছে",
-              action: "forward_to_cf_section",
+              action: "approved_by_doctor",
               applicationFromId: loggedInUserId,
               applicationToId:
                 userType === WORKFORCE_USER_TYPE.DOCTOR
                   ? 139
                   : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
                   ? 187
+                  : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+                  ? 173
                   : null,
               toRoleId:
                 userType === WORKFORCE_USER_TYPE.DOCTOR
                   ? 32
                   : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
                   ? 40
+                  : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+                  ? 42
                   : null,
             };
             try {
