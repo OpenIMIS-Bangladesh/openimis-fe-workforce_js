@@ -51,6 +51,7 @@ headerFactoryAdmin, headerDirector,headerBlwfSectionAdmin } from "../../utils/he
 import Searcher from "../shared/searcher/Searcher";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
 import ForwardApplicationSummarySectionAdminModal from "./modals/ForwardApplicationSummarySectionAdminModal";
+import ForwardApplicationEisDoctorModal from "./modals/ForwardApplicationEisDoctorModal"
 
 
 const styles = (theme) => ({
@@ -85,6 +86,7 @@ class ApplicationProcessSearcher extends Component {
       // 🆕 Modal state
       forwardModalOpen: false,
       forwardModalOpenSA: false,
+      forwardModalOpenEisDoctor: false,
       forwardModalOpenSummarySA:false,
       revertModalOpen: false,
       selectedApplication: null,
@@ -479,58 +481,6 @@ class ApplicationProcessSearcher extends Component {
       }
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) {
-      this.setState({ displayVersion: showHistoryFilter });
-      let defaultStatusFilters = [];
-      if (this.props.returnedApplications) {
-        defaultStatusFilters = ['statusIn: ["revert"]'];
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-        }
-      }
-      else if (this.props.revertedApplications) {
-        defaultStatusFilters = ['statusIn: ["revert"]'];
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
-      }
-      else if (this.props.forwardedApplications) {
-        defaultStatusFilters = ['statusIn: ["approved_by_doctor"]'];
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-        }
-      }
-      else if (loggedInUserId) {
-          defaultStatusFilters = ['statusIn: ["forward_to_doctor"]'];
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
-      this.props.fetchApplicationsSummary(this.props.modulesManager,defaultStatusFilters, ['organizationTypeIn: ["cf"]', 'orderBy: ["-dateCreated"]']);
-    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DOCTOR) {
-      this.setState({ displayVersion: showHistoryFilter });
-      let defaultStatusFilters = [];
-      if (this.props.returnedApplications) {
-        defaultStatusFilters = ['statusIn: ["revert"]'];
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-        }
-      }
-      else if (this.props.revertedApplications) {
-        defaultStatusFilters = ['statusIn: ["revert"]'];
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
-      }
-      else if (this.props.forwardedApplications) {
-        defaultStatusFilters = ['statusIn: ["approved_by_doctor"]'];
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-        }
-      }
-      else if (loggedInUserId) {
-        defaultStatusFilters = ['statusIn: ["forward_to_doctor"]'];
-        defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-      }
-      this.props.fetchApplicationsSummary(this.props.modulesManager,defaultStatusFilters, ['organizationTypeIn: ["blwf"]', 'orderBy: ["-dateCreated"]']);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER_TWO || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
       let defaultStatusFilters = [
@@ -1019,6 +969,51 @@ class ApplicationProcessSearcher extends Component {
           this.props.summaryId
         )}"`,
       ]);
+    }else {
+      const userType = getUserTypeFromRights(userRights);
+
+      if (
+        userType === WORKFORCE_USER_TYPE.DOCTOR ||
+        userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR ||
+        userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+      ) {
+        this.setState({ displayVersion: showHistoryFilter });
+
+        let defaultStatusFilters = [];
+
+        if (this.props.returnedApplications) {
+          defaultStatusFilters = ['statusIn: ["revert"]'];
+          if (loggedInUserId) {
+            defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+          }
+        } else if (this.props.revertedApplications) {
+          defaultStatusFilters = ['statusIn: ["revert"]'];
+          if (loggedInUserId) {
+            defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+          }
+        } else if (this.props.forwardedApplications) {
+          defaultStatusFilters = ['statusIn: ["approved_by_doctor"]'];
+          if (loggedInUserId) {
+            defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+          }
+        } else if (loggedInUserId) {
+          defaultStatusFilters = ['statusIn: ["forward_to_doctor"]'];
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
+        const organizationType =
+          userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
+            ? "blwf"
+            : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+            ? "eis"
+            : "cf";
+
+        this.props.fetchApplicationsSummary(
+          this.props.modulesManager,
+          defaultStatusFilters,
+          [`organizationTypeIn: ["${organizationType}"]`, 'orderBy: ["-dateCreated"]']
+        );
+      }
+
     }
 }
 
@@ -1058,6 +1053,9 @@ class ApplicationProcessSearcher extends Component {
   };
   handleCloseForwardModalForEisAdvisor = () => {
     this.setState({ forwardModalOpenSA: false, selectedApplication: null });
+  };
+  handleCloseForwardModalForEisDoctor = () => {
+    this.setState({ forwardModalOpenEisDoctor: false, selectedApplication: null });
   };
 
   handleCloseForwardModal = () => {
@@ -1310,21 +1308,25 @@ class ApplicationProcessSearcher extends Component {
             };
             const createApplicationMovementData = {
               applicationId: decodeId(application.id),
-              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+              status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
               note: "আবেদন ডাক্তার দ্বারা অনুমোদন করা হয়েছে",
-              action: "forward_to_cf_section",
+              action: "approved_by_doctor",
               applicationFromId: loggedInUserId,
               applicationToId:
                 userType === WORKFORCE_USER_TYPE.DOCTOR
                   ? 139
                   : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
                   ? 187
+                  : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+                  ? 173
                   : null,
               toRoleId:
                 userType === WORKFORCE_USER_TYPE.DOCTOR
                   ? 32
                   : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
                   ? 40
+                  : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+                  ? 42
                   : null,
             };
             try {
@@ -1481,7 +1483,7 @@ class ApplicationProcessSearcher extends Component {
       ? headerSectionTwoAdmin(this)
       : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
       ? headerBlwfSectionAdmin(this)
-      : userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
+      : userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR || userType === WORKFORCE_USER_TYPE.EIS_DOCTOR 
       ? headerDoctor(this)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
       ? headerAssociation(this)
@@ -1514,7 +1516,7 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersSectionTwoAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
       ? itemFormattersBlwfSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
-      : userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
+      : userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR || userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
       ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
       ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
@@ -2195,6 +2197,7 @@ class ApplicationProcessSearcher extends Component {
     const {
       forwardModalOpen,
       forwardModalOpenSA,
+      forwardModalOpenEisDoctor,
       revertModalOpen,
       revertByChecker,
       revertByApprover,
@@ -2318,6 +2321,18 @@ class ApplicationProcessSearcher extends Component {
                           variant="contained"
                           color="primary"
                           onClick={this.handleBulkSelectedbySectionAdminToDoctor}
+                        >
+                          <FormattedMessage
+                            module="workforce"
+                            id="workforce.employee.application.forwardToDoctor"
+                          />
+                        </Button>
+                      )}
+                      {WORKFORCE_USER_TYPE.EIS_COORDINATOR.includes(userType) && (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => this.setState({ forwardModalOpenEisDoctor: true })}
                         >
                           <FormattedMessage
                             module="workforce"
@@ -2540,7 +2555,7 @@ class ApplicationProcessSearcher extends Component {
             );}
           else if (userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR || userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO
           || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
-          || userType === WORKFORCE_USER_TYPE.EIS_OFFICER || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER) {
+          || userType === WORKFORCE_USER_TYPE.EIS_OFFICER || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
             return (
                 <RevertApplicationModal
                   open={revertModalOpen}
@@ -2644,6 +2659,13 @@ class ApplicationProcessSearcher extends Component {
                   onClose={this.handleCloseBFTN}
                   applications={applications}
                   status={"approved_by_dg"}
+                  userRights={userRights}
+                />
+                <ForwardApplicationEisDoctorModal
+                  open={forwardModalOpenEisDoctor}
+                  onClose={this.handleCloseForwardModalForEisDoctor}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
+                  onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
                 />
               </>

@@ -89,6 +89,8 @@ export const WORKFORCE_STATUS = {
   FORWARD_TO_EIS_ADVISOR: "forward_to_eis_advisor",
   AMMENDED_APPLICATION: "amended_application",
   APPROVED_BY_COMMITTEE: "approved_by_committee",
+  FORWARD_TO_EIS_COORDINATOR:"forward_to_eis_coordinator",
+
 
 };
 export const STATUS_MAP_BN  = {
@@ -139,6 +141,7 @@ export const STATUS_MAP_BN  = {
   forward_to_eis_advisor: "ইআইএস উপদেষ্টার কাছে প্রেরণ",
   amended_application: "সংশোধিত আবেদন",
   approved_by_committee: "কমিটি দ্বারা অনুমোদিত",
+  forward_to_eis_coordinator: "ইআইএস কোঅর্ডিনেটর কাছে প্রেরণ",
 
 
 };
