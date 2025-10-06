@@ -313,11 +313,11 @@ export const itemFormattersChecker = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
-    // (application) =>
-    //   locale === "en"
-    //     ? application?.grantMoney?.applicationTypeNameEn
-    //     : application?.grantMoney?.applicationTypeNameBn,
-    // (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -388,11 +388,11 @@ export const itemFormattersCheckerTwo = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
-    // (application) =>
-    //   locale === "en"
-    //     ? application?.grantMoney?.applicationTypeNameEn
-    //     : application?.grantMoney?.applicationTypeNameBn,
-    // (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -455,11 +455,11 @@ export const itemFormattersS1DeputyAsstDirector = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
-    // (application) =>
-    //   locale === "en"
-    //     ? application?.grantMoney?.applicationTypeNameEn
-    //     : application?.grantMoney?.applicationTypeNameBn,
-    // (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -521,11 +521,11 @@ export const itemFormattersS2DeputyAsstDirector = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
-    // (application) =>
-    //   locale === "en"
-    //     ? application?.grantMoney?.applicationTypeNameEn
-    //     : application?.grantMoney?.applicationTypeNameBn,
-    // (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -600,11 +600,11 @@ export const itemFormattersSectionAdmin = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
-    // (application) =>
-    //   locale === "en"
-    //     ? application?.grantMoney?.applicationTypeNameEn
-    //     : application?.grantMoney?.applicationTypeNameBn,
-    // (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => application?.workforceEmployee?.nid,
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
@@ -723,11 +723,11 @@ export const itemFormattersSectionTwoAdmin = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
-    // (application) =>
-    //   locale === "en"
-    //     ? application?.grantMoney?.applicationTypeNameEn
-    //     : application?.grantMoney?.applicationTypeNameBn,
-    // (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => application?.workforceEmployee?.nid,
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
@@ -850,11 +850,11 @@ export const itemFormattersBlwfSectionAdmin = (
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
     (application) => application?.workforceEmployee?.firstNameBn,
-    // (application) =>
-    //   locale === "en"
-    //     ? application?.grantMoney?.applicationTypeNameEn
-    //     : application?.grantMoney?.applicationTypeNameBn,
-    // (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => application?.workforceEmployee?.nid,
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
@@ -1102,11 +1102,11 @@ export const itemFormattersAssociation = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
-    // (application) =>
-    //   locale === "en"
-    //     ? application?.grantMoney?.applicationTypeNameEn
-    //     : application?.grantMoney?.applicationTypeNameBn,
-    // (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
     // (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;

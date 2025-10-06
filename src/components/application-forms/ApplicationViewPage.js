@@ -5,7 +5,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import FileUploader from "../../pickers/FileUploader";
 import DocumentReviewAccordion from "../application-process/DocumentReviewAccordion";
-import { banglaLabels, STATUS_MAP_BN, WORKFORCE_USER_TYPE } from "../../constants";
+import { banglaLabels, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
 import { conditionalEnToBn, getUserType } from "../../utils/utils";
 
@@ -256,7 +256,7 @@ const ApplicationViewPage = ({
       TrackingNumber: application.trackingNumber,
       Status: language==="en"?STATUS_MAP_EN[application.status]:STATUS_MAP_BN[application?.status],
       SubmittedBy: application.submittedBy,
-      GrantAmount: conditionalEnToBn(application.grantAmount, language),
+      GrantAmount: conditionalEnToBn(application?.grantAmount, language),
       CreatedDate: conditionalEnToBn(application?.dateCreated?.split("T")[0] || "—", language),
       ApplicationFor: application?.applicationFor,
     }),
