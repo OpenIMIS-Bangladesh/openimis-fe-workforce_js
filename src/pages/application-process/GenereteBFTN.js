@@ -60,7 +60,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   const [serverResponse, setServerResponse] = useState(null);
   const dispatch = useDispatch();
   const handleForward = async () => {
-    if (!window.confirm("আবেদনগুলো পরিচালকের কাছে প্রেরণ নিশ্চিত করছেন?")) {
+    if (!window.confirm("আবেদনগুলো মহাপরিচালক কাছে প্রেরণ নিশ্চিত করছেন?")) {
       return;
     }
     const filteredApplications = applications.filter(
@@ -338,7 +338,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
             <FormattedMessage id="workforce.table.printSUmmary" defaultMessage="মুদ্রণের সারাংশ" />
           </Button>
           <Button onClick={() => handleForward()} variant="contained" color="primary">
-            <FormattedMessage id="workforce.table.forwardToDirector" defaultMessage="পরিচালকের কাছে ফরোয়ার্ড করুন" />
+            <FormattedMessage id="workforce.table.forwardToDirector" defaultMessage="মহাপরিচালক কাছে ফরোয়ার্ড করুন" />
             <ForwardIcon />
           </Button>
         </DialogActions>

@@ -1187,6 +1187,8 @@ export const itemFormattersFactoryAdmin = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
+    (application) => "14-05-2025",
+    (application) => "20-05-2025",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;

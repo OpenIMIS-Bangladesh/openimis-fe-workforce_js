@@ -274,6 +274,8 @@
     "workforce.employee.application.approveMeetingSheet":"Approve Meeting Sheet",
     "workforce.employee.application.bulkSelect":"Bulk Select",
     "workforce.employee.application.bulkApprove":"Approve",
+    "workforce.employee.application.receivedDate":"Received Date",
+    "workforce.employee.application.sentDate":"Sent Date",
 
 
     "workforce.banks.nameEn": "Bank Name En",
