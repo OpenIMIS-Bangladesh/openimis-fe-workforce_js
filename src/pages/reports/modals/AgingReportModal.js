@@ -26,10 +26,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import ReactQuill from "react-quill";
 import {
-  fetchApplication,
-  updateApplication,
-  createApplicationMovement,
-  fetchApplicationWiseMovementList,
+  fetchApplicationTimeWiseMatrix
 } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
 import {
@@ -88,23 +85,114 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const AgingReportModal = ({ open, onClose, data }) => {
+const AgingReportModal = ({ open, onClose, data, organizationType }) => {
   const classes = useStyles();
-  const barData = [
-    { days: "১ দিন", applications: Math.floor(Math.random() * 100), color: "#1ba000ff" },
-    { days: "৩ দিন", applications: Math.floor(Math.random() * 100), color: "#87c067ff" },
-    { days: "৭ দিন", applications: Math.floor(Math.random() * 100), color: "#cfbb00ff" },
-    { days: "১০ দিন", applications: Math.floor(Math.random() * 100), color: "#c4811cff" },
-    { days: "১৫ দিন", applications: Math.floor(Math.random() * 100), color: "#c20000ff" },
-  ];
+  const dispatch = useDispatch();
 
+  const [barData, setBarData] = useState([]);
   const [selectedDay, setSelectedDay] = useState(null);
   const [tableData, setTableData] = useState([]);
+  const [tableSectionHeading, setTableSectionHeading] = useState('');
+
+  useEffect(() => {
+    async function fetchData() {
+      setTableData([]);
+      try {
+        let res= null;
+        let applicationType= '';
+        if(organizationType=='cf')
+        {
+          if(data.appType=='medical')
+          {
+            applicationType= 'medicalAssistance';
+          }
+          else if(data.appType=='death')
+          {
+            applicationType= 'financialAssistance';
+          }
+          else if(data.appType=='educational')
+          {
+            applicationType= 'scholarship';
+          }
+          else if(data.appType=='maternityGrant')
+          {
+            applicationType= 'maternityGrant';
+          }
+          else if(data.appType=='disabilityAssistance')
+          {
+            applicationType= 'disabilityAssistance';
+          }
+        }
+        else if(organizationType=='blwf')
+        {
+          if(data.appType=='medical')
+          {
+            applicationType= 'medicalDonation';
+          }
+          else if(data.appType=='death')
+          {
+            applicationType= 'deadlyGrant';
+          }
+          else if(data.appType=='educational')
+          {
+            applicationType= 'educationGrant';
+          }
+          else if(data.appType=='maternityGrant')
+          {
+            applicationType= 'maternityGrant';
+          }
+        }
+        else
+        {
+          if(data.appType=='medical')
+          {
+            applicationType= 'medicalAssistance, medicalDonation';
+          }
+          else if(data.appType=='death')
+          {
+            applicationType= 'financialAssistance, deadlyGrant';
+          }
+          else if(data.appType=='educational')
+          {
+            applicationType= 'scholarship, educationGrant';
+          }
+          else if(data.appType=='maternityGrant')
+          {
+            applicationType= 'maternityGrant, maternityGrant';
+          }
+          else if(data.appType=='disabilityAssistance')
+          {
+            applicationType= 'disabilityAssistance';
+          }
+        }
+        await dispatch(fetchApplicationTimeWiseMatrix(organizationType, applicationType)).then((response) => {
+          console.log(applicationType);
+          console.log(organizationType);
+           res= response.payload?.data?.workforceApplicationTimewiseMatrix || [];
+        });
+        let dayWiseCount= res.dayWiseCount || {};
+        setBarData([
+          { days: "১ দিন", applications: dayWiseCount.day1, color: "#1ba000ff", dayCount:1 },
+          { days: "৩ দিন", applications: dayWiseCount.day3, color: "#87c067ff", dayCount:3 },
+          { days: "৭ দিন", applications: dayWiseCount.day7, color: "#cfbb00ff", dayCount:7 },
+          { days: "১০ দিন", applications: dayWiseCount.day10, color: "#c4811cff", dayCount:10 },
+          { days: "১৫ দিন", applications: dayWiseCount.day15, color: "#c20000ff", dayCount:15 },
+          { days: "১৫ এর অধিক দিন", applications: dayWiseCount.moreThan15, color: "#4e0000ff", dayCount:16 },
+        ]);
+      }
+      catch (e) {
+        console.log(e);
+      }
+    }
+    fetchData();
+  }, [open]);
+
+
 
   // When user clicks a bar
   const handleBarClick = (dataItem) => {
     setSelectedDay(dataItem.days);
-
+    setTableSectionHeading(`${dataItem.days} ধরে প্রক্রিয়াধীনরত আবেদনের অবস্থানসমূহ`);
     const tableData = [
       { user: 'সাব-এসিস্টেন্ট অফিসার', applications: Math.floor(Math.random() * 10) },
       { user: 'সেকশন এডমিন ১', applications: Math.floor(Math.random() * 10) },
@@ -172,6 +260,9 @@ const AgingReportModal = ({ open, onClose, data }) => {
             </Grid>
             {tableData.length > 0 && (
               <Grid item md={6} xs={6}>
+                <Typography variant="h6" gutterBottom style={{fontWeight:'bold', textAlign:'center', marginBottom:10}}>
+                  {tableSectionHeading}
+                </Typography>
                 <Table size="small">
                   <TableHead>
                     <TableRow>
