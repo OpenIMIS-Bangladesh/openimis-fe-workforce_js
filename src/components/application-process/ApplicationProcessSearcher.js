@@ -2452,7 +2452,8 @@ class ApplicationProcessSearcher extends Component {
             }}
           >
             <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyAssociation}>
-              <FormattedMessage module="workforce" id="workforce.employee.application.forwardToSectionAdmin" />
+              {/* <FormattedMessage module="workforce" id="workforce.employee.application.forwardToSectionAdmin" /> */}
+              <FormattedMessage module="workforce" id="workforce.employee.application.forwardToDG" />
             </Button>
           </Box>
         ) : null}

@@ -464,6 +464,7 @@
     "workforce.employee.application.forward.ToSelectionCommittee":"Forward To Selection Committee",
     "workforce.employee.application.forwardToSectionAdmin":"Forward To Section Admin",
     "workforce.employee.application.forwardToDoctor":"Forward To Doctor",
+  "workforce.employee.application.forwardToDG": "Forward To DG",
 
     "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন।",
     "workforce.registration.title":"উপকারভোগী নিবন্ধন ফর্ম",

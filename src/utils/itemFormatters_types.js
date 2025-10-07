@@ -248,7 +248,7 @@ export const itemFormattersApplicant = (
                 );
               }}
             >
-              <TabIcon style={{color:"blue"}} />
+              <TabIcon />
             </IconButton>
           </Tooltip>
         </>
@@ -289,7 +289,7 @@ export const itemFormattersApplicant = (
               );
             }}
           >
-            <RestorePageIcon style={{color:"#1976D2"}} />
+            <RestorePageIcon />
           </IconButton>
         </Tooltip>
       )}
@@ -313,10 +313,170 @@ export const itemFormattersChecker = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
-    // (application) =>
-    //   locale === "en"
-    //     ? application?.grantMoney?.applicationTypeNameEn
-    //     : application?.grantMoney?.applicationTypeNameBn,
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    // (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) => {
+      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+      return statusMap[application?.status] || application?.status;
+    },
+    isShowHistory() ? application?.version : null,
+  ];
+
+  // --- VIEW BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      <Tooltip title="View">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            historyPush(
+              modulesManager,
+              history,
+              "workforce.route.applications.application.process.view",
+              [decodeId(application?.id)],
+              false
+            );
+          }}
+        >
+          <TabIcon style={{color:"blue"}} />
+        </IconButton>
+      </Tooltip>
+    </div>
+  ));
+
+  // --- VERIFY BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      <Tooltip title="Verify">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            historyPush(
+              modulesManager,
+              history,
+              "workforce.route.applications.application.verify",
+              [decodeId(application?.id)],
+              false
+            );
+          }}
+        >
+          <VerifiedUserIcon style={{color:"green"}}/>
+        </IconButton>
+      </Tooltip>
+    </div>
+  ));
+
+  // --- REVERT BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      <Tooltip title="Revert">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => component.handleOpenRevertModal(application)}
+        >
+          <UndoIcon style={{color:"red"}}/>
+        </IconButton>
+      </Tooltip>
+    </div>
+  ));
+
+  return formatters;
+};
+
+export const itemFormattersCheckerTwo = (
+  isShowHistory,
+  modulesManager,
+  history,
+  component,
+  locale = "en"
+) => {
+  const formatters = [
+    (application) => application?.trackingNumber,
+    (application) =>
+      conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
+    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      locale === "en"
+        ? application?.employeeFactory?.nameEn
+        : application?.employeeFactory?.nameBn,
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) => {
+      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+      return statusMap[application?.status] || application?.status;
+    },
+    isShowHistory() ? application?.version : null,
+  ];
+
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      <Tooltip title="View">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            historyPush(
+              modulesManager,
+              history,
+              "workforce.route.applications.application.process.view",
+              [decodeId(application?.id)],
+              false
+            );
+          }}
+        >
+          <TabIcon style={{color:"blue"}} />
+        </IconButton>
+      </Tooltip>
+    </div>
+  ));
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+
+      <Tooltip title="Verify">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            historyPush(
+              modulesManager,
+              history,
+              "workforce.route.applications.application.verify",
+              [decodeId(application?.id)],
+              false
+            );
+          }}
+        >
+          <VerifiedUserIcon style={{color:"green"}} />
+        </IconButton>
+      </Tooltip>
+    </div>
+  ));
+  return formatters;
+};
+export const itemFormattersS1DeputyAsstDirector = (
+  isShowHistory,
+  modulesManager,
+  history,
+  component,
+  locale = "en"
+) => {
+  const formatters = [
+    (application) => application?.trackingNumber,
+    (application) =>
+      conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
+    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      locale === "en"
+        ? application?.employeeFactory?.nameEn
+        : application?.employeeFactory?.nameBn,
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
     // (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
@@ -340,141 +500,13 @@ export const itemFormattersChecker = (
             );
           }}
         >
-          <TabIcon />
-        </IconButton>
-      </Tooltip>
-
-      <Tooltip title="Verify">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.verify",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <VerifiedUserIcon />
-        </IconButton>
-      </Tooltip>
-       <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => component.handleOpenRevertModal(application)}
-        >
-          <UndoIcon />
+          <TabIcon style={{color:"blue"}}/>
         </IconButton>
       </Tooltip>
     </div>
   ));
-  return formatters;
-};
-export const itemFormattersCheckerTwo = (
-  isShowHistory,
-  modulesManager,
-  history,
-  component,
-  locale = "en"
-) => {
-  const formatters = [
-    (application) => application?.trackingNumber,
-    (application) =>
-      conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.workforceEmployee?.firstNameBn,
-    (application) =>
-      locale === "en"
-        ? application?.employeeFactory?.nameEn
-        : application?.employeeFactory?.nameBn,
-    (application) => {
-      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
-      return statusMap[application?.status] || application?.status;
-    },
-    isShowHistory() ? application?.version : null,
-  ];
-
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
-      <Tooltip title="View">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.process.view",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <TabIcon />
-        </IconButton>
-      </Tooltip>
-
-      <Tooltip title="Verify">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.verify",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <VerifiedUserIcon />
-        </IconButton>
-      </Tooltip>
-    </div>
-  ));
-  return formatters;
-};
-export const itemFormattersS1DeputyAsstDirector = (
-  isShowHistory,
-  modulesManager,
-  history,
-  component,
-  locale = "en"
-) => {
-  const formatters = [
-    (application) => application?.trackingNumber,
-    (application) =>
-      conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.workforceEmployee?.firstNameBn,
-    (application) =>
-      locale === "en"
-        ? application?.employeeFactory?.nameEn
-        : application?.employeeFactory?.nameBn,
-    (application) => {
-      const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
-      return statusMap[application?.status] || application?.status;
-    },
-    isShowHistory() ? application?.version : null,
-  ];
-
-  formatters.push((application) => (
-    <div className={component.props.classes.horizontalButtonContainer}>
-      <Tooltip title="View">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.process.view",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <TabIcon />
-        </IconButton>
-      </Tooltip>
        <Tooltip title="Verify">
         <IconButton
           disabled={application?.isHistory}
@@ -488,7 +520,7 @@ export const itemFormattersS1DeputyAsstDirector = (
             );
           }}
         >
-          <VerifiedUserIcon />
+          <VerifiedUserIcon style={{color:"green"}}/>
         </IconButton>
       </Tooltip>
     </div>
@@ -511,6 +543,11 @@ export const itemFormattersS2DeputyAsstDirector = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -533,10 +570,13 @@ export const itemFormattersS2DeputyAsstDirector = (
             );
           }}
         >
-          <TabIcon />
+          <TabIcon style={{color:"blue"}} />
         </IconButton>
       </Tooltip>
-
+    </div>
+  ));
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="Verify">
         <IconButton
           disabled={application?.isHistory}
@@ -550,7 +590,7 @@ export const itemFormattersS2DeputyAsstDirector = (
             );
           }}
         >
-          <VerifiedUserIcon />
+          <VerifiedUserIcon style={{color:"green"}} />
         </IconButton>
       </Tooltip>
     </div>
@@ -565,18 +605,6 @@ export const itemFormattersSectionAdmin = (
   locale = "en"
 ) => {
   const formatters = [
-    // (application) =>
-    //   application?.workforceEmployee && component.props.disableButtons!==1 ? (
-    //     <Checkbox
-    //       checked={component.state.selectedApplicationIds.includes(
-    //         application?.id
-    //       )}
-    //       onChange={component.handleCheckboxChange(application?.id)}
-    //       color="primary"
-    //     />
-    //   ) : (
-    //     ""
-    //   ),
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
@@ -585,6 +613,10 @@ export const itemFormattersSectionAdmin = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
     (application) => application?.workforceEmployee?.nid,
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
@@ -593,6 +625,7 @@ export const itemFormattersSectionAdmin = (
     isShowHistory() ? application?.version : null,
   ];
 
+  // --- VIEW BUTTON ---
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="View">
@@ -608,63 +641,73 @@ export const itemFormattersSectionAdmin = (
             );
           }}
         >
-          <TabIcon />
+          <TabIcon style={{color:"blue"}} />
         </IconButton>
       </Tooltip>
+    </div>
+  ));
 
+  // --- VERIFY BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
       {component.props.disableButtons !== 1 && (
-        <>
-          <Tooltip title="Verify">
-            <IconButton
-              disabled={application?.isHistory}
-              onClick={() => {
-                historyPush(
-                  modulesManager,
-                  history,
-                  "workforce.route.applications.application.verify",
-                  [decodeId(application?.id)],
-                  false
-                );
-              }}
-            >
-              <VerifiedUserIcon />
-            </IconButton>
-          </Tooltip>
-          {/* 
-            <Tooltip title="Forward">
-              <IconButton
-                disabled={application?.isHistory}
-                onClick={() => component.handleOpenForwardModal(application)}
-              >
-                <ForwardIcon />
-              </IconButton>
-            </Tooltip> */}
-          {!component.props.revertedApplication && (
-            <>
-              <Tooltip title="Revert">
-                <IconButton
-                  disabled={application?.isHistory}
-                  onClick={() => {
-                    component.handleOpenRevertModal(application);
-                    component.setState({ revertByChecker: true });
-                  }}
-                >
-                  <UndoIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Reject">
-                <span>
-                  <IconButton
-                    onClick={() => component.handleReject(application)}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            </>
-          )}
-        </>
+        <Tooltip title="Verify">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.verify",
+                [decodeId(application?.id)],
+                false
+              );
+            }}
+          >
+            <VerifiedUserIcon style={{color:"green"}}/>
+          </IconButton>
+        </Tooltip>
       )}
+    </div>
+  ));
+
+  // --- REVERT BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      {component.props.disableButtons !== 1 && !component.props.revertedApplication && (
+        <Tooltip title="Revert">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              component.handleOpenRevertModal(application);
+              component.setState({ revertByChecker: true });
+            }}
+          >
+            <UndoIcon style={{color:"red"}}/>
+          </IconButton>
+        </Tooltip>
+      )}
+    </div>
+  ));
+
+  // --- REJECT BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      {component.props.disableButtons !== 1 && !component.props.revertedApplication && (
+        <Tooltip title="Reject">
+          <span>
+            <IconButton onClick={() => component.handleReject(application)}>
+              <CloseIcon style={{color:"#750506"}}/>
+            </IconButton>
+          </span>
+        </Tooltip>
+      )}
+    </div>
+  ));
+
+  // --- RESEND BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
       {component.props.revertedApplication && (
         <Tooltip title="Resend">
           <IconButton
@@ -679,14 +722,16 @@ export const itemFormattersSectionAdmin = (
               );
             }}
           >
-            <RestorePageIcon />
+            <RestorePageIcon style={{color:"#1976D2"}} />
           </IconButton>
         </Tooltip>
       )}
     </div>
   ));
+
   return formatters;
 };
+
 export const itemFormattersSectionTwoAdmin = (
   isShowHistory,
   modulesManager,
@@ -703,6 +748,11 @@ export const itemFormattersSectionTwoAdmin = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    // (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => application?.workforceEmployee?.nid,
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
@@ -711,96 +761,111 @@ export const itemFormattersSectionTwoAdmin = (
     isShowHistory() ? application?.version : null,
   ];
 
+  // --- VIEW BUTTON ---
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="View">
         <IconButton
           disabled={application?.isHistory}
-          onClick={() => {
+          onClick={() =>
             historyPush(
               modulesManager,
               history,
               "workforce.route.applications.application.process.view",
               [decodeId(application?.id)],
               false
-            );
-          }}
+            )
+          }
         >
-          <TabIcon />
+          <TabIcon style={{color:"blue"}} />
         </IconButton>
       </Tooltip>
+    </div>
+  ));
 
+  // --- VERIFY BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="Verify">
         <IconButton
           disabled={application?.isHistory}
-          onClick={() => {
+          onClick={() =>
             historyPush(
               modulesManager,
               history,
               "workforce.route.applications.application.verify",
               [decodeId(application?.id)],
               false
-            );
-          }}
+            )
+          }
         >
-          <VerifiedUserIcon />
+          <VerifiedUserIcon style={{color:"green"}}/>
         </IconButton>
       </Tooltip>
-      {/* 
-        <Tooltip title="Forward">
+    </div>
+  ));
+
+  // --- REVERT BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      {!component.props.revertedApplication && (
+        <Tooltip title="Revert">
           <IconButton
             disabled={application?.isHistory}
-            onClick={() => component.handleOpenForwardModal(application)}
+            onClick={() => {
+              component.handleOpenRevertModal(application);
+              component.setState({ revertByChecker: true });
+            }}
           >
-            <ForwardIcon />
+            <UndoIcon style={{color:"red"}}/>
           </IconButton>
-        </Tooltip> */}
-      {!component.props.revertedApplication && (
-        <>
-          <Tooltip title="Revert">
-            <IconButton
-              disabled={application?.isHistory}
-              onClick={() => {
-                component.handleOpenRevertModal(application);
-                component.setState({ revertByChecker: true });
-              }}
-            >
-              <UndoIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Reject">
-            <span>
-              <IconButton
-                onClick={() => component.handleReject(application)}
-              >
-                <CloseIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
-        </>
+        </Tooltip>
       )}
+    </div>
+  ));
+
+  // --- REJECT BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      {!component.props.revertedApplication && (
+        <Tooltip title="Reject">
+          <span>
+            <IconButton onClick={() => component.handleReject(application)}>
+              <CloseIcon style={{color:"#750506"}}/>
+            </IconButton>
+          </span>
+        </Tooltip>
+      )}
+    </div>
+  ));
+
+  // --- RESEND BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
       {component.props.revertedApplication && (
         <Tooltip title="Resend">
           <IconButton
             disabled={application?.isHistory}
-            onClick={() => {
+            onClick={() =>
               historyPush(
                 modulesManager,
                 history,
                 "workforce.route.applications.application.process.resend",
                 [decodeId(application?.id)],
                 false
-              );
-            }}
+              )
+            }
           >
-            <RestorePageIcon />
+            <RestorePageIcon style={{color:"#1976D2"}}/>
           </IconButton>
         </Tooltip>
       )}
     </div>
   ));
+
   return formatters;
 };
+
 export const itemFormattersBlwfSectionAdmin = (
   isShowHistory,
   modulesManager,
@@ -825,6 +890,11 @@ export const itemFormattersBlwfSectionAdmin = (
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
     (application) => application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
+    (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => application?.workforceEmployee?.nid,
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
@@ -960,6 +1030,7 @@ export const itemFormattersDoctor = (
     isShowHistory() ? application?.version : null,
   ];
 
+  // --- VIEW BUTTON ---
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="View">
@@ -975,10 +1046,15 @@ export const itemFormattersDoctor = (
             );
           }}
         >
-          <TabIcon />
+          <TabIcon style={{color:"blue"}} />
         </IconButton>
       </Tooltip>
+    </div>
+  ));
 
+  // --- VERIFY BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="Verify">
         <IconButton
           disabled={application?.isHistory}
@@ -992,58 +1068,70 @@ export const itemFormattersDoctor = (
             );
           }}
         >
-          <VerifiedUserIcon />
+          <VerifiedUserIcon style={{color:"green"}}/>
         </IconButton>
       </Tooltip>
+    </div>
+  ));
+
+  // --- APPROVE BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="Approve">
         <IconButton
+          disabled={application?.isHistory}
           onClick={() => component.handleApprovalByDoctor(application)}
         >
-          <CheckIcon />
+          <CheckIcon style={{color:"#006273"}}/>
         </IconButton>
       </Tooltip>
+    </div>
+  ));
+
+  // --- REVERT BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="Revert">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            component.handleOpenRevertModal(application);
+            component.setState({ revertByChecker: true });
+          }}
+        >
+          <UndoIcon style={{color:"red"}}/>
+        </IconButton>
+      </Tooltip>
+    </div>
+  ));
+
+  // --- RESEND BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      {component.props.revertedApplication && (
+        <Tooltip title="Resend">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
-              component.handleOpenRevertModal(application);
-              component.setState({ revertByChecker: true });
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.process.resend",
+                [decodeId(application?.id)],
+                false
+              );
             }}
           >
-            <UndoIcon />
+            <RestorePageIcon style={{color:"#1976D2"}}/>
           </IconButton>
         </Tooltip>
-         {component.props.revertedApplication && (
-            <Tooltip title="Resend">
-              <IconButton
-                disabled={application?.isHistory}
-                onClick={() => {
-                  historyPush(
-                    modulesManager,
-                    history,
-                    "workforce.route.applications.application.process.resend",
-                    [decodeId(application?.id)],
-                    false
-                  );
-                }}
-              >
-                <RestorePageIcon />
-              </IconButton>
-            </Tooltip>
-          )}
-      {/* 
-        <Tooltip title="Forward">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => component.handleOpenForwardModal(application)}
-          >
-            <ForwardIcon />
-          </IconButton>
-        </Tooltip> */}
+      )}
     </div>
   ));
+
   return formatters;
 };
+
 export const itemFormattersAssociation = (
   isShowHistory,
   modulesManager,
@@ -1052,18 +1140,6 @@ export const itemFormattersAssociation = (
   locale = "en"
 ) => {
   const formatters = [
-    // (application) =>
-    //   application?.workforceEmployee && component.props.disableButtons!==1 ? (
-    //     <Checkbox
-    //       checked={component.state.selectedApplicationIds.includes(
-    //         application?.id
-    //       )}
-    //       onChange={component.handleCheckboxChange(application?.id)}
-    //       color="primary"
-    //     />
-    //   ) : (
-    //     ""
-    //   ),
     (application) => application.trackingNumber,
     (application) =>
       conditionalEnToBn(application.dateCreated.split("T")[0], locale),
@@ -1072,7 +1148,10 @@ export const itemFormattersAssociation = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
-    // (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -1080,6 +1159,7 @@ export const itemFormattersAssociation = (
     isShowHistory() ? application?.version : null,
   ];
 
+  // --- VIEW BUTTON ---
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="View">
@@ -1095,11 +1175,16 @@ export const itemFormattersAssociation = (
             );
           }}
         >
-          <TabIcon />
+          <TabIcon style={{ color: "blue" }} />
         </IconButton>
       </Tooltip>
+    </div>
+  ));
 
-      {component.props.disableButtons!==1 && (
+  // --- VERIFY & REVERT BUTTONS ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      {component.props.disableButtons !== 1 && !component.props.revertedApplication && (
         <>
           <Tooltip title="Verify">
             <IconButton
@@ -1114,47 +1199,178 @@ export const itemFormattersAssociation = (
                 );
               }}
             >
-              <VerifiedUserIcon />
+              <VerifiedUserIcon style={{ color: "green" }} />
             </IconButton>
           </Tooltip>
-          {!component.props.revertedApplication && (
-            <Tooltip title="Revert">
-              <IconButton
-                disabled={application?.isHistory}
-                onClick={() => {
-                  component.handleOpenRevertModal(application);
-                  component.setState({ revertByChecker: true });
-                }}
-              >
-                <UndoIcon />
-              </IconButton>
-            </Tooltip>
-          )}
-           {component.props.revertedApplication && (
-            <Tooltip title="Resend">
-              <IconButton
-                disabled={application?.isHistory}
-                onClick={() => {
-                  historyPush(
-                    modulesManager,
-                    history,
-                    "workforce.route.applications.application.process.resend",
-                    [decodeId(application?.id)],
-                    false
-                  );
-                }}
-              >
-                <RestorePageIcon />
-              </IconButton>
-            </Tooltip>
-          )}
         </>
       )}
-
     </div>
   ));
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      {component.props.disableButtons !== 1 && !component.props.revertedApplication && (
+        <>
+          <Tooltip title="Revert">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => {
+                component.handleOpenRevertModal(application);
+                component.setState({ revertByChecker: true });
+              }}
+            >
+              <UndoIcon style={{ color: "red" }} />
+            </IconButton>
+          </Tooltip>
+        </>
+      )}
+    </div>
+  ));
+
+  // --- RESEND BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      {component.props.disableButtons !== 1 && component.props.revertedApplication && (
+        <Tooltip title="Resend">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.process.resend",
+                [decodeId(application?.id)],
+                false
+              );
+            }}
+          >
+            <RestorePageIcon style={{ color: "#1976D2" }} />
+          </IconButton>
+        </Tooltip>
+      )}
+    </div>
+  ));
+
   return formatters;
 };
+// export const itemFormattersFactoryAdmin = (
+//   isShowHistory,
+//   modulesManager,
+//   history,
+//   component,
+//   locale = "en"
+// ) => {
+//   const formatters = [
+//     (application) => application.trackingNumber,
+//     (application) =>
+//       conditionalEnToBn(application.dateCreated.split("T")[0], locale),
+//     (application) => application.workforceEmployee?.firstNameBn,
+//     (application) =>
+//       locale === "en"
+//         ? application?.employeeFactory?.nameEn
+//         : application?.employeeFactory?.nameBn,
+//     (application) =>
+//       locale === "en"
+//         ? application?.grantMoney?.applicationTypeNameEn
+//         : application?.grantMoney?.applicationTypeNameBn,
+//     (application) => {
+//       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+//       return statusMap[application?.status] || application?.status;
+//     },
+//     (application) => {
+//       const userTypeMap =
+//         locale === "en"
+//           ? WORKFORCE_USER_TYPE_MAP_EN
+//           : WORKFORCE_USER_TYPE_MAP_BN;
+//       return userTypeMap[application?.submittedBy] || application?.submittedBy;
+//     },
+//     isShowHistory() ? application?.version : null,
+//   ];
+
+//   formatters.push((application) => (
+//     <div className={component.props.classes.horizontalButtonContainer}>
+//       <Tooltip title="ভিউ">
+//         <IconButton
+//           disabled={application?.isHistory}
+//           onClick={() => {
+//             historyPush(
+//               modulesManager,
+//               history,
+//               "workforce.route.applications.application.process.view",
+//               [decodeId(application?.id)],
+//               false
+//             );
+//           }}
+//         >
+//           <TabIcon />
+//         </IconButton>
+//       </Tooltip>
+//       {component.props.disableButtons !== 1 && (
+//         <>
+//           <Tooltip title="যাচাই">
+//             <IconButton
+//               disabled={application?.isHistory}
+//               onClick={() => {
+//                 historyPush(
+//                   modulesManager,
+//                   history,
+//                   "workforce.route.applications.application.verify",
+//                   [decodeId(application?.id)],
+//                   false
+//                 );
+//               }}
+//             >
+//               <VerifiedUserIcon />
+//             </IconButton>
+//           </Tooltip>
+//           {!component.props.revertedApplication && (
+//             <>
+//               {/* <Tooltip title="ফরওয়ার্ড">
+//                 <IconButton
+//                   disabled={application?.isHistory}
+//                   onClick={() => component.handleOpenForwardModal(application)}
+//                 >
+//                   <ForwardIcon />
+//                 </IconButton>
+//               </Tooltip> */}
+    
+//               <Tooltip title="রিভার্ট">
+//                 <IconButton
+//                   disabled={application?.isHistory}
+//                   onClick={() => {
+//                     component.handleOpenRevertModal(application);
+//                     component.setState({ revertByChecker: true });
+//                   }}
+//                 >
+//                   <UndoIcon />
+//                 </IconButton>
+//               </Tooltip>
+//             </>
+//           )}
+//           {component.props.revertedApplication && (
+//             <Tooltip title="Resend">
+//               <IconButton
+//                 disabled={application?.isHistory}
+//                 onClick={() => {
+//                   historyPush(
+//                     modulesManager,
+//                     history,
+//                     "workforce.route.applications.application.process.resend",
+//                     [decodeId(application?.id)],
+//                     false
+//                   );
+//                 }}
+//               >
+//                 <RestorePageIcon />
+//               </IconButton>
+//             </Tooltip>
+//           )}
+//         </>
+//       )}
+
+//     </div>
+//   ));
+//   return formatters;
+// };
 export const itemFormattersFactoryAdmin = (
   isShowHistory,
   modulesManager,
@@ -1163,18 +1379,6 @@ export const itemFormattersFactoryAdmin = (
   locale = "en"
 ) => {
   const formatters = [
-    // (application) =>
-    //   application?.workforceEmployee && component.props.disableButtons!==1 ? (
-    //     <Checkbox
-    //       checked={component.state.selectedApplicationIds.includes(
-    //         application?.id
-    //       )}
-    //       onChange={component.handleCheckboxChange(application?.id)}
-    //       color="primary"
-    //     />
-    //   ) : (
-    //     ""
-    //   ),
     (application) => application.trackingNumber,
     (application) =>
       conditionalEnToBn(application.dateCreated.split("T")[0], locale),
@@ -1187,8 +1391,6 @@ export const itemFormattersFactoryAdmin = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
-    (application) => "14-05-2025",
-    (application) => "20-05-2025",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -1203,6 +1405,7 @@ export const itemFormattersFactoryAdmin = (
     isShowHistory() ? application?.version : null,
   ];
 
+  // View button
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="ভিউ">
@@ -1218,76 +1421,82 @@ export const itemFormattersFactoryAdmin = (
             );
           }}
         >
-          <TabIcon />
+          <TabIcon style={{color:"blue"}}/>
         </IconButton>
       </Tooltip>
-      {component.props.disableButtons !== 1 && (
-        <>
-          <Tooltip title="যাচাই">
-            <IconButton
-              disabled={application?.isHistory}
-              onClick={() => {
-                historyPush(
-                  modulesManager,
-                  history,
-                  "workforce.route.applications.application.verify",
-                  [decodeId(application?.id)],
-                  false
-                );
-              }}
-            >
-              <VerifiedUserIcon />
-            </IconButton>
-          </Tooltip>
-          {!component.props.revertedApplication && (
-            <>
-              {/* <Tooltip title="ফরওয়ার্ড">
-                <IconButton
-                  disabled={application?.isHistory}
-                  onClick={() => component.handleOpenForwardModal(application)}
-                >
-                  <ForwardIcon />
-                </IconButton>
-              </Tooltip> */}
-    
-              <Tooltip title="রিভার্ট">
-                <IconButton
-                  disabled={application?.isHistory}
-                  onClick={() => {
-                    component.handleOpenRevertModal(application);
-                    component.setState({ revertByChecker: true });
-                  }}
-                >
-                  <UndoIcon />
-                </IconButton>
-              </Tooltip>
-            </>
-          )}
-          {component.props.revertedApplication && (
-            <Tooltip title="Resend">
-              <IconButton
-                disabled={application?.isHistory}
-                onClick={() => {
-                  historyPush(
-                    modulesManager,
-                    history,
-                    "workforce.route.applications.application.process.resend",
-                    [decodeId(application?.id)],
-                    false
-                  );
-                }}
-              >
-                <RestorePageIcon />
-              </IconButton>
-            </Tooltip>
-          )}
-        </>
-      )}
-
     </div>
   ));
+
+  // Verify + Revert
+  formatters.push((application) =>
+    component.props.disableButtons !== 1 && !component.props.revertedApplication ? (
+      <div className={component.props.classes.horizontalButtonContainer}>
+        <Tooltip title="যাচাই">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.verify",
+                [decodeId(application?.id)],
+                false
+              );
+            }}
+          >
+            <VerifiedUserIcon style={{color:"green"}}/>
+          </IconButton>
+        </Tooltip>
+
+      </div>
+    ) : null
+  );
+  formatters.push((application) =>
+    component.props.disableButtons !== 1 && !component.props.revertedApplication ? (
+      <div className={component.props.classes.horizontalButtonContainer}>
+
+        <Tooltip title="রিভার্ট">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              component.handleOpenRevertModal(application);
+              component.setState({ revertByChecker: true });
+            }}
+          >
+            <UndoIcon style={{color:"red"}}/>
+          </IconButton>
+        </Tooltip>
+      </div>
+    ) : null
+  );
+
+  // Resend
+  formatters.push((application) =>
+    component.props.disableButtons !== 1 && component.props.revertedApplication ? (
+      <div className={component.props.classes.horizontalButtonContainer}>
+        <Tooltip title="Resend">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.process.resend",
+                [decodeId(application?.id)],
+                false
+              );
+            }}
+          >
+            <RestorePageIcon />
+          </IconButton>
+        </Tooltip>
+      </div>
+    ) : null
+  );
+
   return formatters;
 };
+
 export const itemFormattersApprover = (
   isShowHistory,
   modulesManager,

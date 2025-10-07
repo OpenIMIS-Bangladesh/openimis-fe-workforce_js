@@ -151,6 +151,7 @@
   "workforce.employee.application.forwardToAssociation": "বিবেচ্য আবেদন সমূহ অ্যাসোসিয়েশন অফিসে পাঠান",
   "workforce.employee.application.forwardToSelectionOffice": "বিবেচিত আবেদনপত্রগুলি সিলেকশন কমিটিতে পাঠান",
   "workforce.employee.application.forwardToSectionAdmin": "বিবেচিত আবেদনপত্রগুলি কল্যাণ শাখা বরাবর পাঠান",
+  "workforce.employee.application.forwardToDG": "বিবেচিত আবেদনপত্রগুলি মহাপরিচালক বরাবর ফরোয়ার্ড করুন",
   "workforce.employee.application.provideMeetingInfo": "মিটিং এর তথ্য দিন",
   "workforce.employee.application.createMeetingSheet": "মিটিং পত্র তৈরি করুন",
   "workforce.employee.application.bulkForward": "বাল্ক ফরওয়ার্ড করুন",
