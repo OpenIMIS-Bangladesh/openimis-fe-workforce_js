@@ -272,7 +272,7 @@ const ApplicationViewPage = ({
       TrackingNumber: application.trackingNumber,
       Status: language==="en"?STATUS_MAP_EN[application.status]:STATUS_MAP_BN[application?.status],
       SubmittedBy: application.submittedBy==="applicant" ? (language === "en" ? "Applicant" : "আবেদনকারী") : application.submittedBy,
-      GrantAmount: '৳'+(language==='en'?Number(application?.grantAmount).toLocaleString('en-US'):Number(application?.grantAmount).toLocaleString('bn-BD')),
+      GrantAmount: '৳ '+(language==='en'?Number(application?.grantAmount).toLocaleString('en-US'):Number(application?.grantAmount).toLocaleString('bn-BD')),
       CreatedDate: conditionalEnToBn(application?.dateCreated?.split("T")[0] || "—", language),
       ApplicationFor: application?.applicationFor=="self" ? (language === "en" ? "Self" : "নিজের জন্য") : (language === "en" ? "Dependent" : "নির্ভরশীলের জন্য"),
     }),

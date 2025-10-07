@@ -84,11 +84,11 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-
 const AgingReportModal = ({ open, onClose, data, organizationType }) => {
+  const [thisApplicationType, setThisApplicationType] = useState([]);
+  const [thisOrganizationType, setThisOrganizationType] = useState('');
   const classes = useStyles();
   const dispatch = useDispatch();
-
   const [barData, setBarData] = useState([]);
   const [selectedDay, setSelectedDay] = useState(null);
   const [tableData, setTableData] = useState([]);
@@ -97,87 +97,44 @@ const AgingReportModal = ({ open, onClose, data, organizationType }) => {
   useEffect(() => {
     async function fetchData() {
       setTableData([]);
+      setThisOrganizationType(organizationType);
       try {
         let res= null;
-        let applicationType= '';
-        if(organizationType=='cf')
-        {
-          if(data.appType=='medical')
-          {
-            applicationType= 'medicalAssistance';
-          }
-          else if(data.appType=='death')
-          {
-            applicationType= 'financialAssistance';
-          }
-          else if(data.appType=='educational')
-          {
-            applicationType= 'scholarship';
-          }
-          else if(data.appType=='maternityGrant')
-          {
-            applicationType= 'maternityGrant';
-          }
-          else if(data.appType=='disabilityAssistance')
-          {
-            applicationType= 'disabilityAssistance';
-          }
+        let applicationType = [];
+        if (organizationType === 'cf') {
+          if (data.appType === 'medical') applicationType = ['medicalAssistance'];
+          else if (data.appType === 'death') applicationType = ['financialAssistance'];
+          else if (data.appType === 'educational') applicationType = ['scholarship'];
+          else if (data.appType === 'maternityGrant') applicationType = ['maternityGrant'];
+          else if (data.appType === 'disabilityAssistance') applicationType = ['disabilityAssistance'];
         }
-        else if(organizationType=='blwf')
-        {
-          if(data.appType=='medical')
-          {
-            applicationType= 'medicalDonation';
-          }
-          else if(data.appType=='death')
-          {
-            applicationType= 'deadlyGrant';
-          }
-          else if(data.appType=='educational')
-          {
-            applicationType= 'educationGrant';
-          }
-          else if(data.appType=='maternityGrant')
-          {
-            applicationType= 'maternityGrant';
-          }
+        else if (organizationType === 'blwf') {
+          if (data.appType === 'medical') applicationType = ['medicalDonation'];
+          else if (data.appType === 'death') applicationType = ['deadlyGrant'];
+          else if (data.appType === 'educational') applicationType = ['educationGrant'];
+          else if (data.appType === 'maternityGrant') applicationType = ['maternityGrant'];
         }
-        else
-        {
-          if(data.appType=='medical')
-          {
-            applicationType= 'medicalAssistance, medicalDonation';
-          }
-          else if(data.appType=='death')
-          {
-            applicationType= 'financialAssistance, deadlyGrant';
-          }
-          else if(data.appType=='educational')
-          {
-            applicationType= 'scholarship, educationGrant';
-          }
-          else if(data.appType=='maternityGrant')
-          {
-            applicationType= 'maternityGrant, maternityGrant';
-          }
-          else if(data.appType=='disabilityAssistance')
-          {
-            applicationType= 'disabilityAssistance';
-          }
+        else {
+          if (data.appType === 'medical') applicationType = ['medicalAssistance', 'medicalDonation'];
+          else if (data.appType === 'death') applicationType = ['financialAssistance', 'deadlyGrant'];
+          else if (data.appType === 'educational') applicationType = ['scholarship', 'educationGrant'];
+          else if (data.appType === 'maternityGrant') applicationType = ['maternityGrant'];
+          else if (data.appType === 'disabilityAssistance') applicationType = ['disabilityAssistance'];
         }
-        await dispatch(fetchApplicationTimeWiseMatrix(organizationType, applicationType)).then((response) => {
-          console.log(applicationType);
-          console.log(organizationType);
+
+        setThisApplicationType(applicationType);
+
+        await dispatch(fetchApplicationTimeWiseMatrix(organizationType, applicationType, null)).then((response) => {
            res= response.payload?.data?.workforceApplicationTimewiseMatrix || [];
         });
         let dayWiseCount= res.dayWiseCount || {};
         setBarData([
-          { days: "১ দিন", applications: dayWiseCount.day1, color: "#1ba000ff", dayCount:1 },
-          { days: "৩ দিন", applications: dayWiseCount.day3, color: "#87c067ff", dayCount:3 },
-          { days: "৭ দিন", applications: dayWiseCount.day7, color: "#cfbb00ff", dayCount:7 },
-          { days: "১০ দিন", applications: dayWiseCount.day10, color: "#c4811cff", dayCount:10 },
-          { days: "১৫ দিন", applications: dayWiseCount.day15, color: "#c20000ff", dayCount:15 },
-          { days: "১৫ এর অধিক দিন", applications: dayWiseCount.moreThan15, color: "#4e0000ff", dayCount:16 },
+          { days: "১ দিন", applications: dayWiseCount.day1, color: "#1ba000ff", dayCount:"1" },
+          { days: "৩ দিন", applications: dayWiseCount.day3, color: "#87c067ff", dayCount:"3" },
+          { days: "৭ দিন", applications: dayWiseCount.day7, color: "#cfbb00ff", dayCount:"7" },
+          { days: "১০ দিন", applications: dayWiseCount.day10, color: "#c4811cff", dayCount:"10" },
+          { days: "১৫ দিন", applications: dayWiseCount.day15, color: "#c20000ff", dayCount:"15" },
+          { days: "১৫ এর অধিক দিন", applications: dayWiseCount.moreThan15, color: "#4e0000ff", dayCount:"15+" },
         ]);
       }
       catch (e) {
@@ -191,18 +148,21 @@ const AgingReportModal = ({ open, onClose, data, organizationType }) => {
 
   // When user clicks a bar
   const handleBarClick = (dataItem) => {
-    setSelectedDay(dataItem.days);
-    setTableSectionHeading(`${dataItem.days} ধরে প্রক্রিয়াধীনরত আবেদনের অবস্থানসমূহ`);
-    const tableData = [
-      { user: 'সাব-এসিস্টেন্ট অফিসার', applications: Math.floor(Math.random() * 10) },
-      { user: 'সেকশন এডমিন ১', applications: Math.floor(Math.random() * 10) },
-      { user: 'সেকশন এডমিন ২', applications: Math.floor(Math.random() * 10) },
-      { user: 'ডাক্তার', applications: Math.floor(Math.random() * 10) },
-      { user: 'যাচাই বাছাই কমিটি', applications: Math.floor(Math.random() * 10) },
-      { user: 'পরিচালক', applications: Math.floor(Math.random() * 10) },
-    ];
-
-    setTableData(tableData);
+    console.log("Bar clicked:", dataItem);
+    let res= null;
+    let roleWiseCount= [];
+    dispatch(fetchApplicationTimeWiseMatrix(thisOrganizationType, thisApplicationType, dataItem.dayCount)).then((response) => {
+        res= response.payload?.data?.workforceApplicationTimewiseMatrix || [];
+        roleWiseCount= res.roleWiseCount || [];
+        let buildData=[];
+        roleWiseCount.forEach(item => {
+          let tempitem= { user: item?.otherNames+' ('+item.roleName+')', applications: item?.applicationCount };
+          buildData.push(tempitem);
+        });
+        setSelectedDay(dataItem.dayCount);
+        setTableSectionHeading(`${dataItem.days} ধরে প্রক্রিয়াধীনরত আবেদনের অবস্থানসমূহ`);
+        setTableData(buildData);
+    });
   };
 
 
