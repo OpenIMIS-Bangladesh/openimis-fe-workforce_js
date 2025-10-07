@@ -2607,31 +2607,35 @@ export function fetchGenderWiseApplicationMatrixByDate(months, fromDate, toDate,
   return graphql(payload, "GENDER_WISE_APPLICATION_MATRIX_BY_DATE");
 }
 
-export function fetchApplicationTimeWiseMatrix(organizationType, applicationType) {
+export function fetchApplicationTimeWiseMatrix(organizationType, applicationType, daycount) {
+  const organization= organizationType=='সব' || organizationType=='All' ? '' : `organizationType:"${organizationType}"`;
+  const typeList = applicationType.map(type => `"${type}"`).join(", ");
+  const dayWiseCount= daycount!=null || daycount!=''? `dayCount: "${daycount}"` : '';
   const payload = `
     query {
-        workforceApplicationTimewiseMatrix(
-          applicationType: "${applicationType}"
-          organizationType: "${organizationType}"
-        ) {
-          totalApplicationCount
-          dayWiseCount {
-            day1
-            day3
-            day7
-            day10
-            day15
-            moreThan15
-          }
-          roleWiseCount {
-            roleName
-            userId
-            lastName
-            otherNames
-            applicationCount
-          }
+      workforceApplicationTimewiseMatrix(
+        applicationTypeIn: [${typeList}]
+        ${organization}
+        ${dayWiseCount}
+      ) {
+        totalApplicationCount
+        dayWiseCount {
+          day1
+          day3
+          day7
+          day10
+          day15
+          moreThan15
+        }
+        roleWiseCount {
+          roleName
+          userId
+          lastName
+          otherNames
+          applicationCount
         }
       }
+    }
   `;
 
   return graphql(payload, "WORKFORCE_APPLICATIONS_TIME_WISE_MATRIX");
