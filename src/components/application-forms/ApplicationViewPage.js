@@ -249,16 +249,32 @@ const ApplicationViewPage = ({
   console.log({ view: application });
   const user_type = getUserType();
   // Sidebar summary fields
+  let organizationTypeName = "";
+  if (application?.organizationType === "cf") {
+    organizationTypeName = language === "en" ? "Central Fund" : "কেন্দ্রীয় তহবিল";
+  } else if (application?.organizationType === "blwf") {
+    organizationTypeName = language === "en" ?"Bangladesh Labour Welfare Foundation":"বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন";
+  }else
+  {
+    orgranizationTypeName="Employee Injury Scheme";
+  }
   const sidebarFields = useMemo(
     () => ({
+      ApplicantName: language === "en" ? 
+                      application?.workforceEmployee?.firstNameEn+' '+(application?.workforceEmployee?.lastNameEn!=null?application?.workforceEmployee?.lastNameEn:'') 
+                      : 
+                      application?.workforceEmployee?.firstNameBn+' '+(application?.workforceEmployee?.lastNameBn!=null?application?.workforceEmployee?.lastNameBn:''),
+      ApplicantFactoryName: language === "en" ? 
+                      application?.employeeFactory?.nameEn: application?.employeeFactory?.nameBn,
+      ApplicantDesignation: application?.workforceEmployee?.position,
       ApplicationType: (language === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn) || application?.applicationType,
-      OrganizationType: application.organizationType,
+      OrganizationType: organizationTypeName,
       TrackingNumber: application.trackingNumber,
       Status: language==="en"?STATUS_MAP_EN[application.status]:STATUS_MAP_BN[application?.status],
-      SubmittedBy: application.submittedBy,
-      GrantAmount: conditionalEnToBn(application?.grantAmount, language),
+      SubmittedBy: application.submittedBy==="applicant" ? (language === "en" ? "Applicant" : "আবেদনকারী") : application.submittedBy,
+      GrantAmount: '৳'+(language==='en'?Number(application?.grantAmount).toLocaleString('en-US'):Number(application?.grantAmount).toLocaleString('bn-BD')),
       CreatedDate: conditionalEnToBn(application?.dateCreated?.split("T")[0] || "—", language),
-      ApplicationFor: application?.applicationFor,
+      ApplicationFor: application?.applicationFor=="self" ? (language === "en" ? "Self" : "নিজের জন্য") : (language === "en" ? "Dependent" : "নির্ভরশীলের জন্য"),
     }),
     [application]
   );
