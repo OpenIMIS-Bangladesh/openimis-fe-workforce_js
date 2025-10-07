@@ -1072,6 +1072,10 @@ export const itemFormattersAssociation = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
+    (application) =>
+      locale === "en"
+        ? application?.grantMoney?.applicationTypeNameEn
+        : application?.grantMoney?.applicationTypeNameBn,
     // (application) => <TextInput value={application?.grantAmount} onChange={(v)=>component.setState({editedGrantMoney: v})}/> ,
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;

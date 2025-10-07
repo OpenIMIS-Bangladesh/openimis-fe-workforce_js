@@ -136,8 +136,8 @@
     "workforce.employee.name",
     "workforce.employee.application.factoryName",
     "workforce.employee.application.applicationType",
-    "workforce.employee.application.receivedDate",
-    "workforce.employee.application.sentDate",
+    // "workforce.employee.application.receivedDate",
+    // "workforce.employee.application.sentDate",
     "workforce.employee.application.status",
     component.isShowHistory() ? "workforce.version" : "",
   ];
