@@ -68,7 +68,7 @@ class AddWorkforceEmployeePage extends Component {
     const { dispatch } = this.props;
 
     const workforceEmployeeData = {
-      company: stateEdited?.company.id || stateEdited.company.id,
+      // company: stateEdited?.company.id || stateEdited.company.id,
       factory: decodeId(stateEdited?.factory.id) || decodeId(stateEdited.factory.id),
       firstNameBn: stateEdited?.firstNameBn || stateEdited.firstNameBn,
       lastNameBn: stateEdited?.lastNameBn || stateEdited.lastNameBn,
@@ -174,7 +174,7 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                {/* <Grid item xs={6} className={classes.item}>
                   <CompanyPicker
                     value={stateEdited?.company?.id}
                     label={
@@ -187,7 +187,7 @@ class AddWorkforceEmployeePage extends Component {
                     onChange={(v) => this.updateAttribute("company", v)}
                     readOnly={isSaved}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={6} className={classes.item}>
                   <FactoryPicker
                     value={stateEdited?.factory?.id}

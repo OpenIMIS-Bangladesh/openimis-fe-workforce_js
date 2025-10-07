@@ -272,21 +272,45 @@ const Dashboard = () =>{
             res = response.payload?.data?.workforceApplicationMatrix || [];
           });
         // Map API response to table structure
-        const rows = res.map((item) => ({
-          type: applicationTypeNames[item.applicationType],
-          total: Number(item.applicationCount),
-          approved: Number(item.approvedCount),
-          cancelled: Number(item.rejectedCount),
-          processing: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount)),
-        }));
+        let rows = [];
+        res.forEach((item) => {
+          if(orgType=='blwf' && item.applicationType=='disabilityAssistance')
+          {
+            console.log('skipping disabilityAssistance for BLWF');
+          }
+          else
+          {
+            rows.push({
+              type: applicationTypeNames[item.applicationType],
+              total: Number(item.applicationCount),
+              approved: Number(item.approvedCount),
+              cancelled: Number(item.rejectedCount),
+              processing: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount)),
+            });
+          }
+        });
+        // const rows = res.map((item) => ({
+        //   type: applicationTypeNames[item.applicationType],
+        //   total: Number(item.applicationCount),
+        //   approved: Number(item.approvedCount),
+        //   cancelled: Number(item.rejectedCount),
+        //   processing: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount)),
+        // }));
         let appTypes=[];
         let pendingAppTypes=[];
 
         res.map((item) => {
-          appTypes.push({type: applicationTypeNames[item.applicationType], count: item.applicationCount});
-          pendingAppTypes.push({
-            type: applicationTypeNames[item.applicationType], count: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount))
-          });
+          if(orgType=='blwf' && item.applicationType=='disabilityAssistance')
+          {
+
+          }
+          else
+          {
+            appTypes.push({appType: item.applicationType, type: applicationTypeNames[item.applicationType], count: item.applicationCount});
+            pendingAppTypes.push({
+              appType: item.applicationType, type: applicationTypeNames[item.applicationType], count: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount))
+            });
+          }
         });
 
         setApplicationTypes(appTypes);
@@ -456,22 +480,56 @@ const Dashboard = () =>{
                   </ButtonGroup>
                 </Box>
               </Grid>
-              <Grid item md={3} xs={3} style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
-                  <PublishedComponent
-                    pubRef="workforce.DatePicker"
-                    label={"workforce.from.date"}
-                    onChange={(datevalue) => handleFromDateChange(datevalue)}
-                    width="100%"
-                    style={{ border: "1px solid #aaa", padding: "10px", borderRadius: "10px", width:"100%" }}
-                  />
-              </Grid>
-              <Grid item md={3} xs={3} style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
-                  <PublishedComponent
-                    pubRef="workforce.DatePicker"
-                    label={"workforce.to.date"}
-                    onChange={(datevalue) => handleToDateChange(datevalue)}
-                    style={{border:"1px solid #aaa", padding:"10px", borderRadius:"10px"}}
-                  />
+              <Grid item md={12}>
+                <Card style={{...newCard, padding:"10px", borderRadius:"15px", overflow:"visible"}}>
+                  <Grid container spacing={2}>
+                    <Grid item md={3} xs={3} style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                        <PublishedComponent
+                          pubRef="workforce.DatePicker"
+                          label={"workforce.from.date"}
+                          onChange={(datevalue) => handleFromDateChange(datevalue)}
+                          width="100%"
+                          style={{ border: "1px solid #aaa", padding: "10px", borderRadius: "10px", width:"100%" }}
+                        />
+                    </Grid>
+                    <Grid item md={3} xs={3} style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                        <PublishedComponent
+                          pubRef="workforce.DatePicker"
+                          label={"workforce.to.date"}
+                          onChange={(datevalue) => handleToDateChange(datevalue)}
+                          style={{border:"1px solid #aaa", padding:"10px", borderRadius:"10px"}}
+                        />
+                    </Grid>
+                    <Grid item md={6} xs={6}>
+                      <Card style={{...newCard, padding:"10px", borderRadius:"15px", overflow:"visible", display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                        {/* Filters row */}
+                        <Typography component="div">
+                          {locale=='fr'?"তহবিল নির্বাচন করুন":"Fund Type"}
+                        </Typography>
+                        <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
+                          <Box>
+                            <ButtonGroup size="small" variant="outlined">
+                              {[locale=='fr'?"সব":"All", "CF", "BLWF"].map((l) => (
+                                <Button
+                                  key={l}
+                                  variant={filter === l ? "contained" : "outlined"}
+                                  onClick={() => handleFilter(l)}
+                                >
+                                  {l}
+                                </Button>
+                              ))}
+                            </ButtonGroup>
+                          </Box>
+                          <Box>
+                            <Typography variant="caption" color="textSecondary">
+                              {locale=='fr'?"নির্বাচিত তহবিল":"Selected Fund"}: <strong>{filter}</strong>
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Card>
+                    </Grid>
+                  </Grid>
+                </Card>
               </Grid>
             </Grid>
           </Card>
@@ -489,16 +547,16 @@ const Dashboard = () =>{
               </Typography>
               <table cellPadding={"6px"} style={{ width: "100%" }}>
                 <tbody>
-                    {pendingApplicationTypes.map((type) => (
+                    {pendingApplicationTypes.map((item) => (
                       <tr style={{paddingTop:"10px", paddingBottom:"10px"}}>
-                        <th style={{textAlign:"left"}}><Typography>{type.type}</Typography></th>
+                        <th style={{textAlign:"left"}}><Typography>{item.type}</Typography></th>
                         <td style={{textAlign:"right"}}>
                           <Link
                             component="button"
                             variant="body2"
-                            onClick={() => handleOpenModal(type)}
+                            onClick={() => handleOpenModal(item)}
                           >
-                            <Typography>{type.count}</Typography>
+                            <Typography>{item.count}</Typography>
                           </Link>
                           </td>
                       </tr>
@@ -506,7 +564,7 @@ const Dashboard = () =>{
                 </tbody>
               </table>
               {/* Attach modal here */}
-              <AgingReportModal open={openModal} onClose={handleCloseModal} data={selectedType}/>
+              <AgingReportModal open={openModal} onClose={handleCloseModal} data={selectedType} organizationType={filter.toLowerCase()}/>
             </CardContent>
           </Card>
         </Grid>
@@ -599,28 +657,6 @@ const Dashboard = () =>{
               }
             />
             <CardContent>
-              {/* Filters row */}
-              <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
-                <Box>
-                  <ButtonGroup size="small" variant="outlined">
-                    {[locale=='fr'?"সব":"All", "CF", "BLWF"].map((l) => (
-                      <Button
-                        key={l}
-                        variant={filter === l ? "contained" : "outlined"}
-                        onClick={() => handleFilter(l)}
-                      >
-                        {l}
-                      </Button>
-                    ))}
-                  </ButtonGroup>
-                </Box>
-                <Box>
-                  <Typography variant="caption" color="textSecondary">
-                    {locale=='fr'?"তহবিল":"Fund"}: <strong>{filter}</strong>
-                  </Typography>
-                </Box>
-              </Box>
-
               {/* Table */}
               <Table>
                 <TableHead>
