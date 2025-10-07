@@ -1,14 +1,22 @@
   export const headersAdmin = (component) => [
-    //  "",
-    "workforce.application.tracking.number",
-    "workforce.employee.application.applicationDate",
-    "workforce.employee.name",
-    "workforce.employee.application.factoryName",
-    "workforce.employee.application.applicationType",
-    "workforce.employee.application.moneyAmount",
-    "workforce.employee.application.status",
-    component.isShowHistory() ? "workforce.version" : "",
-  ];
+  "workforce.application.tracking.number",
+  "workforce.employee.application.applicationDate",
+  "workforce.employee.name",
+  "workforce.employee.application.factoryName",
+  "workforce.employee.application.applicationType",
+  "workforce.employee.application.moneyAmount",
+  "workforce.employee.application.status",
+  component.isShowHistory() ? "workforce.version" : "",
+
+  // 1️⃣ View header — always visible
+  "view",
+  // 2️⃣ Revert header — visible only when disableButtons !== 1
+  component.props.disableButtons !== 1 && "revert" ,
+
+  // 3️⃣ Reject header — visible only when disableButtons !== 1
+  component.props.disableButtons !== 1 && "reject" ,
+];
+
   export const headerDirector = (component) => [
     //  "",
     "workforce.application.tracking.number",

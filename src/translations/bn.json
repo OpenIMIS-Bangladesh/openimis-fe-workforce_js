@@ -687,6 +687,20 @@
   "resend": "পুনরায় পাঠান",
   "revert": "ফেরত দিন",
   "forward": "অগ্রসর করুন",
-  "verify": "যাচাই করুন"
+  "verify": "যাচাই করুন",
+
+  "workforce.user.name": "নাম",
+  "workforce.user.role": "পদবী",
+  "workforce.user.role.admin": "অ্যাডমিন",
+  "workforce.user.role.director": "পরিচালক",
+  "workforce.user.role.factoryAdmin": "কারখানা প্রশাসক",
+  "workforce.user.role.bgmeaAssociation": "বিজিএমইএ সমিতি",
+  "workforce.user.role.bkmeaAssociation": "বিকেমইএ সমিতি",
+  "workforce.user.role.sectionAdmin": "সেকশন প্রশাসক",
+  "workforce.user.role.checker": "চেকার",
+  "workforce.user.role.checkerTwo": "চেকার দুই",
+  "workforce.user.role.doctor": "ডাক্তার",
+  "workforce.user.role.approver": "অনুমোদনকারী",
+  "workforce.user.role.applicant": "আবেদনকারী"
   
 }

@@ -22,6 +22,91 @@ import {
 } from "../constants";
 import { conditionalEnToBn } from "./utils";
 
+// export const itemAdminFormatters = (
+//   isShowHistory,
+//   modulesManager,
+//   history,
+//   component,
+//   locale = "en"
+// ) => {
+//   const formatters = [
+//     (application) => application?.trackingNumber,
+//     (application) =>
+//       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
+//     (application) => application?.workforceEmployee?.firstNameBn,
+//     (application) =>
+//       locale === "en"
+//         ? application?.employeeFactory?.nameEn
+//         : application?.employeeFactory?.nameBn,
+//     (application) =>
+//       locale === "en"
+//         ? application?.grantMoney?.applicationTypeNameEn
+//         : application?.grantMoney?.applicationTypeNameBn,
+
+//     (application) => (
+//       <TextInput
+//         value={application?.grantAmount}
+//         onChange={(v) => component.setState({ editedGrantMoney: v })}
+//       />
+//     ),
+//     (application) => {
+//       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
+//       return statusMap[application?.status] || application?.status;
+//     },
+//     isShowHistory() ? application?.version : null,
+//   ];
+
+//   formatters.push((application) => (
+//     <div className={component.props.classes.horizontalButtonContainer}>
+//       <Tooltip title="View">
+//         <IconButton
+//           disabled={application?.isHistory}
+//           onClick={() => {
+//             historyPush(
+//               modulesManager,
+//               history,
+//               "workforce.route.applications.application.process.view",
+//               [decodeId(application?.id)],
+//               false
+//             );
+//           }}
+//         >
+//           <TabIcon />
+//         </IconButton>
+//       </Tooltip>
+//       {component.props.disableButtons!==1 && (
+//         <>
+//           <Tooltip title="Revert">
+//           <IconButton
+//             disabled={application?.isHistory}
+//             onClick={() => component.handleOpenRevertModal(application)}
+//           >
+//             <UndoIcon />
+//           </IconButton>
+//         </Tooltip>
+//         <Tooltip title="Reject">
+//           <span>
+//             <IconButton
+//               onClick={() => component.handleRejectByDG(application)}
+//               disabled={
+//                 application?.isHistory ||
+//                 application?.status === "approved_by_dg" ||
+//                 application?.status === "forward_to_director" ||
+//                 application?.status === "rejected_by_dg"
+
+//               }
+//               color="error"
+//             >
+//               <CloseIcon />
+//             </IconButton>
+//           </span>
+//         </Tooltip>
+//         </>
+//       )}
+//     </div>
+//   ));
+//   return formatters;
+// };
 export const itemAdminFormatters = (
   isShowHistory,
   modulesManager,
@@ -42,7 +127,6 @@ export const itemAdminFormatters = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
-
     (application) => (
       <TextInput
         value={application?.grantAmount}
@@ -53,9 +137,11 @@ export const itemAdminFormatters = (
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
     },
-    isShowHistory() ? application?.version : null,
+
+    isShowHistory() ? (application) => application?.version : null,
   ];
 
+  // 1️⃣ View Button
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="View">
@@ -71,19 +157,32 @@ export const itemAdminFormatters = (
             );
           }}
         >
-          <TabIcon />
+          <TabIcon style={{color:"blue"}} />
         </IconButton>
       </Tooltip>
-      {component.props.disableButtons!==1 && (
-        <>
-          <Tooltip title="Revert">
+    </div>
+  ));
+
+  // 2️⃣ Revert Button (only when disableButtons !== 1)
+  formatters.push((application) =>
+    component.props.disableButtons !== 1 ? (
+      <div className={component.props.classes.horizontalButtonContainer}>
+        <Tooltip title="Revert">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => component.handleOpenRevertModal(application)}
           >
-            <UndoIcon />
+            <UndoIcon style={{color:"red"}}/>
           </IconButton>
         </Tooltip>
+      </div>
+    ) : null
+  );
+
+  // 3️⃣ Reject Button (only when disableButtons !== 1)
+  formatters.push((application) =>
+    component.props.disableButtons !== 1 ? (
+      <div className={component.props.classes.horizontalButtonContainer}>
         <Tooltip title="Reject">
           <span>
             <IconButton
@@ -93,18 +192,17 @@ export const itemAdminFormatters = (
                 application?.status === "approved_by_dg" ||
                 application?.status === "forward_to_director" ||
                 application?.status === "rejected_by_dg"
-
               }
               color="error"
             >
-              <CloseIcon />
+              <CloseIcon style={{color:"#750506"}} />
             </IconButton>
           </span>
         </Tooltip>
-        </>
-      )}
-    </div>
-  ));
+      </div>
+    ) : null
+  );
+
   return formatters;
 };
 export const itemFormattersDirector = (
