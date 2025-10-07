@@ -150,6 +150,7 @@
   "workforce.employee.application.forwardToDoctor": "ডক্টরের কাছে ফরওয়ার্ড করুন",
   "workforce.employee.application.forwardToAssociation": "বিবেচ্য আবেদন সমূহ অ্যাসোসিয়েশন অফিসে পাঠান",
   "workforce.employee.application.forwardToSelectionOffice": "বিবেচিত আবেদনপত্রগুলি সিলেকশন কমিটিতে পাঠান",
+  "workforce.employee.application.forwardToSectionAdmin": "বিবেচিত আবেদনপত্রগুলি কল্যাণ শাখা বরাবর পাঠান",
   "workforce.employee.application.provideMeetingInfo": "মিটিং এর তথ্য দিন",
   "workforce.employee.application.createMeetingSheet": "মিটিং পত্র তৈরি করুন",
   "workforce.employee.application.bulkForward": "বাল্ক ফরওয়ার্ড করুন",
@@ -292,6 +293,7 @@
   "workforce.application.reasons.deathbodyRefinement": "মৃতদেহ পরিবহন ও সৎকার",
   "workforce.application.reasons.maternalWelfare": "অপ্রাতিষ্ঠানিক খাতে কর্মরত মহিলা শ্রমিকের মাতৃত্ব কল্যাণ",
   "workforce.application.reasons.addComment": "মন্তব্য যোগ করুন",
+  "workforce.application.revert.reasons.addComment": "আবেদন ফেরত পাঠানোর কারণ",
   "workforce.application.reasons.selectedOfficer": "বাছাইকৃত কর্মকর্তা:",
 
   "workforce.employee.dependent.phone": "ফোন নম্বর",

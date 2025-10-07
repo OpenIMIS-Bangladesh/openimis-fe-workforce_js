@@ -264,7 +264,7 @@
     "workforce.employee.application.serviceProviderName":"Name of the service provider",
     "workforce.employee.application.totalAmount":"Total amount applied for:",
     "workforce.employee.application.tk":"Taka",
-    "workforce.employee.application.forwardToAssociation":"Send considered applications to the Association office",
+    ".":"Send considered applications to the Association office",
     "workforce.employee.application.forwardToSelectionOffice":"Send considered applications to the Selection committee",
     "workforce.employee.application.provideMeetingInfo":"Provide meeting information",
     "workforce.employee.application.createMeetingSheet":"Create Meeting Sheet",
@@ -445,6 +445,7 @@
     "workforce.application.steps.previousGrantInfo":"Previous Donation Info",
     "workforce.application.steps.otherInfo":"Other Info",
     "workforce.application.reasons.addComment": "মন্তব্য যোগ করুন",
+    "workforce.application.revert.reasons.addComment": "Reason for revert",
     "workforce.application.reasons.selectedOfficer": "বাছাইকৃত কর্মকর্তা:",
 
 
@@ -456,6 +457,10 @@
     "workforce.application.reasons.maternalWelfare": "Maternity welfare for female workers in the informal sector",
 
     "workforce.employee.application.forward":"Forward",
+    "workforce.employee.application.forward.ToAssociation":"Forward To Association",
+    "workforce.employee.application.forward.ToSectionAdmin":"Forward To Section Admin",
+    "workforce.employee.application.forward.ToSelectionCommittee":"Forward To Selection Committee",
+    "workforce.employee.application.forwardToSectionAdmin":"Forward To Section Admin",
     "workforce.employee.application.forwardToDoctor":"Forward To Doctor",
 
     "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন।",

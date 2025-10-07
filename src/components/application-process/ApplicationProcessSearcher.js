@@ -552,7 +552,7 @@ class ApplicationProcessSearcher extends Component {
       else {
         defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]','associationTypeIn: "BGMEA"');
         if (loggedInUserId) {
-          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
       }
 
@@ -605,7 +605,7 @@ class ApplicationProcessSearcher extends Component {
       else {
         defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]', 'associationTypeIn: "BKMEA"');
         if (loggedInUserId) {
-          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
       }
 
@@ -2452,7 +2452,7 @@ class ApplicationProcessSearcher extends Component {
             }}
           >
             <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyAssociation}>
-              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+              <FormattedMessage module="workforce" id="workforce.employee.application.forwardToSectionAdmin" />
             </Button>
           </Box>
         ) : null}
@@ -2468,7 +2468,7 @@ class ApplicationProcessSearcher extends Component {
             {disableButtons!==1 && (
               <>
                 <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyFactoryAdmin}>
-                  <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                  <FormattedMessage module="workforce" id="workforce.employee.application.forwardToAssociation" />
                 </Button>
               </>
             )}

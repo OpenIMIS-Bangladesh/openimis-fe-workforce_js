@@ -45,6 +45,7 @@ const NotificationBar = ({ classes }) => {
   const history = useHistory();
 
   const dispatch = useDispatch();
+  const reduxState = useSelector((state) => state);
   useEffect(() => {
     return dispatch(
       fetchWorkforceApplicationStatusCount()
@@ -241,6 +242,8 @@ const NotificationBar = ({ classes }) => {
       </Tooltip>
       </>
     )}
+
+
     </Box>
   );
 };

@@ -248,7 +248,7 @@ export const itemFormattersApplicant = (
                 );
               }}
             >
-              <TabIcon />
+              <TabIcon style={{color:"blue"}} />
             </IconButton>
           </Tooltip>
         </>
@@ -289,7 +289,7 @@ export const itemFormattersApplicant = (
               );
             }}
           >
-            <RestorePageIcon />
+            <RestorePageIcon style={{color:"#1976D2"}} />
           </IconButton>
         </Tooltip>
       )}

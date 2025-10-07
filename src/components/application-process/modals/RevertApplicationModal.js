@@ -286,7 +286,7 @@ useEffect(() => {
         >
           <FormattedMessage
             module="workforce"
-            id="workforce.application.reasons.addComment"
+            id="workforce.application.revert.reasons.addComment"
           />
         </Typography>
         <Box sx={{ width: "100%", mb: 7 }}>
