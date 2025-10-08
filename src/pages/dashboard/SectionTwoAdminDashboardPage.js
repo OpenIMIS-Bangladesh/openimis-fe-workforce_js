@@ -233,6 +233,7 @@ const FiledApplications = () =>{
         <CardContent>
             <ApplicationProcessSearcher
                 loggedInUserId={loggedInUserId}
+                coloredRow={true}
 
             />
           </CardContent>

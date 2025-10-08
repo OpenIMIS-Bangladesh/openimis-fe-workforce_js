@@ -35,6 +35,10 @@ import {
   ProgressOrError,
 } from "@openimis/fe-core";
 
+import { getUserType } from "../../../utils/utils";
+import {roleMaxDayCount} from "../../../constants";
+import {colorCode} from "../../../constants";
+
 const styles = (theme) => ({
   table: theme.table,
   tableTitle: theme.table.title,
@@ -113,6 +117,7 @@ function Table({
   selection: initialSelection = [],
   onChangeSelection,
   onChangeSelectionIds, // optional: receives array of ids
+  coloredRow = false,
 }) {
   const { formatMessage, formatMessageWithValues } = useTranslations(
     "workforce" || "core"
@@ -377,6 +382,41 @@ function Table({
     return base + checkboxCol + ordinalCol;
   }, [localItemFormatters.length, selectWithCheckbox, selectionMode, showOrdinalNumber]);
 
+
+  const user_type = getUserType();
+  console.log('table er moddhe paisi user type: ', roleMaxDayCount[user_type]);
+
+  items.forEach(item => {
+    if(item?.trackingNumber && item?.dateUpdated){
+      const currentDate= new Date();
+      const updatedDate= new Date(item?.dateUpdated);
+      const timeDiff= currentDate.getTime() - updatedDate.getTime();
+      const dayCount= Math.floor(timeDiff / (1000 * 3600 * 24));
+      let duePercentage= dayCount*100/roleMaxDayCount[user_type];
+      item.dueDayCount= dayCount;
+      if(duePercentage>0 && duePercentage<=20){
+        item.rowColorCode= colorCode[0];
+      }
+      else if(duePercentage>20 && duePercentage<=40){
+        item.rowColorCode= colorCode[20];
+      }
+      else if(duePercentage>40 && duePercentage<=60){
+        item.rowColorCode= colorCode[40];
+      }
+      else if(duePercentage>60 && duePercentage<=80){
+        item.rowColorCode= colorCode[60];
+      }
+      else if(duePercentage>80 && duePercentage<=100){
+        item.rowColorCode= colorCode[80];
+      }
+      else if(duePercentage>100){
+        item.rowColorCode= colorCode[100];
+      }
+
+      console.log(dayCount);
+    }
+  });
+
   return (
     <Box position="relative" overflow="auto">
       {header && (
@@ -484,6 +524,7 @@ function Table({
                   !!rowDisabled && rowDisabled(row) ? classes.tableDisabledRow : null,
                   !!onDoubleClick && classes.clickable,
                 )}
+                style={coloredRow && row?.rowColorCode ? {backgroundColor: row.rowColorCode} : null}
               >
                 {selectWithCheckbox && selectionMode === "multiple" && (
                   <TableCell padding="checkbox">

@@ -180,6 +180,7 @@ const FiledApplications = () =>{
             <ApplicationProcessSearcher loggedInUserId={loggedInUserId}
                 filedApplications={true}   
                 isMenuFilter={true} 
+                coloredRow={true}
             />
           </CardContent>
       </Card>
