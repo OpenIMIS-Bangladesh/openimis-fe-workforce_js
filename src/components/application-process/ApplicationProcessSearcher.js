@@ -118,7 +118,7 @@ class ApplicationProcessSearcher extends Component {
   }
 
   fetch = async (prms) => {
-    const { applicationType, userRights, revertedApplication,rejectedApplication, userName, workforceEmployeesFactoryId, dynamicTableTitle,loggedInUserId } = this.props;
+    const { applicationType, userRights, revertedApplication,rejectedApplication, userName, workforceEmployeesFactoryId, dynamicTableTitle,loggedInUserId,factoryId} = this.props;
     const { showHistoryFilter } = this.state;
     if(dynamicTableTitle)
     {
@@ -664,8 +664,8 @@ class ApplicationProcessSearcher extends Component {
         defaultFilters = ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
       } else {
         defaultFilters = ['statusIn: ["new","amended_application"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
-         if (loggedInUserId) {
-          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+         if (factoryId) {
+          defaultFilters.push(`employeeFactoryId: "${factoryId}"`);
         }
       }
       this.props.fetchApplicationsSummary(this.props.modulesManager, defaultFilters);

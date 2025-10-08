@@ -28,7 +28,7 @@ import EISAdvisorDashboard from "./EISAdvisorDashboardPage";
 
 const DashboardRelay = () => {
   const user_type = getUserType();
-console.log(user_type)
+console.log("userTpe",user_type)
   if (user_type === WORKFORCE_USER_TYPE.APPLICANT) {
     return <ApplicantDashboard />;
   } else if (user_type === WORKFORCE_USER_TYPE.CHECKER) {
@@ -73,6 +73,8 @@ console.log(user_type)
     return <EisFinancialOfficerDashboard />;
   } else if (user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
     return <EISAdvisorDashboard />;
+  } else {
+    return <FactoryAdminDashboardPage />;
   }
   return <></>;
 

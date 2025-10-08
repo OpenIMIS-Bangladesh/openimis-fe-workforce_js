@@ -1896,10 +1896,8 @@ export function fetchFactoryEmployee(mm, filters) {
   const projections = [
     "id",
     "employeeDesignationEmployeeId{edges{node{id,workforceFactory{id}}}}",
-    // "workforceOffice{id}",
-    // "workforceFactory{id}",
-    // "workforceRepresentative{id}",
-    // "workforceApplication{id}",
+    "workforceFactory{id}",
+    "relatedUser{id}"
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployerEmployees",

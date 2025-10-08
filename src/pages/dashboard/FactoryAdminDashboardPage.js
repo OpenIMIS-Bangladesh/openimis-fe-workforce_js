@@ -30,8 +30,8 @@ import RestorePageIcon from '@material-ui/icons/RestorePage';
 import MultiStepApplyForm from "../application/MultiStepApplyForm";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
-import { useModulesManager, useTranslations, Autocomplete, useGraphqlQuery, decodeId } from "@openimis/fe-core";
-import { fetchApplicationsSummary } from "../../actions";
+import { useModulesManager, useTranslations, Autocomplete, useGraphqlQuery, decodeId, encodeId } from "@openimis/fe-core";
+import { fetchApplicationsSummary,  fetchFactoryEmployee } from "../../actions";
 import CancelIcon from '@material-ui/icons/Cancel';
 import DraftsIcon from '@material-ui/icons/Drafts';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
@@ -158,9 +158,27 @@ const SidebarMenu = [
 
 // ----------- Components to Render in Main Content -----------
 
-const FiledApplications = () =>{ 
-  const classes = useStyles()
+const     FiledApplications = () => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
+
+  const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
+
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  if (loggedInUserId) {
+    const filters = [`relatedUser_Id: "${encodeId(modulesManager,"InteractiveUserGQLType",loggedInUserId)}"`];
+
+    dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
+      const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+      const node = edges[0]?.node;
+
+      const factoryId = node?.workforceFactory?.id || null;
+      console.log("factoryId",factoryId)
+      setWorkforceFactoryId(factoryId);
+    });
+  }
   
   return (
   <>
@@ -169,7 +187,7 @@ const FiledApplications = () =>{
     </Typography>
    <Card className={classes.tableContainer}>
        <CardContent>
-             <ApplicationProcessSearcher loggedInUserId={loggedInUserId}
+             <ApplicationProcessSearcher loggedInUserId={loggedInUserId} factoryId={workforceFactoryId}
                      
               />
             </CardContent>
