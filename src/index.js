@@ -102,6 +102,7 @@ import LoginHeader from "./pages/login/LoginHeader";
 import LoginForm from "./pages/login/LoginForm";
 import LoginFormAdministrative from "./pages/login/LoginFormAdministrative";
 import BeneficiaryReport from "./pages/reports/BeneficiaryReport";
+import UserInfo from "./components/app-bar/UserInfo";
 
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
@@ -313,6 +314,7 @@ const DEFAULT_CONFIG = {
   "core.LoginPageLogo": LoginHeader,
   "core.LoginPageForm": LoginForm,
   "core.AppBar": NotificationBar,
+  "core.userInfo": UserInfo,
   "home.HomePage.Blocks": DashboardRelay,
   "core.showJournalSidebar":false
 };
