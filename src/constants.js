@@ -520,3 +520,41 @@ export const banglaLabels = {
   institutionInfo:"প্রতিষ্ঠানের তথ্য"
 
 };
+
+export const roleMaxDayCount = {
+  "admin":15,
+  "checker":3,
+  "checker_two":3,
+  "approver":5,
+  "blwf_approver":5,
+  "applicant":100,
+  "factory_admin":15,
+  "director":15,
+  "bgmea_association":5,
+  "bkmea_association":5,
+  "section_admin":30,
+  "section_admin_two":5,
+  "blwf_section_admin":5,
+  "doctor":7,
+  "sec1_deputi_asst_director":10,
+  "sec2_deputi_asst_director":10,
+  "blwf_checker":3,
+  "blwf_deputi_asst_director":10,
+  "blwf_director":15,
+  "eis_coordinator":5,
+  "eis_officer":5,
+  "eis_advisor":5,
+  "eis_committee":5,
+  "blwf_doctor":7,
+  "eis_financial_officer":5,
+  "eis_doctor":5,
+};
+
+export const colorCode={
+  0:'#00a80e1e',
+  20:'#001aff13',
+  40:'#36def40e',
+  60:'#c7710023',
+  80:'#ac221821',
+  100:'#8806771a',
+};

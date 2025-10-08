@@ -181,6 +181,7 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
                     summaryId={item.id}
                     disableButtons={disableButtons}
                     loggedInUserId={loggedInUserId}
+                    coloredRow={true}
                   />
                 )}
               </CardContent>

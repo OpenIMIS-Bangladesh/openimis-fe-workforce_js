@@ -148,7 +148,7 @@ const FiledApplications = () =>{
    <Card className={classes.tableContainer}>
         <CardContent>
             <ApplicationProcessSearcher
-                    
+              coloredRow={true}
             />
           </CardContent>
       </Card>

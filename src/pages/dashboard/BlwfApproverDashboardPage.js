@@ -201,7 +201,7 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
                 <Card style={{ width: "100%" }}>
                   <CardContent>
                     {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons} />
+                      <ApplicationProcessSearcher coloredRow={true} summaryId={item.id} disableButtons={disableButtons} />
                     )}
                   </CardContent>
                 </Card>

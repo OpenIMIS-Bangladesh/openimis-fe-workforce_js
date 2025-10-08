@@ -695,6 +695,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate,relatedUser{id}}",
     "applicantInfo",   
     "dateCreated",
+    "dateUpdated",
     "organizationType",
     "applicationType",
     "status",

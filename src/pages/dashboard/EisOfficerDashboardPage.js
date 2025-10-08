@@ -132,7 +132,7 @@ const FiledApplications = () =>{
    <Card className={classes.tableContainer}>
         <CardContent>
             <ApplicationProcessSearcher loggedInUserId={loggedInUserId}
-                revertedApplication={true}    
+                coloredRow={true}
             />
           </CardContent>
       </Card>

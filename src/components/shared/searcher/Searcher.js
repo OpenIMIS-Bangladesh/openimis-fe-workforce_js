@@ -550,6 +550,7 @@ class Searcher extends Component {
       infoButtonContent = '',
       onCheckBoxSelect,
       searcherActionsPosition = 'top-right',
+      coloredRow = false,
     } = this.props;
     
     return (
@@ -681,6 +682,7 @@ class Searcher extends Component {
                     rowsPerPageOptions={rowsPerPageOptions}
                     onChangeRowsPerPage={this.onChangeRowsPerPage}
                     showOrdinalNumber={showOrdinalNumber}
+                    coloredRow={coloredRow}
                     // itemIdentifier={(item) => item.id}
                   />
                 </Grid>
