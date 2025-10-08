@@ -517,6 +517,7 @@ export const banglaLabels = {
   employeeBankInfo: "শ্রমিকের ব্যাংক তথ্য",
   ApplicationFor:"আবেদনকারীর ধরন",
   dependents:"নির্ভরশীল সদস্যদের তথ্য",
-  institutionInfo:"প্রতিষ্ঠানের তথ্য"
+  institutionInfo:"প্রতিষ্ঠানের তথ্য",
+  position:"পদবী"
 
 };

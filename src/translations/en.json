@@ -810,6 +810,7 @@
   "workforce.user.role.checkerTwo": "Checker Two",
   "workforce.user.role.doctor": "Doctor",
   "workforce.user.role.approver": "Approver",
-  "workforce.user.role.applicant": "Applicant"
+  "workforce.user.role.applicant": "Applicant",
+  "workforce.application.rejectReason":"Rejection Reason"
 
 }
