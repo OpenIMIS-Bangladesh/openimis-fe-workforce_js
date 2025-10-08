@@ -35,6 +35,17 @@ export const  WORKFORCE_GENDER = [
   },
 ];
 
+export const ORGANIZATION_TYPE_NAME_BN = {
+  cf:"কেন্দ্রীয় তহবিল",
+  blwf:"বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন",
+  eis:"Employee Injury Scheme"
+}
+export const ORGANIZATION_TYPE_NAME_EN = {
+  cf:"Central Fund",
+  blwf:"Bangladesh Labour Welfare Foundation",
+  eis:"Employee Injury Scheme"
+}
+
 export const WORKFORCE_COMPANY_STATUS = [
   "Draft",
   "Pending",

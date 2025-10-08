@@ -5,7 +5,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import FileUploader from "../../pickers/FileUploader";
 import DocumentReviewAccordion from "../application-process/DocumentReviewAccordion";
-import { banglaLabels, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
+import { banglaLabels, ORGANIZATION_TYPE_NAME_BN, ORGANIZATION_TYPE_NAME_EN, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
 import { conditionalEnToBn, getUserType } from "../../utils/utils";
 
@@ -249,15 +249,6 @@ const ApplicationViewPage = ({
   console.log({ view: application });
   const user_type = getUserType();
   // Sidebar summary fields
-  let organizationTypeName = "";
-  if (application?.organizationType === "cf") {
-    organizationTypeName = language === "en" ? "Central Fund" : "কেন্দ্রীয় তহবিল";
-  } else if (application?.organizationType === "blwf") {
-    organizationTypeName = language === "en" ?"Bangladesh Labour Welfare Foundation":"বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন";
-  }else
-  {
-    orgranizationTypeName="Employee Injury Scheme";
-  }
   const sidebarFields = useMemo(
     () => ({
       ApplicantName: language === "en" ? 
@@ -268,7 +259,7 @@ const ApplicationViewPage = ({
                       application?.employeeFactory?.nameEn: application?.employeeFactory?.nameBn,
       ApplicantDesignation: application?.workforceEmployee?.position,
       ApplicationType: (language === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn) || application?.applicationType,
-      OrganizationType: organizationTypeName,
+      OrganizationType: language==="en"?ORGANIZATION_TYPE_NAME_EN[application?.organizationType]:ORGANIZATION_TYPE_NAME_BN[application?.organizationType],
       TrackingNumber: application.trackingNumber,
       Status: language==="en"?STATUS_MAP_EN[application.status]:STATUS_MAP_BN[application?.status],
       SubmittedBy: application.submittedBy==="applicant" ? (language === "en" ? "Applicant" : "আবেদনকারী") : application.submittedBy,
