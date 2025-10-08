@@ -532,7 +532,7 @@ export const roleMaxDayCount = {
   "director":15,
   "bgmea_association":5,
   "bkmea_association":5,
-  "section_admin":30,
+  "section_admin":5,
   "section_admin_two":5,
   "blwf_section_admin":5,
   "doctor":7,
