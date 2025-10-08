@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { FormattedMessage } from "@openimis/fe-core";
 import {
@@ -167,19 +167,20 @@ const     FiledApplications = () => {
 
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
-  if (loggedInUserId) {
-    const filters = [`relatedUser_Id: "${encodeId(modulesManager,"InteractiveUserGQLType",loggedInUserId)}"`];
-
-    dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
-      const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
-      const node = edges[0]?.node;
-
-      const factoryId = node?.workforceFactory?.id || null;
-      console.log("factoryId",factoryId)
-      setWorkforceFactoryId(factoryId);
-    });
-  }
+  useEffect(() => {
+    if (loggedInUserId) {
+      const filters = [`relatedUser_Id: "${encodeId(modulesManager,"InteractiveUserGQLType",loggedInUserId)}"`];  
+      dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
+            const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+            const node = edges[0]?.node;
   
+            const factoryId = node?.workforceFactory?.id || null;
+            console.log("factoryId",factoryId)
+            setWorkforceFactoryId(factoryId);
+          });
+    }
+
+}, [loggedInUserId]);
   return (
   <>
     <Typography variant="h5" gutterBottom>
