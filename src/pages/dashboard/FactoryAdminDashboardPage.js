@@ -158,7 +158,7 @@ const SidebarMenu = [
 
 // ----------- Components to Render in Main Content -----------
 
-const     FiledApplications = () => {
+  const FiledApplications = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
@@ -172,10 +172,8 @@ const     FiledApplications = () => {
       const filters = [`relatedUser_Id: "${encodeId(modulesManager,"InteractiveUserGQLType",loggedInUserId)}"`];  
       dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
             const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
-            const node = edges[0]?.node;
-  
+            const node = edges[0]?.node;  
             const factoryId = node?.workforceFactory?.id || null;
-            console.log("factoryId",factoryId)
             setWorkforceFactoryId(factoryId);
           });
     }
@@ -191,7 +189,7 @@ const     FiledApplications = () => {
              <ApplicationProcessSearcher loggedInUserId={loggedInUserId} factoryId={workforceFactoryId}
                      
               />
-            </CardContent>
+        </CardContent>
       </Card>
 
     {/* Pagination */}

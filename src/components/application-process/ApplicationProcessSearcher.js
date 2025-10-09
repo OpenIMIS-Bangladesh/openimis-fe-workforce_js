@@ -118,7 +118,7 @@ class ApplicationProcessSearcher extends Component {
   }
 
   fetch = async (prms) => {
-    const { applicationType, userRights, revertedApplication,rejectedApplication, userName, workforceEmployeesFactoryId, dynamicTableTitle,loggedInUserId,factoryId} = this.props;
+    const { applicationType, userRights, revertedApplication,rejectedApplication, userName, workforceEmployeesFactoryId, dynamicTableTitle,loggedInUserId} = this.props;
     const { showHistoryFilter } = this.state;
     if(dynamicTableTitle)
     {
@@ -644,14 +644,14 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["revert"]'
         ];
 
-        if (loggedInUserId) {
-          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+        if (this.props.factoryId) {
+          defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
         }
       } 
       else if (this.props.returnedApplications) {
         defaultFilters = ['status: "revert"', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
-        if (loggedInUserId) {
-          defaultFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        if (this.props.factoryId) {
+          defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
         }
       }else if (rejectedApplication) {
         defaultFilters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
@@ -664,8 +664,8 @@ class ApplicationProcessSearcher extends Component {
         defaultFilters = ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
       } else {
         defaultFilters = ['statusIn: ["new","amended_application"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
-         if (factoryId) {
-          defaultFilters.push(`employeeFactoryId: "${factoryId}"`);
+         if (this.props.factoryId) {
+          defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
         }
       }
       this.props.fetchApplicationsSummary(this.props.modulesManager, defaultFilters);
