@@ -38,6 +38,7 @@ import {
 import { getUserType } from "../../../utils/utils";
 import {roleMaxDayCount} from "../../../constants";
 import {colorCode} from "../../../constants";
+import ColoredRowLegends from "./ColoredRowLegends";
 
 const styles = (theme) => ({
   table: theme.table,
@@ -419,6 +420,12 @@ function Table({
 
   return (
     <Box position="relative" overflow="auto">
+        {coloredRow? (
+          <div style={{marginLeft: '10px'}}>
+            <ColoredRowLegends/>
+          </div>
+          ) : null
+        }
       {header && (
         <Grid container alignItems="center" justify="space-between" className={classes.tableTitle}>
           {extendHeader ? (

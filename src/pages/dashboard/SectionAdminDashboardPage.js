@@ -45,6 +45,7 @@ import ForwardIcon from '@material-ui/icons/Forward';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import BeneficiaryReport from "../reports/BeneficiaryReport";
 import { getFileType } from "../../components/application-process/DocumentReviewAccordion";
+import ColoredRowLegends from "../../components/shared/searcher/ColoredRowLegends"
 
 const useStyles = makeStyles((theme) => ({
   root: {

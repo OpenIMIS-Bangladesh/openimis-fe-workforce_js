@@ -703,6 +703,7 @@
   "workforce.user.role.approver": "অনুমোদনকারী",
   "workforce.user.role.applicant": "আবেদনকারী",
 
-  "workforce.application.rejectReason":"বাতিল করার কারণ"
+  "workforce.application.rejectReason":"বাতিল করার কারণ",
+  "core.tooltip.logout": "লগ আউট"
   
 }
