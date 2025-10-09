@@ -302,7 +302,7 @@ const ApplicationViewPage = ({
               <Typography>{document.nameBn}</Typography>
               <FileUploader
                 fieldKey={document.fieldId}
-                applicationId={applicationUuid}
+                applicationId={application?.id}
                 onFileChange={onFileChange}
                 documentType={document.documentType}
                 documentProp={document}

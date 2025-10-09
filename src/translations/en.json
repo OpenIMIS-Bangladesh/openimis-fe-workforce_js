@@ -800,7 +800,7 @@
 
   "workforce.user.name": "Name",
   "workforce.user.role": "Role",
-  "workforce.user.role.admin": "Admin",
+  "workforce.user.role.admin": "Director General",
   "workforce.user.role.director": "Director",
   "workforce.user.role.factoryAdmin": "Factory Admin",
   "workforce.user.role.bgmeaAssociation": "BGMEA Association",
@@ -810,6 +810,7 @@
   "workforce.user.role.checkerTwo": "Checker Two",
   "workforce.user.role.doctor": "Doctor",
   "workforce.user.role.approver": "Approver",
-  "workforce.user.role.applicant": "Applicant"
+  "workforce.user.role.applicant": "Applicant",
+  "workforce.application.rejectReason":"Rejection Reason"
 
 }

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Grid, Paper, Typography, Divider, IconButton, Card, Button, Box } from "@material-ui/core";
+import { Grid, Paper, Typography, Divider, IconButton, Card, Button, Box, Modal } from "@material-ui/core";
 import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage } from "@openimis/fe-core";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 
@@ -12,6 +12,9 @@ import { fetchWorkforceDocument } from "../../actions";
 import { bindActionCreators } from "redux";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
+import ApplicationPrintView from "../../components/shared/ApplicationPrintPreview";
+import PrintIcon from "@material-ui/icons/Print";
+import CloseIcon from "@material-ui/icons/Close";
 
 const styles = (theme) => ({
   paper: {
@@ -48,6 +51,7 @@ class ViewApplicationPage extends Component {
       stateEdited: props.application || {},
       workforceEmployee: props?.application?.workforceEmployee || {},
       isForwardModalOpen: false,
+      open: false,
     };
   }
 
@@ -85,6 +89,16 @@ class ViewApplicationPage extends Component {
     this.setState({ isForwardModalOpen: false });
   };
 
+  handlePrint = () => {
+    // Open the modal
+    this.setState({ open: true });
+    // // Wait a bit for the modal to render, then trigger print
+    // setTimeout(() => {
+    //   window.print();
+    // },2000)
+    window.print();
+  };
+
   componentDidMount() {
     const { dispatch, modulesManager, application } = this.props;
     this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${application?.id}"`]);
@@ -93,8 +107,7 @@ class ViewApplicationPage extends Component {
   render() {
     const { classes, user_rights, application, documents, locale } = this.props;
     const { stateEdited, workforceEmployee, isForwardModalOpen } = this.state;
-    console.log('application data',stateEdited)
-
+    console.log("application data", stateEdited);
 
     const user_type = getUserTypeFromRights(user_rights);
 
@@ -129,9 +142,14 @@ class ViewApplicationPage extends Component {
             <Grid item xs={12}>
               {/* <PreviewDetails formData={formData} language={locale} /> */}
               {/* <ApplicationViewPage application={formData} language={locale} /> */}
-              <ApplicationViewPage application={formData} language={locale}   fileStates={documents}/>
-
+              <ApplicationViewPage application={formData} language={locale} fileStates={documents} />
             </Grid>
+            <Grid item xs={4}>
+              <Button variant="contained" color="primary" onClick={this.handlePrint}>
+                <PrintIcon />
+              </Button>
+            </Grid>
+            <Grid item xs={8}></Grid>
             {/* <Grid item xs={12}>
               {uploadByApplicant?.length > 0 && (
                 <Typography variant="body2" gutterBottom style={{ textAlign: "left", fontWeight: "bold" }}>
@@ -196,6 +214,38 @@ class ViewApplicationPage extends Component {
             </>
           )}
         </Box>
+
+        <Modal open={this.state.open} onClose={() => this.setState({ open: false })}>
+          <Box
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "75%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              backgroundColor: "white",
+              padding: 16,
+              borderRadius: 8,
+            }}
+          >
+            <Box className="print-button-container" style={{ display: "flex", justifyContent: "flex-end", padding: 1 }}>
+              <Button onClick={() => this.setState({ open: false })} startIcon={<CloseIcon />} color="secondary" style={{ marginRight: "8px" }}>
+                বন্ধ করুন
+              </Button>
+              <Button variant="contained" color="primary" onClick={this.handlePrint} startIcon={<PrintIcon />}>
+                প্রিন্ট / PDF ডাউনলোড
+              </Button>
+            </Box>
+            <ApplicationPrintView
+              data={formData}
+              documents={documents}
+              logoLeft="/front/workforce_assets/centralfund.png"
+              logoLeftUrl="/front/workforce_assets/bdgov.png"
+            />
+          </Box>
+        </Modal>
       </div>
     );
   }
@@ -205,7 +255,7 @@ const mapStateToProps = (state) => ({
   application: state.workforce.application,
   user_rights: state.core?.user?.i_user?.rights || {},
   documents: state.workforce.document,
-  locale: state.core?.user?.i_user?.language ,
+  locale: state.core?.user?.i_user?.language,
 
   // applicationUuid: props.match.params.application_uuid,
 });

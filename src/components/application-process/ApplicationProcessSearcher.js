@@ -2224,7 +2224,8 @@ class ApplicationProcessSearcher extends Component {
       userRights,
       userName,
       organizationEmployee,
-      isApproved
+      isApproved,
+      coloredRow
     } = this.props;
 
     const count = applicationsPageInfo.totalCount;
@@ -2274,6 +2275,7 @@ class ApplicationProcessSearcher extends Component {
           // onCheckBoxSelect={this.onCheckBoxSelect}
           // onChangeSelectionIds={(ids) => console.log("Selected ids:", ids)}
           onCheckBoxSelect={(ids) => this.onCheckBoxSelect(ids)}
+          coloredRow={coloredRow}
         />
           {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
           || userType === WORKFORCE_USER_TYPE.EIS_ADVISOR ? (

@@ -483,7 +483,7 @@
   "workforce.table.totalAmount": "মোট পরিমাণ",
   "workforce.table.printAdvice": "প্রিন্ট এডভাইস",
   "workforce.table.bftn": "ব্যাংক পেমেন্ট এডভাইস (BFTN)",
-  "search.title": "অনুসন্ধানের মানদণ্ড",
+  "search.title": "সার্চ করুন",
   "resetFilterTooltip": "ফিল্টার রিসেট করুন",
   "refreshFilterTooltip": "অনুসন্ধান করুন",
   "workforce.application.submittedBy": "জমাদানকারী",
@@ -691,7 +691,7 @@
 
   "workforce.user.name": "নাম",
   "workforce.user.role": "পদবী",
-  "workforce.user.role.admin": "অ্যাডমিন",
+  "workforce.user.role.admin": "মহাপরিচালক",
   "workforce.user.role.director": "পরিচালক",
   "workforce.user.role.factoryAdmin": "কারখানা প্রশাসক",
   "workforce.user.role.bgmeaAssociation": "বিজিএমইএ সমিতি",
@@ -701,6 +701,8 @@
   "workforce.user.role.checkerTwo": "চেকার দুই",
   "workforce.user.role.doctor": "ডাক্তার",
   "workforce.user.role.approver": "অনুমোদনকারী",
-  "workforce.user.role.applicant": "আবেদনকারী"
+  "workforce.user.role.applicant": "আবেদনকারী",
+
+  "workforce.application.rejectReason":"বাতিল করার কারণ"
   
 }

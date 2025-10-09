@@ -124,6 +124,7 @@ const FiledApplications = () =>{
         <CardContent>
             <ApplicationProcessSearcher oggedInUserId={loggedInUserId}
                  revertedApplication={true}   
+                 coloredRow={true}
             />
           </CardContent>
       </Card>
