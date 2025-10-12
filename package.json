@@ -55,6 +55,7 @@
     "react-otp-input": "^3.1.1",
     "react-pdf": "5.7.2",
     "react-quill": "^2.0.0",
+    "react-to-print": "^3.1.1",
     "react-webcam": "^7.2.0",
     "recharts": "^2.15.2",
     "xlsx": "^0.18.5"

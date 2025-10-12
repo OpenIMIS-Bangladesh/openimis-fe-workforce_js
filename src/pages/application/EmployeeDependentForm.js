@@ -211,7 +211,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   />
                 </Grid>
 
-                {formdata?.organizationType === "cf" && (
+                {(formdata?.organizationType === "cf" && formdata?.applicationType === "financialAssistance") && (
                   <Grid item xs={6}>
                     <TextInput
                       label={formatMessage("workforce.employee.percentage_of_cf_grant")}

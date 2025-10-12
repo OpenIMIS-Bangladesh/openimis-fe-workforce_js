@@ -12,15 +12,21 @@ import { fetchWorkforceDocument } from "../../actions";
 import { bindActionCreators } from "redux";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
-import ApplicationPrintView from "../../components/shared/ApplicationPrintPreview";
 import PrintIcon from "@material-ui/icons/Print";
 import CloseIcon from "@material-ui/icons/Close";
+import {ApplicationPrintPreview} from "../../components/shared/ApplicationPrintPreview";
 
 const styles = (theme) => ({
   paper: {
     padding: theme.spacing(1),
     width: "100%",
     margin: "0 auto",
+  },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflowY: "scroll",
   },
   container: {
     display: "flex",
@@ -96,7 +102,7 @@ class ViewApplicationPage extends Component {
     // setTimeout(() => {
     //   window.print();
     // },2000)
-    window.print();
+    // window.print();
   };
 
   componentDidMount() {
@@ -150,42 +156,6 @@ class ViewApplicationPage extends Component {
               </Button>
             </Grid>
             <Grid item xs={8}></Grid>
-            {/* <Grid item xs={12}>
-              {uploadByApplicant?.length > 0 && (
-                <Typography variant="body2" gutterBottom style={{ textAlign: "left", fontWeight: "bold" }}>
-                  <FormattedMessage module="workforce" id="workforce.previewDetails.uploadedBy.applicant" />
-                </Typography>
-              )}
-              {uploadByApplicant?.map((file, index) => (
-                <DocumentReviewAccordion
-                  key={index}
-                  file={file}
-                  index={index}
-                  onCommentChange={this.handleFileCommentChange}
-                  onVerify={this.handleFileVerify}
-                  onReject={this.handleFileReject}
-                  locale={locale}
-                />
-              ))}
-            </Grid> */}
-            {/* <Grid item xs={12}>
-              {uploadByFactoryAdmin?.length > 0 && (
-                <Typography variant="body2" gutterBottom style={{ textAlign: "left", fontWeight: "bold" }}>
-                  <FormattedMessage module="workforce" id="workforce.previewDetails.uploadedBy.factoryAdmin" />
-                </Typography>
-              )}
-              {uploadByFactoryAdmin?.map((file, index) => (
-                <DocumentReviewAccordion
-                  key={index}
-                  file={file}
-                  index={index}
-                  onCommentChange={this.handleFileCommentChange}
-                  onVerify={this.handleFileVerify}
-                  onReject={this.handleFileReject}
-                  locale={locale}
-                />
-              ))}
-            </Grid> */}
           </Grid>
 
           {user_type === WORKFORCE_USER_TYPE.ADMIN && (
@@ -215,7 +185,7 @@ class ViewApplicationPage extends Component {
           )}
         </Box>
 
-        <Modal open={this.state.open} onClose={() => this.setState({ open: false })}>
+        {/* <Modal open={this.state.open} onClose={() => this.setState({ open: false })}>
           <Box
             style={{
               position: "absolute",
@@ -245,6 +215,17 @@ class ViewApplicationPage extends Component {
               logoLeftUrl="/front/workforce_assets/bdgov.png"
             />
           </Box>
+        </Modal> */}
+        <Modal open={this.state.open} className={classes.modal} onClose={() => this.setState({ open: false })}>
+          <ApplicationPrintPreview
+            open={this.state.open}
+            onClose={() => this.setState({ open: false })}
+            onOpen={() => this.setState({ open: true })}
+            data={formData}
+            documents={documents}
+            logoLeft="/front/workforce_assets/centralfund.png"
+            logoLeftUrl="/front/workforce_assets/bdgov.png"
+          />
         </Modal>
       </div>
     );
