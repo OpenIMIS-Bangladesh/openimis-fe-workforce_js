@@ -88,6 +88,7 @@ class ApplicationProcessSearcher extends Component {
       forwardModalOpenSA: false,
       forwardModalOpenEisDoctor: false,
       forwardModalOpenSummarySA:false,
+      forwardModalOpenFA:false,
       revertModalOpen: false,
       selectedApplication: null,
       selectedUserId: "",
@@ -1050,6 +1051,9 @@ class ApplicationProcessSearcher extends Component {
   };
   handleCloseForwardModalForSummarySectionAdmin = () => {
     this.setState({ forwardModalOpenSummarySA: false, selectedApplication: null });
+  };
+  handleCloseForwardModalForFA = () => {
+    this.setState({ forwardModalOpenFA: false, selectedApplication: null });
   };
   handleCloseForwardModalForEisAdvisor = () => {
     this.setState({ forwardModalOpenSA: false, selectedApplication: null });
@@ -2470,7 +2474,7 @@ class ApplicationProcessSearcher extends Component {
           >
             {disableButtons!==1 && (
               <>
-                <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyFactoryAdmin}>
+                <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenFA: true })}>
                   <FormattedMessage module="workforce" id="workforce.employee.application.forwardToAssociation" />
                 </Button>
               </>
@@ -2599,9 +2603,9 @@ class ApplicationProcessSearcher extends Component {
             return (
               <>
                 <ForwardApplicationFactoryAdminModal
-                  open={forwardModalOpen}
-                  onClose={this.handleCloseForwardModal}
-                  selectedApplication={selectedApplication}
+                  open={this.state.forwardModalOpenFA}
+                  onClose={this.handleCloseForwardModalForFA}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
                   organizationEmployee={organizationEmployee}
                 />
