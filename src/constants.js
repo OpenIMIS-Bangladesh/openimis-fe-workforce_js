@@ -101,6 +101,7 @@ export const WORKFORCE_STATUS = {
   AMMENDED_APPLICATION: "amended_application",
   APPROVED_BY_COMMITTEE: "approved_by_committee",
   FORWARD_TO_EIS_COORDINATOR:"forward_to_eis_coordinator",
+  RESUBMITTED_APPLICATION:"resubmitted_application",
 
 
 };
@@ -153,6 +154,7 @@ export const STATUS_MAP_BN  = {
   amended_application: "সংশোধিত আবেদন",
   approved_by_committee: "কমিটি দ্বারা অনুমোদিত",
   forward_to_eis_coordinator: "ইআইএস কোঅর্ডিনেটর কাছে প্রেরণ",
+  resubmitted_application: "পুনরায় জমাকৃত আবেদন",
 
 
 };
@@ -204,6 +206,7 @@ export const STATUS_MAP_EN = {
   forward_to_eis_advisor: "Forward to Eis Advisor",
   amended_application: "Amended Application",
   approved_by_committee: "approved by committee",
+  resubmitted_application: "resubmitted application",
 
 };
 

@@ -550,7 +550,7 @@ class ApplicationProcessSearcher extends Component {
         }
       }
       else {
-        defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]','associationTypeIn: "BGMEA"');
+        defaultStatusFilters.push('statusIn: ["forward_to_association","resubmitted_application"]','associationTypeIn: "BGMEA"');
         if (loggedInUserId) {
           defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
@@ -603,7 +603,7 @@ class ApplicationProcessSearcher extends Component {
         }
       }
       else {
-        defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]', 'associationTypeIn: "BKMEA"');
+        defaultStatusFilters.push('statusIn: ["forward_to_association","resubmitted_application"]', 'associationTypeIn: "BKMEA"');
         if (loggedInUserId) {
           defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
@@ -663,7 +663,7 @@ class ApplicationProcessSearcher extends Component {
       else if (this.props.forwardedApplications) {
         defaultFilters = ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
       } else {
-        defaultFilters = ['statusIn: ["new","amended_application"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
+        defaultFilters = ['statusIn: ["new","resubmitted_application"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
          if (this.props.factoryId) {
           defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
         }

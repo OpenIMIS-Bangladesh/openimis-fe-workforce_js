@@ -303,7 +303,7 @@ class ResendApplicationPage extends Component {
 
     const updateApplicationData = {
       id: applicationUuid,
-      status: WORKFORCE_STATUS.AMMENDED_APPLICATION,
+      status: WORKFORCE_STATUS.RESUBMITTED_APPLICATION,
     };
 
     try {
@@ -314,8 +314,8 @@ class ResendApplicationPage extends Component {
         applicationId: applicationUuid,
         applicationFromId: this.props.loggedInUserId,
         applicationToId: fromId,
-        note: "amended application",
-        status: WORKFORCE_STATUS.AMMENDED_APPLICATION,
+        note: "resubmitted application",
+        status: WORKFORCE_STATUS.RESUBMITTED_APPLICATION,
       };
 
     await this.props.createApplicationMovement(createApplicationMovementData, "create workforce application movement");
