@@ -88,6 +88,7 @@ class ApplicationProcessSearcher extends Component {
       forwardModalOpenSA: false,
       forwardModalOpenEisDoctor: false,
       forwardModalOpenSummarySA:false,
+      forwardModalOpenFA:false,
       revertModalOpen: false,
       selectedApplication: null,
       selectedUserId: "",
@@ -550,7 +551,7 @@ class ApplicationProcessSearcher extends Component {
         }
       }
       else {
-        defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]','associationTypeIn: "BGMEA"');
+        defaultStatusFilters.push('statusIn: ["forward_to_association","resubmitted_application"]','associationTypeIn: "BGMEA"');
         if (loggedInUserId) {
           defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
@@ -603,7 +604,7 @@ class ApplicationProcessSearcher extends Component {
         }
       }
       else {
-        defaultStatusFilters.push('statusIn: ["forward_to_association","amended_application"]', 'associationTypeIn: "BKMEA"');
+        defaultStatusFilters.push('statusIn: ["forward_to_association","resubmitted_application"]', 'associationTypeIn: "BKMEA"');
         if (loggedInUserId) {
           defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
@@ -663,7 +664,7 @@ class ApplicationProcessSearcher extends Component {
       else if (this.props.forwardedApplications) {
         defaultFilters = ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
       } else {
-        defaultFilters = ['statusIn: ["new","amended_application"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
+        defaultFilters = ['statusIn: ["new","resubmitted_application"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
          if (this.props.factoryId) {
           defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
         }
@@ -1050,6 +1051,9 @@ class ApplicationProcessSearcher extends Component {
   };
   handleCloseForwardModalForSummarySectionAdmin = () => {
     this.setState({ forwardModalOpenSummarySA: false, selectedApplication: null });
+  };
+  handleCloseForwardModalForFA = () => {
+    this.setState({ forwardModalOpenFA: false, selectedApplication: null });
   };
   handleCloseForwardModalForEisAdvisor = () => {
     this.setState({ forwardModalOpenSA: false, selectedApplication: null });
@@ -2470,7 +2474,7 @@ class ApplicationProcessSearcher extends Component {
           >
             {disableButtons!==1 && (
               <>
-                <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyFactoryAdmin}>
+                <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenFA: true })}>
                   <FormattedMessage module="workforce" id="workforce.employee.application.forwardToAssociation" />
                 </Button>
               </>
@@ -2599,9 +2603,9 @@ class ApplicationProcessSearcher extends Component {
             return (
               <>
                 <ForwardApplicationFactoryAdminModal
-                  open={forwardModalOpen}
-                  onClose={this.handleCloseForwardModal}
-                  selectedApplication={selectedApplication}
+                  open={this.state.forwardModalOpenFA}
+                  onClose={this.handleCloseForwardModalForFA}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
                   organizationEmployee={organizationEmployee}
                 />

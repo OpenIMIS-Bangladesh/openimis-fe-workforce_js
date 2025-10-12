@@ -11,7 +11,9 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
-  Checkbox
+  Checkbox,
+  Select,
+  MenuItem
 } from "@material-ui/core";
 import {
   useModulesManager,
@@ -70,6 +72,7 @@ const ForwardApplicationFactoryAdminModal = ({
   open,
   onClose,
   selectedApplication,
+  selectedApplicationIds,
   onSubmitForward,
   organizationEmployee
 }) => {
@@ -81,6 +84,7 @@ const ForwardApplicationFactoryAdminModal = ({
   const [serverResponse, setServerResponse] = useState(null);
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
   useEffect(() => {
     if (!open) {
       setEditorContent("");
@@ -108,35 +112,25 @@ const ForwardApplicationFactoryAdminModal = ({
       destinationOffice: formData,
     };
 
-    // try {
-    //   const response = await onSubmitForward(payload);
-    //   setServerResponse(response);
-    // } catch {
-    //   setServerResponse({ status: "ERROR", message: "সাবমিশনে ব্যর্থ হয়েছে!" });
-    // } finally {
-    //   setSubmitting(false);
-    // }
-
   };
 
  const handleForward = async () => {
-  const isAssociation = formData?.sendToAssociation;
+    for (const encodedId of selectedApplicationIds) {
 
   const updateApplicationData = {
-    id: decodeId(selectedApplication.id),
-    status: isAssociation
-      ? WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION
-      : WORKFORCE_STATUS.NEW,
+      id: decodeId(encodedId?.id),
+      status:WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
+      associationType: formData?.association,
   };
 
   const createApplicationMovementData = {
-    applicationId: decodeId(selectedApplication.id),
-    status: isAssociation
-      ? WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION
-      : WORKFORCE_STATUS.NEW,
-    note: isAssociation
-      ? "সুপারিশসহ অ্যাসোসিয়েশনে পাঠানো হয়েছে"
-      : "আবেদনের প্রমাণপত্র যাচাই করা হয়েছে",
+      applicationId: decodeId(encodedId?.id),
+      status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
+      note: "অ্যাসোসিয়েশনের কাছে প্রেরণ",
+      action: "forward_to_association",
+      applicationFromId: loggedInUserId,
+      applicationToId: 93,
+      toRoleId: 31,
   };
 
   await dispatch(
@@ -149,7 +143,7 @@ const ForwardApplicationFactoryAdminModal = ({
       `create workforce movement`
     )
   );
-
+}
   setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
 };
 
@@ -177,7 +171,7 @@ const ForwardApplicationFactoryAdminModal = ({
           gutterBottom
           style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
         >
-          নিজ অফিসে পাঠান
+          অ্যাসোসিয়েশন অফিসে পাঠান
         </Typography>
 
         <Typography
@@ -223,44 +217,20 @@ const ForwardApplicationFactoryAdminModal = ({
                 textAlign: "center",
               }}
             >
-              অফিসার নির্বাচন করুন
+              অ্যাসোসিয়েশন নির্বাচন করুন
             </Typography>
-            {!formData?.sendToAssociation && (
                 <Grid item xs={12} sm={12}>
-                  <EmployeePicker
-                    value={formData?.id}
-                    officeType={officeType}
-                    label={
-                      <FormattedMessage
-                        id="workforce.officer.selector.picker"
-                        module="workforce"
-                      />
-                    }
-                    organizationEmployee={organizationEmployee}
-                    modulesManager={modulesManager}
-                    required
-                    onChange={(v) => setFormData(v)}
-                  />
-                </Grid>
-              )}
-
-            {/* ✅ Send to Association Field */}
-            <Grid item xs={12} sm={12}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={formData?.sendToAssociation || false}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        sendToAssociation: e.target.checked,
-                      }))
-                    }
-                    color="primary"
-                  />
-                }
-                label="অ্যাসোসিয়েশনে পাঠান"
-              />
+              <FormControl fullWidth>
+                <Select
+                  labelId="association-label"
+                  value={formData?.association || ""}
+                  onChange={(e) => setFormData({ ...formData, association: e.target.value })}
+                  required
+                >
+                  <MenuItem value="BGMEA">BGMEA</MenuItem>
+                  <MenuItem value="BKMEA">BKMEA</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
         </Paper>
