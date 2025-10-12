@@ -518,20 +518,19 @@ const ScholarshipApplicationForm = ({  organizationType, selectedApplicationType
           />
       ),
     },
-    {
-      label: "workforce.application.steps.upload.documents",
-      content: (
+    // {
+    //   label: "workforce.application.steps.upload.documents",
+    //   content: (
 
-          <EmployeeDetailsForm2
-            handleChange={handleChange}
-            formData={formData}
-            selectedApplicationType={selectedApplicationType}
+    //       <EmployeeDetailsForm2
+    //         handleChange={handleChange}
+    //         formData={formData}
+    //         selectedApplicationType={selectedApplicationType}
           
-            formStepNo={"workforceDocument"}
-          />
-
-      ),
-    },
+    //         formStepNo={"workforceDocument"}
+    //       />
+    //   ),
+    // },
   ];
 
   if (showPreview) {

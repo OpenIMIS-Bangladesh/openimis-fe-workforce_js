@@ -170,16 +170,31 @@
 ];
 
    export const headerBlwfSectionAdmin = (component) => [
-    // "",
-    "workforce.application.tracking.number",
-    "workforce.employee.application.applicationDate",
-    "workforce.employee.name",
-    "workforce.employee.application.applicationType",
-    "workforce.employee.application.moneyAmount",
-    "workforce.employee.application.nid",
-    "workforce.employee.application.status",
-    component.isShowHistory() ? "workforce.version" : "",
-  ];
+  "workforce.application.tracking.number",
+  "workforce.employee.application.applicationDate",
+  "workforce.employee.name",
+  "workforce.employee.application.applicationType",
+  "workforce.employee.application.moneyAmount",
+  "workforce.employee.application.nid",
+  "workforce.employee.application.status",
+
+  // ✅ Conditionally show version
+  ...(component.isShowHistory() ? ["workforce.version"] : []),
+
+  // ✅ Always show "view"
+  "view",
+
+  // ✅ Conditionally show verify, revert, reject (only if not reverted)
+  ...(component.props.disableButtons !== 1 && !component.props.revertedApplication
+    ? ["verify", "revert", "reject"]
+    : []),
+
+  // ✅ Conditionally show resend (only if reverted)
+  ...(component.props.disableButtons !== 1 && component.props.revertedApplication
+    ? ["resend"]
+    : []),
+];
+
   export const headerDoctor = (component) => [
   "workforce.application.tracking.number",
   "workforce.employee.application.applicationDate",

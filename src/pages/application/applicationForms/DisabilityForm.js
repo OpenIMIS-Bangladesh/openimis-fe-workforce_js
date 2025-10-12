@@ -54,7 +54,7 @@ const steps = [
   "workforce.application.steps.location",
   "workforce.application.steps.account.info",
   "workforce.application.disabilityInfo",
-  "workforce.application.steps.upload.documents",
+  // "workforce.application.steps.upload.documents",
 ];
 
 const DisabilityForm = ({ organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
@@ -546,13 +546,13 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
               applicationType={"disabilityAssistance"}
               errors={errors}
             />
-        ) : (
-            <EmployeeDetailsForm2
-              selectedApplicationType={selectedApplicationType}
-              handleChange={handleChange}
-              formData={formData}
-              formStepNo={"workforceDocument"}
-            />
+        ) : ( null
+            // <EmployeeDetailsForm2
+            //   selectedApplicationType={selectedApplicationType}
+            //   handleChange={handleChange}
+            //   formData={formData}
+            //   formStepNo={"workforceDocument"}
+            // />
         )}
         </Box>
         <div className={classes.buttonContainer}>

@@ -74,6 +74,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors,applicationId }) 
 
             <Grid container spacing={2}>
               {/* Present Location */}
+              {formData?.applicationType !=="financialAssistance" && (
               <Grid item xs={12}>
                 <b>{getDeathLabel("workforce.employee.present_location")}</b>
                 <PublishedComponent
@@ -87,16 +88,9 @@ const EmployeeLocationForm = ({ handleChange, formData, errors,applicationId }) 
                 />
                 {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
               </Grid>
+              )}
 
-              {/* <Grid item xs={12}>
-                <TextInput
-                  label="workforce.employee.present_address"
-                  value={formData?.workforceEmployee?.presentAddress || ""}
-                  onChange={(v) => handleChange("presentAddress", v)}
-                  readOnly={false}
-                />
-              </Grid> */}
-              {formData?.workforceEmployee?.presentLocation && (
+              {(formData?.workforceEmployee?.presentLocation && formData.applicationType !=="financialAssistance") && (
                 <Grid item xs={12}>
                   <CustomDetailedLocation
                     id="permanentLocationCustomDetailedLocation"
@@ -117,13 +111,15 @@ const EmployeeLocationForm = ({ handleChange, formData, errors,applicationId }) 
               </Grid>
               <Grid item xs={12}>
                 <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
-                {/* Checkbox */}
+                {formData?.applicationType !=="financialAssistance" && (
+
                 <Grid item xs={12}>
                   <FormControlLabel
                     control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
                     label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
                   />
                 </Grid>
+                ) }
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}

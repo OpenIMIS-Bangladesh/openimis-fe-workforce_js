@@ -120,7 +120,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   {applicationType === "financialAssistance" ? (
                     <FormattedMessage id="workforce.previewDetails.dependent" module="workforce" />
                   ) : (
-                    <FormattedMessage id="workforce.application.header.dependent" module="workforce" />
+                    <FormattedMessage id="workforce.application.subHeader.dependent" module="workforce" />
                   )}
                 </Typography>
                 <Typography>{dependent.nameEn || ""}</Typography>

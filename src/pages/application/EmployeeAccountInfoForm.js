@@ -129,6 +129,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                             label={<FormattedMessage id="workforce.application.account.bank" />}
                           />
                           <FormControlLabel
+                            disabled={true}
                             value="mobile"
                             control={<Radio color="primary" />}
                             label={<FormattedMessage id="workforce.application.account.mobile" />}
@@ -207,7 +208,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                               <TextInput
                                 id="accountHolderName"
                                 label="workforce.employee.account.info.accountHolderName"
-                                value={account?.accountHolderName || dependent?.[index]?.nameBn || ""}
+                                value={account?.accountHolderName || dependent?.[index]?.nameBn || formdata?.workforceEmployee?.nameBn}
                                 onChange={(v) => handleAccountChange(index, "accountHolderName", v)}
                                 required
                                 readOnly={false}

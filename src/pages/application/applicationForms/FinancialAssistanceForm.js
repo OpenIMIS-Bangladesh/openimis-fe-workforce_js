@@ -59,7 +59,7 @@ const steps = [
   "workforce.application.steps.location",
   "workforce.application.steps.prosurders",
   "workforce.application.steps.account.info",
-  "workforce.application.steps.upload.documents",
+  // "workforce.application.steps.upload.documents",
 ];
 
 const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, parsedApplicationData,applicationForSelf }) => {
@@ -618,13 +618,13 @@ const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, p
             )}
           </>
         ) : (
-
-            <EmployeeDetailsForm2
-              selectedApplicationType={selectedApplicationType}
-              handleChange={handleChange}
-              formData={formData}
-              formStepNo={"workforceDocument"}
-            />
+null
+            // <EmployeeDetailsForm2
+            //   selectedApplicationType={selectedApplicationType}
+            //   handleChange={handleChange}
+            //   formData={formData}
+            //   formStepNo={"workforceDocument"}
+            // />
 
         )}
         </Box>

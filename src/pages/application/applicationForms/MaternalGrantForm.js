@@ -436,12 +436,12 @@ const MaternalGrantForm = ({  organizationType, selectedApplicationType, applica
         />
       ),
     },
-    {
-      label: "workforce.application.steps.upload.documents",
-      content: (
-        <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={selectedApplicationType}  formStepNo={"workforceDocument"}/>
-      ),
-    },
+    // {
+    //   label: "workforce.application.steps.upload.documents",
+    //   content: (
+    //     <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={selectedApplicationType}  formStepNo={"workforceDocument"}/>
+    //   ),
+    // },
   ];
 
   console.log({ tazwer: reduxState.core.user.id });
