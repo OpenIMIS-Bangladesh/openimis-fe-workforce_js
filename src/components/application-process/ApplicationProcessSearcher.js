@@ -41,12 +41,11 @@ import {
   itemFormattersDoctor,
   itemFormattersFactoryAdmin,
   itemFormattersDirector,
-  itemFormattersS1DeputyAsstDirector,
-  itemFormattersS2DeputyAsstDirector,
+  itemFormattersDeputyAsstDirector,
   itemFormattersBlwfSectionAdmin
 } from "../../utils/itemFormatters_types";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
-import { headerApplicant, headerApprover, headerChecker,headerCheckerTwo,headerS1DeputyAsstDirector,headerS2DeputyAsstDirector,headerDoctor, headerSectionAdmin, headerSectionTwoAdmin, headerAssociation, headersAdmin, 
+import { headerApplicant, headerApprover, headerChecker,headerCheckerTwo,headerDeputyAsstDirector,headerDoctor, headerSectionAdmin, headerSectionTwoAdmin, headerAssociation, headersAdmin, 
 headerFactoryAdmin, headerDirector,headerBlwfSectionAdmin } from "../../utils/headers_types";
 import Searcher from "../shared/searcher/Searcher";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
@@ -1473,14 +1472,12 @@ class ApplicationProcessSearcher extends Component {
     const userType = getUserTypeFromRights(this.props.userRights);
     return userType === WORKFORCE_USER_TYPE.APPLICANT
       ? headerApplicant(this)
-      : userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.EIS_OFFICER || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
+      : userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.EIS_OFFICER || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
       ? headerChecker(this)
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
       ? headerCheckerTwo(this)
-      : userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR
-      ? headerS1DeputyAsstDirector(this)
-      : userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
-      ? headerS2DeputyAsstDirector(this)
+      : userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
+      ? headerDeputyAsstDirector(this)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
       ? headerSectionAdmin(this)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
@@ -1506,14 +1503,12 @@ class ApplicationProcessSearcher extends Component {
 
     return userType === WORKFORCE_USER_TYPE.APPLICANT
       ? itemFormattersApplicant(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication, this.rejectedApplication)
-      : userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.EIS_OFFICER || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
+      : userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.EIS_OFFICER || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
       ? itemFormattersChecker(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.CHECKER_TWO
       ? itemFormattersCheckerTwo(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR
-      ? itemFormattersS1DeputyAsstDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
-      ? itemFormattersS2DeputyAsstDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
+      : userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
+      ? itemFormattersDeputyAsstDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
       ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO

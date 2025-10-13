@@ -38,6 +38,9 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ForwardIcon from '@material-ui/icons/Forward';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
+import { getUserType, getUserTypeFromRights } from "../../utils/utils";
+import { WORKFORCE_USER_TYPE} from "../../constants";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -262,6 +265,8 @@ const checkedApplications = () => (
 const BlwfCheckerDashboard = () => {
   const classes = useStyles();
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications");
+  const user_type = getUserType();
+  
 
   const renderContent = () => {
     switch (selectedMenu) {
@@ -303,7 +308,12 @@ const BlwfCheckerDashboard = () => {
         {/* Main Content */}
         <Grid item xs={12} md={9} className={classes.content}>
           <Typography variant="h5" gutterBottom>
+              {user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER && (    
             <FormattedMessage module="workforce" id="workforce.blwf.checker.dashboard" />
+              )}
+              {user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE && (    
+            <FormattedMessage module="workforce" id="workforce.blwf.dol-dife.dashboard" />
+              )}
           </Typography>
           {renderContent()}
         </Grid>

@@ -24,14 +24,12 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { fetchSummaryApplications } from "../../actions";
-import RestorePageIcon from '@material-ui/icons/RestorePage';
 import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
+import { getUserType, getUserTypeFromRights } from "../../utils/utils";
+import { WORKFORCE_USER_TYPE} from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -111,44 +109,31 @@ const SidebarMenu = [
       <FormattedMessage module="workforce" id="workforce.application.pending" />
     ),
     icon: <HourglassFullTwoToneIcon />,
-  },
-  {
-    id: "forwardedApplications",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.application.forwarded" /> 
-    ),
-    icon: <ArrowForwardIcon />,
-  },
-  {
-      id: "revertedApplication",
-      text: (
-        <FormattedMessage module="workforce" id="workforce.application.reverted" />
-      ),
-      icon: <RestorePageIcon  />,
-  },
-  {
-      id: "returnedApplication",
-      text: (
-        <FormattedMessage module="workforce" id="workforce.application.returned" />
-      ),
-      icon: <ArrowBackIcon  />,
-    },
-   
+  },  
 ];
 
 // ----------- Components to Render in Main Content -----------
 
 const FiledApplications = () =>{ 
   const classes = useStyles()
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const user_type = getUserType();
+  
   return (
   <>
     <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.bkmea.association.dashboard" />
+        {user_type === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR && (
+      <FormattedMessage module="workforce" id="workforce.section1.deputy1.admin.dashboard" />
+        )}
+        {user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR && (
+      <FormattedMessage module="workforce" id="workforce.section2.deputy2.admin.dashboard" />
+        )}
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
-            <ApplicationProcessSearcher
-              coloredRow={true}
+            <ApplicationProcessSearcher oggedInUserId={loggedInUserId}
+                 revertedApplication={true}   
+                 coloredRow={true}
             />
           </CardContent>
       </Card>
@@ -165,103 +150,13 @@ const FiledApplications = () =>{
   </>
 );}
 
-const checkedApplications = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.new.application" />
-  </Typography>
-);
-
-const RevertApplication = () => {
-  const classes = useStyles()
-  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-  
-  return (
-  <>
-    <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.application.reverted" />
-    </Typography>
-   <Card className={classes.tableContainer}>
-       <CardContent>
-             <ApplicationProcessSearcher
-                revertedApplication={true}
-                loggedInUserId={loggedInUserId}
-              />
-            </CardContent>
-      </Card>
-
-    {/* Pagination */}
-    <div className={classes.pagination}>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.back" />
-      </Button>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.next" />
-      </Button>
-    </div>
-  </>
-)}
-
-
-const ReturnedApplications = () => {
-  const classes = useStyles();
-  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-  return (
-    <>
-      <ApplicationProcessSearcher
-        returnedApplications={true}
-        loggedInUserId={loggedInUserId}
-        disableButtons={1}
-        dynamicTableTitle= {"workforce.application.returned"}
-      />
-      {/* Pagination */}
-      <div className={classes.pagination}>
-        <Button>
-          <FormattedMessage module="workforce" id="workforce.back" />
-        </Button>
-        <Button>
-          <FormattedMessage module="workforce" id="workforce.next" />
-        </Button>
-      </div>
-    </>
-  )
-}
-
-
-const ForwardedApplications = () => {
-  const classes = useStyles()
-  return (
-    <>
-      <ApplicationProcessSearcher
-        forwardedApplications={true}
-        disableButtons={1}
-        dynamicTableTitle= {"workforce.application.forwarded"}
-      />
-      {/* Pagination */}
-      <div className={classes.pagination}>
-        <Button>
-          <FormattedMessage module="workforce" id="workforce.back" />
-        </Button>
-        <Button>
-          <FormattedMessage module="workforce" id="workforce.next" />
-        </Button>
-      </div>
-    </>
-  )
-}
-
-const Others = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.others" />
-  </Typography>
-);
-
 // ------------------------------------------------------------
 
-const BKMEAAssociationDashboard = () => {
+const DeputyAsstDirectorDashboardPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
-  const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
+  const [selectedMenu, setSelectedMenu] = useState("pendingApplications");
  useEffect(() => {
       return dispatch(fetchSummaryApplications(modulesManager,['status:"meeting_created"']));
     }, []);
@@ -273,12 +168,6 @@ const BKMEAAssociationDashboard = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
-      case "forwardedApplications":
-        return <ForwardedApplications />;
-      case "revertedApplication":
-        return <RevertApplication />;
-      case "returnedApplication":
-        return <ReturnedApplications />;
       default:
         return <FiledApplications />;
     }
@@ -315,4 +204,4 @@ const BKMEAAssociationDashboard = () => {
   );
 };
 
-export default BKMEAAssociationDashboard;
+export default DeputyAsstDirectorDashboardPage;
