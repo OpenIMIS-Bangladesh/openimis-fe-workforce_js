@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     padding: theme.spacing(2),
-    height: "calc(100vh - 64px)", // assuming 64px header/appbar, adjust as needed
+    height: "calc(100vh - 64px)",
     overflow: "hidden",
   },
   sidebar: {
@@ -131,7 +131,6 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
 
   const handleChange = (panelId) => (event, isExpanded) => {
     if (isExpanded) {
-      // reorder so the clicked item goes to the top
       setRenderedData((prev) => {
         const clickedItem = prev.find((item) => item.id === panelId);
         const rest = prev.filter((item) => item.id !== panelId);

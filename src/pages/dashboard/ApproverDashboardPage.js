@@ -218,7 +218,6 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
       });
       setExpanded(panelId);
     } else {
-      // collapse and restore original order
       setExpanded(null);
       setCurrentData(originalData);
     }
@@ -282,7 +281,7 @@ const ApproverDashboard = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
-  const [selectedMenu, setSelectedMenu] = useState("pendingMeetingSheet"); // Default first menu
+  const [selectedMenu, setSelectedMenu] = useState("pendingMeetingSheet");
   useEffect(() => {
     return dispatch(
       fetchSummaryApplications(modulesManager, ['organizationType:"cf"'])
