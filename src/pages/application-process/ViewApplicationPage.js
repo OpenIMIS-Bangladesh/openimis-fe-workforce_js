@@ -98,11 +98,6 @@ class ViewApplicationPage extends Component {
   handlePrint = () => {
     // Open the modal
     this.setState({ open: true });
-    // // Wait a bit for the modal to render, then trigger print
-    // setTimeout(() => {
-    //   window.print();
-    // },2000)
-    // window.print();
   };
 
   componentDidMount() {
@@ -146,8 +141,6 @@ class ViewApplicationPage extends Component {
         <Box p={0} className={classes.paper}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              {/* <PreviewDetails formData={formData} language={locale} /> */}
-              {/* <ApplicationViewPage application={formData} language={locale} /> */}
               <ApplicationViewPage application={formData} language={locale} fileStates={documents} />
             </Grid>
             <Grid item xs={4}>
@@ -184,38 +177,6 @@ class ViewApplicationPage extends Component {
             </>
           )}
         </Box>
-
-        {/* <Modal open={this.state.open} onClose={() => this.setState({ open: false })}>
-          <Box
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "75%",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              backgroundColor: "white",
-              padding: 16,
-              borderRadius: 8,
-            }}
-          >
-            <Box className="print-button-container" style={{ display: "flex", justifyContent: "flex-end", padding: 1 }}>
-              <Button onClick={() => this.setState({ open: false })} startIcon={<CloseIcon />} color="secondary" style={{ marginRight: "8px" }}>
-                বন্ধ করুন
-              </Button>
-              <Button variant="contained" color="primary" onClick={this.handlePrint} startIcon={<PrintIcon />}>
-                প্রিন্ট / PDF ডাউনলোড
-              </Button>
-            </Box>
-            <ApplicationPrintView
-              data={formData}
-              documents={documents}
-              logoLeft="/front/workforce_assets/centralfund.png"
-              logoLeftUrl="/front/workforce_assets/bdgov.png"
-            />
-          </Box>
-        </Modal> */}
         <Modal open={this.state.open} className={classes.modal} onClose={() => this.setState({ open: false })}>
           <ApplicationPrintPreview
             open={this.state.open}

@@ -58,7 +58,6 @@ class ApplicationProcessPage extends Component {
       organizationVersion,
       user_rights 
     } = this.props;
-    // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
     const path = this.props.history.location.pathname;
     const isVerify =  path.includes("verify");
@@ -66,11 +65,8 @@ class ApplicationProcessPage extends Component {
     const isActions =  path.includes("actions");
     const user_type = getUserTypeFromRights(user_rights);
 
-    // if (!(rights.includes(RIGHT_ORGANIZATION_CREATE) || rights.includes(RIGHT_ORGANIZATION_EDIT))) return null;
     return (
-      <div
-        className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}
-      >
+      <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
         <ApplicationProcessForm
           overview={overview}
           applicationUuid={applicationUuid}

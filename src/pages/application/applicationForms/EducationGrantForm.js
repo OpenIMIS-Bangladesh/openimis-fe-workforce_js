@@ -468,10 +468,12 @@ const EducationGrantForm = ({  organizationType, selectedApplicationType, applic
     //   label: "workforce.application.steps.otherInfo",
     //   content: <OtherInfoForm handleChange={(key, value) => handleChange(key, value, "otherInfo")} formData={formData.otherInfo} />,
     // },
-    {
-      label: "workforce.application.steps.upload.documents",
-      content: <EmployeeDetailsForm2 selectedApplicationType={selectedApplicationType} handleChange={handleChange} formData={formData} formStepNo={"workforceDocument"}/>,
-    },
+    
+    // {
+    //   label: "workforce.application.steps.upload.documents",
+    //   content: <EmployeeDetailsForm2 selectedApplicationType={selectedApplicationType} handleChange={handleChange} formData={formData} formStepNo={"workforceDocument"}/>,
+    // },
+
     // ...(applicationForSelf === "no"
     //   ? [
     //       {
