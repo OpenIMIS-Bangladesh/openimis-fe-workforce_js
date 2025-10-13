@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     padding: theme.spacing(2),
-    height: "fit-content", // assuming 64px header/appbar, adjust as needed
+    height: "fit-content",
     overflow: "visible",
   },
   sidebar: {
@@ -133,10 +133,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
-
-
 const ReturnedApplications = () => {
   const classes = useStyles();
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
@@ -160,7 +156,6 @@ const ReturnedApplications = () => {
     </>
   )
 };
-
 
 const Dashboard = () =>{
   const dispatch = useDispatch();

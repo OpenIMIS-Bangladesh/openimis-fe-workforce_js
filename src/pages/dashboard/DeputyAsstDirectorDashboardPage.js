@@ -128,6 +128,9 @@ const FiledApplications = () =>{
         {user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR && (
       <FormattedMessage module="workforce" id="workforce.section2.deputy2.admin.dashboard" />
         )}
+        {user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR && (
+      <FormattedMessage module="workforce" id="workforce.blwf.deputy.admin.dashboard" />
+        )}
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>

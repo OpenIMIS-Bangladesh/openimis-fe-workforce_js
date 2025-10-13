@@ -245,11 +245,6 @@ const DoctorDashboard = () => {
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); 
   
   const user_type = getUserType();
-  
-  
-//  useEffect(() => {
-//       return dispatch(fetchSummaryApplications(modulesManager,['status:"meeting_created"', 'organizationType:"cf"']));
-//     }, []);
   const data = useSelector(
       (state) => state.workforce[`applicationsSummary`] ?? []
     );
