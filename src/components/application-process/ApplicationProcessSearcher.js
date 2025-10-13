@@ -129,11 +129,8 @@ class ApplicationProcessSearcher extends Component {
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
 
-      let defaultStatusFilters = [
-        'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant", "financialAssistance", "disabilityAssistance"]', //0
-        'organizationTypeIn:["cf"]' //1
-        //statusIn pushable //2
-      ];
+        const defaultStatusFilters = [
+        'applicationTypeIn: ["scholarship", "medicalAssistance", "maternityGrant", "financialAssistance", "disabilityAssistance"], organizationTypeIn: ["cf"]'];
 
       if(this.props.filedApplications)
       {
@@ -201,11 +198,8 @@ class ApplicationProcessSearcher extends Component {
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_CHECKER || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ) {
       this.setState({ displayVersion: showHistoryFilter });
 
-      let defaultStatusFilters = [
-        'applicationTypeIn: ["educationGrant","medicalDonation","deadlyGrant", "maternityGrant"]', //0
-        'organizationTypeIn:["blwf"]' //1
-        //statusIn pushable //2
-      ];
+      const defaultStatusFilters = [
+        'applicationTypeIn: ["educationGrant", "medicalDonation", "deadlyGrant", "maternityGrant"], organizationTypeIn: ["blwf"]'];
 
       if(this.props.filedApplications)
       {
@@ -241,6 +235,69 @@ class ApplicationProcessSearcher extends Component {
       }
 
 
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
+      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
+      const hasAppTypeIn = prms?.some(f => f.includes("applicationTypeIn"));
+
+      let finalFilters = [];
+
+      if (prms?.length)
+      {
+        finalFilters = [...prms];
+        if (!hasStatusIn) {
+          finalFilters = [defaultStatusFilters[2], ...finalFilters];
+        }
+
+        if (!hasAppTypeIn) {
+          finalFilters = [...finalFilters, defaultStatusFilters[0]];
+        }
+
+        if (!hasOrderBy) {
+          finalFilters.push(orderByFilter);
+        }
+      }
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ) {
+      this.setState({ displayVersion: showHistoryFilter });
+
+      const defaultStatusFilters = [
+        'applicationTypeIn: ["educationGrant", "medicalDonation", "deadlyGrant", "maternityGrant"], organizationTypeIn: ["blwf"]'
+      ];
+
+      if(this.props.filedApplications)
+      {
+        defaultStatusFilters.push('statusIn:["new"]');
+        if(loggedInUserId)
+        {
+          defaultStatusFilters.push(`applicationTo:"${loggedInUserId}"`);
+        }
+      }
+      else if(this.props.forwardedApplications)
+      {
+        defaultStatusFilters.push('statusIn:["verified"]');
+        if(loggedInUserId)
+        {
+          defaultStatusFilters.push(`applicationFrom:"${loggedInUserId}"`);
+        }
+      }
+      else if(this.props.revertedApplications)
+      {
+        defaultStatusFilters.push('statusIn:["revert"]');
+        if(loggedInUserId)
+        {
+          defaultStatusFilters.push(`applicationTo:"${loggedInUserId}"`);
+        }
+      }
+      else if(this.props.returnedApplications)
+      {
+        defaultStatusFilters.push('statusIn:["revert"]');
+        if(loggedInUserId)
+        {
+          defaultStatusFilters.push(`applicationFrom:"${loggedInUserId}"`);
+        }
+      }
       const orderByFilter = 'orderBy: ["-dateCreated"]';
 
       const hasStatusIn = prms?.some(f => f.includes("statusIn"));
@@ -444,7 +501,7 @@ class ApplicationProcessSearcher extends Component {
         defaultStatusFilters.push('statusIn: ["approved_by_doctor","verified"]',  'organizationTypeIn: ["blwf"]');
       }
       else {
-        defaultStatusFilters.push('statusIn: ["new"]', 'organizationTypeIn: ["blwf"]');
+        defaultStatusFilters.push('statusIn: ["verified_by_dol_dife"]', 'organizationTypeIn: ["blwf"]');
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -1716,7 +1773,7 @@ class ApplicationProcessSearcher extends Component {
     const userType = getUserTypeFromRights(this.props.userRights);
     let confirmModalMessage = "";
 
-    if (userType === WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO || WORKFORCE_USER_TYPE.BLWF_CHECKER || WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR || WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR) {
+    if (userType === WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO || userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE || WORKFORCE_USER_TYPE.BLWF_CHECKER || WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR || WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR) {
       confirmModalMessage = "workforce.application.forward.message.toSectionAdmin";
     } else if(userType === WORKFORCE_USER_TYPE.EIS_OFFICER) {
       confirmModalMessage = "workforce.application.forward.message.toEisCoordinator";
@@ -1765,24 +1822,24 @@ class ApplicationProcessSearcher extends Component {
               }
               const updateApplicationData = {
                 id: decodedId,
-                status: WORKFORCE_STATUS.VERIFIED,
+                status:  userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ? WORKFORCE_STATUS.VERIFIED_BY_DOL_DIFE : WORKFORCE_STATUS.VERIFIED,
               };
               const createApplicationMovementData = {
                 applicationId: decodedId,
-                status: WORKFORCE_STATUS.VERIFIED,
+                status:  userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ? WORKFORCE_STATUS.VERIFIED_BY_DOL_DIFE : WORKFORCE_STATUS.VERIFIED,
                 note: "আবেদন যাচাইকৃত হয়েছে",
                 action: "verified",
                 applicationFromId: loggedInUserId,
                 applicationToId:
                   userType === WORKFORCE_USER_TYPE.CHECKER
                     ? 139
-                    : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
+                    : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
                     ? 187
                     : null,
                 toRoleId:
                   userType === WORKFORCE_USER_TYPE.CHECKER
                     ? 32
-                    : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
+                    : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
                     ? 40
                     : 42,
               };
@@ -2397,7 +2454,7 @@ class ApplicationProcessSearcher extends Component {
             </Box>
           ) : null}
           {userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR 
-          || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
+          || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
           || userType === WORKFORCE_USER_TYPE.EIS_OFFICER?  (
             <Box
               style={{
