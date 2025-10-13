@@ -32,6 +32,8 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
+import { getUserType, getUserTypeFromRights } from "../../utils/utils";
+import { WORKFORCE_USER_TYPE} from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -141,11 +143,18 @@ const SidebarMenu = [
 const FiledApplications = () =>{ 
   const classes = useStyles()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const user_type = getUserType();
+
 
   return (
   <>
     <Typography variant="h5" gutterBottom>
+       {user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION && (  
       <FormattedMessage module="workforce" id="workforce.bgmea.association.dashboard" />
+       )}
+       {user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION && (  
+      <FormattedMessage module="workforce" id="workforce.bkmea.association.dashboard" />
+       )}
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>
@@ -167,12 +176,6 @@ const FiledApplications = () =>{
     </div>
   </>
 );}
-
-const checkedApplications = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.new.application" />
-  </Typography>
-);
 
 const RevertApplication = () => {
   const classes = useStyles()
@@ -250,20 +253,13 @@ const ForwardedApplications = () => {
   )
 }
 
-
-const Others = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.others" />
-  </Typography>
-);
-
 // ------------------------------------------------------------
 
-const BGMEAAssociationDashboard = () => {
+const AssociationDashboard = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
-  const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
+  const [selectedMenu, setSelectedMenu] = useState("pendingApplications");
  useEffect(() => {
       return dispatch(fetchSummaryApplications(modulesManager,['status:"meeting_created"']));
     }, []);
@@ -317,4 +313,4 @@ const BGMEAAssociationDashboard = () => {
   );
 };
 
-export default BGMEAAssociationDashboard;
+export default AssociationDashboard;

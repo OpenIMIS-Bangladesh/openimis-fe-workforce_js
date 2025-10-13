@@ -555,7 +555,7 @@ export const itemFormattersCheckerTwo = (
   ));
   return formatters;
 };
-export const itemFormattersS1DeputyAsstDirector = (
+export const itemFormattersDeputyAsstDirector = (
   isShowHistory,
   modulesManager,
   history,

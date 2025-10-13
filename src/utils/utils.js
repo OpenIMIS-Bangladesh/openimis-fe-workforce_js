@@ -87,6 +87,8 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.EIS_FINANCIAL_OFFICER;
   } else if (user_rights.includes(813007)) {
     user_type = WORKFORCE_USER_TYPE.EIS_DOCTOR;
+  } else if (user_rights.includes(813008)) {
+    user_type = WORKFORCE_USER_TYPE.BLWF_DOL_DIFE;
   } else if (!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }
