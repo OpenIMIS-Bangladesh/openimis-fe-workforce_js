@@ -2291,7 +2291,6 @@ class ApplicationProcessSearcher extends Component {
                 justifyContent: "space-between",
               }}
             >
-
               {disableButtons == 1 ? (
                   <>
                     <IconButton onClick={this.handleOpenBFTN}>
