@@ -724,6 +724,9 @@ class ApplicationProcessSearcher extends Component {
          if (this.props.factoryId) {
           defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
         }
+        if (loggedInUserId) {
+          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       }
       this.props.fetchApplicationsSummary(this.props.modulesManager, defaultFilters);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {

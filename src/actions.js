@@ -715,7 +715,9 @@ export function fetchApplicationsSummary(mm, filters) {
     "grantAmount",
     "submittedBy",
     "associationType",
-    "applicationFor"
+    "applicationFor",
+    "applicationReceiveDate",
+    "applicationForwardDate"
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
