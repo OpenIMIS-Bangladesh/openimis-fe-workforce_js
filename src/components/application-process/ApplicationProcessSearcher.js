@@ -701,14 +701,20 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["revert"]'
         ];
 
-        if (this.props.factoryId) {
-          defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
+        // if (this.props.factoryId) {
+        //   defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
+        // }
+         if (loggedInUserId) {
+          defaultFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
       } 
       else if (this.props.returnedApplications) {
         defaultFilters = ['status: "revert"', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
         if (this.props.factoryId) {
           defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
+        }
+        if (loggedInUserId) {
+          defaultFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
       }else if (rejectedApplication) {
         defaultFilters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];

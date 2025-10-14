@@ -26,6 +26,7 @@
     "workforce.employee.application.applicationType",
     "workforce.employee.application.moneyAmount",
     "workforce.employee.application.receivedDate",
+    "workforce.employee.application.sentDate",
     "workforce.employee.application.status",
     component.isShowHistory() ? "workforce.version" : "",
   ];
@@ -49,6 +50,7 @@
     "workforce.employee.application.factoryName",
     "workforce.employee.application.applicationType",
     "workforce.employee.application.receivedDate",
+    "workforce.employee.application.sentDate",
     "workforce.employee.application.status",
     "workforce.application.submittedBy",
     "view",
@@ -67,6 +69,7 @@
   "workforce.employee.application.applicationType",
   // "workforce.employee.application.moneyAmount",
   "workforce.employee.application.receivedDate",
+  "workforce.employee.application.sentDate",
   "workforce.employee.application.status",
   "view",
   // ✅ Conditionally add verify & revert (when buttons are enabled)
@@ -90,6 +93,7 @@
     "workforce.employee.application.applicationType",
     // "workforce.employee.application.moneyAmount",
     "workforce.employee.application.receivedDate",
+    "workforce.employee.application.sentDate",
     "workforce.employee.application.status",
     "view",
     "verify",
@@ -104,6 +108,7 @@
     "workforce.employee.application.applicationType",
     "workforce.employee.application.moneyAmount",
     "workforce.employee.application.receivedDate",
+    "workforce.employee.application.sentDate",
     "workforce.employee.application.status",
     "view",
     "verify",
@@ -118,6 +123,7 @@
   // "workforce.employee.application.moneyAmount",
   "workforce.employee.application.nid",
   "workforce.employee.application.receivedDate",
+  "workforce.employee.application.sentDate",
   "workforce.employee.application.status",
 
   // ✅ Conditionally add "workforce.version"
@@ -144,6 +150,7 @@
   // "workforce.employee.application.moneyAmount",
   "workforce.employee.application.nid",
   "workforce.employee.application.receivedDate",
+  "workforce.employee.application.sentDate",
   "workforce.employee.application.status",
 
   // ✅ Conditionally add version column
@@ -171,6 +178,7 @@
   "workforce.employee.application.moneyAmount",
   "workforce.employee.application.nid",
   "workforce.employee.application.receivedDate",
+  "workforce.employee.application.sentDate",
   "workforce.employee.application.status",
 
   // ✅ Conditionally show version
@@ -198,6 +206,7 @@
   "workforce.employee.application.applicationType",
   "workforce.employee.application.moneyAmount",
   "workforce.employee.application.receivedDate",
+  "workforce.employee.application.sentDate",
   "workforce.employee.application.status",
 
   // ✅ Conditionally add version column
@@ -224,6 +233,7 @@
   "workforce.employee.application.factoryName",
   "workforce.employee.application.applicationType",
   "workforce.employee.application.receivedDate",
+  "workforce.employee.application.sentDate",
   "workforce.employee.application.status",
   "view",
   // ✅ Conditionally add verify & revert
@@ -246,6 +256,7 @@
     "workforce.employee.application.applicationType",
     "workforce.employee.application.moneyAmount",
     "workforce.employee.application.receivedDate",
+    "workforce.employee.application.sentDate",
     "workforce.employee.application.status",
     component.isShowHistory() ? "workforce.version" : "",
   ];
