@@ -62,77 +62,72 @@ export const forwardToAssociation = async ({
   }
 };
 
-export const revertApplications = async ({
-  applications,
-  selectedRevertUser,
-  editorContent,
-  userId,
+export async function handleBulkSelectedByAssociationLogic({
+  selectedApplicationIds,
+  loggedInUserId,
   updateApplication,
   createApplicationMovement,
-  dispatch,
   setServerResponse,
-  setSubmitting,
-}) => {
-  if (!selectedRevertUser) {
-    setServerResponse?.({
-      status: "ERROR",
-      message: "একজন ব্যবহারকারী নির্বাচন করুন!",
-    });
+  setConfirmModalOpen,
+  setConfirmModalMessage,
+  setConfirmModalCallback,
+}) {
+  if (!selectedApplicationIds || selectedApplicationIds.length === 0) {
+    alert("Please select at least one application.");
     return;
   }
 
-  // Normalize single object -> array
-  const appArray = Array.isArray(applications) ? applications : [applications];
+  setConfirmModalOpen(true);
+  setConfirmModalMessage("workforce.application.forward.message.toSectionAdmin");
 
-  try {
-    setSubmitting?.(true);
+  setConfirmModalCallback(async (confirmed) => {
+    if (confirmed) {
+      try {
+        await Promise.all(
+          selectedApplicationIds.map(async (selectedItem) => {
+            const decodedId = safeDecodeId(selectedItem?.id);
+            const updateApplicationData = {
+              id: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+            };
+            const createApplicationMovementData = {
+              applicationId: decodedId,
+              status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
+              note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
+              action: "forward_to_cf_section",
+              applicationFromId: loggedInUserId,
+              applicationToId: 139,
+              toRoleId: 32,
+            };
 
-    for (const app of appArray) {
-      const decodedAppId = decodeId(app?.id);
-      const decodedRevertUserId = decodeId(selectedRevertUser);
+            await updateApplication(
+              updateApplicationData,
+              "update workforce application"
+            );
+            await createApplicationMovement(
+              createApplicationMovementData,
+              "create workforce movement"
+            );
+          })
+        );
 
-      const updateApplicationData = {
-        id: decodedAppId,
-        status: WORKFORCE_STATUS.REVERT,
-      };
-
-      const createApplicationMovementData = {
-        applicationId: decodedAppId,
-        status: WORKFORCE_STATUS.REVERT,
-        note: "আবেদন ফেরত পাঠানো হয়েছে",
-        revertNote: editorContent,
-        isReverted: true,
-        applicationFromId: userId,
-        applicationToId: decodedRevertUserId,
-      };
-
-      await dispatch(
-        updateApplication(updateApplicationData, "update workforce application")
-      );
-
-      await dispatch(
-        createApplicationMovement(
-          createApplicationMovementData,
-          "create workforce movement"
-        )
-      );
+        setServerResponse({
+          status: "SUCCESS",
+          message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+        });
+      } catch (error) {
+        console.error("Bulk selection failed:", error);
+        setServerResponse({
+          status: "ERROR",
+          message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+        });
+      } finally {
+        window.location.reload();
+      }
     }
 
-    setServerResponse?.({
-      status: "SUCCESS",
-      message: "সাবমিশন সফল হয়েছে!",
-    });
-
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
-  } catch (error) {
-    console.error("Revert applications failed:", error);
-    setServerResponse?.({
-      status: "ERROR",
-      message: "সাবমিশন ব্যর্থ হয়েছে!",
-    });
-  } finally {
-    setSubmitting?.(false);
-  }
-};
+    // always close the modal
+    setConfirmModalOpen(false);
+    setConfirmModalCallback(null);
+  });
+}

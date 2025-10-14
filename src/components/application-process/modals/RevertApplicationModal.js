@@ -1,23 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   Modal,
   Box,
   Typography,
   Button,
-  Grid,
   Divider,
   Paper,
   Breadcrumbs,
   Radio,
   FormControlLabel,
+  CircularProgress, // Import CircularProgress for loading state
 } from "@material-ui/core";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  useModulesManager,
-  decodeId,
-  FormattedMessage,
-} from "@openimis/fe-core";
+import { useModulesManager, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import ReactQuill from "react-quill";
 import {
@@ -27,7 +23,6 @@ import {
   fetchApplicationWiseMovementList,
 } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
-import { revertApplications } from "../../../utils/workforceForwardRevertActions";
 import { safeDecodeId } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -52,69 +47,44 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5, 1),
     fontSize: "1.2rem",
   },
-  sectionPaper: {
-    padding: theme.spacing(2),
-    marginBottom: theme.spacing(3),
-    borderRadius: theme.spacing(1),
+  sectionPaper: { 
+    padding: theme.spacing(2), 
+    marginBottom: theme.spacing(3), 
+    borderRadius: theme.spacing(1), 
     backgroundColor: theme.palette.grey[50],
+    minHeight: '100px', // Give it a min-height to avoid layout shifts
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  buttonGroup: {
-    marginTop: theme.spacing(3),
-    display: "flex",
-    justifyContent: "flex-end",
-    gap: theme.spacing(2),
-  },
-  responseMessage: {
-    marginBottom: theme.spacing(2),
-    fontWeight: 600,
-  },
+  buttonGroup: { marginTop: theme.spacing(3), display: "flex", justifyContent: "flex-end", gap: theme.spacing(2) },
+  responseMessage: { marginBottom: theme.spacing(2), fontWeight: 600 },
 }));
 
-const RevertPathSelector = ({ users, selectedUser, onChange }) => {
-  return (
-    <Paper elevation={1} style={{ padding: "15px", marginBottom: "20px" }}>
-      <Typography
-        variant="subtitle1"
-        gutterBottom
-        style={{ fontWeight: "bold" }}
-      >
-        আবেদন কাকে ফেরত পাঠাতে চান নির্বাচন করুন:
-      </Typography>
-      <Breadcrumbs
-        separator={<NavigateNextIcon fontSize="small" />}
-        aria-label="breadcrumb"
-      >
+// No changes to RevertPathSelector needed
+const RevertPathSelector = ({ users, selectedUser, onChange }) => (
+  <Paper elevation={1} style={{ padding: "15px", marginBottom: "20px" }}>
+    <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold" }}>
+      আবেদন কাকে ফেরত পাঠাতে চান নির্বাচন করুন:
+    </Typography>
+    {users.length > 0 ? (
+      <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
         {users.map((user) => (
           <FormControlLabel
             key={user.id}
             value={user.id}
-            control={
-              <Radio
-                checked={selectedUser === user.id}
-                onChange={() => onChange(user.id)}
-                style={{ color: selectedUser === user.id ? "#1976d2" : "black" }}
-              />
-            }
-            label={
-              <Typography
-                color={selectedUser === user.id ? "primary" : "inherit"}
-              >
-                {user.name} ({user.role})
-              </Typography>
-            }
+            control={<Radio checked={selectedUser === user.id} onChange={() => onChange(user.id)} style={{ color: selectedUser === user.id ? "#1976d2" : "black" }} />}
+            label={<Typography color={selectedUser === user.id ? "primary" : "inherit"}>{user.name} ({user.role})</Typography>}
           />
         ))}
       </Breadcrumbs>
-    </Paper>
-  );
-};
+    ) : (
+      <Typography variant="body2" color="textSecondary">No revert path available.</Typography>
+    )}
+  </Paper>
+);
 
-
-const RevertApplicationModal = ({
-  open,
-  onClose,
-  selectedApplication,
-}) => {
+const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
@@ -125,197 +95,156 @@ const RevertApplicationModal = ({
   const [serverResponse, setServerResponse] = useState(null);
   const [selectedRevertUser, setSelectedRevertUser] = useState(null);
   const [movementUsers, setMovementUsers] = useState([]);
+  const [isLoadingPath, setIsLoadingPath] = useState(false); // State to track loading
 
+  const hasFetchedRef = useRef(false);
 
-useEffect(() => {
-  if (open && selectedApplication) {
-    dispatch(
-      fetchApplication(modulesManager, [
-        `id: "${safeDecodeId(selectedApplication?.id)}"`,
-      ])
-    );
-  } else if (!open) {
-    setEditorContent("");
-    setSubmitting(false);
-    setServerResponse(null);
-    setSelectedRevertUser(null);
-  }
-}, [open]);
+  const appIdDecoded = useMemo(() => selectedApplication?.id ? safeDecodeId(selectedApplication.id) : null, [selectedApplication?.id]);
+  const applicantName = useMemo(() => selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী", [selectedApplication?.workforceEmployee?.firstNameBn]);
 
-useEffect(() => {
-  if (!open) return;
-  const appId = safeDecodeId(selectedApplication?.id);
-  if (!appId) return;
+  useEffect(() => {
+    if (!open) {
+      hasFetchedRef.current = false;
+      setMovementUsers([]);
+      setSelectedRevertUser(null);
+      setEditorContent("");
+      setServerResponse(null);
+      setSubmitting(false);
+      setIsLoadingPath(false);
+      return;
+    }
 
-  dispatch(
-    fetchApplicationWiseMovementList(modulesManager, {
-      applicationId: appId,
-      orderBy: ["-dateCreated"],
-    })
-  )
-    .then((res) => {
-      const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
-      const allUsers = edges
-        .flatMap(({ node }) => (node.applicationTo ? [node.applicationTo] : []))
-        .filter(Boolean);
+    if (open && appIdDecoded && !hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      setIsLoadingPath(true); // Start loading
 
-      setMovementUsers([
-        {
-          id: "applicant001",
-          name: selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী",
-          role: "Applicant",
-        },
-        ...allUsers.map((user) => ({
-          id: user.id,
-          name: user.loginName,
-          role: user?.userRoles[0]?.role?.name,
-        })),
-      ]);
-    })
-    .catch(console.error);
-}, [open, selectedApplication?.id]);
-
+      dispatch(fetchApplicationWiseMovementList(modulesManager, { applicationId: appIdDecoded, orderBy: ["-dateCreated"] }))
+        .then((res) => {
+          const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
+          const allUsers = edges.flatMap(({ node }) => (node.applicationTo ? [node.applicationTo] : [])).filter(Boolean);
+          
+          const users = [
+            {
+              id: "applicant001",
+              name: applicantName,
+              role: "Applicant",
+            },
+            ...allUsers.map((u) => ({
+              id: u.id,
+              name: u.loginName,
+              role: u?.userRoles?.[0]?.role?.name || "User",
+            })),
+          ];
+          setMovementUsers(users);
+        })
+        .catch((err) => {
+          console.error("fetchApplicationWiseMovementList failed", err);
+          setServerResponse({ status: "ERROR", message: "Failed to load user path." });
+        })
+        .finally(() => {
+            setIsLoadingPath(false); // Stop loading
+        });
+    }
+  }, [open, appIdDecoded, applicantName, dispatch, modulesManager]);
 
 
   const handleRevert = async () => {
-  //   await revertApplications({
-  //   selectedApplications: selectedApplication, // or array if you have multiple
-  //   selectedRevertUser,
-  //   editorContent,
-  //   userId,
-  //   updateApplication,
-  //   createApplicationMovement,
-  //   dispatch,
-  //   setServerResponse,
-  //   setSubmitting,
-  // });
     if (!selectedRevertUser) {
-      setServerResponse({
-        status: "ERROR",
-        message: "একজন ব্যবহারকারী নির্বাচন করুন!",
-      });
+      setServerResponse({ status: "ERROR", message: "একজন ব্যবহারকারী নির্বাচন করুন!" });
       return;
     }
 
     setSubmitting(true);
+    
+    if (!appIdDecoded) {
+      setServerResponse({ status: "ERROR", message: "Application ID is missing." });
+      setSubmitting(false);
+      return;
+    }
 
-    const updateApplicationData = {
-      id: safeDecodeId(selectedApplication.id),
-      status: WORKFORCE_STATUS.REVERT,
-    };
+    const updateApplicationData = { id: appIdDecoded, status: WORKFORCE_STATUS.REVERT };
+    
+    // The applicant won't have a real user UUID, so we treat it as a special case.
+    const revertToId = selectedRevertUser === 'applicant001' ? null : decodeId(selectedRevertUser);
 
     const createApplicationMovementData = {
-      applicationId: safeDecodeId(selectedApplication.id),
+      applicationId: appIdDecoded,
       status: WORKFORCE_STATUS.REVERT,
-      note: "আবেদন ফেরত পাঠানো হয়েছে",
+      note: "আবেদন ফেরত পাঠানো হয়েছে",
       revertNote: editorContent,
       isReverted: true,
       applicationFromId: userId,
-      applicationToId: decodeId(selectedRevertUser),
+      applicationToId: revertToId,
     };
 
-    await dispatch(
-      updateApplication(updateApplicationData, `update workforce application`)
-    );
-    await dispatch(
-      createApplicationMovement(
-        createApplicationMovementData,
-        `create workforce movement`
-      )
-    );
-
-    setSubmitting(false);
-    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
-    setTimeout(()=>{window.location.reload()},2000);
+    try {
+      await dispatch(updateApplication(updateApplicationData, `update workforce application`));
+      await dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
+      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+      setTimeout(() => {
+        onClose();
+        // Optional: you might want to refresh the parent page's data here instead of a full reload
+        window.location.reload(); 
+      }, 1000);
+    } catch (err) {
+      console.error(err);
+      setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে" });
+    } finally {
+      setSubmitting(false);
+    }
   };
+  
+  // Debugging log to see what the modal receives
+  console.log("RevertModal rendering with:", { selectedApplication, movementUsers });
 
   return (
     <Modal open={open} onClose={onClose}>
       <form className={classes.modalContainer}>
-        {/* Close button */}
-        <Button onClick={onClose} className={classes.closeButton}>
-          ✕
-        </Button>
-
-        {/* Title */}
-        <Typography
-          variant="h5"
-          gutterBottom
-          style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
-        >
+        <Button onClick={onClose} className={classes.closeButton}>✕</Button>
+        <Typography variant="h5" gutterBottom style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}>
           আবেদন ফেরত পাঠান
         </Typography>
 
-        {/* Response message */}
         {serverResponse?.status && (
-          <Typography
-            className={classes.responseMessage}
-            style={{
-              color: serverResponse.status === "SUCCESS" ? "green" : "red",
-            }}
-          >
-            {serverResponse.status === "SUCCESS" ? "✅" : "⚠️"}{" "}
-            {serverResponse.message}
+          <Typography className={classes.responseMessage} style={{ color: serverResponse.status === "SUCCESS" ? "green" : "red" }}>
+            {serverResponse.status === "SUCCESS" ? "✅" : "⚠️"} {serverResponse.message}
           </Typography>
         )}
 
         <Divider style={{ marginBottom: 15 }} />
 
-        {/* Applicant Info */}
         <Paper className={classes.sectionPaper} elevation={1}>
-          <Typography variant="subtitle1" gutterBottom>
-            <b>আবেদনকারীর নাম :</b>{" "}
-            {selectedApplication?.workforceEmployee?.firstNameBn} <br />
-            <b>আবেদনের ধরন :</b> {selectedApplication?.applicationType} <br />
-            <b>জাতীয় পরিচয়পত্র :</b>{" "}
-            {selectedApplication?.workforceEmployee?.nid} <br />
-            <b>ফোন নম্বর :</b>{" "}
-            {selectedApplication?.workforceEmployee?.phoneNumber} <br />
-          </Typography>
+          {selectedApplication ? (
+            <Typography variant="subtitle1" gutterBottom style={{width: '100%'}}>
+              <b>আবেদনকারীর নাম :</b> {selectedApplication?.workforceEmployee?.firstNameBn || 'N/A'} <br />
+              <b>আবেদনের ধরন :</b> {selectedApplication?.applicationType || 'N/A'} <br />
+              <b>জাতীয় পরিচয়পত্র :</b> {selectedApplication?.workforceEmployee?.nid || 'N/A'} <br />
+              <b>ফোন নম্বর :</b> {selectedApplication?.workforceEmployee?.phoneNumber || 'N/A'} <br />
+            </Typography>
+          ) : (
+            <CircularProgress size={24} />
+          )}
         </Paper>
 
-        {/* Breadcrumb User Selection */}
-        <RevertPathSelector
-          users={movementUsers}
-          selectedUser={selectedRevertUser}
-          onChange={setSelectedRevertUser}
-        />
-
-        {/* Comment Box */}
-        <Typography
-          variant="subtitle1"
-          gutterBottom
-          style={{
-            fontWeight: "bold",
-            marginTop: 1,
-            textAlign: "center",
-          }}
-        >
-          <FormattedMessage
-            module="workforce"
-            id="workforce.application.revert.reasons.addComment"
-          />
+        {isLoadingPath ? (
+            <Box display="flex" justifyContent="center" my={4}>
+                <CircularProgress />
+            </Box>
+        ) : (
+            <RevertPathSelector users={movementUsers} selectedUser={selectedRevertUser} onChange={setSelectedRevertUser} />
+        )}
+        
+        <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold", marginTop: 1, textAlign: "center" }}>
+          <FormattedMessage module="workforce" id="workforce.application.revert.reasons.addComment" />
         </Typography>
+
         <Box sx={{ width: "100%", mb: 7 }}>
-          <ReactQuill
-            value={editorContent}
-            onChange={setEditorContent}
-            theme="snow"
-            style={{ height: "150px" }}
-          />
+          <ReactQuill value={editorContent} onChange={setEditorContent} theme="snow" style={{ height: "150px" }} />
         </Box>
 
-        {/* Action Buttons */}
         <div className={classes.buttonGroup}>
-          <Button onClick={onClose} variant="outlined" color="secondary">
-            বাতিল করুন
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={submitting}
-            onClick={handleRevert}
-          >
+          <Button onClick={onClose} variant="outlined" color="secondary">বাতিল করুন</Button>
+          <Button variant="contained" color="primary" disabled={submitting || !selectedApplication || isLoadingPath} onClick={handleRevert}>
             {submitting ? "ফেরত পাঠানো হচ্ছে..." : "ফেরত পাঠান"}
           </Button>
         </div>

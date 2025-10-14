@@ -8,7 +8,7 @@ import PreviewDetails from "../../components/application-forms/PreviewDetails";
 import ForwardApplicationAdminModal from "../../components/application-process/modals/ForwardApplicationAdminModal";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserTypeFromRights } from "../../utils/utils";
-import { fetchWorkforceDocument } from "../../actions";
+import { createApplicationMovement, fetchWorkforceDocument, updateApplication } from "../../actions";
 import { bindActionCreators } from "redux";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
@@ -17,6 +17,8 @@ import CloseIcon from "@material-ui/icons/Close";
 import { ApplicationPrintPreview } from "../../components/shared/ApplicationPrintPreview";
 import ForwardApplicationFactoryAdminModal from "../../components/application-process/modals/ForwardApplicationFactoryAdminModal";
 import RevertApplicationModal from "../../components/application-process/modals/RevertApplicationModal";
+import { handleBulkSelectedByAssociationLogic } from "../../utils/workforceForwardRevertActions";
+import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
 
 const styles = (theme) => ({
   paper: {
@@ -61,6 +63,11 @@ class ViewApplicationPage extends Component {
       isForwardModalOpen: false,
       forwardModalOpenFA: false,
       revertModalOpen: false,
+      selectedApplication: null,
+      confirmModalOpen: false,
+      confirmModalMessage: "",
+      serverResponse: "",
+      confirmModalCallback: null,
       open: false,
     };
   }
@@ -71,6 +78,12 @@ class ViewApplicationPage extends Component {
         workforceEmployee: this.props.application?.workforceEmployee || {},
         stateEdited: this.props.application || {},
       });
+    }
+
+    // FIX: Update the memoized application ONLY if the ID or the object reference changes
+    // Use prevProps.application?.id !== this.props.application?.id OR this.props.application !== prevProps.application
+    if (this.props.application !== prevProps.application) {
+      this.memoizedApplication = this.props.application;
     }
 
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
@@ -100,8 +113,25 @@ class ViewApplicationPage extends Component {
   };
 
   handlePrint = () => {
-    // Open the modal
     this.setState({ open: true });
+  };
+
+  handleForward = () => {
+    const { user_rights, application, loggedInUserId } = this.props;
+    const user_type = getUserTypeFromRights(user_rights);
+
+    user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+      ? this.setState({ forwardModalOpenFA: true })
+      : handleBulkSelectedByAssociationLogic({
+          selectedApplicationIds: [{ id: application?.id }],
+          loggedInUserId,
+          updateApplication: this.props.updateApplication,
+          createApplicationMovement: this.props.createApplicationMovement,
+          setServerResponse: (res) => this.setState({ serverResponse: res }),
+          setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
+          setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
+          setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+        });
   };
 
   componentDidMount() {
@@ -110,9 +140,9 @@ class ViewApplicationPage extends Component {
   }
 
   render() {
-    const { classes, user_rights, application, documents, locale, organizationEmployee, history, edited_id } = this.props;
+    const { classes, user_rights, documents, application, locale, organizationEmployee, history, edited_id } = this.props;
     const { stateEdited, workforceEmployee, isForwardModalOpen, forwardModalOpenFA } = this.state;
-    console.log("application uuid", edited_id);
+    // const application = this.memoizedApplication
 
     const user_type = getUserTypeFromRights(user_rights);
 
@@ -139,7 +169,7 @@ class ViewApplicationPage extends Component {
     const uploadByFactoryAdmin = documents?.filter((doc) => doc.holderType === "factoryAdmin");
     console.log({ documents });
     console.log({ uploadByApplicant });
-    console.log({ uploadByFactoryAdmin });
+    console.log({ forRevert: application });
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>
@@ -147,30 +177,41 @@ class ViewApplicationPage extends Component {
             <Grid item xs={12}>
               <ApplicationViewPage application={formData} language={locale} fileStates={documents} />
             </Grid>
-            <Grid item xs={1}>
+            <Grid item xs={1} style={{textAlign:"center"}}>
               <Button variant="contained" color="primary" onClick={this.handlePrint}>
                 <PrintIcon />
               </Button>
             </Grid>
-            {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? (
-              <>
-                <Grid item xs={1}>
-                  <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenFA: true })} style={{paddingLeft:"3px",paddingRight:"3px"}}>
-                    <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-                  </Button>
-                </Grid>
-                <Grid item xs={1}>
-                  <Button variant="contained" color="primary" onClick={() => this.setState({ revertModalOpen: true })}>
-                    <FormattedMessage module="workforce" id="workforce.employee.application.revert" />
-                  </Button>
-                </Grid>
-              </>
-            ) : null}
-            {/* <Grid item xs={1}>
-              <Button variant="contained" color="primary" onClick={this.handlePrint}>
-                <PrintIcon />
-              </Button>
-            </Grid> */}
+           {user_type === WORKFORCE_USER_TYPE.APPLICANT || 
+   user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || 
+   user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ? (
+    <>
+      <Grid item xs={1}>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={() => this.handleForward()} 
+          style={{ paddingLeft: "4px", paddingRight: "4px" }} 
+          fullWidth // <-- Add this
+        >
+          <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+        </Button>
+      </Grid>
+      <Grid item xs={1}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            this.setState({ revertModalOpen: true, selectedApplication: application });
+            console.log("button clicked");
+          }}
+          fullWidth // <-- Add this
+        >
+          <FormattedMessage module="workforce" id="workforce.employee.application.revert" />
+        </Button>
+      </Grid>
+    </>
+  ) : null}
             <Grid item xs={8}></Grid>
           </Grid>
 
@@ -183,17 +224,6 @@ class ViewApplicationPage extends Component {
                 <Button variant="contained" color="primary">
                   <FormattedMessage module="workforce" id="workforce.application.approve" />
                 </Button>
-                {/* Optional Forward Button */}
-                {/* <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={this.handleOpenForwardModal}
-                >
-                  <FormattedMessage
-                    module="workforce"
-                    id="workforce.employee.application.forwardTo"
-                  />
-                </Button> */}
               </div>
 
               <ForwardApplicationAdminModal open={isForwardModalOpen} onClose={this.handleCloseForwardModal} application={application} />
@@ -218,18 +248,32 @@ class ViewApplicationPage extends Component {
               open={this.state.forwardModalOpenFA}
               onClose={() => this.setState({ forwardModalOpenFA: false })}
               selectedApplicationIds={[{ id: edited_id }]}
-              // onSubmitForward={this.handleForwardSubmit}
               organizationEmployee={organizationEmployee}
-            />
-            <RevertApplicationModal
-              open={this.state.revertModalOpen}
-              onClose={() => this.setState({ revertModalOpen: false })}
-              // revertByChecker={revertByChecker}
-              selectedApplication={application}
-              // onSubmitRevert={this.handleRevertSubmit}
             />
           </>
         )}
+        {user_type !== WORKFORCE_USER_TYPE.APPLICANT && (
+          <>
+            {this.state.revertModalOpen && (
+              <RevertApplicationModal
+                open={this.state.revertModalOpen}
+                onClose={() => this.setState({ revertModalOpen: false })}
+                selectedApplication={this.state.selectedApplication}
+              />
+            )}
+          </>
+        )}
+        <ConfirmModal
+        open={this.state.confirmModalOpen}
+        message={this.state.confirmModalMessage}
+        onClose={(result) => {
+    if (this.state.confirmModalCallback) {
+      this.state.confirmModalCallback(result === 1);
+    } else {
+      this.setState({ confirmModalOpen: false });
+    }
+  }}
+      />
       </div>
     );
   }
@@ -241,6 +285,7 @@ const mapStateToProps = (state, props) => ({
   documents: state.workforce.document,
   locale: state.core?.user?.i_user?.language,
   organizationEmployee: state.workforce.organizationEmployee,
+  loggedInUserId: state.core?.user?.i_user?.id,
   // applicationUuid: props.match.params.application_uuid,
 });
 
@@ -248,6 +293,8 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       fetchWorkforceDocument,
+      updateApplication,
+      createApplicationMovement,
       journalize,
       coreConfirm,
     },

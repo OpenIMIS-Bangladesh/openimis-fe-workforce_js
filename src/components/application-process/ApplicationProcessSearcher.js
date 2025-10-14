@@ -51,6 +51,7 @@ import Searcher from "../shared/searcher/Searcher";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
 import ForwardApplicationSummarySectionAdminModal from "./modals/ForwardApplicationSummarySectionAdminModal";
 import ForwardApplicationEisDoctorModal from "./modals/ForwardApplicationEisDoctorModal"
+import { handleBulkSelectedByAssociationLogic } from "../../utils/workforceForwardRevertActions";
 
 
 const styles = (theme) => ({
@@ -1648,59 +1649,18 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkSelectedbyAssociation = () => {
     const { selectedApplicationIds } = this.state;
-    const { loggedInUserId } = this.props;
-    if (selectedApplicationIds.length === 0) {
-      alert("Please select at least one application.");
-      return;
-    }
-    this.setState({
-      confirmModalOpen: true,
-      confirmModalMessage: "workforce.application.forward.message.toSectionAdmin",
-      confirmModalCallback: async (confirmed) => {
-        if (confirmed) {
-          const { updateApplication, createApplicationMovement } = this.props;
-          try {
-            await Promise.all(
-              selectedApplicationIds.map(async (selectedItem) => {
-                const decodedId = decodeId(selectedItem?.id);
-                const updateApplicationData = {
-                  id: decodedId,
-                  status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
-                };
-                const createApplicationMovementData = {
-                  applicationId: decodedId,
-                  status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
-                  note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
-                  action: "forward_to_cf_section",
-                  applicationFromId: loggedInUserId,
-                  applicationToId: 139,
-                  toRoleId: 32,
-                };
-                await updateApplication(updateApplicationData, "update workforce application");
-                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-              })
-            );
-            this.setState({
-              serverResponse: {
-                status: "SUCCESS",
-                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-              },
-            });
-          } catch (error) {
-            console.error("Bulk selection failed:", error);
-            this.setState({
-              serverResponse: {
-                status: "ERROR",
-                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-              },
-            });
-          } finally {
-            window.location.reload();
-          }
-        }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
-      }
-    });
+    const { loggedInUserId, updateApplication, createApplicationMovement } = this.props;
+
+  handleBulkSelectedByAssociationLogic({
+    selectedApplicationIds,
+    loggedInUserId,
+    updateApplication,
+    createApplicationMovement,
+    setServerResponse: (resp) => this.setState({ serverResponse: resp }),
+    setConfirmModalOpen: (v) => this.setState({ confirmModalOpen: v }),
+    setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
+    setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+  });
   };
   handleBulkSelectedbySectionAdminToDoctor = () => {
     const { selectedApplicationIds } = this.state;

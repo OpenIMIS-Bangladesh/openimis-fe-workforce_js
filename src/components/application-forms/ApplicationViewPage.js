@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { Grid, Paper, Typography, Accordion, AccordionSummary, AccordionDetails, Divider, Card, CardContent, Box } from "@material-ui/core";
-import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage, decodeId } from "@openimis/fe-core";
+import { Grid, Paper, Typography, Accordion, AccordionSummary, AccordionDetails, Divider, Card, CardContent, Box,Button } from "@material-ui/core";
+import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage, decodeId, TextInput } from "@openimis/fe-core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import FileUploader from "../../pickers/FileUploader";
@@ -8,6 +8,7 @@ import DocumentReviewAccordion from "../application-process/DocumentReviewAccord
 import { banglaLabels, ORGANIZATION_TYPE_NAME_BN, ORGANIZATION_TYPE_NAME_EN, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
 import { conditionalEnToBn, getUserType } from "../../utils/utils";
+import { updateApplication } from "../../actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,7 +74,7 @@ const hiddenKeys = [
   "workforceEmployeeDependentApplication",
   "applicationForSelf",
   "insuranceNumber",
-  "grantMoney"
+  "grantMoney",
 ];
 
 /**
@@ -248,27 +249,44 @@ const ApplicationViewPage = ({
   const language = useSelector((state) => state.core?.user?.i_user?.language);
   console.log({ view: application });
   const user_type = getUserType();
+  const dispatch = useDispatch()
+  const [proposedAmount,setProposedAmount] = useState("")
+
+  const handleUpdateGrantAmount =(amount)=>{
+    const updateApplicationData = {
+                  id: decodeId(application?.id),
+                  grantAmount: amount,
+                };
+    dispatch(updateApplication(updateApplicationData, "update workforce application"))
+  }
   // Sidebar summary fields
   const sidebarFields = useMemo(
     () => ({
-      ApplicantName: language === "en" ? 
-                      application?.workforceEmployee?.firstNameEn+' '+(application?.workforceEmployee?.lastNameEn!=null?application?.workforceEmployee?.lastNameEn:'') 
-                      : 
-                      application?.workforceEmployee?.firstNameBn+' '+(application?.workforceEmployee?.lastNameBn!=null?application?.workforceEmployee?.lastNameBn:''),
-      ApplicantFactoryName: language === "en" ? 
-                      application?.employeeFactory?.nameEn: application?.employeeFactory?.nameBn,
+      ApplicantName:
+        language === "en"
+          ? application?.workforceEmployee?.firstNameEn +
+            " " +
+            (application?.workforceEmployee?.lastNameEn != null ? application?.workforceEmployee?.lastNameEn : "")
+          : application?.workforceEmployee?.firstNameBn +
+            " " +
+            (application?.workforceEmployee?.lastNameBn != null ? application?.workforceEmployee?.lastNameBn : ""),
+      ApplicantFactoryName: language === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn,
       ApplicantDesignation: application?.workforceEmployee?.position,
-      ApplicationType: (language === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn) || application?.applicationType,
-      OrganizationType: language==="en"?ORGANIZATION_TYPE_NAME_EN[application?.organizationType]:ORGANIZATION_TYPE_NAME_BN[application?.organizationType],
+      ApplicationType:
+        (language === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn) || application?.applicationType,
+      OrganizationType: language === "en" ? ORGANIZATION_TYPE_NAME_EN[application?.organizationType] : ORGANIZATION_TYPE_NAME_BN[application?.organizationType],
       TrackingNumber: application.trackingNumber,
-      Status: language==="en"?STATUS_MAP_EN[application.status]:STATUS_MAP_BN[application?.status],
-      SubmittedBy: application.submittedBy==="applicant" ? (language === "en" ? "Applicant" : "আবেদনকারী") : application.submittedBy,
-      GrantAmount: '৳ '+(language==='en'?Number(application?.grantAmount).toLocaleString('en-US'):Number(application?.grantAmount).toLocaleString('bn-BD')),
+      Status: language === "en" ? STATUS_MAP_EN[application.status] : STATUS_MAP_BN[application?.status],
+      SubmittedBy: application.submittedBy === "applicant" ? (language === "en" ? "Applicant" : "আবেদনকারী") : application.submittedBy,
+      // GrantAmount: '৳ '+(language==='en'?Number(application?.grantAmount).toLocaleString('en-US'):Number(application?.grantAmount).toLocaleString('bn-BD')),
       CreatedDate: conditionalEnToBn(application?.dateCreated?.split("T")[0] || "—", language),
-      ApplicationFor: application?.applicationFor=="self" ? (language === "en" ? "Self" : "নিজের জন্য") : (language === "en" ? "Dependent" : "নির্ভরশীলের জন্য"),
+      ApplicationFor:
+        application?.applicationFor == "self" ? (language === "en" ? "Self" : "নিজের জন্য") : language === "en" ? "Dependent" : "নির্ভরশীলের জন্য",
     }),
     [application]
   );
+
+  console.log({proposedAmount})
   return (
     <Grid container spacing={3} className={classes.root}>
       {/* Sidebar */}
@@ -310,6 +328,20 @@ const ApplicationViewPage = ({
               />
             </Box>
           ))}
+        {user_type === (WORKFORCE_USER_TYPE.DOCTOR || WORKFORCE_USER_TYPE.BLWF_DOCTOR || WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
+          <Grid container spacing={2}>
+            <Grid item xs={10}>
+              <TextInput
+                label={"workforce.application.proposedAmount.byDoctor"}
+                value={proposedAmount || ""}
+                onChange={(e) =>setProposedAmount(e)}
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <Button varient="contained" color="primary" onClick={handleUpdateGrantAmount(proposedAmount)}>{<FormattedMessage id="workforce.submit" module="workforce"/>}</Button>
+            </Grid>
+          </Grid>
+        )}
       </Grid>
 
       {/* Details Section */}

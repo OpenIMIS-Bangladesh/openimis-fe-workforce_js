@@ -815,6 +815,7 @@
   "workforce.user.role.doctor": "Doctor",
   "workforce.user.role.approver": "Approver",
   "workforce.user.role.applicant": "Applicant",
-  "workforce.application.rejectReason":"Rejection Reason"
+  "workforce.application.rejectReason":"Rejection Reason",
+  "workforce.application.proposedAmount.byDoctor": "Proposed grant amount based on medical condition"
 
 }
