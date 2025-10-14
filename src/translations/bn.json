@@ -707,6 +707,14 @@
   "workforce.user.role.applicant": "আবেদনকারী",
 
   "workforce.application.rejectReason":"বাতিল করার কারণ",
-  "core.tooltip.logout": "লগ আউট"
+  "core.tooltip.logout": "লগ আউট",
+  "workforce.factory.addNewTooltip": "ফ্যাক্টরী যোগ করুন",
+  "workforce.factory.representative": "ফ্যাক্টরীর প্রতিনিধির তথ্য",
+
+
+  "core.LoginPage.authError": "ইউজারনেম অথবা পাসওয়ার্ড ভূল হয়েছে",
+  "core.LoginPage.pageTitle": "লগ-ইন করুন",
+  "core.LoginPage.forgotPassword": "পাসওয়ার্ড ভূলে গিয়েছেন?",
+  "core.ForgotPasswordPage.pageTitle": "পাসওয়ার্ড ভূলে গিয়েছেন?"
   
 }

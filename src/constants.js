@@ -561,10 +561,10 @@ export const roleMaxDayCount = {
 };
 
 export const colorCode={
-  0:'#00a80e1e',
-  20:'#001aff13',
-  40:'#36def40e',
-  60:'#c7710023',
-  80:'#ac221821',
-  100:'#8806771a',
+  0:'#cfffd3',
+  20:'#f3fdc7',
+  40:'#dffbff',
+  60:'#fce1c9ff',
+  80:'#fdc8c8',
+  100:'#fddcf9',
 };

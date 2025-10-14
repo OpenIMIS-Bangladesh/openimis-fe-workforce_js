@@ -126,7 +126,7 @@ class WorkforceFactoryForm extends Component {
             edited={workforceFactory}
             reset={reset}
             update={update}
-            title="Workforce Factory"
+            title="ফ্যাক্টরী রেজিস্ট্রেশন"
             titleParams={{ label: "Label" }}
             back={back}
             save={save ? this._save : null}
