@@ -14,7 +14,9 @@ import DocumentReviewAccordion from "../../components/application-process/Docume
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
 import PrintIcon from "@material-ui/icons/Print";
 import CloseIcon from "@material-ui/icons/Close";
-import {ApplicationPrintPreview} from "../../components/shared/ApplicationPrintPreview";
+import { ApplicationPrintPreview } from "../../components/shared/ApplicationPrintPreview";
+import ForwardApplicationFactoryAdminModal from "../../components/application-process/modals/ForwardApplicationFactoryAdminModal";
+import RevertApplicationModal from "../../components/application-process/modals/RevertApplicationModal";
 
 const styles = (theme) => ({
   paper: {
@@ -57,6 +59,8 @@ class ViewApplicationPage extends Component {
       stateEdited: props.application || {},
       workforceEmployee: props?.application?.workforceEmployee || {},
       isForwardModalOpen: false,
+      forwardModalOpenFA: false,
+      revertModalOpen: false,
       open: false,
     };
   }
@@ -106,9 +110,9 @@ class ViewApplicationPage extends Component {
   }
 
   render() {
-    const { classes, user_rights, application, documents, locale } = this.props;
-    const { stateEdited, workforceEmployee, isForwardModalOpen } = this.state;
-    console.log("application data", stateEdited);
+    const { classes, user_rights, application, documents, locale, organizationEmployee, history, edited_id } = this.props;
+    const { stateEdited, workforceEmployee, isForwardModalOpen, forwardModalOpenFA } = this.state;
+    console.log("application uuid", edited_id);
 
     const user_type = getUserTypeFromRights(user_rights);
 
@@ -143,11 +147,30 @@ class ViewApplicationPage extends Component {
             <Grid item xs={12}>
               <ApplicationViewPage application={formData} language={locale} fileStates={documents} />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={1}>
               <Button variant="contained" color="primary" onClick={this.handlePrint}>
                 <PrintIcon />
               </Button>
             </Grid>
+            {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? (
+              <>
+                <Grid item xs={1}>
+                  <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenFA: true })} style={{paddingLeft:"3px",paddingRight:"3px"}}>
+                    <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                  </Button>
+                </Grid>
+                <Grid item xs={1}>
+                  <Button variant="contained" color="primary" onClick={() => this.setState({ revertModalOpen: true })}>
+                    <FormattedMessage module="workforce" id="workforce.employee.application.revert" />
+                  </Button>
+                </Grid>
+              </>
+            ) : null}
+            {/* <Grid item xs={1}>
+              <Button variant="contained" color="primary" onClick={this.handlePrint}>
+                <PrintIcon />
+              </Button>
+            </Grid> */}
             <Grid item xs={8}></Grid>
           </Grid>
 
@@ -188,17 +211,36 @@ class ViewApplicationPage extends Component {
             logoLeftUrl="/front/workforce_assets/bdgov.png"
           />
         </Modal>
+
+        {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && (
+          <>
+            <ForwardApplicationFactoryAdminModal
+              open={this.state.forwardModalOpenFA}
+              onClose={() => this.setState({ forwardModalOpenFA: false })}
+              selectedApplicationIds={[{ id: edited_id }]}
+              // onSubmitForward={this.handleForwardSubmit}
+              organizationEmployee={organizationEmployee}
+            />
+            <RevertApplicationModal
+              open={this.state.revertModalOpen}
+              onClose={() => this.setState({ revertModalOpen: false })}
+              // revertByChecker={revertByChecker}
+              selectedApplication={application}
+              // onSubmitRevert={this.handleRevertSubmit}
+            />
+          </>
+        )}
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state, props) => ({
   application: state.workforce.application,
   user_rights: state.core?.user?.i_user?.rights || {},
   documents: state.workforce.document,
   locale: state.core?.user?.i_user?.language,
-
+  organizationEmployee: state.workforce.organizationEmployee,
   // applicationUuid: props.match.params.application_uuid,
 });
 

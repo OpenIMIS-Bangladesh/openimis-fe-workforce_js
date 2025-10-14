@@ -27,6 +27,7 @@ import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchApplication, updateApplication, createApplicationMovement } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
+import { forwardToAssociation } from "../../../utils/workforceForwardRevertActions";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -103,6 +104,8 @@ const ForwardApplicationFactoryAdminModal = ({
 
   const data = useSelector((state) => state.workforce[`application`] ?? []);
 
+  console.log({selectedApplicationIds})
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -115,36 +118,45 @@ const ForwardApplicationFactoryAdminModal = ({
   };
 
  const handleForward = async () => {
-    for (const encodedId of selectedApplicationIds) {
+  await forwardToAssociation({
+    selectedApplicationIds,
+    formData,
+    loggedInUserId,
+    updateApplication,
+    createApplicationMovement,
+    dispatch,
+    setServerResponse,
+  });
+//     for (const encodedId of selectedApplicationIds) {
 
-  const updateApplicationData = {
-      id: decodeId(encodedId?.id),
-      status:WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
-      associationType: formData?.association,
-  };
+//   const updateApplicationData = {
+//       id: decodeId(encodedId?.id),
+//       status:WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
+//       associationType: formData?.association,
+//   };
 
-  const createApplicationMovementData = {
-      applicationId: decodeId(encodedId?.id),
-      status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
-      note: "অ্যাসোসিয়েশনের কাছে প্রেরণ",
-      action: "forward_to_association",
-      applicationFromId: loggedInUserId,
-      applicationToId: 93,
-      toRoleId: 31,
-  };
+//   const createApplicationMovementData = {
+//       applicationId: decodeId(encodedId?.id),
+//       status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
+//       note: "অ্যাসোসিয়েশনের কাছে প্রেরণ",
+//       action: "forward_to_association",
+//       applicationFromId: loggedInUserId,
+//       applicationToId: 93,
+//       toRoleId: 31,
+//   };
 
-  await dispatch(
-    updateApplication(updateApplicationData, `update workforce application`)
-  );
+//   await dispatch(
+//     updateApplication(updateApplicationData, `update workforce application`)
+//   );
 
-  await dispatch(
-    createApplicationMovement(
-      createApplicationMovementData,
-      `create workforce movement`
-    )
-  );
-}
-  setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+//   await dispatch(
+//     createApplicationMovement(
+//       createApplicationMovementData,
+//       `create workforce movement`
+//     )
+//   );
+// }
+//   setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
 };
 
   useEffect(() => {

@@ -260,17 +260,6 @@ export const itemFormattersDirector = (
       </Tooltip>
       {component.props.disableButtons!==1 && (
         <>
-          {/* <Tooltip title="Approve">
-            <IconButton
-              disabled={
-                application?.isHistory ||
-                application?.status !== "forward_to_director"
-              }
-              onClick={() => component.handleApprovalByDirector(application)}
-            >
-              <CheckIcon />
-            </IconButton>
-          </Tooltip> */}
             <Tooltip title="Revert">
             <IconButton
               disabled={application?.isHistory}

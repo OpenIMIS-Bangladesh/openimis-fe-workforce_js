@@ -27,6 +27,8 @@ import {
   fetchApplicationWiseMovementList,
 } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
+import { revertApplications } from "../../../utils/workforceForwardRevertActions";
+import { safeDecodeId } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -122,47 +124,40 @@ const RevertApplicationModal = ({
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
   const [selectedRevertUser, setSelectedRevertUser] = useState(null);
-  const [movementsfromId, setMovementsfromId] = useState([]);
-  const [applicationFromUsers, setApplicationFromUsers] = useState([]);
   const [movementUsers, setMovementUsers] = useState([]);
 
 
-  useEffect(() => {
-    if (!open) {
-      setEditorContent("");
-      setSubmitting(false);
-      setServerResponse(null);
-      setSelectedRevertUser(null);
-    }
-    if (selectedApplication) {
-      return dispatch(
-        fetchApplication(modulesManager, [
-          `id: "${decodeId(selectedApplication?.id)}"`,
-        ])
-      );
-    }
-  }, [open]);
+useEffect(() => {
+  if (open && selectedApplication) {
+    dispatch(
+      fetchApplication(modulesManager, [
+        `id: "${safeDecodeId(selectedApplication?.id)}"`,
+      ])
+    );
+  } else if (!open) {
+    setEditorContent("");
+    setSubmitting(false);
+    setServerResponse(null);
+    setSelectedRevertUser(null);
+  }
+}, [open]);
 
 useEffect(() => {
-  if (open && selectedApplication?.id) {
-    const applicationId = decodeId(selectedApplication.id);
+  if (!open) return;
+  const appId = safeDecodeId(selectedApplication?.id);
+  if (!appId) return;
 
-    dispatch(
-      fetchApplicationWiseMovementList(modulesManager, {
-        applicationId,
-        orderBy: ["-dateCreated"],
-      })
-    ).then((res) => {
+  dispatch(
+    fetchApplicationWiseMovementList(modulesManager, {
+      applicationId: appId,
+      orderBy: ["-dateCreated"],
+    })
+  )
+    .then((res) => {
       const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
-
-      const allUsers = edges.flatMap(({ node }) => {
-        const users = [];
-        if (node.applicationTo) users.push(node.applicationTo);
-        return users;
-      }).filter(Boolean);
-              console.log("allUsers",allUsers)
-
-      // const roles = [ "Factory Admin","Association", "Section Admin", "Section User","Doctor","Section Admin", "Selection User"];
+      const allUsers = edges
+        .flatMap(({ node }) => (node.applicationTo ? [node.applicationTo] : []))
+        .filter(Boolean);
 
       setMovementUsers([
         {
@@ -170,18 +165,30 @@ useEffect(() => {
           name: selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী",
           role: "Applicant",
         },
-        ...allUsers.map((user, index) => ({
+        ...allUsers.map((user) => ({
           id: user.id,
           name: user.loginName,
           role: user?.userRoles[0]?.role?.name,
         })),
       ]);
-    }).catch((err) => console.error(err));
-  }
-}, [open, selectedApplication, modulesManager, dispatch]);
+    })
+    .catch(console.error);
+}, [open, selectedApplication?.id]);
+
 
 
   const handleRevert = async () => {
+  //   await revertApplications({
+  //   selectedApplications: selectedApplication, // or array if you have multiple
+  //   selectedRevertUser,
+  //   editorContent,
+  //   userId,
+  //   updateApplication,
+  //   createApplicationMovement,
+  //   dispatch,
+  //   setServerResponse,
+  //   setSubmitting,
+  // });
     if (!selectedRevertUser) {
       setServerResponse({
         status: "ERROR",
@@ -193,12 +200,12 @@ useEffect(() => {
     setSubmitting(true);
 
     const updateApplicationData = {
-      id: decodeId(selectedApplication.id),
+      id: safeDecodeId(selectedApplication.id),
       status: WORKFORCE_STATUS.REVERT,
     };
 
     const createApplicationMovementData = {
-      applicationId: decodeId(selectedApplication.id),
+      applicationId: safeDecodeId(selectedApplication.id),
       status: WORKFORCE_STATUS.REVERT,
       note: "আবেদন ফেরত পাঠানো হয়েছে",
       revertNote: editorContent,

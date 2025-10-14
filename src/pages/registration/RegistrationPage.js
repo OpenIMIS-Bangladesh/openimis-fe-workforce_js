@@ -132,10 +132,10 @@ const RegistrationPage = () => {
     formData.firstNameBn &&
     formData.firstNameEn;
 
-  const validateStep3 = () =>
-    formData.password &&
-    formData.confirmPassword &&
-    formData.password === formData.confirmPassword;
+  // const validateStep3 = () =>
+  //   formData.password &&
+  //   formData.confirmPassword &&
+  //   formData.password === formData.confirmPassword;
 
   const handleNext = async () => {
     setServerResponse({ status: "", message: null });
@@ -311,14 +311,6 @@ const RegistrationPage = () => {
 
               {/* Step 2: OTP */}
               {step === 2 && (
-                // <TextInput
-                //   required
-                //   label="OTP দিন (ডেমো: 1234)"
-                //   fullWidth
-                //   value={formData.otp}
-                //   onChange={handleInputChange("otp")}
-                // />
-                
                   <OtpInput
                     value={formData.otp}
                     onChange={handleInputChange("otp")}
@@ -331,7 +323,7 @@ const RegistrationPage = () => {
               )}
 
               {/* Step 3: Password */}
-              {step === 3 && (
+              {/* {step === 3 && (
                 <>
                   <TextInput
                     required
@@ -350,7 +342,7 @@ const RegistrationPage = () => {
                     onChange={handleInputChange("confirmPassword")}
                   />
                 </>
-              )}
+              )} */}
 
               {/* Server Response */}
               {serverResponse?.message && (
@@ -375,7 +367,7 @@ const RegistrationPage = () => {
                 variant="contained"
                 style={{ marginTop: 16 }}
               >
-                {step === 3 ? "সাবমিট করুন" : "পরবর্তী"}
+                {step === 2 ? "সাবমিট করুন" : "পরবর্তী"}
               </Button>
 
               {/* Back Button */}

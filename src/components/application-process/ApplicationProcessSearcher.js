@@ -2776,6 +2776,7 @@ class ApplicationProcessSearcher extends Component {
           }
           return null;
         })()}
+        
       <ConfirmModal
         open={this.state.confirmModalOpen}
         message={this.state.confirmModalMessage}
