@@ -715,7 +715,9 @@ export function fetchApplicationsSummary(mm, filters) {
     "grantAmount",
     "submittedBy",
     "associationType",
-    "applicationFor"
+    "applicationFor",
+    "applicationReceiveDate",
+    "applicationForwardDate"
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
@@ -2638,4 +2640,12 @@ export function fetchApplicationTimeWiseMatrix(organizationType, applicationType
   `;
 
   return graphql(payload, "WORKFORCE_APPLICATIONS_TIME_WISE_MATRIX");
+
+
+  
+}
+
+export function fetchUserDistrictsUnauthorized() {
+  let payload = formatQuery("userDistricts", null, ["id", "uuid", "code", "name", "parent{id, uuid, code, name}"]);
+  return graphql(payload, "LOCATION_USER_DISTRICTS");
 }

@@ -1,31 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-  Grid,
-  Paper,
-  Typography,
-  Divider,
-  IconButton,
-  FormControlLabel,
-  Checkbox,
-  FormControl,InputLabel,Select,MenuItem
-} from "@material-ui/core";
+import { Grid, Paper, Typography, Divider, IconButton, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
 import {
   createRepresentative,
   fetchRepresentativeByClientMutationId,
   createWorkforceFactory,
-  updateRepresentative,
-  updateWorkforceFactory,
+  fetchFactoryByClientMutationId,
+  createWorkforceDocument,
+  fetchInfoIdByClientMutationId,
 } from "../../actions";
-import {
-  TextInput,
-  journalize,
-  PublishedComponent,
-  FormattedMessage,
-  formatMutation,
-  decodeId 
-} from "@openimis/fe-core";
+import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation } from "@openimis/fe-core";
 
 import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
@@ -33,6 +18,7 @@ import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 import CompanyPicker from "../../pickers/CompanyPicker";
 import FileUploader from "../../pickers/FileUploader";
+import { getInfoId } from "../../utils/utils";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -43,25 +29,134 @@ const styles = (theme) => ({
   },
 });
 
-class EditWorkforceFactoryPage extends Component {
+class AddWorkforceFactoryPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stateEdited: props.workforceFactory || {},
+      stateEdited: {},
       isSaved: false,
       isSameRepresentative: true,
     };
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.workforceFactory !== this.props.workforceFactory) {
-      this.setState({ stateEdited: this.props.workforceFactory });
+    const { submittingMutation, mutation, dispatch } = this.props;
+    if (!submittingMutation && prevProps.submittingMutation !== submittingMutation) {
+      dispatch(journalize(mutation));
     }
 
-    if (prevProps.submittingMutation && !this.props.submittingMutation) {
-      this.props.dispatch(journalize(this.props.mutation));
+    console.log("ff", this.props)
+
+    if (
+      prevProps.factoryId !== this.props.factoryId &&
+      this.props.factoryId // ensure not null
+    ) {
+      const factoryId = this.props.factoryId;
+      console.log("fff", factoryId)
+      this.props.dispatch(createWorkforceDocument({ ...this.props.uploadFile, factoryId }, `Created workforce document`));
     }
   }
+
+  save = async () => {
+    const { stateEdited } = this.state;
+    const { dispatch, mutation, uploadFile } = this.props;
+
+    let representativeId = EMPTY_STRING;
+
+    const handleFactoryAndDocument = async (workforceFactoryData) => {
+      try {
+        const res = await dispatch(
+          createWorkforceFactory(
+            workforceFactoryData,
+            `Created Workforce Factory ${workforceFactoryData.nameEn}`
+          )
+        );
+
+        const clientMutationId = res?.meta?.clientMutationId;
+
+        if (!clientMutationId) {
+          console.warn("No clientMutationId returned from createWorkforceFactory");
+          return;
+        }
+
+        const fetchRes = await dispatch(
+          fetchInfoIdByClientMutationId(
+            this.props.modulesManger,
+            "workforceEmployerFactories",
+            clientMutationId,
+            "WORKFORCE_INFO_ID_BY_CLIENT_MUTATION_ID_RESP"
+          )
+        );
+
+        let factoryId = getInfoId(fetchRes, "workforceEmployerFactories");
+
+        if (!factoryId && this.props.factoryId) {
+          factoryId = this.props.factoryId;
+        }
+
+        if (factoryId) {
+          await dispatch(
+            createWorkforceDocument(
+              { ...this.props.uploadFile, factoryId, holderType:"factory",documentType:"factory_membership_certificate"},
+              `Created workforce document`
+            )
+          );
+        } else {
+          console.warn("Factory ID not found after fetch, document not created.");
+        }
+      } catch (error) {
+        console.error("Error in handleFactoryAndDocument:", error);
+      }
+    };
+
+    if (!this.state.isSameRepresentative) {
+      const representativeData = {
+        type: "organization",
+        nameBn: stateEdited.repNameBn,
+        nameEn: stateEdited.repName,
+        location: stateEdited.repLocation,
+        address: stateEdited.repAddress,
+        phoneNumber: stateEdited.repPhone,
+        email: stateEdited.repEmail,
+        nid: stateEdited.nid,
+        passportNo: stateEdited.passport,
+        birthDate: stateEdited.birthDate,
+        position: stateEdited.position,
+      };
+
+      const representativeMutation = await formatMutation(
+        "createWorkforceRepresentative",
+        formatRepresentativeGQL(representativeData),
+        `Created Representative ${representativeData.nameEn}`
+      );
+      const representativeClientMutationId = representativeMutation.clientMutationId;
+
+      await dispatch(createRepresentative(representativeMutation, `Created Representative ${representativeData.nameEn}`));
+      await dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
+      representativeId = this.props.representativeId[0]?.id || EMPTY_STRING;
+    }
+
+    const workforceFactoryData = {
+      company: stateEdited?.company?.id ?? "",
+      nameBn: stateEdited.titleBn,
+      nameEn: stateEdited.title,
+      phoneNumber: stateEdited.phone,
+      email: stateEdited.email,
+      website: stateEdited.website,
+      address: stateEdited.address,
+      associationType: stateEdited.associationType,
+      location: stateEdited.location,
+      status: WORKFORCE_STATUS.DRAFT,
+      holderType: "factory",
+      // isSameCompanyRepresentative: this.state.isSameRepresentative ? "1" : "0",
+      isSameCompanyRepresentative: "0",
+      // workforceRepresentativeId: representativeId,
+      workforceFactory: stateEdited.workforceFactory,
+    };
+
+    await handleFactoryAndDocument(workforceFactoryData);
+    this.setState({ isSaved: true });
+  };
 
   updateAttribute = (key, value) => {
     this.setState((prevState) => ({
@@ -73,101 +168,10 @@ class EditWorkforceFactoryPage extends Component {
     }));
   };
 
-  save = async () => {
-    const { stateEdited } = this.state;
-    const { dispatch } = this.props;
-
-    let representativeId = EMPTY_STRING;
-
-    if (!this.state.isSameRepresentative) {
-      const representativeData = {
-        type: "organization",
-        nameBn:
-          stateEdited?.repNameBn ||
-          stateEdited?.workforceRepresentative?.nameBn,
-        nameEn:
-          stateEdited?.repName || stateEdited?.workforceRepresentative?.nameEn,
-        location:
-          stateEdited?.repLocation ||
-          stateEdited?.workforceRepresentative?.location,
-        address:
-          stateEdited?.repAddress ||
-          stateEdited?.workforceRepresentative?.address,
-        phoneNumber:
-          stateEdited?.repPhone ||
-          stateEdited?.workforceRepresentative?.phoneNumber,
-        email:
-          stateEdited?.repEmail || stateEdited?.workforceRepresentative?.email,
-        nid: stateEdited?.nid || stateEdited?.workforceRepresentative?.nid,
-        passportNo:
-          stateEdited?.passport ||
-          stateEdited?.workforceRepresentative?.passportNo,
-        birthDate:
-          stateEdited?.birthDate ||
-          stateEdited?.workforceRepresentative?.birthDate,
-        position:
-          stateEdited?.position ||
-          stateEdited?.workforceRepresentative?.position,
-        id: decodeId(stateEdited.workforceRepresentative.id),
-      };
-
-      dispatch(
-        updateRepresentative(
-          representativeData,
-          `Update Representative ${representativeData.nameEn}`
-        )
-      );
-
-      const workforceFactoryData = {
-        nameBn: stateEdited?.titleBn || stateEdited.nameBn,
-        nameEn: stateEdited?.title || stateEdited.nameEn,
-        phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
-        email: stateEdited?.email || stateEdited.email,
-        address: stateEdited?.address || stateEdited.address,
-        associationType: stateEdited?.associationType || stateEdited.associationType,
-        website: stateEdited?.website || stateEdited.website,
-        location: stateEdited?.location || stateEdited.location,
-        workforceRepresentativeId: stateEdited.workforceRepresentative.id,
-        company: stateEdited.workforceEmployer.id,
-        id: stateEdited.id,
-      };
-
-      await dispatch(
-        updateWorkforceFactory(
-          workforceFactoryData,
-          `Update Workforce Factory ${workforceFactoryData.nameEn}`
-        )
-      );
-    }
-    const workforceFactoryData = {
-      nameBn: stateEdited?.titleBn || stateEdited.nameBn,
-      nameEn: stateEdited?.title || stateEdited.nameEn,
-      phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
-      email: stateEdited?.email || stateEdited.email,
-      address: stateEdited?.address || stateEdited.address,
-      associationType: stateEdited?.associationType || stateEdited.associationType,
-      website: stateEdited?.website || stateEdited.website,
-      location: stateEdited?.location || stateEdited.location,
-      workforceRepresentativeId: stateEdited.workforceRepresentative.id,
-      company: decodeId(stateEdited.workforceEmployer.id),
-      id: stateEdited.id,
-    };
-
-    await dispatch(
-      updateWorkforceFactory(
-        workforceFactoryData,
-        `Update Workforce Factory ${workforceFactoryData.nameEn}`
-      )
-    );
-
-    this.setState({ isSaved: true });
-  };
-
   render() {
-    const { classes } = this.props;
+    const { classes, mutation } = this.props;
     const { stateEdited, isSaved, isSameRepresentative } = this.state;
     const isSaveDisabled = false;
-    console.log({ stateEdited });
 
     return (
       <div className={classes.page}>
@@ -177,31 +181,21 @@ class EditWorkforceFactoryPage extends Component {
               <Grid container className={classes.tableTitle}>
                 <Grid item xs={12} className={classes.tableTitle}>
                   <Typography>
-                    <FormattedMessage
-                      module={MODULE_NAME}
-                      id="ফ্যাক্টরি রেজিস্ট্রেশন"
-                      values={{ label: EMPTY_STRING }}
-                    />
+                    <FormattedMessage module={MODULE_NAME} id="Workforce Factory" values={{ label: EMPTY_STRING }} />
                   </Typography>
                 </Grid>
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-                {/* <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
                   <CompanyPicker
-                    value={decodeId(stateEdited?.workforceEmployer?.id)}
-                    label={
-                      <FormattedMessage
-                        id="workforce.employee.workforce_employer"
-                        module="workforce"
-                      />
-                    }
-                    required
-                    onChange={(v) => this.updateAttribute("workforceEmployer", v)}
+                    value={stateEdited?.company?.id}
+                    label={<FormattedMessage id="workforce.employee.workforce_employer" module="workforce" />}
+                    onChange={(v) => this.updateAttribute("company", v)}
                     readOnly={isSaved}
                   />
-                </Grid> */}
-                {/* <Grid item xs={6} className={classes.item}>
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -209,24 +203,17 @@ class EditWorkforceFactoryPage extends Component {
                         checked={isSameRepresentative}
                         disabled={false}
                         onChange={(e) => {
-                          this.setState({
-                            isSameRepresentative: !isSameRepresentative,
-                          });
+                          this.setState({ isSameRepresentative: !isSameRepresentative });
                         }}
                       />
                     }
-                    label={
-                      <FormattedMessage
-                        id="workforce.representative.sameAsRepresentative"
-                        module="workforce"
-                      />
-                    }
+                    label={<FormattedMessage id="workforce.representative.sameAsRepresentative" module="workforce" />}
                   />
-                </Grid> */}
+                </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.factory.name.en"
-                    value={stateEdited.nameEn || stateEdited.title || ""}
+                    value={stateEdited.title || ""}
                     onChange={(v) => this.updateAttribute("title", v)}
                     required
                     readOnly={isSaved}
@@ -236,17 +223,18 @@ class EditWorkforceFactoryPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.factory.name.bn"
-                    value={stateEdited.nameBn || stateEdited.titleBn || ""}
+                    value={stateEdited.titleBn || ""}
                     onChange={(v) => this.updateAttribute("titleBn", v)}
                     readOnly={isSaved}
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.factory.phone"
-                    value={stateEdited.phoneNumber || ""}
-                    onChange={(v) => this.updateAttribute("phoneNumber", v)}
+                    value={stateEdited.phone || ""}
+                    onChange={(v) => this.updateAttribute("phone", v)}
                     type={"number"}
                     readOnly={isSaved}
                   />
@@ -262,13 +250,23 @@ class EditWorkforceFactoryPage extends Component {
                   />
                 </Grid>
 
-                <Grid item xs={6} className={classes.item}>
-                  <Typography>Upload Association Membership Certificate</Typography>
+               <Grid item xs={6} className={classes.item}>
+                  <Typography>
+                    <FormattedMessage id="workforce.factory.uploadMembershipCertificate" module="workforce" /> <span>*</span>
+                  </Typography>
+
                   <FileUploader
                     fieldKey="associationCertificate"
-                    onFileChange={(v)=>this.updateAttribute("associationCertificate",v)}
-                    // applicationId={this.props.applicationId || "temp-id"} // Replace with real application/factory ID
-                    documentType="ASSOCIATION_MEMBERSHIP_CERTIFICATE" // Use your documentType enum or string
+                    onFileChange={(v) => this.updateAttribute("associationCertificate", v)}
+                    documentType="ASSOCIATION_MEMBERSHIP_CERTIFICATE"
+                  />
+                 <input
+                    key={stateEdited?.associationCertificate ? 'hasFile' : 'noFile'}
+                    type="file"
+                    style={{ display: 'none' }}
+                    required
+                    onInvalid={(e) => e.target.setCustomValidity("Please upload the certificate")}
+                    onInput={(e) => e.target.setCustomValidity("")}
                   />
                 </Grid>
 
@@ -291,7 +289,7 @@ class EditWorkforceFactoryPage extends Component {
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <FormControl fullWidth>
-                    <InputLabel id="association-type-label">Association Type</InputLabel>
+                    <InputLabel required id="association-type-label"><FormattedMessage id="workforce.factory.associationType" module="workforce" /></InputLabel>
                     <Select
                       labelId="association-type-label"
                       value={stateEdited.associationType || ""}
@@ -299,7 +297,7 @@ class EditWorkforceFactoryPage extends Component {
                       label="Association Type"
                       readOnly={isSaved}
                       disabled={isSaved}
-                      required
+                    
                     >
                       <MenuItem value="BGMEA">BGMEA</MenuItem>
                       <MenuItem value="BKMEA">BKMEA</MenuItem>
@@ -311,9 +309,7 @@ class EditWorkforceFactoryPage extends Component {
                     pubRef="location.DetailedLocation"
                     withNull={true}
                     value={stateEdited.location || null}
-                    onChange={(location) =>
-                      this.updateAttribute("location", location)
-                    }
+                    onChange={(location) => this.updateAttribute("location", location)}
                     readOnly={isSaved}
                     required
                     split={true}
@@ -321,10 +317,10 @@ class EditWorkforceFactoryPage extends Component {
                 </Grid>
 
                 <>
-                  {/* {!isSameRepresentative && ( */}
+                  {!isSameRepresentative && (
                     <Grid item xs={12} className={classes.item}>
                       <WorkforceForm
-                        title="Workforce Representative Info"
+                        title="workforce.representative.title"
                         stateEdited={stateEdited}
                         isSaved={isSaved}
                         updateAttribute={this.updateAttribute}
@@ -334,88 +330,69 @@ class EditWorkforceFactoryPage extends Component {
                             label: "workforce.representative.name.en",
                             type: "text",
                             required: true,
-                            value: stateEdited.workforceRepresentative.nameEn,
                           },
                           {
                             key: "repNameBn",
                             label: "workforce.representative.name.bn",
                             type: "text",
                             required: true,
-                            value: stateEdited.workforceRepresentative.nameBn,
                           },
                           {
                             key: "position",
                             label: "workforce.representative.position",
                             type: "text",
                             required: true,
-                            value: stateEdited.workforceRepresentative.position,
                           },
                           {
                             key: "repPhone",
                             label: "workforce.representative.phone",
                             type: "number",
                             required: true,
-                            value:
-                              stateEdited.workforceRepresentative.phoneNumber,
                           },
                           {
                             key: "repEmail",
                             label: "workforce.representative.email",
-                            type: "text",
+                            type: "email",
                             required: true,
-                            value: stateEdited.workforceRepresentative.email,
                           },
                           {
                             key: "nid",
                             label: "workforce.representative.nid",
                             type: "number",
                             required: true,
-                            value: stateEdited.workforceRepresentative.nid,
-                          },
-                          {
-                            key: "birthDate",
-                            label: "workforce.representative.birthDate",
-                            type: "date",
-                            required: false,
-                            value:
-                              stateEdited.workforceRepresentative.birthDate,
                           },
                           {
                             key: "passport",
                             label: "workforce.representative.passport",
                             type: "text",
                             required: false,
-                            value:
-                              stateEdited.workforceRepresentative.passportNo,
+                          },
+                          {
+                            key: "birthDate",
+                            label: "workforce.representative.birthDate",
+                            type: "date",
+                            required: false,
                           },
                           {
                             key: "repLocation",
                             label: "workforce.representative.location",
                             type: "location",
                             required: true,
-                            value: stateEdited.workforceRepresentative.location,
                           },
                           {
                             key: "repAddress",
                             label: "workforce.representative.address",
                             type: "text",
                             required: true,
-                            value: stateEdited.workforceRepresentative.address,
                           },
                         ]}
                       />
                     </Grid>
-                  {/* )} */}
+                  )}
                 </>
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
-                  <IconButton
-                    variant="contained"
-                    component="label"
-                    color="primary"
-                    onClick={this.save}
-                    disabled={isSaveDisabled || isSaved}
-                  >
+                  <IconButton variant="contained" component="label" color="primary" onClick={this.save} disabled={isSaveDisabled || isSaved}>
                     <Save />
                   </IconButton>
                 </Grid>
@@ -430,9 +407,11 @@ class EditWorkforceFactoryPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  workforceFactory: state.workforce.workforceFactory,
+  submittingMutation: state.workforce.submittingMutation,
+  mutation: state.workforce.mutation,
+  representativeId: state.workforce.fetchedRepresentativeByClientMutationId,
+  factoryId: state.workforce.fetchedWorkforceFactoryId,
+  uploadFile: state.workforce.uploadFile,
 });
 
-export default connect(mapStateToProps)(
-  withStyles(styles)(EditWorkforceFactoryPage)
-);
+export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceFactoryPage));

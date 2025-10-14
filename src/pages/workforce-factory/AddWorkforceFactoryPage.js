@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { Grid, Paper, Typography, Divider, IconButton, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
 import {
@@ -9,6 +9,7 @@ import {
   fetchFactoryByClientMutationId,
   createWorkforceDocument,
   fetchInfoIdByClientMutationId,
+  fetchUserDistrictsUnauthorized,
 } from "../../actions";
 import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation } from "@openimis/fe-core";
 
@@ -19,6 +20,7 @@ import { formatRepresentativeGQL } from "../../utils/format_gql";
 import CompanyPicker from "../../pickers/CompanyPicker";
 import FileUploader from "../../pickers/FileUploader";
 import { getInfoId } from "../../utils/utils";
+import { bindActionCreators } from "redux";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -56,21 +58,32 @@ class AddWorkforceFactoryPage extends Component {
       this.props.dispatch(createWorkforceDocument({ ...this.props.uploadFile, factoryId }, `Created workforce document`));
     }
   }
+  componentDidMount() {
+      const {dispatch } = this.props;
+      const currentPath = window.location.pathname;
+
+      if (currentPath.includes("workforce/factories/factory")) {
+        // const cookieexpires = `; expires=${new Date(Date.now() + 864e5).toUTCString()}`;
+        // document.cookie = `publicPageLanguage=fr${cookieexpires}; path=/`;
+      }
+      this.props.fetchUserDistrictsUnauthorized();
+      // dispatch(fetchUserDistrictsUnauthorized());
+  }
 
   save = async () => {
     const { stateEdited } = this.state;
-    const { dispatch, mutation, uploadFile } = this.props;
+    const {dispatch, mutation, uploadFile } = this.props;
+    // const dispatch= useDispatch();
 
     let representativeId = EMPTY_STRING;
 
     const handleFactoryAndDocument = async (workforceFactoryData) => {
       try {
-        const res = await dispatch(
+        const res = await this.props.
           createWorkforceFactory(
             workforceFactoryData,
             `Created Workforce Factory ${workforceFactoryData.nameEn}`
-          )
-        );
+          );
 
         const clientMutationId = res?.meta?.clientMutationId;
 
@@ -79,14 +92,12 @@ class AddWorkforceFactoryPage extends Component {
           return;
         }
 
-        const fetchRes = await dispatch(
-          fetchInfoIdByClientMutationId(
+        const fetchRes = await this.props.fetchInfoIdByClientMutationId(
             this.props.modulesManger,
             "workforceEmployerFactories",
             clientMutationId,
             "WORKFORCE_INFO_ID_BY_CLIENT_MUTATION_ID_RESP"
-          )
-        );
+          );
 
         let factoryId = getInfoId(fetchRes, "workforceEmployerFactories");
 
@@ -95,15 +106,15 @@ class AddWorkforceFactoryPage extends Component {
         }
 
         if (factoryId) {
-          await dispatch(
-            createWorkforceDocument(
+          await this.props.createWorkforceDocument(
               { ...this.props.uploadFile, factoryId, holderType:"factory",documentType:"factory_membership_certificate"},
               `Created workforce document`
-            )
-          );
+            );
         } else {
           console.warn("Factory ID not found after fetch, document not created.");
         }
+
+        // window.location.href = '/';
       } catch (error) {
         console.error("Error in handleFactoryAndDocument:", error);
       }
@@ -131,8 +142,8 @@ class AddWorkforceFactoryPage extends Component {
       );
       const representativeClientMutationId = representativeMutation.clientMutationId;
 
-      await dispatch(createRepresentative(representativeMutation, `Created Representative ${representativeData.nameEn}`));
-      await dispatch(fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId));
+      await this.props.createRepresentative(representativeMutation, `Created Representative ${representativeData.nameEn}`);
+      await this.props.fetchRepresentativeByClientMutationId(this.props.modulesManger, representativeClientMutationId);
       representativeId = this.props.representativeId[0]?.id || EMPTY_STRING;
     }
 
@@ -159,14 +170,21 @@ class AddWorkforceFactoryPage extends Component {
   };
 
   updateAttribute = (key, value) => {
-    this.setState((prevState) => ({
-      stateEdited: {
-        ...prevState.stateEdited,
-        [key]: value,
-      },
-      isSaved: false,
-    }));
+    console.log('Updating:', key, value);
+
+    this.setState(
+      (prevState) => ({
+        stateEdited: {
+          ...prevState.stateEdited,
+          [key]: value,
+        },
+        isSaved: false,
+      }),
+      () => console.log('Updated stateEdited:', this.state.stateEdited)
+    );
   };
+
+
 
   render() {
     const { classes, mutation } = this.props;
@@ -181,21 +199,21 @@ class AddWorkforceFactoryPage extends Component {
               <Grid container className={classes.tableTitle}>
                 <Grid item xs={12} className={classes.tableTitle}>
                   <Typography>
-                    <FormattedMessage module={MODULE_NAME} id="Workforce Factory" values={{ label: EMPTY_STRING }} />
+                    <FormattedMessage module={MODULE_NAME} id="ফ্যাক্টরী রেজিস্ট্রেশন" values={{ label: EMPTY_STRING }} />
                   </Typography>
                 </Grid>
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-                <Grid item xs={6} className={classes.item}>
+                {/* <Grid item xs={6} className={classes.item}>
                   <CompanyPicker
                     value={stateEdited?.company?.id}
                     label={<FormattedMessage id="workforce.employee.workforce_employer" module="workforce" />}
                     onChange={(v) => this.updateAttribute("company", v)}
                     readOnly={isSaved}
                   />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
+                </Grid> */}
+                {/* <Grid item xs={6} className={classes.item}>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -209,7 +227,7 @@ class AddWorkforceFactoryPage extends Component {
                     }
                     label={<FormattedMessage id="workforce.representative.sameAsRepresentative" module="workforce" />}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.factory.name.en"
@@ -317,7 +335,7 @@ class AddWorkforceFactoryPage extends Component {
                 </Grid>
 
                 <>
-                  {!isSameRepresentative && (
+                  {/* {!isSameRepresentative && ( */}
                     <Grid item xs={12} className={classes.item}>
                       <WorkforceForm
                         title="workforce.representative.title"
@@ -388,7 +406,7 @@ class AddWorkforceFactoryPage extends Component {
                         ]}
                       />
                     </Grid>
-                  )}
+                  {/* )} */}
                 </>
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
@@ -414,4 +432,18 @@ const mapStateToProps = (state) => ({
   uploadFile: state.workforce.uploadFile,
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(AddWorkforceFactoryPage));
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      fetchUserDistrictsUnauthorized,
+      createWorkforceFactory,
+      createRepresentative,
+      fetchRepresentativeByClientMutationId,
+      fetchFactoryByClientMutationId,
+      createWorkforceDocument,
+      fetchInfoIdByClientMutationId
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(AddWorkforceFactoryPage));

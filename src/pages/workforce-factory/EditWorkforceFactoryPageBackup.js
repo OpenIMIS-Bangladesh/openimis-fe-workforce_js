@@ -179,7 +179,7 @@ class EditWorkforceFactoryPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="ফ্যাক্টরি রেজিস্ট্রেশন"
+                      id="Workforce Factory"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>
@@ -187,7 +187,7 @@ class EditWorkforceFactoryPage extends Component {
               </Grid>
               <Divider />
               <Grid container className={classes.item}>
-                {/* <Grid item xs={6} className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
                   <CompanyPicker
                     value={decodeId(stateEdited?.workforceEmployer?.id)}
                     label={
@@ -200,8 +200,8 @@ class EditWorkforceFactoryPage extends Component {
                     onChange={(v) => this.updateAttribute("workforceEmployer", v)}
                     readOnly={isSaved}
                   />
-                </Grid> */}
-                {/* <Grid item xs={6} className={classes.item}>
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -222,7 +222,7 @@ class EditWorkforceFactoryPage extends Component {
                       />
                     }
                   />
-                </Grid> */}
+                </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.factory.name.en"
@@ -321,7 +321,7 @@ class EditWorkforceFactoryPage extends Component {
                 </Grid>
 
                 <>
-                  {/* {!isSameRepresentative && ( */}
+                  {!isSameRepresentative && (
                     <Grid item xs={12} className={classes.item}>
                       <WorkforceForm
                         title="Workforce Representative Info"
@@ -405,7 +405,7 @@ class EditWorkforceFactoryPage extends Component {
                         ]}
                       />
                     </Grid>
-                  {/* )} */}
+                  )}
                 </>
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>

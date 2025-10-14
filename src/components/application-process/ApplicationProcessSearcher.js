@@ -702,14 +702,20 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["revert"]'
         ];
 
-        if (this.props.factoryId) {
-          defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
+        // if (this.props.factoryId) {
+        //   defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
+        // }
+         if (loggedInUserId) {
+          defaultFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
       } 
       else if (this.props.returnedApplications) {
         defaultFilters = ['status: "revert"', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
         if (this.props.factoryId) {
           defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
+        }
+        if (loggedInUserId) {
+          defaultFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
       }else if (rejectedApplication) {
         defaultFilters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
@@ -724,6 +730,9 @@ class ApplicationProcessSearcher extends Component {
         defaultFilters = ['statusIn: ["new","resubmitted_application"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
          if (this.props.factoryId) {
           defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
+        }
+        if (loggedInUserId) {
+          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
       }
       this.props.fetchApplicationsSummary(this.props.modulesManager, defaultFilters);

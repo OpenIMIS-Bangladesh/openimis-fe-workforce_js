@@ -133,6 +133,8 @@ export const itemAdminFormatters = (
         onChange={(v) => component.setState({ editedGrantMoney: v })}
       />
     ),
+    (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -233,6 +235,10 @@ export const itemFormattersDirector = (
       />
     ),
     // (application) => application?.grantAmount,
+     (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
+    (application) =>application?.applicationForwardDate 
+        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -405,6 +411,10 @@ export const itemFormattersChecker = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
     // (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
+    (application) =>application?.applicationForwardDate 
+        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -494,6 +504,10 @@ export const itemFormattersCheckerTwo = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
     (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
+    (application) =>application?.applicationForwardDate 
+        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -565,6 +579,10 @@ export const itemFormattersDeputyAsstDirector = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
     // (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
+    (application) =>application?.applicationForwardDate 
+        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -635,6 +653,10 @@ export const itemFormattersS2DeputyAsstDirector = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
     (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
+    (application) =>application?.applicationForwardDate 
+        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -705,6 +727,10 @@ export const itemFormattersSectionAdmin = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
     (application) => application?.workforceEmployee?.nid,
+    (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
+    (application) =>application?.applicationForwardDate 
+        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -841,6 +867,10 @@ export const itemFormattersSectionTwoAdmin = (
         : application?.grantMoney?.applicationTypeNameBn,
     // (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => application?.workforceEmployee?.nid,
+    (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
+    (application) =>application?.applicationForwardDate 
+        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",   
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -971,6 +1001,10 @@ export const itemFormattersBlwfSectionAdmin = (
         : application?.grantMoney?.applicationTypeNameBn,
     (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => application?.workforceEmployee?.nid,
+    (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
+    (application) =>application?.applicationForwardDate 
+        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -1125,6 +1159,10 @@ export const itemFormattersDoctor = (
         onChange={(v) => component.setState({ editedGrantMoney: v })}
       />
     ),
+    (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
+    (application) =>application?.applicationForwardDate 
+        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -1254,6 +1292,10 @@ export const itemFormattersAssociation = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
+    (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A", 
+    (application) =>application?.applicationForwardDate 
+        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",       
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -1493,6 +1535,10 @@ export const itemFormattersFactoryAdmin = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
+    (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
+    (application) =>application?.applicationForwardDate 
+        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -1628,6 +1674,10 @@ export const itemFormattersApprover = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
     (application) => conditionalEnToBn(application?.grantAmount, locale),
+    (application) =>application?.applicationReceiveDate 
+        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
+    (application) =>application?.applicationForwardDate 
+        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
