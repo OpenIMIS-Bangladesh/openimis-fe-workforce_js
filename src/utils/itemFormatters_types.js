@@ -479,6 +479,19 @@ export const itemFormattersChecker = (
       </Tooltip>
     </div>
   ));
+  ///---RESEND BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      <Tooltip title="Revert">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => component.handleOpenRevertModal(application)}
+        >
+          <RestorePageIcon style={{color:"#1976D2"}}/>
+        </IconButton>
+      </Tooltip>
+    </div>
+  ));
 
   return formatters;
 };
@@ -1396,125 +1409,7 @@ export const itemFormattersAssociation = (
 
   return formatters;
 };
-// export const itemFormattersFactoryAdmin = (
-//   isShowHistory,
-//   modulesManager,
-//   history,
-//   component,
-//   locale = "en"
-// ) => {
-//   const formatters = [
-//     (application) => application.trackingNumber,
-//     (application) =>
-//       conditionalEnToBn(application.dateCreated.split("T")[0], locale),
-//     (application) => application.workforceEmployee?.firstNameBn,
-//     (application) =>
-//       locale === "en"
-//         ? application?.employeeFactory?.nameEn
-//         : application?.employeeFactory?.nameBn,
-//     (application) =>
-//       locale === "en"
-//         ? application?.grantMoney?.applicationTypeNameEn
-//         : application?.grantMoney?.applicationTypeNameBn,
-//     (application) => {
-//       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
-//       return statusMap[application?.status] || application?.status;
-//     },
-//     (application) => {
-//       const userTypeMap =
-//         locale === "en"
-//           ? WORKFORCE_USER_TYPE_MAP_EN
-//           : WORKFORCE_USER_TYPE_MAP_BN;
-//       return userTypeMap[application?.submittedBy] || application?.submittedBy;
-//     },
-//     isShowHistory() ? application?.version : null,
-//   ];
 
-//   formatters.push((application) => (
-//     <div className={component.props.classes.horizontalButtonContainer}>
-//       <Tooltip title="ভিউ">
-//         <IconButton
-//           disabled={application?.isHistory}
-//           onClick={() => {
-//             historyPush(
-//               modulesManager,
-//               history,
-//               "workforce.route.applications.application.process.view",
-//               [decodeId(application?.id)],
-//               false
-//             );
-//           }}
-//         >
-//           <TabIcon />
-//         </IconButton>
-//       </Tooltip>
-//       {component.props.disableButtons !== 1 && (
-//         <>
-//           <Tooltip title="যাচাই">
-//             <IconButton
-//               disabled={application?.isHistory}
-//               onClick={() => {
-//                 historyPush(
-//                   modulesManager,
-//                   history,
-//                   "workforce.route.applications.application.verify",
-//                   [decodeId(application?.id)],
-//                   false
-//                 );
-//               }}
-//             >
-//               <VerifiedUserIcon />
-//             </IconButton>
-//           </Tooltip>
-//           {!component.props.revertedApplication && (
-//             <>
-//               {/* <Tooltip title="ফরওয়ার্ড">
-//                 <IconButton
-//                   disabled={application?.isHistory}
-//                   onClick={() => component.handleOpenForwardModal(application)}
-//                 >
-//                   <ForwardIcon />
-//                 </IconButton>
-//               </Tooltip> */}
-    
-//               <Tooltip title="রিভার্ট">
-//                 <IconButton
-//                   disabled={application?.isHistory}
-//                   onClick={() => {
-//                     component.handleOpenRevertModal(application);
-//                     component.setState({ revertByChecker: true });
-//                   }}
-//                 >
-//                   <UndoIcon />
-//                 </IconButton>
-//               </Tooltip>
-//             </>
-//           )}
-//           {component.props.revertedApplication && (
-//             <Tooltip title="Resend">
-//               <IconButton
-//                 disabled={application?.isHistory}
-//                 onClick={() => {
-//                   historyPush(
-//                     modulesManager,
-//                     history,
-//                     "workforce.route.applications.application.process.resend",
-//                     [decodeId(application?.id)],
-//                     false
-//                   );
-//                 }}
-//               >
-//                 <RestorePageIcon />
-//               </IconButton>
-//             </Tooltip>
-//           )}
-//         </>
-//       )}
-
-//     </div>
-//   ));
-//   return formatters;
-// };
 export const itemFormattersFactoryAdmin = (
   isShowHistory,
   modulesManager,
@@ -1635,7 +1530,7 @@ export const itemFormattersFactoryAdmin = (
               );
             }}
           >
-            <RestorePageIcon />
+            <RestorePageIcon style={{color:"#1976D2"}}/>
           </IconButton>
         </Tooltip>
       </div>
@@ -1653,18 +1548,7 @@ export const itemFormattersApprover = (
   locale = "en"
 ) => {
   const formatters = [
-    // (application) =>
-    //   application?.workforceEmployee && component.props.disableButtons!==1? (
-    //     <Checkbox
-    //       checked={component.state.selectedApplicationIds.includes(
-    //         application?.id
-    //       )}
-    //       onChange={component.handleCheckboxChange(application?.id)}
-    //       color="primary"
-    //     />
-    //   ) : (
-    //     ""
-    //   ),
+
     (application) => application.trackingNumber,
     (application) =>
       conditionalEnToBn(application.dateCreated.split("T")[0], locale),
@@ -1756,21 +1640,10 @@ export const itemFormattersApprover = (
                   );
                 }}
               >
-                <RestorePageIcon />
+                <RestorePageIcon style={{color:"#1976D2"}}/>
               </IconButton>
             </Tooltip>
-          )}
-          {/* <Tooltip title="Selected">
-            <IconButton
-              disabled={
-                application?.isHistory ||
-                application?.status !== "forward_to_comiitee"
-              }
-              onClick={() => component.handleSelected(application)}
-            >
-              <CheckIcon />
-            </IconButton>
-          </Tooltip> */}
+          )}  
         </>
       )}
     </div>
