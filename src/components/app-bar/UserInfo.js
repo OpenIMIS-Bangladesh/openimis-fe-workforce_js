@@ -52,7 +52,8 @@ const UserInfo = ({ classes }) => {
         <Typography>
           {/* <strong><FormattedMessage module="workforce" id="workforce.user.name" />:</strong>{" "} */}
           <strong>
-            {reduxStateUserInfo.other_names} {reduxStateUserInfo.last_name}
+            {/* {reduxStateUserInfo.other_names}  */}
+            {reduxStateUserInfo.last_name}
           </strong>
         </Typography>
 
