@@ -713,6 +713,7 @@
   "core.tooltip.logout": "লগ আউট",
   "workforce.factory.addNewTooltip": "ফ্যাক্টরী যোগ করুন",
   "workforce.factory.representative": "ফ্যাক্টরীর প্রতিনিধির তথ্য",
+  "workforce.factoryAdmin.employee.lastAmount": "সর্বশেষ মূল বেতন",
 
 
   "core.LoginPage.authError": "ইউজারনেম অথবা পাসওয়ার্ড ভূল হয়েছে",

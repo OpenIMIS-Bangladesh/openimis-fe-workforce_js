@@ -794,6 +794,7 @@
   "core.roleManagement.label": "Role Management",
   "profile.otherNames": "Name BN",
   "profile.lastName": "Name EN",
+  "workforce.factoryAdmin.employee.lastAmount": "Last basic salary",
 
   "view": "view",
   "reject": "reject",
