@@ -818,6 +818,13 @@
   "workforce.user.role.approver": "Approver",
   "workforce.user.role.applicant": "Applicant",
   "workforce.application.rejectReason":"Rejection Reason",
-  "workforce.application.proposedAmount.byDoctor": "Proposed grant amount based on medical condition"
+  "workforce.application.proposedAmount.byDoctor": "Proposed grant amount based on medical condition",
+  "workforce.application.diagnosis.byDoctor": "Diagnosis Info",
+  "workforce.application.lastBaseSalary.byFactoryAdmin": "Last Base Salary",
+
+
+  "workforce.doctor.discussionRequired":"Discussion needed",
+  "workforce.doctor.rejectRequest":"Reject",
+  "workforce.doctor.recommend":"Recommend"
 
 }

@@ -708,6 +708,8 @@
   "workforce.user.role.applicant": "আবেদনকারী",
 
   "workforce.application.proposedAmount.byDoctor": "চিকিৎসা অবস্থার ভিত্তিতে প্রস্তাবিত অনুদানের পরিমাণ",
+  "workforce.application.diagnosis.byDoctor": "রোগের বিবরণ",
+  "workforce.application.lastBaseSalary.byFactoryAdmin": "আবেদনকারীর সর্বশেষ মূল বেতন",
 
   "workforce.application.rejectReason":"বাতিল করার কারণ",
   "core.tooltip.logout": "লগ আউট",
@@ -719,6 +721,11 @@
   "core.LoginPage.authError": "ইউজারনেম অথবা পাসওয়ার্ড ভূল হয়েছে",
   "core.LoginPage.pageTitle": "লগ-ইন করুন",
   "core.LoginPage.forgotPassword": "পাসওয়ার্ড ভূলে গিয়েছেন?",
-  "core.ForgotPasswordPage.pageTitle": "পাসওয়ার্ড ভূলে গিয়েছেন?"
+  "core.ForgotPasswordPage.pageTitle": "পাসওয়ার্ড ভূলে গিয়েছেন?",
+
+  "workforce.doctor.discussionRequired":"সিদ্ধান্তের প্রয়োজন",
+  "workforce.doctor.rejectRequest":"বাতিলের সুপারিশ",
+  "workforce.doctor.recommend":"সুপারিশ"
+
   
 }

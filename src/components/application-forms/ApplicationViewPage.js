@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Grid, Paper, Typography, Accordion, AccordionSummary, AccordionDetails, Divider, Card, CardContent, Box,Button } from "@material-ui/core";
+import { Grid, Paper, Typography, Accordion, AccordionSummary, AccordionDetails, Divider, Card, CardContent, Box, Button } from "@material-ui/core";
 import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage, decodeId, TextInput } from "@openimis/fe-core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
@@ -9,6 +9,7 @@ import { banglaLabels, ORGANIZATION_TYPE_NAME_BN, ORGANIZATION_TYPE_NAME_EN, STA
 import { useSelector, useDispatch } from "react-redux";
 import { conditionalEnToBn, getUserType } from "../../utils/utils";
 import { updateApplication } from "../../actions";
+import DoctorsEntries from "./Atoms/DoctorsEntries";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -249,17 +250,17 @@ const ApplicationViewPage = ({
   const language = useSelector((state) => state.core?.user?.i_user?.language);
   console.log({ view: application });
   const user_type = getUserType();
-  const dispatch = useDispatch()
-  const [proposedAmount,setProposedAmount] = useState("")
+  const dispatch = useDispatch();
+  const [lastSalaryAmount, setLastSalaryAmount] = useState("");
 
-  const handleUpdateGrantAmount =(amount)=>{
+  const handleLastSalaryAmount = (amount) => {
     const updateApplicationData = {
-                  id: application?.id,
-                  grantAmount: amount,
-                };
-    console.log({grantAmount:updateApplicationData})
-    dispatch(updateApplication(updateApplicationData, "update workforce application"))
-  }
+      id: application?.id,
+      lastBaseSalary: amount,
+    };
+    console.log({ grantAmount: updateApplicationData });
+    dispatch(updateApplication(updateApplicationData, "update workforce application"));
+  };
   // Sidebar summary fields
   const sidebarFields = useMemo(
     () => ({
@@ -287,7 +288,6 @@ const ApplicationViewPage = ({
     [application]
   );
 
-  console.log({proposedAmount})
   return (
     <Grid container spacing={3} className={classes.root}>
       {/* Sidebar */}
@@ -315,33 +315,35 @@ const ApplicationViewPage = ({
             </b>
           </Typography>
         )}
-        {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN &&
-          filteredDocumentTypes?.map((document, index) => (
-            <Box style={{ marginTop: "10px" }}>
-              <Typography>{document.nameBn}</Typography>
-              <FileUploader
-                fieldKey={document.fieldId}
-                applicationId={application?.id}
-                onFileChange={onFileChange}
-                documentType={document.documentType}
-                documentProp={document}
-                uploadedBy={"factoryAdmin"}
-              />
-            </Box>
-          ))}
-        {user_type === (WORKFORCE_USER_TYPE.DOCTOR || WORKFORCE_USER_TYPE.BLWF_DOCTOR || WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
+        {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && (
+          <>
           <Grid container spacing={2} style={{marginTop:"10px"}}>
-            <Grid item xs={9} >
-              <TextInput
-                label={"workforce.application.proposedAmount.byDoctor"}
-                value={proposedAmount || ""}
-                onChange={(e) =>setProposedAmount(e)}
-              />
+            <Grid item xs={9}>
+              <TextInput label={"workforce.application.lastBaseSalary.byFactoryAdmin"} value={lastSalaryAmount || ""} onChange={(e) => setLastSalaryAmount(e)} />
             </Grid>
             <Grid item xs={3}>
-              <Button variant="contained" color="primary" onClick={()=>handleUpdateGrantAmount(proposedAmount)}>{<FormattedMessage id="workforce.submit" module="workforce"/>}</Button>
+              <Button variant="contained" color="primary" onClick={() => handleLastSalaryAmount(lastSalaryAmount)}>
+                {<FormattedMessage id="workforce.submit" module="workforce" />}
+              </Button>
             </Grid>
           </Grid>
+            {filteredDocumentTypes?.map((document, index) => (
+              <Box style={{ marginTop: "10px" }}>
+                <Typography>{document.nameBn}</Typography>
+                <FileUploader
+                  fieldKey={document.fieldId}
+                  applicationId={application?.id}
+                  onFileChange={onFileChange}
+                  documentType={document.documentType}
+                  documentProp={document}
+                  uploadedBy={"factoryAdmin"}
+                />
+              </Box>
+            ))}
+          </>
+        )}
+        {user_type === (WORKFORCE_USER_TYPE.DOCTOR || WORKFORCE_USER_TYPE.BLWF_DOCTOR || WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
+          <DoctorsEntries application={application} />
         )}
       </Grid>
 

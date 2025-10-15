@@ -293,6 +293,10 @@ export function formatApplicationeGQL(application) {
   ${application?.eisApplicationSummaryId ? `eisApplicationSummaryId: "${(application?.eisApplicationSummaryId)}"` : ""}
   ${application?.blwfApplicationSummaryId ? `blwfApplicationSummaryId: "${(application?.blwfApplicationSummaryId)}"` : ""}
   ${application?.applicationFor ? `applicationFor: "${(application?.applicationFor)}"` : ""}
+  ${application?.doctorsDiagnosis ? `doctorsDiagnosis: "${(application?.doctorsDiagnosis)}"` : ""}
+  ${application?.doctorsFlag ? `doctorsFlag: "${(application?.doctorsFlag)}"` : ""}
+  ${application?.doctorsRecommendedDonation ? `doctorsRecommendedDonation: "${(application?.doctorsRecommendedDonation)}"` : ""}
+  ${application?.lastBaseSalary ? `lastBaseSalary: "${(application?.lastBaseSalary)}"` : ""}
 `;
 }
 ///application movement ////
