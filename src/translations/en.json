@@ -801,6 +801,7 @@
   "revert": "revert",
   "forward": "forward",
   "verify": "verify",
+  "approve":"Approve",
 
   "workforce.user.name": "Name",
   "workforce.user.role": "Role",

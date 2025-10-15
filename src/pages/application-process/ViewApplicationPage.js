@@ -82,9 +82,9 @@ class ViewApplicationPage extends Component {
 
     // FIX: Update the memoized application ONLY if the ID or the object reference changes
     // Use prevProps.application?.id !== this.props.application?.id OR this.props.application !== prevProps.application
-    if (this.props.application !== prevProps.application) {
-      this.memoizedApplication = this.props.application;
-    }
+    // if (this.props.application !== prevProps.application) {
+    //   this.memoizedApplication = this.props.application;
+    // }
 
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.dispatch(journalize(this.props.mutation));
@@ -182,7 +182,8 @@ class ViewApplicationPage extends Component {
                 <PrintIcon />
               </Button>
             </Grid>
-           {user_type === WORKFORCE_USER_TYPE.APPLICANT || 
+           {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN || 
+          //  user_type === WORKFORCE_USER_TYPE.APPLICANT || 
    user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || 
    user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ? (
     <>

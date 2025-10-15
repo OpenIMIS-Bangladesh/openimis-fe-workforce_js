@@ -254,9 +254,10 @@ const ApplicationViewPage = ({
 
   const handleUpdateGrantAmount =(amount)=>{
     const updateApplicationData = {
-                  id: decodeId(application?.id),
+                  id: application?.id,
                   grantAmount: amount,
                 };
+    console.log({grantAmount:updateApplicationData})
     dispatch(updateApplication(updateApplicationData, "update workforce application"))
   }
   // Sidebar summary fields
@@ -329,8 +330,8 @@ const ApplicationViewPage = ({
             </Box>
           ))}
         {user_type === (WORKFORCE_USER_TYPE.DOCTOR || WORKFORCE_USER_TYPE.BLWF_DOCTOR || WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
-          <Grid container spacing={2}>
-            <Grid item xs={10}>
+          <Grid container spacing={2} style={{marginTop:"10px"}}>
+            <Grid item xs={10} >
               <TextInput
                 label={"workforce.application.proposedAmount.byDoctor"}
                 value={proposedAmount || ""}
@@ -338,7 +339,7 @@ const ApplicationViewPage = ({
               />
             </Grid>
             <Grid item xs={2}>
-              <Button varient="contained" color="primary" onClick={handleUpdateGrantAmount(proposedAmount)}>{<FormattedMessage id="workforce.submit" module="workforce"/>}</Button>
+              <Button variant="contained" color="primary" onClick={()=>handleUpdateGrantAmount(proposedAmount)}>{<FormattedMessage id="workforce.submit" module="workforce"/>}</Button>
             </Grid>
           </Grid>
         )}

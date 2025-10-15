@@ -120,8 +120,6 @@ class ApplicationProcessForm extends Component {
       },
     ];
 
-    console.log("Hello", applicationUuid && !isVerify);
-
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
