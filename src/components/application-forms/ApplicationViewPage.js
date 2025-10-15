@@ -331,14 +331,14 @@ const ApplicationViewPage = ({
           ))}
         {user_type === (WORKFORCE_USER_TYPE.DOCTOR || WORKFORCE_USER_TYPE.BLWF_DOCTOR || WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
           <Grid container spacing={2} style={{marginTop:"10px"}}>
-            <Grid item xs={10} >
+            <Grid item xs={9} >
               <TextInput
                 label={"workforce.application.proposedAmount.byDoctor"}
                 value={proposedAmount || ""}
                 onChange={(e) =>setProposedAmount(e)}
               />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={3}>
               <Button variant="contained" color="primary" onClick={()=>handleUpdateGrantAmount(proposedAmount)}>{<FormattedMessage id="workforce.submit" module="workforce"/>}</Button>
             </Grid>
           </Grid>
