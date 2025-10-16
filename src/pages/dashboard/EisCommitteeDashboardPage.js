@@ -209,7 +209,7 @@ const EisCommitteeDashboardPage = () => {
     (state) => state.workforce[`applicationsSummary`] ?? []
   );
 
-  const pendingSummaryData = data.filter(d => d.status === "forward_to_comiitee");
+  const pendingSummaryData = data.filter(d => d.status === "meeting_created");
   const sentSummaryData = data.filter(d => d.status === "forward_to_dg" || d.status ==='forward_to_director');
 
   const renderContent = () => {
