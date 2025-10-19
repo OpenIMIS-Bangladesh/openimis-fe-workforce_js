@@ -175,44 +175,45 @@ class ViewApplicationPage extends Component {
         <Box p={0} className={classes.paper}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <ApplicationViewPage application={formData} language={locale} fileStates={documents} />
+              <ApplicationViewPage application={formData} language={locale} fileStates={documents} viewedFromFlag={"view"} />
             </Grid>
-            <Grid item xs={1} style={{textAlign:"center"}}>
-              <Button variant="contained" color="primary" onClick={this.handlePrint}>
-                <PrintIcon />
+            <Grid item xs={2} style={{ textAlign: "center" }}>
+              <Button variant="contained" color="primary" onClick={this.handlePrint} fullWidth>
+                <PrintIcon /> {" "} {<FormattedMessage id="workforce.modal.print" module="workforce" />}
               </Button>
             </Grid>
-           {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN || 
-          //  user_type === WORKFORCE_USER_TYPE.APPLICANT || 
-   user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || 
-   user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ? (
-    <>
-      <Grid item xs={1}>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          onClick={() => this.handleForward()} 
-          style={{ paddingLeft: "4px", paddingRight: "4px" }} 
-          fullWidth // <-- Add this
-        >
-          <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-        </Button>
-      </Grid>
-      <Grid item xs={1}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            this.setState({ revertModalOpen: true, selectedApplication: application });
-            console.log("button clicked");
-          }}
-          fullWidth // <-- Add this
-        >
-          <FormattedMessage module="workforce" id="workforce.employee.application.revert" />
-        </Button>
-      </Grid>
-    </>
-  ) : null}
+            {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
+            user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+            user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ? (
+              <>
+                <Grid item xs={1}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => this.handleForward()}
+                    style={{ paddingLeft: "4px", paddingRight: "4px" }}
+                    fullWidth
+                  >
+                    <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                  </Button>
+                </Grid>
+                <Grid item xs={1}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      this.setState({ revertModalOpen: true, selectedApplication: application });
+                      console.log("button clicked");
+                    }}
+                    fullWidth // <-- Add this
+                  >
+                    <FormattedMessage module="workforce" id="workforce.employee.application.revert" />
+                  </Button>
+                </Grid>
+              </>
+            ) : null}
+
+           
             <Grid item xs={8}></Grid>
           </Grid>
 
@@ -265,16 +266,16 @@ class ViewApplicationPage extends Component {
           </>
         )}
         <ConfirmModal
-        open={this.state.confirmModalOpen}
-        message={this.state.confirmModalMessage}
-        onClose={(result) => {
-    if (this.state.confirmModalCallback) {
-      this.state.confirmModalCallback(result === 1);
-    } else {
-      this.setState({ confirmModalOpen: false });
-    }
-  }}
-      />
+          open={this.state.confirmModalOpen}
+          message={this.state.confirmModalMessage}
+          onClose={(result) => {
+            if (this.state.confirmModalCallback) {
+              this.state.confirmModalCallback(result === 1);
+            } else {
+              this.setState({ confirmModalOpen: false });
+            }
+          }}
+        />
       </div>
     );
   }

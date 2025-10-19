@@ -28,6 +28,7 @@ import ApplicationProcessSearcher from "../../components/application-process/App
 import { useSelector, useDispatch } from "react-redux";
 import { useModulesManager, useTranslations, Autocomplete, useGraphqlQuery, decodeId } from "@openimis/fe-core";
 import { fetchApplicationsSummary } from "../../actions";
+import EisMultiStepApplyForm from "../application/EisMultiStepApplyForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -90,6 +91,13 @@ const SidebarMenu = [
     id: "newApplications",
     text: (
       <FormattedMessage module="workforce" id="workforce.new.application" />
+    ),
+    icon: <AddCircleOutlineIcon />,
+  },
+  {
+    id: "newEisApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.new.eis.application" />
     ),
     icon: <AddCircleOutlineIcon />,
   },
@@ -349,6 +357,8 @@ const ApplicantDashboard = () => {
         return <FiledApplications />;
       case "newApplications":
         return <MultiStepApplyForm />;
+      case "newEisApplications":
+        return <EisMultiStepApplyForm />;
       case "revertedApplication":
         return <RevertApplication />;
       case "rejectedApplication":

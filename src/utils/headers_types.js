@@ -106,13 +106,13 @@
     "workforce.employee.name",
     "workforce.employee.application.factoryName",
     "workforce.employee.application.applicationType",
-    "workforce.employee.application.moneyAmount",
+    // "workforce.employee.application.moneyAmount",
     "workforce.employee.application.receivedDate",
     "workforce.employee.application.sentDate",
     "workforce.employee.application.status",
     "view",
     "verify",
-    component.isShowHistory() ? "workforce.version" : "",
+    component.isShowHistory() ? "workforce.version" : "", 
   ];
   export const headerSectionAdmin = (component) => [
   "workforce.application.tracking.number",
