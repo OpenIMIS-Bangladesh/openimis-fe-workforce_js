@@ -26,12 +26,24 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage, decodeId } from "@openimis/fe-core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { bindActionCreators } from "redux";
-import { fetchApplication, fetchDocumentType, fetchWorkforceDocument, updateWorkforceDocument } from "../../actions";
+import {
+  createApplicationMovement,
+  fetchApplication,
+  fetchDocumentType,
+  fetchWorkforceDocument,
+  updateApplication,
+  updateWorkforceDocument,
+} from "../../actions";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import FileUploader from "../../pickers/FileUploader";
 import { getUserTypeFromRights, tryParse } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
+import { handleBulkSelectedByAssociationLogic, handleBulkSelectedByCheckerLogic } from "../../utils/workforceForwardRevertActions";
+import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
+import RevertApplicationModal from "../../components/application-process/modals/RevertApplicationModal";
+import ForwardApplicationFactoryAdminModal from "../../components/application-process/modals/ForwardApplicationFactoryAdminModal";
+import ForwardApplicationSectionAdminModal from "../../components/application-process/modals/ForwardApplicationSectionAdminModal";
 
 const styles = (theme) => ({
   paper: {
@@ -96,19 +108,24 @@ class VerifyApplicationPage extends Component {
     ];
 
     this.state = {
-      // applicationType: props?.application || {},
-      // stateEdited: props.application?.workforceEmployee || {},
       isSaved: false,
       preview: null,
       note: "",
       mockFiles: mockFiles,
-      
       uploadedFiles: [],
       fileStates: mockFiles.map((file) => ({
         ...file,
         note: "",
         status: null,
       })),
+      forwardModalOpenFA: false,
+      forwardModalOpenSA: false,
+      revertModalOpen: false,
+      confirmModalOpen: false,
+      confirmModalMessage: "",
+      confirmModalCallback: null,
+      serverResponse: "",
+      selectedApplication: null,
     };
   }
 
@@ -134,14 +151,14 @@ class VerifyApplicationPage extends Component {
     const applicationFor = application?.applicationFor;
     const applicationForType = this.safeParse(application?.metadata);
     const doubleParseApplicationFor = this.safeParse(applicationForType);
-    if (applicationType !==("financialAssistance"||"disabilityAssistance") && organizationType && applicationFor !==(""||null)) {
+    if (applicationType !== ("financialAssistance" || "disabilityAssistance") && organizationType && applicationFor !== ("" || null)) {
       this.props.fetchDocumentType(modulesManager, [
         `applicationType:"${applicationType}"`,
         `organizationType:"${organizationType}"`,
         `mandatoryForApplicant: false`,
         `applicationFor_Icontains:"${applicationFor}"`,
       ]);
-    } else if (applicationType === "disabilityAssistance" && organizationType && applicationFor === (""||null)) {
+    } else if (applicationType === "disabilityAssistance" && organizationType && applicationFor === ("" || null)) {
       console.log({ hello: doubleParseApplicationFor });
       doubleParseApplicationFor.disabilityType === "partial"
         ? this.props.fetchDocumentType(modulesManager, [
@@ -269,12 +286,59 @@ class VerifyApplicationPage extends Component {
     });
   };
 
+  handleForward = () => {
+    const { user_rights, application, loggedInUserId } = this.props;
+    const user_type = getUserTypeFromRights(user_rights);
+
+    if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+      this.setState({ forwardModalOpenFA: true });
+    } else if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+      this.setState({ forwardModalOpenSA: true });
+    } else if (
+      user_type === WORKFORCE_USER_TYPE.CHECKER ||
+      user_type === WORKFORCE_USER_TYPE.CHECKER_TWO ||
+      user_type === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR ||
+      user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR ||
+      user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
+      user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ||
+      user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
+      user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
+    ) {
+      handleBulkSelectedByCheckerLogic({
+        selectedApplicationIds: [{ id: application?.id }],
+        loggedInUserId: this.props.loggedInUserId,
+        userRights: this.props.user_rights,
+        fetchWorkforceDocument: this.props.fetchWorkforceDocument,
+        updateApplication: this.props.updateApplication,
+        createApplicationMovement: this.props.createApplicationMovement,
+        modulesManager: this.props.modulesManager,
+        setServerResponse: (res) => this.setState({ serverResponse: res }),
+        setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
+        setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
+        setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+      });
+    } else {
+      handleBulkSelectedByAssociationLogic({
+        selectedApplicationIds: [{ id: application?.id }],
+        loggedInUserId,
+        updateApplication: this.props.updateApplication,
+        createApplicationMovement: this.props.createApplicationMovement,
+        setServerResponse: (res) => this.setState({ serverResponse: res }),
+        setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
+        setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
+        setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+      });
+    }
+  };
+
+  handleRevert = () => {
+    this.setState({ revertModalOpen: true, selectedApplication: this.props.application });
+  };
+
   render() {
     const { classes, applicationUuid, documents, application, documentType, locale, user_rights } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType } = this.state;
     const user_type = getUserTypeFromRights(user_rights);
-    // console.log({ mah_boob: documentType });
-    // console.log({ my_boob: fileStates });
     const bankInfo = this.safeParse(application?.employeeBankInfo);
     const AccidentInfo = this.safeParse(application?.employeeAccidentInfo);
     const dependentInfo = this.safeParse(application?.employeeDependentInfo);
@@ -309,131 +373,100 @@ class VerifyApplicationPage extends Component {
     });
 
     console.log("filteredDocumentTypes", filteredDocumentTypes);
-    console.log({ fileStates });
+    console.log({ user_type });
     return (
-      <Grid container spacing={3} className={classes.rootGrid}>
-        {/* User Summary */}
-        <Grid item xs={12} md={12} className={classes.leftGrid}>
-          {/* <Card variant="outlined" className={classes.cardSpacing}>
-            <CardContent>
-              <Typography variant="h6">
-                <b>
-                  <FormattedMessage module="workforce" id="workforce.employee.application.details" />
-                </b>
-              </Typography>
-              <Divider />
-              <Typography>
-                <b>Application Type:</b> {application?.applicationType}
-              </Typography>
-              <Typography>
-                <b>Organization Type:</b> {application?.organizationType}
-              </Typography>
-              <Typography>
-                <b>Applied By:</b> {application?.workforceEmployee?.firstNameEn}
-              </Typography>
-            </CardContent>
-          </Card>
-
-          <Card variant="outlined" mt={2} className={classes.cardSpacing}>
-            <CardContent>
-              <Typography variant="h6">
-                <b>
-                  <FormattedMessage module="workforce" id="workforce.employee.details" />
-                </b>
-              </Typography>
-              <Divider />
-              <Typography>
-                <b>First Name:</b> {application?.workforceEmployee?.firstNameBn}
-              </Typography>
-              <Typography>
-                <b>NID:</b> {application?.workforceEmployee?.nid}
-              </Typography>
-              <Typography>
-                <b>Phone:</b> {application?.workforceEmployee?.phoneNumber}
-              </Typography>
-              <Typography>
-                <b>Address:</b> {application?.workforceEmployee?.presentAddress}
-              </Typography>
-              <Typography>
-                <b>Email:</b> {application?.workforceEmployee?.email}
-              </Typography>
-              <Typography>
-                <b>Birth Cert No:</b> {application?.workforceEmployee?.birthCertificateNo}
-              </Typography>
-            </CardContent>
-          </Card> */}
-          {user_type !== WORKFORCE_USER_TYPE.APPLICANT && filteredDocumentTypes ? (
-            // <Card variant="outlined" mt={2} className={classes.cardSpacing}>
-            //   <CardContent>
-            //     <Typography variant="h6">
-            //       <b>
-            //         <FormattedMessage module="workforce" id="workforce.employee.upload.factory.document" />
-            //       </b>
-            //     </Typography>
-            //     <Divider />
-            //     {filteredDocumentTypes?.map((document, index) => (
-            //           <Box style={{marginTop:"10px"}}>
-            //             <Typography>{document.nameBn}</Typography>
-            //             <FileUploader fieldKey={document.fieldId} applicationId={applicationUuid} onFileChange={this.handleFileChange} documentType={document.documentType} documentProp={document}  uploadedBy={"factoryAdmin"}/>
-            //           </Box>
-            //     ))}
-            //   </CardContent>
-            // </Card>
-            <ApplicationViewPage
-              application={formData}
-              language={locale}
-              filteredDocumentTypes={filteredDocumentTypes}
-              applicationUuid={applicationUuid}
-              onFileChange={this.handleFileChange}
-              fileStates={fileStates}
-              handleCommentChange={this.handleFileCommentChange}
-              handleFileVerify={this.handleFileVerify}
-              handleFileReject={this.handleFileReject}
-            />
-          ) : (
-            <ApplicationViewPage application={formData} language={locale} fileStates={fileStates}/>
-          )}
+      <>
+        <Grid container spacing={3} className={classes.rootGrid}>
+          {/* User Summary */}
+          <Grid item xs={12} md={12} className={classes.leftGrid}>
+            {user_type !== WORKFORCE_USER_TYPE.APPLICANT && filteredDocumentTypes ? (
+              <ApplicationViewPage
+                application={formData}
+                language={locale}
+                filteredDocumentTypes={filteredDocumentTypes}
+                applicationUuid={applicationUuid}
+                onFileChange={this.handleFileChange}
+                fileStates={fileStates}
+                handleCommentChange={this.handleFileCommentChange}
+                handleFileVerify={this.handleFileVerify}
+                handleFileReject={this.handleFileReject}
+                viewedFromFlag={"verify"}
+              />
+            ) : (
+              <ApplicationViewPage application={formData} language={locale} fileStates={fileStates} viewedFromFlag={"verify"} />
+            )}
+          </Grid>
         </Grid>
+        {(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
+          user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+          user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ||
+          user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
+          user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
+          user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
+          user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
+          user_type === WORKFORCE_USER_TYPE.CHECKER ||
+          user_type === WORKFORCE_USER_TYPE.CHECKER_TWO ||
+          user_type === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR ||
+          user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR ||
+          user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
+          user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ||
+          user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
+          user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) && (
+          <Grid container spacing={2} style={{ marginTop: "16px", padding: 4 }}>
+            <Grid item xs={2}>
+              <Button variant="contained" color="primary" fullWidth onClick={this.handleForward}>
+                <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+              </Button>
+            </Grid>
+            <Grid item xs={2}>
+              <Button variant="contained" color="primary" fullWidth onClick={this.handleRevert}>
+                <FormattedMessage module="workforce" id="workforce.employee.application.revert" />
+              </Button>
+            </Grid>
+          </Grid>
+        )}
 
-        {/* Document Viewer */}
-        {/* <Grid item xs={12} md={8} className={classes.rightGrid}>
-          <Card variant="outlined" className={classes.cardSpacing}>
-            <CardContent>
-              <Typography variant="h6">
-                <FormattedMessage module="workforce" id="workforce.employee.document" />
-              </Typography>
+        {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && (
+          <ForwardApplicationFactoryAdminModal
+            open={this.state.forwardModalOpenFA}
+            onClose={() => this.setState({ forwardModalOpenFA: false })}
+            selectedApplicationIds={[{ id: this.props.application?.id }]}
+            organizationEmployee={this.props.organizationEmployee}
+          />
+        )}
 
-              {fileStates?.map((file, index) => (
-                <DocumentReviewAccordion
-                  key={index}
-                  file={file} // ✅ from editable local state
-                  index={index}
-                  onCommentChange={this.handleFileCommentChange}
-                  onVerify={this.handleFileVerify}
-                  onReject={this.handleFileReject}
-                  locale={locale}
-                />
-              ))}
-            </CardContent>
-          </Card>
-        </Grid> */}
+        {(user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
+          user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
+          user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) && (
+          <ForwardApplicationSectionAdminModal
+            open={this.state.forwardModalOpenSA}
+            onClose={() => this.setState({ forwardModalOpenSA: false })}
+            selectedApplicationIds={[{ id: this.props.application?.id }]}
+            // onSubmitForward={th  is.handleForwardSubmit}
+            userRights={user_rights}
+          />
+        )}
 
-        {/* Preview Modal */}
-        <Dialog open={!!preview} onClose={this.handlePreviewClose} maxWidth="md" fullWidth>
-          <DialogContent style={{ position: "relative" }}>
-            <IconButton onClick={this.handlePreviewClose} style={{ position: "absolute", top: 8, right: 8 }}>
-              <CloseIcon />
-            </IconButton>
-            {preview?.type === "image" ? (
-              <img src={preview.src} alt="Full Preview" style={{ width: "100%" }} />
-            ) : preview?.type === "pdf" ? (
-              <Document file={preview.src}>
-                <Page pageNumber={1} />
-              </Document>
-            ) : null}
-          </DialogContent>
-        </Dialog>
-      </Grid>
+        {user_type !== WORKFORCE_USER_TYPE.APPLICANT && (
+          <RevertApplicationModal
+            open={this.state.revertModalOpen}
+            onClose={() => this.setState({ revertModalOpen: false })}
+            selectedApplication={this.state.selectedApplication}
+          />
+        )}
+
+        <ConfirmModal
+          open={this.state.confirmModalOpen}
+          message={this.state.confirmModalMessage}
+          onClose={(result) => {
+            if (this.state.confirmModalCallback) {
+              this.state.confirmModalCallback(result === 1);
+            } else {
+              this.setState({ confirmModalOpen: false });
+            }
+          }}
+        />
+      </>
     );
   }
 }
@@ -443,7 +476,7 @@ const mapStateToProps = (state, props) => ({
   applicationUuid: props.match.params.application_uuid,
   documents: state.workforce.document,
   documentType: state.workforce.documentType,
-  user_rights: state.core?.user?.i_user?.rights || {},
+  user_rights: state.core?.user?.i_user?.rights,
   locale: state.core?.user?.i_user?.language,
 });
 
@@ -456,6 +489,8 @@ const mapDispatchToProps = (dispatch) =>
       updateWorkforceDocument,
       journalize,
       coreConfirm,
+      updateApplication,
+      createApplicationMovement,
     },
     dispatch
   );

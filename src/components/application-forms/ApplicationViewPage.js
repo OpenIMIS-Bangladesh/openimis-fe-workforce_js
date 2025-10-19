@@ -245,6 +245,7 @@ const ApplicationViewPage = ({
   handleCommentChange,
   handleFileVerify,
   handleFileReject,
+  viewedFromFlag
 }) => {
   const classes = useStyles();
   const language = useSelector((state) => state.core?.user?.i_user?.language);
@@ -315,7 +316,7 @@ const ApplicationViewPage = ({
             </b>
           </Typography>
         )}
-        {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && (
+        {(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && viewedFromFlag==="verify") && (
           <>
           <Grid container spacing={2} style={{marginTop:"10px"}}>
             <Grid item xs={9}>
@@ -342,7 +343,7 @@ const ApplicationViewPage = ({
             ))}
           </>
         )}
-        {user_type === (WORKFORCE_USER_TYPE.DOCTOR || WORKFORCE_USER_TYPE.BLWF_DOCTOR || WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
+        {(user_type === (WORKFORCE_USER_TYPE.DOCTOR || WORKFORCE_USER_TYPE.BLWF_DOCTOR || WORKFORCE_USER_TYPE.EIS_DOCTOR) &&(viewedFromFlag==="verify")) && (
           <DoctorsEntries application={application} />
         )}
       </Grid>

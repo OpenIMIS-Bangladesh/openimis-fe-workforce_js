@@ -246,7 +246,7 @@ export const WORKFORCE_USER_TYPE = {
   EIS_FINANCIAL_OFFICER: "eis_financial_officer",
   EIS_DOCTOR: "eis_doctor",
   BLWF_DOL_DIFE: "blwf_dol_dife",
-
+  EIS_APPLICANT:"eis_applicant"
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
   admin: "Admin",
