@@ -2132,6 +2132,72 @@ class ApplicationProcessSearcher extends Component {
       }
     });
   };
+  handleBulkApproveByEisAdvisor = async () => {
+    const { selectedApplicationIds } = this.state;
+    const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
+    const { loggedInUserId } = this.props;
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
+    }
+
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.approve.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          try {
+            const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
+            await Promise.all(
+              selectedApplicationIds?.map(async (selectedItem) => {
+                const decodedId = decodeId(selectedItem?.id);
+                const updateApplicationData = {
+                  id: decodedId,
+                  status: WORKFORCE_STATUS.APPROVED_BY_EIS_ADVISOR,
+                  grantAmount: this.state.editedGrantMoney,
+                };
+                const createApplicationMovementData = {
+                  applicationId: decodedId,
+                  status: WORKFORCE_STATUS.APPROVED_BY_EIS_ADVISOR,
+                  note: "আবেদন ইআইএস উপদেষ্টা দ্বারা অনুমোদন করা হয়েছে",
+                  action: "approved_by_eis_advisor",
+                  applicationFromId: loggedInUserId,
+                  applicationToId: 173,
+                  toRoleId: 42,
+                  
+                };
+                const updateApplicationSummaryData = {
+                  id: decodeId(this.props.summaryId),
+                  status: WORKFORCE_STATUS.APPROVED_BY_EIS_ADVISOR,
+                };
+                // console.log("summay row id", id);
+                await updateApplication(updateApplicationData, "update workforce application");
+                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+                await updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
+              })
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+              },
+            });
+          } catch (error) {
+            console.error("Bulk selection failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+          } finally {
+            window.location.reload();
+          }
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+      }
+    });
+  };
   handleBulkSelectedbyEisCommittee = () => {
     const { selectedApplicationIds } = this.state;
     const { loggedInUserId } = this.props;
@@ -2302,8 +2368,7 @@ class ApplicationProcessSearcher extends Component {
           onCheckBoxSelect={(ids) => this.onCheckBoxSelect(ids)}
           coloredRow={coloredRow}
         />
-          {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
-          || userType === WORKFORCE_USER_TYPE.EIS_ADVISOR ? (
+          {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR ? (
             <Box
               style={{
                 marginTop: 10,
@@ -2567,6 +2632,29 @@ class ApplicationProcessSearcher extends Component {
             </Box>
           )
         ) : null}
+        {userType === WORKFORCE_USER_TYPE.EIS_ADVISOR ? (
+          disableButtons!==1 && (
+            <Box
+              style={{
+                marginTop: 10,
+                display: "flex",
+                gap: 2,
+                justifyContent: "space-between",
+              }}
+            >
+              <Button variant="contained" color="primary" onClick={this.handleBulkApproveByEisAdvisor}>
+                <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
+              </Button>
+              <RevertApplicationModal
+                open={revertModalOpen}
+                onClose={this.handleCloseRevertModal}
+                revertByChecker={revertByChecker}
+                selectedApplication={this.state.selectedApplication}
+                onSubmitRevert={this.handleRevertSubmit}
+              />
+            </Box>
+          )
+        ) : null}
 
         {(() => {
           const userType = getUserTypeFromRights(userRights);
@@ -2695,40 +2783,14 @@ class ApplicationProcessSearcher extends Component {
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
                 />
-              </>
-            );
-          } else if (userType === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
-            return (
-              <>
-                 <ForwardApplicationEisAdvisorModal
+                  {/* <ForwardApplicationEisAdvisorModal
                   open={forwardModalOpenSA}
                   onClose={this.handleCloseForwardModalForEisAdvisor}
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
                   summaryId={decodeId(this.props.summaryId)}
-                />
-                <RevertApplicationModal
-                  open={revertModalOpen}
-                  onClose={this.handleCloseRevertModal}
-                  revertByChecker={revertByChecker}
-                  selectedApplication={this.state.selectedApplication}
-                  onSubmitRevert={this.handleRevertSubmit}
-                />
-                <ForwardApplicationSummaryModal
-                  open={forwardModalOpen}
-                  onClose={this.handleCloseForwardModal}
-                  selectedApplication={this.state.selectedApplication}
-                  selectedApplicationIds={this.state.selectedApplicationIds}
-                  userRights={userRights}
-                />
-                 <GenerateBFTN
-                  open={openGenerateBFTN}
-                  onClose={this.handleCloseBFTN}
-                  applications={applications}
-                  status={"approved_by_dg"}
-                  userRights={userRights}
-                />
+                /> */}
               </>
             );
           } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
