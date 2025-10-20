@@ -413,6 +413,7 @@ class VerifyApplicationPage extends Component {
           user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
           user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) && (
           <Grid container spacing={2} style={{ marginTop: "16px", padding: 4 }}>
+            <Grid item xs={8}></Grid>
             <Grid item xs={2}>
               <Button variant="contained" color="primary" fullWidth onClick={this.handleForward}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.forward" />

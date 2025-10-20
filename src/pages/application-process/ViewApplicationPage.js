@@ -177,6 +177,7 @@ class ViewApplicationPage extends Component {
             <Grid item xs={12}>
               <ApplicationViewPage application={formData} language={locale} fileStates={documents} viewedFromFlag={"view"} />
             </Grid>
+            <Grid item xs={8}></Grid>
             <Grid item xs={2} style={{ textAlign: "center" }}>
               <Button variant="contained" color="primary" onClick={this.handlePrint} fullWidth>
                 <PrintIcon /> {" "} {<FormattedMessage id="workforce.modal.print" module="workforce" />}
@@ -212,9 +213,6 @@ class ViewApplicationPage extends Component {
                 </Grid>
               </>
             ) : null}
-
-           
-            <Grid item xs={8}></Grid>
           </Grid>
 
           {user_type === WORKFORCE_USER_TYPE.ADMIN && (

@@ -128,7 +128,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 handleChange={(key, value) => handleChange(key, value, null)}
                 required={true}
               />
-              {errors.cronicDiseaseType && <FormHelperText error>{errors.cronicDiseaseType}</FormHelperText>}
+              {errors?.cronicDiseaseType && <FormHelperText error>{errors?.cronicDiseaseType}</FormHelperText>}
             </Grid>
 
             {selectedDiseases.includes("অন্যান্য") && (
@@ -150,7 +150,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 readOnly={false}
                 required
               />
-              {errors.rdmp && <FormHelperText error>{errors.rdmp}</FormHelperText>}
+              {errors?.rdmp && <FormHelperText error>{errors?.rdmp}</FormHelperText>}
             </Grid>
 
             <Grid item xs={6} className={classes.item}>
@@ -190,8 +190,8 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                     value={formData?.employeeAccidentInfo?.hospitalName || ""}
                     onChange={(v) => handleChange("hospitalName", v)}
                     required
-                    error={!!errors.hospitalName}
-                    helperText={errors.hospitalName}
+                    error={!!errors?.hospitalName}
+                    helperText={errors?.hospitalName}
                   />
                 </Grid>
 
@@ -204,7 +204,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                     readOnly={false}
                     required
                   />
-                  {errors.rdmp && <FormHelperText error>{errors.rdmp}</FormHelperText>}
+                  {errors?.rdmp && <FormHelperText error>{errors?.rdmp}</FormHelperText>}
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
@@ -216,7 +216,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                     readOnly={false}
                     required
                   />
-                  {errors.rdmp && <FormHelperText error>{errors.rdmp}</FormHelperText>}
+                  {errors?.rdmp && <FormHelperText error>{errors?.rdmp}</FormHelperText>}
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
@@ -243,7 +243,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 onChange={(v) => handleChange("accidentType", v)}
                 readOnly={false}
               />
-              {errors.accidentType && <FormHelperText error>{errors.accidentType}</FormHelperText>}
+              {errors?.accidentType && <FormHelperText error>{errors?.accidentType}</FormHelperText>}
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <TextInput
@@ -252,8 +252,8 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 value={formData?.employeeAccidentInfo?.accidentPlace || ""}
                 onChange={(v) => handleChange("accidentPlace", v)}
                 required
-                 error={!!errors.accidentPlace}
-            helperText={errors.accidentPlace}
+                 error={!!errors?.accidentPlace}
+            helperText={errors?.accidentPlace}
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
@@ -291,7 +291,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 onChange={(v) => handleChange("inOutsideFactory", v)}
                 readOnly={false}
               />
-              {errors.inOutsideFactory && <FormHelperText error>{errors.inOutsideFactory}</FormHelperText>}
+              {errors?.inOutsideFactory && <FormHelperText error>{errors?.inOutsideFactory}</FormHelperText>}
             </Grid>
             <Grid item xs={12} className={classes.item}>
               <FormControl component="fieldset">

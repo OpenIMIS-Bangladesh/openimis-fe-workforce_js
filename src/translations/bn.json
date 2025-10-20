@@ -728,6 +728,7 @@
   "core.ForgotPasswordPage.pageTitle": "পাসওয়ার্ড ভূলে গিয়েছেন?",
   "workforce.dependent.isDisabled":"নির্ভরশীলটি কি প্রতিবন্ধী?",
   "workforce.dependent.disabilityType":"প্রতিবন্ধিতার ধরন বর্ণনা করুন",
+  "workforce.eis.factory.admin.accidentInfo.button":"দুর্ঘটনা ও চিকিৎসার বিবরণ",
 
 
   "workforce.doctor.discussionRequired":"সিদ্ধান্তের প্রয়োজন",

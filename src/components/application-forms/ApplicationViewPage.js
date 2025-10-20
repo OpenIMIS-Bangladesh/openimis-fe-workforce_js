@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { conditionalEnToBn, getUserType } from "../../utils/utils";
 import { updateApplication } from "../../actions";
 import DoctorsEntries from "./Atoms/DoctorsEntries";
+import EisFactoryAdminModal from "./EisFactoryAdminModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -245,7 +246,7 @@ const ApplicationViewPage = ({
   handleCommentChange,
   handleFileVerify,
   handleFileReject,
-  viewedFromFlag
+  viewedFromFlag,
 }) => {
   const classes = useStyles();
   const language = useSelector((state) => state.core?.user?.i_user?.language);
@@ -253,6 +254,7 @@ const ApplicationViewPage = ({
   const user_type = getUserType();
   const dispatch = useDispatch();
   const [lastSalaryAmount, setLastSalaryAmount] = useState("");
+  const [openAccidentInfoModal,setOpenAccidentInfoModal] = useState(false)
 
   const handleLastSalaryAmount = (amount) => {
     const updateApplicationData = {
@@ -290,6 +292,7 @@ const ApplicationViewPage = ({
   );
 
   return (
+    <>
     <Grid container spacing={3} className={classes.root}>
       {/* Sidebar */}
       <Grid item xs={12} md={4}>
@@ -316,18 +319,29 @@ const ApplicationViewPage = ({
             </b>
           </Typography>
         )}
-        {(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && viewedFromFlag==="verify") && (
+        {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && viewedFromFlag === "verify" && (
           <>
-          <Grid container spacing={2} style={{marginTop:"10px"}}>
-            <Grid item xs={9}>
-              <TextInput label={"workforce.application.lastBaseSalary.byFactoryAdmin"} value={lastSalaryAmount || ""} onChange={(e) => setLastSalaryAmount(e)} />
+            <Grid container spacing={2} style={{ marginTop: "10px" }}>
+              <Grid item xs={9}>
+                <TextInput
+                  label={"workforce.application.lastBaseSalary.byFactoryAdmin"}
+                  value={lastSalaryAmount || ""}
+                  onChange={(e) => setLastSalaryAmount(e)}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <Button variant="contained" color="primary" onClick={() => handleLastSalaryAmount(lastSalaryAmount)}>
+                  {<FormattedMessage id="workforce.submit" module="workforce" />}
+                </Button>
+              </Grid>
+              {application?.organizationType === "eis" && (
+                <Grid item xs={12}>
+                  <Button variant="contained" color="primary" onClick={() => setOpenAccidentInfoModal(true)} fullwidth>
+                    {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
+                  </Button>
+                </Grid>
+              )}
             </Grid>
-            <Grid item xs={3}>
-              <Button variant="contained" color="primary" onClick={() => handleLastSalaryAmount(lastSalaryAmount)}>
-                {<FormattedMessage id="workforce.submit" module="workforce" />}
-              </Button>
-            </Grid>
-          </Grid>
             {filteredDocumentTypes?.map((document, index) => (
               <Box style={{ marginTop: "10px" }}>
                 <Typography>{document.nameBn}</Typography>
@@ -343,7 +357,7 @@ const ApplicationViewPage = ({
             ))}
           </>
         )}
-        {(user_type === (WORKFORCE_USER_TYPE.DOCTOR || WORKFORCE_USER_TYPE.BLWF_DOCTOR || WORKFORCE_USER_TYPE.EIS_DOCTOR) &&(viewedFromFlag==="verify")) && (
+        {user_type === (WORKFORCE_USER_TYPE.DOCTOR || WORKFORCE_USER_TYPE.BLWF_DOCTOR || WORKFORCE_USER_TYPE.EIS_DOCTOR) && viewedFromFlag === "verify" && (
           <DoctorsEntries application={application} />
         )}
       </Grid>
@@ -419,6 +433,10 @@ const ApplicationViewPage = ({
         )}
       </Grid>
     </Grid>
+    {openAccidentInfoModal && (
+      <EisFactoryAdminModal open={openAccidentInfoModal} onClose={()=>setOpenAccidentInfoModal(false)} application={application}/>
+    )}
+    </>
   );
 };
 

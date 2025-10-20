@@ -825,6 +825,7 @@
   "workforce.application.lastBaseSalary.byFactoryAdmin": "Last Base Salary",
   "workforce.dependent.isDisabled":"Is the Dependent disable?",
   "workforce.dependent.disabilityType":"Describe Disability type",
+  "workforce.eis.factory.admin.accidentInfo.button":"Accident and Medical Details",
 
 
   "workforce.doctor.discussionRequired":"Discussion needed",
