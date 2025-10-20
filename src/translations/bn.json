@@ -78,6 +78,7 @@
   "workforce.employee.spouse.name.en": "স্বামী/স্ত্রীর নাম (ইংরেজি)",
   "workforce.employee.marital_status": "বৈবাহিক অবস্থা",
   "workforce.employee.percentage_of_cf_grant": "কেন্দ্রীয় তহবিলের অনুদানের শতকরা হার",
+  "workforce.employee.eis.percentage_of_cf_grant": "ই.আই.এস. অনুদানের শতকরা হার",
   "workforce.employee.position": "বর্তমান ঠিকানা",
   "workforce.employee.monthly_earning": "মাসিক আয়",
   "workforce.employee.reference_salary": "রেফারেন্স বেতন",
@@ -231,9 +232,11 @@
   "workforce.application.type.medical.donation": "চিকিৎসা অনুদান",
   "workforce.application.type.financial.assistance": "মৃত শ্রমিক পরিবারের জন্য আর্থিক সহায়তা",
   "workforce.application.type.medical.disability": "স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তা",
+  "workforce.application.type.eis.medical.disability": "দুর্ঘটনা জনিত স্থায়ী ও অস্থায়ী অক্ষমতা জনিত আর্থিক সহায়তা",
   "workforce.application.type.scholarship": " শিক্ষাবৃত্তির আবেদন",
   "workforce.application.type.education.grant": "শিক্ষা অনুদান",
   "workforce.application.type.deadly.grant": "মৃত্যুজনিত অনুদান",
+  "workforce.application.type.eis.deadly.grant": "দুর্ঘটনা জনিত মৃত্যু অনুদান",
   "workforce.application.type.maternal.grant": "মাতৃত্বজনিত অনুদান",
 
   "workforce.application.company.type": "আপনার কোম্পানি কি শতভাগ রপ্তানিমুখী গার্মেন্টস?",
@@ -723,6 +726,9 @@
   "core.LoginPage.pageTitle": "লগ-ইন করুন",
   "core.LoginPage.forgotPassword": "পাসওয়ার্ড ভূলে গিয়েছেন?",
   "core.ForgotPasswordPage.pageTitle": "পাসওয়ার্ড ভূলে গিয়েছেন?",
+  "workforce.dependent.isDisabled":"নির্ভরশীলটি কি প্রতিবন্ধী?",
+  "workforce.dependent.disabilityType":"প্রতিবন্ধিতার ধরন বর্ণনা করুন",
+
 
   "workforce.doctor.discussionRequired":"সিদ্ধান্তের প্রয়োজন",
   "workforce.doctor.rejectRequest":"বাতিলের সুপারিশ",

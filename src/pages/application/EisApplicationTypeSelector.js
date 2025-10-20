@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 
 const EisApplicationTypeSelector = ({ modulesManager, onSelect, selectedApplicationType, parsedApplicationData }) => {
   const [isExportOriented, setIsExportOriented] = useState("");
+  const url_flag = process.env.TZ
   const classes = useStyles();
   const dispatch = useDispatch();
   const selectedEmployee = useSelector((state) => state.selectedEmployee);
@@ -111,12 +112,12 @@ const EisApplicationTypeSelector = ({ modulesManager, onSelect, selectedApplicat
           <FormControlLabel
             value="financialAssistance"
             control={<Radio color="primary" />}
-            label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce" />}
+            label={<FormattedMessage id="workforce.application.type.eis.deadly.grant" module="workforce" />}
           />
           <FormControlLabel
             value="disabilityAssistance"
             control={<Radio color="primary" />}
-            label={<FormattedMessage id="workforce.application.type.medical.disability" module="workforce" />}
+            label={<FormattedMessage id="workforce.application.type.eis.medical.disability" module="workforce" />}
           />
         </RadioGroup>
       </FormControl>

@@ -13,8 +13,6 @@ import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import {
   createApplication,
   createWorkforceDocument,
-  createWorkforceEmployee,
-  fetchApplicationId,
   fetchEmployeeDependent,
   fetchInfoIdByClientMutationId,
   fetchWorkforceEmployee,
@@ -65,6 +63,7 @@ const steps = [
 const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, parsedApplicationData,applicationForSelf }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
+  console.log({organizationType})
 
   const modulesManager= useModulesManager()
       const { formatMessage } = useTranslations("workforce");
@@ -149,7 +148,7 @@ const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, p
     company: null,
     factory: null,
     isSubmitted: "no",
-    organizationType: "",
+    organizationType: "" ||organizationType,
     applicationType: "",
     dependents: [{}],
     employeeBankInfo: [{}],
@@ -473,32 +472,7 @@ const FinancialAssistanceForm = ({  organizationType, selectedApplicationType, p
             </Button>
           </div>
       </div>
-      // <div className={classes.container}>
-      //   <Paper className={classes.paper} elevation={0}>
-      //     <PreviewDetails formData={formData} language={reduxState.core?.user?.i_user?.language} />
-      //     <div className={classes.buttonContainer}>
-      //       <Button
-      //         variant="outlined"
-      //         color="error"
-      //         onClick={() => {
-      //           setShowPreview(false);
-      //         }}
-      //       >
-      //         <FormattedMessage module="workforce" id="workforce.back" />
-      //       </Button>
-      //       <Button
-      //         variant="contained"
-      //         color="primary"
-      //         onClick={() => {
-      //           setShowPreview(false);
-      //           setShowVerifyNid(true);
-      //         }}
-      //       >
-      //         <FormattedMessage module="workforce" id="workforce.submit" />
-      //       </Button>
-      //     </div>
-      //   </Paper>
-      // </div>
+
     );
   }
 

@@ -132,10 +132,10 @@ const RegistrationPage = () => {
     formData.firstNameBn &&
     formData.firstNameEn;
 
-  // const validateStep3 = () =>
-  //   formData.password &&
-  //   formData.confirmPassword &&
-  //   formData.password === formData.confirmPassword;
+  const validateStep3 = () =>
+    formData.password &&
+    formData.confirmPassword &&
+    formData.password === formData.confirmPassword;
 
   const handleNext = async () => {
     setServerResponse({ status: "", message: null });
@@ -181,17 +181,19 @@ const RegistrationPage = () => {
       if (internalId !== "") {
         setStep(2);
       }
-    } else if (step === 2) {
+    } else if (step === 2 ) {
       if (formData.otp === "12345") {
         // Bypass OTP verification for default test OTP
-        setStep(3);
+        // setStep(3);
+        await handleSubmit();
+        history.push("/");
       }
       // await dispatch(
       //   fetchWorkforceOtp(modulesManager, [
       //     `id:"${internalId}",otp:"${formData.otp}"`,
       //   ])
       // );
-    } else if (step === 3 && validateStep3()) {
+    } else if (step === 3) {
       await handleSubmit();
       history.push("/");
     } else {
@@ -367,7 +369,7 @@ const RegistrationPage = () => {
                 variant="contained"
                 style={{ marginTop: 16 }}
               >
-                {step === 2 ? "সাবমিট করুন" : "পরবর্তী"}
+                {step === 1 ? "সাবমিট করুন" : "পরবর্তী"}
               </Button>
 
               {/* Back Button */}

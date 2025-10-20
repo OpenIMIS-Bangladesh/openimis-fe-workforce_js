@@ -94,13 +94,13 @@ const SidebarMenu = [
     ),
     icon: <AddCircleOutlineIcon />,
   },
-  {
-    id: "newEisApplications",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.new.eis.application" />
-    ),
-    icon: <AddCircleOutlineIcon />,
-  },
+  // {
+  //   id: "newEisApplications",
+  //   text: (
+  //     <FormattedMessage module="workforce" id="workforce.new.eis.application" />
+  //   ),
+  //   icon: <AddCircleOutlineIcon />,
+  // },
   {
     id: "revertedApplication",
     text: (
@@ -342,6 +342,11 @@ const ApprovedApplications = () => {
 
 const ApplicantDashboard = () => {
   const classes = useStyles();
+  const history = useHistory()
+  const path = history.location.pathname
+  // const isEisPath = path.includes("eis")
+  const isEisPath = true
+  console.log("heello from url history",isEisPath)
   const [selectedMenu, setSelectedMenu] = useState(() => {
     const hash = window.location.hash.substring(1);
     return SidebarMenu.some(item => item.id === hash) ? hash : "pendingApplications";
@@ -356,9 +361,9 @@ const ApplicantDashboard = () => {
       case "pendingApplications":
         return <FiledApplications />;
       case "newApplications":
-        return <MultiStepApplyForm />;
-      case "newEisApplications":
-        return <EisMultiStepApplyForm />;
+        return isEisPath ? <EisMultiStepApplyForm /> : <MultiStepApplyForm />;
+      // case "newEisApplications":
+      //   return <EisMultiStepApplyForm />;
       case "revertedApplication":
         return <RevertApplication />;
       case "rejectedApplication":

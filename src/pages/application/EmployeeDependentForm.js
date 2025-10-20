@@ -1,5 +1,19 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Grid, Box, Paper, Button, Typography, Divider, Accordion, AccordionSummary, AccordionDetails, FormControlLabel, Checkbox,FormHelperText  } from "@material-ui/core";
+import {
+  Grid,
+  Box,
+  Paper,
+  Button,
+  Typography,
+  Divider,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  FormControlLabel,
+  Checkbox,
+  FormHelperText,
+  FormControl, FormLabel, Radio, RadioGroup 
+} from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextInput, PublishedComponent, FormattedMessage, useTranslations, useModulesManager } from "@openimis/fe-core";
@@ -21,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addItem, removeItem, expanded, setExpanded, formdata,errors }) => {
+const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addItem, removeItem, expanded, setExpanded, formdata, errors }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
@@ -64,48 +78,45 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
     [applicationType, formatMessage]
   );
 
-  const onPickerChange=(v,index) => {
-  handleChange(index, "relationType", v);
-  
-  const employee = formdata?.workforceEmployee;
+  const onPickerChange = (v, index) => {
+    handleChange(index, "relationType", v);
 
-  handleChange(index, "fatherNameEn", "");
-  handleChange(index, "fatherNameBn", "");
-  handleChange(index, "motherNameEn", "");
-  handleChange(index, "motherNameBn", "");
-  handleChange(index, "nameEn", "");
-  handleChange(index, "nameBn", "");
-  handleChange(index, "presentLocation", null);
-  handleChange(index, "permanentLocation", null);
-  handleChange(index, "presentAddress", "");
-  handleChange(index, "permanentAddress", "");
+    const employee = formdata?.workforceEmployee;
 
-  if (["workforce.relation.son", "workforce.relation.daughter"].includes(v) && employee) {
-    handleChange(index, "fatherNameEn", employee.nameEn);
-    handleChange(index, "fatherNameBn", employee.nameBn);
-    handleChange(index, "presentLocation", employee.presentLocation);
-    handleChange(index, "permanentLocation", employee.presentLocation);
-    handleChange(index, "presentAddress", employee.presentAddress);
-    handleChange(index, "permanentAddress", employee.presentAddress);
+    handleChange(index, "fatherNameEn", "");
+    handleChange(index, "fatherNameBn", "");
+    handleChange(index, "motherNameEn", "");
+    handleChange(index, "motherNameBn", "");
+    handleChange(index, "nameEn", "");
+    handleChange(index, "nameBn", "");
+    handleChange(index, "presentLocation", null);
+    handleChange(index, "permanentLocation", null);
+    handleChange(index, "presentAddress", "");
+    handleChange(index, "permanentAddress", "");
 
-  } else if (["workforce.relation.father"].includes(v) && employee) {
-    handleChange(index, "nameEn", employee.fatherNameEn);
-    handleChange(index, "nameBn", employee.fatherNameBn);
-    handleChange(index, "presentLocation", employee.presentLocation);
-    handleChange(index, "permanentLocation", employee.presentLocation);
-    handleChange(index, "presentAddress", employee.presentAddress);
-    handleChange(index, "permanentAddress", employee.presentAddress);
-
-  } else if (["workforce.relation.mother"].includes(v) && employee) {
-    handleChange(index, "nameEn", employee.motherNameEn);
-    handleChange(index, "nameBn", employee.motherNameBn);
-    handleChange(index, "presentLocation", employee.presentLocation);
-    handleChange(index, "permanentLocation", employee.presentLocation);
-    handleChange(index, "presentAddress", employee.presentAddress);
-    handleChange(index, "permanentAddress", employee.presentAddress);
-  }
-}
-
+    if (["workforce.relation.son", "workforce.relation.daughter"].includes(v) && employee) {
+      handleChange(index, "fatherNameEn", employee.nameEn);
+      handleChange(index, "fatherNameBn", employee.nameBn);
+      handleChange(index, "presentLocation", employee.presentLocation);
+      handleChange(index, "permanentLocation", employee.presentLocation);
+      handleChange(index, "presentAddress", employee.presentAddress);
+      handleChange(index, "permanentAddress", employee.presentAddress);
+    } else if (["workforce.relation.father"].includes(v) && employee) {
+      handleChange(index, "nameEn", employee.fatherNameEn);
+      handleChange(index, "nameBn", employee.fatherNameBn);
+      handleChange(index, "presentLocation", employee.presentLocation);
+      handleChange(index, "permanentLocation", employee.presentLocation);
+      handleChange(index, "presentAddress", employee.presentAddress);
+      handleChange(index, "permanentAddress", employee.presentAddress);
+    } else if (["workforce.relation.mother"].includes(v) && employee) {
+      handleChange(index, "nameEn", employee.motherNameEn);
+      handleChange(index, "nameBn", employee.motherNameBn);
+      handleChange(index, "presentLocation", employee.presentLocation);
+      handleChange(index, "permanentLocation", employee.presentLocation);
+      handleChange(index, "presentAddress", employee.presentAddress);
+      handleChange(index, "permanentAddress", employee.presentAddress);
+    }
+  };
 
   const isFirstDependentValid = useMemo(() => normalizedDependents?.[0]?.nid && normalizedDependents?.[0]?.nameEn, [normalizedDependents]);
 
@@ -131,37 +142,37 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
             <Paper className={classes.paper} elevation={0}>
               <Grid container spacing={2}>
                 {/* {applicationType === "financialAssistance" && ( */}
-                  <Grid item xs={12}>
-                    <RelationWithWorkerPicker
-                      id="relationType"
-                      value={dependent?.relationType || ""}
-                      required
-                      onChange={(v) => onPickerChange(v,index)}
-                      readOnly={false}
-                    />
-                    {errors.relationType && <FormHelperText error>{errors.relationType}</FormHelperText>}
-                  </Grid>
+                <Grid item xs={12}>
+                  <RelationWithWorkerPicker
+                    id="relationType"
+                    value={dependent?.relationType || ""}
+                    required
+                    onChange={(v) => onPickerChange(v, index)}
+                    readOnly={false}
+                  />
+                  {errors.relationType && <FormHelperText error>{errors.relationType}</FormHelperText>}
+                </Grid>
                 {/* )} */}
                 <Grid item xs={6}>
                   <TextInput
-                  id="nameBn"
+                    id="nameBn"
                     label={getRelationAwareLabel(dependent, "workforce.employee.name.bn")}
                     value={dependent.nameBn || ""}
                     onChange={(v) => handleChange(index, "nameBn", v)}
                     required
                     error={!!errors.nameBn}
-            helperText={errors.nameBn}
+                    helperText={errors.nameBn}
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <TextInput
-                  id="nameEn"
+                    id="nameEn"
                     label={getRelationAwareLabel(dependent, "workforce.employee.name.en")}
                     value={dependent.nameEn || ""}
                     onChange={(v) => handleChange(index, "nameEn", v)}
                     required
                     error={!!errors.nameEn}
-            helperText={errors.nameEn}
+                    helperText={errors.nameEn}
                   />
                 </Grid>
 
@@ -191,14 +202,14 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
 
                 <Grid item xs={6}>
                   <TextInput
-                  id="nid"
+                    id="nid"
                     label={getRelationAwareLabel(dependent, "workforce.application.employee.children.nidOrBirthRegistry")}
                     value={dependent.nid || ""}
                     onChange={(v) => handleChange(index, "nid", v)}
                     type="number"
                     required
                     error={!!errors.nid}
-            helperText={errors.nid}
+                    helperText={errors.nid}
                   />
                 </Grid>
 
@@ -211,14 +222,57 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   />
                 </Grid>
 
-                {(formdata?.organizationType === "cf" && formdata?.applicationType === "financialAssistance") && (
+                {formdata?.organizationType === "cf" && formdata?.applicationType === "financialAssistance" && (
                   <Grid item xs={6}>
                     <TextInput
-                      label={formatMessage("workforce.employee.percentage_of_cf_grant")}
+                      label={
+                        formdata?.organizationType === "eis"
+                          ? formatMessage("workforce.employee.eis.percentage_of_cf_grant")
+                          : formatMessage("workforce.employee.percentage_of_cf_grant")
+                      }
                       value={dependent.maritalStatus || ""}
                       onChange={(v) => handleChange(index, "maritalStatus", v)}
                     />
                   </Grid>
+                )}
+
+                {formdata?.organizationType === "eis" && (
+                  <>
+                    <Grid item xs={6} className={classes.item}>
+                      <FormControl component="fieldset">
+                        <FormLabel>
+                          <FormattedMessage id="workforce.dependent.isDisabled" defaultMessage="Is the dependent disabled?" module="workforce" />
+                        </FormLabel>
+
+                        <RadioGroup row value={dependent?.isDisabled || ""} onChange={(e) => handleChange(index, "isDisabled", e.target.value)}>
+                          <FormControlLabel
+                            value="yes"
+                            control={<Radio color="primary" />}
+                            label={<FormattedMessage id="workforce.application.permission.yes" module="workforce" />}
+                          />
+                          <FormControlLabel
+                            value="no"
+                            control={<Radio color="primary" />}
+                            label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}
+                          />
+                        </RadioGroup>
+                      </FormControl>
+                    </Grid>
+
+                    {dependent?.isDisabled === "yes" && (
+                      <Grid item xs={6} className={classes.item}>
+                        <TextInput
+                          id="disabilityType"
+                          label={formatMessage("workforce.dependent.disabilityType") || "Describe disability"}
+                          value={dependent.disabilityType || ""}
+                          onChange={(v) => handleChange(index, "disabilityType", v)}
+                          required
+                          error={!!errors?.disabilityType}
+                          helperText={errors?.disabilityType}
+                        />
+                      </Grid>
+                    )}
+                  </>
                 )}
 
                 <Grid item xs={12}>
@@ -287,7 +341,12 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   <FileUploader fieldKey="dependentNid" onFileChange={(field, value) => handleChange(index, field, value)} documentType="dependent nid" />
                 </Grid> */}
                 <Grid item xs={12}>
-                  <EmployeeDetailsForm2 handleChange={(key,value)=>handleChange(index,"attachments",value)} formData={formdata} selectedApplicationType={applicationType}  formStepNo={"employeeDependentInfo"} />
+                  <EmployeeDetailsForm2
+                    handleChange={(key, value) => handleChange(index, "attachments", value)}
+                    formData={formdata}
+                    selectedApplicationType={applicationType}
+                    formStepNo={"employeeDependentInfo"}
+                  />
                 </Grid>
 
                 {applicationType === "financialAssistance" && (
