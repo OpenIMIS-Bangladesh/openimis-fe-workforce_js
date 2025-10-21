@@ -33,6 +33,8 @@ export const forwardToAssociation = async ({
                           ? 193
                           : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION
                           ? 202
+                          : userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+                          ? 203
                           : null,
         toRoleId: 31, // hardcoded role
       };

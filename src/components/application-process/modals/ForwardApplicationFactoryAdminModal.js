@@ -239,6 +239,7 @@ const ForwardApplicationFactoryAdminModal = ({
                   <MenuItem value="BGMEA">BGMEA</MenuItem>
                   <MenuItem value="BKMEA">BKMEA</MenuItem>
                   <MenuItem value="BEPZA">BEPZA</MenuItem>
+                  <MenuItem value="LFMEAB">LFMEAB</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
