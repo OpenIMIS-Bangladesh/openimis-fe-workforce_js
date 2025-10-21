@@ -366,7 +366,7 @@ class ApplicationProcessSearcher extends Component {
       else {
         defaultStatusFilters.push('statusIn: ["forward_to_cf_section"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
          if (loggedInUserId) {
-          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
       }
 
