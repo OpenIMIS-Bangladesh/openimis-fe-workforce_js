@@ -365,6 +365,9 @@ class ApplicationProcessSearcher extends Component {
       }
       else {
         defaultStatusFilters.push('statusIn: ["forward_to_cf_section"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+         if (loggedInUserId) {
+          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -689,6 +692,112 @@ class ApplicationProcessSearcher extends Component {
       }
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION) {
+     this.setState({ displayVersion: showHistoryFilter });
+
+      let defaultStatusFilters = [];
+      if (revertedApplication) {
+        defaultStatusFilters = [
+          'organizationTypeIn: ["eis"]',
+          'statusIn: ["revert"]',
+          'associationTypeIn: "BEPZA"'
+        ];
+
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
+      }
+      else if (this.props.forwardedApplications) {
+        defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator","revert_to_applicant", associationTypeIn: "BEPZA"]');
+      }
+      else if (this.props.returnedApplications) {
+        defaultStatusFilters = ['statusIn: ["revert"]','associationTypeIn: "BEPZA"'];
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+      }
+      else {
+        defaultStatusFilters.push('statusIn: ["forward_to_association","resubmitted_application"]', 'associationTypeIn: "BEPZA"');
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
+      }
+
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
+      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
+
+      let finalFilters = [];
+
+      if (prms?.length) {
+        finalFilters = [...prms];
+
+        if (!hasStatusIn) {
+          finalFilters = [...defaultStatusFilters, ...finalFilters];
+        }
+
+        if (!hasOrderBy) {
+          finalFilters.push(orderByFilter);
+        }
+      } else {
+        finalFilters = [...defaultStatusFilters, orderByFilter];
+      }
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION) {
+     this.setState({ displayVersion: showHistoryFilter });
+
+      let defaultStatusFilters = [];
+      if (revertedApplication) {
+        defaultStatusFilters = [
+          'organizationTypeIn: ["eis"]',
+          'statusIn: ["revert"]',
+          'associationTypeIn: "LFMEAB"'
+        ];
+
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
+      }
+      else if (this.props.forwardedApplications) {
+        defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator","revert_to_applicant", associationTypeIn: "LFMEAB"]');
+      }
+      else if (this.props.returnedApplications) {
+        defaultStatusFilters = ['statusIn: ["revert"]','associationTypeIn: "LFMEAB"'];
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+      }
+      else {
+        defaultStatusFilters.push('statusIn: ["forward_to_association","resubmitted_application"]', 'associationTypeIn: "LFMEAB"');
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
+      }
+
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
+      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
+
+      let finalFilters = [];
+
+      if (prms?.length) {
+        finalFilters = [...prms];
+
+        if (!hasStatusIn) {
+          finalFilters = [...defaultStatusFilters, ...finalFilters];
+        }
+
+        if (!hasOrderBy) {
+          finalFilters.push(orderByFilter);
+        }
+      } else {
+        finalFilters = [...defaultStatusFilters, orderByFilter];
+      }
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
@@ -697,7 +806,7 @@ class ApplicationProcessSearcher extends Component {
 
       if (revertedApplication) {
         defaultFilters = [
-          'organizationTypeIn: ["cf"]',
+          'organizationTypeIn: ["cf","eis"]',
           'orderBy: ["-dateCreated"]',
           'statusIn: ["revert"]'
         ];
@@ -710,7 +819,7 @@ class ApplicationProcessSearcher extends Component {
         }
       } 
       else if (this.props.returnedApplications) {
-        defaultFilters = ['status: "revert"', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
+        defaultFilters = ['status: "revert"', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf","eis"]'];
         if (this.props.factoryId) {
           defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
         }
@@ -718,16 +827,16 @@ class ApplicationProcessSearcher extends Component {
           defaultFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
       }else if (rejectedApplication) {
-        defaultFilters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
+        defaultFilters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf","eis"]'];
       } else if (this.props.applicationStatus) {
-        defaultFilters = ['statusIn: ["draft"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
+        defaultFilters = ['statusIn: ["draft"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf","eis"]'];
       } else if (this.props.submittedByApplicants) {
-        defaultFilters = ['statusIn: ["new"]','submittedByIn:["applicant"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
+        defaultFilters = ['statusIn: ["new"]','submittedByIn:["applicant"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf","eis"]'];
       }
       else if (this.props.forwardedApplications) {
-        defaultFilters = ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
+        defaultFilters = ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf","eis"]'];
       } else {
-        defaultFilters = ['statusIn: ["new","resubmitted_application"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf"]'];
+        defaultFilters = ['statusIn: ["new","resubmitted_application"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf","eis"]'];
          if (this.props.factoryId) {
           defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
         }
@@ -944,7 +1053,10 @@ class ApplicationProcessSearcher extends Component {
         additionalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
       }
       else {
-        defaultStatusFilters.push('applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
+        defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator"]','applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -1553,7 +1665,7 @@ class ApplicationProcessSearcher extends Component {
       ? headerBlwfSectionAdmin(this)
       : userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR || userType === WORKFORCE_USER_TYPE.EIS_DOCTOR 
       ? headerDoctor(this)
-      : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+      : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION
       ? headerAssociation(this)
       : userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER || userType === WORKFORCE_USER_TYPE.EIS_FINANCIAL_OFFICER
       ? headerApprover(this)
@@ -1584,7 +1696,7 @@ class ApplicationProcessSearcher extends Component {
       ? itemFormattersBlwfSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication, this.rejectedApplication,this.nidFilters)
       : userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR || userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
       ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
-      : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+      : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION
       ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)
       : userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER || userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.EIS_FINANCIAL_OFFICER
       ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale,this.revertedApplication)

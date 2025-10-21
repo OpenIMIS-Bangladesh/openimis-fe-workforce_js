@@ -1,6 +1,6 @@
 import { decodeId } from "@openimis/fe-core";
-import { WORKFORCE_STATUS } from "../constants";
-import { safeDecodeId } from "./utils";
+import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../constants";
+import { getUserTypeFromRights, safeDecodeId } from "./utils";
 
 export const forwardToAssociation = async ({
   selectedApplicationIds,
@@ -27,7 +27,13 @@ export const forwardToAssociation = async ({
         note: "অ্যাসোসিয়েশনের কাছে প্রেরণ",
         action: "forward_to_association",
         applicationFromId: loggedInUserId,
-        applicationToId: 93, // hardcoded target
+        applicationToId: userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION
+                          ? 93
+                          : userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+                          ? 193
+                          : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION
+                          ? 202
+                          : null,
         toRoleId: 31, // hardcoded role
       };
 

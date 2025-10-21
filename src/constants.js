@@ -246,7 +246,10 @@ export const WORKFORCE_USER_TYPE = {
   EIS_FINANCIAL_OFFICER: "eis_financial_officer",
   EIS_DOCTOR: "eis_doctor",
   BLWF_DOL_DIFE: "blwf_dol_dife",
-  EIS_APPLICANT:"eis_applicant"
+  EIS_APPLICANT:"eis_applicant",
+  BEPZA_ASSOCIATION: "bepza_association",
+  LFMEAB_ASSOCIATION: "lfmeab_association",
+
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
   admin: "Admin",
@@ -276,6 +279,8 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   eis_financial_officer: "Eis Financial Officer",
   eis_doctor: "Eis Doctor",
   blwf_dol_dife: "Blwf Dol/Dife",
+  bepza_association: "Bepza Association",
+  lfmeab_association: "Lfmeab Association",
 
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
@@ -304,6 +309,9 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   eis_financial_officer: "ইআইএস ফিনান্সিয়াল অফিসার",
   eis_doctor: "ইআইএস ডাক্তার",
   blwf_dol_dife: "বিএলডাব্লিউএফ ডল/ডাইফি",
+  bepza_association: "বেপজা অ্যাসোসিয়েশন",
+  lfmeab_association: "এলএফএমইএবি অ্যাসোসিয়েশন",
+
 
 };
 
