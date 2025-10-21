@@ -155,6 +155,12 @@ const FiledApplications = () =>{
        {user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION && (  
       <FormattedMessage module="workforce" id="workforce.bkmea.association.dashboard" />
        )}
+       {user_type === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION && (  
+      <FormattedMessage module="workforce" id="workforce.bepza.association.dashboard" />
+       )}
+       {user_type === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION && (  
+      <FormattedMessage module="workforce" id="workforce.lfmeab.association.dashboard" />
+       )}
     </Typography>
    <Card className={classes.tableContainer}>
         <CardContent>

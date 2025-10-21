@@ -27,7 +27,15 @@ export const forwardToAssociation = async ({
         note: "অ্যাসোসিয়েশনের কাছে প্রেরণ",
         action: "forward_to_association",
         applicationFromId: loggedInUserId,
-        applicationToId: 93, // hardcoded target
+        applicationToId: userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION
+                          ? 93
+                          : userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+                          ? 193
+                          : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION
+                          ? 202
+                          : userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+                          ? 203
+                          : null,
         toRoleId: 31, // hardcoded role
       };
 

@@ -216,9 +216,6 @@ const ForwardApplicationFactoryAdminModal = ({
 
         {/* Form Fields */}
         <Paper className={classes.sectionPaper} elevation={1}>
-
-
-
           <Grid container spacing={3} style={{ marginTop: 3 }}>
             <Typography
               variant="subtitle1"
@@ -241,6 +238,8 @@ const ForwardApplicationFactoryAdminModal = ({
                 >
                   <MenuItem value="BGMEA">BGMEA</MenuItem>
                   <MenuItem value="BKMEA">BKMEA</MenuItem>
+                  <MenuItem value="BEPZA">BEPZA</MenuItem>
+                  <MenuItem value="LFMEAB">LFMEAB</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
