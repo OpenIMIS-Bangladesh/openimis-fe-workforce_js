@@ -1,45 +1,83 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Grid, Paper, Typography, FormControlLabel, Radio, RadioGroup, Divider, Card, CardContent, Box, Button } from "@material-ui/core";
-import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage, decodeId, TextInput } from "@openimis/fe-core";
+import { useDispatch } from "react-redux";
+import { Grid, FormControlLabel, Radio, RadioGroup, Button } from "@material-ui/core";
+import { FormattedMessage, TextInput } from "@openimis/fe-core";
 import { updateApplication } from "../../../actions";
 
 const DoctorsEntries = ({ application }) => {
   const dispatch = useDispatch();
+
   const [proposedAmount, setProposedAmount] = useState(application?.grantAmount || "");
   const [doctorDiagnosis, setDoctorDiagnosis] = useState("");
+  const [doctorComment, setDoctorComment] = useState("");
   const [doctorsActions, setDoctorsActions] = useState("");
-  const handleSelectCheckbox = (event)=>{
-    setDoctorsActions(event.target.value)
-  }
-  const handleUpdateGrantAmount = (amount) => {
+
+  const handleSelectCheckbox = (event) => {
+    setDoctorsActions(event.target.value);
+    // Reset fields when changing option
+    setDoctorDiagnosis("");
+    setDoctorComment("");
+  };
+
+  const handleUpdateGrantAmount = () => {
     const updateApplicationData = {
       id: application?.id,
-      doctorsRecommendedDonation: amount,
-      doctorDiagnosis: doctorDiagnosis,
-      doctorsFlag:doctorsActions
+      doctorsRecommendedDonation: proposedAmount,
+      doctorDiagnosis: doctorDiagnosis || null,
+      doctorComment: doctorComment || null,
+      doctorsFlag: doctorsActions,
     };
-    console.log({ grantAmount: updateApplicationData });
+
+    console.log("Doctor Update Payload:", updateApplicationData);
+
     dispatch(updateApplication(updateApplicationData, "update workforce application"));
   };
+
   return (
     <Grid container spacing={2} style={{ marginTop: "10px" }}>
+      {/* Proposed Amount */}
       <Grid item xs={12}>
-        <TextInput label={"workforce.application.proposedAmount.byDoctor"} value={proposedAmount || ""} onChange={(e) => setProposedAmount(e)} />
+        <TextInput label="workforce.application.proposedAmount.byDoctor" value={proposedAmount || ""} onChange={(v) => setProposedAmount(v)} />
       </Grid>
-      <Grid item xs={12}>
-        <TextInput label={"workforce.application.diagnosis.byDoctor"} value={doctorDiagnosis || ""} onChange={(e) => setDoctorDiagnosis(e)} />
-      </Grid>
+
+      {/* Radio Group */}
       <Grid item xs={12}>
         <RadioGroup value={doctorsActions} onChange={handleSelectCheckbox}>
-          <FormControlLabel value="discussion_required" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.doctor.discussionRequired" module="workforce" />} />
-          <FormControlLabel value="reject_request" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.doctor.rejectRequest" module="workforce" />} />
-          <FormControlLabel value="recommend" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.doctor.recommend" module="workforce" />} />
+          <FormControlLabel
+            value="recommend"
+            control={<Radio color="primary" />}
+            label={<FormattedMessage id="workforce.doctor.recommend" module="workforce" />}
+          />
+          <FormControlLabel
+            value="discussion_required"
+            control={<Radio color="primary" />}
+            label={<FormattedMessage id="workforce.doctor.discussionRequired" module="workforce" />}
+          />
+          <FormControlLabel
+            value="reject_request"
+            control={<Radio color="primary" />}
+            label={<FormattedMessage id="workforce.doctor.rejectRequest" module="workforce" />}
+          />
         </RadioGroup>
       </Grid>
+
+      {/* Conditional Fields */}
+      {doctorsActions === "recommend" && (
+        <Grid item xs={12}>
+          <TextInput label="workforce.application.diagnosis.byDoctor" value={doctorDiagnosis} onChange={(v) => setDoctorDiagnosis(v)} />
+        </Grid>
+      )}
+
+      {(doctorsActions === "discussion_required" || doctorsActions === "reject_request") && (
+        <Grid item xs={12}>
+          <TextInput label="workforce.application.reasons.addComment" value={doctorComment} onChange={(v) => setDoctorComment(v)} multiline rows={3} />
+        </Grid>
+      )}
+
+      {/* Submit Button */}
       <Grid item xs={3}>
-        <Button variant="contained" color="primary" onClick={() => handleUpdateGrantAmount(proposedAmount)}>
-          {<FormattedMessage id="workforce.submit" module="workforce" />}
+        <Button variant="contained" color="primary" onClick={handleUpdateGrantAmount} disabled={!doctorsActions || !proposedAmount}>
+          <FormattedMessage id="workforce.submit" module="workforce" />
         </Button>
       </Grid>
     </Grid>

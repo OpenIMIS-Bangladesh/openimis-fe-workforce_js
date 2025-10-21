@@ -1,6 +1,6 @@
 import { decodeId } from "@openimis/fe-core";
-import { WORKFORCE_STATUS } from "../constants";
-import { safeDecodeId } from "./utils";
+import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../constants";
+import { getUserTypeFromRights, safeDecodeId } from "./utils";
 
 export const forwardToAssociation = async ({
   selectedApplicationIds,
@@ -179,7 +179,7 @@ export const handleBulkSelectedByCheckerLogic = async ({
       setConfirmModalOpen(false);
       return;
     }
-
+ 
     try {
       for (const selectedItem of selectedApplicationIds) {
         const decodedId = decodeId(selectedItem?.id);

@@ -487,14 +487,22 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>
         <Stepper activeStep={activeStep} alternativeLabel style={{ padding: "0px" }}>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>
-                <FormattedMessage module="workforce" id={label} />
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+  {steps
+    .filter(
+      (label) =>
+        !(
+          label === "workforce.application.disabilityInfo" &&
+          formData?.organizationType === "eis"
+        )
+    )
+    .map((label) => (
+      <Step key={label}>
+        <StepLabel>
+          <FormattedMessage module="workforce" id={label} />
+        </StepLabel>
+      </Step>
+    ))}
+</Stepper>
         <Box mt={0} ref={stepRef}>
         {activeStep === 0 ? (
           <ApplicationReasonForDisability
@@ -537,15 +545,14 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
               setExpanded={setExpanded}
               errors={errors}
             />
-        ) : activeStep === 4 ? (
-       
-            <EmployeeAccidentInfoForm
-              handleChange={(key, value) => handleChange(key, value, "employeeAccidentInfo")}
-              formData={formData}
-              setFormData={setFormData}
-              applicationType={"disabilityAssistance"}
-              errors={errors}
-            />
+        ) : activeStep === 4 && formData?.organizationType !== "eis" ? (
+    <EmployeeAccidentInfoForm
+      handleChange={(key, value) => handleChange(key, value, "employeeAccidentInfo")}
+      formData={formData}
+      setFormData={setFormData}
+      applicationType={"disabilityAssistance"}
+      errors={errors}
+    />
         ) : ( null
             // <EmployeeDetailsForm2
             //   selectedApplicationType={selectedApplicationType}

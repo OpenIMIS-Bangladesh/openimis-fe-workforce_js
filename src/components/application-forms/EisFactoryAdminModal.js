@@ -125,7 +125,6 @@ const EisFactoryAdminModal = ({
           {/* Header */}
           <div className={classes.header}>
             <Typography variant="h6" style={{textAlign:"center",fontWeight:"bold"}}>{<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}</Typography>
-
             {/* Top-right close icon */}
             <IconButton onClick={onClose} size="small" style={{color:'black'}}>
               <CloseIcon />
