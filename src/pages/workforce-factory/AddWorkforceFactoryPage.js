@@ -10,6 +10,7 @@ import {
   createWorkforceDocument,
   fetchInfoIdByClientMutationId,
   fetchUserDistrictsUnauthorized,
+  fetchFactoryPublicInfoIdByClientMutationId,
 } from "../../actions";
 import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation } from "@openimis/fe-core";
 
@@ -46,79 +47,65 @@ class AddWorkforceFactoryPage extends Component {
     if (!submittingMutation && prevProps.submittingMutation !== submittingMutation) {
       dispatch(journalize(mutation));
     }
-
-    console.log("ff", this.props)
-
-    if (
-      prevProps.factoryId !== this.props.factoryId &&
-      this.props.factoryId // ensure not null
-    ) {
-      const factoryId = this.props.factoryId;
-      console.log("fff", factoryId)
-      this.props.dispatch(createWorkforceDocument({ ...this.props.uploadFile, factoryId }, `Created workforce document`));
-    }
   }
   componentDidMount() {
-      const {dispatch } = this.props;
       const currentPath = window.location.pathname;
-
       if (currentPath.includes("workforce/factories/factory")) {
-        // const cookieexpires = `; expires=${new Date(Date.now() + 864e5).toUTCString()}`;
-        // document.cookie = `publicPageLanguage=fr${cookieexpires}; path=/`;
       }
       this.props.fetchUserDistrictsUnauthorized();
-      // dispatch(fetchUserDistrictsUnauthorized());
   }
 
   save = async () => {
     const { stateEdited } = this.state;
-    const {dispatch, mutation, uploadFile } = this.props;
-    // const dispatch= useDispatch();
-
-    let representativeId = EMPTY_STRING;
-
     const handleFactoryAndDocument = async (workforceFactoryData) => {
-      try {
-        const res = await this.props.
-          createWorkforceFactory(
-            workforceFactoryData,
-            `Created Workforce Factory ${workforceFactoryData.nameEn}`
-          );
+    try {
+      const res = await this.props.createWorkforceFactory(
+        workforceFactoryData,
+        `Created Workforce Factory ${workforceFactoryData.nameEn}`
+      );
 
-        const clientMutationId = res?.meta?.clientMutationId;
-
-        if (!clientMutationId) {
-          console.warn("No clientMutationId returned from createWorkforceFactory");
-          return;
-        }
-
-        const fetchRes = await this.props.fetchInfoIdByClientMutationId(
-            this.props.modulesManger,
-            "workforceEmployerFactories",
-            clientMutationId,
-            "WORKFORCE_INFO_ID_BY_CLIENT_MUTATION_ID_RESP"
-          );
-
-        let factoryId = getInfoId(fetchRes, "workforceEmployerFactories");
-
-        if (!factoryId && this.props.factoryId) {
-          factoryId = this.props.factoryId;
-        }
-
-        if (factoryId) {
-          await this.props.createWorkforceDocument(
-              { ...this.props.uploadFile, factoryId, holderType:"factory",documentType:"factory_membership_certificate"},
-              `Created workforce document`
-            );
-        } else {
-          console.warn("Factory ID not found after fetch, document not created.");
-        }
-
-        // window.location.href = '/';
-      } catch (error) {
-        console.error("Error in handleFactoryAndDocument:", error);
+      const clientMutationId = res?.meta?.clientMutationId;
+      if (!clientMutationId) {
+        console.warn("No clientMutationId returned from createWorkforceFactory");
+        return;
       }
-    };
+
+      // fetch factory ID
+      const fetchRes = await this.props.fetchFactoryPublicInfoIdByClientMutationId(
+        clientMutationId,
+        "WORKFORCE_INFO_ID_BY_CLIENT_MUTATION_ID_RESP"
+      );
+
+      console.log(fetchRes);
+      let factoryId = getInfoId(fetchRes, "workforceEmployerFactories");
+      if (!factoryId && this.props.factoryId) {
+        factoryId = this.props.factoryId;
+      }
+
+      console.log("Factory created with ID:", factoryId);
+
+      const { uploadFile } = this.props;
+      if (factoryId && uploadFile) {
+        await this.props.createWorkforceDocument(
+          {
+            ...uploadFile,
+            factoryId,
+            holderType: "factory",
+            documentType: "factory_membership_certificate",
+          },
+          `Created workforce document`
+        );
+      } else {
+        console.warn("Cannot create document yet — missing:", {
+          factoryId,
+          uploadFile,
+        });
+      }
+    } catch (error) {
+      console.error("Error in handleFactoryAndDocument:", error);
+    }
+  };
+
 
     if (!this.state.isSameRepresentative) {
       const representativeData = {
@@ -170,8 +157,6 @@ class AddWorkforceFactoryPage extends Component {
   };
 
   updateAttribute = (key, value) => {
-    console.log('Updating:', key, value);
-
     this.setState(
       (prevState) => ({
         stateEdited: {
@@ -180,7 +165,6 @@ class AddWorkforceFactoryPage extends Component {
         },
         isSaved: false,
       }),
-      () => console.log('Updated stateEdited:', this.state.stateEdited)
     );
   };
 
@@ -441,7 +425,8 @@ const mapDispatchToProps = (dispatch) =>
       fetchRepresentativeByClientMutationId,
       fetchFactoryByClientMutationId,
       createWorkforceDocument,
-      fetchInfoIdByClientMutationId
+      fetchInfoIdByClientMutationId,
+      fetchFactoryPublicInfoIdByClientMutationId,
     },
     dispatch
   );

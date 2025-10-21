@@ -2292,6 +2292,18 @@ export function fetchInfoIdByClientMutationId(mm, querySchema, clientMutationId,
   return graphql(payload, reduxKey);
 }
 
+export function fetchFactoryPublicInfoIdByClientMutationId(clientMutationId, reduxKey) {
+  const payload = `{
+                      workforceEmployerFactoriesPublic(
+                        clientMutationId: "${clientMutationId}"
+                      ){
+                        id
+                      }
+                    }
+                    `;
+  return graphql(payload, reduxKey);
+}
+
 export function fetchFactoryByClientMutationId(mm, clientMutationId) {
   const payload = `{
   workforceEmployerFactories(

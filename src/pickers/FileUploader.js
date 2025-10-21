@@ -101,7 +101,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
       const createDocumentData = {
         path: responseData.file_path,
         url: responseData.file_url,
-        workforceDocumentTypeId: decodeId(documentProp.id),
+        workforceDocumentTypeId: documentProp?.id? decodeId(documentProp.id) :"",
         // workforceApplicationId: safeApplicationId(applicationId),
         documentType: documentType,
         holder: "57",
