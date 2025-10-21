@@ -68,17 +68,15 @@ const styles = (theme) => ({
       color: `${theme.palette.text.primary} !important`,
     },
   },
-  rootGrid: {
-    height: "calc(100vh - 64px)", // Adjust if you have AppBar
-    overflow: "hidden",
-  },
-  leftGrid: {
-    position: "sticky",
-    top: 0,
-    height: "100%",
-    overflowY: "auto",
-    paddingRight: 8,
-  },
+ rootGrid: {
+  height: "auto",
+  overflow: "visible",
+},
+leftGrid: {
+  overflowY: "visible",
+  height: "auto",
+},
+
   rightGrid: {
     height: "100%",
     overflowY: "auto",

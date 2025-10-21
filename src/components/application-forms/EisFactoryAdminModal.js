@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Modal,
   Backdrop,
@@ -7,28 +7,36 @@ import {
   Typography,
   Button,
   Divider,
+  IconButton,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import CloseIcon from "@material-ui/icons/Close";
 import EmployeeAccidentInfoForm from "../../pages/application/EmployeeAccidentInfoForm";
+import { useSelector, useDispatch } from "react-redux";
+import { updateApplication } from "../../actions";
+import { validateRequiredFields } from "../../utils/utils";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage,useTranslations } from "@openimis/fe-core";
+
 
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    overflow: "auto",
+    overflow: "hidden", // ✅ prevent global modal scrollbars
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
     borderRadius: 10,
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(3),
-    width: "100%",
-    maxWidth: (props) => props.maxWidth || 700,
-    maxHeight: "90vh", // 👈 Limit modal height
+    padding: theme.spacing(2),
+    width: "90vw", // ✅ responsive width instead of fixed pixel
+    maxWidth: (props) => props.maxWidth || 850,
+    maxHeight: "90vh",
     display: "flex",
     flexDirection: "column",
     outline: "none",
+    overflow: "hidden", // ✅ ensure horizontal overflow is hidden
   },
   header: {
     display: "flex",
@@ -37,10 +45,12 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
   content: {
-    flex: 1, // 👈 Fill remaining space
-    overflowY: "auto", // 👈 Enable vertical scroll
-    paddingRight: theme.spacing(1), // spacing for scrollbar
+    flex: 1,
+    overflowY: "auto", // ✅ only vertical scroll
+    overflowX: "hidden", // ✅ hide horizontal scroll
     marginBottom: theme.spacing(2),
+    paddingRight: theme.spacing(1),
+    boxSizing: "border-box",
   },
   actions: {
     display: "flex",
@@ -50,19 +60,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 const EisFactoryAdminModal = ({
   open,
   onClose,
   title,
   application,
-  onConfirm,
-  confirmText = "Confirm",
+  onSubmit, // ✅ Function to trigger on submit
+  confirmText = "Submit", // ✅ Label for submit
   cancelText = "Cancel",
   maxWidth,
   showActions = true,
 }) => {
   const classes = useStyles({ maxWidth });
-  const [formData, setFormData] = useState(application);
+  const [formData, setFormData] = useState(application || {});
+  const [errors,setErrors] = useState()
+  const { formatMessage } = useTranslations("workforce");
+  const dispatch = useDispatch()
+  const stepRef =useRef(null)
 
   const handleChange = (key, value, parent = null) => {
     setFormData((prev) => {
@@ -79,6 +94,23 @@ const EisFactoryAdminModal = ({
     });
   };
 
+  const handleSubmit = () => {
+    const newErrors = validateRequiredFields(stepRef, formatMessage);
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length === 0 ){
+      const updateApplicationData = {
+              id: application?.id,
+              // ...application,
+              employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
+            };
+            console.log({ updateApplicationData });
+            dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`))
+            .then(()=>{
+              window.location.reload()
+            })
+    }
+  };
+
   return (
     <Modal
       open={open}
@@ -88,49 +120,48 @@ const EisFactoryAdminModal = ({
       BackdropComponent={Backdrop}
       BackdropProps={{ timeout: 300 }}
     >
-      <Fade in={open}>
+
         <Box className={classes.paper}>
           {/* Header */}
           <div className={classes.header}>
-            <Typography variant="h6">{title}</Typography>
-            <Button onClick={onClose} size="small" color="secondary">
-              ✕
-            </Button>
+            <Typography variant="h6" style={{textAlign:"center",fontWeight:"bold"}}>{<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}</Typography>
+
+            {/* Top-right close icon */}
+            <IconButton onClick={onClose} size="small" style={{color:'black'}}>
+              <CloseIcon />
+            </IconButton>
           </div>
           <Divider />
 
-          {/* Scrollable Content */}
-          <Box className={classes.content}>
+          {/* Scrollable Form Content */}
+          <Box className={classes.content} ref={stepRef}>
             <EmployeeAccidentInfoForm
               handleChange={(key, value) =>
                 handleChange(key, value, "employeeAccidentInfo")
               }
               formData={formData}
               setFormData={setFormData}
-              applicationType={"disabilityAssistance"}
-            //   errors={errors}
+              applicationType="disabilityAssistance"
+              errors={errors}
             />
           </Box>
 
-          {/* Footer / Actions */}
+          {/* Footer Actions */}
           {showActions && (
             <div className={classes.actions}>
               <Button onClick={onClose} variant="outlined">
                 {cancelText}
               </Button>
-              {onConfirm && (
-                <Button
-                  onClick={() => onConfirm(formData)}
-                  color="primary"
-                  variant="contained"
-                >
-                  {confirmText}
-                </Button>
-              )}
+              <Button
+                onClick={handleSubmit}
+                color="primary"
+                variant="contained"
+              >
+                {confirmText}
+              </Button>
             </div>
           )}
         </Box>
-      </Fade>
     </Modal>
   );
 };

@@ -59,7 +59,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
 
-  const [selectedOption, setSelectedOption] = useState(formData?.applicationType ==="disabilityAssistance"?"accident":(formData?.employeeAccidentInfo?.accidentType || "disease"));
+  const [selectedOption, setSelectedOption] = useState((formData?.applicationType ==="disabilityAssistance"||formData?.organizationType === "eis")?"accident":(formData?.employeeAccidentInfo?.accidentType || "disease"));
   const [selectedDiseases, setSelectedDiseases] = useState(formData?.employeeAccidentInfo?.cronicDiseaseType || []);
   const [isAdmitted, setIsAdmitted] = useState(formData?.employeeAccidentInfo?.admitted || "no");
   const [hasRejoined, setHasRejoined] = useState(formData?.employeeAccidentInfo?.hasRejoined || "no");
@@ -103,7 +103,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
           {applicationType === "disabilityAssistance"?<FormattedMessage id="workforce.application.disabilityDetails" />:<FormattedMessage id="workforce.employee.accident.info.title" />}
         </Typography>
 
-      {formData?.applicationType !=="disabilityAssistance" && (
+      {(formData?.applicationType !=="disabilityAssistance" ||formData?.organizationType === "eis") && (
         <RadioGroup column value={formData?.employeeAccidentInfo?.accidentType || "disease"} onChange={handleOptionChange}>
           <FormControlLabel value="disease" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.employee.aid.reason.info.cronic" />} />
           <FormControlLabel

@@ -210,7 +210,7 @@ console.log('formData from employee Details form',formData)
                   readOnly={false}
                 />
               </Grid>
-              {formData?.organizationType === "cf" && (
+              {(formData?.organizationType === "cf" || formData?.organizationType === "eis") && (
                 <Grid item xs={6} className={classes.item}>
                   <FactoryPicker
                     id="factory"

@@ -334,13 +334,13 @@ const ApplicationViewPage = ({
                   {<FormattedMessage id="workforce.submit" module="workforce" />}
                 </Button>
               </Grid>
-              {application?.organizationType === "eis" && (
+              {/* {application?.organizationType === "eis" && ( */}
                 <Grid item xs={12}>
                   <Button variant="contained" color="primary" onClick={() => setOpenAccidentInfoModal(true)} fullwidth>
                     {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
                   </Button>
                 </Grid>
-              )}
+              {/* )} */}
             </Grid>
             {filteredDocumentTypes?.map((document, index) => (
               <Box style={{ marginTop: "10px" }}>
