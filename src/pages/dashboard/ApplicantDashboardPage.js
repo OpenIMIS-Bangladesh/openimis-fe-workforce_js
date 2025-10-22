@@ -343,9 +343,10 @@ const ApprovedApplications = () => {
 const ApplicantDashboard = () => {
   const classes = useStyles();
   const history = useHistory()
-  const path = history.location.pathname
-  // const isEisPath = path.includes("eis")
-  const isEisPath = false
+  const path = window.location.href
+  const isEisPath = path.includes("eis")
+  console.log({isEisPath})
+  // const isEisPath = false
   console.log("heello from url history",isEisPath)
   const [selectedMenu, setSelectedMenu] = useState(() => {
     const hash = window.location.hash.substring(1);

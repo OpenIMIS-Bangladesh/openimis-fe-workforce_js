@@ -122,6 +122,7 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
         .then((res) => {
           const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
           const allUsers = edges.flatMap(({ node }) => (node.applicationTo ? [node.applicationTo] : [])).filter(Boolean);
+          console.log("reverted",res)
           
           const users = [
             {
