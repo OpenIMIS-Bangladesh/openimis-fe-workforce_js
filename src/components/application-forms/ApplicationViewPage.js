@@ -372,7 +372,6 @@ const ApplicationViewPage = ({
           const parsedValue = tryParse(value);
           if (!parsedValue || isEmpty(parsedValue)) return null;
 
-          console.log({ fileStates });
           ///expanded={expanded === key} onChange={() => setExpanded(expanded === key ? null : key)}
           return (
             <Accordion key={key} className={classes.accordion} style={{ background: `${"#B7D4D8"}` }}>

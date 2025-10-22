@@ -31,7 +31,6 @@ const DocumentReviewAccordion = ({ file, key, index, onCommentChange, onVerify, 
     setNumPages(numPages);
   };
 
-  console.log("from document review accordion", file);
   return (
     <>
       <Accordion>

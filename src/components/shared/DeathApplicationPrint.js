@@ -8,7 +8,7 @@ import CloseIcon from "@material-ui/icons/Close";
 // --- ROBUST STYLES FOR PRINTING FROM A MODAL (Hardcoded Values) ---
 const useStyles = makeStyles({
   "@global": {
-    fontSize:"small",
+    fontSize: "small",
     "@media all": {
       ".page-break": {
         display: "none",
@@ -93,7 +93,7 @@ const useStyles = makeStyles({
     textAlign: "center",
   },
   title: {
-    fontSize:"small",
+    fontSize: "small",
     fontWeight: "bold",
     textAlign: "center",
     margin: "8px 0 5px 0", // Replaced theme.spacing(3, 0, 1, 0)
@@ -101,7 +101,7 @@ const useStyles = makeStyles({
   },
   sectionTitle: {
     fontWeight: "bold",
-    fontSize:"small",
+    fontSize: "small",
     marginTop: "8px", // Replaced theme.spacing(2.5)
     marginBottom: "4px", // Replaced theme.spacing(1)
     borderBottom: "1px solid #000",
@@ -139,6 +139,7 @@ const useStyles = makeStyles({
   table: {
     width: "100%",
     borderCollapse: "collapse",
+    color:"black",
     marginTop: "8px", // Replaced theme.spacing(1)
     "& th, & td": {
       border: "1px solid #000",
@@ -233,6 +234,7 @@ const formatAddress = (locationData, addressJsonString) => {
 
 export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, logoLeft }) {
   const classes = useStyles();
+  const movementLogs = data?.movementLogs || [];
   // const printRef = useRef();
 
   if (!data || !data.workforceEmployee) return <p>আবেদনের কোনো তথ্য পাওয়া যায়নি।</p>;
@@ -289,6 +291,7 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
     { label: "প্রতিষ্ঠানের মেম্বারশীপ সনদপত্র", checked: true },
     { label: "মৃত শ্রমিকের অনলাইন ডেটাবেজের কপি", checked: true },
   ];
+  console.log({movementLogs})
   return (
     <>
       <Paper id="print-container" className={`${classes.paper} printable-paper`}>
@@ -299,20 +302,18 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
               {logoLeft && <img src={logoLeft} alt="Govt Logo" className={classes.logo} />}
             </Grid>
             <Grid item xs={8} className={classes.headerText}>
-                {logoLeftUrl && <img src={logoLeftUrl} alt="Govt Logo" className={classes.logo} />}
-              <Typography variant="body1" style={{  marginTop: "4px" }}>
+              {logoLeftUrl && <img src={logoLeftUrl} alt="Govt Logo" className={classes.logo} />}
+              <Typography variant="body1" style={{ marginTop: "4px" }}>
                 গণপ্রজাতন্ত্রী বাংলাদেশ সরকার
               </Typography>
-              <Typography variant="body1" >
-                কেন্দ্রীয় তহবিল
-              </Typography>
+              <Typography variant="body1">কেন্দ্রীয় তহবিল</Typography>
               <Typography variant="body1">শ্রম ও কর্মসংস্থান মন্ত্রণালয়</Typography>
               <Typography variant="body2">২১ তলা, ভবন নং: ৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০।</Typography>
               <Typography variant="body2" style={{ color: "blue" }}>
                 www.centralfund.gov.bd
               </Typography>
             </Grid>
-            <Grid item xs={2} >
+            <Grid item xs={2}>
               {/* Photo Box */}
               <Box className={classes.photoBox}>
                 শ্রমিক ও তার <br /> ওয়ারিশাণের পাসপোর্ট <br /> সাইজের ১ (এক) কপি <br /> করে ছবি
@@ -325,13 +326,13 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
           <Typography variant="body2" style={{ textAlign: "center" }}>
             (শতভাগ রপ্তানিমুখি শিল্প কারখানায় কর্মরত শ্রমিকের ওয়ারিশান/ওয়ারিশানদের জন্য)
           </Typography>
-          <Typography variant="body1" style={{ textAlign:"left" }}>
+          <Typography variant="body1" style={{ textAlign: "left" }}>
             বরাবর
           </Typography>
-          <Typography variant="body1" style={{ textAlign:"left" }}>
+          <Typography variant="body1" style={{ textAlign: "left" }}>
             মহাপরিচালক
           </Typography>
-          <Typography variant="body1" style={{ textAlign:"left" }}>
+          <Typography variant="body1" style={{ textAlign: "left" }}>
             কেন্দ্রীয় তহবিল
           </Typography>
 
@@ -392,7 +393,7 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
             </Grid>
           </Grid>
 
-          <Typography style={{ marginTop: "8px",fontWeight:"bold" }}>স্থায়ী ঠিকানাঃ</Typography>
+          <Typography style={{ marginTop: "8px", fontWeight: "bold" }}>স্থায়ী ঠিকানাঃ</Typography>
           <Grid container spacing={1}>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>গ্রাম/মহল্লাঃ</Typography>
@@ -420,7 +421,7 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
             </Grid>
           </Grid>
 
-          <Typography style={{ marginTop: "8px",fontWeight:"bold" }}>বর্তমান ঠিকানাঃ-</Typography>
+          <Typography style={{ marginTop: "8px", fontWeight: "bold" }}>বর্তমান ঠিকানাঃ-</Typography>
           <Grid container spacing={1}>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>গ্রাম/মহল্লাঃ</Typography>
@@ -604,6 +605,45 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
           <Typography className={classes.fieldValue} style={{ minHeight: "40px" }}>
             {/* Empty field */}
           </Typography>
+
+          <Box mt={4}>
+            <Typography variant="h6">৬। মুভমেন্ট লগ / Movement Log</Typography>
+            <Divider />
+            {movementLogs.length > 0 ? (
+              <Table style={{ marginTop: 8 }} size="small" className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <b>তারিখ / Date</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>অফিসারের নাম / Action Taken</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>দায়িত্বপ্রাপ্ত পদবী / Officer</b>
+                    </TableCell>
+                    <TableCell>
+                      <b>মন্তব্য / Remarks</b>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {movementLogs.map((log, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{log.date || "-"}</TableCell>
+                      <TableCell>{log.name || "-"}</TableCell>
+                      <TableCell>{log.role || "-"}</TableCell>
+                      <TableCell>{log.revertNote || "-"}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <Typography color="textSecondary" style={{ marginTop: 8 }}>
+                No movement data found.
+              </Typography>
+            )}
+          </Box>
 
           <Typography className={classes.sectionTitle}>৬। সংযুক্তিঃ- (আবেদন দাখিলের পূর্ব নিম্নোক্ত দলিলাদি সংযুক্ত করতে হবে)</Typography>
           <Grid container spacing={1}>

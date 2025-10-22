@@ -18,7 +18,10 @@ import {
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME } from "../../constants";
-import { fetchWorkforceFactoriesSummary } from "../../actions";
+import {
+  Check as CheckIcon,
+} from "@material-ui/icons";
+import { fetchWorkforceFactoriesSummary, updateWorkforceFactory } from "../../actions";
 import WorkforceFactoryFilter from "./WorkforceFactoryFilter";
 
 
@@ -107,6 +110,15 @@ class WorkforceFactorySearcher extends Component {
     this.isShowHistory() ? 'workforce.version' : '',
   ];
 
+  handleFactoryUserApprove = (workforceFactory)=>{
+    let approveFactoryUser = workforceFactory
+    approveFactoryUser.id = decodeId(workforceFactory?.id)
+    approveFactoryUser["status"] = "active"
+    console.log(workforceFactory?.id)
+    console.log(approveFactoryUser)
+    this.props.updateWorkforceFactory(approveFactoryUser,`Update Workforce Factory `)
+   }
+
   sorts = () => [
     
   ];
@@ -126,6 +138,7 @@ class WorkforceFactorySearcher extends Component {
     ];
     
          formatters.push((workforcefactory) => (
+          <>
            <Tooltip title="Edit">
              <IconButton
                disabled={workforcefactory?.isHistory}
@@ -142,6 +155,15 @@ class WorkforceFactorySearcher extends Component {
                <EditIcon />
              </IconButton>
            </Tooltip>
+           <Tooltip title="approve">
+             <IconButton
+               disabled={workforcefactory?.isHistory}
+               onClick={() => this.handleFactoryUserApprove(workforcefactory)}
+             >
+               <CheckIcon />
+             </IconButton>
+           </Tooltip>
+          </>
          ));
     return formatters;
   };
@@ -215,7 +237,7 @@ const mapStateToProps = (state) => (
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(
   {
-    fetchWorkforceFactoriesSummary, journalize, coreConfirm,
+    fetchWorkforceFactoriesSummary, journalize, coreConfirm,updateWorkforceFactory
   },
   dispatch,
 );
