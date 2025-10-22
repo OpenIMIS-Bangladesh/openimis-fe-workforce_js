@@ -209,11 +209,6 @@ useEffect(() => {
           gutterBottom
           style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}
         >
-          {selectedApplication
-            ? `${selectedApplication.workforceEmployee?.firstNameBn ||
-            "আবেদনকারী"
-            } এর আবেদন ফরওয়ার্ড করতে চান?`
-            : "একটি আবেদন বেছে নিন।"}
         </Typography>
 
         {/* Response message */}

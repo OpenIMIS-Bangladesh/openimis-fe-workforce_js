@@ -133,9 +133,11 @@ const ForwardApplicationModal = ({
         </Typography>
 
         <Typography id="forward-modal-description" sx={{ mt: 2 }}>
-          {selectedApplication
-            ? `${selectedApplication.workforceEmployee?.firstNameBn || "আবেদনকারী"} এর আবেদন ফরওয়ার্ড করতে চান?`
-            : "একটি আবেদন বেছে নিন।"}
+         {selectedApplication &&
+          `${
+            selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী"
+          } এর আবেদন ফেরত পাঠাতে চান?`}
+
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>

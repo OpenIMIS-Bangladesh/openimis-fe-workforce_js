@@ -192,11 +192,11 @@ const ForwardApplicationFactoryAdminModal = ({
           gutterBottom
           style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}
         >
-          {selectedApplication
+          {/* {selectedApplication
             ? `${selectedApplication.workforceEmployee?.firstNameBn ||
             "আবেদনকারী"
             } এর আবেদন ফরওয়ার্ড করতে চান?`
-            : "একটি আবেদন বেছে নিন।"}
+            : "একটি আবেদন বেছে নিন।"} */}
         </Typography>
 
         {/* Response message */}
@@ -236,10 +236,10 @@ const ForwardApplicationFactoryAdminModal = ({
                   onChange={(e) => setFormData({ ...formData, association: e.target.value })}
                   required
                 >
-                  <MenuItem value="BGMEA">BGMEA</MenuItem>
-                  <MenuItem value="BKMEA">BKMEA</MenuItem>
-                  <MenuItem value="BEPZA">BEPZA</MenuItem>
-                  <MenuItem value="LFMEAB">LFMEAB</MenuItem>
+                  <MenuItem value="BGMEA">বিজিএমইএ</MenuItem>
+                  <MenuItem value="BKMEA">বিকেএমইএ</MenuItem>
+                  <MenuItem value="BEPZA">বেপজা</MenuItem>
+                  <MenuItem value="LFMEAB">এলএফএমইএবি</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
