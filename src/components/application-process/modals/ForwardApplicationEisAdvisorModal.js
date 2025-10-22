@@ -117,8 +117,8 @@ const ForwardApplicationEisAdvisorModal = ({
       setFormData({});
 
       let roleIds = [];
-      if (userType === "eis_advisor") {
-        roleIds = ["49"];
+      if (userType === "eis_coordinator") {
+        roleIds = ["47"];
       }
 
       if (roleIds.length > 0) {

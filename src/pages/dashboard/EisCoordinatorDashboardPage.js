@@ -158,6 +158,14 @@ const SidebarMenu = [
     ),
     icon: <HourglassFullTwoToneIcon  />,
   },
+   {
+    id: "advisorApproveMeetingSheet",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.employee.application.advisorApproveMeetingSheet"
+      />
+    ),
+    icon: <CheckCircleOutlineTwoToneIcon />,
+  },
   {
     id: "revertedApplication",
     text: (
@@ -233,6 +241,53 @@ const FiledApplications = () =>{
 );}
 
 const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
+  const classes = useStyles();
+  const [expanded, setExpanded] = useState(null);
+
+  const handleChange = (panelId) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panelId : null);
+  };
+  console.log("clear")
+  console.log("summary data", summaryData);
+  return (
+    <div className={classes.accordionPadding}>
+        {summaryData         
+          .map((item, index) => (
+            <Accordion
+              key={index}
+              expanded={expanded === item.id}
+              onChange={handleChange(item.id)}
+              className={classes.accordion}
+            >
+              <AccordionSummary
+                className={classes.accordionSummary}
+                expandIcon={<ExpandMoreIcon className="material-icons" />}
+              >
+                <Typography variant="subtitle1" style={{ flex: 1 }}>
+                  <strong>{item.name}</strong>
+                </Typography>
+                <Typography
+                  variant="body2"
+                  style={{ marginLeft: "auto", color: "#015C63" }}
+                >
+                  {item.meetingDate} | {item.month} {item.year}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className={classes.accordionDetails}>
+                <Card style={{ width: "100%" }}>
+                  <CardContent>
+                    {expanded === item.id && (
+                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons}/>
+                    )}
+                  </CardContent>
+                </Card>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+    </div>
+  );
+};
+const AdvisorApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
 
@@ -500,7 +555,6 @@ const RevertApplication = () => {
   </>
 )}
 
-
 const RejectApplication = () => {
   const classes = useStyles()
   return (
@@ -566,6 +620,7 @@ const EisCoordinatorDashboardPage = () => {
 
   const pendingSummaryData = data.filter(d => d.status !== "approved_by_dg");
   const approvedSummaryData = data.filter(d => d.status === "approved_by_committee");
+  const advisorApprovedSummaryData = data.filter(d => d.status === "approved_by_eis_advisor");
   const sentSummaryData = data.filter(d => d.status === "forward_to_comiitee");
 
  
@@ -586,6 +641,8 @@ const EisCoordinatorDashboardPage = () => {
         return <RevertApplication />;
       case "pendingMeetingSheet":
         return <PendingMeetingSheet summaryData={pendingSummaryData} disableButtons={1} />;
+      case "advisorApproveMeetingSheet":
+        return <AdvisorApprovedApplications summaryData={advisorApprovedSummaryData} disableButtons={1} />;
       case "sentMeetingSheet":
         return <SentMeetingSheet summaryData={sentSummaryData} disableButtons={1} />;
       case "approveMeetingSheet":
