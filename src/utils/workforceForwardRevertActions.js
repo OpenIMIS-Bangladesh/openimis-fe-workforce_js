@@ -10,8 +10,10 @@ export const forwardToAssociation = async ({
   createApplicationMovement,
   dispatch,
   setServerResponse,
+  userRights
 }) => {
   try {
+    const userType = getUserTypeFromRights(userRights);
     for (const encodedId of selectedApplicationIds) {
       const decodedId = safeDecodeId(encodedId?.id);
 

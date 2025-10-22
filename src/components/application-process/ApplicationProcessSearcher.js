@@ -837,12 +837,12 @@ class ApplicationProcessSearcher extends Component {
         defaultFilters = ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf","eis"]'];
       } else {
         defaultFilters = ['statusIn: ["new","resubmitted_application"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf","eis"]'];
-         if (this.props.factoryId) {
-          defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
-        }
-        if (loggedInUserId) {
-          defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
+        // if (loggedInUserId) {
+        //   defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+        // }
+      }
+      if (this.props.factoryId) {
+        defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
       }
       this.props.fetchApplicationsSummary(this.props.modulesManager, defaultFilters);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {

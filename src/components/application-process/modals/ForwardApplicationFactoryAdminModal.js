@@ -86,6 +86,8 @@ const ForwardApplicationFactoryAdminModal = ({
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const userRights = useSelector((state) => state.core.user.i_user.rights);
+  console.log({userRights})
   useEffect(() => {
     if (!open) {
       setEditorContent("");
@@ -126,6 +128,7 @@ const ForwardApplicationFactoryAdminModal = ({
     createApplicationMovement,
     dispatch,
     setServerResponse,
+    userRights
   });
 //     for (const encodedId of selectedApplicationIds) {
 

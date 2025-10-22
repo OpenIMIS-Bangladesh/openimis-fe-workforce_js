@@ -176,9 +176,8 @@ const SidebarMenu = [
             const factoryId = node?.workforceFactory?.id || null;
             setWorkforceFactoryId(factoryId);
           });
-    }
-
-}, [loggedInUserId]);
+      }
+    }, [loggedInUserId]);
   return (
   <>
     <Typography variant="h5" gutterBottom>
@@ -218,7 +217,7 @@ const DraftApplications = () => {
   const classes = useStyles()
   return (
     <>
-      <ApplicationProcessSearcher applicationStatus={"draft"} dynamicTableTitle= {"workforce.application.draft_applications"} />
+      <ApplicationProcessSearcher applicationStatus={"draft"} dynamicTableTitle= {"workforce.application.draft_applications"}  />
     </>
   );
 }
@@ -327,7 +326,23 @@ const filters = [`trackingNumber: "${trackingNumber}"`];
 
 const RevertApplication = () => {
   const classes = useStyles()
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
+
+
+  useEffect(() => {
+    if (loggedInUserId) {
+      const filters = [`relatedUser_Id: "${encodeId(modulesManager,"InteractiveUserGQLType",loggedInUserId)}"`];  
+      dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
+            const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+            const node = edges[0]?.node;  
+            const factoryId = node?.workforceFactory?.id || null;
+            setWorkforceFactoryId(factoryId);
+          });
+      }
+    }, [loggedInUserId]);
   
   return (
   <>
@@ -339,6 +354,7 @@ const RevertApplication = () => {
              <ApplicationProcessSearcher
                 revertedApplication={true}
                 loggedInUserId={loggedInUserId}
+                factoryId= {workforceFactoryId}
               />
             </CardContent>
       </Card>
@@ -358,7 +374,22 @@ const RevertApplication = () => {
 
 const ReturnedApplications = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
+
+  useEffect(() => {
+    if (loggedInUserId) {
+      const filters = [`relatedUser_Id: "${encodeId(modulesManager,"InteractiveUserGQLType",loggedInUserId)}"`];  
+      dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
+            const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+            const node = edges[0]?.node;  
+            const factoryId = node?.workforceFactory?.id || null;
+            setWorkforceFactoryId(factoryId);
+          });
+      }
+    }, [loggedInUserId]);
   return (
     <>
       <ApplicationProcessSearcher
@@ -366,6 +397,7 @@ const ReturnedApplications = () => {
         loggedInUserId={loggedInUserId}
         disableButtons={1}
         dynamicTableTitle= {"workforce.application.returned"}
+        factoryId= {workforceFactoryId}
       />
       {/* Pagination */}
       <div className={classes.pagination}>
@@ -382,11 +414,29 @@ const ReturnedApplications = () => {
 
 const RejectApplication = () => {
   const classes = useStyles()
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
+  const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  useEffect(() => {
+    if (loggedInUserId) {
+      const filters = [`relatedUser_Id: "${encodeId(modulesManager,"InteractiveUserGQLType",loggedInUserId)}"`];  
+      dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
+            const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+            const node = edges[0]?.node;  
+            const factoryId = node?.workforceFactory?.id || null;
+            setWorkforceFactoryId(factoryId);
+          });
+      }
+    }, [loggedInUserId]);
   return (
     <>
       <ApplicationProcessSearcher
         rejectedApplication={true}
         dynamicTableTitle= {"workforce.application.rejectedApplication"}
+        loggedInUserId= {loggedInUserId}
+        factoryId= {workforceFactoryId}
       />
       {/* Pagination */}
       <div className={classes.pagination}>
@@ -402,11 +452,29 @@ const RejectApplication = () => {
 }
 const SubmittedByApplicants = () => {
   const classes = useStyles()
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
+  const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  useEffect(() => {
+    if (loggedInUserId) {
+      const filters = [`relatedUser_Id: "${encodeId(modulesManager,"InteractiveUserGQLType",loggedInUserId)}"`];  
+      dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
+            const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+            const node = edges[0]?.node;  
+            const factoryId = node?.workforceFactory?.id || null;
+            setWorkforceFactoryId(factoryId);
+          });
+      }
+    }, [loggedInUserId]);
   return (
     <>
       <ApplicationProcessSearcher
         submittedByApplicants={true}
         dynamicTableTitle= {"workforce.new.application.submittedbyapplicant"}
+        loggedInUserId= {loggedInUserId}
+        factoryId= {workforceFactoryId}
       />
       {/* Pagination */}
       <div className={classes.pagination}>
@@ -422,12 +490,31 @@ const SubmittedByApplicants = () => {
 }
 const ForwardedApplications = () => {
   const classes = useStyles()
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
+  const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
+
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  useEffect(() => {
+    if (loggedInUserId) {
+      const filters = [`relatedUser_Id: "${encodeId(modulesManager,"InteractiveUserGQLType",loggedInUserId)}"`];  
+      dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
+            const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+            const node = edges[0]?.node;  
+            const factoryId = node?.workforceFactory?.id || null;
+            setWorkforceFactoryId(factoryId);
+          });
+      }
+    }, [loggedInUserId]);
   return (
     <>
       <ApplicationProcessSearcher
         forwardedApplications={true}
         disableButtons={1}
         dynamicTableTitle= {"workforce.application.forwarded"}
+        loggedInUserId= {loggedInUserId}
+        factoryId= {workforceFactoryId}
       />
       {/* Pagination */}
       <div className={classes.pagination}>
