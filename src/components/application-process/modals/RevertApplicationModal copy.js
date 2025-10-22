@@ -208,12 +208,11 @@ const RevertApplicationModal = ({
           gutterBottom
           style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}
         >
-          {selectedApplication
-            ? `${
-                selectedApplication?.workforceEmployee?.firstNameBn ||
-                "আবেদনকারী"
-              } এর আবেদন ফেরত পাঠাতে চান?`
-            : "একটি আবেদন বেছে নিন।"}
+          {selectedApplication &&
+          `${
+            selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী"
+          } এর আবেদন ফেরত পাঠাতে চান?`}
+
         </Typography>
 
         {/* Response message */}

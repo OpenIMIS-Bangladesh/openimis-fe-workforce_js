@@ -173,7 +173,10 @@ const ForwardApplicationSectionAdminModal = ({ open, onClose, selectedApplicatio
         </Typography>
 
         <Typography variant="body1" color="textSecondary" gutterBottom style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}>
-          {selectedApplication ? `${selectedApplication.workforceEmployee?.firstNameBn || "আবেদনকারী"} এর আবেদন ফরওয়ার্ড করতে চান?` : "একটি আবেদন বেছে নিন।"}
+        {selectedApplication &&
+          `${
+            selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী"
+          } এর আবেদন ফেরত পাঠাতে চান?`}
         </Typography>
 
         {/* Response message */}
