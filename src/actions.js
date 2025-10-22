@@ -2621,7 +2621,8 @@ export function fetchGenderWiseApplicationMatrixByDate(months, fromDate, toDate,
 }
 
 export function fetchApplicationTimeWiseMatrix(organizationType, applicationType, daycount) {
-  const organization= organizationType=='সব' || organizationType=='All' ? '' : `organizationType:"${organizationType}"`;
+  const organization= organizationType=='সব' || organizationType=='All' || organizationType=='all' ? '' : `organizationType:"${organizationType}"`;
+  console.log(organizationType);
   const typeList = applicationType.map(type => `"${type}"`).join(", ");
   const dayWiseCount= daycount!=null || daycount!=''? `dayCount: "${daycount}"` : '';
   const payload = `
