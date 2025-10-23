@@ -598,6 +598,52 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
             </TableContainer>
           </div>
 
+          {/* Employee Info */}
+<Grid item xs={12}>
+  <Typography>First Name (BN): {formData.workforceEmployee.firstNameBn}</Typography>
+  <Typography>Last Name (BN): {formData.workforceEmployee.lastNameBn || '-'}</Typography>
+  <Typography>Gender: {formData.workforceEmployee.gender === 'workforce.gender.male' ? 'Male' : 'Female'}</Typography>
+  <Typography>Birth Date: {formData.workforceEmployee.birthDate}</Typography>
+  {/* other fields */}
+</Grid>
+
+{/* Applicant Info */}
+<Grid item xs={12}>
+  <Typography>Name: {formData.applicantInfo.nameBn}</Typography>
+  <Typography>Relation: {translateRelation(formData.applicantInfo.relationWithApplicant)}</Typography>
+  {/* other fields */}
+</Grid>
+
+{/* Dependents */}
+{formData.employeeDependentInfo.map((dep, i) => (
+  <Grid item xs={12} key={i}>
+    <Typography>Name: {dep.nameBn}</Typography>
+    <Typography>Relation: {translateRelation(dep.relationType)}</Typography>
+    <Typography>Birth Date: {dep.birthDate}</Typography>
+    <Typography>Disability: {dep.isDisabled === 'yes' ? dep.disabilityType : 'No'}</Typography>
+  </Grid>
+))}
+
+{/* Bank Info */}
+{formData.employeeBankInfo.map((bank, i) => (
+  <Grid item xs={12} key={i}>
+    <Typography>Bank: {bank.bank.nameBn}</Typography>
+    <Typography>Branch: {bank.branch.nameBn}</Typography>
+    <Typography>District: {bank.district.nameBn}</Typography>
+    <Typography>Account No: {bank.accountNumber}</Typography>
+  </Grid>
+))}
+
+{/* Others Info */}
+<Grid item xs={12}>
+  <Typography>Death Type: {formData.metadata.deathType}</Typography>
+  <Typography>Death Reason: {formData.metadata.deathReason}</Typography>
+  <Typography>Death Date: {formData.metadata.deathDate}</Typography>
+  <Typography>Organization Type: {formData.organizationType}</Typography>
+  <Typography>Application Type: {formData.applicationType}</Typography>
+</Grid>
+
+
           {/* <Divider style={{ margin: "10px 0" }} /> */}
 
           {/* Section 5 & 6: Other Info and Attachments */}

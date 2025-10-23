@@ -13,7 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import EmployeeAccidentInfoForm from "../../pages/application/EmployeeAccidentInfoForm";
 import { useSelector, useDispatch } from "react-redux";
-import { updateApplication } from "../../actions";
+import { createWorkforceDocument, updateApplication } from "../../actions";
 import { validateRequiredFields } from "../../utils/utils";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage,useTranslations } from "@openimis/fe-core";
 
@@ -76,6 +76,7 @@ const EisFactoryAdminModal = ({
   const [formData, setFormData] = useState(application || {});
   const [errors,setErrors] = useState()
   const { formatMessage } = useTranslations("workforce");
+  const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const dispatch = useDispatch()
   const stepRef =useRef(null)
 
@@ -98,6 +99,9 @@ const EisFactoryAdminModal = ({
     const newErrors = validateRequiredFields(stepRef, formatMessage);
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0 ){
+      uploadFile.map((file, index) => {
+            dispatch(createWorkforceDocument({ ...file, workforceApplicationId: application?.id}, `Created workforce document `));
+          });
       const updateApplicationData = {
               id: application?.id,
               // ...application,
