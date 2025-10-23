@@ -52,26 +52,21 @@ const useStyles = makeStyles({
   },
 });
 
-export const ApplicationPrintPreview = ({
-  data,
-  documents,
-  logoLeftUrl,
-  logoLeft,
-}) => {
+export const ApplicationPrintPreview = ({ data, documents, logoLeftUrl, logoLeft }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [movementLogs, setMovementLogs] = useState();
   const [isLoadingPath, setIsLoadingPath] = useState(false);
-  const modulesManager = useModulesManager()
-  const dispatch = useDispatch()
+  const modulesManager = useModulesManager();
+  const dispatch = useDispatch();
   const hasFetchedRef = useRef(false);
   const printRef = useRef();
-  console.log("hellooww",data)
+  console.log("hellooww", data);
 
   // 1️⃣ Setup the printer hook
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
-  contentRef: printRef,
+    contentRef: printRef,
     documentTitle: "Death Application Form",
     // removeAfterPrint: false,
   });
@@ -102,7 +97,7 @@ export const ApplicationPrintPreview = ({
       })
     )
       .then((res) => {
-        console.log(res)
+        console.log(res);
         const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
         const allUsers = edges.flatMap(({ node }) => (node.applicationTo ? [node.applicationTo] : [])).filter(Boolean);
         const formattedLogs = edges.map(({ node }) => ({
@@ -112,58 +107,39 @@ export const ApplicationPrintPreview = ({
           remarks: node?.remarks || "",
         }));
         const users = [
-            {
-              id: "applicant001",
-              name: data?.workforceEmployee?.firstNameBn || "আবেদনকারী",
-              role: "Applicant",
-            },
-            ...allUsers.map((u) => ({
-              id: u.id,
-              name: u.loginName,
-              role: u?.userRoles?.[0]?.role?.name || "User",
-            })),
-          ];
+          {
+            id: "applicant001",
+            name: data?.workforceEmployee?.firstNameBn || "আবেদনকারী",
+            role: "Applicant",
+          },
+          ...allUsers.map((u) => ({
+            id: u.id,
+            name: u.loginName,
+            role: u?.userRoles?.[0]?.role?.name || "User",
+          })),
+        ];
         setMovementLogs(users);
       })
       .catch((err) => console.error("Movement fetch failed", err))
       .finally(() => setIsLoadingPath(false));
   }, []);
 
-
-  if (!data || !data.workforceEmployee)
-    return <p>আবেদনের কোনো তথ্য পাওয়া যায়নি।</p>;
+  if (!data || !data.workforceEmployee) return <p>আবেদনের কোনো তথ্য পাওয়া যায়নি।</p>;
 
   return (
     <>
+      <Paper className={classes.modalContent}>
+        <div className="print-button-container" style={{ textAlign: "right", marginBottom: 16 }}>
+          <Button variant="contained" color="secondary" startIcon={<PrintIcon />} onClick={handleSafePrint}>
+            Print
+          </Button>
+        </div>
 
-
-
-        <Paper className={classes.modalContent}>
-          <div
-            className="print-button-container"
-            style={{ textAlign: "right", marginBottom: 16 }}
-          >
-            <Button
-              variant="contained"
-              color="secondary"
-              startIcon={<PrintIcon />}
-              onClick={handleSafePrint}
-            >
-              Print
-            </Button>
-          </div>
-
-          {/* Printable Area */}
-          <div id="print-container" ref={printRef}>
-            <DeathApplicationPrint
-              data={{ ...data, movementLogs }}
-              documents={documents}
-              logoLeft={logoLeft}
-              logoLeftUrl={logoLeftUrl}
-            />
-          </div>
-        </Paper>
-
+        {/* Printable Area */}
+        <div id="print-container" ref={printRef}>
+          <DeathApplicationPrint data={{ ...data, movementLogs }} documents={documents} logoLeft={logoLeft} logoLeftUrl={logoLeftUrl} />
+        </div>
+      </Paper>
     </>
   );
 };

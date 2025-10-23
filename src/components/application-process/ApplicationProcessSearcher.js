@@ -698,29 +698,29 @@ class ApplicationProcessSearcher extends Component {
       let defaultStatusFilters = [];
       if (revertedApplication) {
         defaultStatusFilters = [
-          'organizationTypeIn: ["eis"]',
+          // 'organizationTypeIn: ["eis"]',
           'statusIn: ["revert"]',
           'associationTypeIn: "BEPZA"'
         ];
 
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
+        // if (loggedInUserId) {
+        //   defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        // }
       }
       else if (this.props.forwardedApplications) {
         defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator","revert_to_applicant", associationTypeIn: "BEPZA"]');
       }
       else if (this.props.returnedApplications) {
         defaultStatusFilters = ['statusIn: ["revert"]','associationTypeIn: "BEPZA"'];
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-        }
+        // if (loggedInUserId) {
+        //   defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        // }
       }
       else {
         defaultStatusFilters.push('statusIn: ["forward_to_association","resubmitted_application"]', 'associationTypeIn: "BEPZA"');
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
+        // if (loggedInUserId) {
+        //   defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        // }
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -751,29 +751,29 @@ class ApplicationProcessSearcher extends Component {
       let defaultStatusFilters = [];
       if (revertedApplication) {
         defaultStatusFilters = [
-          'organizationTypeIn: ["eis"]',
+          // 'organizationTypeIn: ["eis"]',
           'statusIn: ["revert"]',
           'associationTypeIn: "LFMEAB"'
         ];
 
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
+        // if (loggedInUserId) {
+        //   defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        // }
       }
       else if (this.props.forwardedApplications) {
         defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator","revert_to_applicant", associationTypeIn: "LFMEAB"]');
       }
       else if (this.props.returnedApplications) {
         defaultStatusFilters = ['statusIn: ["revert"]','associationTypeIn: "LFMEAB"'];
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-        }
+        // if (loggedInUserId) {
+        //   defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        // }
       }
       else {
         defaultStatusFilters.push('statusIn: ["forward_to_association","resubmitted_application"]', 'associationTypeIn: "LFMEAB"');
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
+        // if (loggedInUserId) {
+        //   defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        // }
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -2671,7 +2671,7 @@ class ApplicationProcessSearcher extends Component {
             )}
           </Box>
         ) : null}
-        {userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ? (
+        {userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION ? (
           <Box
             style={{
               marginTop: 10,
