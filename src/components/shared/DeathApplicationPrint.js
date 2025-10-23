@@ -606,8 +606,20 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
             {/* Empty field */}
           </Typography>
 
+          <Typography className={classes.sectionTitle}>৬। সংযুক্তিঃ- (আবেদন দাখিলের পূর্ব নিম্নোক্ত দলিলাদি সংযুক্ত করতে হবে)</Typography>
+          <Grid container spacing={1}>
+            {requiredAttachments.map((item, index) => (
+              <Grid item xs={12} key={index}>
+                <Box display="flex" alignItems="center">
+                  <Box className={`${classes.checkbox} ${item.checked ? classes.checked : ""}`} />
+                  <Typography variant="body2">{item.label}</Typography>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+
           <Box mt={4}>
-            <Typography variant="h6">৬। মুভমেন্ট লগ / Movement Log</Typography>
+            <Typography variant="h6">৭। মুভমেন্ট লগ / Movement Log</Typography>
             <Divider />
             {movementLogs.length > 0 ? (
               <Table style={{ marginTop: 8 }} size="small" className={classes.table}>
@@ -645,34 +657,22 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
             )}
           </Box>
 
-          <Typography className={classes.sectionTitle}>৬। সংযুক্তিঃ- (আবেদন দাখিলের পূর্ব নিম্নোক্ত দলিলাদি সংযুক্ত করতে হবে)</Typography>
-          <Grid container spacing={1}>
-            {requiredAttachments.map((item, index) => (
-              <Grid item xs={12} key={index}>
-                <Box display="flex" alignItems="center">
-                  <Box className={`${classes.checkbox} ${item.checked ? classes.checked : ""}`} />
-                  <Typography variant="body2">{item.label}</Typography>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-
           {/* <Divider style={{ margin: "10px 0" }} /> */}
 
           {/* Section 7 & 8: Declaration and Recommendation */}
-          <Typography className={classes.sectionTitle}>৭। ঘোষণা</Typography>
+          {/* <Typography className={classes.sectionTitle}>৭। ঘোষণা</Typography>
           <Typography variant="body2" style={{ lineHeight: 1.5 }}>
             আমি ঘোষণা করতেছি যে, এই আবেদন পত্রে বর্ণিত সকল তথ্য আমার জ্ঞান ও বিশ্বাস মতে সত্য এবং আমি কোনো তথ্য গোপন করি নাই।
-          </Typography>
+          </Typography> */}
 
-          <Box className={classes.signatureBox}>
+          {/* <Box className={classes.signatureBox}>
             <Box className={classes.signatureItem}>
               আবেদনকারীর নাম, স্বাক্ষর ও তারিখ
               <br />({applicantName})<br />({createdDate})
             </Box>
             <Box className={classes.signatureItem}>কারখানা কর্তৃপক্ষের স্বাক্ষর, সীল এবং মোবাইল নাম্বার</Box>
             <Box className={classes.signatureItem}>মালিকপক্ষের প্রতিনিধি সংস্থার দায়িত্বপ্রাপ্ত কর্মকর্তার স্বাক্ষর, সীল এবং মোবাইল নাম্বার</Box>
-          </Box>
+          </Box> */}
 
           <Typography variant="body2" className={classes.note} style={{ textAlign: "center", marginTop: "15px" }}>
             (বিঃদ্রঃ- অসম্পূর্ণ ও ভুল আবেদন বাতিলের ক্ষেত্রে কেন্দ্রীয় তহবিলের সিদ্ধান্তই চূড়ান্ত বলে গণ্য হবে।)
