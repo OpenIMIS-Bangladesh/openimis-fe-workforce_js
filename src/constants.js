@@ -104,6 +104,7 @@ export const WORKFORCE_STATUS = {
   FORWARD_TO_EIS_COORDINATOR:"forward_to_eis_coordinator",
   RESUBMITTED_APPLICATION:"resubmitted_application",
   APPROVED_BY_EIS_ADVISOR: "approved_by_eis_advisor",
+  FORWARD_TO_BLWF_SECTION: "forward_to_blwf_section",
 
 
 
@@ -160,6 +161,7 @@ export const STATUS_MAP_BN  = {
   forward_to_eis_coordinator: "ইআইএস কোঅর্ডিনেটর কাছে প্রেরণ",
   resubmitted_application: "পুনরায় জমাকৃত আবেদন",
   approved_by_eis_advisor: "ইআইএস উপদেষ্টা দ্বারা অনুমোদিত",
+  forward_to_blwf_section: "বিএলডাব্লিউএফ শাখায় প্রেরণ",
 
 
 };
