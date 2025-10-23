@@ -81,6 +81,7 @@ export async function handleBulkSelectedByAssociationLogic({
   setConfirmModalOpen,
   setConfirmModalMessage,
   setConfirmModalCallback,
+  userRights
 }) {
   if (!selectedApplicationIds || selectedApplicationIds.length === 0) {
     alert("Please select at least one application.");
@@ -104,7 +105,7 @@ export async function handleBulkSelectedByAssociationLogic({
             const createApplicationMovementData = {
               applicationId: decodedId,
               status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
-              note: "আবেদন শাখায়/কোঅর্ডিনেটর প্রেরণ করা হয়েছে",
+              note: "আবেদন শাখায় প্রেরণ করা হয়েছে",
               action: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
                           ? "forward_to_cf_section"
                           : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
@@ -147,7 +148,7 @@ export async function handleBulkSelectedByAssociationLogic({
           message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
         });
       } finally {
-        window.location.reload();
+        // window.location.reload();
       }
     }
 

@@ -22,7 +22,7 @@ import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal"
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
 import ForwardApplicationFactoryAdminModal from "./modals/ForwardApplicationFactoryAdminModal";
 import ForwardApplicationSectionAdminModal from "./modals/ForwardApplicationSectionAdminModal";
-import ForwardApplicationEisAdvisorModal from "./modals/ForwardApplicationEisAdvisorModal";
+import ForwardApplicationEisCoordinatorModal from "./modals/ForwardApplicationEisCoordinatorModal";
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
@@ -1773,13 +1773,14 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkSelectedbyAssociation = () => {
     const { selectedApplicationIds } = this.state;
-    const { loggedInUserId, updateApplication, createApplicationMovement } = this.props;
+    const { loggedInUserId, updateApplication, createApplicationMovement,userRights } = this.props;
 
   handleBulkSelectedByAssociationLogic({
     selectedApplicationIds,
     loggedInUserId,
     updateApplication,
     createApplicationMovement,
+    userRights,
     setServerResponse: (resp) => this.setState({ serverResponse: resp }),
     setConfirmModalOpen: (v) => this.setState({ confirmModalOpen: v }),
     setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
@@ -2921,7 +2922,7 @@ class ApplicationProcessSearcher extends Component {
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
                 />
-                  <ForwardApplicationEisAdvisorModal
+                  <ForwardApplicationEisCoordinatorModal
                   open={forwardModalOpenSA}
                   onClose={this.handleCloseForwardModalForEisCoordinator}
                   selectedApplicationIds={this.state.selectedApplicationIds}

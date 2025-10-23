@@ -344,9 +344,9 @@ const ApplicantDashboard = () => {
   const classes = useStyles();
   const history = useHistory()
   const path = window.location.href
-  const isEisPath = path.includes("eis")
+  // const isEisPath = path.includes("eis")
+  const isEisPath = true
   console.log({isEisPath})
-  // const isEisPath = false
   console.log("heello from url history",isEisPath)
   const [selectedMenu, setSelectedMenu] = useState(() => {
     const hash = window.location.hash.substring(1);
