@@ -93,6 +93,7 @@ export async function handleBulkSelectedByAssociationLogic({
   setConfirmModalCallback(async (confirmed) => {
     if (confirmed) {
       try {
+        const userType = getUserTypeFromRights(userRights);
         await Promise.all(
           selectedApplicationIds.map(async (selectedItem) => {
             const decodedId = safeDecodeId(selectedItem?.id);
