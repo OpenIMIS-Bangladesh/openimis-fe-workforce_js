@@ -34,7 +34,7 @@ export const forwardToAssociation = async ({
                           : userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
                           ? 193
                           : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION
-                          ? 202
+                          ? 219
                           : userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
                           ? 203
                           : null,
@@ -106,7 +106,15 @@ export async function handleBulkSelectedByAssociationLogic({
               note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
               action: "forward_to_cf_section",
               applicationFromId: loggedInUserId,
-              applicationToId: 139,
+              applicationToId: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
+                          ? 139
+                          : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
+                          ? 193
+                          : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+                          ? 136
+                          : userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
+                          ? 194
+                          : null,
               toRoleId: 32,
             };
 
