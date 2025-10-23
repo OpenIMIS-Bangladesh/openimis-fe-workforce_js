@@ -29,6 +29,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useModulesManager, useTranslations, Autocomplete, useGraphqlQuery, decodeId } from "@openimis/fe-core";
 import { fetchApplicationsSummary } from "../../actions";
 import EisMultiStepApplyForm from "../application/EisMultiStepApplyForm";
+import { isEisPath } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -343,10 +344,8 @@ const ApprovedApplications = () => {
 const ApplicantDashboard = () => {
   const classes = useStyles();
   const history = useHistory()
-  const path = window.location.href
-  const isEisPath = path.includes("eis")
-  console.log({isEisPath})
-  // const isEisPath = false
+  // const isEisPath = isEisPath()
+  // console.log({isEisPath})
   console.log("heello from url history",isEisPath)
   const [selectedMenu, setSelectedMenu] = useState(() => {
     const hash = window.location.hash.substring(1);
@@ -362,7 +361,7 @@ const ApplicantDashboard = () => {
       case "pendingApplications":
         return <FiledApplications />;
       case "newApplications":
-        return isEisPath ? <EisMultiStepApplyForm /> : <MultiStepApplyForm />;
+        return isEisPath() ? <EisMultiStepApplyForm /> : <MultiStepApplyForm />;
       // case "newEisApplications":
       //   return <EisMultiStepApplyForm />;
       case "revertedApplication":

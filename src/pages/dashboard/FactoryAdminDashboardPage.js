@@ -38,6 +38,7 @@ import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import EisMultiStepApplyForm from "../application/EisMultiStepApplyForm";
+import { isEisPath } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -501,8 +502,8 @@ const Others = () => (
 const FactoryAdminDashboard = () => {
   const classes = useStyles();
   const history = useHistory();
-  const path = window.location.href;
-  const isEisPath = path.includes("eis");
+  // const path = window.location.href;
+  // const isEisPath = path.includes("eis");
   console.log({ isEisPath });
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
 
@@ -511,7 +512,7 @@ const FactoryAdminDashboard = () => {
       case "pendingApplications":
         return <FiledApplications />;
       case "newApplications":
-        return isEisPath ? <EisMultiStepApplyForm /> : <MultiStepApplyForm />;
+        return isEisPath() ? <EisMultiStepApplyForm /> : <MultiStepApplyForm />;
       case "submittedByApplicants":
         return <SubmittedByApplicants />;
       case "forwardedApplications":

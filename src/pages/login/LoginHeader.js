@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Box, Grid, Paper, LinearProgress, Divider, Link, Typography } from "@material-ui/core";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { makeStyles } from "@material-ui/styles";
 
 
@@ -24,6 +25,12 @@ const useStyles = makeStyles((theme) => ({
 export default function LoginHeader() {
     const classes = useStyles();
     return (
+        <>
+        <Box display="flex" justifyContent="flex-start" >
+                <Button startIcon={<ArrowBackIcon />} href={"https://eis-site-stage.skydigitalbd.com/"} variant="text" color="primary" style={{padding:"3px"}}>
+                  Back
+                </Button>
+              </Box>
         <Grid item container direction="row" alignItems="center" justifyContent="center">
             <img className={classes.logo} src={"/api/workforce/logo"} />
             <>
@@ -55,5 +62,7 @@ export default function LoginHeader() {
                     </Box>
                 </div>
             </>
-        </Grid>)
+        </Grid>
+        </>
+        )
 }

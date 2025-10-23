@@ -251,6 +251,11 @@ const RegistrationPage = () => {
       {isSubmitting && <LinearProgress />}
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={3}>
+      <Box display="flex" justifyContent="flex-start" >
+                      <Button startIcon={<ArrowBackIcon />} href={"https://eis-site-stage.skydigitalbd.com/"} variant="text" color="primary" style={{padding:"3px"}}>
+                        Back
+                      </Button>
+                    </Box>
           <Typography variant="h5" color="primary">
             <FormattedMessage
               module="workforce"
