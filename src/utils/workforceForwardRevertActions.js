@@ -103,8 +103,14 @@ export async function handleBulkSelectedByAssociationLogic({
             const createApplicationMovementData = {
               applicationId: decodedId,
               status: WORKFORCE_STATUS.FORWARD_TO_CF_SECTION,
-              note: "আবেদন সিএফ শাখায় প্রেরণ করা হয়েছে",
-              action: "forward_to_cf_section",
+              note: "আবেদন শাখায়/কোঅর্ডিনেটর প্রেরণ করা হয়েছে",
+              action: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
+                          ? "forward_to_cf_section"
+                          : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+                          ? "forward_to_blwf_section"
+                          : userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
+                          ? "forward_to_eis_coordinator"
+                          : null,
               applicationFromId: loggedInUserId,
               applicationToId: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
                           ? 139
