@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ForwardApplicationEisAdvisorModal = ({
+const ForwardApplicationEisCoordinatorModal = ({
   open,
   onClose,
   selectedApplication,
@@ -330,4 +330,4 @@ const ForwardApplicationEisAdvisorModal = ({
   );
 };
 
-export default ForwardApplicationEisAdvisorModal;
+export default ForwardApplicationEisCoordinatorModal;
