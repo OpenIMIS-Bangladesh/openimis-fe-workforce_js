@@ -1236,6 +1236,9 @@ class ApplicationProcessSearcher extends Component {
   handleCloseForwardModalForEisAdvisor = () => {
     this.setState({ forwardModalOpenSA: false, selectedApplication: null });
   };
+  handleCloseForwardModalForEisCoordinator = () => {
+    this.setState({ forwardModalOpenSA: false, selectedApplication: null });
+  };
   handleCloseForwardModalForEisDoctor = () => {
     this.setState({ forwardModalOpenEisDoctor: false, selectedApplication: null });
   };
@@ -2918,14 +2921,14 @@ class ApplicationProcessSearcher extends Component {
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
                 />
-                  {/* <ForwardApplicationEisAdvisorModal
+                  <ForwardApplicationEisAdvisorModal
                   open={forwardModalOpenSA}
-                  onClose={this.handleCloseForwardModalForEisAdvisor}
+                  onClose={this.handleCloseForwardModalForEisCoordinator}
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
-                  summaryId={decodeId(this.props.summaryId)}
-                /> */}
+                  summaryId={this.props.summaryId}
+                />
               </>
             );
           } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {

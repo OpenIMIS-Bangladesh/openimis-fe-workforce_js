@@ -642,7 +642,7 @@ const EisCoordinatorDashboardPage = () => {
       case "pendingMeetingSheet":
         return <PendingMeetingSheet summaryData={pendingSummaryData} disableButtons={1} />;
       case "advisorApproveMeetingSheet":
-        return <AdvisorApprovedApplications summaryData={advisorApprovedSummaryData} disableButtons={1} />;
+        return <AdvisorApprovedApplications summaryData={advisorApprovedSummaryData} />;
       case "sentMeetingSheet":
         return <SentMeetingSheet summaryData={sentSummaryData} disableButtons={1} />;
       case "approveMeetingSheet":
