@@ -164,7 +164,7 @@ class ViewApplicationPage extends Component {
       employeeDependentInfo: this.safeParse(dependentInfo),
       employeeChildrenInfo: this.safeParse(childrenInfo),
       applicantInfo: this.safeParse(applicantInfo),
-      metadata: this.safeParse(metaInfo),
+      metadata: this.safeParse(metaInfo), 
     };
 
     const uploadByApplicant = documents?.filter((doc) => doc.holderType === "applicant");
