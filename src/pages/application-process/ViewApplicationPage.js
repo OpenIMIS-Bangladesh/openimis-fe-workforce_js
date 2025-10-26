@@ -124,6 +124,7 @@ class ViewApplicationPage extends Component {
       ? this.setState({ forwardModalOpenFA: true })
       : handleBulkSelectedByAssociationLogic({
           selectedApplicationIds: [{ id: application?.id }],
+          user_rights,
           loggedInUserId,
           updateApplication: this.props.updateApplication,
           createApplicationMovement: this.props.createApplicationMovement,
@@ -186,7 +187,9 @@ class ViewApplicationPage extends Component {
             </Grid>
             {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
             user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
-            user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ? (
+            user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+            ||  user_type === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION
+            ||  user_type === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION ? (
               <>
                 <Grid item xs={1}>
                   <Button

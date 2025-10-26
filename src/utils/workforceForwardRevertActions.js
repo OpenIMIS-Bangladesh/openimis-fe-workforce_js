@@ -100,40 +100,30 @@ export async function handleBulkSelectedByAssociationLogic({
             const decodedId = safeDecodeId(selectedItem?.id);
             const updateApplicationData = {
               id: decodedId,
-              status:  userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
+              status:  userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
                 ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
-                : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-                ? WORKFORCE_STATUS.FORWARD_TO_BLWF_SECTION
-                : userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
+                : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
                 ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
                 : null,
             };
             const createApplicationMovementData = {
               applicationId: decodedId,
-              status:  userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
+               status:  userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
                 ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
-                : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-                ? WORKFORCE_STATUS.FORWARD_TO_BLWF_SECTION
-                : userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
+                : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
                 ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
-                : null,         
+                : null,       
 
               note: "আবেদন শাখায় প্রেরণ করা হয়েছে",
-              action: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
+              action: userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
                           ? "forward_to_cf_section"
-                          : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-                          ? "forward_to_blwf_section"
-                          : userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
+                          : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
                           ? "forward_to_eis_coordinator"
                           : null,
               applicationFromId: loggedInUserId,
-              applicationToId: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
+              applicationToId: userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
                           ? 139
-                          : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
-                          ? 193
-                          : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-                          ? 136
-                          : userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR
+                          : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
                           ? 194
                           : null,
               toRoleId: 32,
