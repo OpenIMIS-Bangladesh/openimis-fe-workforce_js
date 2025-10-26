@@ -7,7 +7,7 @@ import FileUploader from "../../pickers/FileUploader";
 import DocumentReviewAccordion from "../application-process/DocumentReviewAccordion";
 import { banglaLabels, ORGANIZATION_TYPE_NAME_BN, ORGANIZATION_TYPE_NAME_EN, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
-import { conditionalEnToBn, getUserType } from "../../utils/utils";
+import { conditionalEnToBn, enToBn, getUserType } from "../../utils/utils";
 import { updateApplication } from "../../actions";
 import DoctorsEntries from "./Atoms/DoctorsEntries";
 import EisFactoryAdminModal from "./EisFactoryAdminModal";
@@ -136,7 +136,7 @@ const renderDetails = (data, classes, parentKey = "", language) => {
         <Card key={idx} className={classes.nestedCard}>
           <CardContent>
             <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold", fontSize: "large" }}>
-              {formatKey(parentKey, language)} {idx + 1}
+              {formatKey(parentKey, language)} {enToBn(idx + 1)}
             </Typography>
             <Divider style={{ marginBottom: 12 }} />
 
@@ -147,7 +147,8 @@ const renderDetails = (data, classes, parentKey = "", language) => {
                     <span className={classes.label} style={{ fontWeight: "bold" }}>
                       {formatKey(key, language)}:
                     </span>{" "}
-                    {value}
+                    {/* {value} */}
+                    <FormattedMessage id={value} module={"workforce"} />
                   </Typography>
                 </Grid>
               ))}

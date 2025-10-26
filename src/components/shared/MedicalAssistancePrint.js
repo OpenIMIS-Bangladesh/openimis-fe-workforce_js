@@ -8,33 +8,37 @@ const useStyles = makeStyles({
     "@media print": {
       html: { overflow: "initial !important" },
       body: { overflow: "initial !important" },
+      "*": {
+        color: "#000 !important",
+      },
       ".page-break": { display: "block", pageBreakBefore: "auto" },
       "table, tr, td, th": { pageBreakInside: "avoid !important" },
     },
   },
-  paper: { padding: 32, fontFamily: "'Siyam Rupali', Arial, sans-serif" },
-  headerContainer: { marginBottom: 16, position: "relative" },
+  paper: { padding: 32, fontFamily: "'Siyam Rupali', Arial, sans-serif",color:"black" },
+  headerContainer: { marginBottom: 16, position: "relative",color:"black" },
   logo: { maxWidth: 70, maxHeight: 70 },
-  headerText: { textAlign: "center" },
+  headerText: { textAlign: "center",color:"black" },
   title: {
     fontSize: "small",
     fontWeight: "bold",
     textAlign: "center",
     margin: "8px 0 5px 0",
     textDecoration: "underline",
+    color:"black"
   },
-  sectionTitle: { fontWeight: "bold", fontSize: "small", marginTop: 8, marginBottom: 4, borderBottom: "1px solid #000", paddingBottom: 4 },
-  fieldLabel: { textAlign: "left", fontSize: "0.9rem", paddingRight: 8 },
-  fieldValue: { borderBottom: "1px dotted #000", minHeight: 20, paddingLeft: 8, display: "block", fontSize: "0.9rem" },
-  checkboxContainer: { display: "flex", alignItems: "center", marginRight: 16 },
-  checkbox: { width: 15, height: 15, border: "1px solid #000", marginRight: 4, display: "inline-block", backgroundColor: "transparent" },
+  sectionTitle: { fontWeight: "bold", fontSize: "small", marginTop: 8, marginBottom: 4, borderBottom: "1px solid #000", paddingBottom: 4,color:"black" },
+  fieldLabel: { textAlign: "left", fontSize: "0.9rem", paddingRight: 8,color:"black" },
+  fieldValue: { borderBottom: "1px dotted #000", minHeight: 20, paddingLeft: 8, display: "block", fontSize: "0.9rem" ,color:"black"},
+  checkboxContainer: { display: "flex", alignItems: "center", marginRight: 16,color:"black" },
+  checkbox: { width: 15, height: 15, border: "1px solid #000", marginRight: 4, display: "inline-block", backgroundColor: "transparent",color:"black" },
   checked: { backgroundColor: "#000" },
   table: {
     width: "100%",
     borderCollapse: "collapse",
     marginTop: 8,
     "& th, & td": { border: "1px solid #000", padding: 8 },
-    "& th": { fontWeight: "bold", textAlign: "center" },
+    "& th": { fontWeight: "bold", textAlign: "center",color:"black" },
   },
   photoBox: {
     border: "1px solid #000",
@@ -47,8 +51,9 @@ const useStyles = makeStyles({
     position: "absolute",
     right: 0,
     top: 60,
+    color:"black"
   },
-  note: { fontSize: "0.85rem", marginTop: 8, marginBottom: 8 },
+  note: { fontSize: "0.85rem", marginTop: 8, marginBottom: 8,color:"black" },
 });
 
 // --- Helpers ---
@@ -102,19 +107,21 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
   const isNormalDeath = true;
 
   const requiredAttachments = [
-    { label: "রেজিস্টার্ড চিকিৎসক/ ইউনিয়ন পরিষদ / পৌরসভা বা সিটি কর্পোরেশন কর্তৃক প্রদত্ত মৃত্যু সনদ (মূলকপি)", checked: true },
-    { label: "মৃত শ্রমিকের নিয়োগপত্র", checked: true },
+    // { label: "রেজিস্টার্ড চিকিৎসক/ ইউনিয়ন পরিষদ / পৌরসভা বা সিটি কর্পোরেশন কর্তৃক প্রদত্ত মৃত্যু সনদ (মূলকপি)", checked: true },
+    { label: "শ্রমিকের নিয়োগপত্র", checked: true },
     { label: "প্রতিষ্ঠান কর্তৃক প্রদত্ত আইডি কার্ড", checked: true },
     { label: "ইউনিয়ন পরিষদ / পৌরসভা বা সিটি কর্পোরেশন হতে ওয়ারিশান সনদ (মূলকপি)", checked: true },
-    { label: "মৃত শ্রমিকের জাতীয় পরিচয়পত্র এবং ছবি", checked: true },
+    // { label: "মৃত শ্রমিকের জাতীয় পরিচয়পত্র এবং ছবি", checked: true },
     { label: "প্রতিষ্ঠান কর্তৃক প্রদত্ত প্রত্যয়ন পত্র (শ্রমিকের সকল তথ্যসহ)", checked: true },
     { label: "নমিনীর জাতীয় পরিচয়পত্র/ জন্মসনদ এবং ছবি", checked: true },
-    { label: "মৃত শ্রমিকের শেষ ছয় মাসের বেতন শীটের কপি", checked: true },
+    { label: "শ্রমিকের শেষ ছয় মাসের বেতন শীটের কপি", checked: true },
     { label: "প্রতিষ্ঠান কর্তৃক প্রদত্ত প্রত্যয়ন পত্র (নমিনীর সকল তথ্যসহ)", checked: true },
     { label: "নমিনীর ব্যাংক হিসাবের চেক বা স্টেটমেন্টের কপি", checked: true },
     { label: "প্রতিষ্ঠানের মেম্বারশীপ সনদপত্র", checked: true },
-    { label: "মৃত শ্রমিকের অনলাইন ডেটাবেজের কপি", checked: true },
+    // { label: "মৃত শ্রমিকের অনলাইন ডেটাবেজের কপি", checked: true },
   ];
+
+  console.log({ medicalAssistancePrintData: data });
 
   return (
     <>
@@ -244,48 +251,93 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
             </Grid>
           </Grid>
 
+          {/* Section 3: Disease Info */}
+          {data?.employeeAccidentInfo && (
+            <>
+              <Typography className={classes.sectionTitle}>৩। রোগের তথ্য </Typography>
+
+              <TableContainer component={Box}>
+                <Table className={classes.table}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>ক্রম</TableCell>
+                      <TableCell>রোগের নাম</TableCell>
+                      <TableCell>রোগের গ্রেড</TableCell>
+                      <TableCell>নির্ণয়ের তারিখ</TableCell>
+                      <TableCell>সর্বনিম্ন অনুদান</TableCell>
+                      <TableCell>সর্বোচ্চ অনুদান</TableCell>
+                      <TableCell>প্রস্তাবিত অনুদান</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {data?.employeeAccidentInfo?.cronicDiseaseType?.map((disease, index) => (
+                      <TableRow key={disease.id || index}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{disease.diseaseName || "N/A"}</TableCell>
+                        <TableCell>{disease.grade || "N/A"}</TableCell>
+                        <TableCell>{formatDate(data?.employeeAccidentInfo?.diagnosisDate)}</TableCell>
+                        <TableCell>{disease.minimumDonationAmount || 0}</TableCell>
+                        <TableCell>{disease.maximumDonationAmount || 0}</TableCell>
+                        <TableCell>{data?.employeeAccidentInfo?.grantAmount || 0}</TableCell>
+                      </TableRow>
+                    ))}
+
+                    {/* Fallback if no disease data */}
+                    {(!data?.employeeAccidentInfo?.cronicDiseaseType || data?.employeeAccidentInfo?.cronicDiseaseType.length === 0) && (
+                      <TableRow>
+                        <TableCell colSpan={7} align="center">
+                          কোনো রোগ সম্পর্কিত তথ্য পাওয়া যায়নি।
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
+          )}
+
           {/* Section 4: Bank Info - Start of Page 2 (implicit page break) */}
-                    <div className="page-break-before">
-                      <Typography className={classes.sectionTitle}>৪। মৃত শ্রমিকের ওয়ারিশ / ওয়ারিশানের ব্যাংক হিসাবের বিবরণীঃ-</Typography>
-                      <Typography variant="body2" style={{ marginBottom: "8px" }}>
-                        (একাধিক ওয়ারিশানের ক্ষেত্রে প্রাপ্যতা (%) উল্লেখ করতে হবে)
-                      </Typography>
-          
-                      <TableContainer component={Box}>
-                        <Table className={classes.table}>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>ক্রম</TableCell>
-                              <TableCell>মৃত শ্রমিকের ওয়ারিশ / ওয়ারিশানের নাম</TableCell>
-                              <TableCell>সম্পর্ক</TableCell>
-                              <TableCell>ব্যাংক হিসাব নাম্বার, শাখার নাম</TableCell>
-                              <TableCell>ব্যাংকের রাউটিং নাম্বার</TableCell>
-                              <TableCell>প্রাপ্যতা (%)</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {/* Row A: Example with applicant data */}
-                            {employeeBankInfo?.map((bankInfo, index) => {
-                              const bankName = bankInfo?.bank?.nameBn || "N/A";
-                              const branchName = bankInfo?.branch?.nameBn || "N/A";
-                              const accountHolderName = bankInfo?.accountHolderName || "N/A";
-                              const accountNumber = bankInfo?.accountNumber || "N/A";
-                              const routingNumber = bankInfo?.branch?.routingNumber || "N/A";
-                              return (
-                                <TableRow key={index}>
-                                  <TableCell>ক</TableCell>
-                                  <TableCell>{accountHolderName}</TableCell>
-                                  <TableCell>{applicantRelation}</TableCell>
-                                  <TableCell>
-                                    {accountNumber}, {branchName}, {bankName}
-                                  </TableCell>
-                                  <TableCell>{routingNumber}</TableCell>
-                                  <TableCell>১০০% (উদাহরণ)</TableCell>
-                                </TableRow>
-                              );
-                            })}
-                            {/* Rows for others (b, c, d) - empty as per data */}
-                            {/* {["খ", "গ", "ঘ"].map((item) => (
+          <div className="page-break-before">
+            <Typography className={classes.sectionTitle}>৪। মৃত শ্রমিকের ওয়ারিশ / ওয়ারিশানের ব্যাংক হিসাবের বিবরণীঃ-</Typography>
+            <Typography variant="body2" style={{ marginBottom: "8px" }}>
+              (একাধিক ওয়ারিশানের ক্ষেত্রে প্রাপ্যতা (%) উল্লেখ করতে হবে)
+            </Typography>
+
+            <TableContainer component={Box}>
+              <Table className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>ক্রম</TableCell>
+                    <TableCell>মৃত শ্রমিকের ওয়ারিশ / ওয়ারিশানের নাম</TableCell>
+                    <TableCell>সম্পর্ক</TableCell>
+                    <TableCell>ব্যাংক হিসাব নাম্বার, শাখার নাম</TableCell>
+                    <TableCell>ব্যাংকের রাউটিং নাম্বার</TableCell>
+                    <TableCell>প্রাপ্যতা (%)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {/* Row A: Example with applicant data */}
+                  {employeeBankInfo?.map((bankInfo, index) => {
+                    const bankName = bankInfo?.bank?.nameBn || "N/A";
+                    const branchName = bankInfo?.branch?.nameBn || "N/A";
+                    const accountHolderName = bankInfo?.accountHolderName || "N/A";
+                    const accountNumber = bankInfo?.accountNumber || "N/A";
+                    const routingNumber = bankInfo?.branch?.routingNumber || "N/A";
+                    return (
+                      <TableRow key={index}>
+                        <TableCell>ক</TableCell>
+                        <TableCell>{accountHolderName}</TableCell>
+                        <TableCell>{applicantRelation}</TableCell>
+                        <TableCell>
+                          {accountNumber}, {branchName}, {bankName}
+                        </TableCell>
+                        <TableCell>{routingNumber}</TableCell>
+                        <TableCell>১০০% (উদাহরণ)</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {/* Rows for others (b, c, d) - empty as per data */}
+                  {/* {["খ", "গ", "ঘ"].map((item) => (
                               <TableRow key={item}>
                                 <TableCell>{item}</TableCell>
                                 <TableCell></TableCell>
@@ -295,10 +347,16 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
                                 <TableCell></TableCell>
                               </TableRow>
                             ))} */}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </div>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+
+          {/* Section 5 & 6: Other Info and Attachments */}
+          <Typography className={classes.sectionTitle}>৫। অন্য কোনো তথ্য (যদি থাকে):-</Typography>
+          <Typography className={classes.fieldValue} style={{ minHeight: "40px" }}>
+            {/* Empty field */}
+          </Typography>
 
           <Typography className={classes.sectionTitle}>৬। সংযুক্তিঃ- (আবেদন দাখিলের পূর্ব নিম্নোক্ত দলিলাদি সংযুক্ত করতে হবে)</Typography>
           <Grid container spacing={1}>
