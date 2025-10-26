@@ -1054,9 +1054,9 @@ class ApplicationProcessSearcher extends Component {
       }
       else {
         defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator"]','applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
+        // if (loggedInUserId) {
+        //   defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        // }
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';

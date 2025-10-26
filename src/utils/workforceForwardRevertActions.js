@@ -151,7 +151,7 @@ export async function handleBulkSelectedByAssociationLogic({
           message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
         });
       } finally {
-        // window.location.reload();
+        window.location.reload();
       }
     }
 
