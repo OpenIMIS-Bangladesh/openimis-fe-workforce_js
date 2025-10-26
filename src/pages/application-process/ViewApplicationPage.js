@@ -164,6 +164,7 @@ class ViewApplicationPage extends Component {
       employeeDependentInfo: this.safeParse(dependentInfo),
       employeeChildrenInfo: this.safeParse(childrenInfo),
       applicantInfo: this.safeParse(applicantInfo),
+      institutionInfo: this.safeParse(institutionInfo),
       metadata: this.safeParse(metaInfo), 
     };
 
