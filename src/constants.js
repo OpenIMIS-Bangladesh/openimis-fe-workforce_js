@@ -542,7 +542,14 @@ export const banglaLabels = {
   ApplicationFor:"আবেদনকারীর ধরন",
   dependents:"নির্ভরশীল সদস্যদের তথ্য",
   institutionInfo:"প্রতিষ্ঠানের তথ্য",
-  position:"পদবী"
+  position:"পদবী",
+  grade:"গ্রেড",
+  diseaseNo:"রোগ নং",
+  diseaseName:"রোগের নাম",
+  maximumDonationAmount:"সর্বোচ্চ দানের পরিমাণ",
+  minimumDonationAmount:"ন্যূনতম অনুদানের পরিমাণ",
+  status:"অবস্থা",
+  diseaseType:"রোগের ধরন"
 
 };
 

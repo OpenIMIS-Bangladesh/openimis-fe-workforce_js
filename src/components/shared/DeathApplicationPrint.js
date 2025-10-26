@@ -139,7 +139,7 @@ const useStyles = makeStyles({
   table: {
     width: "100%",
     borderCollapse: "collapse",
-    color:"black",
+    color: "black",
     marginTop: "8px", // Replaced theme.spacing(1)
     "& th, & td": {
       border: "1px solid #000",
@@ -266,11 +266,6 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
 
   // Bank Info - Only taking the first one as an example
   const bankInfo = employeeBankInfo && employeeBankInfo.length > 0 ? employeeBankInfo[0] : {};
-  const bankName = bankInfo.bank?.nameBn || "N/A";
-  const branchName = bankInfo.branch?.nameBn || "N/A";
-  const accountHolderName = bankInfo.accountHolderName || "N/A";
-  const accountNumber = bankInfo.accountNumber || "N/A";
-  const routingNumber = bankInfo.branch?.routingNumber || "N/A";
 
   // Checkbox for death reason
   const isNormalDeath = true;
@@ -291,7 +286,7 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
     { label: "প্রতিষ্ঠানের মেম্বারশীপ সনদপত্র", checked: true },
     { label: "মৃত শ্রমিকের অনলাইন ডেটাবেজের কপি", checked: true },
   ];
-  console.log({movementLogs})
+  console.log({ movementLogs });
   return (
     <>
       <Paper id="print-container" className={`${classes.paper} printable-paper`}>
@@ -572,18 +567,27 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
                 </TableHead>
                 <TableBody>
                   {/* Row A: Example with applicant data */}
-                  <TableRow>
-                    <TableCell>ক</TableCell>
-                    <TableCell>{accountHolderName}</TableCell>
-                    <TableCell>{applicantRelation}</TableCell>
-                    <TableCell>
-                      {accountNumber}, {branchName}, {bankName}
-                    </TableCell>
-                    <TableCell>{routingNumber}</TableCell>
-                    <TableCell>১০০% (উদাহরণ)</TableCell>
-                  </TableRow>
+                  {employeeBankInfo?.map((bankInfo, index) => {
+                    const bankName = bankInfo?.bank?.nameBn || "N/A";
+                    const branchName = bankInfo?.branch?.nameBn || "N/A";
+                    const accountHolderName = bankInfo?.accountHolderName || "N/A";
+                    const accountNumber = bankInfo?.accountNumber || "N/A";
+                    const routingNumber = bankInfo?.branch?.routingNumber || "N/A";
+                    return (
+                      <TableRow key={index}>
+                        <TableCell>ক</TableCell>
+                        <TableCell>{accountHolderName}</TableCell>
+                        <TableCell>{applicantRelation}</TableCell>
+                        <TableCell>
+                          {accountNumber}, {branchName}, {bankName}
+                        </TableCell>
+                        <TableCell>{routingNumber}</TableCell>
+                        <TableCell>১০০% (উদাহরণ)</TableCell>
+                      </TableRow>
+                    );
+                  })}
                   {/* Rows for others (b, c, d) - empty as per data */}
-                  {["খ", "গ", "ঘ"].map((item) => (
+                  {/* {["খ", "গ", "ঘ"].map((item) => (
                     <TableRow key={item}>
                       <TableCell>{item}</TableCell>
                       <TableCell></TableCell>
@@ -592,7 +596,7 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
                       <TableCell></TableCell>
                       <TableCell></TableCell>
                     </TableRow>
-                  ))}
+                  ))} */}
                 </TableBody>
               </Table>
             </TableContainer>

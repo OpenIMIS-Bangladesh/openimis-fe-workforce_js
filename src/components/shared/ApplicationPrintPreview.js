@@ -7,6 +7,7 @@ import { useReactToPrint } from "react-to-print";
 import { DeathApplicationPrint } from "./DeathApplicationPrint";
 import { withModulesManager, combine, useTranslations, useModulesManager, ProgressOrError } from "@openimis/fe-core";
 import { fetchApplicationWiseMovementList } from "../../actions";
+import { MedicalAssistancePrint } from "./MedicalAssistancePrint";
 
 const useStyles = makeStyles({
   "@global": {
@@ -137,7 +138,11 @@ export const ApplicationPrintPreview = ({ data, documents, logoLeftUrl, logoLeft
 
         {/* Printable Area */}
         <div id="print-container" ref={printRef}>
+          {data?.applicationType ===("financialAssistance" || "deadlyGrant") ? (
           <DeathApplicationPrint data={{ ...data, movementLogs }} documents={documents} logoLeft={logoLeft} logoLeftUrl={logoLeftUrl} />
+        ):data?.applicationType ===("medicalAssistance" || "medicalDonation")?(
+            <MedicalAssistancePrint data={{ ...data, movementLogs }} documents={documents} logoLeft={logoLeft} logoLeftUrl={logoLeftUrl} />
+          ):null}
         </div>
       </Paper>
     </>
