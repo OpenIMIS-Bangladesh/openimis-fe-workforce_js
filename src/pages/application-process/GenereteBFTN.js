@@ -126,7 +126,8 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       let organization= 'কেন্দ্রীয় তহবিল';
       let address= '২১ তলা, ভবন#৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০';
       let web= 'www.centralfund.gov.bd';
-      if(getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN)
+      // if(getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN)
+      if(getUserTypeFromRights(userRights).includes("blwf"))
       {
         logo= `/workforce_assets/blwf.png`;
         organization= 'বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন';
@@ -275,7 +276,8 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   };
 
 
-  if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
+  if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_APPROVER) 
+  {
     return (
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle disableTypography>
@@ -344,14 +346,18 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
         </DialogActions>
       </Dialog>
     );
-  } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN || 
-  getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-  || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COORDINATOR || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
+  } 
+  // else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN || 
+  // getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+  // || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COORDINATOR || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR) 
+  else if (!getUserTypeFromRights(userRights).includes("blwf")) 
+  {
     let logo= <img src={`workforce_assets/centralfund.png`} alt="Logo" style={{ width: "120px" }} />;
     let organization= 'কেন্দ্রীয় তহবিল';
     let address= '২১ তলা, ভবন#৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০';
     let web= 'www.centralfund.gov.bd';
-    if(getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN)
+    // if(getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN)
+    if(getUserTypeFromRights(userRights).includes("blwf"))
     {
       logo= <img src={`workforce_assets/blwf.png`} alt="Logo" style={{ width: "120px" }} />;
       organization= 'বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন';
