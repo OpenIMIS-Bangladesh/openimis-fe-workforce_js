@@ -385,7 +385,6 @@ function Table({
 
 
   const user_type = getUserType();
-  console.log('table er moddhe paisi user type: ', roleMaxDayCount[user_type]);
 
   items.forEach(item => {
     if(item?.trackingNumber && item?.dateUpdated){
@@ -395,7 +394,7 @@ function Table({
       const dayCount= Math.floor(timeDiff / (1000 * 3600 * 24));
       let duePercentage= dayCount*100/roleMaxDayCount[user_type];
       item.dueDayCount= dayCount;
-      if(duePercentage>0 && duePercentage<=20){
+      if(duePercentage>=0 && duePercentage<=20){
         item.rowColorCode= colorCode[0];
       }
       else if(duePercentage>20 && duePercentage<=40){
@@ -413,8 +412,6 @@ function Table({
       else if(duePercentage>100){
         item.rowColorCode= colorCode[100];
       }
-
-      console.log(dayCount);
     }
   });
 

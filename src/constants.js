@@ -568,8 +568,8 @@ export const roleMaxDayCount = {
   "section_admin_two":5,
   "blwf_section_admin":5,
   "doctor":7,
-  "sec1_deputi_asst_director":10,
-  "sec2_deputi_asst_director":10,
+  "sec1_deputi_asst_director ":10,
+  "sec2_deputi_asst_director ":10,
   "blwf_checker":3,
   "blwf_deputi_asst_director":10,
   "blwf_director":15,
@@ -580,7 +580,12 @@ export const roleMaxDayCount = {
   "blwf_doctor":7,
   "eis_financial_officer":5,
   "eis_doctor":5,
+  "blwf_dol_dife":5,
+  "eis_applicant":6,
+  "bepza_association":7,
+  "lfmeab_association":10,
 };
+
 
 export const colorCode={
   0:'#cfffd3',

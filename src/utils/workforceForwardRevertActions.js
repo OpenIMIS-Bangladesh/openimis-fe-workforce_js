@@ -1,6 +1,6 @@
 import { decodeId } from "@openimis/fe-core";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../constants";
-import { getUserTypeFromRights, safeDecodeId } from "./utils";
+import { getUserTypeFromRights, isEisPath, safeDecodeId } from "./utils";
 
 export const forwardToAssociation = async ({
   selectedApplicationIds,
@@ -89,7 +89,7 @@ export async function handleBulkSelectedByAssociationLogic({
   }
 
   setConfirmModalOpen(true);
-  setConfirmModalMessage("workforce.application.forward.message.toSectionAdmin");
+  setConfirmModalMessage(isEisPath()?"workforce.application.forward.message.toEisCoordinator":"workforce.application.forward.message.toSectionAdmin");
 
   setConfirmModalCallback(async (confirmed) => {
     if (confirmed) {
@@ -137,6 +137,11 @@ export async function handleBulkSelectedByAssociationLogic({
               createApplicationMovementData,
               "create workforce movement"
             );
+
+            if(isEisPath())
+            {
+              console.log("ekhane dependent update query boshbe");
+            }
           })
         );
 
@@ -151,7 +156,7 @@ export async function handleBulkSelectedByAssociationLogic({
           message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
         });
       } finally {
-        window.location.reload();
+        // window.location.reload();
       }
     }
 
