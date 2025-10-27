@@ -549,7 +549,12 @@ export const banglaLabels = {
   maximumDonationAmount:"সর্বোচ্চ দানের পরিমাণ",
   minimumDonationAmount:"ন্যূনতম অনুদানের পরিমাণ",
   status:"অবস্থা",
-  diseaseType:"রোগের ধরন"
+  diseaseType:"রোগের ধরন",
+  workerType:"শ্রমিকের ধরন",
+  instituteName:"প্রতিষ্ঠানের নাম",
+  instituteAddress:"প্রতিষ্ঠানের ঠিকানা",
+  aboutWork:"কাজের ধরণ",
+  workingPlace:"কর্মস্থলের বিবরণ"
 
 };
 
