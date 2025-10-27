@@ -15,30 +15,35 @@ const useStyles = makeStyles({
       "table, tr, td, th": { pageBreakInside: "avoid !important" },
     },
   },
-  paper: { padding: 32, fontFamily: "'Siyam Rupali', Arial, sans-serif",color:"black" },
-  headerContainer: { marginBottom: 16, position: "relative",color:"black" },
+  paper: { padding: 32, fontFamily: "'Siyam Rupali', Arial, sans-serif", color: "black" },
+  headerContainer: { marginBottom: 16, position: "relative", color: "black" },
   logo: { maxWidth: 70, maxHeight: 70 },
-  headerText: { textAlign: "center",color:"black" },
+  headerText: { textAlign: "center", color: "black" },
   title: {
     fontSize: "small",
     fontWeight: "bold",
     textAlign: "center",
     margin: "8px 0 5px 0",
     textDecoration: "underline",
-    color:"black"
+    color: "black",
   },
-  sectionTitle: { fontWeight: "bold", fontSize: "small", marginTop: 8, marginBottom: 4, borderBottom: "1px solid #000", paddingBottom: 4,color:"black" },
-  fieldLabel: { textAlign: "left", fontSize: "0.9rem", paddingRight: 8,color:"black" },
-  fieldValue: { borderBottom: "1px dotted #000", minHeight: 20, paddingLeft: 8, display: "block", fontSize: "0.9rem" ,color:"black"},
-  checkboxContainer: { display: "flex", alignItems: "center", marginRight: 16,color:"black" },
-  checkbox: { width: 15, height: 15, border: "1px solid #000", marginRight: 4, display: "inline-block", backgroundColor: "transparent",color:"black" },
+  sectionTitle: { fontWeight: "bold", fontSize: "small", marginTop: 8, marginBottom: 4, borderBottom: "1px solid #000", paddingBottom: 4, color: "black" },
+  fieldLabel: { textAlign: "left", fontSize: "0.9rem", paddingRight: 8, color: "black" },
+  fieldValue: { borderBottom: "1px dotted #000", minHeight: 20, paddingLeft: 8, display: "block", fontSize: "0.9rem", color: "black" },
+  checkboxContainer: { display: "flex", alignItems: "center", marginRight: 16, color: "black" },
+  checkbox: { width: 15, height: 15, border: "1px solid #000", marginRight: 4, display: "inline-block", backgroundColor: "transparent", color: "black" },
   checked: { backgroundColor: "#000" },
+  checkboxGroup: {
+    display: "flex",
+    alignItems: "center",
+    gap: "24px", // spacing between the two options
+  },
   table: {
     width: "100%",
     borderCollapse: "collapse",
     marginTop: 8,
     "& th, & td": { border: "1px solid #000", padding: 8 },
-    "& th": { fontWeight: "bold", textAlign: "center",color:"black" },
+    "& th": { fontWeight: "bold", textAlign: "center", color: "black" },
   },
   photoBox: {
     border: "1px solid #000",
@@ -51,9 +56,9 @@ const useStyles = makeStyles({
     position: "absolute",
     right: 0,
     top: 60,
-    color:"black"
+    color: "black",
   },
-  note: { fontSize: "0.85rem", marginTop: 8, marginBottom: 8,color:"black" },
+  note: { fontSize: "0.85rem", marginTop: 8, marginBottom: 8, color: "black" },
 });
 
 // --- Helpers ---
@@ -293,6 +298,116 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
                   </TableBody>
                 </Table>
               </TableContainer>
+            </>
+          )}
+
+          {(data?.employeeAccidentInfo?.accidentType !== "accident" || data?.employeeAccidentInfo) && (
+            <>
+              <Typography className={classes.sectionTitle}>৩। রোগের তথ্য </Typography>
+              <Grid container spacing={1}>
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldLabel}>দুর্ঘটনার ধরন:</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                </Grid>
+
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldLabel}>দুর্ঘটনার স্থান:</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                </Grid>
+
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldLabel}>দুর্ঘটনার তারিখ:</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                </Grid>
+
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldLabel}>দুর্ঘটনার সময়:</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                </Grid>
+
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldLabel}>কোন পরিস্থিতিতে দুর্ঘটনা হয়েছে?</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                </Grid>
+
+                <Grid item xs={6}>
+                  <Typography className={classes.fieldLabel}>আপনি কি সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদান করেছেন?</Typography>
+
+                  <Box className={classes.checkboxGroup}>
+                    <Box className={classes.checkboxContainer}>
+                      <Box className={`${classes.checkbox} ${true ? classes.checked : ""}`} />
+                      <Typography variant="body2">হ্যাঁ</Typography>
+                    </Box>
+                    <Box className={classes.checkboxContainer}>
+                      <Box className={`${classes.checkbox} ${false ? classes.checked : ""}`} />
+                      <Typography variant="body2">না</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+
+                {/* <Grid item xs={3}>
+                </Grid> */}
+
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldLabel}>সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদানের তারিখ</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                </Grid>
+
+                <Grid item xs={6}>
+                  <Typography className={classes.fieldLabel}>হাসপাতালে ভর্তি হয়েছিলেন?</Typography>
+                  <Box className={classes.checkboxGroup}>
+                    <Box className={classes.checkboxContainer}>
+                      <Box className={`${classes.checkbox} ${true ? classes.checked : ""}`} />
+                      <Typography variant="body2">হ্যাঁ</Typography>
+                    </Box>
+                    <Box className={classes.checkboxContainer}>
+                      <Box className={`${classes.checkbox} ${false ? classes.checked : ""}`} />
+                      <Typography variant="body2">না</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                
+
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldLabel}>হাসপাতালের নাম</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                </Grid>
+
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldLabel}>ভর্তির তারিখ</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                </Grid>
+
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldLabel}>রিলিজের তারিখ</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                </Grid>
+
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldLabel}>ডাক্তারের নাম</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                </Grid>
+              </Grid>
             </>
           )}
 
