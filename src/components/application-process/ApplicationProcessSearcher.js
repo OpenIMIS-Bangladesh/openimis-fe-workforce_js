@@ -1773,7 +1773,7 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkSelectedbyAssociation = () => {
     const { selectedApplicationIds } = this.state;
-    const { loggedInUserId, updateApplication, createApplicationMovement,userRights } = this.props;
+    const { loggedInUserId, updateApplication, createApplicationMovement,userRights,modulesManager,fetchWorkforceDocument } = this.props;
 
   handleBulkSelectedByAssociationLogic({
     selectedApplicationIds,
@@ -1781,6 +1781,8 @@ class ApplicationProcessSearcher extends Component {
     updateApplication,
     createApplicationMovement,
     userRights,
+    fetchWorkforceDocument,
+    modulesManager,
     setServerResponse: (resp) => this.setState({ serverResponse: resp }),
     setConfirmModalOpen: (v) => this.setState({ confirmModalOpen: v }),
     setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),

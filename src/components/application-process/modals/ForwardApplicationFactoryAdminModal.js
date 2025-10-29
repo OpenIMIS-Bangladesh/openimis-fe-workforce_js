@@ -25,7 +25,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import DistrictOfficePicker from "../../../pickers/DistrictOfficePicker";
 import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchApplication, updateApplication, createApplicationMovement } from "../../../actions";
+import { fetchApplication, updateApplication, createApplicationMovement,fetchWorkforceDocument } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
 import { forwardToAssociation } from "../../../utils/workforceForwardRevertActions";
 
@@ -128,7 +128,9 @@ const ForwardApplicationFactoryAdminModal = ({
     createApplicationMovement,
     dispatch,
     setServerResponse,
-    userRights
+    userRights,
+    modulesManager,
+    fetchWorkforceDocument
   });
 //     for (const encodedId of selectedApplicationIds) {
 

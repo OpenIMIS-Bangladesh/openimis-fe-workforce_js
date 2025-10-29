@@ -11,7 +11,8 @@ export const forwardToAssociation = async ({
   dispatch,
   setServerResponse,
   userRights,
-  fetchWorkforceDocument
+  fetchWorkforceDocument,
+  modulesManager
 }) => {
   try {
     const userType = getUserTypeFromRights(userRights);
@@ -101,7 +102,8 @@ export async function handleBulkSelectedByAssociationLogic({
   setConfirmModalMessage,
   setConfirmModalCallback,
   userRights,
-  fetchWorkforceDocument
+  fetchWorkforceDocument,
+  modulesManager
 }) {
   if (!selectedApplicationIds || selectedApplicationIds.length === 0) {
     alert("Please select at least one application.");
