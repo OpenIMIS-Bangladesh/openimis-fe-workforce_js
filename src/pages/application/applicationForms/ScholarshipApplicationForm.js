@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox } from "@material-ui/core";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox,Grid,FormControlLabel  } from "@material-ui/core";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage, useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -489,16 +489,6 @@ const ScholarshipApplicationForm = ({ organizationType, selectedApplicationType,
               />
             ),
           },
-          // {
-          //   label: "workforce.application.steps.dependent",
-          //   content: (
-          //     <Box mt={0}>
-          //       {formData?.applicationForSelf === "no" && (
-          //         <EmployeeDependentForm formData={formData} handleChange={handleChange} addDependent={addDependent} removeDependent={removeDependent} />
-          //       )}
-          //     </Box>
-          //   ),
-          // },
         ]
       : []),
     {
@@ -637,6 +627,15 @@ const ScholarshipApplicationForm = ({ organizationType, selectedApplicationType,
         <Box mt={0} ref={stepRef}>
           {steps[activeStep].content}
         </Box>
+
+        {activeStep < steps.length - 1 && (
+                    <Box>
+                      <FormControlLabel
+                        control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{ color: "blue" }} />}
+                        label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
+                      />
+                    </Box>
+                  )}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
@@ -648,22 +647,10 @@ const ScholarshipApplicationForm = ({ organizationType, selectedApplicationType,
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Box mt={2}>
-              <Grid container direction="column" spacing={2}>
-                <Grid item>
-                  <FormControlLabel
-                    control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{ color: "blue" }} />}
-                    label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
-                  />
-                </Grid>
-
-                <Grid item>
                   <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
                     <FormattedMessage module="workforce" id="workforce.submit" />
                   </Button>
-                </Grid>
-              </Grid>
-            </Box>
+            
           )}
         </div>
       </Paper>

@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Stepper, Step, StepLabel, Paper, Box, Typography,Checkbox } from "@material-ui/core";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography,Checkbox,Grid,FormControlLabel  } from "@material-ui/core";
 import { FormattedMessage, formatMutation, decodeId, useModulesManager, useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
-import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
-import EmployeeDetailsForm2 from "../EmployeeDetailsForm2";
 import EmployeeLocationForm from "../EmployeeLocationForm";
 import EmployeeDependentForm from "../EmployeeDependentForm";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import {
   createApplication,
   createWorkforceDocument,
-  createWorkforceEmployee,
-  fetchApplicationId,
   fetchEmployeeDependent,
   fetchInfoIdByClientMutationId,
   fetchWorkforceEmployee,
@@ -24,13 +20,11 @@ import {
 import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
-import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import { getInfoId, getParsedApplication, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
-import ApplicantInfoForm from "../ApplicantInfoForm";
 import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
 
 const useStyles = makeStyles((theme) => ({
@@ -527,32 +521,7 @@ const MedicalAssistanceForm = ({ organizationType, selectedApplicationType, appl
           </Button>
         </div>
       </div>
-      // <div className={classes.container}>
-      //   <Paper className={classes.paper} elevation={0}>
-      //     <PreviewDetails formData={formData} language={reduxState.core?.user?.i_user?.language} />
-      //     <div className={classes.buttonContainer}>
-      //       <Button
-      //         variant="outlined"
-      //         color="error"
-      //         onClick={() => {
-      //           setShowPreview(false);
-      //         }}
-      //       >
-      //         <FormattedMessage module="workforce" id="workforce.back" />
-      //       </Button>
-      //       <Button
-      //         variant="contained"
-      //         color="primary"
-      //         onClick={() => {
-      //           setShowPreview(false);
-      //           setShowVerifyNid(true);
-      //         }}
-      //       >
-      //         <FormattedMessage module="workforce" id="workforce.submit" />
-      //       </Button>
-      //     </div>
-      //   </Paper>
-      // </div>
+
     );
   }
 
@@ -600,6 +569,15 @@ const MedicalAssistanceForm = ({ organizationType, selectedApplicationType, appl
         <Box mt={0} ref={stepRef}>
           {steps[activeStep].content}
         </Box>
+
+        {activeStep < steps.length - 1 && (
+                    <Box>
+                      <FormControlLabel
+                        control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{ color: "blue" }} />}
+                        label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
+                      />
+                    </Box>
+                  )}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
@@ -611,22 +589,10 @@ const MedicalAssistanceForm = ({ organizationType, selectedApplicationType, appl
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Box mt={2}>
-              <Grid container direction="column" spacing={2}>
-                <Grid item>
-                  <FormControlLabel
-                    control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{ color: "blue" }} />}
-                    label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
-                  />
-                </Grid>
-
-                <Grid item>
                   <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
                     <FormattedMessage module="workforce" id="workforce.submit" />
                   </Button>
-                </Grid>
-              </Grid>
-            </Box>
+            
           )}
         </div>
       </Paper>

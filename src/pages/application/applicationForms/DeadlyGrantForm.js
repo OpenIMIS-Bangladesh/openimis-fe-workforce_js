@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Stepper, Step, StepLabel, Paper, Box, Typography,Checkbox } from "@material-ui/core";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox, Grid, FormControlLabel } from "@material-ui/core";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage, useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
@@ -247,11 +247,11 @@ const DeadlyGrantForm = ({ organizationType, selectedApplicationType, parsedAppl
 
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if (nextStep === 3 ){
-        let fakeErrors = {...newErrors,rdmp:"core.error.workerAge"}
-        setErrors(fakeErrors)
-        console.log({fakeErrors})
-      }else{
+      if (nextStep === 3) {
+        let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
+        setErrors(fakeErrors);
+        console.log({ fakeErrors });
+      } else {
         setActiveStep(nextStep);
         if (nextStep === 3 || nextStep === 4) {
           const workforceEmployeeData = {
@@ -279,7 +279,7 @@ const DeadlyGrantForm = ({ organizationType, selectedApplicationType, parsedAppl
             maritalStatus: formData?.workforceEmployee?.maritalStatus,
             presentLocation: formData?.workforceEmployee?.presentLocation,
             permanentLocation: formData?.workforceEmployee?.permanentLocation,
-  
+
             id: formData?.workforceEmployee?.id || reduxState.core.user.id,
           };
           console.log("Update Submitting formData:", formData);
@@ -301,14 +301,18 @@ const DeadlyGrantForm = ({ organizationType, selectedApplicationType, parsedAppl
             status: WORKFORCE_STATUS.DRAFT,
             applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
           };
-  
+
           console.log({ createApplicationData });
           if (!parsedApplicationData) {
-            const applicationMutation = await formatMutation("createWorkforceApplication", formatApplicationeGQL(createApplicationData), `Created application `);
+            const applicationMutation = await formatMutation(
+              "createWorkforceApplication",
+              formatApplicationeGQL(createApplicationData),
+              `Created application `
+            );
             const applicationClientMutationId = applicationMutation.clientMutationId;
             console.log("applicationClientMutationId", applicationClientMutationId);
             await dispatch(createApplication(applicationMutation, `Created workforce application `));
-  
+
             // await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
             const fetchRes = await dispatch(
               fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
@@ -347,7 +351,7 @@ const DeadlyGrantForm = ({ organizationType, selectedApplicationType, parsedAppl
           if (uploadDependentFile) {
             await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0]?.id)}"`])).then((res) => {
               const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-  
+
               console.log({ dependentId });
               uploadDependentFile.map((file, index) => {
                 dispatch(
@@ -647,35 +651,33 @@ const DeadlyGrantForm = ({ organizationType, selectedApplicationType, parsedAppl
             </Box>
           )}
         </Box>
-        <div className={classes.buttonContainer}>
-          {activeStep > 0 && (
-            <Button onClick={handleBack} variant="outlined">
-              <FormattedMessage module="workforce" id="workforce.back" />{" "}
-            </Button>
-          )}
-          {activeStep < steps.length - 1 ? (
-            <Button variant="contained" color="primary" onClick={handleNext}>
-              <FormattedMessage module="workforce" id="workforce.save.next" />
-            </Button>
-          ) : (
-            <Box mt={2}>
-              <Grid container direction="column" spacing={2}>
-                <Grid item>
-                  <FormControlLabel
-                    control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{color:"blue"}} />}
-                    label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
-                  />
-                </Grid>
-
-                <Grid item>
-                  <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
-                    <FormattedMessage module="workforce" id="workforce.submit" />
-                  </Button>
-                </Grid>
-              </Grid>
+        <Box>
+          {activeStep < steps.length - 1 && (
+            <Box>
+              <FormControlLabel
+                control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{ color: "blue" }} />}
+                label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
+              />
             </Box>
           )}
-        </div>
+          <div className={classes.buttonContainer}>
+            {activeStep > 0 && (
+              <Button onClick={handleBack} variant="outlined">
+                <FormattedMessage module="workforce" id="workforce.back" />{" "}
+              </Button>
+            )}
+            {activeStep < steps.length - 1 ? (
+              <Button variant="contained" color="primary" onClick={handleNext}>
+                <FormattedMessage module="workforce" id="workforce.save.next" />
+              </Button>
+            ) : (
+                    <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
+                      <FormattedMessage module="workforce" id="workforce.submit" />
+                    </Button>
+              
+            )}
+          </div>
+        </Box>
       </Paper>
     </div>
   );

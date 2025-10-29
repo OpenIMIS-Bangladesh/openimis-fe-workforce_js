@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox } from "@material-ui/core";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox,Grid,FormControlLabel  } from "@material-ui/core";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage, useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
@@ -48,14 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const steps = [
-  "workforce.application.steps.aidReason",
-  "workforce.application.steps.employeeDetails",
-  "workforce.application.steps.location",
-  "workforce.application.steps.account.info",
-  "workforce.application.disabilityInfo",
-  // "workforce.application.steps.upload.documents",
-];
+
 
 const DisabilityForm = ({ organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
@@ -430,32 +423,7 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
           </Button>
         </div>
       </div>
-      // <div className={classes.container}>
-      //   <Paper className={classes.paper} elevation={0}>
-      //     <PreviewDetails formData={formData} language={reduxState.core?.user?.i_user?.language} />
-      //     <div className={classes.buttonContainer}>
-      //       <Button
-      //         variant="outlined"
-      //         color="error"
-      //         onClick={() => {
-      //           setShowPreview(false);
-      //         }}
-      //       >
-      //         <FormattedMessage module="workforce" id="workforce.back" />
-      //       </Button>
-      //       <Button
-      //         variant="contained"
-      //         color="primary"
-      //         onClick={() => {
-      //           setShowPreview(false);
-      //           setShowVerifyNid(true);
-      //         }}
-      //       >
-      //         <FormattedMessage module="workforce" id="workforce.submit" />
-      //       </Button>
-      //     </div>
-      //   </Paper>
-      // </div>
+
     );
   }
 
@@ -487,27 +455,46 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
     return <ApplicationFormSubmitted />;
   }
 
+  const steps = [
+  "workforce.application.steps.aidReason",
+  "workforce.application.steps.employeeDetails",
+  "workforce.application.steps.location",
+  "workforce.application.steps.account.info",
+  "workforce.application.disabilityInfo",
+  // "workforce.application.steps.upload.documents",
+];
+  const eisSteps = [
+  // "workforce.application.steps.aidReason",
+  "workforce.application.steps.employeeDetails",
+  "workforce.application.steps.location",
+  "workforce.application.steps.account.info",
+  // "workforce.application.disabilityInfo",
+  // "workforce.application.steps.upload.documents",
+];
+
   console.log({ formData });
 
   return (
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>
         <Stepper activeStep={activeStep} alternativeLabel style={{ padding: "0px" }}>
-          {steps
-            .filter(
-              (label) =>
-                !(
-                  (label === "workforce.application.disabilityInfo" || label === "workforce.application.steps.aidReason") &&
-                  formData?.organizationType === "eis"
-                )
-            )
-            .map((label) => (
+          {formData?.organizationType ==="eis" ?(
+          eisSteps?.map((label) => (
               <Step key={label}>
                 <StepLabel>
                   <FormattedMessage module="workforce" id={label} />
                 </StepLabel>
               </Step>
-            ))}
+            ))
+          ):(
+            steps?.map((label) => (
+              <Step key={label}>
+                <StepLabel>
+                  <FormattedMessage module="workforce" id={label} />
+                </StepLabel>
+              </Step>
+            ))
+          )}
         </Stepper>
 
         <Box mt={0} ref={stepRef}>
@@ -547,16 +534,6 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
                       removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
                       expanded={expanded}
                       setExpanded={setExpanded}
-                      errors={errors}
-                    />
-                  );
-                case 3:
-                  return (
-                    <EmployeeAccidentInfoForm
-                      handleChange={(key, value) => handleChange(key, value, "employeeAccidentInfo")}
-                      formData={formData}
-                      setFormData={setFormData}
-                      applicationType={"disabilityAssistance"}
                       errors={errors}
                     />
                   );
@@ -626,35 +603,38 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
           })()}
         </Box>
 
+        <Box>
+          {((formData?.organizationType !=="eis" && activeStep === steps.length-1)||(formData?.organizationType ==="eis" && activeStep === eisSteps.length-1))  &&(
+            <Box>
+              <FormControlLabel
+                    control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{color:"blue"}} />}
+                    label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
+                  />
+            </Box>
+          )}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
               <FormattedMessage module="workforce" id="workforce.back" />
             </Button>
           )}
-          {activeStep < steps.length - 1 ? (
+          {((formData?.organizationType !=="eis" && activeStep < steps.length - 1)||(formData?.organizationType ==="eis" && activeStep < eisSteps.length - 1) ) ? (
             <Button variant="contained" color="primary" onClick={handleNext}>
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Box mt={2}>
-              <Grid container direction="column" spacing={2}>
-                <Grid item>
-                  <FormControlLabel
-                    control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{color:"blue"}} />}
-                    label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
-                  />
-                </Grid>
-
-                <Grid item>
                   <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
                     <FormattedMessage module="workforce" id="workforce.submit" />
                   </Button>
-                </Grid>
-              </Grid>
-            </Box>
+            // <Box mt={2}>
+            //   <Grid container direction="column" spacing={2}>
+            //     <Grid item>
+            //     </Grid>
+            //   </Grid>
+            // </Box>
           )}
         </div>
+        </Box>
       </Paper>
     </div>
   );
