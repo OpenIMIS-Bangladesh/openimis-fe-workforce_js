@@ -755,6 +755,10 @@
   "workforce.dead":"Dead",
   "workforce.account.entry":"",
   "core.error.required":"Required field",
+  "core.error.phoneNumberLength":"Phone number must be exactly 11 digits",
+  "core.error.nidLength":"Nid/BirthCertificate number is not valid",
+  "core.error.workerAge":"A worker’s age must be a minimum of 18 years.",
+  "core.error.accountNumberLength":"Account number must be 8 to 17",
 
   "workforce.employee.accident.info.hasRejoined":"Have you rejoined the workplace after recovery?",
 
@@ -830,6 +834,7 @@
   "workforce.dependent.isDisabled":"Is the Dependent disable?",
   "workforce.dependent.disabilityType":"Describe Disability type",
   "workforce.eis.factory.admin.accidentInfo.button":"Accident and Medical Details",
+  "workforce.application.acknowledgement.text":"I hereby affirm that all information given above is correct & complete.",
 
 
   "workforce.doctor.discussionRequired":"Discussion needed",

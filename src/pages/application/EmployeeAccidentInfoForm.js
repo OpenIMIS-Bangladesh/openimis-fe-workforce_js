@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   Box,
@@ -16,7 +16,7 @@ import {
   Select,
   InputLabel,
   FormGroup,
-  FormHelperText
+  FormHelperText,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import EmployeeInjuryTypePicker from "../../pickers/EmployeeInjuryTypePicker";
@@ -54,26 +54,33 @@ const diseaseOptions = [
   "Others", // Allow manual input if selected
 ];
 
-const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applicationType,errors }) => {
+const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applicationType, errors }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
 
-  const [selectedOption, setSelectedOption] = useState((formData?.applicationType ==="disabilityAssistance"||formData?.organizationType === "eis")?"accident":(formData?.employeeAccidentInfo?.accidentType || "disease"));
+  const [aidReasonType, setAidReasonType] = useState(
+    formData?.employeeAccidentInfo?.aidReasonType ||
+      (formData?.applicationType === "disabilityAssistance" || formData?.organizationType === "eis" ? "accident" : "disease")
+  );
   const [selectedDiseases, setSelectedDiseases] = useState(formData?.employeeAccidentInfo?.cronicDiseaseType || []);
   const [isAdmitted, setIsAdmitted] = useState(formData?.employeeAccidentInfo?.admitted || "no");
   const [hasRejoined, setHasRejoined] = useState(formData?.employeeAccidentInfo?.hasRejoined || "no");
 
+  useEffect(() => {
+  if (!formData?.employeeAccidentInfo?.aidReasonType) {
+    handleChange("aidReasonType", aidReasonType);
+  }
+  if (!formData?.employeeAccidentInfo?.admitted) {
+    handleChange("admitted", isAdmitted);
+  }
+}, []); 
+
+
   const handleOptionChange = (event) => {
     const newValue = event.target.value;
-    setSelectedOption(newValue);
-    setFormData((prev) => ({
-      ...prev,
-      employeeAccidentInfo: {
-        ...prev.employeeAccidentInfo,
-        accidentType: newValue,
-      },
-    }));
+    setAidReasonType(newValue);
+    handleChange("aidReasonType", newValue);
   };
   const handleHasRejoinedChange = (event) => {
     const value = event.target.value;
@@ -96,31 +103,35 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
   return (
     <Box mt={2}>
       <Paper className={classes.paper} elevation={0}>
-        <Typography mb={4} style={{textAlign:"center",fontWeight:"bold",fontSize:"small",margin:"15px"}}>
-                <FormattedMessage id="workforce.application.steps.treatment.info" module="workforce" />
+        <Typography mb={4} style={{ textAlign: "center", fontWeight: "bold", fontSize: "small", margin: "15px" }}>
+          <FormattedMessage id="workforce.application.steps.treatment.info" module="workforce" />
         </Typography>
         <Typography variant="h6" gutterBottom>
-          {applicationType === "disabilityAssistance"?<FormattedMessage id="workforce.application.disabilityDetails" />:<FormattedMessage id="workforce.employee.accident.info.title" />}
+          {applicationType === "disabilityAssistance" ? (
+            <FormattedMessage id="workforce.application.disabilityDetails" />
+          ) : (
+            <FormattedMessage id="workforce.employee.accident.info.title" />
+          )}
         </Typography>
 
-      {(formData?.applicationType !=="disabilityAssistance" ||formData?.organizationType === "eis") && (
-        <RadioGroup column value={formData?.employeeAccidentInfo?.accidentType || "disease"} onChange={handleOptionChange}>
-          <FormControlLabel value="disease" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.employee.aid.reason.info.cronic" />} />
-          <FormControlLabel
-            value="accident"
-            control={<Radio color="primary" />}
-            label={<FormattedMessage id="workforce.employee.aid.reason.info.accident" />}
-          />
-        </RadioGroup>
-      )}
+        {(formData?.applicationType !== "disabilityAssistance" || formData?.organizationType === "eis") && (
+          <RadioGroup column value={formData?.employeeAccidentInfo?.aidReasonType|| aidReasonType || "disease"} onChange={handleOptionChange}>
+            <FormControlLabel value="disease" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.employee.aid.reason.info.cronic" />} />
+            <FormControlLabel
+              value="accident"
+              control={<Radio color="primary" />}
+              label={<FormattedMessage id="workforce.employee.aid.reason.info.accident" />}
+            />
+          </RadioGroup>
+        )}
 
         <Divider style={{ margin: "16px 0" }} />
 
-        {selectedOption === "disease" && (
+        {aidReasonType === "disease" && (
           <Grid container spacing={1}>
             <Grid item xs={6} className={classes.item}>
               <DiseaseMultiSelectPicker
-              id="cronicDiseaseType"
+                id="cronicDiseaseType"
                 selectedDiseases={formData?.employeeAccidentInfo?.cronicDiseaseType || []}
                 onChange={(value) => handleChange("cronicDiseaseType", value, "employeeAccidentInfo")}
                 onOtherDiseaseChange={(value) => handleChange("otherDisease", value, "employeeAccidentInfo")}
@@ -232,7 +243,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
         )}
 
         {/* Keep your accident section as is */}
-        {selectedOption === "accident" && (
+        {aidReasonType === "accident" && (
           <Grid container spacing={2}>
             <Grid item xs={6} className={classes.item}>
               <EmployeeAccidentTypePicker
@@ -247,13 +258,13 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <TextInput
-              id="accidentPlace"
+                id="accidentPlace"
                 label={"workforce.application.accident.accidentPlace"}
                 value={formData?.employeeAccidentInfo?.accidentPlace || ""}
                 onChange={(v) => handleChange("accidentPlace", v)}
                 required
-                 error={!!errors?.accidentPlace}
-            helperText={errors?.accidentPlace}
+                error={!!errors?.accidentPlace}
+                helperText={errors?.accidentPlace}
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
@@ -391,8 +402,12 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
           </Grid>
         )}
       </Paper>
-      <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"employeeAccidentInfo"} />
-
+      <EmployeeDetailsForm2
+        handleChange={handleChange}
+        formData={formData}
+        selectedApplicationType={formData.applicationType}
+        formStepNo={"employeeAccidentInfo"}
+      />
     </Box>
   );
 };
