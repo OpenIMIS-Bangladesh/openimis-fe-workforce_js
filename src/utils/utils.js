@@ -333,10 +333,59 @@ export const validateRequiredFields = (containerRef, formatMessage) => {
       errors[field.id || field.name] = formatMessage("core.error.required");
       console.warn(`Validation failed for field: ${field.id || field.name}`);
     }
+
+    if (field.id === "phoneNumber") {
+      if (value.length !== 11) {
+        errors[field.id] = formatMessage("core.error.phoneNumberLength");
+        console.warn(
+          `Validation failed for phoneNumber: expected 11 digits, got ${value.length}`
+        );
+      }
+    }
+
+    if (field.id === "nid") {
+      if (!(value.length === 10  || value.length === 13 ||  value.length === 17)) {
+        errors[field.id] = formatMessage("core.error.nidLength");
+        console.warn(
+          `Validation failed for phoneNumber: expected 11 digits, got ${value.length}`
+        );
+      }
+    }
+
+    if (field.id === "accountNumber") {
+      if (!(value.length >= 8 && value.length <= 17)) {
+        errors[field.id] = formatMessage("core.error.accountNumberLength");
+        console.warn(
+          `Validation failed for phoneNumber: expected 11 digits, got ${value.length}`
+        );
+      }
+    }
   });
 
   return errors;
 };
+
+export const isAtLeast18YearsOld = (birthDateString) => {
+  if (!birthDateString) return false;
+
+  const birthDate = new Date(birthDateString);
+  const today = new Date();
+
+  // Calculate the difference in years
+  let age = today.getFullYear() - birthDate.getFullYear();
+
+  // Adjust if the birthday hasn’t occurred yet this year
+  const hasHadBirthdayThisYear =
+    today.getMonth() > birthDate.getMonth() ||
+    (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+
+  if (!hasHadBirthdayThisYear) {
+    age -= 1;
+  }
+
+  return age >= 18;
+};
+
 
 export function extractId(item) {
   if (!item && item !== 0) return null;

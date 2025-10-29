@@ -361,7 +361,7 @@ const ApplicantDashboard = () => {
       case "pendingApplications":
         return <FiledApplications />;
       case "newApplications":
-        return isEisPath() ? <EisMultiStepApplyForm /> : <MultiStepApplyForm />;
+        return true ? <EisMultiStepApplyForm /> : <MultiStepApplyForm />;
       // case "newEisApplications":
       //   return <EisMultiStepApplyForm />;
       case "revertedApplication":

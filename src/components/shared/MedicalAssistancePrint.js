@@ -1,6 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Typography, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, Divider, TableRow } from "@material-ui/core";
+import { FormattedMessage, formatMutation, decodeId, useModulesManager, useTranslations,formatMessage } from "@openimis/fe-core";
+
 
 // --- Styles ---
 const useStyles = makeStyles({
@@ -102,11 +104,6 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
   const presentAddress = formatAddress(deceased.presentLocation, deceased.presentAddress);
 
   const bankInfo = employeeBankInfo && employeeBankInfo?.length > 0 ? employeeBankInfo[0] : {};
-  const bankName = bankInfo.bank?.nameBn || "N/A";
-  const branchName = bankInfo.branch?.nameBn || "N/A";
-  const accountHolderName = bankInfo.accountHolderName || "N/A";
-  const accountNumber = bankInfo.accountNumber || "N/A";
-  const routingNumber = bankInfo.branch?.routingNumber || "N/A";
 
   const createdDate = formatDate(dateCreated);
   const isNormalDeath = true;
@@ -257,7 +254,7 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
           </Grid>
 
           {/* Section 3: Disease Info */}
-          {data?.employeeAccidentInfo && (
+          {(data?.employeeAccidentInfo?.aidReasonType === "disease" &&data?.employeeAccidentInfo) && (
             <>
               <Typography className={classes.sectionTitle}>৩। রোগের তথ্য </Typography>
 
@@ -301,7 +298,7 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
             </>
           )}
 
-          {(data?.employeeAccidentInfo?.accidentType !== "accident" || data?.employeeAccidentInfo) && (
+          {(data?.employeeAccidentInfo?.aidReasonType === "accident" && data?.employeeAccidentInfo) && (
             <>
               <Typography className={classes.sectionTitle}>৩। রোগের তথ্য </Typography>
               <Grid container spacing={1}>
@@ -309,35 +306,35 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
                   <Typography className={classes.fieldLabel}>দুর্ঘটনার ধরন:</Typography>
                 </Grid>
                 <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                  <Typography className={classes.fieldValue}>{<FormattedMessage id={data?.employeeAccidentInfo?.accidentType}/>}</Typography>
                 </Grid>
 
                 <Grid item xs={3}>
                   <Typography className={classes.fieldLabel}>দুর্ঘটনার স্থান:</Typography>
                 </Grid>
                 <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.accidentPlace}</Typography>
                 </Grid>
 
                 <Grid item xs={3}>
                   <Typography className={classes.fieldLabel}>দুর্ঘটনার তারিখ:</Typography>
                 </Grid>
                 <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.accidentDate}</Typography>
                 </Grid>
 
                 <Grid item xs={3}>
                   <Typography className={classes.fieldLabel}>দুর্ঘটনার সময়:</Typography>
                 </Grid>
                 <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.accidentTime}</Typography>
                 </Grid>
 
                 <Grid item xs={3}>
                   <Typography className={classes.fieldLabel}>কোন পরিস্থিতিতে দুর্ঘটনা হয়েছে?</Typography>
                 </Grid>
                 <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.inOutsideFactory}</Typography>
                 </Grid>
 
                 <Grid item xs={6}>
@@ -345,11 +342,11 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
 
                   <Box className={classes.checkboxGroup}>
                     <Box className={classes.checkboxContainer}>
-                      <Box className={`${classes.checkbox} ${true ? classes.checked : ""}`} />
+                      <Box className={`${classes.checkbox} ${data?.employeeAccidentInfo?.hasRejoined ==="yes" ? classes.checked : ""}`} />
                       <Typography variant="body2">হ্যাঁ</Typography>
                     </Box>
                     <Box className={classes.checkboxContainer}>
-                      <Box className={`${classes.checkbox} ${false ? classes.checked : ""}`} />
+                      <Box className={`${classes.checkbox} ${data?.employeeAccidentInfo?.hasRejoined ==="no" ? classes.checked : ""}`} />
                       <Typography variant="body2">না</Typography>
                     </Box>
                   </Box>
@@ -362,18 +359,18 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
                   <Typography className={classes.fieldLabel}>সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদানের তারিখ</Typography>
                 </Grid>
                 <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.reJoiningDate}</Typography>
                 </Grid>
 
                 <Grid item xs={6}>
                   <Typography className={classes.fieldLabel}>হাসপাতালে ভর্তি হয়েছিলেন?</Typography>
                   <Box className={classes.checkboxGroup}>
                     <Box className={classes.checkboxContainer}>
-                      <Box className={`${classes.checkbox} ${true ? classes.checked : ""}`} />
+                      <Box className={`${classes.checkbox} ${data?.employeeAccidentInfo?.admitted ==="yes" ? classes.checked : ""}`} />
                       <Typography variant="body2">হ্যাঁ</Typography>
                     </Box>
                     <Box className={classes.checkboxContainer}>
-                      <Box className={`${classes.checkbox} ${false ? classes.checked : ""}`} />
+                      <Box className={`${classes.checkbox} ${data?.employeeAccidentInfo?.admitted ==="no" ? classes.checked : ""}`} />
                       <Typography variant="body2">না</Typography>
                     </Box>
                   </Box>
@@ -384,28 +381,28 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
                   <Typography className={classes.fieldLabel}>হাসপাতালের নাম</Typography>
                 </Grid>
                 <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.hospitalName}</Typography>
                 </Grid>
 
                 <Grid item xs={3}>
                   <Typography className={classes.fieldLabel}>ভর্তির তারিখ</Typography>
                 </Grid>
                 <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.admitDate}</Typography>
                 </Grid>
 
                 <Grid item xs={3}>
                   <Typography className={classes.fieldLabel}>রিলিজের তারিখ</Typography>
                 </Grid>
                 <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.releaseDate}</Typography>
                 </Grid>
 
                 <Grid item xs={3}>
                   <Typography className={classes.fieldLabel}>ডাক্তারের নাম</Typography>
                 </Grid>
                 <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
+                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.hospitalDoctorName}</Typography>
                 </Grid>
               </Grid>
             </>

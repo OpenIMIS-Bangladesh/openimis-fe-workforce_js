@@ -617,6 +617,11 @@
 
   "core.LoginPage.loginBtn": "লগইন",
   "core.error.required":"এই তথ্যটি  আবশ্যক",
+  "core.error.phoneNumberLength":"ফোন নম্বর অবশ্যই ১১ সংখ্যার হতে হবে",
+  "core.error.nidLength":"এনআইডি/জন্মসনদ নম্বরটি সঠিক নয়",
+  "core.error.workerAge":"শ্রমিকের বয়স ন্যূনতম ১৮ বছর হতে হবে।",
+  "core.error.accountNumberLength":"অ্যাকাউন্ট নম্বর অবশ্যই ৮ থেকে ১৭ অঙ্কের হতে হবে",
+
 
 
   "calendar.clearButton": "মুছে ফেলুন",
@@ -734,6 +739,7 @@
   "workforce.dependent.isDisabled":"নির্ভরশীলটি কি প্রতিবন্ধী?",
   "workforce.dependent.disabilityType":"প্রতিবন্ধিতার ধরন বর্ণনা করুন",
   "workforce.eis.factory.admin.accidentInfo.button":"দুর্ঘটনা ও চিকিৎসার বিবরণ",
+  "workforce.application.acknowledgement.text":"আমি নিশ্চিত করছি যে উপরের দেওয়া সমস্ত তথ্য সঠিক এবং সম্পূর্ণ।",
 
 
   "workforce.doctor.discussionRequired":"সিদ্ধান্তের প্রয়োজন",
