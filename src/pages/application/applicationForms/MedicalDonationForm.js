@@ -26,7 +26,7 @@ import NidVerification from "../../../components/application-forms/NidVerificati
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
-import { getInfoId, getUserType, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
+import { getInfoId, getUserType, isAtLeast18YearsOld, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
 import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
@@ -225,7 +225,7 @@ const MedicalDonationForm = ({ organizationType, selectedApplicationType, applic
 
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if (nextStep ===2) {
+      if (nextStep ===2 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
         let fakeErrors = {...newErrors,rdmp:"core.error.workerAge"}
         setErrors(fakeErrors)
         console.log({fakeErrors})

@@ -100,7 +100,7 @@ console.log('formData from employee Details form',formData)
                   readOnly={false}
                   required
                 />
-                {errors.rdmp && <FormHelperText error>{errors.rdmp}</FormHelperText>}
+                {errors.rdmp && <FormHelperText error>{formatMessage(errors?.rdmp)}</FormHelperText>}
               </Grid>
               
 

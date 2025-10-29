@@ -24,7 +24,7 @@ import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getParsedApplication, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
+import { getParsedApplication, isAtLeast18YearsOld, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -220,7 +220,7 @@ const MaternalGrantForm = ({ organizationType, selectedApplicationType, applicat
 
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if (nextStep === 1) {
+      if (nextStep === 1&& !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
         let fakeErrors = {...newErrors,rdmp:"core.error.workerAge"}
         setErrors(fakeErrors)
         console.log({fakeErrors})
