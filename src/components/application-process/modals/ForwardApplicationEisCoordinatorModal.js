@@ -185,7 +185,7 @@ const ForwardApplicationEisCoordinatorModal = ({
           );
 
           const updateApplicationSummaryData = {
-              id: summaryId,
+              id: decodeId(summaryId),
               status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
             };
         
