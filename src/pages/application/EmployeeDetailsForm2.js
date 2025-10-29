@@ -4,12 +4,6 @@ import { Grid, Box, Paper, Typography, Divider, IconButton } from "@material-ui/
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
-import { EMPTY_STRING, MODULE_NAME } from "../../constants";
-import CompanyPicker from "../../pickers/CompanyPicker";
-import FactoryPicker from "../../pickers/FactoryPicker";
-import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
-import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
-import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import FileUploader from "../../pickers/FileUploader";
 import { fetchDocumentType } from "../../actions";

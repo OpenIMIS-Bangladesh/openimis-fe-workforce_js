@@ -570,7 +570,7 @@ const MedicalAssistanceForm = ({ organizationType, selectedApplicationType, appl
           {steps[activeStep].content}
         </Box>
 
-        {activeStep < steps.length - 1 && (
+        {activeStep === steps.length - 1 && (
                     <Box>
                       <FormControlLabel
                         control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{ color: "blue" }} />}
