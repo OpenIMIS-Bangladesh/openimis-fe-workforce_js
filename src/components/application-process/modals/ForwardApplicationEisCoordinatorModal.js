@@ -81,7 +81,8 @@ const ForwardApplicationEisCoordinatorModal = ({
   selectedApplicationIds,
   onSubmitForward,
   userRights,
-  summaryId
+  summaryId,
+  roleIds
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -115,10 +116,10 @@ const ForwardApplicationEisCoordinatorModal = ({
   useEffect(() => {
     if (open) {
       setFormData({});
+      console.log("role id pathaisi",roleIds)
 
-      let roleIds = [];
       if (userType === "eis_coordinator") {
-        roleIds = ["49"];
+        roleIds = roleIds;
       }
 
       if (roleIds.length > 0) {
@@ -183,15 +184,16 @@ const ForwardApplicationEisCoordinatorModal = ({
               "create workforce movement"
             )
           );
-
-          const updateApplicationSummaryData = {
-              id: decodeId(summaryId),
-              status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
-            };
-        
-            await dispatch(
+          if (summaryId){
+            const updateApplicationSummaryData = {
+                  id: decodeId(summaryId),
+                  status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+                };
+                await dispatch(
               updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary")
             );
+          }   
+            
         }
       }
 
