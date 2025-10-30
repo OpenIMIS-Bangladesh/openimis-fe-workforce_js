@@ -111,7 +111,11 @@ const tryParse = (value) => {
 
 const isEmpty = (value) => {
   if (value == null) return true;
-  if (Array.isArray(value)) return value.length === 0;
+  // if (Array.isArray(value)) return value.length === 0;
+  if (Array.isArray(value)) {
+    if (value.length === 0) return true;
+    return value.every((item) => item == null || (typeof item === "object" && Object.keys(item).length === 0));
+  }
   if (typeof value === "object") return Object.keys(value).length === 0;
   return false;
 };
@@ -255,7 +259,7 @@ const ApplicationViewPage = ({
   const user_type = getUserType();
   const dispatch = useDispatch();
   const [lastSalaryAmount, setLastSalaryAmount] = useState("");
-  const [openAccidentInfoModal,setOpenAccidentInfoModal] = useState(false)
+  const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
 
   const handleLastSalaryAmount = (amount) => {
     const updateApplicationData = {
@@ -294,148 +298,146 @@ const ApplicationViewPage = ({
 
   return (
     <>
-    <Grid container spacing={3} className={classes.root}>
-      {/* Sidebar */}
-      <Grid item xs={12} md={4}>
-        <Paper className={classes.sidebar}>
-          <Typography variant="h6" gutterBottom style={{ fontWeight: "bold" }}>
-            <FormattedMessage module="workforce" id="workforce.application.info" />
-          </Typography>
-          <Divider />
-          <Box mt={2}>
-            {Object.entries(sidebarFields).map(([label, value]) => (
-              <Typography variant="body1" className={classes.value}>
-                <span className={classes.label} style={{ fontWeight: "bold" }}>
-                  {formatKey(label, language)}:
-                </span>{" "}
-                {value || "—"}
-              </Typography>
-            ))}
-          </Box>
-        </Paper>
-        {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes && filteredDocumentTypes?.length > 0 && (
-          <Typography variant="h6" style={{ marginTop: 6 }}>
-            <b>
-              <FormattedMessage module="workforce" id="workforce.employee.upload.factory.document" />
-            </b>
-          </Typography>
-        )}
-        {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && viewedFromFlag === "verify" && (
-          <>
-            <Grid container spacing={2} style={{ marginTop: "10px" }}>
-              <Grid item xs={9}>
-                <TextInput
-                  label={"workforce.application.lastBaseSalary.byFactoryAdmin"}
-                  value={lastSalaryAmount || ""}
-                  onChange={(e) => setLastSalaryAmount(e)}
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <Button variant="contained" color="primary" onClick={() => handleLastSalaryAmount(lastSalaryAmount)}>
-                  {<FormattedMessage id="workforce.submit" module="workforce" />}
-                </Button>
-              </Grid>
-              {application?.organizationType === "eis" && (
-                <Grid item xs={12}>
-                  <Button variant="contained" color="primary" onClick={() => setOpenAccidentInfoModal(true)} fullwidth>
-                    {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
+      <Grid container spacing={3} className={classes.root}>
+        {/* Sidebar */}
+        <Grid item xs={12} md={4}>
+          <Paper className={classes.sidebar}>
+            <Typography variant="h6" gutterBottom style={{ fontWeight: "bold" }}>
+              <FormattedMessage module="workforce" id="workforce.application.info" />
+            </Typography>
+            <Divider />
+            <Box mt={2}>
+              {Object.entries(sidebarFields).map(([label, value]) => (
+                <Typography variant="body1" className={classes.value}>
+                  <span className={classes.label} style={{ fontWeight: "bold" }}>
+                    {formatKey(label, language)}:
+                  </span>{" "}
+                  {value || "—"}
+                </Typography>
+              ))}
+            </Box>
+          </Paper>
+          {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes && filteredDocumentTypes?.length > 0 && (
+            <Typography variant="h6" style={{ marginTop: 6 }}>
+              <b>
+                <FormattedMessage module="workforce" id="workforce.employee.upload.factory.document" />
+              </b>
+            </Typography>
+          )}
+          {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && viewedFromFlag === "verify" && (
+            <>
+              <Grid container spacing={2} style={{ marginTop: "10px" }}>
+                <Grid item xs={9}>
+                  <TextInput
+                    label={"workforce.application.lastBaseSalary.byFactoryAdmin"}
+                    value={lastSalaryAmount || ""}
+                    onChange={(e) => setLastSalaryAmount(e)}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <Button variant="contained" color="primary" onClick={() => handleLastSalaryAmount(lastSalaryAmount)}>
+                    {<FormattedMessage id="workforce.submit" module="workforce" />}
                   </Button>
                 </Grid>
-              )}
-            </Grid>
-            {filteredDocumentTypes?.map((document, index) => (
-              <Box style={{ marginTop: "10px" }}>
-                <Typography>{document.nameBn}</Typography>
-                <FileUploader
-                  fieldKey={document.fieldId}
-                  applicationId={application?.id}
-                  onFileChange={onFileChange}
-                  documentType={document.documentType}
-                  documentProp={document}
-                  uploadedBy={"factoryAdmin"}
-                />
-              </Box>
-            ))}
-          </>
-        )}
-        {user_type === (WORKFORCE_USER_TYPE.DOCTOR || WORKFORCE_USER_TYPE.BLWF_DOCTOR || WORKFORCE_USER_TYPE.EIS_DOCTOR) && viewedFromFlag === "verify" && (
-          <DoctorsEntries application={application} />
-        )}
-      </Grid>
-
-      {/* Details Section */}
-      <Grid item xs={12} md={8}>
-        {Object.entries(application).map(([key, value]) => {
-          // skip sidebar & hidden fields
-          if (["applicationType", "organizationType", "trackingNumber", "status", "grantAmount", "submittedBy", "dateCreated", ...hiddenKeys].includes(key))
-            return null;
-
-          const parsedValue = tryParse(value);
-          if (!parsedValue || isEmpty(parsedValue)) return null;
-
-          ///expanded={expanded === key} onChange={() => setExpanded(expanded === key ? null : key)}
-          return (
-            <Accordion key={key} className={classes.accordion} style={{ background: `${"#B7D4D8"}` }}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.sectionTitle}>{formatKey(key, language)}</Typography>
-              </AccordionSummary>
-              <AccordionDetails style={{ display: "block", background: `${"white"}` }}>
-                {renderDetails(parsedValue, classes, key, language)}
-                {fileStates && (
-                  <>
-                    <Typography variant="h6" style={{ marginTop: 3 }}>
-                      <FormattedMessage module="workforce" id="workforce.employee.document" />
-                    </Typography>
-                    {fileStates
-                      ?.filter((item, originalIdx) => {
-                        item._originalIndex = originalIdx; // attach index temporarily
-                        return item?.workforceDocumentType?.formStepNo === key;
-                      })
-                      .map((file) => (
-                        <DocumentReviewAccordion
-                          key={file._originalIndex}
-                          file={file} // ✅ from editable local state
-                          index={file._originalIndex}
-                          onCommentChange={handleCommentChange}
-                          onVerify={handleFileVerify}
-                          onReject={handleFileReject}
-                          locale={language}
-                        />
-                      ))}
-                  </>
+                {application?.organizationType === "eis" && (
+                  <Grid item xs={12}>
+                    <Button variant="contained" color="primary" onClick={() => setOpenAccidentInfoModal(true)} fullwidth>
+                      {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
+                    </Button>
+                  </Grid>
                 )}
-              </AccordionDetails>
-            </Accordion>
-          );
-        })}
-        {fileStates && (
-          <>
-            <Typography variant="h6" style={{ marginTop: 3 }}>
-              <FormattedMessage module="workforce" id="workforce.employee.other.document" />
-            </Typography>
-            {fileStates
-              ?.filter((item, originalIdx) => {
-                item._originalIndex = originalIdx; // attach index temporarily
-                return item?.workforceDocumentType?.formStepNo === "workforceDocument";
-              })
-              .map((file) => (
-                <DocumentReviewAccordion
-                  key={file._originalIndex}
-                  file={file} // ✅ from editable local state
-                  index={file._originalIndex}
-                  onCommentChange={handleCommentChange}
-                  onVerify={handleFileVerify}
-                  onReject={handleFileReject}
-                  locale={language}
-                />
+              </Grid>
+              {filteredDocumentTypes?.map((document, index) => (
+                <Box style={{ marginTop: "10px" }}>
+                  <Typography>{document.nameBn}</Typography>
+                  <FileUploader
+                    fieldKey={document.fieldId}
+                    applicationId={application?.id}
+                    onFileChange={onFileChange}
+                    documentType={document.documentType}
+                    documentProp={document}
+                    uploadedBy={"factoryAdmin"}
+                  />
+                </Box>
               ))}
-          </>
-        )}
+            </>
+          )}
+          {user_type === (WORKFORCE_USER_TYPE.DOCTOR || WORKFORCE_USER_TYPE.BLWF_DOCTOR || WORKFORCE_USER_TYPE.EIS_DOCTOR) && viewedFromFlag === "verify" && (
+            <DoctorsEntries application={application} />
+          )}
+        </Grid>
+
+        {/* Details Section */}
+        <Grid item xs={12} md={8}>
+          {Object.entries(application).map(([key, value]) => {
+            // skip sidebar & hidden fields
+            if (["applicationType", "organizationType", "trackingNumber", "status", "grantAmount", "submittedBy", "dateCreated", ...hiddenKeys].includes(key))
+              return null;
+
+            const parsedValue = tryParse(value);
+            if (!parsedValue || isEmpty(parsedValue)) return null;
+
+            ///expanded={expanded === key} onChange={() => setExpanded(expanded === key ? null : key)}
+            return (
+              <Accordion key={key} className={classes.accordion} style={{ background: `${"#B7D4D8"}` }}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography className={classes.sectionTitle}>{formatKey(key, language)}</Typography>
+                </AccordionSummary>
+                <AccordionDetails style={{ display: "block", background: `${"white"}` }}>
+                  {renderDetails(parsedValue, classes, key, language)}
+                  {fileStates && (
+                    <>
+                      <Typography variant="h6" style={{ marginTop: 3 }}>
+                        <FormattedMessage module="workforce" id="workforce.employee.document" />
+                      </Typography>
+                      {fileStates
+                        ?.filter((item, originalIdx) => {
+                          item._originalIndex = originalIdx; // attach index temporarily
+                          return item?.workforceDocumentType?.formStepNo === key;
+                        })
+                        .map((file) => (
+                          <DocumentReviewAccordion
+                            key={file._originalIndex}
+                            file={file} // ✅ from editable local state
+                            index={file._originalIndex}
+                            onCommentChange={handleCommentChange}
+                            onVerify={handleFileVerify}
+                            onReject={handleFileReject}
+                            locale={language}
+                          />
+                        ))}
+                    </>
+                  )}
+                </AccordionDetails>
+              </Accordion>
+            );
+          })}
+          {fileStates && (
+            <>
+              <Typography variant="h6" style={{ marginTop: 3 }}>
+                <FormattedMessage module="workforce" id="workforce.employee.other.document" />
+              </Typography>
+              {fileStates
+                ?.filter((item, originalIdx) => {
+                  item._originalIndex = originalIdx; // attach index temporarily
+                  return item?.workforceDocumentType?.formStepNo === "workforceDocument";
+                })
+                .map((file) => (
+                  <DocumentReviewAccordion
+                    key={file._originalIndex}
+                    file={file} // ✅ from editable local state
+                    index={file._originalIndex}
+                    onCommentChange={handleCommentChange}
+                    onVerify={handleFileVerify}
+                    onReject={handleFileReject}
+                    locale={language}
+                  />
+                ))}
+            </>
+          )}
+        </Grid>
       </Grid>
-    </Grid>
-    {openAccidentInfoModal && (
-      <EisFactoryAdminModal open={openAccidentInfoModal} onClose={()=>setOpenAccidentInfoModal(false)} application={application}/>
-    )}
+      {openAccidentInfoModal && <EisFactoryAdminModal open={openAccidentInfoModal} onClose={() => setOpenAccidentInfoModal(false)} application={application} />}
     </>
   );
 };
