@@ -448,7 +448,7 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
       applicationId: safeApplicationId(applicationId, parsedApplicationData),
       status: WORKFORCE_STATUS.NEW,
       note: "একটি নতুন আবেদন করা হয়েছে",
-      applicationFromId: parseInt(reduxState.core.user.id),
+      applicationFromId: reduxState.core?.user?.i_user?.id,
       applicationToId: 165,
       toRoleId: 25,
     };
