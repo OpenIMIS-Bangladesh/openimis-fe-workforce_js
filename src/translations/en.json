@@ -70,6 +70,7 @@
     "workforce.organization.picker": "Organization",
     "workforce.bank.picker": "Bank",
     "workforce.branch.picker": "Branch",
+  "workforce.district.branch.picker": "District",
     "workforce.organization.unit.picker": "Unit",
     "workforce.employee.relation.picker": "Select Relation type",
     "workforce.officeType.selector.picker": "Select Office",
@@ -189,6 +190,9 @@
     "workforce.employee.passport_no": "Passport No",
     "workforce.employee.fathers_name.bn": "Father Name Bn",
     "workforce.employee.fathers_name.en": "Father Name En",
+    "workforce.employee.fathers_name":"Father Name",
+    "workforce.employee.mothers_name":"Mother Name",
+  "workforce.employee.spouse.name": "Spouse Name",
     "workforce.employee.mothers_name.bn": "Mother Name Bn",
     "workforce.employee.mothers_name.en": "Mother Name En",
     "workforce.employee.spouse.name.bn": "Spouse Name Bn",
@@ -359,9 +363,12 @@
     "workforce.application.type.medical.donation":"Medical Donation",
     "workforce.application.type.financial.assistance":"Financial Assistance Form for the Family of Deceased Worker",
     "workforce.application.type.medical.disability":"Application for Financial Assistance due to Permanent and Partial Disability",
+    "workforce.application.type.eis.medical.disability": "Application for Financial Assistance due to Permanent and Partial Disability",
+
     "workforce.application.type.scholarship":"Scholarship Application",
     "workforce.application.type.education.grant":"Education Grant",
     "workforce.application.type.deadly.grant":"Deadly Grant",
+    "workforce.application.type.eis.deadly.grant":"Accidental Death Grant",
     "workforce.application.type.maternal.grant":"Maternal Grant",
 
 

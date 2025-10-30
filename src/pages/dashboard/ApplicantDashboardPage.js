@@ -346,7 +346,7 @@ const ApplicantDashboard = () => {
   const history = useHistory()
   // const isEisPath = isEisPath()
   // console.log({isEisPath})
-  console.log("heello from url history",isEisPath)
+
   const [selectedMenu, setSelectedMenu] = useState(() => {
     const hash = window.location.hash.substring(1);
     return SidebarMenu.some(item => item.id === hash) ? hash : "pendingApplications";
