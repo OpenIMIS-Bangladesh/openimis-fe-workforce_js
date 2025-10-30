@@ -508,8 +508,8 @@
 
     "workforce.application.id":"Application id",
     "workforce.application.date":"Application Date",
-    "workforce.application.disabilityInfo":"অক্ষমতার তথ্য",
-    "workforce.application.disabilityDetails":"অক্ষমতার কারণ",
+    "workforce.application.disabilityInfo":"Disability Info",
+    "workforce.application.disabilityDetails":"Disability Reason",
     "workforce.application.expected.date":"Probable date of service",
     "workforce.application.status":"Application Status",
     "workforce.application.draft_applications":"Draft Applications",

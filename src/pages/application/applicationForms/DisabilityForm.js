@@ -222,9 +222,10 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
     console.log({ formData });
     const newErrors = validateRequiredFields(stepRef, formatMessage);
     setErrors(newErrors);
-
+    console.log({newErrors})
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
+      if(organizationType ==="eis" && eisSteps.length -1 ===activeStep) setShowPreview(true)
       if(((nextStep === 1 && organizationType === "eis") ||  (nextStep === 2 && organizationType !== "eis")) && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)){
         let fakeErrors = {...newErrors,rdmp:"core.error.workerAge"}
         setErrors(fakeErrors)
@@ -366,9 +367,9 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
       applicationToId: 165,
       toRoleId: 25,
     };
-    console.log("hello i am from submit", updateApplicationData);
-    dispatch(updateApplication(updateApplicationData, `update workforce application `));
-    dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
+    console.log("hello i am from submit", createApplicationMovementData);
+    await dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
+    await dispatch(updateApplication(updateApplicationData, `update workforce application `));
   };
 
   const handleArrayFieldChange = (fieldKey, index, key, value) => {
@@ -624,7 +625,7 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
           ) : (
             <>
             {formData?.organizationType === "eis"? (
-                  <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => {setShowPreview(true);handleNext()}}>
+                  <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => {organizationType ==="eis"? handleNext() :setShowPreview(true)}}>
                     <FormattedMessage module="workforce" id="workforce.submit" />
                   </Button>
                   
