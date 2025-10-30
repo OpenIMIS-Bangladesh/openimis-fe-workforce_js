@@ -224,6 +224,7 @@ const FiledApplications = () =>{
             <ApplicationProcessSearcher
                loggedInUserId={loggedInUserId}    
                coloredRow={true} 
+               roleIds = {["47"]}
             />
           </CardContent>
       </Card>
@@ -324,7 +325,7 @@ const AdvisorApprovedApplications = ({ summaryData = [], disableButtons=0 }) => 
                 <Card style={{ width: "100%" }}>
                   <CardContent>
                     {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons}/>
+                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons} roleIds = {["49"]}/>
                     )}
                   </CardContent>
                 </Card>

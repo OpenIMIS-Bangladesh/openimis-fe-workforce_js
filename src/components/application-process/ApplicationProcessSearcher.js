@@ -2931,6 +2931,7 @@ class ApplicationProcessSearcher extends Component {
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
                   summaryId={this.props.summaryId}
+                  roleIds={this.props.roleIds}
                 />
               </>
             );
