@@ -24,8 +24,8 @@ export const safeApplicationId = (applicationId, parsedApplicationData) => {
   console.log("parsedApplicationData", parsedApplicationData);
   if (applicationId && applicationId.length > 0 && applicationId[0]?.id) {
     return decodeId(applicationId[0].id);
-  } else if (parsedApplicationData && parsedApplicationData.id) {
-    return parsedApplicationData.id;
+  } else if (parsedApplicationData && parsedApplicationData?.id) {
+    return parsedApplicationData?.id;
   } else {
     return null;
   }

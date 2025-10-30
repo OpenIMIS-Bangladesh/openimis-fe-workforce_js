@@ -98,7 +98,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
-              `applicationFor: ["normal_death","normal_death_institutional","normal_death_institutional_on_work"]`,
+              `applicationForIn: ["normal_death","normal_death_institutional","normal_death_institutional_on_work"]`,
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData?.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
@@ -108,7 +108,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
-              `applicationFor: ["normal_death","normal_death_non_institutional"]`,
+              `applicationForIn: ["normal_death","normal_death_non_institutional"]`,
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,

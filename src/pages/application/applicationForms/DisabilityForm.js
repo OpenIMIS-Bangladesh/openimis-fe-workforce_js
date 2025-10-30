@@ -355,7 +355,6 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
       metadata: JSON.stringify(formData.metadata),
       status: WORKFORCE_STATUS.NEW,
       applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
-
       submittedBy,
     };
 
@@ -623,15 +622,18 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-                  <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
+            <>
+            {formData?.organizationType === "eis"? (
+                  <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => {setShowPreview(true);handleNext()}}>
                     <FormattedMessage module="workforce" id="workforce.submit" />
                   </Button>
-            // <Box mt={2}>
-            //   <Grid container direction="column" spacing={2}>
-            //     <Grid item>
-            //     </Grid>
-            //   </Grid>
-            // </Box>
+                  
+            ):(
+              <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
+                    <FormattedMessage module="workforce" id="workforce.submit" />
+                  </Button>
+            )}
+            </>
           )}
         </div>
         </Box>
