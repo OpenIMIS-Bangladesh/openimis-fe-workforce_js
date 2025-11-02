@@ -9,7 +9,7 @@ import {
   Breadcrumbs,
   Radio,
   FormControlLabel,
-  CircularProgress, // Import CircularProgress for loading state
+  CircularProgress,
 } from "@material-ui/core";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import { useSelector, useDispatch } from "react-redux";
@@ -143,7 +143,7 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
           setServerResponse({ status: "ERROR", message: "Failed to load user path." });
         })
         .finally(() => {
-            setIsLoadingPath(false); // Stop loading
+            setIsLoadingPath(false);
         });
     }
   }, [open, appIdDecoded, applicantName, dispatch, modulesManager]);
@@ -164,18 +164,15 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
     }
 
     const updateApplicationData = { id: appIdDecoded, status: WORKFORCE_STATUS.REVERT };
-    
-    // The applicant won't have a real user UUID, so we treat it as a special case.
-    const revertToId = selectedRevertUser === 'applicant001' ? null : decodeId(selectedRevertUser);
-
-    const createApplicationMovementData = {
+        
+    const createApplicationMovementData = {     
       applicationId: appIdDecoded,
       status: WORKFORCE_STATUS.REVERT,
       note: "আবেদন ফেরত পাঠানো হয়েছে",
       revertNote: editorContent,
       isReverted: true,
       applicationFromId: userId,
-      applicationToId: revertToId,
+      applicationToId: decodeId(selectedApplication?.workforceEmployee?.relatedUser?.id),
     };
 
     try {
@@ -184,7 +181,6 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
       setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
       setTimeout(() => {
         onClose();
-        // Optional: you might want to refresh the parent page's data here instead of a full reload
         window.location.reload(); 
       }, 1000);
     } catch (err) {
@@ -195,7 +191,6 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
     }
   };
   
-  // Debugging log to see what the modal receives
   console.log("RevertModal rendering with:", { selectedApplication, movementUsers });
 
   return (
