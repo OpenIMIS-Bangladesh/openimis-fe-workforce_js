@@ -2663,3 +2663,19 @@ export function fetchUserDistrictsUnauthorized() {
   let payload = formatQuery("userDistricts", null, ["id", "uuid", "code", "name", "parent{id, uuid, code, name}"]);
   return graphql(payload, "LOCATION_USER_DISTRICTS");
 }
+
+
+export function updateWorkforceEmployeeDependentEligibility(applicationId) {
+  const mutation= `
+      mutation {
+        updateWorkforceEmployeeDependentEligibility(
+        workforceApplicationId: "${applicationId}"
+      ) {
+        status
+        data
+        message
+      }
+    }
+  `;
+  return graphql(mutation, "WORKFORCE_EMPLOYEE_DEPENDENT_ELIGIBILITY_UPDATE");
+}
