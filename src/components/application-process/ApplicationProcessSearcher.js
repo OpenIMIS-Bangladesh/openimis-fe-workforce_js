@@ -86,6 +86,7 @@ class ApplicationProcessSearcher extends Component {
       // 🆕 Modal state
       forwardModalOpen: false,
       forwardModalOpenSA: false,
+      forwardModalOpenEIS: false,
       forwardModalOpenEisDoctor: false,
       forwardModalOpenSummarySA:false,
       forwardModalOpenFA:false,
@@ -1224,6 +1225,9 @@ class ApplicationProcessSearcher extends Component {
   handleOpenForwardModalForSectionAdmin = (application) => {
     this.setState({ forwardModalOpenSA: true, selectedApplication: application });
   };
+  handleOpenForwardModalForEIS = (application) => {
+    this.setState({ forwardModalOpenEIS: true, selectedApplication: application });
+  };
   handleCloseForwardModalForSectionAdmin = () => {
     this.setState({ forwardModalOpenSA: false, selectedApplication: null });
   };
@@ -1237,7 +1241,7 @@ class ApplicationProcessSearcher extends Component {
     this.setState({ forwardModalOpenSA: false, selectedApplication: null });
   };
   handleCloseForwardModalForEisCoordinator = () => {
-    this.setState({ forwardModalOpenSA: false, selectedApplication: null });
+    this.setState({ forwardModalOpenEIS: false, selectedApplication: null });
   };
   handleCloseForwardModalForEisDoctor = () => {
     this.setState({ forwardModalOpenEisDoctor: false, selectedApplication: null });
@@ -2430,6 +2434,7 @@ class ApplicationProcessSearcher extends Component {
       forwardModalOpen,
       forwardModalOpenSA,
       forwardModalOpenEisDoctor,
+      forwardModalOpenEIS,
       revertModalOpen,
       revertByChecker,
       revertByApprover,
@@ -2561,6 +2566,7 @@ class ApplicationProcessSearcher extends Component {
                         </Button>
                       )}
                       {WORKFORCE_USER_TYPE.EIS_COORDINATOR.includes(userType) && (
+                        <>
                         <Button
                           variant="contained"
                           color="primary"
@@ -2571,6 +2577,10 @@ class ApplicationProcessSearcher extends Component {
                             id="workforce.employee.application.forwardToDoctor"
                           />
                         </Button>
+                         <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenEIS: true })}>
+                        <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                      </Button>
+                    </>
                       )}
                     </>
                   ):(
@@ -2925,7 +2935,7 @@ class ApplicationProcessSearcher extends Component {
                   userRights={userRights}
                 />
                   <ForwardApplicationEisCoordinatorModal
-                  open={forwardModalOpenSA}
+                  open={forwardModalOpenEIS}
                   onClose={this.handleCloseForwardModalForEisCoordinator}
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
