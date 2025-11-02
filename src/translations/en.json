@@ -842,6 +842,7 @@
   "workforce.dependent.disabilityType":"Describe Disability type",
   "workforce.eis.factory.admin.accidentInfo.button":"Accident and Medical Details",
   "workforce.application.acknowledgement.text":"I hereby affirm that all information given above is correct & complete.",
+  "workforce.application.accident.otherAccidentType":"Describe other accident type",
 
 
   "workforce.doctor.discussionRequired":"Discussion needed",

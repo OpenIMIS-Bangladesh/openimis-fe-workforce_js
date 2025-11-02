@@ -408,7 +408,7 @@ const MaternalGrantForm = ({ organizationType, selectedApplicationType, applicat
       ? [
           {
             label: "workforce.application.steps.worker.extraInfo",
-            content: <WorkerExtraInfo errors={errors} handleChange={handleChange} formData={formData} />,
+            content: <WorkerExtraInfo errors={errors} handleChange={(key, value) => handleChange(key, value, "institutionInfo")} formData={formData} />,
           },
         ]
       : []),

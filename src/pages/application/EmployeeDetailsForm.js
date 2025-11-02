@@ -178,13 +178,13 @@ console.log('formData from employee Details form',formData)
                   label="workforce.employee.nid_or_birth_certificate"
                   value={formData?.workforceEmployee?.nid || formData?.workforceEmployee?.birthCertificateNo || nidOrBcn?.nid || ""}
                   formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
-                  inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*",maxLength: 17 }}
+                  // inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*",maxLength: 17 }}
                   onChange={(v) => {
                     const numericValue = (v || "").replace(/\D/g, "").slice(0, 17);
                     setNidOrBcn({ ...nidOrBcn, nid: numericValue });
                   }}
                   type="text"
-                  // inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*" }}
+                  inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*" }}
                   required
                   readOnly={false}
                   error={!!errors.nid}

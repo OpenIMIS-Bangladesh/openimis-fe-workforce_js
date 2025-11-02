@@ -740,6 +740,7 @@
   "workforce.dependent.disabilityType":"প্রতিবন্ধিতার ধরন বর্ণনা করুন",
   "workforce.eis.factory.admin.accidentInfo.button":"দুর্ঘটনা ও চিকিৎসার বিবরণ",
   "workforce.application.acknowledgement.text":"আমি নিশ্চিত করছি যে উপরের দেওয়া সমস্ত তথ্য সঠিক এবং সম্পূর্ণ।",
+  "workforce.application.accident.otherAccidentType":"অন্যান্য দুর্ঘটনার ধরন বর্ণনা করুন",
 
 
   "workforce.doctor.discussionRequired":"সিদ্ধান্তের প্রয়োজন",

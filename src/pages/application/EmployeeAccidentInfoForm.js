@@ -256,6 +256,19 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
               />
               {errors?.accidentType && <FormHelperText error>{errors?.accidentType}</FormHelperText>}
             </Grid>
+            {formData?.employeeAccidentInfo?.accidentType=== "workforce.accident.type.others" &&(
+              <Grid item xs={6} className={classes.item}>
+              <TextInput
+                  id="otherAccidentType"
+                  label={"workforce.application.accident.otherAccidentType"}
+                  value={formData?.employeeAccidentInfo?.otherAccidentType || ""}
+                  required
+                  onChange={(v) => handleChange("otherAccidentType", v)}
+                  error={!! errors?.otherAccidentType}
+                  helperText={!! errors?.otherAccidentType}
+                />
+              
+            </Grid>)}
             <Grid item xs={6} className={classes.item}>
               <TextInput
                 id="accidentPlace"
