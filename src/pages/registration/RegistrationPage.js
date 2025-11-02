@@ -128,7 +128,9 @@ const RegistrationPage = () => {
 
   const validateStep1 = () =>
     formData.NID_BirthCertificate &&
+    [10, 13, 17].includes((formData.NID_BirthCertificate || "").toString().trim().length) &&
     formData.mobile &&
+    [11].includes((formData.mobile || "").toString().trim().length) &&
     formData.firstNameBn &&
     formData.firstNameEn;
 
@@ -202,7 +204,7 @@ const RegistrationPage = () => {
         message:
           step === 2
             ? "ভুল OTP. দয়া করে আবার চেষ্টা করুন।"
-            : "সমস্ত ঘর পূরণ করুন।",
+            : "সকল প্রয়োজনীয় তথ্য সঠিকভাবে পূরণ করুন|",
       });
     }
   };

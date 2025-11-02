@@ -106,7 +106,7 @@ console.log('formData from employee Details form',formData)
 
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <EmployeeGenderPicker
-                  value={formData?.workforceEmployee?.gender}
+                  value={typeof formData?.workforceEmployee?.gender === "object" ?formData?.workforceEmployee?.gender?.name :formData?.workforceEmployee?.gender}
                   label={<FormattedMessage id="workforce.employee.gender" module="workforce" />}
                   onChange={(v) => handleChange("gender", v)}
                   readOnly={false}
@@ -120,9 +120,10 @@ console.log('formData from employee Details form',formData)
                       label="workforce.employee.phone"
                       value={formData?.workforceEmployee?.phoneNumber || ""}
                       onChange={(v) => handleChange("phoneNumber", v)}
-                      type={"number"}
+                      type={"text"}
                       required
                       readOnly={false}
+                      inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*" }}
                       error={!!errors.phoneNumber}
                       helperText={errors.phoneNumber}
                     />
@@ -177,12 +178,13 @@ console.log('formData from employee Details form',formData)
                   label="workforce.employee.nid_or_birth_certificate"
                   value={formData?.workforceEmployee?.nid || formData?.workforceEmployee?.birthCertificateNo || nidOrBcn?.nid || ""}
                   formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
-                  inputProps={{ maxLength: 17 }}
+                  inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*",maxLength: 17 }}
                   onChange={(v) => {
                     const numericValue = (v || "").replace(/\D/g, "").slice(0, 17);
                     setNidOrBcn({ ...nidOrBcn, nid: numericValue });
                   }}
-                  type="number"
+                  type="text"
+                  // inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*" }}
                   required
                   readOnly={false}
                   error={!!errors.nid}

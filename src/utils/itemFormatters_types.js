@@ -19,6 +19,8 @@ import {
   STATUS_MAP_EN,
   WORKFORCE_USER_TYPE_MAP_EN,
   WORKFORCE_USER_TYPE_MAP_BN,
+  ORGANIZATION_TYPE_NAME_EN,
+  ORGANIZATION_TYPE_NAME_BN,
 } from "../constants";
 import { conditionalEnToBn } from "./utils";
 
@@ -312,7 +314,7 @@ export const itemFormattersApplicant = (
       locale === "en"
         ? application?.employeeFactory?.nameEn ?? "N/A"
         : application?.employeeFactory?.nameBn ?? "প্রযোজ্য নয়",
-    (application) => application?.organizationType,
+    (application) => locale==="en"? ORGANIZATION_TYPE_NAME_EN[application?.organizationType] : ORGANIZATION_TYPE_NAME_BN[application?.organizationType],
     (application) =>
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
