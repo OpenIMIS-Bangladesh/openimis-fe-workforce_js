@@ -47,7 +47,8 @@ import {
   ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_RESEND,
   ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION,
   ROUTE_ADMINISTRATIVE_LOGIN,
-  ROUTE_WORKFORCE_REPORTS_BENEFICIARY_REPORT
+  ROUTE_WORKFORCE_REPORTS_BENEFICIARY_REPORT,
+  ROUTE_WORKFORCE_APPLICATION_EIS
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -103,6 +104,7 @@ import LoginForm from "./pages/login/LoginForm";
 import LoginFormAdministrative from "./pages/login/LoginFormAdministrative";
 import BeneficiaryReport from "./pages/reports/BeneficiaryReport";
 import UserInfo from "./components/app-bar/UserInfo";
+import EisMultiStepApplyForm from "./pages/application/EisMultiStepApplyForm";
 
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
@@ -156,6 +158,7 @@ const DEFAULT_CONFIG = {
 
     { key: "workforce.route.registration", ref: ROUTE_WORKFORCE_REGISTRATION },
     { key: "workforce.route.application", ref: ROUTE_WORKFORCE_APPLICATION },
+    { key: "workforce.route.application.eis", ref: ROUTE_WORKFORCE_APPLICATION_EIS },
     {
       key: "workforce.route.applications.application.process.view",
       ref: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS,
@@ -279,6 +282,8 @@ const DEFAULT_CONFIG = {
 
     { path: ROUTE_WORKFORCE_APPLICATION, component: MultiStepApplyForm },
     { path: `${ROUTE_WORKFORCE_APPLICATION}/:application_uuid`, component: MultiStepApplyForm },
+    { path: ROUTE_WORKFORCE_APPLICATION_EIS, component: EisMultiStepApplyForm },
+    { path: `${ROUTE_WORKFORCE_APPLICATION_EIS}/:application_uuid`, component: EisMultiStepApplyForm },
     { path: ROUTE_WORKFORCE_APPLICATIONS_PROCESS, component: ApplicationsProcessPage },
     { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VIEW_PROCESS, component: ApplicationProcessPage },
     {

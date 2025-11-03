@@ -22,7 +22,7 @@ import {
   ORGANIZATION_TYPE_NAME_EN,
   ORGANIZATION_TYPE_NAME_BN,
 } from "../constants";
-import { conditionalEnToBn } from "./utils";
+import { conditionalEnToBn, isEisPath } from "./utils";
 
 // export const itemAdminFormatters = (
 //   isShowHistory,
@@ -352,7 +352,15 @@ export const itemFormattersApplicant = (
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
+              isEisPath() ?
               historyPush(
+                modulesManager,
+                history,
+                "workforce.route.application.eis",
+                [decodeId(application?.id)],
+                false
+              )
+              :historyPush(
                 modulesManager,
                 history,
                 "workforce.route.application",
