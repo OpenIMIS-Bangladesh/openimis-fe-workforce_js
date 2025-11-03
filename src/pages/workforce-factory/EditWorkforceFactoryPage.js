@@ -33,6 +33,7 @@ import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 import CompanyPicker from "../../pickers/CompanyPicker";
 import FileUploader from "../../pickers/FileUploader";
+import { getAssociationNameByUserType, getUserTypeFromRights } from "../../utils/utils";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -169,6 +170,8 @@ class EditWorkforceFactoryPage extends Component {
     const isSaveDisabled = false;
     console.log({ stateEdited });
 
+    let disableAssociationSelect= getAssociationNameByUserType(this.props.userType)=== ""? false : true;
+
     return (
       <div className={classes.page}>
         <Grid container>
@@ -297,12 +300,14 @@ class EditWorkforceFactoryPage extends Component {
                       value={stateEdited.associationType || ""}
                       onChange={(e) => this.updateAttribute("associationType", e.target.value)}
                       label="Association Type"
-                      readOnly={isSaved}
+                      readOnly={disableAssociationSelect}
                       disabled={isSaved}
                       required
                     >
                       <MenuItem value="BGMEA">BGMEA</MenuItem>
                       <MenuItem value="BKMEA">BKMEA</MenuItem>
+                      <MenuItem value="LFMEAB">LFMEAB</MenuItem>
+                      <MenuItem value="BEPZA">BEPZA</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -431,6 +436,7 @@ class EditWorkforceFactoryPage extends Component {
 
 const mapStateToProps = (state) => ({
   workforceFactory: state.workforce.workforceFactory,
+  userType: getUserTypeFromRights(state.core.user.i_user.rights),
 });
 
 export default connect(mapStateToProps)(

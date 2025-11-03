@@ -306,8 +306,8 @@ class AddWorkforceFactoryPage extends Component {
                       value={associationValue!=""? associationValue : stateEdited.associationType? stateEdited.associationType : ""}
                       onChange={(e) => this.updateAttribute("associationType", e.target.value)}
                       label="Association Type"
-                      readOnly={isSaved}
-                      disabled={disableAssociationSelect}
+                      readOnly={disableAssociationSelect}
+                      disabled={isSaved}
                     
                     >
                       <MenuItem value="BGMEA">BGMEA</MenuItem>

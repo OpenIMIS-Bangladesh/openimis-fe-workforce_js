@@ -10,6 +10,7 @@ import {
 import { MODULE_NAME } from "../../constants";
 import WorkforceEmployeeSearcher from "../../components/workforce-employee/WorkforceEmployeeSearcher";
 import { ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE } from "../../routes";
+import { getUserTypeFromRights } from "../../utils/utils";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -55,6 +56,7 @@ class WorkforceEmployeesPage extends Component {
 
 const mapStateToProps = (state) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
+  userType: getUserTypeFromRights(state.core.user.i_user.rights),
 });
 
 export default withModulesManager(
