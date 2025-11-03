@@ -11,6 +11,7 @@ import { conditionalEnToBn, enToBn, getUserType } from "../../utils/utils";
 import { updateApplication } from "../../actions";
 import DoctorsEntries from "./Atoms/DoctorsEntries";
 import EisFactoryAdminModal from "./EisFactoryAdminModal";
+import ApplicationMovementStepper from "../shared/ApplicationMovementStepper";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,6 +78,7 @@ const hiddenKeys = [
   "applicationForSelf",
   "insuranceNumber",
   "grantMoney",
+  "relatedUser",
 ];
 
 /**
@@ -126,20 +128,83 @@ const isEmpty = (value) => {
 const renderDetails = (data, classes, parentKey = "", language) => {
   if (!data) return null;
 
-  // Handle arrays of objects
-  if (Array.isArray(data)) {
-    return data.map((item, idx) => {
+  // ✅ Safe JSON parser
+  const tryParse = (value) => {
+    if (typeof value === "string") {
+      try {
+        const parsed = JSON.parse(value);
+        return typeof parsed === "object" ? parsed : value;
+      } catch {
+        return value;
+      }
+    }
+    return value;
+  };
+
+  // ✅ Merge present/permanent address + location
+  const mergeAddressAndLocation = (obj) => {
+    const parsedObj = Object.fromEntries(
+      Object.entries(obj).map(([k, v]) => [k, tryParse(v)])
+    );
+    const newObj = { ...parsedObj };
+
+    if (parsedObj.presentAddress || parsedObj.presentLocation) {
+      newObj.presentAddressAndLocation = {
+        ...(parsedObj.presentAddress || {}),
+        ...(parsedObj.presentLocation || {}),
+      };
+      delete newObj.presentAddress;
+      delete newObj.presentLocation;
+    }
+
+    if (parsedObj.permanentAddress || parsedObj.permanentLocation) {
+      newObj.permanentAddressAndLocation = {
+        ...(parsedObj.permanentAddress || {}),
+        ...(parsedObj.permanentLocation || {}),
+      };
+      delete newObj.permanentAddress;
+      delete newObj.permanentLocation;
+    }
+
+    return newObj;
+  };
+
+  // ✅ Merge + parse data
+  const mergedData =
+    typeof data === "object" && !Array.isArray(data)
+      ? mergeAddressAndLocation(data)
+      : Array.isArray(data)
+      ? data.map((item) =>
+          typeof item === "object" ? mergeAddressAndLocation(item) : tryParse(item)
+        )
+      : tryParse(data);
+
+  // ✅ Handle arrays of objects
+  if (Array.isArray(mergedData)) {
+    return mergedData.map((item, idx) => {
       if (typeof item !== "object" || !item) return null;
 
       const scalars = Object.entries(item).filter(
-        ([key, value]) => typeof value !== "object" && !hiddenKeys.includes(key) && value !== null && value !== undefined && value !== ""
+        ([key, value]) =>
+          typeof value !== "object" &&
+          !hiddenKeys.includes(key) &&
+          value !== null &&
+          value !== undefined &&
+          value !== ""
       );
-      const objects = Object.entries(item).filter(([key, value]) => typeof value === "object" && value && !hiddenKeys.includes(key));
+      const objects = Object.entries(item).filter(
+        ([key, value]) =>
+          typeof value === "object" && value && !hiddenKeys.includes(key)
+      );
 
       return (
         <Card key={idx} className={classes.nestedCard}>
           <CardContent>
-            <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold", fontSize: "large" }}>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              style={{ fontWeight: "bold", fontSize: "large" }}
+            >
               {formatKey(parentKey, language)} {enToBn(idx + 1)}
             </Typography>
             <Divider style={{ marginBottom: 12 }} />
@@ -151,7 +216,6 @@ const renderDetails = (data, classes, parentKey = "", language) => {
                     <span className={classes.label} style={{ fontWeight: "bold" }}>
                       {formatKey(key, language)}:
                     </span>{" "}
-                    {/* {value} */}
                     <FormattedMessage id={value} module={"workforce"} />
                   </Typography>
                 </Grid>
@@ -170,7 +234,11 @@ const renderDetails = (data, classes, parentKey = "", language) => {
                     padding: 3,
                   }}
                 >
-                  {formatKey(key, language)}
+                  {key === "presentAddressAndLocation"
+                    ? (language==="en"?"Present Address & Location":"বর্তমান ঠিকানা")
+                    : key === "permanentAddressAndLocation"
+                    ? (language==="en"?"Permanent Address & Location":"স্থায়ী ঠিকানা")
+                    : formatKey(key, language)}
                 </Typography>
                 {renderDetails(value, classes, key, language)}
               </Box>
@@ -181,22 +249,19 @@ const renderDetails = (data, classes, parentKey = "", language) => {
     });
   }
 
-  // Handle objects (top-level case)
-  if (typeof data === "object") {
-    const scalars = Object.entries(data).filter(
+  // ✅ Handle object data
+  if (typeof mergedData === "object" && mergedData !== null) {
+    const scalars = Object.entries(mergedData).filter(
       ([key, value]) =>
         typeof value !== "object" &&
         !hiddenKeys.includes(key) &&
         value !== null &&
         value !== undefined &&
-        value !== "" &&
-        key !== "presentAddress" &&
-        key !== "permanentAddress"
+        value !== ""
     );
-
-    const objects = Object.entries(data).filter(([key, value]) => {
-      const parsedValue = tryParse(value);
-      return typeof parsedValue === "object" && parsedValue && !hiddenKeys.includes(key);
+    const objects = Object.entries(mergedData).filter(([key, value]) => {
+      const parsed = tryParse(value);
+      return typeof parsed === "object" && parsed && !hiddenKeys.includes(key);
     });
 
     return (
@@ -213,9 +278,16 @@ const renderDetails = (data, classes, parentKey = "", language) => {
           </Grid>
         ))}
 
-        {/* ✅ Objects after */}
+        {/* ✅ Nested objects */}
         {objects.map(([key, value]) => {
           const parsedValue = tryParse(value);
+          const sectionTitle =
+            key === "presentAddressAndLocation"
+              ? (language==="en"?"Present Address & Location":"বর্তমান ঠিকানা")
+              : key === "permanentAddressAndLocation"
+              ? (language==="en"?"Permanent Address & Location":"স্থায়ী ঠিকানা")
+              : formatKey(key, language);
+
           return (
             <Grid item xs={12} key={key}>
               <Typography
@@ -228,7 +300,7 @@ const renderDetails = (data, classes, parentKey = "", language) => {
                   padding: 3,
                 }}
               >
-                {formatKey(key, language)}
+                {sectionTitle}
               </Typography>
               {renderDetails(parsedValue, classes, key, language)}
             </Grid>
@@ -241,6 +313,7 @@ const renderDetails = (data, classes, parentKey = "", language) => {
   return null;
 };
 
+
 const ApplicationViewPage = ({
   application,
   // language,
@@ -252,6 +325,7 @@ const ApplicationViewPage = ({
   handleFileVerify,
   handleFileReject,
   viewedFromFlag,
+  movementLogs
 }) => {
   const classes = useStyles();
   const language = useSelector((state) => state.core?.user?.i_user?.language);
@@ -317,6 +391,9 @@ const ApplicationViewPage = ({
               ))}
             </Box>
           </Paper>
+          {viewedFromFlag ==="view" && (
+            <ApplicationMovementStepper data={movementLogs}/>
+          )}
           {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes && filteredDocumentTypes?.length > 0 && (
             <Typography variant="h6" style={{ marginTop: 6 }}>
               <b>
