@@ -71,6 +71,10 @@ class WorkforceFactorySearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
+    if(this.props.association && this.props.association !== "all"){
+      const associationType= this.props.association.toUpperCase();
+      prms.push(`associationType: "${associationType}"`);
+    }
     this.props.fetchWorkforceFactoriesSummary(
       this.props.modulesManager,
       prms,
@@ -176,7 +180,7 @@ class WorkforceFactorySearcher extends Component {
     const {
       intl,
       workforceFactories, workforceFactoriesPageInfo, fetchingWorkforceFactories, fetchedWorkforceFactories, errorWorkforceFactories,
-      filterPaneContributionsKey, cacheFiltersKey, onDoubleClick,
+      filterPaneContributionsKey, cacheFiltersKey, onDoubleClick, association
     } = this.props;
 
     const count = workforceFactoriesPageInfo.totalCount;
