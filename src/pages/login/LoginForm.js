@@ -1,241 +1,229 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button, Box, Grid, LinearProgress, InputLabel } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { TextInput } from "@openimis/fe-core";
 import { useAuthentication, useHistory } from "@openimis/fe-core";
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import SharedTabPanel from "../../components/shared/TabPanel";
 import OtpInput from "react-otp-input";
 
+const RECAPTCHA_SITE_KEY = "6LetjAAsAAAAANxUe7M2ePfj_2Nxgkgn9xzlPFqd";
+
 const useStyles = makeStyles((theme) => ({
-    container: {
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        margin: "auto",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    paper: theme.paper.paper,
-    logo: {
-        width: "45%",
-        padding: theme.spacing(2),
-    },
-    otpInput: {
-        width: "100% !important",
-        height: "2.2rem",
-        margin: "0 .8rem",
-        fontSize: "2rem",
-        borderRadius: 8,
-        border: "1px solid #006273",
-        color: "#00668f",
-        background: "transparent !important",
-        textAlign: "center",
-        outline: "none",
-        fontSize: "inherit",
-        transition: "border-color 0.2s ease-in-out",
-        "&:focus": {
-            borderColor: "#1976d2", // MUI primary color
-        },
-    }
+  otpInput: {
+    width: "100% !important",
+    height: "2.2rem",
+    margin: "0 .8rem",
+    fontSize: "2rem",
+    borderRadius: 8,
+    border: "1px solid #006273",
+    color: "#00668f",
+    background: "transparent !important",
+    textAlign: "center",
+    outline: "none",
+    transition: "border-color 0.2s ease-in-out",
+    "&:focus": { borderColor: "#1976d2" },
+  },
 }));
 
 const errorMessages = {
-    INVALID_PHONE_NUMBER: "মোবাইল নম্বর ভুল দিয়েছেন। পুনরায় চেষ্টা করুন।",
-    INCORRECT_CREDENTIALS: "তথ্য ভুল দিয়েছেন। পুনরায় চেষ্টা করুন।",
-    GENERAL: "যান্ত্রিক ত্রুটি হয়েছে।",
+  INVALID_PHONE_NUMBER: "মোবাইল নম্বর ভুল দিয়েছেন। পুনরায় চেষ্টা করুন।",
+  INCORRECT_CREDENTIALS: "তথ্য ভুল দিয়েছেন। পুনরায় চেষ্টা করুন।",
+  GENERAL: "যান্ত্রিক ত্রুটি হয়েছে।",
 };
 
-const getErrorMessage = (messageKey) => {
-    return errorMessages[messageKey] || messageKey;
-};
+const getErrorMessage = (key) => errorMessages[key] || key;
 
-
-const getMyCookie= (name) =>{
-  return document.cookie.split("; ").reduce((prev, current) => {
-    const [key, value] = current.split("=");
-    return key === name ? decodeURIComponent(value) : prev;
+const getMyCookie = (name) =>
+  document.cookie.split("; ").reduce((prev, current) => {
+    const [k, v] = current.split("=");
+    return k === name ? decodeURIComponent(v) : prev;
   }, null);
-};
-
 
 export default function LoginForm() {
-    const classes = useStyles();
-    const [credentials, setCredentials] = useState({});
-    const [mobileNumber, setMobileNumber] = useState("");
-    const [isOtpSent, setIsOtpSent] = useState(false);
-    const auth = useAuthentication();
-    const [isAuthenticating, setAuthenticating] = useState(false);
-    const [serverResponse, setServerResponse] = useState({ loginStatus: "", message: null });
-    const history = useHistory();
-    const [loginType, setLoginType] = useState(0);
-  
-
-
-    const checkAdmin = () => {
-        console.log("Checking if user is admin...");
-        const userType = getMyCookie("userType");
-
-        if (userType == 'administrative') {
-            history.push("/administrative/login");
-        }
-    };
+  const classes = useStyles();
+  const [credentials, setCredentials] = useState({});
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isAuthenticating, setAuthenticating] = useState(false);
+  const [serverResponse, setServerResponse] = useState({ loginStatus: "", message: null });
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const recaptchaId = useRef(null);
+  const auth = useAuthentication();
+  const history = useHistory();
 
     useEffect(() => {
-        checkAdmin();
-    }, []);
+    const userType = getMyCookie("userType");
+    if (userType === "administrative") history.push("/administrative/login");
+
+    const loadRecaptcha = () =>
+        new Promise((resolve) => {
+        if (window.grecaptcha) return resolve(window.grecaptcha);
+        const script = document.createElement("script");
+        script.src = "https://www.google.com/recaptcha/api.js?render=explicit";
+        script.async = true;
+        script.defer = true;
+        script.onload = () => resolve(window.grecaptcha);
+        document.body.appendChild(script);
+        });
+
+    loadRecaptcha().then((grecaptcha) => {
+        grecaptcha.ready(() => {
+        const container = document.getElementById("recaptcha-container");
+        if (!container) return;
+
+        if (window.__recaptchaWidgetId !== undefined) {
+            try {
+            grecaptcha.reset(window.__recaptchaWidgetId);
+            } catch (e) {
+            console.warn("Error resetting reCAPTCHA:", e);
+            }
+            return;
+        }
+
+        const widgetId = grecaptcha.render("recaptcha-container", {
+            sitekey: RECAPTCHA_SITE_KEY,
+            size: "normal",
+            callback: (token) => setRecaptchaToken(token),
+            "expired-callback": () => setRecaptchaToken(null),
+        });
+        window.__recaptchaWidgetId = widgetId;
+        });
+    });
+    }, [history]);
 
 
-
-
-    const handleLoginError = (errorMessage) => {
-        setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: errorMessage });
+    const handleLoginError = (msg) => {
+        setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: msg });
         setAuthenticating(false);
     };
 
-    const loginTypeTabChange = (index) => {
-        return {
-            id: `login-type-${index}`,
-            "aria-controls": `login-type-${index}`,
-        };
-    };
-
-
-    const onSubmit = async (e) => {
+    const onSubmit = async () => {
         setAuthenticating(true);
-
         try {
-            const cookieexpires = `; expires=${-1}`;
-            document.cookie = `userType=${encodeURIComponent('')}${cookieexpires}; path=/`;
+        const cookieexpires = `; expires=${-1}`;
+        document.cookie = `userType=${encodeURIComponent("")}${cookieexpires}; path=/`;
 
-            const response = await auth.login(credentials);
+        const response = await auth.login(credentials);
+        if (response.payload?.errors?.length) {
+            handleLoginError(response.payload.errors[0].message);
+            return;
+        }
 
-            if (response.payload?.errors?.length) {
-                handleLoginError(response.payload.errors[0].message);
-                return;
-            }
-            const { loginStatus, message } = response;
-            setServerResponse({ loginStatus, message });
+        const { loginStatus, message } = response;
+        setServerResponse({ loginStatus, message });
 
-            if (loginStatus === "CORE_AUTH_ERR") {
-                setAuthenticating(false);
-            } else {
-                history.push("/");
-            }
+        if (loginStatus === "CORE_AUTH_ERR") setAuthenticating(false);
+        else history.push("/");
         } catch (error) {
-            setAuthenticating(false);
+        setAuthenticating(false);
         }
     };
 
+    // ✅ Only send OTP if user verified reCAPTCHA
     const sendOtp = async () => {
+        if (!recaptchaToken) {
+        alert("অনুগ্রহ করে 'আমি রোবট নই' চেকবক্সটি টিক দিন।");
+        return;
+        }
+
         const formData = new FormData();
         formData.append("phone_number", mobileNumber);
+        formData.append("recaptcha_token", recaptchaToken);
 
         try {
-            const response = await fetch("/api/workforce/send/otp", {
-                method: "POST",
-                body: formData,
-            });
+        const response = await fetch("/api/workforce/send/otp", {
+            method: "POST",
+            body: formData,
+        });
+        const data = await response.json();
 
-            const responseData = await response.json();
-
-            if (!response.ok) {
-                setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: responseData.message });
-            } else {
-                if (responseData.status == 'success') {
-                    setCredentials({ ...credentials, username: responseData.username })
-                    setIsOtpSent(true);
-                } else {
-                    setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: responseData.message });
-                }
-            }
-        } catch (error) {
-            console.log(error);
-            setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: errorMessages.GENERAL });
+        if (!response.ok || data.status !== "success") {
+            setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: data.message });
+        } else {
+            setCredentials({ ...credentials, username: data.username });
+            setIsOtpSent(true);
         }
-
+        } catch (err) {
+        console.error(err);
+        setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: errorMessages.GENERAL });
+        }
     };
 
     const setInput = (type, value) => {
-        if (type == "mobile_number")
-            setMobileNumber(value);
-        if (type == "otp")
-            setCredentials({ ...credentials, password: value })
+        if (type === "mobile_number") setMobileNumber(value);
+        if (type === "otp") setCredentials({ ...credentials, password: value });
     };
 
-    return (
-        <>
-            {isAuthenticating && (
-                <Box position="absolute" top={0} left={0} right={0}>
-                    <LinearProgress className="bootstrap" />
-                </Box>
-            )}
+  return (
+    <>
+      {isAuthenticating && (
+        <Box position="absolute" top={0} left={0} right={0}>
+          <LinearProgress className="bootstrap" />
+        </Box>
+      )}
 
-            <>
-                <Grid item style={{ marginTop: "1rem" }}>
-                    <TextInput
-                        required
-                        label="মোবাইল নাম্বার"
-                        fullWidth
-                        defaultValue=""
-                        onChange={(mobileNumber) => setInput('mobile_number', mobileNumber)}
-                    />
-                </Grid>
+      <div>
+        
 
-                {serverResponse?.message && (
-                    <Grid item style={{ marginTop: "1rem" }}>
-                        <Box color="error.main">{getErrorMessage(serverResponse.message)}</Box>
-                    </Grid>
-                )}
+        <Grid item style={{ marginTop: "1rem" }}>
+          <TextInput
+            required
+            label="মোবাইল নাম্বার"
+            fullWidth
+            defaultValue=""
+            onChange={(mobileNumber) => setInput("mobile_number", mobileNumber)}
+          />
+        </Grid>
 
-                {isOtpSent && (
-                    <>
-                        <Grid item style={{ marginTop: "1rem" }}>
-                            <InputLabel required fullWidth shrink style={{ marginBottom: 8 }}>ওটিপি কোড</InputLabel>
-                            <OtpInput
-                                value={credentials.password}
-                                onChange={(otp) => setInput('otp', otp)}
-                                numInputs={5}
-                                renderSeparator={<span>-</span>}
-                                inputStyle={classes.otpInput}
-                                renderInput={(props) => <input {...props} />}
-                            />
-                        </Grid>
+        <div id="recaptcha-container" style={{ marginTop: "1rem" }} />
 
-                        <Grid item style={{ marginTop: "1rem" }}>
-                            <Button
-                                fullWidth
-                                type="button"
-                                disabled={!(credentials.username && credentials.password)}
-                                color="primary"
-                                variant="contained"
-                                onClick={() => onSubmit()}
-                            >
-                                লগইন
-                            </Button>
-                        </Grid>
-                    </>
-                )}
+        {serverResponse?.message && (
+          <Grid item style={{ marginTop: "1rem" }}>
+            <Box color="error.main">{getErrorMessage(serverResponse.message)}</Box>
+          </Grid>
+        )}
 
-                {!isOtpSent && (
-                    <Grid item style={{ marginTop: "1rem" }}>
-                        <Button
-                            fullWidth
-                            type="button"
-                            disabled={mobileNumber.length !== 11}
-                            color="primary"
-                            variant="contained"
-                            onClick={() => sendOtp()}
-                        >
-                            ওটিপি প্রেরণ করুন
-                        </Button>
-                    </Grid>
-                )}
-            </>
-        </>
-    )
+        {isOtpSent ? (
+          <>
+            <Grid item style={{ marginTop: "1rem" }}>
+              <InputLabel required fullWidth shrink style={{ marginBottom: 8 }}>
+                ওটিপি কোড
+              </InputLabel>
+              <OtpInput
+                value={credentials.password}
+                onChange={(otp) => setInput("otp", otp)}
+                numInputs={5}
+                renderSeparator={<span>-</span>}
+                inputStyle={classes.otpInput}
+                renderInput={(props) => <input {...props} />}
+              />
+            </Grid>
+
+            <Grid item style={{ marginTop: "1rem" }}>
+              <Button
+                fullWidth
+                disabled={!(credentials.username && credentials.password)}
+                color="primary"
+                variant="contained"
+                onClick={onSubmit}
+              >
+                লগইন
+              </Button>
+            </Grid>
+          </>
+        ) : (
+          <Grid item style={{ marginTop: "1rem" }}>
+            <Button
+              fullWidth
+              disabled={mobileNumber.length !== 11}
+              color="primary"
+              variant="contained"
+              onClick={sendOtp}
+            >
+              ওটিপি প্রেরণ করুন
+            </Button>
+          </Grid>
+        )}
+      </div>
+    </>
+  );
 }

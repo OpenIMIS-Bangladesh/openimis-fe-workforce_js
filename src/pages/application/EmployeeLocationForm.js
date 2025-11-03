@@ -74,7 +74,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors,applicationId }) 
 
             <Grid container spacing={2}>
               {/* Present Location */}
-              {formData?.applicationType !=="financialAssistance" && (
+              {formData?.applicationType !==("financialAssistance" ||"DeadlyGrant") && (
               <Grid item xs={12}>
                 <b>{getDeathLabel("workforce.employee.present_location")}</b>
                 <PublishedComponent

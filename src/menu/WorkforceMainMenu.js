@@ -181,7 +181,6 @@ function WorkforceMainMenu(props) {
   } 
   else if (user_type.includes("association")
   ) {
-    console.log("user_type factory", user_type);
     return (
       <MainMenuContribution 
         {...props}

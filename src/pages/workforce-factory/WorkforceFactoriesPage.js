@@ -15,7 +15,7 @@ import {
 import { MODULE_NAME } from "../../constants";
 import OrganizationFactorySearcher from "../../components/workforce-factory/WorkforceFactorySearcher";
 import { ROUTE_WORKFORCE_FACTORIES_FACTORY } from "../../routes";
-import { getUserType, isEmptyObject } from "../../utils/utils";
+import { getAssociationNameByUserType, getUserType, isEmptyObject } from "../../utils/utils";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -26,7 +26,7 @@ const styles = (theme) => ({
 const OrganizationFactoriesPage = (props) => {
   const { modulesManager, history, intl, classes, rights } = props;
   const user_type = getUserType();
-  const association= user_type.includes("association")? user_type.split("_")[0] : "all";
+  const association= getAssociationNameByUserType(user_type);
 
   const onDoubleClick = (factory, newTab = false) => {
     const routeParams = ["workforce.route.factories.factory", [decodeId(factory.id)]];

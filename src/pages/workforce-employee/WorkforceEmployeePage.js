@@ -8,6 +8,7 @@ import {
 import WorkforceEmployeeForm from "../../components/workforce-employee/WorkforceEmployeeForm";
 import { createWorkforceEmployee, updateWorkforceEmployee } from "../../actions";
 import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../permission-rights";
+import { getUserTypeFromRights } from "../../utils/utils";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -63,6 +64,7 @@ const mapStateToProps = (state, props) => ({
   workforceEmployeeUuid: props.match.params.workforce_employee_uuid,
   organizationVersion: props.match.params.version,
   employee: state.workforce.employee,
+  userType: getUserTypeFromRights(state.core.user.i_user.rights),
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({

@@ -844,6 +844,7 @@
   "workforce.eis.factory.admin.accidentInfo.button":"Accident and Medical Details",
   "workforce.application.acknowledgement.text":"I hereby affirm that all information given above is correct & complete.",
   "workforce.application.accident.otherAccidentType":"Describe other accident type",
+  "workforce.application.progressMovement":"Application Movement Progress",
 
 
   "workforce.doctor.discussionRequired":"Discussion needed",

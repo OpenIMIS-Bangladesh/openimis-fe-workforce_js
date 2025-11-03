@@ -8,7 +8,7 @@ import PreviewDetails from "../../components/application-forms/PreviewDetails";
 import ForwardApplicationAdminModal from "../../components/application-process/modals/ForwardApplicationAdminModal";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserTypeFromRights } from "../../utils/utils";
-import { createApplicationMovement, fetchWorkforceDocument, updateApplication } from "../../actions";
+import { createApplicationMovement, fetchApplicationWiseMovementList, fetchWorkforceDocument, updateApplication } from "../../actions";
 import { bindActionCreators } from "redux";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
@@ -68,6 +68,7 @@ class ViewApplicationPage extends Component {
       confirmModalMessage: "",
       serverResponse: "",
       confirmModalCallback: null,
+      movementLogs:null,
       open: false,
     };
   }
@@ -138,6 +139,36 @@ class ViewApplicationPage extends Component {
   componentDidMount() {
     const { dispatch, modulesManager, application } = this.props;
     this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${application?.id}"`]);
+    this.props.fetchApplicationWiseMovementList(modulesManager, {
+            applicationId: application?.id,
+            orderBy: ["-dateCreated"],
+          })
+          .then((res) => {
+            console.log(res);
+            const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
+            const allUsers = edges.flatMap(({ node }) => (node.applicationTo ? [node.applicationTo] : [])).filter(Boolean);
+            // const formattedLogs = edges.map(({ node }) => ({
+            //   date: node?.dateCreated?.split("T")[0],
+            //   action: node?.actionTaken || "—",
+            //   officer: node?.applicationTo?.loginName || "—",
+            //   remarks: node?.remarks || "",
+            // }));
+            const users = [
+              {
+                id: "applicant001",
+                name: application?.workforceEmployee?.firstNameBn || "আবেদনকারী",
+                role: "Applicant",
+              },
+              ...allUsers.map((u) => ({
+                id: u.id,
+                name: u.loginName,
+                role: u?.userRoles?.[0]?.role?.name || "User",
+              })),
+            ];
+            // setMovementLogs(users);
+            this.setState({movementLogs:users})
+          })
+          .catch((err) => console.error("Movement fetch failed", err))
   }
 
   render() {
@@ -172,13 +203,13 @@ class ViewApplicationPage extends Component {
     const uploadByFactoryAdmin = documents?.filter((doc) => doc.holderType === "factoryAdmin");
     console.log({ documents });
     console.log({ uploadByApplicant });
-    console.log({ forRevert: application });
+    console.log({ movementLogs: this.state.movementLogs });
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <ApplicationViewPage application={formData} language={locale} fileStates={documents} viewedFromFlag={"view"} />
+              <ApplicationViewPage application={formData} language={locale} fileStates={documents} viewedFromFlag={"view"} movementLogs={this.state.movementLogs}/>
             </Grid>
             <Grid item xs={8}></Grid>
             <Grid item xs={2} style={{ textAlign: "center" }}>
@@ -300,6 +331,7 @@ const mapDispatchToProps = (dispatch) =>
       fetchWorkforceDocument,
       updateApplication,
       createApplicationMovement,
+      fetchApplicationWiseMovementList,
       journalize,
       coreConfirm,
     },

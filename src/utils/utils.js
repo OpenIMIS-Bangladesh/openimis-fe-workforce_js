@@ -434,6 +434,14 @@ export function safeDecodeId(maybeEncoded) {
   }
 }
 
+export function getAssociationNameByUserType(user_type) {
+  if(user_type.includes("association")) {
+    return user_type.split("_")[0].toUpperCase();
+  }
+  else
+  {return "";}
+}
+
 export const isEisPath = () => {
   if (typeof window !== "undefined") {
     return window.location.href.includes("eis");
