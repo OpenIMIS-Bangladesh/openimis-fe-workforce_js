@@ -128,7 +128,7 @@ const SidebarMenu = [
     icon: <ForwardIcon />,
   },  
   {
-    id: "revertedApplications",
+    id: "revertedApplication",
     text: (
       <FormattedMessage module="workforce" id="workforce.application.reverted" />
     ),
@@ -239,7 +239,7 @@ const RevertedApplications = () =>{
         <CardContent>
             <ApplicationProcessSearcher 
                 loggedInUserId={loggedInUserId}
-                revertedApplications={true}
+                revertedApplication={true}
                 isMenuFilter={true}
             />
           </CardContent>
@@ -271,7 +271,7 @@ const CheckerDashboard = () => {
         return <FiledApplications />;
       case "forwardedApplications":
         return <ForwardedApplications />;
-      case "revertedApplications":
+      case "revertedApplication":
         return <RevertedApplications />;
       case "returnedApplications":
         return <ReturnedApplications />;

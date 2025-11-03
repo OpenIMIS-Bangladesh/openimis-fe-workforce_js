@@ -145,6 +145,30 @@ function WorkforceMainMenu(props) {
     //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     // },
   ];
+  const factory_entries = [
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.factory" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_FACTORIES}`,
+      id: `menu.workforce.factories`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.factory.employee.designation" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION}`,
+      id: `menu.workforce.factory.employee.designation`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.employee" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_EMPLOYEES}`,
+      id: `menu.workforce.employees`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+  ];
   if (user_type === WORKFORCE_USER_TYPE.ADMIN) {
     return (
       <MainMenuContribution
@@ -154,11 +178,22 @@ function WorkforceMainMenu(props) {
         menuId="WorkforceMainMenu"
       />
     );
-  } else {
+  } 
+  else if (user_type.includes("association")
+  ) {
+    console.log("user_type factory", user_type);
+    return (
+      <MainMenuContribution 
+        {...props}
+        header={<FormattedMessage module="workforce" id="menu.factory.management" />}
+        entries={factory_entries}
+        menuId="WorkforceMainMenu"
+      />
+    )
+  }
+  else {
     return <></>;
   }
-
-
 }
 
 const mapStateToProps = (state) => ({

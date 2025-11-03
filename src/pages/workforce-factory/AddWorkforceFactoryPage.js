@@ -20,7 +20,7 @@ import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 import CompanyPicker from "../../pickers/CompanyPicker";
 import FileUploader from "../../pickers/FileUploader";
-import { getInfoId } from "../../utils/utils";
+import { getInfoId, getUserTypeFromRights } from "../../utils/utils";
 import { bindActionCreators } from "redux";
 
 const styles = (theme) => ({
@@ -154,6 +154,7 @@ class AddWorkforceFactoryPage extends Component {
 
     await handleFactoryAndDocument(workforceFactoryData);
     this.setState({ isSaved: true });
+    window.location.href('/workforce/factories');
   };
 
   updateAttribute = (key, value) => {
@@ -174,6 +175,14 @@ class AddWorkforceFactoryPage extends Component {
     const { classes, mutation } = this.props;
     const { stateEdited, isSaved, isSameRepresentative } = this.state;
     const isSaveDisabled = false;
+    let disableAssociationSelect= false;
+    if(this.props.userType && this.props.userType.includes("association")){
+      disableAssociationSelect= true;
+    }
+    let associationValue= "";
+    if(this.props.userType && this.props.userType.includes("association")){
+      associationValue= this.props.userType.split("_")[0].toUpperCase();
+    }
 
     return (
       <div className={classes.page}>
@@ -294,15 +303,17 @@ class AddWorkforceFactoryPage extends Component {
                     <InputLabel required id="association-type-label"><FormattedMessage id="workforce.factory.associationType" module="workforce" /></InputLabel>
                     <Select
                       labelId="association-type-label"
-                      value={stateEdited.associationType || ""}
+                      value={associationValue!=""? associationValue : stateEdited.associationType? stateEdited.associationType : ""}
                       onChange={(e) => this.updateAttribute("associationType", e.target.value)}
                       label="Association Type"
                       readOnly={isSaved}
-                      disabled={isSaved}
+                      disabled={disableAssociationSelect}
                     
                     >
                       <MenuItem value="BGMEA">BGMEA</MenuItem>
                       <MenuItem value="BKMEA">BKMEA</MenuItem>
+                      <MenuItem value="LFMEAB">LFMEAB</MenuItem>
+                      <MenuItem value="BEPZA">BEPZA</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -414,6 +425,7 @@ const mapStateToProps = (state) => ({
   representativeId: state.workforce.fetchedRepresentativeByClientMutationId,
   factoryId: state.workforce.fetchedWorkforceFactoryId,
   uploadFile: state.workforce.uploadFile,
+  userType: getUserTypeFromRights(state.core.user.i_user.rights),
 });
 
 const mapDispatchToProps = (dispatch) =>
