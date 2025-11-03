@@ -126,7 +126,7 @@ const WorkerExtraInfo = ({ handleChange, formData,errors }) => {
             </Grid>
           </Grid>
         )}
-        <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData?.applicationType}  formStepNo={"institutionalInfo"} />
+        <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData?.applicationType}  formStepNo={"institutionInfo"} />
       </FormControl>
     </>
   );
