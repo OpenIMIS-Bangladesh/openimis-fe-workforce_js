@@ -564,8 +564,8 @@
     "workforce.lfmeab.association.dashboard":"LFMEAB Association Dashboard",
     "workforce.new.application.factory":"New application (on behalf of the applicant)",
     "workforce.new.application.submittedbyapplicant":"Application submitted by the applicant",
-
-
+    "workforce.employee.application.forwardToAssociation":"Send considered applications to the association office",
+    
     
     "core.LanguageQuickPicker.dialog.title":"Confirm Language",
     "core.LanguageQuickPicker.dialog.message":"You are about to change the language to Bengali. Do you want to proceed?",

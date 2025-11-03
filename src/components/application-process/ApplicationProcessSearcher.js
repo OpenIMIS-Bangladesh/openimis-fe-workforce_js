@@ -237,15 +237,15 @@ class ApplicationProcessSearcher extends Component {
         {
           defaultStatusFilters.push(`applicationFrom:"${loggedInUserId}"`);
         }
-      }
-      else if(this.props.revertedApplications)
-      {
-        defaultStatusFilters.push('statusIn:["revert"]');
-        if(loggedInUserId)
-        {
-          defaultStatusFilters.push(`applicationTo:"${loggedInUserId}"`);
+       }else if (revertedApplication) {
+
+        defaultStatusFilters.push(
+          'statusIn: ["revert"]'
+        );
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
-      }
+      } 
       else if(this.props.returnedApplications)
       {
         defaultStatusFilters.push('statusIn:["revert"]');
@@ -255,30 +255,9 @@ class ApplicationProcessSearcher extends Component {
         }
       }
       const orderByFilter = 'orderBy: ["-dateCreated"]';
-
-      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
-      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
-      const hasAppTypeIn = prms?.some(f => f.includes("applicationTypeIn"));
-
-      let finalFilters = [];
-
-      if (prms?.length)
-      {
-        finalFilters = [...prms];
-        if (!hasStatusIn) {
-          finalFilters = [defaultStatusFilters[2], ...finalFilters];
-        }
-
-        if (!hasAppTypeIn) {
-          finalFilters = [...finalFilters, defaultStatusFilters[0]];
-        }
-
-        if (!hasOrderBy) {
-          finalFilters.push(orderByFilter);
-        }
-      }
-      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
-
+      defaultStatusFilters.push(orderByFilter);
+      
+      this.props.fetchApplicationsSummary(this.props.modulesManager, defaultStatusFilters);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
 
