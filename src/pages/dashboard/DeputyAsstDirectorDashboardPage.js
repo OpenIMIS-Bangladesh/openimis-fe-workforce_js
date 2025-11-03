@@ -30,6 +30,9 @@ import ApplicationProcessSearcher from "../../components/application-process/App
 import { useSelector, useDispatch } from "react-redux";
 import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE} from "../../constants";
+import ForwardIcon from '@material-ui/icons/Forward';
+import RestorePageIcon from '@material-ui/icons/RestorePage';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -110,6 +113,27 @@ const SidebarMenu = [
     ),
     icon: <HourglassFullTwoToneIcon />,
   },  
+  {
+    id: "forwardedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.forwarded" />
+    ),
+    icon: <ForwardIcon />,
+  },  
+  {
+    id: "revertedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.reverted" />
+    ),
+    icon: <RestorePageIcon />,
+  },  
+  {
+    id: "returnedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.returned" />
+    ),
+    icon: <ArrowBackIcon />,
+  },  
 ];
 
 // ----------- Components to Render in Main Content -----------
@@ -135,8 +159,9 @@ const FiledApplications = () =>{
    <Card className={classes.tableContainer}>
         <CardContent>
             <ApplicationProcessSearcher oggedInUserId={loggedInUserId}
-                 revertedApplication={true}   
-                 coloredRow={true}
+                filedApplications={true}   
+                isMenuFilter={true} 
+                coloredRow={true}
             />
           </CardContent>
       </Card>
@@ -153,6 +178,88 @@ const FiledApplications = () =>{
   </>
 );}
 
+
+const ForwardedApplications = () =>{ 
+  const classes = useStyles()
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  return (
+  <>
+   <Card className={classes.tableContainer}>
+        <CardContent>
+            <ApplicationProcessSearcher 
+                loggedInUserId={loggedInUserId}
+                forwardedApplications={true}    
+                isMenuFilter={true}
+            />
+          </CardContent>
+      </Card>
+
+    {/* Pagination */}
+    <div className={classes.pagination}>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.back" />
+      </Button>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.next" />
+      </Button>
+    </div>
+  </>
+);}
+
+
+const RevertedApplications = () =>{ 
+  const classes = useStyles()
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  return (
+  <>
+   <Card className={classes.tableContainer}>
+        <CardContent>
+            <ApplicationProcessSearcher 
+                loggedInUserId={loggedInUserId}
+                revertedApplication={true}
+                isMenuFilter={true}
+            />
+          </CardContent>
+      </Card>
+
+    {/* Pagination */}
+    <div className={classes.pagination}>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.back" />
+      </Button>
+      <Button>
+        <FormattedMessage module="workforce" id="workforce.next" />
+      </Button>
+    </div>
+  </>
+);}
+
+const ReturnedApplications = () => {
+  const classes = useStyles();
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  return (
+    <>
+      <ApplicationProcessSearcher
+        returnedApplications={true}
+        loggedInUserId={loggedInUserId}
+        disableButtons={1}
+        dynamicTableTitle= {"workforce.application.returned"}
+        isMenuFilter={true}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
 // ------------------------------------------------------------
 
 const DeputyAsstDirectorDashboardPage = () => {
@@ -167,10 +274,16 @@ const DeputyAsstDirectorDashboardPage = () => {
       (state) => state.workforce[`applicationsSummary`] ?? []
     );
 
-  const renderContent = () => {
+ const renderContent = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
+      case "forwardedApplications":
+        return <ForwardedApplications />;
+      case "revertedApplications":
+        return <RevertedApplications />;
+      case "returnedApplications":
+        return <ReturnedApplications />;
       default:
         return <FiledApplications />;
     }
