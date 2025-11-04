@@ -318,7 +318,7 @@ const DEFAULT_CONFIG = {
   "core.LoginPage": RegistrationButton,
   "core.LoginPageLogo": LoginHeader,
   "core.LoginPageForm": LoginForm,
-  "core.AppBar": NotificationBar,
+  // "core.AppBar": NotificationBar,
   "core.userInfo": UserInfo,
   "home.HomePage.Blocks": DashboardRelay,
   "core.showJournalSidebar":false

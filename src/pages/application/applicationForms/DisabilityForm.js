@@ -367,7 +367,7 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
     //   applicationToId: 165,
     //   toRoleId: 25,
     // };
-    console.log("hello i am from submit", createApplicationMovementData);
+    // console.log("hello i am from submit", createApplicationMovementData)
     // await dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
     await dispatch(updateApplication(updateApplicationData, `update workforce application `));
   };

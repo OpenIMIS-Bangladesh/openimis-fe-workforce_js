@@ -18,24 +18,24 @@ export const forwardToAssociation = async ({
     const userType = getUserTypeFromRights(userRights);
     for (const encodedId of selectedApplicationIds) {
       const decodedId = safeDecodeId(encodedId?.id);
-      const res = await fetchWorkforceDocument(modulesManager, [
-          `workforceApplication_Id: "${decodedId}"`,
-        ]);
+      // const res = await fetchWorkforceDocument(modulesManager, [
+      //     `workforceApplication_Id: "${decodedId}"`,
+      //   ]);
 
-        const documents =
-          res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
+      //   const documents =
+      //     res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-        const allVerified = documents.every(
-          (doc) => doc.status?.toLowerCase() === "verified"
-        );
+      //   const allVerified = documents.every(
+      //     (doc) => doc.status?.toLowerCase() === "verified"
+      //   );
 
-        if (!allVerified) {
-          setServerResponse({
-            status: "ERROR",
-            message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
-          });
-          return;
-        }
+      //   if (!allVerified) {
+      //     setServerResponse({
+      //       status: "ERROR",
+      //       message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
+      //     });
+      //     return;
+      //   }
 
       const updateApplicationData = {
         id: decodedId,
@@ -130,51 +130,51 @@ export async function handleBulkSelectedByAssociationLogic({
         await Promise.all(
           selectedApplicationIds.map(async (selectedItem) => {
             const decodedId = safeDecodeId(selectedItem?.id);
-            const res = await fetchWorkforceDocument(modulesManager, [
-                `workforceApplication_Id: "${decodedId}"`,
-              ]);
+            // const res = await fetchWorkforceDocument(modulesManager, [
+            //     `workforceApplication_Id: "${decodedId}"`,
+            //   ]);
 
-              const documents =
-                res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
+            //   const documents =
+            //     res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-              const allVerified = documents.every(
-                (doc) => doc.status?.toLowerCase() === "verified"
-              );
+            //   const allVerified = documents.every(
+            //     (doc) => doc.status?.toLowerCase() === "verified"
+            //   );
 
-              if (!allVerified) {
-                setServerResponse({
-                  status: "ERROR",
-                  message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
-                });
-                return;
-              }
+            //   if (!allVerified) {
+            //     setServerResponse({
+            //       status: "ERROR",
+            //       message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
+            //     });
+            //     return;
+            //   }
             const updateApplicationData = {
               id: decodedId,
               status:  userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
                 ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
-                : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-                ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
+                // : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+                // ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
                 : null,
             };
             const createApplicationMovementData = {
               applicationId: decodedId,
                status:  userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
                 ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
-                : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-                ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
+                // : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+                // ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
                 : null,       
 
               note: "আবেদন শাখায় প্রেরণ করা হয়েছে",
               action: userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
                           ? "forward_to_cf_section"
-                          : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-                          ? "forward_to_eis_coordinator"
+                          // : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+                          // ? "forward_to_eis_coordinator"
                           : null,
               applicationFromId: loggedInUserId,
               applicationToId: userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
                           ? 139
-                          : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-                          ? 194
+                          // : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+                          // ? 194
                           : null,
               toRoleId: 32,
             };
