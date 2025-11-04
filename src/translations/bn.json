@@ -755,8 +755,12 @@
   "profile.ChangePasswordPage.confirmPasswordLabel": "নতুন পাসওয়ার্ড নিশ্চিত করুন",
   "profile.ChangePasswordPage.submitButton": "সাবমিট করুন",
   "profile.menu.myProfile": "আমার প্রোফাইল",
+  "profile.menu.dashboard": "ড্যাশবোর্ড",
+  "profile.menu.editProfile": "তথ্য পরিবর্তন",
   "profile.MyProfilePage.title": "আমার প্রোফাইল",
+  "profile.MyProfilePage.editTitle": "প্রোফাইল তথ্য পরিবর্তন",
   "profile.roles": "এসাইনকৃত রোলসমূহ",
+  "profile.role": "রোল",
   "profile.regions": "বিভাহ",
   "profile.districts": "জেলাসমূহ",
   "profile.userName": "ইউজারনেম",
@@ -764,7 +768,7 @@
   "profile.lastName": "বংশ নাম",
   "profile.email": "ই-মেইল",
   "profile.phone": "ফোন নাম্বার",
-  "profile.language": "সিস্টেম ভাষা"
-
-  
+  "profile.language": "সিস্টেমের ভাষা",
+  "profile.fullname": "পূর্ণ নাম",
+  "profile.saveProfile": "তথ্য সংরক্ষণ করুন"
 }
