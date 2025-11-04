@@ -26,7 +26,7 @@ import NidVerification from "../../../components/application-forms/NidVerificati
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
-import { getInfoId, getUserType, isAtLeast18YearsOld, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
+import { getInfoId, getUserType, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
 import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
@@ -308,7 +308,7 @@ const MedicalDonationForm = ({ organizationType, selectedApplicationType, applic
                 uploadDependentFile.map((file, index) => {
                   dispatch(
                     createWorkforceDocument(
-                      { ...file, workforceApplicationId: applicationgetId, workforceDependentId: decodeId(dependentId) },
+                      { ...file, workforceApplicationId: applicationgetId, workforceDependentId: safeDecodeId(dependentId) },
                       `Created workforce document `
                     )
                   );

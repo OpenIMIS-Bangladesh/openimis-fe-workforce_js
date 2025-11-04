@@ -21,7 +21,7 @@ import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getInfoId, getParsedApplication, isAtLeast18YearsOld, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
+import { getInfoId, getParsedApplication, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -292,7 +292,7 @@ const MedicalAssistanceForm = ({ organizationType, selectedApplicationType, appl
                 uploadDependentFile.map((file, index) => {
                   dispatch(
                     createWorkforceDocument(
-                      { ...file, workforceApplicationId: applicationgetId, workforceDependentId: decodeId(dependentId) },
+                      { ...file, workforceApplicationId: applicationgetId, workforceDependentId: safeDecodeId(dependentId) },
                       `Created workforce document `
                     )
                   );

@@ -28,7 +28,7 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReason from "../FormsComponents/FinancialAssistance/ApplicationReason";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getInfoId, isAtLeast18YearsOld, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
+import { getInfoId, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -61,7 +61,7 @@ const steps = [
   "workforce.application.steps.dead.worker.extraInfo",
   "workforce.application.steps.prosurders",
   "workforce.application.steps.account.info",
-  "workforce.application.steps.upload.documents",
+  // "workforce.application.steps.upload.documents",
 ];
 
 const DeadlyGrantForm = ({ organizationType, selectedApplicationType, parsedApplicationData, applicationForSelf }) => {
@@ -374,14 +374,14 @@ const DeadlyGrantForm = ({ organizationType, selectedApplicationType, parsedAppl
           };
           dispatch(updateApplication(updateApplicationData, `update workforce application`)).then((res) => setIsDependentSaved(true));
           if (uploadDependentFile) {
-            await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0]?.id)}"`])).then((res) => {
+            await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeApplicationId(applicationId[0]?.id)}"`])).then((res) => {
               const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
 
               console.log({ dependentId });
               uploadDependentFile.map((file, index) => {
                 dispatch(
                   createWorkforceDocument(
-                    { ...file, workforceApplicationId: decodeId(applicationId[0]?.id), workforceDependentId: decodeId(dependentId) },
+                    { ...file, workforceApplicationId: safeApplicationId(applicationId[0]?.id), workforceDependentId: safeDecodeId(dependentId) },
                     `Created workforce document `
                   )
                 );
