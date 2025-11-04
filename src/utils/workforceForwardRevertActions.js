@@ -18,24 +18,24 @@ export const forwardToAssociation = async ({
     const userType = getUserTypeFromRights(userRights);
     for (const encodedId of selectedApplicationIds) {
       const decodedId = safeDecodeId(encodedId?.id);
-      const res = await fetchWorkforceDocument(modulesManager, [
-          `workforceApplication_Id: "${decodedId}"`,
-        ]);
+      // const res = await fetchWorkforceDocument(modulesManager, [
+      //     `workforceApplication_Id: "${decodedId}"`,
+      //   ]);
 
-        const documents =
-          res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
+      //   const documents =
+      //     res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-        const allVerified = documents.every(
-          (doc) => doc.status?.toLowerCase() === "verified"
-        );
+      //   const allVerified = documents.every(
+      //     (doc) => doc.status?.toLowerCase() === "verified"
+      //   );
 
-        if (!allVerified) {
-          setServerResponse({
-            status: "ERROR",
-            message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
-          });
-          return;
-        }
+      //   if (!allVerified) {
+      //     setServerResponse({
+      //       status: "ERROR",
+      //       message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
+      //     });
+      //     return;
+      //   }
 
       const updateApplicationData = {
         id: decodedId,
@@ -130,24 +130,24 @@ export async function handleBulkSelectedByAssociationLogic({
         await Promise.all(
           selectedApplicationIds.map(async (selectedItem) => {
             const decodedId = safeDecodeId(selectedItem?.id);
-            const res = await fetchWorkforceDocument(modulesManager, [
-                `workforceApplication_Id: "${decodedId}"`,
-              ]);
+            // const res = await fetchWorkforceDocument(modulesManager, [
+            //     `workforceApplication_Id: "${decodedId}"`,
+            //   ]);
 
-              const documents =
-                res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
+            //   const documents =
+            //     res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-              const allVerified = documents.every(
-                (doc) => doc.status?.toLowerCase() === "verified"
-              );
+            //   const allVerified = documents.every(
+            //     (doc) => doc.status?.toLowerCase() === "verified"
+            //   );
 
-              if (!allVerified) {
-                setServerResponse({
-                  status: "ERROR",
-                  message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
-                });
-                return;
-              }
+            //   if (!allVerified) {
+            //     setServerResponse({
+            //       status: "ERROR",
+            //       message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
+            //     });
+            //     return;
+            //   }
             const updateApplicationData = {
               id: decodedId,
               status:  userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
