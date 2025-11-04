@@ -359,16 +359,16 @@ const DisabilityForm = ({ organizationType, selectedApplicationType, application
       submittedBy,
     };
 
-    const createApplicationMovementData = {
-      applicationId: safeApplicationId(applicationId, parsedApplicationData),
-      status: WORKFORCE_STATUS.NEW,
-      note: "একটি নতুন আবেদন করা হয়েছে",
-      applicationFromId: reduxState.core?.user?.i_user?.id,
-      applicationToId: 165,
-      toRoleId: 25,
-    };
+    // const createApplicationMovementData = {
+    //   applicationId: safeApplicationId(applicationId, parsedApplicationData),
+    //   status: WORKFORCE_STATUS.NEW,
+    //   note: "একটি নতুন আবেদন করা হয়েছে",
+    //   applicationFromId: reduxState.core?.user?.i_user?.id,
+    //   applicationToId: 165,
+    //   toRoleId: 25,
+    // };
     console.log("hello i am from submit", createApplicationMovementData);
-    await dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
+    // await dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
     await dispatch(updateApplication(updateApplicationData, `update workforce application `));
   };
 
