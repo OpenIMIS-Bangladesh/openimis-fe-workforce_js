@@ -302,7 +302,7 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
               JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
             employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
             metadata: JSON.stringify(formData.metadata),
-            deceasedWorkerInfo: JSON.stringify(formData.deceasedWorkerInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}").replace(/\\\\\\/g, "\\\\"),
+            deceasedWorkerInfo: JSON.stringify(formData.workforceEmployee).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}").replace(/\\\\\\/g, "\\\\"),
             status: WORKFORCE_STATUS.DRAFT,
             applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
           };
@@ -400,7 +400,7 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
               JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
             employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
             metadata: JSON.stringify(formData.metadata),
-            deceasedWorkerInfo: JSON.stringify(formData.deceasedWorkerInfo),
+            // deceasedWorkerInfo: JSON.stringify(formData.workforceEmployee),
             status: WORKFORCE_STATUS.DRAFT,
             applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
           };
@@ -463,7 +463,7 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
         JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),
-      deceasedWorkerInfo: JSON.stringify(formData.deceasedWorkerInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}").replace(/\\\\\\/g, "\\\\"),
+      deceasedWorkerInfo: JSON.stringify(formData.workforceEmployee).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}").replace(/\\\\\\/g, "\\\\"),
       status: WORKFORCE_STATUS.NEW,
       applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
       submittedBy,
