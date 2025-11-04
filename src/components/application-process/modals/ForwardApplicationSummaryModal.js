@@ -138,17 +138,20 @@ const ForwardApplicationSummaryModal = ({
   }
   const ids = selectedApplicationIds.map(obj => obj.id)
     const createApplicationSummaryData = {
-      status:
-      userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
-      ? WORKFORCE_STATUS.MEETING_CREATED
-      : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-      ? WORKFORCE_STATUS.MEETING_CREATED
-      : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
+      status: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
+              userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ||
+              userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+              ? WORKFORCE_STATUS.MEETING_CREATED
+              : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
       name: formData?.meetingName,
       meetingDate: formData?.meetingDate,
       year: formData?.year,
       month: formData?.month,
-      organizationType: userType === "section_admin" ? "cf" : userType === "blwf_section_admin" ? "blwf": "eis",      
+      organizationType : userType === "section_admin" || userType === "section_admin_two"
+      ? "cf"
+      : userType === "blwf_section_admin"
+      ? "blwf"
+      : "eis",
       sectionType: userType === "section_admin" ? "section_one" : userType === "section_admin_two" ? "section_two": null,
       applicationData: JSON.stringify(ids),
     };
