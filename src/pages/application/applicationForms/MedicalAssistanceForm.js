@@ -390,17 +390,17 @@ const MedicalAssistanceForm = ({ organizationType, selectedApplicationType, appl
         applicationFor: applicationForSelf === "yes" ? "self" : "dependent",
         submittedBy,
       };
-      const createApplicationMovementData = {
-        applicationId: safeApplicationId(applicationId, parsedApplicationData),
-        status: WORKFORCE_STATUS.NEW,
-        note: "একটি নতুন আবেদন করা হয়েছে",
-        applicationFromId: reduxState.core?.user?.i_user?.id,
-        applicationToId: 165,
-        toRoleId: 25,
-      };
+      // const createApplicationMovementData = {
+      //   applicationId: safeApplicationId(applicationId, parsedApplicationData),
+      //   status: WORKFORCE_STATUS.NEW,
+      //   note: "একটি নতুন আবেদন করা হয়েছে",
+      //   applicationFromId: reduxState.core?.user?.i_user?.id,
+      //   applicationToId: 165,
+      //   toRoleId: 25,
+      // };
       console.log("hello i am from submit", updateApplicationData);
       dispatch(updateApplication(updateApplicationData, `update workforce application `));
-      dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
+      // dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
     } catch (err) {
       console.error("Submit failed:", err);
     }
