@@ -12,7 +12,7 @@ const DoctorsEntries = ({ application }) => {
   const [doctorDiagnosis, setDoctorDiagnosis] = useState("");
   const [doctorComment, setDoctorComment] = useState("");
   const [doctorsActions, setDoctorsActions] = useState("");
-  const [openSnackBar, setOpenSnackBar] = useState({openResponseBar: false,status: "",type:"success"});
+  const [openSnackBar, setOpenSnackBar] = useState({openResponseBar: false,status: "workforce.success.message.doctor",type:"success"});
 
   const handleSelectCheckbox = (event) => {
     setDoctorsActions(event.target.value);
@@ -89,8 +89,8 @@ const DoctorsEntries = ({ application }) => {
         </Grid>
       </Grid>
       <CustomSnackbar
-        open={openSnackBar}
-        onClose={() => setOpenSnackBar(false)}
+        open={openSnackBar?.openResponseBar}
+        onClose={() => setOpenSnackBar({...openSnackBar,openResponseBar:false})}
         type={openSnackBar?.type}
         message={<FormattedMessage id={openSnackBar?.status} module="workforce" />}
       />

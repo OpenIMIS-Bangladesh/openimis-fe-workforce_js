@@ -71,7 +71,7 @@ const EisMultiStepApplyForm = () => {
   const [showForm, setShowForm] = useState(false);
   const [applicationForSelf, setApplicationForSelf] = useState("");
   const [organizationType, setOrganizationType] = useState("eis" || parsedApplicationData?.organizationType);
-  const [selectedApplicationType, setSelectedApplicationType] = useState("" || parsedApplicationData?.applicationType);
+  const [selectedApplicationType, setSelectedApplicationType] = useState(parsedApplicationData?.applicationType || "");
   const [isApplicationForSelfSelected, setIsApplicationForSelfSelected] = useState(true);
   const [openErrorModal, setOpenErrorModal] = useState(false);
   const reduxState = useSelector((state) => state);
@@ -127,8 +127,7 @@ const EisMultiStepApplyForm = () => {
     }
   };
 
-  console.log({ applicationForSelf });
-  console.log({ parsedApplicationData });
+  console.log({ eis:parsedApplicationData });
 
   return (
     <div className={classes.container}>
