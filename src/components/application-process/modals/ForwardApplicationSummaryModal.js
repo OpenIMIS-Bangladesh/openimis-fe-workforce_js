@@ -182,30 +182,28 @@ const ForwardApplicationSummaryModal = ({
   for (const encodedId of selectedApplicationIds) {
      const updateApplicationData = {
        id: decodeId(encodedId?.id),
-      ...(userType === "section_admin"
+      ...(userType === "section_admin" || userType === "section_admin_two"
       ? { cfApplicationSummaryId: decodeId(applicationSummaryId) }
       : userType === "blwf_section_admin"
       ? { blwfApplicationSummaryId: decodeId(applicationSummaryId) }
       : {eisApplicationSummaryId: decodeId(applicationSummaryId)}),       
-      status:
-      userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
-      ? WORKFORCE_STATUS.MEETING_CREATED
-      : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-      ? WORKFORCE_STATUS.MEETING_CREATED
-      : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
+      status: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
+            userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ||
+            userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+            ? WORKFORCE_STATUS.MEETING_CREATED
+            : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
      };
     const createApplicationMovementData = {
         applicationId: decodeId(encodedId?.id),
         status:
-        userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
-        ? WORKFORCE_STATUS.MEETING_CREATED
-        : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+        userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ||
+              userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
         ? WORKFORCE_STATUS.MEETING_CREATED
         : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
         note: "আবেদন কমিটির কাছে প্রেরণ হয়েছে",
         action: "forward_to_comiitee",
         applicationFromId: loggedInUserId,
-        applicationToId: userType === WORKFORCE_USER_TYPE.CHECKER ? 69 : 196,
+        applicationToId: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ? 69 : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ? 198 : 196,
         toRoleId: userType === WORKFORCE_USER_TYPE.CHECKER ? 23 : 48,
       };
    
