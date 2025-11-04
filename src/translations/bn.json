@@ -415,9 +415,7 @@
   "core.LanguageQuickPicker.dialog.confirm": "নিশ্চিত করুন",
   "core.LanguageQuickPicker.dialog.cancel": "বাতিল করুন",
 
-  "profile.mainMenu": "প্রোফাইল",
-  "profile.menu.changePassword": "পাসওয়ার্ড পরিবর্তন করুন",
-  "profile.menu.myProfile": "আমার প্রোফাইল",
+
 
   "mainMenuGrievance": "অভিযোগ",
   "menu.grievance.grievances": "অভিযোগ সমূহ",
@@ -698,8 +696,6 @@
   "workforce.dashboard.total.beneficiary.amount":"মোট সুবিধা পরিমাণ",
   "core.roleManagement.label": "রোল ম্যানেজমেন্ট",
   "workforce.modal.close": "বন্ধ করুন",
-  "profile.otherNames": "বাংলা নাম",
-  "profile.lastName": "ইংরেজি নাম",
 
   "view": "দেখুন",
   "reject": "প্রত্যাখ্যান",
@@ -748,7 +744,27 @@
 
   "workforce.doctor.discussionRequired":"সিদ্ধান্তের প্রয়োজন",
   "workforce.doctor.rejectRequest":"বাতিলের সুপারিশ",
-  "workforce.doctor.recommend":"সুপারিশ"
+  "workforce.doctor.recommend":"সুপারিশ",
+
+   "profile.mainMenu": "প্রোফাইল",
+  "profile.menu.changePassword": "পাসওয়ার্ড পরিবর্তন করুন",
+  "profile.ChangePasswordPage.title": "পাসওয়ার্ড পরিবর্তন",
+  "profile.ChangePasswordPage.notEqualError": "পাসওয়ার্ড একই নয়",
+  "profile.ChangePasswordPage.oldPasswordLabel": "বর্তমান পাসওয়ার্ড",
+  "profile.ChangePasswordPage.newPasswordLabel": "নতুন পাসওয়ার্ড",
+  "profile.ChangePasswordPage.confirmPasswordLabel": "নতুন পাসওয়ার্ড নিশ্চিত করুন",
+  "profile.ChangePasswordPage.submitButton": "সাবমিট করুন",
+  "profile.menu.myProfile": "আমার প্রোফাইল",
+  "profile.MyProfilePage.title": "আমার প্রোফাইল",
+  "profile.roles": "এসাইনকৃত রোলসমূহ",
+  "profile.regions": "বিভাহ",
+  "profile.districts": "জেলাসমূহ",
+  "profile.userName": "ইউজারনেম",
+  "profile.otherNames": "নাম",
+  "profile.lastName": "বংশ নাম",
+  "profile.email": "ই-মেইল",
+  "profile.phone": "ফোন নাম্বার",
+  "profile.language": "সিস্টেম ভাষা"
 
   
 }
