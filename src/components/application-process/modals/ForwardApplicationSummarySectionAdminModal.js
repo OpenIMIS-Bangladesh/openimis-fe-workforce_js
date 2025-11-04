@@ -6,7 +6,7 @@ import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchApplication, updateApplication, createApplicationMovement, fetchWorkforceUserRoleWiseUser, fetchDocumentType, createWorkforceDocument } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
-import { getUserTypeFromRights, safeApplicationId } from "../../../utils/utils";
+import { getUserTypeFromRights, safeApplicationId, safeDecodeId } from "../../../utils/utils";
 import FileUploader from "../../../pickers/FileUploader";
 
 const useStyles = makeStyles((theme) => ({
@@ -64,6 +64,7 @@ const ForwardApplicationSummarySectionAdminModal = ({ open, onClose, selectedApp
   const userType = getUserTypeFromRights(userRights);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
+  console.log({disburseId:summaryId})
 
   useEffect(() => {
     // if (!open) {
@@ -105,10 +106,10 @@ const ForwardApplicationSummarySectionAdminModal = ({ open, onClose, selectedApp
       //   setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
       //   return;
       // }
-      console.log({summaryId:decodeId(summaryId)})
+      console.log({summaryId:safeDecodeId(summaryId)})
 
       uploadFile?.map((file, index) => {
-            dispatch(createWorkforceDocument({ ...file, applicationSummaryId: decodeId(summaryId) }, `Created workforce document `));
+            dispatch(createWorkforceDocument({ ...file, applicationSummaryId: safeDecodeId(summaryId) }, `Created workforce document `));
           });
 
       // for (const encodedId of selectedApplicationIds) {

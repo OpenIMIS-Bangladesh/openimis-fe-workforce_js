@@ -154,6 +154,7 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
     dependents: [{}],
     employeeBankInfo: [{}],
     employeeAccidentInfo: {},
+    deceasedWorkerInfo: {},
     metadata: {},
     id: "",
   });
@@ -284,7 +285,28 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
             id: formData?.workforceEmployee?.id || reduxState.core.user.id,
           };
           console.log("Update Submitting formData:", formData);
-          await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
+          // await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
+          const updateApplicationData = {
+            // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
+            id: safeApplicationId(applicationId, parsedApplicationData),
+            workforceEmployeeId: employeeData?.id || reduxState.core.user.id,
+            company: formData?.workforceEmployee?.company?.id,
+            factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
+            organizationType: organizationType || parsedApplicationData?.organizationType,
+            applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+            grantAmount: formData?.employeeAccidentInfo.grantAmount,
+            employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
+            // employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+            employeeDependentInfo:
+              JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") ||
+              JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
+            employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+            metadata: JSON.stringify(formData.metadata),
+            deceasedWorkerInfo: JSON.stringify(formData.deceasedWorkerInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}").replace(/\\\\\\/g, "\\\\"),
+            status: WORKFORCE_STATUS.DRAFT,
+            applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
+          };
+          dispatch(updateApplication(updateApplicationData, `update workforce application`));
         } else if (nextStep === 1) {
           const createApplicationData = {
             workforceEmployeeId: employeeData?.id || reduxState.core.user.id || "",
@@ -378,6 +400,7 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
               JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
             employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
             metadata: JSON.stringify(formData.metadata),
+            deceasedWorkerInfo: JSON.stringify(formData.deceasedWorkerInfo),
             status: WORKFORCE_STATUS.DRAFT,
             applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
           };
@@ -440,6 +463,7 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
         JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),
+      deceasedWorkerInfo: JSON.stringify(formData.deceasedWorkerInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}").replace(/\\\\\\/g, "\\\\"),
       status: WORKFORCE_STATUS.NEW,
       applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
       submittedBy,

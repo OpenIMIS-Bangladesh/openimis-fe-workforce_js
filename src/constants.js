@@ -554,7 +554,8 @@ export const banglaLabels = {
   instituteName:"প্রতিষ্ঠানের নাম",
   instituteAddress:"প্রতিষ্ঠানের ঠিকানা",
   aboutWork:"কাজের ধরণ",
-  workingPlace:"কর্মস্থলের বিবরণ"
+  workingPlace:"কর্মস্থলের বিবরণ",
+  deceasedWorkerInfo:"মৃত শ্রমিকের তথ্য"
 
 };
 

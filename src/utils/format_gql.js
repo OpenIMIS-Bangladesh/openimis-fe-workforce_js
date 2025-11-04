@@ -297,6 +297,7 @@ export function formatApplicationeGQL(application) {
   ${application?.doctorsFlag ? `doctorsFlag: "${(application?.doctorsFlag)}"` : ""}
   ${application?.doctorsRecommendedDonation ? `doctorsRecommendedDonation: "${(application?.doctorsRecommendedDonation)}"` : ""}
   ${application?.lastBaseSalary ? `lastBaseSalary: "${(application?.lastBaseSalary)}"` : ""}
+  ${application?.deceasedWorkerInfo ? `deceasedWorkerInfo: ${escapeQuotes(application?.deceasedWorkerInfo)}` : ""}
 `;
 }
 ///application movement ////

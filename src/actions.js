@@ -718,7 +718,8 @@ export function fetchApplicationsSummary(mm, filters) {
     "associationType",
     "applicationFor",
     "applicationReceiveDate",
-    "applicationForwardDate"
+    "applicationForwardDate",
+    "deceasedWorkerInfo"
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
@@ -779,7 +780,8 @@ export function fetchApplication(mm, filters) {
     "grantMoney {id,grantMoney,applicationTypeNameEn,applicationTypeNameBn}",
     "submittedBy",
     "associationType",
-    "applicationFor"
+    "applicationFor",
+    "deceasedWorkerInfo"
   ];
   // const filterArray = filters
   //   ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)

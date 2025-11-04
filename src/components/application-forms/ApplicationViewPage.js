@@ -143,9 +143,7 @@ const renderDetails = (data, classes, parentKey = "", language) => {
 
   // ✅ Merge present/permanent address + location
   const mergeAddressAndLocation = (obj) => {
-    const parsedObj = Object.fromEntries(
-      Object.entries(obj).map(([k, v]) => [k, tryParse(v)])
-    );
+    const parsedObj = Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, tryParse(v)]));
     const newObj = { ...parsedObj };
 
     if (parsedObj.presentAddress || parsedObj.presentLocation) {
@@ -174,9 +172,7 @@ const renderDetails = (data, classes, parentKey = "", language) => {
     typeof data === "object" && !Array.isArray(data)
       ? mergeAddressAndLocation(data)
       : Array.isArray(data)
-      ? data.map((item) =>
-          typeof item === "object" ? mergeAddressAndLocation(item) : tryParse(item)
-        )
+      ? data.map((item) => (typeof item === "object" ? mergeAddressAndLocation(item) : tryParse(item)))
       : tryParse(data);
 
   // ✅ Handle arrays of objects
@@ -185,26 +181,14 @@ const renderDetails = (data, classes, parentKey = "", language) => {
       if (typeof item !== "object" || !item) return null;
 
       const scalars = Object.entries(item).filter(
-        ([key, value]) =>
-          typeof value !== "object" &&
-          !hiddenKeys.includes(key) &&
-          value !== null &&
-          value !== undefined &&
-          value !== ""
+        ([key, value]) => typeof value !== "object" && !hiddenKeys.includes(key) && value !== null && value !== undefined && value !== ""
       );
-      const objects = Object.entries(item).filter(
-        ([key, value]) =>
-          typeof value === "object" && value && !hiddenKeys.includes(key)
-      );
+      const objects = Object.entries(item).filter(([key, value]) => typeof value === "object" && value && !hiddenKeys.includes(key));
 
       return (
         <Card key={idx} className={classes.nestedCard}>
           <CardContent>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              style={{ fontWeight: "bold", fontSize: "large" }}
-            >
+            <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold", fontSize: "large" }}>
               {formatKey(parentKey, language)} {enToBn(idx + 1)}
             </Typography>
             <Divider style={{ marginBottom: 12 }} />
@@ -235,9 +219,13 @@ const renderDetails = (data, classes, parentKey = "", language) => {
                   }}
                 >
                   {key === "presentAddressAndLocation"
-                    ? (language==="en"?"Present Address & Location":"বর্তমান ঠিকানা")
+                    ? language === "en"
+                      ? "Present Address & Location"
+                      : "বর্তমান ঠিকানা"
                     : key === "permanentAddressAndLocation"
-                    ? (language==="en"?"Permanent Address & Location":"স্থায়ী ঠিকানা")
+                    ? language === "en"
+                      ? "Permanent Address & Location"
+                      : "স্থায়ী ঠিকানা"
                     : formatKey(key, language)}
                 </Typography>
                 {renderDetails(value, classes, key, language)}
@@ -252,12 +240,7 @@ const renderDetails = (data, classes, parentKey = "", language) => {
   // ✅ Handle object data
   if (typeof mergedData === "object" && mergedData !== null) {
     const scalars = Object.entries(mergedData).filter(
-      ([key, value]) =>
-        typeof value !== "object" &&
-        !hiddenKeys.includes(key) &&
-        value !== null &&
-        value !== undefined &&
-        value !== ""
+      ([key, value]) => typeof value !== "object" && !hiddenKeys.includes(key) && value !== null && value !== undefined && value !== ""
     );
     const objects = Object.entries(mergedData).filter(([key, value]) => {
       const parsed = tryParse(value);
@@ -283,9 +266,13 @@ const renderDetails = (data, classes, parentKey = "", language) => {
           const parsedValue = tryParse(value);
           const sectionTitle =
             key === "presentAddressAndLocation"
-              ? (language==="en"?"Present Address & Location":"বর্তমান ঠিকানা")
+              ? language === "en"
+                ? "Present Address & Location"
+                : "বর্তমান ঠিকানা"
               : key === "permanentAddressAndLocation"
-              ? (language==="en"?"Permanent Address & Location":"স্থায়ী ঠিকানা")
+              ? language === "en"
+                ? "Permanent Address & Location"
+                : "স্থায়ী ঠিকানা"
               : formatKey(key, language);
 
           return (
@@ -313,7 +300,6 @@ const renderDetails = (data, classes, parentKey = "", language) => {
   return null;
 };
 
-
 const ApplicationViewPage = ({
   application,
   // language,
@@ -325,7 +311,7 @@ const ApplicationViewPage = ({
   handleFileVerify,
   handleFileReject,
   viewedFromFlag,
-  movementLogs
+  movementLogs,
 }) => {
   const classes = useStyles();
   const language = useSelector((state) => state.core?.user?.i_user?.language);
@@ -391,9 +377,7 @@ const ApplicationViewPage = ({
               ))}
             </Box>
           </Paper>
-          {viewedFromFlag ==="view" && (
-            <ApplicationMovementStepper data={movementLogs}/>
-          )}
+          {viewedFromFlag === "view" && <ApplicationMovementStepper data={movementLogs} />}
           {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes && filteredDocumentTypes?.length > 0 && (
             <Typography variant="h6" style={{ marginTop: 6 }}>
               <b>
@@ -450,6 +434,10 @@ const ApplicationViewPage = ({
             // skip sidebar & hidden fields
             if (["applicationType", "organizationType", "trackingNumber", "status", "grantAmount", "submittedBy", "dateCreated", ...hiddenKeys].includes(key))
               return null;
+
+            if (key === "workforceEmployee" && ["financialAssistance", "deadlyGrant"].includes(application?.applicationType)) {
+              return null;
+            }
 
             const parsedValue = tryParse(value);
             if (!parsedValue || isEmpty(parsedValue)) return null;

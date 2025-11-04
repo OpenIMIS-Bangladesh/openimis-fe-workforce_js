@@ -154,7 +154,7 @@ console.log('formData from employee Details form',formData)
                   value={formData?.workforceEmployee?.citizenship || ""}
                   onChange={(v) => handleChange("citizenship", v)}
                   readOnly={false}
-                  required
+                  // required
                   language={locale === "fr" ? "bn" : "en"}
                 />
                 {errors.citizenship && <FormHelperText error>{errors.citizenship}</FormHelperText>}

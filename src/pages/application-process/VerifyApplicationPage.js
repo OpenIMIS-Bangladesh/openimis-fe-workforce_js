@@ -343,6 +343,7 @@ class VerifyApplicationPage extends Component {
     const childrenInfo = this.safeParse(application?.employeeChildrenInfo);
     const applicantInfo = this.safeParse(application?.applicantInfo);
     const institutionInfo = this.safeParse(stateEdited?.institutionInfo)
+    const deceasedWorkerInfo = this.safeParse(stateEdited?.deceasedWorkerInfo)
     const metaInfo = this.safeParse(application?.metadata);
 
     const formData = {
@@ -354,6 +355,7 @@ class VerifyApplicationPage extends Component {
       employeeChildrenInfo: this.safeParse(childrenInfo),
       applicantInfo: this.safeParse(applicantInfo),
       institutionInfo: this.safeParse(institutionInfo),
+      deceasedWorkerInfo: this.safeParse(deceasedWorkerInfo),
       metadata: this.safeParse(metaInfo),
     };
     console.log(documentType);
