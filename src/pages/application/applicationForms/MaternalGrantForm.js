@@ -292,7 +292,7 @@ const MaternalGrantForm = ({ organizationType, selectedApplicationType, applicat
             dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
           }
         } else {
-          console.clear();
+          // console.clear();
           console.log(applicationId);
           const updateApplicationData = {
             id: safeApplicationId(applicationId, parsedApplicationData),
