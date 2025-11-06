@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(2),
     height: "100vh",
-    overflow: "hidden",
+    overflow: "visible",
   },
   sidebar: {
     position: "sticky",
