@@ -386,6 +386,17 @@ export const isAtLeast18YearsOld = (birthDateString) => {
   return age >= 18;
 };
 
+export const isNotFutureDate = (dateString) => {
+  if (!dateString) return false;
+
+  const selectedDate = new Date(dateString);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  selectedDate.setHours(0, 0, 0, 0);
+  return selectedDate <= today;
+};
+
+
 
 export function extractId(item) {
   if (!item && item !== 0) return null;

@@ -225,8 +225,11 @@ const MedicalDonationForm = ({ organizationType, selectedApplicationType, applic
 
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if (nextStep ===2 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
+      if ((nextStep ===2 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate))||(nextStep ===5 && applicationForSelf==="yes") ||(nextStep ===6 && applicationForSelf==="no")) {
         let fakeErrors = {...newErrors,rdmp:"core.error.workerAge"}
+        if ((nextStep=== 5&& applicationForSelf ==="yes" && !isNotFutureDate(formData?.employeeAccidentInfo?.accidentDate))&& (nextStep ===6 && applicationForSelf==="no" && !isNotFutureDate(formData?.employeeAccidentInfo?.accidentDate)) ) {
+                  fakeErrors ={...fakeErrors,accidentDate:"core.error.accidentDate"}
+        }
         setErrors(fakeErrors)
         console.log({fakeErrors})
       }else{

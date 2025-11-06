@@ -28,7 +28,7 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReason from "../FormsComponents/FinancialAssistance/ApplicationReason";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getInfoId, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
+import { getInfoId, isAtLeast18YearsOld, isNotFutureDate, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -249,8 +249,13 @@ const DeadlyGrantForm = ({ organizationType, selectedApplicationType, parsedAppl
 
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if (nextStep === 3&& !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
+      if ((nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate) && !isNotFutureDate(formData?.workforceEmployee?.deathDate)) ||
+              (nextStep === 1 && !isNotFutureDate(formData?.metadata?.deathDate))
+        ) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
+        if ((nextStep === 1 || nextStep===3) &&(!isNotFutureDate(formData?.workforceEmployee?.deathDate)||!isNotFutureDate(formData?.metadata?.deathDate))) {
+           fakeErrors = { ...fakeErrors, deathDate: "core.error.deathTime" };
+        }
         setErrors(fakeErrors);
         console.log({ fakeErrors });
       } else {

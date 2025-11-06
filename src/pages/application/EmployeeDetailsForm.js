@@ -253,6 +253,7 @@ console.log('formData from employee Details form',formData)
                     onChange={(v) => handleChange("deathDate", v)}
                   // readOnly={true}
                   />
+                  {errors.deathDate && <FormHelperText error><FormattedMessage id={errors.deathDate} /></FormHelperText>}
                 </Grid>
               ) : null}
             </Grid>

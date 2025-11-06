@@ -133,7 +133,7 @@ const ApplicationReason = ({ handleChange, formData, errors }) => {
                 readOnly={false}
                 required
               />
-              {errors.rdmp && <FormHelperText error>{errors.rdmp}</FormHelperText>}
+              {errors.deathDate && <FormHelperText error><FormattedMessage id={errors.deathDate} /></FormHelperText>}
             </Grid>
           )}
 
