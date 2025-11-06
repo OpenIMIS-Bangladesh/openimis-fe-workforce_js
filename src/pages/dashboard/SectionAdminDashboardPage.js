@@ -553,12 +553,6 @@ const ApplicationStatus = () => {
 };
 
 
-const checkedApplications = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.new.application" />
-  </Typography>
-);
-
 const RevertApplication = () => {
   const classes = useStyles()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
