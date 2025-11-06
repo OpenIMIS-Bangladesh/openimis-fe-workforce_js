@@ -75,6 +75,7 @@ const hiddenKeys = [
   "associationType",
   "applicationFor",
   "workforceEmployeeDependentApplication",
+  "educations",
   "applicationForSelf",
   "insuranceNumber",
   "grantMoney",

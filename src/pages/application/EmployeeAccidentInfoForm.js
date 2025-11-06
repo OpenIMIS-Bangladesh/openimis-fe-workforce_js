@@ -289,6 +289,8 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 readOnly={false}
                 required
               />
+              {/* {errors?.rdmp && <FormHelperText error>{errors?.rdmp}</FormHelperText>} */}
+              {errors?.accidentDate && <FormHelperText error><FormattedMessage id={errors?.accidentDate} /></FormHelperText>}
               {/* <CustomDateTimePicker isDateTime value={formData?.employeeAccidentInfo?.accidentDate || ""} label="দুর্ঘটনার সময়" onChange={(v) => handleChange("accidentDate", v)} /> */}
             </Grid>
             <Grid item xs={6} className={classes.item}>

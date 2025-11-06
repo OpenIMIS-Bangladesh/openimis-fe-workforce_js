@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(2),
     // height: '100vh', // assuming 64px header/appbar, adjust as needed
-    overflow: 'hidden',
+    overflow: 'visible',
   },
   sidebar: {
     position: "sticky",
@@ -401,7 +401,7 @@ const ApplicantDashboard = () => {
         </Grid>
 
         {/* Main Content */}
-        <Grid item xs={12} md={9} className={classes.content}>
+        <Grid item xs={12} md={9} className={classes.content} >
           {renderContent()}
         </Grid>
       </Grid>

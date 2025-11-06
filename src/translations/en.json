@@ -766,7 +766,8 @@
   "core.error.phoneNumberLength":"Phone number must be exactly 11 digits",
   "core.error.nidLength":"Nid/BirthCertificate number is not valid",
   "core.error.workerAge":"A worker’s age must be a minimum of 18 years.",
-  "core.error.deathTime":"Death date is not correct",
+  "core.error.deathTime":"Death date is not valid",
+  "core.error.accidentDate":"Accident date is not valid",
   "core.error.accountNumberLength":"Account number must be 8 to 17",
 
   "workforce.employee.accident.info.hasRejoined":"Have you rejoined the workplace after recovery?",
