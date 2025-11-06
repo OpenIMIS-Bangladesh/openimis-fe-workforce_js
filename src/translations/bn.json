@@ -296,11 +296,11 @@
   "workforce.application.steps.hsc": "এইচ.এস.সি. বা সমমান",
   "workforce.application.steps.skip": "বাদ দিন",
   "workforce.application.steps.dependentAdd": "নির্ভরশীল যোগ করুন",
-  "workforce.application.steps.reasonsforSeekingFinancialAssistance": "আর্থিক সহায়তা চাওয়ার কারণ",
+  "workforce.application.steps.reasonsforSeekingFinancialAssistance": "আর্থিক সহায়তা চাওয়ার কারণ (সর্বশেষ সময়সীমা বিগত ১০৫ দিনের মধ্যে হতে হবে)",
   "workforce.application.steps.previousGrantInfo": "পূর্ববর্তী অনুদানের তথ্য",
   "workforce.application.steps.otherInfo": "অন্যান্য তথ্য",
   "workforce.application.reasons.physicalMentalDisability": "দুর্ঘটনাজনিত কারণে দৈহিক ও মানসিকভাবে স্থায়ী অক্ষমতা (সর্বশেষ সময়সীমা বিগত ১০৫ দিনের মধ্যে হতে হবে)",
-  "workforce.application.reasons.accidentalDeath": "দুর্ঘটনাজনিত কারণে মৃত্যু (সর্বশেষ সময়সীমা বিগত ১০৫ দিনের মধ্যে হতে হবে)",
+  "workforce.application.reasons.accidentalDeath": "দুর্ঘটনাজনিত কারণে মৃত্যু",
   "workforce.application.reasons.curativeTreatment": "দুরারোগ্য চিকিৎসা",
   "workforce.application.reasons.deathbodyRefinement": "মৃতদেহ পরিবহন ও সৎকার",
   "workforce.application.reasons.maternalWelfare": "অপ্রাতিষ্ঠানিক খাতে কর্মরত মহিলা শ্রমিকের মাতৃত্ব কল্যাণ",
@@ -620,6 +620,7 @@
   "core.error.phoneNumberLength":"ফোন নম্বর অবশ্যই ১১ সংখ্যার হতে হবে",
   "core.error.nidLength":"এনআইডি/জন্মসনদ নম্বরটি সঠিক নয়",
   "core.error.workerAge":"শ্রমিকের বয়স ন্যূনতম ১৮ বছর হতে হবে।",
+  "core.error.deathTime":"মৃত্যুর তারিখ সঠিক নয়।",
   "core.error.accountNumberLength":"অ্যাকাউন্ট নম্বর অবশ্যই ৮ থেকে ১৭ অঙ্কের হতে হবে",
 
 
