@@ -21,7 +21,7 @@ import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getInfoId, getParsedApplication, isAtLeast18YearsOld, isNotFutureDate, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
+import { getInfoId, getParsedApplication, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -216,11 +216,8 @@ const MedicalAssistanceForm = ({ organizationType, selectedApplicationType, appl
 
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if ((nextStep === 1&& !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) ||(nextStep ===3 && applicationForSelf==="yes") ||(nextStep ===4 && applicationForSelf==="no")) {
+      if (nextStep === 1&& !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
         let fakeErrors = {...newErrors,rdmp:"core.error.workerAge"}
-        if ((nextStep===3 && applicationForSelf ==="yes" && !isNotFutureDate(formData?.employeeAccidentInfo?.accidentDate))&& (nextStep ===4 && applicationForSelf==="no" && !isNotFutureDate(formData?.employeeAccidentInfo?.accidentDate)) ) {
-          fakeErrors ={...fakeErrors,accidentDate:"core.error.accidentDate"}
-        }
         setErrors(fakeErrors)
         console.log({fakeErrors})
       }else{

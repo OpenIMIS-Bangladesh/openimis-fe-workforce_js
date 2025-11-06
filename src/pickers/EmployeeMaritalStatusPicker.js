@@ -25,7 +25,7 @@ const EmployeeMaritalStatusPicker = ({
     "workforce.marital_status.married", 
     "workforce.marital_status.widow", 
     // "workforce.marital_status.widower", 
-    "workforce.marital_status.remarried"
+    // "workforce.marital_status.remarried"
   ];
 
   // Find the selected option
