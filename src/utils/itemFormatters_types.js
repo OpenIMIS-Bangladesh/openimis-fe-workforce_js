@@ -135,8 +135,6 @@ export const itemAdminFormatters = (
         onChange={(v) => component.setState({ editedGrantMoney: v })}
       />
     ),
-    (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;

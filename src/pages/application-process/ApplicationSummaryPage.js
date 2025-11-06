@@ -111,7 +111,7 @@ class ApplicationSummaryPage extends Component {
 
 
   render() {
-    const { classes, rights, applications, summaryData, loggedInUserId, status } = this.props;
+    const { classes, rights, applications, summaryData, loggedInUserId, status, disableButtons = 0 } = this.props;
     const { value, openGenerateBFTN, expanded, reorderedData } = this.state;
     // const summaryData = this.props.summaryData || [];
     // const { loggedInUserId } = this.props;
@@ -237,6 +237,8 @@ class ApplicationSummaryPage extends Component {
                           cacheFiltersKey="pending"
                           onDoubleClick={this.onDoubleClick}
                           loggedInUserId={loggedInUserId}
+                          disableButtons={disableButtons}
+                          status={status}
                         />
                       )}
                     </CardContent>

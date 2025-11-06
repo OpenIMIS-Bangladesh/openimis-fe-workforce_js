@@ -883,8 +883,17 @@ class ApplicationProcessSearcher extends Component {
           this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
           this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
         ]);
-      }
-      else if(this.props.returnedApplications)
+      } else if (rejectedApplication) {
+      const filtersBase = [
+        'statusIn: ["rejected_by_dg"]',
+        'orderBy: ["-dateCreated"]'
+      ];
+       if(loggedInUserId)
+        {
+          filtersBase.push(`applicationTo:"${loggedInUserId}"`);
+        }
+      await this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
+    }else if(this.props.returnedApplications)
       {
         const filtersBase = [
           'statusIn: ["revert"]',
@@ -1279,6 +1288,7 @@ class ApplicationProcessSearcher extends Component {
   };
   handleRejectByDG = async (application) => {
     const { selectedApplication } = this.state;
+    const { loggedInUserId } = this.props;
     this.setState({
       confirmModalOpen: true,
       confirmModalMessage: "workforce.application.reject.message",
@@ -1299,6 +1309,8 @@ class ApplicationProcessSearcher extends Component {
               status: WORKFORCE_STATUS.REJECTED_BY_DG,
               note: "আবেদন ডিজি কর্তৃক বাতিল করা হয়েছে",
               action: "rejected_by_dg",
+              applicationFromId: loggedInUserId,
+              applicationToId:1,
             };
             try {
               await this.props.updateApplication(updateApplicationData, "update workforce application");

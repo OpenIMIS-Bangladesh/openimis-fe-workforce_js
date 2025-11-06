@@ -161,6 +161,26 @@ const ReturnedApplications = () => {
     </>
   )
 };
+const RejectApplication = () => {
+  const classes = useStyles()
+  return (
+    <>
+      <ApplicationProcessSearcher
+        rejectedApplication={true}
+        dynamicTableTitle= {"workforce.application.rejectedApplication"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
 
 
 const Dashboard = () =>{
@@ -923,9 +943,9 @@ const DashboardPage = () => {
       case "waitingApplications":
         return (<ApplicationSummaryPage status="pending"/>);
       case "rejectedApplications":
-        return <ApplicationSummaryPage status="rejected"/>;
+        return <RejectApplication/>;
       case "approvedApplications":
-        return (<ApplicationSummaryPage status="approved"/>);
+        return (<ApplicationSummaryPage status="approved" disableButtons={1} />);
       case "returnedApplications":
         return (<ReturnedApplications/>);
       default:

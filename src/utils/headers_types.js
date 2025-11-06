@@ -6,7 +6,6 @@
   "workforce.employee.application.applicationType",
   "workforce.employee.application.moneyAmount",
   "workforce.employee.application.status",
-  component.isShowHistory() ? "workforce.version" : "",
 
   // 1️⃣ View header — always visible
   "view",
