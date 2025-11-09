@@ -591,7 +591,7 @@ class ApplicationProcessSearcher extends Component {
         }
       }
       else if (this.props.forwardedApplications) {
-        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","revert_to_applicant", associationTypeIn: "BKMEA"]');
+        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","revert_to_applicant"', 'associationTypeIn: "BKMEA"]');
       }
       else if (this.props.returnedApplications) {
         defaultStatusFilters = ['statusIn: ["revert"]','associationTypeIn: "BKMEA"'];
@@ -644,7 +644,7 @@ class ApplicationProcessSearcher extends Component {
         // }
       }
       else if (this.props.forwardedApplications) {
-        defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator","revert_to_applicant", associationTypeIn: "BEPZA"]');
+        defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator","revert_to_applicant"]', 'associationTypeIn: "BEPZA"]');
       }
       else if (this.props.returnedApplications) {
         defaultStatusFilters = ['statusIn: ["revert"]','associationTypeIn: "BEPZA"'];
@@ -697,7 +697,7 @@ class ApplicationProcessSearcher extends Component {
         // }
       }
       else if (this.props.forwardedApplications) {
-        defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator","revert_to_applicant", associationTypeIn: "LFMEAB"]');
+        defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator","revert_to_applicant"', 'associationTypeIn: "LFMEAB"]');
       }
       else if (this.props.returnedApplications) {
         defaultStatusFilters = ['statusIn: ["revert"]','associationTypeIn: "LFMEAB"'];
