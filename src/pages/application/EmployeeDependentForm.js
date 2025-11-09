@@ -21,6 +21,7 @@ import RelationWithWorkerPicker from "../../pickers/RelationWithWorkerPicker";
 import FileUploader from "../../pickers/FileUploader";
 import CustomDependentLocation from "../../components/application-forms/CustomDependentLocation";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
+import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -221,6 +222,18 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     type="number"
                   />
                 </Grid>
+                
+                <Grid item xs={6}>
+                  <EmployeeMaritalStatusPicker
+                  id="maritalStatus"
+                  value={dependent?.maritalStatus || ""}
+                  label={<FormattedMessage id="workforce.employee.marital_status" module="workforce" />}
+                  required
+                  onChange={(v) => handleChange(index,"maritalStatus", v)}
+                  readOnly={false}
+                />
+                {errors.maritalStatus && <FormHelperText error>{errors.maritalStatus}</FormHelperText>}
+                </Grid>
 
                 {formdata?.organizationType === "cf" && formdata?.applicationType === "financialAssistance" && (
                   <Grid item xs={6}>
@@ -230,8 +243,8 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                           ? formatMessage("workforce.employee.eis.percentage_of_cf_grant")
                           : formatMessage("workforce.employee.percentage_of_cf_grant")
                       }
-                      value={dependent.maritalStatus || ""}
-                      onChange={(v) => handleChange(index, "maritalStatus", v)}
+                      value={dependent.percentage_of_grant || ""}
+                      onChange={(v) => handleChange(index, "percentage_of_grant", v)}
                     />
                   </Grid>
                 )}
