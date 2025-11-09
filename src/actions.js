@@ -823,6 +823,7 @@ export function fetchApplicationWiseMovementList(mm, variables) {
               id
               status
               revertNote
+              note
               dateCreated
               applicationFrom {
                 id

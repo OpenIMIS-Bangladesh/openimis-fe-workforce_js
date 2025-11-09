@@ -378,7 +378,7 @@ const ApplicationViewPage = ({
               ))}
             </Box>
           </Paper>
-          {/* {viewedFromFlag === "view" && <ApplicationMovementStepper data={movementLogs} />} */}
+          {viewedFromFlag === "view" && <ApplicationMovementStepper data={movementLogs} language={language}/>}
           {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes && filteredDocumentTypes?.length > 0 && (
             <Typography variant="h6" style={{ marginTop: 6 }}>
               <b>
