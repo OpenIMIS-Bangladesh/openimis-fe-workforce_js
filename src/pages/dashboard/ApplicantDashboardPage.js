@@ -29,7 +29,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { useModulesManager, useTranslations, Autocomplete, useGraphqlQuery, decodeId } from "@openimis/fe-core";
 import { fetchApplicationsSummary } from "../../actions";
 import EisMultiStepApplyForm from "../application/EisMultiStepApplyForm";
-import { isEisPath } from "../../utils/utils";
+import { isEisPath,conditionalEnToBn } from "../../utils/utils";
+import {
+  STATUS_MAP_BN,
+  STATUS_MAP_EN,
+  WORKFORCE_USER_TYPE_MAP_EN,
+  WORKFORCE_USER_TYPE_MAP_BN,
+  ORGANIZATION_TYPE_NAME_EN,
+  ORGANIZATION_TYPE_NAME_BN,
+} from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -180,6 +188,8 @@ const ApplicationStatus = () => {
   const [applicationData, setApplicationData] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const history = useHistory();
+  const reduxState = useSelector((state) => state);
+  const locale = reduxState?.core?.user?.i_user?.language || 'en';
 
  const handleApplicationSearch = () => {
  const filters = [`trackingNumber: "${trackingNumber}"`];
@@ -244,15 +254,22 @@ const ApplicationStatus = () => {
                     <strong><FormattedMessage module="workforce" id="workforce.application.tracking.number" />:</strong> {applicationData.trackingNumber}
                   </Typography>
                   <Typography>
-                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.currentStatus" />:</strong> {applicationData.status}
+                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.currentStatus" />:
+                    </strong>{(locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN)[applicationData?.status] 
+                    || applicationData?.status}
                   </Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <Typography>
-                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.applicationType" />:</strong> {applicationData.applicationType}
+                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.applicationType" />:
+                    </strong> {locale === "en" ? applicationData?.grantMoney?.applicationTypeNameEn : applicationData?.grantMoney?.applicationTypeNameBn}
                   </Typography>
                   <Typography>
-                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.applicationDate" />:</strong> {applicationData.dateCreated || "-"}
+                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.applicationDate" />:
+                    </strong> {applicationData?.dateCreated
+                            ? conditionalEnToBn(applicationData?.dateCreated?.split("T")[0], locale)
+                            : "-"
+                        }
                   </Typography>
                 </Grid>
               </Grid>
