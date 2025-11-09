@@ -214,6 +214,13 @@ class ViewApplicationPage extends Component {
               <ApplicationViewPage application={formData} language={locale} fileStates={documents} viewedFromFlag={"view"} movementLogs={this.state.movementLogs}/>
             </Grid>
             <Grid item xs={8}></Grid>
+            {user_type != WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
+            user_type != WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+            user_type != WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+            ||  user_type != WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION
+            ||  user_type != WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION ? (
+              <Grid item xs={2}></Grid>
+            ):null}
             <Grid item xs={2} style={{ textAlign: "center" }}>
               <Button variant="contained" color="primary" onClick={this.handlePrint} fullWidth>
                 <PrintIcon /> {" "} {<FormattedMessage id="workforce.modal.print" module="workforce" />}
