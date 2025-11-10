@@ -424,7 +424,7 @@ const ApplicationViewPage = ({
               ))}
             </>
           )}
-          {user_type === (WORKFORCE_USER_TYPE.DOCTOR || WORKFORCE_USER_TYPE.BLWF_DOCTOR || WORKFORCE_USER_TYPE.EIS_DOCTOR) && viewedFromFlag === "verify" && (
+          {(user_type === WORKFORCE_USER_TYPE.DOCTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR || user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) && viewedFromFlag === "verify" && (
             <DoctorsEntries application={application} />
           )}
         </Grid>
