@@ -317,6 +317,9 @@ const CheckerDashboard = () => {
               {user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE && (    
             <FormattedMessage module="workforce" id="workforce.blwf.dol-dife.dashboard" />
             )}
+              {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && (    
+            <FormattedMessage module="workforce" id="workforce.eis.officer.dashboard" />
+            )}
           </Typography>
           {renderContent()}
         </Grid>

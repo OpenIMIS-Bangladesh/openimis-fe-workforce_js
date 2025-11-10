@@ -15,7 +15,6 @@ import DoctorDashboardPage from "./DoctorDashboardPage";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import BlwfApproverDashboard from "./BlwfApproverDashboardPage";
 import EisCoordinatorDashboardPage from "./EisCoordinatorDashboardPage";
-import EisOfficerDashboardPage from "./EisOfficerDashboardPage";
 import EisCommitteeDashboardPage from "./EisCommitteeDashboardPage"
 import EisFinancialOfficerDashboard from "./EisFinancialOfficerDashboardPage";
 import EISAdvisorDashboard from "./EISAdvisorDashboardPage";
@@ -25,7 +24,7 @@ const DashboardRelay = () => {
 console.log("userTpe",user_type)
   if (user_type === WORKFORCE_USER_TYPE.APPLICANT) {
     return <ApplicantDashboard />;
-  } else if (user_type === WORKFORCE_USER_TYPE.CHECKER || user_type === WORKFORCE_USER_TYPE.CHECKER_TWO || user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER || user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE) {
+  } else if (user_type === WORKFORCE_USER_TYPE.CHECKER || user_type === WORKFORCE_USER_TYPE.CHECKER_TWO || user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER || user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE || user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) {
     return <CheckerDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR)  {
     return <DeputyAsstDirectorDashboardPage />;
@@ -49,8 +48,6 @@ console.log("userTpe",user_type)
     return <FactoryAdminDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
     return <EisCoordinatorDashboardPage />;
-  } else if (user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) {
-    return <EisOfficerDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE) {
     return <EisCommitteeDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.EIS_FINANCIAL_OFFICER) {

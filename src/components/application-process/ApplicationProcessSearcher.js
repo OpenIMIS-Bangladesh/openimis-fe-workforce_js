@@ -2512,7 +2512,7 @@ class ApplicationProcessSearcher extends Component {
                           />
                         </Button>
                       )}
-                      {WORKFORCE_USER_TYPE.EIS_COORDINATOR.includes(userType) && (
+                       {WORKFORCE_USER_TYPE.EIS_COORDINATOR.includes(userType) && (
                         <>
                         <Button
                           variant="contained"
@@ -2524,17 +2524,23 @@ class ApplicationProcessSearcher extends Component {
                             id="workforce.employee.application.forwardToDoctor"
                           />
                         </Button>
-                         <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenEIS: true })}>
-                        <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-                      </Button>
                     </>
                       )}
                     </>
                   ):(
                     <>
+                     {![WORKFORCE_USER_TYPE.EIS_ADVISOR, WORKFORCE_USER_TYPE.EIS_COORDINATOR].includes(userType) && (
                       <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
                         <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
                       </Button>
+                        )}
+                         {WORKFORCE_USER_TYPE.EIS_COORDINATOR.includes(userType) && (
+                        <>
+                         <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenEIS: true })}>
+                        <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                      </Button>
+                    </>
+                      )}
                     </>
                   )}
                 </>
