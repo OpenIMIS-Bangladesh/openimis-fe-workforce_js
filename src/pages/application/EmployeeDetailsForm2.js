@@ -306,6 +306,16 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                     </Typography>
                   </Grid>
                   <Grid item xs={6}>
+                    { (formData?.applicationType ==="deadlyGrant"||formData?.applicationType === "financialAssistance")?(
+                      <FileUploader
+                      fieldKey={document.fieldId}
+                      onFileChange={handleChange}
+                      applicationId={applicationId}
+                      documentType={document.documentType}
+                      documentProp={document}
+                      uploadedBy={formStepNo==="employeeDependentInfo"?"dependent":"applicant"}
+                    />
+                    ) :(
                     <FileUploader
                       fieldKey={document.fieldId}
                       onFileChange={handleFileChange}
@@ -314,6 +324,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                       documentProp={document}
                       uploadedBy={formStepNo==="employeeDependentInfo"?"dependent":"applicant"}
                     />
+                    )}
                   </Grid>
                   {uploadedFiles.find((item) => item.fieldKey === document.fieldId && item.files.length > 0) && (
                     <Grid item xs={1}>

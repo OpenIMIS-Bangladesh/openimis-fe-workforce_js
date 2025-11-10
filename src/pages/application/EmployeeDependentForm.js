@@ -12,8 +12,12 @@ import {
   FormControlLabel,
   Checkbox,
   FormHelperText,
-  FormControl, FormLabel, Radio, RadioGroup 
+  FormControl,
+  FormLabel,
+  Radio,
+  RadioGroup,
 } from "@material-ui/core";
+import { useSelector, useDispatch } from "react-redux";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextInput, PublishedComponent, FormattedMessage, useTranslations, useModulesManager } from "@openimis/fe-core";
@@ -78,6 +82,24 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
     },
     [applicationType, formatMessage]
   );
+
+  const handleAttachmentChange = useCallback(
+  (index, fieldKey, value) => {
+    // Get the current attachments array for this dependent
+    const currentAttachments = dependents?.[index]?.attachments || [];
+
+    // Check if this fieldKey already exists (e.g., re-upload)
+    const updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
+      ? currentAttachments.map((att) =>
+          att.fieldKey === fieldKey ? { ...att, ...value } : att
+        )
+      : [...currentAttachments, { fieldKey, ...value }];
+
+    // Update the dependent with merged attachments
+    handleChange(index, "attachments", updatedAttachments);
+  },
+  [dependents, handleChange]
+);
 
   const onPickerChange = (v, index) => {
     handleChange(index, "relationType", v);
@@ -222,17 +244,17 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     type="number"
                   />
                 </Grid>
-                
+
                 <Grid item xs={6}>
                   <EmployeeMaritalStatusPicker
-                  id="maritalStatus"
-                  value={dependent?.maritalStatus || ""}
-                  label={<FormattedMessage id="workforce.employee.marital_status" module="workforce" />}
-                  required
-                  onChange={(v) => handleChange(index,"maritalStatus", v)}
-                  readOnly={false}
-                />
-                {errors.maritalStatus && <FormHelperText error>{errors.maritalStatus}</FormHelperText>}
+                    id="maritalStatus"
+                    value={dependent?.maritalStatus || ""}
+                    label={<FormattedMessage id="workforce.employee.marital_status" module="workforce" />}
+                    required
+                    onChange={(v) => handleChange(index, "maritalStatus", v)}
+                    readOnly={false}
+                  />
+                  {errors.maritalStatus && <FormHelperText error>{errors.maritalStatus}</FormHelperText>}
                 </Grid>
 
                 {formdata?.organizationType === "cf" && formdata?.applicationType === "financialAssistance" && (
@@ -355,7 +377,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                 </Grid> */}
                 <Grid item xs={12}>
                   <EmployeeDetailsForm2
-                    handleChange={(key, value) => handleChange(index, "attachments", value)}
+                    handleChange={(fieldKey, value) => handleAttachmentChange(index, fieldKey, value)}
                     formData={formdata}
                     selectedApplicationType={applicationType}
                     formStepNo={"employeeDependentInfo"}
