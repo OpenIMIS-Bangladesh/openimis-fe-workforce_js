@@ -1044,36 +1044,43 @@ class ApplicationProcessSearcher extends Component {
       const defaultStatusFilters = [
         'applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]'
       ];
+       if(this.props.filedApplications)
+      {
+        defaultStatusFilters.push('statusIn:["forward_for_verification"]');
+        if(loggedInUserId)
+        {
+          defaultStatusFilters.push(`applicationTo:"${loggedInUserId}"`);
+        }
+      }
+      else if(this.props.forwardedApplications)
+      {
+        defaultStatusFilters.push('statusIn:["verified"]');
+        if(loggedInUserId)
+        {
+          defaultStatusFilters.push(`applicationFrom:"${loggedInUserId}"`);
+        }
+      }else if (revertedApplication) {
+
+        defaultStatusFilters.push(
+          'statusIn: ["revert"]'
+        );
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
+      } 
+      else if(this.props.returnedApplications)
+      {
+        defaultStatusFilters.push('statusIn:["revert"]');
+        if(loggedInUserId)
+        {
+          defaultStatusFilters.push(`applicationFrom:"${loggedInUserId}"`);
+        }
+      }
+
       const orderByFilter = 'orderBy: ["-dateCreated"]';
-
-      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
-      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
-      const hasAppTypeIn = prms?.some(f => f.includes("applicationTypeIn"));
-
-      let finalFilters = [];
-
-      if (prms?.length) {
-        finalFilters = [...prms];
-
-        if (!hasStatusIn) {
-          finalFilters = [...defaultStatusFilters.slice(0, 1), ...finalFilters];
-        }
-
-        if (!hasAppTypeIn) {
-          finalFilters = [...finalFilters, defaultStatusFilters[1]];
-        }
-
-        if (!hasOrderBy) {
-          finalFilters.push(orderByFilter);
-        }
-      } else {
-        finalFilters = [...defaultStatusFilters, orderByFilter];
-      }
-      if (loggedInUserId) {
-        finalFilters.push(`applicationTo: "${loggedInUserId}"`);
-      }
-
-      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+      defaultStatusFilters.push(orderByFilter);
+   
+      this.props.fetchApplicationsSummary(this.props.modulesManager, defaultStatusFilters);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
       this.setState({ displayVersion: showHistoryFilter });
       const filtersBase = [
