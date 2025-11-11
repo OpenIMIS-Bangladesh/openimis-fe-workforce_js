@@ -65,17 +65,17 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
   );
   const [selectedDiseases, setSelectedDiseases] = useState(formData?.employeeAccidentInfo?.cronicDiseaseType || []);
   const [isAdmitted, setIsAdmitted] = useState(formData?.employeeAccidentInfo?.admitted || "no");
+  const [disAbilityEffect, setDisAbilityEffect] = useState(formData?.employeeAccidentInfo?.disAbilityEffect || "no");
   const [hasRejoined, setHasRejoined] = useState(formData?.employeeAccidentInfo?.hasRejoined || "no");
 
   useEffect(() => {
-  if (!formData?.employeeAccidentInfo?.aidReasonType) {
-    handleChange("aidReasonType", aidReasonType);
-  }
-  if (!formData?.employeeAccidentInfo?.admitted) {
-    handleChange("admitted", isAdmitted);
-  }
-}, []); 
-
+    if (!formData?.employeeAccidentInfo?.aidReasonType) {
+      handleChange("aidReasonType", aidReasonType);
+    }
+    if (!formData?.employeeAccidentInfo?.admitted) {
+      handleChange("admitted", isAdmitted);
+    }
+  }, []);
 
   const handleOptionChange = (event) => {
     const newValue = event.target.value;
@@ -99,6 +99,11 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
     setIsAdmitted(value);
     handleChange("admitted", value);
   };
+  const handleDisabilityEffect = (event) => {
+    const value = event.target.value;
+    setDisAbilityEffect(value);
+    handleChange("disabilityEffect", value);
+  };
 
   return (
     <Box mt={2}>
@@ -115,7 +120,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
         </Typography>
 
         {(formData?.applicationType !== "disabilityAssistance" || formData?.organizationType === "eis") && (
-          <RadioGroup column value={formData?.employeeAccidentInfo?.aidReasonType|| aidReasonType || "disease"} onChange={handleOptionChange}>
+          <RadioGroup column value={formData?.employeeAccidentInfo?.aidReasonType || aidReasonType || "disease"} onChange={handleOptionChange}>
             <FormControlLabel value="disease" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.employee.aid.reason.info.cronic" />} />
             <FormControlLabel
               value="accident"
@@ -256,19 +261,19 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
               />
               {errors?.accidentType && <FormHelperText error>{errors?.accidentType}</FormHelperText>}
             </Grid>
-            {formData?.employeeAccidentInfo?.accidentType=== "workforce.accident.type.others" &&(
+            {formData?.employeeAccidentInfo?.accidentType === "workforce.accident.type.others" && (
               <Grid item xs={6} className={classes.item}>
-              <TextInput
+                <TextInput
                   id="otherAccidentType"
                   label={"workforce.application.accident.otherAccidentType"}
                   value={formData?.employeeAccidentInfo?.otherAccidentType || ""}
                   required
                   onChange={(v) => handleChange("otherAccidentType", v)}
-                  error={!! errors?.otherAccidentType}
-                  helperText={!! errors?.otherAccidentType}
+                  error={!!errors?.otherAccidentType}
+                  helperText={!!errors?.otherAccidentType}
                 />
-              
-            </Grid>)}
+              </Grid>
+            )}
             <Grid item xs={6} className={classes.item}>
               <TextInput
                 id="accidentPlace"
@@ -290,7 +295,11 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 required
               />
               {/* {errors?.rdmp && <FormHelperText error>{errors?.rdmp}</FormHelperText>} */}
-              {errors?.accidentDate && <FormHelperText error><FormattedMessage id={errors?.accidentDate} /></FormHelperText>}
+              {errors?.accidentDate && (
+                <FormHelperText error>
+                  <FormattedMessage id={errors?.accidentDate} />
+                </FormHelperText>
+              )}
               {/* <CustomDateTimePicker isDateTime value={formData?.employeeAccidentInfo?.accidentDate || ""} label="দুর্ঘটনার সময়" onChange={(v) => handleChange("accidentDate", v)} /> */}
             </Grid>
             <Grid item xs={6} className={classes.item}>
@@ -412,6 +421,68 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                     onChange={(v) => handleChange("hospitalDoctorName", v)}
                   />
                 </Grid>
+              </>
+            )}
+            {formData?.organizationType === "eis" && (
+              <>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label={"workforce.employee.accident.info.breifInfo"}
+                    value={formData?.employeeAccidentInfo?.accidentBriefInfo || ""}
+                    onChange={(v) => handleChange("accidentBriefInfo", v)}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label={"workforce.employee.accident.info.injurySite"}
+                    value={formData?.employeeAccidentInfo?.injurySite || ""}
+                    onChange={(v) => handleChange("injurySite", v)}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label={"workforce.employee.accident.info.injuryDescription"}
+                    value={formData?.employeeAccidentInfo?.injuryDescription || ""}
+                    onChange={(v) => handleChange("injuryDescription", v)}
+                  />
+                </Grid>
+                <Grid item xs={12} className={classes.item}>
+                  <FormControl component="fieldset">
+                    <FormLabel>
+                      <FormattedMessage id="workforce.employee.accident.info.disAbilityEffect" module="workforce" />
+                    </FormLabel>
+                    <RadioGroup row value={disAbilityEffect} onChange={handleDisabilityEffect}>
+                      <FormControlLabel
+                        value="yes"
+                        control={<Radio color="primary" />}
+                        label={<FormattedMessage id="workforce.application.permission.yes" module="workforce" />}
+                      />
+                      <FormControlLabel
+                        value="no"
+                        control={<Radio color="primary" />}
+                        label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
+                {disAbilityEffect === "yes"&&(
+                  <>
+                  <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label={"workforce.employee.accident.info.disabilityPerSchedule"}
+                    value={formData?.employeeAccidentInfo?.disabilityPerSchedule || ""}
+                    onChange={(v) => handleChange("disabilityPerSchedule", v)}
+                  />
+                </Grid>
+                  <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label={"workforce.employee.accident.info.presentInjuryBLASchedule1"}
+                    value={formData?.employeeAccidentInfo?.presentInjuryBLASchedule1 || ""}
+                    onChange={(v) => handleChange("presentInjuryBLASchedule1", v)}
+                  />
+                </Grid>
+                </>
+                )}
               </>
             )}
           </Grid>

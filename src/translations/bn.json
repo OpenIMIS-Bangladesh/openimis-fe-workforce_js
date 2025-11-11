@@ -44,6 +44,17 @@
   "workforce.employee.accident.info.dutyStatus": "ডিউটি ​​স্ট্যাটাস/কর্তব্যের অবস্থা",
   "workforce.employee.accident.info.insideOutsideFactory": "কোন পরিস্থিতিতে দুর্ঘটনা হয়েছে?",
   "workforce.employee.accident.info.reJoiningDate": "সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদানের তারিখ",
+  "workforce.employee.accident.info.breifInfo": "দুর্ঘটনা/ঘটনার সংক্ষিপ্ত বিবরণ",
+  "workforce.employee.accident.info.breifDoctorsPrescriptionInfo": "ডাক্তারের প্রেসক্রিপশন অনুযায়ী দুর্ঘটনা/ঘটনা থেকে প্রাপ্ত আঘাতের সংক্ষিপ্ত বিবরণ",
+  "workforce.employee.accident.info.injurySite": "আঘাতের স্থান/অবস্থান",
+  "workforce.employee.accident.info.injuryDescription": "আঘাতের বিস্তারিত ও বিবরণ",
+  "workforce.employee.accident.info.disAbilityEffect": "পেশা ও দৈনন্দিন জীবনের কার্যক্রমে সীমাবদ্ধতা?",
+  "workforce.employee.accident.info.presentInjuryBLASchedule1": "বর্তমান আঘাত বিএলএ সূচি ১ এর ক্রমিক নং অনুযায়ী",
+  "workforce.employee.accident.info.disabilityPerSchedule": "অক্ষমতা (উপার্জন হ্রাস) % বিএলএ সূচি ১ অনুযায়ী",
+
+
+
+
 
   "workforce.employee.workforce_employer": "নিয়োগকারী কোম্পানির নাম",
   "workforce.employee.workforce_office": "অফিস",
@@ -567,8 +578,8 @@
   "workforce.gender.other": "অন্যান্য",
   "workforce.marital_status.single": "অবিবাহিত",
   "workforce.marital_status.married": "বিবাহিত",
-  "workforce.marital_status.widow": "বিধবা/বিপত্নীক",
-  "workforce.marital_status.widower": "বিধুর",
+  "workforce.marital_status.widow": "বিধবা",
+  "workforce.marital_status.widower": "বিপত্নীক",
   "workforce.marital_status.remarried": "পুনরায় বিবাহিত",
 
   "workforce.account.selection.type": "অ্যাকাউন্টের ধরণ নির্বাচন করুন",

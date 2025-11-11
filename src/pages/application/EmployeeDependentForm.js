@@ -84,22 +84,20 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
   );
 
   const handleAttachmentChange = useCallback(
-  (index, fieldKey, value) => {
-    // Get the current attachments array for this dependent
-    const currentAttachments = dependents?.[index]?.attachments || [];
+    (index, fieldKey, value) => {
+      // Get the current attachments array for this dependent
+      const currentAttachments = dependents?.[index]?.attachments || [];
 
-    // Check if this fieldKey already exists (e.g., re-upload)
-    const updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
-      ? currentAttachments.map((att) =>
-          att.fieldKey === fieldKey ? { ...att, ...value } : att
-        )
-      : [...currentAttachments, { fieldKey, ...value }];
+      // Check if this fieldKey already exists (e.g., re-upload)
+      const updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
+        ? currentAttachments.map((att) => (att.fieldKey === fieldKey ? { ...att, ...value } : att))
+        : [...currentAttachments, { fieldKey, ...value }];
 
-    // Update the dependent with merged attachments
-    handleChange(index, "attachments", updatedAttachments);
-  },
-  [dependents, handleChange]
-);
+      // Update the dependent with merged attachments
+      handleChange(index, "attachments", updatedAttachments);
+    },
+    [dependents, handleChange]
+  );
 
   const onPickerChange = (v, index) => {
     handleChange(index, "relationType", v);
@@ -153,9 +151,9 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                 <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
                   {applicationType === "financialAssistance" ? (
                     <FormattedMessage id="workforce.previewDetails.dependent" module="workforce" />
-                  ) :formdata.organizationType ==="eis"? (
+                  ) : formdata.organizationType === "eis" ? (
                     <FormattedMessage id="workforce.previewDetails.eis.dependent" module="workforce" />
-                  ):(
+                  ) : (
                     <FormattedMessage id="workforce.application.subHeader.dependent" module="workforce" />
                   )}
                 </Typography>
@@ -221,8 +219,10 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     pubRef="workforce.DatePicker"
                     label={getRelationAwareLabel(dependent, "workforce.employee.birthdate")}
                     value={dependent.birthDate || ""}
+                    required
                     onChange={(v) => handleChange(index, "birthDate", v)}
                   />
+                  {errors.rdmp && <FormHelperText error><FormattedMessage id={errors.rdmp} /></FormHelperText>}
                 </Grid>
 
                 <Grid item xs={6}>
@@ -281,7 +281,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                           <FormattedMessage id="workforce.dependent.isDisabled" defaultMessage="Is the dependent disabled?" module="workforce" />
                         </FormLabel>
 
-                        <RadioGroup row value={dependent?.isDisabled || ""} onChange={(e) => handleChange(index, "isDisabled", e.target.value)}>
+                        <RadioGroup row value={dependent?.isDisabled || "no"} onChange={(e) => handleChange(index, "isDisabled", e.target.value)} defaultValue={"no"}>
                           <FormControlLabel
                             value="yes"
                             control={<Radio color="primary" />}
@@ -382,6 +382,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     handleChange={(fieldKey, value) => handleAttachmentChange(index, fieldKey, value)}
                     formData={formdata}
                     selectedApplicationType={applicationType}
+                    isDisabled={dependent?.isDisabled}
                     formStepNo={"employeeDependentInfo"}
                   />
                 </Grid>

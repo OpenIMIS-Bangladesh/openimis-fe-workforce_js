@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApplicationType, applicationId,formStepNo }) => {
+const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApplicationType, applicationId, formStepNo,isDisabled }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -38,8 +38,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
 
   useEffect(() => {
     if (formData.applicationType && formData.organizationType) {
-      
-      if (formData?.applicationForSelf === "yes"&& formData?.organizationType === "cf") {
+      if (formData?.applicationForSelf === "yes" && formData?.organizationType === "cf") {
         return dispatch(
           fetchDocumentType(modulesManager, [
             `orderBy: ["documentTypeNo"]`,
@@ -94,7 +93,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
           );
         }
       } else if (formData?.applicationType === "deadlyGrant") {
-        if (formData?.metadata.deathType === "normalDeath" && formData?.institutionInfo.workerType ==="formal") {
+        if (formData?.metadata.deathType === "normalDeath" && formData?.institutionInfo.workerType === "formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -104,7 +103,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               `formStepNo:"${formStepNo}"`,
             ])
           );
-        }else if(formData?.metadata.deathType === "normalDeath" && formData?.institutionInfo.workerType ==="informal"){
+        } else if (formData?.metadata.deathType === "normalDeath" && formData?.institutionInfo.workerType === "informal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -125,16 +124,16 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             ])
           );
         }
-          // return dispatch(
-          //   fetchDocumentType(modulesManager, [
-          //     `orderBy: ["documentTypeNo"]`,
-          //     `applicationForIn: ["normal_death","normal_death_institutional","normal_death_institutional_on_work"]`,
-          //     `applicationType:"${selectedApplicationType}"`,
-          //     `organizationType:"${formData.organizationType}"`,
-          //     `formStepNo:"${formStepNo}"`,
-          //   ])
-          // );
-      } else if (formData?.applicationType === "medicalDonation" && formData?.applicationForSelf ==="yes"&& formData?.organizationType === "blwf") {
+        // return dispatch(
+        //   fetchDocumentType(modulesManager, [
+        //     `orderBy: ["documentTypeNo"]`,
+        //     `applicationForIn: ["normal_death","normal_death_institutional","normal_death_institutional_on_work"]`,
+        //     `applicationType:"${selectedApplicationType}"`,
+        //     `organizationType:"${formData.organizationType}"`,
+        //     `formStepNo:"${formStepNo}"`,
+        //   ])
+        // );
+      } else if (formData?.applicationType === "medicalDonation" && formData?.applicationForSelf === "yes" && formData?.organizationType === "blwf") {
         if (formData?.institutionInfo?.workerType === "formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
@@ -145,7 +144,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               `formStepNo:"${formStepNo}"`,
             ])
           );
-        }else{
+        } else {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -156,7 +155,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             ])
           );
         }
-      }else if (formData.applicationType === "medicalDonation" && formData.applicationForSelf ==="no"&& formData.organizationType === "blwf") {
+      } else if (formData.applicationType === "medicalDonation" && formData.applicationForSelf === "no" && formData.organizationType === "blwf") {
         if (formData?.institutionInfo?.workerType === "formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
@@ -167,7 +166,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               `formStepNo:"${formStepNo}"`,
             ])
           );
-        }else{
+        } else {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -189,7 +188,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               `formStepNo:"${formStepNo}"`,
             ])
           );
-        }else{
+        } else {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -200,7 +199,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             ])
           );
         }
-      }else if (formData.applicationType === "maternityGrant" && formData.organizationType === "blwf" && formData.applicationForSelf === "no") {
+      } else if (formData.applicationType === "maternityGrant" && formData.organizationType === "blwf" && formData.applicationForSelf === "no") {
         if (formData?.institutionInfo?.workerType === "formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
@@ -211,7 +210,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               `formStepNo:"${formStepNo}"`,
             ])
           );
-        }else{
+        } else {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -222,7 +221,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             ])
           );
         }
-      }else if (formData.applicationType === "educationGrant" && formData.organizationType === "blwf") {
+      } else if (formData.applicationType === "educationGrant" && formData.organizationType === "blwf") {
         if (formData?.institutionInfo?.workerType === "formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
@@ -233,7 +232,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               `formStepNo:"${formStepNo}"`,
             ])
           );
-        }else{
+        } else {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,
@@ -256,7 +255,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
         );
       }
     }
-  }, [selectedApplicationType,formData?.organizationType,formStepNo,formData?.institutionInfo?.workerType,formData?.metadata?.disabilityType]);
+  }, [selectedApplicationType, formData?.organizationType, formStepNo, formData?.institutionInfo?.workerType, formData?.metadata?.disabilityType,isDisabled]);
 
   const isLoading = useSelector((state) => state.workforce[`fetchingDocumentType`]);
   const data = useSelector((state) => state.workforce[`documentType`] ?? []);
@@ -298,41 +297,47 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
               <FormattedMessage id="workforce.application.header.document" module="workforce" />
             </Box>
             <Grid container className={classes.item} spacing={2}>
-              {data.map((document, index) => (
-                <Grid container spacing={2} alignItems="center" style={{ marginBottom: "12px", border: "1px solid #006273" }} key={document.fieldId}>
-                  <Grid item xs={5}>
-                    <Typography>
-                      {index + 1}. {document.nameBn}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    { (formData?.applicationType ==="deadlyGrant"||formData?.applicationType === "financialAssistance")?(
-                      <FileUploader
-                      fieldKey={document.fieldId}
-                      onFileChange={handleChange}
-                      applicationId={applicationId}
-                      documentType={document.documentType}
-                      documentProp={document}
-                      uploadedBy={formStepNo==="employeeDependentInfo"?"dependent":"applicant"}
-                    />
-                    ) :(
-                    <FileUploader
-                      fieldKey={document.fieldId}
-                      onFileChange={handleFileChange}
-                      applicationId={applicationId}
-                      documentType={document.documentType}
-                      documentProp={document}
-                      uploadedBy={formStepNo==="employeeDependentInfo"?"dependent":"applicant"}
-                    />
+              {data.map((document, index) => {
+                console.log({isDisabled})
+                if (document?.documentType === "disability_certificate" && (isDisabled ==="no" || isDisabled === undefined)) {
+                  return null;
+                }
+                return (
+                  <Grid container spacing={2} alignItems="center" style={{ marginBottom: "12px", border: "1px solid #006273" }} key={document.fieldId}>
+                    <Grid item xs={5}>
+                      <Typography>
+                        {index + 1}. {document.nameBn}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                      {formData?.applicationType === "deadlyGrant" || formData?.applicationType === "financialAssistance" ? (
+                        <FileUploader
+                          fieldKey={document.fieldId}
+                          onFileChange={handleChange}
+                          applicationId={applicationId}
+                          documentType={document.documentType}
+                          documentProp={document}
+                          uploadedBy={formStepNo === "employeeDependentInfo" ? "dependent" : "applicant"}
+                        />
+                      ) : (
+                        <FileUploader
+                          fieldKey={document.fieldId}
+                          onFileChange={handleFileChange}
+                          applicationId={applicationId}
+                          documentType={document.documentType}
+                          documentProp={document}
+                          uploadedBy={formStepNo === "employeeDependentInfo" ? "dependent" : "applicant"}
+                        />
+                      )}
+                    </Grid>
+                    {uploadedFiles.find((item) => item.fieldKey === document.fieldId && item.files.length > 0) && (
+                      <Grid item xs={1}>
+                        <CheckCircleIcon style={{ color: "green" }} />
+                      </Grid>
                     )}
                   </Grid>
-                  {uploadedFiles.find((item) => item.fieldKey === document.fieldId && item.files.length > 0) && (
-                    <Grid item xs={1}>
-                      <CheckCircleIcon style={{ color: "green" }} />
-                    </Grid>
-                  )}
-                </Grid>
-              ))}
+                );
+              })}
             </Grid>
             <Divider />
           </Paper>

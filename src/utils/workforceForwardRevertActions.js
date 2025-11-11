@@ -72,20 +72,20 @@ export const forwardToAssociation = async ({
             "create workforce movement"
           )
         );
-        if(isEisPath())
-        {
-          console.log("Workforce Employee Dependent Eligibility updated for application ID:", decodeId);
-          await dispatch(updateWorkforceEmployeeDependentEligibility(decodeId));
-        }
+        // if(isEisPath())
+        // {
+        //   console.log("Workforce Employee Dependent Eligibility updated for application ID:", decodeId);
+        //   await dispatch(updateWorkforceEmployeeDependentEligibility(decodeId));
+        // }
       } else {
         // Otherwise just call directly
         await updateApplication(updateApplicationData, "update workforce application");
         await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-        if(isEisPath())
-        {
-          console.log("Workforce Employee Dependent Eligibility updated for application ID:", decodeId);
-          await updateWorkforceEmployeeDependentEligibility(decodeId);
-        }
+        // if(isEisPath())
+        // {
+        //   console.log("Workforce Employee Dependent Eligibility updated for application ID:", decodeId);
+        //   await updateWorkforceEmployeeDependentEligibility(decodeId);
+        // }
       }
     }
 
@@ -187,10 +187,10 @@ export async function handleBulkSelectedByAssociationLogic({
               createApplicationMovementData,
               "create workforce movement"
             );
-            if(isEisPath())
-            {
-              await updateWorkforceEmployeeDependentEligibility(decodedId);
-            }
+            // if(isEisPath())
+            // {
+            //   await updateWorkforceEmployeeDependentEligibility(decodedId);
+            // }
           })
         );
 

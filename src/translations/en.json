@@ -322,6 +322,14 @@
     "workforce.employee.accident.info.dutyStatus": "Duty Status",
     "workforce.employee.accident.info.insideOutsideFactory": "Under what circumstances did the accident occur?",
     "workforce.employee.accident.info.reJoiningDate": "Re-Joining Date",
+    "workforce.employee.accident.info.breifInfo": "Brief Description of Accident/Incident",
+    "workforce.employee.accident.info.breifDoctorsPrescriptionInfo": "Brief Description of the Injury from the Accident/Incidents as per Doctor’s Prescription",
+    "workforce.employee.accident.info.injurySite": "Injury Site/Location",
+  "workforce.employee.accident.info.injuryDescription": "Injury detains and Description",
+  "workforce.employee.accident.info.disAbilityEffect": "Limitations in Occupation and Activities of Daily Living?",
+  "workforce.employee.accident.info.presentInjuryBLASchedule1": "Present Injury Matching BLA Schedule 1 Serial no",
+  "workforce.employee.accident.info.disabilityPerSchedule": "Disability (Loss of Earning) % as Per BLA Schedule",
+
     "workforce.tracking.notfound": "No applications found",
 
     "workforce.employee.accident.info.application.injuryType": "Injury Type",
