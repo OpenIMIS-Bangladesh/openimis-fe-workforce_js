@@ -103,13 +103,6 @@ const SidebarMenu = [
     ),
     icon: <AddCircleOutlineIcon />,
   },
-  // {
-  //   id: "newEisApplications",
-  //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.new.eis.application" />
-  //   ),
-  //   icon: <AddCircleOutlineIcon />,
-  // },
   {
     id: "revertedApplication",
     text: (

@@ -476,13 +476,6 @@ const ApplicationStatus = () => {
   );
 };
 
-
-const checkedApplications = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.new.application" />
-  </Typography>
-);
-
 const RevertApplication = () => {
   const classes = useStyles()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
@@ -571,9 +564,6 @@ const SectionTwoAdminDashboardPage = () => {
  useEffect(() => {
        return dispatch(fetchSummaryApplications(modulesManager,['sectionTypeIn: ["section_two"]','organizationType:"cf"']));
      }, []);
- //  useEffect(() => {
- //       return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"', 'sectionTypeIn: ["section_two"]']));
- //     }, []);
    const data = useSelector(
        (state) => state.workforce[`applicationsSummary`] ?? []
      );
@@ -586,8 +576,6 @@ const SectionTwoAdminDashboardPage = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
-      // case "revertedToApplication":
-      //   return <RevertApplication />;
       case "sentForVerificationApplications":
         return <SentForVerificationApplications />;
       case "verifiedApplications":

@@ -124,13 +124,6 @@ const SidebarMenu = [
     ),
     icon: <AssignmentReturnedIcon />,
   },
-  // {
-  //   id: "revertedToApplication",
-  //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.application.returned" />
-  //   ),
-  //   icon: <RestorePageIcon  />,
-  // },
   {
     id: "sentForVerificationApplications",
     text: (
@@ -196,15 +189,6 @@ const SidebarMenu = [
     ),
     icon: <AssignmentIcon />,
   },
-
-  // {
-  //     id: "beneficiaryReportSheet",
-  //     text: (
-  //       <FormattedMessage module="workforce" id="workforce.employee.application.beneficiaryReportSheet" />
-  //     ),
-  //     icon: <HourglassFullTwoToneIcon  />,
-  // },
-
    
 ];
 
@@ -497,12 +481,6 @@ const ApplicationStatus = () => {
 };
 
 
-const checkedApplications = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.new.application" />
-  </Typography>
-);
-
 const RevertApplication = () => {
   const classes = useStyles()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
@@ -607,8 +585,6 @@ const BlwfSectionAdminDashboard = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
-      // case "revertedToApplication":
-      //   return <RevertApplication />;
       case "sentForVerificationApplications":
         return <SentForVerificationApplications />;
       case "verifiedApplications":

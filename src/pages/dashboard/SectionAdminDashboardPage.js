@@ -126,13 +126,6 @@ const SidebarMenu = [
     ),
     icon: <AssignmentReturnedIcon />,
   },
-  // {
-  //   id: "revertedToApplication",
-  //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.application.returned" />
-  //   ),
-  //   icon: <RestorePageIcon  />,
-  // },
   {
     id: "sentForVerificationApplications",
     text: (
@@ -197,17 +190,7 @@ const SidebarMenu = [
       <FormattedMessage module="workforce" id="workforce.application.status" />
     ),
     icon: <AssignmentIcon />,
-  },
-
-  // {
-  //     id: "beneficiaryReportSheet",
-  //     text: (
-  //       <FormattedMessage module="workforce" id="workforce.employee.application.beneficiaryReportSheet" />
-  //     ),
-  //     icon: <HourglassFullTwoToneIcon  />,
-  // },
-
-   
+  },  
 ];
 
 // ----------- Components to Render in Main Content -----------
@@ -643,9 +626,6 @@ const SectionAdminDashboard = () => {
  useEffect(() => {
       return dispatch(fetchSummaryApplications(modulesManager,['sectionTypeIn: ["section_one"]','organizationType:"cf"']));
     }, []);
-//  useEffect(() => {
-//       return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"', 'sectionTypeIn: ["section_one"]']));
-//     }, []);
   const data = useSelector(
       (state) => state.workforce[`applicationsSummary`] ?? []
     );
@@ -660,8 +640,6 @@ const SectionAdminDashboard = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
-      // case "revertedToApplication":
-      //   return <RevertApplication />;
       case "sentForVerificationApplications":
         return <SentForVerificationApplications />;
       case "verifiedApplications":

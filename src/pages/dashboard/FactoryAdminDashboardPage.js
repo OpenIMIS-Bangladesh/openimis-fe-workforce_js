@@ -38,7 +38,15 @@ import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import EisMultiStepApplyForm from "../application/EisMultiStepApplyForm";
-import { isEisPath } from "../../utils/utils";
+import { isEisPath,conditionalEnToBn } from "../../utils/utils";
+import {
+  STATUS_MAP_BN,
+  STATUS_MAP_EN,
+  WORKFORCE_USER_TYPE_MAP_EN,
+  WORKFORCE_USER_TYPE_MAP_BN,
+  ORGANIZATION_TYPE_NAME_EN,
+  ORGANIZATION_TYPE_NAME_BN,
+} from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -208,6 +216,8 @@ const ApplicationStatus = () => {
   const [trackingNumber, setTrackingNumber] = useState("");
   const [applicationData, setApplicationData] = useState(null);
   const [showResult, setShowResult] = useState(false);
+  const reduxState = useSelector((state) => state);
+  const locale = reduxState?.core?.user?.i_user?.language || 'en';
 
   const handleApplicationSearch = () => {
     const filters = [`trackingNumber: "${trackingNumber}"`];
@@ -243,49 +253,62 @@ const ApplicationStatus = () => {
             </Button>
           </Grid>
         </Grid>
-        {showResult &&
-          (applicationData ? (
-            <Box mt={4} p={3} border={1} borderColor="#ccc" borderRadius={2} textAlign="left" maxWidth={800} margin="32px auto 0">
+        {showResult && (
+          applicationData ? (
+            <Box
+              mt={4}
+              p={3}
+              border={1}
+              borderColor="#ccc"
+              borderRadius={2}
+              textAlign="left"
+              maxWidth={800}
+              margin="32px auto 0"
+            >
               <Typography variant="h6" gutterBottom style={{ textAlign: "center" }}>
-                <FormattedMessage module="workforce" id="workforce.tracking.summary" defaultMessage="ট্র্যাকিং সারাংশ" />
+                <FormattedMessage
+                  module="workforce"
+                  id="workforce.tracking.summary"
+                  defaultMessage="ট্র্যাকিং সারাংশ"
+                />
               </Typography>
 
               <Grid container style={{ marginTop: 16 }} spacing={2}>
                 <Grid item xs={6}>
                   <Typography>
-                    <strong>
-                      <FormattedMessage module="workforce" id="workforce.application.tracking.number" />:
-                    </strong>{" "}
-                    {applicationData.trackingNumber}
+                    <strong><FormattedMessage module="workforce" id="workforce.application.tracking.number" />:</strong> {applicationData.trackingNumber}
                   </Typography>
                   <Typography>
-                    <strong>
-                      <FormattedMessage module="workforce" id="workforce.employee.application.currentStatus" />:
-                    </strong>{" "}
-                    {applicationData.status}
+                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.currentStatus" />:
+                    </strong>{(locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN)[applicationData?.status] 
+                    || applicationData?.status}
                   </Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <Typography>
-                    <strong>
-                      <FormattedMessage module="workforce" id="workforce.employee.application.applicationType" />:
-                    </strong>{" "}
-                    {applicationData.applicationType}
+                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.applicationType" />:
+                    </strong> {locale === "en" ? applicationData?.grantMoney?.applicationTypeNameEn : applicationData?.grantMoney?.applicationTypeNameBn}
                   </Typography>
                   <Typography>
-                    <strong>
-                      <FormattedMessage module="workforce" id="workforce.employee.application.applicationDate" />:
-                    </strong>{" "}
-                    {applicationData.dateCreated || "-"}
+                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.applicationDate" />:
+                    </strong> {applicationData?.dateCreated
+                            ? conditionalEnToBn(applicationData?.dateCreated?.split("T")[0], locale)
+                            : "-"
+                        }
                   </Typography>
                 </Grid>
               </Grid>
             </Box>
           ) : (
             <Typography color="error" style={{ marginTop: 32 }}>
-              <FormattedMessage module="workforce" id="workforce.tracking.notfound" defaultMessage="কোনো আবেদন পাওয়া যায়নি।" />
+              <FormattedMessage
+                module="workforce"
+                id="workforce.tracking.notfound"
+                defaultMessage="কোনো আবেদন পাওয়া যায়নি।"
+              />
             </Typography>
-          ))}
+          )
+        )}
       </CardContent>
     </Card>
   );
@@ -491,11 +514,6 @@ const ForwardedApplications = () => {
   );
 };
 
-const Others = () => (
-  <Typography variant="h5">
-    <FormattedMessage module="workforce" id="workforce.others" />
-  </Typography>
-);
 
 // ------------------------------------------------------------
 

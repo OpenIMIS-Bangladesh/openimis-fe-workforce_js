@@ -388,11 +388,6 @@ const Dashboard = () =>{
     application_status_count.approved = application_status_count_data?.approved?.totalCount;
   }
 
-
-
-
-
-
   const newCard = {
     height: "100%",
     borderRadius: "20px",

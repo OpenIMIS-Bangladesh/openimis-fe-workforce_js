@@ -123,13 +123,6 @@ const SidebarMenu = [
     ),
     icon: <AssignmentReturnedIcon />,
   },
-  // {
-  //   id: "revertedToApplication",
-  //   text: (
-  //     <FormattedMessage module="workforce" id="workforce.application.returned" />
-  //   ),
-  //   icon: <RestorePageIcon  />,
-  // },
   {
     id: "sentForVerificationApplications",
     text: (
@@ -196,16 +189,6 @@ const SidebarMenu = [
     ),
     icon: <AssignmentIcon />,
   },
-
-  // {
-  //     id: "beneficiaryReportSheet",
-  //     text: (
-  //       <FormattedMessage module="workforce" id="workforce.employee.application.beneficiaryReportSheet" />
-  //     ),
-  //     icon: <HourglassFullTwoToneIcon  />,
-  // },
-
-   
 ];
 
 // ----------- Components to Render in Main Content -----------
@@ -443,7 +426,6 @@ const VerifiedApplications = () =>{
 
 
 const BeneficiaryReportSheet = () => {
-  // historyPush("/workforce/reports/beneficiary-report");
   return (
     <div>
       <Typography variant="h5" gutterBottom>
@@ -630,8 +612,6 @@ const EisCoordinatorDashboardPage = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
-      // case "revertedToApplication":
-      //   return <RevertApplication />;
       case "sentForVerificationApplications":
         return <SentForVerificationApplications />;
       case "verifiedApplications":
