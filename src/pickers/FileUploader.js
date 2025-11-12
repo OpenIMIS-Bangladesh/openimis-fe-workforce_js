@@ -74,6 +74,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
   const [webcamOpen, setWebcamOpen] = useState(false);
   const webcamRef = useRef(null);
   const [files, setFiles] = useState([]);
+  const [uploadFilePaths,setUploadedFilePaths] = useState(null)
   const dispatch = useDispatch();
 
   // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
@@ -82,8 +83,6 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
     const formData = new FormData();
     formData.append("file", file); // actual file content
     formData.append("name", file.name); // optional field if backend expects this
-
-    const jwtToken = localStorage.getItem("token"); // Adjust this as needed
 
     try {
       const response = await fetch("/api/workforce/document/upload", {
@@ -98,21 +97,22 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
       }
       const responseData = await response.json();
       console.log(`Upload successful for ${file.name}:`, responseData);
+      setUploadedFilePaths(responseData)
       const createDocumentData = {
         path: responseData.file_path,
         url: responseData.file_url,
-        workforceDocumentTypeId: documentProp?.id? decodeId(documentProp.id) :"",
+        workforceDocumentTypeId: documentProp?.id ? decodeId(documentProp.id) : "",
         // workforceApplicationId: safeApplicationId(applicationId),
         documentType: documentType,
         holder: "57",
-        holderType:uploadedBy|| "applicant",
+        holderType: uploadedBy || "applicant",
       };
       if (uploadedBy === "dependent") {
         dispatch({
           type: "SET_UPLOAD_DEPENDENT_FILE_DATA",
-          payload: {...createDocumentData,holderType:"applicant"},
+          payload: { ...createDocumentData, holderType: "applicant" },
         });
-      }else{
+      } else {
         dispatch({
           type: "SET_UPLOAD_FILE_DATA",
           payload: createDocumentData,
@@ -127,6 +127,8 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
           )
         );
       }
+
+      return responseData
     } catch (error) {
       console.error(`Upload error for ${file.name}:`, error);
     }
@@ -147,18 +149,33 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
   };
 
   const onDrop = useCallback(
-    async (acceptedFiles) => {
-      const newFiles = [...files, ...acceptedFiles];
-      setFiles(newFiles);
-      onFileChange(fieldKey, newFiles);
+  async (acceptedFiles) => {
+    const newFiles = [...files, ...acceptedFiles];
+    setFiles(newFiles);
 
-      // Upload each file one-by-one
-      for (const file of acceptedFiles) {
-        await uploadFileToApi(file);
-      }
-    },
-    [files, fieldKey, onFileChange]
-  );
+    // Upload each file and collect API response
+    const uploadedResponses = [];
+    for (const file of acceptedFiles) {
+      const res = await uploadFileToApi(file);
+      if (res) uploadedResponses.push(res);
+    }
+
+    // 🔹 Combine file info with upload response
+    const attachments = newFiles.map((file, i) => ({
+      file,
+      uploadInfo: uploadedResponses[i] || null, // contains file_path, file_url, etc.
+    }));
+
+    // 🔹 Pass it upward
+    onFileChange(fieldKey, {
+      files: attachments,
+      documentType,
+      documentPropId: documentProp?.id,
+    });
+  },
+  [files, fieldKey, onFileChange, documentType, documentProp]
+);
+
 
   const removeFile = (fileName) => {
     const updatedFiles = files.filter((file) => file.name !== fileName);
@@ -179,7 +196,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
     },
   });
 
-  console.log("upload files", applicationId);
+  console.log("upload files", files);
 
   return (
     <div>

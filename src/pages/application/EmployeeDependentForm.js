@@ -83,21 +83,37 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
     [applicationType, formatMessage]
   );
 
-  const handleAttachmentChange = useCallback(
-    (index, fieldKey, value) => {
-      // Get the current attachments array for this dependent
-      const currentAttachments = dependents?.[index]?.attachments || [];
+ const handleAttachmentChange = useCallback(
+  (index, fieldKey, value) => {
+    const currentAttachments = dependents?.[index]?.attachments || [];
 
-      // Check if this fieldKey already exists (e.g., re-upload)
-      const updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
-        ? currentAttachments.map((att) => (att.fieldKey === fieldKey ? { ...att, ...value } : att))
-        : [...currentAttachments, { fieldKey, ...value }];
+    const updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
+      ? currentAttachments.map((att) =>
+          att.fieldKey === fieldKey
+            ? {
+                ...att,
+                fieldKey,
+                files: value.files, // [{ file, uploadInfo }]
+                documentType: value.documentType,
+                documentPropId: value.documentPropId,
+              }
+            : att
+        )
+      : [
+          ...currentAttachments,
+          {
+            fieldKey,
+            files: value.files, // [{ file, uploadInfo }]
+            documentType: value.documentType,
+            documentPropId: value.documentPropId,
+          },
+        ];
 
-      // Update the dependent with merged attachments
-      handleChange(index, "attachments", updatedAttachments);
-    },
-    [dependents, handleChange]
-  );
+    handleChange(index, "attachments", updatedAttachments);
+  },
+  [dependents, handleChange]
+);
+
 
   const onPickerChange = (v, index) => {
     handleChange(index, "relationType", v);
@@ -222,7 +238,11 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     required
                     onChange={(v) => handleChange(index, "birthDate", v)}
                   />
-                  {errors.rdmp && <FormHelperText error><FormattedMessage id={errors.rdmp} /></FormHelperText>}
+                  {errors.rdmp && (
+                    <FormHelperText error>
+                      <FormattedMessage id={errors.rdmp} />
+                    </FormHelperText>
+                  )}
                 </Grid>
 
                 <Grid item xs={6}>
@@ -281,7 +301,12 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                           <FormattedMessage id="workforce.dependent.isDisabled" defaultMessage="Is the dependent disabled?" module="workforce" />
                         </FormLabel>
 
-                        <RadioGroup row value={dependent?.isDisabled || "no"} onChange={(e) => handleChange(index, "isDisabled", e.target.value)} defaultValue={"no"}>
+                        <RadioGroup
+                          row
+                          value={dependent?.isDisabled || "no"}
+                          onChange={(e) => handleChange(index, "isDisabled", e.target.value)}
+                          defaultValue={"no"}
+                        >
                           <FormControlLabel
                             value="yes"
                             control={<Radio color="primary" />}
