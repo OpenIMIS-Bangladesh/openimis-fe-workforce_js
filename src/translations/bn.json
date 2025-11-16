@@ -283,6 +283,15 @@
   "workforce.employee.account.info.accountHolderName": "অ্যাকাউন্ট হোল্ডারের নাম",
   "workforce.employee.account.info.accountNumber": "অ্যাকাউন্ট নম্বর",
   "workforce.employee.account.info.mobileNumber": "মোবাইল নম্বর",
+  "workforce.employee.whoseAccount": "আপনি কার অ্যাকাউন্ট বেছে নিতে চান?",
+  "workforce.employee.account.self": "নিজের",
+  "workforce.employee.account.dependent": "অন্যান্য নির্ভর্শীল ব্যক্তিবর্গ হতে নির্বাচন করুন",
+  "workforce.employee.account.other": "অন্যের একাউন্ট",
+  "workforce.employee.account.info.relationshipWithAccountHolder":"অ্যাকাউন্টধারীর সাথে নির্ভরশীলের সম্পর্ক",
+  "workforce.employee.account.info.accountHolderNid":"অ্যাকাউন্টধারীর জাতীয় পরিচয়পত্র",
+  "workforce.employee.account.info.accountHolderDob":"অ্যাকাউন্টধারীর জন্মতারিখ",
+
+
 
   "workforce.application.steps.deademployee.applicant.Details": "মৃত শ্রমিকের পক্ষে আবেদনকারীর তথ্য",
   "workforce.application.steps.employeeDetails": "শ্রমিকের বিবরণ",

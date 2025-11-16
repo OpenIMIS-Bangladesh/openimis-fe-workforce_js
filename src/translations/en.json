@@ -352,6 +352,14 @@
     "workforce.employee.account.info.accountNumber": "Account Number",
     "workforce.employee.account.info.mobileNumber": "Mobile Number",
     "workforce.employee.account.info.status": "Status",
+  "workforce.employee.whoseAccount": "Whose Account you want to choose?",
+  "workforce.employee.account.self": "Self",
+  "workforce.employee.account.dependent": "Select another dependent's bank account",
+  "workforce.employee.account.other": "Others Account",
+  "workforce.employee.account.info.relationshipWithAccountHolder":"Relationship with account holder",
+  "workforce.employee.account.info.accountHolderNid":"Account Holder NID",
+  "workforce.employee.account.info.accountHolderDob":"Account Holder Date of Birth",
+
 
     "workforce.employee.services.employee.id": "Employee ID",
     "workforce.employee.services.employee.name": "Employee Name",
