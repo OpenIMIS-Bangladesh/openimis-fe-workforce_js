@@ -391,7 +391,7 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
             applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
           };
           dispatch(updateApplication(updateApplicationData, `update workforce application`)).then((res) => setIsDependentSaved(true));
-          await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeApplicationId(applicationId[0]?.id)}"`])).then((res) => {
+          await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(applicationId[0]?.id)}"`])).then((res) => {
             const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
 
             console.log({ dependentId });
