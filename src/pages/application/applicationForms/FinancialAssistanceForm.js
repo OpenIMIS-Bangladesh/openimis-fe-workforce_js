@@ -31,6 +31,7 @@ import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
+import EmployeeDeathAccountInfoForm from "../EmployeeDeathAccountInfoForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -394,6 +395,7 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
             const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
 
             console.log({ dependentId });
+            console.log('dependent document',safeApplicationId(applicationId[0]?.id));
             if (uploadDependentFile) {
               uploadDependentFile.map((file, index) => {
                 dispatch(
@@ -632,7 +634,25 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
                 {!isDependentSaved ? (
                   <b>loading ...</b>
                 ) : (
-                  <EmployeeAccountInfoForm
+                  // <EmployeeAccountInfoForm
+                  //   formdata={formData}
+                  //   accounts={formData.employeeBankInfo}
+                  //   handleChange={(index, key, value) => handleArrayFieldChange("employeeBankInfo", index, key, value)}
+                  //   addItem={() =>
+                  //     addArrayFieldItem("employeeBankInfo", {
+                  //       accountHolderName: "",
+                  //       bankName: "",
+                  //       accountNumber: "",
+                  //       branchName: "",
+                  //     })
+                  //   }
+                  //   removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
+                  //   expanded={expanded}
+                  //   setExpanded={setExpanded}
+                  //   applicationId={applicationId}
+                  //   errors={errors}
+                  // />
+                  <EmployeeDeathAccountInfoForm
                     formdata={formData}
                     accounts={formData.employeeBankInfo}
                     handleChange={(index, key, value) => handleArrayFieldChange("employeeBankInfo", index, key, value)}
@@ -650,6 +670,7 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
                     applicationId={applicationId}
                     errors={errors}
                   />
+                
                 )}
               </>
             ) : null

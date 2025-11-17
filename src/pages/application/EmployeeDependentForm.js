@@ -165,7 +165,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
             <Grid container spacing={0} alignItems="center">
               <Grid item xs={12}>
                 <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                  {applicationType === "financialAssistance" ? (
+                  {(applicationType === "financialAssistance" && formdata?.organizationType!=="eis") ? (
                     <FormattedMessage id="workforce.previewDetails.dependent" module="workforce" />
                   ) : formdata.organizationType === "eis" ? (
                     <FormattedMessage id="workforce.previewDetails.eis.dependent" module="workforce" />
