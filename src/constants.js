@@ -213,9 +213,11 @@ export const STATUS_MAP_EN = {
   meeting_created: "Meeting Created",
   forward_to_eis_advisor: "Forward to Eis Advisor",
   amended_application: "Amended Application",
-  approved_by_committee: "approved by committee",
-  resubmitted_application: "resubmitted application",
-  approved_by_eis_advisor: "approved by eis advisor",
+  approved_by_committee: "Approved by Committee",
+  resubmitted_application: "Resubmitted Application",
+  approved_by_eis_advisor: "Approved by Eis Advisor",
+  forward_to_eis_coordinator: "Forward to Eis Coordinator",
+
 
 };
 

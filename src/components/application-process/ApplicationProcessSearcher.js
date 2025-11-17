@@ -28,7 +28,7 @@ import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
 import ConfirmModal from "./modals/ConfirmModal";
 import { WORKFORCE_STATUS } from "../../constants";
-import { updateApplication, createApplicationMovement, updateApplicationSummary } from "../../actions";
+import { updateApplication, createApplicationMovement, updateApplicationSummary, eisPaymentProcess } from "../../actions";
 import {
   itemAdminFormatters,
   itemFormattersApplicant,
@@ -1812,6 +1812,53 @@ class ApplicationProcessSearcher extends Component {
       }
     });
   };
+  handlePaymentProcessForEis = () => {
+    const { selectedApplicationIds } = this.state;
+    const { loggedInUserId } = this.props;
+    const userType = getUserTypeFromRights(this.props.userRights);
+    if (selectedApplicationIds.length === 0) {
+      alert("Please select at least one application.");
+      return;
+    }
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.forward.message.toDoctor",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          const { eisPaymentProcess } = this.props;
+          try {
+            await Promise.all(
+              selectedApplicationIds.map(async (selectedItem) => {
+                const decodedId = decodeId(selectedItem?.id);
+                const updateApplicationData = {
+                  id: decodedId,
+                };
+          
+                await eisPaymentProcess(updateApplicationData, "Payment Process");
+              })
+            );
+            this.setState({
+              serverResponse: {
+                status: "SUCCESS",
+                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+              },
+            });
+          } catch (error) {
+            console.error("Bulk selection failed:", error);
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+              },
+            });
+          } finally {
+            // window.location.reload();
+          }
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+      }
+    });
+  };
   handleBulkSelectedbyChecker = () => {
     const {
     selectedApplicationIds,
@@ -2492,6 +2539,14 @@ class ApplicationProcessSearcher extends Component {
                         id="workforce.employee.application.disburse"
                       />
                     </Button>
+                    <Button variant="contained"
+                          color="primary"
+                          onClick={this.handlePaymentProcessForEis}>
+                        <FormattedMessage
+                          module="workforce"
+                          id="workforce.employee.application.paymentProcess"
+                        />
+                    </Button>
                   </>
                 )  : (
                 <>
@@ -3019,6 +3074,7 @@ const mapDispatchToProps = (dispatch) =>
       fetchOrganizationEmployee,
       fetchFactoryEmployee,
       fetchWorkforceDocument,
+      eisPaymentProcess,
       journalize,
       coreConfirm,
     },
