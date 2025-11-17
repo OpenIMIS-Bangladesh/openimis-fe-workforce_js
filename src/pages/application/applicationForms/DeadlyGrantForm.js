@@ -387,7 +387,7 @@ const DeadlyGrantForm = ({ organizationType, selectedApplicationType, parsedAppl
                 dispatch(
                   createWorkforceDocument(
                     // { ...file, workforceApplicationId: safeApplicationId(applicationId[0]?.id), workforceDependentId: safeDecodeId(dependentId) },
-                    { ...file, workforceApplicationId: safeApplicationId(applicationId[0]?.id)},
+                    { ...file, workforceApplicationId: safeDecodeId(applicationId[0]?.id)},
                     `Created workforce document `
                   )
                 );

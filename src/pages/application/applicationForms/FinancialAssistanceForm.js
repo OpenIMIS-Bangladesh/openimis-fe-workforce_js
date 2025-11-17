@@ -395,13 +395,13 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
             const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
 
             console.log({ dependentId });
-            console.log('dependent document',safeApplicationId(applicationId[0]?.id));
+            console.log('dependent document',safeDecodeId(applicationId[0]?.id));
             if (uploadDependentFile) {
               uploadDependentFile.map((file, index) => {
                 dispatch(
                   createWorkforceDocument(
                     // { ...file, workforceApplicationId: safeApplicationId(applicationId[0]?.id), workforceDependentId: safeDecodeId(dependentId) },
-                    { ...file, workforceApplicationId: safeApplicationId(applicationId[0]?.id)},
+                    { ...file, workforceApplicationId: safeDecodeId(applicationId[0]?.id)},
                     `Created workforce document `
                   )
                 );
