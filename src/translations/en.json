@@ -253,7 +253,7 @@
     "workforce.employee.application.permanent_address": "Permanent Address",
     "workforce.employee.application.status": "Status",
     "workforce.employee.application.revertNote": "Revert Note",
-  "workforce.employee.application.revert": "Revert",
+    "workforce.employee.application.revert": "Revert",
     "workforce.employee.application.applicationDate": "Application Date",
     "workforce.employee.application.currentStatus": "Current Status",
     "workforce.employee.application.assignedBy": "Assigned By",
@@ -284,6 +284,10 @@
     "workforce.employee.application.receivedDate":"Received Date",
     "workforce.employee.application.sentDate":"Sent Date",
     "workforce.employee.application.advisorApproveMeetingSheet": "Special Advisor Approve Meeting Sheet",
+    "workforce.employee.application.sentMeetingSheet": "Sent Application",
+    "workforce.employee.application.paymentProcess": "Payment Process",
+    "workforce.application.verified": "Verified Application",
+    "workforce.application.sentforverification":"Application Sent for Verification",
 
 
     "workforce.banks.nameEn": "Bank Name En",
