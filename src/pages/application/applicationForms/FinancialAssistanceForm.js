@@ -255,8 +255,11 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
         (nextStep === 1 && !isNotFutureDate(formData?.metadata?.deathDate))
       ) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
-        if ((nextStep === 1 || nextStep===3) &&(!isNotFutureDate(formData?.workforceEmployee?.deathDate)||!isNotFutureDate(formData?.metadata?.deathDate))) {
-                   fakeErrors = { ...fakeErrors, deathDate: "core.error.deathTime" };
+        if (
+          (nextStep === 1 || nextStep === 3) &&
+          (!isNotFutureDate(formData?.workforceEmployee?.deathDate) || !isNotFutureDate(formData?.metadata?.deathDate))
+        ) {
+          fakeErrors = { ...fakeErrors, deathDate: "core.error.deathTime" };
         }
         setErrors(fakeErrors);
         console.log({ fakeErrors });
@@ -380,7 +383,9 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
             employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
-
+            employeeApplicantInfo:
+              JSON.stringify(formData.workforceApplicant).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") ||
+              JSON.stringify(parsedApplicationData?.workforceApplicant).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
             employeeDependentInfo:
               JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") ||
               JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
@@ -395,13 +400,13 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
             const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
 
             console.log({ dependentId });
-            console.log('dependent document',safeDecodeId(applicationId[0]?.id));
+            console.log("dependent document", safeDecodeId(applicationId[0]?.id));
             if (uploadDependentFile) {
               uploadDependentFile.map((file, index) => {
                 dispatch(
                   createWorkforceDocument(
                     // { ...file, workforceApplicationId: safeApplicationId(applicationId[0]?.id), workforceDependentId: safeDecodeId(dependentId) },
-                    { ...file, workforceApplicationId: safeDecodeId(applicationId[0]?.id)},
+                    { ...file, workforceApplicationId: safeDecodeId(applicationId[0]?.id) },
                     `Created workforce document `
                   )
                 );
@@ -426,6 +431,9 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
             employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
             // employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
+            employeeApplicantInfo:
+              JSON.stringify(formData.workforceApplicant).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") ||
+              JSON.stringify(parsedApplicationData?.workforceApplicant).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
             employeeDependentInfo:
               JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") ||
               JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
@@ -670,7 +678,6 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
                     applicationId={applicationId}
                     errors={errors}
                   />
-                
                 )}
               </>
             ) : null

@@ -131,13 +131,27 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
     handleChange(index, "presentAddress", "");
     handleChange(index, "permanentAddress", "");
 
-    if (["workforce.relation.son", "workforce.relation.daughter"].includes(v) && employee) {
+    if (v === formdata?.workforceApplicant?.relationWithApplicant) {
+      handleChange(index, "birthDate", formdata?.workforceApplicant?.birthDate);
+      handleChange(index, "phoneNumber", formdata?.workforceApplicant?.phoneNumber);
+      handleChange(index, "nameEn", formdata?.workforceApplicant?.nameEn);
+      handleChange(index, "nameBn", formdata?.workforceApplicant?.nameBn);
+      handleChange(index, "fatherNameEn", formdata?.workforceApplicant?.fatherNameEn);
+      handleChange(index, "fatherNameBn", formdata?.workforceApplicant?.fatherNameBn);
+      handleChange(index, "motherNameEn", formdata?.workforceApplicant?.motherNameEn);
+      handleChange(index, "motherNameBn", formdata?.workforceApplicant?.motherNameBn);
+      handleChange(index, "nid", formdata?.workforceApplicant?.nid);
+      handleChange(index, "presentLocation", formdata?.workforceApplicant?.presentLocation);
+      handleChange(index, "permanentLocation", formdata?.workforceApplicant?.permanentLocation);
+      handleChange(index, "presentAddress", formdata?.workforceApplicant?.presentAddress);
+      handleChange(index, "permanentAddress", formdata?.workforceApplicant?.permanentAddress);
+    }else if (["workforce.relation.son", "workforce.relation.daughter"].includes(v) && employee) {
       handleChange(index, "fatherNameEn", employee.nameEn);
       handleChange(index, "fatherNameBn", employee.nameBn);
       handleChange(index, "presentLocation", employee.presentLocation);
-      handleChange(index, "permanentLocation", employee.presentLocation);
+      handleChange(index, "permanentLocation", employee.permanentLocation);
       handleChange(index, "presentAddress", employee.presentAddress);
-      handleChange(index, "permanentAddress", employee.presentAddress);
+      handleChange(index, "permanentAddress", employee.permanentAddress);
     } else if (["workforce.relation.father"].includes(v) && employee) {
       handleChange(index, "nameEn", employee.fatherNameEn);
       handleChange(index, "nameBn", employee.fatherNameBn);
