@@ -28,7 +28,7 @@ import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
 import ConfirmModal from "./modals/ConfirmModal";
 import { WORKFORCE_STATUS } from "../../constants";
-import { updateApplication, createApplicationMovement, updateApplicationSummary, eisPaymentProcess } from "../../actions";
+import { updateApplication, createApplicationMovement, updateApplicationSummary } from "../../actions";
 import {
   itemAdminFormatters,
   itemFormattersApplicant,
@@ -52,6 +52,7 @@ import CustomSnackbar from "../../components/shared/CustomSnackbar";
 import ForwardApplicationSummarySectionAdminModal from "./modals/ForwardApplicationSummarySectionAdminModal";
 import ForwardApplicationEisDoctorModal from "./modals/ForwardApplicationEisDoctorModal"
 import { handleBulkSelectedByAssociationLogic, handleBulkSelectedByCheckerLogic } from "../../utils/workforceForwardRevertActions";
+import ForwardEisPaymentProcessModal from "./modals/ForwardEisPaymentProcessModal";
 
 
 const styles = (theme) => ({
@@ -85,6 +86,7 @@ class ApplicationProcessSearcher extends Component {
       displayVersion: false,
       // 🆕 Modal state
       forwardModalOpen: false,
+      forwardPaymentModalOpen: false,
       forwardModalOpenSA: false,
       forwardModalOpenEIS: false,
       forwardModalOpenEisDoctor: false,
@@ -1172,6 +1174,9 @@ class ApplicationProcessSearcher extends Component {
   handleOpenForwardModal = (application) => {
     this.setState({ forwardModalOpen: true, selectedApplication: application });
   };
+  handleOpenForwardPaymentModal = (application) => {
+    this.setState({ forwardPaymentModalOpen: true, selectedApplication: application });
+  };
 
   handleOpenForwardModalForSectionAdmin = (application) => {
     this.setState({ forwardModalOpenSA: true, selectedApplication: application });
@@ -1200,6 +1205,9 @@ class ApplicationProcessSearcher extends Component {
 
   handleCloseForwardModal = () => {
     this.setState({ forwardModalOpen: false, selectedApplication: null });
+  };
+  handleCloseForwardPaymentModal = () => {
+    this.setState({ forwardPaymentModalOpen: false, selectedApplication: null });
   };
   handleOpenRevertModal = (application) => {
     this.setState({ revertModalOpen: true, selectedApplication: application });
@@ -1812,53 +1820,6 @@ class ApplicationProcessSearcher extends Component {
       }
     });
   };
-  handlePaymentProcessForEis = () => {
-    const { selectedApplicationIds } = this.state;
-    const { loggedInUserId } = this.props;
-    const userType = getUserTypeFromRights(this.props.userRights);
-    if (selectedApplicationIds.length === 0) {
-      alert("Please select at least one application.");
-      return;
-    }
-    this.setState({
-      confirmModalOpen: true,
-      confirmModalMessage: "workforce.application.forward.message.toDoctor",
-      confirmModalCallback: async (confirmed) => {
-        if (confirmed) {
-          const { eisPaymentProcess } = this.props;
-          try {
-            await Promise.all(
-              selectedApplicationIds.map(async (selectedItem) => {
-                const decodedId = decodeId(selectedItem?.id);
-                const updateApplicationData = {
-                  id: decodedId,
-                };
-          
-                await eisPaymentProcess(updateApplicationData, "Payment Process");
-              })
-            );
-            this.setState({
-              serverResponse: {
-                status: "SUCCESS",
-                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-              },
-            });
-          } catch (error) {
-            console.error("Bulk selection failed:", error);
-            this.setState({
-              serverResponse: {
-                status: "ERROR",
-                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-              },
-            });
-          } finally {
-            // window.location.reload();
-          }
-        }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
-      }
-    });
-  };
   handleBulkSelectedbyChecker = () => {
     const {
     selectedApplicationIds,
@@ -2433,6 +2394,7 @@ class ApplicationProcessSearcher extends Component {
   render() {
     const {
       forwardModalOpen,
+      forwardPaymentModalOpen,
       forwardModalOpenSA,
       forwardModalOpenEisDoctor,
       forwardModalOpenEIS,
@@ -2539,14 +2501,16 @@ class ApplicationProcessSearcher extends Component {
                         id="workforce.employee.application.disburse"
                       />
                     </Button>
-                    <Button variant="contained"
-                          color="primary"
-                          onClick={this.handlePaymentProcessForEis}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => this.setState({ forwardPaymentModalOpen: true })}
+                      >
                         <FormattedMessage
                           module="workforce"
-                          id="workforce.employee.application.paymentProcess"
+                         id="workforce.employee.application.paymentProcess"
                         />
-                    </Button>
+                      </Button>
                   </>
                 )  : (
                 <>
@@ -2935,6 +2899,13 @@ class ApplicationProcessSearcher extends Component {
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   userRights={userRights}
                 />
+                <ForwardEisPaymentProcessModal
+                  open={forwardPaymentModalOpen}
+                  onClose={this.handleCloseForwardPaymentModal}
+                  selectedApplication={this.state.selectedApplication}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
+                  userRights={userRights}
+                />
                  <GenerateBFTN
                   open={openGenerateBFTN}
                   onClose={this.handleCloseBFTN}
@@ -3074,7 +3045,6 @@ const mapDispatchToProps = (dispatch) =>
       fetchOrganizationEmployee,
       fetchFactoryEmployee,
       fetchWorkforceDocument,
-      eisPaymentProcess,
       journalize,
       coreConfirm,
     },

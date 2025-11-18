@@ -720,7 +720,14 @@ export function fetchApplicationsSummary(mm, filters) {
     "applicationFor",
     "applicationReceiveDate",
     "applicationForwardDate",
-    "deceasedWorkerInfo"
+    "deceasedWorkerInfo",
+    "eisApprovedAmount",
+    "eisCalculatedAmount",
+    "eisPaymentType",
+    "eisInitialMonthlyAmount",
+    "eisMonthlyAmount",
+    "initialReplacementRate",
+    "pvFactor"
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
@@ -782,7 +789,14 @@ export function fetchApplication(mm, filters) {
     "submittedBy",
     "associationType",
     "applicationFor",
-    "deceasedWorkerInfo"
+    "deceasedWorkerInfo",
+    "eisApprovedAmount",
+    "eisCalculatedAmount",
+    "eisPaymentType",
+    "eisInitialMonthlyAmount",
+    "eisMonthlyAmount",
+    "initialReplacementRate",
+    "pvFactor"
   ];
   // const filterArray = filters
   //   ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)
@@ -2171,29 +2185,24 @@ export function updateApplication(application, clientMutationLabel) {
   );
 }
 
-export function eisPaymentProcess(application, clientMutationLabel) {
-  const mutation = formatMutation(
-    "createWorkforceEisPaymentProcess",
-    formatEisPaymentProcessGQL(application),
-    clientMutationLabel
-  );
 
-  console.log({ mutation });
-  const requestedDateTime = new Date();
-  return graphql(
-    mutation.payload,
-    [
-      "APPLICATION_MUTATION_REQ",
-      "APPLICATION_UPDATE_APPLICATION_RESP",
-      "APPLICATION_MUTATION_ERR",
-    ],
-    {
-      clientMutationId: mutation.clientMutationId,
-      clientMutationLabel,
-      requestedDateTime,
+export function eisPaymentProcess(eisPaymentData) {
+  const mutation = `
+    mutation {
+      createWorkforceEisPaymentProcess(
+        workforceApplicationId: "${eisPaymentData?.workforceApplicationId}"
+        month: "${eisPaymentData?.month}"
+        year: "${eisPaymentData?.year}"
+      ) {
+        success
+        errors
+      }
     }
-  );
+  `;
+
+  return graphql(mutation, "WORKFORCE_EIS_PAYMENT_PROCESS");
 }
+
 
 export function createDependentInfo(education, clientMutationLabel) {
   const mutation = formatMutation(
