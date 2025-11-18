@@ -782,7 +782,8 @@ export function fetchApplication(mm, filters) {
     "submittedBy",
     "associationType",
     "applicationFor",
-    "deceasedWorkerInfo"
+    "deceasedWorkerInfo",
+    "lastBaseSalary"
   ];
   // const filterArray = filters
   //   ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)

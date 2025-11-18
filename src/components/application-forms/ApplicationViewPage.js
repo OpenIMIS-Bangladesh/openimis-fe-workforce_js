@@ -397,7 +397,7 @@ const ApplicationViewPage = ({
                   />
                 </Grid>
                 <Grid item xs={3}>
-                  <Button variant="contained" color="primary" onClick={() => handleLastSalaryAmount(lastSalaryAmount)}>
+                  <Button variant="contained" color="primary" disabled={application?.lastBaseSalary !==null ?true:false} onClick={() => handleLastSalaryAmount(lastSalaryAmount)}>
                     {<FormattedMessage id="workforce.submit" module="workforce" />}
                   </Button>
                 </Grid>
