@@ -11,7 +11,8 @@ import {
   fetchOrganizationEmployeeDesignation,
   fetchOrganizationEmployee,
   fetchFactoryEmployee,
-  fetchWorkforceDocument
+  fetchWorkforceDocument,
+  testWorkforcePayment
 } from "../../actions";
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
@@ -1739,8 +1740,8 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkSelectedbyAssociation = () => {
     const { selectedApplicationIds } = this.state;
-    const { loggedInUserId, updateApplication, createApplicationMovement,userRights,modulesManager,fetchWorkforceDocument } = this.props;
-
+    const { loggedInUserId, updateApplication, createApplicationMovement,userRights,modulesManager,fetchWorkforceDocument,testWorkforcePayment } = this.props;
+console.log("hi payment call",testWorkforcePayment)
   handleBulkSelectedByAssociationLogic({
     selectedApplicationIds,
     loggedInUserId,
@@ -1748,6 +1749,7 @@ class ApplicationProcessSearcher extends Component {
     createApplicationMovement,
     userRights,
     fetchWorkforceDocument,
+    testWorkforcePayment,
     modulesManager,
     setServerResponse: (resp) => this.setState({ serverResponse: resp }),
     setConfirmModalOpen: (v) => this.setState({ confirmModalOpen: v }),
@@ -3045,6 +3047,7 @@ const mapDispatchToProps = (dispatch) =>
       fetchOrganizationEmployee,
       fetchFactoryEmployee,
       fetchWorkforceDocument,
+      testWorkforcePayment,
       journalize,
       coreConfirm,
     },

@@ -298,6 +298,13 @@ export function formatApplicationeGQL(application) {
   ${application?.doctorsRecommendedDonation ? `doctorsRecommendedDonation: "${(application?.doctorsRecommendedDonation)}"` : ""}
   ${application?.lastBaseSalary ? `lastBaseSalary: "${(application?.lastBaseSalary)}"` : ""}
   ${application?.deceasedWorkerInfo ? `deceasedWorkerInfo: ${escapeQuotes(application?.deceasedWorkerInfo)}` : ""}
+   ${application?.eisApprovedAmount ? `eisApprovedAmount: "${(application?.eisApprovedAmount)}"` : ""}
+  ${application?.eisCalculatedAmount ? `eisCalculatedAmount: "${(application?.eisCalculatedAmount)}"` : ""}
+  ${application?.eisPaymentType ? `eisPaymentType: "${(application?.eisPaymentType)}"` : ""}
+  ${application?.eisInitialMonthlyAmount ? `eisInitialMonthlyAmount: "${(application?.eisInitialMonthlyAmount)}"` : ""}
+  ${application?.eisMonthlyAmount ? `eisMonthlyAmount: "${(application?.eisMonthlyAmount)}"` : ""}
+  ${application?.initialReplacementRate ? `initialReplacementRate: "${(application?.initialReplacementRate)}"` : ""}
+  ${application?.pvFactor ? `pvFactor: "${(application?.pvFactor)}"` : ""}
 `;
 }
 ///application movement ////

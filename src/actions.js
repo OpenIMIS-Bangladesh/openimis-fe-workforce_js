@@ -2202,6 +2202,20 @@ export function eisPaymentProcess(eisPaymentData) {
 
   return graphql(mutation, "WORKFORCE_EIS_PAYMENT_PROCESS");
 }
+export function testWorkforcePayment(testPaymentData) {
+  const mutation = `
+    mutation {
+      testWorkforcePayment(
+        workforceApplicationId: "${testPaymentData?.id}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+
+  return graphql(mutation, "WORKFORCE_EIS_PAYMENT_PROCESS");
+}
 
 
 export function createDependentInfo(education, clientMutationLabel) {
