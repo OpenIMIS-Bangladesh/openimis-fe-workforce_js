@@ -64,7 +64,6 @@ const steps = [
 const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, parsedApplicationData, applicationForSelf }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
-  console.log({ organizationType });
 
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("workforce");
@@ -244,7 +243,6 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
   };
 
   const handleNext = async () => {
-    console.log({ formData });
     const newErrors = validateRequiredFields(stepRef, formatMessage);
     setErrors(newErrors);
 
@@ -262,7 +260,6 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
           fakeErrors = { ...fakeErrors, deathDate: "core.error.deathTime" };
         }
         setErrors(fakeErrors);
-        console.log({ fakeErrors });
       } else {
         setActiveStep(nextStep);
         if (nextStep === 3 || nextStep === 4) {
@@ -294,7 +291,6 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
 
             id: formData?.workforceEmployee?.id || reduxState.core.user.id,
           };
-          console.log("Update Submitting formData:", formData);
           // await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
           const updateApplicationData = {
             // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
@@ -340,7 +336,6 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
             applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
           };
 
-          console.log({ createApplicationData });
           if (!parsedApplicationData) {
             const applicationMutation = await formatMutation(
               "createWorkforceApplication",
@@ -348,7 +343,6 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
               `Created application `
             );
             const applicationClientMutationId = applicationMutation.clientMutationId;
-            console.log("applicationClientMutationId", applicationClientMutationId);
             await dispatch(createApplication(applicationMutation, `Created workforce application `)).then((res) => {
               // await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
               const fetchRes = dispatch(
@@ -360,7 +354,6 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
                 )
               );
               let applicationgetId = getInfoId(fetchRes, "workforceApplication");
-              console.log("hello there", applicationgetId);
               if (!applicationgetId && applicationId) {
                 applicationgetId = applicationId;
               } else {
@@ -369,7 +362,6 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
             });
           } else {
             const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
-            console.log("i am from update", updateApplicationData);
             dispatch(updateApplication(updateApplicationData, `update workforce application `));
           }
         } else if (nextStep === 5) {
@@ -395,24 +387,26 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
             status: WORKFORCE_STATUS.DRAFT,
             applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
           };
-          dispatch(updateApplication(updateApplicationData, `update workforce application`)).then((res) => {
-            setIsDependentSaved(true);
-             if (uploadDependentFile) {
-              uploadDependentFile.map((file, index) => {
+          console.log(uploadDependentFile);
+          if (uploadDependentFile) {
+            await Promise.all(
+              uploadDependentFile.map((file) =>
                 dispatch(
                   createWorkforceDocument(
-                    // { ...file, workforceApplicationId: safeApplicationId(applicationId[0]?.id), workforceDependentId: safeDecodeId(dependentId) },
                     { ...file, workforceApplicationId: safeDecodeId(applicationId[0]?.id) },
-                    `Created workforce document `
+                    `Created workforce document`
                   )
-                );
-              });
-            }
-          });
+                )
+              )
+            );
+          }
+          const res = await dispatch(updateApplication(updateApplicationData, `update workforce application`));
+          if(res)
+          {
+            setIsDependentSaved(true);
+          }
           await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(applicationId[0]?.id)}"`])).then((res) => {
             const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-            console.log({ dependentId:res });
-            console.log({ dependentId });
           });
         } else {
           const updateApplicationData = {
@@ -514,7 +508,6 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
     //   applicationToId: 165,
     //   toRoleId: 25,
     // };
-    console.log("hello i am from submit", updateApplicationData);
     dispatch(updateApplication(updateApplicationData, `update workforce application `));
     // dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
   };
@@ -576,8 +569,6 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
     return <ApplicationFormSubmitted />;
   }
 
-  console.log({ tazwer: formData });
-  console.log({ fahimTazwer: uploadFile });
 
   return (
     <div className={classes.container}>

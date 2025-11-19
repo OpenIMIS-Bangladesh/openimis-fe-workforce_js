@@ -121,7 +121,8 @@ const RegistrationPage = () => {
 
       setTimeout(() => {
         setSubmitting(false);
-        history.push("/login");
+        //history.push("/login");
+window.location.href='/';
       }, 2000);
     }
   }, [internalId]);
@@ -188,7 +189,8 @@ const RegistrationPage = () => {
         // Bypass OTP verification for default test OTP
         // setStep(3);
         await handleSubmit();
-        history.push("/");
+        //history.push("/");
+window.location.href='/';
       }
       // await dispatch(
       //   fetchWorkforceOtp(modulesManager, [
@@ -197,7 +199,8 @@ const RegistrationPage = () => {
       // );
     } else if (step === 3) {
       await handleSubmit();
-      history.push("/");
+      //history.push("/");
+window.location.href='/';
     } else {
       setServerResponse({
         status: "ERROR",
@@ -382,7 +385,7 @@ const RegistrationPage = () => {
               {/* Back Button */}
               <Button
                 fullWidth
-                onClick={() => history.push("/")}
+                onClick={() => window.location.href='/'} //history.push("/")}
                 startIcon={<ArrowBackIcon />}
                 color="primary"
                 variant="text"
