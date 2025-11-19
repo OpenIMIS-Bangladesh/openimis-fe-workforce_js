@@ -58,6 +58,17 @@ const GenerateEisBFTN = ({ open, onClose, eisPayments = [], userRights, status, 
 
   console.log("eisPayments", eisPayments);
 
+const year = eisPayments[0]?.year;
+const monthIndex = eisPayments[0]?.monthIndex;
+
+// Format month as 01..12
+const monthFormatted = String(monthIndex + 1).padStart(2, "0");
+
+// Pay period values
+const payFrom = `01.${monthFormatted}.${year}`;
+const lastDay = new Date(year, monthIndex + 1, 0).getDate();
+const payTo = `${lastDay}.${monthFormatted}.${year}`;
+
   // -----------------------------
   // Excel generator (unchanged)
   // -----------------------------
@@ -85,8 +96,9 @@ const GenerateEisBFTN = ({ open, onClose, eisPayments = [], userRights, status, 
   // Header (same as before)
   // -----------------------------
   sheet.mergeCells("A1:K1");
-  sheet.getCell("A1").value = "Ref No: EIS.Bank Advice.Benefit.2023.06";
+  sheet.getCell("A1").value = `Ref No: EIS.Bank Advice.Benefit.${year}.${monthFormatted}`;
   sheet.getCell("A1").font = { bold: true };
+
 
   sheet.mergeCells("A3:K3");
   sheet.getCell("A3").value = "Manager";
@@ -179,8 +191,8 @@ sheet.getCell("A14").value = {
       bankInfo?.branch?.routingNumber || "",
       row?.eisMonthlyAmount || 0,
       "2023.EIS.000001.01",
-      "12.11.2025",
-      "20.11.2025"
+      payFrom,
+      payTo
     ]);
   });
 
@@ -298,8 +310,8 @@ closingLines.forEach((line) => {
                   <TableCell>{bankInfo?.branch?.routingNumber || ""}</TableCell>
                   <TableCell align="right">{row?.eisMonthlyAmount}</TableCell>
                   <TableCell align="right">2023.EIS.000001.01</TableCell>
-                  <TableCell align="right">12.11.2025</TableCell>
-                  <TableCell align="right">20.11.2025</TableCell>
+                  <TableCell align="right">{payFrom}</TableCell>
+                  <TableCell align="right">{payTo}</TableCell>
                 </TableRow>
               );
             })}
