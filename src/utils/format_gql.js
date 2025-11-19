@@ -154,6 +154,7 @@ export function formatWorkforceFactoryGQL(factory) {
     ${factory?.address ? `address: "${factory?.address}"` : ""}
     ${factory?.associationType ? `associationType: "${factory?.associationType}"` : ""}
     ${factory?.location?.id ? `locationId: "${decodeId(factory?.location.id)}"` : ""}
+    ${factory?.officeLocation?.id ? `officeLocationId: "${decodeId(factory?.officeLocation.id)}"` : ""}
     ${factory?.status ? `status: "${factory?.status}"` : ""}
     ${factory?.workforceRepresentativeId ? `workforceRepresentativeId: "${decodeId(factory?.workforceRepresentativeId)}"` : ""}
     ${factory?.isSameCompanyRepresentative ? `isSameCompanyRepresentative: "${factory?.isSameCompanyRepresentative}"` : ""}

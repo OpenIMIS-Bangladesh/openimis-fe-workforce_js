@@ -272,6 +272,7 @@ export function fetchWorkforceFactoriesSummary(mm, filters) {
     "email",
     "status",
     "website",
+    "officeLocation{id}",
     "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
     location_projection,
   ];
@@ -298,7 +299,7 @@ export function fetchWorkforceFactory(mm, filters) {
     "website",
     location_projection,
     "workforceEmployer{id}",
-    "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
+    "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, officeLocation{id}, " +
     location_projection +
     "}",
   ];
