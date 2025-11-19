@@ -797,7 +797,8 @@ export function fetchApplication(mm, filters) {
     "eisInitialMonthlyAmount",
     "eisMonthlyAmount",
     "initialReplacementRate",
-    "pvFactor"
+    "pvFactor",
+    "lastBaseSalary"
   ];
   // const filterArray = filters
   //   ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)
