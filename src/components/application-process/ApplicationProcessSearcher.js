@@ -12,7 +12,8 @@ import {
   fetchOrganizationEmployee,
   fetchFactoryEmployee,
   fetchWorkforceDocument,
-  testWorkforcePayment
+  testWorkforcePayment,
+  fetchEisPaymentProcess
 } from "../../actions";
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
@@ -54,6 +55,7 @@ import ForwardApplicationSummarySectionAdminModal from "./modals/ForwardApplicat
 import ForwardApplicationEisDoctorModal from "./modals/ForwardApplicationEisDoctorModal"
 import { handleBulkSelectedByAssociationLogic, handleBulkSelectedByCheckerLogic } from "../../utils/workforceForwardRevertActions";
 import ForwardEisPaymentProcessModal from "./modals/ForwardEisPaymentProcessModal";
+import GenerateEisBFTN from "../../pages/application-process/GenereteEisBFTN";
 
 
 const styles = (theme) => ({
@@ -99,6 +101,7 @@ class ApplicationProcessSearcher extends Component {
       deadline: "",
       userList: [],
       openGenerateBFTN: false,
+      openGenerateEisBFTN: false,
       submitting: false,
       serverResponse: null,
       editedGrantMoney: "",
@@ -2372,8 +2375,14 @@ console.log("hi payment call",testWorkforcePayment)
   handleCloseBFTN = () => {
     this.setState({ openGenerateBFTN: false });
   };
+  handleCloseEisBFTN = () => {
+    this.setState({ openGenerateEisBFTN: false });
+  };
   handleOpenBFTN = () => {
     this.setState({ openGenerateBFTN: true });
+  };
+  handleOpenEisBFTN = () => {
+    this.setState({ openGenerateEisBFTN: true });
   };
 
   onCheckBoxSelect = (selection) => {
@@ -2406,6 +2415,7 @@ console.log("hi payment call",testWorkforcePayment)
       revertByFactoryAdmin,
       selectedApplication,
       openGenerateBFTN,
+      openGenerateEisBFTN,
       showHistoryFilter,
       selectedApplicationIds
     } = this.state;
@@ -2427,7 +2437,8 @@ console.log("hi payment call",testWorkforcePayment)
       userName,
       organizationEmployee,
       isApproved,
-      coloredRow
+      coloredRow,
+      eisPayments
     } = this.props;
 
     const count = applicationsPageInfo.totalCount;
@@ -2490,9 +2501,16 @@ console.log("hi payment call",testWorkforcePayment)
             >
               {disableButtons == 1 ? (
                   <>
+                    {userType !== WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
                     <IconButton onClick={this.handleOpenBFTN}>
                       <PrintIcon />
                     </IconButton>
+                      )}
+                    {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+                    <IconButton onClick={this.handleOpenEisBFTN}>
+                      <PrintIcon />
+                    </IconButton>
+                    )}
                     <Button
                       variant="contained"
                       color="primary"
@@ -2908,6 +2926,7 @@ console.log("hi payment call",testWorkforcePayment)
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   userRights={userRights}
                 />
+                 {userType !== WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
                  <GenerateBFTN
                   open={openGenerateBFTN}
                   onClose={this.handleCloseBFTN}
@@ -2915,6 +2934,17 @@ console.log("hi payment call",testWorkforcePayment)
                   status={"approved_by_dg"}
                   userRights={userRights}
                 />
+                 )}
+                {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+                  <GenerateEisBFTN
+                    open={openGenerateEisBFTN}
+                    onClose={this.handleCloseEisBFTN}
+                    eisPayments={eisPayments}
+                    status="approved_by_committee"
+                    userRights={userRights}
+                  />
+                )}
+
                 <ForwardApplicationEisDoctorModal
                   open={forwardModalOpenEisDoctor}
                   onClose={this.handleCloseForwardModalForEisDoctor}
@@ -3018,6 +3048,7 @@ console.log("hi payment call",testWorkforcePayment)
 const mapStateToProps = (state) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   applications: state.workforce.applications,
+  eisPayments: state.workforce.eisPayments,
   applicationsPageInfo: state.workforce.applicationsPageInfo,
   fetchingApplications: state.workforce.fetchingApplications,
   fetchedApplications: state.workforce.fetchedApplications,
@@ -3048,6 +3079,7 @@ const mapDispatchToProps = (dispatch) =>
       fetchFactoryEmployee,
       fetchWorkforceDocument,
       testWorkforcePayment,
+      fetchEisPaymentProcess,
       journalize,
       coreConfirm,
     },
