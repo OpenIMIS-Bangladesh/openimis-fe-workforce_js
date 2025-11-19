@@ -105,6 +105,7 @@ export const WORKFORCE_STATUS = {
   RESUBMITTED_APPLICATION:"resubmitted_application",
   APPROVED_BY_EIS_ADVISOR: "approved_by_eis_advisor",
   FORWARD_TO_BLWF_SECTION: "forward_to_blwf_section",
+  EIS_PAYMENT_PROCESS: "eis_payment_process",
 
 
 

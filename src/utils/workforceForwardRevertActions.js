@@ -107,6 +107,7 @@ export async function handleBulkSelectedByAssociationLogic({
   loggedInUserId,
   updateApplication,
   createApplicationMovement,
+  testWorkforcePayment,
   setServerResponse,
   setConfirmModalOpen,
   setConfirmModalMessage,
@@ -179,6 +180,10 @@ export async function handleBulkSelectedByAssociationLogic({
               toRoleId: 32,
             };
 
+              const testPaymentData = {
+              id: decodedId,
+            };
+
             await updateApplication(
               updateApplicationData,
               "update workforce application"
@@ -186,6 +191,10 @@ export async function handleBulkSelectedByAssociationLogic({
             await createApplicationMovement(
               createApplicationMovementData,
               "create workforce movement"
+            );
+            await testWorkforcePayment(
+              testPaymentData,
+              "create test payment"
             );
             // if(isEisPath())
             // {

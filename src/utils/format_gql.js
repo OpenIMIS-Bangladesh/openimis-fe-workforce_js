@@ -298,6 +298,13 @@ export function formatApplicationeGQL(application) {
   ${application?.doctorsRecommendedDonation ? `doctorsRecommendedDonation: "${(application?.doctorsRecommendedDonation)}"` : ""}
   ${application?.lastBaseSalary ? `lastBaseSalary: "${(application?.lastBaseSalary)}"` : ""}
   ${application?.deceasedWorkerInfo ? `deceasedWorkerInfo: ${escapeQuotes(application?.deceasedWorkerInfo)}` : ""}
+   ${application?.eisApprovedAmount ? `eisApprovedAmount: "${(application?.eisApprovedAmount)}"` : ""}
+  ${application?.eisCalculatedAmount ? `eisCalculatedAmount: "${(application?.eisCalculatedAmount)}"` : ""}
+  ${application?.eisPaymentType ? `eisPaymentType: "${(application?.eisPaymentType)}"` : ""}
+  ${application?.eisInitialMonthlyAmount ? `eisInitialMonthlyAmount: "${(application?.eisInitialMonthlyAmount)}"` : ""}
+  ${application?.eisMonthlyAmount ? `eisMonthlyAmount: "${(application?.eisMonthlyAmount)}"` : ""}
+  ${application?.initialReplacementRate ? `initialReplacementRate: "${(application?.initialReplacementRate)}"` : ""}
+  ${application?.pvFactor ? `pvFactor: "${(application?.pvFactor)}"` : ""}
 `;
 }
 ///application movement ////
@@ -345,27 +352,6 @@ export function formatApplicationMovementGQL(application) {
 `;
 }
 
-///Eis Payment Process////
-export function formatEisPaymentProcessGQL(application) {
-  return `
-  ${application?.id ? `id: "${(application?.id)}"` : ""}
-  ${application?.eisPaymentType ? `eisPaymentType: "${(application?.eisPaymentType)}"` : ""}
-  ${application?.eisCalculatedAmount ? `eisCalculatedAmount: "${(application?.eisCalculatedAmount)}"` : ""}
-  ${application?.eisApprovedAmount ? `eisApprovedAmount: "${(application?.eisApprovedAmount)}"` : ""}
-  ${application?.eisMonthlyAmount ? `eisMonthlyAmount: "${(application?.eisMonthlyAmount)}"` : ""}
-  ${application?.monthIndex ? `monthIndex: "${(application?.monthIndex)}"` : ""}
-  ${application?.year ? `year: "${(application?.year)}"` : ""}
-  ${application?.processingDate ? `processingDate: "${(application?.processingDate)}"` : ""}
-  ${application?.isDisbursed ? `isDisbursed: "${(application?.isDisbursed)}"` : ""}
-  ${application?.bankId ? `bankId: "${(application?.bankId)}"` : ""}
-  ${application?.processedById ? `processedById: "${(application?.processedById)}"` : ""}
-  ${application?.workforceApplicationId ? `workforceApplicationId: "${(application?.workforceApplicationId)}"` : ""}
-  ${application?.workforceApplicationSummaryId ? `workforceApplicationSummaryId: "${(application?.workforceApplicationSummaryId)}"` : ""}
-  ${application?.workforceEmployeeDependentId ? `workforceEmployeeDependentId: "${(application?.workforceEmployeeDependentId)}"` : ""}
-  ${application?.bankAccountHolderName ? `bankAccountHolderName: "${(application?.bankAccountHolderName)}"` : ""}
-  ${application?.bankAccountNo ? `bankAccountNo: "${(application?.bankAccountNo)}"` : ""}
-`;
-}
 ///beneficiary registration   ////
 export function formatWorkforceBeneficiaryGQL(beneficiary) {
   return `
