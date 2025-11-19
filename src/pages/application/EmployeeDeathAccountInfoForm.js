@@ -25,7 +25,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchDependent, fetchEmployeeDependent } from "../../actions";
 import DistrictBanks from "../../pickers/DistrictBanks";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
-import { isAtLeast18YearsOld } from "../../utils/utils";
+import { isAtLeast18YearsOld, safeDecodeId } from "../../utils/utils";
 import ParentDependentPicker from "../../pickers/ParentDependentPicker";
 
 const useStyles = makeStyles((theme) => ({
@@ -53,7 +53,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
   useEffect(() => {
     if (applicationId && applicationId[0]?.id) {
       setLoading(true);
-      dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${decodeId(applicationId[0].id)}"`]));
+      dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(applicationId[0].id)}"`])).then(res =>console.log("from account dependent",res));
       setLoading(false);
     }
   }, [applicationId]);

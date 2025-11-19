@@ -395,13 +395,9 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
             status: WORKFORCE_STATUS.DRAFT,
             applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
           };
-          dispatch(updateApplication(updateApplicationData, `update workforce application`)).then((res) => setIsDependentSaved(true));
-          await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(applicationId[0]?.id)}"`])).then((res) => {
-            const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-
-            console.log({ dependentId });
-            console.log("dependent document", safeDecodeId(applicationId[0]?.id));
-            if (uploadDependentFile) {
+          dispatch(updateApplication(updateApplicationData, `update workforce application`)).then((res) => {
+            setIsDependentSaved(true);
+             if (uploadDependentFile) {
               uploadDependentFile.map((file, index) => {
                 dispatch(
                   createWorkforceDocument(
@@ -411,13 +407,12 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
                   )
                 );
               });
-              // dispatch(
-              //   createWorkforceDocument(
-              //     { ...uploadFile, workforceApplicationId: decodeId(applicationId[0]?.id), workforceDependentId: decodeId(dependentId) },
-              //     `Created workforce document`
-              //   )
-              // );
             }
+          });
+          await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(applicationId[0]?.id)}"`])).then((res) => {
+            const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
+            console.log({ dependentId:res });
+            console.log({ dependentId });
           });
         } else {
           const updateApplicationData = {
