@@ -2216,7 +2216,7 @@ export function testWorkforcePayment(testPaymentData) {
     }
   `;
 
-  return graphql(mutation, "WORKFORCE_EIS_PAYMENT_PROCESS");
+  return graphql(mutation, "WORKFORCE_TEST_PAYMENT");
 }
 
 
@@ -2731,4 +2731,44 @@ export function updateWorkforceEmployeeDependentEligibility(applicationId) {
     }
   `;
   return graphql(mutation, "WORKFORCE_EMPLOYEE_DEPENDENT_ELIGIBILITY_UPDATE");
+}
+
+export function fetchEisPaymentProcess() {
+  const payload = `
+ query {
+  workforceEisPaymentProcess
+  {
+    id
+    monthIndex
+    year
+    eisMonthlyAmount
+    eisPaymentType
+    eisApprovedAmount
+    eisCalculatedAmount
+    processingDate
+    isDisbursed
+    bank {
+      id
+      nameEn
+      districtNameEn
+      branchCode
+      routingNumber
+    }
+    bankAccountNo
+    bankAccountHolderName
+    workforceApplication {
+      id
+      lastBaseSalary
+      workforceEmployee {
+        id
+        firstNameBn
+        firstNameEn
+      }
+    }
+  }
+}
+  `;
+
+   return graphql(payload, "EIS_PAYMENT_PROCESS");
+
 }

@@ -366,6 +366,13 @@ function reducer(
     roleWiseUsers: [],
     roleWiseUsersPageInfo: { totalCount: 0 },
 
+     // eis payment process
+    fetchingEisPayments: false,
+    errorEisPayments: null,
+    fetchedEisPayments: false,
+    eisPayments: [],
+    eisPaymentsPageInfo: { totalCount: 0 },
+
 
     ////workforce otp id ///
     workforceOtpId: "",
@@ -1470,6 +1477,38 @@ function reducer(
           roleWiseUsers: [],
           roleWiseUsersPageInfo: { totalCount: 0 },
           errorRoleWiseUsers: formatServerError(action.payload),
+        };
+
+
+               //// eis payment process ////
+      case "EIS_PAYMENT_PROCESS_REQ":
+        return {
+          ...state,
+          fetchingEisPayments: true,
+          fetchedEisPayments: false,
+          eisPayments: [],
+          eisPaymentsPageInfo: { totalCount: 0 },
+          errorEisPayments: null,
+        };
+
+      case "EIS_PAYMENT_PROCESS_RESP":
+        return {
+          ...state,
+          fetchingEisPayments: false,
+          fetchedEisPayments: true,
+          eisPayments: action.payload.data.workforceEisPaymentProcess,
+          eisPaymentsPageInfo: pageInfo(action.payload.data.workforceEisPaymentProcess),
+          errorEisPayments: formatGraphQLError(action.payload),
+        };
+
+      case "EIS_PAYMENT_PROCESS_ERR":
+        return {
+          ...state,
+          fetchingEisPayments: false,
+          fetchedEisPayments: false,
+          eisPayments: [],
+          eisPaymentsPageInfo: { totalCount: 0 },
+          errorEisPayments: formatServerError(action.payload),
         };
 
 
