@@ -185,12 +185,12 @@ sheet.getCell("A14").value = {
       index + 1,
       row?.bankAccountHolderName || "",
       row?.bankAccountNo || "",
-      "Sonali Bank",
+      "",
       bankInfo?.branch?.name || "",
       bankInfo?.branch?.district || "",
       bankInfo?.branch?.routingNumber || "",
       row?.eisMonthlyAmount || 0,
-      "2023.EIS.000001.01",
+      "",
       payFrom,
       payTo
     ]);
@@ -286,7 +286,7 @@ closingLines.forEach((line) => {
               <TableCell><FormattedMessage id="District" /></TableCell>
               <TableCell><FormattedMessage id="Routing No" /></TableCell>
               <TableCell><FormattedMessage id="Amount (BDT)" /></TableCell>
-              <TableCell align="right"><FormattedMessage id="Beneficiary ID" /></TableCell>
+              <TableCell align="right"><FormattedMessage id="BeneficiaryID" /></TableCell>
               <TableCell align="right"><FormattedMessage id="Pay From" /></TableCell>
               <TableCell align="right"><FormattedMessage id="Pay To" /></TableCell>
             </TableRow>
@@ -309,7 +309,7 @@ closingLines.forEach((line) => {
                   <TableCell>{bankInfo?.branch?.district || ""}</TableCell>
                   <TableCell>{bankInfo?.branch?.routingNumber || ""}</TableCell>
                   <TableCell align="right">{row?.eisMonthlyAmount}</TableCell>
-                  <TableCell align="right">2023.EIS.000001.01</TableCell>
+                  <TableCell align="right"></TableCell>
                   <TableCell align="right">{payFrom}</TableCell>
                   <TableCell align="right">{payTo}</TableCell>
                 </TableRow>
