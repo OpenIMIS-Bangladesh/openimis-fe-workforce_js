@@ -166,7 +166,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 readOnly={false}
                 required
               />
-              {errors?.rdmp && <FormHelperText error>{errors?.rdmp}</FormHelperText>}
+              {errors?.rdmp && <FormHelperText error><FormattedMessage id={errors?.rdmp}/></FormHelperText>}
             </Grid>
 
             <Grid item xs={6} className={classes.item}>

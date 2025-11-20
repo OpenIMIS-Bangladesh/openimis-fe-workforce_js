@@ -182,9 +182,9 @@ const renderDetails = (data, classes, parentKey = "", language) => {
       if (typeof item !== "object" || !item) return null;
 
       const scalars = Object.entries(item).filter(
-        ([key, value]) => typeof value !== "object" && !hiddenKeys.includes(key) && value !== null && value !== undefined && value !== ""
+        ([key, value]) => typeof value !== "object" && ![...hiddenKeys,"attachments"].includes(key) && value !== null && value !== undefined && value !== ""
       );
-      const objects = Object.entries(item).filter(([key, value]) => typeof value === "object" && value && !hiddenKeys.includes(key));
+      const objects = Object.entries(item).filter(([key, value]) => typeof value === "object" && value && ![...hiddenKeys,"attachments"].includes(key));
 
       return (
         <Card key={idx} className={classes.nestedCard}>

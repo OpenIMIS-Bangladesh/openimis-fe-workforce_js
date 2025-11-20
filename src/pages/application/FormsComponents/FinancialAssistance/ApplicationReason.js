@@ -1,23 +1,7 @@
 import React from "react";
-import {
-  Grid,
-  Box,
-  Paper,
-  Typography,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  FormHelperText
-} from "@material-ui/core";
+import { Grid, Box, Paper, Typography, Divider, FormControl, FormControlLabel, Radio, RadioGroup, FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  useTranslations,
-  FormattedMessage,
-  TextInput,
-  PublishedComponent,
-} from "@openimis/fe-core";
+import { useTranslations, FormattedMessage, TextInput, PublishedComponent } from "@openimis/fe-core";
 import EmployeeAccidentTypePicker from "../../../../pickers/EmployeeAccidentTypePicker";
 import DeathReasonPicker from "../../../../pickers/DeathReasonPicker";
 
@@ -29,9 +13,10 @@ const useStyles = makeStyles((theme) => ({
 
 const ApplicationReason = ({ handleChange, formData, errors }) => {
   const classes = useStyles();
+  const organizationType = formData?.organizationType;
   const { formatMessage } = useTranslations("core.RegistrationPage");
 
-  const deathType = formData?.metadata?.deathType || "";
+  const deathType =organizationType==="eis"? "accidentalDeath": (formData?.metadata?.deathType || "");
 
   const handleApplicationReason = (event) => {
     const value = event.target.value;
@@ -56,34 +41,22 @@ const ApplicationReason = ({ handleChange, formData, errors }) => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <FormControl component="fieldset" fullWidth>
-              <Typography
-                variant="subtitle1"
-                style={{ fontWeight: "bold", textAlign: "center" }}
-              >
+              <Typography variant="subtitle1" style={{ fontWeight: "bold", textAlign: "center" }}>
                 <FormattedMessage id="workforce.application.reason.type" module="workforce" />
               </Typography>
-              <RadioGroup row value={deathType} onChange={handleApplicationReason}>
-                <FormControlLabel
-                  value="normalDeath"
-                  control={<Radio color="primary" />}
-                  label={
-                    <FormattedMessage
-                      id="workforce.financial.assistance.normalDeath"
-                      module="workforce"
-                    />
-                  }
-                />
+              <RadioGroup row value={organizationType==="eis"?"accidentalDeath":deathType} onChange={handleApplicationReason}>
+                {organizationType !== "eis" && (
+                  <FormControlLabel
+                    value="normalDeath"
+                    control={<Radio color="primary" />}
+                    label={<FormattedMessage id="workforce.financial.assistance.normalDeath" module="workforce" />}
+                  />
+                )}
                 <FormControlLabel
                   value="accidentalDeath"
                   control={<Radio color="primary" />}
-                  label={
-                    <FormattedMessage
-                      id="workforce.financial.assistance.accidentalDeath"
-                      module="workforce"
-                    />
-                  }
+                  label={<FormattedMessage id="workforce.financial.assistance.accidentalDeath" module="workforce" />}
                 />
-
               </RadioGroup>
             </FormControl>
           </Grid>
@@ -107,12 +80,7 @@ const ApplicationReason = ({ handleChange, formData, errors }) => {
               <EmployeeAccidentTypePicker
                 id={"accidentReason"}
                 value={formData?.employeeAccidentInfo?.accidentType || ""}
-                label={
-                  <FormattedMessage
-                    id="workforce.employee.accident.info.typeOfAccident"
-                    module="workforce"
-                  />
-                }
+                label={<FormattedMessage id="workforce.employee.accident.info.typeOfAccident" module="workforce" />}
                 required
                 onChange={(v) => handleChange("accidentReason", v, "metadata")}
                 readOnly={false}
@@ -120,7 +88,6 @@ const ApplicationReason = ({ handleChange, formData, errors }) => {
               {errors.accidentReason && <FormHelperText error>{errors.accidentReason}</FormHelperText>}
             </Grid>
           )}
-
 
           {/* Death Date (shared for normal/accidental) */}
           {(deathType === "normalDeath" || deathType === "accidentalDeath") && (
@@ -133,12 +100,13 @@ const ApplicationReason = ({ handleChange, formData, errors }) => {
                 readOnly={false}
                 required
               />
-              {errors.deathDate && <FormHelperText error><FormattedMessage id={errors.deathDate} /></FormHelperText>}
+              {errors.deathDate && (
+                <FormHelperText error>
+                  <FormattedMessage id={errors.deathDate} />
+                </FormHelperText>
+              )}
             </Grid>
           )}
-
-
-
 
           {/* other: manual input */}
           {deathType === "other" && (
