@@ -400,11 +400,8 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
               )
             );
           }
-          const res = await dispatch(updateApplication(updateApplicationData, `update workforce application`));
-          if(res)
-          {
-            setIsDependentSaved(true);
-          }
+          await dispatch(updateApplication(updateApplicationData, `update workforce application`)).then(res =>setIsDependentSaved(true));
+          
           await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(applicationId[0]?.id)}"`])).then((res) => {
             const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
           });
