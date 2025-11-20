@@ -868,7 +868,7 @@ class ApplicationProcessSearcher extends Component {
       }else {
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
-          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, 'statusIn: ["new"]', 'orderBy: ["-dateCreated"]']
+          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, 'statusIn: ["new","forward_to_factory_admin","forward_to_association","forward_for_verification","verified","forward_to_doctor","approved_by_doctor","forward_to_eis_advisor","approved_by_eis_advisor,""forward_to_comiitee","approved_by_committee"]', 'orderBy: ["-dateCreated"]']
         );
       }
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ADMIN) {
