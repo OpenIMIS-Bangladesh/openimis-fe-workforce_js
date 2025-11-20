@@ -345,6 +345,7 @@ export const handleBulkSelectedByCheckerLogic = async ({
         message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
       });
     } finally {
+       window.location.reload();
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
     }

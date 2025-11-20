@@ -365,7 +365,7 @@ const ApplicantDashboard = () => {
     useEffect(() => {
       window.history.pushState(null, "", `#${selectedMenu}`);
     }, [selectedMenu]);
-
+const isEisPath = () => true;
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
