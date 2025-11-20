@@ -776,7 +776,7 @@ class ApplicationProcessSearcher extends Component {
         defaultFilters = ['statusIn: ["new"]','submittedByIn:["applicant"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf","eis"]'];
       }
       else if (this.props.forwardedApplications) {
-        defaultFilters = ['statusIn: ["forward_to_association"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf","eis"]'];
+        defaultFilters = ['orderBy: ["-dateCreated"]','organizationTypeIn: ["cf","eis"]'];
       } else {
         defaultFilters = ['statusIn: ["new","resubmitted_application"]', 'orderBy: ["-dateCreated"]','organizationTypeIn: ["cf","eis"]'];
         // if (loggedInUserId) {
