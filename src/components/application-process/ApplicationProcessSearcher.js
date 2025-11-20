@@ -2506,11 +2506,25 @@ console.log("hi payment call",testWorkforcePayment)
                       <PrintIcon />
                     </IconButton>
                       )}
-                    {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
-                    <IconButton onClick={this.handleOpenEisBFTN}>
-                      <PrintIcon />
-                    </IconButton>
+                   {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+                      <>
+                        <IconButton onClick={this.handleOpenEisBFTN}>
+                          <PrintIcon />
+                        </IconButton>
+
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => this.setState({ forwardPaymentModalOpen: true })}
+                        >
+                          <FormattedMessage
+                            module="workforce"
+                            id="workforce.employee.application.paymentProcess"
+                          />
+                        </Button>
+                      </>
                     )}
+
                     <Button
                       variant="contained"
                       color="primary"
@@ -2521,16 +2535,8 @@ console.log("hi payment call",testWorkforcePayment)
                         id="workforce.employee.application.disburse"
                       />
                     </Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => this.setState({ forwardPaymentModalOpen: true })}
-                      >
-                        <FormattedMessage
-                          module="workforce"
-                         id="workforce.employee.application.paymentProcess"
-                        />
-                      </Button>
+                   
+                  
                   </>
                 )  : (
                 <>
