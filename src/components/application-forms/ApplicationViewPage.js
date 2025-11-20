@@ -92,7 +92,7 @@ const hiddenKeys = [
   "eisMonthlyAmount",
   "initialReplacementRate",
   "pvFactor",
-  "dependentId"
+  "dependentId",
 ];
 
 /**
@@ -195,9 +195,9 @@ const renderDetails = (data, classes, parentKey = "", language) => {
       if (typeof item !== "object" || !item) return null;
 
       const scalars = Object.entries(item).filter(
-        ([key, value]) => typeof value !== "object" && ![...hiddenKeys,"attachments"].includes(key) && value !== null && value !== undefined && value !== ""
+        ([key, value]) => typeof value !== "object" && ![...hiddenKeys, "attachments"].includes(key) && value !== null && value !== undefined && value !== ""
       );
-      const objects = Object.entries(item).filter(([key, value]) => typeof value === "object" && value && ![...hiddenKeys,"attachments"].includes(key));
+      const objects = Object.entries(item).filter(([key, value]) => typeof value === "object" && value && ![...hiddenKeys, "attachments"].includes(key));
 
       return (
         <Card key={idx} className={classes.nestedCard}>
@@ -370,6 +370,16 @@ const ApplicationViewPage = ({
     [application]
   );
 
+  const mapFormStepNo = (fileStepNo, sectionKey,application) => {
+    const isDeathCase = ["financialAssistance", "deadlyGrant"].includes(application?.applicationType);
+
+    if (isDeathCase && fileStepNo === "workforceEmployee") {
+      return "deceasedWorkerInfo"; // remap only for death applications
+    }
+
+    return fileStepNo;
+  };
+
   return (
     <>
       <Grid container spacing={3} className={classes.root}>
@@ -391,7 +401,7 @@ const ApplicationViewPage = ({
               ))}
             </Box>
           </Paper>
-          {viewedFromFlag === "view" && <ApplicationMovementStepper data={movementLogs} language={language}/>}
+          {viewedFromFlag === "view" && <ApplicationMovementStepper data={movementLogs} language={language} />}
           {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes && filteredDocumentTypes?.length > 0 && (
             <Typography variant="h6" style={{ marginTop: 6 }}>
               <b>
@@ -410,11 +420,16 @@ const ApplicationViewPage = ({
                   />
                 </Grid>
                 <Grid item xs={3}>
-                  <Button variant="contained" color="primary" disabled={application?.lastBaseSalary !==null ?true:false} onClick={() => handleLastSalaryAmount(lastSalaryAmount)}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={application?.lastBaseSalary !== null ? true : false}
+                    onClick={() => handleLastSalaryAmount(lastSalaryAmount)}
+                  >
                     {<FormattedMessage id="workforce.submit" module="workforce" />}
                   </Button>
                 </Grid>
-                {(application?.organizationType === "eis" && application?.applicationType ==="disabilityAssistance") && (
+                {application?.organizationType === "eis" && application?.applicationType === "disabilityAssistance" && (
                   <Grid item xs={12}>
                     <Button variant="contained" color="primary" onClick={() => setOpenAccidentInfoModal(true)} fullwidth>
                       {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
@@ -437,9 +452,8 @@ const ApplicationViewPage = ({
               ))}
             </>
           )}
-          {(user_type === WORKFORCE_USER_TYPE.DOCTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR || user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) && viewedFromFlag === "verify" && (
-            <DoctorsEntries application={application} />
-          )}
+          {(user_type === WORKFORCE_USER_TYPE.DOCTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR || user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) &&
+            viewedFromFlag === "verify" && <DoctorsEntries application={application} />}
         </Grid>
 
         {/* Details Section */}
@@ -472,7 +486,8 @@ const ApplicationViewPage = ({
                       {fileStates
                         ?.filter((item, originalIdx) => {
                           item._originalIndex = originalIdx; // attach index temporarily
-                          return item?.workforceDocumentType?.formStepNo === key;
+                          return mapFormStepNo(item?.workforceDocumentType?.formStepNo, key,application) === key;
+
                         })
                         .map((file) => (
                           <DocumentReviewAccordion
