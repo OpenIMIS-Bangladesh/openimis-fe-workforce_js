@@ -351,7 +351,6 @@ const SentForVerificationApplications = () =>{
         <CardContent>
             <ApplicationProcessSearcher
               sentForVerificationApplications={true}
-              disableButtons={1}
             />
           </CardContent>
       </Card>

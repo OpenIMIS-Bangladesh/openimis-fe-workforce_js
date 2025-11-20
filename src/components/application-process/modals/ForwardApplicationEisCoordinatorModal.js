@@ -159,7 +159,7 @@ const ForwardApplicationEisCoordinatorModal = ({
       for (const encodedId of selectedApplicationIds) {
         const updateApplicationData = {
           id: decodeId(encodedId?.id),
-          status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+          status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
         };
 
         await dispatch(
@@ -174,8 +174,8 @@ const ForwardApplicationEisCoordinatorModal = ({
             applicationId: decodeId(encodedId?.id),
             applicationFromId: loggedInUserId,
             applicationToId: userId,
-            status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
-            action: "forward_to_committee",
+            status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
+            action: "forward_for_verification",
           };
 
           await dispatch(
@@ -184,16 +184,6 @@ const ForwardApplicationEisCoordinatorModal = ({
               "create workforce movement"
             )
           );
-          if (summaryId){
-            const updateApplicationSummaryData = {
-                  id: decodeId(summaryId),
-                  status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
-                };
-                await dispatch(
-              updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary")
-            );
-          }   
-            
         }
       }
 
