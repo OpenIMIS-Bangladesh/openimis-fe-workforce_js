@@ -91,7 +91,8 @@ const hiddenKeys = [
   "eisInitialMonthlyAmount",
   "eisMonthlyAmount",
   "initialReplacementRate",
-  "pvFactor"
+  "pvFactor",
+  "dependentId"
 ];
 
 /**

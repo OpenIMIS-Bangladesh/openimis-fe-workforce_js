@@ -53,7 +53,9 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
   useEffect(() => {
     if (applicationId && applicationId[0]?.id) {
       setLoading(true);
-      dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(applicationId[0].id)}"`])).then(res =>console.log("from account dependent",res));
+      dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(applicationId[0].id)}"`])).then((res) =>
+        console.log("from account dependent", res)
+      );
       setLoading(false);
     }
   }, [applicationId]);
@@ -64,18 +66,43 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
   useEffect(() => {
     if (dependent?.length > 0) {
       setExpanded(0);
-      dependent?.map((dep, index) => handleChange(index, "accountHolderName", dep?.nameBn));
+      dependent?.map((dep, index) => {handleChange(index, "accountHolderName", dep?.nameBn);handleChange(index, "dependentId", dep?.id)});
     } else {
       handleChange(0, "accountHolderName", formdata?.workforceEmployee?.nameBn);
     }
   }, [dependent]);
 
   // simplified flat update handler
-  const handleAccountChange = (index, key, value) => {
-    handleChange(index, key, value);
+  const handleAccountChange = (index, key, value, nestedKey = null) => {
+    console.log(dependent);
+    const isDependent = Array.isArray(dependent) && dependent.length > 0;
+    const dependentId = isDependent ? dependent?.[index]?.id : null;
+
+    const baseAccount = {
+      ...(accounts[index] || {}),
+      applicant_type: isDependent ? "dependent" : "applicant",
+      ...(isDependent && { id: dependentId }),
+    };
+
+    if (nestedKey) {
+      handleChange(index, key, {
+        ...(baseAccount[key] || {}),
+        [nestedKey]: value,
+      });
+    } else {
+      handleChange(index, key, value);
+    }
+
+    handleChange(index, "applicant_type", isDependent ? "dependent" : "applicant");
+
+    if (isDependent && dependentId) {
+      handleChange(index, "id", dependentId);
+    }
   };
 
   const allowAdd = !applicationId || !applicationId[0]?.id;
+
+  console.log({dependent})
 
   return (
     <Box mt={1}>
