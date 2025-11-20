@@ -80,6 +80,18 @@ const hiddenKeys = [
   "insuranceNumber",
   "grantMoney",
   "relatedUser",
+  "doctorsDiagnosis",
+  "doctorsFlag",
+  "doctorsRecommendedDonation",
+  "lastBaseSalary",
+  "doctorsFlagNote",
+  "eisApprovedAmount",
+  "eisCalculatedAmount",
+  "eisPaymentType",
+  "eisInitialMonthlyAmount",
+  "eisMonthlyAmount",
+  "initialReplacementRate",
+  "pvFactor"
 ];
 
 /**
