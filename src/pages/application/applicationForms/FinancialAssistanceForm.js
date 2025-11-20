@@ -566,6 +566,8 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
     return <ApplicationFormSubmitted />;
   }
 
+  console.log({ tazwer: formData });
+  console.log({ fahimTazwer: uploadFile });
 
   return (
     <div className={classes.container}>
