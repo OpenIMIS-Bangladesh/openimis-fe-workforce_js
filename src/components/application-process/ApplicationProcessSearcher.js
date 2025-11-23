@@ -1089,7 +1089,10 @@ class ApplicationProcessSearcher extends Component {
       this.props.fetchApplicationsSummary(this.props.modulesManager, defaultStatusFilters);
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
       this.setState({ displayVersion: showHistoryFilter });
+      if(this.props.summaryId)
+        {
       const filtersBase = [
+        'statusIn: ["forward_to_eis_advisor"]',
         'organizationTypeIn: ["eis"]',
         'orderBy: ["-dateCreated"]',
       ];
@@ -1099,6 +1102,30 @@ class ApplicationProcessSearcher extends Component {
       const [] = await Promise.all([
         this.props.fetchApplicationsSummary(this.props.modulesManager, Filters),
       ]);
+    } else if (rejectedApplication) {
+      const filtersBase = [
+        'statusIn: ["rejected_by_dg"]',
+        'organizationTypeIn: ["eis"]',
+        'orderBy: ["-dateCreated"]'
+      ];
+       if(loggedInUserId)
+        {
+          filtersBase.push(`applicationTo:"${loggedInUserId}"`);
+        }
+      await this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
+    }else if(this.props.returnedApplications)
+      {
+        const filtersBase = [
+          'statusIn: ["revert"]',
+          'organizationTypeIn: ["eis"]',
+          'orderBy: ["-dateCreated"]'
+        ];
+        if(loggedInUserId)
+        {
+          filtersBase.push(`applicationFrom:"${loggedInUserId}"`);
+        }
+        this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
+      }
     }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COMMITTEE) {
       this.setState({ displayVersion: showHistoryFilter });
       this.props.fetchApplicationsSummary(this.props.modulesManager, [

@@ -156,6 +156,74 @@ const ReturnedApplications = () => {
     </>
   )
 };
+const RejectApplication = () => {
+  const classes = useStyles()
+  return (
+    <>
+      <ApplicationProcessSearcher
+        rejectedApplication={true}
+        dynamicTableTitle= {"workforce.application.rejectedApplication"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
+
+const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
+  const classes = useStyles();
+  const [expanded, setExpanded] = useState(null);
+
+  const handleChange = (panelId) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panelId : null);
+  };
+  console.log("clear")
+  console.log("summary data", summaryData);
+  return (
+    <div className={classes.accordionPadding}>
+        {summaryData         
+          .map((item, index) => (
+            <Accordion
+              key={index}
+              expanded={expanded === item.id}
+              onChange={handleChange(item.id)}
+              className={classes.accordion}
+            >
+              <AccordionSummary
+                className={classes.accordionSummary}
+                expandIcon={<ExpandMoreIcon className="material-icons" />}
+              >
+                <Typography variant="subtitle1" style={{ flex: 1 }}>
+                  <strong>{item.name}</strong>
+                </Typography>
+                <Typography
+                  variant="body2"
+                  style={{ marginLeft: "auto", color: "#015C63" }}
+                >
+                  {item.meetingDate} | {item.month} {item.year}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails className={classes.accordionDetails}>
+                <Card style={{ width: "100%" }}>
+                  <CardContent>
+                    {expanded === item.id && (
+                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons}/>
+                    )}
+                  </CardContent>
+                </Card>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+    </div>
+  );
+};
 
 const Dashboard = () =>{
   const dispatch = useDispatch();
@@ -791,7 +859,7 @@ const EISAdvisorDashboardPage = () => {
       case "waitingApplications":
         return (<ApplicationSummaryPage status="pending"/>);
       case "rejectedApplications":
-        return <ApplicationSummaryPage status="rejected"/>;
+        return <RejectApplication/>;
       case "approvedApplications":
         return (<ApplicationSummaryPage status="approved"/>);
       case "returnedApplications":
