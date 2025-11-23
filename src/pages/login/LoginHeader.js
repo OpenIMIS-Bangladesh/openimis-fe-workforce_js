@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Box, Grid, Paper, LinearProgress, Divider, Link, Typography } from "@material-ui/core";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { makeStyles } from "@material-ui/styles";
+import { isEisPath } from "../../utils/utils";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -58,7 +59,7 @@ export default function LoginHeader() {
                         fontSize="h6.fontSize"
                         textAlign="center" /* Make sure all props are complete */
                     >
-                        শ্রমিক কল্যাণ তহবিল ব্যবস্থাপনা সিস্টেম
+                     { isEisPath()? "ই.আই.এস. ম্যানেজমেন্ট সিস্টেম":  "শ্রমিক কল্যাণ তহবিল ব্যবস্থাপনা সিস্টেম"}
                     </Box>
                 </div>
             </>
