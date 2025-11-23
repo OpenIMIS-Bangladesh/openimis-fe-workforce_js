@@ -8,6 +8,7 @@ import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
 import CustomDetailedLocation from "../../components/application-forms/CustomDetailedLocation";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 import RelationWithWorkerPicker from "../../pickers/RelationWithWorkerPicker";
+import CountryPicker from "../../pickers/CountryPicker";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -42,6 +43,8 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
   const [sameAsPresent, setSameAsPresent] = useState(false);
 
   const applicantData = useSelector((state) => state.workforce[`workforceApplicant`] ?? []);
+  const reduxState = useSelector((state) => state);
+  const locale = reduxState?.core?.user?.i_user?.language
   const isCityLocation = (locationObj) => {
     let current = locationObj;
 
@@ -136,12 +139,22 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
               </Grid>
 
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                <TextInput
+                {/* <TextInput
                   label="workforce.employee.citizenship"
                   value={formData?.workforceApplicant?.citizenship || ""}
                   onChange={(v) => handleChange("citizenship", v)}
                   readOnly={false}
+                /> */}
+                <CountryPicker
+                  id="citizenship"
+                  label={formatMessage("workforce.employee.citizenship")}
+                  value={formData?.workforceApplicant?.citizenship || ""}
+                  onChange={(v) => handleChange("citizenship", v)}
+                  readOnly={false}
+                  // required
+                  language={locale === "fr" ? "bn" : "en"}
                 />
+                {errors.citizenship && <FormHelperText error>{errors.citizenship}</FormHelperText>}
               </Grid>
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <PublishedComponent
@@ -336,7 +349,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
           </Paper>
         </Grid>
       </Grid>
-      <EmployeeDetailsForm2 handleChange={()=>{}} formData={formData} selectedApplicationType={formData?.applicationType} formStepNo={"applicantInfo"} />
+      <EmployeeDetailsForm2 handleChange={() => {}} formData={formData} selectedApplicationType={formData?.applicationType} formStepNo={"applicantInfo"} />
     </Box>
   );
 };

@@ -217,14 +217,14 @@ console.log('formData from employee Details form',formData)
                   <FactoryPicker
                     id="factory"
                     required={true}
-                    value={ formData?.factory?.id || formData?.workforceEmployee?.factory?.id }
+                    value={ formData?.workforceFactoryId||formData?.factory?.id || formData?.workforceEmployee?.factory?.id }
                     label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
                     companyId={formData?.workforceEmployee?.company?.id}
                     onChange={(v) => {
                       // handleChange("factory", v, "employeeDesignation");
                       handleChange("factory", v);
                     }}
-                    readOnly={false}
+                    readOnly={formData?.workforceFactoryId?true:false}
                   />
                   {errors.factory && <FormHelperText error>{errors.factory}</FormHelperText>}
                 </Grid>

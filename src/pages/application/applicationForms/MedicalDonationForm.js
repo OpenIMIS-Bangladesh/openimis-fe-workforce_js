@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MedicalDonationForm = ({ organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
+const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
   const modulesManager = useModulesManager();
@@ -110,7 +110,8 @@ const MedicalDonationForm = ({ organizationType, selectedApplicationType, applic
       organizationId: "",
     },
     company: null,
-    factory: null,
+    factory: workforceFactoryId||null,
+    workforceFactoryId:workforceFactoryId||"",
     isSubmitted: "no",
     organizationType: "",
     applicationType: "",
@@ -187,8 +188,9 @@ const MedicalDonationForm = ({ organizationType, selectedApplicationType, applic
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || workforceFactoryId|| null,
         applicationForSelf: applicationForSelf,
+        workforceFactoryId:workforceFactoryId||"",
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,

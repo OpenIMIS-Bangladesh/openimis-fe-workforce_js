@@ -61,7 +61,7 @@ const steps = [
   // "workforce.application.steps.upload.documents",
 ];
 
-const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, parsedApplicationData, applicationForSelf }) => {
+const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selectedApplicationType, parsedApplicationData, applicationForSelf }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
 
@@ -147,7 +147,8 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
     },
     deathType: deathType,
     company: null,
-    factory: null,
+    factory: workforceFactoryId||null,
+    workforceFactoryId:workforceFactoryId||"",
     isSubmitted: "no",
     organizationType: "" || organizationType,
     applicationType: "",
@@ -211,8 +212,9 @@ const FinancialAssistanceForm = ({ organizationType, selectedApplicationType, pa
           presentAddress: employeeData?.presentAddress || "",
         },
         company: employeeData?.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory ||workforceFactoryId || null,
         applicationForSelf: applicationForSelf,
+        workforceFactoryId:workforceFactoryId||"",
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,

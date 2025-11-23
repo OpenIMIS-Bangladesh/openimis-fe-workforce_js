@@ -64,7 +64,7 @@ const steps = [
   // "workforce.application.steps.upload.documents",
 ];
 
-const DeadlyGrantForm = ({ organizationType, selectedApplicationType, parsedApplicationData, applicationForSelf }) => {
+const DeadlyGrantForm = ({workforceFactoryId,organizationType, selectedApplicationType, parsedApplicationData, applicationForSelf }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
   const modulesManager = useModulesManager();
@@ -149,6 +149,7 @@ const DeadlyGrantForm = ({ organizationType, selectedApplicationType, parsedAppl
     deathType: deathType,
     company: null,
     factory: null,
+    workforceFactoryId:workforceFactoryId||"",
     isSubmitted: "no",
     organizationType: "",
     applicationType: "",
@@ -210,7 +211,8 @@ const DeadlyGrantForm = ({ organizationType, selectedApplicationType, parsedAppl
           presentAddress: employeeData?.presentAddress || "",
         },
         company: employeeData?.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory ||workforceFactoryId || null,
+        workforceFactoryId:workforceFactoryId||"",
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,

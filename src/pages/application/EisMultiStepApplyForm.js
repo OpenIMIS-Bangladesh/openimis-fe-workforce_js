@@ -142,7 +142,7 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
         {!showForm ? (
           <>
             <EisApplicationTypeSelector
-            workforceFactoryId={workforceFactoryId}
+              workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}
               onSelect={handleSelection}
               selectedApplicationType={selectedApplicationType}
@@ -171,6 +171,7 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
               </Typography>
             </div>
             <DisabilityForm
+              workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
@@ -190,6 +191,7 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
               </Typography>
             </div>
             <FinancialAssistanceForm
+              workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}
               organizationType={organizationType}
               parsedApplicationData={parsedApplicationData}

@@ -203,6 +203,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               </Paper>
             ) : (
               <MedicalDonationForm
+                workforceFactoryId={workforceFactoryId}
                 modulesManager={modulesManager}
                 organizationType={organizationType}
                 selectedApplicationType={selectedApplicationType}
@@ -249,6 +250,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               </Paper>
             ) : (
               <MedicalAssistanceForm
+                workforceFactoryId={workforceFactoryId}
                 modulesManager={modulesManager}
                 organizationType={organizationType}
                 parsedApplicationData={parsedApplicationData}
@@ -295,6 +297,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               </Paper>
             ) : (
               <MaternalGrantForm
+                workforceFactoryId={workforceFactoryId}
                 modulesManager={modulesManager}
                 organizationType={organizationType}
                 parsedApplicationData={parsedApplicationData}
@@ -315,6 +318,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               </Typography>
             </div>
             <DisabilityForm
+              workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
@@ -360,6 +364,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               </Paper>
             ) : ( */}
             <EducationGrantForm
+              workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}
               organizationType={organizationType}
               selectedApplicationType={selectedApplicationType}
@@ -380,6 +385,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               </Typography>
             </div>
             <FinancialAssistanceForm
+              workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}
               organizationType={organizationType}
               parsedApplicationData={parsedApplicationData}
@@ -425,6 +431,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               </Paper>
             ) : (
               <ScholarshipApplicationForm
+                workforceFactoryId={workforceFactoryId}
                 modulesManager={modulesManager}
                 organizationType={organizationType}
                 selectedApplicationType={selectedApplicationType}
@@ -445,6 +452,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               </Typography>
             </div>
             <DeadlyGrantForm
+              workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}
               organizationType={organizationType}
               parsedApplicationData={parsedApplicationData}

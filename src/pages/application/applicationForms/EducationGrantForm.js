@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EducationGrantForm = ({ organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
+const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
   const modulesManager = useModulesManager();
@@ -129,6 +129,7 @@ const EducationGrantForm = ({ organizationType, selectedApplicationType, applica
     otherInfo: "",
     company: null,
     factory: null,
+    workforceFactoryId:workforceFactoryId||"",
     isSubmitted: "no",
     organizationType: "",
     applicationType: "",
@@ -188,8 +189,9 @@ const EducationGrantForm = ({ organizationType, selectedApplicationType, applica
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory ||workforceFactoryId|| null,
         applicationForSelf: applicationForSelf,
+        workforceFactoryId:workforceFactoryId||"",
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || {},
