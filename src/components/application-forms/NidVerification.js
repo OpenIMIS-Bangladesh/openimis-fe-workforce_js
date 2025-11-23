@@ -45,7 +45,7 @@ const NidVerification = ({ formData, nidOrBcn, modulesManager, setDisableConfirm
           <Grid item xs={12}>
             <Card>
               <CardContent>
-                {formData.organizationType !== "blwf" && (
+                {(formData.organizationType !== "blwf" ||formData.organizationType !== "eis") && (
                   <Typography variant="body1" className={classes.title}>
                     {data && !data.error ? (
                       <b style={{ color: "#25D366" }}>

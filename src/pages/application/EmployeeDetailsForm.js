@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Grid, Box, Paper, Typography, Divider, IconButton, FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent,decodeId } from "@openimis/fe-core";
+import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent, decodeId } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import clsx from "clsx";
 import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
@@ -48,8 +48,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
     return formData.applicationType === "financialAssistance" ? `${formatMessage("workforce.dead")} ${formatMessage(labelKey)}` : formatMessage(labelKey);
   };
 
-  const locale = reduxState?.core?.user?.i_user?.language
-console.log('formData from employee Details form',formData)
+  const locale = reduxState?.core?.user?.i_user?.language;
+  console.log("formData from employee Details form", formData);
   return (
     <Box>
       <Grid container spacing={2}>
@@ -102,11 +102,12 @@ console.log('formData from employee Details form',formData)
                 />
                 {errors.rdmp && <FormHelperText error>{formatMessage(errors?.rdmp)}</FormHelperText>}
               </Grid>
-              
 
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <EmployeeGenderPicker
-                  value={typeof formData?.workforceEmployee?.gender === "object" ?formData?.workforceEmployee?.gender?.name :formData?.workforceEmployee?.gender}
+                  value={
+                    typeof formData?.workforceEmployee?.gender === "object" ? formData?.workforceEmployee?.gender?.name : formData?.workforceEmployee?.gender
+                  }
                   label={<FormattedMessage id="workforce.employee.gender" module="workforce" />}
                   onChange={(v) => handleChange("gender", v)}
                   readOnly={false}
@@ -217,14 +218,14 @@ console.log('formData from employee Details form',formData)
                   <FactoryPicker
                     id="factory"
                     required={true}
-                    value={ formData?.workforceFactoryId||formData?.factory?.id || formData?.workforceEmployee?.factory?.id }
+                    value={formData?.workforceFactoryId || formData?.factory?.id || formData?.workforceEmployee?.factory?.id}
                     label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
                     companyId={formData?.workforceEmployee?.company?.id}
                     onChange={(v) => {
                       // handleChange("factory", v, "employeeDesignation");
                       handleChange("factory", v);
                     }}
-                    readOnly={formData?.workforceFactoryId?true:false}
+                    readOnly={formData?.workforceFactoryId ? true : false}
                   />
                   {errors.factory && <FormHelperText error>{errors.factory}</FormHelperText>}
                 </Grid>
@@ -251,9 +252,13 @@ console.log('formData from employee Details form',formData)
                     value={formData?.workforceEmployee?.deathDate || ""}
                     readOnly={false}
                     onChange={(v) => handleChange("deathDate", v)}
-                  // readOnly={true}
+                    // readOnly={true}
                   />
-                  {errors.deathDate && <FormHelperText error><FormattedMessage id={errors.deathDate} /></FormHelperText>}
+                  {errors.deathDate && (
+                    <FormHelperText error>
+                      <FormattedMessage id={errors.deathDate} />
+                    </FormHelperText>
+                  )}
                 </Grid>
               ) : null}
             </Grid>
@@ -264,7 +269,7 @@ console.log('formData from employee Details form',formData)
               <b>{getDeathLabel("workforce.application.labourHeadingTwo")}</b>
             </Typography>
             <Grid container className={clsx(classes.item, classes.overrideReadOnly)} spacing={2}>
-              {/* <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
+              {formData?.organizationType === "eis" &&(<Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   id="fatherNameEn"
                   label="workforce.employee.fathers_name.en"
@@ -275,11 +280,11 @@ console.log('formData from employee Details form',formData)
                   error={!!errors.fatherNameEn}
                   helperText={errors.fatherNameEn}
                 />
-              </Grid> */}
-              <Grid item xs={12} className={clsx(classes.item, classes.overrideReadOnly)}>
+              </Grid>)}
+              <Grid item xs={formData?.organizationType === "eis"?6:12} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   id="fatherNameBn"
-                  label="workforce.employee.fathers_name"
+                  label={formData?.organizationType === "eis" ?"workforce.employee.fathers_name.bn" :"workforce.employee.fathers_name"}
                   value={formData?.workforceEmployee?.fatherNameBn || ""}
                   onChange={(v) => handleChange("fatherNameBn", v)}
                   readOnly={false}
@@ -288,22 +293,25 @@ console.log('formData from employee Details form',formData)
                   helperText={errors.fatherNameBn}
                 />
               </Grid>
-              {/* <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
-                <TextInput
-                  id="motherNameEn"
-                  label="workforce.employee.mothers_name.en"
-                  value={formData?.workforceEmployee?.motherNameEn || ""}
-                  onChange={(v) => handleChange("motherNameEn", v)}
-                  readOnly={false}
-                  required
-                  error={!!errors.motherNameEn}
-                  helperText={errors.motherNameEn}
-                />
-              </Grid> */}
-              <Grid item xs={12} className={clsx(classes.item, classes.overrideReadOnly)}>
+
+              {formData?.organizationType === "eis" && (
+                <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
+                  <TextInput
+                    id="motherNameEn"
+                    label="workforce.employee.mothers_name.en"
+                    value={formData?.workforceEmployee?.motherNameEn || ""}
+                    onChange={(v) => handleChange("motherNameEn", v)}
+                    readOnly={false}
+                    required
+                    error={!!errors.motherNameEn}
+                    helperText={errors.motherNameEn}
+                  />
+                </Grid>
+              )}
+              <Grid item xs={formData?.organizationType === "eis"?6:12} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   id="motherNameBn"
-                  label="workforce.employee.mothers_name"
+                  label={formData?.organizationType === "eis" ?"workforce.employee.mothers_name.bn" :"workforce.employee.mothers_name"}
                   value={formData?.workforceEmployee?.motherNameBn || ""}
                   onChange={(v) => handleChange("motherNameBn", v)}
                   readOnly={false}
@@ -312,17 +320,18 @@ console.log('formData from employee Details form',formData)
                   helperText={errors.motherNameBn}
                 />
               </Grid>
-              {/* <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
+              
+              {formData?.organizationType === "eis" &&( <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
                   label="workforce.employee.spouse.name.en"
                   value={formData?.workforceEmployee?.spouseNameEn || ""}
                   onChange={(v) => handleChange("spouseNameEn", v)}
                   readOnly={false}
                 />
-              </Grid> */}
-              <Grid item xs={12} className={clsx(classes.item, classes.overrideReadOnly)}>
+              </Grid>)}
+              <Grid item xs={formData?.organizationType === "eis"?6:12} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <TextInput
-                  label="workforce.employee.spouse.name"
+                  label={formData?.organizationType === "eis" ? "workforce.employee.spouse.name.bn":"workforce.employee.spouse.name"}
                   value={formData?.workforceEmployee?.spouseNameBn || ""}
                   onChange={(v) => handleChange("spouseNameBn", v)}
                   readOnly={false}
@@ -376,8 +385,7 @@ console.log('formData from employee Details form',formData)
                       value={formData?.metadata?.motherNameEn || ""}
                       onChange={(v) => setFormData("spouseMotherNameEn", v, "metadata")}
                       readOnly={false}
-                    // required
-
+                      // required
                     />
                   </Grid>
                   <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
@@ -411,7 +419,7 @@ console.log('formData from employee Details form',formData)
           </Paper>
         </Grid>
       </Grid>
-      <EmployeeDetailsForm2 handleChange={()=>{}} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"workforceEmployee"} />
+      <EmployeeDetailsForm2 handleChange={() => {}} formData={formData} selectedApplicationType={formData.applicationType} formStepNo={"workforceEmployee"} />
     </Box>
   );
 };
