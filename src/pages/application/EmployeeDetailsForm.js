@@ -411,7 +411,7 @@ console.log('formData from employee Details form',formData)
           </Paper>
         </Grid>
       </Grid>
-      <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"workforceEmployee"} />
+      <EmployeeDetailsForm2 handleChange={()=>{}} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"workforceEmployee"} />
     </Box>
   );
 };

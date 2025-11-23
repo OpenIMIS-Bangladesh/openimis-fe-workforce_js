@@ -489,7 +489,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
         )}
       </Paper>
       <EmployeeDetailsForm2
-        handleChange={handleChange}
+        handleChange={()=>{}}
         formData={formData}
         selectedApplicationType={formData.applicationType}
         formStepNo={"employeeAccidentInfo"}

@@ -62,11 +62,9 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
   useEffect(() => {
     if (dependent?.length > 0) {
       setExpanded(0);
-      dependent?.map((dep,index)=>(
-        handleChange(index,"accountHolderName", dependent?.[index]?.nameBn )
-      ))
-    }else{
-      handleChange(0,"accountHolderName",formdata?.workforceEmployee?.nameBn)
+      dependent?.map((dep, index) => handleChange(index, "accountHolderName", dependent?.[index]?.nameBn));
+    } else {
+      handleChange(0, "accountHolderName", formdata?.workforceEmployee?.nameBn);
     }
   }, [dependent]);
 
@@ -259,12 +257,12 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                   </Grid>
                 </Grid>
               </AccordionDetails>
-            <EmployeeDetailsForm2
-              handleChange={handleChange}
-              formData={formdata}
-              selectedApplicationType={formdata.applicationType}
-              formStepNo={"employeeBankInfo"}
-            />
+              <EmployeeDetailsForm2
+                handleChange={() => {}}
+                formData={formdata}
+                selectedApplicationType={formdata.applicationType}
+                formStepNo={"employeeBankInfo"}
+              />
             </Accordion>
           </>
         );

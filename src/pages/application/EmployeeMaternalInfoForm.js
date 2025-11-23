@@ -154,7 +154,7 @@ const EmployeeMaternalInfoForm = ({ handleChange, formData, setFormData,applicat
           </Grid>
         {/* )} */}
       </Paper>
-      <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"employeeAccidentInfo"} />
+      <EmployeeDetailsForm2 handleChange={()=>{}} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"employeeAccidentInfo"} />
 
     </Box>
   );

@@ -319,7 +319,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
             </AccordionDetails>
 
             <EmployeeDetailsForm2
-              // handleChange={handleChange}
+              handleChange={()=>{}}
               formData={formdata}
               selectedApplicationType={formdata.applicationType}
               formStepNo={"employeeBankInfo"}
