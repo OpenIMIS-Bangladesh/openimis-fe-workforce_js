@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const EisMultiStepApplyForm = () => {
+const EisMultiStepApplyForm = ({workforceFactoryId}) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { application_uuid } = useParams();
@@ -142,6 +142,7 @@ const EisMultiStepApplyForm = () => {
         {!showForm ? (
           <>
             <EisApplicationTypeSelector
+            workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}
               onSelect={handleSelection}
               selectedApplicationType={selectedApplicationType}

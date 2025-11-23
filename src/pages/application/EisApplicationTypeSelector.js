@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EisApplicationTypeSelector = ({ modulesManager, onSelect, selectedApplicationType, parsedApplicationData }) => {
+const EisApplicationTypeSelector = ({ workforceFactoryId,modulesManager, onSelect, selectedApplicationType, parsedApplicationData }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -74,6 +74,7 @@ const EisApplicationTypeSelector = ({ modulesManager, onSelect, selectedApplicat
             <Grid item xs={8}>
               <WorkforceEmployeePicker
                 modulesManager={modulesManager}
+                workforceFactoryId={workforceFactoryId}
                 value={selectedEmployee}
                 onChange={handleEmployeeChange}
                 required={true}

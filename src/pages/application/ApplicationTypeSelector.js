@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ApplicationTypeSelector = ({ modulesManager, onSelect, selectedApplicationType, parsedApplicationData }) => {
+const ApplicationTypeSelector = ({ workforceFactoryId,modulesManager, onSelect, selectedApplicationType, parsedApplicationData }) => {
   const [isExportOriented, setIsExportOriented] = useState("");
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -74,6 +74,7 @@ const ApplicationTypeSelector = ({ modulesManager, onSelect, selectedApplication
             <Grid item xs={8}>
               <WorkforceEmployeePicker
                 modulesManager={modulesManager}
+                workforceFactoryId={workforceFactoryId}
                 value={selectedEmployee}
                 onChange={handleEmployeeChange}
                 required={true}

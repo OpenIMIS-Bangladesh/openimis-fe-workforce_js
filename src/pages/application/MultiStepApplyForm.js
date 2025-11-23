@@ -60,8 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-const MultiStepApplyForm = () => {
+const MultiStepApplyForm = ({ workforceFactoryId }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { application_uuid } = useParams();
@@ -90,7 +89,7 @@ const MultiStepApplyForm = () => {
 
     const isEmptyDependent = Object.keys(parsedApplicationData.employeeDependentInfo).length === 0;
 
-    setApplicationForSelf(parsedApplicationData?.applicationFor==="dependent"?"no":parsedApplicationData?.applicationFor==="self"?"yes":"");
+    setApplicationForSelf(parsedApplicationData?.applicationFor === "dependent" ? "no" : parsedApplicationData?.applicationFor === "self" ? "yes" : "");
     setSelectedApplicationType(parsedApplicationData?.applicationType);
     setOrganizationType(parsedApplicationData?.organizationType);
   }, [parsedApplicationData]);
@@ -118,14 +117,16 @@ const MultiStepApplyForm = () => {
 
   const handleNextButtonClicked = () => {
     if (selectedApplicationType === "financialAssistance") {
-      dispatch(fetchApplicationsSummary(modulesManager, [`applicationType: "financialAssistance",workforceEmployee_Nid: "${userName}",status:"new"`])).then((res) => {
-        const data = res?.payload?.data?.workforceApplication?.edges;
-        if (data && data.length > 0) {
-          setOpenErrorModal(true);
-          return;
+      dispatch(fetchApplicationsSummary(modulesManager, [`applicationType: "financialAssistance",workforceEmployee_Nid: "${userName}",status:"new"`])).then(
+        (res) => {
+          const data = res?.payload?.data?.workforceApplication?.edges;
+          if (data && data.length > 0) {
+            setOpenErrorModal(true);
+            return;
+          }
+          setShowForm(true);
         }
-        setShowForm(true);
-      });
+      );
     } else {
       setShowForm(true);
     }
@@ -147,6 +148,7 @@ const MultiStepApplyForm = () => {
         {!showForm ? (
           <>
             <ApplicationTypeSelector
+              workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}
               onSelect={handleSelection}
               selectedApplicationType={selectedApplicationType}

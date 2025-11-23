@@ -524,13 +524,30 @@ const FactoryAdminDashboard = () => {
   // const isEisPath = path.includes("eis");
   console.log({ isEisPath });
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
+  const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
+
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  useEffect(() => {
+    if (loggedInUserId) {
+      const filters = [`relatedUser_Id: "${encodeId(modulesManager, "InteractiveUserGQLType", loggedInUserId)}"`];
+      dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
+        const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+        const node = edges[0]?.node;
+        const factoryId = node?.workforceFactory?.id || null;
+        setWorkforceFactoryId(factoryId);
+      });
+    }
+  }, [loggedInUserId]);
 
   const renderContent = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
       case "newApplications":
-        return isEisPath() ? <EisMultiStepApplyForm /> : <MultiStepApplyForm />;
+        return isEisPath() ? <EisMultiStepApplyForm workforceFactoryId={workforceFactoryId}/> : <MultiStepApplyForm workforceFactoryId={workforceFactoryId}/>;
       case "submittedByApplicants":
         return <SubmittedByApplicants />;
       case "forwardedApplications":

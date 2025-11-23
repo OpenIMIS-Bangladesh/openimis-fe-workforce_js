@@ -5,6 +5,7 @@ import { fetchWorkforceEmployeesSummary } from "../actions";
 
 const WorkforceEmployeePicker = ({
   modulesManager,
+  workforceFactoryId,
   onChange,
   readOnly,
   required,
@@ -18,34 +19,25 @@ const WorkforceEmployeePicker = ({
 }) => {
   const [searchString, setSearchString] = useState("");
   const { formatMessage } = useTranslations("workforce");
+  const user = useSelector((state) => state.core?.user);
+  console.log("user infos", user);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchWorkforceEmployeesSummary(modulesManager, ""));
+    dispatch(fetchWorkforceEmployeesSummary(modulesManager, [`workforceFactoryId:"${workforceFactoryId}"`]));
   }, []);
 
   const fetchEmployees = () => {
     dispatch(fetchWorkforceEmployeesSummary(modulesManager, ""));
   };
 
-  const isLoading = useSelector(
-    (state) => state.workforce[`fetchingWorkforceEmployees`]
-  );
-  const data = useSelector(
-    (state) => state.workforce[`workforceEmployees`] ?? []
-  );
-  const error = useSelector(
-    (state) => state.workforce["errorWorkforceEmployees"]
-  );
+  const isLoading = useSelector((state) => state.workforce[`fetchingWorkforceEmployees`]);
+  const data = useSelector((state) => state.workforce[`workforceEmployees`] ?? []);
+  const error = useSelector((state) => state.workforce["errorWorkforceEmployees"]);
 
-  const selectedOption = useMemo(
-    () => data.find((option) => option.id === value) || null,
-    [value, data]
-  );
+  const selectedOption = useMemo(() => data.find((option) => option.id === value) || null, [value, data]);
 
-  const locale = useSelector(
-    (state) => state.core?.user?.i_user?.language || "en"
-  );
+  const locale = useSelector((state) => state.core?.user?.i_user?.language || "en");
 
   const customFilterOptions = (options, { inputValue }) => {
     const lowerInput = inputValue.toLowerCase();
@@ -72,13 +64,17 @@ const WorkforceEmployeePicker = ({
       options={data}
       isLoading={isLoading}
       value={selectedOption}
-      getOptionLabel={(option) =>
-        locale === "en" ? option.firstNameEn : option.firstNameBn
-      }
+      getOptionLabel={(option) => (locale === "en" ? option.firstNameEn : option.firstNameBn)}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={customFilterOptions}
       filterSelectedOptions={filterSelectedOptions}
       onInputChange={(text) => setSearchString(text)}
+      textFieldProps={{
+        inputProps: {
+          inputMode: "numeric",
+          pattern: "[0-9০-৯]*", // allow English + Bangla numbers
+        },
+      }}
       // onOpen={fetchEmployees}
     />
   );
