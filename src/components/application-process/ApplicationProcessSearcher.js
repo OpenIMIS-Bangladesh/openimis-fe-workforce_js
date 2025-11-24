@@ -1092,7 +1092,7 @@ class ApplicationProcessSearcher extends Component {
       if(this.props.summaryId)
         {
       const filtersBase = [
-        'statusIn: ["forward_to_eis_advisor"]',
+        'statusIn: ["forward_to_eis_advisor","approved_by_eis_director"]',
         'organizationTypeIn: ["eis"]',
         'orderBy: ["-dateCreated"]',
       ];
