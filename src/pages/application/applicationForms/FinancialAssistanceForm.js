@@ -247,20 +247,13 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
   const handleNext = async () => {
     const newErrors = validateRequiredFields(stepRef, formatMessage);
     setErrors(newErrors);
+    console.log(newErrors)
 
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if (
-        (nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate) && !isNotFutureDate(formData?.workforceEmployee?.deathDate)) ||
-        (nextStep === 1 && !isNotFutureDate(formData?.metadata?.deathDate))
-      ) {
+      if ((nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate))) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
-        if (
-          (nextStep === 1 || nextStep === 3) &&
-          (!isNotFutureDate(formData?.workforceEmployee?.deathDate) || !isNotFutureDate(formData?.metadata?.deathDate))
-        ) {
-          fakeErrors = { ...fakeErrors, deathDate: "core.error.deathTime" };
-        }
+        
         setErrors(fakeErrors);
       } else {
         setActiveStep(nextStep);

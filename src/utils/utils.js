@@ -1,13 +1,7 @@
 import { useSelector } from "react-redux";
 import { WORKFORCE_USER_TYPE } from "../constants";
 import { fetchApplication } from "../actions";
-import {
-  useModulesManager,
-  formatMutation,
-  decodeId,
-  FormattedMessage,
-  parseData
-} from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage, parseData } from "@openimis/fe-core";
 
 export function isBase64Encoded(str) {
   // Base64 encoded strings can only contain characters from [A-Za-z0-9+/=]
@@ -47,13 +41,13 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.SECTION_ADMIN;
   } else if (user_rights.includes(821002)) {
     user_type = WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO;
-  }else if (user_rights.includes(821003)) {
+  } else if (user_rights.includes(821003)) {
     user_type = WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR;
-  }else if (user_rights.includes(821004)) {
+  } else if (user_rights.includes(821004)) {
     user_type = WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR;
-  }else if (user_rights.includes(821005)) {
+  } else if (user_rights.includes(821005)) {
     user_type = WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN;
-  }else if (user_rights.includes(821007)) {
+  } else if (user_rights.includes(821007)) {
     user_type = WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR;
   } else if (user_rights.includes(818001)) {
     user_type = WORKFORCE_USER_TYPE.DOCTOR;
@@ -103,8 +97,8 @@ export function getUserTypeFromRights(user_rights) {
 export const safeParse = (str) => {
   try {
     if (!str) return null;
-    const once = JSON.parse(str);     // first parse
-    return typeof once === 'string' ? JSON.parse(once) : once; // second parse if needed
+    const once = JSON.parse(str); // first parse
+    return typeof once === "string" ? JSON.parse(once) : once; // second parse if needed
   } catch (e) {
     console.warn("Parsing failed for:", str);
     return null;
@@ -126,7 +120,7 @@ export const tryParse = (value) => {
 };
 
 export const getParsedApplication = (modulesManager, filters) => {
-  console.log('hello from getParsedApplication', filters)
+  console.log("hello from getParsedApplication", filters);
   return async (dispatch, getState) => {
     try {
       // Dispatch the fetch action and wait for it to complete
@@ -142,23 +136,23 @@ export const getParsedApplication = (modulesManager, filters) => {
       }
 
       console.log("Raw application data:", rawData);
-      const workforceDependentInfo = safeParse(rawData?.employeeDependentInfo)
-      const dependentInfoWithId = workforceDependentInfo?.map((dep,idx)=>{
-        const temp= {...dep,id:rawData?.workforceEmployeeDependentApplication?.[idx]?.id}
-        return temp
-      })
-       const parsedDependentInfo = Array.isArray(rawData?.workforceEmployeeDependentApplication)
-      ? rawData?.workforceEmployeeDependentApplication?.map((dep) => ({
-          ...dep,
-          presentAddress: safeParse(dep?.presentAddress),
-          permanentAddress: safeParse(dep?.permanentAddress),
-        }))
-      : rawData?.workforceEmployeeDependentApplication;
+      const workforceDependentInfo = safeParse(rawData?.employeeDependentInfo);
+      const dependentInfoWithId = workforceDependentInfo?.map((dep, idx) => {
+        const temp = { ...dep, id: rawData?.workforceEmployeeDependentApplication?.[idx]?.id };
+        return temp;
+      });
+      const parsedDependentInfo = Array.isArray(rawData?.workforceEmployeeDependentApplication)
+        ? rawData?.workforceEmployeeDependentApplication?.map((dep) => ({
+            ...dep,
+            presentAddress: safeParse(dep?.presentAddress),
+            permanentAddress: safeParse(dep?.permanentAddress),
+          }))
+        : rawData?.workforceEmployeeDependentApplication;
 
       // Parse the JSON fields safely
       const parsedData = {
         ...rawData,
-        employeeDependentInfo: dependentInfoWithId ||[{}],
+        employeeDependentInfo: dependentInfoWithId || [{}],
         workforceEmployeeDependentApplication: parsedDependentInfo || [{}],
         employeeBankInfo: safeParse(rawData?.employeeBankInfo) || [{}],
         employeeAccidentInfo: safeParse(rawData?.employeeAccidentInfo) || {},
@@ -175,7 +169,6 @@ export const getParsedApplication = (modulesManager, filters) => {
   };
 };
 
-
 export const getParsedApplicationFromArray = (applications) => {
   const returnArray = [];
   if (!Array.isArray(applications)) return [];
@@ -186,7 +179,7 @@ export const getParsedApplicationFromArray = (applications) => {
       employeeBankInfo: safeParse(rawData.employeeBankInfo) || {},
       employeeAccidentInfo: safeParse(rawData.employeeAccidentInfo) || {},
       employeeChildrenInfo: safeParse(rawData.employeeChildrenInfo) || {},
-      metadata: safeParse(rawData.metadata) || {}
+      metadata: safeParse(rawData.metadata) || {},
     };
     returnArray.push(parsedData);
   });
@@ -194,19 +187,28 @@ export const getParsedApplicationFromArray = (applications) => {
 };
 
 export const isEmpty = (value) => {
-  if (typeof (value) == 'undefined' || value == '' || value == null || value == 0) {
+  if (typeof value == "undefined" || value == "" || value == null || value == 0) {
     return true;
   }
   return false;
-}
+};
 
-export const enToBn = (input, type = '') => {
+export const enToBn = (input, type = "") => {
   var numbers = {
-    0: '০', 1: '১', 2: '২', 3: '৩', 4: '৪', 5: '৫', 6: '৬', 7: '৭', 8: '৮', 9: '৯'
+    0: "০",
+    1: "১",
+    2: "২",
+    3: "৩",
+    4: "৪",
+    5: "৫",
+    6: "৬",
+    7: "৭",
+    8: "৮",
+    9: "৯",
   };
-  var output = '';
+  var output = "";
 
-  if (typeof (input) == 'number') {
+  if (typeof input == "number") {
     input = input.toString();
   }
   if (isEmpty(input?.length)) {
@@ -224,12 +226,30 @@ export const enToBn = (input, type = '') => {
 
 export const bnToEn = (input) => {
   var numbers = {
-    '০': 0, '১': 1, '২': 2, '৩': 3, '৪': 4, '৫': 5, '৬': 6, '৭': 7, '৮': 8, '৯': 9,
-    '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9
+    "০": 0,
+    "১": 1,
+    "২": 2,
+    "৩": 3,
+    "৪": 4,
+    "৫": 5,
+    "৬": 6,
+    "৭": 7,
+    "৮": 8,
+    "৯": 9,
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
   };
-  var output = '';
+  var output = "";
 
-  if (typeof (input) == 'number') {
+  if (typeof input == "number") {
     input = input.toString();
   }
   if (empty(input)) {
@@ -245,30 +265,27 @@ export const bnToEn = (input) => {
   return output;
 };
 
-export const conditionalEnToBn = (num, locale, type = '') => {
-  if (locale === 'en') {
+export const conditionalEnToBn = (num, locale, type = "") => {
+  if (locale === "en") {
     return num;
   } else {
     return enToBn(num, type);
   }
-}
+};
 
 export const getInfoId = (resp, dataKey) => {
   let id = null;
   if (resp?.payload?.data) {
-    const data = parseData(resp.payload.data[dataKey]).map(
-      (info) => ({
-        ...info,
-        id: decodeId(info.id),
-      })
-    )?.[0];
+    const data = parseData(resp.payload.data[dataKey]).map((info) => ({
+      ...info,
+      id: decodeId(info.id),
+    }))?.[0];
 
     id = data?.id;
   }
 
   return id;
 };
-
 
 export const validateForm = (emp, formatMessage, formData) => {
   // const emp = formData?.workforceEmployee || {};
@@ -304,6 +321,43 @@ export function getThirdStepId(location) {
   // after 2 jumps, we're at step 3
   return current?.id || null;
 }
+const convertBanglaToEnglishDigits = (str) => {
+  return str.replace(/[০-৯]/g, (d) => "০১২৩৪৫৬৭৮৯".indexOf(d));
+};
+
+export const isNotFutureDateBangla = (dateString) => {
+  if (!dateString) return false;
+
+  // Convert Bangla digits to English first
+  const en = convertBanglaToEnglishDigits(dateString);
+
+  // Parse DD-MM-YYYY manually
+  const parts = en.split("-");
+  if (parts.length !== 3) return false;
+
+  const [day, month, year] = parts.map(Number);
+  const selectedDate = new Date(year, month - 1, day);
+
+  if (isNaN(selectedDate.getTime())) return false;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  selectedDate.setHours(0, 0, 0, 0);
+
+  return selectedDate <= today;
+};
+
+
+
+export const isNotFutureDate = (dateString) => {
+  if (!dateString) return false;
+
+  const selectedDate = new Date(dateString);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  selectedDate.setHours(0, 0, 0, 0);
+  return selectedDate <= today;
+};
 
 export const validateRequiredFields = (containerRef, formatMessage) => {
   const fields = containerRef.current.querySelectorAll("[required]");
@@ -332,6 +386,15 @@ export const validateRequiredFields = (containerRef, formatMessage) => {
 
       errors[field.id || field.name] = formatMessage("core.error.required");
       console.warn(`Validation failed for field: ${field.id || field.name}`);
+    }
+
+    if (value && field.tagName !== "DIV") {
+      if (!field.id && field.parentElement.previousElementSibling?.classList && Array.from(field.parentElement.previousElementSibling.classList).some(c => c.startsWith("openIMISDatePicker-label")) && !isNotFutureDateBangla(value)) {
+        field.id = "rdmp";
+        errors[field.id || field.name] = formatMessage("core.error.dateTime");
+        console.warn(`Validation failed for field: ${field.id || field.name}`);
+      }
+
     }
 
     if (field.id === "phoneNumber") {
@@ -376,8 +439,7 @@ export const isAtLeast18YearsOld = (birthDateString) => {
 
   // Adjust if the birthday hasn’t occurred yet this year
   const hasHadBirthdayThisYear =
-    today.getMonth() > birthDate.getMonth() ||
-    (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+    today.getMonth() > birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
 
   if (!hasHadBirthdayThisYear) {
     age -= 1;
@@ -385,18 +447,6 @@ export const isAtLeast18YearsOld = (birthDateString) => {
 
   return age >= 18;
 };
-
-export const isNotFutureDate = (dateString) => {
-  if (!dateString) return false;
-
-  const selectedDate = new Date(dateString);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  selectedDate.setHours(0, 0, 0, 0);
-  return selectedDate <= today;
-};
-
-
 
 export function extractId(item) {
   if (!item && item !== 0) return null;
@@ -446,11 +496,11 @@ export function safeDecodeId(maybeEncoded) {
 }
 
 export function getAssociationNameByUserType(user_type) {
-  if(user_type.includes("association")) {
+  if (user_type.includes("association")) {
     return user_type.split("_")[0].toUpperCase();
+  } else {
+    return "";
   }
-  else
-  {return "";}
 }
 
 export const isEisPath = () => {

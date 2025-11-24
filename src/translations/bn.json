@@ -644,6 +644,7 @@
   "core.error.nidLength":"এনআইডি/জন্মসনদ নম্বরটি সঠিক নয়",
   "core.error.workerAge":"শ্রমিকের বয়স ন্যূনতম ১৮ বছর হতে হবে।",
   "core.error.deathTime":"মৃত্যুর তারিখ সঠিক নয়।",
+  "core.error.dateTime":"তারিখ সঠিক নয়।",
   "core.error.accidentDate":"দুর্ঘটনার তারিখ বৈধ নয়",
   "core.error.accountNumberLength":"অ্যাকাউন্ট নম্বর অবশ্যই ৮ থেকে ১৭ অঙ্কের হতে হবে",
 
