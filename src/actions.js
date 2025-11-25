@@ -2772,3 +2772,13 @@ export function fetchEisPaymentProcess() {
    return graphql(payload, "EIS_PAYMENT_PROCESS");
 
 }
+
+export const setUploadedFiles = (fieldKey, files) => ({
+  type: "SET_UPLOADED_FILES",
+  payload: { fieldKey, files },
+});
+
+export const removeUploadedFile = (fieldKey, fileName) => ({
+  type: "REMOVE_UPLOADED_FILE",
+  payload: { fieldKey, fileName },
+});

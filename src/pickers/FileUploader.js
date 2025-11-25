@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { makeStyles } from "@material-ui/core/styles";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
@@ -12,9 +12,9 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import Webcam from "react-webcam";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { formatGQLString, decodeId, FormattedMessage } from "@openimis/fe-core";
-import { createWorkforceDocument } from "../actions";
+import { createWorkforceDocument, removeUploadedFile, setUploadedFiles } from "../actions";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import AddIcon from "@material-ui/icons/Add";
 import { safeApplicationId } from "../utils/utils";
@@ -73,9 +73,14 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
   const classes = useStyles();
   const [webcamOpen, setWebcamOpen] = useState(false);
   const webcamRef = useRef(null);
-  const [files, setFiles] = useState([]);
-  const [uploadFilePaths,setUploadedFilePaths] = useState(null)
+  const savedFiles = useSelector((state) => state.workforce.uploadedFilesByField?.[fieldKey] || []);
+  const [files, setFiles] = useState(savedFiles);
+  const [uploadFilePaths, setUploadedFilePaths] = useState(null);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setFiles(savedFiles);
+  }, [savedFiles]);
 
   // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
 
@@ -97,7 +102,13 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
       }
       const responseData = await response.json();
       console.log(`Upload successful for ${file.name}:`, responseData);
-      setUploadedFilePaths(responseData)
+      const fileWithInfo = {
+        file,
+        uploadInfo: responseData, // contains path, url, etc.
+        name: file.name,
+      };
+      dispatch(setUploadedFiles(fieldKey, [...files, fileWithInfo]));
+      setUploadedFilePaths(responseData);
       const createDocumentData = {
         path: responseData.file_path,
         url: responseData.file_url,
@@ -128,7 +139,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
         );
       }
 
-      return responseData
+      return responseData;
     } catch (error) {
       console.error(`Upload error for ${file.name}:`, error);
     }
@@ -149,35 +160,35 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
   };
 
   const onDrop = useCallback(
-  async (acceptedFiles) => {
-    const newFiles = [...files, ...acceptedFiles];
-    setFiles(newFiles);
+    async (acceptedFiles) => {
+      const newFiles = [...files, ...acceptedFiles];
+      setFiles(newFiles);
 
-    // Upload each file and collect API response
-    const uploadedResponses = [];
-    for (const file of acceptedFiles) {
-      const res = await uploadFileToApi(file);
-      if (res) uploadedResponses.push(res);
-    }
+      // Upload each file and collect API response
+      const uploadedResponses = [];
+      for (const file of acceptedFiles) {
+        const res = await uploadFileToApi(file);
+        if (res) uploadedResponses.push(res);
+      }
 
-    // 🔹 Combine file info with upload response
-    const attachments = newFiles.map((file, i) => ({
-      file,
-      uploadInfo: uploadedResponses[i] || null, // contains file_path, file_url, etc.
-    }));
+      // 🔹 Combine file info with upload response
+      const attachments = newFiles.map((file, i) => ({
+        file,
+        uploadInfo: uploadedResponses[i] || null, // contains file_path, file_url, etc.
+      }));
 
-    // 🔹 Pass it upward
-    onFileChange(fieldKey, {
-      files: attachments,
-      documentType,
-      documentPropId: documentProp?.id,
-    });
-  },
-  [files, fieldKey, onFileChange, documentType, documentProp]
-);
-
+      // 🔹 Pass it upward
+      onFileChange(fieldKey, {
+        files: attachments,
+        documentType,
+        documentPropId: documentProp?.id,
+      });
+    },
+    [files, fieldKey, onFileChange, documentType, documentProp]
+  );
 
   const removeFile = (fileName) => {
+    dispatch(removeUploadedFile(fieldKey, fileName));
     const updatedFiles = files.filter((file) => file.name !== fileName);
     setFiles(updatedFiles);
     onFileChange(fieldKey, updatedFiles);

@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApplicationType, applicationId, formStepNo,isDisabled }) => {
+const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApplicationType, applicationId, formStepNo, isDisabled }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -255,11 +255,12 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
         );
       }
     }
-  }, [selectedApplicationType, formData?.organizationType, formStepNo, formData?.institutionInfo?.workerType, formData?.metadata?.disabilityType,isDisabled]);
+  }, [selectedApplicationType, formData?.organizationType, formStepNo, formData?.institutionInfo?.workerType, formData?.metadata?.disabilityType, isDisabled]);
 
   const isLoading = useSelector((state) => state.workforce[`fetchingDocumentType`]);
   const data = useSelector((state) => state.workforce[`documentType`] ?? []);
   const error = useSelector((state) => state.workforce["errorDocumentType"]);
+  const uploadedFilesByField = useSelector((state) => state.workforce.uploadedFilesByField || {});
 
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
@@ -298,10 +299,12 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
             </Box>
             <Grid container className={classes.item} spacing={2}>
               {data.map((document, index) => {
-                console.log({isDisabled})
-                if (document?.documentType === "disability_certificate" && (isDisabled ==="no" || isDisabled === undefined)) {
+                console.log({ isDisabled });
+                if (document?.documentType === "disability_certificate" && (isDisabled === "no" || isDisabled === undefined)) {
                   return null;
                 }
+                const fieldKey = document.fieldId;
+                const hasFiles = (uploadedFilesByField[fieldKey]?.length || 0) > 0;
                 return (
                   <Grid container spacing={2} alignItems="center" style={{ marginBottom: "12px", border: "1px solid #006273" }} key={document.fieldId}>
                     <Grid item xs={5}>
@@ -312,7 +315,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                     <Grid item xs={6}>
                       {formData?.applicationType === "deadlyGrant" || formData?.applicationType === "financialAssistance" ? (
                         <FileUploader
-                          fieldKey={document.fieldId}
+                          fieldKey={fieldKey}
                           onFileChange={handleChange}
                           applicationId={applicationId}
                           documentType={document.documentType}
@@ -321,7 +324,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                         />
                       ) : (
                         <FileUploader
-                          fieldKey={document.fieldId}
+                          fieldKey={fieldKey}
                           onFileChange={handleFileChange}
                           applicationId={applicationId}
                           documentType={document.documentType}
@@ -330,7 +333,12 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                         />
                       )}
                     </Grid>
-                    {uploadedFiles.find((item) => item.fieldKey === document.fieldId && item.files.length > 0) && (
+                    {/* {uploadedFiles.find((item) => item.fieldKey === document.fieldId && item.files.length > 0) && (
+                      <Grid item xs={1}>
+                        <CheckCircleIcon style={{ color: "green" }} />
+                      </Grid>
+                    )} */}
+                    {hasFiles && (
                       <Grid item xs={1}>
                         <CheckCircleIcon style={{ color: "green" }} />
                       </Grid>
