@@ -83,37 +83,36 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
     [applicationType, formatMessage]
   );
 
- const handleAttachmentChange = useCallback(
-  (index, fieldKey, value) => {
-    const currentAttachments = dependents?.[index]?.attachments || [];
+  const handleAttachmentChange = useCallback(
+    (index, fieldKey, value) => {
+      const currentAttachments = dependents?.[index]?.attachments || [];
 
-    const updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
-      ? currentAttachments.map((att) =>
-          att.fieldKey === fieldKey
-            ? {
-                ...att,
-                fieldKey,
-                files: value.files, // [{ file, uploadInfo }]
-                documentType: value.documentType,
-                documentPropId: value.documentPropId,
-              }
-            : att
-        )
-      : [
-          ...currentAttachments,
-          {
-            fieldKey,
-            files: value.files, // [{ file, uploadInfo }]
-            documentType: value.documentType,
-            documentPropId: value.documentPropId,
-          },
-        ];
+      const updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
+        ? currentAttachments.map((att) =>
+            att.fieldKey === fieldKey
+              ? {
+                  ...att,
+                  fieldKey,
+                  files: value.files, // [{ file, uploadInfo }]
+                  documentType: value.documentType,
+                  documentPropId: value.documentPropId,
+                }
+              : att
+          )
+        : [
+            ...currentAttachments,
+            {
+              fieldKey,
+              files: value.files, // [{ file, uploadInfo }]
+              documentType: value.documentType,
+              documentPropId: value.documentPropId,
+            },
+          ];
 
-    handleChange(index, "attachments", updatedAttachments);
-  },
-  [dependents, handleChange]
-);
-
+      handleChange(index, "attachments", updatedAttachments);
+    },
+    [dependents, handleChange]
+  );
 
   const onPickerChange = (v, index) => {
     handleChange(index, "relationType", v);
@@ -145,7 +144,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
       handleChange(index, "permanentLocation", formdata?.workforceApplicant?.permanentLocation);
       handleChange(index, "presentAddress", formdata?.workforceApplicant?.presentAddress);
       handleChange(index, "permanentAddress", formdata?.workforceApplicant?.permanentAddress);
-    }else if (["workforce.relation.son", "workforce.relation.daughter"].includes(v) && employee) {
+    } else if (["workforce.relation.son", "workforce.relation.daughter"].includes(v) && employee) {
       handleChange(index, "fatherNameEn", employee.nameEn);
       handleChange(index, "fatherNameBn", employee.nameBn);
       handleChange(index, "presentLocation", employee.presentLocation);
@@ -179,7 +178,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
             <Grid container spacing={0} alignItems="center">
               <Grid item xs={12}>
                 <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                  {(applicationType === "financialAssistance" && formdata?.organizationType!=="eis") ? (
+                  {applicationType === "financialAssistance" && formdata?.organizationType !== "eis" ? (
                     <FormattedMessage id="workforce.previewDetails.dependent" module="workforce" />
                   ) : formdata.organizationType === "eis" ? (
                     <FormattedMessage id="workforce.previewDetails.eis.dependent" module="workforce" />
@@ -307,49 +306,50 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   </Grid>
                 )}
 
-                {(formdata?.organizationType === "eis" && (dependent?.relationType ==="workforce.relation.son"||dependent?.relationType ==="workforce.relation.daughter")) && (
-                  <>
-                    <Grid item xs={6} className={classes.item}>
-                      <FormControl component="fieldset">
-                        <FormLabel>
-                          <FormattedMessage id="workforce.dependent.isDisabled" defaultMessage="Is the dependent disabled?" module="workforce" />
-                        </FormLabel>
-
-                        <RadioGroup
-                          row
-                          value={dependent?.isDisabled || "no"}
-                          onChange={(e) => handleChange(index, "isDisabled", e.target.value)}
-                          defaultValue={"no"}
-                        >
-                          <FormControlLabel
-                            value="yes"
-                            control={<Radio color="primary" />}
-                            label={<FormattedMessage id="workforce.application.permission.yes" module="workforce" />}
-                          />
-                          <FormControlLabel
-                            value="no"
-                            control={<Radio color="primary" />}
-                            label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}
-                          />
-                        </RadioGroup>
-                      </FormControl>
-                    </Grid>
-
-                    {dependent?.isDisabled === "yes" && (
+                {formdata?.organizationType === "eis" &&
+                  (dependent?.relationType === "workforce.relation.son" || dependent?.relationType === "workforce.relation.daughter") && (
+                    <>
                       <Grid item xs={6} className={classes.item}>
-                        <TextInput
-                          id="disabilityType"
-                          label={formatMessage("workforce.dependent.disabilityType") || "Describe disability"}
-                          value={dependent.disabilityType || ""}
-                          onChange={(v) => handleChange(index, "disabilityType", v)}
-                          required
-                          error={!!errors?.disabilityType}
-                          helperText={errors?.disabilityType}
-                        />
+                        <FormControl component="fieldset">
+                          <FormLabel>
+                            <FormattedMessage id="workforce.dependent.isDisabled" defaultMessage="Is the dependent disabled?" module="workforce" />
+                          </FormLabel>
+
+                          <RadioGroup
+                            row
+                            value={dependent?.isDisabled || "no"}
+                            onChange={(e) => handleChange(index, "isDisabled", e.target.value)}
+                            defaultValue={"no"}
+                          >
+                            <FormControlLabel
+                              value="yes"
+                              control={<Radio color="primary" />}
+                              label={<FormattedMessage id="workforce.application.permission.yes" module="workforce" />}
+                            />
+                            <FormControlLabel
+                              value="no"
+                              control={<Radio color="primary" />}
+                              label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}
+                            />
+                          </RadioGroup>
+                        </FormControl>
                       </Grid>
-                    )}
-                  </>
-                )}
+
+                      {dependent?.isDisabled === "yes" && (
+                        <Grid item xs={6} className={classes.item}>
+                          <TextInput
+                            id="disabilityType"
+                            label={formatMessage("workforce.dependent.disabilityType") || "Describe disability"}
+                            value={dependent.disabilityType || ""}
+                            onChange={(v) => handleChange(index, "disabilityType", v)}
+                            required
+                            error={!!errors?.disabilityType}
+                            helperText={errors?.disabilityType}
+                          />
+                        </Grid>
+                      )}
+                    </>
+                  )}
 
                 <Grid item xs={12}>
                   <b>{formatMessage("workforce.employee.present_location")}</b>
@@ -448,7 +448,16 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
       ))}
 
       {applicationType === "financialAssistance" && (
-        <Button variant="contained" color="primary" onClick={addItem} disabled={!isFirstDependentValid}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={addItem}
+          disabled={
+            !isFirstDependentValid ||
+            (formdata?.organizationType === "eis" &&
+            (formdata?.dependents[0]?.relationType === "workforce.relation.father" || formdata?.dependents[0]?.relationType === "workforce.relation.mother"))
+          }
+        >
           <FormattedMessage module="workforce" id="workforce.application.steps.dependentAdd" />
         </Button>
       )}
