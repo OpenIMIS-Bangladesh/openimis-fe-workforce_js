@@ -307,7 +307,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   </Grid>
                 )}
 
-                {formdata?.organizationType === "eis" && (
+                {(formdata?.organizationType === "eis" && (dependent?.relationType ==="workforce.relation.son"||dependent?.relationType ==="workforce.relation.daughter")) && (
                   <>
                     <Grid item xs={6} className={classes.item}>
                       <FormControl component="fieldset">

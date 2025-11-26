@@ -12,7 +12,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import Webcam from "react-webcam";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { formatGQLString, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { createWorkforceDocument, removeUploadedFile, setUploadedFiles } from "../actions";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
@@ -74,13 +74,15 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
   const [webcamOpen, setWebcamOpen] = useState(false);
   const webcamRef = useRef(null);
   const savedFiles = useSelector((state) => state.workforce.uploadedFilesByField?.[fieldKey] || []);
-  const [files, setFiles] = useState(savedFiles);
+  const [files, setFiles] = useState([]);
   const [uploadFilePaths, setUploadedFilePaths] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setFiles(savedFiles);
-  }, [savedFiles]);
+    if (savedFiles?.length > 0) {
+      setFiles(savedFiles);
+    }
+  }, []);
 
   // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
 

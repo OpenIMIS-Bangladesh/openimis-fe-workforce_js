@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeLocationForm = ({ handleChange, formData, errors,applicationId }) => {
+const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId }) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -32,7 +32,6 @@ const EmployeeLocationForm = ({ handleChange, formData, errors,applicationId }) 
         const parsedAddress = JSON.parse(presentAddress);
         handleChange("permanentAddress", JSON.stringify(parsedAddress));
       } catch (err) {
-
         handleChange("permanentAddress", presentAddress);
       }
     }
@@ -45,7 +44,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors,applicationId }) 
       if (current.name && current.name.includes("সিটি কর্পোরেশন")) {
         return true;
       } else if (current.name?.includes("পৌরসভা")) {
-        return true
+        return true;
       }
       current = current.parent;
     }
@@ -59,9 +58,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors,applicationId }) 
       : formatMessage(labelKey);
   };
 
-
-
-  console.log(formData)
+  console.log(formData);
 
   return (
     <Box mt={1}>
@@ -74,36 +71,39 @@ const EmployeeLocationForm = ({ handleChange, formData, errors,applicationId }) 
 
             <Grid container spacing={2}>
               {/* Present Location */}
-              {formData?.applicationType !==("financialAssistance" ||"DeadlyGrant") && (
-              <Grid item xs={12}>
-                <b>{getDeathLabel("workforce.employee.present_location")}</b>
-                <PublishedComponent
-                  pubRef="location.DetailedLocation"
-                  withNull={true}
-                  value={formData?.workforceEmployee?.presentLocation || null}
-                  onChange={(presentLocation) => handleChange("presentLocation", presentLocation)}
-                  readOnly={false}
-                  required
-                  split={true}
-                />
-                {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
-              </Grid>
-              )}
-
-              {(formData?.workforceEmployee?.presentLocation && formData.applicationType !=="financialAssistance") && (
+              {((formData?.applicationType !== "financialAssistance" && formData?.organizationType === "eis") ||
+                (formData?.applicationType !== "DeadlyGrant" && formData?.organizationType === "eis")) && (
                 <Grid item xs={12}>
-                  <CustomDetailedLocation
-                    id="permanentLocationCustomDetailedLocation"
-                    locationType={isCityLocation(formData?.workforceEmployee?.presentLocation) ? "city" : "rural"}
-                    onChange={handleChange}
-                    addressKey="presentAddress"
-                    data={formData?.workforceEmployee?.presentAddress}
+                  <b>{getDeathLabel("workforce.employee.present_location")}</b>
+                  <PublishedComponent
+                    pubRef="location.DetailedLocation"
+                    withNull={true}
+                    value={formData?.workforceEmployee?.presentLocation || null}
+                    onChange={(presentLocation) => handleChange("presentLocation", presentLocation)}
                     readOnly={false}
-                    locationData={formData?.workforceEmployee?.presentLocation}
-                    errors={errors}
+                    required
+                    split={true}
                   />
+                  {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
                 </Grid>
               )}
+
+              {formData?.workforceEmployee?.presentLocation &&
+                ((formData?.applicationType !== "financialAssistance" && formData?.organizationType === "eis") ||
+                  (formData?.applicationType !== "DeadlyGrant" && formData?.organizationType === "eis")) && (
+                  <Grid item xs={12}>
+                    <CustomDetailedLocation
+                      id="permanentLocationCustomDetailedLocation"
+                      locationType={isCityLocation(formData?.workforceEmployee?.presentLocation) ? "city" : "rural"}
+                      onChange={handleChange}
+                      addressKey="presentAddress"
+                      data={formData?.workforceEmployee?.presentAddress}
+                      readOnly={false}
+                      locationData={formData?.workforceEmployee?.presentLocation}
+                      errors={errors}
+                    />
+                  </Grid>
+                )}
 
               {/* Permanent Location */}
               <Grid item xs={12}>
@@ -111,15 +111,14 @@ const EmployeeLocationForm = ({ handleChange, formData, errors,applicationId }) 
               </Grid>
               <Grid item xs={12}>
                 <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
-                {formData?.applicationType !=="financialAssistance" && (
-
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
-                    label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
-                  />
-                </Grid>
-                ) }
+                {formData?.applicationType !== "financialAssistance" && (
+                  <Grid item xs={12}>
+                    <FormControlLabel
+                      control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
+                      label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
+                    />
+                  </Grid>
+                )}
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}

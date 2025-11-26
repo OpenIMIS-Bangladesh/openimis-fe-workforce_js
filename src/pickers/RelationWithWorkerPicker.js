@@ -1,8 +1,11 @@
 import React, { useMemo, useState } from "react";
 import { useTranslations, Autocomplete } from "@openimis/fe-core";
+import { getUserType } from "../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../constants";
 
 const RelationWithWorkerPicker = ({
   id,
+  applicantInfo ="",
   modulesManager,
   onChange,
   readOnly,
@@ -18,6 +21,7 @@ const RelationWithWorkerPicker = ({
 }) => {
   const [searchString, setSearchString] = useState(null);
   const { formatMessage } = useTranslations("workforce");
+  const user_type = getUserType();
 
   // Adjust the options to match the EMPLOYEE_RELATION format
   const EMPLOYEE_RELATION = [
@@ -35,6 +39,10 @@ const RelationWithWorkerPicker = ({
   "workforce.relation.grand_mother"
   ];
 
+  const EMPLOYEE_RELATION_APPLICANT = [
+    "workforce.user.role.factoryAdmin"
+  ]
+
   // Find the selected option
   const selectedOption = useMemo(
     () => (EMPLOYEE_RELATION.includes(value) ? value : null),
@@ -42,7 +50,7 @@ const RelationWithWorkerPicker = ({
   );
   return (
     <Autocomplete
-    id={id}
+      id={id}
       multiple={false}
       required={required}
       placeholder={placeholder ?? ""}
@@ -51,7 +59,7 @@ const RelationWithWorkerPicker = ({
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
       isLoading={false} // Set to false if not loading data dynamically
-      options={EMPLOYEE_RELATION}
+      options={(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && applicantInfo ==="factory_admin")? EMPLOYEE_RELATION_APPLICANT : EMPLOYEE_RELATION}
       value={selectedOption}
       getOptionLabel={(option) => formatMessage(option)} // Since options are strings, return the string directly
       onChange={(option) => onChange(option, option ?? null)}

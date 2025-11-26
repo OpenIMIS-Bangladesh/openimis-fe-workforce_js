@@ -172,7 +172,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                 <TextInput
                   id="nid"
                   label="workforce.employee.nid_or_birth_certificate"
-                  value={formData?.workforceApplicant?.nid || formData?.workforceApplicant?.birthCertificateNo || nidOrBcn?.nid || ""}
+                  value={formData?.workforceApplicant?.nid || formData?.workforceApplicant?.birthCertificateNo  || ""}
                   formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
                   inputProps={{ maxLength: 17 }}
                   onChange={(v) => {
@@ -200,6 +200,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                 /> */}
                 <RelationWithWorkerPicker
                   id="relationWithApplicant"
+                  applicantInfo="factory_admin"
                   value={formData?.workforceApplicant?.relationWithApplicant || ""}
                   label={formatMessage("workforce.employee.relationWithApplicant")}
                   required
