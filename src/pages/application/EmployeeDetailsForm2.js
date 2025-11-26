@@ -309,7 +309,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                   <Grid container spacing={2} alignItems="center" style={{ marginBottom: "12px", border: "1px solid #006273" }} key={document.fieldId}>
                     <Grid item xs={5}>
                       <Typography>
-                        {index + 1}. {document.nameBn}
+                        {index + 1}. {document.nameBn} {document?.mandatoryForApplicant && (<sup>*</sup>)}
                       </Typography>
                     </Grid>
                     <Grid item xs={6}>
