@@ -2763,6 +2763,7 @@ export function fetchEisPaymentProcess() {
         id
         firstNameBn
         firstNameEn
+        nid
       }
     }
   }

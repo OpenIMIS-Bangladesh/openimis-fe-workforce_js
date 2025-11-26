@@ -56,6 +56,7 @@ import ForwardApplicationEisDoctorModal from "./modals/ForwardApplicationEisDoct
 import { handleBulkSelectedByAssociationLogic, handleBulkSelectedByCheckerLogic } from "../../utils/workforceForwardRevertActions";
 import ForwardEisPaymentProcessModal from "./modals/ForwardEisPaymentProcessModal";
 import GenerateEisBFTN from "../../pages/application-process/GenereteEisBFTN";
+import GenereteEisDependentBFTN from "../../pages/application-process/GenereteEisDependentBFTN";
 
 
 const styles = (theme) => ({
@@ -102,6 +103,7 @@ class ApplicationProcessSearcher extends Component {
       userList: [],
       openGenerateBFTN: false,
       openGenerateEisBFTN: false,
+      openGenerateEisDependentBFTN: false,
       submitting: false,
       serverResponse: null,
       editedGrantMoney: "",
@@ -2405,11 +2407,17 @@ console.log("hi payment call",testWorkforcePayment)
   handleCloseEisBFTN = () => {
     this.setState({ openGenerateEisBFTN: false });
   };
+  handleCloseEisDependentBFTN = () => {
+    this.setState({ openGenerateEisDependentBFTN: false });
+  };
   handleOpenBFTN = () => {
     this.setState({ openGenerateBFTN: true });
   };
   handleOpenEisBFTN = () => {
     this.setState({ openGenerateEisBFTN: true });
+  };
+  handleOpenEisDependentBFTN = () => {
+    this.setState({ openGenerateEisDependentBFTN: true });
   };
 
   onCheckBoxSelect = (selection) => {
@@ -2443,6 +2451,7 @@ console.log("hi payment call",testWorkforcePayment)
       selectedApplication,
       openGenerateBFTN,
       openGenerateEisBFTN,
+      openGenerateEisDependentBFTN,
       showHistoryFilter,
       selectedApplicationIds
     } = this.state;
@@ -2538,17 +2547,6 @@ console.log("hi payment call",testWorkforcePayment)
                         <IconButton onClick={this.handleOpenEisBFTN}>
                           <PrintIcon />
                         </IconButton>
-
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => this.setState({ forwardPaymentModalOpen: true })}
-                        >
-                          <FormattedMessage
-                            module="workforce"
-                            id="workforce.employee.application.paymentProcess"
-                          />
-                        </Button>
                       </>
                     )}
 
@@ -2579,6 +2577,19 @@ console.log("hi payment call",testWorkforcePayment)
                           id="workforce.employee.application.createMeetingSheet"
                         />
                       </Button>
+                      <IconButton onClick={this.handleOpenEisDependentBFTN}>
+                          <PrintIcon />
+                      </IconButton>
+                      <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => this.setState({ forwardPaymentModalOpen: true })}
+                        >
+                          <FormattedMessage
+                            module="workforce"
+                            id="workforce.employee.application.paymentProcess"
+                          />
+                        </Button>
                       {![WORKFORCE_USER_TYPE.EIS_ADVISOR, WORKFORCE_USER_TYPE.EIS_COORDINATOR].includes(userType) && (
                         <Button
                           variant="contained"
@@ -2969,6 +2980,7 @@ console.log("hi payment call",testWorkforcePayment)
                 />
                  )}
                 {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+                  <>
                   <GenerateEisBFTN
                     open={openGenerateEisBFTN}
                     onClose={this.handleCloseEisBFTN}
@@ -2976,6 +2988,14 @@ console.log("hi payment call",testWorkforcePayment)
                     status="approved_by_committee"
                     userRights={userRights}
                   />
+                  <GenereteEisDependentBFTN
+                    open={openGenerateEisDependentBFTN}
+                    onClose={this.handleCloseEisDependentBFTN}
+                    eisPayments={eisPayments}
+                    status="approved_by_committee"
+                    userRights={userRights}
+                  />
+                  </>
                 )}
 
                 <ForwardApplicationEisDoctorModal
