@@ -172,7 +172,7 @@ window.location.href='/';
             createOtpData,
             `Created Workforce Office ${createOtpData.firstNameEn}`
           )
-        );
+        )
       } else {
         setServerResponse({
           status: "ERROR",
@@ -185,18 +185,21 @@ window.location.href='/';
         setStep(2);
       }
     } else if (step === 2 ) {
-      if (formData.otp === "12345") {
-        // Bypass OTP verification for default test OTP
-        // setStep(3);
-        await handleSubmit();
-        //history.push("/");
-window.location.href='/';
-      }
-      // await dispatch(
-      //   fetchWorkforceOtp(modulesManager, [
-      //     `id:"${internalId}",otp:"${formData.otp}"`,
-      //   ])
-      // );
+//       if (formData.otp === "12345") {
+//         // Bypass OTP verification for default test OTP
+//         // setStep(3);
+//         await handleSubmit();
+//         //history.push("/");
+// window.location.href='/';
+//       }
+      await dispatch(
+        fetchWorkforceOtp(modulesManager, [
+          `id:"${internalId}",otp:"${formData.otp}"`,
+        ])
+      ).then((res)=>{
+        handleSubmit();
+        window.location.href='/';
+      })
     } else if (step === 3) {
       await handleSubmit();
       //history.push("/");
