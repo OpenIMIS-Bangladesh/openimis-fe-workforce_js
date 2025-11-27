@@ -2577,9 +2577,11 @@ console.log("hi payment call",testWorkforcePayment)
                           id="workforce.employee.application.createMeetingSheet"
                         />
                       </Button>
-                      <IconButton onClick={this.handleOpenEisDependentBFTN}>
-                          <PrintIcon />
-                      </IconButton>
+                      {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+                        <>
+                        <IconButton onClick={this.handleOpenEisDependentBFTN}>
+                        <PrintIcon />
+                    </IconButton>
                       <Button
                           variant="contained"
                           color="primary"
@@ -2590,6 +2592,8 @@ console.log("hi payment call",testWorkforcePayment)
                             id="workforce.employee.application.paymentProcess"
                           />
                         </Button>
+                        </>
+                      )}
                       {![WORKFORCE_USER_TYPE.EIS_ADVISOR, WORKFORCE_USER_TYPE.EIS_COORDINATOR].includes(userType) && (
                         <Button
                           variant="contained"
