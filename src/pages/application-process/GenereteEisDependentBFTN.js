@@ -66,188 +66,191 @@ const monthFormatted = String(monthIndex + 1).padStart(2, "0");
   // -----------------------------
   // Excel generator (unchanged)
   // -----------------------------
- const exportToExcel = async () => {
-  const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet("Bank Advice", {
-  });
-
-   // Set column widths
-      sheet.columns = [
-        { width: 5 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-      ];
-
-  // -----------------------------
-  // Header (same as before)
-  // -----------------------------
-  sheet.mergeCells("A1:K1");
-  sheet.getCell("A1").value = `Ref No: EIS.Bank Advice.Benefit.${year}.${monthFormatted}`;
-  sheet.getCell("A1").font = { bold: true };
-
-
-  sheet.mergeCells("A3:K3");
-  sheet.getCell("A3").value = "Manager";
-
-  sheet.mergeCells("A4:K4");
-  sheet.getCell("A4").value = "Sonali Bank Limited";
-
-  sheet.mergeCells("A5:K5");
-  sheet.getCell("A5").value = "Ramna Corporate Branch";
-
-  sheet.mergeCells("A6:K6");
-  sheet.getCell("A6").value = "1, Topkhana Road, Ramna, Dhaka, 1000";
-
-  sheet.mergeCells("A8:K8");
-  sheet.getCell("A8").value = "Subject: Bank Advice Letter (EIS Top-up Benefit)";
-  sheet.getCell("A8").font = { bold: true, underline: true };
-
-  sheet.mergeCells("A10:K10");
-  sheet.getCell("A10").value = "Dear Sir:";
-
-  sheet.mergeCells("A12:K12");
-  sheet.getCell("A12").value = "Greetings from EIS Pilot!";
-
-  sheet.mergeCells("A14:K14");
-
-sheet.getCell("A14").value = {
-  richText: [
-    { text: "EIS Pilot top-up benefits are required to be disbursed to the beneficiaries through bank transfer from your branch of EIS Pilot bank account," },
-    { text: " Account Title: EMPLOYMENT INJURY SCHEME EIS", font: { bold: true } },
-    { text: ", Account Number: 4426302003729", font: { bold: true } },
-    { text: ". The validated list of account holders with their respective Account Titles, Bank Account Numbers, Bank Names, Branch info, Routing Numbers including Payment amounts have been mentioned below." }
-  ]
-};
-
-  // -----------------------------
-  // Table Header
-  // -----------------------------
-  const tableHeader = [
-    "Sl #",
-    "EIS Worker ID",
-    "NID/Birth Certificate of Worker",
-    "Benefit Rate (%) of Gross Salary",
-    "Monthly Payable Benefit (BDT)",
-    "Net Monthly Payable After Adjustment (BDT",
-    "Type of Payment",
-    "Approval Status",
-    "Remarks",
-  ];
-
-  sheet.addRow([]);
-  sheet.addRow([]);
-  sheet.addRow([]);
-
-  const headerRow = sheet.addRow(tableHeader);
-
-  headerRow.eachCell((cell) => {
-    cell.fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: "92D050" }
-    };
-    cell.font = { bold: true };
-    cell.alignment = { horizontal: "center", vertical: "middle" };
-    cell.border = {
-      top: { style: "thin" },
-      left: { style: "thin" },
-      bottom: { style: "thin" },
-      right: { style: "thin" }
-    };
-  });
-
-  // -----------------------------
-  // REAL DATA FROM eisPayments
-  // -----------------------------
-  eisPayments.forEach((row, index) => {
-    let bankInfo = {};
-    try {
-      bankInfo = JSON.parse(JSON.parse(row.employeeBankInfo));
-    } catch (e) {}
-
-    sheet.addRow([
-      index + 1,
-      "",
-      row?.workforceApplication?.workforceEmployee?.nid || "",
-      "",
-      row?.eisMonthlyAmount || 0,
-      row?.eisMonthlyAmount || 0,
-      "",
-      "",
-      row?.eisApprovedAmount,
-    ]);
-  });
-
-  // -----------------------------
-  // Apply border to all data rows
-  // -----------------------------
-// Apply border only to table rows (after headerRow)
-const firstDataRow = headerRow.number + 1;
-const lastDataRow = firstDataRow + eisPayments.length - 1;
-
-for (let i = firstDataRow; i <= lastDataRow; i++) {
-  const row = sheet.getRow(i);
-  row.eachCell((cell) => {
-    cell.border = {
-      top: { style: "thin" },
-      left: { style: "thin" },
-      bottom: { style: "thin" },
-      right: { style: "thin" }
-    };
-    cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
-  });
-}
-
-
-  // -----------------------------
-// Add Closing / Signature Section
-// -----------------------------
-sheet.addRow([]);
-sheet.addRow([]);
-
-const closingLines = [
-  "Your prompt necessary steps in this matter will be highly appreciated.",
-  "",
-  "With warm regards",
-  "",
-  "Director General,",
-  "Central Fund, Ministry of Labor and Employment &",
-  "Member Secretary, EIS Pilot Governance Board",
-  "Bangladesh Secretariat, Dhaka-1000",
-  "",
-  "Copy to (Not in order of seniority):",
-  "1. PS to State Minister, Ministry of Labour and Employment, Bangladesh Secretariat, Dhaka-1000.",
-  "2. PS to Secretary, Ministry of Labour and Employment, Bangladesh Secretariat, Dhaka-1000.",
-  "3. Special Advisor, EIS Pilot Special Unit, 196, Sromo Bhaban (9th Floor), Bijoynagar, Dhaka-1000.",
-  "4. PA to Director General, Central Fund, Bangladesh Secretariat, Dhaka-1000.",
-  "5. Assistant Director, Welfare-2 and Development, Central Fund, Bangladesh Secretariat, Dhaka-1000.",
-  "6. Assistant Director, Finance Department, Central Fund, Bangladesh Secretariat, Dhaka-1000."
-];
-
-// Loop through lines and merge across all 10 columns
-closingLines.forEach((line) => {
-  const row = sheet.addRow([line]);
-  sheet.mergeCells(`A${row.number}:J${row.number}`);
-  row.getCell(1).alignment = { horizontal: "left", vertical: "top", wrapText: true };
-});
-
-
-  // -----------------------------
-  // Download Excel File
-  // -----------------------------
-  const buffer = await workbook.xlsx.writeBuffer();
-  const blob = new Blob([buffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  });
-
-  saveAs(blob, "BA-Advice.xlsx");
-};
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Benefit Approval Note");
+  
+    // ==========================
+    // Set column widths (first table + spacing)
+    // ==========================
+    sheet.columns = [
+      { width: 20 }, // A
+      { width: 25 }, // B
+      { width: 15 },  // C (gap)
+      { width: 25 }, // D
+      { width: 25 }, // E
+      { width: 15 },  // F (gap)
+      { width: 20 }, // G - last table columns
+      { width: 20 }, // H
+      { width: 20 }, // I
+    ];
+  
+    // ==========================
+    // Top Headers
+    // ==========================
+    sheet.mergeCells("A1:I1");
+    sheet.getCell("A1").value = "Employment Injury Scheme-Pilot";
+    sheet.getCell("A1").font = { bold: true, size: 16 };
+    sheet.getCell("A1").alignment = { horizontal: "center" };
+  
+    sheet.mergeCells("A2:I2");
+    sheet.getCell("A2").value = "Benefit Approval Note (Disability)";
+    sheet.getCell("A2").font = { bold: true, size: 14 };
+    sheet.getCell("A2").alignment = { horizontal: "center" };
+  
+    sheet.mergeCells("A3:I3");
+    sheet.getCell("A3").value =
+      "EIS PILOT Special Unit, 196, Sromo Bhaban (9th Floor), Bijoynagar, Dhaka, 1000";
+    sheet.getCell("A3").alignment = { horizontal: "center" };
+  
+    sheet.mergeCells("A4:I4");
+    sheet.getCell("A4").value =
+      "Email: specialunit@eis-pilot-bd.org, Phone: 01886-921030, Website: eis-pilot-bd.org";
+    sheet.getCell("A4").alignment = { horizontal: "center" };
+  
+    // ==========================
+    // Meeting Info + Worker Info (no gap)
+    // ==========================
+    // Meeting Info
+    sheet.mergeCells("A6:F6");
+    sheet.getCell("A6").value = "EIS-GB Sub Committee Meeting No:16";
+    sheet.getCell("A6").font = { bold: true };
+    sheet.getCell("A6").alignment = { horizontal: "left" };
+  
+    sheet.mergeCells("G6:I6");
+    sheet.getCell("G6").value = "Date: 10/15/2025";
+    sheet.getCell("G6").font = { bold: true };
+    sheet.getCell("G6").alignment = { horizontal: "right" };
+  
+    // Worker, Factory & Accident Information
+    const data = eisPayments?.[0] || {};
+  
+    const leftItems = [
+      ["EIS Worker ID", data.eisWorkerId || ""],
+      ["Date of Accident", data.dateOfAccident || ""],
+      ["Date of Rejoining", data.dateOfRejoining || ""],
+      ["Date of Disability Assessment", data.disabilityAssessmentDate || ""],
+      ["Effective date of Benefit", data.effectiveDateOfBenefit || ""],
+    ];
+  
+    const rightItems = [
+      ["Name of the Factory", data.factoryName || ""],
+      ["Name of Association", data.associationName || ""],
+      ["Gross Salary (BDT)", data.grossSalary || ""],
+      ["Percentage of Disability", data.percentageOfDisability || ""],
+      ["Type of Accident", data.typeOfAccident || ""],
+    ];
+  
+    // Section Title
+    const titleRow = sheet.addRow([]);
+    sheet.mergeCells(`A${titleRow.number}:F${titleRow.number}`);
+    sheet.getCell(`A${titleRow.number}`).value =
+      "Worker, Factory & Accident Information:";
+    sheet.getCell(`A${titleRow.number}`).font = { bold: true };
+    sheet.getCell(`A${titleRow.number}`).alignment = { horizontal: "left" };
+  
+    // Add combined rows (Left + Right)
+    for (let i = 0; i < 5; i++) {
+      const row = sheet.addRow([
+        leftItems[i][0],
+        leftItems[i][1],
+        "", // gap
+        rightItems[i][0],
+        rightItems[i][1],
+        "", // gap
+      ]);
+  
+      ["A", "B", "D", "E"].forEach((col) => {
+        const cell = sheet.getCell(`${col}${row.number}`);
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+        cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
+        if (col === "A" || col === "D") cell.font = { bold: true };
+      });
+    }
+  
+    // ==========================
+    // Separate EIS Payments Table
+    // ==========================
+    sheet.addRow([]); // small spacing before table
+  
+    const tableHeader = [
+      "Sl #",
+      "EIS Worker ID",
+      "NID/Birth Certificate of Worker",
+      "Benefit Rate (%) of Gross Salary",
+      "Monthly Payable Benefit (BDT)",
+      "Net Monthly Payable After Adjustment (BDT)",
+      "Type of Payment",
+      "Approval Status",
+      "Remarks",
+    ];
+  
+    const headerRow = sheet.addRow(tableHeader);
+  
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "92D050" },
+      };
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+  
+    // Add payment rows
+    eisPayments.forEach((row, index) => {
+      sheet.addRow([
+        index + 1,
+        "",
+        row?.workforceApplication?.workforceEmployee?.nid || "",
+        "",
+        row?.eisMonthlyAmount || 0,
+        row?.eisMonthlyAmount || 0,
+        "",
+        "",
+        row?.eisApprovedAmount,
+      ]);
+    });
+  
+    // Apply borders to payment rows
+    const firstDataRow = headerRow.number + 1;
+    const lastDataRow = firstDataRow + eisPayments.length - 1;
+  
+    for (let i = firstDataRow; i <= lastDataRow; i++) {
+      const row = sheet.getRow(i);
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+        cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
+      });
+    }
+  
+    // ==========================
+    // Download Excel
+    // ==========================
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+  
+    saveAs(blob, "Benefit-Approval.xlsx");
+  };
+  
 
 
   // -----------------------------------
