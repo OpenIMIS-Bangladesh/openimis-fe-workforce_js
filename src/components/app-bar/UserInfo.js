@@ -92,6 +92,9 @@ const UserInfo = ({ classes }) => {
           {user_type === WORKFORCE_USER_TYPE.APPLICANT && (
             <FormattedMessage module="workforce" id="workforce.user.role.applicant" defaultMessage="Applicant" />
           )}
+          {user_type === WORKFORCE_USER_TYPE.SECRETARY && (
+            <FormattedMessage module="workforce" id="workforce.user.role.secretary" defaultMessage="Secretary" />
+          )}
         </Typography>
       </Box>
       <AccountCircleIcon/>

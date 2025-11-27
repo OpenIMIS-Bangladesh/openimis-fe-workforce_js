@@ -745,6 +745,7 @@
   "workforce.user.role.doctor": "ডাক্তার",
   "workforce.user.role.approver": "অনুমোদনকারী",
   "workforce.user.role.applicant": "আবেদনকারী",
+  "workforce.user.role.secretary": "সচিব",
 
   "workforce.application.proposedAmount.byDoctor": "চিকিৎসা অবস্থার ভিত্তিতে প্রস্তাবিত অনুদানের পরিমাণ",
   "workforce.application.diagnosis.byDoctor": "রোগের বিবরণ",
