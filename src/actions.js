@@ -2759,11 +2759,16 @@ export function fetchEisPaymentProcess() {
     workforceApplication {
       id
       lastBaseSalary
+      associationType
       workforceEmployee {
         id
         firstNameBn
         firstNameEn
         nid
+      }
+      employeeFactory{
+        id
+        nameEn
       }
     }
   }

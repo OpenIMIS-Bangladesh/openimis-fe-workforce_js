@@ -134,9 +134,9 @@ const monthFormatted = String(monthIndex + 1).padStart(2, "0");
     ];
   
     const rightItems = [
-      ["Name of the Factory", data.factoryName || ""],
-      ["Name of Association", data.associationName || ""],
-      ["Gross Salary (BDT)", data.grossSalary || ""],
+      ["Name of the Factory", data.workforceApplication?.employeeFactory?.nameEn || ""],
+      ["Name of Association", data.workforceApplication?.associationType || ""],
+      ["Gross Salary (BDT)", data.workforceApplication?.lastBaseSalary || ""],
       ["Percentage of Disability", data.percentageOfDisability || ""],
       ["Type of Accident", data.typeOfAccident || ""],
     ];
@@ -217,7 +217,7 @@ const monthFormatted = String(monthIndex + 1).padStart(2, "0");
         "",
         row?.eisMonthlyAmount || 0,
         row?.eisMonthlyAmount || 0,
-        "",
+        row?.eisPaymentType || "",
         "",
         row?.eisApprovedAmount,
       ]);
@@ -296,7 +296,7 @@ const monthFormatted = String(monthIndex + 1).padStart(2, "0");
                   <TableCell>5.20%</TableCell>
                   <TableCell>{row?.eisMonthlyAmount}</TableCell>
                   <TableCell>{row?.eisMonthlyAmount}</TableCell>
-                  <TableCell>One Time</TableCell>
+                  <TableCell>{row?.eisPaymentType}</TableCell>
                   <TableCell></TableCell>
                   <TableCell>{row?.eisApprovedAmount}</TableCell>
                 </TableRow>
