@@ -198,8 +198,10 @@ window.location.href='/';
         ])
       ).then((res)=>{
         handleSubmit();
-        window.location.href='/';
       })
+      // .finally((res)=>{
+      //   window.location.href='/';
+      // })
     } else if (step === 3) {
       await handleSubmit();
       //history.push("/");
@@ -232,7 +234,7 @@ window.location.href='/';
           createUserData,
           `Created Workforce User ${createUserData.firstNameEn}`
         )
-      );
+      ).then((res) => {window.location.href='/';})
     } else {
       const createUserData = {
         NID: formData.NID_BirthCertificate,
@@ -246,7 +248,7 @@ window.location.href='/';
           createUserData,
           `Created Workforce User ${createUserData.firstNameEn}`
         )
-      );
+      ).then((res) => {window.location.href='/';})
     }
     setSubmitting(true);
   };

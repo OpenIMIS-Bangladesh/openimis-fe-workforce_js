@@ -16,6 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { createWorkforceDocument, updateApplication } from "../../actions";
 import { validateRequiredFields } from "../../utils/utils";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage,useTranslations } from "@openimis/fe-core";
+import FactoryAdminAccidentForm from "../../pages/application/FactoryAdminAccidentForm";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -138,7 +139,7 @@ const EisFactoryAdminModal = ({
 
           {/* Scrollable Form Content */}
           <Box className={classes.content} ref={stepRef}>
-            <EmployeeAccidentInfoForm
+            <FactoryAdminAccidentForm
               handleChange={(key, value) =>
                 handleChange(key, value, "employeeAccidentInfo")
               }
