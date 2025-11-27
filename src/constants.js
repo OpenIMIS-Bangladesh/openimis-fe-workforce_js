@@ -254,6 +254,7 @@ export const WORKFORCE_USER_TYPE = {
   EIS_APPLICANT:"eis_applicant",
   BEPZA_ASSOCIATION: "bepza_association",
   LFMEAB_ASSOCIATION: "lfmeab_association",
+  SECRETARY: "secretary",
 
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {

@@ -87,6 +87,8 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION;
   } else if (user_rights.includes(814000)) {
     user_type = WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION;
+  } else if (user_rights.includes(815000)) {
+    user_type = WORKFORCE_USER_TYPE.SECRETARY;
   } else if (!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }
