@@ -348,10 +348,10 @@ const ApplicationViewPage = ({
     () => ({
       ApplicantName:
         language === "en"
-          ? application?.workforceEmployee?.firstNameEn +
+          ? (application?.workforceEmployee?.firstNameEn ||application?.workforceEmployee?.nameEn) +
             " " +
             (application?.workforceEmployee?.lastNameEn != null ? application?.workforceEmployee?.lastNameEn : "")
-          : application?.workforceEmployee?.firstNameBn +
+          : (application?.workforceEmployee?.firstNameBn||application?.workforceEmployee?.nameBn) +
             " " +
             (application?.workforceEmployee?.lastNameBn != null ? application?.workforceEmployee?.lastNameBn : ""),
       ApplicantFactoryName: language === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn,

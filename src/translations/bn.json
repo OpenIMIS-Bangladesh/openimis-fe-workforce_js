@@ -496,7 +496,7 @@
   "workforce.employee.accident.info.releaseDate": "রিলিজের তারিখ",
   "workforce.employee.accident.info.doctorName": "ডাক্তারের নাম",
   "workforce.application.accident.hospitalized": "হাসপাতালে ভর্তি হয়েছিলেন?",
-  "workforce.application.accident.accidentPlace": "দুর্ঘটনার স্থান",
+  "workforce.application.accident.accidentPlace": "দুর্ঘটনা কোথায় হয়েছে?",
   "workforce.application.accident.dateOfDiagnosis": "রোগ নির্ণয়ের তারিখ",
   "workforce.application.accident.": "অন্যান্য রোগ উল্লেখ করুন",
   "workforce.application.disease.name": "রোগের নাম",

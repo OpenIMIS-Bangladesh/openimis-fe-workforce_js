@@ -59,7 +59,7 @@ export default function LoginHeader() {
                         fontSize="h6.fontSize"
                         textAlign="center" /* Make sure all props are complete */
                     >
-                     { isEisPath()? "ই.আই.এস. ম্যানেজমেন্ট সিস্টেম":  "শ্রমিক কল্যাণ তহবিল ব্যবস্থাপনা সিস্টেম"}
+                     { isEisPath()? "ই.আই.এস. ম্যানেজমেন্ট সিস্টেম":  "শ্রমিক কল্যাণ সহায়তার আবেদন ব্যবস্থাপনা সিস্টেম"}
                     </Box>
                 </div>
             </>

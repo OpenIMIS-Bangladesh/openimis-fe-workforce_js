@@ -71,8 +71,9 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
 
             <Grid container spacing={2}>
               {/* Present Location */}
-              {((formData?.applicationType !== "financialAssistance" && formData?.organizationType === "eis") ||
-                (formData?.applicationType !== "DeadlyGrant" && formData?.organizationType === "eis")) && (
+              {/* {((formData?.applicationType !== "financialAssistance" || formData?.organizationType === "eis") ||
+                (formData?.applicationType !== "DeadlyGrant" || formData?.organizationType === "eis")) && ( */}
+              {(formData?.applicationType !=="financialAssistance" ||formData?.applicationType !=="DeadlyGrant") && (
                 <Grid item xs={12}>
                   <b>{getDeathLabel("workforce.employee.present_location")}</b>
                   <PublishedComponent
@@ -88,9 +89,11 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
                 </Grid>
               )}
 
-              {formData?.workforceEmployee?.presentLocation &&
+              {/* {formData?.workforceEmployee?.presentLocation &&
                 ((formData?.applicationType !== "financialAssistance" && formData?.organizationType === "eis") ||
-                  (formData?.applicationType !== "DeadlyGrant" && formData?.organizationType === "eis")) && (
+                  (formData?.applicationType !== "DeadlyGrant" && formData?.organizationType === "eis")) && ( */}
+              {formData?.workforceEmployee?.presentLocation &&
+                (formData?.applicationType !=="financialAssistance" ||formData?.applicationType !=="DeadlyGrant")&& (
                   <Grid item xs={12}>
                     <CustomDetailedLocation
                       id="permanentLocationCustomDetailedLocation"
@@ -111,7 +114,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
               </Grid>
               <Grid item xs={12}>
                 <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
-                {formData?.applicationType !== "financialAssistance" && (
+                {(formData?.applicationType !== "financialAssistance" && formData?.applicationType !== "deadlyGrant") && (
                   <Grid item xs={12}>
                     <FormControlLabel
                       control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
