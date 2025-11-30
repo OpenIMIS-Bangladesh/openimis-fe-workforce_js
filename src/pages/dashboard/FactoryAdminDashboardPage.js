@@ -522,7 +522,7 @@ const FactoryAdminDashboard = () => {
   const history = useHistory();
   // const path = window.location.href;
   // const isEisPath = path.includes("eis");
-  console.log({ isEisPath });
+  // console.log({ isEisPath });
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
   const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
   const dispatch = useDispatch();
