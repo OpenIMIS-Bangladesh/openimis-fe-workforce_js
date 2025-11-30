@@ -217,10 +217,19 @@ const Dashboard = () => {
     return date.toLocaleString(locale, { month: "long" });
   };
 
+  const getBanglaDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('bn-BD')
+  }
+
   const [months, setMonths] = useState(0);
+  const [monthString, setMonthString] = useState("");
   const [filter, setFilter] = useState(locale == 'fr' ? "সব" : "All");
   const [fromDate, setFromDate] = useState("");
+  const [fromDateString, setFromDateString] = useState("");
   const [toDate, setToDate] = useState("");
+  const [toDateString, setToDateString] = useState(locale=="fr"? " আজ পর্যন্ত" : " To Date");
+  const [organizationName, setOrganizationName] = useState(locale == 'fr' ? "সকল তহবিল" : "All Funds"); 
 
   const [graphMonths, setGraphMonths] = useState(6);
   const [graphFromDate, setGraphFromDate] = useState("");
@@ -228,23 +237,66 @@ const Dashboard = () => {
 
   const handleFilter = (f) => {
     setFilter(f);
+    if(f === (locale == 'fr' ? "সব" : "All") || f=="") {
+      setOrganizationName(locale == 'fr' ? "সকল তহবিল" : "All Funds");
+    }else if(f === "CF") {
+      setOrganizationName(locale == 'fr' ? "কেন্দ্রীয় তহবিল" : "Central Fund");
+    }else if(f === "BLWF") {
+      setOrganizationName(locale == 'fr' ? "বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন" : "Bangladesh Labour Welfare Foundation");
+    }else if(f === "EIS") {
+      setOrganizationName(locale == 'fr' ? "এমপ্লয়ি ইন্জুরি স্কিম" : "Employee Injury Scheme");
+    }
   };
 
   const handleMonthChange = (month) => {
     setMonths(month);
-    setFromDate("");
-    setToDate("");
+    if(locale == 'fr') {
+      setMonthString("সর্বশেষ "+Number(month).toLocaleString("bn-BD")+" মাসের তথ্য");
+    }
+    else
+    {
+      setMonthString("Last "+month+" Month(s) Data");
+    }
   };
 
   const handleFromDateChange = (date) => {
     setFromDate(date);
-    setMonths(0);
+    if(locale == 'fr') {
+      let datestr= getBanglaDate(date);
+      datestr+=' হতে ';
+      setFromDateString(datestr);
+    }
+    else {
+      setFromDateString("From "+date);
+    }
   }
 
   const handleToDateChange = (date) => {
     setToDate(date);
-    setMonths(0);
+    if(locale == 'fr') {
+      let datestr= getBanglaDate(date);
+      setToDateString(datestr + " পর্যন্ত");
+    }
+    else {
+      setToDateString(" To "+date);
+    }
   }
+
+  useEffect(() => {
+    if (months > 0) {
+      setFromDate("");
+      setToDate("");
+    }
+  }, [
+    months
+  ]);
+
+  useEffect(() => {
+    setMonths(0);
+    setMonthString("");
+  }, [
+    fromDate, toDate
+  ]);
 
 
   const handleGraphMonthChange = (month) => {
@@ -507,6 +559,21 @@ const Dashboard = () => {
 
   const [selectedType, setSelectedType] = useState(null);
 
+
+  const Filters = () => {
+    return (
+      <Grid container spacing={2} style={{marginTop:"15px", marginBottom:"10px", color: "red" }}>
+        <Grid item xs={6} md={6} >
+            {organizationName}
+        </Grid>
+        <Grid item xs={6} md={6} style={{ textAlign: "right" }}>
+          {fromDate && fromDate!="" ?fromDateString + toDateString :""}
+          {monthString!="" ? monthString :""}
+        </Grid>
+      </Grid>
+    )
+  };
+
   const handleOpenModal = (type) => {
     setSelectedType(type);
     setOpenModal(true);
@@ -578,8 +645,8 @@ const Dashboard = () => {
                             </ButtonGroup>
                           </Box>
                           <Box>
-                            <Typography variant="caption" color="textSecondary">
-                              {locale == 'fr' ? "নির্বাচিত তহবিল" : "Selected Fund"}: <strong>{filter}</strong>
+                            <Typography variant="caption" style={{color:"red"}}>
+                              {locale == 'fr' ? "নির্বাচিত তহবিল" : "Selected Fund"}: <strong>{organizationName}</strong>
                             </Typography>
                           </Box>
                         </Box>
@@ -597,11 +664,12 @@ const Dashboard = () => {
         <Grid item xs={12} md={4}>
           <Card style={newCard}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h5" gutterBottom>
                 {/* <FormattedMessage id="workforce.dashboard.application.types"/> */}
                 {locale == 'fr' ? "প্রক্রিয়াধীন আবেদনসমূহ" : "Pending Applications"}
                 <DescriptionIcon style={{ verticalAlign: 'middle', marginRight: 8, float: "right" }} />
               </Typography>
+              <Filters/>
               <table cellPadding={"6px"} style={{ width: "100%" }}>
                 <tbody>
                   {pendingApplicationTypes.map((item) => (
@@ -630,10 +698,11 @@ const Dashboard = () => {
         <Grid item xs={12} md={4}>
           <Card style={newCard}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h5" gutterBottom>
                 <FormattedMessage id="workforce.dashboard.applicant.types" />
                 <PeopleAltIcon style={{ verticalAlign: 'middle', marginRight: 8, float: "right" }} />
               </Typography>
+              <Filters/>
               {applicationCounts.map((item) => (
                 <Card style={{ ...newCard, margin: "10px", padding: "0px" }}>
                   <CardContent>
@@ -659,6 +728,7 @@ const Dashboard = () => {
                     {locale == 'fr' ? "মোট আবেদন" : "Total Applications"}
                     <DescriptionIcon style={{ verticalAlign: 'middle', marginRight: 8, float: "right" }} />
                   </Typography>
+                  <Filters/>
                   <table cellPadding={"6px"} style={{ width: "100%" }}>
                     <tbody>
                       {applicationTypes.map((type) => (
@@ -679,6 +749,7 @@ const Dashboard = () => {
                     <FormattedMessage id="workforce.dashboard.financial.info" />
                     <LocalAtmIcon style={{ verticalAlign: 'middle', marginRight: 8, float: "right" }} />
                   </Typography>
+                  <Filters/>
                   <Card style={{ ...newCard, margin: "10px", padding: "0px" }}>
                     <CardContent>
                       <Typography><FormattedMessage id="workforce.dashboard.total.beneficiary.amount" /></Typography>
@@ -712,6 +783,7 @@ const Dashboard = () => {
                   </Typography>
                 </Box>
               }
+              action={<Filters/>}
             />
             <CardContent>
               {/* Table */}
@@ -846,7 +918,10 @@ const Dashboard = () => {
 
         <Grid item xs={12} md={5}>
           <Card style={newCard} sx={{ borderRadius: "16px", boxShadow: 3 }}>
-            <CardHeader title={locale == 'fr' ? 'আবেদনের অবস্থা' : 'Application Status'} subheader={locale == 'fr' ? 'একনজরে আবেদনসমূহের অবস্থা' : 'Status At a Glance'} />
+            <CardHeader 
+              title={locale == 'fr' ? 'আবেদনের অবস্থা' : 'Application Status'} subheader={locale == 'fr' ? 'একনজরে আবেদনসমূহের অবস্থা' : 'Status At a Glance'}
+              action={<Filters/>}
+            />
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
