@@ -198,6 +198,7 @@ window.location.href='/';
         ])
       ).then((res)=>{
         handleSubmit();
+        console.log(res)
       })
       // .finally((res)=>{
       //   window.location.href='/';

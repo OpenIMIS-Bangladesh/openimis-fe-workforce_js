@@ -453,9 +453,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
           color="primary"
           onClick={addItem}
           disabled={
-            !isFirstDependentValid ||
-            (formdata?.organizationType === "eis" &&
-            (formdata?.dependents[0]?.relationType === "workforce.relation.father" || formdata?.dependents[0]?.relationType === "workforce.relation.mother"))
+            !isFirstDependentValid 
           }
         >
           <FormattedMessage module="workforce" id="workforce.application.steps.dependentAdd" />
