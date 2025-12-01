@@ -29,7 +29,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApplicationType, applicationId, formStepNo, isDisabled }) => {
+const EmployeeDetailsForm2 = ({
+  handleChange,
+  formData,
+  setFormData,
+  selectedApplicationType,
+  applicationId,
+  formStepNo,
+  isDisabled,
+  dependentIndex,
+  accountIndex,
+}) => {
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -288,7 +298,14 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
     }
   };
 
-  console.log({ fahim: data });
+  const getUniqueFieldKey = (baseKey) => {
+    if (dependentIndex !== undefined) return `dependent_${dependentIndex}_${baseKey}`;
+    if (accountIndex !== undefined) return `account_${accountIndex}_${baseKey}`;
+    return baseKey;
+  };
+
+  console.log({ fahim: dependentIndex });
+  console.log({ fahimA: accountIndex });
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
@@ -304,18 +321,27 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                   return null;
                 }
                 const fieldKey = document.fieldId;
-                const hasFiles = (uploadedFilesByField[fieldKey]?.length || 0) > 0;
+                let uniqueFieldKey = fieldKey;
+
+                if (dependentIndex !== undefined) {
+                  uniqueFieldKey = `dependent_${dependentIndex}_${fieldKey}`;
+                } else if (accountIndex !== undefined) {
+                  uniqueFieldKey = `account_${accountIndex}_${fieldKey}`;
+                }
+
+                const hasFiles = (uploadedFilesByField[uniqueFieldKey]?.length || 0) > 0;
+                // const hasFiles = (uploadedFilesByField[fieldKey]?.length || 0) > 0;
                 return (
                   <Grid container spacing={2} alignItems="center" style={{ marginBottom: "12px", border: "1px solid #006273" }} key={document.fieldId}>
                     <Grid item xs={5}>
                       <Typography>
-                        {index + 1}. {document.nameBn} {document?.mandatoryForApplicant && (<sup>*</sup>)}
+                        {index + 1}. {document.nameBn} {document?.mandatoryForApplicant && <sup>*</sup>}
                       </Typography>
                     </Grid>
                     <Grid item xs={6}>
                       {formData?.applicationType === "deadlyGrant" || formData?.applicationType === "financialAssistance" ? (
                         <FileUploader
-                          fieldKey={fieldKey}
+                          fieldKey={uniqueFieldKey}
                           onFileChange={handleChange}
                           applicationId={applicationId}
                           documentType={document.documentType}
@@ -324,7 +350,7 @@ const EmployeeDetailsForm2 = ({ handleChange, formData, setFormData, selectedApp
                         />
                       ) : (
                         <FileUploader
-                          fieldKey={fieldKey}
+                          fieldKey={uniqueFieldKey}
                           onFileChange={handleFileChange}
                           applicationId={applicationId}
                           documentType={document.documentType}

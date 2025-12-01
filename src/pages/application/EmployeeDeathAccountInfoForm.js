@@ -135,7 +135,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                       <FormattedMessage id={"workforce.employee.whoseAccount"} />
                     </Typography>
 
-                    <RadioGroup row value={accountHolderType} onChange={(e) => handleAccountChange(index, "accountHolderType", e.target.value)}>
+                    <RadioGroup row value={accountHolderType} onChange={(e) => handleAccountChange(index, "accountHolderType", e.target.value)} >
                       <FormControlLabel value="self" control={<Radio color="primary" />} label={<FormattedMessage id={"workforce.employee.account.self"} />} />
                       <FormControlLabel
                         value="select_from_another_dependent"
@@ -323,6 +323,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
               formData={formdata}
               selectedApplicationType={formdata.applicationType}
               formStepNo={"employeeBankInfo"}
+              accountIndex={index}
             />
           </Accordion>
         );

@@ -262,6 +262,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                 formData={formdata}
                 selectedApplicationType={formdata.applicationType}
                 formStepNo={"employeeBankInfo"}
+                accountIndex={index}
               />
             </Accordion>
           </>

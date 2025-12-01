@@ -407,15 +407,6 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   />
                 </Grid>
 
-                {/* <Grid item xs={6}>
-                  <Typography>{formatMessage("workforce.uploadFile.dependent.photo")}</Typography>
-                  <FileUploader fieldKey="dependentPhoto" onFileChange={(field, value) => handleChange(index, field, value)} documentType="dependent photo" />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography>{formatMessage("workforce.uploadFile.dependent.nid_or_birthCcertificate")}</Typography>
-                  <FileUploader fieldKey="dependentNid" onFileChange={(field, value) => handleChange(index, field, value)} documentType="dependent nid" />
-                </Grid> */}
                 <Grid item xs={12}>
                   <EmployeeDetailsForm2
                     handleChange={(fieldKey, value) => handleAttachmentChange(index, fieldKey, value)}
@@ -423,6 +414,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     selectedApplicationType={applicationType}
                     isDisabled={dependent?.isDisabled}
                     formStepNo={"employeeDependentInfo"}
+                    dependentIndex={index}
                   />
                 </Grid>
 
@@ -448,14 +440,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
       ))}
 
       {applicationType === "financialAssistance" && (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={addItem}
-          disabled={
-            !isFirstDependentValid 
-          }
-        >
+        <Button variant="contained" color="primary" onClick={addItem} disabled={!isFirstDependentValid}>
           <FormattedMessage module="workforce" id="workforce.application.steps.dependentAdd" />
         </Button>
       )}

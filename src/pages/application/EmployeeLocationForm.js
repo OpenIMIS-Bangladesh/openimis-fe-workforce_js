@@ -58,7 +58,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
       : formatMessage(labelKey);
   };
 
-  console.log(formData);
+  console.log({ fromLocation: formData });
 
   return (
     <Box mt={1}>
@@ -73,7 +73,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
               {/* Present Location */}
               {/* {((formData?.applicationType !== "financialAssistance" || formData?.organizationType === "eis") ||
                 (formData?.applicationType !== "DeadlyGrant" || formData?.organizationType === "eis")) && ( */}
-              {(formData?.applicationType !=="financialAssistance" ||formData?.applicationType !=="DeadlyGrant") && (
+              {(formData?.applicationType !== "financialAssistance" || formData?.applicationType !== "DeadlyGrant") && (
                 <Grid item xs={12}>
                   <b>{getDeathLabel("workforce.employee.present_location")}</b>
                   <PublishedComponent
@@ -93,7 +93,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
                 ((formData?.applicationType !== "financialAssistance" && formData?.organizationType === "eis") ||
                   (formData?.applicationType !== "DeadlyGrant" && formData?.organizationType === "eis")) && ( */}
               {formData?.workforceEmployee?.presentLocation &&
-                (formData?.applicationType !=="financialAssistance" ||formData?.applicationType !=="DeadlyGrant")&& (
+                (formData?.applicationType !== "financialAssistance" || formData?.applicationType !== "DeadlyGrant") && (
                   <Grid item xs={12}>
                     <CustomDetailedLocation
                       id="permanentLocationCustomDetailedLocation"
@@ -114,7 +114,10 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
               </Grid>
               <Grid item xs={12}>
                 <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
-                {(formData?.applicationType !== "financialAssistance" && formData?.applicationType !== "deadlyGrant") && (
+                {!(
+                  (formData?.applicationType === "financialAssistance" || formData?.applicationType === "DeadlyGrant") &&
+                  formData?.organizationType !== "eis"
+                ) && (
                   <Grid item xs={12}>
                     <FormControlLabel
                       control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
@@ -122,6 +125,15 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
                     />
                   </Grid>
                 )}
+                {/* {(formData?.applicationType !== "financialAssistance" || formData?.applicationType !== "DeadlyGrant") &&
+                  formData?.organizationType != "eis" && (
+                    <Grid item xs={12}>
+                      <FormControlLabel
+                        control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
+                        label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
+                      />
+                    </Grid>
+                  )} */}
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
