@@ -172,272 +172,276 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
 
   return (
     <Box mt={1}>
-      {normalizedDependents?.map((dependent, index) => (
-        <Accordion key={index} expanded={expanded === index} onChange={(_, isExpanded) => setExpanded(isExpanded ? index : false)}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Grid container spacing={0} alignItems="center">
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                  {applicationType === "financialAssistance" && formdata?.organizationType !== "eis" ? (
-                    <FormattedMessage id="workforce.previewDetails.dependent" module="workforce" />
-                  ) : formdata.organizationType === "eis" ? (
-                    <FormattedMessage id="workforce.previewDetails.eis.dependent" module="workforce" />
-                  ) : (
-                    <FormattedMessage id="workforce.application.subHeader.dependent" module="workforce" />
-                  )}
-                </Typography>
-                <Typography>{dependent.nameEn || ""}</Typography>
-              </Grid>
-            </Grid>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Paper className={classes.paper} elevation={0}>
-              <Grid container spacing={2}>
-                {/* {applicationType === "financialAssistance" && ( */}
+      {normalizedDependents?.map((dependent, index) => {
+        const previousRelation = index > 0 ? normalizedDependents[index - 1]?.relationType : null;
+        return (
+          <Accordion key={index} expanded={expanded === index} onChange={(_, isExpanded) => setExpanded(isExpanded ? index : false)}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Grid container spacing={0} alignItems="center">
                 <Grid item xs={12}>
-                  <RelationWithWorkerPicker
-                    id="relationType"
-                    value={dependent?.relationType || ""}
-                    required
-                    onChange={(v) => onPickerChange(v, index)}
-                    readOnly={false}
-                  />
-                  {errors.relationType && <FormHelperText error>{errors.relationType}</FormHelperText>}
+                  <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
+                    {applicationType === "financialAssistance" && formdata?.organizationType !== "eis" ? (
+                      <FormattedMessage id="workforce.previewDetails.dependent" module="workforce" />
+                    ) : formdata.organizationType === "eis" ? (
+                      <FormattedMessage id="workforce.previewDetails.eis.dependent" module="workforce" />
+                    ) : (
+                      <FormattedMessage id="workforce.application.subHeader.dependent" module="workforce" />
+                    )}
+                  </Typography>
+                  <Typography>{dependent.nameEn || ""}</Typography>
                 </Grid>
-                {/* )} */}
-                <Grid item xs={6}>
-                  <TextInput
-                    id="nameBn"
-                    label={getRelationAwareLabel(dependent, "workforce.employee.name.bn")}
-                    value={dependent.nameBn || ""}
-                    onChange={(v) => handleChange(index, "nameBn", v)}
-                    required
-                    error={!!errors.nameBn}
-                    helperText={errors.nameBn}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextInput
-                    id="nameEn"
-                    label={getRelationAwareLabel(dependent, "workforce.employee.name.en")}
-                    value={dependent.nameEn || ""}
-                    onChange={(v) => handleChange(index, "nameEn", v)}
-                    required
-                    error={!!errors.nameEn}
-                    helperText={errors.nameEn}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextInput
-                    label={getRelationAwareLabel(dependent, "workforce.employee.fathers_name")}
-                    value={dependent.fatherNameEn || ""}
-                    onChange={(v) => handleChange(index, "fatherNameEn", v)}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextInput
-                    label={getRelationAwareLabel(dependent, "workforce.employee.mothers_name")}
-                    value={dependent.motherNameEn || ""}
-                    onChange={(v) => handleChange(index, "motherNameEn", v)}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <PublishedComponent
-                    pubRef="workforce.DatePicker"
-                    label={getRelationAwareLabel(dependent, "workforce.employee.birthdate")}
-                    value={dependent.birthDate || ""}
-                    required
-                    onChange={(v) => handleChange(index, "birthDate", v)}
-                  />
-                  {errors.rdmp && (
-                    <FormHelperText error>
-                      <FormattedMessage id={errors.rdmp} />
-                    </FormHelperText>
-                  )}
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextInput
-                    id="nid"
-                    label={getRelationAwareLabel(dependent, "workforce.application.employee.children.nidOrBirthRegistry")}
-                    value={dependent.nid || ""}
-                    onChange={(v) => handleChange(index, "nid", v)}
-                    type="number"
-                    required
-                    error={!!errors.nid}
-                    helperText={errors.nid}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextInput
-                    label={getRelationAwareLabel(dependent, "workforce.employee.phone")}
-                    value={dependent.phoneNumber || ""}
-                    onChange={(v) => handleChange(index, "phoneNumber", v)}
-                    type="number"
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <EmployeeMaritalStatusPicker
-                    id="maritalStatus"
-                    value={dependent?.maritalStatus || ""}
-                    label={<FormattedMessage id="workforce.employee.marital_status" module="workforce" />}
-                    required
-                    onChange={(v) => handleChange(index, "maritalStatus", v)}
-                    readOnly={false}
-                  />
-                  {errors.maritalStatus && <FormHelperText error>{errors.maritalStatus}</FormHelperText>}
-                </Grid>
-
-                {formdata?.organizationType === "cf" && formdata?.applicationType === "financialAssistance" && (
+              </Grid>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Paper className={classes.paper} elevation={0}>
+                <Grid container spacing={2}>
+                  {/* {applicationType === "financialAssistance" && ( */}
+                  <Grid item xs={12}>
+                    <RelationWithWorkerPicker
+                      id="relationType"
+                      value={dependent?.relationType || ""}
+                      required
+                      onChange={(v) => onPickerChange(v, index)}
+                      readOnly={false}
+                      excludeRelation={previousRelation}
+                    />
+                    {errors.relationType && <FormHelperText error>{errors.relationType}</FormHelperText>}
+                  </Grid>
+                  {/* )} */}
                   <Grid item xs={6}>
                     <TextInput
-                      label={
-                        formdata?.organizationType === "eis"
-                          ? formatMessage("workforce.employee.eis.percentage_of_cf_grant")
-                          : formatMessage("workforce.employee.percentage_of_cf_grant")
-                      }
-                      value={dependent.percentage_of_grant || ""}
-                      onChange={(v) => handleChange(index, "percentage_of_grant", v)}
+                      id="nameBn"
+                      label={getRelationAwareLabel(dependent, "workforce.employee.name.bn")}
+                      value={dependent.nameBn || ""}
+                      onChange={(v) => handleChange(index, "nameBn", v)}
+                      required
+                      error={!!errors.nameBn}
+                      helperText={errors.nameBn}
                     />
                   </Grid>
-                )}
+                  <Grid item xs={6}>
+                    <TextInput
+                      id="nameEn"
+                      label={getRelationAwareLabel(dependent, "workforce.employee.name.en")}
+                      value={dependent.nameEn || ""}
+                      onChange={(v) => handleChange(index, "nameEn", v)}
+                      required
+                      error={!!errors.nameEn}
+                      helperText={errors.nameEn}
+                    />
+                  </Grid>
 
-                {formdata?.organizationType === "eis" &&
-                  (dependent?.relationType === "workforce.relation.son" || dependent?.relationType === "workforce.relation.daughter") && (
-                    <>
-                      <Grid item xs={6} className={classes.item}>
-                        <FormControl component="fieldset">
-                          <FormLabel>
-                            <FormattedMessage id="workforce.dependent.isDisabled" defaultMessage="Is the dependent disabled?" module="workforce" />
-                          </FormLabel>
+                  <Grid item xs={6}>
+                    <TextInput
+                      label={getRelationAwareLabel(dependent, "workforce.employee.fathers_name")}
+                      value={dependent.fatherNameEn || ""}
+                      onChange={(v) => handleChange(index, "fatherNameEn", v)}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextInput
+                      label={getRelationAwareLabel(dependent, "workforce.employee.mothers_name")}
+                      value={dependent.motherNameEn || ""}
+                      onChange={(v) => handleChange(index, "motherNameEn", v)}
+                    />
+                  </Grid>
 
-                          <RadioGroup
-                            row
-                            value={dependent?.isDisabled || "no"}
-                            onChange={(e) => handleChange(index, "isDisabled", e.target.value)}
-                            defaultValue={"no"}
-                          >
-                            <FormControlLabel
-                              value="yes"
-                              control={<Radio color="primary" />}
-                              label={<FormattedMessage id="workforce.application.permission.yes" module="workforce" />}
-                            />
-                            <FormControlLabel
-                              value="no"
-                              control={<Radio color="primary" />}
-                              label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}
-                            />
-                          </RadioGroup>
-                        </FormControl>
-                      </Grid>
+                  <Grid item xs={6}>
+                    <PublishedComponent
+                      pubRef="workforce.DatePicker"
+                      label={getRelationAwareLabel(dependent, "workforce.employee.birthdate")}
+                      value={dependent.birthDate || ""}
+                      required
+                      onChange={(v) => handleChange(index, "birthDate", v)}
+                    />
+                    {errors.rdmp && (
+                      <FormHelperText error>
+                        <FormattedMessage id={errors.rdmp} />
+                      </FormHelperText>
+                    )}
+                  </Grid>
 
-                      {dependent?.isDisabled === "yes" && (
-                        <Grid item xs={6} className={classes.item}>
-                          <TextInput
-                            id="disabilityType"
-                            label={formatMessage("workforce.dependent.disabilityType") || "Describe disability"}
-                            value={dependent.disabilityType || ""}
-                            onChange={(v) => handleChange(index, "disabilityType", v)}
-                            required
-                            error={!!errors?.disabilityType}
-                            helperText={errors?.disabilityType}
-                          />
-                        </Grid>
-                      )}
-                    </>
+                  <Grid item xs={6}>
+                    <TextInput
+                      id="nid"
+                      label={getRelationAwareLabel(dependent, "workforce.application.employee.children.nidOrBirthRegistry")}
+                      value={dependent.nid || ""}
+                      onChange={(v) => handleChange(index, "nid", v)}
+                      type="number"
+                      required
+                      error={!!errors.nid}
+                      helperText={errors.nid}
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <TextInput
+                      label={getRelationAwareLabel(dependent, "workforce.employee.phone")}
+                      value={dependent.phoneNumber || ""}
+                      onChange={(v) => handleChange(index, "phoneNumber", v)}
+                      type="number"
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <EmployeeMaritalStatusPicker
+                      id="maritalStatus"
+                      value={dependent?.maritalStatus || ""}
+                      label={<FormattedMessage id="workforce.employee.marital_status" module="workforce" />}
+                      required
+                      onChange={(v) => handleChange(index, "maritalStatus", v)}
+                      readOnly={false}
+                    />
+                    {errors.maritalStatus && <FormHelperText error>{errors.maritalStatus}</FormHelperText>}
+                  </Grid>
+
+                  {formdata?.organizationType === "cf" && formdata?.applicationType === "financialAssistance" && (
+                    <Grid item xs={6}>
+                      <TextInput
+                        label={
+                          formdata?.organizationType === "eis"
+                            ? formatMessage("workforce.employee.eis.percentage_of_cf_grant")
+                            : formatMessage("workforce.employee.percentage_of_cf_grant")
+                        }
+                        value={dependent.percentage_of_grant || ""}
+                        onChange={(v) => handleChange(index, "percentage_of_grant", v)}
+                      />
+                    </Grid>
                   )}
 
-                <Grid item xs={12}>
-                  <b>{formatMessage("workforce.employee.present_location")}</b>
-                  <PublishedComponent
-                    pubRef="location.DetailedLocation"
-                    withNull
-                    value={dependents?.[index]?.presentLocation || null}
-                    onChange={(v) => handleChange(index, "presentLocation", v)}
-                    required
-                    split
-                  />
-                  {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
-                </Grid>
+                  {formdata?.organizationType === "eis" &&
+                    (dependent?.relationType === "workforce.relation.son" || dependent?.relationType === "workforce.relation.daughter") && (
+                      <>
+                        <Grid item xs={6} className={classes.item}>
+                          <FormControl component="fieldset">
+                            <FormLabel>
+                              <FormattedMessage id="workforce.dependent.isDisabled" defaultMessage="Is the dependent disabled?" module="workforce" />
+                            </FormLabel>
 
-                <Grid item xs={12}>
-                  <CustomDependentLocation
-                    location={dependents?.[index]?.presentLocation}
-                    onChange={(key, value) => handleChange(index, key, value)}
-                    addressKey="presentAddress"
-                    data={dependents?.[index]?.presentAddress}
-                    locationData={dependents?.[index]?.presentLocation}
-                    errors={errors}
-                  />
-                </Grid>
+                            <RadioGroup
+                              row
+                              value={dependent?.isDisabled || "no"}
+                              onChange={(e) => handleChange(index, "isDisabled", e.target.value)}
+                              defaultValue={"no"}
+                            >
+                              <FormControlLabel
+                                value="yes"
+                                control={<Radio color="primary" />}
+                                label={<FormattedMessage id="workforce.application.permission.yes" module="workforce" />}
+                              />
+                              <FormControlLabel
+                                value="no"
+                                control={<Radio color="primary" />}
+                                label={<FormattedMessage id="workforce.application.permission.no" module="workforce" />}
+                              />
+                            </RadioGroup>
+                          </FormControl>
+                        </Grid>
 
-                <Grid item xs={12}>
-                  <b>{formatMessage("workforce.employee.permanent_location")}</b>
+                        {dependent?.isDisabled === "yes" && (
+                          <Grid item xs={6} className={classes.item}>
+                            <TextInput
+                              id="disabilityType"
+                              label={formatMessage("workforce.dependent.disabilityType") || "Describe disability"}
+                              value={dependent.disabilityType || ""}
+                              onChange={(v) => handleChange(index, "disabilityType", v)}
+                              required
+                              error={!!errors?.disabilityType}
+                              helperText={errors?.disabilityType}
+                            />
+                          </Grid>
+                        )}
+                      </>
+                    )}
+
                   <Grid item xs={12}>
-                    <FormControlLabel
-                      control={<Checkbox color="primary" checked={sameAsPresent?.[index] || false} onChange={(e) => handleCheckboxChange(index, e)} />}
-                      label={formatMessage("workforce.employee.sameAsPresent")}
+                    <b>{formatMessage("workforce.employee.present_location")}</b>
+                    <PublishedComponent
+                      pubRef="location.DetailedLocation"
+                      withNull
+                      value={dependents?.[index]?.presentLocation || null}
+                      onChange={(v) => handleChange(index, "presentLocation", v)}
+                      required
+                      split
+                    />
+                    {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <CustomDependentLocation
+                      location={dependents?.[index]?.presentLocation}
+                      onChange={(key, value) => handleChange(index, key, value)}
+                      addressKey="presentAddress"
+                      data={dependents?.[index]?.presentAddress}
+                      locationData={dependents?.[index]?.presentLocation}
+                      errors={errors}
                     />
                   </Grid>
 
-                  <PublishedComponent
-                    pubRef="location.DetailedLocation"
-                    withNull
-                    value={dependents?.[index]?.permanentLocation || null}
-                    onChange={(v) => handleChange(index, "permanentLocation", v)}
-                    readOnly={!!sameAsPresent[index]}
-                    required
-                    split
-                  />
-                  {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
-                </Grid>
+                  <Grid item xs={12}>
+                    <b>{formatMessage("workforce.employee.permanent_location")}</b>
+                    <Grid item xs={12}>
+                      <FormControlLabel
+                        control={<Checkbox color="primary" checked={sameAsPresent?.[index] || false} onChange={(e) => handleCheckboxChange(index, e)} />}
+                        label={formatMessage("workforce.employee.sameAsPresent")}
+                      />
+                    </Grid>
 
-                <Grid item xs={12}>
-                  <CustomDependentLocation
-                    location={dependents?.[index]?.permanentLocation}
-                    onChange={(key, value) => handleChange(index, key, value)}
-                    addressKey="permanentAddress"
-                    data={dependents?.[index]?.permanentAddress}
-                    readOnly={!!sameAsPresent[index]}
-                    locationData={dependents?.[index]?.permanentLocation}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <EmployeeDetailsForm2
-                    handleChange={(fieldKey, value) => handleAttachmentChange(index, fieldKey, value)}
-                    formData={formdata}
-                    selectedApplicationType={applicationType}
-                    isDisabled={dependent?.isDisabled}
-                    formStepNo={"employeeDependentInfo"}
-                    dependentIndex={index}
-                  />
-                </Grid>
-
-                {applicationType === "financialAssistance" && (
-                  <Grid item xs={12} className={classes.buttonContainer}>
-                    <Button
-                      variant="contained"
-                      style={{
-                        backgroundColor: applicationType !== "financialAssistance" || dependents.length === 1 ? "#B0B0B0" : "#d32f2f",
-                        color: "white",
-                      }}
-                      onClick={() => removeItem(index)}
-                      disabled={applicationType !== "financialAssistance" || dependents.length === 1}
-                    >
-                      <FormattedMessage module="workforce" id="workforce.application.steps.skip" />
-                    </Button>
+                    <PublishedComponent
+                      pubRef="location.DetailedLocation"
+                      withNull
+                      value={dependents?.[index]?.permanentLocation || null}
+                      onChange={(v) => handleChange(index, "permanentLocation", v)}
+                      readOnly={!!sameAsPresent[index]}
+                      required
+                      split
+                    />
+                    {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
                   </Grid>
-                )}
-              </Grid>
-            </Paper>
-          </AccordionDetails>
-        </Accordion>
-      ))}
+
+                  <Grid item xs={12}>
+                    <CustomDependentLocation
+                      location={dependents?.[index]?.permanentLocation}
+                      onChange={(key, value) => handleChange(index, key, value)}
+                      addressKey="permanentAddress"
+                      data={dependents?.[index]?.permanentAddress}
+                      readOnly={!!sameAsPresent[index]}
+                      locationData={dependents?.[index]?.permanentLocation}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <EmployeeDetailsForm2
+                      handleChange={(fieldKey, value) => handleAttachmentChange(index, fieldKey, value)}
+                      formData={formdata}
+                      selectedApplicationType={applicationType}
+                      isDisabled={dependent?.isDisabled}
+                      formStepNo={"employeeDependentInfo"}
+                      dependentIndex={index}
+                    />
+                  </Grid>
+
+                  {applicationType === "financialAssistance" && (
+                    <Grid item xs={12} className={classes.buttonContainer}>
+                      <Button
+                        variant="contained"
+                        style={{
+                          backgroundColor: applicationType !== "financialAssistance" || dependents.length === 1 ? "#B0B0B0" : "#d32f2f",
+                          color: "white",
+                        }}
+                        onClick={() => removeItem(index)}
+                        disabled={applicationType !== "financialAssistance" || dependents.length === 1}
+                      >
+                        <FormattedMessage module="workforce" id="workforce.application.steps.skip" />
+                      </Button>
+                    </Grid>
+                  )}
+                </Grid>
+              </Paper>
+            </AccordionDetails>
+          </Accordion>
+        );
+      })}
 
       {applicationType === "financialAssistance" && (
         <Button variant="contained" color="primary" onClick={addItem} disabled={!isFirstDependentValid}>

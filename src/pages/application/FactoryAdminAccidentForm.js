@@ -139,7 +139,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
   return (
     <Box mt={2}>
       <Paper className={classes.paper} elevation={0}>
-        <Typography mb={4} style={{ textAlign: "center", fontWeight: "bold", fontSize: "small", margin: "15px" }}>
+        {/* <Typography mb={4} style={{ textAlign: "center", fontWeight: "bold", fontSize: "small", margin: "15px" }}>
           <FormattedMessage id="workforce.application.steps.treatment.info" module="workforce" />
         </Typography>
         <Typography variant="h6" gutterBottom>
@@ -148,7 +148,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
           ) : (
             <FormattedMessage id="workforce.employee.accident.info.title" />
           )}
-        </Typography>
+        </Typography> */}
 
         {/* PRESERVED: AID REASON TYPE RADIO GROUP */}
         {(formData?.applicationType !== "disabilityAssistance" || formData?.organizationType === "eis") && (

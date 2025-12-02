@@ -11,6 +11,7 @@ const RelationWithWorkerPicker = ({
   readOnly,
   required,
   withLabel = true,
+  excludeRelation = null,
   withPlaceholder,
   value,
   label,
@@ -43,6 +44,16 @@ const RelationWithWorkerPicker = ({
     "workforce.user.role.factoryAdmin"
   ]
 
+  const options = useMemo(() => {
+    const baseOptions = (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && applicantInfo === "factory_admin")
+      ? EMPLOYEE_RELATION_APPLICANT
+      : EMPLOYEE_RELATION;
+
+    if (!excludeRelation) return baseOptions;
+
+    return baseOptions.filter(option => option !== excludeRelation);
+  }, [user_type, applicantInfo, excludeRelation]);
+
   // Find the selected option
   const selectedOption = useMemo(
     () => (EMPLOYEE_RELATION.includes(value) ? value : null),
@@ -59,7 +70,7 @@ const RelationWithWorkerPicker = ({
       withPlaceholder={withPlaceholder}
       readOnly={readOnly}
       isLoading={false} // Set to false if not loading data dynamically
-      options={(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && applicantInfo ==="factory_admin")? EMPLOYEE_RELATION_APPLICANT : EMPLOYEE_RELATION}
+      options={options}
       value={selectedOption}
       getOptionLabel={(option) => formatMessage(option)} // Since options are strings, return the string directly
       onChange={(option) => onChange(option, option ?? null)}
