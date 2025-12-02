@@ -295,7 +295,7 @@ class ApplicationProcessSearcher extends Component {
         }
       }
       else if (this.props.sentForVerificationApplications) {
-        defaultStatusFilters.push('statusIn: ["forward_for_verification"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
+        defaultStatusFilters.push('statusIn: ["forward_for_verification","forward_to_doctor"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
       }
       else if (this.props.verifiedApplications) {
         defaultStatusFilters.push('statusIn: ["approved_by_doctor","verified"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
@@ -439,6 +439,9 @@ class ApplicationProcessSearcher extends Component {
         if (loggedInUserId) {
           defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
+      }
+      else if (this.props.sentForVerificationApplications) {
+        defaultStatusFilters.push('statusIn: ["forward_for_verification","forward_to_doctor"]', 'organizationTypeIn: ["blwf"]');
       }
       else if (summaryId) {
         defaultStatusFilters.push('statusIn: ["forward_to_blwf_section","meeting_created","approved_by_dg"]',  'organizationTypeIn: ["blwf"]');
@@ -996,7 +999,7 @@ class ApplicationProcessSearcher extends Component {
         }
       }
       else if (this.props.sentForVerificationApplications) {
-        defaultStatusFilters.push('statusIn: ["forward_for_verification"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
+        defaultStatusFilters.push('statusIn: ["forward_for_verification","forward_to_doctor"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
       }
       else if (this.props.verifiedApplications) {
         defaultStatusFilters.push('statusIn: ["approved_by_doctor","verified"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]');
