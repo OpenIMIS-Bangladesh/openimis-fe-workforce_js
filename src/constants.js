@@ -559,8 +559,36 @@ export const banglaLabels = {
   instituteAddress:"প্রতিষ্ঠানের ঠিকানা",
   aboutWork:"কাজের ধরণ",
   workingPlace:"কর্মস্থলের বিবরণ",
-  deceasedWorkerInfo:"মৃত শ্রমিকের তথ্য"
-
+  deceasedWorkerInfo:"মৃত শ্রমিকের তথ্য",
+  aidReasonType:"সাহায্যের কারণের ধরণ",
+  accidentMainType:"দুর্ঘটনা প্রধান ধরণ",
+  dailyDutyStart:"দৈনিক কর্তব্য শুরু",
+  dailyDutyEnd:"দৈনিক কর্তব্য সমাপ্তি",
+  outsideDutyExplanation:"বাইরের দায়িত্বব্যাখ্যা",
+  accidentSpecificType:"দুর্ঘটনার ধরণ",
+  detailsOfAccident:"দুর্ঘটনার বিবরণ",
+  dutyStatusWorkplace:"কর্তব্যের অবস্থা কর্মক্ষেত্রে",
+  placeOfDeath:"মৃত্যুর স্থান",
+  dateOfDeath:"মৃত্যুর তারিখ",
+  timeOfDeath:"মৃত্যুর সময়",
+  otherAccidentType:"অন্যান্য দুর্ঘটনার ধরণ",
+  outOfFactoryPlace:"কারখানার বাইরে",
+  journeyStartTime:"যাত্রা শুরুর সময়",
+  journeyStartPoint:"যাত্রা শুরুর বিন্দু",
+  journeyDestination:"যাত্রাগন্তব্য",
+  modeOfTravel:"ভ্রমণের ধরণ",
+  roadDescription:"রাস্তার বর্ণনা",
+  dutyStatusRTA:"ডিউটি ​​স্ট্যাটাস আরটিএ",
+  travelPurpose:"ভ্রমণউদ্দেশ্য",
+  regularTravel:"নিয়মিত ভ্রমণ",
+  workEngagedIn:"কাজে নিযুক্ত",
+  otherInjuredName:"অন্যান্য আহত নাম",
+  otherInjuredDesignation:"অন্যান্য আহত পদবী",
+  otherInjuredPhone:"অন্যান্য আহত ফোন",
+  otherInjuredType:"অন্যান্য আহত প্রকার",
+  otherInjuredBenefit:"অন্যান্য আহত সুবিধা",
+  otherInjuredTracking:"অন্যান্য আহত ট্র্যাকিং নম্বর",
+  
 };
 
 export const roleMaxDayCount = {
