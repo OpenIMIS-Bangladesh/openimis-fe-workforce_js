@@ -431,7 +431,7 @@ const ApplicationViewPage = ({
                 </Grid>
                 {application?.organizationType === "eis" && (
                   <Grid item xs={12}>
-                    <Button variant="contained" color="primary" onClick={() => setOpenAccidentInfoModal(true)} fullwidth>
+                    <Button variant="contained" color="primary" onClick={() => setOpenAccidentInfoModal(true)} fullwidth disabled={application?.employeeAccidentInfo !=""?true:false}>
                       {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
                     </Button>
                   </Grid>

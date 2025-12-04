@@ -1257,7 +1257,7 @@ export function fetchWorkforceDocument(mm, filters) {
     "status",
     "documentType",
     "holderType",
-    "holder",
+    // "holderId",
     "note",
     "workforceApplication{id}",
     "workforceDocumentType{id,nameBn,nameEn,documentType,mandatoryForApplicant,formStepNo,fieldId}",

@@ -421,7 +421,8 @@ function reducer(
         ...state,
         uploadDependentFile: [...(state.uploadDependentFile || []), action.payload],
       };
-    case "SET_SELECTED_EMPLOYEE":
+    
+      case "SET_SELECTED_EMPLOYEE":
       return {
         ...state,
         selectedEmployee: action.payload,
