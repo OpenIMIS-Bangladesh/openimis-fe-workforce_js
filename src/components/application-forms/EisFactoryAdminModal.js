@@ -17,6 +17,8 @@ import { createWorkforceDocument, updateApplication } from "../../actions";
 import { validateRequiredFields } from "../../utils/utils";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage,useTranslations } from "@openimis/fe-core";
 import FactoryAdminAccidentForm from "../../pages/application/FactoryAdminAccidentForm";
+import EisDoctorEntries from "../../pages/application/EisDoctorEntries";
+import DoctorsEntries from "./Atoms/DoctorsEntries";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -107,6 +109,7 @@ const EisFactoryAdminModal = ({
               id: application?.id,
               // ...application,
               employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
+              doctorEntries: JSON.stringify(formData?.doctorEntries),
             };
             console.log({ updateApplicationData });
             dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`))
@@ -138,7 +141,22 @@ const EisFactoryAdminModal = ({
           <Divider />
 
           {/* Scrollable Form Content */}
-          <Box className={classes.content} ref={stepRef}>
+          
+
+          {application?.organizationType === "eis" ? (
+            <Box className={classes.content} ref={stepRef}>
+              <EisDoctorEntries
+                handleChange={(key, value) =>
+                  handleChange(key, value, "doctorEntries")
+                }
+                formData={formData}
+                setFormData={setFormData}
+                applicationType="disabilityAssistance"
+                errors={errors}
+              />
+            </Box>
+          ):(
+            <Box className={classes.content} ref={stepRef}>
             <FactoryAdminAccidentForm
               handleChange={(key, value) =>
                 handleChange(key, value, "employeeAccidentInfo")
@@ -149,6 +167,7 @@ const EisFactoryAdminModal = ({
               errors={errors}
             />
           </Box>
+          )}
 
           {/* Footer Actions */}
           {showActions && (

@@ -904,6 +904,17 @@
   "workforce.accident.otherInjuredBenefit.label": "Have you applied for any benefit for this worker?",
   "workforce.accident.otherInjuredTracking.label": "Tracking Number (if benefit applied)",
 
+  "workforce.disability.assessmentDetails":"Assesment Details", 
+  "workforce.disability.dateOfAssessment":"Date of Assessment ", 
+  "workforce.disability.nameOfAssessmentMeeting":"Name of the Assessment Meeting ", 
+  "workforce.disability.briefInjuryDescription":"Brief Description of the Injury from the Accident/Incidents as per Doctor’s Prescription", 
+  "workforce.disability.briefTreatmentDescription":"Brief Description of the Treatment including any Surgery/Medication/Therapy as per Doctor’s Prescription", 
+  "workforce.disability.physicalExamination":"Physical Examination Findings", 
+  "workforce.disability.injurySiteLocation":"Injury Site/Location", 
+  "workforce.disability.injuryDetailsDescription":"Injury detains and Description", 
+  "workforce.disability.observationCurrentCondition":"Observation After Evaluating the Current Condition of Employee", 
+  "workforce.disability.limitationsOccupationDailyLiving":"Limitations in Occupation and Activities of Daily Living",
+
   "workforce.accident.officialComplaint.label": "Was any official complaint filed? (GD/FIR/Postmortem)",
   
   "workforce.accident.hospitalized.label": "Was the worker admitted to hospital?",

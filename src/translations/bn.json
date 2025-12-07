@@ -817,6 +817,17 @@
   "workforce.accident.releaseDate.label": "ছাড়পত্র/ডিসচার্জের তারিখ",
   "workforce.accident.hospitalDoctorName.label": "চিকিৎসকের নাম (হাসপাতাল)",
 
+  "workforce.disability.assessmentDetails": "মূল্যায়নের বিবরণ",
+  "workforce.disability.dateOfAssessment": "মূল্যায়নের তারিখ",
+  "workforce.disability.nameOfAssessmentMeeting": "মূল্যায়ন সভার নাম",
+  "workforce.disability.briefInjuryDescription": "ডাক্তারের প্রেসক্রিপশন অনুযায়ী দুর্ঘটনা/ঘটনা থেকে প্রাপ্ত আঘাতের সংক্ষিপ্ত বিবরণ",
+  "workforce.disability.briefTreatmentDescription": "ডাক্তারের প্রেসক্রিপশন অনুযায়ী চিকিৎসার সংক্ষিপ্ত বিবরণ (অপারেশন/ওষুধ/থেরাপি সহ)",
+  "workforce.disability.physicalExamination": "শারীরিক পরীক্ষার ফলাফল",
+  "workforce.disability.injurySiteLocation": "আঘাতের স্থান/অবস্থান",
+  "workforce.disability.injuryDetailsDescription": "আঘাতের বিস্তারিত তথ্য ও বিবরণ",
+  "workforce.disability.observationCurrentCondition": "কর্মীর বর্তমান অবস্থা মূল্যায়নের পর পর্যবেক্ষণ",
+  "workforce.disability.limitationsOccupationDailyLiving": "কর্মসংস্থান ও দৈনন্দিন কার্যকলাপে সীমাবদ্ধতা",
+
   "workforce.accident.placeOfDeath.label": "মৃত্যুর স্থান",
   "workforce.accident.dateOfDeath.label": "মৃত্যুর তারিখ",
   "workforce.accident.timeOfDeath.label": "মৃত্যুর সময়",

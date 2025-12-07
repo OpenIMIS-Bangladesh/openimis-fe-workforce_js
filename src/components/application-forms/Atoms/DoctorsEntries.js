@@ -4,6 +4,7 @@ import { Grid, FormControlLabel, Radio, RadioGroup, Button } from "@material-ui/
 import { FormattedMessage, TextInput } from "@openimis/fe-core";
 import { updateApplication } from "../../../actions";
 import CustomSnackbar from "../../shared/CustomSnackbar";
+import EisFactoryAdminModal from "../EisFactoryAdminModal";
 
 const DoctorsEntries = ({ application }) => {
   const dispatch = useDispatch();
@@ -12,7 +13,8 @@ const DoctorsEntries = ({ application }) => {
   const [doctorDiagnosis, setDoctorDiagnosis] = useState("");
   const [doctorComment, setDoctorComment] = useState("");
   const [doctorsActions, setDoctorsActions] = useState("");
-  const [openSnackBar, setOpenSnackBar] = useState({openResponseBar: false,status: "workforce.success.message.doctor",type:"success"});
+  const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
+  const [openSnackBar, setOpenSnackBar] = useState({ openResponseBar: false, status: "workforce.success.message.doctor", type: "success" });
 
   const handleSelectCheckbox = (event) => {
     setDoctorsActions(event.target.value);
@@ -33,9 +35,9 @@ const DoctorsEntries = ({ application }) => {
       console.log("Doctor Update Payload:", updateApplicationData);
 
       await dispatch(updateApplication(updateApplicationData, "update workforce application"));
-      setOpenSnackBar({openResponseBar:true,status:"আপনার মতামত সফলভাবে সংরক্ষিত করা হয়েছে!",type:"success"})
+      setOpenSnackBar({ openResponseBar: true, status: "আপনার মতামত সফলভাবে সংরক্ষিত করা হয়েছে!", type: "success" });
     } catch (error) {
-      setOpenSnackBar({openResponseBar:true,status:"আপনার মতামত সংরক্ষণ করা যায়নি।",type:"error"})
+      setOpenSnackBar({ openResponseBar: true, status: "আপনার মতামত সংরক্ষণ করা যায়নি।", type: "error" });
     }
   };
 
@@ -87,10 +89,25 @@ const DoctorsEntries = ({ application }) => {
             <FormattedMessage id="workforce.submit" module="workforce" />
           </Button>
         </Grid>
+
+        {application?.organizationType === "eis" && (
+          <Grid item xs={12}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setOpenAccidentInfoModal(true)}
+              fullwidth
+              disabled={application?.doctorsEntry != "" ? true : false}
+            >
+              {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
+            </Button>
+          </Grid>
+        )}
       </Grid>
+      {openAccidentInfoModal && <EisFactoryAdminModal open={openAccidentInfoModal} onClose={() => setOpenAccidentInfoModal(false)} application={application} />}
       <CustomSnackbar
         open={openSnackBar?.openResponseBar}
-        onClose={() => setOpenSnackBar({...openSnackBar,openResponseBar:false})}
+        onClose={() => setOpenSnackBar({ ...openSnackBar, openResponseBar: false })}
         type={openSnackBar?.type}
         message={<FormattedMessage id={openSnackBar?.status} module="workforce" />}
       />
