@@ -2733,50 +2733,52 @@ export function updateWorkforceEmployeeDependentEligibility(applicationId) {
   return graphql(mutation, "WORKFORCE_EMPLOYEE_DEPENDENT_ELIGIBILITY_UPDATE");
 }
 
-export function fetchEisPaymentProcess() {
+export function fetchEisPaymentProcess(applicationId) {
   const payload = `
- query {
-  workforceEisPaymentProcess
-  {
-    id
-    monthIndex
-    year
-    eisMonthlyAmount
-    eisPaymentType
-    eisApprovedAmount
-    eisCalculatedAmount
-    processingDate
-    isDisbursed
-    bank {
-      id
-      nameEn
-      districtNameEn
-      branchCode
-      routingNumber
-    }
-    bankAccountNo
-    bankAccountHolderName
-    workforceApplication {
-      id
-      lastBaseSalary
-      associationType
-      workforceEmployee {
+    {
+      workforceEisPaymentProcess(
+        workforceApplicationId: "${applicationId}"
+      ) {
         id
-        firstNameBn
-        firstNameEn
-        nid
-      }
-      employeeFactory{
-        id
-        nameEn
+        monthIndex
+        year
+        eisMonthlyAmount
+        eisPaymentType
+        eisApprovedAmount
+        eisCalculatedAmount
+        processingDate
+        isDisbursed
+        bank {
+          id
+          nameEn
+          districtNameEn
+          branchCode
+          routingNumber
+        }
+        bankAccountNo
+        bankAccountHolderName
+        workforceApplication {
+          id
+          lastBaseSalary
+          associationType
+          workforceEmployee {
+            id
+            firstNameBn
+            firstNameEn
+            nid
+          }
+          employeeFactory {
+            id
+            nameEn
+          }
+        }
       }
     }
-  }
-}
   `;
 
-   return graphql(payload, "EIS_PAYMENT_PROCESS");
-
+  return graphql(payload, "EIS_PAYMENT_PROCESS", {
+    applicationId,
+  });
 }
 
 export const setUploadedFiles = (fieldKey, files) => ({

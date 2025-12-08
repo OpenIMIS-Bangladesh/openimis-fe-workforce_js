@@ -25,7 +25,7 @@ import {
   AccordionDetails,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { fetchSummaryApplications,fetchEisPaymentProcess, fetchApplicationsSummary } from "../../actions";
+import { fetchSummaryApplications, fetchApplicationsSummary } from "../../actions";
 import RestorePageIcon from '@material-ui/icons/RestorePage';
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
@@ -594,9 +594,6 @@ const EisCoordinatorDashboardPage = () => {
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); 
  useEffect(() => {
       return dispatch(fetchSummaryApplications(modulesManager,['organizationType:"eis"']));
-    }, []);
- useEffect(() => {
-      return dispatch(fetchEisPaymentProcess());
     }, []);
   const data = useSelector(
       (state) => state.workforce[`applicationsSummary`] ?? []
