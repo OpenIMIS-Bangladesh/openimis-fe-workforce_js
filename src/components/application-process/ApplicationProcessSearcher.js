@@ -13,7 +13,6 @@ import {
   fetchFactoryEmployee,
   fetchWorkforceDocument,
   testWorkforcePayment,
-  fetchEisPaymentProcess
 } from "../../actions";
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
@@ -3001,6 +3000,7 @@ console.log("hi payment call",testWorkforcePayment)
                     eisPayments={eisPayments}
                     status="approved_by_committee"
                     userRights={userRights}
+                    selectedApplicationIds={this.state.selectedApplicationIds}
                   />
                   </>
                 )}
@@ -3139,7 +3139,6 @@ const mapDispatchToProps = (dispatch) =>
       fetchFactoryEmployee,
       fetchWorkforceDocument,
       testWorkforcePayment,
-      fetchEisPaymentProcess,
       journalize,
       coreConfirm,
     },

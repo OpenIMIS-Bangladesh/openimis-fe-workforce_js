@@ -18,7 +18,7 @@ import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
 import { createApplicationSummary, updateApplication, updateApplicationSummary } from "../../actions";
 import { useDispatch } from "react-redux";
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { enToBn } from '../../utils/utils';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
@@ -46,15 +46,30 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+import { fetchEisPaymentProcess } from "../../actions";
 
-const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights, status, summary_Id }) => {
+const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights, status, summary_Id, selectedApplicationIds }) => {
 const classes = useStyles();
-console.log("eisPayments", eisPayments);
+const dispatch = useDispatch();
+
+console.log("selectedApplicationIds", selectedApplicationIds);
 const getTotalAmount = () => {
   return eisPayments
     .reduce((sum, item) => sum + (parseFloat(item.eisMonthlyAmount) || 0), 0)
     .toFixed(2);
 };
+
+useEffect(() => {
+  if (selectedApplicationIds?.length > 0) {
+    const applicationIds = selectedApplicationIds.map(x =>
+      decodeId(x.id)
+    );
+    console.log("ggggggggggg",applicationIds)
+    dispatch(fetchEisPaymentProcess(applicationIds?.[0]));
+  } 
+}, [selectedApplicationIds]);
+
+
 
 const year = eisPayments[0]?.year;
 const monthIndex = eisPayments[0]?.monthIndex;
