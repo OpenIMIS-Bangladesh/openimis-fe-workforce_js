@@ -79,7 +79,7 @@ const ApplicationReason = ({ handleChange, formData, errors }) => {
             <Grid item xs={6}>
               <EmployeeAccidentTypePicker
                 id={"accidentReason"}
-                value={formData?.employeeAccidentInfo?.accidentType || ""}
+                value={formData?.metadata?.accidentReason || ""}
                 label={<FormattedMessage id="workforce.employee.accident.info.typeOfAccident" module="workforce" />}
                 required
                 onChange={(v) => handleChange("accidentReason", v, "metadata")}
