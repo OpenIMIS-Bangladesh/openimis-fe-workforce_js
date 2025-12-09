@@ -254,6 +254,9 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
         deceasedWorkerInfo: parsedApplicationData?.deceasedWorkerInfo || {},
       });
     }
+    // if (parsedApplicationData?.id) {
+    //   applicationId=parsedApplicationData?.id
+    // }
   }, [employeeData?.id, parsedApplicationData]);
 
   // Handle form input changes
@@ -280,7 +283,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
 
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if ((nextStep === 3 && !isAtLeast18YearsOld(formData?.deceasedWorkerInfo?.birthDate))) {
+      if ((nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate))) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
       } else {
@@ -331,7 +334,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
               JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
             employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
             metadata: JSON.stringify(formData.metadata),
-            deceasedWorkerInfo: JSON.stringify(formData.deceasedWorkerInfo)
+            deceasedWorkerInfo: JSON.stringify(formData.workforceEmployee)
               .replace(/\\/g, "")
               .replace(/"{/g, "{")
               .replace(/}"/g, "}")
@@ -404,7 +407,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
             employeeDependentInfo:
               JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") ||
               JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
-            deceasedWorkerInfo: JSON.stringify(formData.deceasedWorkerInfo)
+            deceasedWorkerInfo: JSON.stringify(formData.workforceEmployee)
               .replace(/\\/g, "")
               .replace(/"{/g, "{")
               .replace(/}"/g, "}")
@@ -416,22 +419,22 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
           };
           console.log(uploadDependentFile);
           if (uploadDependentFile) {
-            await Promise.all(
-              uploadDependentFile.map((file) =>
-                dispatch(
+            await uploadDependentFile.map((file) =>{
+              const appId = applicationId||formData?.id
+              return  dispatch(
                   createWorkforceDocument(
-                    { ...file, workforceApplicationId: safeDecodeId(applicationId[0]?.id) },
+                    { ...file, workforceApplicationId: safeApplicationId(appId) },
                     `Created workforce document`
                   )
                 )
-              )
-            );
+              })
           }
           await dispatch(updateApplication(updateApplicationData, `update workforce application`)).then(res =>setIsDependentSaved(true));
-          
-          await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(applicationId[0]?.id)}"`])).then((res) => {
-            const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-          });
+          if (parsedApplicationData?.id) {
+            await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${parsedApplicationData?.id}"`]))
+          }else{
+            await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeApplicationId(applicationId)}"`]))
+          }
         } else {
           const updateApplicationData = {
             // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
