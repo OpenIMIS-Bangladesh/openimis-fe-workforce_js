@@ -141,20 +141,27 @@ const monthFormatted = String(monthIndex + 1).padStart(2, "0");
     const data = eisPayments?.[0] || {};
     const parsingAccidentInfo = JSON.parse(data.workforceApplication?.employeeAccidentInfo); 
     const parsedAccidentInfo = JSON.parse(parsingAccidentInfo);
+    const parsingDoctorEntry = JSON.parse(data.workforceApplication?.doctorsEntry); 
+    const parsedDoctorEntry = JSON.parse(parsingDoctorEntry);
+
+    const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
+    const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
+    const effectiveDate = dateOfRejoining || dateOfAssessment || "";
+
     
     const leftItems = [
       ["EIS Worker ID", data.eisWorkerId || ""],
       ["Date of Accident", parsedAccidentInfo?.accidentDate || ""],
-      ["Date of Rejoining", data.dateOfRejoining || ""],
-      ["Date of Disability Assessment", data.disabilityAssessmentDate || ""],
-      ["Effective date of Benefit", data.effectiveDateOfBenefit || ""],
+      ["Date of Rejoining", dateOfRejoining],
+      ["Date of Disability Assessment", dateOfAssessment],
+      ["Effective date of Benefit", effectiveDate],
     ];
   
     const rightItems = [
       ["Name of the Factory", data.workforceApplication?.employeeFactory?.nameEn || ""],
       ["Name of Association", data.workforceApplication?.associationType || ""],
       ["Gross Salary (BDT)", data.workforceApplication?.lastBaseSalary || ""],
-      ["Percentage of Disability", data.percentageOfDisability || ""],
+      ["Percentage of Disability", parsedDoctorEntry?.disabilityPerSchedule || ""],
       ["Type of Accident", (parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace" ? "Workplace Accident" : parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA" ?  "On Duty RTA" : "Commuting") || ""],
     ];
   
@@ -259,7 +266,7 @@ const monthFormatted = String(monthIndex + 1).padStart(2, "0");
           row?.eisCalculatedAmount || 0,
           row?.eisPaymentType || "",
           row?.approvalStatus || "",
-          row?.remarks || "",
+          row?.eisApprovedAmount || "",
         ]);
 
         totalMonthly += Number(row?.eisMonthlyAmount || 0);
