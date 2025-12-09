@@ -19,6 +19,8 @@ import { useModulesManager, formatMutation, decodeId, FormattedMessage,useTransl
 import FactoryAdminAccidentForm from "../../pages/application/FactoryAdminAccidentForm";
 import EisDoctorEntries from "../../pages/application/EisDoctorEntries";
 import DoctorsEntries from "./Atoms/DoctorsEntries";
+import { banglaLabels, ORGANIZATION_TYPE_NAME_BN, ORGANIZATION_TYPE_NAME_EN, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
+import { conditionalEnToBn, enToBn, getUserType } from "../../utils/utils";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -82,6 +84,7 @@ const EisFactoryAdminModal = ({
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const dispatch = useDispatch()
   const stepRef =useRef(null)
+  const user_type = getUserType();
 
   const handleChange = (key, value, parent = null) => {
     setFormData((prev) => {
@@ -143,7 +146,7 @@ const EisFactoryAdminModal = ({
           {/* Scrollable Form Content */}
           
 
-          {application?.organizationType === "eis" ? (
+          {application?.organizationType === "eis" && (user_type === WORKFORCE_USER_TYPE.DOCTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR || user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) ? (
             <Box className={classes.content} ref={stepRef}>
               <EisDoctorEntries
                 handleChange={(key, value) =>

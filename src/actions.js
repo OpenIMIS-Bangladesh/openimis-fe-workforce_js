@@ -2761,6 +2761,8 @@ export function fetchEisPaymentProcess(applicationId) {
           id
           lastBaseSalary
           associationType
+          employeeAccidentInfo
+          doctorsEntry
           workforceEmployee {
             id
             firstNameBn
