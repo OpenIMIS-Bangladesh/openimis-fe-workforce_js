@@ -140,7 +140,7 @@ export const ApplicationPrintPreview = ({ data, documents, logoLeftUrl, logoLeft
         <div id="print-container" ref={printRef}>
           {data?.applicationType ===("financialAssistance" || "deadlyGrant") ? (
           <DeathApplicationPrint data={{ ...data, movementLogs }} documents={documents} logoLeft={logoLeft} logoLeftUrl={logoLeftUrl} />
-        ):data?.applicationType ===("medicalAssistance" || "medicalDonation")?(
+        ):(data?.applicationType ==="medicalAssistance" ||data?.applicationType === "medicalDonation"||data?.applicationType ==="disabilityAssistance")?(
             <MedicalAssistancePrint data={{ ...data, movementLogs }} documents={documents} logoLeft={logoLeft} logoLeftUrl={logoLeftUrl} />
           ):null}
         </div>

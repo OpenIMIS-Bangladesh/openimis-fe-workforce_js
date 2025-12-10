@@ -506,6 +506,7 @@ export const banglaLabels = {
   spouseBirthDate: "স্বামী/স্ত্রীর জন্ম তারিখ",
   spouseNid: "স্বামী/স্ত্রীর এনআইডি",
   applicantInfo: "আবেদনকারীর তথ্য",
+  workforceApplicant: "আবেদনকারীর তথ্য",
   workforceEmployee: "শ্রমিকের তথ্য",
   relationWithApplicant: "আবেদনকারীর সাথে সম্পর্ক",
   houseName: "বাড়ির নাম",
