@@ -2993,6 +2993,8 @@ console.log("hi payment call",testWorkforcePayment)
                     eisPayments={eisPayments}
                     status="approved_by_committee"
                     userRights={userRights}
+                    selectedApplicationIds={this.state.selectedApplicationIds}
+
                   />
                   <GenereteEisDependentBFTN
                     open={openGenerateEisDependentBFTN}
