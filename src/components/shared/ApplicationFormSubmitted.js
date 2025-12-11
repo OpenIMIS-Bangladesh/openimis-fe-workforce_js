@@ -29,10 +29,10 @@ export const ApplicationFormSubmitted = (form_type = '') => {
     const classes = useStyles();
     const history = useHistory();
 
-    setTimeout(() => {
-        history.push("/home");
-        window.location.reload();
-    }, 2000);
+    // setTimeout(() => {
+    //     history.push("/home");
+    //     window.location.reload();
+    // }, 2000);
 
     return (
         <div className={classes.container}>

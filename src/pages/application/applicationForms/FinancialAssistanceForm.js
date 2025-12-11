@@ -509,7 +509,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
     const updateApplicationData = {
       // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
       id: safeApplicationId(applicationId, parsedApplicationData),
-      workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
+      workforceEmployeeId: safeDecodeId(formData?.workforceEmployee.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
       company: formData?.workforceEmployee?.company?.id,
        factory: (formData?.workforceEmployee?.factory?.id||formData?.deceasedWorkerInfo?.factory?.id) ? decodeId(formData?.workforceEmployee?.factory?.id||formData?.deceasedWorkerInfo?.factory?.id) : null,
       organizationType: organizationType || parsedApplicationData?.organizationType,
