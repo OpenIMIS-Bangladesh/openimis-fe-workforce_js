@@ -423,7 +423,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
               const appId = applicationId||formData?.id
               return  dispatch(
                   createWorkforceDocument(
-                    { ...file, workforceApplicationId: safeApplicationId(appId) },
+                    { ...file, workforceApplicationId: safeApplicationId(applicationId,parsedApplicationData) },
                     `Created workforce document`
                   )
                 )
@@ -499,7 +499,9 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
 
   const handleSubmit = () => {
     uploadFile.map((file, index) => {
-      dispatch(createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId) }, `Created workforce document `));
+      // const createDocumentData = { ...file, workforceApplicationId: safeApplicationId(applicationId,parsedApplicationData) }
+      // console.log({createDocumentData})
+      return dispatch(createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId,parsedApplicationData) }, `Created workforce document `));
     });
 
     const submittedBy =
@@ -540,7 +542,9 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
     //   applicationToId: 165,
     //   toRoleId: 25,
     // };
+
     dispatch(updateApplication(updateApplicationData, `update workforce application `));
+
     // dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
   };
 
