@@ -2733,11 +2733,17 @@ export function updateWorkforceEmployeeDependentEligibility(applicationId) {
   return graphql(mutation, "WORKFORCE_EMPLOYEE_DEPENDENT_ELIGIBILITY_UPDATE");
 }
 
-export function fetchEisPaymentProcess(applicationId) {
+export function fetchEisPaymentProcess(applicationIds) {
+  const idsArray = Array.isArray(applicationIds)
+    ? applicationIds
+    : [applicationIds];
+
+  const idsString = idsArray.map(id => `"${id}"`).join(",");
+
   const payload = `
     {
       workforceEisPaymentProcess(
-        workforceApplicationId: "${applicationId}"
+        workforceApplicationIdIn: [${idsString}]
       ) {
         id
         monthIndex
@@ -2781,9 +2787,10 @@ export function fetchEisPaymentProcess(applicationId) {
   `;
 
   return graphql(payload, "EIS_PAYMENT_PROCESS", {
-    applicationId,
+    applicationIds: idsArray
   });
 }
+
 
 export const setUploadedFiles = (fieldKey, files) => ({
   type: "SET_UPLOADED_FILES",
