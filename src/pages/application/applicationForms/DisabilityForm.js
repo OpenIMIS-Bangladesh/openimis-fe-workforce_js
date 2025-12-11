@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox,Grid,FormControlLabel  } from "@material-ui/core";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox, Grid, FormControlLabel } from "@material-ui/core";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage, useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
@@ -48,9 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
-const DisabilityForm = ({ workforceFactoryId,organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
+const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
   const modulesManager = useModulesManager();
@@ -114,8 +112,8 @@ const DisabilityForm = ({ workforceFactoryId,organizationType, selectedApplicati
     },
     deathType: "",
     company: null,
-    factory:workforceFactoryId|| null,
-    workforceFactoryId:workforceFactoryId||"",
+    factory: workforceFactoryId || null,
+    workforceFactoryId: workforceFactoryId || "",
     isSubmitted: "no",
     organizationType: "",
     applicationType: "",
@@ -189,9 +187,9 @@ const DisabilityForm = ({ workforceFactoryId,organizationType, selectedApplicati
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory ||workforceFactoryId|| null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || workforceFactoryId || null,
         applicationForSelf: applicationForSelf,
-        workforceFactoryId:workforceFactoryId ||"",
+        workforceFactoryId: workforceFactoryId || "",
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
@@ -224,15 +222,18 @@ const DisabilityForm = ({ workforceFactoryId,organizationType, selectedApplicati
     console.log({ formData });
     const newErrors = validateRequiredFields(stepRef, formatMessage);
     setErrors(newErrors);
-    console.log({newErrors})
+    console.log({ newErrors });
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if(organizationType ==="eis" && eisSteps.length -1 ===activeStep) setShowPreview(true)
-      if(((nextStep === 1 && organizationType === "eis") ||  (nextStep === 2 && organizationType !== "eis")) && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)){
-        let fakeErrors = {...newErrors,rdmp:"core.error.workerAge"}
-        setErrors(fakeErrors)
-        console.log({fakeErrors})
-      }else{
+      if (organizationType === "eis" && eisSteps.length - 1 === activeStep) setShowPreview(true);
+      if (
+        ((nextStep === 1 && organizationType === "eis") || (nextStep === 2 && organizationType !== "eis")) &&
+        !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)
+      ) {
+        let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
+        setErrors(fakeErrors);
+        console.log({ fakeErrors });
+      } else {
         setActiveStep(nextStep);
         if ((nextStep === 1 && organizationType === "eis") || nextStep === 2 || (nextStep === 3 && organizationType !== "eis")) {
           const workforceEmployeeData = {
@@ -264,6 +265,34 @@ const DisabilityForm = ({ workforceFactoryId,organizationType, selectedApplicati
           };
           console.log("Update Submitting formData:", formData);
           await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
+          if (organizationType === "eis" && nextStep===1) {
+            const createApplicationData = {
+              workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
+              organizationType: formData.organizationType,
+              applicationType: formData.applicationType,
+              company: formData?.workforceEmployee?.company?.id,
+              factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
+              grantAmount: formData?.employeeAccidentInfo.grantAmount,
+              metadata: JSON.stringify(formData.metadata),
+              status: WORKFORCE_STATUS.DRAFT,
+              applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
+            };
+            if (!parsedApplicationData) {
+              const applicationMutation = formatMutation("createWorkforceApplication", formatApplicationeGQL(createApplicationData), `Created application`);
+              const applicationClientMutationId = applicationMutation.clientMutationId;
+              console.log("applicationClientMutationId", applicationClientMutationId);
+              await dispatch(createApplication(applicationMutation, `Created workforce application `));
+
+              await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
+            } else {
+              const updateApplicationData = {
+                id: parsedApplicationData?.id,
+                ...createApplicationData,
+              };
+              console.log("i am from update", updateApplicationData);
+              dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
+            }
+          }
         } else if (nextStep === 4) {
           console.log("Create application formData:", formData);
           const updateApplicationData = {
@@ -300,7 +329,7 @@ const DisabilityForm = ({ workforceFactoryId,organizationType, selectedApplicati
             const applicationClientMutationId = applicationMutation.clientMutationId;
             console.log("applicationClientMutationId", applicationClientMutationId);
             await dispatch(createApplication(applicationMutation, `Created workforce application `));
-  
+
             await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
           } else {
             const updateApplicationData = {
@@ -425,7 +454,6 @@ const DisabilityForm = ({ workforceFactoryId,organizationType, selectedApplicati
           </Button>
         </div>
       </div>
-
     );
   }
 
@@ -458,21 +486,21 @@ const DisabilityForm = ({ workforceFactoryId,organizationType, selectedApplicati
   }
 
   const steps = [
-  "workforce.application.steps.aidReason",
-  "workforce.application.steps.employeeDetails",
-  "workforce.application.steps.location",
-  "workforce.application.steps.account.info",
-  "workforce.application.disabilityInfo",
-  // "workforce.application.steps.upload.documents",
-];
+    "workforce.application.steps.aidReason",
+    "workforce.application.steps.employeeDetails",
+    "workforce.application.steps.location",
+    "workforce.application.steps.account.info",
+    "workforce.application.disabilityInfo",
+    // "workforce.application.steps.upload.documents",
+  ];
   const eisSteps = [
-  // "workforce.application.steps.aidReason",
-  "workforce.application.steps.employeeDetails",
-  "workforce.application.steps.location",
-  "workforce.application.steps.account.info",
-  // "workforce.application.disabilityInfo",
-  // "workforce.application.steps.upload.documents",
-];
+    // "workforce.application.steps.aidReason",
+    "workforce.application.steps.employeeDetails",
+    "workforce.application.steps.location",
+    "workforce.application.steps.account.info",
+    // "workforce.application.disabilityInfo",
+    // "workforce.application.steps.upload.documents",
+  ];
 
   console.log({ formData });
 
@@ -480,23 +508,21 @@ const DisabilityForm = ({ workforceFactoryId,organizationType, selectedApplicati
     <div className={classes.container}>
       <Paper className={classes.paper} elevation={0}>
         <Stepper activeStep={activeStep} alternativeLabel style={{ padding: "0px" }}>
-          {formData?.organizationType ==="eis" ?(
-          eisSteps?.map((label) => (
-              <Step key={label}>
-                <StepLabel>
-                  <FormattedMessage module="workforce" id={label} />
-                </StepLabel>
-              </Step>
-            ))
-          ):(
-            steps?.map((label) => (
-              <Step key={label}>
-                <StepLabel>
-                  <FormattedMessage module="workforce" id={label} />
-                </StepLabel>
-              </Step>
-            ))
-          )}
+          {formData?.organizationType === "eis"
+            ? eisSteps?.map((label) => (
+                <Step key={label}>
+                  <StepLabel>
+                    <FormattedMessage module="workforce" id={label} />
+                  </StepLabel>
+                </Step>
+              ))
+            : steps?.map((label) => (
+                <Step key={label}>
+                  <StepLabel>
+                    <FormattedMessage module="workforce" id={label} />
+                  </StepLabel>
+                </Step>
+              ))}
         </Stepper>
 
         <Box mt={0} ref={stepRef}>
@@ -606,39 +632,47 @@ const DisabilityForm = ({ workforceFactoryId,organizationType, selectedApplicati
         </Box>
 
         <Box>
-          {((formData?.organizationType !=="eis" && activeStep === steps.length-1)||(formData?.organizationType ==="eis" && activeStep === eisSteps.length-1))  &&(
+          {((formData?.organizationType !== "eis" && activeStep === steps.length - 1) ||
+            (formData?.organizationType === "eis" && activeStep === eisSteps.length - 1)) && (
             <Box>
               <FormControlLabel
-                    control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{color:"blue"}} />}
-                    label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
-                  />
+                control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{ color: "blue" }} />}
+                label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
+              />
             </Box>
           )}
-        <div className={classes.buttonContainer}>
-          {activeStep > 0 && (
-            <Button onClick={handleBack} variant="outlined">
-              <FormattedMessage module="workforce" id="workforce.back" />
-            </Button>
-          )}
-          {((formData?.organizationType !=="eis" && activeStep < steps.length - 1)||(formData?.organizationType ==="eis" && activeStep < eisSteps.length - 1) ) ? (
-            <Button variant="contained" color="primary" onClick={handleNext}>
-              <FormattedMessage module="workforce" id="workforce.save.next" />
-            </Button>
-          ) : (
-            <>
-            {formData?.organizationType === "eis"? (
-                  <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => {organizationType ==="eis"? handleNext() :setShowPreview(true)}}>
-                    <FormattedMessage module="workforce" id="workforce.submit" />
-                  </Button>
-                  
-            ):(
-              <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
-                    <FormattedMessage module="workforce" id="workforce.submit" />
-                  </Button>
+          <div className={classes.buttonContainer}>
+            {activeStep > 0 && (
+              <Button onClick={handleBack} variant="outlined">
+                <FormattedMessage module="workforce" id="workforce.back" />
+              </Button>
             )}
-            </>
-          )}
-        </div>
+            {(formData?.organizationType !== "eis" && activeStep < steps.length - 1) ||
+            (formData?.organizationType === "eis" && activeStep < eisSteps.length - 1) ? (
+              <Button variant="contained" color="primary" onClick={handleNext}>
+                <FormattedMessage module="workforce" id="workforce.save.next" />
+              </Button>
+            ) : (
+              <>
+                {formData?.organizationType === "eis" ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={!acknowledged}
+                    onClick={() => {
+                      organizationType === "eis" ? handleNext() : setShowPreview(true);
+                    }}
+                  >
+                    <FormattedMessage module="workforce" id="workforce.submit" />
+                  </Button>
+                ) : (
+                  <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
+                    <FormattedMessage module="workforce" id="workforce.submit" />
+                  </Button>
+                )}
+              </>
+            )}
+          </div>
         </Box>
       </Paper>
     </div>
