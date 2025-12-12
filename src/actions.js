@@ -2770,6 +2770,7 @@ export function fetchEisPaymentProcess(applicationIds) {
           applicationType
           organizationType
           employeeAccidentInfo
+          employeeBankInfo
           doctorsEntry
           workforceEmployee {
             id

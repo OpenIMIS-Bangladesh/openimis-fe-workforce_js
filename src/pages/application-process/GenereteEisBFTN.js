@@ -188,7 +188,11 @@ sheet.getCell("A14").value = {
       right: { style: "thin" }
     };
   });
-
+   
+    const data = eisPayments?.[0] || {};
+    const parsingBankInfo = JSON.parse(data.workforceApplication?.employeeBankInfo); 
+    const parsedBankInfo = JSON.parse(parsingBankInfo);
+    console.log("parsedBankInfo",parsedBankInfo)
   // -----------------------------
   // REAL DATA FROM eisPayments
   // -----------------------------
@@ -202,10 +206,10 @@ sheet.getCell("A14").value = {
       index + 1,
       row?.bankAccountHolderName || "",
       row?.bankAccountNo || "",
-      "",
-      bankInfo?.branch?.name || "",
-      bankInfo?.branch?.district || "",
-      bankInfo?.branch?.routingNumber || "",
+      parsedBankInfo[0]?.bank?.nameEn || "",
+      parsedBankInfo[0]?.branch?.nameEn || "",
+      parsedBankInfo[0]?.district?.nameEn || "",
+      parsedBankInfo[0]?.branch?.routingNumber || "",
       row?.eisMonthlyAmount || 0,
       "",
       payFrom,
