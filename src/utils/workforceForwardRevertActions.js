@@ -192,10 +192,13 @@ export async function handleBulkSelectedByAssociationLogic({
               createApplicationMovementData,
               "create workforce movement"
             );
-            // await testWorkforcePayment(
-            //   testPaymentData,
-            //   "create test payment"
-            // );
+            if(selectedItem?.organizationType==="eis" && selectedItem?.applicationType == "financialAssistance")
+            {
+              await testWorkforcePayment(
+                testPaymentData,
+                "create test payment"
+              );
+            }
             // if(isEisPath())
             // {
             //   await updateWorkforceEmployeeDependentEligibility(decodedId);
