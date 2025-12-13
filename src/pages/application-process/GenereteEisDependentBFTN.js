@@ -188,9 +188,8 @@ const exportDisabilityExcel = async (eisPayments) => {
     const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
     const effectiveDate = dateOfRejoining || dateOfAssessment || "";
 
-    
     const leftItems = [
-      ["EIS Worker ID", data.eisWorkerId || ""],
+      ["EIS Worker ID", data?.beneficiaryId || ""],
       ["Date of Accident", parsedAccidentInfo?.accidentDate || ""],
       ["Date of Rejoining", dateOfRejoining],
       ["Date of Disability Assessment", dateOfAssessment],
@@ -299,7 +298,7 @@ const exportDisabilityExcel = async (eisPayments) => {
 
         const excelRow = sheet.addRow([
           index + 1,
-          row?.eisWorkerId || "",
+          row?.beneficiaryId || "",
           row?.workforceApplication?.workforceEmployee?.nid || "",
           `${benefitRate}%`,
           row?.eisMonthlyAmount || 0,
@@ -501,7 +500,7 @@ const exportDeathExcel = async (eisPayments) => {
 
     
     const leftItems = [
-      ["EIS Worker ID", data.eisWorkerId || ""],
+      ["EIS Worker ID", data?.beneficiaryId || ""],
       ["Date of Accident", parsedAccidentInfo?.accidentDate || ""],
       ["Date of Rejoining", dateOfRejoining],
       ["Date of Disability Assessment", dateOfAssessment],
