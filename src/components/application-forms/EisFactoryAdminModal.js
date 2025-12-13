@@ -18,6 +18,7 @@ import { validateRequiredFields } from "../../utils/utils";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage,useTranslations } from "@openimis/fe-core";
 import FactoryAdminAccidentForm from "../../pages/application/FactoryAdminAccidentForm";
 import EisDoctorEntries from "../../pages/application/EisDoctorEntries";
+import { testWorkforcePayment } from "../../actions";
 import DoctorsEntries from "./Atoms/DoctorsEntries";
 import { banglaLabels, ORGANIZATION_TYPE_NAME_BN, ORGANIZATION_TYPE_NAME_EN, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
 import { conditionalEnToBn, enToBn, getUserType } from "../../utils/utils";
@@ -115,9 +116,14 @@ const EisFactoryAdminModal = ({
               doctorEntries: JSON.stringify(formData?.doctorEntries),
             };
             console.log({ updateApplicationData });
+            const testPaymentData = {
+              id: application?.id,
+            };
             dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`))
             .then(()=>{
-              window.location.reload()
+                dispatch(testWorkforcePayment(testPaymentData,"create test payment")).then(()=>{
+                window.location.reload()
+              })
             })
     }
   };
