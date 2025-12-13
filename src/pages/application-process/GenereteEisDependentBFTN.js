@@ -61,18 +61,22 @@ const getTotalAmount = () => {
 
 useEffect(() => {
   if (selectedApplicationIds?.length > 0) {
+
     const applicationIds = selectedApplicationIds.map(x =>
       decodeId(x.id)
     );
-    console.log("ggggggggggg",applicationIds)
-    dispatch(fetchEisPaymentProcess(applicationIds?.[0]));
-  } 
+
+    console.log("IDs:", applicationIds);
+
+    dispatch(fetchEisPaymentProcess(applicationIds));
+  }
 }, [selectedApplicationIds]);
 
 
 
-const year = eisPayments[0]?.year;
-const monthIndex = eisPayments[0]?.monthIndex;
+const year = eisPayments?.[0]?.year || "";
+const monthIndex = eisPayments?.[0]?.monthIndex || "";
+
 
 // Format month as 01..12
 const monthFormatted = String(monthIndex + 1).padStart(2, "0");
@@ -607,9 +611,9 @@ const exportDeathExcel = async (eisPayments) => {
 
         const excelRow = sheet.addRow([
           index + 1,
-          "",
+          row?.beneficiaryId,
           row?.workforceApplication?.workforceEmployee?.nid || "",
-          "",
+          row?.workforceEmployeeDependent[0]?.relationWithWorker || "",
           `${benefitRate}%`,
           row?.eisMonthlyAmount || 0,
           row?.eisCalculatedAmount || 0,

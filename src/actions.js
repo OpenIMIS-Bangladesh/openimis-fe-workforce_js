@@ -2753,6 +2753,7 @@ export function fetchEisPaymentProcess(applicationIds) {
         eisApprovedAmount
         eisCalculatedAmount
         processingDate
+        beneficiaryId
         isDisbursed
         bank {
           id
@@ -2763,6 +2764,23 @@ export function fetchEisPaymentProcess(applicationIds) {
         }
         bankAccountNo
         bankAccountHolderName
+        workforceEmployeeDependent{
+          status
+          nameBn
+          relationWithWorker
+          presentLocation{
+            id
+          }
+          bankAccountNo
+          bank{
+            nameBn
+            districtNameBn
+            bankCode
+            routingNumber
+            parent{
+              nameBn
+            }
+          }
         workforceApplication {
           id
           lastBaseSalary

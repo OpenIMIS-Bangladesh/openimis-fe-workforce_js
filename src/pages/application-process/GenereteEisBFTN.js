@@ -75,8 +75,9 @@ useEffect(() => {
 
 
 
-const year = eisPayments[0]?.year;
-const monthIndex = eisPayments[0]?.monthIndex;
+const year = eisPayments?.[0]?.year || "";
+const monthIndex = eisPayments?.[0]?.monthIndex || "";
+
 
 // Format month as 01..12
 const monthFormatted = String(monthIndex + 1).padStart(2, "0");
@@ -211,7 +212,7 @@ sheet.getCell("A14").value = {
       parsedBankInfo[0]?.district?.nameEn || "",
       parsedBankInfo[0]?.branch?.routingNumber || "",
       row?.eisMonthlyAmount || 0,
-      "",
+      row?.beneficiaryId,
       payFrom,
       payTo
     ]);
