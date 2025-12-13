@@ -2781,6 +2781,7 @@ export function fetchEisPaymentProcess(applicationIds) {
               nameBn
             }
           }
+        }
         workforceApplication {
           id
           lastBaseSalary
