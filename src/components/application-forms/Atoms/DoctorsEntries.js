@@ -6,6 +6,18 @@ import { updateApplication } from "../../../actions";
 import CustomSnackbar from "../../shared/CustomSnackbar";
 import EisFactoryAdminModal from "../EisFactoryAdminModal";
 
+
+const isEmpty = (value) => {
+  if (value == null) return true;
+  // if (Array.isArray(value)) return value.length === 0;
+  if (Array.isArray(value)) {
+    if (value.length === 0) return true;
+    return value.every((item) => item == null || (typeof item === "object" && Object.keys(item).length === 0));
+  }
+  if (typeof value === "object") return Object.keys(value).length === 0;
+  return false;
+};
+
 const DoctorsEntries = ({ application }) => {
   const dispatch = useDispatch();
 
@@ -40,6 +52,8 @@ const DoctorsEntries = ({ application }) => {
       setOpenSnackBar({ openResponseBar: true, status: "আপনার মতামত সংরক্ষণ করা যায়নি।", type: "error" });
     }
   };
+
+  const isNotEmpty = (value) => !isEmpty(value);
 
   return (
     <>
@@ -97,7 +111,7 @@ const DoctorsEntries = ({ application }) => {
               color="primary"
               onClick={() => setOpenAccidentInfoModal(true)}
               fullwidth
-              disabled={application?.doctorsEntry === null}
+              disabled={isNotEmpty(application?.doctorsEntry)}
             >
               {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
             </Button>

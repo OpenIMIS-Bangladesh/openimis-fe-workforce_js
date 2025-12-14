@@ -779,7 +779,8 @@ export function fetchApplication(mm, filters) {
     "employeeChildrenInfo",
     "institutionInfo",
     "educations{edges{node{id,childNameEn,childNameBn,childBirthDate,childBirthCertificateNo,childNidNo,studyClass,institution,educationLevel,educationBoard,passingYear,rollNumber,registrationNumber,result}}}",
-    "workforceEmployeeDependentApplication{edges{node{id,nameBn,nameEn,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,nid,birthDate,percentageOfCfGrant,phoneNumber,presentLocation {id},presentAddress,permanentLocation {id},permanentAddress}}}",
+    // "workforceEmployeeDependentApplication{edges{node{id,nameBn,nameEn,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,nid,birthDate,percentageOfCfGrant,phoneNumber,presentLocation {id},presentAddress,permanentLocation {id},permanentAddress}}}",
+    "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,occupation,email,phoneNumber,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,status,presentAddress,permanentAddress," + present_location_projection + permanent_location_projection + ",bankingInfo{id}}}}",
     "metadata",
     "employeeFactory{id, nameBn, nameEn}",
     "cfApplicationSummary{id}",
@@ -798,7 +799,8 @@ export function fetchApplication(mm, filters) {
     "eisMonthlyAmount",
     "initialReplacementRate",
     "pvFactor",
-    "lastBaseSalary"
+    "lastBaseSalary",
+    "doctorsEntry"
   ];
   // const filterArray = filters
   //   ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)
@@ -1260,6 +1262,7 @@ export function fetchWorkforceDocument(mm, filters) {
     // "holderId",
     "note",
     "workforceApplication{id}",
+    "workforceDependent{id}",
     "workforceDocumentType{id,nameBn,nameEn,documentType,mandatoryForApplicant,formStepNo,fieldId}",
 
   ];

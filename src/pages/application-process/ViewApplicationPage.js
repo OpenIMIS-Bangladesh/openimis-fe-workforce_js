@@ -189,6 +189,8 @@ class ViewApplicationPage extends Component {
     const institutionInfo = this.safeParse(stateEdited?.institutionInfo)
     const deceasedWorkerInfo = this.safeParse(stateEdited?.deceasedWorkerInfo)
     const metaInfo = this.safeParse(stateEdited?.metadata);
+    const doctorsEntry = this.safeParse(stateEdited?.doctorsEntry);
+    const parsedWorkforceEmployeeDependentApplication = application?.workforceEmployeeDependentApplication;
 
     // ✅ Safely parse nested stringified objects
     const formData = {
@@ -200,14 +202,16 @@ class ViewApplicationPage extends Component {
       employeeChildrenInfo: this.safeParse(childrenInfo),
       applicantInfo: this.safeParse(applicantInfo),
       institutionInfo: this.safeParse(institutionInfo),
+      doctorsEntry: this.safeParse(doctorsEntry),
       deceasedWorkerInfo: this.safeParse(deceasedWorkerInfo),
+      workforceEmployeeDependentApplication: parsedWorkforceEmployeeDependentApplication,
       metadata: this.safeParse(metaInfo), 
     };
 
     const uploadByApplicant = documents?.filter((doc) => doc.holderType === "applicant");
     const uploadByFactoryAdmin = documents?.filter((doc) => doc.holderType === "factoryAdmin");
     console.log({ documents });
-    console.log({ uploadByApplicant });
+    console.log({ parsedWorkforceEmployeeDependentApplication });
     console.log({ movementLogs: this.state.movementLogs });
     return (
       <div className={classes.container}>

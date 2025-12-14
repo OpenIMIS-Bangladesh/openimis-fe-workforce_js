@@ -74,7 +74,8 @@ const hiddenKeys = [
   "employeeFactory",
   "associationType",
   "applicationFor",
-  "workforceEmployeeDependentApplication",
+  "employeeDependentInfo",
+  // "workforceEmployeeDependentApplication",
   "educations",
   "applicationForSelf",
   "insuranceNumber",
@@ -93,6 +94,10 @@ const hiddenKeys = [
   "initialReplacementRate",
   "pvFactor",
   "dependentId",
+  "attachments",
+  "dateCreated",
+  "doctorsEntry",
+  "wCode",
 ];
 
 /**
@@ -139,7 +144,7 @@ const isEmpty = (value) => {
 /**
  * Recursive renderer for objects & arrays in Grid format
  */
-const renderDetails = (data, classes, parentKey = "", language) => {
+const renderDetails = (data, classes, parentKey = "", language, fileStates, handleCommentChange, handleFileVerify, handleFileReject) => {
   if (!data) return null;
 
   // ✅ Safe JSON parser
@@ -195,9 +200,16 @@ const renderDetails = (data, classes, parentKey = "", language) => {
       if (typeof item !== "object" || !item) return null;
 
       const scalars = Object.entries(item).filter(
-        ([key, value]) => typeof value !== "object" && ![...hiddenKeys, "attachments"].includes(key) && value !== null && value !== undefined && value !== ""
+        ([key, value]) => typeof value !== "object" && ![...hiddenKeys].includes(key) && value !== null && value !== undefined && value !== ""
       );
       const objects = Object.entries(item).filter(([key, value]) => typeof value === "object" && value && ![...hiddenKeys, "attachments"].includes(key));
+
+      let matchingFiles = [];
+      if (parentKey === "workforceEmployeeDependentApplication" && item?.id && fileStates) {
+        matchingFiles = fileStates
+          .map((f, i) => ({ ...f, _originalIndex: i })) // Preserve original index
+          .filter((f) => f?.workforceDependent?.id === item.id);
+      }
 
       return (
         <Card key={idx} className={classes.nestedCard}>
@@ -245,6 +257,25 @@ const renderDetails = (data, classes, parentKey = "", language) => {
                 {renderDetails(value, classes, key, language)}
               </Box>
             ))}
+
+            {matchingFiles.length > 0 && (
+              <Box mt={2}>
+                <Typography variant="h6" style={{ marginTop: 3, marginBottom: 5 }}>
+                  <FormattedMessage module="workforce" id="workforce.employee.document" />
+                </Typography>
+                {matchingFiles.map((file) => (
+                  <DocumentReviewAccordion
+                    key={file._originalIndex}
+                    file={file}
+                    index={file._originalIndex}
+                    onCommentChange={handleCommentChange}
+                    onVerify={handleFileVerify}
+                    onReject={handleFileReject}
+                    locale={language}
+                  />
+                ))}
+              </Box>
+            )}
           </CardContent>
         </Card>
       );
@@ -348,10 +379,10 @@ const ApplicationViewPage = ({
     () => ({
       ApplicantName:
         language === "en"
-          ? (application?.workforceEmployee?.firstNameEn ||application?.workforceEmployee?.nameEn) +
+          ? (application?.workforceEmployee?.firstNameEn || application?.workforceEmployee?.nameEn) +
             " " +
             (application?.workforceEmployee?.lastNameEn != null ? application?.workforceEmployee?.lastNameEn : "")
-          : (application?.workforceEmployee?.firstNameBn||application?.workforceEmployee?.nameBn) +
+          : (application?.workforceEmployee?.firstNameBn || application?.workforceEmployee?.nameBn) +
             " " +
             (application?.workforceEmployee?.lastNameBn != null ? application?.workforceEmployee?.lastNameBn : ""),
       ApplicantFactoryName: language === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn,
@@ -370,7 +401,7 @@ const ApplicationViewPage = ({
     [application]
   );
 
-  const mapFormStepNo = (fileStepNo, sectionKey,application) => {
+  const mapFormStepNo = (fileStepNo, sectionKey, application) => {
     const isDeathCase = ["financialAssistance", "deadlyGrant"].includes(application?.applicationType);
 
     if (isDeathCase && fileStepNo === "workforceEmployee") {
@@ -379,6 +410,7 @@ const ApplicationViewPage = ({
 
     return fileStepNo;
   };
+  const isNotEmpty = (value) => !isEmpty(value);
 
   return (
     <>
@@ -431,7 +463,13 @@ const ApplicationViewPage = ({
                 </Grid>
                 {application?.organizationType === "eis" && (
                   <Grid item xs={12}>
-                    <Button variant="contained" color="primary" onClick={() => setOpenAccidentInfoModal(true)} fullwidth disabled={application?.employeeAccidentInfo === null}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => setOpenAccidentInfoModal(true)}
+                      fullwidth
+                      disabled={isNotEmpty(application?.employeeAccidentInfo)}
+                    >
                       {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
                     </Button>
                   </Grid>
@@ -477,7 +515,7 @@ const ApplicationViewPage = ({
                   <Typography className={classes.sectionTitle}>{formatKey(key, language)}</Typography>
                 </AccordionSummary>
                 <AccordionDetails style={{ display: "block", background: `${"white"}` }}>
-                  {renderDetails(parsedValue, classes, key, language)}
+                  {renderDetails(value, classes, key, language, fileStates, handleCommentChange, handleFileVerify, handleFileReject)}
                   {fileStates && (
                     <>
                       <Typography variant="h6" style={{ marginTop: 3 }}>
@@ -486,8 +524,7 @@ const ApplicationViewPage = ({
                       {fileStates
                         ?.filter((item, originalIdx) => {
                           item._originalIndex = originalIdx; // attach index temporarily
-                          return mapFormStepNo(item?.workforceDocumentType?.formStepNo, key,application) === key;
-
+                          return mapFormStepNo(item?.workforceDocumentType?.formStepNo, key, application) === key;
                         })
                         .map((file) => (
                           <DocumentReviewAccordion
