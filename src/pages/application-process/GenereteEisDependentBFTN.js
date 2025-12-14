@@ -602,17 +602,23 @@ const exportDeathExcel = async (eisPayments) => {
       let benefitRateTotal = null;
 
       eisPayments.forEach((row, index) => {
-        const benefitRate = row?.benefitRate || row?.percentageOfDisability || 0;
+      const benefitRate =
+        row?.benefitRate ?? row?.percentageOfDisability ?? 0;
 
-        if (benefitRateTotal === null) {
-          benefitRateTotal = benefitRate;
-        }
+      if (benefitRateTotal === null) {
+        benefitRateTotal = benefitRate;
+      }
 
+      const dependents = row?.workforceEmployeeDependent?.length
+        ? row.workforceEmployeeDependent
+        : [null]; // fallback if no dependent
+
+      dependents.forEach((dependent, depIndex) => {
         const excelRow = sheet.addRow([
-          index + 1,
-          row?.beneficiaryId,
+          depIndex === 0 ? index + 1 : "", // show SL only once per application
+          row?.beneficiaryId || "",
           row?.workforceApplication?.workforceEmployee?.nid || "",
-          row?.workforceEmployeeDependent[0]?.relationWithWorker || "",
+          dependent?.relationWithWorker || "",
           `${benefitRate}%`,
           row?.eisMonthlyAmount || 0,
           row?.eisCalculatedAmount || 0,
@@ -621,8 +627,11 @@ const exportDeathExcel = async (eisPayments) => {
           row?.eisApprovedAmount || "",
         ]);
 
-        totalMonthly += Number(row?.eisMonthlyAmount || 0);
-        totalNet += Number(row?.eisCalculatedAmount || 0);
+        // totals only once per payment (not per dependent)
+        if (depIndex === 0) {
+          totalMonthly += Number(row?.eisMonthlyAmount || 0);
+          totalNet += Number(row?.eisCalculatedAmount || 0);
+        }
 
         excelRow.eachCell((cell) => {
           cell.border = {
@@ -638,6 +647,8 @@ const exportDeathExcel = async (eisPayments) => {
           };
         });
       });
+    });
+
 
       // ==================================
       // TOTAL ROW (WITH BENEFIT RATE TOTAL)
