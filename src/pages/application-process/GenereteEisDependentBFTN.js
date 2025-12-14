@@ -611,14 +611,29 @@ const exportDeathExcel = async (eisPayments) => {
 
       const dependents = row?.workforceEmployeeDependent?.length
         ? row.workforceEmployeeDependent
-        : [null]; // fallback if no dependent
+        : [null];
+
+      const RELATION_LABEL_MAP = {
+      "workforce.relation.father": "Father",
+      "workforce.relation.mother": "Mother",
+      "workforce.relation.wife": "Wife",
+      "workforce.relation.husband": "Husband",
+      "workforce.relation.son": "Son",
+      "workforce.relation.daughter": "Daughter",
+      "workforce.relation.brother": "Brother",
+      "workforce.relation.sister": "Sister",
+      "workforce.relation.grand_daughter": "Grand Daughter",
+      "workforce.relation.grand_son": "Grand Son",
+      "workforce.relation.grand_father": "Grand Father",
+      "workforce.relation.grand_mother": "Grand Mother",
+    };
 
       dependents.forEach((dependent, depIndex) => {
         const excelRow = sheet.addRow([
-          depIndex === 0 ? index + 1 : "", // show SL only once per application
+          depIndex === 0 ? index + 1 : "",
           row?.beneficiaryId || "",
           row?.workforceApplication?.workforceEmployee?.nid || "",
-          dependent?.relationWithWorker || "",
+          RELATION_LABEL_MAP[dependent?.relationWithWorker] || "",
           `${benefitRate}%`,
           row?.eisMonthlyAmount || 0,
           row?.eisCalculatedAmount || 0,
