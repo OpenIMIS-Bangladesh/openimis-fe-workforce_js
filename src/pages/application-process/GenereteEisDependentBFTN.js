@@ -258,6 +258,8 @@ const exportDisabilityExcel = async (eisPayments) => {
         "Benefit Rate (%) of Gross Salary",
         "Monthly Payable Benefit (BDT)",
         "Net Monthly Payable After Adjustment (BDT)",
+        "Total time amount (individual)",
+        "After adjustment (individual)",
         "Type of Payment",
         "Approval Status",
         "Remarks",
@@ -302,14 +304,16 @@ const exportDisabilityExcel = async (eisPayments) => {
           row?.workforceApplication?.workforceEmployee?.nid || "",
           `${benefitRate}%`,
           row?.eisMonthlyAmount || 0,
+          row?.eisMonthlyAmount || 0,
           row?.eisCalculatedAmount || 0,
+          row?.eisApprovedAmount || 0,
           row?.eisPaymentType || "",
           row?.approvalStatus || "",
           row?.eisApprovedAmount || "",
         ]);
 
         totalMonthly += Number(row?.eisMonthlyAmount || 0);
-        totalNet += Number(row?.eisCalculatedAmount || 0);
+        totalNet += Number(row?.eisApprovedAmount || 0);
 
         excelRow.eachCell((cell) => {
           cell.border = {
@@ -570,6 +574,8 @@ const exportDeathExcel = async (eisPayments) => {
         "Benefit Rate (%) of Gross Salary",
         "Monthly Payable Benefit (BDT)",
         "Net Monthly Payable After Adjustment (BDT)",
+        "Total time amount (individual)",
+        "After adjustment (individual)",
         "Type of Payment",
         "Approval Status",
         "Remarks",
@@ -636,7 +642,9 @@ const exportDeathExcel = async (eisPayments) => {
           RELATION_LABEL_MAP[dependent?.relationWithWorker] || "",
           `${benefitRate}%`,
           row?.eisMonthlyAmount || 0,
+          row?.eisMonthlyAmount || 0,
           row?.eisCalculatedAmount || 0,
+          row?.eisApprovedAmount || 0,
           row?.eisPaymentType || "",
           row?.approvalStatus || "",
           row?.eisApprovedAmount || "",
@@ -790,6 +798,8 @@ const exportDeathExcel = async (eisPayments) => {
               <TableCell><FormattedMessage id="EIS Worker ID" /></TableCell>
               <TableCell><FormattedMessage id="NID/Birth Certificate of Worker" /></TableCell>
               <TableCell><FormattedMessage id="Benefit Rate (%) of Gross Salary" /></TableCell>
+              <TableCell><FormattedMessage id="Total time amount (individual)" /></TableCell>
+              <TableCell><FormattedMessage id="After adjustment (individual)" /></TableCell>
               <TableCell><FormattedMessage id="Monthly Payable Benefit (BDT)" /></TableCell>
               <TableCell><FormattedMessage id="Net Monthly Payable After Adjustment (BDT" /></TableCell>
               <TableCell><FormattedMessage id="Type of Payment" /></TableCell>
@@ -813,6 +823,8 @@ const exportDeathExcel = async (eisPayments) => {
                   <TableCell>5.20%</TableCell>
                   <TableCell>{row?.eisMonthlyAmount}</TableCell>
                   <TableCell>{row?.eisMonthlyAmount}</TableCell>
+                  <TableCell>{row?.eisCalculatedAmount}</TableCell>
+                  <TableCell>{row?.eisApprovedAmount}</TableCell>
                   <TableCell>{row?.eisPaymentType}</TableCell>
                   <TableCell></TableCell>
                   <TableCell>{row?.eisApprovedAmount}</TableCell>
@@ -821,7 +833,7 @@ const exportDeathExcel = async (eisPayments) => {
               );
             })}
              <TableRow>
-              <TableCell colSpan={8}><strong><FormattedMessage id="Total Amount" /></strong></TableCell>
+              <TableCell colSpan={10}><strong><FormattedMessage id="Total Amount" /></strong></TableCell>
               <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
               <TableCell colSpan={3} />
             </TableRow>
