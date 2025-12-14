@@ -672,9 +672,11 @@ const exportDeathExcel = async (eisPayments) => {
         "Total",    // Sl
         "",         // EIS Worker ID
         "",         // NID
+        "",         
         `${benefitRateTotal}%`, // benefit rate total
         totalMonthly,
         totalNet,
+        "",
         "",
         "",
         "",
