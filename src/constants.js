@@ -494,6 +494,7 @@ export const banglaLabels = {
   deathType: "মৃত্যুর ধরণ",
   scholarshipFor: "স্কলারশিপের উদ্দেশ্য",
   employeeDependentInfo: "নির্ভরশীল সদস্যদের তথ্য",
+  workforceEmployeeDependentApplication: "নির্ভরশীল সদস্যদের তথ্য",
   employeeBankInfo: "শ্রমিকের ব্যাংক তথ্য",
   applicant_type: "আবেদনকারীর ধরণ",
   bankCode: "ব্যাংক কোড",

@@ -346,6 +346,7 @@ class VerifyApplicationPage extends Component {
     const deceasedWorkerInfo = this.safeParse(stateEdited?.deceasedWorkerInfo)
     const doctorsEntryInfo = this.safeParse(stateEdited?.doctorsEntry)
     const metaInfo = this.safeParse(application?.metadata);
+    const parsedWorkforceEmployeeDependentApplication = application?.workforceEmployeeDependentApplication;
 
     const formData = {
       ...application,
@@ -359,6 +360,7 @@ class VerifyApplicationPage extends Component {
       deceasedWorkerInfo: this.safeParse(deceasedWorkerInfo),
       doctorsEntry: this.safeParse(doctorsEntryInfo),
       metadata: this.safeParse(metaInfo),
+      workforceEmployeeDependentApplication: parsedWorkforceEmployeeDependentApplication,
     };
     console.log(documentType);
     // const filteredDocumentTypes = documentType?.filter((doc) => {
