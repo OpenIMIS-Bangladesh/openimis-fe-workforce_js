@@ -61,18 +61,22 @@ const getTotalAmount = () => {
 
 useEffect(() => {
   if (selectedApplicationIds?.length > 0) {
+
     const applicationIds = selectedApplicationIds.map(x =>
       decodeId(x.id)
     );
-    console.log("ggggggggggg",applicationIds)
-    dispatch(fetchEisPaymentProcess(applicationIds?.[0]));
-  } 
+
+    console.log("IDs:", applicationIds);
+
+    dispatch(fetchEisPaymentProcess(applicationIds));
+  }
 }, [selectedApplicationIds]);
 
 
 
-const year = eisPayments[0]?.year;
-const monthIndex = eisPayments[0]?.monthIndex;
+const year = eisPayments?.[0]?.year || "";
+const monthIndex = eisPayments?.[0]?.monthIndex || "";
+
 
 // Format month as 01..12
 const monthFormatted = String(monthIndex + 1).padStart(2, "0");
@@ -184,9 +188,8 @@ const exportDisabilityExcel = async (eisPayments) => {
     const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
     const effectiveDate = dateOfRejoining || dateOfAssessment || "";
 
-    
     const leftItems = [
-      ["EIS Worker ID", data.eisWorkerId || ""],
+      ["EIS Worker ID", data?.beneficiaryId || ""],
       ["Date of Accident", parsedAccidentInfo?.accidentDate || ""],
       ["Date of Rejoining", dateOfRejoining],
       ["Date of Disability Assessment", dateOfAssessment],
@@ -295,7 +298,7 @@ const exportDisabilityExcel = async (eisPayments) => {
 
         const excelRow = sheet.addRow([
           index + 1,
-          row?.eisWorkerId || "",
+          row?.beneficiaryId || "",
           row?.workforceApplication?.workforceEmployee?.nid || "",
           `${benefitRate}%`,
           row?.eisMonthlyAmount || 0,
@@ -497,7 +500,7 @@ const exportDeathExcel = async (eisPayments) => {
 
     
     const leftItems = [
-      ["EIS Worker ID", data.eisWorkerId || ""],
+      ["EIS Worker ID", data?.beneficiaryId || ""],
       ["Date of Accident", parsedAccidentInfo?.accidentDate || ""],
       ["Date of Rejoining", dateOfRejoining],
       ["Date of Disability Assessment", dateOfAssessment],
@@ -599,17 +602,38 @@ const exportDeathExcel = async (eisPayments) => {
       let benefitRateTotal = null;
 
       eisPayments.forEach((row, index) => {
-        const benefitRate = row?.benefitRate || row?.percentageOfDisability || 0;
+      const benefitRate =
+        row?.benefitRate ?? row?.percentageOfDisability ?? 0;
 
-        if (benefitRateTotal === null) {
-          benefitRateTotal = benefitRate;
-        }
+      if (benefitRateTotal === null) {
+        benefitRateTotal = benefitRate;
+      }
 
+      const dependents = row?.workforceEmployeeDependent?.length
+        ? row.workforceEmployeeDependent
+        : [null];
+
+      const RELATION_LABEL_MAP = {
+      "workforce.relation.father": "Father",
+      "workforce.relation.mother": "Mother",
+      "workforce.relation.wife": "Wife",
+      "workforce.relation.husband": "Husband",
+      "workforce.relation.son": "Son",
+      "workforce.relation.daughter": "Daughter",
+      "workforce.relation.brother": "Brother",
+      "workforce.relation.sister": "Sister",
+      "workforce.relation.grand_daughter": "Grand Daughter",
+      "workforce.relation.grand_son": "Grand Son",
+      "workforce.relation.grand_father": "Grand Father",
+      "workforce.relation.grand_mother": "Grand Mother",
+    };
+
+      dependents.forEach((dependent, depIndex) => {
         const excelRow = sheet.addRow([
-          index + 1,
-          "",
+          depIndex === 0 ? index + 1 : "",
+          row?.beneficiaryId || "",
           row?.workforceApplication?.workforceEmployee?.nid || "",
-          "",
+          RELATION_LABEL_MAP[dependent?.relationWithWorker] || "",
           `${benefitRate}%`,
           row?.eisMonthlyAmount || 0,
           row?.eisCalculatedAmount || 0,
@@ -618,8 +642,11 @@ const exportDeathExcel = async (eisPayments) => {
           row?.eisApprovedAmount || "",
         ]);
 
-        totalMonthly += Number(row?.eisMonthlyAmount || 0);
-        totalNet += Number(row?.eisCalculatedAmount || 0);
+        // totals only once per payment (not per dependent)
+        if (depIndex === 0) {
+          totalMonthly += Number(row?.eisMonthlyAmount || 0);
+          totalNet += Number(row?.eisCalculatedAmount || 0);
+        }
 
         excelRow.eachCell((cell) => {
           cell.border = {
@@ -635,6 +662,8 @@ const exportDeathExcel = async (eisPayments) => {
           };
         });
       });
+    });
+
 
       // ==================================
       // TOTAL ROW (WITH BENEFIT RATE TOTAL)
@@ -643,9 +672,11 @@ const exportDeathExcel = async (eisPayments) => {
         "Total",    // Sl
         "",         // EIS Worker ID
         "",         // NID
+        "",         
         `${benefitRateTotal}%`, // benefit rate total
         totalMonthly,
         totalNet,
+        "",
         "",
         "",
         "",

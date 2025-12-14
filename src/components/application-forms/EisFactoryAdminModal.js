@@ -18,6 +18,7 @@ import { validateRequiredFields } from "../../utils/utils";
 import { FormattedMessage, useTranslations } from "@openimis/fe-core";
 import FactoryAdminAccidentForm from "../../pages/application/FactoryAdminAccidentForm";
 import EisDoctorEntries from "../../pages/application/EisDoctorEntries";
+import { testWorkforcePayment } from "../../actions";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserType } from "../../utils/utils";
 
@@ -143,6 +144,9 @@ const EisFactoryAdminModal = ({
       };
 
       console.log({ updateApplicationData });
+            const testPaymentData = {
+              id: application?.id,
+            };
 
       // 4. Update Application (Wait for completion)
       await dispatch(
@@ -152,8 +156,10 @@ const EisFactoryAdminModal = ({
         )
       );
 
-      // 5. Success & Reload
+                dispatch(testWorkforcePayment(testPaymentData,"create test payment")).then(()=>{
+        // 5. Success & Reload
       window.location.reload();
+              })
     } catch (error) {
       console.error("Submission failed:", error);
       setLoading(false); // ✅ Stop loading only on error (on success page reloads)
