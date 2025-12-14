@@ -78,13 +78,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EisFactoryAdminModal = ({
-  open,
-  onClose,
-  application,
-  showActions = true,
-  maxWidth,
-}) => {
+const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, maxWidth }) => {
   const classes = useStyles({ maxWidth });
   const [formData, setFormData] = useState(application || {});
   const [errors, setErrors] = useState({});
@@ -119,19 +113,12 @@ const EisFactoryAdminModal = ({
     if (Object.keys(newErrors).length > 0) {
       return; // Stop if there are validation errors
     }
-
     setLoading(true); // ✅ Start Loading
-
     try {
       // 2. Upload Files Concurrently (Wait for all to finish)
       if (uploadFile && uploadFile.length > 0) {
         const uploadPromises = uploadFile.map((file) =>
-          dispatch(
-            createWorkforceDocument(
-              { ...file, workforceApplicationId: application?.id },
-              `Created workforce document`
-            )
-          )
+          dispatch(createWorkforceDocument({ ...file, workforceApplicationId: application?.id }, `Created workforce document`))
         );
         await Promise.all(uploadPromises);
       }
@@ -144,22 +131,17 @@ const EisFactoryAdminModal = ({
       };
 
       console.log({ updateApplicationData });
-            const testPaymentData = {
-              id: application?.id,
-            };
+      const testPaymentData = {
+        id: application?.id,
+      };
 
       // 4. Update Application (Wait for completion)
-      await dispatch(
-        updateApplication(
-          updateApplicationData,
-          `update workforce application ${formData.firstNameEn}`
-        )
-      );
+      await dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
 
-                dispatch(testWorkforcePayment(testPaymentData,"create test payment")).then(()=>{
+      await dispatch(testWorkforcePayment(testPaymentData, "create test payment")).then(() => {
         // 5. Success & Reload
-      window.location.reload();
-              })
+        window.location.reload();
+      });
     } catch (error) {
       console.error("Submission failed:", error);
       setLoading(false); // ✅ Stop loading only on error (on success page reloads)
@@ -190,10 +172,7 @@ const EisFactoryAdminModal = ({
         {/* Header */}
         <div className={classes.header}>
           <Typography variant="h6" style={{ textAlign: "center", fontWeight: "bold" }}>
-            <FormattedMessage
-              id="workforce.eis.factory.admin.accidentInfo.button"
-              module="workforce"
-            />
+            <FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />
           </Typography>
           <IconButton onClick={onClose} size="small" style={{ color: "black" }} disabled={loading}>
             <CloseIcon />
@@ -203,9 +182,7 @@ const EisFactoryAdminModal = ({
 
         {/* Scrollable Form Content */}
         {application?.organizationType === "eis" &&
-        (user_type === WORKFORCE_USER_TYPE.DOCTOR ||
-          user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR ||
-          user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) ? (
+        (user_type === WORKFORCE_USER_TYPE.DOCTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR || user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) ? (
           <Box className={classes.content} ref={stepRef}>
             <EisDoctorEntries
               handleChange={(key, value) => handleChange(key, value, "doctorEntries")}
