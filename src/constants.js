@@ -496,6 +496,7 @@ export const banglaLabels = {
   employeeDependentInfo: "নির্ভরশীল সদস্যদের তথ্য",
   workforceEmployeeDependentApplication: "নির্ভরশীল সদস্যদের তথ্য",
   employeeBankInfo: "শ্রমিকের ব্যাংক তথ্য",
+  employeeBankingInfoApplication: "শ্রমিকের ব্যাংক তথ্য",
   applicant_type: "আবেদনকারীর ধরণ",
   bankCode: "ব্যাংক কোড",
   bank: "ব্যাংক",

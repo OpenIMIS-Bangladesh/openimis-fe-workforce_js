@@ -347,6 +347,9 @@ class VerifyApplicationPage extends Component {
     const doctorsEntryInfo = this.safeParse(stateEdited?.doctorsEntry)
     const metaInfo = this.safeParse(application?.metadata);
     const parsedWorkforceEmployeeDependentApplication = application?.workforceEmployeeDependentApplication;
+    const tempBankInfo = application?.employeeBankingInfoApplication?.map(item=>{
+      return {...item,bank:{...item?.branch?.parent}}
+    })
 
     const formData = {
       ...application,
@@ -361,6 +364,7 @@ class VerifyApplicationPage extends Component {
       doctorsEntry: this.safeParse(doctorsEntryInfo),
       metadata: this.safeParse(metaInfo),
       workforceEmployeeDependentApplication: parsedWorkforceEmployeeDependentApplication,
+      employeeBankingInfoApplication:tempBankInfo
     };
     console.log(documentType);
     // const filteredDocumentTypes = documentType?.filter((doc) => {

@@ -1634,6 +1634,7 @@ function reducer(
           id: decodeId(application.id),
           educations: parseData(application.educations),
           workforceEmployeeDependentApplication: parseData(application.workforceEmployeeDependentApplication),
+          employeeBankingInfoApplication: parseData(application.employeeBankingInfoApplication),
         }))?.[0],
         errorApplication: formatGraphQLError(action.payload),
       };

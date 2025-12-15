@@ -76,6 +76,7 @@ const hiddenKeys = [
   "applicationFor",
   "employeeDependentInfo",
   // "workforceEmployeeDependentApplication",
+  "employeeBankingInfoApplication",
   "educations",
   "applicationForSelf",
   "insuranceNumber",

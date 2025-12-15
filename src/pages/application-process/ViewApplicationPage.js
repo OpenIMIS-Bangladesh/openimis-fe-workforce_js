@@ -178,6 +178,7 @@ class ViewApplicationPage extends Component {
     const { classes, user_rights, documents, application, locale, organizationEmployee, history, edited_id } = this.props;
     const { stateEdited, workforceEmployee, isForwardModalOpen, forwardModalOpenFA } = this.state;
     // const application = this.memoizedApplication
+    console.log("putki",stateEdited)
 
     const user_type = getUserTypeFromRights(user_rights);
 
@@ -191,6 +192,9 @@ class ViewApplicationPage extends Component {
     const metaInfo = this.safeParse(stateEdited?.metadata);
     const doctorsEntry = this.safeParse(stateEdited?.doctorsEntry);
     const parsedWorkforceEmployeeDependentApplication = application?.workforceEmployeeDependentApplication;
+    const tempBankInfo = application?.employeeBankingInfoApplication?.map(item=>{
+      return {...item,bank:{...item?.branch?.parent}}
+    })
 
     // ✅ Safely parse nested stringified objects
     const formData = {
@@ -206,11 +210,12 @@ class ViewApplicationPage extends Component {
       deceasedWorkerInfo: this.safeParse(deceasedWorkerInfo),
       workforceEmployeeDependentApplication: parsedWorkforceEmployeeDependentApplication,
       metadata: this.safeParse(metaInfo), 
+      employeeBankingInfoApplication:tempBankInfo
     };
 
     const uploadByApplicant = documents?.filter((doc) => doc.holderType === "applicant");
     const uploadByFactoryAdmin = documents?.filter((doc) => doc.holderType === "factoryAdmin");
-    console.log({ documents });
+    console.log({ formData });
     console.log({ parsedWorkforceEmployeeDependentApplication });
     console.log({ movementLogs: this.state.movementLogs });
     return (
