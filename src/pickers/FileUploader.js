@@ -125,13 +125,28 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
           type: "SET_UPLOAD_DEPENDENT_FILE_DATA",
           payload: { ...createDocumentData, holderType: "applicant" },
         });
+      }else if (uploadedBy === "bank") {
+        dispatch({
+          type: "SET_UPLOAD_DEPENDENT_BANK_DATA",
+          payload: { ...createDocumentData, holderType: "applicant" },
+        });
       } else {
         dispatch({
           type: "SET_UPLOAD_FILE_DATA",
           payload: createDocumentData,
         });
       }
-      if (applicationId) {
+      if (applicationId && uploadedBy==="factoryAdmin") {
+        console.log("create document data", createDocumentData);
+        dispatch(
+          createWorkforceDocument(
+            { ...createDocumentData, workforceApplicationId: uploadedBy ? applicationId : safeApplicationId(applicationId),status:"verified" },
+            `Created workforce document `
+          )
+        );
+      }
+
+      if (applicationId && uploadedBy != "factoryAdmin") {
         console.log("create document data", createDocumentData);
         dispatch(
           createWorkforceDocument(

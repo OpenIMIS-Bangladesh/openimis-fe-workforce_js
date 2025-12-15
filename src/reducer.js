@@ -382,6 +382,7 @@ function reducer(
 
     uploadFile: [],
     uploadDependentFile: [],
+    uploadBankFile: [],
 
     workforceApplicationStatusCount: {},
   },
@@ -420,6 +421,11 @@ function reducer(
       return {
         ...state,
         uploadDependentFile: [...(state.uploadDependentFile || []), action.payload],
+      };
+    case "SET_UPLOAD_DEPENDENT_BANK_DATA":
+      return {
+        ...state,
+        uploadBankFile: [...(state.uploadBankFile || []), action.payload],
       };
     
       case "SET_SELECTED_EMPLOYEE":

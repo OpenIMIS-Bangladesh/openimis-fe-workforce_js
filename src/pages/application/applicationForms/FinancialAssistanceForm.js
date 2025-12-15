@@ -74,6 +74,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
   // const dependentId = useSelector((state) => state.workforce["workforceDependent"] ?? []);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const uploadDependentFile = useSelector((state) => state.workforce.uploadDependentFile);
+  const uploadBankFile = useSelector((state) => state.workforce.uploadBankFile);
   const classes = useStyles();
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(0);
@@ -606,7 +607,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
   }
 
   console.log({ tazwer: formData });
-  console.log({ fahimTazwer: uploadFile });
+  console.log({ fahimTazwer: uploadBankFile });
 
   return (
     <div className={classes.container}>

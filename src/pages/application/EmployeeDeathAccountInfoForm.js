@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Grid,
   Box,
@@ -101,6 +101,37 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
   };
 
   const allowAdd = !applicationId || !applicationId[0]?.id;
+
+  const handleAttachmentChange = useCallback(
+      (index, fieldKey, value) => {
+        const currentAttachments = accounts?.[index]?.attachments || [];
+  
+        const updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
+          ? currentAttachments.map((att) =>
+              att.fieldKey === fieldKey
+                ? {
+                    ...att,
+                    fieldKey,
+                    files: value.files, // [{ file, uploadInfo }]
+                    documentType: value.documentType,
+                    documentPropId: value.documentPropId,
+                  }
+                : att
+            )
+          : [
+              ...currentAttachments,
+              {
+                fieldKey,
+                files: value.files, // [{ file, uploadInfo }]
+                documentType: value.documentType,
+                documentPropId: value.documentPropId,
+              },
+            ];
+  
+        handleChange(index, "attachments", updatedAttachments);
+      },
+      [accounts, handleChange]
+    );
 
   console.log({dependent})
 
@@ -319,7 +350,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
             </AccordionDetails>
 
             <EmployeeDetailsForm2
-              handleChange={()=>{}}
+              handleChange={(fieldKey, value) => handleAttachmentChange(index, fieldKey, value)}
               formData={formdata}
               selectedApplicationType={formdata.applicationType}
               formStepNo={"employeeBankInfo"}

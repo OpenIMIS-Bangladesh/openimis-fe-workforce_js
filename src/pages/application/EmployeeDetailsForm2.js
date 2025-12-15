@@ -346,7 +346,7 @@ const EmployeeDetailsForm2 = ({
                           applicationId={applicationId}
                           documentType={document.documentType}
                           documentProp={document}
-                          uploadedBy={formStepNo === "employeeDependentInfo" ? "dependent" : "applicant"}
+                          uploadedBy={formStepNo === "employeeDependentInfo" ? "dependent" :formStepNo==="employeeBankInfo"?"bank": "applicant"}
                         />
                       ) : (
                         <FileUploader
