@@ -754,7 +754,7 @@ const exportDeathExcel = async (eisPayments) => {
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle disableTypography>
         <Typography variant="h6">
-          <FormattedMessage id="EIS-Pilot Benefit Approval Note (Disability)" />
+          <FormattedMessage id="EIS-Pilot Benefit Approval Note (Disability/Death)" />
         </Typography>
       </DialogTitle>
 
