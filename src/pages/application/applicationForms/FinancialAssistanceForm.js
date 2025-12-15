@@ -61,7 +61,7 @@ const steps = [
   // "workforce.application.steps.upload.documents",
 ];
 
-const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selectedApplicationType, parsedApplicationData, applicationForSelf }) => {
+const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selectedApplicationType, parsedApplicationData, applicationForSelf }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
 
@@ -148,8 +148,8 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
     },
     deathType: deathType,
     company: null,
-    factory: workforceFactoryId||null,
-    workforceFactoryId:workforceFactoryId||"",
+    factory: workforceFactoryId || null,
+    workforceFactoryId: workforceFactoryId || "",
     isSubmitted: "no",
     organizationType: "" || organizationType,
     applicationType: "",
@@ -191,28 +191,28 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
       setFormData({
         id: parsedApplicationData?.id || "",
         workforceApplicant: {
-          nameEn:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameEn: employeeData?.firstNameEn || "",
-          nameBn:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameBn: employeeData?.firstNameBn || "",
+          nameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameEn : employeeData?.firstNameEn || "",
+          nameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameBn : employeeData?.firstNameBn || "",
 
-          fatherNameEn:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.fatherNameEn: employeeData?.fatherNameEn || "",
-          fatherNameBn:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.fatherNameBn: employeeData?.fatherNameBn || "",
-          motherNameEn:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.motherNameEn: employeeData?.motherNameEn || "",
-          motherNameBn:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.motherNameBn: employeeData?.motherNameBn || "",
-          spouseNameEn:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameEn: employeeData?.spouseNameEn || "",
-          spouseNameBn:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameBn: employeeData?.spouseNameBn || "",
-          phoneNumber:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.phoneNumber: employeeData?.phoneNumber || "",
+          fatherNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.fatherNameEn : employeeData?.fatherNameEn || "",
+          fatherNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.fatherNameBn : employeeData?.fatherNameBn || "",
+          motherNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.motherNameEn : employeeData?.motherNameEn || "",
+          motherNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.motherNameBn : employeeData?.motherNameBn || "",
+          spouseNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameEn : employeeData?.spouseNameEn || "",
+          spouseNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameBn : employeeData?.spouseNameBn || "",
+          phoneNumber: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.phoneNumber : employeeData?.phoneNumber || "",
           relationWithApplicant: parsedApplicationData?.applicantInfo?.relationWithApplicant,
           birthDate: parsedApplicationData?.applicantInfo?.birthDate,
           gender: parsedApplicationData?.applicantInfo?.gender,
           citizenship: parsedApplicationData?.applicantInfo?.citizenship,
 
-          nid:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nid: employeeData?.nid || "",
-          birthCertificateNo:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.birthCertificateNo: employeeData?.birthCertificateNo || "",
+          nid: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nid : employeeData?.nid || "",
+          birthCertificateNo: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.birthCertificateNo : employeeData?.birthCertificateNo || "",
 
-          permanentAddress:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.permanentAddress: employeeData?.permanentAddress || "",
-          permanentLocation:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.permanentLocation: employeeData?.permanentLocation || "",
-          presentLocation:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentLocation: employeeData?.presentLocation || "",
-          presentAddress:parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentAddress: employeeData?.presentAddress || "",
+          permanentAddress: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.permanentAddress : employeeData?.permanentAddress || "",
+          permanentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.permanentLocation : employeeData?.permanentLocation || "",
+          presentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentLocation : employeeData?.presentLocation || "",
+          presentAddress: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentAddress : employeeData?.presentAddress || "",
         },
         workforceEmployee: {
           nameEn: parsedApplicationData?.deceasedWorkerInfo?.nameEn || "",
@@ -241,9 +241,15 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
           presentAddress: parsedApplicationData?.deceasedWorkerInfo?.presentAddress || "",
         },
         company: employeeData?.company || formData?.workforceEmployee?.company?.id || null,
-        factory: formData?.employeeFactory?.id||employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory ||workforceFactoryId || null,
+        factory:
+          formData?.employeeFactory?.id ||
+          employeeData.factory ||
+          formData?.workforceEmployee?.factory?.id ||
+          parsedApplicationData?.employeeFactory ||
+          workforceFactoryId ||
+          null,
         applicationForSelf: applicationForSelf,
-        workforceFactoryId:workforceFactoryId||"",
+        workforceFactoryId: workforceFactoryId || "",
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
@@ -280,11 +286,11 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
   const handleNext = async () => {
     const newErrors = validateRequiredFields(stepRef, formatMessage);
     setErrors(newErrors);
-    console.log(newErrors)
+    console.log(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if ((nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate))) {
+      if (nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
       } else {
@@ -324,7 +330,10 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
             id: safeApplicationId(applicationId, parsedApplicationData),
             workforceEmployeeId: employeeData?.id || reduxState.core.user.id,
             company: formData?.workforceEmployee?.company?.id,
-            factory: (formData?.workforceEmployee?.factory?.id||formData?.deceasedWorkerInfo?.factory?.id) ? decodeId(formData?.workforceEmployee?.factory?.id||formData?.deceasedWorkerInfo?.factory?.id) : null,
+            factory:
+              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id
+                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id)
+                : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -348,7 +357,10 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
           const createApplicationData = {
             workforceEmployeeId: employeeData?.id || reduxState.core.user.id || "",
             company: formData?.workforceEmployee?.company?.id,
-            factory: (formData?.workforceEmployee?.factory?.id||formData?.deceasedWorkerInfo?.factory?.id) ? decodeId(formData?.workforceEmployee?.factory?.id||formData?.deceasedWorkerInfo?.factory?.id) : null,
+            factory:
+              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id
+                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id)
+                : null,
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -397,7 +409,10 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
             id: safeApplicationId(applicationId, parsedApplicationData),
             workforceEmployeeId: employeeData?.id || reduxState.core.user.id,
             company: formData?.workforceEmployee?.company?.id,
-            factory: (formData?.workforceEmployee?.factory?.id||formData?.deceasedWorkerInfo?.factory?.id) ? decodeId(formData?.workforceEmployee?.factory?.id||formData?.deceasedWorkerInfo?.factory?.id) : null,
+            factory:
+              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id
+                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id)
+                : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -420,21 +435,21 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
           };
           console.log(uploadDependentFile);
           if (uploadDependentFile) {
-            await uploadDependentFile.map((file) =>{
-              const appId = applicationId||formData?.id
-              return  dispatch(
-                  createWorkforceDocument(
-                    { ...file, workforceApplicationId: safeApplicationId(applicationId,parsedApplicationData) },
-                    `Created workforce document`
-                  )
+            await uploadDependentFile.map((file) => {
+              const appId = applicationId || formData?.id;
+              return dispatch(
+                createWorkforceDocument(
+                  { ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) },
+                  `Created workforce document`
                 )
-              })
+              );
+            });
           }
-          await dispatch(updateApplication(updateApplicationData, `update workforce application`)).then(res =>setIsDependentSaved(true));
+          await dispatch(updateApplication(updateApplicationData, `update workforce application`)).then((res) => setIsDependentSaved(true));
           if (parsedApplicationData?.id) {
-            await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${parsedApplicationData?.id}"`]))
-          }else{
-            await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeApplicationId(applicationId)}"`]))
+            await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${parsedApplicationData?.id}"`]));
+          } else {
+            await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeApplicationId(applicationId)}"`]));
           }
         } else {
           const updateApplicationData = {
@@ -442,7 +457,10 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
             id: safeApplicationId(applicationId, parsedApplicationData),
             workforceEmployeeId: employeeData?.id || reduxState.core.user.id,
             company: formData?.workforceEmployee?.company?.id,
-            factory: (formData?.workforceEmployee?.factory?.id||formData?.deceasedWorkerInfo?.factory?.id) ? decodeId(formData?.workforceEmployee?.factory?.id||formData?.deceasedWorkerInfo?.factory?.id) : null,
+            factory:
+              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id
+                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id)
+                : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -465,6 +483,17 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
             status: WORKFORCE_STATUS.DRAFT,
             applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
           };
+          if (uploadBankFile) {
+            await uploadBankFile.map((file) => {
+              const appId = applicationId || formData?.id;
+              return dispatch(
+                createWorkforceDocument(
+                  { ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) },
+                  `Created workforce document`
+                )
+              );
+            });
+          }
           dispatch(updateApplication(updateApplicationData, `update workforce application`));
         }
       }
@@ -498,11 +527,20 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (uploadBankFile) {
+      await uploadBankFile.map((file) => {
+        return dispatch(
+          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`)
+        );
+      });
+    }
     uploadFile.map((file, index) => {
       // const createDocumentData = { ...file, workforceApplicationId: safeApplicationId(applicationId,parsedApplicationData) }
       // console.log({createDocumentData})
-      return dispatch(createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId,parsedApplicationData) }, `Created workforce document `));
+      return dispatch(
+        createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document `)
+      );
     });
 
     const submittedBy =
@@ -512,7 +550,10 @@ const FinancialAssistanceForm = ({ workforceFactoryId,organizationType, selected
       id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId: safeDecodeId(formData?.workforceEmployee.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
       company: formData?.workforceEmployee?.company?.id,
-       factory: (formData?.workforceEmployee?.factory?.id||formData?.deceasedWorkerInfo?.factory?.id) ? decodeId(formData?.workforceEmployee?.factory?.id||formData?.deceasedWorkerInfo?.factory?.id) : null,
+      factory:
+        formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id
+          ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id)
+          : null,
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       grantAmount: formData?.employeeAccidentInfo.grantAmount,
