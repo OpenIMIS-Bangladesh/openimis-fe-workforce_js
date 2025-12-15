@@ -2797,6 +2797,17 @@ console.log("hi payment call",testWorkforcePayment)
             <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyEisCommittee}>
               <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
             </Button>
+            <IconButton onClick={this.handleOpenEisDependentBFTN}>
+              <PrintIcon />
+            </IconButton>
+            <GenereteEisDependentBFTN
+              open={openGenerateEisDependentBFTN}
+              onClose={this.handleCloseEisDependentBFTN}
+              eisPayments={eisPayments}
+              status="approved_by_committee"
+              userRights={userRights}
+              selectedApplicationIds={this.state.selectedApplicationIds}
+              />
           </Box>
         ) : null}
         {userType === WORKFORCE_USER_TYPE.DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR ? (
@@ -2845,6 +2856,9 @@ console.log("hi payment call",testWorkforcePayment)
               <Button variant="contained" color="primary" onClick={this.handleBulkApproveByEisAdvisor}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
               </Button>
+               <IconButton onClick={this.handleOpenEisDependentBFTN}>
+                  <PrintIcon />
+                </IconButton>
               <RevertApplicationModal
                 open={revertModalOpen}
                 onClose={this.handleCloseRevertModal}
@@ -2852,6 +2866,14 @@ console.log("hi payment call",testWorkforcePayment)
                 selectedApplication={this.state.selectedApplication}
                 onSubmitRevert={this.handleRevertSubmit}
               />
+              <GenereteEisDependentBFTN
+                open={openGenerateEisDependentBFTN}
+                onClose={this.handleCloseEisDependentBFTN}
+                eisPayments={eisPayments}
+                status="approved_by_committee"
+                userRights={userRights}
+                selectedApplicationIds={this.state.selectedApplicationIds}
+                />
             </Box>
           )
         ) : null}
