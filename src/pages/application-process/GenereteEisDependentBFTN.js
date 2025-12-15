@@ -606,19 +606,6 @@ const exportDeathExcel = async (eisPayments) => {
       let totalMonthly = 0;
       let totalNet = 0;
       let benefitRateTotal = null;
-
-      eisPayments.forEach((row, index) => {
-      const benefitRate =
-        row?.benefitRate ?? row?.percentageOfDisability ?? 0;
-
-      if (benefitRateTotal === null) {
-        benefitRateTotal = benefitRate;
-      }
-
-      const dependents = row?.workforceEmployeeDependent?.length
-        ? row.workforceEmployeeDependent
-        : [null];
-
       const RELATION_LABEL_MAP = {
       "workforce.relation.father": "Father",
       "workforce.relation.mother": "Mother",
@@ -633,45 +620,26 @@ const exportDeathExcel = async (eisPayments) => {
       "workforce.relation.grand_father": "Grand Father",
       "workforce.relation.grand_mother": "Grand Mother",
     };
+  
 
-      dependents.forEach((dependent, depIndex) => {
-        const excelRow = sheet.addRow([
-          depIndex === 0 ? index + 1 : "",
-          row?.beneficiaryId || "",
-          row?.workforceApplication?.workforceEmployee?.nid || "",
-          RELATION_LABEL_MAP[dependent?.relationWithWorker] || "",
-          `${benefitRate}%`,
-          row?.eisMonthlyAmount || 0,
-          row?.eisMonthlyAmount || 0,
+    eisPayments.forEach((row, index) => { const benefitRate = row?.benefitRate || row?.percentageOfDisability || 0; 
+        if (benefitRateTotal === null) { benefitRateTotal = benefitRate; } 
+        const excelRow = sheet.addRow([ index + 1, 
+          row?.beneficiaryId, 
+          row?.workforceApplication?.workforceEmployee?.nid || "", 
+          RELATION_LABEL_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker] || "",
+          `${benefitRate}%`, 
+          row?.eisMonthlyAmount || 0, 
           row?.eisCalculatedAmount || 0,
-          row?.eisApprovedAmount || 0,
-          row?.eisPaymentType || "",
-          row?.approvalStatus || "",
-          row?.eisApprovedAmount || "",
-        ]);
-
-        // totals only once per payment (not per dependent)
-        if (depIndex === 0) {
-          totalMonthly += Number(row?.eisMonthlyAmount || 0);
-          totalNet += Number(row?.eisCalculatedAmount || 0);
-        }
-
-        excelRow.eachCell((cell) => {
-          cell.border = {
-            top: { style: "thin" },
-            left: { style: "thin" },
-            bottom: { style: "thin" },
-            right: { style: "thin" },
-          };
-          cell.alignment = {
-            vertical: "middle",
-            horizontal: "center",
-            wrapText: true,
-          };
-        });
-      });
-    });
-
+          row?.eisApprovedAmount || 0, 
+          row?.eisPaymentType || "", 
+          row?.approvalStatus || "", 
+          row?.eisApprovedAmount || "", ]); 
+          totalMonthly += Number(row?.eisMonthlyAmount || 0); totalNet += Number(row?.eisCalculatedAmount || 0);
+          excelRow.eachCell((cell) => { cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, 
+          right: { style: "thin" }, }; cell.alignment = { vertical: "middle", 
+            horizontal: "center", wrapText: true, }; }); 
+          });
 
       // ==================================
       // TOTAL ROW (WITH BENEFIT RATE TOTAL)
@@ -786,7 +754,7 @@ const exportDeathExcel = async (eisPayments) => {
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle disableTypography>
         <Typography variant="h6">
-          <FormattedMessage id="EIS-Pilot Benefit Approval Note (Disability)" />
+          <FormattedMessage id="EIS-Pilot Benefit Approval Note (Disability/Death)" />
         </Typography>
       </DialogTitle>
 
