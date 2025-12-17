@@ -143,37 +143,61 @@ useEffect(() => {
 
 const handleForward = async () => {
   try {
-    if (!formData?.userId) {
-      setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
+    if (!formData?.userIds || formData.userIds.length === 0) {
+      setServerResponse({
+        status: "ERROR",
+        message: "অফিসার নির্বাচন করুন!",
+      });
       return;
     }
 
     for (const encodedId of selectedApplicationIds) {
-      const updateApplicationData = {
-        id: decodeId(encodedId?.id),
-        status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR,
-      };
+      const applicationId = decodeId(encodedId?.id);
 
- await dispatch(
-      updateApplication(updateApplicationData, `update workforce application`)
-    );
-      const createApplicationMovementData = {
-        applicationId: decodeId(encodedId?.id),
-        applicationFromId: loggedInUserId,
-        applicationToId: formData.userId,
-        status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR, 
-        action: "forward_to_doctor",
-      };
+      // update application status once
+      await dispatch(
+        updateApplication(
+          {
+            id: applicationId,
+            status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR,
+          },
+          "update workforce application"
+        )
+      );
 
-      await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
+      // create movement for EACH selected officer
+      for (const userId of formData.userIds) {
+        const createApplicationMovementData = {
+          applicationId,
+          applicationFromId: loggedInUserId,
+          applicationToId: userId,
+          status: WORKFORCE_STATUS.FORWARD_TO_DOCTOR,
+          action: "forward_to_doctor",
+          note: "ডক্টরের কাছে প্রেরণ"
+        };
+
+        await dispatch(
+          createApplicationMovement(
+            createApplicationMovementData,
+            "create workforce movement"
+          )
+        );
+      }
     }
 
-    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+    setServerResponse({
+      status: "SUCCESS",
+      message: "সাবমিশন সফল হয়েছে!",
+    });
   } catch (error) {
     console.error("Forwarding error:", error);
-    setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
+    setServerResponse({
+      status: "ERROR",
+      message: "সাবমিশন ব্যর্থ হয়েছে!",
+    });
   }
 };
+
 
 useEffect(() => {
   if (serverResponse?.status === "SUCCESS") {
@@ -242,22 +266,40 @@ useEffect(() => {
             </Typography>
               <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
-              <Select
-                value={formData?.userId || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, userId: e.target.value })
-                }
-                displayEmpty
-              >
-                <MenuItem value="">
-                  <em>ডক্টর নির্বাচন করুন</em>
-                </MenuItem>
-                {officers.map((officer) => (
-                  <MenuItem key={officer.id} value={officer.userId}>
-                    {officer.otherNames}
-                  </MenuItem>
-                ))}
-              </Select>
+               <Select
+                  multiple
+                  value={formData?.userIds || []}
+                  onChange={(e) =>
+                    setFormData({ ...formData, userIds: e.target.value })
+                  }
+                  renderValue={(selected) =>
+                    officers
+                      .filter((officer) => selected.includes(officer.userId))
+                      .map((officer) => officer.otherNames)
+                      .join(", ")
+                  }
+                  displayEmpty
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        backgroundColor: "#fff", 
+                        color: "#000",
+                      },
+                    },
+                  }}
+                >
+                  {officers.map((officer) => (
+                    <MenuItem key={officer.id} value={officer.userId}>
+                      <Checkbox
+                        checked={formData?.userIds?.includes(officer.userId)}
+                        style={{ color: "#000" }} // checkbox tick color
+                      />
+                      <Typography style={{ color: "#000" }}>
+                        {officer.otherNames}
+                      </Typography>
+                    </MenuItem>
+                  ))}
+                </Select>
               </FormControl>
             </Grid>
           </Grid>
