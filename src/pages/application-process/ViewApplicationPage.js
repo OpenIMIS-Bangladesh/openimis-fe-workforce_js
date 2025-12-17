@@ -178,7 +178,6 @@ class ViewApplicationPage extends Component {
     const { classes, user_rights, documents, application, locale, organizationEmployee, history, edited_id } = this.props;
     const { stateEdited, workforceEmployee, isForwardModalOpen, forwardModalOpenFA } = this.state;
     // const application = this.memoizedApplication
-    console.log("putki",stateEdited)
 
     const user_type = getUserTypeFromRights(user_rights);
 
