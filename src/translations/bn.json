@@ -749,7 +749,7 @@
 
   "workforce.application.proposedAmount.byDoctor": "চিকিৎসা অবস্থার ভিত্তিতে প্রস্তাবিত অনুদানের পরিমাণ",
   "workforce.application.diagnosis.byDoctor": "রোগের বিবরণ",
-  "workforce.application.lastBaseSalary.byFactoryAdmin": "আবেদনকারীর সর্বশেষ মূল বেতন",
+  "workforce.application.lastBaseSalary.byFactoryAdmin": "দুর্ঘটনাকালীন মাসের সর্বশেষ মোট (গ্রস) বেতন",
 
   "workforce.application.rejectReason":"বাতিল করার কারণ",
   "core.tooltip.logout": "লগ আউট",

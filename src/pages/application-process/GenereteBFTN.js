@@ -16,9 +16,9 @@ import { WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserTypeFromRights } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
-import { createApplicationSummary, updateApplication, updateApplicationSummary } from "../../actions";
+import { createApplicationSummary, fetchApplicationWiseMovementList, updateApplication, updateApplicationSummary } from "../../actions";
 import { useDispatch } from "react-redux";
-import React, { Component, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { enToBn } from '../../utils/utils';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
@@ -49,6 +49,12 @@ const useStyles = makeStyles((theme) => ({
 
 const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, summary_Id }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager()
+  const [movements, setMovements] = useState([]);
+  const [lastRevertMovement, setLastRevertMovement] = useState(null);
+  const [revertNotes, setRevertNotes] = useState([]);
+  const [serverResponse, setServerResponse] = useState(null);
   const getTotalAmount = () => {
     return applications
       .filter((item) => String(item.status) === String(status))
@@ -56,9 +62,9 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       .toFixed(2);
   };
 
+  console.log({fromBFTN:applications})
 
-  const [serverResponse, setServerResponse] = useState(null);
-  const dispatch = useDispatch();
+
   const handleForward = async () => {
     if (!window.confirm("আবেদনগুলো মহাপরিচালক কাছে অগ্রায়ন নিশ্চিত করছেন?")) {
       return;
@@ -99,6 +105,42 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       window.location.reload();
     }, 1500);
   };
+
+  const fetchApplicationMovement = async () => {
+
+    try {
+      const response = await dispatch(
+        fetchApplicationWiseMovementList(modulesManager, { applicationId: applications?.[0]?.id })
+      );
+      console.log("movement response",response)
+      const movementsData = response?.payload?.data?.workforceApplicationMovement?.edges?.map((e) => e.node) || [];
+      console.log("movement movementData",movementsData)
+
+      
+      const clean = (html) => html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
+
+      // Clone and find the last revert note
+      const lastRevert = [...movementsData].reverse().find((m) => m.revertNote);
+
+      if (lastRevert) {
+        lastRevert.revertNote = clean(lastRevert.revertNote);
+      }
+
+      // Update State
+      setMovements(movementsData);
+      setLastRevertMovement(lastRevert);
+      setRevertNotes(lastRevert ? [lastRevert.revertNote] : []);
+
+    } catch (error) {
+      console.error("Failed to load revert notes", error);
+    }
+  };
+
+  useEffect(() => {
+    if (open ) {
+      fetchApplicationMovement();
+    }
+  }, [open]);
 
   const loadImageAsBuffer = async (url) => {
     try {
