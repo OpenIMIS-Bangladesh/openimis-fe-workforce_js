@@ -86,7 +86,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
             <PublishedComponent
               pubRef="workforce.DatePicker"
               label="workforce.disability.dateOfAssessment"
-              value={formData?.employeeAccidentInfo?.dateOfAssessment || ""}
+              value={formData?.employeeAccidentInfo?.dateOfAssessment||formData?.doctorsEntry?.dateOfAssessment || ""}
               onChange={(v) => handleChange("dateOfAssessment", v)}
               required
             />
@@ -94,7 +94,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
           <Grid item xs={6} className={classes.item}>
             <TextInput
               label="workforce.disability.nameOfAssessmentMeeting"
-              value={formData?.employeeAccidentInfo?.nameOfAssessmentMeeting || ""}
+              value={formData?.employeeAccidentInfo?.nameOfAssessmentMeeting||formData?.doctorsEntry?.nameOfAssessmentMeeting || ""}
               onChange={(v) => handleChange("nameOfAssessmentMeeting", v)}
               required
             />
@@ -104,7 +104,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
               multiline
               rows={4}
               label="workforce.disability.briefInjuryDescription"
-              value={formData?.employeeAccidentInfo?.briefInjuryDescription || ""}
+              value={formData?.employeeAccidentInfo?.briefInjuryDescription||formData?.doctorsEntry?.briefInjuryDescription || ""}
               onChange={(v) => handleChange("briefInjuryDescription", v)}
               required
             />
@@ -114,7 +114,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
               multiline
               rows={4}
               label="workforce.disability.briefTreatmentDescription"
-              value={formData?.employeeAccidentInfo?.briefTreatmentDescription || ""}
+              value={formData?.employeeAccidentInfo?.briefTreatmentDescription||formData?.doctorsEntry?.briefTreatmentDescription || ""}
               onChange={(v) => handleChange("briefTreatmentDescription", v)}
               required
             />
@@ -128,7 +128,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
           <Grid item xs={6} className={classes.item}>
             <TextInput
               label="workforce.disability.injurySiteLocation"
-              value={formData?.employeeAccidentInfo?.injurySiteLocation || ""}
+              value={formData?.employeeAccidentInfo?.injurySiteLocation|| formData?.doctorsEntry?.injurySiteLocation|| ""}
               onChange={(v) => handleChange("injurySiteLocation", v)}
               required
             />
@@ -138,7 +138,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
               //   multiline
               //   rows={4}
               label="workforce.disability.injuryDetailsDescription"
-              value={formData?.employeeAccidentInfo?.injuryDetailsDescription || ""}
+              value={formData?.employeeAccidentInfo?.injuryDetailsDescription||formData?.doctorsEntry?.injuryDetailsDescription || ""}
               onChange={(v) => handleChange("injuryDetailsDescription", v)}
               required
             />
@@ -159,7 +159,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
                   defaultMessage="Limitations in Occupation and Activities of Daily Living"
                 />
               </FormLabel>
-              <RadioGroup row value={hasLimitations} onChange={handleLimitationsChange}>
+              <RadioGroup row value={hasLimitations||formData?.doctorsEntry?.hasLimitations} onChange={handleLimitationsChange}>
                 <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.permission.yes" />} />
                 <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.permission.no" />} />
               </RadioGroup>
@@ -177,14 +177,14 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
           <Grid item xs={6} className={classes.item}>
             <TextInput
               label={"workforce.employee.accident.info.disabilityPerSchedule"}
-              value={formData?.employeeAccidentInfo?.disabilityPerSchedule || ""}
+              value={formData?.employeeAccidentInfo?.disabilityPerSchedule||formData?.doctorsEntry?.disabilityPerSchedule || ""}
               onChange={(v) => handleChange("disabilityPerSchedule", v)}
             />
           </Grid>
           <Grid item xs={6} className={classes.item}>
             <TextInput
               label={"workforce.employee.accident.info.presentInjuryBLASchedule1"}
-              value={formData?.employeeAccidentInfo?.presentInjuryBLASchedule1 || ""}
+              value={formData?.employeeAccidentInfo?.presentInjuryBLASchedule1||formData?.doctorsEntry?.presentInjuryBLASchedule1 || ""}
               onChange={(v) => handleChange("presentInjuryBLASchedule1", v)}
             />
           </Grid>

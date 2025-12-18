@@ -111,7 +111,7 @@ const DoctorsEntries = ({ application }) => {
               color="primary"
               onClick={() => setOpenAccidentInfoModal(true)}
               fullwidth
-              disabled={isNotEmpty(application?.doctorsEntry)}
+              // disabled={isNotEmpty(application?.doctorsEntry)}
             >
               {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
             </Button>
