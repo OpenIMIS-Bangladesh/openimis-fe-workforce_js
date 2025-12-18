@@ -491,26 +491,60 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
               </TableRow>
             </TableHead>
             <TableBody>
-              {applications.filter((item) => item.status === status).map((row, index) => {
-                const parseBankInfo = JSON.parse(row.employeeBankInfo)
-                const bankInfo = JSON.parse(parseBankInfo)
-                console.log(bankInfo)
-                return (
-                  <TableRow key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{row?.dateCreated.split("T")[0]}</TableCell>
+              {applications
+              .filter(item => item.status === status)
+              .flatMap((row, appIndex) => {
+                let bankInfos = []
+
+                try {
+                  const parsed = JSON.parse(row.employeeBankInfo)
+                  bankInfos = Array.isArray(parsed) ? parsed : JSON.parse(parsed)
+                } catch (e) {
+                  console.error("Bank info parse error", e)
+                  return []
+                }
+
+                // Iterate based on employeeBankInfo count
+                return bankInfos.map((bankInfo, bankIndex) => (
+                  <TableRow key={`${row.id}-${bankIndex}`}>
+                    {/* SL */}
+                    <TableCell>{bankIndex + 1}</TableCell>
+
+                    {/* Application Date */}
+                    <TableCell>
+                      {row?.dateCreated?.split("T")[0]}
+                    </TableCell>
+
+                    {/* Company Account */}
                     <TableCell>4426336001034</TableCell>
-                    <TableCell>{bankInfo[0]?.branch?.routingNumber}</TableCell>
+
+                    {/* Routing Number (Dependent Bank) */}
+                    <TableCell>
+                      {bankInfo?.branch?.routingNumber}
+                    </TableCell>
+
+                    {/* BIN / Fixed */}
                     <TableCell>200275714</TableCell>
-                    <TableCell>{row?.workforceEmployee?.firstNameBn}</TableCell>
-                    <TableCell>{bankInfo[0]?.accountNumber}</TableCell>
-                    {/* <TableCell>{row.applicationType}</TableCell> */}
+
+                    {/* Dependent / Account Holder Name */}
+                    <TableCell>
+                      {bankInfo?.accountHolderName}
+                    </TableCell>
+
+                    {/* Account Number */}
+                    <TableCell>
+                      {bankInfo?.accountNumber}
+                    </TableCell>
+
+                    {/* Reference */}
                     <TableCell></TableCell>
-                    <TableCell align="right">{row?.grantAmount}</TableCell>
-                    {/* <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
-                    <TableCell>{bankInfo?.branch?.nameEn}</TableCell> */}
+
+                    {/* Grant Amount (Same for all dependents) */}
+                    <TableCell align="right">
+                      {row?.grantAmount}
+                    </TableCell>
                   </TableRow>
-                )
+                ))
               })}
               <TableRow>
                 <TableCell colSpan={8}>
