@@ -103,7 +103,7 @@ const EmployeeDetailsForm2 = ({
           );
         }
       } else if (formData?.applicationType === "deadlyGrant") {
-        if (formData?.metadata.deathType === "normalDeath" && formData?.institutionInfo.workerType === "formal") {
+        if (formData?.metadata.deathType === "normalDeath" && formData?.institutionInfo?.workerType === "formal") {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,

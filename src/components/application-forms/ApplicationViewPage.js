@@ -203,7 +203,7 @@ const renderDetails = (data, classes, parentKey = "", language, fileStates, hand
       const scalars = Object.entries(item).filter(
         ([key, value]) => typeof value !== "object" && ![...hiddenKeys].includes(key) && value !== null && value !== undefined && value !== ""
       );
-      const objects = Object.entries(item).filter(([key, value]) => typeof value === "object" && value && ![...hiddenKeys, "attachments"].includes(key));
+      const objects = Object.entries(item).filter(([key, value]) => typeof value === "object" && value && ![...hiddenKeys, "attachments","employeeBankingDependents"].includes(key));
 
       let matchingFiles = [];
       if (parentKey === "workforceEmployeeDependentApplication" && item?.id && fileStates) {
