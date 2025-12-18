@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ScholarshipApplicationForm = ({ workforceFactoryId,organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
+const ScholarshipApplicationForm = ({ workforceFactoryId,organizationType, selectedApplicationType, applicationForSelf,selectedFactory, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
   const modulesManager = useModulesManager();
@@ -116,7 +116,7 @@ const ScholarshipApplicationForm = ({ workforceFactoryId,organizationType, selec
     },
     scholarshipProgram: "",
     company: null,
-    factory: workforceFactoryId|| null,
+    factory: selectedFactory||null,
     workforceFactoryId:workforceFactoryId||"",
     isSubmitted: "no",
     organizationType: "",
@@ -192,7 +192,7 @@ const ScholarshipApplicationForm = ({ workforceFactoryId,organizationType, selec
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || workforceFactoryId|| null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || workforceFactoryId||selectedFactory|| null,
         applicationForSelf: applicationForSelf,
         workforceFactoryId:workforceFactoryId||"",
         organizationType: parsedApplicationData?.organizationType || organizationType,

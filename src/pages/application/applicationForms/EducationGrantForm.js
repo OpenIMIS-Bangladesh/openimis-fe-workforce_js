@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
+const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData,selectedFactory }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
   const modulesManager = useModulesManager();
@@ -128,7 +128,7 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
     },
     otherInfo: "",
     company: null,
-    factory: null,
+    factory: selectedFactory||null,
     workforceFactoryId:workforceFactoryId||"",
     isSubmitted: "no",
     organizationType: "",
@@ -189,7 +189,7 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory ||workforceFactoryId|| null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory ||workforceFactoryId||selectedFactory|| null,
         applicationForSelf: applicationForSelf,
         workforceFactoryId:workforceFactoryId||"",
         organizationType: parsedApplicationData?.organizationType || organizationType,
@@ -279,6 +279,7 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
             employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
             employeeDependentInfo: JSON.stringify(formData.dependents),
             employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo),
+            institutionInfo: JSON.stringify(formData.institutionInfo),
             metadata: JSON.stringify(formData.metadata),
             status: WORKFORCE_STATUS.DRAFT,
             applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
@@ -334,6 +335,7 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
             factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+            institutionInfo: JSON.stringify(formData.institutionInfo),
             employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
             employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
             employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo) || JSON.stringify(parsedApplicationData?.employeeChildrenInfo),
@@ -389,6 +391,7 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
       factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+      institutionInfo: JSON.stringify(formData.institutionInfo),
       employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
       employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),

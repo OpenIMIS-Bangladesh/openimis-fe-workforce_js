@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
+const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData,selectedFactory }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
   const modulesManager = useModulesManager();
@@ -112,7 +112,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
     },
     deathType: "",
     company: null,
-    factory: workforceFactoryId || null,
+    factory: selectedFactory||null,
     workforceFactoryId: workforceFactoryId || "",
     isSubmitted: "no",
     organizationType: "",
@@ -187,7 +187,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || workforceFactoryId || null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || workforceFactoryId||selectedFactory || null,
         applicationForSelf: applicationForSelf,
         workforceFactoryId: workforceFactoryId || "",
         organizationType: parsedApplicationData?.organizationType || organizationType,

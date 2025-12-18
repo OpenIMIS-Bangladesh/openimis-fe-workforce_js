@@ -72,6 +72,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
   const [selectedApplicationType, setSelectedApplicationType] = useState("" || parsedApplicationData?.applicationType);
   const [isApplicationForSelfSelected, setIsApplicationForSelfSelected] = useState(true);
   const [openErrorModal, setOpenErrorModal] = useState(false);
+  const [selectedFactory, setSelectedFactory] = useState(null);
   const reduxState = useSelector((state) => state);
   const userName = reduxState.core.user.username;
 
@@ -132,7 +133,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
     }
   };
 
-  console.log({ applicationForSelf });
+  console.log({ selectedFactory });
   console.log({ parsedApplicationData });
 
   return (
@@ -153,6 +154,8 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               onSelect={handleSelection}
               selectedApplicationType={selectedApplicationType}
               parsedApplicationData={parsedApplicationData}
+              setSelectedFactory={setSelectedFactory}
+              selectedFactory= {selectedFactory}
             />
             <div className={classes.buttonContainer}>
               <Button
@@ -209,6 +212,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
                 selectedApplicationType={selectedApplicationType}
                 applicationForSelf={applicationForSelf}
                 parsedApplicationData={parsedApplicationData}
+                selectedFactory={selectedFactory}
               />
             )}
           </>
@@ -256,6 +260,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
                 parsedApplicationData={parsedApplicationData}
                 selectedApplicationType={selectedApplicationType}
                 applicationForSelf={applicationForSelf}
+                selectedFactory={selectedFactory}
               />
             )}
           </>
@@ -303,6 +308,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
                 parsedApplicationData={parsedApplicationData}
                 selectedApplicationType={selectedApplicationType}
                 applicationForSelf={applicationForSelf}
+                selectedFactory={selectedFactory}
               />
             )}
           </>
@@ -324,6 +330,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               selectedApplicationType={selectedApplicationType}
               parsedApplicationData={parsedApplicationData}
               applicationForSelf={applicationForSelf}
+              selectedFactory={selectedFactory}
             />
           </>
         ) : selectedApplicationType === "educationGrant" ? (
@@ -370,6 +377,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               selectedApplicationType={selectedApplicationType}
               applicationForSelf={applicationForSelf}
               parsedApplicationData={parsedApplicationData}
+              selectedFactory={selectedFactory}
             />
             {/* )} */}
           </>
@@ -391,6 +399,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               parsedApplicationData={parsedApplicationData}
               selectedApplicationType={selectedApplicationType}
               applicationForSelf={applicationForSelf}
+              selectedFactory={selectedFactory}
             />
           </>
         ) : selectedApplicationType === "scholarship" ? (
@@ -437,6 +446,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
                 selectedApplicationType={selectedApplicationType}
                 applicationForSelf={applicationForSelf}
                 parsedApplicationData={parsedApplicationData}
+                selectedFactory={selectedFactory}
               />
             )}
           </>
@@ -458,6 +468,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
               parsedApplicationData={parsedApplicationData}
               selectedApplicationType={selectedApplicationType}
               applicationForSelf={applicationForSelf}
+              selectedFactory={selectedFactory}
             />
           </>
         ) : (

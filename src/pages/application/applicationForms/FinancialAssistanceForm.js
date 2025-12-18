@@ -61,7 +61,7 @@ const steps = [
   // "workforce.application.steps.upload.documents",
 ];
 
-const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selectedApplicationType, parsedApplicationData, applicationForSelf }) => {
+const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selectedApplicationType, parsedApplicationData, applicationForSelf,selectedFactory }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
 
@@ -148,7 +148,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
     },
     deathType: deathType,
     company: null,
-    factory: workforceFactoryId || null,
+    factory: selectedFactory||null,
     workforceFactoryId: workforceFactoryId || "",
     isSubmitted: "no",
     organizationType: "" || organizationType,
@@ -246,7 +246,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
           employeeData.factory ||
           formData?.workforceEmployee?.factory?.id ||
           parsedApplicationData?.employeeFactory ||
-          workforceFactoryId ||
+          workforceFactoryId||selectedFactory ||
           null,
         applicationForSelf: applicationForSelf,
         workforceFactoryId: workforceFactoryId || "",

@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MaternalGrantForm = ({ workforceFactoryId,organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData }) => {
+const MaternalGrantForm = ({ workforceFactoryId,organizationType, selectedApplicationType, applicationForSelf,selectedFactory, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
   const modulesManager = useModulesManager();
@@ -105,7 +105,7 @@ const MaternalGrantForm = ({ workforceFactoryId,organizationType, selectedApplic
       organizationId: "",
     },
     company: null,
-    factory: workforceFactoryId||null,
+    factory: selectedFactory||null,
     workforceFactoryId:workforceFactoryId||"",
     isSubmitted: "no",
     organizationType: "",
@@ -184,12 +184,13 @@ const MaternalGrantForm = ({ workforceFactoryId,organizationType, selectedApplic
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || workforceFactoryId|| null,
+        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || workforceFactoryId||selectedFactory|| null,
         applicationForSelf: applicationForSelf,
         workforceFactoryId:workforceFactoryId||"",
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
+        institutionInfo: parsedApplicationData?.institutionInfo || employeeData?.institutionInfo || {},
         dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || [{}],
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
@@ -268,6 +269,7 @@ const MaternalGrantForm = ({ workforceFactoryId,organizationType, selectedApplic
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
+            institutionInfo: JSON.stringify(formData.institutionInfo),
             employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
             employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
             employeeDependentInfo: JSON.stringify(formData.dependents),
@@ -310,6 +312,7 @@ const MaternalGrantForm = ({ workforceFactoryId,organizationType, selectedApplic
               JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
             employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
             metadata: JSON.stringify(formData.metadata),
+            institutionInfo: JSON.stringify(formData.institutionInfo),
             status: WORKFORCE_STATUS.DRAFT,
             applicationFor: applicationForSelf === "yes" ? "self" : "dependent",
           };
@@ -363,7 +366,7 @@ const MaternalGrantForm = ({ workforceFactoryId,organizationType, selectedApplic
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       grantAmount: formData?.employeeAccidentInfo.grantAmount,
-
+      institutionInfo: JSON.stringify(formData.institutionInfo),
       employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
       employeeDependentInfo:
         JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") ||
