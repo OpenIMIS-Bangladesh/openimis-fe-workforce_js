@@ -6,6 +6,7 @@ import { useTranslations, FormattedMessage, useModuleManager, historyPush, useHi
 import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import WorkforceEmployeePicker from "../../pickers/WorkforceEmployeePicker";
+import FactoryPicker from "../../pickers/FactoryPicker";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -22,10 +23,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ApplicationTypeSelector = ({ workforceFactoryId,modulesManager, onSelect, selectedApplicationType, parsedApplicationData }) => {
+const ApplicationTypeSelector = ({
+  workforceFactoryId,
+  modulesManager,
+  onSelect,
+  selectedApplicationType,
+  parsedApplicationData,
+  selectedFactory,
+  setSelectedFactory,
+}) => {
   const [isExportOriented, setIsExportOriented] = useState("");
   const classes = useStyles();
   const dispatch = useDispatch();
+  const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const selectedEmployee = useSelector((state) => state.selectedEmployee);
   // const [selectedEmployee, setSelectedEmployee] = useState(null);
   const history = useHistory();
@@ -67,8 +77,8 @@ const ApplicationTypeSelector = ({ workforceFactoryId,modulesManager, onSelect, 
     <Paper className={classes.paper} elevation={0}>
       {user_type != WORKFORCE_USER_TYPE.APPLICANT && (
         <Box>
-          <Typography style={{textAlign:"center",color:"red",fontWeight:"bold",marginBottom:8}}>
-          <FormattedMessage id="workforce.application.header.employeeSelector.note" module="workforce" />
+          <Typography style={{ textAlign: "center", color: "red", fontWeight: "bold", marginBottom: 8 }}>
+            <FormattedMessage id="workforce.application.header.employeeSelector.note" module="workforce" />
           </Typography>
           <Grid container alignItems="center" spacing={2}>
             <Grid item xs={8}>
@@ -99,6 +109,19 @@ const ApplicationTypeSelector = ({ workforceFactoryId,modulesManager, onSelect, 
           </Grid>
         </Box>
       )}
+      <Box mt={3}>
+        <FactoryPicker
+          value={selectedFactory?.factory?.id}
+          label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
+          required
+          // companyId={selectedCompany?.id}
+          companyId={employeeData?.company?.id}
+          onChange={(v) => {
+            setSelectedFactory(v);
+          }}
+          readOnly={false}
+        />
+      </Box>
       <FormControl component="fieldset">
         {/* New Export-Oriented Company Question */}
         <Typography variant="h6" className={`${classes.title} ${classes.section}`}>
