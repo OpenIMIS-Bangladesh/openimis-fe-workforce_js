@@ -26,6 +26,7 @@ import {
   useModulesManager,
   decodeId,
   FormattedMessage,
+  parseData,
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
@@ -113,8 +114,11 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
         fetchApplicationWiseMovementList(modulesManager, { applicationId: applications?.[0]?.id })
       );
       console.log("movement response",response)
-      const movementsData = response?.payload?.data?.workforceApplicationMovement?.edges?.map((e) => e.node) || [];
-      console.log("movement movementData",movementsData)
+      const movementsData = parseData(response?.payload?.data?.workforceApplicationMovement) || [];
+      const senderObjects = movementsData
+      .filter(m => m.applicationFrom !== null)
+      .map(m => m.applicationFrom).filter(m=> m.userRoles?.[0]?.role?.name ==="Doctor"||m.userRoles?.[0]?.role?.name ==="Blwf Doctor"||m.userRoles?.[0]?.role?.name ==="Eis Doctor")
+      console.log("movement senderData",senderObjects)
 
       
       const clean = (html) => html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
