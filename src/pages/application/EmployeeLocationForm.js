@@ -134,6 +134,11 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
                       />
                     </Grid>
                   )} */}
+                {!(
+                  (formData?.applicationType === "financialAssistance" || formData?.applicationType === "DeadlyGrant") &&
+                  formData?.organizationType !== "eis"
+                ) && (
+                  <>
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
                   withNull={true}
@@ -144,6 +149,8 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
                   split={true}
                 />
                 {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
+                  </>
+                )}
               </Grid>
 
               {/* <Grid item xs={12}>
