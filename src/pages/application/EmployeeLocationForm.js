@@ -114,15 +114,17 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
               </Grid>
               <Grid item xs={12}>
                 
-                {!((formData?.applicationType === "financialAssistance"&&formData?.organizationType !== "eis") ||( formData?.applicationType === "DeadlyGrant"&&formData?.organizationType !== "eis"))
+                {(!(formData?.applicationType === "financialAssistance"&&formData?.organizationType !== "eis") ||!( formData?.applicationType === "DeadlyGrant"&&formData?.organizationType !== "eis"))
                  && (
+                  <>
+                  <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
                   <Grid item xs={12}>
-                    <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
                     <FormControlLabel
                       control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
                       label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
                     />
                   </Grid>
+                  </>
                 )}
                 {/* {(formData?.applicationType !== "financialAssistance" || formData?.applicationType !== "DeadlyGrant") &&
                   formData?.organizationType != "eis" && (
@@ -133,7 +135,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
                       />
                     </Grid>
                   )} */}
-                {!((formData?.applicationType === "financialAssistance"&&formData?.organizationType !== "eis") ||( formData?.applicationType === "DeadlyGrant"&&formData?.organizationType !== "eis")) && (
+                {(!(formData?.applicationType === "financialAssistance"&&formData?.organizationType !== "eis") ||!( formData?.applicationType === "DeadlyGrant"&&formData?.organizationType !== "eis")) && (
                   <>
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
