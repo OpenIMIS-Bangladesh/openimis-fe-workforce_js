@@ -786,9 +786,9 @@ const exportDeathExcel = async (eisPayments) => {
               return (
                 <TableRow key={index}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>EIS.2025.SP.000045</TableCell>
+                  <TableCell>{row?.beneficiaryId}</TableCell>
                   <TableCell>{row?.workforceApplication?.workforceEmployee?.nid}</TableCell>
-                  <TableCell>5.20%</TableCell>
+                  <TableCell></TableCell>
                   <TableCell>{row?.eisMonthlyAmount}</TableCell>
                   <TableCell>{row?.eisMonthlyAmount}</TableCell>
                   <TableCell>{row?.eisCalculatedAmount}</TableCell>
