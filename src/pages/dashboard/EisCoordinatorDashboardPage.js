@@ -270,7 +270,7 @@ const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
     </div>
   );
 };
-const AdvisorApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
+const AdvisorApprovedApplications = ({ summaryData = [] }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
 
@@ -307,7 +307,7 @@ const AdvisorApprovedApplications = ({ summaryData = [], disableButtons=0 }) => 
                 <Card style={{ width: "100%" }}>
                   <CardContent>
                     {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons} roleIds = {["49"]}/>
+                      <ApplicationProcessSearcher summaryId={item.id} approvedButton={1} roleIds = {["49"]}/>
                     )}
                   </CardContent>
                 </Card>
@@ -621,7 +621,7 @@ const EisCoordinatorDashboardPage = () => {
       case "pendingMeetingSheet":
         return <PendingMeetingSheet summaryData={pendingSummaryData} disableButtons={1} />;
       case "advisorApproveMeetingSheet":
-        return <AdvisorApprovedApplications summaryData={advisorApprovedSummaryData} />;
+        return <AdvisorApprovedApplications summaryData={advisorApprovedSummaryData} approvedButton={1} />;
       case "sentMeetingSheet":
         return <SentMeetingSheet summaryData={sentSummaryData} disableButtons={1} />;
       case "approveMeetingSheet":

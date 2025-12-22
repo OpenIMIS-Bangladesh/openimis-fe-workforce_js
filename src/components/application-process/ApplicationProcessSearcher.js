@@ -27,6 +27,7 @@ import ForwardApplicationEisCoordinatorModal from "./modals/ForwardApplicationEi
 import ForwardApplicationApproverModal from "./modals/ForwardApplicationApproverModal";
 import RevertApplicationModal from "./modals/RevertApplicationModal";
 import ForwardApplicationSummaryModal from "./modals/ForwardApplicationSummaryModal";
+import ForwardEisCoordinatoToCommitteeModal from "./modals/ForwardEisCoordinatoToCommitteeModal";
 import ConfirmModal from "./modals/ConfirmModal";
 import { WORKFORCE_STATUS } from "../../constants";
 import { updateApplication, createApplicationMovement, updateApplicationSummary } from "../../actions";
@@ -92,6 +93,7 @@ class ApplicationProcessSearcher extends Component {
       forwardPaymentModalOpen: false,
       forwardModalOpenSA: false,
       forwardModalOpenEIS: false,
+      forwardModalOpenEISToCoordinator: false,
       forwardModalOpenEisDoctor: false,
       forwardModalOpenSummarySA:false,
       forwardModalOpenFA:false,
@@ -1219,6 +1221,9 @@ class ApplicationProcessSearcher extends Component {
   handleOpenForwardModalForEIS = (application) => {
     this.setState({ forwardModalOpenEIS: true, selectedApplication: application });
   };
+  handleOpenForwardModalForEISToCommittee = (application) => {
+    this.setState({ forwardModalOpenEISToCoordinator: true, selectedApplication: application });
+  };
   handleCloseForwardModalForSectionAdmin = () => {
     this.setState({ forwardModalOpenSA: false, selectedApplication: null });
   };
@@ -1233,6 +1238,9 @@ class ApplicationProcessSearcher extends Component {
   };
   handleCloseForwardModalForEisCoordinator = () => {
     this.setState({ forwardModalOpenEIS: false, selectedApplication: null });
+  };
+  handleCloseForwardModalForEisCoordinatorToCommittee = () => {
+    this.setState({ forwardModalOpenEISToCoordinator: false, selectedApplication: null });
   };
   handleCloseForwardModalForEisDoctor = () => {
     this.setState({ forwardModalOpenEisDoctor: false, selectedApplication: null });
@@ -2446,6 +2454,7 @@ console.log("hi payment call",testWorkforcePayment)
       forwardModalOpenSA,
       forwardModalOpenEisDoctor,
       forwardModalOpenEIS,
+      forwardModalOpenEISToCoordinator,
       revertModalOpen,
       revertByChecker,
       revertByApprover,
@@ -2494,6 +2503,7 @@ console.log("hi payment call",testWorkforcePayment)
 
     console.log({faltu:selectedApplicationIds})
     const disableButtons = this.props.disableButtons ? decodeId(this.props.disableButtons) : null;
+    const approvedButton = this.props.approvedButton ? decodeId(this.props.approvedButton) : null;
     const meetingForwardButton = this.props.meetingForwardButton ? decodeId(this.props.meetingForwardButton) : null;
     return (
       <React.Fragment>
@@ -2537,6 +2547,20 @@ console.log("hi payment call",testWorkforcePayment)
                 justifyContent: "space-between",
               }}
             >
+                  {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR &&
+                approvedButton === 1 && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => this.setState({ forwardModalOpenEISToCoordinator: true })}
+                  >
+                    <FormattedMessage
+                      module="workforce"
+                      id="workforce.employee.application.forwardToSelectionOffice"
+                    />
+                  </Button>
+                )}
+
               {disableButtons == 1 ? (
                   <>
                     {userType !== WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
@@ -3039,6 +3063,15 @@ console.log("hi payment call",testWorkforcePayment)
                   <ForwardApplicationEisCoordinatorModal
                   open={forwardModalOpenEIS}
                   onClose={this.handleCloseForwardModalForEisCoordinator}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
+                  onSubmitForward={this.handleForwardSubmit}
+                  userRights={userRights}
+                  summaryId={this.props.summaryId}
+                  roleIds={this.props.roleIds}
+                />
+                  <ForwardEisCoordinatoToCommitteeModal
+                  open={forwardModalOpenEISToCoordinator}
+                  onClose={this.handleCloseForwardModalForEisCoordinatorToCommittee}
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
