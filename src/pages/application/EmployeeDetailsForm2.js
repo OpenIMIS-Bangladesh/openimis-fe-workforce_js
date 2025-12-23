@@ -81,7 +81,7 @@ const EmployeeDetailsForm2 = ({
           );
         }
       } else if (formData?.applicationType === "financialAssistance") {
-        if (formData?.metadata.deathType === "normalDeath") {
+        if (formData?.metadata?.deathType === "normalDeath") {
           return dispatch(
             fetchDocumentType(modulesManager, [
               `orderBy: ["documentTypeNo"]`,

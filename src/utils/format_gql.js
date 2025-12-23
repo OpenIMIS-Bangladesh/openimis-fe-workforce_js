@@ -228,42 +228,54 @@ export function formatWorkforceEmployeeGQL(employee) {
   `;
 }
 
-export function formatWorkforceDependentGQL(employee) {
+export function formatWorkforceDependentGQL(dependent) {
   return `
-    ${employee?.id ? `id: "${formatGQLString(employee.id)}"` : ""}
-    ${employee.company ? `workforceEmployerId: "${employee.company}"` : ""}
-    ${employee.factory ? `workforceFactoryId: "${employee.factory}"` : ""}
-    ${employee.firstNameBn ? `firstNameBn: "${formatGQLString(employee.firstNameBn)}"` : ""}
-    ${employee.lastNameBn ? `lastNameBn: "${formatGQLString(employee.lastNameBn)}"` : ""}
-    ${employee.firstNameEn ? `firstNameEn: "${formatGQLString(employee.firstNameEn)}"` : ""}
-    ${employee.lastNameEn ? `lastNameEn: "${formatGQLString(employee.lastNameEn)}"` : ""}
-    ${employee.otherName ? `otherName: "${formatGQLString(employee.otherName)}"` : ""}
-    ${employee.phoneNumber ? `phoneNumber: "${formatGQLString(employee.phoneNumber)}"` : ""}
-    ${employee.email ? `email: "${formatGQLString(employee.email)}"` : ""}
-    ${employee.birthDate ? `birthDate: "${employee.birthDate}"` : ""}
-    ${employee.joinDate ? `joinDate: "${employee.joinDate}"` : ""}
-    ${employee.deathDate ? `deathDate: "${employee.deathDate}"` : ""}
-    ${employee.gender ? `gender: "${employee.gender}"` : ""}
-    ${employee.birthCertificateNo ? `birthCertificateNo: "${employee.birthCertificateNo}"` : ""}
-    ${employee.nid ? `nid: "${employee.nid}"` : ""}
-    ${employee.insuranceNumber ? `insuranceNumber: "${employee.insuranceNumber}"` : ""}
-    ${employee.passportNo ? `passportNo: "${employee.passportNo}"` : ""}
-    ${employee.permanentAddress ? `permanentAddress: "${employee.permanentAddress}"` : ""}
-    ${employee.presentAddress ? `presentAddress: "${employee.presentAddress}"` : ""}
-    ${employee.position ? `position: "${employee.position}"` : ""}
-    ${employee.monthlyEarning ? `monthlyEarning: "${employee.monthlyEarning}"` : ""}
-    ${employee.fatherNameBn ? `fatherNameBn: "${employee.fatherNameBn}"` : ""}
-    ${employee.fatherNameEn ? `fatherNameEn: "${employee.fatherNameEn}"` : ""}
-    ${employee.motherNameBn ? `motherNameBn: "${employee.motherNameBn}"` : ""}
-    ${employee.motherNameEn ? `motherNameEn: "${employee.motherNameEn}"` : ""}
-    ${employee.spouseNameBn ? `spouseNameBn: "${employee.spouseNameBn}"` : ""}
-    ${employee.spouseNameEn ? `spouseNameEn: "${employee.spouseNameEn}"` : ""}
-    ${employee.maritalStatus ? `maritalStatus: "${employee.maritalStatus}"` : ""}
-    ${employee.relationship ? `relationship: "${employee.relationship}"` : ""}
-    ${employee.presentLocation.id ? `presentLocationId: "${decodeId(employee.presentLocation.id)}"` : ""}
-    ${employee.permanentLocation.id ? `permanentLocationId: "${decodeId(employee.permanentLocation.id)}"` : ""}
-    ${employee.status ? `status: "${employee.status}"` : ""}
-  `;
+    ${dependent?.id ? `id: "${(dependent.id)}"` : ""}
+    ${dependent.workforceApplicationId ? `workforceApplicationId: "${(dependent.workforceApplicationId)}"` : ""}
+    ${dependent.nameBn ? `nameBn: "${(dependent.nameBn)}"` : ""}
+    ${dependent.nameEn ? `nameEn: "${(dependent.nameEn)}"` : ""}
+    ${dependent.fatherNameBn ? `fatherNameBn: "${(dependent.fatherNameBn)}"` : ""}
+    ${dependent.fatherNameEn ? `fatherNameEn: "${(dependent.fatherNameEn)}"` : ""}
+    ${dependent.motherNameBn ? `motherNameBn: "${(dependent.motherNameBn)}"` : ""}
+    ${dependent.motherNameEn ? `motherNameEn: "${(dependent.motherNameEn)}"` : ""}
+    ${dependent.maritalStatus ? `maritalStatus: "${(dependent.maritalStatus)}"` : ""}
+    ${dependent.gender ? `gender: "${(dependent.gender)}"` : ""}
+    ${dependent.occupation ? `occupation: "${(dependent.occupation)}"` : ""}
+    ${dependent.email ? `email: "${(dependent.email)}"` : ""}
+    ${dependent.phoneNumber ? `phoneNumber: "${(dependent.phoneNumber)}"` : ""}
+    ${dependent.birthDate ? `birthDate: "${dependent.birthDate}"` : ""}
+    ${dependent.nid ? `nid: "${(dependent.nid)}"` : ""}
+    ${dependent.birthCertificateNo ? `birthCertificateNo: "${(dependent.birthCertificateNo)}"` : ""}
+    ${dependent.lifeStatus ? `lifeStatus: "${(dependent.lifeStatus)}"` : ""}
+    ${dependent.deathDate ? `deathDate: "${dependent.deathDate}"` : ""}
+    ${dependent.disabilityStatus ? `disabilityStatus: "${formatGQLString(dependent.disabilityStatus)}"` : ""}
+    ${dependent.disabilityType ? `disabilityType: "${formatGQLString(dependent.disabilityType)}"` : ""}
+    ${dependent.relationWithWorker ? `relationWithWorker: "${formatGQLString(dependent.relationWithWorker)}"` : ""}
+    ${dependent.lastVerificationDate ? `lastVerificationDate: "${dependent.lastVerificationDate}"` : ""}
+    ${dependent.status ? `status: "${formatGQLString(dependent.status)}"` : ""}
+    ${dependent.permanentLocationId ? `permanentLocationId: "${decodeId(dependent.permanentLocationId)}"` : ""}
+    ${dependent.presentLocationId ? `presentLocationId: "${decodeId(dependent.presentLocationId)}"` : ""}
+    ${dependent.permanentAddress ? `permanentAddress: ${dependent.permanentAddress ? `"${escapeQuotes(dependent.permanentAddress)}"` : null}` : ""}
+    ${dependent.presentAddress ? `presentAddress: ${dependent.presentAddress ? `"${escapeQuotes(dependent.presentAddress)}"` : null}` : ""}
+    ${dependent.isEligible ? `isEligible: ${dependent.isEligible}` : ""}
+    ${dependent.bankId ? `bankId: "${(dependent.bankId)}"` : ""}
+    ${dependent.bankAccountHolderName ? `bankAccountHolderName: "${(dependent.bankAccountHolderName)}"` : ""}
+    ${dependent.bankAccountNo ? `bankAccountNo: "${(dependent.bankAccountNo)}"` : ""}
+    ${dependent.accountHolderType ? `accountHolderType: "${(dependent.accountHolderType)}"` : ""}
+    ${dependent.accountHolderDob ? `accountHolderDob: "${dependent.accountHolderDob}"` : ""}
+    ${dependent.accountHolderNid ? `accountHolderNid: "${(dependent.accountHolderNid)}"` : ""}
+    ${dependent.accountHolderRelationWithDependent ? `accountHolderRelationWithDependent: "${(dependent.accountHolderRelationWithDependent)}"` : ""}
+    ${dependent.bankingInfoId ? `bankingInfoId: "${(dependent.bankingInfoId)}"` : ""}
+    ${dependent.parentDependentId ? `parentDependentId: "${(dependent.parentDependentId)}"` : ""}
+    ${dependent.percentageOfCfGrant ? `percentageOfCfGrant: "${(dependent.percentageOfCfGrant)}"` : ""}
+    ${dependent.eisApprovedAmount ? `eisApprovedAmount: ${dependent.eisApprovedAmount ?? null}` : ""}
+    ${dependent.eisCalculatedAmount ? `eisCalculatedAmount: ${dependent.eisCalculatedAmount ?? null}` : ""}
+    ${dependent.eisMonthlyAmount ? `eisMonthlyAmount: ${dependent.eisMonthlyAmount ?? null}` : ""}
+    ${dependent.eisPaymentType ? `eisPaymentType: "${(dependent.eisPaymentType)}"` : ""}
+    ${dependent.eisInitialMonthlyAmount ? `eisInitialMonthlyAmount: ${dependent.eisInitialMonthlyAmount ?? null}` : ""}
+    ${dependent.initialReplacementRate ? `initialReplacementRate: ${dependent.initialReplacementRate ?? null}` : ""}
+    ${dependent.pvFactor ? `pvFactor: ${dependent.pvFactor ?? null}` : ""}
+  `
 }
 
 ///application   ////
