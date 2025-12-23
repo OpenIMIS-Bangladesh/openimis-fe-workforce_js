@@ -76,6 +76,8 @@
     "workforce.employee.relation.picker": "Select Relation type",
     "workforce.officeType.selector.picker": "Select Office",
     "workforce.EmployeeType.selector.picker": "Select Employee",
+    "menu.workforce.association": "Associations",
+
 
     "workforce.representative.details": "Representative Details",
     "workforce.representative.name.en": "Representative Name En",

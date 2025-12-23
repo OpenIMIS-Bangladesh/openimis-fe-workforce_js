@@ -38,6 +38,9 @@ export const ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION = "workforce/employee/
 export const ROUTE_WORKFORCE_BANKS = "workforce/banks";
 export const ROUTE_WORKFORCE_DOCUMENTS = "workforce/documents";
 export const ROUTE_WORKFORCE_BANKS_BANK = "workforce/banks/bank"
+export const ROUTE_WORKFORCE_ASSOCIATIONS = "workforce/associations";
+export const ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION = "workforce/associations/association";
+
 
 export const ROUTE_WORKFORCE_REGISTRATION = "registration"
 export const ROUTE_WORKFORCE_APPLICATION = "workforce/application"
