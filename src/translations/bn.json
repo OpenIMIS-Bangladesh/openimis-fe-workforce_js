@@ -829,6 +829,18 @@
   "workforce.disability.observationCurrentCondition": "কর্মীর বর্তমান অবস্থা মূল্যায়নের পর পর্যবেক্ষণ",
   "workforce.disability.limitationsOccupationDailyLiving": "কর্মসংস্থান ও দৈনন্দিন কার্যকলাপে সীমাবদ্ধতা",
 
+  "workforce.other.compensationInfo": "পূর্ববর্তী ক্ষতিপূরণের তথ্য",
+  "workforce.compensation.add": "আরেকটি ক্ষতিপূরণ যোগ করুন",
+  "workforce.compensation.date": "ক্ষতিপূরণের তারিখ",
+  "workforce.compensation.recievedFrom": "ক্ষতিপূরণ গ্রহণকৃত প্রতিষ্ঠানের নাম",
+  "workforce.compensation.remarks": "মন্তব্য",
+  "workforce.compensation.eligible.ForEISAdjustment": "ই.আই.এস. সুবিধা সমন্বয়ের জন্য যোগ্য",
+  "workforce.compensation.paymentStatus": "পেমেন্টের অবস্থা",
+  "workforce.paid": "পরিশোধিত",
+  "workforce.unpaid": "এখনও পরিশোধ করা হয়নি",
+
+
+
   "workforce.accident.placeOfDeath.label": "মৃত্যুর স্থান",
   "workforce.accident.dateOfDeath.label": "মৃত্যুর তারিখ",
   "workforce.accident.timeOfDeath.label": "মৃত্যুর সময়",

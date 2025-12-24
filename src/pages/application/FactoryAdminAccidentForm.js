@@ -738,12 +738,14 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
         )}
       </Paper>
 
+      {formData?.applicationType === "disabilityAssistance"&&(
       <EmployeeDetailsForm2
         handleChange={()=>{}}
         formData={formData}
         selectedApplicationType={formData.applicationType}
-        // formStepNo={formData.applicationType==="financialAssistance"?"":"employeeAccidentInfo"}
+        formStepNo={"employeeAccidentInfo"}
       />
+      ) }
     </Box>
   );
 };

@@ -353,17 +353,18 @@ class VerifyApplicationPage extends Component {
       return {...item,bank:{...item?.branch?.parent}}
     })
 
+    console.log("verify application",application)
     const formData = {
       ...application,
       workforceEmployee: application?.workforceEmployee,
-      employeeAccidentInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(AccidentInfo),
-      employeeBankInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(bankInfo),
+      employeeAccidentInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& application?.applicationType==="financialAssistance")?null: this.safeParse(AccidentInfo),
+      employeeBankInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& application?.applicationType==="financialAssistance")?null: this.safeParse(bankInfo),
       employeeDependentInfo: this.safeParse(dependentInfo),
-      employeeChildrenInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(childrenInfo),
-      applicantInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(applicantInfo),
-      institutionInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(institutionInfo),
-      deceasedWorkerInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(deceasedWorkerInfo),
-      doctorsEntry:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(doctorsEntryInfo),
+      employeeChildrenInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& application?.applicationType==="financialAssistance")?null: this.safeParse(childrenInfo),
+      applicantInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& application?.applicationType==="financialAssistance")?null: this.safeParse(applicantInfo),
+      institutionInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& application?.applicationType==="financialAssistance")?null: this.safeParse(institutionInfo),
+      deceasedWorkerInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& application?.applicationType==="financialAssistance")?null: this.safeParse(deceasedWorkerInfo),
+      doctorsEntry:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& application?.applicationType==="financialAssistance")?null: this.safeParse(doctorsEntryInfo),
       metadata: this.safeParse(metaInfo),
       workforceEmployeeDependentApplication: parsedWorkforceEmployeeDependentApplication,
       employeeBankingInfoApplication:tempBankInfo

@@ -927,6 +927,17 @@
   "workforce.accident.releaseDate.label": "Date of Release/Discharge",
   "workforce.accident.hospitalDoctorName.label": "Doctor's Name (Hospital)",
 
+
+  "workforce.other.compensationInfo": "Previous Compensation Info",
+  "workforce.compensation.add": "Add Another Compensation",
+  "workforce.compensation.date": "Date of Compensation",
+  "workforce.compensation.recievedFrom": "Name of the organization receiving compensation",
+  "workforce.compensation.paymentStatus": "Status of payment",
+  "workforce.compensation.remarks": "Remarks",
+  "workforce.compensation.eligible.ForEISAdjustment": "Eligible for EIS Benefit Adjustment",
+  "workforce.paid": "Paid",
+  "workforce.unpaid": "Not Paid yet",
+
   "workforce.accident.placeOfDeath.label": "Place of Death",
   "workforce.accident.dateOfDeath.label": "Date of Death",
   "workforce.accident.timeOfDeath.label": "Time of Death",

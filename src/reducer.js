@@ -285,6 +285,13 @@ function reducer(
     document: [],
     documentPageInfo: { totalCount: 0 },
 
+    ///workforce other compensation ///
+    fetchingOtherCompensation: false,
+    errorOtherCompensation: null,
+    fetchedOtherCompensation: false,
+    otherCompensation: [],
+    otherCompensationPageInfo: { totalCount: 0 },
+
     ////employee Account states
     fetchingEmployeeAccounts: false,
     errorEmployeeAccounts: null,
@@ -492,6 +499,22 @@ function reducer(
         fetchingDocument: false,
         fetchedDocument: true,
         document: parseData(action.payload.data.workforceDocuments),
+        errorDocument: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_OTHER_COMPENSATION_REQ":
+      return {
+        ...state,
+        fetchingOtherCompensation: true,
+        fetchedOtherCompensation: false,
+        otherCompensation: null,
+        errorOtherCompensation: null,
+      };
+    case "WORKFORCE_OTHER_COMPENSATION_RESP":
+      return {
+        ...state,
+        fetchingOtherCompensation: false,
+        fetchedOtherCompensation: true,
+        otherCompensation: parseData(action.payload.data.workforceOtherCompensationInfo),
         errorDocument: formatGraphQLError(action.payload),
       };
 
@@ -1762,6 +1785,15 @@ function reducer(
     case "ORG_CREATE_ORG_RESP":
       return dispatchMutationResp(state, "createOrganization", action);
     case "ORG_UPDATE_ORG_RESP":
+      return dispatchMutationResp(state, "updateOrganization", action);
+    case "COMPENSATION_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "COMPENSATION_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "COMPENSATION_CREATE_COMPENSATION_RESP":
+      return dispatchMutationResp(state, "createOrganization", action);
+    case "COMPENSATION_UPDATE_COMPENSATION_RESP":
       return dispatchMutationResp(state, "updateOrganization", action);
 
     case "OTP_MUTATION_REQ": {

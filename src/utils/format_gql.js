@@ -142,6 +142,18 @@ export function formatWorkforceOfficeGQL(office) {
   `;
 }
 
+export function formatWorkforceOtherCompensationGQL(otherCompensation) {
+  return `
+    ${otherCompensation?.id ? `id: "${(otherCompensation?.id)}"` : ""}
+    ${otherCompensation?.entryBy ? `entryBy: "${(otherCompensation?.entryBy)}"` : ""}
+    ${otherCompensation?.dateOfCompensation ? `dateOfCompensation: "${(otherCompensation?.dateOfCompensation)}"` : ""}
+    ${otherCompensation?.amount ? `amount: "${(otherCompensation?.amount)}"` : ""}
+    ${otherCompensation?.statusOfPayment ? `statusOfPayment: "${(otherCompensation?.statusOfPayment)}"` : ""}
+    ${otherCompensation?.isEisBenefitAdjustmentEligible ? `isEisBenefitAdjustmentEligible: "${otherCompensation?.isEisBenefitAdjustmentEligible}"` : ""}
+    ${otherCompensation?.remarks ? `remarks: "${otherCompensation?.remarks}"` : ""}
+    ${otherCompensation?.paymentType ? `paymentType: "${otherCompensation?.paymentType}"` : ""}
+  `;
+}
 export function formatWorkforceFactoryGQL(factory) {
   return `
     ${factory?.id ? `id: "${formatGQLString(factory?.id)}"` : ""}

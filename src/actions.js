@@ -32,7 +32,8 @@ import {
   formatWorkforceDocumentGQL,
   formatEducationInfoGQL,
   formatEisPaymentProcessGQL,
-  formatWorkforceDependentGQL
+  formatWorkforceDependentGQL,
+  formatWorkforceOtherCompensationGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 
@@ -781,7 +782,7 @@ export function fetchApplication(mm, filters) {
     "institutionInfo",
     "educations{edges{node{id,childNameEn,childNameBn,childBirthDate,childBirthCertificateNo,childNidNo,studyClass,institution,educationLevel,educationBoard,passingYear,rollNumber,registrationNumber,result}}}",
     // "workforceEmployeeDependentApplication{edges{node{id,nameBn,nameEn,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,nid,birthDate,percentageOfCfGrant,phoneNumber,presentLocation {id},presentAddress,permanentLocation {id},permanentAddress}}}",
-    "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,occupation,email,phoneNumber,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,status,employeeBankingDependents{edges{node{id}}},presentAddress,permanentAddress," + present_location_projection + permanent_location_projection + ",bankingInfo{id}}}}",
+    "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,occupation,email,phoneNumber,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,attachments,status,employeeBankingDependents{edges{node{id}}},presentAddress,permanentAddress," + present_location_projection + permanent_location_projection + ",bankingInfo{id}}}}",
     "employeeBankingInfoApplication{edges{node{id,dateCreated,nameBn,nameEn,accountNo,accountHolderName,accountHolderType,status,branch{id,nameBn,nameEn,bankCode,branchCode,routingNumber,districtNameEn,districtNameBn,parent{id,nameBn,nameEn}},dependant{id},relationWithDependent}}}",
     "metadata",
     "employeeFactory{id, nameBn, nameEn}",
@@ -1192,6 +1193,45 @@ export function updateWorkforceOrganization(
     }
   );
 }
+export function createWorkforceOtherCompensation(compensation, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceOtherCompensationInfo",
+    formatWorkforceOtherCompensationGQL(compensation),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["COMPENSATION_MUTATION_REQ", "COMPENSATION_CREATE_COMPENSATION_RESP", "COMPENSATION_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+
+export function updateWorkforceOtherCompensation(
+  compensation,
+  clientMutationLabel
+) {
+  const mutation = formatMutation(
+    "updateWorkforceOtherCompensationInfo",
+    formatWorkforceOtherCompensationGQL(compensation),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ["COMPENSATION_MUTATION_REQ", "COMPENSATION_UPDATE_COMPENSATION_RESP", "COMPENSATION_MUTATION_ERR"],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      id: representative.id,
+    }
+  );
+}
 
 ///registration actions///
 export function createWorkforceOtp(workforceOtp, clientMutationLabel) {
@@ -1261,12 +1301,10 @@ export function fetchWorkforceDocument(mm, filters) {
     "status",
     "documentType",
     "holderType",
-    // "holderId",
     "note",
     "workforceApplication{id}",
     "workforceDependent{id}",
     "workforceDocumentType{id,nameBn,nameEn,documentType,mandatoryForApplicant,formStepNo,fieldId}",
-
   ];
   const payload = formatPageQueryWithCount(
     "workforceDocuments",
@@ -1274,6 +1312,25 @@ export function fetchWorkforceDocument(mm, filters) {
     projections
   );
   return graphql(payload, "WORKFORCE_DOCUMENT");
+}
+
+export function fetchWorkforceOtherCompensation(mm, filters) {
+  const projections = [
+    "id",
+    "entryBy",
+    "dateOfCompensation",
+    "amount",
+    "statusOfPayment",
+    "isEisBenefitAdjustmentEligible",
+    "remarks",
+    "paymentType",
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceOtherCompensationInfo",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_OTHER_COMPENSATION");
 }
 
 export function createWorkforceDocument(

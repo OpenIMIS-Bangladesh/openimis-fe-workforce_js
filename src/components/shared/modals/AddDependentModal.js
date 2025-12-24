@@ -53,7 +53,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
 
     return {
       ...application,
-      employeeDependentInfo: parsedDependents, 
+      employeeDependentInfo: application?.workforceEmployeeDependentApplication, 
     };
   });
 
@@ -108,13 +108,13 @@ const AddDependentModal = ({ open, onClose, application }) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        <FormattedMessage id="workforce.add.dependent.title" defaultMessage="Add New Dependent" />
+        <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
       </DialogTitle>
       <DialogContent>
         <Box mt={0} ref={stepRef}>
           <EmployeeDependentForm
             applicationType={formData.applicationType}
-            dependents={formData.employeeDependentInfo} // Pass the Array directly
+            dependents={formData.workforceEmployeeDependentApplication} // Pass the Array directly
             handleChange={(index, key, value) =>
               handleArrayFieldChange("employeeDependentInfo", index, key, value)
             }

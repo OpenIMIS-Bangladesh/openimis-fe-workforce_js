@@ -29,6 +29,7 @@ import { updateApplication } from "../../actions";
 import DoctorsEntries from "./Atoms/DoctorsEntries";
 import EisFactoryAdminModal from "./EisFactoryAdminModal";
 import ApplicationMovementStepper from "../shared/ApplicationMovementStepper";
+import CompensationFormModal from "./CompensationFormModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -352,7 +353,7 @@ const renderDetails = (
                         row
                         aria-label="eligibility"
                         name={`eligibility-${item.id}`}
-                        value={eligibilityMap?.[item.id]||item?.isEligible || ""}
+                        value={eligibilityMap?.[item.id] || item?.isEligible || ""}
                         onChange={(e) => handleEligibilityChange(item.id, e.target.value)}
                       >
                         <FormControlLabel value="yes" control={<Radio color="primary" />} label={language === "en" ? "Yes" : "হ্যাঁ"} />
@@ -470,6 +471,8 @@ const ApplicationViewPage = ({
   const dispatch = useDispatch();
   const [lastSalaryAmount, setLastSalaryAmount] = useState("");
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
+  const [openCompensationInfoModal, setOpenCompensationInfoModal] = useState(false);
+  console.log({ view: application });
 
   // --- NEW: Eligibility State and Handlers ---
   const [eligibilityMap, setEligibilityMap] = useState({});
@@ -488,9 +491,6 @@ const ApplicationViewPage = ({
     if (!isEligibleValue) return;
 
     const isEligibleBool = isEligibleValue === "yes";
-
-    // 1. Get the current list of dependents from the application object
-    // Assuming 'workforceEmployeeDependentApplication' is the main array in the application object
     const currentDependents = application?.workforceEmployeeDependentApplication || [];
 
     // 2. Create a modified copy of the array
@@ -517,6 +517,7 @@ const ApplicationViewPage = ({
       id: application.id,
       employeeDependentInfo: JSON.stringify(updatedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
     };
+    console.log(payload)
 
     // 4. Dispatch the updateApplication mutation
     dispatch(updateApplication(payload, "update workforce dependent info"));
@@ -617,17 +618,19 @@ const ApplicationViewPage = ({
                   </Button>
                 </Grid>
                 {application?.organizationType === "eis" && (
-                  <Grid item xs={12}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => setOpenAccidentInfoModal(true)}
-                      fullwidth
-                      disabled={isNotEmpty(application?.employeeAccidentInfo)}
-                    >
-                      {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
-                    </Button>
-                  </Grid>
+                  <>
+                    <Grid item xs={12}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setOpenAccidentInfoModal(true)}
+                        fullwidth
+                        disabled={isNotEmpty(application?.employeeAccidentInfo)}
+                      >
+                        {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
+                      </Button>
+                    </Grid>
+                  </>
                 )}
               </Grid>
               {filteredDocumentTypes?.map((document, index) => (
@@ -644,6 +647,15 @@ const ApplicationViewPage = ({
                 </Box>
               ))}
             </>
+          )}
+          {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER || user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) && application?.organizationType === "eis" && (
+            <Grid container spacing={2} style={{ marginTop: "10px" }}>
+              <Grid item xs={12}>
+                <Button variant="contained" color="primary" onClick={() => setOpenCompensationInfoModal(true)} fullwidth>
+                  {<FormattedMessage id="workforce.other.compensationInfo" module="workforce" />}
+                </Button>
+              </Grid>
+            </Grid>
           )}
           {(user_type === WORKFORCE_USER_TYPE.DOCTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR || user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) &&
             viewedFromFlag === "verify" && <DoctorsEntries application={application} />}
@@ -738,6 +750,12 @@ const ApplicationViewPage = ({
         </Grid>
       </Grid>
       {openAccidentInfoModal && <EisFactoryAdminModal open={openAccidentInfoModal} onClose={() => setOpenAccidentInfoModal(false)} application={application} />}
+      <CompensationFormModal
+        open={openCompensationInfoModal}
+        application={application}
+        onClose={() => setOpenCompensationInfoModal(false)}
+        entryType="factory"
+      />
     </>
   );
 };
