@@ -379,6 +379,13 @@ function reducer(
     eisPayments: [],
     eisPaymentsPageInfo: { totalCount: 0 },
 
+    ////employee Account states
+    fetchingWorkforceAllAssociations: false,
+    errorWorkforceAllAssociations: null,
+    fetchedWorkforceAllAssociations: false,
+    workforceAllAssociations: [],
+    workforceAllAssociationsPageInfo: { totalCount: 0 },
+
     ///file upload state
     uploadedFilesByField: {},
 
@@ -440,6 +447,33 @@ function reducer(
         ...state,
         selectedEmployee: action.payload,
       };
+
+           /// all associations////
+    case "WORKFORCE_ALL_ASSOCIATIONS_REQ":
+      return {
+        ...state,
+        fetchingWorkforceAllAssociations: true,
+        fetchedWorkforceAllAssociations: false,
+        workforceAllAssociations: [],
+        workforceAllAssociationsPageInfo: { totalCount: 0 },
+        errorWorkforceAllAssociations: null,
+      };
+    case "WORKFORCE_ALL_ASSOCIATIONS_RESP":
+      return {
+        ...state,
+        fetchingWorkforceAllAssociations: false,
+        fetchedWorkforceAllAssociations: true,
+        workforceAllAssociations: parseData(action.payload.data.workforceAllAssociations),
+        workforceAllAssociationsPageInfo: pageInfo(action.payload.data.workforceAllAssociations),
+        errorWorkforceAllAssociations: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_ALL_ASSOCIATIONS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
     case "WORKFORCE_ORGANIZATIONS_REQ":
       return {
         ...state,
@@ -1764,6 +1798,8 @@ function reducer(
         errorGrievanceConfig: formatGraphQLError(action.payload),
         grievanceConfig: null,
       };
+
+   
     case "WORKFORCE_APPLICATION_STATUS_COUNT_RESP":
       return {
         ...state,

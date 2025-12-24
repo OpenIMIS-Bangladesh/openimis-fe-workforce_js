@@ -91,6 +91,17 @@
     "workforce.representative.position": "Representative Position",
     "workforce.representative.birthDate": "Representative Birth Date",
 
+     "workforce.association.name.en": "Name En",
+      "workforce.association.shortName.en": "Short Name En",
+      "workforce.association.name.bn": "Name Bn",
+      "workforce.association.shortName.bn": "Short Name Bn",
+      "workforce.association.phone": "Phone",
+      "workforce.association.email": "Email",
+      "workforce.association.address": "Address",
+      "workforce.association.webAddress": "Web Address",
+      "workforce.association.status": "Status",
+      "workforce.association.minimumSalary": "Minimum Salary",
+
     "workforce.organization.unit.addNewTooltip": "Add Workforce Organizations Unit",
     "workforce.organization.unit.name.en": "Organization Unit Name En",
     "workforce.organization.unit.name.bn": "Organization Unit Name Bn",

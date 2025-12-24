@@ -3,12 +3,20 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import {
-  withModulesManager, withHistory, historyPush,
+  withModulesManager,
+  withHistory,
+  historyPush,
 } from "@openimis/fe-core";
-import WorkforceEmployeeForm from "../../components/workforce-employee/WorkforceEmployeeForm";
-import { createWorkforceEmployee, updateWorkforceEmployee } from "../../actions";
-import { RIGHT_ORGANIZATION_CREATE, RIGHT_ORGANIZATION_EDIT } from "../../permission-rights";
+import {
+  createWorkforceEmployee,
+  updateWorkforceEmployee,
+} from "../../actions";
+import {
+  RIGHT_ORGANIZATION_CREATE,
+  RIGHT_ORGANIZATION_EDIT,
+} from "../../permission-rights";
 import { getUserTypeFromRights } from "../../utils/utils";
+import WorkforceAssociationForm from "../../components/workforce-association/WorkforceAssociationForm";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -17,7 +25,11 @@ const styles = (theme) => ({
 
 class WorkforceAsociationPage extends Component {
   add = () => {
-    historyPush(this.props.modulesManager, this.props.history, "grievance.route.ticket");
+    historyPush(
+      this.props.modulesManager,
+      this.props.history,
+      "grievance.route.ticket"
+    );
   };
 
   save = (employee) => {
@@ -25,32 +37,42 @@ class WorkforceAsociationPage extends Component {
       this.props.createWorkforceEmployee(
         this.props.modulesManager,
         employee,
-        "Create",
+        "Create"
       );
     } else {
       this.props.updateWorkforceEmployee(
         this.props.modulesManager,
         employee,
-        "Update",
+        "Update"
       );
     }
   };
 
   render() {
     const {
-      classes, modulesManager, history, rights, workforceEmployeeUuid, overview, organizationVersion,
+      classes,
+      modulesManager,
+      history,
+      rights,
+      workforceAssociationUuid,
+      overview,
+      organizationVersion,
     } = this.props;
     // const readOnly = organization?.status === TICKET_STATUSES.CLOSED || ticket?.isHistory;
     const readOnly = false;
     // if (!(rights.includes(RIGHT_ORGANIZATION_CREATE) || rights.includes(RIGHT_ORGANIZATION_EDIT))) return null;
     return (
-      <div className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}>
-        <WorkforceEmployeeForm
+      <div
+        className={`${readOnly ? classes.lockedPage : null} ${classes.page}`}
+      >
+        <WorkforceAssociationForm
           overview={overview}
-          workforceEmployeeUuid={workforceEmployeeUuid}
+          workforceAssociationUuid={workforceAssociationUuid}
           organizationVersion={organizationVersion}
           readOnly={readOnly}
-          back={() => historyPush(modulesManager, history, "workforce.route.employees")}
+          back={() =>
+            historyPush(modulesManager, history, "workforce.route.associations")
+          }
           add={rights.includes(RIGHT_ORGANIZATION_CREATE) ? this.add : null}
           save={rights.includes(RIGHT_ORGANIZATION_EDIT) ? this.save : null}
         />
@@ -60,18 +82,30 @@ class WorkforceAsociationPage extends Component {
 }
 
 const mapStateToProps = (state, props) => ({
-  rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  workforceEmployeeUuid: props.match.params.workforce_employee_uuid,
+  rights:
+    !!state.core && !!state.core.user && !!state.core.user.i_user
+      ? state.core.user.i_user.rights
+      : [],
+  workforceAssociationUuid: props.match.params.workforce_association_uuid,
   organizationVersion: props.match.params.version,
   employee: state.workforce.employee,
   userType: getUserTypeFromRights(state.core.user.i_user.rights),
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-  createWorkforceEmployee,
-  updateWorkforceEmployee,
-}, dispatch);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      createWorkforceEmployee,
+      updateWorkforceEmployee,
+    },
+    dispatch
+  );
 
-export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
-  withTheme(withStyles(styles)(WorkforceAsociationPage))),
-));
+export default withHistory(
+  withModulesManager(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(withTheme(withStyles(styles)(WorkforceAsociationPage)))
+  )
+);

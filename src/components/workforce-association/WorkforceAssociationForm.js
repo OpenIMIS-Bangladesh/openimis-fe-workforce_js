@@ -6,10 +6,10 @@ import {
 } from "@openimis/fe-core";
 import { bindActionCreators } from "redux";
 import {
-  fetchWorkforceEmployee,
+  fetchWorkforceAllAssociation,
 } from "../../actions";
-import EditWorkforceEmployeePage from "../../pages/workforce-employee/EditWorkforceEmployeePage";
-import AddWorkforceEmployeePage from "../../pages/workforce-employee/AddWorkforceEmployeePage";
+import EditWorkforceAssociationPage from "../../pages/workforce-association/EditWorkforceAssociationPage";
+import AddWorkforceAssociationPage from "../../pages/workforce-association/AddWorkforceAssociationPage";
 import { MODULE_NAME } from "../../constants";
 
 class WorkforceAssociationForm extends Component {
@@ -18,14 +18,14 @@ class WorkforceAssociationForm extends Component {
     this.state = {
       lockNew: false,
       reset: 0,
-      workforceEmployeeUuid: null,
+      workforceAssociationUuid: null,
       ticket: this._newTicket(),
     };
   }
 
   componentDidMount() {
-    if (this.props.workforceEmployeeUuid) {
-      this.setState((state, props) => ({ workforceEmployeeUuid: props.workforceEmployeeUuid }));
+    if (this.props.workforceAssociationUuid) {
+      this.setState((state, props) => ({ workforceAssociationUuid: props.workforceAssociationUuid }));
     }
   }
 
@@ -33,27 +33,27 @@ class WorkforceAssociationForm extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedWorkforceEmployee !== this.props.fetchedWorkforceEmployee
-      && !!this.props.fetchedWorkforceEmployee
-      && !!this.props.workforceEmployee) {
+    if (prevProps.fetchedWorkforceAllAssociation !== this.props.fetchedWorkforceAllAssociation
+      && !!this.props.fetchedWorkforceAllAssociation
+      && !!this.props.workforceAssociation) {
       this.setState((state, props) => ({
-        workforceEmployee: { ...props.workforceEmployee },
-        workforceEmployeeUuid: props.workforceEmployee.id,
+        workforceAssociation: { ...props.workforceAssociation },
+        workforceAssociationUuid: props.workforceAssociation.id,
         lockNew: false,
       }));
-    } else if (prevState.workforceEmployeeUuid !== this.state.workforceEmployeeUuid) {
-      const filters = [`id: "${this.state.workforceEmployeeUuid}"`];
-      this.props.fetchWorkforceEmployee(
+    } else if (prevState.workforceAssociationUuid !== this.state.workforceAssociationUuid) {
+      const filters = [`id: "${this.state.workforceAssociationUuid}"`];
+      this.props.fetchWorkforceAllAssociation(
         this.props.modulesManager,
         filters,
       );
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
-      if (this.props?.workforceEmployee?.id) {
-        this.props.fetchWorkforceEmployee(
+      if (this.props?.workforceAssociation?.id) {
+        this.props.fetchWorkforceAllAssociation(
           this.props.modulesManager,
-          [`id: "${this.state.workforceEmployeeUuid}"`],
+          [`id: "${this.state.workforceAssociationUuid}"`],
         );
       }
     }
@@ -93,7 +93,7 @@ class WorkforceAssociationForm extends Component {
   render() {
     const {
       fetchingTicket,
-      fetchedWorkforceEmployee,
+      fetchedWorkforceAllAssociation,
       errorTicket,
       save, back,
     } = this.props;
@@ -103,7 +103,7 @@ class WorkforceAssociationForm extends Component {
       reset,
       update,
       overview,
-      workforceEmployeeUuid,
+      workforceAssociationUuid,
       ticket,
     } = this.state;
 
@@ -119,22 +119,22 @@ class WorkforceAssociationForm extends Component {
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
-        {(!!fetchedWorkforceEmployee || !workforceEmployeeUuid) && (
+        {(!!fetchedWorkforceAllAssociation || !workforceAssociationUuid) && (
           <Form
             module={MODULE_NAME}
-            edited_id={workforceEmployeeUuid}
+            edited_id={workforceAssociationUuid}
             edited={ticket}
             reset={reset}
             update={update}
-            title="Workforce Employee"
+            title="Workforce Association"
             titleParams={{ label: "Label" }}
             back={back}
             save={save ? this._save : null}
             canSave={this.canSave}
-            reload={(workforceEmployeeUuid || readOnly) && this.reload}
+            reload={(workforceAssociationUuid || readOnly) && this.reload}
             readOnly={readOnly}
             overview={overview}
-            Panels={workforceEmployeeUuid ? [EditWorkforceEmployeePage] : [AddWorkforceEmployeePage]}
+            Panels={workforceAssociationUuid ? [EditWorkforceAssociationPage] : [AddWorkforceAssociationPage]}
             onEditedChanged={this.onEditedChanged}
           />
         )}
@@ -148,7 +148,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   fetchingTicket: state.workforce.fetchingTicket,
   errorTicket: state.workforce.errorTicket,
-  fetchedWorkforceEmployee: state.workforce.fetchedWorkforceEmployee,
+  fetchedWorkforceAllAssociation: state.workforce.fetchedWorkforceAllAssociation,
   ticket: state.workforce.ticket,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
@@ -156,7 +156,7 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchWorkforceEmployee,
+  fetchWorkforceAllAssociation,
   journalize,
 }, dispatch);
 

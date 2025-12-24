@@ -6,28 +6,27 @@ import AddIcon from "@material-ui/icons/Add";
 import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
 } from "@openimis/fe-core";
-
 import { MODULE_NAME } from "../../constants";
-import WorkforceEmployeeSearcher from "../../components/workforce-employee/WorkforceEmployeeSearcher";
-import { ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE } from "../../routes";
+import WorkforceAssociationSearcher from "../../components/workforce-association/WorkforceAssociationSearcher";
+import { ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION } from "../../routes";
 import { getUserTypeFromRights } from "../../utils/utils";
 
 const styles = (theme) => ({
   page: theme.page,
-  fab: theme.fab, ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE,
+  fab: theme.fab, ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION,
 });
 
 class WorkforceAsociationsPage extends Component {
-  onDoubleClick = (employee, newTab = false) => {
-    const routeParams = ["workforce.route.employees.employee", [decodeId(employee.id)]];
-    if (employee?.isHistory) {
-      routeParams[1].push(employee.version);
+  onDoubleClick = (assocition, newTab = false) => {
+    const routeParams = ["workforce.route.associations.association", [decodeId(assocition.id)]];
+    if (assocition?.isHistory) {
+      routeParams[1].push(assocition.version);
     }
     historyPush(this.props.modulesManager, this.props.history, ...routeParams, newTab);
   };
 
   onAdd = () => {
-    historyPush(this.props.modulesManager, this.props.history, "workforce.route.employees.employee");
+    historyPush(this.props.modulesManager, this.props.history, "workforce.route.associations.association");
   };
 
   render() {
@@ -35,7 +34,7 @@ class WorkforceAsociationsPage extends Component {
 
     return (
       <div className={classes.page}>
-        <WorkforceEmployeeSearcher
+        <WorkforceAssociationSearcher
           cacheFiltersKey="ticketPageFiltersCache"
           onDoubleClick={this.onDoubleClick}
         />
@@ -47,7 +46,7 @@ class WorkforceAsociationsPage extends Component {
               <AddIcon />
             </Fab>
           </div>,
-          <FormattedMessage module={MODULE_NAME} id={"workforce.employee.addNewTooltip"} />,
+          <FormattedMessage module={MODULE_NAME} id={"workforce.assocition.addNewTooltip"} />,
         )}
       </div>
     );

@@ -33,7 +33,8 @@ import {
   formatEducationInfoGQL,
   formatEisPaymentProcessGQL,
   formatWorkforceDependentGQL,
-  formatWorkforceOtherCompensationGQL
+  formatWorkforceOtherCompensationGQL,
+  formatWorkforceAssociationGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 
@@ -538,6 +539,49 @@ export function fetchWorkforceEmployeesSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_EMPLOYEES");
 }
+export function fetchWorkforceAllAssociationSummary(mm, filters) {
+  const projections = [
+    "id",
+    "nameEn",
+    "nameBn",
+    "shortNameEn",
+    "shortNameBn",
+    "phone",
+    "email",
+    "address",
+    "webAddress",
+    "status",
+    "minimumSalary"
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceAllAssociation",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_ALL_ASSOCIATIONS");
+}
+export function fetchWorkforceAllAssociation(mm, filters) {
+  const projections = [
+    "id",
+    "nameEn",
+    "nameBn",
+    "shortNameEn",
+    "shortNameBn",
+    "phone",
+    "email",
+    "address",
+    "webAddress",
+    "status",
+    "minimumSalary"
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceAllAssociation",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_ALL_ASSOCIATIONS");
+}
+
 
 export function fetchDependentsSummary(mm, filters) {
   const present_location_projection =
@@ -1594,6 +1638,50 @@ export function createWorkforceBeneficiary(beneficiary, clientMutationLabel) {
     {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
+    }
+  );
+}
+export function createWorkforceAssociation(association, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceAllAssociation",
+    formatWorkforceAssociationGQL(association),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_ALL_ASSOCIATIONS_REQ",
+      "WORKFORCE_ALL_ASSOCIATIONS_RESP",
+      "WORKFORCE_ALL_ASSOCIATIONS_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+
+export function updateWorkforceAssociation(association, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWorkforceAllAssociation",
+    formatWorkforceAssociationGQL(association),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_ALL_ASSOCIATIONS_REQ",
+      "WORKFORCE_ALL_ASSOCIATIONS_RESP",
+      "WORKFORCE_ALL_ASSOCIATIONS_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      id: association.id,
     }
   );
 }

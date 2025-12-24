@@ -27,7 +27,7 @@ const styles = (theme) => ({
   paperDivider: theme.paper.divider,
 });
 
-const WORKFORCE_EMPLOYEE_FILTER_CONTRIBUTION_KEY = "workforce.employee.Filter";
+const WORKFORCE_ASSOCIATION_FILTER_CONTRIBUTION_KEY = "workforce.association.Filter";
 
 class WorkforceAssociationFilter extends Component {
   debouncedOnChangeFilter = _debounce(this.props.onChangeFilters, 800);
@@ -65,18 +65,18 @@ class WorkforceAssociationFilter extends Component {
       <Grid container className={classes.form}>
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.employee.first.name.en"
+          id="workforce.association.name.en"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.employee.first.name.en"
-                name="firstNameEn"
-                value={this._filterValue("firstNameEn")}
+                label="workforce.association.name.en"
+                name="nameEn"
+                value={this._filterValue("nameEn")}
                 onChange={(v) =>
                   this.debouncedOnChangeFilter([
                     {
-                      id: "firstNameEn",
+                      id: "nameEn",
                       value: v,
                       filter: `nameEn_Icontains: "${v}"`,
                     },
@@ -88,20 +88,20 @@ class WorkforceAssociationFilter extends Component {
         />
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.employee.first.name.bn"
+          id="workforce.association.name.en"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
                 label="workforce.employee.first.name.bn"
-                name="firstNameBn"
-                value={this._filterValue("firstNameBn")}
+                name="nameBn"
+                value={this._filterValue("nameBn")}
                 onChange={(v) =>
                   this.debouncedOnChangeFilter([
                     {
-                      id: "firstNameBn",
+                      id: "nameBn",
                       value: v,
-                      filter: `firstNameBn_Icontains: "${v}"`,
+                      filter: `nameBn: "${v}"`,
                     },
                   ])
                 }
@@ -111,43 +111,20 @@ class WorkforceAssociationFilter extends Component {
         />
         <ControlledField
           module={MODULE_NAME}
-          id="workforce.employee.nid"
+          id="workforce.association.phone"
           field={
             <Grid item xs={3} className={classes.item}>
               <TextInput
                 module={MODULE_NAME}
-                label="workforce.employee.nid"
-                name="address"
-                value={this._filterValue("nid")}
+                label="workforce.association.phone"
+                name="phone"
+                value={this._filterValue("phone")}
                 onChange={(v) =>
                   this.debouncedOnChangeFilter([
                     {
-                      id: "nid",
+                      id: "phone",
                       value: v,
-                      filter: `nid: "${v}"`,
-                    },
-                  ])
-                }
-              />
-            </Grid>
-          }
-        />
-        <ControlledField
-          module={MODULE_NAME}
-          id="workforce.employee.phone"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <TextInput
-                module={MODULE_NAME}
-                label="workforce.employee.phone"
-                name="address"
-                value={this._filterValue("phoneNumber")}
-                onChange={(v) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "phoneNumber",
-                      value: v,
-                      filter: `phoneNumber: "${v}"`,
+                      filter: `phone: "${v}"`,
                     },
                   ])
                 }
@@ -158,7 +135,7 @@ class WorkforceAssociationFilter extends Component {
         <Contributions
           filters={filters}
           onChangeFilters={onChangeFilters}
-          contributionKey={WORKFORCE_EMPLOYEE_FILTER_CONTRIBUTION_KEY}
+          contributionKey={WORKFORCE_ASSOCIATION_FILTER_CONTRIBUTION_KEY}
         />
       </Grid>
     );

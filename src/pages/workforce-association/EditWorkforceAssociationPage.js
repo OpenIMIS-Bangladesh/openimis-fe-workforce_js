@@ -111,7 +111,7 @@ class EditWorkforceAssociationPage extends Component {
     dispatch(
       updateWorkforceEmployee(
         workforceEmployeeData,
-        `Update Workforce Employee ${workforceEmployeeData.nameEn}`
+        `Update Workforce Association ${workforceEmployeeData.nameEn}`
       )
     );
     this.setState({ isSaved: true });
@@ -132,7 +132,7 @@ class EditWorkforceAssociationPage extends Component {
                   <Typography>
                     <FormattedMessage
                       module={MODULE_NAME}
-                      id="Workforce Employee"
+                      id="Workforce Association"
                       values={{ label: EMPTY_STRING }}
                     />
                   </Typography>

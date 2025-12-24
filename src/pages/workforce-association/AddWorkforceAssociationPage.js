@@ -16,15 +16,9 @@ import {
   formatMutation,
   decodeId,
 } from "@openimis/fe-core";
-import { createWorkforceEmployee } from "../../actions";
+import { createWorkforceAssociation } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import EmployeeGenderPicker from "../../pickers/EmployeeGenderPicker";
-import CompanyPicker from "../../pickers/CompanyPicker";
-import FactoryPicker from "../../pickers/FactoryPicker";
-import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
-import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
-
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -57,7 +51,10 @@ class AddWorkforceAssociationPage extends Component {
   toggleSecondaryCalendar = () => {
     const isSecondaryCalendarEnabled = true;
     const { dispatch } = this.props;
-    dispatch({ type: "CORE_CALENDAR_TYPE_TOGGLE", payload: { isSecondaryCalendarEnabled } });
+    dispatch({
+      type: "CORE_CALENDAR_TYPE_TOGGLE",
+      payload: { isSecondaryCalendarEnabled },
+    });
   };
   componentDidMount() {
     // this.toggleSecondaryCalendar()
@@ -67,55 +64,26 @@ class AddWorkforceAssociationPage extends Component {
     const { stateEdited } = this.state;
     const { dispatch } = this.props;
 
-    const workforceEmployeeData = {
-      // company: stateEdited?.company.id || stateEdited.company.id,
-      factory: decodeId(stateEdited?.factory.id) || decodeId(stateEdited.factory.id),
-      firstNameBn: stateEdited?.firstNameBn || stateEdited.firstNameBn,
-      lastNameBn: stateEdited?.lastNameBn || stateEdited.lastNameBn,
-      otherName: stateEdited?.otherName || stateEdited.otherName,
-      firstNameEn: stateEdited?.firstNameEn || stateEdited.firstNameEn,
-      lastNameEn: stateEdited?.lastNameEn || stateEdited.lastNameEn,
-      phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
+    const workforceAssociationData = {
+      nameBn: stateEdited?.nameBn || stateEdited.nameBn,
+      nameEn: stateEdited?.nameEn || stateEdited.nameEn,
+      shortNameBn: stateEdited?.shortNameBn || stateEdited.shortNameBn,
+      shortNameEn: stateEdited?.shortNameEn || stateEdited.shortNameEn,
+      phone: stateEdited?.phone || stateEdited.phone,
       email: stateEdited?.email || stateEdited.email,
-      gender: stateEdited?.gender.id || stateEdited.gender.id,
-      birthDate: stateEdited?.birthDate || stateEdited.birthDate,
-      joinDate: stateEdited?.joinDate || stateEdited.joinDate,
-      deathDate: stateEdited?.deathDate || stateEdited.deathDate,
-      employeeType: stateEdited?.employeeType || stateEdited.employeeType,
-      lifeStatus: stateEdited?.lifeStatus || stateEdited.lifeStatus,
-      permanentAddress:
-        stateEdited?.permanentAddress || stateEdited.permanentAddress,
-      presentAddress: stateEdited?.presentAddress || stateEdited.presentAddress,
-      position: stateEdited?.position || stateEdited.position,
-      monthlyEarning: stateEdited?.monthlyEarning || stateEdited.monthlyEarning,
-      fatherNameBn: stateEdited?.fatherNameBn || stateEdited.fatherNameBn,
-      fatherNameEn: stateEdited?.fatherNameEn || stateEdited.fatherNameEn,
-      motherNameBn: stateEdited?.motherNameBn || stateEdited.motherNameBn,
-      motherNameEn: stateEdited?.motherNameEn || stateEdited.motherNameEn,
-      spouseNameBn: stateEdited?.spouseNameBn || stateEdited.spouseNameBn,
-      spouseNameEn: stateEdited?.spouseNameEn || stateEdited.spouseNameEn,
-      insuranceNumber:
-        stateEdited?.insuranceNumber || stateEdited.insuranceNumber,
-      birthCertificateNo:
-        stateEdited?.birthCertificateNo || stateEdited.birthCertificateNo,
-      passportNo: stateEdited?.passportNo || stateEdited.passportNo,
-      nid: stateEdited?.nid || stateEdited.nid,
-      citizenship: stateEdited?.citizenship || stateEdited.citizenship,
-      privacyLaw: stateEdited?.privacyLaw || stateEdited.privacyLaw,
-      maritalStatus: stateEdited?.maritalStatus || stateEdited.maritalStatus,
-      presentLocation:
-        stateEdited?.presentLocation || stateEdited.presentLocation,
-      permanentLocation:
-        stateEdited?.permanentLocation || stateEdited.permanentLocation,
-      workforceEmployee: stateEdited.workforceEmployee,
+      status: stateEdited?.status || stateEdited.status,
+      webAddress: stateEdited?.webAddress || stateEdited.webAddress,
+      address: stateEdited?.address || stateEdited.address,
+      minimumSalary: stateEdited?.minimumSalary || stateEdited.minimumSalary,
+      workforceAssociation: stateEdited.workforceAssociation,
     };
 
-    console.log({ workforceEmployeeData });
+    console.log({ workforceAssociationData });
 
     await dispatch(
-      createWorkforceEmployee(
-        workforceEmployeeData,
-        `Created Workforce Employee ${stateEdited.title}`
+      createWorkforceAssociation(
+        workforceAssociationData,
+        `Created Workforce Association ${stateEdited.title}`
       )
     );
 
@@ -154,12 +122,12 @@ class AddWorkforceAssociationPage extends Component {
                 </Grid>
               </Grid>
               <Divider />
-              <Grid container className={classes.item}>  
-                  <Grid item xs={6} className={classes.item}>
+              <Grid container className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.association.name.en"
-                    value={stateEdited.firstNameEn || ""}
-                    onChange={(v) => this.updateAttribute("firstNameEn", v)}
+                    value={stateEdited.nameEn || ""}
+                    onChange={(v) => this.updateAttribute("nameEn", v)}
                     required
                     readOnly={isSaved}
                   />
@@ -167,74 +135,85 @@ class AddWorkforceAssociationPage extends Component {
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.association.name.bn"
-                    value={stateEdited.firstNameBn || ""}
-                    onChange={(v) => this.updateAttribute("firstNameBn", v)}
+                    value={stateEdited.nameBn || ""}
+                    onChange={(v) => this.updateAttribute("nameBn", v)}
                     required
                     readOnly={isSaved}
                   />
-                </Grid>   
-                 <Grid item xs={12} className={classes.item}>
+                </Grid>
+                <Grid item xs={12} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.present_address"
+                    label="workforce.association.address"
                     value={stateEdited.presentAddress || ""}
-                    onChange={(v) => this.updateAttribute("presentAddress", v)}
+                    onChange={(v) => this.updateAttribute("address", v)}
                     readOnly={isSaved}
                   />
-                </Grid>   
-                 <Grid item xs={6} className={classes.item}>
+                </Grid>
+                <Grid item xs={12} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.phone"
-                    value={stateEdited.phoneNumber || ""}
-                    onChange={(v) => this.updateAttribute("phoneNumber", v)}
+                    label="workforce.association.webAddress"
+                    value={stateEdited.presentAddress || ""}
+                    onChange={(v) => this.updateAttribute("webAddress", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.association.phone"
+                    value={stateEdited.phone || ""}
+                    onChange={(v) => this.updateAttribute("phone", v)}
                     type={"number"}
                     readOnly={isSaved}
+                    required
                   />
                 </Grid>
 
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.email"
+                    label="workforce.association.email"
                     value={stateEdited.email || ""}
                     onChange={(v) => this.updateAttribute("email", v)}
                     type={"email"}
                     readOnly={isSaved}
                   />
                 </Grid>
-           
+
                 <Grid item xs={6} className={classes.item}>
-                  <EmployeeLifeStatusPicker
-                    value={stateEdited.lifeStatus || ""}
-                    label={
-                      <FormattedMessage
-                        id="workforce.employee.lifeStatus"
-                        module="workforce"
-                      />
-                    }
-                    required
-                    onChange={(v) => this.updateAttribute("lifeStatus", v)}
+                  <TextInput
+                    label="workforce.association.status"
+                    value={stateEdited.status || ""}
+                    onChange={(v) => this.updateAttribute("status", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
-                       
+
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.last.name.en"
-                    value={stateEdited.lastNameEn || ""}
-                    onChange={(v) => this.updateAttribute("lastNameEn", v)}
-                    required
+                    label="workforce.association.shortName.en"
+                    value={stateEdited.shortNameEn || ""}
+                    onChange={(v) => this.updateAttribute("shortNameEn", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
-                    label="workforce.employee.last.name.bn"
+                    label="workforce.association.shortName.bn"
                     value={stateEdited.lastNameBn || ""}
-                    onChange={(v) => this.updateAttribute("lastNameBn", v)}
-                    required
+                    onChange={(v) => this.updateAttribute("shortNameBn", v)}
                     readOnly={isSaved}
                   />
                 </Grid>
-              
+                <Grid item xs={6} className={classes.item}>
+                  <TextInput
+                    label="workforce.association.minimumSalary"
+                    value={stateEdited.minimumSalary || ""}
+                    onChange={(v) => this.updateAttribute("minimumSalary", v)}
+                    required
+                    type={"number"}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
                   <IconButton

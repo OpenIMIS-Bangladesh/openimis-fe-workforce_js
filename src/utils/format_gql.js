@@ -239,6 +239,21 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee?.relatedUserId ? `relatedUserId: "${employee.relatedUserId}"` : ""}
   `;
 }
+export function formatWorkforceAssociationGQL(association) {
+  return `
+    ${association?.id ? `id: "${formatGQLString(association.id)}"` : ""}
+    ${association.nameBn ? `nameBn: "${formatGQLString(association.nameBn)}"` : ""}
+    ${association.shortNameBn ? `shortNameBn: "${formatGQLString(association.shortNameBn)}"` : ""}
+    ${association.nameEn ? `nameEn: "${formatGQLString(association.nameEn)}"` : ""}
+    ${association.shortNameEn ? `shortNameEn: "${formatGQLString(association.shortNameEn)}"` : ""}
+    ${association.webAddress ? `webAddress: "${formatGQLString(association.webAddress)}"` : ""}
+    ${association.address ? `address: "${formatGQLString(association.address)}"` : ""}
+    ${association.phone ? `phone: "${formatGQLString(association.phone)}"` : ""}
+    ${association.email ? `email: "${formatGQLString(association.email)}"` : ""}
+    ${association.status ? `status: "${association.status}"` : ""}
+    ${association.minimumSalary ? `minimumSalary: "${formatGQLString(association.minimumSalary)}"` : ""}   
+  `;
+}
 
 export function formatWorkforceDependentGQL(dependent) {
   return `

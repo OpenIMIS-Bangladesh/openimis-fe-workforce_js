@@ -19,8 +19,8 @@ import {
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME } from "../../constants";
-import { fetchWorkforceEmployeesSummary } from "../../actions";
-import WorkforceEmployeeFilter from "./WorkforceAssociationFilter";
+import { fetchWorkforceAllAssociationSummary } from "../../actions";
+import WorkforceAssociationFilter from "./WorkforceAssociationFilter";
 
 const styles = (theme) => ({
   paper: {
@@ -91,7 +91,10 @@ class WorkforceAssociationSearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchWorkforceEmployeesSummary(this.props.modulesManager, prms);
+    this.props.fetchWorkforceAllAssociationSummary(
+      this.props.modulesManager,
+      prms
+    );
   };
 
   rowIdentifier = (r) => r.uuid;
@@ -116,11 +119,11 @@ class WorkforceAssociationSearcher extends Component {
   };
 
   headers = () => [
-    "workforce.employee.first.name.en",
-    "workforce.employee.first.name.bn",
-    "workforce.employee.nid",
-    "workforce.employee.phone",
-    "workforce.employee.email",
+    "workforce.association.name.bn",
+    "workforce.association.name.en",
+    "workforce.association.phone",
+    "workforce.association.email",
+    "workforce.association.minimumSalary",
     this.isShowHistory() ? "workforce.version" : "",
   ];
 
@@ -128,102 +131,31 @@ class WorkforceAssociationSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      (workforceemployee) => workforceemployee.firstNameEn,
-      (workforceemployee) => workforceemployee.firstNameBn,
-      (workforceemployee) => workforceemployee.nid,
-      (workforceemployee) => workforceemployee.phoneNumber,
-      (workforceemployee) => workforceemployee.email,
-      (workforceemployee) =>
-        this.isShowHistory() ? workforceemployee?.version : null,
+      (workforceassociation) => workforceassociation.nameEn,
+      (workforceassociation) => workforceassociation.nameBn,
+      (workforceassociation) => workforceassociation.phoneNumber,
+      (workforceassociation) => workforceassociation.email,
+      (workforceassociation) => workforceassociation.minimumSalary,
+      (workforceassociation) =>
+        this.isShowHistory() ? workforceassociation?.version : null,
     ];
-    formatters.push((workforceemployee) => (
+    formatters.push((workforceassociation) => (
       <div className={this.props.classes.horizontalButtonContainer}>
         <Tooltip title="Edit">
           <IconButton
-            disabled={workforceemployee?.isHistory}
+            disabled={workforceassociation?.isHistory}
             onClick={() => {
               historyPush(
                 this.props.modulesManager,
                 this.props.history,
-                "workforce.route.employees.employee",
-                [decodeId(workforceemployee.id)],
+                "workforce.route.associations.association",
+                [decodeId(workforceassociation.id)],
                 false
               );
             }}
           >
             <EditIcon />
           </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Account Info">
-          <IconButton
-            disabled={workforceemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.employees.account.infos",
-                [decodeId(workforceemployee.id)],
-                false
-              );
-            }}
-          >
-            <AccountBoxIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Accident Info">
-          <Button
-            className={this.props.classes.compactButton}
-            disabled={workforceemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.employees.accident.infos",
-                [decodeId(workforceemployee.id)],
-                false
-              );
-            }}
-          >
-            Accident Info
-          </Button>
-        </Tooltip>
-
-        <Tooltip title="Services">
-          <Button
-            className={this.props.classes.compactButton}
-            disabled={workforceemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.employees.services",
-                [decodeId(workforceemployee.id)],
-                false
-              );
-            }}
-          >
-            Services
-          </Button>
-        </Tooltip>
-
-        <Tooltip title="Dependent">
-          <Button
-            className={this.props.classes.compactButton}
-            disabled={workforceemployee?.isHistory}
-            onClick={() => {
-              historyPush(
-                this.props.modulesManager,
-                this.props.history,
-                "workforce.route.employees.dependents",
-                [decodeId(workforceemployee.id)],
-                false
-              );
-            }}
-          >
-            Dependent
-          </Button>
         </Tooltip>
       </div>
     ));
@@ -237,21 +169,21 @@ class WorkforceAssociationSearcher extends Component {
   render() {
     const {
       intl,
-      workforceEmployees,
-      workforceEmployeesPageInfo,
-      fetchingWorkforceEmployees,
-      fetchedWorkforceEmployees,
-      errorWorkforceEmployees,
+      workforceAllAssociations,
+      workforceAllAssociationsPageInfo,
+      fetchingWorkforceAllAssociations,
+      fetchedWorkforceAllAssociations,
+      errorWorkforceAllAssociations,
       filterPaneContributionsKey,
       cacheFiltersKey,
       onDoubleClick,
     } = this.props;
 
-    console.log({ workforceEmployees });
-    const count = workforceEmployeesPageInfo.totalCount;
+    console.log({ workforceAllAssociations });
+    const count = workforceAllAssociationsPageInfo.totalCount;
 
     const filterPane = ({ filters, onChangeFilters }) => (
-      <WorkforceEmployeeFilter
+      <WorkforceAssociationFilter
         filters={filters}
         onChangeFilters={onChangeFilters}
         setShowHistoryFilter={(showHistoryFilter) =>
@@ -267,15 +199,15 @@ class WorkforceAssociationSearcher extends Component {
           cacheFiltersKey={cacheFiltersKey}
           FilterPane={filterPane}
           filterPaneContributionsKey={filterPaneContributionsKey}
-          items={workforceEmployees}
-          itemsPageInfo={workforceEmployeesPageInfo}
-          fetchingItems={fetchingWorkforceEmployees}
-          fetchedItems={fetchedWorkforceEmployees}
-          errorItems={errorWorkforceEmployees}
+          items={workforceAllAssociations}
+          itemsPageInfo={workforceAllAssociationsPageInfo}
+          fetchingItems={fetchingWorkforceAllAssociations}
+          fetchedItems={fetchedWorkforceAllAssociations}
+          errorItems={errorWorkforceAllAssociations}
           tableTitle={
             <FormattedMessage
               module={MODULE_NAME}
-              id="menu.workforce.employee"
+              id="menu.workforce.association"
             />
           }
           rowsPerPageOptions={this.rowsPerPageOptions}
@@ -302,11 +234,14 @@ const mapStateToProps = (state) => ({
     !!state.core && !!state.core.user && !!state.core.user.i_user
       ? state.core.user.i_user.rights
       : [],
-  workforceEmployees: state.workforce.workforceEmployees,
-  workforceEmployeesPageInfo: state.workforce.workforceEmployeesPageInfo,
-  fetchingWorkforceEmployees: state.workforce.fetchingWorkforceEmployees,
-  fetchedWorkforceEmployees: state.workforce.fetchedWorkforceEmployees,
-  errorWorkforceEmployees: state.workforce.errorWorkforceEmployees,
+  workforceAllAssociations: state.workforce.workforceAllAssociations,
+  workforceAllAssociationsPageInfo:
+    state.workforce.workforceAllAssociationsPageInfo,
+  fetchingWorkforceAllAssociations:
+    state.workforce.fetchingWorkforceAllAssociations,
+  fetchedWorkforceAllAssociations:
+    state.workforce.fetchedWorkforceAllAssociations,
+  errorWorkforceAllAssociations: state.workforce.errorWorkforceAllAssociations,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   confirmed: state.core.confirmed,
@@ -315,7 +250,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      fetchWorkforceEmployeesSummary,
+      fetchWorkforceAllAssociationSummary,
       journalize,
       coreConfirm,
     },

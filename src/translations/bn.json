@@ -193,8 +193,8 @@
   "workforce.application.educationInfo.boards.rajshahi": "রাজশাহী",
   "workforce.application.educationInfo.boards.sylhet": "সিলেট",
   "workforce.application.educationInfo.boards.madrasha_board":"মাদ্রাসা বোর্ড",
-    "workforce.application.educationInfo.boards.technical_board":"কারিগরি বোর্ড",
-    "workforce.application.educationInfo.boards.open_board":"উন্মুক্ত বোর্ড",
+  "workforce.application.educationInfo.boards.technical_board":"কারিগরি বোর্ড",
+  "workforce.application.educationInfo.boards.open_board":"উন্মুক্ত বোর্ড",
 
   "workforce.application.educationInfo.passingYear": "পাসের বছর",
   "workforce.application.educationInfo.admissionYear": "ভর্তির বছর",
@@ -275,7 +275,7 @@
 
   "workforce.application.employee.children.studyingClass": "অধ্যয়নরত শ্রেণী/বিভাগ",
   "workforce.application.employee.children.studyingSemester": "অধ্যয়নরত সেমিস্টার/বছর",
-    "workforce.application.employee.children.studyingSubject":"অধ্যয়নরত বিষয়/বিভাগ",
+  "workforce.application.employee.children.studyingSubject":"অধ্যয়নরত বিষয়/বিভাগ",
   "workforce.application.employee.children.educationInstituteName": "শিক্ষা প্রতিষ্ঠানের নাম",
   "workforce.application.employee.children.result": "ফলাফল",
   "workforce.application.employee.children.bankNameOrAcNo": "ব্যাংকের নাম এবং অ্যাকাউন্ট নম্বর (যদি থাকে)",
@@ -336,9 +336,9 @@
   "workforce.registration.desclaimer": "আপনি ইতোমধ্যে নিবন্ধকৃত ব্যবহারকারী কি না? না হলে নিবন্ধন করুন",
 
   "workforce.employee.details": "শ্রমিকের বিবরণ",
-    "workforce.employee.upload.factory.document":"অনুপস্থিত ফ্যাক্টরির ডকুমেন্ট আপলোড করুন",
-    "workforce.employee.document":"ডকুমেন্ট সমূহ",
-    "workforce.employee.other.document":"অন্যান্য ডকুমেন্ট সমূহ",
+  "workforce.employee.upload.factory.document":"অনুপস্থিত ফ্যাক্টরির ডকুমেন্ট আপলোড করুন",
+  "workforce.employee.document":"ডকুমেন্ট সমূহ",
+  "workforce.employee.other.document":"অন্যান্য ডকুমেন্ট সমূহ",
 
   "workforce.employee.application.details": "শ্রমিকের আবেদন বিবরণ",
 
@@ -522,7 +522,17 @@
   "resetFilterTooltip": "ফিল্টার রিসেট করুন",
   "refreshFilterTooltip": "অনুসন্ধান করুন",
   "workforce.application.submittedBy": "জমাদানকারী",
-
+  "workforce.association.name.en": "নাম (ইংরেজি)",
+  "workforce.association.shortName.en": "নাম (ইংরেজি)",
+  "workforce.association.name.bn": "নাম (বাংলা)",
+  "workforce.association.shortName.bn": "নাম (বাংলা)",
+  "workforce.association.phone": "ফোন নম্বর",
+  "workforce.association.email": "ই-মেইল",
+  "workforce.association.address": "ঠিকানা",
+  "workforce.association.webAddress": "ওয়েবসাইটের ঠিকানা",
+  "workforce.association.status": "অবস্থা",
+  "workforce.association.minimumSalary": "ন্যূনতম বেতন",
+  
   "workforce.previewDetails.personalInfo": "ব্যক্তিগত তথ্য",
   "workforce.previewDetails.statusInfo": "অবস্থা তথ্য",
   "workforce.previewDetails.employeeAccidentInfo": "দুর্ঘটনার তথ্য",

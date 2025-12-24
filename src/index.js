@@ -278,9 +278,9 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS_INFO, component: AccountInfoPage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS_INFO}/:workforce_employee_uuid`, component: AccountInfoPage },
 
-    { path: ROUTE_WORKFORCE_ASSOCIATIONS, component: WorkforceAsociationPage },
-    { path: ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION, component: WorkforceAsociationsPage },
-    { path: `${ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION}/:workforce_association_uuid`, component: WorkforceAsociationsPage },
+    { path: ROUTE_WORKFORCE_ASSOCIATIONS, component: WorkforceAsociationsPage },
+    { path: ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION, component: WorkforceAsociationPage },
+    { path: `${ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION}/:workforce_association_uuid`, component: WorkforceAsociationPage },
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, component: OrganizationEmployeeDesignationPage },
     { path: ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION, component: WorkforceEmployeeDesignationPage },
