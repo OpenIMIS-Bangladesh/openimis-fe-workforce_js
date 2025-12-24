@@ -2922,3 +2922,35 @@ export const removeUploadedFile = (fieldKey, fileName) => ({
   type: "REMOVE_UPLOADED_FILE",
   payload: { fieldKey, fileName },
 });
+
+
+export function updateWorkforceEisPaymentProcessPaymentType(eisPaymentData) {
+  const mutation = `
+    mutation {
+      updateWorkforceEisPaymentProcessPaymentType(
+        beneficiaryId: "${eisPaymentData?.beneficiaryId}"
+        paymentType: "${eisPaymentData?.eisPaymentType}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "UPDATE_WORKFORCE_EIS_PAYMENT_PROCESS_PAYMENT_TYPE");
+}
+
+
+export function updateWorkforceEisPaymentProcessApproval(eisPaymentData) {
+  const mutation = `
+    mutation {
+      updateWorkforceEisPaymentProcessApproval(
+        beneficiaryId: "${eisPaymentData?.beneficiaryId}"
+        isApproved: true
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "UPDATE_WORKFORCE_EIS_PAYMENT_PROCESS_APPROVAL");
+}

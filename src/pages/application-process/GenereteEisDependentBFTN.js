@@ -12,11 +12,11 @@ import {
   Button,
   Divider,
 } from '@material-ui/core';
-import { WORKFORCE_USER_TYPE } from "../../constants";
+import { RELATION_LABEL_MAP, WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
-import { createApplicationSummary, updateApplication, updateApplicationSummary } from "../../actions";
+import { createApplicationSummary, updateApplication, updateApplicationSummary, updateWorkforceEisPaymentProcessPaymentType } from "../../actions";
 import { useDispatch } from "react-redux";
 import React, { Component, useState, useEffect } from "react";
 import { enToBn } from '../../utils/utils';
@@ -46,13 +46,14 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-import { fetchEisPaymentProcess,eisPaymentProcessWithoutDate } from "../../actions";
+import { fetchEisPaymentProcess, eisPaymentProcessWithoutDate } from "../../actions";
 
 const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights, status, summary_Id, selectedApplicationIds }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [dataCreated, setDataCreated] = useState(false);
+  const [paymentTypeMap, setPaymentTypeMap] = useState([]);
 
   console.log("selectedApplicationIds", selectedApplicationIds);
   const getTotalAmount = () => {
@@ -63,7 +64,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
 
   useEffect(() => {
     if (selectedApplicationIds?.length > 0) {
-
+      setPaymentTypeMap(eisPayments);
       const run = async () => {
         setLoading(true);
         setDataCreated(false);
@@ -86,7 +87,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
     }
   }, [open]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (selectedApplicationIds?.length > 0) {
 
 
@@ -636,20 +637,6 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
     let totalMonthly = 0;
     let totalNet = 0;
     let benefitRateTotal = null;
-    const RELATION_LABEL_MAP = {
-      "workforce.relation.father": "Father",
-      "workforce.relation.mother": "Mother",
-      "workforce.relation.wife": "Wife",
-      "workforce.relation.husband": "Husband",
-      "workforce.relation.son": "Son",
-      "workforce.relation.daughter": "Daughter",
-      "workforce.relation.brother": "Brother",
-      "workforce.relation.sister": "Sister",
-      "workforce.relation.grand_daughter": "Grand Daughter",
-      "workforce.relation.grand_son": "Grand Son",
-      "workforce.relation.grand_father": "Grand Father",
-      "workforce.relation.grand_mother": "Grand Mother",
-    };
 
 
     eisPayments.forEach((row, index) => {
@@ -666,7 +653,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
       row?.eisApprovedAmount || 0,
       row?.eisPaymentType || "",
       row?.approvalStatus || "",
-      "",]);
+        "",]);
       totalMonthly += Number(row?.eisMonthlyAmount || 0); totalNet += Number(row?.eisCalculatedAmount || 0);
       excelRow.eachCell((cell) => {
         cell.border = {
@@ -785,21 +772,40 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
   };
 
 
-  
+
 
 
   // -----------------------------------
   // UI: Render all eisPayments (no filter)
   // -----------------------------------
 
+  const handlePaymentTypeChange = async (paymentType, beneficiaryId, rowId) => {
 
-  const user_type= getUserTypeFromRights(userRights)
+    setPaymentTypeMap((prev) => ({
+    ...prev,
+      [rowId]: paymentType,
+    }));
+
+    const data = {
+      beneficiaryId,
+      eisPaymentType: paymentType,
+    };
+
+    try {
+      await dispatch(updateWorkforceEisPaymentProcessPaymentType(data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+  const user_type = getUserTypeFromRights(userRights)
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xl" fullWidth>
       <DialogTitle disableTypography>
         <Typography variant="h6">
-          {loading? (
+          {loading ? (
             <>
               Loading....
             </>
@@ -841,14 +847,41 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{row?.beneficiaryId}</TableCell>
                   <TableCell>{row?.workforceApplication?.workforceEmployee?.firstNameEn}</TableCell>
-                  <TableCell>{row?.workforceEmployeeDependent[0]?.nameEn}</TableCell>
+                  <TableCell>
+                    {row?.workforceEmployeeDependent?.length > 0
+                      ? row.workforceEmployeeDependent[0].nameEn + (" ("+ RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker]+") ")
+                      : ""}
+                  </TableCell>
                   <TableCell>{row?.workforceApplication?.workforceEmployee?.nid}</TableCell>
                   <TableCell>{row?.eisInitialReplacementRate ? Number(row.eisInitialReplacementRate) * 100 + "%" : ""}</TableCell>
                   <TableCell>{row?.eisCalculatedAmount}</TableCell>
                   <TableCell>{row?.eisApprovedAmount}</TableCell>
                   <TableCell>{row?.eisInitialMonthlyAmount}</TableCell>
                   <TableCell>{row?.eisMonthlyAmount}</TableCell>
-                  <TableCell>{row?.eisPaymentType}</TableCell>
+                  <TableCell>
+                    {
+                      user_type== WORKFORCE_USER_TYPE.EIS_COORDINATOR || user_type== WORKFORCE_USER_TYPE.EIS_ADVISOR || user_type== WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
+                        <>
+                         <select
+                            value={
+                              paymentTypeMap[index] !== undefined
+                              ? paymentTypeMap[index]
+                              : row?.eisPaymentType || ""
+                            }
+                            onChange={(e) =>
+                              handlePaymentTypeChange(e.target.value, row?.beneficiaryId, index)
+                            }
+                          >
+                            <option value="" disabled>Select</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="one-time">One-time</option>
+                            <option value="installment">Tri Monthly Installment</option>
+                          </select>
+                        </>
+                      ) :
+                      row?.eisPaymentType
+                    }
+                  </TableCell>
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                 </TableRow>
