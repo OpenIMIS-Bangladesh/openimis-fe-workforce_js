@@ -145,9 +145,9 @@ const ForwardEisPaymentProcessModal = ({
 
 useEffect(() => {
   if (serverResponse?.status === "SUCCESS") {
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 2000);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     }
   }, [serverResponse]);
 
