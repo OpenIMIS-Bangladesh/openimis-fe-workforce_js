@@ -178,8 +178,8 @@
   "workforce.employee.application.receivedDate": "প্রাপ্তির তারিখ",
   "workforce.employee.application.sentDate": "প্রেরণের তারিখ",
   "workforce.employee.application.advisorApproveMeetingSheet": "স্পেশাল অ্যাডভাইজর এর অনুমোদিত আবেদন",
-  "workforce.employee.application.paymentProcess": "পেমেন্ট প্রক্রিয়া",
-  "workforce.application.providePaymentInfo": "পেমেন্ট এর তথ্য দিন",
+  "workforce.employee.application.paymentProcess": "পেমেন্ট ক্যালকুলেশন",
+  "workforce.application.providePaymentInfo": "আপনি কি নির্বাচিত আবেদনসমূহের পেমেন্ট ক্যালকুলেশন সম্পন্ন করতে চান?",
 
   
 

@@ -290,7 +290,7 @@
     "workforce.employee.application.paymentProcess": "Payment Process",
     "workforce.application.verified": "Verified Application",
     "workforce.application.sentforverification":"Application Sent for Verification",
-    "workforce.application.providePaymentInfo":"Enter payment information.",
+    "workforce.application.providePaymentInfo":"Do you want to calculate payment for selected applications?",
 
 
     "workforce.banks.nameEn": "Bank Name En",

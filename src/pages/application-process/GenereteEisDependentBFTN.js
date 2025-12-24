@@ -13,7 +13,7 @@ import {
   Divider,
 } from '@material-ui/core';
 import { WORKFORCE_USER_TYPE } from "../../constants";
-import { getUserTypeFromRights } from "../../utils/utils";
+import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
 import { createApplicationSummary, updateApplication, updateApplicationSummary } from "../../actions";
@@ -46,85 +46,113 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-import { fetchEisPaymentProcess } from "../../actions";
+import { fetchEisPaymentProcess,eisPaymentProcessWithoutDate } from "../../actions";
 
 const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights, status, summary_Id, selectedApplicationIds }) => {
-const classes = useStyles();
-const dispatch = useDispatch();
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  const [dataCreated, setDataCreated] = useState(false);
 
-console.log("selectedApplicationIds", selectedApplicationIds);
-const getTotalAmount = () => {
-  return eisPayments
-    .reduce((sum, item) => sum + (parseFloat(item.eisMonthlyAmount) || 0), 0)
-    .toFixed(2);
-};
+  console.log("selectedApplicationIds", selectedApplicationIds);
+  const getTotalAmount = () => {
+    return eisPayments
+      .reduce((sum, item) => sum + (parseFloat(item.eisMonthlyAmount) || 0), 0)
+      .toFixed(2);
+  };
 
-useEffect(() => {
-  if (selectedApplicationIds?.length > 0) {
+  useEffect(() => {
+    if (selectedApplicationIds?.length > 0) {
 
-    const applicationIds = selectedApplicationIds.map(x =>
-      decodeId(x.id)
-    );
+      const run = async () => {
+        setLoading(true);
+        setDataCreated(false);
 
-    console.log("IDs:", applicationIds);
+        for (const encodedId of selectedApplicationIds) {
+          const eisPaymentData = {
+            workforceApplicationId: decodeId(encodedId?.id),
+          };
 
-    dispatch(fetchEisPaymentProcess(applicationIds));
-  }
-}, [selectedApplicationIds]);
+          await dispatch(
+            eisPaymentProcessWithoutDate(eisPaymentData, "Create Payment Process")
+          );
+        }
+
+        setDataCreated(true);   // ✅ only after ALL dispatches complete
+        setLoading(false);
+      };
+
+      run();
+    }
+  }, [open]);
+
+  useEffect(()=>{
+    if (selectedApplicationIds?.length > 0) {
+
+
+      const applicationIds = selectedApplicationIds.map(x =>
+        decodeId(x.id)
+      );
+
+      console.log("IDs:", applicationIds);
+
+      dispatch(fetchEisPaymentProcess(applicationIds));
+    }
+  }, [dataCreated])
 
 
 
-const year = eisPayments?.[0]?.year || "";
-const monthIndex = eisPayments?.[0]?.monthIndex || "";
+  const year = eisPayments?.[0]?.year || "";
+  const monthIndex = eisPayments?.[0]?.monthIndex || "";
 
 
-// Format month as 01..12
-const monthFormatted = String(monthIndex + 1).padStart(2, "0");
-console.log("eisPayments",eisPayments)
+  // Format month as 01..12
+  const monthFormatted = String(monthIndex + 1).padStart(2, "0");
+  console.log("eisPayments", eisPayments)
 
   // -----------------------------
   // Excel generator (unchanged)
   // -----------------------------
   const exportToExcel = async () => {
-  const first = eisPayments?.[0];
+    const first = eisPayments?.[0];
 
-  if (!first) {
-    alert("No data found!");
-    return;
-  }
+    if (!first) {
+      alert("No data found!");
+      return;
+    }
 
-  const organizationType = first?.workforceApplication?.organizationType;
-  const applicationType = first?.workforceApplication?.applicationType;
+    const organizationType = first?.workforceApplication?.organizationType;
+    const applicationType = first?.workforceApplication?.applicationType;
 
-  // ==========================
-  //  DISABILITY EXCEL
-  // ==========================
-  if (
-    organizationType === "eis" &&
-    applicationType === "disabilityAssistance"
-  ) {
-    return exportDisabilityExcel(eisPayments);
-  }
+    // ==========================
+    //  DISABILITY EXCEL
+    // ==========================
+    if (
+      organizationType === "eis" &&
+      applicationType === "disabilityAssistance"
+    ) {
+      return exportDisabilityExcel(eisPayments);
+    }
 
-  // ==========================
-  //  FINANCIAL ASSISTANCE EXCEL
-  // ==========================
-  if (
-    organizationType === "eis" &&
-    applicationType === "financialAssistance"
-  ) {
-    return exportDeathExcel(eisPayments);
-  }
+    // ==========================
+    //  FINANCIAL ASSISTANCE EXCEL
+    // ==========================
+    if (
+      organizationType === "eis" &&
+      applicationType === "financialAssistance"
+    ) {
+      return exportDeathExcel(eisPayments);
+    }
 
-  // DEFAULT
-  alert("Unsupported applicationType or organizationType");
-};
+    // DEFAULT
+    alert("Unsupported applicationType or organizationType");
+  };
 
-const exportDisabilityExcel = async (eisPayments) => {
-  const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet("Benefit Approval Note");
+  const exportDisabilityExcel = async (eisPayments) => {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Benefit Approval Note");
 
-   
+
     // ==========================
     // Set column widths (first table + spacing)
     // ==========================
@@ -139,7 +167,7 @@ const exportDisabilityExcel = async (eisPayments) => {
       { width: 20 }, // H
       { width: 20 }, // I
     ];
-  
+
     // ==========================
     // Top Headers
     // ==========================
@@ -147,22 +175,22 @@ const exportDisabilityExcel = async (eisPayments) => {
     sheet.getCell("A1").value = "Employment Injury Scheme-Pilot";
     sheet.getCell("A1").font = { bold: true, size: 16 };
     sheet.getCell("A1").alignment = { horizontal: "center" };
-  
+
     sheet.mergeCells("A2:I2");
     sheet.getCell("A2").value = "Benefit Approval Note (Disability)";
     sheet.getCell("A2").font = { bold: true, size: 14 };
     sheet.getCell("A2").alignment = { horizontal: "center" };
-  
+
     sheet.mergeCells("A3:I3");
     sheet.getCell("A3").value =
       "EIS PILOT Special Unit, 196, Sromo Bhaban (9th Floor), Bijoynagar, Dhaka, 1000";
     sheet.getCell("A3").alignment = { horizontal: "center" };
-  
+
     sheet.mergeCells("A4:I4");
     sheet.getCell("A4").value =
       "Email: specialunit@eis-pilot-bd.org, Phone: 01886-921030, Website: eis-pilot-bd.org";
     sheet.getCell("A4").alignment = { horizontal: "center" };
-  
+
     // ==========================
     // Meeting Info + Worker Info (no gap)
     // ==========================
@@ -171,17 +199,17 @@ const exportDisabilityExcel = async (eisPayments) => {
     sheet.getCell("A6").value = "EIS-GB Sub Committee Meeting No:16";
     sheet.getCell("A6").font = { bold: true };
     sheet.getCell("A6").alignment = { horizontal: "left" };
-  
+
     sheet.mergeCells("G6:I6");
     sheet.getCell("G6").value = "Date: 10/15/2025";
     sheet.getCell("G6").font = { bold: true };
     sheet.getCell("G6").alignment = { horizontal: "right" };
-  
+
     // Worker, Factory & Accident Information
     const data = eisPayments?.[0] || {};
-    const parsingAccidentInfo = JSON.parse(data.workforceApplication?.employeeAccidentInfo); 
+    const parsingAccidentInfo = JSON.parse(data.workforceApplication?.employeeAccidentInfo);
     const parsedAccidentInfo = JSON.parse(parsingAccidentInfo);
-    const parsingDoctorEntry = JSON.parse(data.workforceApplication?.doctorsEntry); 
+    const parsingDoctorEntry = JSON.parse(data.workforceApplication?.doctorsEntry);
     const parsedDoctorEntry = JSON.parse(parsingDoctorEntry);
 
     const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
@@ -195,15 +223,15 @@ const exportDisabilityExcel = async (eisPayments) => {
       ["Date of Disability Assessment", dateOfAssessment],
       ["Effective date of Benefit", effectiveDate],
     ];
-  
+
     const rightItems = [
       ["Name of the Factory", data.workforceApplication?.employeeFactory?.nameEn || ""],
       ["Name of Association", data.workforceApplication?.associationType || ""],
       ["Gross Salary (BDT)", data.workforceApplication?.lastBaseSalary || ""],
       ["Percentage of Disability", parsedDoctorEntry?.disabilityPerSchedule || ""],
-      ["Type of Accident", (parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace" ? "Workplace Accident" : parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA" ?  "On Duty RTA" : "Commuting") || ""],
+      ["Type of Accident", (parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace" ? "Workplace Accident" : parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA" ? "On Duty RTA" : "Commuting") || ""],
     ];
-  
+
     // Section Title
     const titleRow = sheet.addRow([]);
     sheet.mergeCells(`A${titleRow.number}:F${titleRow.number}`);
@@ -211,7 +239,7 @@ const exportDisabilityExcel = async (eisPayments) => {
       "Worker, Factory & Accident Information:";
     sheet.getCell(`A${titleRow.number}`).font = { bold: true };
     sheet.getCell(`A${titleRow.number}`).alignment = { horizontal: "left" };
-  
+
     // Add combined rows (Left + Right)
     for (let i = 0; i < 5; i++) {
       const row = sheet.addRow([
@@ -222,7 +250,7 @@ const exportDisabilityExcel = async (eisPayments) => {
         rightItems[i][1],
         "", // gap
       ]);
-  
+
       ["A", "B", "D", "E"].forEach((col) => {
         const cell = sheet.getCell(`${col}${row.number}`);
         cell.border = {
@@ -235,210 +263,211 @@ const exportDisabilityExcel = async (eisPayments) => {
         if (col === "A" || col === "D") cell.font = { bold: true };
       });
     }
-  
+
     // ==========================
     // Separate EIS Payments Table
-          // ==========================
-        // Small space before table
-      sheet.addRow([]);
+    // ==========================
+    // Small space before table
+    sheet.addRow([]);
 
-      // Benefit Information Title
-      const benefitTitle = sheet.addRow(["Benefit Information:"]);
-      benefitTitle.font = { bold: true, size: 12 };
-      benefitTitle.alignment = { horizontal: "left" };
+    // Benefit Information Title
+    const benefitTitle = sheet.addRow(["Benefit Information:"]);
+    benefitTitle.font = { bold: true, size: 12 };
+    benefitTitle.alignment = { horizontal: "left" };
 
-      // Space before header
-      sheet.addRow([]);
+    // Space before header
+    sheet.addRow([]);
 
-      // TABLE HEADER
-      const tableHeader = [
-        "Sl #",
-        "EIS Worker ID",
-        "NID/Birth Certificate of Worker",
-        "Benefit Rate (%) of Gross Salary",
-        "Monthly Payable Benefit (BDT)",
-        "Net Monthly Payable After Adjustment (BDT)",
-        "Total time amount (individual)",
-        "After adjustment (individual)",
-        "Type of Payment",
-        "Approval Status",
-        "Remarks",
-      ];
+    // TABLE HEADER
+    const tableHeader = [
+      "Sl #",
+      "EIS Worker ID",
+      "NID/Birth Certificate of Worker",
+      "Benefit Rate (%) of Gross Salary",
+      "Monthly Payable Benefit (BDT)",
+      "Net Monthly Payable After Adjustment (BDT)",
+      "Total time amount (individual)",
+      "After adjustment (individual)",
+      "Type of Payment",
+      "Approval Status",
+      "Remarks",
+    ];
 
-      const headerRow = sheet.addRow(tableHeader);
+    const headerRow = sheet.addRow(tableHeader);
 
-      // Style header
-      headerRow.eachCell((cell) => {
-        cell.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: "white",
-        };
-        cell.font = { bold: true };
-        cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
-        cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
-          right: { style: "thin" },
-        };
-      });
+    // Style header
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: "white",
+      };
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
 
-      // ==================================
-      // ADD PAYMENT ROWS
-      // ==================================
-      let totalMonthly = 0;
-      let totalNet = 0;
-      let benefitRateTotal = null;
+    // ==================================
+    // ADD PAYMENT ROWS
+    // ==================================
+    let totalMonthly = 0;
+    let totalNet = 0;
+    let benefitRateTotal = null;
 
-      eisPayments.forEach((row, index) => {
-        const benefitRate = row?.benefitRate || row?.percentageOfDisability || 0;
+    eisPayments.forEach((row, index) => {
+      const benefitRate = Number(row?.eisInitialReplacementRate) || 0;
 
-        if (benefitRateTotal === null) {
-          benefitRateTotal = benefitRate;
-        }
+      if (benefitRateTotal === null) {
+        benefitRateTotal = benefitRate;
+      }
 
-        const excelRow = sheet.addRow([
-          index + 1,
-          row?.beneficiaryId || "",
-          row?.workforceApplication?.workforceEmployee?.nid || "",
-          `${benefitRate}%`,
-          row?.eisMonthlyAmount || 0,
-          row?.eisMonthlyAmount || 0,
-          row?.eisCalculatedAmount || 0,
-          row?.eisApprovedAmount || 0,
-          row?.eisPaymentType || "",
-          row?.approvalStatus || "",
-          row?.eisApprovedAmount || "",
-        ]);
-
-        totalMonthly += Number(row?.eisMonthlyAmount || 0);
-        totalNet += Number(row?.eisApprovedAmount || 0);
-
-        excelRow.eachCell((cell) => {
-          cell.border = {
-            top: { style: "thin" },
-            left: { style: "thin" },
-            bottom: { style: "thin" },
-            right: { style: "thin" },
-          };
-          cell.alignment = {
-            vertical: "middle",
-            horizontal: "center",
-            wrapText: true,
-          };
-        });
-      });
-
-      // ==================================
-      // TOTAL ROW (WITH BENEFIT RATE TOTAL)
-      // ==================================
-      const totalRow = sheet.addRow([
-        "Total",    // Sl
-        "",         // EIS Worker ID
-        "",         // NID
-        `${benefitRateTotal}%`, // benefit rate total
-        totalMonthly,
-        totalNet,
-        "",
-        "",
+      const excelRow = sheet.addRow([
+        index + 1,
+        row?.beneficiaryId || "",
+        row?.workforceApplication?.workforceEmployee?.nid || "",
+        `${benefitRate * 100}%`,
+        Number(row?.eisInitialReplacementRate) * 100 || "",
+        row?.eisInitialMonthlyAmount || 0,
+        row?.eisMonthlyAmount || 0,
+        row?.eisCalculatedAmount || 0,
+        row?.eisApprovedAmount || 0,
+        row?.eisPaymentType || "",
+        row?.approvalStatus || "",
         "",
       ]);
 
-      totalRow.eachCell((cell, col) => {
-        if (col === 1 || col === 4) cell.font = { bold: true }; 
+      totalMonthly += Number(row?.eisMonthlyAmount || 0);
+      totalNet += Number(row?.eisApprovedAmount || 0);
+
+      excelRow.eachCell((cell) => {
         cell.border = {
           top: { style: "thin" },
           left: { style: "thin" },
           bottom: { style: "thin" },
           right: { style: "thin" },
         };
-        cell.alignment = { horizontal: "center", vertical: "middle" };
+        cell.alignment = {
+          vertical: "middle",
+          horizontal: "center",
+          wrapText: true,
+        };
       });
+    });
+
+    // ==================================
+    // TOTAL ROW (WITH BENEFIT RATE TOTAL)
+    // ==================================
+    const totalRow = sheet.addRow([
+      "Total",    // Sl
+      "",         // EIS Worker ID
+      "",         // NID
+      ``, // benefit rate total
+      totalMonthly,
+      totalNet,
+      "",
+      "",
+      "",
+    ]);
+
+    totalRow.eachCell((cell, col) => {
+      if (col === 1 || col === 4) cell.font = { bold: true };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+    });
 
 
     // footer start
 
-      // Spacing before footer
-      sheet.addRow([]);
-      sheet.addRow([]);
-      sheet.addRow([]);
+    // Spacing before footer
+    sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
 
-      // Title
-      const footerHeader = sheet.addRow(["Signature of EIS-GB Sub Committee Members:"]);
-      footerHeader.font = { bold: true, size: 13 };
-      footerHeader.alignment = { horizontal: "left" };
+    // Title
+    const footerHeader = sheet.addRow(["Signature of EIS-GB Sub Committee Members:"]);
+    footerHeader.font = { bold: true, size: 13 };
+    footerHeader.alignment = { horizontal: "left" };
 
-      sheet.addRow([]); 
-      sheet.addRow([]);
-      sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
 
-      const signatureBlocks = [
-        [
-          "President-BAWF &\nExecutive Member,\nIBC\nMember\nEIS-GB Sub\nCommittee"
-        ],
-        [
-          "President-SLF\n& Member- NCCWE\nMember\nEIS-GB Sub\nCommittee"
-        ],
-        [
-          "Director\nBKMEA\nMember\nEIS-GB Sub\nCommittee"
-        ],
-        [
-          "Chairman,\nLabour & ILO Standing\nCommittee\nBGMEA\nMember\nEIS-GB Sub Committee"
-        ],
-        [
-          "Inspector General,\nDIFE\nMember\nEIS-GB Sub\nCommittee"
-        ],
-        [
-          "Director General,\nDepartment of Labour\nMember\nEIS-GB Sub Committee"
-        ],
-        [
-          "Director General,\nCentral Fund\nMember Secretary\nEIS-GB Sub Committee"
-        ],
-        [
-          "Additional Secretary,\nI.O. Wing, MoLE\nChairman\nEIS-GB Sub Committee"
-        ],
-      ];
+    const signatureBlocks = [
+      [
+        "President-BAWF &\nExecutive Member,\nIBC\nMember\nEIS-GB Sub\nCommittee"
+      ],
+      [
+        "President-SLF\n& Member- NCCWE\nMember\nEIS-GB Sub\nCommittee"
+      ],
+      [
+        "Director\nBKMEA\nMember\nEIS-GB Sub\nCommittee"
+      ],
+      [
+        "Chairman,\nLabour & ILO Standing\nCommittee\nBGMEA\nMember\nEIS-GB Sub Committee"
+      ],
+      [
+        "Inspector General,\nDIFE\nMember\nEIS-GB Sub\nCommittee"
+      ],
+      [
+        "Director General,\nDepartment of Labour\nMember\nEIS-GB Sub Committee"
+      ],
+      [
+        "Director General,\nCentral Fund\nMember Secretary\nEIS-GB Sub Committee"
+      ],
+      [
+        "Additional Secretary,\nI.O. Wing, MoLE\nChairman\nEIS-GB Sub Committee"
+      ],
+    ];
 
-      const underlineRow = sheet.addRow(
-        signatureBlocks.map(() => "__________________")
-      );
+    const underlineRow = sheet.addRow(
+      signatureBlocks.map(() => "__________________")
+    );
 
-      underlineRow.height = 20;
+    underlineRow.height = 20;
 
-      underlineRow.eachCell((cell) => {
-        cell.font = { bold: true };
-        cell.alignment = { horizontal: "left", vertical: "bottom" };
-      });
+    underlineRow.eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "left", vertical: "bottom" };
+    });
 
-      // Create text row
-      const textRow = sheet.addRow(signatureBlocks.map((sig) => sig[0]));
+    // Create text row
+    const textRow = sheet.addRow(signatureBlocks.map((sig) => sig[0]));
 
-      textRow.height = 70;
+    textRow.height = 70;
 
-      textRow.eachCell((cell) => {
-        cell.alignment = {
-          horizontal: "left",
-          vertical: "top",
-          wrapText: true,
-        };
-      });
+    textRow.eachCell((cell) => {
+      cell.alignment = {
+        horizontal: "left",
+        vertical: "top",
+        wrapText: true,
+      };
+    });
 
-      sheet.addRow([]);
+    sheet.addRow([]);
 
-  const buffer = await workbook.xlsx.writeBuffer();
-  const blob = new Blob([buffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
 
-  saveAs(blob, "Benefit Approval Note-Disability.xlsx");
-};
+    saveAs(blob, "Benefit Approval Note-Disability.xlsx");
+  };
 
-const exportDeathExcel = async (eisPayments) => {
-  const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet("Benefit Approval Note");
+  const exportDeathExcel = async (eisPayments) => {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Benefit Approval Note");
 
-   
+
     // ==========================
     // Set column widths (first table + spacing)
     // ==========================
@@ -452,8 +481,9 @@ const exportDeathExcel = async (eisPayments) => {
       { width: 20 }, // G - last table columns
       { width: 20 }, // H
       { width: 20 }, // I
+      { width: 20 }, // J
     ];
-  
+
     // ==========================
     // Top Headers
     // ==========================
@@ -461,22 +491,22 @@ const exportDeathExcel = async (eisPayments) => {
     sheet.getCell("A1").value = "Employment Injury Scheme-Pilot";
     sheet.getCell("A1").font = { bold: true, size: 16 };
     sheet.getCell("A1").alignment = { horizontal: "center" };
-  
+
     sheet.mergeCells("A2:I2");
     sheet.getCell("A2").value = "Benefit Approval Note (Death)";
     sheet.getCell("A2").font = { bold: true, size: 14 };
     sheet.getCell("A2").alignment = { horizontal: "center" };
-  
+
     sheet.mergeCells("A3:I3");
     sheet.getCell("A3").value =
       "EIS PILOT Special Unit, 196, Sromo Bhaban (9th Floor), Bijoynagar, Dhaka, 1000";
     sheet.getCell("A3").alignment = { horizontal: "center" };
-  
+
     sheet.mergeCells("A4:I4");
     sheet.getCell("A4").value =
       "Email: specialunit@eis-pilot-bd.org, Phone: 01886-921030, Website: eis-pilot-bd.org";
     sheet.getCell("A4").alignment = { horizontal: "center" };
-  
+
     // ==========================
     // Meeting Info + Worker Info (no gap)
     // ==========================
@@ -485,24 +515,24 @@ const exportDeathExcel = async (eisPayments) => {
     sheet.getCell("A6").value = "EIS-GB Sub Committee Meeting No:16";
     sheet.getCell("A6").font = { bold: true };
     sheet.getCell("A6").alignment = { horizontal: "left" };
-  
+
     sheet.mergeCells("G6:I6");
     sheet.getCell("G6").value = "Date: 10/15/2025";
     sheet.getCell("G6").font = { bold: true };
     sheet.getCell("G6").alignment = { horizontal: "right" };
-  
+
     // Worker, Factory & Accident Information
     const data = eisPayments?.[0] || {};
-    const parsingAccidentInfo = JSON.parse(data.workforceApplication?.employeeAccidentInfo); 
+    const parsingAccidentInfo = JSON.parse(data.workforceApplication?.employeeAccidentInfo);
     const parsedAccidentInfo = JSON.parse(parsingAccidentInfo);
-    const parsingDoctorEntry = JSON.parse(data.workforceApplication?.doctorsEntry); 
+    const parsingDoctorEntry = JSON.parse(data.workforceApplication?.doctorsEntry);
     const parsedDoctorEntry = JSON.parse(parsingDoctorEntry);
 
     const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
     const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
     const effectiveDate = dateOfRejoining || dateOfAssessment || "";
 
-    
+
     const leftItems = [
       ["EIS Worker ID", data?.beneficiaryId || ""],
       ["Date of Accident", parsedAccidentInfo?.accidentDate || ""],
@@ -510,15 +540,15 @@ const exportDeathExcel = async (eisPayments) => {
       ["Date of Disability Assessment", dateOfAssessment],
       ["Effective date of Benefit", effectiveDate],
     ];
-  
+
     const rightItems = [
       ["Name of the Factory", data.workforceApplication?.employeeFactory?.nameEn || ""],
       ["Name of Association", data.workforceApplication?.associationType || ""],
       ["Gross Salary (BDT)", data.workforceApplication?.lastBaseSalary || ""],
       ["Percentage of Disability", parsedDoctorEntry?.disabilityPerSchedule || ""],
-      ["Type of Accident", (parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace" ? "Workplace Accident" : parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA" ?  "On Duty RTA" : "Commuting") || ""],
+      ["Type of Accident", (parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace" ? "Workplace Accident" : parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA" ? "On Duty RTA" : "Commuting") || ""],
     ];
-  
+
     // Section Title
     const titleRow = sheet.addRow([]);
     sheet.mergeCells(`A${titleRow.number}:F${titleRow.number}`);
@@ -526,7 +556,7 @@ const exportDeathExcel = async (eisPayments) => {
       "Worker, Factory & Accident Information:";
     sheet.getCell(`A${titleRow.number}`).font = { bold: true };
     sheet.getCell(`A${titleRow.number}`).alignment = { horizontal: "left" };
-  
+
     // Add combined rows (Left + Right)
     for (let i = 0; i < 5; i++) {
       const row = sheet.addRow([
@@ -537,7 +567,7 @@ const exportDeathExcel = async (eisPayments) => {
         rightItems[i][1],
         "", // gap
       ]);
-  
+
       ["A", "B", "D", "E"].forEach((col) => {
         const cell = sheet.getCell(`${col}${row.number}`);
         cell.border = {
@@ -550,63 +580,63 @@ const exportDeathExcel = async (eisPayments) => {
         if (col === "A" || col === "D") cell.font = { bold: true };
       });
     }
-  
+
     // ==========================
     // Separate EIS Payments Table
-          // ==========================
-        // Small space before table
-      sheet.addRow([]);
+    // ==========================
+    // Small space before table
+    sheet.addRow([]);
 
-      // Benefit Information Title
-      const benefitTitle = sheet.addRow(["Benefit Information:"]);
-      benefitTitle.font = { bold: true, size: 12 };
-      benefitTitle.alignment = { horizontal: "left" };
+    // Benefit Information Title
+    const benefitTitle = sheet.addRow(["Benefit Information:"]);
+    benefitTitle.font = { bold: true, size: 12 };
+    benefitTitle.alignment = { horizontal: "left" };
 
-      // Space before header
-      sheet.addRow([]);
+    // Space before header
+    sheet.addRow([]);
 
-      // TABLE HEADER
-      const tableHeader = [
-        "Sl #",
-        "EIS Beneficiary ID",
-        "NID/Birth Certificate of Worker",
-        "Relationship with worker",
-        "Benefit Rate (%) of Gross Salary",
-        "Monthly Payable Benefit (BDT)",
-        "Net Monthly Payable After Adjustment (BDT)",
-        "Total time amount (individual)",
-        "After adjustment (individual)",
-        "Type of Payment",
-        "Approval Status",
-        "Remarks",
-      ];
+    // TABLE HEADER
+    const tableHeader = [
+      "Sl #",
+      "EIS Beneficiary ID",
+      "NID/Birth Certificate of Worker",
+      "Relationship with worker",
+      "Benefit Rate (%) of Gross Salary",
+      "Monthly Payable Benefit (BDT)",
+      "Net Monthly Payable After Adjustment (BDT)",
+      "Total time amount (individual)",
+      "After adjustment (individual)",
+      "Type of Payment",
+      "Approval Status",
+      "Remarks",
+    ];
 
-      const headerRow = sheet.addRow(tableHeader);
+    const headerRow = sheet.addRow(tableHeader);
 
-      // Style header
-      headerRow.eachCell((cell) => {
-        cell.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: "white",
-        };
-        cell.font = { bold: true };
-        cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
-        cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
-          right: { style: "thin" },
-        };
-      });
+    // Style header
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: "white",
+      };
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
 
-      // ==================================
-      // ADD PAYMENT ROWS
-      // ==================================
-      let totalMonthly = 0;
-      let totalNet = 0;
-      let benefitRateTotal = null;
-      const RELATION_LABEL_MAP = {
+    // ==================================
+    // ADD PAYMENT ROWS
+    // ==================================
+    let totalMonthly = 0;
+    let totalNet = 0;
+    let benefitRateTotal = null;
+    const RELATION_LABEL_MAP = {
       "workforce.relation.father": "Father",
       "workforce.relation.mother": "Mother",
       "workforce.relation.wife": "Wife",
@@ -620,141 +650,162 @@ const exportDeathExcel = async (eisPayments) => {
       "workforce.relation.grand_father": "Grand Father",
       "workforce.relation.grand_mother": "Grand Mother",
     };
-  
 
-    eisPayments.forEach((row, index) => { const benefitRate = row?.benefitRate || row?.percentageOfDisability || 0; 
-        if (benefitRateTotal === null) { benefitRateTotal = benefitRate; } 
-        const excelRow = sheet.addRow([ index + 1, 
-          row?.beneficiaryId, 
-          row?.workforceApplication?.workforceEmployee?.nid || "", 
-          RELATION_LABEL_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker] || "",
-          `${benefitRate}%`, 
-          row?.eisMonthlyAmount || 0, 
-          row?.eisCalculatedAmount || 0,
-          row?.eisApprovedAmount || 0, 
-          row?.eisPaymentType || "", 
-          row?.approvalStatus || "", 
-          row?.eisApprovedAmount || "", ]); 
-          totalMonthly += Number(row?.eisMonthlyAmount || 0); totalNet += Number(row?.eisCalculatedAmount || 0);
-          excelRow.eachCell((cell) => { cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, 
-          right: { style: "thin" }, }; cell.alignment = { vertical: "middle", 
-            horizontal: "center", wrapText: true, }; }); 
-          });
 
-      // ==================================
-      // TOTAL ROW (WITH BENEFIT RATE TOTAL)
-      // ==================================
-      const totalRow = sheet.addRow([
-        "Total",    // Sl
-        "",         // EIS Worker ID
-        "",         // NID
-        "",         
-        `${benefitRateTotal}%`, // benefit rate total
-        totalMonthly,
-        totalNet,
-        "",
-        "",
-        "",
-        "",
-      ]);
-
-      totalRow.eachCell((cell, col) => {
-        if (col === 1 || col === 4) cell.font = { bold: true }; 
+    eisPayments.forEach((row, index) => {
+      const benefitRate = Number(row?.eisInitialReplacementRate) || 0;
+      if (benefitRateTotal === null) { benefitRateTotal = benefitRate; }
+      const excelRow = sheet.addRow([index + 1,
+      row?.beneficiaryId,
+      row?.workforceApplication?.workforceEmployee?.nid || "",
+      RELATION_LABEL_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker] || "",
+      `${benefitRate * 100}%`,
+      row?.eisInitialMonthlyAmount || 0,
+      row?.eisMonthlyAmount || 0,
+      row?.eisCalculatedAmount || 0,
+      row?.eisApprovedAmount || 0,
+      row?.eisPaymentType || "",
+      row?.approvalStatus || "",
+      "",]);
+      totalMonthly += Number(row?.eisMonthlyAmount || 0); totalNet += Number(row?.eisCalculatedAmount || 0);
+      excelRow.eachCell((cell) => {
         cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
+          top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" },
           right: { style: "thin" },
+        }; cell.alignment = {
+          vertical: "middle",
+          horizontal: "center", wrapText: true,
         };
-        cell.alignment = { horizontal: "center", vertical: "middle" };
       });
+    });
+
+    // ==================================
+    // TOTAL ROW (WITH BENEFIT RATE TOTAL)
+    // ==================================
+    const totalRow = sheet.addRow([
+      "Total",    // Sl
+      "",         // EIS Worker ID
+      "",         // NID
+      "",
+      "", // benefit rate total
+      "",
+      totalMonthly,
+      "",
+      totalNet,
+      "",
+      "",
+      "",
+    ]);
+
+    totalRow.eachCell((cell, col) => {
+      if (col === 1 || col === 4) cell.font = { bold: true };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+    });
 
 
     // footer start
 
-      // Spacing before footer
-      sheet.addRow([]);
-      sheet.addRow([]);
-      sheet.addRow([]);
+    // Spacing before footer
+    sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
 
-      // Title
-      const footerHeader = sheet.addRow(["Signature of EIS-GB Sub Committee Members:"]);
-      footerHeader.font = { bold: true, size: 13 };
-      footerHeader.alignment = { horizontal: "left" };
+    // Title
+    const footerHeader = sheet.addRow(["Signature of EIS-GB Sub Committee Members:"]);
+    footerHeader.font = { bold: true, size: 13 };
+    footerHeader.alignment = { horizontal: "left" };
 
-      sheet.addRow([]); 
-      sheet.addRow([]);
-      sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
 
-      const signatureBlocks = [
-        [
-          "Executive Member\nIBC\nMember.\nEIS-GB Sub Committee"
-        ],
-        [
-          "Member,\nNCCWE.\nMember.\nEIS-GB Sub Committee"
-        ],
-        [
-          "Vice President\nBKMEA\nMember.\nEIS-GB Sub Committee"
-        ],
-        [
-          "Chairman,\nLabour & ILO Standing Committee\nBGMEA\nMember.\nEIS-GB Sub Committee"
-        ],
-        [
-          "Director General,\nDepartment of Labour\nMember Secretary.\nEIS-GB Sub Committee"
-        ],
-        [
-          "Director General,\nCentral Fund\nMember Secretary.\nEIS-GB Sub Committee"
-        ],
-        [
-          "Additional Secretary,\nI.O. Wing, MoLE\nChairman.\nEIS-GB Sub Committee"
-        ]
-      ];
+    const signatureBlocks = [
+      [
+        "Executive Member\nIBC\nMember.\nEIS-GB Sub Committee"
+      ],
+      [
+        "Member,\nNCCWE.\nMember.\nEIS-GB Sub Committee"
+      ],
+      [
+        "Vice President\nBKMEA\nMember.\nEIS-GB Sub Committee"
+      ],
+      [
+        "Chairman,\nLabour & ILO Standing Committee\nBGMEA\nMember.\nEIS-GB Sub Committee"
+      ],
+      [
+        "Director General,\nDepartment of Labour\nMember Secretary.\nEIS-GB Sub Committee"
+      ],
+      [
+        "Director General,\nCentral Fund\nMember Secretary.\nEIS-GB Sub Committee"
+      ],
+      [
+        "Additional Secretary,\nI.O. Wing, MoLE\nChairman.\nEIS-GB Sub Committee"
+      ]
+    ];
 
 
-      const underlineRow = sheet.addRow(
-        signatureBlocks.map(() => "__________________")
-      );
+    const underlineRow = sheet.addRow(
+      signatureBlocks.map(() => "__________________")
+    );
 
-      underlineRow.height = 20;
+    underlineRow.height = 20;
 
-      underlineRow.eachCell((cell) => {
-        cell.font = { bold: true };
-        cell.alignment = { horizontal: "left", vertical: "bottom" };
-      });
+    underlineRow.eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "left", vertical: "bottom" };
+    });
 
-      // Create text row
-      const textRow = sheet.addRow(signatureBlocks.map((sig) => sig[0]));
+    // Create text row
+    const textRow = sheet.addRow(signatureBlocks.map((sig) => sig[0]));
 
-      textRow.height = 70;
+    textRow.height = 70;
 
-      textRow.eachCell((cell) => {
-        cell.alignment = {
-          horizontal: "left",
-          vertical: "top",
-          wrapText: true,
-        };
-      });
+    textRow.eachCell((cell) => {
+      cell.alignment = {
+        horizontal: "left",
+        vertical: "top",
+        wrapText: true,
+      };
+    });
 
-      sheet.addRow([]);
+    sheet.addRow([]);
 
-  const buffer = await workbook.xlsx.writeBuffer();
-  const blob = new Blob([buffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
 
-  saveAs(blob, "Benefit Approval Note-Death.xlsx");
-};
+    saveAs(blob, "Benefit Approval Note-Death.xlsx");
+  };
+
+
+  
 
 
   // -----------------------------------
   // UI: Render all eisPayments (no filter)
   // -----------------------------------
 
+
+  const user_type= getUserTypeFromRights(userRights)
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="xl" fullWidth>
       <DialogTitle disableTypography>
         <Typography variant="h6">
-          <FormattedMessage id="EIS-Pilot Benefit Approval Note (Disability/Death)" />
+          {loading? (
+            <>
+              Loading....
+            </>
+          ) : (
+            <FormattedMessage id="EIS-Pilot Benefit Approval Note (Disability/Death)" />
+          )}
         </Typography>
       </DialogTitle>
 
@@ -764,6 +815,8 @@ const exportDeathExcel = async (eisPayments) => {
             <TableRow>
               <TableCell><FormattedMessage id="SL #" /></TableCell>
               <TableCell><FormattedMessage id="EIS Worker ID" /></TableCell>
+              <TableCell><FormattedMessage id="Worker Name" /></TableCell>
+              <TableCell><FormattedMessage id="Dependent Name" /></TableCell>
               <TableCell><FormattedMessage id="NID/Birth Certificate of Worker" /></TableCell>
               <TableCell><FormattedMessage id="Benefit Rate (%) of Gross Salary" /></TableCell>
               <TableCell><FormattedMessage id="Total time amount (individual)" /></TableCell>
@@ -781,27 +834,29 @@ const exportDeathExcel = async (eisPayments) => {
               let bankInfo = {};
               try {
                 bankInfo = JSON.parse(JSON.parse(row.employeeBankInfo));
-              } catch (e) {}
+              } catch (e) { }
 
               return (
                 <TableRow key={index}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{row?.beneficiaryId}</TableCell>
+                  <TableCell>{row?.workforceApplication?.workforceEmployee?.firstNameEn}</TableCell>
+                  <TableCell>{row?.workforceEmployeeDependent[0]?.nameEn}</TableCell>
                   <TableCell>{row?.workforceApplication?.workforceEmployee?.nid}</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>{row?.eisMonthlyAmount}</TableCell>
-                  <TableCell>{row?.eisMonthlyAmount}</TableCell>
+                  <TableCell>{row?.eisInitialReplacementRate ? Number(row.eisInitialReplacementRate) * 100 + "%" : ""}</TableCell>
                   <TableCell>{row?.eisCalculatedAmount}</TableCell>
                   <TableCell>{row?.eisApprovedAmount}</TableCell>
+                  <TableCell>{row?.eisInitialMonthlyAmount}</TableCell>
+                  <TableCell>{row?.eisMonthlyAmount}</TableCell>
                   <TableCell>{row?.eisPaymentType}</TableCell>
                   <TableCell></TableCell>
-                  <TableCell>{row?.eisApprovedAmount}</TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
-                
+
               );
             })}
-             <TableRow>
-              <TableCell colSpan={10}><strong><FormattedMessage id="Total Amount" /></strong></TableCell>
+            <TableRow>
+              <TableCell colSpan={7}><strong><FormattedMessage id="Total Amount (Monthly)" /></strong></TableCell>
               <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
               <TableCell colSpan={3} />
             </TableRow>
@@ -815,6 +870,13 @@ const exportDeathExcel = async (eisPayments) => {
         <Button onClick={onClose} variant="outlined" color="primary">
           <FormattedMessage id="workforce.modal.close" />
         </Button>
+        {
+          user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+            <Button onClick={onClose} variant="contained" color="primary">
+              <FormattedMessage id="ক্যালকুলেশন সেভ করুন" />
+            </Button>
+          )
+        }
 
         <Button onClick={() => window.print()} variant="contained" color="primary">
           <FormattedMessage id="workforce.modal.print.advice" />

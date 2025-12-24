@@ -2286,7 +2286,20 @@ export function eisPaymentProcess(eisPaymentData) {
       }
     }
   `;
+  return graphql(mutation, "WORKFORCE_EIS_PAYMENT_PROCESS");
+}
 
+export function eisPaymentProcessWithoutDate(eisPaymentData) {
+  const mutation = `
+    mutation {
+      createWorkforceEisPaymentProcess(
+        workforceApplicationId: "${eisPaymentData?.workforceApplicationId}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
   return graphql(mutation, "WORKFORCE_EIS_PAYMENT_PROCESS");
 }
 export function testWorkforcePayment(testPaymentData) {
@@ -2834,9 +2847,11 @@ export function fetchEisPaymentProcess(applicationIds) {
         monthIndex
         year
         eisMonthlyAmount
+        eisInitialMonthlyAmount
         eisPaymentType
         eisApprovedAmount
         eisCalculatedAmount
+        eisInitialReplacementRate
         processingDate
         beneficiaryId
         isDisbursed
@@ -2851,6 +2866,7 @@ export function fetchEisPaymentProcess(applicationIds) {
         bankAccountHolderName
         workforceEmployeeDependent{
           status
+          nameEn
           nameBn
           relationWithWorker
           presentLocation{
