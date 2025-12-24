@@ -1858,6 +1858,16 @@ function reducer(
     case "BANK_UPDATE_BANK_RESP":
       return dispatchMutationResp(state, "updateBank", action);
 
+    case "DEPENDENT_MUTATION_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "DEPENDENT_MUTATION_ERR":
+      return dispatchMutationErr(state, action);
+    case "DEPENDENT_CREATE_DEPENDENT_RESP":
+      return dispatchMutationResp(state, "createWorkforceEmployeeDependent", action);
+    case "DEPENDENT_UPDATE_DEPENDENT_RESP":
+      return dispatchMutationResp(state, "updateWorkforceEmployeeDependent", action);
+
     case "EDUCATION_INFO_MUTATION_REQ": {
       return dispatchMutationReq(state, action);
     }

@@ -48,7 +48,9 @@ import {
   ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION,
   ROUTE_ADMINISTRATIVE_LOGIN,
   ROUTE_WORKFORCE_REPORTS_BENEFICIARY_REPORT,
-  ROUTE_WORKFORCE_APPLICATION_EIS
+  ROUTE_WORKFORCE_APPLICATION_EIS,
+  ROUTE_WORKFORCE_ASSOCIATIONS,
+  ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -105,6 +107,8 @@ import LoginFormAdministrative from "./pages/login/LoginFormAdministrative";
 import BeneficiaryReport from "./pages/reports/BeneficiaryReport";
 import UserInfo from "./components/app-bar/UserInfo";
 import EisMultiStepApplyForm from "./pages/application/EisMultiStepApplyForm";
+import WorkforceAsociationsPage from "./pages/workforce-association/WorkforceAsociationsPage";
+import WorkforceAsociationPage from "./pages/workforce-association/WorkforceAssociationPage";
 
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
@@ -191,6 +195,9 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.banks", ref: ROUTE_WORKFORCE_BANKS },
     { key: "workforce.route.banks.bank", ref: ROUTE_WORKFORCE_BANKS_BANK },
     { key: "workforce.route.banks.bank", ref: ROUTE_WORKFORCE_BANKS_BANK },
+
+    { key: "workforce.route.associations", ref: ROUTE_WORKFORCE_ASSOCIATIONS },
+    { key: "workforce.route.associations.association", ref: ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION },
     
     { key: "workforce.route.reports.beneficiaryReport", ref: ROUTE_WORKFORCE_REPORTS_BENEFICIARY_REPORT },
 
@@ -271,6 +278,9 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS_INFO, component: AccountInfoPage },
     { path: `${ROUTE_WORKFORCE_EMPLOYEES_ACCOUNT_INFOS_INFO}/:workforce_employee_uuid`, component: AccountInfoPage },
 
+    { path: ROUTE_WORKFORCE_ASSOCIATIONS, component: WorkforceAsociationPage },
+    { path: ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION, component: WorkforceAsociationsPage },
+    { path: `${ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION}/:workforce_association_uuid`, component: WorkforceAsociationsPage },
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, component: OrganizationEmployeeDesignationPage },
     { path: ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION, component: WorkforceEmployeeDesignationPage },

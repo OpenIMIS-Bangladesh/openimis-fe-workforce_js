@@ -44,6 +44,7 @@ import ConfirmModal from "../../components/application-process/modals/ConfirmMod
 import RevertApplicationModal from "../../components/application-process/modals/RevertApplicationModal";
 import ForwardApplicationFactoryAdminModal from "../../components/application-process/modals/ForwardApplicationFactoryAdminModal";
 import ForwardApplicationSectionAdminModal from "../../components/application-process/modals/ForwardApplicationSectionAdminModal";
+import AddDependentModal from "../../components/shared/modals/AddDependentModal";
 
 const styles = (theme) => ({
   paper: {
@@ -116,6 +117,7 @@ class VerifyApplicationPage extends Component {
         note: "",
         status: null,
       })),
+      addDependentModalOpen: false,
       forwardModalOpenFA: false,
       forwardModalOpenSA: false,
       revertModalOpen: false,
@@ -354,14 +356,14 @@ class VerifyApplicationPage extends Component {
     const formData = {
       ...application,
       workforceEmployee: application?.workforceEmployee,
-      employeeAccidentInfo: this.safeParse(AccidentInfo),
-      employeeBankInfo: this.safeParse(bankInfo),
+      employeeAccidentInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(AccidentInfo),
+      employeeBankInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(bankInfo),
       employeeDependentInfo: this.safeParse(dependentInfo),
-      employeeChildrenInfo: this.safeParse(childrenInfo),
-      applicantInfo: this.safeParse(applicantInfo),
-      institutionInfo: this.safeParse(institutionInfo),
-      deceasedWorkerInfo: this.safeParse(deceasedWorkerInfo),
-      doctorsEntry: this.safeParse(doctorsEntryInfo),
+      employeeChildrenInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(childrenInfo),
+      applicantInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(applicantInfo),
+      institutionInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(institutionInfo),
+      deceasedWorkerInfo:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(deceasedWorkerInfo),
+      doctorsEntry:(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER&& stateEdited?.applicationType==="financialAssistance")?null: this.safeParse(doctorsEntryInfo),
       metadata: this.safeParse(metaInfo),
       workforceEmployeeDependentApplication: parsedWorkforceEmployeeDependentApplication,
       employeeBankingInfoApplication:tempBankInfo
@@ -424,6 +426,18 @@ class VerifyApplicationPage extends Component {
           user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) && (
           <Grid container spacing={2} style={{ marginTop: "16px", padding: 4 }}>
             <Grid item xs={8}></Grid>
+            {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) && (
+              <Grid item xs={2}>
+                 <Button 
+                   variant="contained" 
+                   color="primary" 
+                   fullWidth 
+                   onClick={() => this.setState({ addDependentModalOpen: true })}
+                 >
+                   <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add Dependent" />
+                 </Button>
+              </Grid>
+            )}
             <Grid item xs={2}>
               <Button variant="contained" color="primary" fullWidth onClick={this.handleForward}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
@@ -435,6 +449,14 @@ class VerifyApplicationPage extends Component {
               </Button>
             </Grid>
           </Grid>
+        )}
+
+        {this.state.addDependentModalOpen && (
+          <AddDependentModal 
+            open={this.state.addDependentModalOpen}
+            onClose={() => this.setState({ addDependentModalOpen: false })}
+            application={formData}
+          />
         )}
 
         {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && (

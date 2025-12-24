@@ -230,6 +230,7 @@
   "menu.workforce.branch": "শাখা সমূহ",
   "menu.workforce.employee.factory": "কর্মচারী শ্রমিকের কর্মরত প্রতিষ্ঠান/ কারখানার তথ্য",
   "menu.workforce.documents": "নথিপত্র",
+  "menu.workforce.association": "অ্যাসোসিয়েশন",
 
   "workforce.employee.designation":"পদবী",
   "workforce.employee.relationWithApplicant":"মৃত শ্রমিকের সাথে আবেদনকারীর সম্পর্ক",

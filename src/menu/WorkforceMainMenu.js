@@ -24,6 +24,7 @@ import {
   ROUTE_WORKFORCE_APPLICATIONS_PROCESS,
   ROUTE_WORKFORCE_DOCUMENTS,
   ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION,
+  ROUTE_WORKFORCE_ASSOCIATIONS
 } from "../routes";
 import { RIGHT_WORKFORCE_EMPLOYER_APPROVE } from "../permission-rights";
 import { getUserType, isEmptyObject } from "../utils/utils";
@@ -129,6 +130,13 @@ function WorkforceMainMenu(props) {
       icon: <ListAlt />,
       route: `/${ROUTE_WORKFORCE_BANKS}`,
       id: `menu.workforce.banks`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.association" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_ASSOCIATIONS}`,
+      id: `menu.workforce.association`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
     {

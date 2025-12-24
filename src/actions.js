@@ -31,7 +31,8 @@ import {
   formatApplicationSummaryGQL,
   formatWorkforceDocumentGQL,
   formatEducationInfoGQL,
-  formatEisPaymentProcessGQL
+  formatEisPaymentProcessGQL,
+  formatWorkforceDependentGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 
@@ -2182,6 +2183,29 @@ export function updateApplication(application, clientMutationLabel) {
       "APPLICATION_MUTATION_REQ",
       "APPLICATION_UPDATE_APPLICATION_RESP",
       "APPLICATION_MUTATION_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+export function updateDependent(application, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWorkforceEmployeeDependent",
+    formatWorkforceDependentGQL(application),
+    clientMutationLabel
+  );
+
+  console.log({ mutation });
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "DEPENDENT_MUTATION_REQ",
+      "DEPENDENT_UPDATE_DEPENDENT_RESP",
+      "DEPENDENT_MUTATION_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,

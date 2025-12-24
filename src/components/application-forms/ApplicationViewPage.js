@@ -1,5 +1,22 @@
 import React, { useMemo, useState } from "react";
-import { Grid, Paper, Typography, Accordion, AccordionSummary, AccordionDetails, Divider, Card, CardContent, Box, Button } from "@material-ui/core";
+import {
+  Grid,
+  Paper,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Divider,
+  Card,
+  CardContent,
+  Box,
+  Button,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+} from "@material-ui/core";
 import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage, decodeId, TextInput } from "@openimis/fe-core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,7 +24,7 @@ import FileUploader from "../../pickers/FileUploader";
 import DocumentReviewAccordion from "../application-process/DocumentReviewAccordion";
 import { banglaLabels, ORGANIZATION_TYPE_NAME_BN, ORGANIZATION_TYPE_NAME_EN, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
-import { conditionalEnToBn, enToBn, getUserType } from "../../utils/utils";
+import { conditionalEnToBn, enToBn, getUserType, safeDecodeId } from "../../utils/utils";
 import { updateApplication } from "../../actions";
 import DoctorsEntries from "./Atoms/DoctorsEntries";
 import EisFactoryAdminModal from "./EisFactoryAdminModal";
@@ -41,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
   label: {
     fontWeight: "bold",
     color: "#555",
+    marginRight: 6,
   },
   value: {
     color: "#222",
@@ -51,12 +69,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     background: "#fafafa",
     borderRadius: 8,
-    // marginTop:3
-  },
-  label: {
-    fontWeight: 450,
-    color: "#333",
-    marginRight: 6,
   },
 }));
 
@@ -93,6 +105,7 @@ const hiddenKeys = [
   "eisInitialMonthlyAmount",
   "eisMonthlyAmount",
   "initialReplacementRate",
+  "eisApplicationSummary",
   "pvFactor",
   "dependentId",
   "attachments",
@@ -114,6 +127,7 @@ const formatKey = (key, language) => {
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/\b\w/g, (c) => c.toUpperCase());
 };
+
 /**
  * Try parsing JSON safely
  */
@@ -133,7 +147,6 @@ const tryParse = (value) => {
 
 const isEmpty = (value) => {
   if (value == null) return true;
-  // if (Array.isArray(value)) return value.length === 0;
   if (Array.isArray(value)) {
     if (value.length === 0) return true;
     return value.every((item) => item == null || (typeof item === "object" && Object.keys(item).length === 0));
@@ -145,7 +158,20 @@ const isEmpty = (value) => {
 /**
  * Recursive renderer for objects & arrays in Grid format
  */
-const renderDetails = (data, classes, parentKey = "", language, fileStates, handleCommentChange, handleFileVerify, handleFileReject) => {
+const renderDetails = (
+  data,
+  classes,
+  parentKey = "",
+  language,
+  fileStates,
+  handleCommentChange,
+  handleFileVerify,
+  handleFileReject,
+  eligibilityMap,
+  handleEligibilityChange,
+  onSaveEligibility,
+  user_type // ✅ Argument present
+) => {
   if (!data) return null;
 
   // ✅ Safe JSON parser
@@ -203,7 +229,9 @@ const renderDetails = (data, classes, parentKey = "", language, fileStates, hand
       const scalars = Object.entries(item).filter(
         ([key, value]) => typeof value !== "object" && ![...hiddenKeys].includes(key) && value !== null && value !== undefined && value !== ""
       );
-      const objects = Object.entries(item).filter(([key, value]) => typeof value === "object" && value && ![...hiddenKeys, "attachments","employeeBankingDependents"].includes(key));
+      const objects = Object.entries(item).filter(
+        ([key, value]) => typeof value === "object" && value && ![...hiddenKeys, "attachments", "employeeBankingDependents"].includes(key)
+      );
 
       let matchingFiles = [];
       if (parentKey === "workforceEmployeeDependentApplication" && item?.id && fileStates) {
@@ -211,6 +239,9 @@ const renderDetails = (data, classes, parentKey = "", language, fileStates, hand
           .map((f, i) => ({ ...f, _originalIndex: i })) // Preserve original index
           .filter((f) => f?.workforceDependent?.id === item.id);
       }
+
+      // Check if user is allowed (Coordinator OR Officer)
+      const isAllowedUser = [WORKFORCE_USER_TYPE.EIS_COORDINATOR, WORKFORCE_USER_TYPE.EIS_OFFICER].includes(user_type);
 
       return (
         <Card key={idx} className={classes.nestedCard}>
@@ -255,7 +286,21 @@ const renderDetails = (data, classes, parentKey = "", language, fileStates, hand
                       : "স্থায়ী ঠিকানা"
                     : formatKey(key, language)}
                 </Typography>
-                {renderDetails(value, classes, key, language)}
+                {/* Recursively pass new props */}
+                {renderDetails(
+                  value,
+                  classes,
+                  key,
+                  language,
+                  fileStates,
+                  handleCommentChange,
+                  handleFileVerify,
+                  handleFileReject,
+                  eligibilityMap,
+                  handleEligibilityChange,
+                  onSaveEligibility,
+                  user_type // ✅ Passed recursively
+                )}
               </Box>
             ))}
 
@@ -277,6 +322,53 @@ const renderDetails = (data, classes, parentKey = "", language, fileStates, hand
                 ))}
               </Box>
             )}
+
+            {/* ----- CONDITIONAL: ELIGIBILITY RADIO BUTTON & SAVE BUTTON ----- */}
+            {parentKey === "workforceEmployeeDependentApplication" && isAllowedUser && (
+              <Box
+                mt={3}
+                p={2}
+                style={{
+                  background: "#f0f7ff",
+                  borderRadius: 8,
+                  border: "1px solid #d1e3f0",
+                }}
+              >
+                <Grid container alignItems="center" justifyContent="space-between">
+                  <Grid item>
+                    <FormControl component="fieldset">
+                      <FormLabel
+                        component="legend"
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: "0.9rem",
+                          color: "#333",
+                          marginBottom: 8,
+                        }}
+                      >
+                        {language === "en" ? "Is beneficiary eligible?" : "উপকারভোগী কি যোগ্য?"}
+                      </FormLabel>
+                      <RadioGroup
+                        row
+                        aria-label="eligibility"
+                        name={`eligibility-${item.id}`}
+                        value={eligibilityMap?.[item.id]||item?.isEligible || ""}
+                        onChange={(e) => handleEligibilityChange(item.id, e.target.value)}
+                      >
+                        <FormControlLabel value="yes" control={<Radio color="primary" />} label={language === "en" ? "Yes" : "হ্যাঁ"} />
+                        <FormControlLabel value="no" control={<Radio color="primary" />} label={language === "en" ? "No" : "না"} />
+                      </RadioGroup>
+                    </FormControl>
+                  </Grid>
+                  <Grid item>
+                    <Button variant="contained" color="primary" onClick={() => onSaveEligibility(item)} disabled={!eligibilityMap?.[item.id]}>
+                      {language === "en" ? "Save" : "সংরক্ষণ করুন"}
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+            )}
+            {/* ------------------------------------------------------- */}
           </CardContent>
         </Card>
       );
@@ -335,7 +427,21 @@ const renderDetails = (data, classes, parentKey = "", language, fileStates, hand
               >
                 {sectionTitle}
               </Typography>
-              {renderDetails(parsedValue, classes, key, language)}
+              {/* Recursively pass new props */}
+              {renderDetails(
+                parsedValue,
+                classes,
+                key,
+                language,
+                fileStates,
+                handleCommentChange,
+                handleFileVerify,
+                handleFileReject,
+                eligibilityMap,
+                handleEligibilityChange,
+                onSaveEligibility,
+                user_type // ✅ Passed recursively
+              )}
             </Grid>
           );
         })}
@@ -348,7 +454,6 @@ const renderDetails = (data, classes, parentKey = "", language, fileStates, hand
 
 const ApplicationViewPage = ({
   application,
-  // language,
   filteredDocumentTypes,
   applicationUuid,
   onFileChange,
@@ -361,11 +466,62 @@ const ApplicationViewPage = ({
 }) => {
   const classes = useStyles();
   const language = useSelector((state) => state.core?.user?.i_user?.language);
-  console.log({ view: application });
   const user_type = getUserType();
   const dispatch = useDispatch();
   const [lastSalaryAmount, setLastSalaryAmount] = useState("");
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
+
+  // --- NEW: Eligibility State and Handlers ---
+  const [eligibilityMap, setEligibilityMap] = useState({});
+
+  const handleEligibilityChange = (id, value) => {
+    setEligibilityMap((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  const onSaveEligibility = (dependentItem) => {
+    const isEligibleValue = eligibilityMap[dependentItem.id];
+
+    // Safety check: ensure we have a value selected
+    if (!isEligibleValue) return;
+
+    const isEligibleBool = isEligibleValue === "yes";
+
+    // 1. Get the current list of dependents from the application object
+    // Assuming 'workforceEmployeeDependentApplication' is the main array in the application object
+    const currentDependents = application?.workforceEmployeeDependentApplication || [];
+
+    // 2. Create a modified copy of the array
+    const updatedDependentsList = currentDependents.map((dep) => {
+      // Create a shallow copy of the dependent to avoid mutating props directly
+      const newDep = { ...dep };
+
+      // Optional: Remove __typename if it exists (common in GraphQL) to prevent mutation errors
+      delete newDep.__typename;
+
+      // If this is the matched dependent, update isEligible
+      if (newDep.id === dependentItem.id) {
+        newDep.isEligible = isEligibleBool;
+      }
+      return newDep;
+    });
+
+    console.log("Saving Eligibility for ID:", dependentItem.id, "Eligible:", isEligibleBool);
+    console.log("Updated List:", updatedDependentsList);
+
+    // 3. Create Payload for updateApplication
+    // We send the Modified Array as 'employeeDependentInfo'
+    const payload = {
+      id: application.id,
+      employeeDependentInfo: JSON.stringify(updatedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
+    };
+
+    // 4. Dispatch the updateApplication mutation
+    dispatch(updateApplication(payload, "update workforce dependent info"));
+  };
+  // -------------------------------------------
 
   const handleLastSalaryAmount = (amount) => {
     const updateApplicationData = {
@@ -375,6 +531,7 @@ const ApplicationViewPage = ({
     console.log({ grantAmount: updateApplicationData });
     dispatch(updateApplication(updateApplicationData, "update workforce application"));
   };
+
   // Sidebar summary fields
   const sidebarFields = useMemo(
     () => ({
@@ -394,7 +551,6 @@ const ApplicationViewPage = ({
       TrackingNumber: application.trackingNumber,
       Status: language === "en" ? STATUS_MAP_EN[application.status] : STATUS_MAP_BN[application?.status],
       SubmittedBy: application.submittedBy === "applicant" ? (language === "en" ? "Applicant" : "আবেদনকারী") : application.submittedBy,
-      // GrantAmount: '৳ '+(language==='en'?Number(application?.grantAmount).toLocaleString('en-US'):Number(application?.grantAmount).toLocaleString('bn-BD')),
       CreatedDate: conditionalEnToBn(application?.dateCreated?.split("T")[0] || "—", language),
       ApplicationFor:
         application?.applicationFor == "self" ? (language === "en" ? "Self" : "নিজের জন্য") : language === "en" ? "Dependent" : "নির্ভরশীলের জন্য",
@@ -404,11 +560,9 @@ const ApplicationViewPage = ({
 
   const mapFormStepNo = (fileStepNo, sectionKey, application) => {
     const isDeathCase = ["financialAssistance", "deadlyGrant"].includes(application?.applicationType);
-
     if (isDeathCase && fileStepNo === "workforceEmployee") {
-      return "deceasedWorkerInfo"; // remap only for death applications
+      return "deceasedWorkerInfo";
     }
-
     return fileStepNo;
   };
   const isNotEmpty = (value) => !isEmpty(value);
@@ -509,14 +663,28 @@ const ApplicationViewPage = ({
             const parsedValue = tryParse(value);
             if (!parsedValue || isEmpty(parsedValue)) return null;
 
-            ///expanded={expanded === key} onChange={() => setExpanded(expanded === key ? null : key)}
             return (
               <Accordion key={key} className={classes.accordion} style={{ background: `${"#B7D4D8"}` }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography className={classes.sectionTitle}>{formatKey(key, language)}</Typography>
                 </AccordionSummary>
                 <AccordionDetails style={{ display: "block", background: `${"white"}` }}>
-                  {renderDetails(value, classes, key, language, fileStates, handleCommentChange, handleFileVerify, handleFileReject)}
+                  {/* Pass new props to renderDetails */}
+                  {renderDetails(
+                    value,
+                    classes,
+                    key,
+                    language,
+                    fileStates,
+                    handleCommentChange,
+                    handleFileVerify,
+                    handleFileReject,
+                    eligibilityMap,
+                    handleEligibilityChange,
+                    onSaveEligibility,
+                    user_type // ✅✅✅ THIS IS THE CRITICAL FIX: Pass user_type here
+                  )}
+
                   {fileStates && (
                     <>
                       <Typography variant="h6" style={{ marginTop: 3 }}>
@@ -530,7 +698,7 @@ const ApplicationViewPage = ({
                         .map((file) => (
                           <DocumentReviewAccordion
                             key={file._originalIndex}
-                            file={file} // ✅ from editable local state
+                            file={file}
                             index={file._originalIndex}
                             onCommentChange={handleCommentChange}
                             onVerify={handleFileVerify}
@@ -551,7 +719,7 @@ const ApplicationViewPage = ({
               </Typography>
               {fileStates
                 ?.filter((item, originalIdx) => {
-                  item._originalIndex = originalIdx; // attach index temporarily
+                  item._originalIndex = originalIdx;
                   return item?.workforceDocumentType?.formStepNo === "workforceDocument";
                 })
                 .map((file) => (
