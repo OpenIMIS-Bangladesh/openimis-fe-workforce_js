@@ -2855,6 +2855,7 @@ export function fetchEisPaymentProcess(applicationIds) {
         processingDate
         beneficiaryId
         isDisbursed
+        approved
         bank {
           id
           nameEn
@@ -2945,7 +2946,7 @@ export function updateWorkforceEisPaymentProcessApproval(eisPaymentData) {
     mutation {
       updateWorkforceEisPaymentProcessApproval(
         beneficiaryId: "${eisPaymentData?.beneficiaryId}"
-        isApproved: true
+        approved: "${eisPaymentData?.approved}"
       ) {
         success
         errors

@@ -12,12 +12,12 @@ import {
   Button,
   Divider,
 } from '@material-ui/core';
-import { RELATION_LABEL_MAP, WORKFORCE_USER_TYPE } from "../../constants";
-import { getUserType, getUserTypeFromRights } from "../../utils/utils";
+import { EIS_PAYMENT_TYPES, RELATION_LABEL_MAP, WORKFORCE_USER_TYPE } from "../../constants";
+import { getApprovalStatus, getUserType, getUserTypeFromRights } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
-import { createApplicationSummary, updateApplication, updateApplicationSummary, updateWorkforceEisPaymentProcessPaymentType } from "../../actions";
-import { useDispatch } from "react-redux";
+import { createApplicationSummary, updateApplication, updateApplicationSummary, updateWorkforceEisPaymentProcessApproval, updateWorkforceEisPaymentProcessPaymentType } from "../../actions";
+import { useDispatch, useSelector } from "react-redux";
 import React, { Component, useState, useEffect } from "react";
 import { enToBn } from '../../utils/utils';
 import ExcelJS from 'exceljs';
@@ -49,6 +49,8 @@ const useStyles = makeStyles((theme) => ({
 import { fetchEisPaymentProcess, eisPaymentProcessWithoutDate } from "../../actions";
 
 const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights, status, summary_Id, selectedApplicationIds }) => {
+  const reduxState = useSelector((state) => state);
+  const locale = reduxState?.core?.user?.i_user?.language || 'en';
   const classes = useStyles();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
@@ -779,26 +781,44 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
   // UI: Render all eisPayments (no filter)
   // -----------------------------------
 
-  const handlePaymentTypeChange = async (paymentType, beneficiaryId, rowId) => {
+  
+  
+    const handlePaymentTypeChange = async (paymentType, beneficiaryId, rowId) => {
 
-    setPaymentTypeMap((prev) => ({
-    ...prev,
-      [rowId]: paymentType,
-    }));
+      setPaymentTypeMap((prev) => ({
+      ...prev,
+        [rowId]: paymentType,
+      }));
 
-    const data = {
-      beneficiaryId,
-      eisPaymentType: paymentType,
+      const data = {
+        beneficiaryId,
+        eisPaymentType: paymentType,
+      };
+
+      try {
+        await dispatch(updateWorkforceEisPaymentProcessPaymentType(data));
+      } catch (error) {
+        console.error(error);
+      }
     };
 
-    try {
-      await dispatch(updateWorkforceEisPaymentProcessPaymentType(data));
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    const handleApprovalChange = async (value, beneficiaryId, rowId) => {
+      setPaymentTypeMap((prev) => ({
+        ...prev,
+        [rowId]: value,
+      }));
 
+      const data = {
+        beneficiaryId,
+        approved: value,
+      };
 
+      try {
+        await dispatch(updateWorkforceEisPaymentProcessApproval(data));
+      } catch (error) {
+        console.error(error);
+      }
+    };
   const user_type = getUserTypeFromRights(userRights)
 
   return (
@@ -818,7 +838,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
       <DialogContent dividers>
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow style={{ backgroundColor: "#f0f0f0", fontWeight: "bold" }}>
               <TableCell><FormattedMessage id="SL #" /></TableCell>
               <TableCell><FormattedMessage id="EIS Worker ID" /></TableCell>
               <TableCell><FormattedMessage id="Worker Name" /></TableCell>
@@ -865,7 +885,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
                          <select
                             value={
                               paymentTypeMap[index] !== undefined
-                              ? paymentTypeMap[index]
+                              ? paymentTypeMap[index]?.eisPaymentType
                               : row?.eisPaymentType || ""
                             }
                             onChange={(e) =>
@@ -874,15 +894,34 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
                           >
                             <option value="" disabled>Select</option>
                             <option value="monthly">Monthly</option>
-                            <option value="one-time">One-time</option>
+                            <option value="onetime">One-time</option>
                             <option value="installment">Tri Monthly Installment</option>
                           </select>
                         </>
                       ) :
-                      row?.eisPaymentType
+                      EIS_PAYMENT_TYPES[row?.eisPaymentType]
                     }
                   </TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>
+                    {
+                      user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
+                      <>
+                         <select
+                            value={
+                              paymentTypeMap[index] !== undefined ? paymentTypeMap[index]?.approved : ""
+                            }
+                            onChange={(e) =>
+                              handleApprovalChange(e.target.value, row?.beneficiaryId, index)
+                            }
+                          >
+                            <option value="">Not Approved</option>
+                            <option value="yes">Approved</option>
+                          </select>
+                        </>
+                        
+                      ) : getApprovalStatus(row?.isApproved)
+                    }
+                  </TableCell>
                   <TableCell></TableCell>
                 </TableRow>
 
