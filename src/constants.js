@@ -652,3 +652,10 @@ export const RELATION_LABEL_MAP = {
   "workforce.relation.grand_father": "Grand Father",
   "workforce.relation.grand_mother": "Grand Mother",
 };
+
+
+export const EIS_PAYMENT_TYPES = {
+  "monthly": "Monthly",
+  "onetime": "One Time",
+  "installment": "Tri Monthly Installment",
+};
