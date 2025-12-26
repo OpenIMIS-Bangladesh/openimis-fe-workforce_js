@@ -511,11 +511,17 @@ const ApplicationViewPage = ({
     console.log("Saving Eligibility for ID:", dependentItem.id, "Eligible:", isEligibleBool);
     console.log("Updated List:", updatedDependentsList);
 
+    const newEmployeeDependentForm = {
+      ...updatedDependentsList,
+      isDisabled:updatedDependentsList.disabilityStatus,
+      relationType:updatedDependentsList.relationWithWorker
+    }
+
     // 3. Create Payload for updateApplication
     // We send the Modified Array as 'employeeDependentInfo'
     const payload = {
       id: application.id,
-      employeeDependentInfo: JSON.stringify(updatedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
+      employeeDependentInfo: JSON.stringify(newEmployeeDependentForm).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
     };
     console.log(payload)
 
