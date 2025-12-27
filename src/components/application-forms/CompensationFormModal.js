@@ -148,6 +148,7 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
         entryBy: user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory" : "officer",
         dateOfCompensation: item.dateOfCompensation,
         amount: item.amount,
+        receivedFromOrganization:item?.receivedFrom,
         statusOfPayment: item.paymentStatus, // Map State -> API
         // Map String "Yes"/"No" -> Boolean
         isEisBenefitAdjustmentEligible: item.eisBenefitAdjustment === "Yes", 
