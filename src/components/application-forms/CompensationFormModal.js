@@ -10,12 +10,13 @@ import {
   Paper,
   Fade,
   Backdrop,
-  TextField
+  TextField,
+  Select
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import CloseIcon from "@material-ui/icons/Close";
-import { TextInput, PublishedComponent, FormattedMessage, useModulesManager,parseData } from "@openimis/fe-core";
+import { TextInput, PublishedComponent, FormattedMessage, useModulesManager,parseData} from "@openimis/fe-core";
 import { getUserType, safeDecodeId } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
@@ -151,7 +152,7 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
         receivedFromOrganization:item?.receivedFrom,
         statusOfPayment: item.paymentStatus, // Map State -> API
         // Map String "Yes"/"No" -> Boolean
-        isEisBenefitAdjustmentEligible: item.eisBenefitAdjustment === "Yes", 
+        isEisBenefitAdjustmentEligible: item.eisBenefitAdjustment, 
         remarks: item.remarks,
         // Optional: Map receivedFrom to paymentType if that's the intention
         // paymentType: item.receivedFrom 
@@ -257,17 +258,16 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                   {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && (
                     <>
                       <Grid item xs={12} sm={6}>
-                        <TextField
-                          select
+                        <Select
                           label={<FormattedMessage id="workforce.compensation.eligible.ForEISAdjustment" />}
                           fullWidth
-                          value={entry.eisBenefitAdjustment || "No"}
+                          value={entry.eisBenefitAdjustment || entry?.isEisBenefitAdjustmentEligible || "No"}
                           onChange={handleChange(index, "eisBenefitAdjustment")}
                           helperText="If Yes, value passes to VBA"
                         >
                           <MenuItem value="Yes">Yes</MenuItem>
                           <MenuItem value="No">No</MenuItem>
-                        </TextField>
+                        </Select>
                       </Grid>
 
                       <Grid item xs={12} sm={6}>
