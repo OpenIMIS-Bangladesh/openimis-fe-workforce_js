@@ -215,7 +215,7 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                     <TextInput
                       label={"workforce.compensation.recievedFrom"}
                       fullWidth
-                      value={entry.receivedFrom}
+                      value={entry.receivedFrom ||entry?.receivedFromOrganization||" "}
                       onChange={handleChange(index, "receivedFrom")}
                     />
                   </Grid>

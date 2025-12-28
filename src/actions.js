@@ -1321,6 +1321,7 @@ export function fetchWorkforceOtherCompensation(mm, filters) {
     "amount",
     "statusOfPayment",
     "isEisBenefitAdjustmentEligible",
+    "receivedFromOrganization",
     "remarks",
     "paymentType",
   ];
