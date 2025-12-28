@@ -536,9 +536,10 @@ const ApplicationViewPage = ({
     // 3. Create Payload
     // Note: Since we parsed attachments into objects above, JSON.stringify here 
     // will handle the structure correctly without needing manual regex replacements.
+    console.log({formattedDependentsList})
     const payload = {
       id: application.id,
-      employeeDependentInfo: JSON.stringify(formattedDependentsList),
+      employeeDependentInfo: JSON.stringify(formattedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
     };
     
     console.log("Final Payload:", payload);
