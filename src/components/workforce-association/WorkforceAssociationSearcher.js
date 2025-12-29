@@ -112,9 +112,6 @@ class WorkforceAssociationSearcher extends Component {
     if (state.beforeCursor) {
       prms.push(`before: "${state.beforeCursor}"`);
     }
-    if (state.orderBy) {
-      prms.push(`orderBy: ["${state.orderBy}"]`);
-    }
     return prms;
   };
 
@@ -131,9 +128,9 @@ class WorkforceAssociationSearcher extends Component {
 
   itemFormatters = () => {
     const formatters = [
-      (workforceassociation) => workforceassociation.nameEn,
       (workforceassociation) => workforceassociation.nameBn,
-      (workforceassociation) => workforceassociation.phoneNumber,
+      (workforceassociation) => workforceassociation.nameEn,
+      (workforceassociation) => workforceassociation.phone,
       (workforceassociation) => workforceassociation.email,
       (workforceassociation) => workforceassociation.minimumSalary,
       (workforceassociation) =>

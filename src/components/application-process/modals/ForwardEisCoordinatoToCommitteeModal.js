@@ -118,8 +118,6 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
 
   const ROLE_OPTIONS = [
     { id: "49", name: "EIS Committee" },
-    { id: "52", name: "EIS Association" },
-    { id: "53", name: "EIS Doctor" },
   ];
 
   useEffect(() => {
