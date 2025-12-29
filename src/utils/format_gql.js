@@ -152,6 +152,8 @@ export function formatWorkforceOtherCompensationGQL(otherCompensation) {
     ${otherCompensation?.isEisBenefitAdjustmentEligible ? `isEisBenefitAdjustmentEligible: "${otherCompensation?.isEisBenefitAdjustmentEligible}"` : ""}
     ${otherCompensation?.remarks ? `remarks: "${otherCompensation?.remarks}"` : ""}
     ${otherCompensation?.paymentType ? `paymentType: "${otherCompensation?.paymentType}"` : ""}
+    ${otherCompensation?.receivedFromOrganization ? `receivedFromOrganization: "${otherCompensation?.receivedFromOrganization}"` : ""}
+    ${otherCompensation?.workforceApplicationId ? `workforceApplicationId: "${otherCompensation?.workforceApplicationId}"` : ""}
   `;
 }
 export function formatWorkforceFactoryGQL(factory) {

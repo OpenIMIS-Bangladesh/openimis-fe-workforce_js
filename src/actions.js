@@ -826,7 +826,7 @@ export function fetchApplication(mm, filters) {
     "institutionInfo",
     "educations{edges{node{id,childNameEn,childNameBn,childBirthDate,childBirthCertificateNo,childNidNo,studyClass,institution,educationLevel,educationBoard,passingYear,rollNumber,registrationNumber,result}}}",
     // "workforceEmployeeDependentApplication{edges{node{id,nameBn,nameEn,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,nid,birthDate,percentageOfCfGrant,phoneNumber,presentLocation {id},presentAddress,permanentLocation {id},permanentAddress}}}",
-    "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,occupation,email,phoneNumber,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,attachments,status,employeeBankingDependents{edges{node{id}}},presentAddress,permanentAddress," + present_location_projection + permanent_location_projection + ",bankingInfo{id}}}}",
+    "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,occupation,email,phoneNumber,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,relationWithWorker,attachments,status,employeeBankingDependents{edges{node{id}}},presentAddress,permanentAddress," + present_location_projection + permanent_location_projection + ",bankingInfo{id}}}}",
     "employeeBankingInfoApplication{edges{node{id,dateCreated,nameBn,nameEn,accountNo,accountHolderName,accountHolderType,status,branch{id,nameBn,nameEn,bankCode,branchCode,routingNumber,districtNameEn,districtNameBn,parent{id,nameBn,nameEn}},dependant{id},relationWithDependent}}}",
     "metadata",
     "employeeFactory{id, nameBn, nameEn}",
@@ -1272,7 +1272,6 @@ export function updateWorkforceOtherCompensation(
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
       requestedDateTime,
-      id: representative.id,
     }
   );
 }
@@ -1366,6 +1365,7 @@ export function fetchWorkforceOtherCompensation(mm, filters) {
     "amount",
     "statusOfPayment",
     "isEisBenefitAdjustmentEligible",
+    "receivedFromOrganization",
     "remarks",
     "paymentType",
   ];
@@ -2943,6 +2943,7 @@ export function fetchEisPaymentProcess(applicationIds) {
         processingDate
         beneficiaryId
         isDisbursed
+        approved
         bank {
           id
           nameEn
@@ -3010,3 +3011,35 @@ export const removeUploadedFile = (fieldKey, fileName) => ({
   type: "REMOVE_UPLOADED_FILE",
   payload: { fieldKey, fileName },
 });
+
+
+export function updateWorkforceEisPaymentProcessPaymentType(eisPaymentData) {
+  const mutation = `
+    mutation {
+      updateWorkforceEisPaymentProcessPaymentType(
+        beneficiaryId: "${eisPaymentData?.beneficiaryId}"
+        paymentType: "${eisPaymentData?.eisPaymentType}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "UPDATE_WORKFORCE_EIS_PAYMENT_PROCESS_PAYMENT_TYPE");
+}
+
+
+export function updateWorkforceEisPaymentProcessApproval(eisPaymentData) {
+  const mutation = `
+    mutation {
+      updateWorkforceEisPaymentProcessApproval(
+        beneficiaryId: "${eisPaymentData?.beneficiaryId}"
+        approved: "${eisPaymentData?.approved}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "UPDATE_WORKFORCE_EIS_PAYMENT_PROCESS_APPROVAL");
+}

@@ -10,17 +10,17 @@ import {
   Paper,
   Fade,
   Backdrop,
-  TextField // Imported standard MUI TextField
+  TextField,
+  Select
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import CloseIcon from "@material-ui/icons/Close";
-import { TextInput, PublishedComponent, FormattedMessage,useModulesManager } from "@openimis/fe-core";
-import { getUserType } from "../../utils/utils";
+import { TextInput, PublishedComponent, FormattedMessage, useModulesManager,parseData} from "@openimis/fe-core";
+import { getUserType, safeDecodeId } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
 import { createWorkforceOtherCompensation, fetchWorkforceOtherCompensation, updateWorkforceOtherCompensation } from "../../actions";
-
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -81,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const initialEntry = {
+  id: null, // Track ID for updates
   receivedFrom: "",
   dateOfCompensation: null,
   amount: "",
@@ -89,26 +90,34 @@ const initialEntry = {
   remarks: "",
 };
 
-const CompensationFormModal = ({ application,open, onClose, onSubmit, entryType = "factory" }) => {
+const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType = "factory" }) => {
   const classes = useStyles();
   const [formData, setFormData] = useState([initialEntry]);
-  const dispatch = useDispatch()
-  const modulesManager= useModulesManager()
-  const user_type= getUserType()
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
+  const user_type = getUserType();
 
   useEffect(() => {
-    if (application?.id) {
-        return dispatch(fetchWorkforceOtherCompensation(modulesManager, [`workforceApplicationId:"${application?.id}"`]))
-                .then(res =>console.log(res))
-    }
-    if (open) {
+    // Only fetch if modal is open and we have an application ID
+    if (open && application?.id) {
+      dispatch(fetchWorkforceOtherCompensation(modulesManager, [`workforceApplicationId:"${application?.id}"`]))
+        .then((res) => {
+          const fetchOtherCompensation = parseData(res?.payload?.data?.workforceOtherCompensationInfo)
+                  console.log(fetchOtherCompensation)
+                  setFormData(fetchOtherCompensation)
+        })
+        .catch((err) => {
+          console.error("Error fetching compensation:", err);
+          setFormData([{ ...initialEntry }]);
+        });
+    } else if (open) {
+      // If opening without an ID (new application context), reset form
       setFormData([{ ...initialEntry }]);
     }
-  }, [open, entryType]);
+  }, [open, application?.id, dispatch, modulesManager]); // Added proper dependencies
 
   const handleChange = (index, key) => (eventOrValue) => {
     let value = eventOrValue;
-    // Standardize value extraction: if it's an event, get target.value
     if (eventOrValue && eventOrValue.target) {
       value = eventOrValue.target.value;
     }
@@ -125,6 +134,8 @@ const CompensationFormModal = ({ application,open, onClose, onSubmit, entryType 
 
   const handleRemoveEntry = (index) => {
     const values = [...formData];
+    // If deleting an item that exists in DB (has ID), you might need a delete API call here.
+    // For now, we just remove it from the UI list.
     if (values.length > 1) {
       values.splice(index, 1);
       setFormData(values);
@@ -132,23 +143,33 @@ const CompensationFormModal = ({ application,open, onClose, onSubmit, entryType 
   };
 
   const handleFormSubmit = () => {
-    formData?.map((item,idx)=>{
-        const payload = {
-          entryBy: user_type===WORKFORCE_USER_TYPE.FACTORY_ADMIN?"factory":"officer",
-          dateOfCompensation: item.dateOfCompensation,
-          amount: item.amount,
-          statusOfPayment: item.paymentStatus,
-          isEisBenefitAdjustmentEligible: item.eisBenefitAdjustment ==="Yes"?true:false,
-          remarks: item.remarks,
-        };
-        console.log("Submitting Payload:", payload); // This will now show the correct values
-        if (item?.id) {
-            dispatch(createWorkforceOtherCompensation(payload,"create other compensation info"))
-        }else{
-            dispatch(updateWorkforceOtherCompensation(payload,"create other compensation info"))
-        }
-    })
-    // if (onSubmit) onSubmit(payload);
+    formData?.forEach((item) => {
+      const payload = {
+        workforceApplicationId: safeDecodeId(application?.id),
+        entryBy: user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory" : "officer",
+        dateOfCompensation: item.dateOfCompensation,
+        amount: item.amount,
+        receivedFromOrganization:item?.receivedFrom,
+        statusOfPayment: item.paymentStatus, // Map State -> API
+        // Map String "Yes"/"No" -> Boolean
+        isEisBenefitAdjustmentEligible: item.eisBenefitAdjustment, 
+        remarks: item.remarks,
+        // Optional: Map receivedFrom to paymentType if that's the intention
+        // paymentType: item.receivedFrom 
+      };
+
+      if (item.id) {
+        // UPDATE: Include the ID in the payload for the update action
+        const updatePayload = { ...payload, id: safeDecodeId(item.id) }; 
+        console.log("Updating Payload:", updatePayload);
+        dispatch(updateWorkforceOtherCompensation(updatePayload, "update other compensation info"));
+      } else {
+        // CREATE
+        console.log("Creating Payload:", payload);
+        dispatch(createWorkforceOtherCompensation(payload, "create other compensation info"));
+      }
+    });
+    
     onClose();
   };
 
@@ -167,7 +188,6 @@ const CompensationFormModal = ({ application,open, onClose, onSubmit, entryType 
     >
       <Fade in={open}>
         <Paper className={classes.modalPaper}>
-          {/* --- HEADER --- */}
           <div className={classes.modalHeader}>
             <Typography variant="h6">
               {isOfficer ? "Officer Compensation Entry" : "Factory Compensation Entry"}
@@ -177,7 +197,6 @@ const CompensationFormModal = ({ application,open, onClose, onSubmit, entryType 
             </IconButton>
           </div>
 
-          {/* --- BODY --- */}
           <div className={classes.modalBody}>
             {Array.isArray(formData) && formData.map((entry, index) => (
               <div key={index} className={classes.entryBox}>
@@ -193,17 +212,15 @@ const CompensationFormModal = ({ application,open, onClose, onSubmit, entryType 
                 </Grid>
 
                 <Grid container spacing={2}>
-                  {/* 1. Received From */}
                   <Grid item xs={12} sm={6}>
                     <TextInput
                       label={"workforce.compensation.recievedFrom"}
                       fullWidth
-                      value={entry.receivedFrom}
+                      value={entry.receivedFrom ||entry?.receivedFromOrganization||" "}
                       onChange={handleChange(index, "receivedFrom")}
                     />
                   </Grid>
 
-                  {/* 2. Date Picker */}
                   <Grid item xs={12} sm={6}>
                     <PublishedComponent
                       pubRef="workforce.DatePicker"
@@ -215,7 +232,6 @@ const CompensationFormModal = ({ application,open, onClose, onSubmit, entryType 
                     />
                   </Grid>
 
-                  {/* 3. Amount */}
                   <Grid item xs={12} sm={6}>
                     <TextInput
                       label="workforce.employee.application.moneyAmount"
@@ -226,36 +242,32 @@ const CompensationFormModal = ({ application,open, onClose, onSubmit, entryType 
                     />
                   </Grid>
 
-                  {/* 4. Status (CHANGED TO STANDARD TextField) */}
                   <Grid item xs={12} sm={6}>
                     <TextField
                       select
                       label={<FormattedMessage id="workforce.compensation.paymentStatus" defaultMessage="Status of Payment" />}
                       fullWidth
-                      value={entry.paymentStatus}
+                      value={entry.paymentStatus || entry.statusOfPayment||""}
                       onChange={handleChange(index, "paymentStatus")}
-                      // Make sure margin matches TextInput if needed, or remove variant if using standard
                     >
                       <MenuItem value="Paid"><FormattedMessage id="workforce.paid" defaultMessage="Paid" /></MenuItem>
                       <MenuItem value="unPaid"><FormattedMessage id="workforce.unpaid" defaultMessage="Not paid yet" /></MenuItem>
                     </TextField>
                   </Grid>
 
-                  {/* OFFICER ONLY FIELDS */}
-                  {user_type=== WORKFORCE_USER_TYPE.EIS_OFFICER && (
+                  {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && (
                     <>
                       <Grid item xs={12} sm={6}>
-                        <TextField
-                          select
-                          label="workforce.compensation.eligible.ForEISAdjustment"
+                        <Select
+                          label={<FormattedMessage id="workforce.compensation.eligible.ForEISAdjustment" />}
                           fullWidth
-                          value={entry.eisBenefitAdjustment}
+                          value={entry.eisBenefitAdjustment || entry?.isEisBenefitAdjustmentEligible || "No"}
                           onChange={handleChange(index, "eisBenefitAdjustment")}
                           helperText="If Yes, value passes to VBA"
                         >
                           <MenuItem value="Yes">Yes</MenuItem>
                           <MenuItem value="No">No</MenuItem>
-                        </TextField>
+                        </Select>
                       </Grid>
 
                       <Grid item xs={12} sm={6}>
@@ -278,11 +290,10 @@ const CompensationFormModal = ({ application,open, onClose, onSubmit, entryType 
               onClick={handleAddEntry}
               style={{ marginTop: "8px" }}
             >
-              <FormattedMessage id="workforce.compensation.add"/>
+              <FormattedMessage id="workforce.compensation.add" />
             </Button>
           </div>
 
-          {/* --- FOOTER --- */}
           <div className={classes.modalFooter}>
             <Button onClick={onClose} color="secondary">
               Cancel

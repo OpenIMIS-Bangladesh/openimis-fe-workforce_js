@@ -487,21 +487,16 @@ const ApplicationViewPage = ({
   const onSaveEligibility = (dependentItem) => {
     const isEligibleValue = eligibilityMap[dependentItem.id];
 
-    // Safety check: ensure we have a value selected
     if (!isEligibleValue) return;
 
     const isEligibleBool = isEligibleValue === "yes";
     const currentDependents = application?.workforceEmployeeDependentApplication || [];
 
-    // 2. Create a modified copy of the array
+    // 1. Update eligibility in the list
     const updatedDependentsList = currentDependents.map((dep) => {
-      // Create a shallow copy of the dependent to avoid mutating props directly
       const newDep = { ...dep };
-
-      // Optional: Remove __typename if it exists (common in GraphQL) to prevent mutation errors
       delete newDep.__typename;
 
-      // If this is the matched dependent, update isEligible
       if (newDep.id === dependentItem.id) {
         newDep.isEligible = isEligibleBool;
       }
@@ -509,17 +504,47 @@ const ApplicationViewPage = ({
     });
 
     console.log("Saving Eligibility for ID:", dependentItem.id, "Eligible:", isEligibleBool);
-    console.log("Updated List:", updatedDependentsList);
 
-    // 3. Create Payload for updateApplication
-    // We send the Modified Array as 'employeeDependentInfo'
+    // ---------------------------------------------------------
+    // FIX STARTS HERE
+    // ---------------------------------------------------------
+
+    // 2. Transform keys and parse attachments for EVERY item in the list
+    const formattedDependentsList = updatedDependentsList.map((dep) => {
+      
+      // A. Logic to handle JSON.parse for attachments safely
+      let parsedAttachments = dep.attachments;
+      if (typeof dep.attachments === 'string') {
+        try {
+          parsedAttachments = JSON.parse(dep.attachments);
+        } catch (error) {
+          console.warn("Error parsing attachments for dependent", dep.id, error);
+          // Fallback to empty array or original value if parse fails
+          parsedAttachments = []; 
+        }
+      }
+
+      // B. Return the object with new key mappings
+      return {
+        ...dep, // Keep existing properties
+        isDisabled: dep.disabilityStatus, // Remap disabilityStatus -> isDisabled
+        relationType: dep.relationWithWorker, // Remap relationWithWorker -> relationType
+        attachments: parsedAttachments // Set the parsed attachments
+      };
+    });
+
+    // 3. Create Payload
+    // Note: Since we parsed attachments into objects above, JSON.stringify here 
+    // will handle the structure correctly without needing manual regex replacements.
+    console.log({formattedDependentsList})
     const payload = {
       id: application.id,
-      employeeDependentInfo: JSON.stringify(updatedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
+      employeeDependentInfo: JSON.stringify(formattedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
     };
-    console.log(payload)
+    
+    console.log("Final Payload:", payload);
 
-    // 4. Dispatch the updateApplication mutation
+    // 4. Dispatch
     dispatch(updateApplication(payload, "update workforce dependent info"));
   };
   // -------------------------------------------

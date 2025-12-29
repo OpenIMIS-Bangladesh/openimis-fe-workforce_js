@@ -636,3 +636,26 @@ export const colorCode={
   80:'#fdc8c8',
   100:'#fddcf9',
 };
+
+
+export const RELATION_LABEL_MAP = {
+  "workforce.relation.father": "Father",
+  "workforce.relation.mother": "Mother",
+  "workforce.relation.wife": "Wife",
+  "workforce.relation.husband": "Husband",
+  "workforce.relation.son": "Son",
+  "workforce.relation.daughter": "Daughter",
+  "workforce.relation.brother": "Brother",
+  "workforce.relation.sister": "Sister",
+  "workforce.relation.grand_daughter": "Grand Daughter",
+  "workforce.relation.grand_son": "Grand Son",
+  "workforce.relation.grand_father": "Grand Father",
+  "workforce.relation.grand_mother": "Grand Mother",
+};
+
+
+export const EIS_PAYMENT_TYPES = {
+  "monthly": "Monthly",
+  "onetime": "One Time",
+  "installment": "Tri Monthly Installment",
+};

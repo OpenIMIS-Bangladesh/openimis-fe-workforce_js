@@ -173,9 +173,9 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
   return (
     <Box mt={1}>
       {normalizedDependents?.map((dependent, index) => {
-        const isFatherSelected =normalizedDependents.find(d=>d.relationType ==="workforce.relation.father")
-        const previousRelation = index > 0 && isFatherSelected != null? "workforce.relation.father" : null;
-        
+        const isFatherSelected = normalizedDependents.find((d) => d.relationType === "workforce.relation.father");
+        const previousRelation = index > 0 && isFatherSelected != null ? "workforce.relation.father" : null;
+
         return (
           <Accordion key={index} expanded={expanded === index} onChange={(_, isExpanded) => setExpanded(isExpanded ? index : false)}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>

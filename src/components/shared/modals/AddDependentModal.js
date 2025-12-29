@@ -1,13 +1,5 @@
-import React, { useRef, useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Box,
-  makeStyles,
-} from "@material-ui/core";
+import React, { useRef, useState } from "react";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, makeStyles } from "@material-ui/core";
 import { FormattedMessage } from "@openimis/fe-core";
 import { useDispatch } from "react-redux";
 import { updateApplication } from "../../../actions";
@@ -27,41 +19,40 @@ const AddDependentModal = ({ open, onClose, application }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const stepRef = useRef(null);
-  
+
   const [expanded, setExpanded] = useState(0);
   const [errors, setErrors] = useState({});
 
-  // 1. FIX INITIALIZATION: 
-  // We must parse the stringified JSON from props into a real Array immediately.
   const [formData, setFormData] = useState(() => {
     let parsedDependents = [];
-    
-    if (application?.employeeDependentInfo) {
+
+    // Prioritize existing array, otherwise parse string
+    if (Array.isArray(application?.workforceEmployeeDependentApplication)) {
+      parsedDependents = application.workforceEmployeeDependentApplication;
+    } else if (application?.employeeDependentInfo) {
       try {
-        // Check if it's a string, if so, parse it. If it's already an object/array, use it.
-        parsedDependents = typeof application.employeeDependentInfo === "string"
-          ? JSON.parse(application.employeeDependentInfo)
-          : application.employeeDependentInfo;
+        parsedDependents =
+          typeof application.employeeDependentInfo === "string"
+            ? JSON.parse(application.employeeDependentInfo)
+            : application.employeeDependentInfo;
       } catch (error) {
         console.error("Error parsing dependents:", error);
         parsedDependents = [];
       }
     }
 
-    // Ensure it is always an array
     if (!Array.isArray(parsedDependents)) parsedDependents = [];
 
     return {
       ...application,
-      employeeDependentInfo: application?.workforceEmployeeDependentApplication, 
+      // FIX 1: Assign the parsed array to the key we will be editing
+      employeeDependentInfo: parsedDependents, 
     };
   });
 
   const handleArrayFieldChange = (fieldKey, index, key, value) => {
     setFormData((prev) => {
-      // Create a shallow copy of the array to ensure immutability
       const items = prev[fieldKey] ? [...prev[fieldKey]] : [];
-      // Update the specific field
       items[index] = { ...items[index], [key]: value };
       return { ...prev, [fieldKey]: items };
     });
@@ -71,7 +62,8 @@ const AddDependentModal = ({ open, onClose, application }) => {
     setFormData((prev) => {
       const items = prev[fieldKey] ? [...prev[fieldKey]] : [];
       const updated = [...items, defaultItem];
-      setExpanded(updated.length - 1); 
+      // Auto-expand the new item
+      setExpanded(updated.length - 1);
       return { ...prev, [fieldKey]: updated };
     });
   };
@@ -85,26 +77,16 @@ const AddDependentModal = ({ open, onClose, application }) => {
   };
 
   const handleSubmit = () => {
-    // 2. FIX SUBMIT LOGIC:
-    // formData.employeeDependentInfo contains the FULL list (edited old items + new items).
-    // We do NOT need to merge it with `currentDependents` again, and we must NOT spread it into an object.
-    
     const finalDependentList = formData.employeeDependentInfo || [];
-
     const payload = {
       id: application.id,
-      // Simply stringify the final array. 
-      // This results in "[{...}, {...}]" instead of "{0:{...}, 1:{...}}"
-      employeeDependentInfo: JSON.stringify(finalDependentList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") 
+      employeeDependentInfo: JSON.stringify(finalDependentList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
     };
 
-    // Dispatch Action
     dispatch(updateApplication(payload, "update dependent info"));
-
-    // Close & Reset
     onClose();
   };
-
+console.log("tazwer",formData)
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
@@ -114,13 +96,16 @@ const AddDependentModal = ({ open, onClose, application }) => {
         <Box mt={0} ref={stepRef}>
           <EmployeeDependentForm
             applicationType={formData.applicationType}
-            dependents={formData.workforceEmployeeDependentApplication} // Pass the Array directly
-            handleChange={(index, key, value) =>
-              handleArrayFieldChange("employeeDependentInfo", index, key, value)
-            }
-            addItem={() =>
-              addArrayFieldItem("employeeDependentInfo", { fullName: "", relationship: "" })
-            }
+            // FIX 2: Point to the variable that is actually being updated (employeeDependentInfo)
+            dependents={formData.employeeDependentInfo} 
+            handleChange={(index, key, value) => handleArrayFieldChange("employeeDependentInfo", index, key, value)}
+            // Ensure default values are provided so the form doesn't crash on render
+            addItem={() => addArrayFieldItem("employeeDependentInfo", { 
+                fullName: "", 
+                relationship: "", 
+                // Initialize boolean fields to avoid controlled/uncontrolled warnings
+                isDisabled: "no" 
+            })}
             removeItem={(index) => removeArrayFieldItem("employeeDependentInfo", index)}
             expanded={expanded}
             setExpanded={setExpanded}

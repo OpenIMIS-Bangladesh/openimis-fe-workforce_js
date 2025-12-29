@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import React from "react";
 import { WORKFORCE_USER_TYPE } from "../constants";
 import { fetchApplication } from "../actions";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage, parseData } from "@openimis/fe-core";
@@ -505,6 +506,22 @@ export function getAssociationNameByUserType(user_type) {
     return "";
   }
 }
+
+export function getApprovalStatus(isApproved) {
+  if (isApproved === "yes") {
+    return (
+      <>
+        <b style= {{ color: "green" }}>
+          Approved
+        </b>
+      </>
+    )
+
+  } else {
+    return "Not Approved Yet";
+  }
+}
+
 
 export const isEisPath = () => {
   if (typeof window !== "undefined") {
