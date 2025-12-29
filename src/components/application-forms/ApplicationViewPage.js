@@ -71,11 +71,18 @@ const useStyles = makeStyles((theme) => ({
     background: "#fafafa",
     borderRadius: 8,
   },
+  bulkActionContainer: {
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(2),
+    background: "#e3f2fd",
+    borderRadius: 8,
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
 }));
 
-/**
- * Keys to hide from rendering
- */
+// ... [hiddenKeys, formatKey, tryParse, isEmpty functions remain unchanged] ...
 const hiddenKeys = [
   "id",
   "uuid",
@@ -88,7 +95,6 @@ const hiddenKeys = [
   "associationType",
   "applicationFor",
   "employeeDependentInfo",
-  // "workforceEmployeeDependentApplication",
   "employeeBankingInfoApplication",
   "educations",
   "applicationForSelf",
@@ -115,9 +121,6 @@ const hiddenKeys = [
   "wCode",
 ];
 
-/**
- * Convert key into a user-friendly label
- */
 const formatKey = (key, language) => {
   const cleanKey = key.split(".").pop();
   if (["fr", "bangla", "bd"].includes(language) && banglaLabels[cleanKey]) {
@@ -129,9 +132,6 @@ const formatKey = (key, language) => {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 };
 
-/**
- * Try parsing JSON safely
- */
 const tryParse = (value) => {
   if (typeof value === "string") {
     try {
@@ -170,12 +170,10 @@ const renderDetails = (
   handleFileReject,
   eligibilityMap,
   handleEligibilityChange,
-  onSaveEligibility,
-  user_type // ✅ Argument present
+  user_type
 ) => {
   if (!data) return null;
 
-  // ✅ Safe JSON parser
   const tryParse = (value) => {
     if (typeof value === "string") {
       try {
@@ -188,7 +186,6 @@ const renderDetails = (
     return value;
   };
 
-  // ✅ Merge present/permanent address + location
   const mergeAddressAndLocation = (obj) => {
     const parsedObj = Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, tryParse(v)]));
     const newObj = { ...parsedObj };
@@ -214,7 +211,6 @@ const renderDetails = (
     return newObj;
   };
 
-  // ✅ Merge + parse data
   const mergedData =
     typeof data === "object" && !Array.isArray(data)
       ? mergeAddressAndLocation(data)
@@ -222,7 +218,7 @@ const renderDetails = (
       ? data.map((item) => (typeof item === "object" ? mergeAddressAndLocation(item) : tryParse(item)))
       : tryParse(data);
 
-  // ✅ Handle arrays of objects
+  // Handle arrays of objects
   if (Array.isArray(mergedData)) {
     return mergedData.map((item, idx) => {
       if (typeof item !== "object" || !item) return null;
@@ -236,12 +232,9 @@ const renderDetails = (
 
       let matchingFiles = [];
       if (parentKey === "workforceEmployeeDependentApplication" && item?.id && fileStates) {
-        matchingFiles = fileStates
-          .map((f, i) => ({ ...f, _originalIndex: i })) // Preserve original index
-          .filter((f) => f?.workforceDependent?.id === item.id);
+        matchingFiles = fileStates.map((f, i) => ({ ...f, _originalIndex: i })).filter((f) => f?.workforceDependent?.id === item.id);
       }
 
-      // Check if user is allowed (Coordinator OR Officer)
       const isAllowedUser = [WORKFORCE_USER_TYPE.EIS_COORDINATOR, WORKFORCE_USER_TYPE.EIS_OFFICER].includes(user_type);
 
       return (
@@ -287,7 +280,6 @@ const renderDetails = (
                       : "স্থায়ী ঠিকানা"
                     : formatKey(key, language)}
                 </Typography>
-                {/* Recursively pass new props */}
                 {renderDetails(
                   value,
                   classes,
@@ -299,8 +291,7 @@ const renderDetails = (
                   handleFileReject,
                   eligibilityMap,
                   handleEligibilityChange,
-                  onSaveEligibility,
-                  user_type // ✅ Passed recursively
+                  user_type
                 )}
               </Box>
             ))}
@@ -324,7 +315,7 @@ const renderDetails = (
               </Box>
             )}
 
-            {/* ----- CONDITIONAL: ELIGIBILITY RADIO BUTTON & SAVE BUTTON ----- */}
+            {/* ----- UPDATED: ONLY RADIO BUTTONS (No individual Save Button) ----- */}
             {parentKey === "workforceEmployeeDependentApplication" && isAllowedUser && (
               <Box
                 mt={3}
@@ -335,7 +326,7 @@ const renderDetails = (
                   border: "1px solid #d1e3f0",
                 }}
               >
-                <Grid container alignItems="center" justifyContent="space-between">
+                <Grid container alignItems="center">
                   <Grid item>
                     <FormControl component="fieldset">
                       <FormLabel
@@ -353,18 +344,22 @@ const renderDetails = (
                         row
                         aria-label="eligibility"
                         name={`eligibility-${item.id}`}
-                        value={eligibilityMap?.[item.id] || item?.isEligible || ""}
+                        // Use local map value OR fallback to existing database value
+                        value={
+                          eligibilityMap?.[item.id] !== undefined
+                            ? eligibilityMap[item.id]
+                            : item?.isEligible === true
+                            ? "yes"
+                            : item?.isEligible === false
+                            ? "no"
+                            : ""
+                        }
                         onChange={(e) => handleEligibilityChange(item.id, e.target.value)}
                       >
                         <FormControlLabel value="yes" control={<Radio color="primary" />} label={language === "en" ? "Yes" : "হ্যাঁ"} />
                         <FormControlLabel value="no" control={<Radio color="primary" />} label={language === "en" ? "No" : "না"} />
                       </RadioGroup>
                     </FormControl>
-                  </Grid>
-                  <Grid item>
-                    <Button variant="contained" color="primary" onClick={() => onSaveEligibility(item)} disabled={!eligibilityMap?.[item.id]}>
-                      {language === "en" ? "Save" : "সংরক্ষণ করুন"}
-                    </Button>
                   </Grid>
                 </Grid>
               </Box>
@@ -376,7 +371,7 @@ const renderDetails = (
     });
   }
 
-  // ✅ Handle object data
+  // Handle object data
   if (typeof mergedData === "object" && mergedData !== null) {
     const scalars = Object.entries(mergedData).filter(
       ([key, value]) => typeof value !== "object" && !hiddenKeys.includes(key) && value !== null && value !== undefined && value !== ""
@@ -388,7 +383,6 @@ const renderDetails = (
 
     return (
       <Grid container spacing={2}>
-        {/* ✅ Scalars on top */}
         {scalars.map(([key, value]) => (
           <Grid item xs={6} key={key} className={classes.itemRow}>
             <Typography variant="body1" className={classes.value}>
@@ -400,7 +394,6 @@ const renderDetails = (
           </Grid>
         ))}
 
-        {/* ✅ Nested objects */}
         {objects.map(([key, value]) => {
           const parsedValue = tryParse(value);
           const sectionTitle =
@@ -428,7 +421,6 @@ const renderDetails = (
               >
                 {sectionTitle}
               </Typography>
-              {/* Recursively pass new props */}
               {renderDetails(
                 parsedValue,
                 classes,
@@ -440,8 +432,7 @@ const renderDetails = (
                 handleFileReject,
                 eligibilityMap,
                 handleEligibilityChange,
-                onSaveEligibility,
-                user_type // ✅ Passed recursively
+                user_type
               )}
             </Grid>
           );
@@ -472,11 +463,11 @@ const ApplicationViewPage = ({
   const [lastSalaryAmount, setLastSalaryAmount] = useState("");
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
   const [openCompensationInfoModal, setOpenCompensationInfoModal] = useState(false);
-  console.log({ view: application });
 
-  // --- NEW: Eligibility State and Handlers ---
+  // --- Eligibility State ---
   const [eligibilityMap, setEligibilityMap] = useState({});
 
+  // 1. Update Local Map
   const handleEligibilityChange = (id, value) => {
     setEligibilityMap((prev) => ({
       ...prev,
@@ -484,77 +475,58 @@ const ApplicationViewPage = ({
     }));
   };
 
-  const onSaveEligibility = (dependentItem) => {
-    const isEligibleValue = eligibilityMap[dependentItem.id];
-
-    if (!isEligibleValue) return;
-
-    const isEligibleBool = isEligibleValue === "yes";
+  // 2. Bulk Save Function
+  const handleSaveAllDependents = () => {
     const currentDependents = application?.workforceEmployeeDependentApplication || [];
 
-    // 1. Update eligibility in the list
-    const updatedDependentsList = currentDependents.map((dep) => {
-      const newDep = { ...dep };
-      delete newDep.__typename;
+    // Map through ALL dependents to create the full list
+    const formattedDependentsList = currentDependents.map((dep) => {
+      // A. Check if this dependent was modified in the map, otherwise use existing value
+      let updatedIsEligible = dep.isEligible;
 
-      if (newDep.id === dependentItem.id) {
-        newDep.isEligible = isEligibleBool;
+      if (eligibilityMap.hasOwnProperty(dep.id)) {
+        updatedIsEligible = eligibilityMap[dep.id] === "yes";
       }
-      return newDep;
-    });
 
-    console.log("Saving Eligibility for ID:", dependentItem.id, "Eligible:", isEligibleBool);
-
-    // ---------------------------------------------------------
-    // FIX STARTS HERE
-    // ---------------------------------------------------------
-
-    // 2. Transform keys and parse attachments for EVERY item in the list
-    const formattedDependentsList = updatedDependentsList.map((dep) => {
-      
-      // A. Logic to handle JSON.parse for attachments safely
+      // B. Parse Attachments Safely
       let parsedAttachments = dep.attachments;
-      if (typeof dep.attachments === 'string') {
+      if (typeof dep.attachments === "string") {
         try {
           parsedAttachments = JSON.parse(dep.attachments);
         } catch (error) {
           console.warn("Error parsing attachments for dependent", dep.id, error);
-          // Fallback to empty array or original value if parse fails
-          parsedAttachments = []; 
+          parsedAttachments = [];
         }
       }
 
-      // B. Return the object with new key mappings
+      // C. Return the object with new key mappings and updated eligibility
       return {
-        ...dep, // Keep existing properties
-        isDisabled: dep.disabilityStatus, // Remap disabilityStatus -> isDisabled
-        relationType: dep.relationWithWorker, // Remap relationWithWorker -> relationType
-        attachments: parsedAttachments // Set the parsed attachments
+        ...dep,
+        isEligible: updatedIsEligible, // The Updated Value
+        isDisabled: dep.disabilityStatus,
+        relationType: dep.relationWithWorker,
+        attachments: parsedAttachments,
       };
     });
 
-    // 3. Create Payload
-    // Note: Since we parsed attachments into objects above, JSON.stringify here 
-    // will handle the structure correctly without needing manual regex replacements.
-    console.log({formattedDependentsList})
     const payload = {
       id: application.id,
       employeeDependentInfo: JSON.stringify(formattedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
     };
-    
-    console.log("Final Payload:", payload);
 
-    // 4. Dispatch
-    dispatch(updateApplication(payload, "update workforce dependent info"));
+    console.log("Saving All Dependents Payload:", payload);
+
+    // Dispatch and Clear Map (so button disables again if needed, or keep it enabled)
+    dispatch(updateApplication(payload, "update workforce dependent info")).then(()=>window.location.reload())
+    
+    // Optional: setEligibilityMap({});
   };
-  // -------------------------------------------
 
   const handleLastSalaryAmount = (amount) => {
     const updateApplicationData = {
       id: application?.id,
       lastBaseSalary: amount,
     };
-    console.log({ grantAmount: updateApplicationData });
     dispatch(updateApplication(updateApplicationData, "update workforce application"));
   };
 
@@ -593,11 +565,16 @@ const ApplicationViewPage = ({
   };
   const isNotEmpty = (value) => !isEmpty(value);
 
+  // Check if user is allowed to save dependents
+  const isAllowedUser = [WORKFORCE_USER_TYPE.EIS_COORDINATOR, WORKFORCE_USER_TYPE.EIS_OFFICER].includes(user_type);
+  const hasUnsavedChanges = Object.keys(eligibilityMap).length > 0;
+
   return (
     <>
       <Grid container spacing={3} className={classes.root}>
         {/* Sidebar */}
         <Grid item xs={12} md={4}>
+          {/* ... [Sidebar content remains unchanged] ... */}
           <Paper className={classes.sidebar}>
             <Typography variant="h6" gutterBottom style={{ fontWeight: "bold" }}>
               <FormattedMessage module="workforce" id="workforce.application.info" />
@@ -622,57 +599,56 @@ const ApplicationViewPage = ({
               </b>
             </Typography>
           )}
+          {/* ... [Rest of Sidebar logic for salary, accident info etc] ... */}
           {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && viewedFromFlag === "verify" && (
-            <>
-              <Grid container spacing={2} style={{ marginTop: "10px" }}>
-                <Grid item xs={9}>
-                  <TextInput
-                    label={"workforce.application.lastBaseSalary.byFactoryAdmin"}
-                    value={lastSalaryAmount || ""}
-                    onChange={(e) => setLastSalaryAmount(e)}
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    disabled={application?.lastBaseSalary !== null ? true : false}
-                    onClick={() => handleLastSalaryAmount(lastSalaryAmount)}
-                  >
-                    {<FormattedMessage id="workforce.submit" module="workforce" />}
-                  </Button>
-                </Grid>
-                {application?.organizationType === "eis" && (
-                  <>
-                    <Grid item xs={12}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => setOpenAccidentInfoModal(true)}
-                        fullwidth
-                        disabled={isNotEmpty(application?.employeeAccidentInfo)}
-                      >
-                        {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
-                      </Button>
-                    </Grid>
-                  </>
-                )}
+            <Grid container spacing={2} style={{ marginTop: "10px" }}>
+              <Grid item xs={9}>
+                <TextInput
+                  label={"workforce.application.lastBaseSalary.byFactoryAdmin"}
+                  value={lastSalaryAmount || ""}
+                  onChange={(e) => setLastSalaryAmount(e)}
+                />
               </Grid>
-              {filteredDocumentTypes?.map((document, index) => (
-                <Box style={{ marginTop: "10px" }}>
-                  <Typography>{document.nameBn}</Typography>
-                  <FileUploader
-                    fieldKey={document.fieldId}
-                    applicationId={application?.id}
-                    onFileChange={onFileChange}
-                    documentType={document.documentType}
-                    documentProp={document}
-                    uploadedBy={"factoryAdmin"}
-                  />
-                </Box>
-              ))}
-            </>
+              <Grid item xs={3}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={application?.lastBaseSalary !== null ? true : false}
+                  onClick={() => handleLastSalaryAmount(lastSalaryAmount)}
+                >
+                  {<FormattedMessage id="workforce.submit" module="workforce" />}
+                </Button>
+              </Grid>
+              {application?.organizationType === "eis" && (
+                <>
+                  <Grid item xs={12}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => setOpenAccidentInfoModal(true)}
+                      fullwidth
+                      disabled={isNotEmpty(application?.employeeAccidentInfo)}
+                    >
+                      {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
+                    </Button>
+                  </Grid>
+                </>
+              )}
+            </Grid>
           )}
+          {filteredDocumentTypes?.map((document, index) => (
+            <Box style={{ marginTop: "10px" }}>
+              <Typography>{document.nameBn}</Typography>
+              <FileUploader
+                fieldKey={document.fieldId}
+                applicationId={application?.id}
+                onFileChange={onFileChange}
+                documentType={document.documentType}
+                documentProp={document}
+                uploadedBy={"factoryAdmin"}
+              />
+            </Box>
+          ))}
           {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER || user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) && application?.organizationType === "eis" && (
             <Grid container spacing={2} style={{ marginTop: "10px" }}>
               <Grid item xs={12}>
@@ -689,7 +665,6 @@ const ApplicationViewPage = ({
         {/* Details Section */}
         <Grid item xs={12} md={8}>
           {Object.entries(application).map(([key, value]) => {
-            // skip sidebar & hidden fields
             if (["applicationType", "organizationType", "trackingNumber", "status", "grantAmount", "submittedBy", "dateCreated", ...hiddenKeys].includes(key))
               return null;
 
@@ -706,7 +681,7 @@ const ApplicationViewPage = ({
                   <Typography className={classes.sectionTitle}>{formatKey(key, language)}</Typography>
                 </AccordionSummary>
                 <AccordionDetails style={{ display: "block", background: `${"white"}` }}>
-                  {/* Pass new props to renderDetails */}
+                  {/* Recursively Render Content */}
                   {renderDetails(
                     value,
                     classes,
@@ -718,18 +693,40 @@ const ApplicationViewPage = ({
                     handleFileReject,
                     eligibilityMap,
                     handleEligibilityChange,
-                    onSaveEligibility,
-                    user_type // ✅✅✅ THIS IS THE CRITICAL FIX: Pass user_type here
+                    user_type
                   )}
 
+                  {/* ----- NEW: BULK SAVE BUTTON FOR DEPENDENTS ----- */}
+                  {key === "workforceEmployeeDependentApplication" && isAllowedUser && (
+                    <Box className={classes.bulkActionContainer}>
+                      <Typography variant="body2" style={{ marginRight: 15, color: "#666" }}>
+                        {language === "en"
+                          ? "Select eligibility for dependents above, then click save."
+                          : "উপরের নির্ভরশীলদের জন্য যোগ্যতা নির্বাচন করুন, তারপর সংরক্ষণ করুন এ ক্লিক করুন।"}
+                      </Typography>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSaveAllDependents}
+                        disabled={!hasUnsavedChanges} // Only active if radios have been clicked
+                      >
+                        {language === "en" ? "Save All Dependents" : "সমস্ত নির্ভরশীল সংরক্ষণ করুন"}
+                      </Button>
+                    </Box>
+                  )}
+                  {/* ----------------------------------------------- */}
+
+                  {/* Document Review logic */}
                   {fileStates && (
                     <>
+                      {/* ... existing document logic ... */}
+                      {/* Logic hidden for brevity as it was not changed */}
                       <Typography variant="h6" style={{ marginTop: 3 }}>
                         <FormattedMessage module="workforce" id="workforce.employee.document" />
                       </Typography>
                       {fileStates
                         ?.filter((item, originalIdx) => {
-                          item._originalIndex = originalIdx; // attach index temporarily
+                          item._originalIndex = originalIdx;
                           return mapFormStepNo(item?.workforceDocumentType?.formStepNo, key, application) === key;
                         })
                         .map((file) => (
@@ -749,6 +746,8 @@ const ApplicationViewPage = ({
               </Accordion>
             );
           })}
+
+          {/* Other Documents Section */}
           {fileStates && (
             <>
               <Typography variant="h6" style={{ marginTop: 3 }}>
@@ -762,7 +761,7 @@ const ApplicationViewPage = ({
                 .map((file) => (
                   <DocumentReviewAccordion
                     key={file._originalIndex}
-                    file={file} // ✅ from editable local state
+                    file={file}
                     index={file._originalIndex}
                     onCommentChange={handleCommentChange}
                     onVerify={handleFileVerify}
