@@ -379,7 +379,7 @@ function reducer(
     eisPayments: [],
     eisPaymentsPageInfo: { totalCount: 0 },
 
-    ////employee Account states
+    ////all association state
     fetchingWorkforceAllAssociations: false,
     errorWorkforceAllAssociations: null,
     fetchedWorkforceAllAssociations: false,
@@ -463,8 +463,8 @@ function reducer(
         ...state,
         fetchingWorkforceAllAssociations: false,
         fetchedWorkforceAllAssociations: true,
-        workforceAllAssociations: parseData(action.payload.data.workforceAllAssociations),
-        workforceAllAssociationsPageInfo: pageInfo(action.payload.data.workforceAllAssociations),
+        workforceAllAssociations: parseData(action.payload.data.workforceAllAssociation),
+        workforceAllAssociationsPageInfo: pageInfo(action.payload.data.workforceAllAssociation),
         errorWorkforceAllAssociations: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ALL_ASSOCIATIONS_ERR":
