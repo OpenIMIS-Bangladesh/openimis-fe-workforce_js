@@ -33,8 +33,8 @@ class WorkforceAssociationForm extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedWorkforceAllAssociation !== this.props.fetchedWorkforceAllAssociation
-      && !!this.props.fetchedWorkforceAllAssociation
+    if (prevProps.fetchedWorkforceAllAssociations !== this.props.fetchedWorkforceAllAssociations
+      && !!this.props.fetchedWorkforceAllAssociations
       && !!this.props.workforceAssociation) {
       this.setState((state, props) => ({
         workforceAssociation: { ...props.workforceAssociation },
@@ -93,7 +93,7 @@ class WorkforceAssociationForm extends Component {
   render() {
     const {
       fetchingTicket,
-      fetchedWorkforceAllAssociation,
+      fetchedWorkforceAllAssociations,
       errorTicket,
       save, back,
     } = this.props;
@@ -119,7 +119,7 @@ class WorkforceAssociationForm extends Component {
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
-        {(!!fetchedWorkforceAllAssociation || !workforceAssociationUuid) && (
+        {(!!fetchedWorkforceAllAssociations || !workforceAssociationUuid) && (
           <Form
             module={MODULE_NAME}
             edited_id={workforceAssociationUuid}
@@ -148,7 +148,7 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   fetchingTicket: state.workforce.fetchingTicket,
   errorTicket: state.workforce.errorTicket,
-  fetchedWorkforceAllAssociation: state.workforce.fetchedWorkforceAllAssociation,
+  fetchedWorkforceAllAssociations: state.workforce.fetchedWorkforceAllAssociations,
   ticket: state.workforce.ticket,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
