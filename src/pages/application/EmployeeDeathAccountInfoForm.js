@@ -66,9 +66,10 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
   useEffect(() => {
     if (dependent?.length > 0) {
       setExpanded(0);
-      dependent?.map((dep, index) => {handleChange(index, "accountHolderName", dep?.nameBn);handleChange(index, "dependentId", dep?.id)});
+      dependent?.map((dep, index) => {handleChange(index, "accountHolderName", dep?.nameBn);handleChange(index, "dependentId", dep?.id);handleChange(index, "accountHolderType", "self")});
     } else {
       handleChange(0, "accountHolderName", formdata?.workforceEmployee?.nameBn);
+      // handleChange(index, "accountHolderType", "self")
     }
   }, [dependent]);
 

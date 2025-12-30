@@ -129,12 +129,70 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
   };
 
   const isOutsideDutyHours = () => {
-    const start = formData?.employeeAccidentInfo?.dailyDutyStart;
-    const end = formData?.employeeAccidentInfo?.dailyDutyEnd;
-    const accidentTime = formData?.employeeAccidentInfo?.accidentTime;
-    return !!start && !!end && !!accidentTime; 
+    const startVal = formData?.employeeAccidentInfo?.dailyDutyStart;
+    const endVal = formData?.employeeAccidentInfo?.dailyDutyEnd;
+    const accidentVal = formData?.employeeAccidentInfo?.accidentTime;
+
+    // Helper: Convert "09:05 PM", "21:05", or Date Objects to Total Minutes
+    const getMinutes = (input) => {
+      if (!input) return null;
+
+      // 1. Handle String with AM/PM (Your specific format: "09:05 PM")
+      if (typeof input === "string" && input.match(/PM|AM/i)) {
+        const match = input.match(/(\d+):(\d+)\s*(AM|PM)/i);
+        if (match) {
+          let [_, hours, minutes, modifier] = match;
+          hours = parseInt(hours, 10);
+          minutes = parseInt(minutes, 10);
+
+          // Convert to 24-hour format
+          if (hours === 12 && modifier.toUpperCase() === "AM") {
+            hours = 0; // 12 AM is 00:00
+          } else if (hours !== 12 && modifier.toUpperCase() === "PM") {
+            hours += 12; // 1 PM to 11 PM -> add 12
+          }
+          return hours * 60 + minutes;
+        }
+      }
+
+      // 2. Handle String without AM/PM (24-hour format: "21:05")
+      if (typeof input === "string" && input.includes(":")) {
+        const [h, m] = input.split(":").map((v) => parseInt(v, 10));
+        if (!isNaN(h) && !isNaN(m)) {
+          return h * 60 + m;
+        }
+      }
+
+      // 3. Handle Date Objects (If the picker returns a Date object directly)
+      if (input instanceof Date || (typeof input === "object" && input.toDate)) {
+        const d = input.toDate ? input.toDate() : input;
+        return d.getHours() * 60 + d.getMinutes();
+      }
+
+      return null;
+    };
+
+    const startMins = getMinutes(startVal);
+    const endMins = getMinutes(endVal);
+    const accidentMins = getMinutes(accidentVal);
+
+    // If calculation failed for any reason (missing data), hide the field
+    if (startMins === null || endMins === null || accidentMins === null) {
+      return false;
+    }
+
+    // LOGIC: Compare minutes
+    if (startMins <= endMins) {
+      // SCENARIO A: Standard Shift (e.g., 09:00 AM to 06:00 PM) -> (540 to 1080)
+      // Outside if BEFORE start OR AFTER end
+      return accidentMins < startMins || accidentMins > endMins;
+    } else {
+      // SCENARIO B: Night Shift crossing midnight (e.g., 10:00 PM to 06:00 AM)
+      // Outside is the day time gap
+      return accidentMins > endMins && accidentMins < startMins;
+    }
   };
-  
+  console.log(formData)
   // --- RENDERING STARTS HERE ---
   return (
     <Box mt={2}>
@@ -153,7 +211,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
         {/* PRESERVED: AID REASON TYPE RADIO GROUP */}
         {(formData?.applicationType !== "disabilityAssistance" || formData?.organizationType === "eis") && (
           <RadioGroup column value={formData?.employeeAccidentInfo?.aidReasonType || aidReasonType || "disease"} onChange={handleOptionChange}>
-            <FormControlLabel value="disease" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.employee.aid.reason.info.cronic" />} />
+            {/* <FormControlLabel value="disease" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.employee.aid.reason.info.cronic" />} /> */}
             <FormControlLabel
               value="accident"
               control={<Radio color="primary" />}
@@ -163,114 +221,6 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
         )}
 
         <Divider style={{ margin: "16px 0" }} />
-
-        {/* PRESERVED: DISEASE SECTION */}
-        {aidReasonType === "disease" && (
-          <Grid container spacing={2}>
-            {/* DiseaseMultiSelectPicker should take full width or be contained in xs=6 */}
-            <Grid item xs={6} className={classes.item}>
-              <DiseaseMultiSelectPicker
-                id="cronicDiseaseType"
-                selectedDiseases={formData?.employeeAccidentInfo?.cronicDiseaseType || []}
-                onChange={(value) => handleChange("cronicDiseaseType", value )}
-                onOtherDiseaseChange={(value) => handleChange("otherDisease", value )}
-                otherDiseaseValue={formData?.employeeAccidentInfo?.otherDisease || ""}
-                handleChange={(key, value) => handleChange(key, value )}
-                required={true}
-              />
-              {errors?.cronicDiseaseType && <FormHelperText error>{errors?.cronicDiseaseType}</FormHelperText>}
-            </Grid>
-
-            {selectedDiseases.includes("অন্যান্য") && (
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label={"workforce.application.accident.otherDieses"}
-                  value={formData?.employeeAccidentInfo?.otherDisease || ""}
-                  onChange={(v) => handleChange("otherDisease", v )}
-                />
-              </Grid>
-            )}
-
-            <Grid item xs={6} className={classes.item}>
-              <PublishedComponent
-                pubRef="workforce.DatePicker"
-                label={"workforce.application.accident.dateOfDiagnosis"}
-                value={formData?.employeeAccidentInfo?.diagnosisDate || ""}
-                onChange={(v) => handleChange("diagnosisDate", v )}
-                readOnly={false}
-                required
-              />
-              {errors?.rdmp && <FormHelperText error><FormattedMessage id={errors?.rdmp}/></FormHelperText>}
-            </Grid>
-
-            <Grid item xs={6} className={classes.item}>
-              <TextInput
-                label={"workforce.employee.accident.info.doctorName"}
-                value={formData?.employeeAccidentInfo?.doctorName || ""}
-                onChange={(v) => handleChange("doctorName", v )}
-              />
-            </Grid>
-            
-            {/* Admitted section for disease - xs=12 for radio group */}
-            <Grid item xs={12} className={classes.item}>
-              <FormControl component="fieldset">
-                <FormLabel>
-                  <FormattedMessage id="workforce.application.accident.hospitalized" defaultMessage="হাসপাতালে ভর্তি হয়েছিলেন?" module="workforce" />
-                </FormLabel>
-                <RadioGroup row value={isAdmitted} onChange={handleAdmittedChange}>
-                  <FormControlLabel value="yes" control={<Radio color="primary" />} label={<FormattedMessage id={<FormattedMessage id="workforce.application.permission.yes"/>} module="workforce" />} />
-                  <FormControlLabel value="no" control={<Radio color="primary" />} label={<FormattedMessage id={<FormattedMessage id="workforce.application.permission.no"/>} module="workforce" />} />
-                </RadioGroup>
-              </FormControl>
-            </Grid>
-
-            {isAdmitted === "yes" && (
-              <>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    id="hospitalName"
-                    label={"workforce.employee.accident.info.hospitalName"}
-                    value={formData?.employeeAccidentInfo?.hospitalName || ""}
-                    onChange={(v) => handleChange("hospitalName", v )}
-                    required
-                    error={!!errors?.hospitalName}
-                    helperText={errors?.hospitalName}
-                  />
-                </Grid>
-
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="workforce.DatePicker"
-                    label={"workforce.employee.accident.info.admitDate"}
-                    value={formData?.employeeAccidentInfo?.admitDate || ""}
-                    onChange={(v) => handleChange("admitDate", v )}
-                    readOnly={false}
-                    required
-                  />
-                </Grid>
-
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="workforce.DatePicker"
-                    label={"workforce.employee.accident.info.releaseDate"}
-                    value={formData?.employeeAccidentInfo?.releaseDate || ""}
-                    onChange={(v) => handleChange("releaseDate", v )}
-                    readOnly={false}
-                    required
-                  />
-                </Grid>
-                 {/* Adding hospital doctor name for consistency with original */}
-                 <Grid item xs={6} className={classes.item}>
-                    <TextInput
-                        label={"workforce.employee.accident.info.doctorName"}
-                        value={formData?.employeeAccidentInfo?.hospitalDoctorName || ""}
-                        onChange={(v) => handleChange("hospitalDoctorName", v )}
-                    />
-                </Grid>
-              </>
-            )}
-          </Grid>
-        )}
 
         {/* MODIFIED: ACCIDENT SECTION BASED ON DOCX */}
         {aidReasonType === "accident" && (

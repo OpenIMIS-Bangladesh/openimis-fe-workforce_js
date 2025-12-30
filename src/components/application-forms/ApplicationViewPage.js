@@ -155,6 +155,25 @@ const isEmpty = (value) => {
   if (typeof value === "object") return Object.keys(value).length === 0;
   return false;
 };
+const formatAddress = (locationData, addressData) => {
+  // TryParse handles both JSON strings and objects
+  const address = tryParse(addressData) || {}; 
+  const location = tryParse(locationData) || {};
+
+  const postOffice = address?.postOffice?.nameBn || address?.postOffice;
+  const village = [address.houseName, address.paraMahalla, address.villageRoad].filter(Boolean).join(", ");
+  
+  // Navigate location parents for Thana/District
+  const thana = location?.parent?.name || location?.name; // Fallback if structure varies
+  const district = location?.parent?.parent?.name || location?.parent?.name;
+
+  return {
+    village,
+    postOffice,
+    thana,
+    district,
+  };
+};
 
 /**
  * Recursive renderer for objects & arrays in Grid format
@@ -174,35 +193,26 @@ const renderDetails = (
 ) => {
   if (!data) return null;
 
-  const tryParse = (value) => {
-    if (typeof value === "string") {
-      try {
-        const parsed = JSON.parse(value);
-        return typeof parsed === "object" ? parsed : value;
-      } catch {
-        return value;
-      }
-    }
-    return value;
-  };
-
+  // --- UPDATED: Merge Logic to support formatAddress ---
   const mergeAddressAndLocation = (obj) => {
     const parsedObj = Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, tryParse(v)]));
     const newObj = { ...parsedObj };
 
+    // Structure specifically for presentAddressAndLocation
     if (parsedObj.presentAddress || parsedObj.presentLocation) {
       newObj.presentAddressAndLocation = {
-        ...(parsedObj.presentAddress || {}),
-        ...(parsedObj.presentLocation || {}),
+        locationData: parsedObj.presentLocation,
+        addressData: parsedObj.presentAddress
       };
       delete newObj.presentAddress;
       delete newObj.presentLocation;
     }
 
+    // Structure specifically for permanentAddressAndLocation
     if (parsedObj.permanentAddress || parsedObj.permanentLocation) {
       newObj.permanentAddressAndLocation = {
-        ...(parsedObj.permanentAddress || {}),
-        ...(parsedObj.permanentLocation || {}),
+        locationData: parsedObj.permanentLocation,
+        addressData: parsedObj.permanentAddress
       };
       delete newObj.permanentAddress;
       delete newObj.permanentLocation;
@@ -280,6 +290,8 @@ const renderDetails = (
                       : "স্থায়ী ঠিকানা"
                     : formatKey(key, language)}
                 </Typography>
+                
+                {/* --- RECURSIVE CALL --- */}
                 {renderDetails(
                   value,
                   classes,
@@ -295,8 +307,9 @@ const renderDetails = (
                 )}
               </Box>
             ))}
-
-            {matchingFiles.length > 0 && (
+            
+            {/* ... [Dependent File Logic and Save Buttons remain here] ... */}
+             {matchingFiles.length > 0 && (
               <Box mt={2}>
                 <Typography variant="h6" style={{ marginTop: 3, marginBottom: 5 }}>
                   <FormattedMessage module="workforce" id="workforce.employee.document" />
@@ -315,44 +328,22 @@ const renderDetails = (
               </Box>
             )}
 
-            {/* ----- UPDATED: ONLY RADIO BUTTONS (No individual Save Button) ----- */}
             {parentKey === "workforceEmployeeDependentApplication" && isAllowedUser && (
-              <Box
-                mt={3}
-                p={2}
-                style={{
-                  background: "#f0f7ff",
-                  borderRadius: 8,
-                  border: "1px solid #d1e3f0",
-                }}
-              >
+              <Box mt={3} p={2} style={{ background: "#f0f7ff", borderRadius: 8, border: "1px solid #d1e3f0" }}>
                 <Grid container alignItems="center">
                   <Grid item>
                     <FormControl component="fieldset">
-                      <FormLabel
-                        component="legend"
-                        style={{
-                          fontWeight: "bold",
-                          fontSize: "0.9rem",
-                          color: "#333",
-                          marginBottom: 8,
-                        }}
-                      >
+                      <FormLabel component="legend" style={{ fontWeight: "bold", fontSize: "0.9rem", color: "#333", marginBottom: 8 }}>
                         {language === "en" ? "Is beneficiary eligible?" : "উপকারভোগী কি যোগ্য?"}
                       </FormLabel>
                       <RadioGroup
                         row
                         aria-label="eligibility"
                         name={`eligibility-${item.id}`}
-                        // Use local map value OR fallback to existing database value
                         value={
                           eligibilityMap?.[item.id] !== undefined
                             ? eligibilityMap[item.id]
-                            : item?.isEligible === true
-                            ? "yes"
-                            : item?.isEligible === false
-                            ? "no"
-                            : ""
+                            : item?.isEligible === true ? "yes" : item?.isEligible === false ? "no" : ""
                         }
                         onChange={(e) => handleEligibilityChange(item.id, e.target.value)}
                       >
@@ -364,7 +355,6 @@ const renderDetails = (
                 </Grid>
               </Box>
             )}
-            {/* ------------------------------------------------------- */}
           </CardContent>
         </Card>
       );
@@ -373,6 +363,38 @@ const renderDetails = (
 
   // Handle object data
   if (typeof mergedData === "object" && mergedData !== null) {
+    // --- UPDATED: Specific Handling for Address Keys ---
+    if (parentKey === "presentAddressAndLocation" || parentKey === "permanentAddressAndLocation") {
+        // Extract using the formatted function
+        const { village, postOffice, thana, district } = formatAddress(mergedData.locationData, mergedData.addressData);
+        
+        return (
+            <Grid container spacing={2}>
+                <Grid item xs={6} className={classes.itemRow}>
+                    <Typography variant="body1" className={classes.value}>
+                        <span className={classes.label}>{language === 'en' ? "Village/Road/House" : "গ্রাম/রাস্তা/বাড়ি"}:</span> {village || "—"}
+                    </Typography>
+                </Grid>
+                <Grid item xs={6} className={classes.itemRow}>
+                    <Typography variant="body1" className={classes.value}>
+                        <span className={classes.label}>{language === 'en' ? "Post Office" : "পোস্ট অফিস"}:</span> {postOffice || "—"}
+                    </Typography>
+                </Grid>
+                <Grid item xs={6} className={classes.itemRow}>
+                    <Typography variant="body1" className={classes.value}>
+                        <span className={classes.label}>{language === 'en' ? "Thana" : "থানা"}:</span> {thana || "—"}
+                    </Typography>
+                </Grid>
+                <Grid item xs={6} className={classes.itemRow}>
+                    <Typography variant="body1" className={classes.value}>
+                        <span className={classes.label}>{language === 'en' ? "District" : "জেলা"}:</span> {district || "—"}
+                    </Typography>
+                </Grid>
+            </Grid>
+        );
+    }
+
+    // --- STANDARD RENDERING (for everything else) ---
     const scalars = Object.entries(mergedData).filter(
       ([key, value]) => typeof value !== "object" && !hiddenKeys.includes(key) && value !== null && value !== undefined && value !== ""
     );
@@ -424,7 +446,7 @@ const renderDetails = (
               {renderDetails(
                 parsedValue,
                 classes,
-                key,
+                key, // Pass key so next recursive call knows to hit the "if(parentKey...)" block
                 language,
                 fileStates,
                 handleCommentChange,
