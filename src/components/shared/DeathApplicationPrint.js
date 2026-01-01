@@ -1,11 +1,12 @@
 import React, { useRef, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Paper, Typography, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Modal, Button, Divider } from "@material-ui/core";
+// Added Checkbox to imports
+import { Paper, Typography, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Modal, Button, Divider, Checkbox } from "@material-ui/core";
 import ReactToPrint from "react-to-print";
 import PrintIcon from "@material-ui/icons/Print";
 import CloseIcon from "@material-ui/icons/Close";
 
-// --- ROBUST STYLES FOR PRINTING FROM A MODAL (Hardcoded Values) ---
+// --- ROBUST STYLES FOR PRINTING (NO CHANGES) ---
 const useStyles = makeStyles({
   "@global": {
     fontSize: "small",
@@ -28,7 +29,6 @@ const useStyles = makeStyles({
         pageBreakBefore: "auto",
       },
 
-      // Prevent breaking inside important sections
       "table, tr, td, th": {
         pageBreakInside: "avoid !important",
       },
@@ -51,7 +51,6 @@ const useStyles = makeStyles({
     },
   },
 
-  // Styles for the Modal on screen
   modal: {
     display: "flex",
     alignItems: "center",
@@ -59,30 +58,28 @@ const useStyles = makeStyles({
     overflowY: "scroll",
   },
   modalContent: {
-    backgroundColor: "#fff", // Replaced theme.palette.background.paper
-    boxShadow: "0 4px 12px rgba(0,0,0,0.3)", // Replaced theme.shadows[5]
-    padding: "16px", // Replaced theme.spacing(2, 2, 2, 2)
+    backgroundColor: "#fff",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+    padding: "16px",
     width: "90%",
-    maxWidth: "210mm", // A4 width for preview
+    maxWidth: "210mm",
     maxHeight: "90vh",
     overflowY: "auto",
   },
   printControls: {
     textAlign: "right",
-    marginBottom: "16px", // Replaced theme.spacing(2)
-    paddingRight: "16px", // Replaced theme.spacing(2)
+    marginBottom: "16px",
+    paddingRight: "16px",
   },
-
-  // Regular component styles for the A4-like paper
   paper: {
     fontFamily: "'Siyam Rupali', Arial, sans-serif",
-    padding: "32px", // Replaced theme.spacing(4)
+    padding: "32px",
     color: "#000",
     backgroundColor: "#fff",
     boxSizing: "border-box",
   },
   headerContainer: {
-    marginBottom: "16px", // Replaced theme.spacing(2)
+    marginBottom: "16px",
     position: "relative",
   },
   logo: {
@@ -96,21 +93,21 @@ const useStyles = makeStyles({
     fontSize: "small",
     fontWeight: "bold",
     textAlign: "center",
-    margin: "8px 0 5px 0", // Replaced theme.spacing(3, 0, 1, 0)
+    margin: "8px 0 5px 0",
     textDecoration: "underline",
   },
   sectionTitle: {
     fontWeight: "bold",
     fontSize: "small",
-    marginTop: "8px", // Replaced theme.spacing(2.5)
-    marginBottom: "4px", // Replaced theme.spacing(1)
+    marginTop: "8px",
+    marginBottom: "4px",
     borderBottom: "1px solid #000",
-    paddingBottom: "4px", // Replaced theme.spacing(0.5)
+    paddingBottom: "4px",
   },
   fieldValue: {
     borderBottom: "1px dotted #000",
     minHeight: "20px",
-    paddingLeft: "8px", // Replaced theme.spacing(1)
+    paddingLeft: "8px",
     width: "100%",
     display: "block",
     fontSize: "0.9rem",
@@ -118,18 +115,18 @@ const useStyles = makeStyles({
   fieldLabel: {
     textAlign: "left",
     fontSize: "0.9rem",
-    paddingRight: "8px", // Replaced theme.spacing(1)
+    paddingRight: "8px",
   },
   checkboxContainer: {
     display: "flex",
     alignItems: "center",
-    marginRight: "16px", // Replaced theme.spacing(2)
+    marginRight: "16px",
   },
   checkbox: {
     width: "15px",
     height: "15px",
     border: "1px solid #000",
-    marginRight: "4px", // Replaced theme.spacing(0.5)
+    marginRight: "4px",
     display: "inline-block",
     backgroundColor: "transparent",
   },
@@ -140,10 +137,10 @@ const useStyles = makeStyles({
     width: "100%",
     borderCollapse: "collapse",
     color: "black",
-    marginTop: "8px", // Replaced theme.spacing(1)
+    marginTop: "8px",
     "& th, & td": {
       border: "1px solid #000",
-      padding: "8px", // Replaced theme.spacing(1)
+      padding: "8px",
       textAlign: "left",
       verticalAlign: "top",
     },
@@ -154,8 +151,8 @@ const useStyles = makeStyles({
     },
   },
   signatureBox: {
-    marginTop: "40px", // Replaced theme.spacing(5)
-    paddingTop: "8px", // Replaced theme.spacing(1)
+    marginTop: "40px",
+    paddingTop: "8px",
     display: "flex",
     justifyContent: "space-between",
     flexWrap: "wrap",
@@ -164,7 +161,7 @@ const useStyles = makeStyles({
     width: "30%",
     textAlign: "center",
     borderTop: "1px solid #000",
-    paddingTop: "8px", // Replaced theme.spacing(1)
+    paddingTop: "8px",
     fontSize: "0.8rem",
   },
   photoBox: {
@@ -172,25 +169,37 @@ const useStyles = makeStyles({
     width: "120px",
     height: "140px",
     textAlign: "center",
-    padding: "8px", // Replaced theme.spacing(1)
+    padding: "8px",
     fontSize: "12px",
     lineHeight: "1.2",
     position: "absolute",
-    right: 0, // Replaced theme.spacing(0)
+    right: 0,
     top: "60px",
   },
   note: {
     fontSize: "0.85rem",
-    marginTop: "8px", // Replaced theme.spacing(1)
-    marginBottom: "8px", // Replaced theme.spacing(1)
+    marginTop: "8px",
+    marginBottom: "8px",
   },
   list: {
     listStyleType: "disc",
-    paddingLeft: "24px", // Replaced theme.spacing(3)
+    paddingLeft: "24px",
     "& li": {
-      marginBottom: "4px", // Replaced theme.spacing(0.5)
+      marginBottom: "4px",
       fontSize: "0.9rem",
     },
+  },
+  documentPage: {
+    textAlign: "center",
+  },
+  documentTitle: {
+    marginBottom: "16px",
+    textDecoration: "underline",
+  },
+  documentImage: {
+    maxWidth: "100%",
+    height: "auto",
+    maxHeight: "900px",
   },
 });
 
@@ -217,58 +226,79 @@ const formatDate = (dateString) => {
   }
 };
 
-const formatAddress = (locationData, addressJsonString) => {
-  const address = safeJsonParse(addressJsonString);
-  const postOffice = address?.postOffice?.nameBn;
-  const village = [address.houseName, address.paraMahalla, address.villageRoad].filter(Boolean).join(", ");
+const formatAddress = (locationData, addressInput) => {
+  let address = {};
+  if (typeof addressInput === 'string') {
+     address = safeJsonParse(addressInput);
+  } else if (typeof addressInput === 'object' && addressInput !== null) {
+     address = addressInput;
+  }
+
+  const postOffice = address?.postOffice?.nameBn || address?.postOffice?.nameEn;
+  const village = [address?.houseName, address?.paraMahalla, address?.villageRoad].filter(Boolean).join(", ") || locationData?.name;
   const thana = locationData?.parent?.name;
   const district = locationData?.parent?.parent?.name;
 
   return {
-    village,
-    postOffice,
-    thana,
-    district,
+    village: village || "N/A",
+    postOffice: postOffice || "N/A",
+    thana: thana || "N/A",
+    district: district || "N/A",
   };
+};
+
+const translateRelation = (relationKey) => {
+    const map = {
+        "workforce.relation.father": "পিতা",
+        "workforce.relation.mother": "মাতা",
+        "workforce.relation.wife": "স্ত্রী",
+        "workforce.relation.husband": "স্বামী",
+        "workforce.relation.son": "পুত্র",
+        "workforce.relation.daughter": "কন্যা",
+        "workforce.relation.brother": "ভাই",
+        "workforce.relation.sister": "বোন"
+    };
+    return map[relationKey] || relationKey;
 };
 
 export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, logoLeft }) {
   const classes = useStyles();
-  const movementLogs = data?.movementLogs || [];
-  // const printRef = useRef();
+  
+  if (!data) return <p>আবেদনের কোনো তথ্য পাওয়া যায়নি।</p>;
 
-  if (!data || !data.workforceEmployee) return <p>আবেদনের কোনো তথ্য পাওয়া যায়নি।</p>;
+  const { workforceEmployee, employeeBankInfo, employeeFactory, dateCreated, applicantInfo, deceasedWorkerInfo, metadata, movementLogs = [] } = data;
 
-  const { workforceEmployee, employeeBankInfo, employeeFactory, dateCreated } = data;
-  const {
-    firstNameBn: deceasedName,
-    fatherNameBn: deceasedFatherName,
-    motherNameBn: deceasedMotherName,
-    position: deceasedPosition,
-    nid: deceasedNid,
-    deathDate,
-    gender,
-  } = workforceEmployee;
+  // --- 1. APPLICANT INFO ---
+  const applicantName = applicantInfo?.nameBn || applicantInfo?.nameEn || "N/A";
+  const applicantRelation = translateRelation(applicantInfo?.relationWithApplicant) || "N/A";
+  const applicantNid = applicantInfo?.nid || "N/A";
+  const applicantDOB = applicantInfo?.birthDate || "N/A";
+  const applicantMobile = applicantInfo?.phoneNumber || "N/A";
 
-  const applicantInfo = data.applicantInfo;
-  const applicantName = workforceEmployee.spouseNameBn || "N/A";
-  const applicantRelation = "স্ত্রী";
-  const applicantNid = applicantInfo.nid || "N/A";
-  const applicantDOB = workforceEmployee.birthDate || "N/A"; // Using employee birthdate as placeholder
-  const applicantMobile = applicantInfo.phoneNumber || workforceEmployee.phoneNumber;
+  const appPermLoc = applicantInfo?.permanentLocation;
+  const appPermAddrObj = applicantInfo?.permanentAddress;
+  const applicantPermanentAddress = formatAddress(appPermLoc, appPermAddrObj);
 
-  // Address Parsing
-  const permanentLocationData = workforceEmployee.permanentLocation;
-  const presentLocationData = workforceEmployee.presentLocation;
+  const appPresLoc = applicantInfo?.presentLocation;
+  const appPresAddrObj = applicantInfo?.presentAddress;
+  const applicantPresentAddress = formatAddress(appPresLoc, appPresAddrObj);
 
-  const permanentAddress = formatAddress(permanentLocationData, workforceEmployee.permanentAddress);
-  const presentAddress = formatAddress(presentLocationData, workforceEmployee.presentAddress);
+  // --- 3. DECEASED WORKER INFO ---
+  const deceasedName = deceasedWorkerInfo?.nameBn || deceasedWorkerInfo?.nameEn || "N/A";
+  const deceasedFatherName = deceasedWorkerInfo?.fatherNameBn || deceasedWorkerInfo?.fatherNameEn || "N/A";
+  const deceasedMotherName = deceasedWorkerInfo?.motherNameBn || deceasedWorkerInfo?.motherNameEn || "N/A";
+  const deceasedPosition = workforceEmployee?.position || "N/A"; 
+  const deceasedNid = deceasedWorkerInfo?.nid || "N/A";
+  
+  const deathDate = metadata?.deathDate || data?.employeeAccidentInfo?.dateOfDeath || "N/A";
+  const gender = workforceEmployee?.gender; 
 
-  // Bank Info - Only taking the first one as an example
-  const bankInfo = employeeBankInfo && employeeBankInfo.length > 0 ? employeeBankInfo[0] : {};
+  const decPermLoc = deceasedWorkerInfo?.permanentLocation;
+  const decPermAddrObj = deceasedWorkerInfo?.permanentAddress;
+  const deceasedPermanentAddress = formatAddress(decPermLoc, decPermAddrObj);
 
-  // Checkbox for death reason
-  const isNormalDeath = true;
+  // Checkbox logic based on metadata
+  const isNormalDeath = metadata?.deathType === "normalDeath";
 
   const createdDate = formatDate(dateCreated);
 
@@ -286,7 +316,7 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
     { label: "প্রতিষ্ঠানের মেম্বারশীপ সনদপত্র", checked: true },
     { label: "মৃত শ্রমিকের অনলাইন ডেটাবেজের কপি", checked: true },
   ];
-  console.log({ movementLogs });
+
   return (
     <>
       <Paper id="print-container" className={`${classes.paper} printable-paper`}>
@@ -331,23 +361,31 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
             কেন্দ্রীয় তহবিল
           </Typography>
 
-          {/* Financial Assistance Reason */}
+          {/* Financial Assistance Reason - MODIFIED SECTION */}
           <Typography className={classes.sectionTitle}>আর্থিক সহায়তা চাওয়ার কারণঃ- সংশ্লিষ্ট ক্ষেত্রে টিক চিহ্ন (✓) দিন</Typography>
           <Box display="flex" style={{ marginBottom: "8px" }}>
             <Box className={classes.checkboxContainer}>
-              <Box className={`${classes.checkbox} ${!isNormalDeath ? classes.checked : ""}`} />
+              <Checkbox
+                checked={!isNormalDeath}
+                color="default"
+                size="small"
+                style={{ padding: 0, paddingRight: "4px", color: "black" }} 
+              />
               <Typography variant="body1">(খ) দুর্ঘটনাজনিত কারণে মৃত্যু</Typography>
             </Box>
             <Box className={classes.checkboxContainer}>
-              <Box className={`${classes.checkbox} ${isNormalDeath ? classes.checked : ""}`} />
+              <Checkbox
+                checked={isNormalDeath}
+                color="default"
+                size="small"
+                style={{ padding: 0, paddingRight: "4px", color: "black" }}
+              />
               <Typography variant="body1">(ক) স্বাভাবিক মৃত্যু</Typography>
             </Box>
           </Box>
           <Typography className={classes.note} style={{ marginTop: 0 }}>
             বিঃদ্রঃ আবেদনের সময়সীমা মৃত্যুর ১২০ দিনের মধ্যে হতে হবে।
           </Typography>
-
-          {/* <Divider style={{ margin: "10px 0" }} /> */}
 
           {/* Section 1: Applicant/Warishan Info */}
           <Typography className={classes.sectionTitle}>১। আবেদনকারী ব্যক্তিগত তথ্যবলীঃ-</Typography>
@@ -394,25 +432,25 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
               <Typography className={classes.fieldLabel}>গ্রাম/মহল্লাঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{permanentAddress.village}</Typography>
+              <Typography className={classes.fieldValue}>{applicantPermanentAddress.village}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>ডাকঘরঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{permanentAddress.postOffice}</Typography>
+              <Typography className={classes.fieldValue}>{applicantPermanentAddress.postOffice}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>থানা/উপজেলাঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{permanentAddress.thana}</Typography>
+              <Typography className={classes.fieldValue}>{applicantPermanentAddress.thana}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>জেলাঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{permanentAddress.district}</Typography>
+              <Typography className={classes.fieldValue}>{applicantPermanentAddress.district}</Typography>
             </Grid>
           </Grid>
 
@@ -422,29 +460,27 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
               <Typography className={classes.fieldLabel}>গ্রাম/মহল্লাঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{presentAddress.village}</Typography>
+              <Typography className={classes.fieldValue}>{applicantPresentAddress.village}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>ডাকঘরঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{presentAddress.postOffice}</Typography>
+              <Typography className={classes.fieldValue}>{applicantPresentAddress.postOffice}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>থানা/উপজেলাঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{presentAddress.thana}</Typography>
+              <Typography className={classes.fieldValue}>{applicantPresentAddress.thana}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>জেলাঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{presentAddress.district}</Typography>
+              <Typography className={classes.fieldValue}>{applicantPresentAddress.district}</Typography>
             </Grid>
           </Grid>
-
-          {/* <Divider style={{ margin: "10px 0" }} /> */}
 
           {/* Section 2: Factory Info */}
           <Typography className={classes.sectionTitle}>২। মৃত শ্রমিকের কর্মরত প্রতিষ্ঠানের / কারখানার নাম ও ঠিকানা (স্পষ্ট অক্ষরে) লিখুনঃ-</Typography>
@@ -453,8 +489,6 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
             {/* Factory Address */}
           </Typography>
 
-          {/* <Divider style={{ margin: "10px 0" }} /> */}
-
           {/* Section 3: Deceased Worker's Info */}
           <Typography className={classes.sectionTitle}>৩। মৃত শ্রমিকের বিবরণঃ-</Typography>
           <Grid container spacing={1}>
@@ -462,15 +496,15 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
               <Typography className={classes.fieldLabel}>নামঃ</Typography>
             </Grid>
             <Grid item xs={7}>
-              <Typography className={classes.fieldValue}>{deceasedName || "N/A"}</Typography>
+              <Typography className={classes.fieldValue}>{deceasedName}</Typography>
             </Grid>
             <Grid item xs={3} container alignItems="center">
               <Box className={classes.checkboxContainer}>
-                <Box className={`${classes.checkbox} ${gender === "workforce.gender.male" ? classes.checked : ""}`} />
+                <Box className={`${classes.checkbox} ${gender === "M" || gender === "workforce.gender.male" ? classes.checked : ""}`} />
                 পুরুষ
               </Box>
               <Box className={classes.checkboxContainer}>
-                <Box className={`${classes.checkbox} ${gender !== "workforce.gender.male" ? classes.checked : ""}`} style={{ marginLeft: "8px" }} />
+                <Box className={`${classes.checkbox} ${gender === "F" || gender === "workforce.gender.female" ? classes.checked : ""}`} style={{ marginLeft: "8px" }} />
                 নারী
               </Box>
             </Grid>
@@ -479,40 +513,42 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
               <Typography className={classes.fieldLabel}>পিতার নামঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{deceasedFatherName || "N/A"}</Typography>
+              <Typography className={classes.fieldValue}>{deceasedFatherName}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>মাতার নামঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{deceasedMotherName || "N/A"}</Typography>
+              <Typography className={classes.fieldValue}>{deceasedMotherName}</Typography>
             </Grid>
 
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>পদবিঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{deceasedPosition || "N/A"}</Typography>
+              <Typography className={classes.fieldValue}>{deceasedPosition}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>মৃত্যুর তারিখঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{formatDate(deathDate) || "N/A"}</Typography>
+              <Typography className={classes.fieldValue}>{formatDate(deathDate)}</Typography>
             </Grid>
 
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>মৃত্যুর কারণঃ</Typography>
             </Grid>
             <Grid item xs={10}>
-              <Typography className={classes.fieldValue}>স্বাভাবিক মৃত্যু/দুর্ঘটনা (প্রাসঙ্গিক প্রমাণপত্র অনুযায়ী)</Typography>
+              <Typography className={classes.fieldValue}>
+                  {isNormalDeath ? "স্বাভাবিক মৃত্যু" : "দুর্ঘটনা"} (প্রাসঙ্গিক প্রমাণপত্র অনুযায়ী)
+              </Typography>
             </Grid>
 
             <Grid item xs={4}>
               <Typography className={classes.fieldLabel}>জাতীয় পরিচয় পত্র/জন্ম সনদ পত্রের নাম্বারঃ</Typography>
             </Grid>
             <Grid item xs={8}>
-              <Typography className={classes.fieldValue}>{deceasedNid || "N/A"}</Typography>
+              <Typography className={classes.fieldValue}>{deceasedNid}</Typography>
             </Grid>
           </Grid>
 
@@ -522,29 +558,27 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
               <Typography className={classes.fieldLabel}>গ্রাম/মহল্লাঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{permanentAddress.village}</Typography>
+              <Typography className={classes.fieldValue}>{deceasedPermanentAddress.village}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>ডাকঘরঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{permanentAddress.postOffice}</Typography>
+              <Typography className={classes.fieldValue}>{deceasedPermanentAddress.postOffice}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>থানা/উপজেলাঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{permanentAddress.thana}</Typography>
+              <Typography className={classes.fieldValue}>{deceasedPermanentAddress.thana}</Typography>
             </Grid>
             <Grid item xs={2}>
               <Typography className={classes.fieldLabel}>জেলাঃ</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography className={classes.fieldValue}>{permanentAddress.district}</Typography>
+              <Typography className={classes.fieldValue}>{deceasedPermanentAddress.district}</Typography>
             </Grid>
           </Grid>
-
-          {/* <Divider style={{ margin: "10px 0" }} /> */}
 
           {/* Section 4: Bank Info - Start of Page 2 (implicit page break) */}
           <div className="page-break-before">
@@ -566,43 +600,31 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {/* Row A: Example with applicant data */}
                   {employeeBankInfo?.map((bankInfo, index) => {
                     const bankName = bankInfo?.bank?.nameBn || "N/A";
                     const branchName = bankInfo?.branch?.nameBn || "N/A";
                     const accountHolderName = bankInfo?.accountHolderName || "N/A";
                     const accountNumber = bankInfo?.accountNumber || "N/A";
                     const routingNumber = bankInfo?.branch?.routingNumber || "N/A";
+                    const relation = bankInfo?.relationshipWithAccountHolder || "N/A"; 
+
                     return (
                       <TableRow key={index}>
-                        <TableCell>ক</TableCell>
+                        <TableCell>{index + 1}</TableCell>
                         <TableCell>{accountHolderName}</TableCell>
-                        <TableCell>{applicantRelation}</TableCell>
+                        <TableCell>{translateRelation(relation)}</TableCell>
                         <TableCell>
                           {accountNumber}, {branchName}, {bankName}
                         </TableCell>
                         <TableCell>{routingNumber}</TableCell>
-                        <TableCell>১০০% (উদাহরণ)</TableCell>
+                        <TableCell>100% (উদাহরণ)</TableCell>
                       </TableRow>
                     );
                   })}
-                  {/* Rows for others (b, c, d) - empty as per data */}
-                  {/* {["খ", "গ", "ঘ"].map((item) => (
-                    <TableRow key={item}>
-                      <TableCell>{item}</TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                  ))} */}
                 </TableBody>
               </Table>
             </TableContainer>
           </div>
-
-          {/* <Divider style={{ margin: "10px 0" }} /> */}
 
           {/* Section 5 & 6: Other Info and Attachments */}
           <Typography className={classes.sectionTitle}>৫। অন্য কোনো তথ্য (যদি থাকে):-</Typography>
@@ -661,30 +683,13 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
             )}
           </Box>
 
-          {/* <Divider style={{ margin: "10px 0" }} /> */}
-
-          {/* Section 7 & 8: Declaration and Recommendation */}
-          {/* <Typography className={classes.sectionTitle}>৭। ঘোষণা</Typography>
-          <Typography variant="body2" style={{ lineHeight: 1.5 }}>
-            আমি ঘোষণা করতেছি যে, এই আবেদন পত্রে বর্ণিত সকল তথ্য আমার জ্ঞান ও বিশ্বাস মতে সত্য এবং আমি কোনো তথ্য গোপন করি নাই।
-          </Typography> */}
-
-          {/* <Box className={classes.signatureBox}>
-            <Box className={classes.signatureItem}>
-              আবেদনকারীর নাম, স্বাক্ষর ও তারিখ
-              <br />({applicantName})<br />({createdDate})
-            </Box>
-            <Box className={classes.signatureItem}>কারখানা কর্তৃপক্ষের স্বাক্ষর, সীল এবং মোবাইল নাম্বার</Box>
-            <Box className={classes.signatureItem}>মালিকপক্ষের প্রতিনিধি সংস্থার দায়িত্বপ্রাপ্ত কর্মকর্তার স্বাক্ষর, সীল এবং মোবাইল নাম্বার</Box>
-          </Box> */}
-
           <Typography variant="body2" className={classes.note} style={{ textAlign: "center", marginTop: "15px" }}>
             (বিঃদ্রঃ- অসম্পূর্ণ ও ভুল আবেদন বাতিলের ক্ষেত্রে কেন্দ্রীয় তহবিলের সিদ্ধান্তই চূড়ান্ত বলে গণ্য হবে।)
           </Typography>
         </Box>
       </Paper>
 
-      {/* Attached Documents Section (optional) */}
+      {/* Attached Documents Section */}
       {documents &&
         documents.length > 0 &&
         documents.map((doc, index) => (

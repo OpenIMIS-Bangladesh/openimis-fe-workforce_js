@@ -1,8 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Paper, Typography, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, Divider, TableRow } from "@material-ui/core";
-import { FormattedMessage, formatMutation, decodeId, useModulesManager, useTranslations,formatMessage } from "@openimis/fe-core";
-
+import { Paper, Typography, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, Divider, TableRow, Checkbox } from "@material-ui/core";
+import { FormattedMessage } from "@openimis/fe-core"; 
 
 // --- Styles ---
 const useStyles = makeStyles({
@@ -33,12 +32,11 @@ const useStyles = makeStyles({
   fieldLabel: { textAlign: "left", fontSize: "0.9rem", paddingRight: 8, color: "black" },
   fieldValue: { borderBottom: "1px dotted #000", minHeight: 20, paddingLeft: 8, display: "block", fontSize: "0.9rem", color: "black" },
   checkboxContainer: { display: "flex", alignItems: "center", marginRight: 16, color: "black" },
-  checkbox: { width: 15, height: 15, border: "1px solid #000", marginRight: 4, display: "inline-block", backgroundColor: "transparent", color: "black" },
   checked: { backgroundColor: "#000" },
   checkboxGroup: {
     display: "flex",
     alignItems: "center",
-    gap: "24px", // spacing between the two options
+    gap: "24px", 
   },
   table: {
     width: "100%",
@@ -77,53 +75,64 @@ const formatDate = (dateString) => {
   const date = new Date(dateString);
   return `${String(date.getDate()).padStart(2, "0")}-${String(date.getMonth() + 1).padStart(2, "0")}-${date.getFullYear()}`;
 };
-const formatAddress = (locationData, addressJsonString) => {
-  const address = safeJsonParse(addressJsonString);
-  const postOffice = address?.postOffice?.nameBn;
-  const village = [address.houseName, address.paraMahalla, address.villageRoad].filter(Boolean).join(", ");
+const formatAddress = (locationData, addressInput) => {
+  let address = {};
+  if (typeof addressInput === 'string') {
+     address = safeJsonParse(addressInput);
+  } else if (typeof addressInput === 'object' && addressInput !== null) {
+     address = addressInput;
+  }
+
+  const postOffice = address?.postOffice?.nameBn || address?.postOffice?.nameEn;
+  const village = [address?.houseName, address?.paraMahalla, address?.villageRoad].filter(Boolean).join(", ") || locationData?.name;
   const thana = locationData?.parent?.name;
   const district = locationData?.parent?.parent?.name;
-  return { village, postOffice, thana, district };
+  return { 
+    village: village || "N/A", 
+    postOffice: postOffice || "N/A", 
+    thana: thana || "N/A", 
+    district: district || "N/A" 
+  };
 };
 
 // --- Component ---
 export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl, logoLeft }) {
   const classes = useStyles();
-  if (!data || !data.workforceEmployee) return <p>আবেদনের কোনো তথ্য পাওয়া যায়নি।</p>;
+  if (!data) return <p>আবেদনের কোনো তথ্য পাওয়া যায়নি।</p>;
 
-  const { workforceEmployee, employeeBankInfo, employeeFactory, dateCreated, applicantInfo, movementLogs } = data;
+  const { workforceEmployee, dateCreated, movementLogs } = data;
 
-  const deceased = workforceEmployee;
-  const applicantName = deceased.spouseNameBn || "N/A";
-  const applicantRelation = "স্ত্রী";
-  const applicantNid = applicantInfo?.nid || "N/A";
-  const applicantDOB = deceased.birthDate || "N/A";
-  const applicantMobile = applicantInfo?.phoneNumber || deceased.phoneNumber;
+  // --- 1. APPLICANT INFO ---
+  const applicantName = workforceEmployee?.firstNameBn || workforceEmployee?.firstNameEn || "N/A";
+  const applicantRelation = "নিজ"; 
+  const applicantNid = workforceEmployee?.nid || "N/A";
+  const applicantDOB = workforceEmployee?.birthDate || "N/A";
+  const applicantMobile = workforceEmployee?.phoneNumber || "N/A";
 
-  const permanentAddress = formatAddress(deceased.permanentLocation, deceased.permanentAddress);
-  const presentAddress = formatAddress(deceased.presentLocation, deceased.presentAddress);
+  const permanentAddress = formatAddress(workforceEmployee?.permanentLocation, workforceEmployee?.permanentAddress);
+  const presentAddress = formatAddress(workforceEmployee?.presentLocation, workforceEmployee?.presentAddress);
 
-  const bankInfo = employeeBankInfo && employeeBankInfo?.length > 0 ? employeeBankInfo[0] : {};
+  // --- 2. ACCIDENT/DISEASE INFO ---
+  // Ensure accidentInfo is at least an empty object to avoid crashes
+  const accidentInfo = data?.employeeAccidentInfo || {};
+  
+  // Decide whether to show Disease Table or Accident Grid.
+  // Default to Accident Grid if type is 'accident' OR null/undefined (to ensure fields show)
+  const isDisease = accidentInfo?.aidReasonType === "disease";
 
   const createdDate = formatDate(dateCreated);
-  const isNormalDeath = true;
 
   const requiredAttachments = [
-    // { label: "রেজিস্টার্ড চিকিৎসক/ ইউনিয়ন পরিষদ / পৌরসভা বা সিটি কর্পোরেশন কর্তৃক প্রদত্ত মৃত্যু সনদ (মূলকপি)", checked: true },
     { label: "শ্রমিকের নিয়োগপত্র", checked: true },
     { label: "প্রতিষ্ঠান কর্তৃক প্রদত্ত আইডি কার্ড", checked: true },
     { label: "ইউনিয়ন পরিষদ / পৌরসভা বা সিটি কর্পোরেশন হতে ওয়ারিশান সনদ (মূলকপি)", checked: true },
-    // { label: "মৃত শ্রমিকের জাতীয় পরিচয়পত্র এবং ছবি", checked: true },
     { label: "প্রতিষ্ঠান কর্তৃক প্রদত্ত প্রত্যয়ন পত্র (শ্রমিকের সকল তথ্যসহ)", checked: true },
     { label: "নমিনীর জাতীয় পরিচয়পত্র/ জন্মসনদ এবং ছবি", checked: true },
     { label: "শ্রমিকের শেষ ছয় মাসের বেতন শীটের কপি", checked: true },
     { label: "প্রতিষ্ঠান কর্তৃক প্রদত্ত প্রত্যয়ন পত্র (নমিনীর সকল তথ্যসহ)", checked: true },
     { label: "নমিনীর ব্যাংক হিসাবের চেক বা স্টেটমেন্টের কপি", checked: true },
     { label: "প্রতিষ্ঠানের মেম্বারশীপ সনদপত্র", checked: true },
-    // { label: "মৃত শ্রমিকের অনলাইন ডেটাবেজের কপি", checked: true },
   ];
-
-  console.log({ medicalAssistancePrintData: data });
 
   return (
     <>
@@ -253,218 +262,175 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
             </Grid>
           </Grid>
 
-          {/* Section 3: Disease Info */}
-          {(data?.employeeAccidentInfo?.aidReasonType === "disease" &&data?.employeeAccidentInfo) && (
-            <>
-              <Typography className={classes.sectionTitle}>৩। রোগের তথ্য </Typography>
-
-              <TableContainer component={Box}>
-                <Table className={classes.table}>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>ক্রম</TableCell>
-                      <TableCell>রোগের নাম</TableCell>
-                      <TableCell>রোগের গ্রেড</TableCell>
-                      <TableCell>নির্ণয়ের তারিখ</TableCell>
-                      <TableCell>সর্বনিম্ন অনুদান</TableCell>
-                      <TableCell>সর্বোচ্চ অনুদান</TableCell>
-                      <TableCell>প্রস্তাবিত অনুদান</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data?.employeeAccidentInfo?.cronicDiseaseType?.map((disease, index) => (
-                      <TableRow key={disease.id || index}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{disease.diseaseName || "N/A"}</TableCell>
-                        <TableCell>{disease.grade || "N/A"}</TableCell>
-                        <TableCell>{formatDate(data?.employeeAccidentInfo?.diagnosisDate)}</TableCell>
-                        <TableCell>{disease.minimumDonationAmount || 0}</TableCell>
-                        <TableCell>{disease.maximumDonationAmount || 0}</TableCell>
-                        <TableCell>{data?.employeeAccidentInfo?.grantAmount || 0}</TableCell>
-                      </TableRow>
-                    ))}
-
-                    {/* Fallback if no disease data */}
-                    {(!data?.employeeAccidentInfo?.cronicDiseaseType || data?.employeeAccidentInfo?.cronicDiseaseType.length === 0) && (
-                      <TableRow>
-                        <TableCell colSpan={7} align="center">
-                          কোনো রোগ সম্পর্কিত তথ্য পাওয়া যায়নি।
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </>
-          )}
-
-          {(data?.employeeAccidentInfo?.aidReasonType === "accident" && data?.employeeAccidentInfo) && (
-            <>
-              <Typography className={classes.sectionTitle}>৩। রোগের তথ্য </Typography>
-              <Grid container spacing={1}>
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldLabel}>দুর্ঘটনার ধরন:</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{<FormattedMessage id={data?.employeeAccidentInfo?.accidentType}/>}</Typography>
-                </Grid>
-
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldLabel}>দুর্ঘটনার স্থান:</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.accidentPlace}</Typography>
-                </Grid>
-
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldLabel}>দুর্ঘটনার তারিখ:</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.accidentDate}</Typography>
-                </Grid>
-
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldLabel}>দুর্ঘটনার সময়:</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.accidentTime}</Typography>
-                </Grid>
-
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldLabel}>কোন পরিস্থিতিতে দুর্ঘটনা হয়েছে?</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.inOutsideFactory}</Typography>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography className={classes.fieldLabel}>আপনি কি সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদান করেছেন?</Typography>
-
-                  <Box className={classes.checkboxGroup}>
-                    <Box className={classes.checkboxContainer}>
-                      <Box className={`${classes.checkbox} ${data?.employeeAccidentInfo?.hasRejoined ==="yes" ? classes.checked : ""}`} />
-                      <Typography variant="body2">হ্যাঁ</Typography>
-                    </Box>
-                    <Box className={classes.checkboxContainer}>
-                      <Box className={`${classes.checkbox} ${data?.employeeAccidentInfo?.hasRejoined ==="no" ? classes.checked : ""}`} />
-                      <Typography variant="body2">না</Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-
-                {/* <Grid item xs={3}>
-                </Grid> */}
-
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldLabel}>সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদানের তারিখ</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.reJoiningDate}</Typography>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography className={classes.fieldLabel}>হাসপাতালে ভর্তি হয়েছিলেন?</Typography>
-                  <Box className={classes.checkboxGroup}>
-                    <Box className={classes.checkboxContainer}>
-                      <Box className={`${classes.checkbox} ${data?.employeeAccidentInfo?.admitted ==="yes" ? classes.checked : ""}`} />
-                      <Typography variant="body2">হ্যাঁ</Typography>
-                    </Box>
-                    <Box className={classes.checkboxContainer}>
-                      <Box className={`${classes.checkbox} ${data?.employeeAccidentInfo?.admitted ==="no" ? classes.checked : ""}`} />
-                      <Typography variant="body2">না</Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-                
-
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldLabel}>হাসপাতালের নাম</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.hospitalName}</Typography>
-                </Grid>
-
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldLabel}>ভর্তির তারিখ</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.admitDate}</Typography>
-                </Grid>
-
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldLabel}>রিলিজের তারিখ</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.releaseDate}</Typography>
-                </Grid>
-
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldLabel}>ডাক্তারের নাম</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography className={classes.fieldValue}>{data?.employeeAccidentInfo?.hospitalDoctorName}</Typography>
-                </Grid>
-              </Grid>
-            </>
-          )}
-
-          {/* Section 4: Bank Info - Start of Page 2 (implicit page break) */}
-          <div className="page-break-before">
-            <Typography className={classes.sectionTitle}>৪। মৃত শ্রমিকের ওয়ারিশ / ওয়ারিশানের ব্যাংক হিসাবের বিবরণীঃ-</Typography>
-            <Typography variant="body2" style={{ marginBottom: "8px" }}>
-              (একাধিক ওয়ারিশানের ক্ষেত্রে প্রাপ্যতা (%) উল্লেখ করতে হবে)
-            </Typography>
-
+          {/* Section 3: Disease Info or Accident Info (Always Shown) */}
+          <Typography className={classes.sectionTitle}>৩। রোগের তথ্য </Typography>
+          
+          {isDisease ? (
+            // DISEASE LAYOUT
             <TableContainer component={Box}>
               <Table className={classes.table}>
                 <TableHead>
                   <TableRow>
                     <TableCell>ক্রম</TableCell>
-                    <TableCell>মৃত শ্রমিকের ওয়ারিশ / ওয়ারিশানের নাম</TableCell>
-                    <TableCell>সম্পর্ক</TableCell>
-                    <TableCell>ব্যাংক হিসাব নাম্বার, শাখার নাম</TableCell>
-                    <TableCell>ব্যাংকের রাউটিং নাম্বার</TableCell>
-                    <TableCell>প্রাপ্যতা (%)</TableCell>
+                    <TableCell>রোগের নাম</TableCell>
+                    <TableCell>রোগের গ্রেড</TableCell>
+                    <TableCell>নির্ণয়ের তারিখ</TableCell>
+                    <TableCell>সর্বনিম্ন অনুদান</TableCell>
+                    <TableCell>সর্বোচ্চ অনুদান</TableCell>
+                    <TableCell>প্রস্তাবিত অনুদান</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {/* Row A: Example with applicant data */}
-                  {employeeBankInfo?.map((bankInfo, index) => {
-                    const bankName = bankInfo?.bank?.nameBn || "N/A";
-                    const branchName = bankInfo?.branch?.nameBn || "N/A";
-                    const accountHolderName = bankInfo?.accountHolderName || "N/A";
-                    const accountNumber = bankInfo?.accountNumber || "N/A";
-                    const routingNumber = bankInfo?.branch?.routingNumber || "N/A";
-                    return (
-                      <TableRow key={index}>
-                        <TableCell>ক</TableCell>
-                        <TableCell>{accountHolderName}</TableCell>
-                        <TableCell>{applicantRelation}</TableCell>
-                        <TableCell>
-                          {accountNumber}, {branchName}, {bankName}
-                        </TableCell>
-                        <TableCell>{routingNumber}</TableCell>
-                        <TableCell>১০০% (উদাহরণ)</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {/* Rows for others (b, c, d) - empty as per data */}
-                  {/* {["খ", "গ", "ঘ"].map((item) => (
-                              <TableRow key={item}>
-                                <TableCell>{item}</TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                              </TableRow>
-                            ))} */}
+                  {accidentInfo?.cronicDiseaseType?.map((disease, index) => (
+                    <TableRow key={disease.id || index}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{disease.diseaseName || "N/A"}</TableCell>
+                      <TableCell>{disease.grade || "N/A"}</TableCell>
+                      <TableCell>{formatDate(accidentInfo?.diagnosisDate)}</TableCell>
+                      <TableCell>{disease.minimumDonationAmount || 0}</TableCell>
+                      <TableCell>{disease.maximumDonationAmount || 0}</TableCell>
+                      <TableCell>{accidentInfo?.grantAmount || 0}</TableCell>
+                    </TableRow>
+                  ))}
+
+                  {/* Fallback if no disease data */}
+                  {(!accidentInfo?.cronicDiseaseType || accidentInfo?.cronicDiseaseType.length === 0) && (
+                    <TableRow>
+                      <TableCell colSpan={7} align="center">
+                        কোনো রোগ সম্পর্কিত তথ্য পাওয়া যায়নি।
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
-          </div>
+          ) : (
+            // ACCIDENT LAYOUT (Default)
+            <Grid container spacing={1}>
+              <Grid item xs={3}>
+                <Typography className={classes.fieldLabel}>দুর্ঘটনার ধরন:</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className={classes.fieldValue}>{accidentInfo?.accidentSpecificType || "N/A"}</Typography>
+              </Grid>
 
-          {/* Section 5 & 6: Other Info and Attachments */}
+              <Grid item xs={3}>
+                <Typography className={classes.fieldLabel}>দুর্ঘটনার স্থান:</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className={classes.fieldValue}>{accidentInfo?.accidentPlace || "N/A"}</Typography>
+              </Grid>
+
+              <Grid item xs={3}>
+                <Typography className={classes.fieldLabel}>দুর্ঘটনার তারিখ:</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className={classes.fieldValue}>{formatDate(accidentInfo?.accidentDate)}</Typography>
+              </Grid>
+
+              <Grid item xs={3}>
+                <Typography className={classes.fieldLabel}>দুর্ঘটনার সময়:</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className={classes.fieldValue}>{accidentInfo?.accidentTime || "N/A"}</Typography>
+              </Grid>
+
+              <Grid item xs={3}>
+                <Typography className={classes.fieldLabel}>কোন পরিস্থিতিতে দুর্ঘটনা হয়েছে?</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className={classes.fieldValue}>{accidentInfo?.inOutsideFactory || "N/A"}</Typography>
+              </Grid>
+
+              <Grid item xs={6}>
+                <Typography className={classes.fieldLabel}>আপনি কি সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদান করেছেন?</Typography>
+
+                <Box className={classes.checkboxGroup}>
+                  <Box className={classes.checkboxContainer}>
+                    <Checkbox
+                      checked={accidentInfo?.hasRejoined === "yes"}
+                      color="default"
+                      size="small"
+                      style={{ padding: 0, paddingRight: "4px", color: "black" }} 
+                    />
+                    <Typography variant="body2">হ্যাঁ</Typography>
+                  </Box>
+                  <Box className={classes.checkboxContainer}>
+                    <Checkbox
+                      checked={accidentInfo?.hasRejoined === "no"}
+                      color="default"
+                      size="small"
+                      style={{ padding: 0, paddingRight: "4px", color: "black" }} 
+                    />
+                    <Typography variant="body2">না</Typography>
+                  </Box>
+                </Box>
+              </Grid>
+
+              <Grid item xs={3}>
+                <Typography className={classes.fieldLabel}>সুস্থ হওয়ার পরে পুনরায় কর্মস্থলে যোগদানের তারিখ</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className={classes.fieldValue}>{formatDate(accidentInfo?.dateOfRejoining)}</Typography>
+              </Grid>
+
+              <Grid item xs={6}>
+                <Typography className={classes.fieldLabel}>হাসপাতালে ভর্তি হয়েছিলেন?</Typography>
+                <Box className={classes.checkboxGroup}>
+                  <Box className={classes.checkboxContainer}>
+                    <Checkbox
+                      checked={accidentInfo?.admitted === "yes"}
+                      color="default"
+                      size="small"
+                      style={{ padding: 0, paddingRight: "4px", color: "black" }} 
+                    />
+                    <Typography variant="body2">হ্যাঁ</Typography>
+                  </Box>
+                  <Box className={classes.checkboxContainer}>
+                    <Checkbox
+                      checked={accidentInfo?.admitted === "no"}
+                      color="default"
+                      size="small"
+                      style={{ padding: 0, paddingRight: "4px", color: "black" }} 
+                    />
+                    <Typography variant="body2">না</Typography>
+                  </Box>
+                </Box>
+              </Grid>
+              
+              <Grid item xs={3}>
+                <Typography className={classes.fieldLabel}>হাসপাতালের নাম</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className={classes.fieldValue}>{accidentInfo?.hospitalName || "N/A"}</Typography>
+              </Grid>
+
+              <Grid item xs={3}>
+                <Typography className={classes.fieldLabel}>ভর্তির তারিখ</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className={classes.fieldValue}>{formatDate(accidentInfo?.admitDate)}</Typography>
+              </Grid>
+
+              <Grid item xs={3}>
+                <Typography className={classes.fieldLabel}>রিলিজের তারিখ</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className={classes.fieldValue}>{formatDate(accidentInfo?.releaseDate)}</Typography>
+              </Grid>
+
+              <Grid item xs={3}>
+                <Typography className={classes.fieldLabel}>ডাক্তারের নাম</Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Typography className={classes.fieldValue}>{accidentInfo?.hospitalDoctorName || "N/A"}</Typography>
+              </Grid>
+            </Grid>
+          )}
+
+          {/* Section 4 was removed as per request */}
+
+          {/* Section 5: Other Info (Numbering adjusted to match previous logic or kept as 5/6/7) */}
           <Typography className={classes.sectionTitle}>৫। অন্য কোনো তথ্য (যদি থাকে):-</Typography>
           <Typography className={classes.fieldValue} style={{ minHeight: "40px" }}>
             {/* Empty field */}
@@ -475,14 +441,19 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
             {requiredAttachments.map((item, index) => (
               <Grid item xs={12} key={index}>
                 <Box display="flex" alignItems="center">
-                  <Box className={`${classes.checkbox} ${item.checked ? classes.checked : ""}`} />
+                  <Checkbox
+                    checked={item.checked}
+                    color="default"
+                    size="small"
+                    style={{ padding: 0, paddingRight: "8px", color: "black" }} 
+                  />
                   <Typography variant="body2">{item.label}</Typography>
                 </Box>
               </Grid>
             ))}
           </Grid>
 
-          {/* Keep Movement Logs & Documents section untouched */}
+          {/* Movement Logs */}
           <Box mt={4}>
             <Typography variant="h6">৭। মুভমেন্ট লগ / Movement Log</Typography>
             <Divider />
@@ -522,30 +493,13 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
             )}
           </Box>
 
-          {/* <Divider style={{ margin: "10px 0" }} /> */}
-
-          {/* Section 7 & 8: Declaration and Recommendation */}
-          {/* <Typography className={classes.sectionTitle}>৭। ঘোষণা</Typography>
-                  <Typography variant="body2" style={{ lineHeight: 1.5 }}>
-                    আমি ঘোষণা করতেছি যে, এই আবেদন পত্রে বর্ণিত সকল তথ্য আমার জ্ঞান ও বিশ্বাস মতে সত্য এবং আমি কোনো তথ্য গোপন করি নাই।
-                  </Typography> */}
-
-          {/* <Box className={classes.signatureBox}>
-                    <Box className={classes.signatureItem}>
-                      আবেদনকারীর নাম, স্বাক্ষর ও তারিখ
-                      <br />({applicantName})<br />({createdDate})
-                    </Box>
-                    <Box className={classes.signatureItem}>কারখানা কর্তৃপক্ষের স্বাক্ষর, সীল এবং মোবাইল নাম্বার</Box>
-                    <Box className={classes.signatureItem}>মালিকপক্ষের প্রতিনিধি সংস্থার দায়িত্বপ্রাপ্ত কর্মকর্তার স্বাক্ষর, সীল এবং মোবাইল নাম্বার</Box>
-                  </Box> */}
-
           <Typography variant="body2" className={classes.note} style={{ textAlign: "center", marginTop: "15px" }}>
             (বিঃদ্রঃ- অসম্পূর্ণ ও ভুল আবেদন বাতিলের ক্ষেত্রে কেন্দ্রীয় তহবিলের সিদ্ধান্তই চূড়ান্ত বলে গণ্য হবে।)
           </Typography>
         </Box>
       </Paper>
 
-      {/* Attached Documents Section (optional) */}
+      {/* Attached Documents Section */}
       {documents &&
         documents?.length > 0 &&
         documents?.map((doc, index) => (

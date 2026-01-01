@@ -485,7 +485,7 @@ const ApplicationViewPage = ({
   const [lastSalaryAmount, setLastSalaryAmount] = useState("");
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
   const [openCompensationInfoModal, setOpenCompensationInfoModal] = useState(false);
-
+  console.log({view:application})
   // --- Eligibility State ---
   const [eligibilityMap, setEligibilityMap] = useState({});
 
