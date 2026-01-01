@@ -20,6 +20,7 @@ import { createApplicationSummary, testWorkforcePayment, updateApplication, upda
 import { useDispatch, useSelector } from "react-redux";
 import React, { Component, useState, useEffect } from "react";
 import { enToBn } from '../../utils/utils';
+import {CircularProgress} from "@material-ui/core";
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import {
@@ -65,30 +66,30 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
       .toFixed(2);
   };
 
+  // useEffect(() => {
+  //   if (selectedApplicationIds?.length > 0) {
+  //     const run = async () => {
+  //       setLoading(true);
+
+  //       for (const encodedId of selectedApplicationIds) {
+  //         const eisPaymentData = {
+  //           workforceApplicationId: decodeId(encodedId?.id),
+  //         };
+
+  //         await dispatch(
+  //           testWorkforcePayment(eisPaymentData, "Create Test Payment Process")
+  //         );
+  //       }
+
+  //       setVbaCalled(true);
+  //     };
+
+  //     run();
+  //   }
+  // }, [open]);
+
   useEffect(() => {
-    if (selectedApplicationIds?.length > 0) {
-      const run = async () => {
-        setLoading(true);
-
-        for (const encodedId of selectedApplicationIds) {
-          const eisPaymentData = {
-            workforceApplicationId: decodeId(encodedId?.id),
-          };
-
-          await dispatch(
-            testWorkforcePayment(eisPaymentData, "Create Test Payment Process")
-          );
-        }
-
-        setVbaCalled(true);
-      };
-
-      run();
-    }
-  }, [open]);
-
-  useEffect(() => {
-    if (selectedApplicationIds?.length > 0) {
+    if (selectedApplicationIds?.length > 0 && open) {
       setPaymentTypeMap(eisPayments);
       const run = async () => {
         setLoading(true);
@@ -110,7 +111,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
 
       run();
     }
-  }, [vbaCalled]);
+  }, [open]);
 
   useEffect(() => {
     if (selectedApplicationIds?.length > 0) {
@@ -804,44 +805,44 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
   // UI: Render all eisPayments (no filter)
   // -----------------------------------
 
-  
-  
-    const handlePaymentTypeChange = async (paymentType, beneficiaryId, rowId) => {
 
-      setPaymentTypeMap((prev) => ({
+
+  const handlePaymentTypeChange = async (paymentType, beneficiaryId, rowId) => {
+
+    setPaymentTypeMap((prev) => ({
       ...prev,
-        [rowId]: paymentType,
-      }));
+      [rowId]: paymentType,
+    }));
 
-      const data = {
-        beneficiaryId,
-        eisPaymentType: paymentType,
-      };
-
-      try {
-        await dispatch(updateWorkforceEisPaymentProcessPaymentType(data));
-      } catch (error) {
-        console.error(error);
-      }
+    const data = {
+      beneficiaryId,
+      eisPaymentType: paymentType,
     };
 
-    const handleApprovalChange = async (value, beneficiaryId, rowId) => {
-      setPaymentTypeMap((prev) => ({
-        ...prev,
-        [rowId]: value,
-      }));
+    try {
+      await dispatch(updateWorkforceEisPaymentProcessPaymentType(data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-      const data = {
-        beneficiaryId,
-        approved: value,
-      };
+  const handleApprovalChange = async (value, beneficiaryId, rowId) => {
+    setPaymentTypeMap((prev) => ({
+      ...prev,
+      [rowId]: value,
+    }));
 
-      try {
-        await dispatch(updateWorkforceEisPaymentProcessApproval(data));
-      } catch (error) {
-        console.error(error);
-      }
+    const data = {
+      beneficiaryId,
+      approved: value,
     };
+
+    try {
+      await dispatch(updateWorkforceEisPaymentProcessApproval(data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const user_type = getUserTypeFromRights(userRights)
 
   return (
@@ -849,9 +850,9 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
       <DialogTitle disableTypography>
         <Typography variant="h6">
           {loading ? (
-            <>
-              Loading....
-            </>
+            <p style={{width:'100%', textAlign: 'center' }}>
+              <CircularProgress/> Loading....
+            </p>
           ) : (
             <FormattedMessage id="EIS-Pilot Benefit Approval Note (Disability/Death)" />
           )}
@@ -859,127 +860,133 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
       </DialogTitle>
 
       <DialogContent dividers>
-        <Table>
-          <TableHead>
-            <TableRow style={{ backgroundColor: "#f0f0f0", fontWeight: "bold" }}>
-              <TableCell><FormattedMessage id="SL #" /></TableCell>
-              <TableCell><FormattedMessage id="EIS Worker ID" /></TableCell>
-              <TableCell><FormattedMessage id="Worker Name" /></TableCell>
-              <TableCell><FormattedMessage id="Dependent Name" /></TableCell>
-              <TableCell><FormattedMessage id="NID/Birth Certificate of Worker" /></TableCell>
-              <TableCell><FormattedMessage id="Benefit Rate (%) of Gross Salary" /></TableCell>
-              <TableCell><FormattedMessage id="Total time amount (individual)" /></TableCell>
-              <TableCell><FormattedMessage id="After adjustment (individual)" /></TableCell>
-              <TableCell><FormattedMessage id="Monthly Payable Benefit (BDT)" /></TableCell>
-              <TableCell><FormattedMessage id="Net Monthly Payable After Adjustment (BDT" /></TableCell>
-              <TableCell><FormattedMessage id="Type of Payment" /></TableCell>
-              <TableCell><FormattedMessage id="Approval Status" /></TableCell>
-              <TableCell><FormattedMessage id="Remarks" /></TableCell>
-            </TableRow>
-          </TableHead>
+        {!loading && (
+          <Table>
+            <TableHead>
+              <TableRow style={{ backgroundColor: "#f0f0f0", fontWeight: "bold" }}>
+                <TableCell><FormattedMessage id="SL #" /></TableCell>
+                <TableCell><FormattedMessage id="EIS Worker ID" /></TableCell>
+                <TableCell><FormattedMessage id="Worker Name" /></TableCell>
+                <TableCell><FormattedMessage id="Dependent Name" /></TableCell>
+                <TableCell><FormattedMessage id="NID/Birth Certificate of Worker" /></TableCell>
+                <TableCell><FormattedMessage id="Benefit Rate (%) of Gross Salary" /></TableCell>
+                <TableCell><FormattedMessage id="Total time amount (individual)" /></TableCell>
+                <TableCell><FormattedMessage id="After adjustment (individual)" /></TableCell>
+                <TableCell><FormattedMessage id="Monthly Payable Benefit (BDT)" /></TableCell>
+                <TableCell><FormattedMessage id="Net Monthly Payable After Adjustment (BDT" /></TableCell>
+                <TableCell><FormattedMessage id="Type of Payment" /></TableCell>
+                <TableCell><FormattedMessage id="Approval Status" /></TableCell>
+                <TableCell><FormattedMessage id="Remarks" /></TableCell>
+              </TableRow>
+            </TableHead>
 
-          <TableBody>
-            {eisPayments.map((row, index) => {
-              let bankInfo = {};
-              try {
-                bankInfo = JSON.parse(JSON.parse(row.employeeBankInfo));
-              } catch (e) { }
+            <TableBody>
+              {eisPayments.map((row, index) => {
+                let bankInfo = {};
+                try {
+                  bankInfo = JSON.parse(JSON.parse(row.employeeBankInfo));
+                } catch (e) { }
 
-              return (
-                <TableRow key={index}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{row?.beneficiaryId}</TableCell>
-                  <TableCell>{row?.workforceApplication?.workforceEmployee?.firstNameEn}</TableCell>
-                  <TableCell>
-                    {row?.workforceEmployeeDependent?.length > 0
-                      ? row.workforceEmployeeDependent[0].nameEn + (" ("+ RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker]+") ")
-                      : ""}
-                  </TableCell>
-                  <TableCell>{row?.workforceApplication?.workforceEmployee?.nid}</TableCell>
-                  <TableCell>{row?.eisInitialReplacementRate ? Number(row.eisInitialReplacementRate) * 100 + "%" : ""}</TableCell>
-                  <TableCell>{row?.eisCalculatedAmount}</TableCell>
-                  <TableCell>{row?.eisApprovedAmount}</TableCell>
-                  <TableCell>{row?.eisInitialMonthlyAmount}</TableCell>
-                  <TableCell>{row?.eisMonthlyAmount}</TableCell>
-                  <TableCell>
-                    {
-                      user_type== WORKFORCE_USER_TYPE.EIS_COORDINATOR || user_type== WORKFORCE_USER_TYPE.EIS_ADVISOR || user_type== WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
-                        <>
-                         <select
-                            value={
-                              paymentTypeMap[index] !== undefined
-                              ? paymentTypeMap[index]?.eisPaymentType
-                              : row?.eisPaymentType || ""
-                            }
-                            onChange={(e) =>
-                              handlePaymentTypeChange(e.target.value, row?.beneficiaryId, index)
-                            }
-                          >
-                            <option value="" disabled>Select</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="onetime">One-time</option>
-                            <option value="installment">Tri Monthly Installment</option>
-                          </select>
-                        </>
-                      ) :
-                      EIS_PAYMENT_TYPES[row?.eisPaymentType]
-                    }
-                  </TableCell>
-                  <TableCell>
-                    {
-                      user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
-                      <>
-                         <select
-                            value={
-                              paymentTypeMap[index] !== undefined ? paymentTypeMap[index]?.approved : ""
-                            }
-                            onChange={(e) =>
-                              handleApprovalChange(e.target.value, row?.beneficiaryId, index)
-                            }
-                          >
-                            <option value="">Not Approved</option>
-                            <option value="yes">Approved</option>
-                          </select>
-                        </>
-                        
-                      ) : getApprovalStatus(row?.isApproved)
-                    }
-                  </TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
+                return (
+                  <TableRow key={index}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{row?.beneficiaryId}</TableCell>
+                    <TableCell>{row?.workforceApplication?.workforceEmployee?.firstNameEn}</TableCell>
+                    <TableCell>
+                      {row?.workforceEmployeeDependent?.length > 0
+                        ? row.workforceEmployeeDependent[0].nameEn + (" (" + RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker] + ") ")
+                        : ""}
+                    </TableCell>
+                    <TableCell>{row?.workforceApplication?.workforceEmployee?.nid}</TableCell>
+                    <TableCell>{row?.eisInitialReplacementRate ? Number(row.eisInitialReplacementRate) * 100 + "%" : ""}</TableCell>
+                    <TableCell>{row?.eisCalculatedAmount}</TableCell>
+                    <TableCell>{row?.eisApprovedAmount}</TableCell>
+                    <TableCell>{row?.eisInitialMonthlyAmount}</TableCell>
+                    <TableCell>{row?.eisMonthlyAmount}</TableCell>
+                    <TableCell>
+                      {
+                        user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR || user_type == WORKFORCE_USER_TYPE.EIS_ADVISOR || user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
+                          <>
+                            <select
+                              value={
+                                paymentTypeMap[index] !== undefined
+                                  ? paymentTypeMap[index]?.eisPaymentType
+                                  : row?.eisPaymentType || ""
+                              }
+                              onChange={(e) =>
+                                handlePaymentTypeChange(e.target.value, row?.beneficiaryId, index)
+                              }
+                            >
+                              <option value="" disabled>Select</option>
+                              <option value="monthly">Monthly</option>
+                              <option value="onetime">One-time</option>
+                              <option value="installment">Tri Monthly Installment</option>
+                            </select>
+                          </>
+                        ) :
+                          EIS_PAYMENT_TYPES[row?.eisPaymentType]
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {
+                        user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
+                          <>
+                            <select
+                              value={
+                                paymentTypeMap[index] !== undefined ? paymentTypeMap[index]?.approved : ""
+                              }
+                              onChange={(e) =>
+                                handleApprovalChange(e.target.value, row?.beneficiaryId, index)
+                              }
+                            >
+                              <option value="">Not Approved</option>
+                              <option value="yes">Approved</option>
+                            </select>
+                          </>
 
-              );
-            })}
-            <TableRow>
-              <TableCell colSpan={7}><strong><FormattedMessage id="Total Amount (Monthly)" /></strong></TableCell>
-              <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
-              <TableCell colSpan={3} />
-            </TableRow>
-          </TableBody>
-        </Table>
+                        ) : getApprovalStatus(row?.isApproved)
+                      }
+                    </TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+
+                );
+              })}
+              <TableRow>
+                <TableCell colSpan={7}><strong><FormattedMessage id="Total Amount (Monthly)" /></strong></TableCell>
+                <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
+                <TableCell colSpan={3} />
+              </TableRow>
+            </TableBody>
+          </Table>
+        )}
       </DialogContent>
 
       <Divider />
 
       <DialogActions className={classes.noPrint}>
-        <Button onClick={onClose} variant="outlined" color="primary">
-          <FormattedMessage id="workforce.modal.close" />
-        </Button>
-        {
-          user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
-            <Button onClick={onClose} variant="contained" color="primary">
-              <FormattedMessage id="ক্যালকুলেশন সেভ করুন" />
+        {!loading && (
+          <>
+            <Button onClick={onClose} variant="outlined" color="primary">
+              <FormattedMessage id="workforce.modal.close" />
             </Button>
-          )
-        }
+            {
+              user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+                <Button onClick={onClose} variant="contained" color="primary">
+                  <FormattedMessage id="ক্যালকুলেশন সেভ করুন" />
+                </Button>
+              )
+            }
 
-        <Button onClick={() => window.print()} variant="contained" color="primary">
-          <FormattedMessage id="workforce.modal.print.advice" />
-        </Button>
+            <Button onClick={() => window.print()} variant="contained" color="primary">
+              <FormattedMessage id="workforce.modal.print.advice" />
+            </Button>
 
-        <Button onClick={exportToExcel} variant="contained" color="success">
-          <FormattedMessage id="workforce.modal.excel" />
-        </Button>
+            <Button onClick={exportToExcel} variant="contained" color="success">
+              <FormattedMessage id="workforce.modal.excel" />
+            </Button>
+          </>
+        )}
       </DialogActions>
     </Dialog>
   );
