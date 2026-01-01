@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Typography, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, Divider, TableRow, Checkbox } from "@material-ui/core";
-import { FormattedMessage } from "@openimis/fe-core"; 
+import { FormattedMessage } from "@openimis/fe-core";
 
 // --- Styles ---
 const useStyles = makeStyles({
@@ -36,7 +36,7 @@ const useStyles = makeStyles({
   checkboxGroup: {
     display: "flex",
     alignItems: "center",
-    gap: "24px", 
+    gap: "24px",
   },
   table: {
     width: "100%",
@@ -77,21 +77,21 @@ const formatDate = (dateString) => {
 };
 const formatAddress = (locationData, addressInput) => {
   let address = {};
-  if (typeof addressInput === 'string') {
-     address = safeJsonParse(addressInput);
-  } else if (typeof addressInput === 'object' && addressInput !== null) {
-     address = addressInput;
+  if (typeof addressInput === "string") {
+    address = safeJsonParse(addressInput);
+  } else if (typeof addressInput === "object" && addressInput !== null) {
+    address = addressInput;
   }
 
   const postOffice = address?.postOffice?.nameBn || address?.postOffice?.nameEn;
   const village = [address?.houseName, address?.paraMahalla, address?.villageRoad].filter(Boolean).join(", ") || locationData?.name;
   const thana = locationData?.parent?.name;
   const district = locationData?.parent?.parent?.name;
-  return { 
-    village: village || "N/A", 
-    postOffice: postOffice || "N/A", 
-    thana: thana || "N/A", 
-    district: district || "N/A" 
+  return {
+    village: village || "N/A",
+    postOffice: postOffice || "N/A",
+    thana: thana || "N/A",
+    district: district || "N/A",
   };
 };
 
@@ -104,10 +104,12 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
 
   // --- 1. APPLICANT INFO ---
   const applicantName = workforceEmployee?.firstNameBn || workforceEmployee?.firstNameEn || "N/A";
-  const applicantRelation = "নিজ"; 
+  const applicantRelation = "নিজ";
   const applicantNid = workforceEmployee?.nid || "N/A";
   const applicantDOB = workforceEmployee?.birthDate || "N/A";
   const applicantMobile = workforceEmployee?.phoneNumber || "N/A";
+  const applicantFatherName = workforceEmployee?.fatherNameBn || "N/A";
+  const applicantMotherName = workforceEmployee?.motherNameBn || "N/A";
 
   const permanentAddress = formatAddress(workforceEmployee?.permanentLocation, workforceEmployee?.permanentAddress);
   const presentAddress = formatAddress(workforceEmployee?.presentLocation, workforceEmployee?.presentAddress);
@@ -115,7 +117,7 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
   // --- 2. ACCIDENT/DISEASE INFO ---
   // Ensure accidentInfo is at least an empty object to avoid crashes
   const accidentInfo = data?.employeeAccidentInfo || {};
-  
+
   // Decide whether to show Disease Table or Accident Grid.
   // Default to Accident Grid if type is 'accident' OR null/undefined (to ensure fields show)
   const isDisease = accidentInfo?.aidReasonType === "disease";
@@ -146,7 +148,9 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
             <Grid item xs={8} className={classes.headerText}>
               {logoLeftUrl && <img src={logoLeftUrl} alt="Govt Logo" className={classes.logo} />}
               <Typography variant="body1">গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</Typography>
-              <Typography variant="body1">{data?.organizationType ==="cf"?"কেন্দ্রীয় তহবিল":data?.organizationType==="eis"?"ই.আই.এস.":"বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন"}</Typography>
+              <Typography variant="body1">
+                {data?.organizationType === "cf" ? "কেন্দ্রীয় তহবিল" : data?.organizationType === "eis" ? "ই.আই.এস." : "বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন"}
+              </Typography>
               <Typography variant="body1">শ্রম ও কর্মসংস্থান মন্ত্রণালয়</Typography>
               <Typography variant="body2">২১ তলা, ভবন নং: ৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০।</Typography>
               <Typography variant="body2" style={{ color: "blue" }}>
@@ -177,7 +181,7 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
             </Grid>
 
             <Grid item xs={3}>
-              <Typography className={classes.fieldLabel}>মৃত শ্রমিকের সাথে সম্পর্কঃ</Typography>
+              <Typography className={classes.fieldLabel}>শ্রমিকের সাথে সম্পর্কঃ</Typography>
             </Grid>
             <Grid item xs={3}>
               <Typography className={classes.fieldValue}>{applicantRelation}</Typography>
@@ -202,6 +206,19 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
             </Grid>
             <Grid item xs={8}>
               <Typography className={classes.fieldValue}>{applicantMobile}</Typography>
+            </Grid>
+
+            <Grid item xs={2}>
+              <Typography className={classes.fieldLabel}>পিতার নামঃ</Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography className={classes.fieldValue}>{applicantFatherName}</Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography className={classes.fieldLabel}>মাতার নামঃ</Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography className={classes.fieldValue}>{applicantMotherName}</Typography>
             </Grid>
           </Grid>
 
@@ -264,7 +281,7 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
 
           {/* Section 3: Disease Info or Accident Info (Always Shown) */}
           <Typography className={classes.sectionTitle}>৩। রোগের তথ্য </Typography>
-          
+
           {isDisease ? (
             // DISEASE LAYOUT
             <TableContainer component={Box}>
@@ -351,7 +368,7 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
                       checked={accidentInfo?.hasRejoined === "yes"}
                       color="default"
                       size="small"
-                      style={{ padding: 0, paddingRight: "4px", color: "black" }} 
+                      style={{ padding: 0, paddingRight: "4px", color: "black" }}
                     />
                     <Typography variant="body2">হ্যাঁ</Typography>
                   </Box>
@@ -360,7 +377,7 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
                       checked={accidentInfo?.hasRejoined === "no"}
                       color="default"
                       size="small"
-                      style={{ padding: 0, paddingRight: "4px", color: "black" }} 
+                      style={{ padding: 0, paddingRight: "4px", color: "black" }}
                     />
                     <Typography variant="body2">না</Typography>
                   </Box>
@@ -382,7 +399,7 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
                       checked={accidentInfo?.admitted === "yes"}
                       color="default"
                       size="small"
-                      style={{ padding: 0, paddingRight: "4px", color: "black" }} 
+                      style={{ padding: 0, paddingRight: "4px", color: "black" }}
                     />
                     <Typography variant="body2">হ্যাঁ</Typography>
                   </Box>
@@ -391,13 +408,13 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
                       checked={accidentInfo?.admitted === "no"}
                       color="default"
                       size="small"
-                      style={{ padding: 0, paddingRight: "4px", color: "black" }} 
+                      style={{ padding: 0, paddingRight: "4px", color: "black" }}
                     />
                     <Typography variant="body2">না</Typography>
                   </Box>
                 </Box>
               </Grid>
-              
+
               <Grid item xs={3}>
                 <Typography className={classes.fieldLabel}>হাসপাতালের নাম</Typography>
               </Grid>
@@ -441,12 +458,7 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
             {requiredAttachments.map((item, index) => (
               <Grid item xs={12} key={index}>
                 <Box display="flex" alignItems="center">
-                  <Checkbox
-                    checked={item.checked}
-                    color="default"
-                    size="small"
-                    style={{ padding: 0, paddingRight: "8px", color: "black" }} 
-                  />
+                  <Checkbox checked={item.checked} color="default" size="small" style={{ padding: 0, paddingRight: "8px", color: "black" }} />
                   <Typography variant="body2">{item.label}</Typography>
                 </Box>
               </Grid>
