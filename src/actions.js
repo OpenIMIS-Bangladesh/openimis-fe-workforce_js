@@ -2221,6 +2221,7 @@ export function fetchEmployeeDependent(mm, filters) {
     "location" + mm.getProjection("location.Location.FlatProjection");
   const projections = [
     "id",
+    "nid",
     "nameBn",
         "nameEn"
   ];
