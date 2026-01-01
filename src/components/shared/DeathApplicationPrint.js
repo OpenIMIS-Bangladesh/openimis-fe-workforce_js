@@ -331,7 +331,7 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
               <Typography variant="body1" style={{ marginTop: "4px" }}>
                 গণপ্রজাতন্ত্রী বাংলাদেশ সরকার
               </Typography>
-              <Typography variant="body1">কেন্দ্রীয় তহবিল</Typography>
+              <Typography variant="body1">{data?.organizationType ==="cf"?"কেন্দ্রীয় তহবিল":data?.organizationType==="eis"?"ই.আই.এস.":"বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন"}</Typography>
               <Typography variant="body1">শ্রম ও কর্মসংস্থান মন্ত্রণালয়</Typography>
               <Typography variant="body2">২১ তলা, ভবন নং: ৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০।</Typography>
               <Typography variant="body2" style={{ color: "blue" }}>
