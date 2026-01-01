@@ -180,9 +180,9 @@ export async function handleBulkSelectedByAssociationLogic({
               toRoleId: 32,
             };
 
-              const testPaymentData = {
-              id: decodedId,
-            };
+            //   const testPaymentData = {
+            //   id: decodedId,
+            // };
 
             await updateApplication(
               updateApplicationData,
@@ -192,13 +192,13 @@ export async function handleBulkSelectedByAssociationLogic({
               createApplicationMovementData,
               "create workforce movement"
             );
-            if(selectedItem?.organizationType==="eis" && selectedItem?.applicationType == "financialAssistance")
-            {
-              await testWorkforcePayment(
-                testPaymentData,
-                "create test payment"
-              );
-            }
+            // if(selectedItem?.organizationType==="eis" && selectedItem?.applicationType == "financialAssistance")
+            // {
+            //   await testWorkforcePayment(
+            //     testPaymentData,
+            //     "create test payment"
+            //   );
+            // }
             // if(isEisPath())
             // {
             //   await updateWorkforceEmployeeDependentEligibility(decodedId);
