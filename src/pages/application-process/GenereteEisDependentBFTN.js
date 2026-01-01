@@ -16,7 +16,7 @@ import { EIS_PAYMENT_TYPES, RELATION_LABEL_MAP, WORKFORCE_USER_TYPE } from "../.
 import { getApprovalStatus, getUserType, getUserTypeFromRights } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
-import { createApplicationSummary, updateApplication, updateApplicationSummary, updateWorkforceEisPaymentProcessApproval, updateWorkforceEisPaymentProcessPaymentType } from "../../actions";
+import { createApplicationSummary, testWorkforcePayment, updateApplication, updateApplicationSummary, updateWorkforceEisPaymentProcessApproval, updateWorkforceEisPaymentProcessPaymentType } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import React, { Component, useState, useEffect } from "react";
 import { enToBn } from '../../utils/utils';
@@ -55,6 +55,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [dataCreated, setDataCreated] = useState(false);
+  const [vbaCalled, setVbaCalled] = useState(false);
   const [paymentTypeMap, setPaymentTypeMap] = useState([]);
 
   console.log("selectedApplicationIds", selectedApplicationIds);
@@ -63,6 +64,28 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
       .reduce((sum, item) => sum + (parseFloat(item.eisMonthlyAmount) || 0), 0)
       .toFixed(2);
   };
+
+  useEffect(() => {
+    if (selectedApplicationIds?.length > 0) {
+      const run = async () => {
+        setLoading(true);
+
+        for (const encodedId of selectedApplicationIds) {
+          const eisPaymentData = {
+            workforceApplicationId: decodeId(encodedId?.id),
+          };
+
+          await dispatch(
+            testWorkforcePayment(eisPaymentData, "Create Test Payment Process")
+          );
+        }
+
+        setVbaCalled(true);
+      };
+
+      run();
+    }
+  }, [open]);
 
   useEffect(() => {
     if (selectedApplicationIds?.length > 0) {
@@ -87,7 +110,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
 
       run();
     }
-  }, [open]);
+  }, [vbaCalled]);
 
   useEffect(() => {
     if (selectedApplicationIds?.length > 0) {

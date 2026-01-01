@@ -25,7 +25,7 @@ import DocumentReviewAccordion from "../application-process/DocumentReviewAccord
 import { banglaLabels, ORGANIZATION_TYPE_NAME_BN, ORGANIZATION_TYPE_NAME_EN, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
 import { conditionalEnToBn, enToBn, getUserType, safeDecodeId } from "../../utils/utils";
-import { testWorkforcePayment, updateApplication } from "../../actions";
+import { updateApplication } from "../../actions";
 import DoctorsEntries from "./Atoms/DoctorsEntries";
 import EisFactoryAdminModal from "./EisFactoryAdminModal";
 import ApplicationMovementStepper from "../shared/ApplicationMovementStepper";
@@ -561,15 +561,11 @@ const ApplicationViewPage = ({
       id: application.id,
       employeeDependentInfo: JSON.stringify(formattedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
     };
-    const testPaymentData = {
-      id: application.id,
-    };
 
     console.log("Saving All Dependents Payload:", payload);
 
     // Dispatch and Clear Map (so button disables again if needed, or keep it enabled)
-    dispatch(updateApplication(payload, "update workforce dependent info"));
-    dispatch(testWorkforcePayment(testPaymentData, "create test payment")).then(() => window.location.reload());
+    dispatch(updateApplication(payload, "update workforce dependent info")).then(() => window.location.reload());
 
     // Optional: setEligibilityMap({});
   };
