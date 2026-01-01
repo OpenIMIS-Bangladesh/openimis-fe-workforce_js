@@ -19,7 +19,7 @@ class WorkforceAssociationForm extends Component {
       lockNew: false,
       reset: 0,
       workforceAssociationUuid: null,
-      ticket: this._newTicket(),
+      workforceAllAssociation: this._newTicket(),
     };
   }
 
@@ -33,12 +33,12 @@ class WorkforceAssociationForm extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedWorkforceAllAssociations !== this.props.fetchedWorkforceAllAssociations
-      && !!this.props.fetchedWorkforceAllAssociations
-      && !!this.props.workforceAssociation) {
+    if (prevProps.fetchedWorkforceAllAssociation !== this.props.fetchedWorkforceAllAssociation
+      && !!this.props.fetchedWorkforceAllAssociation
+      && !!this.props.workforceAllAssociation) {
       this.setState((state, props) => ({
-        workforceAssociation: { ...props.workforceAssociation },
-        workforceAssociationUuid: props.workforceAssociation.id,
+        workforceAllAssociation: { ...props.workforceAllAssociation },
+        workforceAssociationUuid: props.workforceAllAssociation.id,
         lockNew: false,
       }));
     } else if (prevState.workforceAssociationUuid !== this.state.workforceAssociationUuid) {
@@ -50,7 +50,7 @@ class WorkforceAssociationForm extends Component {
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState((state) => ({ reset: state.reset + 1 }));
-      if (this.props?.workforceAssociation?.id) {
+      if (this.props?.workforceAllAssociation?.id) {
         this.props.fetchWorkforceAllAssociation(
           this.props.modulesManager,
           [`id: "${this.state.workforceAssociationUuid}"`],
@@ -71,21 +71,21 @@ class WorkforceAssociationForm extends Component {
 
   };
 
-  _save = (ticket) => {
+  _save = (workforceAllAssociation) => {
     this.setState(
-      { lockNew: !ticket.uuid },
-      () => this.props.save(ticket),
+      { lockNew: !workforceAllAssociation.uuid },
+      () => this.props.save(workforceAllAssociation),
     );
   };
 
-  onEditedChanged = (ticket) => {
-    this.setState({ ticket });
+  onEditedChanged = (workforceAllAssociation) => {
+    this.setState({ workforceAllAssociation });
   };
 
   reopenTicket = () => {
-    const { intl, ticket } = this.props;
+    const { intl, workforceAllAssociation } = this.props;
     this.props.reopenTicket(
-      ticket.id,
+      workforceAllAssociation.id,
       formatMessage(intl, MODULE_NAME, "reopenTicket.mutation.label"),
     );
   };
@@ -93,7 +93,8 @@ class WorkforceAssociationForm extends Component {
   render() {
     const {
       fetchingTicket,
-      fetchedWorkforceAllAssociations,
+      fetchedWorkforceAllAssociation,
+      workforceAllAssociation,
       errorTicket,
       save, back,
     } = this.props;
@@ -104,26 +105,25 @@ class WorkforceAssociationForm extends Component {
       update,
       overview,
       workforceAssociationUuid,
-      ticket,
     } = this.state;
 
-    const readOnly = lockNew || !!ticket.validityTo || this.props.readOnly;
+    const readOnly = lockNew || !!workforceAllAssociation || this.props.readOnly;
     const actions = [
       {
         doIt: this.reopenTicket,
         icon: <LockOpenIcon />,
-        disabled: ticket.isHistory,
+        disabled: workforceAllAssociation,
       },
     ];
-
+console.log("workforceAllAssociation",workforceAllAssociation)
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
-        {(!!fetchedWorkforceAllAssociations || !workforceAssociationUuid) && (
+        {(!!fetchedWorkforceAllAssociation || !workforceAssociationUuid) && (
           <Form
             module={MODULE_NAME}
             edited_id={workforceAssociationUuid}
-            edited={ticket}
+            edited={workforceAllAssociation}
             reset={reset}
             update={update}
             title="Workforce Association"
@@ -148,8 +148,10 @@ const mapStateToProps = (state, props) => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   fetchingTicket: state.workforce.fetchingTicket,
   errorTicket: state.workforce.errorTicket,
-  fetchedWorkforceAllAssociations: state.workforce.fetchedWorkforceAllAssociations,
-  ticket: state.workforce.ticket,
+  workforceAllAssociation: state.workforce.workforceAllAssociation,
+  fetchingWorkforceAllAssociation: state.workforce.fetchingWorkforceAllAssociation,
+  fetchedWorkforceAllAssociation: state.workforce.fetchedWorkforceAllAssociation,
+  errorWorkforceAllAssociation: state.workforce.errorWorkforceAllAssociation,  
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   grievanceConfig: state.workforce.grievanceConfig,

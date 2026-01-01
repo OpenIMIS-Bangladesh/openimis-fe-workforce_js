@@ -19,10 +19,6 @@ import {
 import { updateWorkforceAssociation } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import CompanyPicker from "../../pickers/CompanyPicker";
-import FactoryPicker from "../../pickers/FactoryPicker";
-import EmployeeLifeStatusPicker from "../../pickers/EmployeeLifeStatusPicker";
-import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
 
 const styles = (theme) => ({
   paper: theme.paper.paper,
@@ -37,14 +33,14 @@ class EditWorkforceAssociationPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stateEdited: props.workforceAssociation || {},
+      stateEdited: props.workforceAllAssociation || {},
       isSaved: false,
     };
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.workforceAssociation !== this.props.workforceAssociation) {
-      this.setState({ stateEdited: this.props.workforceAssociation });
+    if (prevProps.workforceAllAssociation !== this.props.workforceAllAssociation) {
+      this.setState({ stateEdited: this.props.workforceAllAssociation });
     }
 
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
@@ -63,7 +59,7 @@ class EditWorkforceAssociationPage extends Component {
   };
 
   save = () => {
-    const { grievanceConfig, dispatch } = this.props;
+    const { dispatch } = this.props;
     const { stateEdited } = this.state;
 
    const workforceAssociationData = {
@@ -93,6 +89,7 @@ class EditWorkforceAssociationPage extends Component {
     const { classes } = this.props;
     const { stateEdited, isSaved } = this.state;
     const isSaveDisabled = false;
+    console.log(this.props.workforceAllAssociation)
 
     return (
          <div className={classes.page}>
@@ -226,7 +223,7 @@ class EditWorkforceAssociationPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  workforceAllAssociations: state.workforce.workforceAllAssociations,
+  workforceAllAssociation: state.workforce.workforceAllAssociation,
 
 });
 

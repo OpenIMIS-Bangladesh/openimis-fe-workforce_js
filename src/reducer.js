@@ -386,6 +386,12 @@ function reducer(
     workforceAllAssociations: [],
     workforceAllAssociationsPageInfo: { totalCount: 0 },
 
+    fetchingWorkforceAllAssociation: false,
+    errorWorkforceAllAssociation: null,
+    fetchedWorkforceAllAssociation: false,
+    workforceAllAssociation: null,
+    workforceAllAssociationPageInfo: { totalCount: 0 },
+
     ///file upload state
     uploadedFilesByField: {},
 
@@ -468,6 +474,34 @@ function reducer(
         errorWorkforceAllAssociations: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ALL_ASSOCIATIONS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
+    case "WORKFORCE_ALL_ASSOCIATION_REQ":
+      return {
+        ...state,
+        fetchingWorkforceAllAssociation: true,
+        fetchedWorkforceAllAssociation: false,
+        workforceAllAssociation: null,
+        workforceAllAssociationPageInfo: { totalCount: 0 },
+        errorWorkforceAllAssociation: null,
+      };
+    case "WORKFORCE_ALL_ASSOCIATION_RESP":
+      return {
+        ...state,
+        fetchingWorkforceAllAssociation: false,
+        fetchedWorkforceAllAssociation: true,
+        workforceAllAssociation: parseData(action.payload.data.workforceAllAssociation).map((association) => ({
+          ...association,
+          id: decodeId(association.id),
+        }))?.[0],
+        workforceAllAssociationPageInfo: pageInfo(action.payload.data.workforceAllAssociation),
+        errorWorkforceAllAssociation: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_ALL_ASSOCIATION_ERR":
       return {
         ...state,
         fetching: false,
