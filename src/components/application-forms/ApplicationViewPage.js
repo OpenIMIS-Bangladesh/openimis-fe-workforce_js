@@ -157,12 +157,12 @@ const isEmpty = (value) => {
 };
 const formatAddress = (locationData, addressData) => {
   // TryParse handles both JSON strings and objects
-  const address = tryParse(addressData) || {}; 
+  const address = tryParse(addressData) || {};
   const location = tryParse(locationData) || {};
 
   const postOffice = address?.postOffice?.nameBn || address?.postOffice;
   const village = [address.houseName, address.paraMahalla, address.villageRoad].filter(Boolean).join(", ");
-  
+
   // Navigate location parents for Thana/District
   const thana = location?.parent?.name || location?.name; // Fallback if structure varies
   const district = location?.parent?.parent?.name || location?.parent?.name;
@@ -202,7 +202,7 @@ const renderDetails = (
     if (parsedObj.presentAddress || parsedObj.presentLocation) {
       newObj.presentAddressAndLocation = {
         locationData: parsedObj.presentLocation,
-        addressData: parsedObj.presentAddress
+        addressData: parsedObj.presentAddress,
       };
       delete newObj.presentAddress;
       delete newObj.presentLocation;
@@ -212,7 +212,7 @@ const renderDetails = (
     if (parsedObj.permanentAddress || parsedObj.permanentLocation) {
       newObj.permanentAddressAndLocation = {
         locationData: parsedObj.permanentLocation,
-        addressData: parsedObj.permanentAddress
+        addressData: parsedObj.permanentAddress,
       };
       delete newObj.permanentAddress;
       delete newObj.permanentLocation;
@@ -290,7 +290,7 @@ const renderDetails = (
                       : "স্থায়ী ঠিকানা"
                     : formatKey(key, language)}
                 </Typography>
-                
+
                 {/* --- RECURSIVE CALL --- */}
                 {renderDetails(
                   value,
@@ -307,9 +307,9 @@ const renderDetails = (
                 )}
               </Box>
             ))}
-            
+
             {/* ... [Dependent File Logic and Save Buttons remain here] ... */}
-             {matchingFiles.length > 0 && (
+            {matchingFiles.length > 0 && (
               <Box mt={2}>
                 <Typography variant="h6" style={{ marginTop: 3, marginBottom: 5 }}>
                   <FormattedMessage module="workforce" id="workforce.employee.document" />
@@ -343,7 +343,11 @@ const renderDetails = (
                         value={
                           eligibilityMap?.[item.id] !== undefined
                             ? eligibilityMap[item.id]
-                            : item?.isEligible === true ? "yes" : item?.isEligible === false ? "no" : ""
+                            : item?.isEligible === true
+                            ? "yes"
+                            : item?.isEligible === false
+                            ? "no"
+                            : ""
                         }
                         onChange={(e) => handleEligibilityChange(item.id, e.target.value)}
                       >
@@ -365,33 +369,33 @@ const renderDetails = (
   if (typeof mergedData === "object" && mergedData !== null) {
     // --- UPDATED: Specific Handling for Address Keys ---
     if (parentKey === "presentAddressAndLocation" || parentKey === "permanentAddressAndLocation") {
-        // Extract using the formatted function
-        const { village, postOffice, thana, district } = formatAddress(mergedData.locationData, mergedData.addressData);
-        
-        return (
-            <Grid container spacing={2}>
-                <Grid item xs={6} className={classes.itemRow}>
-                    <Typography variant="body1" className={classes.value}>
-                        <span className={classes.label}>{language === 'en' ? "Village/Road/House" : "গ্রাম/রাস্তা/বাড়ি"}:</span> {village || "—"}
-                    </Typography>
-                </Grid>
-                <Grid item xs={6} className={classes.itemRow}>
-                    <Typography variant="body1" className={classes.value}>
-                        <span className={classes.label}>{language === 'en' ? "Post Office" : "পোস্ট অফিস"}:</span> {postOffice || "—"}
-                    </Typography>
-                </Grid>
-                <Grid item xs={6} className={classes.itemRow}>
-                    <Typography variant="body1" className={classes.value}>
-                        <span className={classes.label}>{language === 'en' ? "Thana" : "থানা"}:</span> {thana || "—"}
-                    </Typography>
-                </Grid>
-                <Grid item xs={6} className={classes.itemRow}>
-                    <Typography variant="body1" className={classes.value}>
-                        <span className={classes.label}>{language === 'en' ? "District" : "জেলা"}:</span> {district || "—"}
-                    </Typography>
-                </Grid>
-            </Grid>
-        );
+      // Extract using the formatted function
+      const { village, postOffice, thana, district } = formatAddress(mergedData.locationData, mergedData.addressData);
+
+      return (
+        <Grid container spacing={2}>
+          <Grid item xs={6} className={classes.itemRow}>
+            <Typography variant="body1" className={classes.value}>
+              <span className={classes.label}>{language === "en" ? "Village/Road/House" : "গ্রাম/রাস্তা/বাড়ি"}:</span> {village || "—"}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} className={classes.itemRow}>
+            <Typography variant="body1" className={classes.value}>
+              <span className={classes.label}>{language === "en" ? "Post Office" : "পোস্ট অফিস"}:</span> {postOffice || "—"}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} className={classes.itemRow}>
+            <Typography variant="body1" className={classes.value}>
+              <span className={classes.label}>{language === "en" ? "Thana" : "থানা"}:</span> {thana || "—"}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} className={classes.itemRow}>
+            <Typography variant="body1" className={classes.value}>
+              <span className={classes.label}>{language === "en" ? "District" : "জেলা"}:</span> {district || "—"}
+            </Typography>
+          </Grid>
+        </Grid>
+      );
     }
 
     // --- STANDARD RENDERING (for everything else) ---
@@ -466,6 +470,28 @@ const renderDetails = (
   return null;
 };
 
+const PREFERRED_SECTION_ORDER = [
+  "workforceEmployee",
+  "deceasedWorkerInfo",
+  "applicantInfo",
+  "workforceEmployeeDependentApplication",
+  "employeeBankInfo",
+  "employeeBankingInfoApplication",
+];
+
+// 2. Define keys to ignore (these were previously inside your map function)
+const IGNORED_KEYS = [
+  "applicationType",
+  "organizationType",
+  "trackingNumber",
+  "status",
+  "grantAmount",
+  "submittedBy",
+  "dateCreated",
+  "employeeDependentInfo"
+  // We will combine this with 'hiddenKeys' in the logic below
+];
+
 const ApplicationViewPage = ({
   application,
   filteredDocumentTypes,
@@ -485,7 +511,7 @@ const ApplicationViewPage = ({
   const [lastSalaryAmount, setLastSalaryAmount] = useState("");
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
   const [openCompensationInfoModal, setOpenCompensationInfoModal] = useState(false);
-  console.log({view:application})
+
   // --- Eligibility State ---
   const [eligibilityMap, setEligibilityMap] = useState({});
 
@@ -539,8 +565,8 @@ const ApplicationViewPage = ({
     console.log("Saving All Dependents Payload:", payload);
 
     // Dispatch and Clear Map (so button disables again if needed, or keep it enabled)
-    dispatch(updateApplication(payload, "update workforce dependent info")).then(()=>window.location.reload())
-    
+    dispatch(updateApplication(payload, "update workforce dependent info")).then(() => window.location.reload());
+
     // Optional: setEligibilityMap({});
   };
 
@@ -590,6 +616,23 @@ const ApplicationViewPage = ({
   // Check if user is allowed to save dependents
   const isAllowedUser = [WORKFORCE_USER_TYPE.EIS_COORDINATOR, WORKFORCE_USER_TYPE.EIS_OFFICER].includes(user_type);
   const hasUnsavedChanges = Object.keys(eligibilityMap).length > 0;
+
+  const sortedKeys = useMemo(() => {
+    if (!application) return [];
+
+    const appKeys = Object.keys(application);
+
+    // A. Get keys that match your preferred order (if they exist in data)
+    const ordered = PREFERRED_SECTION_ORDER.filter((key) => appKeys.includes(key));
+
+    // B. Get the rest of the keys, EXCLUDING preferred, ignored, and hidden keys
+    const allIgnored = [...IGNORED_KEYS, ...hiddenKeys];
+
+    const others = appKeys.filter((key) => !PREFERRED_SECTION_ORDER.includes(key) && !allIgnored.includes(key));
+
+    // C. Return Combined List
+    return [...ordered, ...others];
+  }, [application]);
 
   return (
     <>
@@ -686,9 +729,8 @@ const ApplicationViewPage = ({
 
         {/* Details Section */}
         <Grid item xs={12} md={8}>
-          {Object.entries(application).map(([key, value]) => {
-            if (["applicationType", "organizationType", "trackingNumber", "status", "grantAmount", "submittedBy", "dateCreated", ...hiddenKeys].includes(key))
-              return null;
+          {sortedKeys.map((key) => {
+            const value = application[key]; // Extract value manually
 
             if (key === "workforceEmployee" && ["financialAssistance", "deadlyGrant"].includes(application?.applicationType)) {
               return null;
@@ -726,12 +768,7 @@ const ApplicationViewPage = ({
                           ? "Select eligibility for dependents above, then click save."
                           : "উপরের নির্ভরশীলদের জন্য যোগ্যতা নির্বাচন করুন, তারপর সংরক্ষণ করুন এ ক্লিক করুন।"}
                       </Typography>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSaveAllDependents}
-                        disabled={!hasUnsavedChanges} // Only active if radios have been clicked
-                      >
+                      <Button variant="contained" color="primary" onClick={handleSaveAllDependents} disabled={!hasUnsavedChanges}>
                         {language === "en" ? "Save All Dependents" : "সমস্ত নির্ভরশীল সংরক্ষণ করুন"}
                       </Button>
                     </Box>
@@ -741,8 +778,6 @@ const ApplicationViewPage = ({
                   {/* Document Review logic */}
                   {fileStates && (
                     <>
-                      {/* ... existing document logic ... */}
-                      {/* Logic hidden for brevity as it was not changed */}
                       <Typography variant="h6" style={{ marginTop: 3 }}>
                         <FormattedMessage module="workforce" id="workforce.employee.document" />
                       </Typography>
