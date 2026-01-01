@@ -591,7 +591,7 @@ export const banglaLabels = {
   otherInjuredType:"অন্যান্য আহত প্রকার",
   otherInjuredBenefit:"অন্যান্য আহত সুবিধা",
   otherInjuredTracking:"অন্যান্য আহত ট্র্যাকিং নম্বর",
-  
+  relationWithWorker:"শ্রমিকের সাথে সম্পর্ক"
 };
 
 export const roleMaxDayCount = {

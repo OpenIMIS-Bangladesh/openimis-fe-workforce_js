@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Grid, Box, Paper, Typography, Divider, FormControl, FormControlLabel, Radio, RadioGroup, FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, FormattedMessage, TextInput, PublishedComponent } from "@openimis/fe-core";
@@ -17,6 +17,19 @@ const ApplicationReason = ({ handleChange, formData, errors }) => {
   const { formatMessage } = useTranslations("core.RegistrationPage");
 
   const deathType =organizationType==="eis"? "accidentalDeath": (formData?.metadata?.deathType || "");
+
+  useEffect(() => {
+    const currentDeathType = formData?.metadata?.deathType;
+
+    if (organizationType === "eis") {
+      if (currentDeathType !== "accidentalDeath") {
+        handleChange("deathType", "accidentalDeath", "metadata");
+      }
+    } 
+    else if (!currentDeathType) {
+      handleChange("deathType", "accidentalDeath", "metadata");
+    }
+  }, [organizationType, formData?.metadata?.deathType, handleChange]);
 
   const handleApplicationReason = (event) => {
     const value = event.target.value;

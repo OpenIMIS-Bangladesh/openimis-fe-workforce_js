@@ -8,6 +8,7 @@ import { DeathApplicationPrint } from "./DeathApplicationPrint";
 import { withModulesManager, combine, useTranslations, useModulesManager, ProgressOrError } from "@openimis/fe-core";
 import { fetchApplicationWiseMovementList } from "../../actions";
 import { MedicalAssistancePrint } from "./MedicalAssistancePrint";
+import { conditionalEnToBn } from "../../utils/utils";
 
 const useStyles = makeStyles({
   "@global": {
@@ -60,6 +61,7 @@ export const ApplicationPrintPreview = ({ data, documents, logoLeftUrl, logoLeft
   const [isLoadingPath, setIsLoadingPath] = useState(false);
   const modulesManager = useModulesManager();
   const dispatch = useDispatch();
+  const locale = useSelector((state)=>state.core?.user?.i_user?.language)
   const hasFetchedRef = useRef(false);
   const printRef = useRef();
   console.log("hellooww", data);
@@ -101,24 +103,29 @@ export const ApplicationPrintPreview = ({ data, documents, logoLeftUrl, logoLeft
         console.log(res);
         const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
         const allUsers = edges.flatMap(({ node }) => (node.applicationTo ? [node.applicationTo] : [])).filter(Boolean);
-        const formattedLogs = edges.map(({ node }) => ({
-          date: node?.dateCreated?.split("T")[0],
-          action: node?.actionTaken || "—",
-          officer: node?.applicationTo?.loginName || "—",
-          remarks: node?.remarks || "",
-        }));
+        console.log({ edges });
+        console.log({ allUsers });
         const users = [
           {
             id: "applicant001",
             name: data?.workforceEmployee?.firstNameBn || "আবেদনকারী",
+            note: "একটি নতুন আবেদন করা হয়েছে",
+            status: "new",
             role: "Applicant",
+            date: conditionalEnToBn(data?.dateCreated?.split("T")[0], locale),
           },
-          ...allUsers.map((u) => ({
+          ...allUsers.map((u, index) => ({
             id: u.id,
             name: u.loginName,
             role: u?.userRoles?.[0]?.role?.name || "User",
+            note: edges?.[index]?.node?.note,
+            status: edges?.[index]?.node?.status,
+            revertNote: edges?.[index]?.node?.revertNote,
+            date: conditionalEnToBn(edges?.[index]?.node?.dateCreated?.split("T")[0], locale),
           })),
         ];
+
+        console.log(users);
         setMovementLogs(users);
       })
       .catch((err) => console.error("Movement fetch failed", err))
@@ -138,11 +145,13 @@ export const ApplicationPrintPreview = ({ data, documents, logoLeftUrl, logoLeft
 
         {/* Printable Area */}
         <div id="print-container" ref={printRef}>
-          {data?.applicationType ===("financialAssistance" || "deadlyGrant") ? (
-          <DeathApplicationPrint data={{ ...data, movementLogs }} documents={documents} logoLeft={logoLeft} logoLeftUrl={logoLeftUrl} />
-        ):(data?.applicationType ==="medicalAssistance" ||data?.applicationType === "medicalDonation"||data?.applicationType ==="disabilityAssistance")?(
+          {data?.applicationType === ("financialAssistance" || "deadlyGrant") ? (
+            <DeathApplicationPrint data={{ ...data, movementLogs }} documents={documents} logoLeft={logoLeft} logoLeftUrl={logoLeftUrl} />
+          ) : data?.applicationType === "medicalAssistance" ||
+            data?.applicationType === "medicalDonation" ||
+            data?.applicationType === "disabilityAssistance" ? (
             <MedicalAssistancePrint data={{ ...data, movementLogs }} documents={documents} logoLeft={logoLeft} logoLeftUrl={logoLeftUrl} />
-          ):null}
+          ) : null}
         </div>
       </Paper>
     </>
