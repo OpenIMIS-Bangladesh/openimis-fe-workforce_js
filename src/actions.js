@@ -579,7 +579,7 @@ export function fetchWorkforceAllAssociation(mm, filters) {
     filters,
     projections
   );
-  return graphql(payload, "WORKFORCE_ALL_ASSOCIATIONS");
+  return graphql(payload, "WORKFORCE_ALL_ASSOCIATION");
 }
 
 
