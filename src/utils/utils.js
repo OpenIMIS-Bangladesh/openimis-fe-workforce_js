@@ -76,6 +76,8 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.EIS_ADVISOR;
   } else if (user_rights.includes(813004)) {
     user_type = WORKFORCE_USER_TYPE.EIS_COMMITTEE;
+  } else if (user_rights.includes(816000)) {
+    user_type = WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE;
   } else if (user_rights.includes(813005)) {
     user_type = WORKFORCE_USER_TYPE.BLWF_DOCTOR;
   } else if (user_rights.includes(813006)) {

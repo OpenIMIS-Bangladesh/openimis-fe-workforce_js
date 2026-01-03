@@ -599,6 +599,8 @@
     "workforce.new.application.factory":"New application (on behalf of the applicant)",
     "workforce.new.application.submittedbyapplicant":"Application submitted by the applicant",
     "workforce.employee.application.forwardToAssociation":"Send considered applications to the association office",
+    "workforce.eis.association.committe.dashboard":"Eis Association Committe Dashboard",
+
     
     
     "core.LanguageQuickPicker.dialog.title":"Confirm Language",

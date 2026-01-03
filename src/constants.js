@@ -255,6 +255,8 @@ export const WORKFORCE_USER_TYPE = {
   BEPZA_ASSOCIATION: "bepza_association",
   LFMEAB_ASSOCIATION: "lfmeab_association",
   SECRETARY: "secretary",
+  EIS_ASSOCIATION_COMMITTEE: "eis_association_committee",
+
 
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
@@ -287,6 +289,7 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   blwf_dol_dife: "Blwf Dol/Dife",
   bepza_association: "Bepza Association",
   lfmeab_association: "Lfmeab Association",
+  eis_association_committee: "Eis Association Committee",
 
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
@@ -317,6 +320,8 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   blwf_dol_dife: "বিএলডাব্লিউএফ ডল/ডাইফি",
   bepza_association: "বেপজা অ্যাসোসিয়েশন",
   lfmeab_association: "এলএফএমইএবি অ্যাসোসিয়েশন",
+  eis_association_committee: "ইআইএস অ্যাসোসিয়েশন কমিটি",
+
 
 
 };
@@ -625,6 +630,7 @@ export const roleMaxDayCount = {
   "eis_applicant":6,
   "bepza_association":7,
   "lfmeab_association":10,
+  "eis_association_committee":5,
 };
 
 

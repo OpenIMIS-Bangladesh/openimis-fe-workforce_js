@@ -1081,13 +1081,27 @@ class ApplicationProcessSearcher extends Component {
         }
         this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
       }
-    } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COMMITTEE) {
+    } else if (
+      getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
+      getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE
+    ) {
       this.setState({ displayVersion: showHistoryFilter });
-      this.props.fetchApplicationsSummary(this.props.modulesManager, [
-        `organizationTypeIn: ["eis"], orderBy: ["-dateCreated"],eisApplicationSummary_Id:"${decodeId(
-          this.props.summaryId
-        )}"`,
-      ]);
+
+      const filters = [
+        `organizationTypeIn: ["eis"]`,
+        `orderBy: ["-dateCreated"]`,
+        `eisApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`
+      ];
+
+      if (loggedInUserId) {
+        filters.push(`applicationTo: "${loggedInUserId}"`);
+      }
+
+      this.props.fetchApplicationsSummary(
+        this.props.modulesManager,
+        [filters.join(", ")]
+      );
+
     } else {
       const userType = getUserTypeFromRights(userRights);
 
@@ -1628,7 +1642,7 @@ class ApplicationProcessSearcher extends Component {
                     ? headerDoctor(this)
                     : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
                       ? headerAssociation(this)
-                      : userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER || userType === WORKFORCE_USER_TYPE.EIS_FINANCIAL_OFFICER
+                      : userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER || userType === WORKFORCE_USER_TYPE.EIS_FINANCIAL_OFFICER
                         ? headerApprover(this)
                         : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
                           ? headerFactoryAdmin(this)
@@ -1659,7 +1673,7 @@ class ApplicationProcessSearcher extends Component {
                     ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication)
                     : userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
                       ? itemFormattersAssociation(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication)
-                      : userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER || userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.EIS_FINANCIAL_OFFICER
+                      : userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER || userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE || userType === WORKFORCE_USER_TYPE.EIS_FINANCIAL_OFFICER
                         ? itemFormattersApprover(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication)
                         : userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN
                           ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication, this.rejectedApplication)
@@ -2783,7 +2797,7 @@ class ApplicationProcessSearcher extends Component {
             </Box>
           )
         ) : null}
-        {userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
+        {userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
           <Box
             style={{
               marginTop: 10,

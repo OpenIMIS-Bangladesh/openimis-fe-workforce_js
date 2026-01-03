@@ -23,6 +23,9 @@ import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
 import CheckCircleOutlineTwoToneIcon from "@material-ui/icons/CheckCircleOutlineTwoTone";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { fetchSummaryApplications } from "../../actions";
+import { WORKFORCE_USER_TYPE} from "../../constants";
+import { getUserType, getUserTypeFromRights } from "../../utils/utils";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -128,6 +131,7 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   const [expanded, setExpanded] = useState(null);
   const [renderedData, setRenderedData] = useState(summaryData);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const user_type = getUserType();
 
   const handleChange = (panelId) => (event, isExpanded) => {
     if (isExpanded) {
@@ -145,10 +149,18 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   return (
     <div className={classes.accordionPadding}>
       <Typography variant="h5" gutterBottom>
+         {user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE && ( 
         <FormattedMessage
           module="workforce"
           id="workforce.eis.committe.dashboard"
         />
+         )}
+         {user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE && ( 
+        <FormattedMessage
+          module="workforce"
+          id="workforce.eis.association.committe.dashboard"
+        />
+         )}
       </Typography>
 
       {renderedData.map((item, index) => (
