@@ -757,6 +757,8 @@
   "workforce.relation.grand_son": "Grand Son",
   "workforce.relation.grand_father": "Grand Father",
   "workforce.relation.grand_mother": "Grand Mother",
+  "workforce.relation.illigitimate_daughter": "Illigitimate Daughter",
+  "workforce.relation.illigitimate_son": "Illigitimate Son",
 
    "workforce.uploadFile.dependent.photo": "Dependent's Photo",
   "workforce.uploadFile.dependent.nid_or_birthCcertificate": "Dependent's NID or Birth Certificate Photo",
@@ -950,6 +952,8 @@
   "workforce.compensation.eligible.ForEISAdjustment": "Eligible for EIS Benefit Adjustment",
   "workforce.paid": "Paid",
   "workforce.unpaid": "Not Paid yet",
+  "workforce.processing":"Loading ...",
+
 
   "workforce.accident.placeOfDeath.label": "Place of Death",
   "workforce.accident.dateOfDeath.label": "Date of Death",

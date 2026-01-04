@@ -37,7 +37,9 @@ const RelationWithWorkerPicker = ({
   "workforce.relation.grand_daughter",
   "workforce.relation.grand_son",
   "workforce.relation.grand_father",
-  "workforce.relation.grand_mother"
+  "workforce.relation.grand_mother",
+  "workforce.relation.illigitimate_son",
+  "workforce.relation.illigitimate_daughter"
   ];
 
   const EMPLOYEE_RELATION_APPLICANT = [

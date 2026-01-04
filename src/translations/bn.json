@@ -621,6 +621,8 @@
   "workforce.relation.grand_son": "নাতি",
   "workforce.relation.grand_father": "দাদা",
   "workforce.relation.grand_mother": "দাদি",
+  "workforce.relation.illigitimate_daughter": "বিবাহ বহির্ভুত কন্যা সন্তান",
+  "workforce.relation.illigitimate_son": "বিবাহ বহির্ভুত পুত্র সন্তান",
   "workforce.employee.relation.picker": "শ্রমিকের সাথে সম্পর্কের ধরন নির্বাচন করুন",
 
   "workforce.employee.city.road_no": "রোড নাম্বার / রোডের নাম",
@@ -849,7 +851,7 @@
   "workforce.compensation.paymentStatus": "পেমেন্টের অবস্থা",
   "workforce.paid": "পরিশোধিত",
   "workforce.unpaid": "এখনও পরিশোধ করা হয়নি",
-
+  "workforce.processing":"লোডিং ...",
 
 
   "workforce.accident.placeOfDeath.label": "মৃত্যুর স্থান",
