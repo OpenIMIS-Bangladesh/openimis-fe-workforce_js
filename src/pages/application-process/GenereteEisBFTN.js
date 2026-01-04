@@ -74,18 +74,10 @@ useEffect(() => {
 }, [selectedApplicationIds]);
 
 
-
-const year = eisPayments?.[0]?.year || "";
-const monthIndex = eisPayments?.[0]?.monthIndex || "";
-
-
-// Format month as 01..12
-const monthFormatted = String(monthIndex + 1).padStart(2, "0");
-
-// Pay period values
-const payFrom = `01.${monthFormatted}.${year}`;
-const lastDay = new Date(year, monthIndex + 1, 0).getDate();
-const payTo = `${lastDay}.${monthFormatted}.${year}`;
+  const printYear = new Date().getFullYear();
+  const printMonth = new Date().getMonth();
+  const excelmonthFormatted = String(printMonth + 1).padStart(2, "0");
+  const excelyear = printYear;
 
   // -----------------------------
   // Excel generator (unchanged)
@@ -114,7 +106,7 @@ const payTo = `${lastDay}.${monthFormatted}.${year}`;
   // Header (same as before)
   // -----------------------------
   sheet.mergeCells("A1:K1");
-  sheet.getCell("A1").value = `Ref No: EIS.Bank Advice.Benefit.${year}.${monthFormatted}`;
+  sheet.getCell("A1").value = `Ref No: EIS.Bank Advice.Benefit.${excelyear}.${excelmonthFormatted}`;
   sheet.getCell("A1").font = { bold: true };
 
 
@@ -190,29 +182,33 @@ sheet.getCell("A14").value = {
     };
   });
    
-    const data = eisPayments?.[0] || {};
-    const parsingBankInfo = JSON.parse(data.workforceApplication?.employeeBankInfo); 
-    const parsedBankInfo = JSON.parse(parsingBankInfo);
-    console.log("parsedBankInfo",parsedBankInfo)
+    // const data = eisPayments?.[0] || {};
+    // const parsingBankInfo = JSON.parse(data.workforceApplication?.employeeBankInfo); 
+    // const parsedBankInfo = JSON.parse(parsingBankInfo);
   // -----------------------------
   // REAL DATA FROM eisPayments
   // -----------------------------
   eisPayments.forEach((row, index) => {
-    let bankInfo = {};
-    try {
-      bankInfo = JSON.parse(JSON.parse(row.employeeBankInfo));
-    } catch (e) {}
+    // Format month as 01..12
+    let year = row?.year || "";
+    let monthIndex = row?.monthIndex || "";
+    let monthFormatted = String(monthIndex).padStart(2, "0");
+
+    // Pay period values
+    let payFrom = `01.${monthFormatted}.${year}`;
+    let lastDay = new Date(year, monthIndex, 0).getDate();
+    let payTo = `${lastDay}.${monthFormatted}.${year}`;
 
     sheet.addRow([
       index + 1,
       row?.bankAccountHolderName || "",
       row?.bankAccountNo || "",
-      parsedBankInfo[0]?.bank?.nameEn || "",
-      parsedBankInfo[0]?.branch?.nameEn || "",
-      parsedBankInfo[0]?.district?.nameEn || "",
-      parsedBankInfo[0]?.branch?.routingNumber || "",
+      row?.bank?.parent?.nameEn || "",
+      row?.bank?.nameEn || "",
+      row?.bank?.districtNameEn || "",
+      row?.bank?.routingNumber || "",
       row?.eisMonthlyAmount || 0,
-      row?.beneficiaryId,
+      row?.beneficiaryId || "",
       payFrom,
       payTo
     ]);
@@ -317,21 +313,26 @@ closingLines.forEach((line) => {
           <TableBody>
             {eisPayments.map((row, index) => {
               let bankInfo = {};
-              try {
-                bankInfo = JSON.parse(JSON.parse(row.employeeBankInfo));
-              } catch (e) {}
+              let year = row?.year || "";
+              let monthIndex = row?.monthIndex || "";
+              let monthFormatted = String(monthIndex).padStart(2, "0");
+
+              // Pay period values
+              let payFrom = `01.${monthFormatted}.${year}`;
+              let lastDay = new Date(year, monthIndex, 0).getDate();
+              let payTo = `${lastDay}.${monthFormatted}.${year}`;
 
               return (
                 <TableRow key={index}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{row?.bankAccountHolderName}</TableCell>
                   <TableCell>{row?.bankAccountNo}</TableCell>
-                  <TableCell>{bankInfo?.nameEn || ""}</TableCell>
-                  <TableCell>{bankInfo?.branch?.nameEn || ""}</TableCell>
-                  <TableCell>{bankInfo?.branch?.district || ""}</TableCell>
-                  <TableCell>{bankInfo?.branch?.routingNumber || ""}</TableCell>
+                  <TableCell>{row?.bank?.parent?.nameEn || ""}</TableCell>
+                  <TableCell>{row?.bank?.nameEn || ""}</TableCell>
+                  <TableCell>{row?.bank?.districtNameEn || ""}</TableCell>
+                  <TableCell>{row?.bank?.routingNumber || ""}</TableCell>
                   <TableCell align="right">{row?.eisMonthlyAmount}</TableCell>
-                  <TableCell align="right"></TableCell>
+                  <TableCell align="right">{row?.beneficiaryId}</TableCell>
                   <TableCell align="right">{payFrom}</TableCell>
                   <TableCell align="right">{payTo}</TableCell>
                 </TableRow>
@@ -339,9 +340,9 @@ closingLines.forEach((line) => {
             })}
 
             <TableRow>
-              <TableCell colSpan={8}><strong><FormattedMessage id="Total Amount" /></strong></TableCell>
+              <TableCell colSpan={7}><strong><FormattedMessage id="Total Amount" /></strong></TableCell>
               <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
-              <TableCell colSpan={3} />
+              <TableCell colSpan={4} />
             </TableRow>
           </TableBody>
         </Table>

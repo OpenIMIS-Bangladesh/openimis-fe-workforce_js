@@ -2949,8 +2949,14 @@ export function fetchEisPaymentProcess(applicationIds) {
           id
           nameEn
           districtNameEn
+          bankCode
           branchCode
           routingNumber
+          parent
+          {
+            nameEn
+            nameBn
+          }
         }
         bankAccountNo
         bankAccountHolderName
