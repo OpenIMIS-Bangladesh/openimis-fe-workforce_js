@@ -488,7 +488,7 @@ const IGNORED_KEYS = [
   "grantAmount",
   "submittedBy",
   "dateCreated",
-  "employeeDependentInfo"
+  "employeeDependentInfo",
   // We will combine this with 'hiddenKeys' in the logic below
 ];
 
@@ -511,7 +511,7 @@ const ApplicationViewPage = ({
   const [lastSalaryAmount, setLastSalaryAmount] = useState("");
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
   const [openCompensationInfoModal, setOpenCompensationInfoModal] = useState(false);
-  const [openSalaryButton,setOpenSalaryButton] = useState(false)
+  const [openSalaryButton, setOpenSalaryButton] = useState(false);
 
   // --- Eligibility State ---
   const [eligibilityMap, setEligibilityMap] = useState({});
@@ -563,7 +563,7 @@ const ApplicationViewPage = ({
       id: application?.id,
       lastBaseSalary: amount,
     };
-    dispatch(updateApplication(updateApplicationData, "update workforce application")).then(()=>setOpenSalaryButton(true))
+    dispatch(updateApplication(updateApplicationData, "update workforce application")).then(() => setOpenSalaryButton(true));
   };
 
   // Sidebar summary fields
@@ -622,7 +622,7 @@ const ApplicationViewPage = ({
     return [...ordered, ...others];
   }, [application]);
 
-  console.log({view:application})
+  console.log({ view: application });
 
   return (
     <>
@@ -668,7 +668,7 @@ const ApplicationViewPage = ({
                 <Button
                   variant="contained"
                   color="primary"
-                  disabled={application?.lastBaseSalary !== null ? true :openSalaryButton ?true: false}
+                  disabled={application?.lastBaseSalary !== null ? true : openSalaryButton ? true : false}
                   onClick={() => handleLastSalaryAmount(lastSalaryAmount)}
                 >
                   {<FormattedMessage id="workforce.submit" module="workforce" />}
@@ -691,19 +691,23 @@ const ApplicationViewPage = ({
               )}
             </Grid>
           )}
-          {filteredDocumentTypes?.map((document, index) => (
-            <Box style={{ marginTop: "10px" }}>
-              <Typography>{document.nameBn}</Typography>
-              <FileUploader
-                fieldKey={document.fieldId}
-                applicationId={application?.id}
-                onFileChange={onFileChange}
-                documentType={document.documentType}
-                documentProp={document}
-                uploadedBy={"factoryAdmin"}
-              />
-            </Box>
-          ))}
+          {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && viewedFromFlag === "verify" && (
+            <>
+              {filteredDocumentTypes?.map((document, index) => (
+                <Box style={{ marginTop: "10px" }}>
+                  <Typography>{document.nameBn}</Typography>
+                  <FileUploader
+                    fieldKey={document.fieldId}
+                    applicationId={application?.id}
+                    onFileChange={onFileChange}
+                    documentType={document.documentType}
+                    documentProp={document}
+                    uploadedBy={"factoryAdmin"}
+                  />
+                </Box>
+              ))}
+            </>
+          )}
           {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER || user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) && application?.organizationType === "eis" && (
             <Grid container spacing={2} style={{ marginTop: "10px" }}>
               <Grid item xs={12}>

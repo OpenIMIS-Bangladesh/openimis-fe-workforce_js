@@ -427,7 +427,7 @@ class VerifyApplicationPage extends Component {
           user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) && (
           <Grid container spacing={2} style={{ marginTop: "16px", padding: 4 }}>
             <Grid item xs={8}></Grid>
-            {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) && (
+            {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && application?.applicationType ==="financialAssistance") && (
               <Grid item xs={2}>
                  <Button 
                    variant="contained" 
