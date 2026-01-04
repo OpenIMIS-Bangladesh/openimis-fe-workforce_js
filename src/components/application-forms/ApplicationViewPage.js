@@ -511,6 +511,7 @@ const ApplicationViewPage = ({
   const [lastSalaryAmount, setLastSalaryAmount] = useState("");
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
   const [openCompensationInfoModal, setOpenCompensationInfoModal] = useState(false);
+  const [openSalaryButton,setOpenSalaryButton] = useState(false)
 
   // --- Eligibility State ---
   const [eligibilityMap, setEligibilityMap] = useState({});
@@ -526,17 +527,11 @@ const ApplicationViewPage = ({
   // 2. Bulk Save Function
   const handleSaveAllDependents = () => {
     const currentDependents = application?.workforceEmployeeDependentApplication || [];
-
-    // Map through ALL dependents to create the full list
     const formattedDependentsList = currentDependents.map((dep) => {
-      // A. Check if this dependent was modified in the map, otherwise use existing value
       let updatedIsEligible = dep.isEligible;
-
       if (eligibilityMap.hasOwnProperty(dep.id)) {
         updatedIsEligible = eligibilityMap[dep.id] === "yes";
       }
-
-      // B. Parse Attachments Safely
       let parsedAttachments = dep.attachments;
       if (typeof dep.attachments === "string") {
         try {
@@ -546,8 +541,6 @@ const ApplicationViewPage = ({
           parsedAttachments = [];
         }
       }
-
-      // C. Return the object with new key mappings and updated eligibility
       return {
         ...dep,
         isEligible: updatedIsEligible, // The Updated Value
@@ -561,13 +554,8 @@ const ApplicationViewPage = ({
       id: application.id,
       employeeDependentInfo: JSON.stringify(formattedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
     };
-
     console.log("Saving All Dependents Payload:", payload);
-
-    // Dispatch and Clear Map (so button disables again if needed, or keep it enabled)
     dispatch(updateApplication(payload, "update workforce dependent info")).then(() => window.location.reload());
-
-    // Optional: setEligibilityMap({});
   };
 
   const handleLastSalaryAmount = (amount) => {
@@ -575,7 +563,7 @@ const ApplicationViewPage = ({
       id: application?.id,
       lastBaseSalary: amount,
     };
-    dispatch(updateApplication(updateApplicationData, "update workforce application"));
+    dispatch(updateApplication(updateApplicationData, "update workforce application")).then(()=>setOpenSalaryButton(true))
   };
 
   // Sidebar summary fields
@@ -634,6 +622,8 @@ const ApplicationViewPage = ({
     return [...ordered, ...others];
   }, [application]);
 
+  console.log({view:application})
+
   return (
     <>
       <Grid container spacing={3} className={classes.root}>
@@ -678,7 +668,7 @@ const ApplicationViewPage = ({
                 <Button
                   variant="contained"
                   color="primary"
-                  disabled={application?.lastBaseSalary !== null ? true : false}
+                  disabled={application?.lastBaseSalary !== null ? true :openSalaryButton ?true: false}
                   onClick={() => handleLastSalaryAmount(lastSalaryAmount)}
                 >
                   {<FormattedMessage id="workforce.submit" module="workforce" />}

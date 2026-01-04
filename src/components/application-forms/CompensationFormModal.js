@@ -258,7 +258,8 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                   {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && (
                     <>
                       <Grid item xs={12} sm={6}>
-                        <Select
+                        <TextField
+                          select
                           label={<FormattedMessage id="workforce.compensation.eligible.ForEISAdjustment" />}
                           fullWidth
                           value={entry.eisBenefitAdjustment || entry?.isEisBenefitAdjustmentEligible || "No"}
@@ -267,7 +268,7 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                         >
                           <MenuItem value="Yes">Yes</MenuItem>
                           <MenuItem value="No">No</MenuItem>
-                        </Select>
+                        </TextField>
                       </Grid>
 
                       <Grid item xs={12} sm={6}>
