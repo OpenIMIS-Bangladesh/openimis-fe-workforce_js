@@ -18,7 +18,7 @@ import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
 import { createApplicationSummary, updateApplication, updateApplicationSummary } from "../../actions";
 import { useDispatch } from "react-redux";
-import React, { Component, useState ,useEffect} from "react";
+import React, { Component, useState ,useEffect, useRef} from "react";
 import { enToBn } from '../../utils/utils';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
@@ -28,30 +28,44 @@ import {
   FormattedMessage,
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
-const useStyles = makeStyles((theme) => ({
-  noPrint: {
+import { useReactToPrint } from "react-to-print";
+import { fetchEisPaymentProcess } from "../../actions";
+const useStyles = makeStyles(() => ({
+  noPrintDialog: {
     '@media print': {
       display: 'none !important',
     },
   },
-  dialogPaper: {
+
+  noPrintNOA: {
     '@media print': {
-      boxShadow: 'none',
-      border: 'none',
+      display: 'none !important',
     },
   },
-  dialogContent: {
+
+  printArea: {
+    display: 'none',
     '@media print': {
-      padding: 0,
+      display: 'block',
+      width: '100%',
+    },
+  },
+
+  noaPage: {
+    '@media print': {
+      fontFamily: '"Noto Sans Bengali","SolaimanLipi",sans-serif',
+      padding: '25mm',
+      pageBreakAfter: 'always',
     },
   },
 }));
-import { fetchEisPaymentProcess } from "../../actions";
+
 
 const GenerateEisBFTN = ({ open, onClose, eisPayments = [], userRights, status, summary_Id, selectedApplicationIds }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [printMode, setPrintMode] = useState(null);
   const getTotalAmount = () => {
     return eisPayments
       .reduce((sum, item) => sum + (parseFloat(item.eisMonthlyAmount) || 0), 0)
@@ -59,6 +73,63 @@ const GenerateEisBFTN = ({ open, onClose, eisPayments = [], userRights, status, 
   };
 
   console.log("eisPayments", eisPayments);
+//  const data = eisPayments?.[0] || {};
+    // const parsingBankInfo = JSON.parse(data.workforceApplication?.employeeBankInfo); 
+    // const parsedBankInfo = JSON.parse(parsingBankInfo);
+    // const parsingEmployeeAccidentInfo = JSON.parse(data.workforceApplication?.employeeAccidentInfo);
+    // const parsedEmployeeAccidentInfo = JSON.parse(parsingEmployeeAccidentInfo);
+    // console.log("parsedEmployeeAccidentInfo",parsedEmployeeAccidentInfo)
+    /* -----------------------------
+     ROW-WISE PRINT HANDLER
+  ----------------------------- */
+
+
+
+const handleRowPrint = (row) => {
+  const year = row?.year || "";
+  const monthIndex = row?.monthIndex || "";
+  const monthFormatted = String(monthIndex).padStart(2, "0");
+  const lastDay = new Date(year, monthIndex, 0).getDate();
+
+  // Prepare the data
+  setSelectedRow({
+    ...row,
+    payFrom: `01.${monthFormatted}.${year}`,
+    payTo: `${lastDay}.${monthFormatted}.${year}`,
+  });
+
+  // Show the template in DOM
+  setPrintMode("NOA");
+
+  // Wait until React renders
+  setTimeout(() => {
+    const printContents = document.getElementById("print-area").innerHTML;
+    const originalContents = document.body.innerHTML;
+
+    document.body.innerHTML = printContents; // replace page content
+    window.print();
+    document.body.innerHTML = originalContents; // restore page
+    setPrintMode(null); // hide template again
+  }, 100); // slight delay to ensure DOM renders
+};
+
+
+const handleDialogPrint = () => {
+  setPrintMode("DIALOG");
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      window.print();
+    });
+  });
+};
+
+// useEffect(() => {
+//   const afterPrint = () => setPrintMode(null);
+//   window.addEventListener("afterprint", afterPrint);
+//   return () => window.removeEventListener("afterprint", afterPrint);
+// }, []);
+
 
 useEffect(() => {
   if (selectedApplicationIds?.length > 0) {
@@ -285,85 +356,173 @@ closingLines.forEach((line) => {
   // -----------------------------------
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle disableTypography>
-        <Typography variant="h6">
-          <FormattedMessage id="Eis Bank Payment Advice (BEFTN)" />
-        </Typography>
-      </DialogTitle>
+    <>
+      {/* ================= DIALOG UI ================= */}
+      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth className={printMode === "NOA" ? classes.noPrintDialog : ""}>
+        <DialogTitle disableTypography>
+          <Typography variant="h6">
+            <FormattedMessage id="Eis Bank Payment Advice (BEFTN)" />
+          </Typography>
+        </DialogTitle>
 
-      <DialogContent dividers>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell><FormattedMessage id="SL #" /></TableCell>
-              <TableCell><FormattedMessage id="Account Title" /></TableCell>
-              <TableCell><FormattedMessage id="Bank Account Number" /></TableCell>
-              <TableCell><FormattedMessage id="Bank" /></TableCell>
-              <TableCell><FormattedMessage id="Branch" /></TableCell>
-              <TableCell><FormattedMessage id="District" /></TableCell>
-              <TableCell><FormattedMessage id="Routing No" /></TableCell>
-              <TableCell><FormattedMessage id="Amount (BDT)" /></TableCell>
-              <TableCell align="right"><FormattedMessage id="BeneficiaryID" /></TableCell>
-              <TableCell align="right"><FormattedMessage id="Pay From" /></TableCell>
-              <TableCell align="right"><FormattedMessage id="Pay To" /></TableCell>
-            </TableRow>
-          </TableHead>
+        <DialogContent dividers>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>NOA Print</TableCell>
+                <TableCell>SL</TableCell>
+                <TableCell>Account Title</TableCell>
+                <TableCell>Account No</TableCell>
+                <TableCell>Bank</TableCell>
+                <TableCell>Branch</TableCell>
+                <TableCell>District</TableCell>
+                <TableCell>Routing</TableCell>
+                <TableCell align="right">Amount</TableCell>
+                <TableCell align="right">Beneficiary ID</TableCell>
+                <TableCell align="right">Pay From</TableCell>
+                <TableCell align="right">Pay To</TableCell>
+              </TableRow>
+            </TableHead>
 
-          <TableBody>
-            {eisPayments.map((row, index) => {
-              let bankInfo = {};
-              let year = row?.year || "";
-              let monthIndex = row?.monthIndex || "";
-              let monthFormatted = String(monthIndex).padStart(2, "0");
+            <TableBody>
+              {eisPayments.map((row, index) => {
+                const year = row?.year || "";
+                const monthIndex = row?.monthIndex || "";
+                const monthFormatted = String(monthIndex).padStart(2, "0");
+                const lastDay = new Date(year, monthIndex, 0).getDate();
 
-              // Pay period values
-              let payFrom = `01.${monthFormatted}.${year}`;
-              let lastDay = new Date(year, monthIndex, 0).getDate();
-              let payTo = `${lastDay}.${monthFormatted}.${year}`;
+                return (
+                  <TableRow key={index}>
+                    <TableCell>
+                     <Button
+                      size="small"
+                      color="primary"
+                      onClick={() => handleRowPrint(row)}
+                    >
+                      Print
+                    </Button>
 
-              return (
-                <TableRow key={index}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{row?.bankAccountHolderName}</TableCell>
-                  <TableCell>{row?.bankAccountNo}</TableCell>
-                  <TableCell>{row?.bank?.parent?.nameEn || ""}</TableCell>
-                  <TableCell>{row?.bank?.nameEn || ""}</TableCell>
-                  <TableCell>{row?.bank?.districtNameEn || ""}</TableCell>
-                  <TableCell>{row?.bank?.routingNumber || ""}</TableCell>
-                  <TableCell align="right">{row?.eisMonthlyAmount}</TableCell>
-                  <TableCell align="right">{row?.beneficiaryId}</TableCell>
-                  <TableCell align="right">{payFrom}</TableCell>
-                  <TableCell align="right">{payTo}</TableCell>
-                </TableRow>
-              );
-            })}
+                    </TableCell>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{row?.bankAccountHolderName}</TableCell>
+                    <TableCell>{row?.bankAccountNo}</TableCell>
+                    <TableCell>{row?.bank?.parent?.nameEn}</TableCell>
+                    <TableCell>{row?.bank?.nameEn}</TableCell>
+                    <TableCell>{row?.bank?.districtNameEn}</TableCell>
+                    <TableCell>{row?.bank?.routingNumber}</TableCell>
+                    <TableCell align="right">{row?.eisMonthlyAmount}</TableCell>
+                    <TableCell align="right">{row?.beneficiaryId}</TableCell>
+                    <TableCell align="right">
+                      01.{monthFormatted}.{year}
+                    </TableCell>
+                    <TableCell align="right">
+                      {lastDay}.{monthFormatted}.{year}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
 
-            <TableRow>
-              <TableCell colSpan={7}><strong><FormattedMessage id="Total Amount" /></strong></TableCell>
-              <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
-              <TableCell colSpan={4} />
-            </TableRow>
-          </TableBody>
-        </Table>
-      </DialogContent>
+              <TableRow>
+                <TableCell colSpan={8}>
+                  <strong>Total Amount</strong>
+                </TableCell>
+                <TableCell align="right">
+                  <strong>{getTotalAmount()}</strong>
+                </TableCell>
+                <TableCell colSpan={3} />
+              </TableRow>
+            </TableBody>
+          </Table>
+        </DialogContent>
 
-      <Divider />
+        <Divider />
 
-      <DialogActions className={classes.noPrint}>
-        <Button onClick={onClose} variant="outlined" color="primary">
-          <FormattedMessage id="workforce.modal.close" />
-        </Button>
+         <DialogActions className={classes.noPrint}>
+               <Button onClick={onClose} variant="outlined" color="primary">
+                 <FormattedMessage id="workforce.modal.close" />
+               </Button>
+       
+               <Button  onClick={handleDialogPrint} variant="contained" color="primary">
+                 <FormattedMessage id="workforce.modal.print.advice" />
+               </Button>
+       
+               <Button onClick={exportToExcel} variant="contained" color="success">
+                 <FormattedMessage id="workforce.modal.excel" />
+               </Button>
+             </DialogActions>
+      </Dialog>
 
-        <Button onClick={() => window.print()} variant="contained" color="primary">
-          <FormattedMessage id="workforce.modal.print.advice" />
-        </Button>
+      {/* ================= PRINT AREA ================= */}
+  {/* Place this somewhere in your component */}
+      <div id="print-area" style={{ display: printMode === "NOA" ? "block" : "none" }}>
+        {selectedRow && (
+          <NOAPrintTemplate
+            row={selectedRow}
+            payFrom={selectedRow.payFrom}
+            payTo={selectedRow.payTo}
+          />
+        )}
+      </div>
+    </>
+  );
+};
 
-        <Button onClick={exportToExcel} variant="contained" color="success">
-          <FormattedMessage id="workforce.modal.excel" />
-        </Button>
-      </DialogActions>
-    </Dialog>
+/* =====================================================
+   NOA PRINT TEMPLATE (LETTER FORMAT)
+===================================================== */
+const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
+  return (
+    <div className="noa-page">
+      <p style={{ textAlign: "center" }}>ব্যক্তিগত</p>
+
+      <h3 style={{ textAlign: "center" }}>
+        এমপ্লয়মেন্ট ইনজুরি স্কীম-(ই.আই.এস) পাইলট
+      </h3>
+
+      <p style={{ textAlign: "center" }}>
+        ১৯৬, ১০ম তলা, শ্রম ভবন, শহীদ সৈয়দ নজরুল ইসলাম সরনী, বিজয়নগর, ঢাকা-১০০০
+      </p>
+      <p style={{ textAlign: "center" }}>
+        মোবাইল: ০১৮৮৬-৯২১০৩০ ই-মেইল: verification@eis-pilot-bd.org ওয়েবসাইট: eis-pilot-bd.org
+      </p>
+
+      <h4 style={{ textAlign: "center" }}>নোটিশ অফ অ্যাওয়ার্ড</h4>
+
+      <br />
+
+      <p>সূত্র: {row?.beneficiaryId}</p>
+      <p style={{ textAlign: "right" }}>তারিখ: {new Date().toLocaleDateString("bn-BD")}</p>
+
+      <br />
+
+      <strong style={{ textAlign: "center" }}>মৃত শ্রমিকের তথ্য:</strong>
+      <p>শ্রমিকের নাম: {row?.workforceApplication?.workforceEmployee?.firstNameBn}</p>
+      <p>শ্রমিকের জাতীয় পরিচয়পত্র নম্বর: {row?.workforceApplication?.workforceEmployee?.nid}</p>
+      <p>ঠিকানা: {row?.workforceApplication?.workforceEmployee?.presentAddress}</p>
+      <p>কর্মস্থলে দুর্ঘটনার তারিখ: </p>
+      <p>মৃত্যুর তারিখ: </p>
+      <p>যে কারখানায় দূর্ঘটনা ঘটেছে তার নাম: </p>
+      <p>দূর্ঘটনা ঘটার সময়কালীন শ্রমিকের মাসিক মজুরি: </p>
+      
+
+      <br />
+
+      <br /><br /><br /> <br /><br /><br />
+<strong>মাসিক টপ-আপ বেনিফিট ও ই.আই.এস পাইলট সম্পর্কে গুরুত্বপূর্ণ তথ্য:</strong>
+          <ol>
+            <li>টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন।</li>
+            <li>শ্রমিকের পিতা/মাতার কেউ মৃত্যুবরণ করলে সেক্ষেত্রে তার প্রাপ্য মাসিক টপ-আপ বেনিফিট পিতা/মাতার মধ্যে জীবিত সদস্যের নিকট প্রদেয় হবে।</li>
+            <li>উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।</li>
+            <li>তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য ই.আই.এস পাইলটকে অর্থায়ন করছে।</li>
+          </ol>
+           <br /><br /><br />
+      <div style={{ textAlign: "right" }}>
+        <p>মহাপরিচালক</p>
+        <p>কেন্দ্রীয় তহবিল</p>
+        <p>ও</p>
+        <p>সদস্য সচিব-ইআইএস গভর্নেন্স বোর্ড</p>
+      </div>
+    </div>
   );
 };
 
