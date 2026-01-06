@@ -95,7 +95,7 @@ const hiddenKeys = [
   "associationType",
   "applicationFor",
   "employeeDependentInfo",
-  "employeeBankingInfoApplication",
+  "employeeBankInfo",
   "educations",
   "applicationForSelf",
   "insuranceNumber",
@@ -495,7 +495,7 @@ const PREFERRED_SECTION_ORDER = [
   "deceasedWorkerInfo",
   "applicantInfo",
   "workforceEmployeeDependentApplication",
-  "employeeBankInfo",
+  // "employeeBankInfo",
   "employeeBankingInfoApplication",
 ];
 

@@ -59,6 +59,7 @@ import { handleBulkSelectedByAssociationLogic, handleBulkSelectedByCheckerLogic 
 import ForwardEisPaymentProcessModal from "./modals/ForwardEisPaymentProcessModal";
 import GenerateEisBFTN from "../../pages/application-process/GenereteEisBFTN";
 import GenereteEisDependentBFTN from "../../pages/application-process/GenereteEisDependentBFTN";
+import EisApprovalSignature from "../../pages/application-process/EisApprovalSignature";
 
 
 const styles = (theme) => ({
@@ -107,6 +108,7 @@ class ApplicationProcessSearcher extends Component {
       openGenerateBFTN: false,
       openGenerateEisBFTN: false,
       openGenerateEisDependentBFTN: false,
+      openEisApprovalSignature: false,
       submitting: false,
       serverResponse: null,
       editedGrantMoney: "",
@@ -2426,6 +2428,7 @@ class ApplicationProcessSearcher extends Component {
       openGenerateBFTN,
       openGenerateEisBFTN,
       openGenerateEisDependentBFTN,
+      openEisApprovalSignature,
       showHistoryFilter,
       selectedApplicationIds
     } = this.state;
@@ -2534,6 +2537,7 @@ class ApplicationProcessSearcher extends Component {
                       id="workforce.employee.application.paymentProcess"
                     />
                   </Button>
+                  
                 </>
               )}
 
@@ -2551,6 +2555,9 @@ class ApplicationProcessSearcher extends Component {
                     <IconButton onClick={this.handleOpenEisBFTN}>
                       <PrintIcon />
                     </IconButton>
+                    <Button variant="contained" color="primary" onClick={()=>{this.setState({openEisApprovalSignature:true})}}>
+                      <FormattedMessage module="workforce" id="workforce.employee.application.eisApproval.signature" />
+                    </Button>
                   </>
                 )}
 
@@ -2868,6 +2875,9 @@ class ApplicationProcessSearcher extends Component {
               <Button variant="contained" color="primary" onClick={this.handleBulkApproveByEisAdvisor}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
               </Button>
+              <Button variant="contained" color="primary" onClick={()=>{this.setState({openEisApprovalSignature:true})}}>
+                <FormattedMessage module="workforce" id="workforce.employee.application.eisApproval.signature" />
+              </Button>
               <IconButton onClick={this.handleOpenEisDependentBFTN}>
                 <PrintIcon />
               </IconButton>
@@ -2881,6 +2891,14 @@ class ApplicationProcessSearcher extends Component {
               <GenereteEisDependentBFTN
                 open={openGenerateEisDependentBFTN}
                 onClose={this.handleCloseEisDependentBFTN}
+                eisPayments={eisPayments}
+                status="approved_by_committee"
+                userRights={userRights}
+                selectedApplicationIds={this.state.selectedApplicationIds}
+              />
+              <EisApprovalSignature
+                open={openEisApprovalSignature}
+                onClose={()=>this.setState({openEisApprovalSignature:false})}
                 eisPayments={eisPayments}
                 status="approved_by_committee"
                 userRights={userRights}
@@ -3030,6 +3048,14 @@ class ApplicationProcessSearcher extends Component {
                       userRights={userRights}
                       selectedApplicationIds={this.state.selectedApplicationIds}
 
+                    />
+                    <EisApprovalSignature
+                      open={openEisApprovalSignature}
+                      onClose={()=>this.setState({openEisApprovalSignature:false})}
+                      eisPayments={eisPayments}
+                      status="approved_by_committee"
+                      userRights={userRights}
+                      selectedApplicationIds={this.state.selectedApplicationIds}
                     />
                     <GenereteEisDependentBFTN
                       open={openGenerateEisDependentBFTN}

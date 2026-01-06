@@ -2594,7 +2594,7 @@ export function fetchApplicationSummaryByClientMutationId(mm, clientMutationId) 
 
 export function fetchWorkforceSignatures(roleIds) {
   const payload = `{
-  workforceSignatures(relatedUsers: ${roleIds})
+  workforceSignatures(relatedUsers: ${JSON.stringify(roleIds)})
 }
 `;
   return graphql(payload, "WORKFORCE_SIGNATURE");
