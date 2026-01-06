@@ -868,7 +868,7 @@ console.log({eisPayments})
                     <TableCell>{row?.eisMonthlyAmount}</TableCell>
                     <TableCell>
                       {
-                        user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR || user_type == WORKFORCE_USER_TYPE.EIS_ADVISOR || user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
+                        user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR || user_type == WORKFORCE_USER_TYPE.EIS_ADVISOR || user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type == WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
                           <>
                             <select
                               value={
@@ -892,7 +892,7 @@ console.log({eisPayments})
                     </TableCell>
                     <TableCell>
                       {
-                        user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
+                        user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type == WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
                           <>
                             <select
                               value={
