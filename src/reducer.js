@@ -392,6 +392,9 @@ function reducer(
     workforceAllAssociation: null,
     workforceAllAssociationPageInfo: { totalCount: 0 },
 
+    fetchedSignatureData: [],
+
+
     ///file upload state
     uploadedFilesByField: {},
 
@@ -1563,6 +1566,12 @@ function reducer(
       return {
         ...state,
         verifyNidDetails: action.payload.data.workforceNidVerification,
+      };
+    
+    case "WORKFORCE_SIGNATURE_RESP":
+      return {
+        ...state,
+        fetchedSignatureData: parseData(action.payload.data.workforceApplication),
       };
 
     /// bank actions////

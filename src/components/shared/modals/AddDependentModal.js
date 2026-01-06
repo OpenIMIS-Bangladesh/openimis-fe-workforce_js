@@ -86,7 +86,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
     dispatch(updateApplication(payload, "update dependent info"));
     onClose();
   };
-console.log("tazwer",formData)
+console.log("tazwer",application)
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>

@@ -189,7 +189,9 @@ const renderDetails = (
   handleFileReject,
   eligibilityMap,
   handleEligibilityChange,
-  user_type
+  user_type,
+  remarksMap, // <--- NEW ARGUMENT
+  handleRemarksChange
 ) => {
   if (!data) return null;
 
@@ -303,7 +305,9 @@ const renderDetails = (
                   handleFileReject,
                   eligibilityMap,
                   handleEligibilityChange,
-                  user_type
+                  user_type,
+                  remarksMap, // <--- Pass down
+                  handleRemarksChange
                 )}
               </Box>
             ))}
@@ -330,8 +334,9 @@ const renderDetails = (
 
             {parentKey === "workforceEmployeeDependentApplication" && isAllowedUser && (
               <Box mt={3} p={2} style={{ background: "#f0f7ff", borderRadius: 8, border: "1px solid #d1e3f0" }}>
-                <Grid container alignItems="center">
-                  <Grid item>
+                <Grid container spacing={2} alignItems="center">
+                  {/* Radio Buttons (Left Side) */}
+                  <Grid item xs={12} md={6}>
                     <FormControl component="fieldset">
                       <FormLabel component="legend" style={{ fontWeight: "bold", fontSize: "0.9rem", color: "#333", marginBottom: 8 }}>
                         {language === "en" ? "Is beneficiary eligible?" : "উপকারভোগী কি যোগ্য?"}
@@ -355,6 +360,19 @@ const renderDetails = (
                         <FormControlLabel value="no" control={<Radio color="primary" />} label={language === "en" ? "No" : "না"} />
                       </RadioGroup>
                     </FormControl>
+                  </Grid>
+
+                  {/* NEW: Remarks Field (Right Side) */}
+                  <Grid item xs={12} md={6}>
+                    <TextInput
+                      label={language === "en" ? "Remarks" : "মন্তব্য"}
+                      placeholder={language === "en" ? "Enter remarks here..." : "এখানে মন্তব্য লিখুন..."}
+                      value={remarksMap?.[item.id] !== undefined ? remarksMap[item.id] : item?.remarks || ""}
+                      onChange={(value) => handleRemarksChange(item.id, value)}
+                      // Note: If TextInput expects an event object instead of value directly, use (e) => handleRemarksChange(item.id, e.target.value)
+                      fullWidth
+                      multiline
+                    />
                   </Grid>
                 </Grid>
               </Box>
@@ -458,7 +476,9 @@ const renderDetails = (
                 handleFileReject,
                 eligibilityMap,
                 handleEligibilityChange,
-                user_type
+                user_type,
+                remarksMap, // <--- Pass down
+                handleRemarksChange
               )}
             </Grid>
           );
@@ -515,6 +535,7 @@ const ApplicationViewPage = ({
 
   // --- Eligibility State ---
   const [eligibilityMap, setEligibilityMap] = useState({});
+  const [remarksMap, setRemarksMap] = useState({});
 
   // 1. Update Local Map
   const handleEligibilityChange = (id, value) => {
@@ -524,14 +545,28 @@ const ApplicationViewPage = ({
     }));
   };
 
+  const handleRemarksChange = (id, value) => {
+    setRemarksMap((prev) => ({ ...prev, [id]: value }));
+  };
+
   // 2. Bulk Save Function
   const handleSaveAllDependents = () => {
     const currentDependents = application?.workforceEmployeeDependentApplication || [];
+
     const formattedDependentsList = currentDependents.map((dep) => {
+      // --- Existing Eligibility Logic ---
       let updatedIsEligible = dep.isEligible;
       if (eligibilityMap.hasOwnProperty(dep.id)) {
         updatedIsEligible = eligibilityMap[dep.id] === "yes";
       }
+
+      // --- NEW: Remarks Logic ---
+      let updatedRemarks = dep.remarks; // Default to existing DB value
+      if (remarksMap.hasOwnProperty(dep.id)) {
+        updatedRemarks = remarksMap[dep.id]; // Override if user typed something
+      }
+
+      // --- Existing Attachment Logic ---
       let parsedAttachments = dep.attachments;
       if (typeof dep.attachments === "string") {
         try {
@@ -541,9 +576,11 @@ const ApplicationViewPage = ({
           parsedAttachments = [];
         }
       }
+
       return {
         ...dep,
-        isEligible: updatedIsEligible, // The Updated Value
+        isEligible: updatedIsEligible,
+        remarks: updatedRemarks, // <--- Add this field to the payload
         isDisabled: dep.disabilityStatus,
         relationType: dep.relationWithWorker,
         attachments: parsedAttachments,
@@ -554,9 +591,11 @@ const ApplicationViewPage = ({
       id: application.id,
       employeeDependentInfo: JSON.stringify(formattedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
     };
-    console.log("Saving All Dependents Payload:", payload);
+    console.log("update application payload",payload)
     dispatch(updateApplication(payload, "update workforce dependent info")).then(() => window.location.reload());
   };
+
+  const hasUnsavedChanges = Object.keys(eligibilityMap).length > 0 || Object.keys(remarksMap).length > 0;
 
   const handleLastSalaryAmount = (amount) => {
     const updateApplicationData = {
@@ -603,7 +642,7 @@ const ApplicationViewPage = ({
 
   // Check if user is allowed to save dependents
   const isAllowedUser = [WORKFORCE_USER_TYPE.EIS_COORDINATOR, WORKFORCE_USER_TYPE.EIS_OFFICER].includes(user_type);
-  const hasUnsavedChanges = Object.keys(eligibilityMap).length > 0;
+  // const hasUnsavedChanges = Object.keys(eligibilityMap).length > 0;
 
   const sortedKeys = useMemo(() => {
     if (!application) return [];
@@ -751,7 +790,9 @@ const ApplicationViewPage = ({
                     handleFileReject,
                     eligibilityMap,
                     handleEligibilityChange,
-                    user_type
+                    user_type,
+                    remarksMap, // <--- Pass down
+                    handleRemarksChange
                   )}
 
                   {/* ----- NEW: BULK SAVE BUTTON FOR DEPENDENTS ----- */}
