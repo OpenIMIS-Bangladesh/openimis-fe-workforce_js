@@ -27,6 +27,7 @@ import {
   useModulesManager,
   decodeId,
   FormattedMessage,
+  parseData
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
@@ -49,93 +50,55 @@ const useStyles = makeStyles((theme) => ({
 }));
 import { fetchEisPaymentProcess, eisPaymentProcessWithoutDate } from "../../actions";
 
-const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights, status, summary_Id, selectedApplicationIds }) => {
+const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_Id, selectedApplicationIds }) => {
   const reduxState = useSelector((state) => state);
+  const [eisPayments,setEisPayments] = useState([]);
+  const fetchedEisPayments = useSelector((state) => state?.worforce?.eisPayments)||[];
   const locale = reduxState?.core?.user?.i_user?.language || 'en';
   const classes = useStyles();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-  const [dataCreated, setDataCreated] = useState(false);
-  const [vbaCalled, setVbaCalled] = useState(false);
   const [paymentTypeMap, setPaymentTypeMap] = useState([]);
 
-  console.log("selectedApplicationIds", selectedApplicationIds);
   const getTotalAmount = () => {
     return eisPayments
       .reduce((sum, item) => sum + (parseFloat(item.eisMonthlyAmount) || 0), 0)
       .toFixed(2);
   };
 
-  // useEffect(() => {
-  //   if (selectedApplicationIds?.length > 0) {
-  //     const run = async () => {
-  //       setLoading(true);
 
-  //       for (const encodedId of selectedApplicationIds) {
-  //         const eisPaymentData = {
-  //           workforceApplicationId: decodeId(encodedId?.id),
-  //         };
 
-  //         await dispatch(
-  //           testWorkforcePayment(eisPaymentData, "Create Test Payment Process")
-  //         );
-  //       }
-
-  //       setVbaCalled(true);
-  //     };
-
-  //     run();
-  //   }
-  // }, [open]);
-
-  useEffect(() => {
-    if (selectedApplicationIds?.length > 0 && open) {
-      setPaymentTypeMap(eisPayments);
-      const run = async () => {
-        setLoading(true);
-        setDataCreated(false);
-
-        for (const encodedId of selectedApplicationIds) {
-          const eisPaymentData = {
-            workforceApplicationId: decodeId(encodedId?.id),
-          };
-
-          await dispatch(
-            eisPaymentProcessWithoutDate(eisPaymentData, "Create Payment Process")
-          );
-        }
-
-        setDataCreated(true);   // ✅ only after ALL dispatches complete
-        setLoading(false);
-      };
-
-      run();
-    }
-  }, [open]);
-
-  useEffect(() => {
+  useEffect(async() => {
     if (selectedApplicationIds?.length > 0) {
+      setLoading(true);
+      // setDataCreated(false);
 
+      for (const encodedId of selectedApplicationIds) {
+        const eisPaymentData = {
+          workforceApplicationId: decodeId(encodedId?.id),
+        };
+
+        await dispatch(
+          eisPaymentProcessWithoutDate(eisPaymentData, "Create Payment Process")
+        );
+      }
+
+      // setDataCreated(true);
+      setLoading(false);
 
       const applicationIds = selectedApplicationIds.map(x =>
         decodeId(x.id)
       );
 
-      console.log("IDs:", applicationIds);
-
-      dispatch(fetchEisPaymentProcess(applicationIds));
+      await dispatch(fetchEisPaymentProcess(applicationIds)).then((res)=> {
+        const fetchedData = res?.payload?.data?.workforceEisPaymentProcess;
+        setEisPayments(fetchedData);
+        setPaymentTypeMap(eisPayments);
+      })
     }
-  }, [dataCreated])
+  }, [open]);
 
 
-
-  const year = eisPayments?.[0]?.year || "";
-  const monthIndex = eisPayments?.[0]?.monthIndex || "";
-
-
-  // Format month as 01..12
-  const monthFormatted = String(monthIndex + 1).padStart(2, "0");
-  console.log("eisPayments", eisPayments)
 
   // -----------------------------
   // Excel generator (unchanged)
@@ -806,7 +769,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
   // -----------------------------------
 
 
-
+console.log({eisPayments})
   const handlePaymentTypeChange = async (paymentType, beneficiaryId, rowId) => {
 
     setPaymentTypeMap((prev) => ({
