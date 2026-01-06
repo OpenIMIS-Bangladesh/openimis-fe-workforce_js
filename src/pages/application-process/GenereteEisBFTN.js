@@ -142,7 +142,7 @@ useEffect(() => {
 
     dispatch(fetchEisPaymentProcess(applicationIds));
   }
-}, [selectedApplicationIds]);
+}, [open]);
 
 
   const printYear = new Date().getFullYear();
