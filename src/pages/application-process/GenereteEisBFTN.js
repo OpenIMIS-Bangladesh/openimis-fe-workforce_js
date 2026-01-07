@@ -30,6 +30,7 @@ import {
   useModulesManager,
   decodeId,
   FormattedMessage,
+  parseData
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useReactToPrint } from "react-to-print";
@@ -139,6 +140,7 @@ const GenerateEisBFTN = ({
   status,
   summary_Id,
   selectedApplicationIds,
+  OtherCompensationAmount = []
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -210,6 +212,7 @@ useEffect(() => {
   //   window.addEventListener("afterprint", afterPrint);
   //   return () => window.removeEventListener("afterprint", afterPrint);
   // }, []);
+const [otherCompAmount, setOtherCompAmount] = useState(0);
 
   useEffect(() => {
     if (selectedApplicationIds?.length > 0) {
@@ -218,7 +221,12 @@ useEffect(() => {
       console.log("IDs:", applicationIds);
 
       dispatch(fetchEisPaymentProcess(applicationIds,modulesManager));
-      dispatch(fetchWorkforceOtherCompensation(applicationIds,modulesManager));
+      dispatch(fetchWorkforceOtherCompensation(modulesManager,[`workforceApplicationId: "${applicationIds}"`])).then((res) => {
+                const fetchOtherCompensation = parseData(res?.payload?.data?.workforceOtherCompensationInfo);
+                const amount = fetchOtherCompensation?.[0]?.amount || 0;
+                setOtherCompAmount(amount);               
+                console.log("OtherCompensation",OtherCompensationAmount);
+              });
     }
   }, [selectedApplicationIds]);
 
@@ -559,6 +567,8 @@ useEffect(() => {
             row={selectedRow}
             payFrom={selectedRow.payFrom}
             payTo={selectedRow.payTo}
+            OtherCompensationAmount={otherCompAmount}
+
           />
         )}
       </div>
@@ -566,7 +576,7 @@ useEffect(() => {
   );
 };
 
-const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
+const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
   const tryParse = (value) => {
   if (typeof value === "string") {
     try {
@@ -611,6 +621,9 @@ const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
   const depentPresentAddress = formatAddress(
     row?.workforceEmployeeDependent[0]?.presentLocation, row?.workforceEmployeeDependent[0]?.depentPresentAddress
   );
+const cfAndEisAmount = (parseFloat(row?.eisMonthlyAmount) || 0) + (parseFloat(OtherCompensationAmount) || 0);
+     console.log("cfAndEisAmount",cfAndEisAmount)
+
   return (
     <div className="noaPage">
       {/* ===== HEADER ===== */}
@@ -711,7 +724,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
               <td className="td label">
                 কেন্দ্রীয় তহবিল থেকে প্রদত্ত অর্থের পরিমাণ:
               </td>
-              <td className="td value"></td>
+              <td className="td value">{OtherCompensationAmount}</td>
             </tr>
 
             {/* ===== SECTION TITLE ===== */}
@@ -734,7 +747,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
                 <br />
                 মাসিক ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
               </td>
-              <td className="td value">{row?.eisMonthlyAmount || ""}</td>
+              <td className="td value">{cfAndEisAmount || ""}</td>
             </tr>
 
             <tr>
