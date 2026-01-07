@@ -29,6 +29,7 @@ import {
   updateWorkforceEisPaymentProcessApproval,
   updateWorkforceEisPaymentProcessPaymentType,
   fetchApplicationWiseMovementList,
+  fetchWorkforceSignatures,
 } from "../../actions";
 
 // --- STYLES ---
@@ -146,7 +147,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GenereteEisDependentBFTN = ({ open, onClose, userRights, selectedApplicationIds }) => {
+const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationIds }) => {
   const reduxState = useSelector((state) => state);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -158,74 +159,76 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, selectedApplicati
   const [lastRevertMovement, setLastRevertMovement] = useState(null);
   const [revertNotes, setRevertNotes] = useState([]);
   const [eisPayments, setEisPayments] = useState([]);
+  const [eisApprovalSignature, setEisApprovalSignature] = useState([]);
 
   const user_type = getUserTypeFromRights(userRights);
 
   const fetchApplicationMovement = async () => {
-    console.log("1. fetchApplicationMovement STARTED"); // <--- Check if this prints
-
     try {
-      // FIX: Ensure selectedApplicationIds exists
-      if (!selectedApplicationIds || selectedApplicationIds.length === 0) {
-          console.log("1a. No selectedApplicationIds found");
-          return;
+      // 1. Get Application ID
+      const firstAppId = selectedApplicationIds?.[0]?.id ? decodeId(selectedApplicationIds[0].id) : null;
+
+      if (!firstAppId) {
+        console.log("No valid application ID found.");
+        return;
       }
 
-      const firstAppId = decodeId(selectedApplicationIds[0].id);
-      console.log("2. ID Decoded:", firstAppId);
-
-      // FIX: Ensure modulesManager is passed correctly
+      // 2. Fetch Data
       const response = await dispatch(fetchApplicationWiseMovementList(modulesManager, { applicationId: firstAppId }));
-      console.log("3. API Response Received:", response);
 
-      // --- CRITICAL FAILURE POINT ---
-      // If parseData is not defined, code breaks here.
-      // We'll try to use it safely, or fallback to raw data.
+      // 3. Parse Data
+      let rawData = response?.payload?.data?.workforceApplicationMovement;
       let rawMovements = [];
-      
-      const rawData = response?.payload?.data?.workforceApplicationMovement;
 
-      if (typeof parseData === "function") {
-          rawMovements = parseData(rawData) || [];
+      // Handle parsing if it's a string, or use directly if object
+      if (typeof rawData === "string") {
+        try {
+          rawMovements = JSON.parse(rawData);
+        } catch (e) {}
       } else {
-          console.warn("parseData function is missing! Using raw data or falling back.");
-          // If the data comes as a JSON string, try parsing it manually:
-          try {
-             rawMovements = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
-          } catch(e) { 
-             console.error("JSON Parse failed", e);
-             rawMovements = [];
-          }
-      }
-      
-      // Ensure rawMovements is an array
-      if (!Array.isArray(rawMovements)) {
-           console.log("Data is not an array, wrapping it or setting empty");
-           rawMovements = rawMovements ? [rawMovements] : [];
+        rawMovements = rawData || [];
       }
 
-      console.log("4. Parsed Movements:", rawMovements);
+      // Ensure it is an array
+      if (!Array.isArray(rawMovements)) rawMovements = [rawMovements];
 
-      // --- MAP LOGIC ---
-      const senderIds = rawMovements.map(m => {
-          // Safety check for null nodes
-          const node = m.node || m; // Handle structure with or without 'node' key
+      // 4. Extract Nodes from 'edges'
+      let actualNodes = [];
+      if (rawMovements.length > 0 && rawMovements[0]?.edges) {
+        actualNodes = rawMovements[0].edges.map((edge) => edge.node);
+      } else {
+        actualNodes = rawMovements;
+      }
+
+      // 5. Extract IDs
+      const senderIds = actualNodes
+        .map((item) => {
+          const node = item.node || item; // Handle if double nested
           return node?.applicationFrom?.id ? decodeId(node.applicationFrom.id) : null;
-      }).filter(id => id !== null);
+        })
+        .filter((id) => id !== null);
 
-      console.log("5. Sender IDs List:", senderIds); // <--- THIS SHOULD NOW SHOW
+      console.log("Sender IDs List:", senderIds);
+      await dispatch(fetchWorkforceSignatures([...senderIds])).then((res) => {
+        console.log("signature response", res)
+        setEisApprovalSignature(res?.payload?.data?.workforceSignatures)
+      });
 
-      // ... Rest of your logic ...
-      setMovements(rawMovements);
-      
+      // 6. Revert Note Logic
+      const clean = (html) => html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
+      const lastRevert = [...actualNodes].reverse().find((m) => m.revertNote);
+      if (lastRevert) lastRevert.revertNote = clean(lastRevert.revertNote);
+
+      setMovements(actualNodes);
+      setLastRevertMovement(lastRevert);
+      setRevertNotes(lastRevert ? [lastRevert.revertNote] : []);
     } catch (error) {
-      // THIS is likely where your code was going before
-      console.error("CRITICAL ERROR in fetchApplicationMovement:", error);
+      console.error("Failed to load application movements", error);
     }
-};
+  };
 
   // --- 1. DATA FETCHING LOGIC ---
-  useEffect(async() => {
+  useEffect(async () => {
     if (selectedApplicationIds?.length > 0) {
       // Initialize map with existing values
       const initialMap = {};
@@ -237,30 +240,24 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, selectedApplicati
       });
       setPaymentTypeMap(initialMap);
 
-
-        setLoading(true);
-        // Create payment process if needed
-        for (const encodedId of selectedApplicationIds) {
-          const eisPaymentData = {
-            workforceApplicationId: decodeId(encodedId?.id),
-          };
-          await dispatch(eisPaymentProcessWithoutDate(eisPaymentData, "Create Payment Process"));
-        }
-        setLoading(false);
-          const applicationIds = selectedApplicationIds.map(x =>
-        decodeId(x.id)
-      );
-        await dispatch(fetchEisPaymentProcess(applicationIds)).then((res)=> {
-          const fetchedData = res?.payload?.data?.workforceEisPaymentProcess;
-          setEisPayments(fetchedData);
-          setPaymentTypeMap(eisPayments);
-        });
-      };
-      fetchApplicationMovement()
-    
+      setLoading(true);
+      // Create payment process if needed
+      for (const encodedId of selectedApplicationIds) {
+        const eisPaymentData = {
+          workforceApplicationId: decodeId(encodedId?.id),
+        };
+        await dispatch(eisPaymentProcessWithoutDate(eisPaymentData, "Create Payment Process"));
+      }
+      setLoading(false);
+      const applicationIds = selectedApplicationIds.map((x) => decodeId(x.id));
+      await dispatch(fetchEisPaymentProcess(applicationIds)).then((res) => {
+        const fetchedData = res?.payload?.data?.workforceEisPaymentProcess;
+        setEisPayments(fetchedData);
+        setPaymentTypeMap(eisPayments);
+      });
+    }
+    fetchApplicationMovement();
   }, [open]);
-
-
 
   // --- 2. CALCULATIONS ---
   const getTotalAmount = () => {
@@ -666,9 +663,10 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, selectedApplicati
             <Box mt={4}>
               <Typography style={{ fontWeight: "bold", textDecoration: "underline", color: "#000" }}>Signature of EIS-GB Sub Committee Members:</Typography>
               <Grid container spacing={2} className={classes.signatureContainer}>
-                {signatureBlocks.map((sig, i) => (
+                {eisApprovalSignature?.filter((sig)=>sig?.role?.name === "Eis Committee"||sig?.role?.name === "Eis Association Committee").map((sig, i) => (
                   <Grid item xs={3} key={i}>
-                    <div className={classes.signatureBlock}>{sig}</div>
+                    <img src={sig?.workforce_document?.url} alt="signature image"/>
+                    <div className={classes.signatureBlock}>{sig?.role?.name}</div>
                   </Grid>
                 ))}
               </Grid>
@@ -702,4 +700,4 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, selectedApplicati
   );
 };
 
-export default GenereteEisDependentBFTN;
+export default EisApprovalSignature;

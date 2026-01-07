@@ -826,7 +826,7 @@ export function fetchApplication(mm, filters) {
     "institutionInfo",
     "educations{edges{node{id,childNameEn,childNameBn,childBirthDate,childBirthCertificateNo,childNidNo,studyClass,institution,educationLevel,educationBoard,passingYear,rollNumber,registrationNumber,result}}}",
     // "workforceEmployeeDependentApplication{edges{node{id,nameBn,nameEn,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,nid,birthDate,percentageOfCfGrant,phoneNumber,presentLocation {id},presentAddress,permanentLocation {id},permanentAddress}}}",
-    "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,occupation,email,phoneNumber,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,relationWithWorker,attachments,isEligible,status,employeeBankingDependents{edges{node{id}}},presentAddress,permanentAddress," + present_location_projection + permanent_location_projection + ",bankingInfo{id}}}}",
+    "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,occupation,email,phoneNumber,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,relationWithWorker,attachments,isEligible,remarks,status,employeeBankingDependents{edges{node{id}}},presentAddress,permanentAddress," + present_location_projection + permanent_location_projection + ",bankingInfo{id}}}}",
     "employeeBankingInfoApplication{edges{node{id,dateCreated,nameBn,nameEn,accountNo,accountHolderName,accountHolderType,status,branch{id,nameBn,nameEn,bankCode,branchCode,routingNumber,districtNameEn,districtNameBn,parent{id,nameBn,nameEn}},dependant{id},relationWithDependent}}}",
     "metadata",
     "employeeFactory{id, nameBn, nameEn}",
@@ -2592,6 +2592,13 @@ export function fetchApplicationSummaryByClientMutationId(mm, clientMutationId) 
   return graphql(payload, "WORKFORCE_APPLICATION_SUMMARY_BY_CLIENT_MUTATION_ID");
 }
 
+export function fetchWorkforceSignatures(roleIds) {
+  const payload = `{
+  workforceSignatures(relatedUsers: ${JSON.stringify(roleIds)})
+}
+`;
+  return graphql(payload, "WORKFORCE_SIGNATURE");
+}
 export function fetchApplicationId(mm, clientMutationId) {
   const payload = `{
   workforceApplication(
@@ -2988,6 +2995,7 @@ export function fetchEisPaymentProcess(applicationIds) {
           employeeAccidentInfo
           employeeBankInfo
           doctorsEntry
+          dateCreated
           workforceEmployee {
             id
             firstNameBn

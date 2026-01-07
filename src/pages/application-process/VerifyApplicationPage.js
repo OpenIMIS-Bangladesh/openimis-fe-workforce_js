@@ -45,6 +45,7 @@ import RevertApplicationModal from "../../components/application-process/modals/
 import ForwardApplicationFactoryAdminModal from "../../components/application-process/modals/ForwardApplicationFactoryAdminModal";
 import ForwardApplicationSectionAdminModal from "../../components/application-process/modals/ForwardApplicationSectionAdminModal";
 import AddDependentModal from "../../components/shared/modals/AddDependentModal";
+import GenereteEisDependentBFTN from "./GenereteEisDependentBFTN";
 
 const styles = (theme) => ({
   paper: {
@@ -126,6 +127,7 @@ class VerifyApplicationPage extends Component {
       confirmModalCallback: null,
       serverResponse: "",
       selectedApplication: null,
+      eisDependentBFTNModalOpen: false,
     };
   }
 
@@ -416,6 +418,8 @@ class VerifyApplicationPage extends Component {
           user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
           user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
           user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
+          user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ||
+          user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
           user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
           user_type === WORKFORCE_USER_TYPE.CHECKER ||
           user_type === WORKFORCE_USER_TYPE.CHECKER_TWO ||
@@ -426,7 +430,7 @@ class VerifyApplicationPage extends Component {
           user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
           user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) && (
           <Grid container spacing={2} style={{ marginTop: "16px", padding: 4 }}>
-            <Grid item xs={8}></Grid>
+            <Grid item xs={6}></Grid>
             {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && application?.applicationType ==="financialAssistance") && (
               <Grid item xs={2}>
                  <Button 
@@ -436,6 +440,18 @@ class VerifyApplicationPage extends Component {
                    onClick={() => this.setState({ addDependentModalOpen: true })}
                  >
                    <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add Dependent" />
+                 </Button>
+              </Grid>
+            )}
+            {(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) && (
+              <Grid item xs={2}>
+                 <Button 
+                   variant="contained" 
+                   color="primary" 
+                   fullWidth 
+                   onClick={() => this.setState({ eisDependentBFTNModalOpen: true })}
+                 >
+                   <FormattedMessage id="workforce.employee.application.paymentProcess" defaultMessage="Payment Calculation" />
                  </Button>
               </Grid>
             )}
@@ -457,6 +473,15 @@ class VerifyApplicationPage extends Component {
             open={this.state.addDependentModalOpen}
             onClose={() => this.setState({ addDependentModalOpen: false })}
             application={formData}
+          />
+        )}
+        {this.state.eisDependentBFTNModalOpen && (
+          <GenereteEisDependentBFTN
+            open={this.state.eisDependentBFTNModalOpen}
+            onClose={() => this.setState({ eisDependentBFTNModalOpen: false })}
+            status="approved_by_committee"
+            userRights={this.props.user_rights}
+            selectedApplicationIds={[{ id: this.props.application?.id }]}
           />
         )}
 

@@ -13,20 +13,21 @@ import {
   Divider,
 } from '@material-ui/core';
 import { EIS_PAYMENT_TYPES, RELATION_LABEL_MAP, WORKFORCE_USER_TYPE } from "../../constants";
-import { getApprovalStatus, getUserType, getUserTypeFromRights } from "../../utils/utils";
+import { getApprovalStatus, getUserType, getUserTypeFromRights, isBase64Encoded } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
 import { createApplicationSummary, testWorkforcePayment, updateApplication, updateApplicationSummary, updateWorkforceEisPaymentProcessApproval, updateWorkforceEisPaymentProcessPaymentType } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import React, { Component, useState, useEffect } from "react";
 import { enToBn } from '../../utils/utils';
-import {CircularProgress} from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import {
   useModulesManager,
   decodeId,
   FormattedMessage,
+  parseData
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
@@ -49,93 +50,68 @@ const useStyles = makeStyles((theme) => ({
 }));
 import { fetchEisPaymentProcess, eisPaymentProcessWithoutDate } from "../../actions";
 
-const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights, status, summary_Id, selectedApplicationIds }) => {
+const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_Id, selectedApplicationIds }) => {
   const reduxState = useSelector((state) => state);
+  const [eisPayments, setEisPayments] = useState([]);
+  const fetchedEisPayments = useSelector((state) => state?.worforce?.eisPayments) || [];
   const locale = reduxState?.core?.user?.i_user?.language || 'en';
   const classes = useStyles();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-  const [dataCreated, setDataCreated] = useState(false);
-  const [vbaCalled, setVbaCalled] = useState(false);
   const [paymentTypeMap, setPaymentTypeMap] = useState([]);
+  const [appType, setAppType] = useState("");
+  const [benefitDate, setBenefitDate] = useState("");
 
-  console.log("selectedApplicationIds", selectedApplicationIds);
   const getTotalAmount = () => {
     return eisPayments
       .reduce((sum, item) => sum + (parseFloat(item.eisMonthlyAmount) || 0), 0)
       .toFixed(2);
   };
 
-  // useEffect(() => {
-  //   if (selectedApplicationIds?.length > 0) {
-  //     const run = async () => {
-  //       setLoading(true);
 
-  //       for (const encodedId of selectedApplicationIds) {
-  //         const eisPaymentData = {
-  //           workforceApplicationId: decodeId(encodedId?.id),
-  //         };
 
-  //         await dispatch(
-  //           testWorkforcePayment(eisPaymentData, "Create Test Payment Process")
-  //         );
-  //       }
+  useEffect(async () => {
+    if (selectedApplicationIds?.length > 0) {
+      setLoading(true);
+      // setDataCreated(false);
 
-  //       setVbaCalled(true);
-  //     };
+      for (const encodedId of selectedApplicationIds) {
+        const eisPaymentData = {
+          workforceApplicationId: isBase64Encoded(encodedId?.id) ? decodeId(encodedId?.id) : encodedId?.id,
+        };
 
-  //     run();
-  //   }
-  // }, [open]);
+        await dispatch(
+          eisPaymentProcessWithoutDate(eisPaymentData, "Create Payment Process")
+        );
+      }
 
-  useEffect(() => {
-    if (selectedApplicationIds?.length > 0 && open) {
-      setPaymentTypeMap(eisPayments);
-      const run = async () => {
-        setLoading(true);
-        setDataCreated(false);
+      // setDataCreated(true);
+      setLoading(false);
 
-        for (const encodedId of selectedApplicationIds) {
-          const eisPaymentData = {
-            workforceApplicationId: decodeId(encodedId?.id),
-          };
+      const applicationIds = selectedApplicationIds.map(x =>
+        isBase64Encoded(x.id) ? decodeId(x.id) : x.id
+      );
 
-          await dispatch(
-            eisPaymentProcessWithoutDate(eisPaymentData, "Create Payment Process")
-          );
+      await dispatch(fetchEisPaymentProcess(applicationIds)).then((res) => {
+        const fetchedData = res?.payload?.data?.workforceEisPaymentProcess;
+        setEisPayments(fetchedData);
+        setPaymentTypeMap(fetchedData);
+        const first = fetchedData?.[0];
+        if (first?.workforceApplication?.applicationType == 'disabilityAssistance') {
+          setAppType("Disability");
+        } else if (first?.workforceApplication?.applicationType == 'financialAssistance') {
+          setAppType("Death");
         }
-
-        setDataCreated(true);   // ✅ only after ALL dispatches complete
-        setLoading(false);
-      };
-
-      run();
+        console.log("fetchedEisPayments", fetchedData);
+        setBenefitDate(first?.workforceApplication?.dateCreated ? first?.workforceApplication?.dateCreated.split("T")[0] : "fg");
+        // setBenefitDate(first?.workforceApplication?.dateCreated ? new Date(first?.workforceApplication?.dateCreated).toLocaleDateString("en-BD", {
+        //   timeZone: "Asia/Dhaka",
+        // }) : "fg");
+      })
     }
   }, [open]);
 
-  useEffect(() => {
-    if (selectedApplicationIds?.length > 0) {
 
-
-      const applicationIds = selectedApplicationIds.map(x =>
-        decodeId(x.id)
-      );
-
-      console.log("IDs:", applicationIds);
-
-      dispatch(fetchEisPaymentProcess(applicationIds));
-    }
-  }, [dataCreated])
-
-
-
-  const year = eisPayments?.[0]?.year || "";
-  const monthIndex = eisPayments?.[0]?.monthIndex || "";
-
-
-  // Format month as 01..12
-  const monthFormatted = String(monthIndex + 1).padStart(2, "0");
-  console.log("eisPayments", eisPayments)
 
   // -----------------------------
   // Excel generator (unchanged)
@@ -228,7 +204,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
     sheet.getCell("A6").alignment = { horizontal: "left" };
 
     sheet.mergeCells("G6:I6");
-    sheet.getCell("G6").value = "Date: 10/15/2025";
+    sheet.getCell("G6").value = "Date: " + benefitDate;
     sheet.getCell("G6").font = { bold: true };
     sheet.getCell("G6").alignment = { horizontal: "right" };
 
@@ -241,11 +217,12 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
 
     const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
     const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
-    const effectiveDate = dateOfRejoining || dateOfAssessment || "";
+    const accidentDate = parsedAccidentInfo?.accidentDate || "";
+    const effectiveDate = benefitDate || "";
 
     const leftItems = [
       ["EIS Worker ID", data?.beneficiaryId || ""],
-      ["Date of Accident", parsedAccidentInfo?.accidentDate || ""],
+      ["Date of Accident", accidentDate || ""],
       ["Date of Rejoining", dateOfRejoining],
       ["Date of Disability Assessment", dateOfAssessment],
       ["Effective date of Benefit", effectiveDate],
@@ -358,7 +335,6 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
         row?.beneficiaryId || "",
         row?.workforceApplication?.workforceEmployee?.nid || "",
         `${benefitRate * 100}%`,
-        Number(row?.eisInitialReplacementRate) * 100 || "",
         row?.eisInitialMonthlyAmount || 0,
         row?.eisMonthlyAmount || 0,
         row?.eisCalculatedAmount || 0,
@@ -396,6 +372,8 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
       ``, // benefit rate total
       totalMonthly,
       totalNet,
+      "",
+      "",
       "",
       "",
       "",
@@ -558,13 +536,16 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
     const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
     const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
     const effectiveDate = dateOfRejoining || dateOfAssessment || "";
+    const accidentDate = parsedAccidentInfo?.accidentDate || "";
+    const dateOfDeath= parsedAccidentInfo?.dateOfDeath || "";
 
 
     const leftItems = [
       ["EIS Worker ID", data?.beneficiaryId || ""],
-      ["Date of Accident", parsedAccidentInfo?.accidentDate || ""],
-      ["Date of Rejoining", dateOfRejoining],
-      ["Date of Disability Assessment", dateOfAssessment],
+      ["Date of Death", dateOfDeath || ""],
+      ["Date of Accident", accidentDate || ""],
+      // ["Date of Rejoining", dateOfRejoining],
+      // ["Date of Disability Assessment", dateOfAssessment],
       ["Effective date of Benefit", effectiveDate],
     ];
 
@@ -572,7 +553,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
       ["Name of the Factory", data.workforceApplication?.employeeFactory?.nameEn || ""],
       ["Name of Association", data.workforceApplication?.associationType || ""],
       ["Gross Salary (BDT)", data.workforceApplication?.lastBaseSalary || ""],
-      ["Percentage of Disability", parsedDoctorEntry?.disabilityPerSchedule || ""],
+      // ["Percentage of Disability", parsedDoctorEntry?.disabilityPerSchedule || ""],
       ["Type of Accident", (parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace" ? "Workplace Accident" : parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA" ? "On Duty RTA" : "Commuting") || ""],
     ];
 
@@ -806,6 +787,23 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
   // -----------------------------------
 
 
+  const first = eisPayments?.[0] || {};
+  let parsedAccidentInfo = {};
+  let parsedDoctorEntry = {};
+
+  try {
+    parsedAccidentInfo = JSON.parse(JSON.parse(first?.workforceApplication?.employeeAccidentInfo));
+  } catch (e) { }
+
+  try {
+    parsedDoctorEntry = JSON.parse(JSON.parse(first?.workforceApplication?.doctorsEntry));
+  } catch (e) { }
+
+  const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
+  const accidentDate = parsedAccidentInfo?.accidentDate || "";
+  const dateOfDeath= parsedAccidentInfo?.dateOfDeath || "";
+  const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
+  const effectiveDate = benefitDate || "";
 
   const handlePaymentTypeChange = async (paymentType, beneficiaryId, rowId) => {
 
@@ -850,8 +848,8 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
       <DialogTitle disableTypography>
         <Typography variant="h6">
           {loading ? (
-            <p style={{width:'100%', textAlign: 'center' }}>
-              <CircularProgress/> Loading....
+            <p style={{ width: '100%', textAlign: 'center' }}>
+              <CircularProgress /> Loading....
             </p>
           ) : (
             <FormattedMessage id="EIS-Pilot Benefit Approval Note (Disability/Death)" />
@@ -860,6 +858,108 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
       </DialogTitle>
 
       <DialogContent dividers>
+        {!loading && (
+          <div style={{ marginBottom: 24 }}>
+
+            <Typography variant="h5" align="center" gutterBottom>
+              Employment Injury Scheme-Pilot
+            </Typography>
+
+            <Typography variant="h6" align="center" gutterBottom>
+              Benefit Approval Note ({appType})
+            </Typography>
+
+            <Typography variant="body2" align="center">
+              EIS PILOT Special Unit, 196, Sromo Bhaban (9th Floor), Bijoynagar, Dhaka, 1000
+            </Typography>
+
+            <Typography variant="body2" align="center" gutterBottom>
+              Email: specialunit@eis-pilot-bd.org, Phone: 01886-921030, Website: eis-pilot-bd.org
+            </Typography>
+
+            <Divider style={{ margin: "16px 0" }} />
+
+            {/* Meeting Info */}
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
+                EIS-GB Sub Committee Meeting No: 16
+              </Typography>
+              <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
+                Date: {benefitDate}
+              </Typography>
+            </div>
+
+            <Divider style={{ margin: "16px 0" }} />
+
+            {/* Worker / Factory / Accident Info */}
+            <Typography variant="subtitle1" style={{ fontWeight: "bold", marginBottom: 8 }}>
+              Worker, Factory & Accident Information:
+            </Typography>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+
+              {/* LEFT COLUMN */}
+              <div>
+                <Typography><strong>EIS Worker ID:</strong> {first?.beneficiaryId}</Typography>
+                {
+                  selectedApplicationIds.length == 1  ? (
+                    <Typography><strong>Worker Name:</strong> {first?.workforceApplication?.workforceEmployee?.firstNameEn} {first?.workforceApplication?.workforceEmployee?.lastNameEn}</Typography>
+                  ): null
+                }
+                <Typography><strong>Date of Accident:</strong> {accidentDate}</Typography>
+                {appType === "Death" ? (
+                  <>
+                    <Typography><strong>Date of Death:</strong> {dateOfDeath}</Typography>
+                  </>
+                ):(
+                  <>
+                    <Typography><strong>Date of Rejoining:</strong> {dateOfRejoining}</Typography>
+                    <Typography><strong>Date of Disability Assessment:</strong> {dateOfAssessment}</Typography>
+                  </>
+                )}
+                <Typography><strong>Effective Date of Benefit:</strong> {effectiveDate}</Typography>
+              </div>
+
+              {/* RIGHT COLUMN */}
+              <div>
+                <Typography>
+                  <strong>Name of the Factory:</strong>{" "}
+                  {first?.workforceApplication?.employeeFactory?.nameEn}
+                </Typography>
+                <Typography>
+                  <strong>Name of Association:</strong>{" "}
+                  {first?.workforceApplication?.associationType}
+                </Typography>
+                <Typography>
+                  <strong>Gross Salary (BDT):</strong>{" "}
+                  {first?.workforceApplication?.lastBaseSalary? first?.workforceApplication?.lastBaseSalary.toLocaleString('en-BD') : ''}
+                </Typography>
+                {
+                  appType === "Death" ? null : (
+                    <Typography>
+                      <strong>Percentage of Disability:</strong>{" "}
+                      {parsedDoctorEntry?.disabilityPerSchedule}
+                    </Typography>
+                  )
+                }
+                <Typography>
+                  <strong>Type of Accident:</strong>{" "}
+                  {parsedAccidentInfo?.accidentMainType ===
+                    "workforce.accident.mainType.workplace"
+                    ? "Workplace Accident"
+                    : parsedAccidentInfo?.accidentMainType ===
+                      "workforce.accident.mainType.onDutyRTA"
+                      ? "On Duty RTA"
+                      : "Commuting"}
+                </Typography>
+              </div>
+            </div>
+
+            <Divider style={{ margin: "16px 0" }} />
+          </div>
+
+        )}
+
         {!loading && (
           <Table>
             <TableHead>
@@ -873,7 +973,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
                 <TableCell><FormattedMessage id="Total time amount (individual)" /></TableCell>
                 <TableCell><FormattedMessage id="After adjustment (individual)" /></TableCell>
                 <TableCell><FormattedMessage id="Monthly Payable Benefit (BDT)" /></TableCell>
-                <TableCell><FormattedMessage id="Net Monthly Payable After Adjustment (BDT" /></TableCell>
+                <TableCell><FormattedMessage id="Net Monthly Payable After Adjustment (BDT)" /></TableCell>
                 <TableCell><FormattedMessage id="Type of Payment" /></TableCell>
                 <TableCell><FormattedMessage id="Approval Status" /></TableCell>
                 <TableCell><FormattedMessage id="Remarks" /></TableCell>
@@ -905,7 +1005,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
                     <TableCell>{row?.eisMonthlyAmount}</TableCell>
                     <TableCell>
                       {
-                        user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR || user_type == WORKFORCE_USER_TYPE.EIS_ADVISOR || user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
+                        user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR || user_type == WORKFORCE_USER_TYPE.EIS_ADVISOR || user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type == WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
                           <>
                             <select
                               value={
@@ -929,7 +1029,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, eisPayments = [], userRights,
                     </TableCell>
                     <TableCell>
                       {
-                        user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
+                        user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type == WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
                           <>
                             <select
                               value={
