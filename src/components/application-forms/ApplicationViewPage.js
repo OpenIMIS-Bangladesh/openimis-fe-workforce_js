@@ -495,8 +495,8 @@ const PREFERRED_SECTION_ORDER = [
   "deceasedWorkerInfo",
   "applicantInfo",
   "workforceEmployeeDependentApplication",
-  // "employeeBankInfo",
-  "employeeBankingInfoApplication",
+  "employeeBankInfo",
+  // "employeeBankingInfoApplication",
 ];
 
 // 2. Define keys to ignore (these were previously inside your map function)

@@ -953,6 +953,7 @@
   "workforce.paid": "Paid",
   "workforce.unpaid": "Not Paid yet",
   "workforce.processing":"Loading ...",
+  "workforce.employee.application.eisApproval.signature":"Eis Approval Signature",
 
 
   "workforce.accident.placeOfDeath.label": "Place of Death",

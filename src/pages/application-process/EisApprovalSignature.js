@@ -667,7 +667,10 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                 {eisApprovalSignature?.filter((sig)=>sig?.role?.name === "Eis Committee"||sig?.role?.name === "Eis Association Committee").map((sig, i) => (
                   <Grid item xs={3} key={i}>
                     <img src={sig?.workforce_document?.url} alt="signature image"/>
-                    <div className={classes.signatureBlock}>{sig?.role?.name}</div>
+                    <div className={classes.signatureBlock}>
+                      <p>{sig?.last_name}</p>
+                      <p>{sig?.role?.name}</p>
+                    </div>
                   </Grid>
                 ))}
               </Grid>
