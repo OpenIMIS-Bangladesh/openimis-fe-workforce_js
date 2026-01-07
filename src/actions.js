@@ -2927,13 +2927,16 @@ export function updateWorkforceEmployeeDependentEligibility(applicationId) {
   return graphql(mutation, "WORKFORCE_EMPLOYEE_DEPENDENT_ELIGIBILITY_UPDATE");
 }
 
-export function fetchEisPaymentProcess(applicationIds) {
+export function fetchEisPaymentProcess(applicationIds,mm) {
   const idsArray = Array.isArray(applicationIds)
     ? applicationIds
     : [applicationIds];
 
   const idsString = idsArray.map(id => `"${id}"`).join(",");
-
+  const present_location_projection =
+    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
   const payload = `
     {
       workforceEisPaymentProcess(
@@ -2972,9 +2975,15 @@ export function fetchEisPaymentProcess(applicationIds) {
           nameEn
           nameBn
           relationWithWorker
-          presentLocation{
-            id
-          }
+          disabilityStatus
+          birthDate
+          maritalStatus
+          nid
+          permanentAddress
+          presentAddress
+          ${
+          present_location_projection +
+          permanent_location_projection }
           bankAccountNo
           bank{
             nameBn
@@ -2996,11 +3005,17 @@ export function fetchEisPaymentProcess(applicationIds) {
           employeeBankInfo
           doctorsEntry
           dateCreated
-          workforceEmployee {
+          workforceEmployee {         
             id
             firstNameBn
             firstNameEn
             nid
+            permanentAddress
+            presentAddress
+            ${
+            present_location_projection +
+            permanent_location_projection }
+
           }
           employeeFactory {
             id

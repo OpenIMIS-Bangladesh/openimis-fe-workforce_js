@@ -15,7 +15,7 @@ import {
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserTypeFromRights } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
-import { WORKFORCE_STATUS } from "../../constants";
+import { WORKFORCE_STATUS, RELATION_LABEL_MAP } from "../../constants";
 import {
   createApplicationSummary,
   updateApplication,
@@ -33,12 +33,12 @@ import {
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useReactToPrint } from "react-to-print";
-import { fetchEisPaymentProcess } from "../../actions";
+import { fetchEisPaymentProcess, fetchWorkforceOtherCompensation } from "../../actions";
 const useStyles = makeStyles(() => ({
   "@global": {
     /* ===== PRINT ROOT ===== */
     ".printArea": {
-      display: "none",
+        display: "none",
     },
 
     "@media print": {
@@ -77,13 +77,12 @@ const useStyles = makeStyles(() => ({
 
       /* ===== BODY ===== */
       ".body": {
-        marginTop: "5mm",
+        width: "100%",
       },
 
       ".table": {
         width: "100%",
         borderCollapse: "collapse",
-        color: "#000",
       },
 
       ".td": {
@@ -115,17 +114,22 @@ const useStyles = makeStyles(() => ({
         height: "40mm",
         padding: "5mm 10mm",
         fontSize: "12px",
-        background: "#fff",
         fontWeight: "bold",
+        background: "#fff",
       },
 
       ".signature": {
         textAlign: "right",
-        marginBottom: "6mm",
+      },
+
+      /* Hide dialog/UI */
+      ".MuiDialog-root": {
+        display: "none !important",
       },
     },
   },
 }));
+
 
 const GenerateEisBFTN = ({
   open,
@@ -140,6 +144,7 @@ const GenerateEisBFTN = ({
   const dispatch = useDispatch();
   const [selectedRow, setSelectedRow] = useState(null);
   const [printMode, setPrintMode] = useState(null);
+  const modulesManager = useModulesManager();
   const getTotalAmount = () => {
     return eisPayments
       .reduce((sum, item) => sum + (parseFloat(item.eisMonthlyAmount) || 0), 0)
@@ -157,33 +162,38 @@ const GenerateEisBFTN = ({
      ROW-WISE PRINT HANDLER
   ----------------------------- */
 
-  const handleRowPrint = (row) => {
-    const year = row?.year || "";
-    const monthIndex = row?.monthIndex || "";
-    const monthFormatted = String(monthIndex).padStart(2, "0");
-    const lastDay = new Date(year, monthIndex, 0).getDate();
+const handleRowPrint = (row) => {
+  const year = row?.year || "";
+  const monthIndex = row?.monthIndex || "";
+  const monthFormatted = String(monthIndex).padStart(2, "0");
+  const lastDay = new Date(year, monthIndex, 0).getDate();
 
-    // Prepare the data
-    setSelectedRow({
-      ...row,
-      payFrom: `01.${monthFormatted}.${year}`,
-      payTo: `${lastDay}.${monthFormatted}.${year}`,
-    });
+  setSelectedRow({
+    ...row,
+    payFrom: `01.${monthFormatted}.${year}`,
+    payTo: `${lastDay}.${monthFormatted}.${year}`,
+  });
 
-    // Show the template in DOM
-    setPrintMode("NOA");
+  setPrintMode("NOA");
 
-    // Wait until React renders
-    setTimeout(() => {
-      const printContents = document.getElementById("print-area").innerHTML;
-      const originalContents = document.body.innerHTML;
-
-      document.body.innerHTML = printContents; // replace page content
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
       window.print();
-      document.body.innerHTML = originalContents; // restore page
-      setPrintMode(null); // hide template again
-    }, 100); // slight delay to ensure DOM renders
+    });
+  });
+};
+
+useEffect(() => {
+  const afterPrint = () => {
+    setPrintMode(null);
+    setSelectedRow(null);
   };
+
+  window.addEventListener("afterprint", afterPrint);
+  return () => window.removeEventListener("afterprint", afterPrint);
+}, []);
+
+
 
   const handleDialogPrint = () => {
     setPrintMode("DIALOG");
@@ -196,7 +206,7 @@ const GenerateEisBFTN = ({
   };
 
   // useEffect(() => {
-  //   const afterPrint = () => setPrintMode(null);
+  //   const afterPrint = () => setPrintMode("");
   //   window.addEventListener("afterprint", afterPrint);
   //   return () => window.removeEventListener("afterprint", afterPrint);
   // }, []);
@@ -207,7 +217,8 @@ const GenerateEisBFTN = ({
 
       console.log("IDs:", applicationIds);
 
-      dispatch(fetchEisPaymentProcess(applicationIds));
+      dispatch(fetchEisPaymentProcess(applicationIds,modulesManager));
+      dispatch(fetchWorkforceOtherCompensation(applicationIds,modulesManager));
     }
   }, [selectedApplicationIds]);
 
@@ -328,7 +339,7 @@ const GenerateEisBFTN = ({
     });
 
     // const data = eisPayments?.[0] || {};
-    // const parsingBankInfo = JSON.parse(data.workforceApplication?.employeeBankInfo);
+    // const parsingBankInfo = JSON.parse(data.workforceApplication?.);
     // const parsedBankInfo = JSON.parse(parsingBankInfo);
     // -----------------------------
     // REAL DATA FROM eisPayments
@@ -542,11 +553,8 @@ const GenerateEisBFTN = ({
 
       {/* ================= PRINT AREA ================= */}
       {/* Place this somewhere in your component */}
-      <div
-        id="print-area"
-        style={{ display: printMode === "NOA" ? "block" : "none" }}
-      >
-        {selectedRow && (
+      <div id="print-area" className="printArea">
+        {printMode === "NOA" && selectedRow && (
           <NOAPrintTemplate
             row={selectedRow}
             payFrom={selectedRow.payFrom}
@@ -559,8 +567,52 @@ const GenerateEisBFTN = ({
 };
 
 const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
+  const tryParse = (value) => {
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      if (typeof parsed === "object" && parsed !== null) {
+        return parsed;
+      }
+    } catch {
+      return value;
+    }
+  }
+  return value;
+};
+   const formatAddress = (locationData, addressData) => {
+    // TryParse handles both JSON strings and objects
+    const address = tryParse(addressData) || {};
+    const location = tryParse(locationData) || {};
+
+    const postOffice = address?.postOffice?.nameBn || address?.postOffice;
+    const village = [
+      address.houseName,
+      address.paraMahalla,
+      address.villageRoad,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    // Navigate location parents for Thana/District
+    const thana = location?.parent?.name || location?.name; // Fallback if structure varies
+    const district = location?.parent?.parent?.name || location?.parent?.name;
+
+    return {
+      village,
+      postOffice,
+      thana,
+      district,
+    };
+  };
+  // const employeePresentAddress = formatAddress(
+  //   row?.workforceApplication?.workforceEmployee?.presentLocation, row?.workforceEmployee[0]?.employeePresentAddress
+  // );
+  const depentPresentAddress = formatAddress(
+    row?.workforceEmployeeDependent[0]?.presentLocation, row?.workforceEmployeeDependent[0]?.depentPresentAddress
+  );
   return (
-    <div className="printArea noaPage">
+    <div className="noaPage">
       {/* ===== HEADER ===== */}
       <div className="header">
         <div className="headerText">
@@ -575,7 +627,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
             ওয়েবসাইট: eis-pilot-bd.org
           </p>
           <h4>নোটিশ অফ অ্যাওয়ার্ড- কর্মরত অবস্থায় দুর্ঘটনাজনিত মৃত্যু</h4>
-          <p>সূত্র: {row?.beneficiaryId}</p>
+          <p>সূত্র: {row?.beneficiaryId || ""}</p>
           <p style={{ textAlign: "right" }}>
             তারিখ: {new Date().toLocaleDateString("bn-BD")}
           </p>
@@ -594,19 +646,19 @@ const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
 
             <tr>
               <td className="td label">শ্রমিকের নাম:</td>
-              <td className="td value"></td>
+              <td className="td value">{row?.workforceApplication?.workforceEmployee?.firstNameBn || ""}</td>
             </tr>
 
             <tr>
               <td className="td label">শ্রমিকের জাতীয় পরিচয়পত্র নম্বর:</td>
-              <td className="td value"></td>
+              <td className="td value">{row?.workforceApplication?.workforceEmployee?.nid || ""}</td>
             </tr>
 
             <tr>
               <td className="td label">ঠিকানা:</td>
               <td className="td value">
-                গ্রামঃ , ডাকঘরঃ , <br />
-                উপজেলা/থানাঃ , জেলাঃ
+                {/* গ্রামঃ {employeePresentAddress?.village || ""}, ডাকঘরঃ {employeePresentAddress?.postOffice || ""} , <br />
+                উপজেলা/থানাঃ {employeePresentAddress?.thana || ""}, জেলাঃ  {employeePresentAddress?.district || ""} */}
               </td>
             </tr>
 
@@ -618,19 +670,19 @@ const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
 
             <tr>
               <td className="td label">উপযুক্ত নির্ভরশীলের নাম:</td>
-              <td className="td value"></td>
+              <td className="td value">{row?.workforceEmployeeDependent[0]?.nameBn || ""}</td>
             </tr>
 
             <tr>
               <td className="td label">মৃত শ্রমিকের সাথে সম্পর্ক:</td>
-              <td className="td value"></td>
+              <td className="td value">{RELATION_LABEL_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker || ""]}</td>              
             </tr>
 
             <tr>
               <td className="td label">
                 নির্ভরশীল ব্যক্তির জাতীয় পরিচয়পত্র / জন্মসনদ নম্বর:
               </td>
-              <td className="td value"></td>
+              <td className="td value">{row?.workforceEmployeeDependent[0]?.nid || ""}</td>
             </tr>
 
             <tr>
@@ -639,24 +691,20 @@ const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
                 <br />
                 (মাস/দিন/বছর)
               </td>
-              <td className="td value"></td>
+              <td className="td value">{row?.workforceEmployeeDependent[0]?.birthDate || ""}</td>
             </tr>
 
-            <tr>
+           <tr>
               <td className="td label">ঠিকানা:</td>
-              <td className="td value"></td>
-            </tr>
-
-            <tr>
-              <td className="td label">
-                অপ্রাপ্ত বয়স্ক নির্ভরশীল ব্যক্তির আইনগত অভিভাবক:
+              <td className="td value">
+                {depentPresentAddress?.village || ""}, {depentPresentAddress?.postOffice || ""},{" "}
+                {depentPresentAddress?.thana || ""}, {depentPresentAddress?.district || ""}
               </td>
-              <td className="td value"></td>
             </tr>
 
             <tr>
               <td className="td label">এম.আই.এস বেনিফিশিয়ারি নম্বর:</td>
-              <td className="td value"></td>
+              <td className="td value">{row?.beneficiaryId || ""}</td>
             </tr>
 
             <tr>
@@ -677,7 +725,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
               <td className="td label">
                 মাসিক প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
               </td>
-              <td className="td value"></td>
+              <td className="td value">{row?.eisMonthlyAmount || ""}</td>
             </tr>
 
             <tr>
@@ -686,14 +734,14 @@ const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
                 <br />
                 মাসিক ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
               </td>
-              <td className="td value"></td>
+              <td className="td value">{row?.eisMonthlyAmount || ""}</td>
             </tr>
 
             <tr>
               <td className="td label">
                 মাসিক ই.আই.এস টপ-আপ বেনিফিটের কার্যকরী তারিখ:
               </td>
-              <td className="td value"></td>
+              <td className="td value">{row?.processingDate || ""}</td>
             </tr>
           </tbody>
         </table>
