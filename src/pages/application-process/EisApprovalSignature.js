@@ -251,7 +251,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
       }
       setLoading(false);
       const applicationIds = selectedApplicationIds.map((x) => decodeId(x.id));
-      await dispatch(fetchEisPaymentProcess(applicationIds)).then((res) => {
+      await dispatch(fetchEisPaymentProcess(applicationIds, modulesManager)).then((res) => {
         const fetchedData = res?.payload?.data?.workforceEisPaymentProcess;
         setEisPayments(fetchedData);
         setPaymentTypeMap(eisPayments);

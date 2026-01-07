@@ -36,7 +36,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useReactToPrint } from "react-to-print";
 import { fetchEisPaymentProcess, fetchWorkforceOtherCompensation } from "../../actions";
 const useStyles = makeStyles(() => ({
-  "@global": {
     /* ===== PRINT ROOT ===== */
     ".printArea": {
         display: "none",
@@ -123,12 +122,7 @@ const useStyles = makeStyles(() => ({
         textAlign: "right",
       },
 
-      /* Hide dialog/UI */
-      ".MuiDialog-root": {
-        display: "none !important",
-      },
     },
-  },
 }));
 
 
