@@ -37,14 +37,42 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   dialogPaper: {
-    '@media print': {
-      boxShadow: 'none',
-      border: 'none',
+    minWidth: "90vw",
+    "@media print": {
+      boxShadow: "none",
+      border: "none",
+      minWidth: "100%",
+      margin: 0,
+      maxWidth: "100% !important", // Ensure full width print
     },
   },
   dialogContent: {
-    '@media print': {
-      padding: 0,
+    backgroundColor: "#fff",
+    padding: theme.spacing(4),
+    "@media print": {
+      padding: "0px !important",
+      overflow: "visible !important",
+    },
+  },
+    "@global": {
+    "@media print": {
+      "body *": {
+        visibility: "hidden",
+      },
+      "#printable-content, #printable-content *": {
+        visibility: "visible",
+      },
+      "#printable-content": {
+        position: "absolute",
+        left: 0,
+        top: 0,
+        width: "100%",
+      },
+      // Hide scrollbars in print
+      "html, body": {
+        height: "100%",
+        overflow: "hidden",
+      },
     },
   },
 }));
@@ -61,6 +89,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
   const [paymentTypeMap, setPaymentTypeMap] = useState([]);
   const [appType, setAppType] = useState("");
   const [benefitDate, setBenefitDate] = useState("");
+  const modulesManager = useModulesManager();
 
   const getTotalAmount = () => {
     return eisPayments
@@ -92,7 +121,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
         isBase64Encoded(x.id) ? decodeId(x.id) : x.id
       );
 
-      await dispatch(fetchEisPaymentProcess(applicationIds)).then((res) => {
+      await dispatch(fetchEisPaymentProcess(applicationIds, modulesManager)).then((res) => {
         const fetchedData = res?.payload?.data?.workforceEisPaymentProcess;
         setEisPayments(fetchedData);
         setPaymentTypeMap(fetchedData);
@@ -544,8 +573,8 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
       ["EIS Worker ID", data?.beneficiaryId || ""],
       ["Date of Death", dateOfDeath || ""],
       ["Date of Accident", accidentDate || ""],
-      // ["Date of Rejoining", dateOfRejoining],
-      // ["Date of Disability Assessment", dateOfAssessment],
+      ["Date of Rejoining", dateOfRejoining],
+      ["Date of Disability Assessment", dateOfAssessment],
       ["Effective date of Benefit", effectiveDate],
     ];
 
@@ -553,7 +582,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
       ["Name of the Factory", data.workforceApplication?.employeeFactory?.nameEn || ""],
       ["Name of Association", data.workforceApplication?.associationType || ""],
       ["Gross Salary (BDT)", data.workforceApplication?.lastBaseSalary || ""],
-      // ["Percentage of Disability", parsedDoctorEntry?.disabilityPerSchedule || ""],
+      ["Percentage of Disability", parsedDoctorEntry?.disabilityPerSchedule || ""],
       ["Type of Accident", (parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace" ? "Workplace Accident" : parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA" ? "On Duty RTA" : "Commuting") || ""],
     ];
 
@@ -844,222 +873,176 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
   const user_type = getUserTypeFromRights(userRights)
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xl" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="xl"
+      fullWidth
+      classes={{ paper: classes.dialogPaper }}
+    >
       <DialogTitle disableTypography>
-        <Typography variant="h6">
+        <Typography variant="h6" align="center">
           {loading ? (
-            <p style={{ width: '100%', textAlign: 'center' }}>
-              <CircularProgress /> Loading....
-            </p>
+            <div style={{ textAlign: 'center', padding: '20px' }}>
+              <CircularProgress /> <br />
+              Loading...
+            </div>
           ) : (
             <FormattedMessage id="EIS-Pilot Benefit Approval Note (Disability/Death)" />
           )}
         </Typography>
       </DialogTitle>
 
-      <DialogContent dividers>
-        {!loading && (
-          <div style={{ marginBottom: 24 }}>
-
-            <Typography variant="h5" align="center" gutterBottom>
-              Employment Injury Scheme-Pilot
-            </Typography>
-
-            <Typography variant="h6" align="center" gutterBottom>
-              Benefit Approval Note ({appType})
-            </Typography>
-
-            <Typography variant="body2" align="center">
-              EIS PILOT Special Unit, 196, Sromo Bhaban (9th Floor), Bijoynagar, Dhaka, 1000
-            </Typography>
-
-            <Typography variant="body2" align="center" gutterBottom>
-              Email: specialunit@eis-pilot-bd.org, Phone: 01886-921030, Website: eis-pilot-bd.org
-            </Typography>
-
-            <Divider style={{ margin: "16px 0" }} />
-
-            {/* Meeting Info */}
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
-                EIS-GB Sub Committee Meeting No: 16
+      <DialogContent dividers className={classes.dialogContent}>
+        <div id="printable-content">
+          {!loading && (
+            <>
+              <Typography variant="h5" align="center" gutterBottom>
+                Employment Injury Scheme-Pilot
               </Typography>
-              <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
-                Date: {benefitDate}
+
+              <Typography variant="h6" align="center" gutterBottom>
+                Benefit Approval Note ({appType})
               </Typography>
-            </div>
 
-            <Divider style={{ margin: "16px 0" }} />
+              <Typography variant="body2" align="center">
+                EIS PILOT Special Unit, 196, Sromo Bhaban (9th Floor), Bijoynagar, Dhaka, 1000
+              </Typography>
 
-            {/* Worker / Factory / Accident Info */}
-            <Typography variant="subtitle1" style={{ fontWeight: "bold", marginBottom: 8 }}>
-              Worker, Factory & Accident Information:
-            </Typography>
+              <Typography variant="body2" align="center" gutterBottom>
+                Email: specialunit@eis-pilot-bd.org, Phone: 01886-921030, Website: eis-pilot-bd.org
+              </Typography>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <Divider style={{ margin: "20px 0" }} />
 
-              {/* LEFT COLUMN */}
-              <div>
-                <Typography><strong>EIS Worker ID:</strong> {first?.beneficiaryId}</Typography>
-                {
-                  selectedApplicationIds.length == 1  ? (
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
+                <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
+                  EIS-GB Sub Committee Meeting No: 16
+                </Typography>
+                <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
+                  Date: {benefitDate}
+                </Typography>
+              </div>
+
+              <Divider style={{ margin: "16px 0" }} />
+
+              <Typography variant="subtitle1" style={{ fontWeight: "bold", marginBottom: "12px" }}>
+                Worker, Factory & Accident Information:
+              </Typography>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: "20px" }}>
+                <div>
+                  <Typography><strong>EIS Worker ID:</strong> {first?.beneficiaryId}</Typography>
+                  {selectedApplicationIds.length === 1 && (
                     <Typography><strong>Worker Name:</strong> {first?.workforceApplication?.workforceEmployee?.firstNameEn} {first?.workforceApplication?.workforceEmployee?.lastNameEn}</Typography>
-                  ): null
-                }
-                <Typography><strong>Date of Accident:</strong> {accidentDate}</Typography>
-                {appType === "Death" ? (
-                  <>
+                  )}
+                  <Typography><strong>Date of Accident:</strong> {accidentDate}</Typography>
+                  {appType === "Death" ? (
                     <Typography><strong>Date of Death:</strong> {dateOfDeath}</Typography>
-                  </>
-                ):(
-                  <>
-                    <Typography><strong>Date of Rejoining:</strong> {dateOfRejoining}</Typography>
-                    <Typography><strong>Date of Disability Assessment:</strong> {dateOfAssessment}</Typography>
-                  </>
-                )}
-                <Typography><strong>Effective Date of Benefit:</strong> {effectiveDate}</Typography>
+                  ) : (
+                    <>
+                      <Typography><strong>Date of Rejoining:</strong> {dateOfRejoining}</Typography>
+                      <Typography><strong>Date of Disability Assessment:</strong> {dateOfAssessment}</Typography>
+                    </>
+                  )}
+                  <Typography><strong>Effective Date of Benefit:</strong> {benefitDate}</Typography>
+                </div>
+
+                <div>
+                  <Typography><strong>Name of the Factory:</strong> {first?.workforceApplication?.employeeFactory?.nameEn}</Typography>
+                  <Typography><strong>Name of Association:</strong> {first?.workforceApplication?.associationType}</Typography>
+                  <Typography><strong>Gross Salary (BDT):</strong> {first?.workforceApplication?.lastBaseSalary?.toLocaleString('en-BD')}</Typography>
+                  {appType !== "Death" && (
+                    <Typography><strong>Percentage of Disability:</strong> {parsedDoctorEntry?.disabilityPerSchedule}</Typography>
+                  )}
+                  <Typography>
+                    <strong>Type of Accident:</strong>{" "}
+                    {parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace" ? "Workplace Accident" :
+                     parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA" ? "On Duty RTA" : "Commuting"}
+                  </Typography>
+                </div>
               </div>
 
-              {/* RIGHT COLUMN */}
-              <div>
-                <Typography>
-                  <strong>Name of the Factory:</strong>{" "}
-                  {first?.workforceApplication?.employeeFactory?.nameEn}
-                </Typography>
-                <Typography>
-                  <strong>Name of Association:</strong>{" "}
-                  {first?.workforceApplication?.associationType}
-                </Typography>
-                <Typography>
-                  <strong>Gross Salary (BDT):</strong>{" "}
-                  {first?.workforceApplication?.lastBaseSalary? first?.workforceApplication?.lastBaseSalary.toLocaleString('en-BD') : ''}
-                </Typography>
-                {
-                  appType === "Death" ? null : (
-                    <Typography>
-                      <strong>Percentage of Disability:</strong>{" "}
-                      {parsedDoctorEntry?.disabilityPerSchedule}
-                    </Typography>
-                  )
-                }
-                <Typography>
-                  <strong>Type of Accident:</strong>{" "}
-                  {parsedAccidentInfo?.accidentMainType ===
-                    "workforce.accident.mainType.workplace"
-                    ? "Workplace Accident"
-                    : parsedAccidentInfo?.accidentMainType ===
-                      "workforce.accident.mainType.onDutyRTA"
-                      ? "On Duty RTA"
-                      : "Commuting"}
-                </Typography>
-              </div>
-            </div>
+              <Divider style={{ margin: "20px 0" }} />
 
-            <Divider style={{ margin: "16px 0" }} />
-          </div>
-
-        )}
-
-        {!loading && (
-          <Table>
-            <TableHead>
-              <TableRow style={{ backgroundColor: "#f0f0f0", fontWeight: "bold" }}>
-                <TableCell><FormattedMessage id="SL #" /></TableCell>
-                <TableCell><FormattedMessage id="EIS Worker ID" /></TableCell>
-                <TableCell><FormattedMessage id="Worker Name" /></TableCell>
-                <TableCell><FormattedMessage id="Dependent Name" /></TableCell>
-                <TableCell><FormattedMessage id="NID/Birth Certificate of Worker" /></TableCell>
-                <TableCell><FormattedMessage id="Benefit Rate (%) of Gross Salary" /></TableCell>
-                <TableCell><FormattedMessage id="Total time amount (individual)" /></TableCell>
-                <TableCell><FormattedMessage id="After adjustment (individual)" /></TableCell>
-                <TableCell><FormattedMessage id="Monthly Payable Benefit (BDT)" /></TableCell>
-                <TableCell><FormattedMessage id="Net Monthly Payable After Adjustment (BDT)" /></TableCell>
-                <TableCell><FormattedMessage id="Type of Payment" /></TableCell>
-                <TableCell><FormattedMessage id="Approval Status" /></TableCell>
-                <TableCell><FormattedMessage id="Remarks" /></TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {eisPayments.map((row, index) => {
-                let bankInfo = {};
-                try {
-                  bankInfo = JSON.parse(JSON.parse(row.employeeBankInfo));
-                } catch (e) { }
-
-                return (
-                  <TableRow key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{row?.beneficiaryId}</TableCell>
-                    <TableCell>{row?.workforceApplication?.workforceEmployee?.firstNameEn}</TableCell>
-                    <TableCell>
-                      {row?.workforceEmployeeDependent?.length > 0
-                        ? row.workforceEmployeeDependent[0].nameEn + (" (" + RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker] + ") ")
-                        : ""}
-                    </TableCell>
-                    <TableCell>{row?.workforceApplication?.workforceEmployee?.nid}</TableCell>
-                    <TableCell>{row?.eisInitialReplacementRate ? Number(row.eisInitialReplacementRate) * 100 + "%" : ""}</TableCell>
-                    <TableCell>{row?.eisCalculatedAmount}</TableCell>
-                    <TableCell>{row?.eisApprovedAmount}</TableCell>
-                    <TableCell>{row?.eisInitialMonthlyAmount}</TableCell>
-                    <TableCell>{row?.eisMonthlyAmount}</TableCell>
-                    <TableCell>
-                      {
-                        user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR || user_type == WORKFORCE_USER_TYPE.EIS_ADVISOR || user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type == WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
-                          <>
+              <div className={classes.printTable}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow style={{ backgroundColor: "#f0f0f0" }}>
+                      <TableCell><strong>SL #</strong></TableCell>
+                      <TableCell><strong>EIS Worker ID</strong></TableCell>
+                      <TableCell><strong>Worker Name</strong></TableCell>
+                      <TableCell><strong>Dependent Name</strong></TableCell>
+                      <TableCell><strong>NID/Birth Cert</strong></TableCell>
+                      <TableCell><strong>Benefit Rate (%)</strong></TableCell>
+                      <TableCell><strong>Total Amount</strong></TableCell>
+                      <TableCell><strong>After Adjustment</strong></TableCell>
+                      <TableCell><strong>Monthly Benefit</strong></TableCell>
+                      <TableCell><strong>Net Monthly</strong></TableCell>
+                      <TableCell><strong>Type of Payment</strong></TableCell>
+                      <TableCell><strong>Approval Status</strong></TableCell>
+                      <TableCell><strong>Remarks</strong></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {eisPayments.map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{row?.beneficiaryId}</TableCell>
+                        <TableCell>{row?.workforceApplication?.workforceEmployee?.firstNameEn} {row?.workforceApplication?.workforceEmployee?.lastNameEn}</TableCell>
+                        <TableCell>
+                          {row?.workforceEmployeeDependent?.[0]
+                            ? `${row.workforceEmployeeDependent[0].nameEn} (${RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker] || ''})`
+                            : ""}
+                        </TableCell>
+                        <TableCell>{row?.workforceApplication?.workforceEmployee?.nid}</TableCell>
+                        <TableCell>{row?.eisInitialReplacementRate ? (Number(row.eisInitialReplacementRate) * 100).toFixed(0) + "%" : ""}</TableCell>
+                        <TableCell>{row?.eisCalculatedAmount}</TableCell>
+                        <TableCell>{row?.eisApprovedAmount}</TableCell>
+                        <TableCell>{row?.eisInitialMonthlyAmount}</TableCell>
+                        <TableCell>{row?.eisMonthlyAmount}</TableCell>
+                        <TableCell>
+                          {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
+                           user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
+                           user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
+                           user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
                             <select
-                              value={
-                                paymentTypeMap[index] !== undefined
-                                  ? paymentTypeMap[index]?.eisPaymentType
-                                  : row?.eisPaymentType || ""
-                              }
-                              onChange={(e) =>
-                                handlePaymentTypeChange(e.target.value, row?.beneficiaryId, index)
-                              }
+                              value={paymentTypeMap[index]?.eisPaymentType ?? row?.eisPaymentType ?? ""}
+                              onChange={(e) => handlePaymentTypeChange(e.target.value, row?.beneficiaryId, index)}
                             >
                               <option value="" disabled>Select</option>
                               <option value="monthly">Monthly</option>
                               <option value="onetime">One-time</option>
                               <option value="installment">Tri Monthly Installment</option>
                             </select>
-                          </>
-                        ) :
-                          EIS_PAYMENT_TYPES[row?.eisPaymentType]
-                      }
-                    </TableCell>
-                    <TableCell>
-                      {
-                        user_type == WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type == WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
-                          <>
+                          ) : EIS_PAYMENT_TYPES[row?.eisPaymentType]}
+                        </TableCell>
+                        <TableCell>
+                          {user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
+                           user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
                             <select
-                              value={
-                                paymentTypeMap[index] !== undefined ? paymentTypeMap[index]?.approved : ""
-                              }
-                              onChange={(e) =>
-                                handleApprovalChange(e.target.value, row?.beneficiaryId, index)
-                              }
+                              value={paymentTypeMap[index]?.approved ?? (row?.isApproved ? "yes" : "")}
+                              onChange={(e) => handleApprovalChange(e.target.value, row?.beneficiaryId, index)}
                             >
                               <option value="">Not Approved</option>
                               <option value="yes">Approved</option>
                             </select>
-                          </>
-
-                        ) : getApprovalStatus(row?.isApproved)
-                      }
-                    </TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-
-                );
-              })}
-              <TableRow>
-                <TableCell colSpan={7}><strong><FormattedMessage id="Total Amount (Monthly)" /></strong></TableCell>
-                <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
-                <TableCell colSpan={3} />
-              </TableRow>
-            </TableBody>
-          </Table>
-        )}
+                          ) : getApprovalStatus(row?.isApproved)}
+                        </TableCell>
+                        <TableCell></TableCell>
+                      </TableRow>
+                    ))}
+                    <TableRow>
+                      <TableCell colSpan={9} align="right"><strong>Total Monthly Amount (BDT):</strong></TableCell>
+                      <TableCell align="center"><strong>{getTotalAmount()}</strong></TableCell>
+                      <TableCell colSpan={3}></TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </>
+          )}
+        </div>
       </DialogContent>
 
       <Divider />

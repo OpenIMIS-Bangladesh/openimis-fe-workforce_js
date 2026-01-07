@@ -11,61 +11,136 @@ import {
   Typography,
   Button,
   Divider,
-} from '@material-ui/core';
+} from "@material-ui/core";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserTypeFromRights } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
-import { WORKFORCE_STATUS } from "../../constants";
-import { createApplicationSummary, updateApplication, updateApplicationSummary } from "../../actions";
+import { WORKFORCE_STATUS, RELATION_LABEL_MAP } from "../../constants";
+import {
+  createApplicationSummary,
+  updateApplication,
+  updateApplicationSummary,
+} from "../../actions";
 import { useDispatch } from "react-redux";
-import React, { Component, useState ,useEffect, useRef} from "react";
-import { enToBn } from '../../utils/utils';
-import ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
+import React, { Component, useState, useEffect, useRef } from "react";
+import { enToBn } from "../../utils/utils";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 import {
   useModulesManager,
   decodeId,
   FormattedMessage,
+  parseData
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useReactToPrint } from "react-to-print";
-import { fetchEisPaymentProcess } from "../../actions";
+import { fetchEisPaymentProcess, fetchWorkforceOtherCompensation } from "../../actions";
 const useStyles = makeStyles(() => ({
-  noPrintDialog: {
-    '@media print': {
-      display: 'none !important',
+    /* ===== PRINT ROOT ===== */
+    ".printArea": {
+        display: "none",
     },
-  },
 
-  noPrintNOA: {
-    '@media print': {
-      display: 'none !important',
-    },
-  },
+    "@media print": {
+      ".printArea": {
+        display: "block",
+        width: "100%",
+        color: "#000",
+      },
 
-  printArea: {
-    display: 'none',
-    '@media print': {
-      display: 'block',
-      width: '100%',
-    },
-  },
+      ".noaPage": {
+        fontFamily: '"Noto Sans Bengali","SolaimanLipi",sans-serif',
+        paddingTop: "50mm",
+        paddingBottom: "50mm",
+        paddingLeft: "25mm",
+        paddingRight: "25mm",
+        pageBreakAfter: "always",
+        fontSize: "10px",
+        color: "#000",
+      },
 
-  noaPage: {
-    '@media print': {
-      fontFamily: '"Noto Sans Bengali","SolaimanLipi",sans-serif',
-      padding: '25mm',
-      pageBreakAfter: 'always',
+      /* ===== HEADER ===== */
+      ".header": {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        height: "55mm",
+        padding: "5mm 10mm",
+        textAlign: "center",
+        background: "#fff",
+      },
+
+      ".headerText": {
+        lineHeight: 1.1,
+      },
+
+      /* ===== BODY ===== */
+      ".body": {
+        width: "100%",
+      },
+
+      ".table": {
+        width: "100%",
+        borderCollapse: "collapse",
+      },
+
+      ".td": {
+        border: "1px solid #000",
+        padding: "6px 8px",
+        verticalAlign: "top",
+      },
+
+      ".label": {
+        width: "35%",
+        fontWeight: 500,
+      },
+
+      ".value": {
+        width: "65%",
+      },
+
+      ".section": {
+        fontWeight: 600,
+        background: "#f5f5f5",
+      },
+
+      /* ===== FOOTER ===== */
+      ".footer": {
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: "40mm",
+        padding: "5mm 10mm",
+        fontSize: "12px",
+        fontWeight: "bold",
+        background: "#fff",
+      },
+
+      ".signature": {
+        textAlign: "right",
+      },
+
     },
-  },
 }));
 
 
-const GenerateEisBFTN = ({ open, onClose, eisPayments = [], userRights, status, summary_Id, selectedApplicationIds }) => {
+const GenerateEisBFTN = ({
+  open,
+  onClose,
+  eisPayments = [],
+  userRights,
+  status,
+  summary_Id,
+  selectedApplicationIds,
+  OtherCompensationAmount = []
+}) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [selectedRow, setSelectedRow] = useState(null);
   const [printMode, setPrintMode] = useState(null);
+  const modulesManager = useModulesManager();
   const getTotalAmount = () => {
     return eisPayments
       .reduce((sum, item) => sum + (parseFloat(item.eisMonthlyAmount) || 0), 0)
@@ -73,17 +148,15 @@ const GenerateEisBFTN = ({ open, onClose, eisPayments = [], userRights, status, 
   };
 
   console.log("eisPayments", eisPayments);
-//  const data = eisPayments?.[0] || {};
-    // const parsingBankInfo = JSON.parse(data.workforceApplication?.employeeBankInfo); 
-    // const parsedBankInfo = JSON.parse(parsingBankInfo);
-    // const parsingEmployeeAccidentInfo = JSON.parse(data.workforceApplication?.employeeAccidentInfo);
-    // const parsedEmployeeAccidentInfo = JSON.parse(parsingEmployeeAccidentInfo);
-    // console.log("parsedEmployeeAccidentInfo",parsedEmployeeAccidentInfo)
-    /* -----------------------------
+  //  const data = eisPayments?.[0] || {};
+  // const parsingBankInfo = JSON.parse(data.workforceApplication?.employeeBankInfo);
+  // const parsedBankInfo = JSON.parse(parsingBankInfo);
+  // const parsingEmployeeAccidentInfo = JSON.parse(data.workforceApplication?.employeeAccidentInfo);
+  // const parsedEmployeeAccidentInfo = JSON.parse(parsingEmployeeAccidentInfo);
+  // console.log("parsedEmployeeAccidentInfo",parsedEmployeeAccidentInfo)
+  /* -----------------------------
      ROW-WISE PRINT HANDLER
   ----------------------------- */
-
-
 
 const handleRowPrint = (row) => {
   const year = row?.year || "";
@@ -91,31 +164,13 @@ const handleRowPrint = (row) => {
   const monthFormatted = String(monthIndex).padStart(2, "0");
   const lastDay = new Date(year, monthIndex, 0).getDate();
 
-  // Prepare the data
   setSelectedRow({
     ...row,
     payFrom: `01.${monthFormatted}.${year}`,
     payTo: `${lastDay}.${monthFormatted}.${year}`,
   });
 
-  // Show the template in DOM
   setPrintMode("NOA");
-
-  // Wait until React renders
-  setTimeout(() => {
-    const printContents = document.getElementById("print-area").innerHTML;
-    const originalContents = document.body.innerHTML;
-
-    document.body.innerHTML = printContents; // replace page content
-    window.print();
-    document.body.innerHTML = originalContents; // restore page
-    setPrintMode(null); // hide template again
-  }, 100); // slight delay to ensure DOM renders
-};
-
-
-const handleDialogPrint = () => {
-  setPrintMode("DIALOG");
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -124,26 +179,50 @@ const handleDialogPrint = () => {
   });
 };
 
-// useEffect(() => {
-//   const afterPrint = () => setPrintMode(null);
-//   window.addEventListener("afterprint", afterPrint);
-//   return () => window.removeEventListener("afterprint", afterPrint);
-// }, []);
-
-
 useEffect(() => {
-  if (selectedApplicationIds?.length > 0) {
+  const afterPrint = () => {
+    setPrintMode(null);
+    setSelectedRow(null);
+  };
 
-    const applicationIds = selectedApplicationIds.map(x =>
-      decodeId(x.id)
-    );
+  window.addEventListener("afterprint", afterPrint);
+  return () => window.removeEventListener("afterprint", afterPrint);
+}, []);
 
-    console.log("IDs:", applicationIds);
 
-    dispatch(fetchEisPaymentProcess(applicationIds));
-  }
-}, [open]);
 
+  const handleDialogPrint = () => {
+    setPrintMode("DIALOG");
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.print();
+      });
+    });
+  };
+
+  // useEffect(() => {
+  //   const afterPrint = () => setPrintMode("");
+  //   window.addEventListener("afterprint", afterPrint);
+  //   return () => window.removeEventListener("afterprint", afterPrint);
+  // }, []);
+const [otherCompAmount, setOtherCompAmount] = useState(0);
+
+  useEffect(() => {
+    if (selectedApplicationIds?.length > 0) {
+      const applicationIds = selectedApplicationIds.map((x) => decodeId(x.id));
+
+      console.log("IDs:", applicationIds);
+
+      dispatch(fetchEisPaymentProcess(applicationIds,modulesManager));
+      dispatch(fetchWorkforceOtherCompensation(modulesManager,[`workforceApplicationId: "${applicationIds}"`])).then((res) => {
+                const fetchOtherCompensation = parseData(res?.payload?.data?.workforceOtherCompensationInfo);
+                const amount = fetchOtherCompensation?.[0]?.amount || 0;
+                setOtherCompAmount(amount);               
+                console.log("OtherCompensation",OtherCompensationAmount);
+              });
+    }
+  }, [selectedApplicationIds]);
 
   const printYear = new Date().getFullYear();
   const printMonth = new Date().getMonth();
@@ -153,203 +232,216 @@ useEffect(() => {
   // -----------------------------
   // Excel generator (unchanged)
   // -----------------------------
- const exportToExcel = async () => {
-  const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet("Bank Advice", {
-  });
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Bank Advice", {});
 
-   // Set column widths
-      sheet.columns = [
-        { width: 5 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 20 }, 
-        { width: 15 }, 
-        { width: 15 }, 
-      ];
+    // Set column widths
+    sheet.columns = [
+      { width: 5 },
+      { width: 20 },
+      { width: 20 },
+      { width: 20 },
+      { width: 20 },
+      { width: 20 },
+      { width: 20 },
+      { width: 20 },
+      { width: 20 },
+      { width: 15 },
+      { width: 15 },
+    ];
 
-  // -----------------------------
-  // Header (same as before)
-  // -----------------------------
-  sheet.mergeCells("A1:K1");
-  sheet.getCell("A1").value = `Ref No: EIS.Bank Advice.Benefit.${excelyear}.${excelmonthFormatted}`;
-  sheet.getCell("A1").font = { bold: true };
+    // -----------------------------
+    // Header (same as before)
+    // -----------------------------
+    sheet.mergeCells("A1:K1");
+    sheet.getCell(
+      "A1"
+    ).value = `Ref No: EIS.Bank Advice.Benefit.${excelyear}.${excelmonthFormatted}`;
+    sheet.getCell("A1").font = { bold: true };
 
+    sheet.mergeCells("A3:K3");
+    sheet.getCell("A3").value = "Manager";
 
-  sheet.mergeCells("A3:K3");
-  sheet.getCell("A3").value = "Manager";
+    sheet.mergeCells("A4:K4");
+    sheet.getCell("A4").value = "Sonali Bank Limited";
 
-  sheet.mergeCells("A4:K4");
-  sheet.getCell("A4").value = "Sonali Bank Limited";
+    sheet.mergeCells("A5:K5");
+    sheet.getCell("A5").value = "Ramna Corporate Branch";
 
-  sheet.mergeCells("A5:K5");
-  sheet.getCell("A5").value = "Ramna Corporate Branch";
+    sheet.mergeCells("A6:K6");
+    sheet.getCell("A6").value = "1, Topkhana Road, Ramna, Dhaka, 1000";
 
-  sheet.mergeCells("A6:K6");
-  sheet.getCell("A6").value = "1, Topkhana Road, Ramna, Dhaka, 1000";
+    sheet.mergeCells("A8:K8");
+    sheet.getCell("A8").value =
+      "Subject: Bank Advice Letter (EIS Top-up Benefit)";
+    sheet.getCell("A8").font = { bold: true, underline: true };
 
-  sheet.mergeCells("A8:K8");
-  sheet.getCell("A8").value = "Subject: Bank Advice Letter (EIS Top-up Benefit)";
-  sheet.getCell("A8").font = { bold: true, underline: true };
+    sheet.mergeCells("A10:K10");
+    sheet.getCell("A10").value = "Dear Sir:";
 
-  sheet.mergeCells("A10:K10");
-  sheet.getCell("A10").value = "Dear Sir:";
+    sheet.mergeCells("A12:K12");
+    sheet.getCell("A12").value = "Greetings from EIS Pilot!";
 
-  sheet.mergeCells("A12:K12");
-  sheet.getCell("A12").value = "Greetings from EIS Pilot!";
+    sheet.mergeCells("A14:K14");
 
-  sheet.mergeCells("A14:K14");
-
-sheet.getCell("A14").value = {
-  richText: [
-    { text: "EIS Pilot top-up benefits are required to be disbursed to the beneficiaries through bank transfer from your branch of EIS Pilot bank account," },
-    { text: " Account Title: EMPLOYMENT INJURY SCHEME EIS", font: { bold: true } },
-    { text: ", Account Number: 4426302003729", font: { bold: true } },
-    { text: ". The validated list of account holders with their respective Account Titles, Bank Account Numbers, Bank Names, Branch info, Routing Numbers including Payment amounts have been mentioned below." }
-  ]
-};
-
-  // -----------------------------
-  // Table Header
-  // -----------------------------
-  const tableHeader = [
-    "Sl #",
-    "Account Title",
-    "Bank Account Number",
-    "Bank",
-    "Branch",
-    "District",
-    "Routing No.",
-    "Amount (BDT)",
-    "Beneficiary ID",
-    "Pay From",
-    "Pay To"
-  ];
-
-  sheet.addRow([]);
-  sheet.addRow([]);
-  sheet.addRow([]);
-
-  const headerRow = sheet.addRow(tableHeader);
-
-  headerRow.eachCell((cell) => {
-    cell.fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: "92D050" }
+    sheet.getCell("A14").value = {
+      richText: [
+        {
+          text: "EIS Pilot top-up benefits are required to be disbursed to the beneficiaries through bank transfer from your branch of EIS Pilot bank account,",
+        },
+        {
+          text: " Account Title: EMPLOYMENT INJURY SCHEME EIS",
+          font: { bold: true },
+        },
+        { text: ", Account Number: 4426302003729", font: { bold: true } },
+        {
+          text: ". The validated list of account holders with their respective Account Titles, Bank Account Numbers, Bank Names, Branch info, Routing Numbers including Payment amounts have been mentioned below.",
+        },
+      ],
     };
-    cell.font = { bold: true };
-    cell.alignment = { horizontal: "center", vertical: "middle" };
-    cell.border = {
-      top: { style: "thin" },
-      left: { style: "thin" },
-      bottom: { style: "thin" },
-      right: { style: "thin" }
-    };
-  });
-   
+
+    // -----------------------------
+    // Table Header
+    // -----------------------------
+    const tableHeader = [
+      "Sl #",
+      "Account Title",
+      "Bank Account Number",
+      "Bank",
+      "Branch",
+      "District",
+      "Routing No.",
+      "Amount (BDT)",
+      "Beneficiary ID",
+      "Pay From",
+      "Pay To",
+    ];
+
+    sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
+
+    const headerRow = sheet.addRow(tableHeader);
+
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "92D050" },
+      };
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+
     // const data = eisPayments?.[0] || {};
-    // const parsingBankInfo = JSON.parse(data.workforceApplication?.employeeBankInfo); 
+    // const parsingBankInfo = JSON.parse(data.workforceApplication?.);
     // const parsedBankInfo = JSON.parse(parsingBankInfo);
-  // -----------------------------
-  // REAL DATA FROM eisPayments
-  // -----------------------------
-  eisPayments.forEach((row, index) => {
-    // Format month as 01..12
-    let year = row?.year || "";
-    let monthIndex = row?.monthIndex || "";
-    let monthFormatted = String(monthIndex).padStart(2, "0");
+    // -----------------------------
+    // REAL DATA FROM eisPayments
+    // -----------------------------
+    eisPayments.forEach((row, index) => {
+      // Format month as 01..12
+      let year = row?.year || "";
+      let monthIndex = row?.monthIndex || "";
+      let monthFormatted = String(monthIndex).padStart(2, "0");
 
-    // Pay period values
-    let payFrom = `01.${monthFormatted}.${year}`;
-    let lastDay = new Date(year, monthIndex, 0).getDate();
-    let payTo = `${lastDay}.${monthFormatted}.${year}`;
+      // Pay period values
+      let payFrom = `01.${monthFormatted}.${year}`;
+      let lastDay = new Date(year, monthIndex, 0).getDate();
+      let payTo = `${lastDay}.${monthFormatted}.${year}`;
 
-    sheet.addRow([
-      index + 1,
-      row?.bankAccountHolderName || "",
-      row?.bankAccountNo || "",
-      row?.bank?.parent?.nameEn || "",
-      row?.bank?.nameEn || "",
-      row?.bank?.districtNameEn || "",
-      row?.bank?.routingNumber || "",
-      row?.eisMonthlyAmount || 0,
-      row?.beneficiaryId || "",
-      payFrom,
-      payTo
-    ]);
-  });
+      sheet.addRow([
+        index + 1,
+        row?.bankAccountHolderName || "",
+        row?.bankAccountNo || "",
+        row?.bank?.parent?.nameEn || "",
+        row?.bank?.nameEn || "",
+        row?.bank?.districtNameEn || "",
+        row?.bank?.routingNumber || "",
+        row?.eisMonthlyAmount || 0,
+        row?.beneficiaryId || "",
+        payFrom,
+        payTo,
+      ]);
+    });
 
-  // -----------------------------
-  // Apply border to all data rows
-  // -----------------------------
-// Apply border only to table rows (after headerRow)
-const firstDataRow = headerRow.number + 1;
-const lastDataRow = firstDataRow + eisPayments.length - 1;
+    // -----------------------------
+    // Apply border to all data rows
+    // -----------------------------
+    // Apply border only to table rows (after headerRow)
+    const firstDataRow = headerRow.number + 1;
+    const lastDataRow = firstDataRow + eisPayments.length - 1;
 
-for (let i = firstDataRow; i <= lastDataRow; i++) {
-  const row = sheet.getRow(i);
-  row.eachCell((cell) => {
-    cell.border = {
-      top: { style: "thin" },
-      left: { style: "thin" },
-      bottom: { style: "thin" },
-      right: { style: "thin" }
-    };
-    cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
-  });
-}
+    for (let i = firstDataRow; i <= lastDataRow; i++) {
+      const row = sheet.getRow(i);
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+        cell.alignment = {
+          vertical: "middle",
+          horizontal: "left",
+          wrapText: true,
+        };
+      });
+    }
 
+    // -----------------------------
+    // Add Closing / Signature Section
+    // -----------------------------
+    sheet.addRow([]);
+    sheet.addRow([]);
 
-  // -----------------------------
-// Add Closing / Signature Section
-// -----------------------------
-sheet.addRow([]);
-sheet.addRow([]);
+    const closingLines = [
+      "Your prompt necessary steps in this matter will be highly appreciated.",
+      "",
+      "With warm regards",
+      "",
+      "Director General,",
+      "Central Fund, Ministry of Labor and Employment &",
+      "Member Secretary, EIS Pilot Governance Board",
+      "Bangladesh Secretariat, Dhaka-1000",
+      "",
+      "Copy to (Not in order of seniority):",
+      "1. PS to State Minister, Ministry of Labour and Employment, Bangladesh Secretariat, Dhaka-1000.",
+      "2. PS to Secretary, Ministry of Labour and Employment, Bangladesh Secretariat, Dhaka-1000.",
+      "3. Special Advisor, EIS Pilot Special Unit, 196, Sromo Bhaban (9th Floor), Bijoynagar, Dhaka-1000.",
+      "4. PA to Director General, Central Fund, Bangladesh Secretariat, Dhaka-1000.",
+      "5. Assistant Director, Welfare-2 and Development, Central Fund, Bangladesh Secretariat, Dhaka-1000.",
+      "6. Assistant Director, Finance Department, Central Fund, Bangladesh Secretariat, Dhaka-1000.",
+    ];
 
-const closingLines = [
-  "Your prompt necessary steps in this matter will be highly appreciated.",
-  "",
-  "With warm regards",
-  "",
-  "Director General,",
-  "Central Fund, Ministry of Labor and Employment &",
-  "Member Secretary, EIS Pilot Governance Board",
-  "Bangladesh Secretariat, Dhaka-1000",
-  "",
-  "Copy to (Not in order of seniority):",
-  "1. PS to State Minister, Ministry of Labour and Employment, Bangladesh Secretariat, Dhaka-1000.",
-  "2. PS to Secretary, Ministry of Labour and Employment, Bangladesh Secretariat, Dhaka-1000.",
-  "3. Special Advisor, EIS Pilot Special Unit, 196, Sromo Bhaban (9th Floor), Bijoynagar, Dhaka-1000.",
-  "4. PA to Director General, Central Fund, Bangladesh Secretariat, Dhaka-1000.",
-  "5. Assistant Director, Welfare-2 and Development, Central Fund, Bangladesh Secretariat, Dhaka-1000.",
-  "6. Assistant Director, Finance Department, Central Fund, Bangladesh Secretariat, Dhaka-1000."
-];
+    // Loop through lines and merge across all 10 columns
+    closingLines.forEach((line) => {
+      const row = sheet.addRow([line]);
+      sheet.mergeCells(`A${row.number}:J${row.number}`);
+      row.getCell(1).alignment = {
+        horizontal: "left",
+        vertical: "top",
+        wrapText: true,
+      };
+    });
 
-// Loop through lines and merge across all 10 columns
-closingLines.forEach((line) => {
-  const row = sheet.addRow([line]);
-  sheet.mergeCells(`A${row.number}:J${row.number}`);
-  row.getCell(1).alignment = { horizontal: "left", vertical: "top", wrapText: true };
-});
+    // -----------------------------
+    // Download Excel File
+    // -----------------------------
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
 
-
-  // -----------------------------
-  // Download Excel File
-  // -----------------------------
-  const buffer = await workbook.xlsx.writeBuffer();
-  const blob = new Blob([buffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  });
-
-  saveAs(blob, "BA-Advice.xlsx");
-};
-
+    saveAs(blob, "BA-Advice.xlsx");
+  };
 
   // -----------------------------------
   // UI: Render all eisPayments (no filter)
@@ -358,7 +450,13 @@ closingLines.forEach((line) => {
   return (
     <>
       {/* ================= DIALOG UI ================= */}
-      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth className={printMode === "NOA" ? classes.noPrintDialog : ""}>
+      <Dialog
+        open={open}
+        onClose={onClose}
+        maxWidth="md"
+        fullWidth
+        className={printMode === "NOA" ? classes.noPrintDialog : ""}
+      >
         <DialogTitle disableTypography>
           <Typography variant="h6">
             <FormattedMessage id="Eis Bank Payment Advice (BEFTN)" />
@@ -394,14 +492,13 @@ closingLines.forEach((line) => {
                 return (
                   <TableRow key={index}>
                     <TableCell>
-                     <Button
-                      size="small"
-                      color="primary"
-                      onClick={() => handleRowPrint(row)}
-                    >
-                      Print
-                    </Button>
-
+                      <Button
+                        size="small"
+                        color="primary"
+                        onClick={() => handleRowPrint(row)}
+                      >
+                        Print
+                      </Button>
                     </TableCell>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{row?.bankAccountHolderName}</TableCell>
@@ -437,29 +534,35 @@ closingLines.forEach((line) => {
 
         <Divider />
 
-         <DialogActions className={classes.noPrint}>
-               <Button onClick={onClose} variant="outlined" color="primary">
-                 <FormattedMessage id="workforce.modal.close" />
-               </Button>
-       
-               <Button  onClick={handleDialogPrint} variant="contained" color="primary">
-                 <FormattedMessage id="workforce.modal.print.advice" />
-               </Button>
-       
-               <Button onClick={exportToExcel} variant="contained" color="success">
-                 <FormattedMessage id="workforce.modal.excel" />
-               </Button>
-             </DialogActions>
+        <DialogActions className={classes.noPrint}>
+          <Button onClick={onClose} variant="outlined" color="primary">
+            <FormattedMessage id="workforce.modal.close" />
+          </Button>
+
+          <Button
+            onClick={handleDialogPrint}
+            variant="contained"
+            color="primary"
+          >
+            <FormattedMessage id="workforce.modal.print.advice" />
+          </Button>
+
+          <Button onClick={exportToExcel} variant="contained" color="success">
+            <FormattedMessage id="workforce.modal.excel" />
+          </Button>
+        </DialogActions>
       </Dialog>
 
       {/* ================= PRINT AREA ================= */}
-  {/* Place this somewhere in your component */}
-      <div id="print-area" style={{ display: printMode === "NOA" ? "block" : "none" }}>
-        {selectedRow && (
+      {/* Place this somewhere in your component */}
+      <div id="print-area" className="printArea">
+        {printMode === "NOA" && selectedRow && (
           <NOAPrintTemplate
             row={selectedRow}
             payFrom={selectedRow.payFrom}
             payTo={selectedRow.payTo}
+            OtherCompensationAmount={otherCompAmount}
+
           />
         )}
       </div>
@@ -467,64 +570,212 @@ closingLines.forEach((line) => {
   );
 };
 
-/* =====================================================
-   NOA PRINT TEMPLATE (LETTER FORMAT)
-===================================================== */
-const NOAPrintTemplate = ({ row, payFrom, payTo }) => {
+const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
+  const tryParse = (value) => {
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      if (typeof parsed === "object" && parsed !== null) {
+        return parsed;
+      }
+    } catch {
+      return value;
+    }
+  }
+  return value;
+};
+   const formatAddress = (locationData, addressData) => {
+    // TryParse handles both JSON strings and objects
+    const address = tryParse(addressData) || {};
+    const location = tryParse(locationData) || {};
+
+    const postOffice = address?.postOffice?.nameBn || address?.postOffice;
+    const village = [
+      address.houseName,
+      address.paraMahalla,
+      address.villageRoad,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    // Navigate location parents for Thana/District
+    const thana = location?.parent?.name || location?.name; // Fallback if structure varies
+    const district = location?.parent?.parent?.name || location?.parent?.name;
+
+    return {
+      village,
+      postOffice,
+      thana,
+      district,
+    };
+  };
+  // const employeePresentAddress = formatAddress(
+  //   row?.workforceApplication?.workforceEmployee?.presentLocation, row?.workforceEmployee[0]?.employeePresentAddress
+  // );
+  const depentPresentAddress = formatAddress(
+    row?.workforceEmployeeDependent[0]?.presentLocation, row?.workforceEmployeeDependent[0]?.depentPresentAddress
+  );
+const cfAndEisAmount = (parseFloat(row?.eisMonthlyAmount) || 0) + (parseFloat(OtherCompensationAmount) || 0);
+     console.log("cfAndEisAmount",cfAndEisAmount)
+
   return (
-    <div className="noa-page">
-      <p style={{ textAlign: "center" }}>ব্যক্তিগত</p>
+    <div className="noaPage">
+      {/* ===== HEADER ===== */}
+      <div className="header">
+        <div className="headerText">
+          <p>ব্যক্তিগত</p>
+          <h3>এমপ্লয়মেন্ট ইনজুরি স্কীম-(ই.আই.এস) পাইলট</h3>
+          <p>
+            ১৯৬, ১০ম তলা, শ্রম ভবন, শহীদ সৈয়দ নজরুল ইসলাম সরনী, বিজয়নগর,
+            ঢাকা-১০০০
+          </p>
+          <p>
+            মোবাইল: ০১৮৮৬-৯২১০৩০ | ই-মেইল: verification@eis-pilot-bd.org |
+            ওয়েবসাইট: eis-pilot-bd.org
+          </p>
+          <h4>নোটিশ অফ অ্যাওয়ার্ড- কর্মরত অবস্থায় দুর্ঘটনাজনিত মৃত্যু</h4>
+          <p>সূত্র: {row?.beneficiaryId || ""}</p>
+          <p style={{ textAlign: "right" }}>
+            তারিখ: {new Date().toLocaleDateString("bn-BD")}
+          </p>
+        </div>
+      </div>
 
-      <h3 style={{ textAlign: "center" }}>
-        এমপ্লয়মেন্ট ইনজুরি স্কীম-(ই.আই.এস) পাইলট
-      </h3>
+      {/* ===== BODY ===== */}
+      <div className="body">
+        <table className="table">
+          <tbody>
+            <tr>
+              <td colSpan={2} className="td section">
+                মৃত শ্রমিকের তথ্য:
+              </td>
+            </tr>
 
-      <p style={{ textAlign: "center" }}>
-        ১৯৬, ১০ম তলা, শ্রম ভবন, শহীদ সৈয়দ নজরুল ইসলাম সরনী, বিজয়নগর, ঢাকা-১০০০
-      </p>
-      <p style={{ textAlign: "center" }}>
-        মোবাইল: ০১৮৮৬-৯২১০৩০ ই-মেইল: verification@eis-pilot-bd.org ওয়েবসাইট: eis-pilot-bd.org
-      </p>
+            <tr>
+              <td className="td label">শ্রমিকের নাম:</td>
+              <td className="td value">{row?.workforceApplication?.workforceEmployee?.firstNameBn || ""}</td>
+            </tr>
 
-      <h4 style={{ textAlign: "center" }}>নোটিশ অফ অ্যাওয়ার্ড</h4>
+            <tr>
+              <td className="td label">শ্রমিকের জাতীয় পরিচয়পত্র নম্বর:</td>
+              <td className="td value">{row?.workforceApplication?.workforceEmployee?.nid || ""}</td>
+            </tr>
 
-      <br />
+            <tr>
+              <td className="td label">ঠিকানা:</td>
+              <td className="td value">
+                {/* গ্রামঃ {employeePresentAddress?.village || ""}, ডাকঘরঃ {employeePresentAddress?.postOffice || ""} , <br />
+                উপজেলা/থানাঃ {employeePresentAddress?.thana || ""}, জেলাঃ  {employeePresentAddress?.district || ""} */}
+              </td>
+            </tr>
 
-      <p>সূত্র: {row?.beneficiaryId}</p>
-      <p style={{ textAlign: "right" }}>তারিখ: {new Date().toLocaleDateString("bn-BD")}</p>
+            <tr>
+              <td colSpan={2} className="td section">
+                উপযুক্ত নির্ভরশীল ব্যক্তির তথ্য:
+              </td>
+            </tr>
 
-      <br />
+            <tr>
+              <td className="td label">উপযুক্ত নির্ভরশীলের নাম:</td>
+              <td className="td value">{row?.workforceEmployeeDependent[0]?.nameBn || ""}</td>
+            </tr>
 
-      <strong style={{ textAlign: "center" }}>মৃত শ্রমিকের তথ্য:</strong>
-      <p>শ্রমিকের নাম: {row?.workforceApplication?.workforceEmployee?.firstNameBn}</p>
-      <p>শ্রমিকের জাতীয় পরিচয়পত্র নম্বর: {row?.workforceApplication?.workforceEmployee?.nid}</p>
-      <p>ঠিকানা: {row?.workforceApplication?.workforceEmployee?.presentAddress}</p>
-      <p>কর্মস্থলে দুর্ঘটনার তারিখ: </p>
-      <p>মৃত্যুর তারিখ: </p>
-      <p>যে কারখানায় দূর্ঘটনা ঘটেছে তার নাম: </p>
-      <p>দূর্ঘটনা ঘটার সময়কালীন শ্রমিকের মাসিক মজুরি: </p>
-      
+            <tr>
+              <td className="td label">মৃত শ্রমিকের সাথে সম্পর্ক:</td>
+              <td className="td value">{RELATION_LABEL_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker || ""]}</td>              
+            </tr>
 
-      <br />
+            <tr>
+              <td className="td label">
+                নির্ভরশীল ব্যক্তির জাতীয় পরিচয়পত্র / জন্মসনদ নম্বর:
+              </td>
+              <td className="td value">{row?.workforceEmployeeDependent[0]?.nid || ""}</td>
+            </tr>
 
-      <br /><br /><br /> <br /><br /><br />
-<strong>মাসিক টপ-আপ বেনিফিট ও ই.আই.এস পাইলট সম্পর্কে গুরুত্বপূর্ণ তথ্য:</strong>
+            <tr>
+              <td className="td label">
+                নির্ভরশীল ব্যক্তির জন্ম তারিখ:
+                <br />
+                (মাস/দিন/বছর)
+              </td>
+              <td className="td value">{row?.workforceEmployeeDependent[0]?.birthDate || ""}</td>
+            </tr>
+
+           <tr>
+              <td className="td label">ঠিকানা:</td>
+              <td className="td value">
+                {depentPresentAddress?.village || ""}, {depentPresentAddress?.postOffice || ""},{" "}
+                {depentPresentAddress?.thana || ""}, {depentPresentAddress?.district || ""}
+              </td>
+            </tr>
+
+            <tr>
+              <td className="td label">এম.আই.এস বেনিফিশিয়ারি নম্বর:</td>
+              <td className="td value">{row?.beneficiaryId || ""}</td>
+            </tr>
+
+            <tr>
+              <td className="td label">
+                কেন্দ্রীয় তহবিল থেকে প্রদত্ত অর্থের পরিমাণ:
+              </td>
+              <td className="td value">{OtherCompensationAmount}</td>
+            </tr>
+
+            {/* ===== SECTION TITLE ===== */}
+            <tr>
+              <td colSpan={2} className="td section">
+                মাসিক প্রদেয় টপ-আপ বেনেফিটের তথ্য:
+              </td>
+            </tr>
+
+            <tr>
+              <td className="td label">
+                মাসিক প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
+              </td>
+              <td className="td value">{row?.eisMonthlyAmount || ""}</td>
+            </tr>
+
+            <tr>
+              <td className="td label">
+                কেন্দ্রীয় তহবিল প্রদত্ত অর্থ সমন্নয়ের পর প্রদেয়
+                <br />
+                মাসিক ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
+              </td>
+              <td className="td value">{cfAndEisAmount || ""}</td>
+            </tr>
+
+            <tr>
+              <td className="td label">
+                মাসিক ই.আই.এস টপ-আপ বেনিফিটের কার্যকরী তারিখ:
+              </td>
+              <td className="td value">{row?.processingDate || ""}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div>
+          <strong>
+            মাসিক টপ-আপ বেনিফিট ও ই.আই.এস পাইলট সম্পর্কে গুরুত্বপূর্ণ তথ্য:
+          </strong>
           <ol>
-            <li>টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন।</li>
-            <li>শ্রমিকের পিতা/মাতার কেউ মৃত্যুবরণ করলে সেক্ষেত্রে তার প্রাপ্য মাসিক টপ-আপ বেনিফিট পিতা/মাতার মধ্যে জীবিত সদস্যের নিকট প্রদেয় হবে।</li>
-            <li>উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।</li>
-            <li>তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য ই.আই.এস পাইলটকে অর্থায়ন করছে।</li>
+            <li>টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে।</li>
+            <li>নির্ভরশীল সদস্য পরিবর্তন হলে অবহিত করতে হবে।</li>
+            <li>প্রমাণপত্র প্রতি বছর প্রদান করতে হবে।</li>
+            <li>ক্রেতা/ব্র্যান্ডদের অর্থায়নে টপ-আপ প্রদান করা হয়।</li>
           </ol>
-           <br /><br /><br />
-      <div style={{ textAlign: "right" }}>
-        <p>মহাপরিচালক</p>
-        <p>কেন্দ্রীয় তহবিল</p>
-        <p>ও</p>
-        <p>সদস্য সচিব-ইআইএস গভর্নেন্স বোর্ড</p>
+        </div>
+      </div>
+
+      {/* ===== FOOTER ===== */}
+      <div className="footer">
+        <div className="signature">
+          <p>মহাপরিচালক</p>
+          <p>কেন্দ্রীয় তহবিল</p>
+          <p>ও</p>
+          <p>সদস্য সচিব-ইআইএস গভর্নেন্স বোর্ড</p>
+        </div>
       </div>
     </div>
   );
 };
-
 
 export default GenerateEisBFTN;
