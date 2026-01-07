@@ -195,7 +195,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
         forwardStatus = WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION;
         forwardAction = "forward_for_verification";
       } else if (numericRoleIds.includes(49)) {
-        forwardStatus = WORKFORCE_STATUS.FORWARD_TO_COMIITTEE;
+        forwardStatus = WORKFORCE_STATUS.FORWARD_TO_COMIITEE;
         forwardAction = "forward_to_committee";
       } else {
         setServerResponse({

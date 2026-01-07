@@ -71,8 +71,6 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
 
             <Grid container spacing={2}>
               {/* Present Location */}
-              {/* {((formData?.applicationType !== "financialAssistance" || formData?.organizationType === "eis") ||
-                (formData?.applicationType !== "DeadlyGrant" || formData?.organizationType === "eis")) && ( */}
               {(formData?.applicationType !== "financialAssistance" || formData?.applicationType !== "DeadlyGrant") && (
                 <Grid item xs={12}>
                   <b>{getDeathLabel("workforce.employee.present_location")}</b>
@@ -89,9 +87,6 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
                 </Grid>
               )}
 
-              {/* {formData?.workforceEmployee?.presentLocation &&
-                ((formData?.applicationType !== "financialAssistance" && formData?.organizationType === "eis") ||
-                  (formData?.applicationType !== "DeadlyGrant" && formData?.organizationType === "eis")) && ( */}
               {formData?.workforceEmployee?.presentLocation &&
                 (formData?.applicationType !== "financialAssistance" || formData?.applicationType !== "DeadlyGrant") && (
                   <Grid item xs={12}>
@@ -114,7 +109,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
               </Grid>
               <Grid item xs={12}>
                 
-                {((formData?.applicationType === "financialAssistance"&& formData?.organizationType === "cf") ||( formData?.applicationType === "financialAssistance"&&formData?.organizationType === "eis"))
+                {((formData?.applicationType === "financialAssistance"&& formData?.organizationType === "cf") ||( formData?.applicationType === "financialAssistance"&&formData?.organizationType === "eis")||( formData?.applicationType === "disabilityAssistance"&&formData?.organizationType === "eis"))
                  && (
                   <>
                   <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
@@ -135,7 +130,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
                       />
                     </Grid>
                   )} */}
-                {((formData?.applicationType === "financialAssistance"&&formData?.organizationType === "cf") ||( formData?.applicationType === "financialAssistance"&&formData?.organizationType === "eis")) && (
+                {((formData?.applicationType === "financialAssistance"&&formData?.organizationType === "cf") ||( formData?.applicationType === "financialAssistance"&&formData?.organizationType === "eis")||( formData?.applicationType === "disabilityAssistance"&&formData?.organizationType === "eis")) && (
                   <>
                 <PublishedComponent
                   pubRef="location.DetailedLocation"
