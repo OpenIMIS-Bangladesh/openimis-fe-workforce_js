@@ -202,9 +202,10 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
 
       // 5. Extract IDs
       const senderIds = actualNodes
+        .filter(item=>item?.status === "forward_to_comiitee")
         .map((item) => {
           const node = item.node || item; // Handle if double nested
-          return node?.applicationFrom?.id ? decodeId(node.applicationFrom.id) : null;
+          return node?.applicationTo?.id ? decodeId(node.applicationTo.id) : null;
         })
         .filter((id) => id !== null);
 
