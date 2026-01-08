@@ -186,11 +186,16 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
       const applicationIds = selectedApplicationIds.map(x =>
             safeDecodeId(x?.id)
           );
-          console.log("fetch eis payment",applicationIds)
-    
-          await dispatch(fetchEisPaymentProcess(applicationIds, modulesManager)).then((res) => {
-            const fetchedData = res?.payload?.data?.workforceEisPaymentProcess;
-            setEisPayments(fetchedData);})
+      await dispatch(fetchEisPaymentProcess(applicationIds, modulesManager)).then((res) => {
+        const fetchedData = res?.payload?.data?.workforceEisPaymentProcess;
+        setEisPayments(fetchedData);})
+
+      await dispatch(fetchWorkforceOtherCompensation(modulesManager,[`workforceApplicationId: "${applicationIds}"`])).then((res) => {
+        const fetchOtherCompensation = parseData(res?.payload?.data?.workforceOtherCompensationInfo);
+        const amount = fetchOtherCompensation?.[0]?.amount || 0;
+        setOtherCompAmount(amount);               
+        console.log("OtherCompensation",OtherCompensationAmount);
+      });
     }
   },[open])
 
