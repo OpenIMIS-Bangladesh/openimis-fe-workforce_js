@@ -13,7 +13,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import { WORKFORCE_USER_TYPE } from "../../constants";
-import { getUserTypeFromRights, safeDecodeId } from "../../utils/utils";
+import { getUserTypeFromRights, safeDecodeId, getFooterContent  } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS, RELATION_LABEL_MAP } from "../../constants";
 import { createApplicationSummary, updateApplication, updateApplicationSummary } from "../../actions";
@@ -67,8 +67,8 @@ const useStyles = makeStyles(() => ({
       ".noa-page": {
         fontFamily: '"Noto Sans Bengali", "SolaimanLipi", sans-serif',
         width: "100%",
-        paddingTop: "50mm",
-        paddingBottom: "40mm",
+        paddingTop: "40mm",
+        paddingBottom: "30mm",
         paddingLeft: "25mm",
         paddingRight: "25mm",
         boxSizing: "border-box",
@@ -85,7 +85,7 @@ const useStyles = makeStyles(() => ({
         textAlign: "center",
         backgroundColor: "#fff",
         zIndex: 1000,
-        paddingTop: "5mm",
+        paddingTop: "1mm",
       },
       ".noa-header h3, .noa-header h4, .noa-header p": {
         margin: "2px 0",
@@ -625,6 +625,12 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
   const cfAndEisAmount = (parseFloat(row?.eisMonthlyAmount) || 0) + (parseFloat(OtherCompensationAmount) || 0);
   console.log("cfAndEisAmount", cfAndEisAmount);
   console.log(row)
+
+  const relation =
+  row?.workforceEmployeeDependent?.[0]?.relationWithWorker;
+
+  const applicationType =
+  row?.workforceApplication?.applicationType;
   // --- Original Logic Ends ---
 
   // NOTE: We do NOT use 'useStyles()' here anymore because classes are global strings.
@@ -646,8 +652,14 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
             মোবাইল: ০১৮৮৬-৯২১০৩০ | ই-মেইল: verification@eis-pilot-bd.org |
             ওয়েবসাইট: eis-pilot-bd.org
           </p>
-          <h4 style={{ margin: "10px 0", textDecoration: "underline" }}>
-            নোটিশ অফ অ্যাওয়ার্ড- কর্মরত অবস্থায় দুর্ঘটনাজনিত মৃত্যু
+          <h4 style={{ margin: "10px 0"}}>
+             <h4 style={{ margin: "10px 0" }}>
+              {applicationType === "financialAssistance"
+              ? "নোটিশ অফ অ্যাওয়ার্ড- কর্মরত অবস্থায় দুর্ঘটনাজনিত মৃত্যু"
+              : applicationType === "disabilityAssistance"
+              ? "নোটিশ অফ অ্যাওয়ার্ড- কর্মরত অবস্থায় দুর্ঘটনাজনিত স্থায়ী আংশিক/সম্পূর্ণ অক্ষমতা"
+              : ""}
+          </h4>
           </h4>
           
           <div style={{ display: "flex", justifyContent: "space-between", padding: "0 25mm", marginTop: "10px" }}>
@@ -771,17 +783,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
           </tbody>
         </table>
 
-        <div style={{ marginTop: "15px", fontSize: "11px" }}>
-          <strong>
-            মাসিক টপ-আপ বেনিফিট ও ই.আই.এস পাইলট সম্পর্কে গুরুত্বপূর্ণ তথ্য:
-          </strong>
-          <ol style={{ marginTop: "5px", paddingLeft: "20px" }}>
-            <li>টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে।</li>
-            <li>নির্ভরশীল সদস্য পরিবর্তন হলে অবহিত করতে হবে।</li>
-            <li>প্রমাণপত্র প্রতি বছর প্রদান করতে হবে।</li>
-            <li>ক্রেতা/ব্র্যান্ডদের অর্থায়নে টপ-আপ প্রদান করা হয়।</li>
-          </ol>
-        </div>
+       {getFooterContent(relation, applicationType)}
       </div>
 
       {/* ===== FOOTER ===== */}
