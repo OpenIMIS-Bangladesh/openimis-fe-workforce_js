@@ -22,6 +22,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Add, Delete } from "@material-ui/icons";
 import { useTranslations, useModulesManager, TextInput, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
+import { getUserType } from "../../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -53,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
 const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType, errors }) => {
   const classes = useStyles();
   const modulesManager = useModulesManager();
+  const user_type = getUserType();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
 
   
@@ -89,6 +92,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
               value={formData?.employeeAccidentInfo?.dateOfAssessment||formData?.doctorsEntry?.dateOfAssessment || ""}
               onChange={(v) => handleChange("dateOfAssessment", v)}
               required
+              readOnly={user_type ===WORKFORCE_USER_TYPE.EIS_COORDINATOR}
             />
           </Grid>
           <Grid item xs={6} className={classes.item}>
@@ -97,6 +101,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
               value={formData?.employeeAccidentInfo?.nameOfAssessmentMeeting||formData?.doctorsEntry?.nameOfAssessmentMeeting || ""}
               onChange={(v) => handleChange("nameOfAssessmentMeeting", v)}
               required
+              readOnly={user_type ===WORKFORCE_USER_TYPE.EIS_COORDINATOR}
             />
           </Grid>
           <Grid item xs={6} className={classes.item}>
@@ -107,6 +112,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
               value={formData?.employeeAccidentInfo?.briefInjuryDescription||formData?.doctorsEntry?.briefInjuryDescription || ""}
               onChange={(v) => handleChange("briefInjuryDescription", v)}
               required
+              readOnly={user_type ===WORKFORCE_USER_TYPE.EIS_COORDINATOR}
             />
           </Grid>
           <Grid item xs={6} className={classes.item}>
@@ -117,6 +123,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
               value={formData?.employeeAccidentInfo?.briefTreatmentDescription||formData?.doctorsEntry?.briefTreatmentDescription || ""}
               onChange={(v) => handleChange("briefTreatmentDescription", v)}
               required
+              readOnly={user_type ===WORKFORCE_USER_TYPE.EIS_COORDINATOR}
             />
           </Grid>
           <Grid item xs={12} className={classes.item}>
@@ -131,6 +138,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
               value={formData?.employeeAccidentInfo?.injurySiteLocation|| formData?.doctorsEntry?.injurySiteLocation|| ""}
               onChange={(v) => handleChange("injurySiteLocation", v)}
               required
+              readOnly={user_type ===WORKFORCE_USER_TYPE.EIS_COORDINATOR}
             />
           </Grid>
           <Grid item xs={6} className={classes.item}>
@@ -141,6 +149,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
               value={formData?.employeeAccidentInfo?.injuryDetailsDescription||formData?.doctorsEntry?.injuryDetailsDescription || ""}
               onChange={(v) => handleChange("injuryDetailsDescription", v)}
               required
+              readOnly={user_type ===WORKFORCE_USER_TYPE.EIS_COORDINATOR}
             />
           </Grid>
           <Grid item xs={12} className={classes.item}>
@@ -179,6 +188,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
               label={"workforce.employee.accident.info.disabilityPerSchedule"}
               value={formData?.employeeAccidentInfo?.disabilityPerSchedule||formData?.doctorsEntry?.disabilityPerSchedule || ""}
               onChange={(v) => handleChange("disabilityPerSchedule", v)}
+              readOnly={user_type ===WORKFORCE_USER_TYPE.EIS_COORDINATOR}
             />
           </Grid>
           <Grid item xs={6} className={classes.item}>
@@ -186,6 +196,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
               label={"workforce.employee.accident.info.presentInjuryBLASchedule1"}
               value={formData?.employeeAccidentInfo?.presentInjuryBLASchedule1||formData?.doctorsEntry?.presentInjuryBLASchedule1 || ""}
               onChange={(v) => handleChange("presentInjuryBLASchedule1", v)}
+              readOnly={user_type ===WORKFORCE_USER_TYPE.EIS_COORDINATOR}
             />
           </Grid>
         </Grid>

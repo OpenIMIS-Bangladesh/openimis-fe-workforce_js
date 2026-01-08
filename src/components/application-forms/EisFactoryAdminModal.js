@@ -182,7 +182,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
 
         {/* Scrollable Form Content */}
         {application?.organizationType === "eis" &&
-        (user_type === WORKFORCE_USER_TYPE.DOCTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR || user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) ? (
+        (user_type === WORKFORCE_USER_TYPE.DOCTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR || user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR || (user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.applicationType==="disabilityAssistance")) ? (
           <Box className={classes.content} ref={stepRef}>
             <EisDoctorEntries
               handleChange={(key, value) => handleChange(key, value, "doctorEntries")}
@@ -214,7 +214,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
               onClick={handleSubmit}
               color="primary"
               variant="contained"
-              disabled={loading} // ✅ Disable button while loading
+              disabled={loading ||user_type ===WORKFORCE_USER_TYPE.EIS_COORDINATOR} // ✅ Disable button while loading
             >
               <FormattedMessage id="workforce.submit" />
             </Button>
