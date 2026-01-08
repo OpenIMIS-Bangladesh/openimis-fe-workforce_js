@@ -13,183 +13,212 @@ import {
   Divider,
 } from "@material-ui/core";
 import { WORKFORCE_USER_TYPE } from "../../constants";
-import { getUserTypeFromRights } from "../../utils/utils";
+import { getUserTypeFromRights, safeDecodeId } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS, RELATION_LABEL_MAP } from "../../constants";
-import {
-  createApplicationSummary,
-  updateApplication,
-  updateApplicationSummary,
-} from "../../actions";
+import { createApplicationSummary, updateApplication, updateApplicationSummary } from "../../actions";
 import { useDispatch } from "react-redux";
 import React, { Component, useState, useEffect, useRef } from "react";
 import { enToBn } from "../../utils/utils";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
-import {
-  useModulesManager,
-  decodeId,
-  FormattedMessage,
-  parseData
-} from "@openimis/fe-core";
+import { useModulesManager, decodeId, FormattedMessage, parseData } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useReactToPrint } from "react-to-print";
 import { fetchEisPaymentProcess, fetchWorkforceOtherCompensation } from "../../actions";
-const useStyles = makeStyles(() => ({
-    /* ===== PRINT ROOT ===== */
-    ".printArea": {
-        display: "none",
-    },
+// import NOAPrintTemplate from "./NOAPrintTemplate";
 
+const useStyles = makeStyles(() => ({
+  printContainer: {
+    display: "none",
+  },
+
+  "@global": {
     "@media print": {
-      ".printArea": {
-        display: "block",
-        width: "100%",
-        color: "#000",
+      // 1. Only apply this aggressive hiding if the BODY has our specific class
+      "body.printing-eis-bftn *": {
+        visibility: "hidden",
       },
 
-      ".noaPage": {
-        fontFamily: '"Noto Sans Bengali","SolaimanLipi",sans-serif',
+      // 2. Make the print container visible ONLY when our class is present
+      "body.printing-eis-bftn #print-area-container": {
+        visibility: "visible !important",
+        display: "block !important",
+        position: "fixed !important",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 99999,
+        backgroundColor: "#fff",
+        overflow: "visible !important",
+      },
+
+      "body.printing-eis-bftn #print-area-container *": {
+        visibility: "visible !important",
+      },
+
+      // 3. Hide the Dialog (specific to this print mode)
+      "body.printing-eis-bftn .MuiDialog-root": {
+        display: "none !important",
+      },
+
+      // --- NOA TEMPLATE STYLES (Keep these global as they have unique names) ---
+      ".noa-page": {
+        fontFamily: '"Noto Sans Bengali", "SolaimanLipi", sans-serif',
+        width: "100%",
         paddingTop: "50mm",
-        paddingBottom: "50mm",
+        paddingBottom: "40mm",
         paddingLeft: "25mm",
         paddingRight: "25mm",
-        pageBreakAfter: "always",
-        fontSize: "10px",
-        color: "#000",
+        boxSizing: "border-box",
+        fontSize: "12px",
+        color: "#000 !important",
       },
-
-      /* ===== HEADER ===== */
-      ".header": {
+      // ... (Rest of the styles remain the same: .noa-header, .noa-table, etc.)
+      ".noa-header": {
         position: "fixed",
         top: 0,
         left: 0,
-        right: 0,
-        height: "55mm",
-        padding: "5mm 10mm",
+        width: "100%",
+        height: "50mm",
         textAlign: "center",
-        background: "#fff",
+        backgroundColor: "#fff",
+        zIndex: 1000,
+        paddingTop: "5mm",
       },
-
-      ".headerText": {
-        lineHeight: 1.1,
+      ".noa-header h3, .noa-header h4, .noa-header p": {
+        margin: "2px 0",
+        color: "#000",
       },
-
-      /* ===== BODY ===== */
-      ".body": {
-        width: "100%",
-      },
-
-      ".table": {
-        width: "100%",
-        borderCollapse: "collapse",
-      },
-
-      ".td": {
-        border: "1px solid #000",
-        padding: "6px 8px",
-        verticalAlign: "top",
-      },
-
-      ".label": {
-        width: "35%",
-        fontWeight: 500,
-      },
-
-      ".value": {
-        width: "65%",
-      },
-
-      ".section": {
-        fontWeight: 600,
-        background: "#f5f5f5",
-      },
-
-      /* ===== FOOTER ===== */
-      ".footer": {
+      ".noa-body": { width: "100%", marginTop: "10mm" },
+      ".noa-footer": {
         position: "fixed",
         bottom: 0,
         left: 0,
-        right: 0,
+        width: "100%",
         height: "40mm",
-        padding: "5mm 10mm",
-        fontSize: "12px",
+        paddingLeft: "25mm",
+        paddingRight: "25mm",
+        boxSizing: "border-box",
+        backgroundColor: "#fff",
+      },
+      ".noa-table": {
+        width: "100%",
+        borderCollapse: "collapse",
+        marginBottom: "15px",
+        tableLayout: "fixed",
+      },
+      ".noa-table td": {
+        border: "1px solid #000 !important",
+        padding: "4px 8px",
+        verticalAlign: "top",
+        color: "#000 !important",
+      },
+      ".noa-label": {
+        width: "35%",
         fontWeight: "bold",
-        background: "#fff",
+        backgroundColor: "#f5f5f5 !important",
+        "-webkit-print-color-adjust": "exact",
       },
-
-      ".signature": {
+      ".noa-value": { width: "65%" },
+      ".noa-section": {
+        fontWeight: "bold",
+        textAlign: "center",
+        backgroundColor: "#e0e0e0 !important",
+        "-webkit-print-color-adjust": "exact",
+        padding: "5px",
+      },
+      ".noa-signature": {
+        marginTop: "15mm",
         textAlign: "right",
+        fontWeight: "bold",
       },
-
     },
+  },
 }));
 
-
-const GenerateEisBFTN = ({
-  open,
-  onClose,
-  eisPayments = [],
-  userRights,
-  status,
-  summary_Id,
-  selectedApplicationIds,
-  OtherCompensationAmount = []
-}) => {
+const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, selectedApplicationIds, OtherCompensationAmount = [] }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
+  
   const [selectedRow, setSelectedRow] = useState(null);
   const [printMode, setPrintMode] = useState(null);
-  const modulesManager = useModulesManager();
+  const [otherCompAmount, setOtherCompAmount] = useState(0);
+  const [eisPayments, setEisPayments] = useState([])
+  console.log({selectedApplicationIds})
+
+  // ... (Data Fetching useEffects remain the same) ...
+
+  const handleRowPrint = (row) => {
+    // ... (Date formatting logic remains the same) ...
+    const year = row?.year || "";
+    const monthIndex = row?.monthIndex || "";
+    const monthFormatted = String(monthIndex).padStart(2, "0");
+    const lastDay = new Date(year, monthIndex, 0).getDate();
+
+    setSelectedRow({
+      ...row,
+      payFrom: `01.${monthFormatted}.${year}`,
+      payTo: `${lastDay}.${monthFormatted}.${year}`,
+    });
+
+    setPrintMode("NOA");
+  };
+
+  // --- TRIGGER PRINT LOGIC (UPDATED) ---
+  useEffect(() => {
+    if (printMode === "NOA" && selectedRow) {
+      // 1. Add the unique class to body so OUR styles take over
+      document.body.classList.add("printing-eis-bftn");
+
+      const timer = setTimeout(() => {
+        window.print();
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [printMode, selectedRow]);
+
+  useEffect(async()=>{
+    if (selectedApplicationIds.length >0) {
+      const applicationIds = selectedApplicationIds.map(x =>
+            safeDecodeId(x?.id)
+          );
+          console.log("fetch eis payment",applicationIds)
+    
+          await dispatch(fetchEisPaymentProcess(applicationIds, modulesManager)).then((res) => {
+            const fetchedData = res?.payload?.data?.workforceEisPaymentProcess;
+            setEisPayments(fetchedData);})
+    }
+  },[open])
+
+  // --- CLEANUP LOGIC (UPDATED) ---
+  useEffect(async() => {
+
+
+    const afterPrint = () => {
+      setPrintMode(null);
+      setSelectedRow(null);
+      // 2. Remove the class so other components can print normally
+      document.body.classList.remove("printing-eis-bftn");
+    };
+
+    window.addEventListener("afterprint", afterPrint);
+    
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener("afterprint", afterPrint);
+      document.body.classList.remove("printing-eis-bftn");
+    };
+  }, []);
+
   const getTotalAmount = () => {
     return eisPayments
       .reduce((sum, item) => sum + (parseFloat(item.eisMonthlyAmount) || 0), 0)
       .toFixed(2);
   };
-
-  console.log("eisPayments", eisPayments);
-  //  const data = eisPayments?.[0] || {};
-  // const parsingBankInfo = JSON.parse(data.workforceApplication?.employeeBankInfo);
-  // const parsedBankInfo = JSON.parse(parsingBankInfo);
-  // const parsingEmployeeAccidentInfo = JSON.parse(data.workforceApplication?.employeeAccidentInfo);
-  // const parsedEmployeeAccidentInfo = JSON.parse(parsingEmployeeAccidentInfo);
-  // console.log("parsedEmployeeAccidentInfo",parsedEmployeeAccidentInfo)
-  /* -----------------------------
-     ROW-WISE PRINT HANDLER
-  ----------------------------- */
-
-const handleRowPrint = (row) => {
-  const year = row?.year || "";
-  const monthIndex = row?.monthIndex || "";
-  const monthFormatted = String(monthIndex).padStart(2, "0");
-  const lastDay = new Date(year, monthIndex, 0).getDate();
-
-  setSelectedRow({
-    ...row,
-    payFrom: `01.${monthFormatted}.${year}`,
-    payTo: `${lastDay}.${monthFormatted}.${year}`,
-  });
-
-  setPrintMode("NOA");
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      window.print();
-    });
-  });
-};
-
-useEffect(() => {
-  const afterPrint = () => {
-    setPrintMode(null);
-    setSelectedRow(null);
-  };
-
-  window.addEventListener("afterprint", afterPrint);
-  return () => window.removeEventListener("afterprint", afterPrint);
-}, []);
-
-
 
   const handleDialogPrint = () => {
     setPrintMode("DIALOG");
@@ -206,23 +235,8 @@ useEffect(() => {
   //   window.addEventListener("afterprint", afterPrint);
   //   return () => window.removeEventListener("afterprint", afterPrint);
   // }, []);
-const [otherCompAmount, setOtherCompAmount] = useState(0);
 
-  useEffect(() => {
-    if (selectedApplicationIds?.length > 0) {
-      const applicationIds = selectedApplicationIds.map((x) => decodeId(x.id));
-
-      console.log("IDs:", applicationIds);
-
-      dispatch(fetchEisPaymentProcess(applicationIds,modulesManager));
-      dispatch(fetchWorkforceOtherCompensation(modulesManager,[`workforceApplicationId: "${applicationIds}"`])).then((res) => {
-                const fetchOtherCompensation = parseData(res?.payload?.data?.workforceOtherCompensationInfo);
-                const amount = fetchOtherCompensation?.[0]?.amount || 0;
-                setOtherCompAmount(amount);               
-                console.log("OtherCompensation",OtherCompensationAmount);
-              });
-    }
-  }, [selectedApplicationIds]);
+  
 
   const printYear = new Date().getFullYear();
   const printMonth = new Date().getMonth();
@@ -255,9 +269,7 @@ const [otherCompAmount, setOtherCompAmount] = useState(0);
     // Header (same as before)
     // -----------------------------
     sheet.mergeCells("A1:K1");
-    sheet.getCell(
-      "A1"
-    ).value = `Ref No: EIS.Bank Advice.Benefit.${excelyear}.${excelmonthFormatted}`;
+    sheet.getCell("A1").value = `Ref No: EIS.Bank Advice.Benefit.${excelyear}.${excelmonthFormatted}`;
     sheet.getCell("A1").font = { bold: true };
 
     sheet.mergeCells("A3:K3");
@@ -273,8 +285,7 @@ const [otherCompAmount, setOtherCompAmount] = useState(0);
     sheet.getCell("A6").value = "1, Topkhana Road, Ramna, Dhaka, 1000";
 
     sheet.mergeCells("A8:K8");
-    sheet.getCell("A8").value =
-      "Subject: Bank Advice Letter (EIS Top-up Benefit)";
+    sheet.getCell("A8").value = "Subject: Bank Advice Letter (EIS Top-up Benefit)";
     sheet.getCell("A8").font = { bold: true, underline: true };
 
     sheet.mergeCells("A10:K10");
@@ -450,22 +461,13 @@ const [otherCompAmount, setOtherCompAmount] = useState(0);
   return (
     <>
       {/* ================= DIALOG UI ================= */}
-      <Dialog
-        open={open}
-        onClose={onClose}
-        maxWidth="md"
-        fullWidth
-        className={printMode === "NOA" ? classes.noPrintDialog : ""}
-      >
+      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle disableTypography>
-          <Typography variant="h6">
-            <FormattedMessage id="Eis Bank Payment Advice (BEFTN)" />
-          </Typography>
+          <Typography variant="h6"><FormattedMessage id="Eis Bank Payment Advice (BEFTN)" /></Typography>
         </DialogTitle>
-
         <DialogContent dividers>
           <Table>
-            <TableHead>
+             <TableHead>
               <TableRow>
                 <TableCell>NOA Print</TableCell>
                 <TableCell>SL</TableCell>
@@ -481,26 +483,24 @@ const [otherCompAmount, setOtherCompAmount] = useState(0);
                 <TableCell align="right">Pay To</TableCell>
               </TableRow>
             </TableHead>
-
             <TableBody>
-              {eisPayments.map((row, index) => {
+              {eisPayments.map((row, index) =>{ 
                 const year = row?.year || "";
                 const monthIndex = row?.monthIndex || "";
                 const monthFormatted = String(monthIndex).padStart(2, "0");
                 const lastDay = new Date(year, monthIndex, 0).getDate();
-
-                return (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <Button
-                        size="small"
-                        color="primary"
-                        onClick={() => handleRowPrint(row)}
-                      >
-                        Print
-                      </Button>
-                    </TableCell>
-                    <TableCell>{index + 1}</TableCell>
+                return(
+                <TableRow key={index}>
+                  <TableCell>
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={() => handleRowPrint(row)}
+                    >
+                      Print
+                    </Button>
+                  </TableCell>
+                   <TableCell>{index + 1}</TableCell>
                     <TableCell>{row?.bankAccountHolderName}</TableCell>
                     <TableCell>{row?.bankAccountNo}</TableCell>
                     <TableCell>{row?.bank?.parent?.nameEn}</TableCell>
@@ -515,54 +515,47 @@ const [otherCompAmount, setOtherCompAmount] = useState(0);
                     <TableCell align="right">
                       {lastDay}.{monthFormatted}.{year}
                     </TableCell>
-                  </TableRow>
-                );
-              })}
-
+                </TableRow>
+              )})}
               <TableRow>
-                <TableCell colSpan={8}>
-                  <strong>Total Amount</strong>
-                </TableCell>
-                <TableCell align="right">
-                  <strong>{getTotalAmount()}</strong>
-                </TableCell>
-                <TableCell colSpan={3} />
+                <TableCell colSpan={4}><strong>Total Amount</strong></TableCell>
+                <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </DialogContent>
-
         <Divider />
-
-        <DialogActions className={classes.noPrint}>
-          <Button onClick={onClose} variant="outlined" color="primary">
+        <DialogActions>
+        <Button onClick={onClose} variant="outlined" color="primary">
             <FormattedMessage id="workforce.modal.close" />
           </Button>
 
-          <Button
+          {/* <Button
             onClick={handleDialogPrint}
             variant="contained"
             color="primary"
           >
             <FormattedMessage id="workforce.modal.print.advice" />
-          </Button>
+          </Button> */}
 
           <Button onClick={exportToExcel} variant="contained" color="success">
             <FormattedMessage id="workforce.modal.excel" />
           </Button>
+          <Button onClick={onClose} variant="outlined" color="primary">Close</Button>
         </DialogActions>
       </Dialog>
 
-      {/* ================= PRINT AREA ================= */}
-      {/* Place this somewhere in your component */}
-      <div id="print-area" className="printArea">
+      {/* ===== PRINT TEMPLATE CONTAINER ===== */}
+      {/* IMPORTANT: The class 'printContainer' hides this in normal view. 
+          The ID 'print-area-container' is targeted by @media print to force it visible.
+      */}
+      <div id="print-area-container" className={classes.printContainer}>
         {printMode === "NOA" && selectedRow && (
           <NOAPrintTemplate
             row={selectedRow}
             payFrom={selectedRow.payFrom}
             payTo={selectedRow.payTo}
             OtherCompensationAmount={otherCompAmount}
-
           />
         )}
       </div>
@@ -570,22 +563,25 @@ const [otherCompAmount, setOtherCompAmount] = useState(0);
   );
 };
 
+// --- FULLY RESTORED NOA TEMPLATE WITH FIXED CSS ---
+// --- NOA TEMPLATE COMPONENT (Updated with Global Classes) ---
+// --- NOAPrintTemplate with Page Break ---
 const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
   const tryParse = (value) => {
-  if (typeof value === "string") {
-    try {
-      const parsed = JSON.parse(value);
-      if (typeof parsed === "object" && parsed !== null) {
-        return parsed;
+    if (typeof value === "string") {
+      try {
+        const parsed = JSON.parse(value);
+        if (typeof parsed === "object" && parsed !== null) {
+          return parsed;
+        }
+      } catch {
+        return value;
       }
-    } catch {
-      return value;
     }
-  }
-  return value;
-};
-   const formatAddress = (locationData, addressData) => {
-    // TryParse handles both JSON strings and objects
+    return value;
+  };
+
+  const formatAddress = (locationData, addressData) => {
     const address = tryParse(addressData) || {};
     const location = tryParse(locationData) || {};
 
@@ -598,8 +594,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
       .filter(Boolean)
       .join(", ");
 
-    // Navigate location parents for Thana/District
-    const thana = location?.parent?.name || location?.name; // Fallback if structure varies
+    const thana = location?.parent?.name || location?.name;
     const district = location?.parent?.parent?.name || location?.parent?.name;
 
     return {
@@ -609,173 +604,196 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
       district,
     };
   };
-  // const employeePresentAddress = formatAddress(
-  //   row?.workforceApplication?.workforceEmployee?.presentLocation, row?.workforceEmployee[0]?.employeePresentAddress
-  // );
+
   const depentPresentAddress = formatAddress(
-    row?.workforceEmployeeDependent[0]?.presentLocation, row?.workforceEmployeeDependent[0]?.depentPresentAddress
+    row?.workforceEmployeeDependent?.[0]?.presentLocation,
+    row?.workforceEmployeeDependent?.[0]?.depentPresentAddress
   );
-const cfAndEisAmount = (parseFloat(row?.eisMonthlyAmount) || 0) + (parseFloat(OtherCompensationAmount) || 0);
-     console.log("cfAndEisAmount",cfAndEisAmount)
+
+  const cfAndEisAmount =
+    (parseFloat(row?.eisMonthlyAmount) || 0) +
+    (parseFloat(OtherCompensationAmount) || 0);
 
   return (
-    <div className="noaPage">
-      {/* ===== HEADER ===== */}
-      <div className="header">
-        <div className="headerText">
-          <p>ব্যক্তিগত</p>
-          <h3>এমপ্লয়মেন্ট ইনজুরি স্কীম-(ই.আই.এস) পাইলট</h3>
-          <p>
-            ১৯৬, ১০ম তলা, শ্রম ভবন, শহীদ সৈয়দ নজরুল ইসলাম সরনী, বিজয়নগর,
-            ঢাকা-১০০০
-          </p>
-          <p>
-            মোবাইল: ০১৮৮৬-৯২১০৩০ | ই-মেইল: verification@eis-pilot-bd.org |
-            ওয়েবসাইট: eis-pilot-bd.org
-          </p>
-          <h4>নোটিশ অফ অ্যাওয়ার্ড- কর্মরত অবস্থায় দুর্ঘটনাজনিত মৃত্যু</h4>
-          <p>সূত্র: {row?.beneficiaryId || ""}</p>
-          <p style={{ textAlign: "right" }}>
-            তারিখ: {new Date().toLocaleDateString("bn-BD")}
-          </p>
+    <div className="noa-page">
+      {/* ===== HEADER (Fixed on every page) ===== */}
+      <div className="noa-header">
+        <p style={{ margin: 0 }}>ব্যক্তিগত</p>
+        <h3 style={{ margin: "5px 0" }}>
+          এমপ্লয়মেন্ট ইনজুরি স্কীম-(ই.আই.এস) পাইলট
+        </h3>
+        <p style={{ margin: "2px 0" }}>
+          ১৯৬, ১০ম তলা, শ্রম ভবন, শহীদ সৈয়দ নজরুল ইসলাম সরনী, বিজয়নগর,
+          ঢাকা-১০০০
+        </p>
+        <p style={{ margin: "2px 0" }}>
+          মোবাইল: ০১৮৮৬-৯২১০৩০ | ই-মেইল: verification@eis-pilot-bd.org |
+          ওয়েবসাইট: eis-pilot-bd.org
+        </p>
+        <h4 style={{ margin: "10px 0", textDecoration: "underline" }}>
+          নোটিশ অফ অ্যাওয়ার্ড- কর্মরত অবস্থায় দুর্ঘটনাজনিত মৃত্যু
+        </h4>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "0 25mm",
+            marginTop: "10px",
+          }}
+        >
+          <span>সূত্র: {row?.beneficiaryId || ""}</span>
+          <span>তারিখ: {new Date().toLocaleDateString("bn-BD")}</span>
         </div>
       </div>
 
       {/* ===== BODY ===== */}
-      <div className="body">
-        <table className="table">
+      <div className="noa-body">
+        <table className="noa-table">
           <tbody>
+            {/* ... (Existing Rows - Section 1: Worker Info) ... */}
             <tr>
-              <td colSpan={2} className="td section">
+              <td colSpan={2} className="noa-section">
                 মৃত শ্রমিকের তথ্য:
               </td>
             </tr>
-
             <tr>
-              <td className="td label">শ্রমিকের নাম:</td>
-              <td className="td value">{row?.workforceApplication?.workforceEmployee?.firstNameBn || ""}</td>
-            </tr>
-
-            <tr>
-              <td className="td label">শ্রমিকের জাতীয় পরিচয়পত্র নম্বর:</td>
-              <td className="td value">{row?.workforceApplication?.workforceEmployee?.nid || ""}</td>
-            </tr>
-
-            <tr>
-              <td className="td label">ঠিকানা:</td>
-              <td className="td value">
-                {/* গ্রামঃ {employeePresentAddress?.village || ""}, ডাকঘরঃ {employeePresentAddress?.postOffice || ""} , <br />
-                উপজেলা/থানাঃ {employeePresentAddress?.thana || ""}, জেলাঃ  {employeePresentAddress?.district || ""} */}
+              <td className="noa-label">শ্রমিকের নাম:</td>
+              <td className="noa-value">
+                {row?.workforceApplication?.workforceEmployee?.firstNameBn || ""}
               </td>
             </tr>
-
             <tr>
-              <td colSpan={2} className="td section">
+              <td className="noa-label">শ্রমিকের জাতীয় পরিচয়পত্র নম্বর:</td>
+              <td className="noa-value">
+                {row?.workforceApplication?.workforceEmployee?.nid || ""}
+              </td>
+            </tr>
+            <tr>
+              <td className="noa-label">ঠিকানা:</td>
+              <td className="noa-value"></td>
+            </tr>
+
+            {/* ... (Existing Rows - Section 2: Dependent Info) ... */}
+            <tr>
+              <td colSpan={2} className="noa-section">
                 উপযুক্ত নির্ভরশীল ব্যক্তির তথ্য:
               </td>
             </tr>
-
             <tr>
-              <td className="td label">উপযুক্ত নির্ভরশীলের নাম:</td>
-              <td className="td value">{row?.workforceEmployeeDependent[0]?.nameBn || ""}</td>
-            </tr>
-
-            <tr>
-              <td className="td label">মৃত শ্রমিকের সাথে সম্পর্ক:</td>
-              <td className="td value">{RELATION_LABEL_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker || ""]}</td>              
-            </tr>
-
-            <tr>
-              <td className="td label">
-                নির্ভরশীল ব্যক্তির জাতীয় পরিচয়পত্র / জন্মসনদ নম্বর:
-              </td>
-              <td className="td value">{row?.workforceEmployeeDependent[0]?.nid || ""}</td>
-            </tr>
-
-            <tr>
-              <td className="td label">
-                নির্ভরশীল ব্যক্তির জন্ম তারিখ:
-                <br />
-                (মাস/দিন/বছর)
-              </td>
-              <td className="td value">{row?.workforceEmployeeDependent[0]?.birthDate || ""}</td>
-            </tr>
-
-           <tr>
-              <td className="td label">ঠিকানা:</td>
-              <td className="td value">
-                {depentPresentAddress?.village || ""}, {depentPresentAddress?.postOffice || ""},{" "}
-                {depentPresentAddress?.thana || ""}, {depentPresentAddress?.district || ""}
+              <td className="noa-label">উপযুক্ত নির্ভরশীলের নাম:</td>
+              <td className="noa-value">
+                {row?.workforceEmployeeDependent?.[0]?.nameBn || ""}
               </td>
             </tr>
-
             <tr>
-              <td className="td label">এম.আই.এস বেনিফিশিয়ারি নম্বর:</td>
-              <td className="td value">{row?.beneficiaryId || ""}</td>
-            </tr>
-
-            <tr>
-              <td className="td label">
-                কেন্দ্রীয় তহবিল থেকে প্রদত্ত অর্থের পরিমাণ:
-              </td>
-              <td className="td value">{OtherCompensationAmount}</td>
-            </tr>
-
-            {/* ===== SECTION TITLE ===== */}
-            <tr>
-              <td colSpan={2} className="td section">
-                মাসিক প্রদেয় টপ-আপ বেনেফিটের তথ্য:
+              <td className="noa-label">মৃত শ্রমিকের সাথে সম্পর্ক:</td>
+              <td className="noa-value">
+                {RELATION_LABEL_MAP[
+                  row?.workforceEmployeeDependent?.[0]?.relationWithWorker
+                ] || ""}
               </td>
             </tr>
-
             <tr>
-              <td className="td label">
-                মাসিক প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
+              <td className="noa-label">
+                নির্ভরশীল ব্যক্তির জাতীয় পরিচয়পত্র / জন্মসনদ নম্বর:
               </td>
-              <td className="td value">{row?.eisMonthlyAmount || ""}</td>
+              <td className="noa-value">
+                {row?.workforceEmployeeDependent?.[0]?.nid || ""}
+              </td>
+            </tr>
+            <tr>
+              <td className="noa-label">
+                নির্ভরশীল ব্যক্তির জন্ম তারিখ (মাস/দিন/বছর):
+              </td>
+              <td className="noa-value">
+                {row?.workforceEmployeeDependent?.[0]?.birthDate || ""}
+              </td>
+            </tr>
+            <tr>
+              <td className="noa-label">ঠিকানা:</td>
+              <td className="noa-value">
+                {depentPresentAddress?.village
+                  ? `${depentPresentAddress.village}, `
+                  : ""}
+                {depentPresentAddress?.postOffice
+                  ? `${depentPresentAddress.postOffice}, `
+                  : ""}
+                {depentPresentAddress?.thana
+                  ? `${depentPresentAddress.thana}, `
+                  : ""}
+                {depentPresentAddress?.district || ""}
+              </td>
+            </tr>
+            <tr>
+              <td className="noa-label">এম.আই.এস বেনিফিশিয়ারি নম্বর:</td>
+              <td className="noa-value">{row?.beneficiaryId || ""}</td>
+            </tr>
+            <tr>
+              <td className="noa-label">
+                কেন্দ্রীয় তহবিল থেকে প্রদত্ত অর্থের পরিমাণ:
+              </td>
+              <td className="noa-value">{OtherCompensationAmount}</td>
             </tr>
 
+            {/* ... (Existing Rows - Section 3: Benefit Info) ... */}
             <tr>
-              <td className="td label">
-                কেন্দ্রীয় তহবিল প্রদত্ত অর্থ সমন্নয়ের পর প্রদেয়
-                <br />
+              <td colSpan={2} className="noa-section">
+                মাসিক প্রদেয় টপ-আপ বেনেফিটের তথ্য:
+              </td>
+            </tr>
+            <tr>
+              <td className="noa-label">
+                মাসিক প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
+              </td>
+              <td className="noa-value">{row?.eisMonthlyAmount || ""}</td>
+            </tr>
+            <tr>
+              <td className="noa-label">
+                কেন্দ্রীয় তহবিল প্রদত্ত অর্থ সমন্নয়ের পর প্রদেয় <br />
                 মাসিক ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
               </td>
-              <td className="td value">{cfAndEisAmount || ""}</td>
+              <td className="noa-value">{cfAndEisAmount || ""}</td>
             </tr>
-
             <tr>
-              <td className="td label">
+              <td className="noa-label">
                 মাসিক ই.আই.এস টপ-আপ বেনিফিটের কার্যকরী তারিখ:
               </td>
-              <td className="td value">{row?.processingDate || ""}</td>
+              <td className="noa-value">{row?.processingDate || ""}</td>
             </tr>
           </tbody>
         </table>
-        <div>
+
+        {/* ===== IMPORTANT INFO SECTION (MOVED TO NEXT PAGE) ===== */}
+        <div
+          style={{
+            pageBreakBefore: "always", // Force new page
+            marginTop: "60mm", // Push down below fixed header on Page 2
+            fontSize: "11px",
+          }}
+        >
           <strong>
             মাসিক টপ-আপ বেনিফিট ও ই.আই.এস পাইলট সম্পর্কে গুরুত্বপূর্ণ তথ্য:
           </strong>
-          <ol>
+          <ol style={{ marginTop: "5px", paddingLeft: "25px" }}>
             <li>টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে।</li>
             <li>নির্ভরশীল সদস্য পরিবর্তন হলে অবহিত করতে হবে।</li>
             <li>প্রমাণপত্র প্রতি বছর প্রদান করতে হবে।</li>
-            <li>ক্রেতা/ব্র্যান্ডদের অর্থায়নে টপ-আপ প্রদান করা হয়।</li>
+            <li>ক্রেতা/ব্র্যান্ডদের অর্থায়নে টপ-আপ প্রদান করা হয়।</li>
           </ol>
         </div>
       </div>
 
-      {/* ===== FOOTER ===== */}
-      <div className="footer">
-        <div className="signature">
-          <p>মহাপরিচালক</p>
-          <p>কেন্দ্রীয় তহবিল</p>
-          <p>ও</p>
-          <p>সদস্য সচিব-ইআইএস গভর্নেন্স বোর্ড</p>
+      {/* ===== FOOTER (Fixed on every page) ===== */}
+      <div className="noa-footer">
+        <div className="noa-signature">
+          <p style={{ margin: "2px 0" }}>মহাপরিচালক</p>
+          <p style={{ margin: "2px 0" }}>কেন্দ্রীয় তহবিল</p>
+          <p style={{ margin: "2px 0" }}>ও</p>
+          <p style={{ margin: "2px 0" }}>সদস্য সচিব-ইআইএস গভর্নেন্স বোর্ড</p>
         </div>
       </div>
     </div>
   );
 };
-
 export default GenerateEisBFTN;
