@@ -202,7 +202,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
 
       // 5. Extract IDs
       const senderIds = actualNodes
-        .filter(item=>item?.status === "forward_to_comiitee")
+        .filter((item) => item?.status === "forward_to_comiitee")
         .map((item) => {
           const node = item.node || item; // Handle if double nested
           return node?.applicationTo?.id ? decodeId(node.applicationTo.id) : null;
@@ -211,8 +211,8 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
 
       console.log("Sender IDs List:", senderIds);
       await dispatch(fetchWorkforceSignatures([...senderIds])).then((res) => {
-        console.log("signature response", res)
-        setEisApprovalSignature(res?.payload?.data?.workforceSignatures)
+        console.log("signature response", res);
+        setEisApprovalSignature(res?.payload?.data?.workforceSignatures);
       });
 
       // 6. Revert Note Logic
@@ -664,15 +664,24 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
             <Box mt={4}>
               <Typography style={{ fontWeight: "bold", textDecoration: "underline", color: "#000" }}>Signature of EIS-GB Sub Committee Members:</Typography>
               <Grid container spacing={2} className={classes.signatureContainer}>
-                {eisApprovalSignature?.filter((sig)=>sig?.role?.name === "Eis Committee"||sig?.role?.name === "Eis Association Committee").map((sig, i) => (
-                  <Grid item xs={3} key={i}>
-                    <img src={sig?.workforce_document?.url} alt="signature image"/>
-                    <div className={classes.signatureBlock}>
-                      <p>{sig?.last_name}</p>
-                      <p>{sig?.role?.name}</p>
-                    </div>
-                  </Grid>
-                ))}
+                {eisApprovalSignature
+                  ?.filter((sig) => ["eis committee", "eis association committee"].includes(sig?.role?.name?.toLowerCase()))
+                  .map((sig, i) => (
+                    <Grid item xs={3} key={i}>
+                      {sig?.workforce_document?.url ? (
+                        <img src={sig.workforce_document.url} alt="signature" style={{ width: "100%", maxHeight: 80, objectFit: "contain" }} />
+                      ) : (
+                        <Typography variant="caption" style={{ fontStyle: "italic", color: "#999" }}>
+                          Signature not available
+                        </Typography>
+                      )}
+
+                      <div className={classes.signatureBlock}>
+                        <p>{sig?.last_name}</p>
+                        <p>{sig?.role?.name}</p>
+                      </div>
+                    </Grid>
+                  ))}
               </Grid>
             </Box>
           </div>

@@ -489,6 +489,7 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
                 const monthIndex = row?.monthIndex || "";
                 const monthFormatted = String(monthIndex).padStart(2, "0");
                 const lastDay = new Date(year, monthIndex, 0).getDate();
+ 
                 return(
                 <TableRow key={index}>
                   <TableCell>
@@ -530,18 +531,17 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
             <FormattedMessage id="workforce.modal.close" />
           </Button>
 
-          {/* <Button
+          <Button
             onClick={handleDialogPrint}
             variant="contained"
             color="primary"
           >
             <FormattedMessage id="workforce.modal.print.advice" />
-          </Button> */}
+          </Button>
 
           <Button onClick={exportToExcel} variant="contained" color="success">
             <FormattedMessage id="workforce.modal.excel" />
           </Button>
-          <Button onClick={onClose} variant="outlined" color="primary">Close</Button>
         </DialogActions>
       </Dialog>
 
@@ -565,8 +565,9 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
 
 // --- FULLY RESTORED NOA TEMPLATE WITH FIXED CSS ---
 // --- NOA TEMPLATE COMPONENT (Updated with Global Classes) ---
-// --- NOAPrintTemplate with Page Break ---
 const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
+  
+  // --- Original Logic Starts ---
   const tryParse = (value) => {
     if (typeof value === "string") {
       try {
@@ -582,6 +583,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
   };
 
   const formatAddress = (locationData, addressData) => {
+    // TryParse handles both JSON strings and objects
     const address = tryParse(addressData) || {};
     const location = tryParse(locationData) || {};
 
@@ -594,7 +596,8 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
       .filter(Boolean)
       .join(", ");
 
-    const thana = location?.parent?.name || location?.name;
+    // Navigate location parents for Thana/District
+    const thana = location?.parent?.name || location?.name; // Fallback if structure varies
     const district = location?.parent?.parent?.name || location?.parent?.name;
 
     return {
@@ -605,45 +608,47 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
     };
   };
 
+  const employeePresentAddress = formatAddress(
+    row?.workforceApplication?.workforceEmployee?.presentLocation, row?.workforceEmployee?.employeePresentAddress
+  );
+  
   const depentPresentAddress = formatAddress(
-    row?.workforceEmployeeDependent?.[0]?.presentLocation,
+    row?.workforceEmployeeDependent?.[0]?.presentLocation, 
     row?.workforceEmployeeDependent?.[0]?.depentPresentAddress
   );
 
-  const cfAndEisAmount =
-    (parseFloat(row?.eisMonthlyAmount) || 0) +
-    (parseFloat(OtherCompensationAmount) || 0);
+  const cfAndEisAmount = (parseFloat(row?.eisMonthlyAmount) || 0) + (parseFloat(OtherCompensationAmount) || 0);
+  console.log("cfAndEisAmount", cfAndEisAmount);
+  console.log(row)
+  // --- Original Logic Ends ---
+
+  // NOTE: We do NOT use 'useStyles()' here anymore because classes are global strings.
+  // Instead of {classes.noaPage}, we use className="noa-page"
 
   return (
     <div className="noa-page">
-      {/* ===== HEADER (Fixed on every page) ===== */}
+      {/* ===== HEADER ===== */}
       <div className="noa-header">
-        <p style={{ margin: 0 }}>ব্যক্তিগত</p>
-        <h3 style={{ margin: "5px 0" }}>
-          এমপ্লয়মেন্ট ইনজুরি স্কীম-(ই.আই.এস) পাইলট
-        </h3>
-        <p style={{ margin: "2px 0" }}>
-          ১৯৬, ১০ম তলা, শ্রম ভবন, শহীদ সৈয়দ নজরুল ইসলাম সরনী, বিজয়নগর,
-          ঢাকা-১০০০
-        </p>
-        <p style={{ margin: "2px 0" }}>
-          মোবাইল: ০১৮৮৬-৯২১০৩০ | ই-মেইল: verification@eis-pilot-bd.org |
-          ওয়েবসাইট: eis-pilot-bd.org
-        </p>
-        <h4 style={{ margin: "10px 0", textDecoration: "underline" }}>
-          নোটিশ অফ অ্যাওয়ার্ড- কর্মরত অবস্থায় দুর্ঘটনাজনিত মৃত্যু
-        </h4>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            padding: "0 25mm",
-            marginTop: "10px",
-          }}
-        >
-          <span>সূত্র: {row?.beneficiaryId || ""}</span>
-          <span>তারিখ: {new Date().toLocaleDateString("bn-BD")}</span>
+        {/* We can use standard HTML tags since styling is handled by global CSS targeting .noa-header children */}
+        <div>
+          <p style={{ margin: 0 }}>ব্যক্তিগত</p>
+          <h3 style={{ margin: "5px 0" }}>এমপ্লয়মেন্ট ইনজুরি স্কীম-(ই.আই.এস) পাইলট</h3>
+          <p style={{ margin: "2px 0" }}>
+            ১৯৬, ১০ম তলা, শ্রম ভবন, শহীদ সৈয়দ নজরুল ইসলাম সরনী, বিজয়নগর,
+            ঢাকা-১০০০
+          </p>
+          <p style={{ margin: "2px 0" }}>
+            মোবাইল: ০১৮৮৬-৯২১০৩০ | ই-মেইল: verification@eis-pilot-bd.org |
+            ওয়েবসাইট: eis-pilot-bd.org
+          </p>
+          <h4 style={{ margin: "10px 0", textDecoration: "underline" }}>
+            নোটিশ অফ অ্যাওয়ার্ড- কর্মরত অবস্থায় দুর্ঘটনাজনিত মৃত্যু
+          </h4>
+          
+          <div style={{ display: "flex", justifyContent: "space-between", padding: "0 25mm", marginTop: "10px" }}>
+             <span>সূত্র: {row?.beneficiaryId || ""}</span>
+             <span>তারিখ: {new Date().toLocaleDateString("bn-BD")}</span>
+          </div>
         </div>
       </div>
 
@@ -651,84 +656,77 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
       <div className="noa-body">
         <table className="noa-table">
           <tbody>
-            {/* ... (Existing Rows - Section 1: Worker Info) ... */}
+            {/* Section 1 */}
             <tr>
               <td colSpan={2} className="noa-section">
                 মৃত শ্রমিকের তথ্য:
               </td>
             </tr>
+
             <tr>
               <td className="noa-label">শ্রমিকের নাম:</td>
-              <td className="noa-value">
-                {row?.workforceApplication?.workforceEmployee?.firstNameBn || ""}
-              </td>
-            </tr>
-            <tr>
-              <td className="noa-label">শ্রমিকের জাতীয় পরিচয়পত্র নম্বর:</td>
-              <td className="noa-value">
-                {row?.workforceApplication?.workforceEmployee?.nid || ""}
-              </td>
-            </tr>
-            <tr>
-              <td className="noa-label">ঠিকানা:</td>
-              <td className="noa-value"></td>
+              <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.firstNameBn || ""}</td>
             </tr>
 
-            {/* ... (Existing Rows - Section 2: Dependent Info) ... */}
+            <tr>
+              <td className="noa-label">শ্রমিকের জাতীয় পরিচয়পত্র নম্বর:</td>
+              <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.nid || ""}</td>
+            </tr>
+
+            <tr>
+              <td className="noa-label">ঠিকানা:</td>
+              <td className="noa-value">
+                {/* গ্রামঃ {employeePresentAddress?.village || ""}, ডাকঘরঃ {employeePresentAddress?.postOffice || ""} , <br />
+                উপজেলা/থানাঃ {employeePresentAddress?.thana || ""}, জেলাঃ  {employeePresentAddress?.district || ""} */}
+              </td>
+            </tr>
+
+            {/* Section 2 */}
             <tr>
               <td colSpan={2} className="noa-section">
                 উপযুক্ত নির্ভরশীল ব্যক্তির তথ্য:
               </td>
             </tr>
+
             <tr>
               <td className="noa-label">উপযুক্ত নির্ভরশীলের নাম:</td>
-              <td className="noa-value">
-                {row?.workforceEmployeeDependent?.[0]?.nameBn || ""}
-              </td>
+              <td className="noa-value">{row?.workforceEmployeeDependent?.[0]?.nameBn || ""}</td>
             </tr>
+
             <tr>
               <td className="noa-label">মৃত শ্রমিকের সাথে সম্পর্ক:</td>
-              <td className="noa-value">
-                {RELATION_LABEL_MAP[
-                  row?.workforceEmployeeDependent?.[0]?.relationWithWorker
-                ] || ""}
-              </td>
+              <td className="noa-value">{RELATION_LABEL_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker || ""]}</td>
             </tr>
+
             <tr>
               <td className="noa-label">
                 নির্ভরশীল ব্যক্তির জাতীয় পরিচয়পত্র / জন্মসনদ নম্বর:
               </td>
-              <td className="noa-value">
-                {row?.workforceEmployeeDependent?.[0]?.nid || ""}
-              </td>
+              <td className="noa-value">{row?.workforceEmployeeDependent?.[0]?.nid || ""}</td>
             </tr>
+
             <tr>
               <td className="noa-label">
-                নির্ভরশীল ব্যক্তির জন্ম তারিখ (মাস/দিন/বছর):
+                নির্ভরশীল ব্যক্তির জন্ম তারিখ: <br /> (মাস/দিন/বছর)
               </td>
-              <td className="noa-value">
-                {row?.workforceEmployeeDependent?.[0]?.birthDate || ""}
-              </td>
+              <td className="noa-value">{row?.workforceEmployeeDependent?.[0]?.birthDate || ""}</td>
             </tr>
+
             <tr>
               <td className="noa-label">ঠিকানা:</td>
               <td className="noa-value">
-                {depentPresentAddress?.village
-                  ? `${depentPresentAddress.village}, `
-                  : ""}
-                {depentPresentAddress?.postOffice
-                  ? `${depentPresentAddress.postOffice}, `
-                  : ""}
-                {depentPresentAddress?.thana
-                  ? `${depentPresentAddress.thana}, `
-                  : ""}
+                {depentPresentAddress?.village ? `${depentPresentAddress.village}, ` : ""} 
+                {depentPresentAddress?.postOffice ? `${depentPresentAddress.postOffice}, ` : ""}
+                {depentPresentAddress?.thana ? `${depentPresentAddress.thana}, ` : ""} 
                 {depentPresentAddress?.district || ""}
               </td>
             </tr>
+
             <tr>
               <td className="noa-label">এম.আই.এস বেনিফিশিয়ারি নম্বর:</td>
               <td className="noa-value">{row?.beneficiaryId || ""}</td>
             </tr>
+
             <tr>
               <td className="noa-label">
                 কেন্দ্রীয় তহবিল থেকে প্রদত্ত অর্থের পরিমাণ:
@@ -736,25 +734,29 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
               <td className="noa-value">{OtherCompensationAmount}</td>
             </tr>
 
-            {/* ... (Existing Rows - Section 3: Benefit Info) ... */}
+            {/* Section 3 */}
             <tr>
               <td colSpan={2} className="noa-section">
                 মাসিক প্রদেয় টপ-আপ বেনেফিটের তথ্য:
               </td>
             </tr>
+
             <tr>
               <td className="noa-label">
                 মাসিক প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
               </td>
               <td className="noa-value">{row?.eisMonthlyAmount || ""}</td>
             </tr>
+
             <tr>
               <td className="noa-label">
-                কেন্দ্রীয় তহবিল প্রদত্ত অর্থ সমন্নয়ের পর প্রদেয় <br />
+                কেন্দ্রীয় তহবিল প্রদত্ত অর্থ সমন্নয়ের পর প্রদেয়
+                <br />
                 মাসিক ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
               </td>
               <td className="noa-value">{cfAndEisAmount || ""}</td>
             </tr>
+
             <tr>
               <td className="noa-label">
                 মাসিক ই.আই.এস টপ-আপ বেনিফিটের কার্যকরী তারিখ:
@@ -764,18 +766,11 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
           </tbody>
         </table>
 
-        {/* ===== IMPORTANT INFO SECTION (MOVED TO NEXT PAGE) ===== */}
-        <div
-          style={{
-            pageBreakBefore: "always", // Force new page
-            marginTop: "60mm", // Push down below fixed header on Page 2
-            fontSize: "11px",
-          }}
-        >
+        <div style={{ marginTop: "15px", fontSize: "11px" }}>
           <strong>
             মাসিক টপ-আপ বেনিফিট ও ই.আই.এস পাইলট সম্পর্কে গুরুত্বপূর্ণ তথ্য:
           </strong>
-          <ol style={{ marginTop: "5px", paddingLeft: "25px" }}>
+          <ol style={{ marginTop: "5px", paddingLeft: "20px" }}>
             <li>টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে।</li>
             <li>নির্ভরশীল সদস্য পরিবর্তন হলে অবহিত করতে হবে।</li>
             <li>প্রমাণপত্র প্রতি বছর প্রদান করতে হবে।</li>
@@ -784,7 +779,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
         </div>
       </div>
 
-      {/* ===== FOOTER (Fixed on every page) ===== */}
+      {/* ===== FOOTER ===== */}
       <div className="noa-footer">
         <div className="noa-signature">
           <p style={{ margin: "2px 0" }}>মহাপরিচালক</p>
