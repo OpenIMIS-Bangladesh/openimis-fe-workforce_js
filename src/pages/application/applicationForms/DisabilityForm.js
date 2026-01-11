@@ -24,7 +24,7 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReasonForDisability from "../FormsComponents/Disability/ApplicationReasonForDisability";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
-import { isAtLeast18YearsOld, safeApplicationId, validateRequiredFields } from "../../../utils/utils";
+import { isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -271,7 +271,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
               organizationType: formData.organizationType,
               applicationType: formData.applicationType,
               company: formData?.workforceEmployee?.company?.id,
-              factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
+              factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
               grantAmount: formData?.employeeAccidentInfo.grantAmount,
               metadata: JSON.stringify(formData.metadata),
               status: WORKFORCE_STATUS.DRAFT,
@@ -299,7 +299,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
             id: safeApplicationId(applicationId, parsedApplicationData),
             workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
+            factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -318,7 +318,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
+            factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
             metadata: JSON.stringify(formData.metadata),
             status: WORKFORCE_STATUS.DRAFT,
@@ -345,7 +345,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
             id: safeApplicationId(applicationId, parsedApplicationData),
             workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
+            factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -376,7 +376,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
       id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
       company: formData?.workforceEmployee?.company?.id,
-      factory: formData?.workforceEmployee?.factory?.id ? decodeId(formData?.workforceEmployee?.factory?.id) : null,
+      factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       grantAmount: formData?.employeeAccidentInfo.grantAmount,

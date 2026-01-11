@@ -108,17 +108,17 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
                 <Divider sstyle={{ marginY: "25px 0px" }} />
               </Grid>
               <Grid item xs={12}>
-                
-                {((formData?.applicationType === "financialAssistance"&& formData?.organizationType === "cf") ||( formData?.applicationType === "financialAssistance"&&formData?.organizationType === "eis")||( formData?.applicationType === "disabilityAssistance"&&formData?.organizationType === "eis"))
-                 && (
+                {((formData?.applicationType === "financialAssistance" && formData?.organizationType === "cf") ||
+                  (formData?.applicationType === "financialAssistance" && formData?.organizationType === "eis") ||
+                  (formData?.applicationType === "disabilityAssistance" && formData?.organizationType === "eis")) && (
                   <>
-                  <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
-                  <Grid item xs={12}>
-                    <FormControlLabel
-                      control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
-                      label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
-                    />
-                  </Grid>
+                    <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
+                    <Grid item xs={12}>
+                      <FormControlLabel
+                        control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
+                        label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
+                      />
+                    </Grid>
                   </>
                 )}
                 {/* {(formData?.applicationType !== "financialAssistance" || formData?.applicationType !== "DeadlyGrant") &&
@@ -130,18 +130,20 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
                       />
                     </Grid>
                   )} */}
-                {((formData?.applicationType === "financialAssistance"&&formData?.organizationType === "cf") ||( formData?.applicationType === "financialAssistance"&&formData?.organizationType === "eis")||( formData?.applicationType === "disabilityAssistance"&&formData?.organizationType === "eis")) && (
+                {((formData?.applicationType === "financialAssistance" && formData?.organizationType === "cf") ||
+                  (formData?.applicationType === "financialAssistance" && formData?.organizationType === "eis") ||
+                  (formData?.applicationType === "disabilityAssistance" && formData?.organizationType === "eis")) && (
                   <>
-                <PublishedComponent
-                  pubRef="location.DetailedLocation"
-                  withNull={true}
-                  value={formData?.workforceEmployee?.permanentLocation || null}
-                  onChange={(permanentLocation) => handleChange("permanentLocation", permanentLocation)}
-                  readOnly={sameAsPresent}
-                  required
-                  split={true}
-                />
-                {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
+                    <PublishedComponent
+                      pubRef="location.DetailedLocation"
+                      withNull={true}
+                      value={formData?.workforceEmployee?.permanentLocation || null}
+                      onChange={(permanentLocation) => handleChange("permanentLocation", permanentLocation)}
+                      readOnly={sameAsPresent}
+                      required
+                      split={true}
+                    />
+                    {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
                   </>
                 )}
               </Grid>

@@ -108,7 +108,6 @@ export const WORKFORCE_STATUS = {
   EIS_PAYMENT_PROCESS: "eis_payment_process",
 
 
-
 };
 export const STATUS_MAP_BN  = {
   active: "সক্রিয়",
@@ -596,7 +595,8 @@ export const banglaLabels = {
   otherInjuredType:"অন্যান্য আহত প্রকার",
   otherInjuredBenefit:"অন্যান্য আহত সুবিধা",
   otherInjuredTracking:"অন্যান্য আহত ট্র্যাকিং নম্বর",
-  relationWithWorker:"শ্রমিকের সাথে সম্পর্ক"
+  relationWithWorker:"শ্রমিকের সাথে সম্পর্ক",
+  factory:"কারখানা"
 };
 
 export const roleMaxDayCount = {
