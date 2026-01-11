@@ -525,13 +525,6 @@ export function getApprovalStatus(isApproved) {
 }
 
 
-export const isEisPath = () => {
-  if (typeof window !== "undefined") {
-    return window.location.href.includes("eis");
-  }
-  return false; // fallback if window is not defined (SSR)
-  // return true;
-};
 
 
 /**
@@ -892,3 +885,11 @@ const FooterWrapper = ({ children }) => (
   </div>
 );
 
+
+export const isEisPath = () => {
+  if (typeof window !== "undefined") {
+    return window.location.href.includes("eis");
+  }
+  return false; // fallback if window is not defined (SSR)
+  // return true;
+};
