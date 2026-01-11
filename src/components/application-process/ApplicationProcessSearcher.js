@@ -2695,11 +2695,18 @@ class ApplicationProcessSearcher extends Component {
                 </Button>
               </>
             ) : (
-              <>
-                <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenSA: true })}>
-                  <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+            disableButtons != 1 && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => this.setState({ forwardModalOpenSA: true })}
+                >
+                  <FormattedMessage
+                    module="workforce"
+                    id="workforce.employee.application.forward"
+                  />
                 </Button>
-              </>
+              )
             )}
             <IconButton onClick={this.handleOpenBFTN}>
               <PrintIcon />
