@@ -1347,6 +1347,7 @@ export function fetchWorkforceDocument(mm, filters) {
     "note",
     "workforceApplication{id}",
     "workforceDependent{id}",
+    "workforceEmployeeBankingInfo{id}",
     "workforceDocumentType{id,nameBn,nameEn,documentType,mandatoryForApplicant,formStepNo,fieldId}",
   ];
   const payload = formatPageQueryWithCount(

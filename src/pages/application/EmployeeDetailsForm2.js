@@ -305,7 +305,7 @@ const EmployeeDetailsForm2 = ({
   };
 
   console.log({ fahim: dependentIndex });
-  console.log({ fahimA: accountIndex });
+  console.log({ fahimA: handleChange });
   return (
     <Box mt={1}>
       <Grid container spacing={2}>
@@ -351,7 +351,7 @@ const EmployeeDetailsForm2 = ({
                       ) : (
                         <FileUploader
                           fieldKey={uniqueFieldKey}
-                          onFileChange={handleFileChange}
+                          onFileChange={handleChange.length>0? handleChange: handleFileChange}
                           applicationId={applicationId}
                           documentType={document.documentType}
                           documentProp={document}

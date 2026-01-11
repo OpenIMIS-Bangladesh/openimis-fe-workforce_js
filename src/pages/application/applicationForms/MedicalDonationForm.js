@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Stepper, Step, StepLabel, Paper, Box, Typography,Checkbox,Grid,FormControlLabel  } from "@material-ui/core";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox, Grid, FormControlLabel } from "@material-ui/core";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage, useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedApplicationType, applicationForSelf,selectedFactory, parsedApplicationData }) => {
+const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApplicationType, applicationForSelf, selectedFactory, parsedApplicationData }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
   const modulesManager = useModulesManager();
@@ -59,6 +59,7 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
   const [acknowledged, setAcknowledged] = useState(false);
   const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
+  const uploadBankFile = useSelector((state) => state.workforce.uploadBankFile);
   const uploadDependentFile = useSelector((state) => state.workforce.uploadDependentFile);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -110,8 +111,8 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
       organizationId: "",
     },
     company: null,
-    factory: selectedFactory||null,
-    workforceFactoryId:workforceFactoryId||"",
+    factory: selectedFactory || null,
+    workforceFactoryId: workforceFactoryId || "",
     isSubmitted: "no",
     organizationType: "",
     applicationType: "",
@@ -188,9 +189,15 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || workforceFactoryId||selectedFactory|| null,
+        factory:
+          employeeData.factory ||
+          formData?.workforceEmployee?.factory?.id ||
+          parsedApplicationData?.employeeFactory ||
+          workforceFactoryId ||
+          selectedFactory ||
+          null,
         applicationForSelf: applicationForSelf,
-        workforceFactoryId:workforceFactoryId||"",
+        workforceFactoryId: workforceFactoryId || "",
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
@@ -227,11 +234,11 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
 
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if (nextStep ===2 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
-        let fakeErrors = {...newErrors,rdmp:"core.error.workerAge"}
-        setErrors(fakeErrors)
-        console.log({fakeErrors})
-      }else{
+      if (nextStep === 2 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
+        let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
+        setErrors(fakeErrors);
+        console.log({ fakeErrors });
+      } else {
         setActiveStep(nextStep);
         if (nextStep === 2 || nextStep === 3) {
           const workforceEmployeeData = {
@@ -274,7 +281,7 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
           const createApplicationData = {
             workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
+            factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -289,11 +296,15 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
           };
           console.log({ createApplicationData });
           if (!parsedApplicationData) {
-            const applicationMutation = await formatMutation("createWorkforceApplication", formatApplicationeGQL(createApplicationData), `Created application `);
+            const applicationMutation = await formatMutation(
+              "createWorkforceApplication",
+              formatApplicationeGQL(createApplicationData),
+              `Created application `
+            );
             const applicationClientMutationId = applicationMutation.clientMutationId;
             console.log("applicationClientMutationId", applicationClientMutationId);
             await dispatch(createApplication(applicationMutation, `Created workforce application `));
-  
+
             const fetchRes = await dispatch(
               fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
             );
@@ -302,11 +313,10 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
             if (!applicationgetId && applicationId) {
               applicationgetId = applicationId;
             }
-  
-            if (applicationForSelf === "no" && uploadDependentFile) {
+
+            if (uploadDependentFile) {
               await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${applicationgetId}"`])).then((res) => {
                 const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
-                console.log({ dependentId });
                 uploadDependentFile.map((file, index) => {
                   dispatch(
                     createWorkforceDocument(
@@ -315,17 +325,26 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
                     )
                   );
                 });
-                // dispatch(
-                //   createWorkforceDocument(
-                //     { ...uploadFile, workforceApplicationId: applicationgetId, workforceDependentId: decodeId(dependentId) },
-                //     `Created workforce document`
-                //   )
-                // );
               });
             }
+            dispatch(updateApplication(createApplicationData, `update workforce application ${formData.firstNameEn}`));
           } else {
             const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
             console.log("i am from update", updateApplicationData);
+            if (uploadDependentFile) {
+              await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${parsedApplicationData?.id}"`])).then((res) => {
+                const dependentId = res?.payload?.data?.workforceEmployeeDependent?.edges[0]?.node?.id;
+                console.log({ dependentId });
+                uploadDependentFile.map((file, index) => {
+                  dispatch(
+                    createWorkforceDocument(
+                      { ...file, workforceApplicationId: parsedApplicationData?.id, workforceDependentId: safeDecodeId(dependentId) },
+                      `Created workforce document `
+                    )
+                  );
+                });
+              });
+            }
             dispatch(updateApplication(updateApplicationData, `update workforce application `));
           }
         } else {
@@ -333,7 +352,7 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
             id: safeApplicationId(applicationId, parsedApplicationData),
             workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
+            factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -347,7 +366,7 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
             status: WORKFORCE_STATUS.DRAFT,
             applicationFor: applicationForSelf === "yes" ? "self" : "dependent",
           };
-  
+
           console.log("i am from accident info", updateApplicationData);
           dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
         }
@@ -384,6 +403,13 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
+    if (uploadBankFile) {
+      await uploadBankFile.map((file) => {
+        return dispatch(
+          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`)
+        );
+      });
+    }
     uploadFile.map((file, index) => {
       dispatch(createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId) }, `Created workforce document `));
     });
@@ -395,7 +421,7 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
       id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
       company: formData?.workforceEmployee?.company?.id,
-      factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
+      factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -620,13 +646,13 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
         </Box>
 
         {activeStep === steps.length - 1 && (
-                    <Box>
-                      <FormControlLabel
-                        control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{ color: "blue" }} />}
-                        label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
-                      />
-                    </Box>
-                  )}
+          <Box>
+            <FormControlLabel
+              control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{ color: "blue" }} />}
+              label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
+            />
+          </Box>
+        )}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
@@ -638,9 +664,9 @@ const MedicalDonationForm = ({ workforceFactoryId,organizationType, selectedAppl
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-                  <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
-                    <FormattedMessage module="workforce" id="workforce.submit" />
-                  </Button>
+            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
+              <FormattedMessage module="workforce" id="workforce.submit" />
+            </Button>
           )}
         </div>
       </Paper>

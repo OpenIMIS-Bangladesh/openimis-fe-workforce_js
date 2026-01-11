@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox,Grid,FormControlLabel  } from "@material-ui/core";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox, Grid, FormControlLabel } from "@material-ui/core";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage, useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
@@ -28,7 +28,15 @@ import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getInfoId, getParsedApplication, getUserType, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
+import {
+  getInfoId,
+  getParsedApplication,
+  getUserType,
+  isAtLeast18YearsOld,
+  safeApplicationId,
+  safeDecodeId,
+  validateRequiredFields,
+} from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 import EducationInfoForm from "../FormsComponents/EducationGrantFrom.js/EducationInfoForm";
 import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
@@ -60,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData,selectedFactory }) => {
+const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData, selectedFactory }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
   const modulesManager = useModulesManager();
@@ -83,6 +91,7 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
   });
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
+  const uploadBankFile = useSelector((state) => state.workforce.uploadBankFile);
 
   const user_type = getUserType();
   const reduxState = useSelector((state) => state);
@@ -128,8 +137,8 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
     },
     otherInfo: "",
     company: null,
-    factory: selectedFactory||null,
-    workforceFactoryId:workforceFactoryId||"",
+    factory: selectedFactory || null,
+    workforceFactoryId: workforceFactoryId || "",
     isSubmitted: "no",
     organizationType: "",
     applicationType: "",
@@ -189,9 +198,15 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory ||workforceFactoryId||selectedFactory|| null,
+        factory:
+          employeeData.factory ||
+          formData?.workforceEmployee?.factory?.id ||
+          parsedApplicationData?.employeeFactory ||
+          workforceFactoryId ||
+          selectedFactory ||
+          null,
         applicationForSelf: applicationForSelf,
-        workforceFactoryId:workforceFactoryId||"",
+        workforceFactoryId: workforceFactoryId || "",
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || {},
@@ -228,11 +243,11 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
 
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if (nextStep===1 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
-        let fakeErrors = {...newErrors,rdmp:"core.error.workerAge"}
-        setErrors(fakeErrors)
-        console.log({fakeErrors})
-      }else{
+      if (nextStep === 1 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
+        let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
+        setErrors(fakeErrors);
+        console.log({ fakeErrors });
+      } else {
         setActiveStep(nextStep);
         if (nextStep === 1 || nextStep === 2) {
           const workforceEmployeeData = {
@@ -274,7 +289,7 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
+            factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
             employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
             employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
             employeeDependentInfo: JSON.stringify(formData.dependents),
@@ -293,7 +308,7 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
             const applicationClientMutationId = applicationMutation.clientMutationId;
             console.log("applicationClientMutationId", applicationClientMutationId);
             await dispatch(createApplication(applicationMutation, `Created workforce application ${formData.firstNameEn}`));
-  
+
             // await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
             const fetchRes = await dispatch(
               fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
@@ -303,7 +318,7 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
             if (!applicationgetId && applicationId) {
               applicationgetId = applicationId;
             }
-  
+
             const createEducation = {
               applicationId: applicationgetId,
               educationLevel: formData?.employeeChildrenInfo?.scholarshipFor,
@@ -320,7 +335,7 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
               childBirthCertificateNo: formData?.employeeChildrenInfo?.nid,
               studyClass: formData?.employeeChildrenInfo?.studyingClass,
             };
-  
+
             await dispatch(createEducationInfo(createEducation, `Created workforce education Info`));
           } else {
             const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
@@ -332,7 +347,7 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
             id: safeApplicationId(applicationId, parsedApplicationData),
             workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
+            factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
             institutionInfo: JSON.stringify(formData.institutionInfo),
@@ -378,6 +393,13 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
+    if (uploadBankFile) {
+      await uploadBankFile.map((file) => {
+        return dispatch(
+          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`)
+        );
+      });
+    }
     uploadFile.map((file, index) => {
       dispatch(createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId) }, `Created workforce document `));
     });
@@ -388,7 +410,7 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
       id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
       company: formData?.workforceEmployee?.company?.id,
-      factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
+      factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       institutionInfo: JSON.stringify(formData.institutionInfo),
@@ -477,7 +499,6 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
       label: "workforce.application.steps.previousGrantInfo",
       content: <PreviousGrantInfoForm errors={errors} handleChange={(key, value) => handleChange(key, value, "metadata")} formData={formData} />,
     },
-
   ];
 
   if (showPreview) {
@@ -506,7 +527,6 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
           </Button>
         </div>
       </div>
-
     );
   }
 
@@ -553,13 +573,13 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
           {steps[activeStep].content}
         </Box>
         {activeStep === steps.length - 1 && (
-                    <Box>
-                      <FormControlLabel
-                        control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{ color: "blue" }} />}
-                        label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
-                      />
-                    </Box>
-                  )}
+          <Box>
+            <FormControlLabel
+              control={<Checkbox checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} style={{ color: "blue" }} />}
+              label={<Typography variant="body2">{<FormattedMessage id="workforce.application.acknowledgement.text" module="workforce" />}</Typography>}
+            />
+          </Box>
+        )}
         <div className={classes.buttonContainer}>
           {activeStep > 0 && (
             <Button onClick={handleBack} variant="outlined">
@@ -571,9 +591,9 @@ const EducationGrantForm = ({ workforceFactoryId,organizationType, selectedAppli
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-                  <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
-                    <FormattedMessage module="workforce" id="workforce.submit" />
-                  </Button>
+            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
+              <FormattedMessage module="workforce" id="workforce.submit" />
+            </Button>
           )}
         </div>
       </Paper>

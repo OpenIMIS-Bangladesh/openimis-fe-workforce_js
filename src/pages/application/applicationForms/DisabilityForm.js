@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData,selectedFactory }) => {
+const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData, selectedFactory }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
   const modulesManager = useModulesManager();
@@ -73,6 +73,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
   });
   const reduxState = useSelector((state) => state);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
+  const uploadBankFile = useSelector((state) => state.workforce.uploadBankFile);
   const user_type = getUserType();
 
   const [formData, setFormData] = useState({
@@ -112,7 +113,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
     },
     deathType: "",
     company: null,
-    factory: selectedFactory||null,
+    factory: selectedFactory || null,
     workforceFactoryId: workforceFactoryId || "",
     isSubmitted: "no",
     organizationType: "",
@@ -187,7 +188,13 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
           presentAddress: employeeData.presentAddress || "",
         },
         company: employeeData.company || formData?.workforceEmployee?.company?.id || null,
-        factory: employeeData.factory || formData?.workforceEmployee?.factory?.id || parsedApplicationData?.employeeFactory || workforceFactoryId||selectedFactory || null,
+        factory:
+          employeeData.factory ||
+          formData?.workforceEmployee?.factory?.id ||
+          parsedApplicationData?.employeeFactory ||
+          workforceFactoryId ||
+          selectedFactory ||
+          null,
         applicationForSelf: applicationForSelf,
         workforceFactoryId: workforceFactoryId || "",
         organizationType: parsedApplicationData?.organizationType || organizationType,
@@ -265,13 +272,13 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
           };
           console.log("Update Submitting formData:", formData);
           await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
-          if (organizationType === "eis" && nextStep===1) {
+          if (organizationType === "eis" && nextStep === 1) {
             const createApplicationData = {
               workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
               organizationType: formData.organizationType,
               applicationType: formData.applicationType,
               company: formData?.workforceEmployee?.company?.id,
-              factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
+              factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
               grantAmount: formData?.employeeAccidentInfo.grantAmount,
               metadata: JSON.stringify(formData.metadata),
               status: WORKFORCE_STATUS.DRAFT,
@@ -299,7 +306,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
             id: safeApplicationId(applicationId, parsedApplicationData),
             workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
+            factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -318,7 +325,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
+            factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
             metadata: JSON.stringify(formData.metadata),
             status: WORKFORCE_STATUS.DRAFT,
@@ -345,7 +352,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
             id: safeApplicationId(applicationId, parsedApplicationData),
             workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
+            factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -366,6 +373,13 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
 
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
+    if (uploadBankFile) {
+      await uploadBankFile.map((file) => {
+        return dispatch(
+          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`)
+        );
+      });
+    }
     uploadFile.map((file, index) => {
       dispatch(createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId) }, `Created workforce document `));
     });
@@ -376,7 +390,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
       id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
       company: formData?.workforceEmployee?.company?.id,
-      factory: formData?.factory?.id ?  safeDecodeId(formData?.factory?.id):null,
+      factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       grantAmount: formData?.employeeAccidentInfo.grantAmount,

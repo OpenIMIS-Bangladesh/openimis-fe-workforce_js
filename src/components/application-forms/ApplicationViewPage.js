@@ -246,6 +246,9 @@ const renderDetails = (
       if (parentKey === "workforceEmployeeDependentApplication" && item?.id && fileStates) {
         matchingFiles = fileStates.map((f, i) => ({ ...f, _originalIndex: i })).filter((f) => f?.workforceDependent?.id === item.id);
       }
+      if (parentKey === "employeeBankingInfoApplication" && item?.id && fileStates) {
+        matchingFiles = fileStates.map((f, i) => ({ ...f, _originalIndex: i })).filter((f) => f?.workforceEmployeeBankingInfo?.id === item.id);
+      }
 
       const isAllowedUser = [WORKFORCE_USER_TYPE.EIS_COORDINATOR, WORKFORCE_USER_TYPE.EIS_OFFICER].includes(user_type);
 
@@ -495,8 +498,8 @@ const PREFERRED_SECTION_ORDER = [
   "deceasedWorkerInfo",
   "applicantInfo",
   "workforceEmployeeDependentApplication",
-  "employeeBankInfo",
-  // "employeeBankingInfoApplication",
+  // "employeeBankInfo",
+  "employeeBankingInfoApplication",
 ];
 
 // 2. Define keys to ignore (these were previously inside your map function)
