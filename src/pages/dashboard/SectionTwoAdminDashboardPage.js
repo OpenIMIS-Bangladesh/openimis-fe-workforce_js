@@ -251,7 +251,7 @@ const FiledApplications = () =>{
   </>
 );}
 
-const ApprovedApplications = ({ summaryData = [] }) => {
+const ApprovedApplications = ({ summaryData = [],  disableButtons=0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
 
@@ -288,7 +288,9 @@ const ApprovedApplications = ({ summaryData = [] }) => {
                 <Card style={{ width: "100%" }}>
                   <CardContent>
                     {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} />
+                      <ApplicationProcessSearcher summaryId={item.id}
+                      disableButtons={disableButtons}
+                      />
                     )}
                   </CardContent>
                 </Card>
