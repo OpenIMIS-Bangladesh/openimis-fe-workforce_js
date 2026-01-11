@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Grid, Box, Paper, Divider, Checkbox, FormControlLabel, FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
+import { useTranslations, useModulesManager, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import CustomDetailedLocation from "../../components/application-forms/CustomDetailedLocation";
-import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -22,12 +21,36 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
 
   const [sameAsPresent, setSameAsPresent] = useState(false);
 
+  // ================= VISIBILITY LOGIC =================
+  const showPresentAddress = useMemo(() => {
+    const appType = formData?.applicationType;
+    const orgType = formData?.organizationType;
+
+    // 1. Identify Restricted Scenarios
+    // Condition: Application is (financialAssistance OR deadlyGrant) AND Organization is (cf OR blwf)
+    // Note: Checking both 'deadlyGrant' and 'DeadlyGrant' to be safe with casing
+    const isRestrictedApp = ["financialAssistance", "deadlyGrant", "DeadlyGrant"].includes(appType);
+    const isRestrictedOrg = ["cf", "blwf"].includes(orgType);
+
+    if (isRestrictedApp && isRestrictedOrg) {
+      return false; // HIDE Present Address
+    }
+
+    // 2. Default: SHOW Present Address (includes 'eis' and all other application types)
+    return true;
+  }, [formData?.applicationType, formData?.organizationType]);
+
+  // Permanent address should be shown for everyone as per "rest of the applications... will be shown"
+  const showPermanentAddress = true; 
+  // ====================================================
+
   useMemo(() => {
-    if (sameAsPresent) {
+    if (sameAsPresent && showPresentAddress) {
       const presentLocation = formData?.workforceEmployee?.presentLocation || null;
       const presentAddress = formData?.workforceEmployee?.presentAddress || "";
+      
       handleChange("permanentLocation", presentLocation);
-      // handleChange("permanentAddress", presentAddress);
+      
       try {
         const parsedAddress = JSON.parse(presentAddress);
         handleChange("permanentAddress", JSON.stringify(parsedAddress));
@@ -35,11 +58,10 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
         handleChange("permanentAddress", presentAddress);
       }
     }
-  }, [sameAsPresent, formData?.workforceEmployee?.presentLocation, formData?.workforceEmployee?.presentAddress]);
+  }, [sameAsPresent, showPresentAddress, formData?.workforceEmployee?.presentLocation, formData?.workforceEmployee?.presentAddress]);
 
   const isCityLocation = (locationObj) => {
     let current = locationObj;
-
     while (current) {
       if (current.name && current.name.includes("সিটি কর্পোরেশন")) {
         return true;
@@ -48,8 +70,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
       }
       current = current.parent;
     }
-
-    return false; // not a city
+    return false;
   };
 
   const getDeathLabel = (labelKey) => {
@@ -57,8 +78,6 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
       ? `${formatMessage("workforce.dead")} শ্রমিকের  ${formatMessage(labelKey)}`
       : formatMessage(labelKey);
   };
-
-  console.log({ fromLocation: formData });
 
   return (
     <Box mt={1}>
@@ -70,70 +89,66 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
             </Box>
 
             <Grid container spacing={2}>
-              {/* Present Location */}
-              {(formData?.applicationType !== "financialAssistance" || formData?.applicationType !== "DeadlyGrant") && (
-                <Grid item xs={12}>
-                  <b>{getDeathLabel("workforce.employee.present_location")}</b>
-                  <PublishedComponent
-                    pubRef="location.DetailedLocation"
-                    withNull={true}
-                    value={formData?.workforceEmployee?.presentLocation || null}
-                    onChange={(presentLocation) => handleChange("presentLocation", presentLocation)}
-                    readOnly={false}
-                    required
-                    split={true}
-                  />
-                  {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
-                </Grid>
+              {/* ================= PRESENT LOCATION SECTION ================= */}
+              {showPresentAddress && (
+                <>
+                  <Grid item xs={12}>
+                    <b>{getDeathLabel("workforce.employee.present_location")}</b>
+                    <PublishedComponent
+                      pubRef="location.DetailedLocation"
+                      withNull={true}
+                      value={formData?.workforceEmployee?.presentLocation || null}
+                      onChange={(presentLocation) => handleChange("presentLocation", presentLocation)}
+                      readOnly={false}
+                      required
+                      split={true}
+                    />
+                    {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
+                  </Grid>
+
+                  {formData?.workforceEmployee?.presentLocation && (
+                    <Grid item xs={12}>
+                      <CustomDetailedLocation
+                        id="presentLocationCustomDetailedLocation"
+                        locationType={isCityLocation(formData?.workforceEmployee?.presentLocation) ? "city" : "rural"}
+                        onChange={handleChange}
+                        addressKey="presentAddress"
+                        data={formData?.workforceEmployee?.presentAddress}
+                        readOnly={false}
+                        locationData={formData?.workforceEmployee?.presentLocation}
+                        errors={errors}
+                      />
+                    </Grid>
+                  )}
+                </>
               )}
 
-              {formData?.workforceEmployee?.presentLocation &&
-                (formData?.applicationType !== "financialAssistance" || formData?.applicationType !== "DeadlyGrant") && (
+              {/* ================= PERMANENT LOCATION SECTION ================= */}
+              {showPermanentAddress && (
+                <>
                   <Grid item xs={12}>
-                    <CustomDetailedLocation
-                      id="permanentLocationCustomDetailedLocation"
-                      locationType={isCityLocation(formData?.workforceEmployee?.presentLocation) ? "city" : "rural"}
-                      onChange={handleChange}
-                      addressKey="presentAddress"
-                      data={formData?.workforceEmployee?.presentAddress}
-                      readOnly={false}
-                      locationData={formData?.workforceEmployee?.presentLocation}
-                      errors={errors}
-                    />
+                    <Divider style={{ margin: "25px 0px" }} />
                   </Grid>
-                )}
 
-              {/* Permanent Location */}
-              <Grid item xs={12}>
-                <Divider sstyle={{ marginY: "25px 0px" }} />
-              </Grid>
-              <Grid item xs={12}>
-                {((formData?.applicationType === "financialAssistance" && formData?.organizationType === "cf") ||
-                  (formData?.applicationType === "financialAssistance" && formData?.organizationType === "eis") ||
-                  (formData?.applicationType === "disabilityAssistance" && formData?.organizationType === "eis")) && (
-                  <>
+                  <Grid item xs={12}>
                     <b>{getDeathLabel("workforce.employee.permanent_location")}</b>
-                    <Grid item xs={12}>
-                      <FormControlLabel
-                        control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
-                        label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
-                      />
-                    </Grid>
-                  </>
-                )}
-                {/* {(formData?.applicationType !== "financialAssistance" || formData?.applicationType !== "DeadlyGrant") &&
-                  formData?.organizationType != "eis" && (
-                    <Grid item xs={12}>
-                      <FormControlLabel
-                        control={<Checkbox color="primary" checked={sameAsPresent} onChange={(e) => setSameAsPresent(e.target.checked)} />}
-                        label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
-                      />
-                    </Grid>
-                  )} */}
-                {((formData?.applicationType === "financialAssistance" && formData?.organizationType === "cf") ||
-                  (formData?.applicationType === "financialAssistance" && formData?.organizationType === "eis") ||
-                  (formData?.applicationType === "disabilityAssistance" && formData?.organizationType === "eis")) && (
-                  <>
+                    
+                    {/* "Same as Present" Checkbox - Only show if Present Address is actually visible */}
+                    {showPresentAddress && (
+                      <Grid item xs={12}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox 
+                              color="primary" 
+                              checked={sameAsPresent} 
+                              onChange={(e) => setSameAsPresent(e.target.checked)} 
+                            />
+                          }
+                          label={<FormattedMessage id="workforce.employee.sameAsPresent" defaultMessage="Same as present location" />}
+                        />
+                      </Grid>
+                    )}
+
                     <PublishedComponent
                       pubRef="location.DetailedLocation"
                       withNull={true}
@@ -144,30 +159,22 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
                       split={true}
                     />
                     {errors?.detailedLocation && <FormHelperText error>{errors?.detailedLocation}</FormHelperText>}
-                  </>
-                )}
-              </Grid>
+                  </Grid>
 
-              {/* <Grid item xs={12}>
-                <TextInput
-                  label="workforce.employee.permanent_address"
-                  value={formData?.workforceEmployee?.permanentAddress || ""}
-                  onChange={(v) => handleChange("permanentAddress", v)}
-                  readOnly={sameAsPresent}
-                />
-              </Grid> */}
-              {formData?.workforceEmployee?.permanentLocation && (
-                <Grid item xs={12}>
-                  <CustomDetailedLocation
-                    id="permanentLocationCustomDetailedLocation"
-                    locationType={isCityLocation(formData?.workforceEmployee?.permanentLocation) ? "city" : "rural"}
-                    onChange={handleChange}
-                    addressKey="permanentAddress"
-                    data={formData?.workforceEmployee?.permanentAddress}
-                    readOnly={sameAsPresent}
-                    locationData={formData?.workforceEmployee?.permanentLocation}
-                  />
-                </Grid>
+                  {formData?.workforceEmployee?.permanentLocation && (
+                    <Grid item xs={12}>
+                      <CustomDetailedLocation
+                        id="permanentLocationCustomDetailedLocation"
+                        locationType={isCityLocation(formData?.workforceEmployee?.permanentLocation) ? "city" : "rural"}
+                        onChange={handleChange}
+                        addressKey="permanentAddress"
+                        data={formData?.workforceEmployee?.permanentAddress}
+                        readOnly={sameAsPresent}
+                        locationData={formData?.workforceEmployee?.permanentLocation}
+                      />
+                    </Grid>
+                  )}
+                </>
               )}
             </Grid>
 
