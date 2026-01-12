@@ -119,6 +119,26 @@ const hiddenKeys = [
   "dateCreated",
   "doctorsEntry",
   "wCode",
+  "applicantInfoVerification",
+  "applicantInfoVerificationRemarks",
+  "deceasedWorkerInfoVerification",
+  "deceasedWorkerInfoVerificationRemarks",
+  "doctorsEntryVerification",
+  "doctorsEntryVerificationRemarks",
+  "employeeAccidentInfoVerification",
+  "employeeAccidentInfoVerificationRemarks",
+  "employeeBankInfoVerification",
+  "employeeBankInfoVerificationRemarks",
+  "employeeChildrenInfoVerification",
+  "employeeChildrenInfoVerificationRemarks",
+  "employeeDependentInfoVerification",
+  "employeeDependentInfoVerificationRemarks",
+  "institutionInfoVerification",
+  "institutionInfoVerificationRemarks",
+  "metadataVerification",
+  "metadataVerificationRemarks",
+  "workforceEmployeeVerification",
+  "workforceEmployeeVerificationRemarks",
 ];
 
 const formatKey = (key, language) => {
@@ -594,7 +614,7 @@ const ApplicationViewPage = ({
       id: application.id,
       employeeDependentInfo: JSON.stringify(formattedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
     };
-    console.log("update application payload",payload)
+    console.log("update application payload", payload);
     dispatch(updateApplication(payload, "update workforce dependent info")).then(() => window.location.reload());
   };
 
@@ -759,7 +779,10 @@ const ApplicationViewPage = ({
               </Grid>
             </Grid>
           )}
-          {(user_type === WORKFORCE_USER_TYPE.DOCTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR || user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR || user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) &&
+          {(user_type === WORKFORCE_USER_TYPE.DOCTOR ||
+            user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR ||
+            user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR ||
+            user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) &&
             viewedFromFlag === "verify" && <DoctorsEntries application={application} />}
         </Grid>
 
