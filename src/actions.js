@@ -826,7 +826,7 @@ export function fetchApplication(mm, filters) {
     "institutionInfo",
     "educations{edges{node{id,childNameEn,childNameBn,childBirthDate,childBirthCertificateNo,childNidNo,studyClass,institution,educationLevel,educationBoard,passingYear,rollNumber,registrationNumber,result}}}",
     // "workforceEmployeeDependentApplication{edges{node{id,nameBn,nameEn,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,nid,birthDate,percentageOfCfGrant,phoneNumber,presentLocation {id},presentAddress,permanentLocation {id},permanentAddress}}}",
-    "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,occupation,email,phoneNumber,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,relationWithWorker,attachments,isEligible,remarks,status,employeeBankingDependents{edges{node{id}}},presentAddress,permanentAddress," + present_location_projection + permanent_location_projection + ",bankingInfo{id}}}}",
+    "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,occupation,email,phoneNumber,percentageOfCfGrant,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,relationWithWorker,attachments,isEligible,remarks,status,employeeBankingDependents{edges{node{id}}},presentAddress,permanentAddress," + present_location_projection + permanent_location_projection + ",bankingInfo{id}}}}",
     "employeeBankingInfoApplication{edges{node{id,dateCreated,nameBn,nameEn,accountNo,accountHolderName,accountHolderType,status,branch{id,nameBn,nameEn,bankCode,branchCode,routingNumber,districtNameEn,districtNameBn,parent{id,nameBn,nameEn}},dependant{id},relationWithDependent}}}",
     "metadata",
     "employeeFactory{id, nameBn, nameEn}",
@@ -1133,8 +1133,28 @@ export function fetchDependent(mm, filters) {
     "relationType",
     "relationWithWorker",
     "status",
+    "percentageOfCfGrant",
     present_location_projection,
     permanent_location_projection,
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployeeDependent",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEE_DEPENDENT");
+}
+
+export function fetchWorkforceEmployeeDependent(mm, filters) {
+  const projections = [
+    "id",
+    "nameEn",
+    "nameEn",
+    "relationWithWorker",
+    "status",
+    "percentageOfCfGrant",
+    "bankAccountNo",
+    "bank{id,nameBn,parent{id,nameBn}}"
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployeeDependent",

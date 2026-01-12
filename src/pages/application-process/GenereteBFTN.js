@@ -13,10 +13,10 @@ import {
   Divider,
 } from '@material-ui/core';
 import { WORKFORCE_USER_TYPE } from "../../constants";
-import { getUserTypeFromRights } from "../../utils/utils";
+import { getUserTypeFromRights,safeDecodeId } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
-import { createApplicationSummary, fetchApplicationWiseMovementList, updateApplication, updateApplicationSummary } from "../../actions";
+import { createApplicationSummary, fetchApplicationWiseMovementList, updateApplication, updateApplicationSummary, fetchWorkforceEmployeeDependent } from "../../actions";
 import { useDispatch } from "react-redux";
 import React, { Component, useEffect, useState } from "react";
 import { enToBn } from '../../utils/utils';
@@ -56,6 +56,8 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   const [lastRevertMovement, setLastRevertMovement] = useState(null);
   const [revertNotes, setRevertNotes] = useState([]);
   const [serverResponse, setServerResponse] = useState(null);
+  const [dependentData, setDependentData] = useState([]);
+
   const getTotalAmount = () => {
     return applications
       .filter((item) => String(item.status) === String(status))
@@ -145,6 +147,28 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       fetchApplicationMovement();
     }
   }, [open]);
+
+  
+    const fetchApplicationEmployeeDependent = async () => {
+      const applicationId = safeDecodeId(applications?.[0]?.id)
+
+    try {
+      const response = await dispatch(
+        fetchWorkforceEmployeeDependent(modulesManager, [`workforceApplication_Id: "${applicationId}"`])
+      );
+      const dependentData = parseData(response?.payload?.data?.workforceEmployeeDependent) || [];
+      console.log("dependentData",dependentData)
+      setDependentData(dependentData); 
+
+    } catch (error) {
+      console.error("Failed to load dependent data", error);
+    }
+  };
+  useEffect(() => {
+      if (open ) {
+        fetchApplicationEmployeeDependent();
+      }
+    }, [open]);
 
   const loadImageAsBuffer = async (url) => {
     try {
@@ -329,54 +353,90 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
         <DialogTitle disableTypography>
           <Typography variant="h6"><FormattedMessage module="workforce" id="workforce.application.modal.header" /></Typography>
         </DialogTitle>
-        <DialogContent dividers>
+      <DialogContent dividers>
+        {applications[0]?.applicationType === "financialAssistance" ? (
+          /* ===== NEW BLOCK FOR FINANCIAL ASSISTANCE ===== */
+           <div>
+    <Typography variant="h6">মৃত্যুজনিত অনুদান</Typography>
+
+    {/* OLD BLOCK INSIDE NEW BLOCK */}
+    <Table>
+      <TableHead>
+        <TableRow style={{ fontWeight: "bold" }}>
+          <TableCell>নির্ভরশীলের নাম</TableCell>
+          <TableCell>আবেদনের ধরণ</TableCell>
+          <TableCell align="right">অনুমোদিত পরিমাণ</TableCell>
+          <TableCell>অ্যাকাউন্ট নম্বর</TableCell>
+          <TableCell>ব্যাংকের নাম</TableCell>
+          <TableCell>শাখা</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {dependentData.map((dep, index) => {
+          const totalGrant = 200000;
+          const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * totalGrant;
+
+          return (
+            <TableRow key={index}>
+              <TableCell>{dep?.nameEn || ""}</TableCell>
+              <TableCell>মৃত্যুজনিত অনুদান</TableCell>
+              <TableCell align="right">{approvedAmount.toLocaleString('bn-BD')}</TableCell> 
+              <TableCell>{dep?.bankAccountNo || ""}</TableCell>
+              <TableCell>{dep?.bank?.parent?.nameBn || ""}</TableCell>
+              <TableCell>{dep?.bank?.nameBn || ""}</TableCell>
+            </TableRow>
+          );
+        })}
+
+        <TableRow>
+          <TableCell colSpan={2}><strong>মোট পরিমাণ</strong></TableCell>
+          <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
+          <TableCell colSpan={3} />
+        </TableRow>
+      </TableBody>
+    </Table>
+  </div>
+        ) : (
+          /* ===== OLD BLOCK ===== */
           <Table>
             <TableHead>
-              <TableRow style={{fontWeight:"bold"}}>
-                <TableCell>
-                  <FormattedMessage id="workforce.table.applicantName" defaultMessage="আবেদনকারীর নাম" />
-                </TableCell>
-                <TableCell>
-                  <FormattedMessage id="workforce.table.applicationType" defaultMessage="আবেদনের ধরণ" />
-                </TableCell>
-                <TableCell align="right">
-                  <FormattedMessage id="workforce.table.approvedAmount" defaultMessage="অনুমোদিত পরিমাণ" />
-                </TableCell>
-                <TableCell>
-                  <FormattedMessage id="workforce.table.accountNo" defaultMessage="অ্যাকাউন্ট নম্বর" />
-                </TableCell>
-                <TableCell>
-                  <FormattedMessage id="workforce.table.bankName" defaultMessage="ব্যাংকের নাম" />
-                </TableCell>
-                <TableCell>
-                  <FormattedMessage id="workforce.table.branch" defaultMessage="শাখা" />
-                </TableCell>
+              <TableRow style={{ fontWeight: "bold" }}>
+                <TableCell>আবেদনকারীর নাম</TableCell>
+                <TableCell>আবেদনের ধরণ</TableCell>
+                <TableCell align="right">অনুমোদিত পরিমাণ</TableCell>
+                <TableCell>অ্যাকাউন্ট নম্বর</TableCell>
+                <TableCell>ব্যাংকের নাম</TableCell>
+                <TableCell>শাখা</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {applications.filter((item) => item.status === status).map((row, index) => {
-                const parseBankInfo = JSON.parse(row.employeeBankInfo)
-                const bankInfo = JSON.parse(parseBankInfo)
-                console.log(bankInfo)
-                return (
-                  <TableRow key={index}>
-                    <TableCell>{row.workforceEmployee?.firstNameBn}</TableCell>
-                    <TableCell>{row.applicationType}</TableCell>
-                    <TableCell align="right">{row.grantAmount}</TableCell>
-                    <TableCell>{bankInfo.accountNumber}</TableCell>
-                    <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
-                    <TableCell>{bankInfo?.branch?.nameEn}</TableCell>
-                  </TableRow>
-                )
-              })}
-              <TableRow>
-                <TableCell colSpan={2}><strong><FormattedMessage id="workforce.table.totalAmount" defaultMessage="মোট পরিমাণ" /></strong></TableCell>
-                <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
-                <TableCell colSpan={3} />
-              </TableRow>
-            </TableBody>
-          </Table>
-        </DialogContent>
+              {applications
+                .filter((item) => item.status === status)
+                .map((row, index) => {
+                  const parseBankInfo = JSON.parse(row.employeeBankInfo);
+                  const bankInfo = JSON.parse(parseBankInfo);
+                  return (
+                    <TableRow key={index}>
+                      <TableCell>{row.workforceEmployee?.firstNameBn}</TableCell>
+                      <TableCell>{row.applicationType}</TableCell>
+                      <TableCell align="right">{row.grantAmount}</TableCell>
+                      <TableCell>{bankInfo.accountNumber}</TableCell>
+                      <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
+                      <TableCell>{bankInfo?.branch?.nameEn}</TableCell>
+                    </TableRow>
+                  );
+                })}
+
+        <TableRow>
+          <TableCell colSpan={2}><strong>মোট পরিমাণ</strong></TableCell>
+          <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
+          <TableCell colSpan={3} />
+        </TableRow>
+      </TableBody>
+    </Table>
+  )}
+</DialogContent>
+
         <Divider />
         <DialogActions className={classes.noPrint}>
           <Button onClick={onClose} variant="outlined" color="primary">
