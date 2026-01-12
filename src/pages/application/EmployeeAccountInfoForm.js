@@ -62,7 +62,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
   useEffect(() => {
     if (dependent?.length > 0) {
       setExpanded(0);
-      dependent?.map((dep, index) => handleChange(index, "accountHolderName", dependent?.[index]?.nameBn));
+      dependent?.map((dep, index) => {handleChange(index, "accountHolderName", dep?.nameBn);handleChange(index, "dependentId", dep?.id);handleChange(index, "dependentNid", dep?.nid);handleChange(index, "accountHolderType", "self")});
     } else {
       handleChange(0, "accountHolderName", formdata?.workforceEmployee?.nameBn);
     }
