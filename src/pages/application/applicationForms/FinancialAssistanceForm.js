@@ -239,9 +239,10 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
           permanentLocation: parsedApplicationData?.deceasedWorkerInfo?.permanentLocation || "",
           presentLocation: parsedApplicationData?.deceasedWorkerInfo?.presentLocation || "",
           presentAddress: parsedApplicationData?.deceasedWorkerInfo?.presentAddress || "",
+          factory:formData?.factory
         },
         company: employeeData?.company || formData?.workforceEmployee?.company?.id || null,
-        factory:
+        factory:formData?.factory||
           formData?.employeeFactory?.id ||
           employeeData.factory ||
           formData?.workforceEmployee?.factory?.id ||
@@ -358,8 +359,8 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
             workforceEmployeeId: employeeData?.id || reduxState.core.user.id || "",
             company: formData?.workforceEmployee?.company?.id,
             factory:
-              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id
-                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id)
+              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory
+                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory?.id)
                 : null,
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
@@ -410,8 +411,8 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
             workforceEmployeeId: employeeData?.id || reduxState.core.user.id,
             company: formData?.workforceEmployee?.company?.id,
             factory:
-              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id
-                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id)
+              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory
+                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory?.id)
                 : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
@@ -458,8 +459,8 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
             workforceEmployeeId: employeeData?.id || reduxState.core.user.id,
             company: formData?.workforceEmployee?.company?.id,
             factory:
-              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id
-                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id)
+              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory
+                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory?.id)
                 : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
@@ -550,10 +551,9 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
       id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId: safeDecodeId(formData?.workforceEmployee.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
       company: formData?.workforceEmployee?.company?.id,
-      factory:
-        formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id
-          ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id)
-          : null,
+      factory:formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory
+                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory?.id)
+                : null,
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       grantAmount: formData?.employeeAccidentInfo.grantAmount,
