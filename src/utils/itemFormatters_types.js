@@ -577,6 +577,39 @@ export const itemFormattersCheckerTwo = (
       </Tooltip>
     </div>
   ));
+     // --- REVERT BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      {component.props.disableButtons !== 1 && !component.props.revertedApplication && (
+        <Tooltip title="Revert">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              component.handleOpenRevertModal(application);
+              component.setState({ revertByChecker: true });
+            }}
+          >
+            <UndoIcon style={{color:"red"}}/>
+          </IconButton>
+        </Tooltip>
+      )}
+    </div>
+  ));
+
+  // --- REJECT BUTTON ---
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      {component.props.disableButtons !== 1 && !component.props.revertedApplication && (
+        <Tooltip title="Reject">
+          <span>
+            <IconButton onClick={() => component.handleReject(application)}>
+              <CloseIcon style={{color:"#750506"}}/>
+            </IconButton>
+          </span>
+        </Tooltip>
+      )}
+    </div>
+  ));
   return formatters;
 };
 export const itemFormattersDeputyAsstDirector = (

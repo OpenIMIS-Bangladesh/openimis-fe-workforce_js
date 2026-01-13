@@ -99,6 +99,7 @@
       "workforce.association.email": "Email",
       "workforce.association.address": "Address",
       "workforce.association.webAddress": "Web Address",
+      "workforce.association.startDate": "Start Date",
       "workforce.association.status": "Status",
       "workforce.association.minimumSalary": "Minimum Salary",
 
@@ -442,14 +443,14 @@
 
     "workforce.application.educationInfo.passingYear":"Passing Year",
   "workforce.application.educationInfo.admissionYear": "Admission Year",
-    "workforce.application.educationInfo.rollNo":"Roll No",
-    "workforce.application.educationInfo.IdNo":"Id No",
-    "workforce.application.educationInfo.regNo":"Registration No",
-    "workforce.application.educationInfo.cgpa":"CGPA/GPA",
-    "workforce.application.educationInfo.board":"Education Board",
-    "workforce.application.educationInfo.university":"University / Institute Name",
-    "workforce.application.steps.underGraduate":"Under Graduate",
-    "workforce.application.steps.postGraduate":"Post Graduate",
+    "workforce.application.educationInfo.rollNo": "Roll Number",
+    "workforce.application.educationInfo.IdNo": "ID Number",
+    "workforce.application.educationInfo.regNo": "Registration Number",
+    "workforce.application.educationInfo.cgpa": "CGPA / GPA",
+    "workforce.application.educationInfo.board": "Education Board",
+    "workforce.application.educationInfo.university": "University / Institute Name",
+    "workforce.application.steps.underGraduate": "Undergraduate",
+    "workforce.application.steps.postGraduate": "Postgraduate",
 
 
     "workforce.financial.assistance.normalDeath":"Normal Death",

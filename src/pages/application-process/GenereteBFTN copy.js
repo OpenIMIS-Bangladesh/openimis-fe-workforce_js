@@ -12,11 +12,11 @@ import {
   Button,
   Divider,
 } from '@material-ui/core';
-import { WORKFORCE_USER_TYPE,RELATION_LABEL_MAP } from "../../constants";
-import { getUserTypeFromRights,safeDecodeId } from "../../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../../constants";
+import { getUserTypeFromRights } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
-import { createApplicationSummary, fetchApplicationWiseMovementList, updateApplication, updateApplicationSummary, fetchWorkforceEmployeeDependent } from "../../actions";
+import { createApplicationSummary, fetchApplicationWiseMovementList, updateApplication, updateApplicationSummary } from "../../actions";
 import { useDispatch } from "react-redux";
 import React, { Component, useEffect, useState } from "react";
 import { enToBn } from '../../utils/utils';
@@ -39,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
     '@media print': {
       boxShadow: 'none',
       border: 'none',
-      maxWidth: '95vw',
     },
   },
   dialogContent: {
@@ -57,8 +56,6 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   const [lastRevertMovement, setLastRevertMovement] = useState(null);
   const [revertNotes, setRevertNotes] = useState([]);
   const [serverResponse, setServerResponse] = useState(null);
-  const [dependentData, setDependentData] = useState([]);
-
   const getTotalAmount = () => {
     return applications
       .filter((item) => String(item.status) === String(status))
@@ -148,28 +145,6 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       fetchApplicationMovement();
     }
   }, [open]);
-
-  
-    const fetchApplicationEmployeeDependent = async () => {
-      const applicationId = safeDecodeId(applications?.[0]?.id)
-
-    try {
-      const response = await dispatch(
-        fetchWorkforceEmployeeDependent(modulesManager, [`workforceApplication_Id: "${applicationId}"`])
-      );
-      const dependentData = parseData(response?.payload?.data?.workforceEmployeeDependent) || [];
-      console.log("dependentData",dependentData)
-      setDependentData(dependentData); 
-
-    } catch (error) {
-      console.error("Failed to load dependent data", error);
-    }
-  };
-  useEffect(() => {
-      if (open ) {
-        fetchApplicationEmployeeDependent();
-      }
-    }, [open]);
 
   const loadImageAsBuffer = async (url) => {
     try {
@@ -354,93 +329,54 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
         <DialogTitle disableTypography>
           <Typography variant="h6"><FormattedMessage module="workforce" id="workforce.application.modal.header" /></Typography>
         </DialogTitle>
-
-      <DialogContent dividers>
-        {applications[0]?.applicationType === "financialAssistance" ? (
-          /* ===== NEW BLOCK FOR FINANCIAL ASSISTANCE ===== */
-           <div>
-    <Typography variant="h6">Death grant</Typography>
-
-    {/* OLD BLOCK INSIDE NEW BLOCK */}
-    <Table>
-      <TableHead>
-        <TableRow style={{ fontWeight: "bold" }}>
-          <TableCell>Dependent Name</TableCell>
-          <TableCell>Relation With Worker</TableCell>
-          <TableCell>Application Type</TableCell>
-          <TableCell align="right">Grant Amount</TableCell>
-          <TableCell>Account No</TableCell>
-          <TableCell>Bank Name</TableCell>
-          <TableCell>Branch</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {dependentData.map((dep, index) => {
-          const totalGrant = 200000;
-          const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * totalGrant;
-
-          return (
-            <TableRow key={index}>
-              <TableCell>{dep?.nameEn || ""}</TableCell>
-              <TableCell>{RELATION_LABEL_MAP[dep?.relationWithWorker || ""]}</TableCell>
-              <TableCell>Death grant</TableCell>
-              <TableCell align="right">{approvedAmount}</TableCell> 
-              <TableCell>{dep?.bankAccountNo || ""}</TableCell>
-              <TableCell>{dep?.bank?.parent?.nameEn || ""}</TableCell>
-              <TableCell>{dep?.bank?.nameEn || ""}</TableCell>
-            </TableRow>
-          );
-        })}
-
-        <TableRow>
-          <TableCell colSpan={2}><strong>TOtal Grant</strong></TableCell>
-          <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
-          <TableCell colSpan={3} />
-        </TableRow>
-      </TableBody>
-    </Table>
-  </div>
-        ) : (
-          /* ===== OLD BLOCK ===== */
+        <DialogContent dividers>
           <Table>
             <TableHead>
-              <TableRow style={{ fontWeight: "bold" }}>
-                <TableCell>Applicant Name</TableCell>
-               <TableCell>Application Type</TableCell>
-              <TableCell align="right">Grant Amount</TableCell>
-              <TableCell>Account No</TableCell>
-              <TableCell>Bank Name</TableCell>
-              <TableCell>Branch</TableCell>
+              <TableRow style={{fontWeight:"bold"}}>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.applicantName" defaultMessage="আবেদনকারীর নাম" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.applicationType" defaultMessage="আবেদনের ধরণ" />
+                </TableCell>
+                <TableCell align="right">
+                  <FormattedMessage id="workforce.table.approvedAmount" defaultMessage="অনুমোদিত পরিমাণ" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.accountNo" defaultMessage="অ্যাকাউন্ট নম্বর" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.bankName" defaultMessage="ব্যাংকের নাম" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.branch" defaultMessage="শাখা" />
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {applications
-                .filter((item) => item.status === status)
-                .map((row, index) => {
-                  const parseBankInfo = JSON.parse(row.employeeBankInfo);
-                  const bankInfo = JSON.parse(parseBankInfo);
-                  return (
-                    <TableRow key={index}>
-                      <TableCell>{row.workforceEmployee?.firstNameEn}</TableCell>
-                      <TableCell>{row.applicationType}</TableCell>
-                      <TableCell align="right">{row.grantAmount}</TableCell>
-                      <TableCell>{bankInfo.accountNumber}</TableCell>
-                      <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
-                      <TableCell>{bankInfo?.branch?.nameEn}</TableCell>
-                    </TableRow>
-                  );
-                })}
-
-        <TableRow>
-          <TableCell colSpan={2}><strong>Total Grant</strong></TableCell>
-          <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
-          <TableCell colSpan={3} />
-        </TableRow>
-      </TableBody>
-    </Table>
-  )}
-      </DialogContent>
-
+              {applications.filter((item) => item.status === status).map((row, index) => {
+                const parseBankInfo = JSON.parse(row.employeeBankInfo)
+                const bankInfo = JSON.parse(parseBankInfo)
+                console.log(bankInfo)
+                return (
+                  <TableRow key={index}>
+                    <TableCell>{row.workforceEmployee?.firstNameBn}</TableCell>
+                    <TableCell>{row.applicationType}</TableCell>
+                    <TableCell align="right">{row.grantAmount}</TableCell>
+                    <TableCell>{bankInfo.accountNumber}</TableCell>
+                    <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
+                    <TableCell>{bankInfo?.branch?.nameEn}</TableCell>
+                  </TableRow>
+                )
+              })}
+              <TableRow>
+                <TableCell colSpan={2}><strong><FormattedMessage id="workforce.table.totalAmount" defaultMessage="মোট পরিমাণ" /></strong></TableCell>
+                <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
+                <TableCell colSpan={3} />
+              </TableRow>
+            </TableBody>
+          </Table>
+        </DialogContent>
         <Divider />
         <DialogActions className={classes.noPrint}>
           <Button onClick={onClose} variant="outlined" color="primary">
@@ -515,104 +451,113 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
                   <p style={{ margin: 0 }}>অর্থের পরিমাণঃ {Number(getTotalAmount()).toLocaleString("bn-BD")}/-</p>
                 </TableCell>
               </TableRow>
-              
+              <TableRow>
+                <TableCell style={{ fontWeight: "700" }}>
+                  <FormattedMessage id="SL No" />
+                </TableCell>
+                <TableCell style={{ fontWeight: "700" }}>
+                  <FormattedMessage id="Date" />
+                </TableCell>
+                <TableCell style={{ fontWeight: "700" }}>
+                  <FormattedMessage id="Sender A/C No" />
+                </TableCell>
+                <TableCell style={{ fontWeight: "700" }}>
+                  <FormattedMessage id="Receiver's Routing Number " />
+                </TableCell>
+                <TableCell style={{ fontWeight: "700" }}>
+                  <FormattedMessage id="Sender's Routing Number " />
+                </TableCell>
+                <TableCell style={{ fontWeight: "700" }}>
+                  <FormattedMessage id="Customer Account Name" />
+                </TableCell>
+                {/* <TableCell>
+                  <FormattedMessage id="workforce.table.applicationType" defaultMessage="আবেদনের ধরণ" />
+                </TableCell> */}
+                <TableCell style={{ fontWeight: "700" }}>
+                  <FormattedMessage id="Customer Account No" />
+                </TableCell>
+                <TableCell style={{ fontWeight: "700" }}>
+                  <FormattedMessage id="Type(C/D)" />
+                </TableCell>
+                <TableCell style={{ textAlign: "right", fontWeight:"700" }}>
+                  <FormattedMessage id="Approved Amount" />
+                </TableCell>
+                {/* <TableCell>
+                  <FormattedMessage id="workforce.table.bankName" defaultMessage="ব্যাংকের নাম" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.branch" defaultMessage="শাখা" />
+                </TableCell> */}
+              </TableRow>
             </TableHead>
-           {applications[0]?.applicationType === "financialAssistance" ? (
-              <>
-                {/* ===== FINANCIAL ASSISTANCE (for now same block) ===== */}
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="SL No" /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Date" /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Sender A/C No" /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Receiver's Routing Number " /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Sender's Routing Number " /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Dependent Account Name" /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Dependent Account No" /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Type(C/D)" /></TableCell>
-                    <TableCell style={{ textAlign: "right", fontWeight: "700" }}><FormattedMessage id="Approved Amount" /></TableCell>
+            <TableBody>
+              {applications
+              .filter(item => item.status === status)
+              .flatMap((row, appIndex) => {
+                let bankInfos = []
+
+                try {
+                  const parsed = JSON.parse(row.employeeBankInfo)
+                  bankInfos = Array.isArray(parsed) ? parsed : JSON.parse(parsed)
+                } catch (e) {
+                  console.error("Bank info parse error", e)
+                  return []
+                }
+
+                // Iterate based on employeeBankInfo count
+                return bankInfos.map((bankInfo, bankIndex) => (
+                  <TableRow key={`${row.id}-${bankIndex}`}>
+                    {/* SL */}
+                    <TableCell>{bankIndex + 1}</TableCell>
+
+                    {/* Application Date */}
+                    <TableCell>
+                      {row?.dateCreated?.split("T")[0]}
+                    </TableCell>
+
+                    {/* Company Account */}
+                    <TableCell>4426336001034</TableCell>
+
+                    {/* Routing Number (Dependent Bank) */}
+                    <TableCell>
+                      {bankInfo?.branch?.routingNumber}
+                    </TableCell>
+
+                    {/* BIN / Fixed */}
+                    <TableCell>200275714</TableCell>
+
+                    {/* Dependent / Account Holder Name */}
+                    <TableCell>
+                      {bankInfo?.accountHolderName}
+                    </TableCell>
+
+                    {/* Account Number */}
+                    <TableCell>
+                      {bankInfo?.accountNumber}
+                    </TableCell>
+
+                    {/* Reference */}
+                    <TableCell></TableCell>
+
+                    {/* Grant Amount (Same for all dependents) */}
+                    <TableCell align="right">
+                      {row?.grantAmount}
+                    </TableCell>
                   </TableRow>
-                </TableHead>
-
-                <TableBody>
-                {dependentData.map((dep, index) => {
-                const totalGrant = 200000;
-                const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * totalGrant;
-
-                return (
-                        <TableRow key={index}>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>{dep?.dateCreated?.split("T")[0]}</TableCell>
-                          <TableCell>4426336001034</TableCell>
-                          <TableCell>{dep?.bank?.routingNumber}</TableCell>
-                          <TableCell>200275714</TableCell>   
-                          <TableCell>{dep?.bankAccountHolderName || ""}</TableCell>
-                          <TableCell>{dep?.bankAccountNo || ""}</TableCell>
-                          <TableCell></TableCell>
-                          <TableCell align="right">{approvedAmount}</TableCell>
-                        </TableRow>
-                        );
-                  })}
-
-                  <TableRow>
-                    <TableCell colSpan={8}><strong><FormattedMessage id="Total Amount" /></strong></TableCell>
-                    <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
-                  </TableRow>
-                </TableBody>
-              </>
-            ) : (
-              <>
-                {/* ===== ELSE: SAME BLOCK FOR NOW ===== */}
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="SL No" /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Date" /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Sender A/C No" /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Receiver's Routing Number " /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Sender's Routing Number " /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Customer Account Name" /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Customer Account No" /></TableCell>
-                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Type(C/D)" /></TableCell>
-                    <TableCell style={{ textAlign: "right", fontWeight: "700" }}><FormattedMessage id="Approved Amount" /></TableCell>
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {applications
-                    .filter(item => item.status === status)
-                    .flatMap((row) => {
-                      let bankInfos = [];
-                      try {
-                        const parsed = JSON.parse(row.employeeBankInfo);
-                        bankInfos = Array.isArray(parsed) ? parsed : JSON.parse(parsed);
-                      } catch (e) {
-                        console.error("Bank info parse error", e);
-                        return [];
-                      }
-
-                      return bankInfos.map((bankInfo, bankIndex) => (
-                        <TableRow key={`${row.id}-${bankIndex}`}>
-                          <TableCell>{bankIndex + 1}</TableCell>
-                          <TableCell>{row?.dateCreated?.split("T")[0]}</TableCell>
-                          <TableCell>4426336001034</TableCell>
-                          <TableCell>{bankInfo?.branch?.routingNumber}</TableCell>
-                          <TableCell>200275714</TableCell>
-                          <TableCell>{bankInfo?.accountHolderName}</TableCell>
-                          <TableCell>{bankInfo?.accountNumber}</TableCell>
-                          <TableCell></TableCell>
-                          <TableCell align="right">{row?.grantAmount}</TableCell>
-                        </TableRow>
-                      ));
-                    })}
-
-                  <TableRow>
-                    <TableCell colSpan={8}><strong><FormattedMessage id="Total Amount" /></strong></TableCell>
-                    <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
-                  </TableRow>
-                </TableBody>
-              </>
-            )}
-
+                ))
+              })}
+              <TableRow>
+                <TableCell colSpan={8}>
+                  <strong>
+                    <FormattedMessage id="Total Amount" />
+                  </strong>
+                </TableCell>
+                <TableCell align="right">
+                  <strong>{getTotalAmount()}</strong>
+                </TableCell>
+                <TableCell colSpan={3} />
+              </TableRow>
+            </TableBody>
           </Table>
         </DialogContent>
         <Divider />
@@ -636,93 +581,54 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
         <DialogTitle disableTypography>
           <Typography variant="h6"> <FormattedMessage id="workforce.table.bftn" /></Typography>
         </DialogTitle>
-        
         <DialogContent dividers>
-              {applications[0]?.applicationType === "financialAssistance" ? (
-                /* ===== NEW BLOCK FOR FINANCIAL ASSISTANCE ===== */
-                <div>
-          <Typography variant="h6">Death grant</Typography>
-
-          {/* OLD BLOCK INSIDE NEW BLOCK */}
           <Table>
             <TableHead>
-              <TableRow style={{ fontWeight: "bold" }}>
-                 <TableCell>Dependent Name</TableCell>
-                  <TableCell>Relation With Worker</TableCell>
-                  <TableCell>Application Type</TableCell>
-                  <TableCell align="right">Grant Amount</TableCell>
-                  <TableCell>Account No</TableCell>
-                  <TableCell>Bank Name</TableCell>
-                  <TableCell>Branch</TableCell>
+              <TableRow>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.applicantName" defaultMessage="আবেদনকারীর নাম" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.applicationType" defaultMessage="আবেদনের ধরণ" />
+                </TableCell>
+                <TableCell align="right">
+                  <FormattedMessage id="workforce.table.approvedAmount" defaultMessage="অনুমোদিত পরিমাণ" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.accountNo" defaultMessage="অ্যাকাউন্ট নম্বর" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.bankName" defaultMessage="ব্যাংকের নাম" />
+                </TableCell>
+                <TableCell>
+                  <FormattedMessage id="workforce.table.branch" defaultMessage="শাখা" />
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {dependentData.map((dep, index) => {
-                const totalGrant = 200000;
-                const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * totalGrant;
-
+              {applications.filter((item) => item.status === status).map((row, index) => {
+                const parseBankInfo = JSON.parse(row.employeeBankInfo)
+                const bankInfo = JSON.parse(parseBankInfo)
+                console.log(bankInfo)
                 return (
                   <TableRow key={index}>
-                    <TableCell>{dep?.nameEn || ""}</TableCell>
-                    <TableCell>{RELATION_LABEL_MAP[dep?.relationWithWorker || ""]}</TableCell>
-                    <TableCell>Death grant</TableCell>
-                    <TableCell align="right">{approvedAmount}</TableCell> 
-                    <TableCell>{dep?.bankAccountNo || ""}</TableCell>
-                    <TableCell>{dep?.bank?.parent?.nameEn || ""}</TableCell>
-                    <TableCell>{dep?.bank?.nameEn || ""}</TableCell>
+                    <TableCell>{row.workforceEmployee?.firstNameBn}</TableCell>
+                    <TableCell>{row.applicationType}</TableCell>
+                    <TableCell align="right">{row.grantAmount}</TableCell>
+                    <TableCell>{bankInfo.accountNumber}</TableCell>
+                    <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
+                    <TableCell>{bankInfo?.branch?.nameEn}</TableCell>
                   </TableRow>
-                );
+                )
               })}
-
               <TableRow>
-                <TableCell colSpan={2}><strong>Total Grant</strong></TableCell>
+                <TableCell colSpan={2}><strong><FormattedMessage id="workforce.table.totalAmount" defaultMessage="মোট পরিমাণ" /></strong></TableCell>
                 <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
                 <TableCell colSpan={3} />
               </TableRow>
             </TableBody>
           </Table>
-        </div>
-              ) : (
-                /* ===== OLD BLOCK ===== */
-                <Table>
-                  <TableHead>
-                    <TableRow style={{ fontWeight: "bold" }}>
-                      <TableCell>Applicant Name</TableCell>
-                      <TableCell>Application Type</TableCell>
-                      <TableCell align="right">Grant Amount</TableCell>
-                      <TableCell>Account No</TableCell>
-                      <TableCell>Bank Name</TableCell>
-                      <TableCell>Branch</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {applications
-                      .filter((item) => item.status === status)
-                      .map((row, index) => {
-                        const parseBankInfo = JSON.parse(row.employeeBankInfo);
-                        const bankInfo = JSON.parse(parseBankInfo);
-                        return (
-                          <TableRow key={index}>
-                            <TableCell>{row.workforceEmployee?.firstNameEn}</TableCell>
-                            <TableCell>{row.applicationType}</TableCell>
-                            <TableCell align="right">{row.grantAmount}</TableCell>
-                            <TableCell>{bankInfo.accountNumber}</TableCell>
-                            <TableCell>{bankInfo?.bank?.nameEn}</TableCell>
-                            <TableCell>{bankInfo?.branch?.nameEn}</TableCell>
-                          </TableRow>
-                        );
-                      })}
-
-                <TableRow>
-                <TableCell colSpan={2}><strong>Total Grant</strong></TableCell>
-                  <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
-                  <TableCell colSpan={3} />
-                </TableRow>
-              </TableBody>
-            </Table>
-          )}
-            </DialogContent>
-
+        </DialogContent>
         <Divider />
         <DialogActions className={classes.noPrint}>
           <Button onClick={onClose} variant="outlined" color="primary">

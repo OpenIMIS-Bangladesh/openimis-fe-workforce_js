@@ -2856,7 +2856,7 @@ class ApplicationProcessSearcher extends Component {
                 open={openGenerateBFTN}
                 onClose={this.handleCloseBFTN}
                 applications={applications}
-                status={"approved_by_director"}
+                status={"forward_to_director"}
                 userRights={userRights}
               />
               <RevertApplicationModal
@@ -2954,7 +2954,7 @@ class ApplicationProcessSearcher extends Component {
                     open={openGenerateBFTN}
                     onClose={this.handleCloseBFTN}
                     applications={applications}
-                    status={"approved_by_dg"}
+                    status={"approved_by_director"}
                     userRights={userRights}
                   />
                   <RevertApplicationModal
