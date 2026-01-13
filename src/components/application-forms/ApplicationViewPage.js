@@ -113,6 +113,8 @@ const hiddenKeys = [
   "eisMonthlyAmount",
   "initialReplacementRate",
   "eisApplicationSummary",
+  "cfApplicationSummary",
+  "blwfApplicationSummary",
   "pvFactor",
   "dependentId",
   "attachments",
