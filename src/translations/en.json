@@ -99,6 +99,7 @@
       "workforce.association.email": "Email",
       "workforce.association.address": "Address",
       "workforce.association.webAddress": "Web Address",
+      "workforce.association.startDate": "Start Date",
       "workforce.association.status": "Status",
       "workforce.association.minimumSalary": "Minimum Salary",
 

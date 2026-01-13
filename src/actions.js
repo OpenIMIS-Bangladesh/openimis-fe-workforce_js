@@ -550,6 +550,7 @@ export function fetchWorkforceAllAssociationSummary(mm, filters) {
     "email",
     "address",
     "webAddress",
+    "startDate",
     "status",
     "minimumSalary"
   ];

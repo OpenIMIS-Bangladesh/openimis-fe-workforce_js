@@ -249,6 +249,7 @@ export function formatWorkforceAssociationGQL(association) {
     ${association.nameEn ? `nameEn: "${formatGQLString(association.nameEn)}"` : ""}
     ${association.shortNameEn ? `shortNameEn: "${formatGQLString(association.shortNameEn)}"` : ""}
     ${association.webAddress ? `webAddress: "${formatGQLString(association.webAddress)}"` : ""}
+    ${association.startDate ? `startDate: "${formatGQLString(association.startDate)}"` : ""}
     ${association.address ? `address: "${formatGQLString(association.address)}"` : ""}
     ${association.phone ? `phone: "${formatGQLString(association.phone)}"` : ""}
     ${association.email ? `email: "${formatGQLString(association.email)}"` : ""}

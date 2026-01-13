@@ -73,6 +73,7 @@ class AddWorkforceAssociationPage extends Component {
       email: stateEdited?.email || stateEdited.email,
       status: stateEdited?.status || stateEdited.status,
       webAddress: stateEdited?.webAddress || stateEdited.webAddress,
+      startDate: stateEdited?.startDate || stateEdited.startDate,
       address: stateEdited?.address || stateEdited.address,
       minimumSalary: stateEdited?.minimumSalary || stateEdited.minimumSalary,
       workforceAssociation: stateEdited.workforceAssociation,
@@ -149,11 +150,22 @@ class AddWorkforceAssociationPage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={12} className={classes.item}>
+                <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.association.webAddress"
-                    value={stateEdited.presentAddress || ""}
+                    value={stateEdited.webAddress || ""}
                     onChange={(v) => this.updateAttribute("webAddress", v)}
+                    readOnly={isSaved}
+                  />
+                </Grid>
+                <Grid item xs={6} className={classes.item}>
+                  <PublishedComponent
+                    pubRef="workforce.DatePicker"
+                    label={"workforce.association.startDate"}
+                    value={stateEdited.startDate || ""}
+                    onChange={(v) =>
+                      this.updateAttribute("startDate", v)
+                    }
                     readOnly={isSaved}
                   />
                 </Grid>
