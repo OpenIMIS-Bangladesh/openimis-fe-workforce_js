@@ -348,6 +348,26 @@ export function formatApplicationeGQL(application) {
   ${application?.eisMonthlyAmount ? `eisMonthlyAmount: "${(application?.eisMonthlyAmount)}"` : ""}
   ${application?.initialReplacementRate ? `initialReplacementRate: "${(application?.initialReplacementRate)}"` : ""}
   ${application?.pvFactor ? `pvFactor: "${(application?.pvFactor)}"` : ""}
+  ${application?.applicantInfoVerification ? `applicantInfoVerification: "${(application?.applicantInfoVerification)}"` : ""}
+  ${application?.applicantInfoVerificationRemarks ? `applicantInfoVerificationRemarks: "${(application?.applicantInfoVerificationRemarks)}"` : ""}
+  ${application?.deceasedWorkerInfoVerification ? `deceasedWorkerInfoVerification: "${(application?.deceasedWorkerInfoVerification)}"` : ""}
+  ${application?.deceasedWorkerInfoVerificationRemarks ? `deceasedWorkerInfoVerificationRemarks: "${(application?.deceasedWorkerInfoVerificationRemarks)}"` : ""}
+  ${application?.doctorsEntryVerification ? `doctorsEntryVerification: "${(application?.doctorsEntryVerification)}"` : ""}
+  ${application?.doctorsEntryVerificationRemarks ? `doctorsEntryVerificationRemarks: "${(application?.doctorsEntryVerificationRemarks)}"` : ""}
+  ${application?.employeeAccidentInfoVerification ? `employeeAccidentInfoVerification: "${(application?.employeeAccidentInfoVerification)}"` : ""}
+  ${application?.employeeAccidentInfoVerificationRemarks ? `employeeAccidentInfoVerificationRemarks: "${(application?.employeeAccidentInfoVerificationRemarks)}"` : ""}
+  ${application?.employeeBankInfoVerification ? `employeeBankInfoVerification: "${(application?.employeeBankInfoVerification)}"` : ""}
+  ${application?.employeeBankInfoVerificationRemarks ? `employeeBankInfoVerificationRemarks: "${(application?.employeeBankInfoVerificationRemarks)}"` : ""}
+  ${application?.employeeChildrenInfoVerification ? `employeeChildrenInfoVerification: "${(application?.employeeChildrenInfoVerification)}"` : ""}
+  ${application?.employeeChildrenInfoVerificationRemarks ? `employeeChildrenInfoVerificationRemarks: "${(application?.employeeChildrenInfoVerificationRemarks)}"` : ""}
+  ${application?.employeeDependentInfoVerification ? `employeeDependentInfoVerification: "${(application?.employeeDependentInfoVerification)}"` : ""}
+  ${application?.employeeDependentInfoVerificationRemarks ? `employeeDependentInfoVerificationRemarks: "${(application?.employeeDependentInfoVerificationRemarks)}"` : ""}
+  ${application?.institutionInfoVerification ? `institutionInfoVerification: "${(application?.institutionInfoVerification)}"` : ""}
+  ${application?.institutionInfoVerificationRemarks ? `institutionInfoVerificationRemarks: "${(application?.institutionInfoVerificationRemarks)}"` : ""}
+  ${application?.metadataVerification ? `metadataVerification: "${(application?.metadataVerification)}"` : ""}
+  ${application?.metadataVerificationRemarks ? `metadataVerificationRemarks: "${(application?.metadataVerificationRemarks)}"` : ""}
+  ${application?.workforceEmployeeVerification ? `workforceEmployeeVerification: "${(application?.workforceEmployeeVerification)}"` : ""}
+  ${application?.workforceEmployeeVerificationRemarks ? `workforceEmployeeVerificationRemarks: "${(application?.workforceEmployeeVerificationRemarks)}"` : ""}
 `;
 }
 ///application movement ////
