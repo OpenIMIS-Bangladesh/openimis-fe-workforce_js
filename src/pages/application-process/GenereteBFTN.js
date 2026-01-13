@@ -515,113 +515,104 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
                   <p style={{ margin: 0 }}>অর্থের পরিমাণঃ {Number(getTotalAmount()).toLocaleString("bn-BD")}/-</p>
                 </TableCell>
               </TableRow>
-              <TableRow>
-                <TableCell style={{ fontWeight: "700" }}>
-                  <FormattedMessage id="SL No" />
-                </TableCell>
-                <TableCell style={{ fontWeight: "700" }}>
-                  <FormattedMessage id="Date" />
-                </TableCell>
-                <TableCell style={{ fontWeight: "700" }}>
-                  <FormattedMessage id="Sender A/C No" />
-                </TableCell>
-                <TableCell style={{ fontWeight: "700" }}>
-                  <FormattedMessage id="Receiver's Routing Number " />
-                </TableCell>
-                <TableCell style={{ fontWeight: "700" }}>
-                  <FormattedMessage id="Sender's Routing Number " />
-                </TableCell>
-                <TableCell style={{ fontWeight: "700" }}>
-                  <FormattedMessage id="Customer Account Name" />
-                </TableCell>
-                {/* <TableCell>
-                  <FormattedMessage id="workforce.table.applicationType" defaultMessage="আবেদনের ধরণ" />
-                </TableCell> */}
-                <TableCell style={{ fontWeight: "700" }}>
-                  <FormattedMessage id="Customer Account No" />
-                </TableCell>
-                <TableCell style={{ fontWeight: "700" }}>
-                  <FormattedMessage id="Type(C/D)" />
-                </TableCell>
-                <TableCell style={{ textAlign: "right", fontWeight:"700" }}>
-                  <FormattedMessage id="Approved Amount" />
-                </TableCell>
-                {/* <TableCell>
-                  <FormattedMessage id="workforce.table.bankName" defaultMessage="ব্যাংকের নাম" />
-                </TableCell>
-                <TableCell>
-                  <FormattedMessage id="workforce.table.branch" defaultMessage="শাখা" />
-                </TableCell> */}
-              </TableRow>
+              
             </TableHead>
-            <TableBody>
-              {applications
-              .filter(item => item.status === status)
-              .flatMap((row, appIndex) => {
-                let bankInfos = []
-
-                try {
-                  const parsed = JSON.parse(row.employeeBankInfo)
-                  bankInfos = Array.isArray(parsed) ? parsed : JSON.parse(parsed)
-                } catch (e) {
-                  console.error("Bank info parse error", e)
-                  return []
-                }
-
-                // Iterate based on employeeBankInfo count
-                return bankInfos.map((bankInfo, bankIndex) => (
-                  <TableRow key={`${row.id}-${bankIndex}`}>
-                    {/* SL */}
-                    <TableCell>{bankIndex + 1}</TableCell>
-
-                    {/* Application Date */}
-                    <TableCell>
-                      {row?.dateCreated?.split("T")[0]}
-                    </TableCell>
-
-                    {/* Company Account */}
-                    <TableCell>4426336001034</TableCell>
-
-                    {/* Routing Number (Dependent Bank) */}
-                    <TableCell>
-                      {bankInfo?.branch?.routingNumber}
-                    </TableCell>
-
-                    {/* BIN / Fixed */}
-                    <TableCell>200275714</TableCell>
-
-                    {/* Dependent / Account Holder Name */}
-                    <TableCell>
-                      {bankInfo?.accountHolderName}
-                    </TableCell>
-
-                    {/* Account Number */}
-                    <TableCell>
-                      {bankInfo?.accountNumber}
-                    </TableCell>
-
-                    {/* Reference */}
-                    <TableCell></TableCell>
-
-                    {/* Grant Amount (Same for all dependents) */}
-                    <TableCell align="right">
-                      {row?.grantAmount}
-                    </TableCell>
+           {applications[0]?.applicationType === "financialAssistance" ? (
+              <>
+                {/* ===== FINANCIAL ASSISTANCE (for now same block) ===== */}
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="SL No" /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Date" /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Sender A/C No" /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Receiver's Routing Number " /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Sender's Routing Number " /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Dependent Account Name" /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Dependent Account No" /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Type(C/D)" /></TableCell>
+                    <TableCell style={{ textAlign: "right", fontWeight: "700" }}><FormattedMessage id="Approved Amount" /></TableCell>
                   </TableRow>
-                ))
-              })}
-              <TableRow>
-                <TableCell colSpan={8}>
-                  <strong>
-                    <FormattedMessage id="Total Amount" />
-                  </strong>
-                </TableCell>
-                <TableCell align="right">
-                  <strong>{getTotalAmount()}</strong>
-                </TableCell>
-                <TableCell colSpan={3} />
-              </TableRow>
-            </TableBody>
+                </TableHead>
+
+                <TableBody>
+                {dependentData.map((dep, index) => {
+                const totalGrant = 200000;
+                const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * totalGrant;
+
+                return (
+                        <TableRow key={index}>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{dep?.dateCreated?.split("T")[0]}</TableCell>
+                          <TableCell>4426336001034</TableCell>
+                          <TableCell>{dep?.bank?.routingNumber}</TableCell>
+                          <TableCell>200275714</TableCell>   
+                          <TableCell>{dep?.bankAccountHolderName || ""}</TableCell>
+                          <TableCell>{dep?.bankAccountNo || ""}</TableCell>
+                          <TableCell></TableCell>
+                          <TableCell align="right">{approvedAmount}</TableCell>
+                        </TableRow>
+                        );
+                  })}
+
+                  <TableRow>
+                    <TableCell colSpan={8}><strong><FormattedMessage id="Total Amount" /></strong></TableCell>
+                    <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
+                  </TableRow>
+                </TableBody>
+              </>
+            ) : (
+              <>
+                {/* ===== ELSE: SAME BLOCK FOR NOW ===== */}
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="SL No" /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Date" /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Sender A/C No" /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Receiver's Routing Number " /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Sender's Routing Number " /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Customer Account Name" /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Customer Account No" /></TableCell>
+                    <TableCell style={{ fontWeight: "700" }}><FormattedMessage id="Type(C/D)" /></TableCell>
+                    <TableCell style={{ textAlign: "right", fontWeight: "700" }}><FormattedMessage id="Approved Amount" /></TableCell>
+                  </TableRow>
+                </TableHead>
+
+                <TableBody>
+                  {applications
+                    .filter(item => item.status === status)
+                    .flatMap((row) => {
+                      let bankInfos = [];
+                      try {
+                        const parsed = JSON.parse(row.employeeBankInfo);
+                        bankInfos = Array.isArray(parsed) ? parsed : JSON.parse(parsed);
+                      } catch (e) {
+                        console.error("Bank info parse error", e);
+                        return [];
+                      }
+
+                      return bankInfos.map((bankInfo, bankIndex) => (
+                        <TableRow key={`${row.id}-${bankIndex}`}>
+                          <TableCell>{bankIndex + 1}</TableCell>
+                          <TableCell>{row?.dateCreated?.split("T")[0]}</TableCell>
+                          <TableCell>4426336001034</TableCell>
+                          <TableCell>{bankInfo?.branch?.routingNumber}</TableCell>
+                          <TableCell>200275714</TableCell>
+                          <TableCell>{bankInfo?.accountHolderName}</TableCell>
+                          <TableCell>{bankInfo?.accountNumber}</TableCell>
+                          <TableCell></TableCell>
+                          <TableCell align="right">{row?.grantAmount}</TableCell>
+                        </TableRow>
+                      ));
+                    })}
+
+                  <TableRow>
+                    <TableCell colSpan={8}><strong><FormattedMessage id="Total Amount" /></strong></TableCell>
+                    <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
+                  </TableRow>
+                </TableBody>
+              </>
+            )}
+
           </Table>
         </DialogContent>
         <Divider />

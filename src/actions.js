@@ -1175,7 +1175,9 @@ export function fetchWorkforceEmployeeDependent(mm, filters) {
     "status",
     "percentageOfCfGrant",
     "bankAccountNo",
-    "bank{id,nameBn,parent{id,nameBn}}"
+    "bank{id,nameBn,routingNumber,parent{id,nameBn}}",
+    "bankAccountHolderName",
+    "dateCreated",
   ];
   const payload = formatPageQueryWithCount(
     "workforceEmployeeDependent",
