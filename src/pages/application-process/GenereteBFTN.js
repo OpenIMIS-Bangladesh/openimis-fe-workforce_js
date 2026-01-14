@@ -280,43 +280,85 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       worksheet.getRow(12).height = 15;
 
       // Table headers
-      const headers = [
-        'SL No',
-        'Date',
-        'Sender A/C No',
-        "Receiver's Routing Number",
-        "Sender's Routing Number",
-        'Customer Account Name',
-        'Customer Account No',
-        'Type(C/D)',
-        'Approved Amount',
-      ];
-      worksheet.addRow(headers);
-      worksheet.getRow(13).font = { bold: true };
-      worksheet.getRow(13).alignment = { horizontal: 'center' };
 
-      // Table data
-      applications
-        .filter((item) => item.status === status)
-        .forEach((row, index) => {
-          let bankInfo = {};
-          try {
-            bankInfo = JSON.parse(JSON.parse(row.employeeBankInfo))[0];
-          } catch (e) {
-            console.error('Failed to parse bankInfo for row', index, e);
-          }
+      if (applications[0]?.applicationType === "financialAssistance") {
+        /* ================= FINANCIAL ASSISTANCE ================= */
+
+        const headers = [
+          'SL No',
+          'Date',
+          'Sender A/C No',
+          "Receiver's Routing Number",
+          "Sender's Routing Number",
+          'Dependent Account Name',
+          'Dependent Account No',
+          'Type(C/D)',
+          'Approved Amount',
+        ];
+        worksheet.addRow(headers);
+        worksheet.getRow(13).font = { bold: true };
+        worksheet.getRow(13).alignment = { horizontal: 'center' };
+
+        dependentData.forEach((dep, index) => {
+          const totalGrant = 200000;
+          const approvedAmount =
+            ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * totalGrant;
+
           worksheet.addRow([
             index + 1,
-            row?.dateCreated.split('T')[0] || '',
+            dep?.dateCreated?.split("T")[0] || '',
             '4426336001034',
-            bankInfo?.branch?.routingNumber || '',
+            dep?.bank?.routingNumber || '',
             '200275714',
-            row?.workforceEmployee?.firstNameBn || '',
-            bankInfo?.accountNumber || '',
+            dep?.bankAccountHolderName || '',
+            dep?.bankAccountNo || '',
             '',
-            row?.grantAmount || 0,
+            approvedAmount,
           ]);
         });
+
+      } else {
+        /* ================= OTHER APPLICATION TYPE ================= */
+
+        const headers = [
+          'SL No',
+          'Date',
+          'Sender A/C No',
+          "Receiver's Routing Number",
+          "Sender's Routing Number",
+          'Customer Account Name',
+          'Customer Account No',
+          'Type(C/D)',
+          'Approved Amount',
+        ];
+        worksheet.addRow(headers);
+        worksheet.getRow(13).font = { bold: true };
+        worksheet.getRow(13).alignment = { horizontal: 'center' };
+
+        applications
+          .filter(item => item.status === status)
+          .forEach((row, index) => {
+            let bankInfo = {};
+            try {
+              bankInfo = JSON.parse(JSON.parse(row.employeeBankInfo))[0];
+            } catch (e) {
+              console.error('Failed to parse bankInfo for row', index, e);
+            }
+
+            worksheet.addRow([
+              index + 1,
+              row?.dateCreated?.split('T')[0] || '',
+              '4426336001034',
+              bankInfo?.branch?.routingNumber || '',
+              '200275714',
+              row?.workforceEmployee?.firstNameBn || '',
+              bankInfo?.accountNumber || '',
+              '',
+              row?.grantAmount || 0,
+            ]);
+          });
+      }
+
 
       // Total amount row
       worksheet.addRow(['', '', '', '', '', 'Total Amount', '', '', getTotalAmount() || 0]);
