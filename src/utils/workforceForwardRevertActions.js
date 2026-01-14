@@ -16,27 +16,29 @@ export const forwardToAssociation = async ({
 }) => {
   try {
     const userType = getUserTypeFromRights(userRights);
-    for (const encodedId of selectedApplicationIds) {
-      const decodedId = safeDecodeId(encodedId?.id);
-      // const res = await fetchWorkforceDocument(modulesManager, [
-      //     `workforceApplication_Id: "${decodedId}"`,
-      //   ]);
+    for (const selectedItem of selectedApplicationIds) {
 
-      //   const documents =
-      //     res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
+        const decodedId = decodeId(selectedItem?.id);
+        const res = await dispatch(
+          fetchWorkforceDocument(modulesManager, [
+            `workforceApplication_Id: "${decodedId}"`,
+          ])
+        );
 
-      //   const allVerified = documents.every(
-      //     (doc) => doc.status?.toLowerCase() === "verified"
-      //   );
+        const documents =
+          res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-      //   if (!allVerified) {
-      //     setServerResponse({
-      //       status: "ERROR",
-      //       message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
-      //     });
-      //     return;
-      //   }
+        const allVerified = documents.every(
+          (doc) => doc.status?.toLowerCase() === "verified"
+        );
 
+        if (!allVerified) {
+          setServerResponse({
+            status: "ERROR",
+            message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
+          });
+          return;
+        }
       const updateApplicationData = {
         id: decodedId,
         status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
@@ -58,10 +60,9 @@ export const forwardToAssociation = async ({
                           : formData?.association === "LFMEAB"
                           ? 203
                           : null,
-        toRoleId: 31, // hardcoded role
+        toRoleId: 31,
       };
 
-      // If dispatch is provided (like in a Redux component)
       if (dispatch) {
         await dispatch(
           updateApplication(updateApplicationData, "update workforce application")
@@ -131,24 +132,24 @@ export async function handleBulkSelectedByAssociationLogic({
         await Promise.all(
           selectedApplicationIds.map(async (selectedItem) => {
             const decodedId = safeDecodeId(selectedItem?.id);
-            // const res = await fetchWorkforceDocument(modulesManager, [
-            //     `workforceApplication_Id: "${decodedId}"`,
-            //   ]);
+            const res = await fetchWorkforceDocument(modulesManager, [
+                `workforceApplication_Id: "${decodedId}"`,
+              ]);
 
-            //   const documents =
-            //     res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
+              const documents =
+                res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-            //   const allVerified = documents.every(
-            //     (doc) => doc.status?.toLowerCase() === "verified"
-            //   );
+              const allVerified = documents.every(
+                (doc) => doc.status?.toLowerCase() === "verified"
+              );
 
-            //   if (!allVerified) {
-            //     setServerResponse({
-            //       status: "ERROR",
-            //       message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
-            //     });
-            //     return;
-            //   }
+              if (!allVerified) {
+                setServerResponse({
+                  status: "ERROR",
+                  message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
+                });
+                return;
+              }
             const updateApplicationData = {
               id: decodedId,
               status:  userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION

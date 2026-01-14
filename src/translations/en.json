@@ -823,7 +823,7 @@
   "workforce.application.forward.message.toSectionAdmin": "Are you sure you want to forward these applications to Section Admin?",
   "workforce.application.forward.message.toSectionUser": "Are you sure you want to forward these applications to Section Data Entry Operator?",
   "workforce.application.forward.message.toDoctor": "Are you sure you want to forward these applications to Doctor?",
-  "workforce.application.forward.message.toEisCoordinator": "Are you sure you want to forward these applications to Eis Coordinator?",
+  "workforce.application.forward.message.toEisCoordinator": "Are you sure you want to forward these applications to Eis Pilot?",
   "workforce.application.forward.message.toEisCommittee": "Are you sure you want to forward these applications to Eis Committe?",
   "workforce.application.select.message": "Are you sure you want to select these applications?",
   "workforce.application.approve.message": "Are you sure you want to approve these applications?",

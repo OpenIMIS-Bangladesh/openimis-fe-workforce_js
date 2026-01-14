@@ -712,7 +712,7 @@
   "workforce.application.forward.message.toSectionAdmin": "আপনি কি নির্বাচিত আবেদনসমূহ শাখা এডমিনে ফরওয়ার্ড করতে চান?",
   "workforce.application.forward.message.toSectionUser": "আপনি কি নির্বাচিত আবেদনসমূহ ডাটা এন্ট্রি অপারেটরে ফরওয়ার্ড করতে চান?",
   "workforce.application.forward.message.toDoctor": "আপনি কি নির্বাচিত আবেদনসমূহ ডক্টরের কাছে ফরওয়ার্ড করতে চান?",
-  "workforce.application.forward.message.toEisCoordinator": "আপনি কি নির্বাচিত আবেদনসমূহ ইআইএস কোঅর্ডিনেটর এর কাছে ফরওয়ার্ড করতে চান?",
+  "workforce.application.forward.message.toEisCoordinator": "আপনি কি নির্বাচিত আবেদনসমূহ ইআইএস পাইলট এর কাছে ফরওয়ার্ড করতে চান?",
   "workforce.application.forward.message.toEisCommittee": "আপনি কি নির্বাচিত আবেদনসমূহ ইআইএস কমিটির কাছে ফরওয়ার্ড করতে চান?",
   "workforce.application.select.message": "আপনি কি এই আবেদনসমূহ নির্বাচন করতে চান?",
   "workforce.application.approve.message": "আপনি কি নির্বাচিত আবেদনসমূহ অনুমোদন করতে চান?",
