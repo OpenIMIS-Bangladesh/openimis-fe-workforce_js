@@ -114,7 +114,7 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
 
   const handleNextButtonClicked = () => {
     if (selectedApplicationType === "financialAssistance") {
-      dispatch(fetchApplicationsSummary(modulesManager, [`applicationType: "financialAssistance",workforceEmployee_Nid: "${userName}",status:"new"`])).then((res) => {
+      dispatch(fetchApplicationsSummary(modulesManager, [`applicationType: "financialAssistance",workforceEmployee_Nid: "${userName}",status:"new",organizationType:"eis"`])).then((res) => {
         const data = res?.payload?.data?.workforceApplication?.edges;
         if (data && data.length > 0) {
           setOpenErrorModal(true);

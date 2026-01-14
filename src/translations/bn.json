@@ -656,7 +656,7 @@
   "core.LoginPage.loginBtn": "লগইন",
   "core.error.required":"এই তথ্যটি  আবশ্যক",
   "core.error.phoneNumberLength":"ফোন নম্বর অবশ্যই ১১ সংখ্যার হতে হবে",
-  "core.error.nidLength":"এনআইডি/জন্মসনদ নম্বরটি সঠিক নয়",
+  "core.error.nidLength":"এনআইডি/জন্মসনদ নম্বরটি অবশ্যই ১০,১৩ অথবা ১৭ সংখ্যার হতে হবে",
   "core.error.workerAge":"শ্রমিকের বয়স ন্যূনতম ১৮ বছর হতে হবে।",
   "core.error.deathTime":"মৃত্যুর তারিখ সঠিক নয়।",
   "core.error.dateTime":"তারিখ সঠিক নয়।",
@@ -843,7 +843,7 @@
   "workforce.disability.observationCurrentCondition": "কর্মীর বর্তমান অবস্থা মূল্যায়নের পর পর্যবেক্ষণ",
   "workforce.disability.limitationsOccupationDailyLiving": "কর্মসংস্থান ও দৈনন্দিন কার্যকলাপে সীমাবদ্ধতা",
 
-  "workforce.other.compensationInfo": "পূর্ববর্তী ক্ষতিপূরণের তথ্য",
+  "workforce.other.compensationInfo": "ক্ষতিপূরণের তথ্য",
   "workforce.compensation.add": "আরেকটি ক্ষতিপূরণ যোগ করুন",
   "workforce.compensation.date": "ক্ষতিপূরণের তারিখ",
   "workforce.compensation.recievedFrom": "ক্ষতিপূরণ গ্রহণকৃত প্রতিষ্ঠানের নাম",

@@ -353,8 +353,6 @@ export const isNotFutureDateBangla = (dateString) => {
   return selectedDate <= today;
 };
 
-
-
 export const isNotFutureDate = (dateString) => {
   if (!dateString) return false;
 
@@ -367,23 +365,24 @@ export const isNotFutureDate = (dateString) => {
 
 export const validateRequiredFields = (containerRef, formatMessage) => {
   const fields = containerRef.current.querySelectorAll("[required]");
-  console.log({ fields })
+  console.log({ fields });
   const errors = {};
 
   fields.forEach((field) => {
     const value = field.value?.trim?.() || "";
 
     if (!value && field.tagName !== "DIV") {
-      if (!field.id && field.parentElement.previousElementSibling?.classList && Array.from(field.parentElement.previousElementSibling.classList).some(c => c.startsWith("openIMISDatePicker-label"))) {
+      if (
+        !field.id &&
+        field.parentElement.previousElementSibling?.classList &&
+        Array.from(field.parentElement.previousElementSibling.classList).some((c) => c.startsWith("openIMISDatePicker-label"))
+      ) {
         field.id = "rdmp";
       }
 
       let parent = field.parentElement;
       while (parent) {
-        if (
-          parent.classList &&
-          Array.from(parent.classList).some(c => c.startsWith("DetailedLocation-form"))
-        ) {
+        if (parent.classList && Array.from(parent.classList).some((c) => c.startsWith("DetailedLocation-form"))) {
           field.id = "detailedLocation";
           break;
         }
@@ -395,38 +394,36 @@ export const validateRequiredFields = (containerRef, formatMessage) => {
     }
 
     if (value && field.tagName !== "DIV") {
-      if (!field.id && field.parentElement.previousElementSibling?.classList && Array.from(field.parentElement.previousElementSibling.classList).some(c => c.startsWith("openIMISDatePicker-label")) && !isNotFutureDateBangla(value)) {
+      if (
+        !field.id &&
+        field.parentElement.previousElementSibling?.classList &&
+        Array.from(field.parentElement.previousElementSibling.classList).some((c) => c.startsWith("openIMISDatePicker-label")) &&
+        !isNotFutureDateBangla(value)
+      ) {
         field.id = "rdmp";
         errors[field.id || field.name] = formatMessage("core.error.dateTime");
         console.warn(`Validation failed for field: ${field.id || field.name}`);
       }
-
     }
 
     if (field.id === "phoneNumber") {
       if (value.length !== 11) {
         errors[field.id] = formatMessage("core.error.phoneNumberLength");
-        console.warn(
-          `Validation failed for phoneNumber: expected 11 digits, got ${value.length}`
-        );
+        console.warn(`Validation failed for phoneNumber: expected 11 digits, got ${value.length}`);
       }
     }
 
     if (field.id === "nid") {
-      if (!(value.length === 10  || value.length === 13 ||  value.length === 17)) {
+      if (!(value.length === 10 || value.length === 13 || value.length === 17)) {
         errors[field.id] = formatMessage("core.error.nidLength");
-        console.warn(
-          `Validation failed for phoneNumber: expected 11 digits, got ${value.length}`
-        );
+        console.warn(`Validation failed for phoneNumber: expected 11 digits, got ${value.length}`);
       }
     }
 
     if (field.id === "accountNumber") {
       if (!(value.length >= 8 && value.length <= 17)) {
         errors[field.id] = formatMessage("core.error.accountNumberLength");
-        console.warn(
-          `Validation failed for phoneNumber: expected 11 digits, got ${value.length}`
-        );
+        console.warn(`Validation failed for phoneNumber: expected 11 digits, got ${value.length}`);
       }
     }
   });
@@ -513,26 +510,20 @@ export function getApprovalStatus(isApproved) {
   if (isApproved === "yes") {
     return (
       <>
-        <b style= {{ color: "green" }}>
-          Approved
-        </b>
+        <b style={{ color: "green" }}>Approved</b>
       </>
-    )
-
+    );
   } else {
     return "Not Approved Yet";
   }
 }
-
-
-
 
 /**
  * @param {string|null} relation
  * @param {string} applicationType
  */
 export const getFooterContent = (relation = null, applicationType) => {
-  console.log("relation pawa gese")
+  console.log("relation pawa gese");
   // -----------------------------
   // Disability Assistance
   // -----------------------------
@@ -543,7 +534,8 @@ export const getFooterContent = (relation = null, applicationType) => {
         <li>শ্রমিকের জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে।</li>
         <li>বিবাহ বন্ধনে আবদ্ধ না হওয়া পর্যন্ত বেনিফিট পাবেন।</li>
         <li>
-          তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট  প্রদানের জন্য ই.আই.এস পাইলটকে অর্থায়ন করছে।
+          তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য ই.আই.এস পাইলটকে অর্থায়ন
+          করছে।
         </li>
       </FooterWrapper>
     );
@@ -552,13 +544,7 @@ export const getFooterContent = (relation = null, applicationType) => {
   // -----------------------------
   // Female dependents
   // -----------------------------
-  if (
-    [
-      "workforce.relation.daugter",
-      "workforce.relation.grand_daugter",
-      "workforce.relation.sister",
-    ].includes(relation)
-  ) {
+  if (["workforce.relation.daugter", "workforce.relation.grand_daugter", "workforce.relation.sister"].includes(relation)) {
     return (
       <FooterWrapper>
         <li>বিবাহের পূর্ব পর্যন্ত টপ-আপ বেনিফিট প্রদান করা হবে।</li>
@@ -582,56 +568,43 @@ export const getFooterContent = (relation = null, applicationType) => {
     return (
       <FooterWrapper>
         <li>টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন।</li>
+        <li>শ্রমিকের পিতা/মাতার কেউ মৃত্যুবরণ করলে সেক্ষেত্রে তার প্রাপ্য মাসিক টপ-আপ বেনিফিট পিতা/মাতার মধ্যে জীবিত সদস্যের নিকট প্রদেয় হবে।</li>
         <li>
-          শ্রমিকের পিতা/মাতার কেউ মৃত্যুবরণ করলে সেক্ষেত্রে তার প্রাপ্য মাসিক টপ-আপ বেনিফিট পিতা/মাতার মধ্যে জীবিত সদস্যের নিকট প্রদেয় হবে।
+          উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ সংক্রান্ত
+          প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
         </li>
         <li>
-          উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
-        </li>
-        <li>
-          তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট  প্রদানের জন্য ই.আই.এস পাইলটকে অর্থায়ন করছে।
+          তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য ই.আই.এস পাইলটকে অর্থায়ন
+          করছে।
         </li>
       </FooterWrapper>
     );
   }
-  if (
-    [
-      "workforce.relation.orphan_son",
-      "workforce.relation.brother",
-      "workforce.relation.grand_son",
-    ].includes(relation)
-  ) {
+  if (["workforce.relation.orphan_son", "workforce.relation.brother", "workforce.relation.grand_son"].includes(relation)) {
     return (
       <FooterWrapper>
         <ol>
-        <li>
-          টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না—
-          <ol type="a" style={{ marginTop: "5px" }}>
-            <li>উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন; অথবা</li>
-            <li>প্রাপ্তবয়স্ক (১৮ বছর) হওয়া পর্যন্ত বেনিফিট পাবেন।</li>
-          </ol>
-        </li>
-        <li>
-          অপ্রাপ্তবয়স্ক উপযুক্ত নির্ভরশীল ব্যক্তির প্রাপ্য বেনিফিট তার আইনগত অভিভাবকের একাউন্টে পরিশোধ করা যাবে।
-        </li>
-        <li>
-          উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
-        </li>
-        <li>
-          তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট  প্রদানের জন্য ই.আই.এস পাইলটকে অর্থায়ন করছে।
-        </li>
-      </ol>
-
+          <li>
+            টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না—
+            <ol type="a" style={{ marginTop: "5px" }}>
+              <li>উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন; অথবা</li>
+              <li>প্রাপ্তবয়স্ক (১৮ বছর) হওয়া পর্যন্ত বেনিফিট পাবেন।</li>
+            </ol>
+          </li>
+          <li>অপ্রাপ্তবয়স্ক উপযুক্ত নির্ভরশীল ব্যক্তির প্রাপ্য বেনিফিট তার আইনগত অভিভাবকের একাউন্টে পরিশোধ করা যাবে।</li>
+          <li>
+            উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ সংক্রান্ত
+            প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
+          </li>
+          <li>
+            তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য ই.আই.এস পাইলটকে
+            অর্থায়ন করছে।
+          </li>
+        </ol>
       </FooterWrapper>
     );
   }
-  if (
-    [
-      "workforce.relation.orphan_daughter",
-      "workforce.relation.sister",
-      "workforce.relation.grand_daughter",
-    ].includes(relation)
-  ) {
+  if (["workforce.relation.orphan_daughter", "workforce.relation.sister", "workforce.relation.grand_daughter"].includes(relation)) {
     return (
       <FooterWrapper>
         <ol>
@@ -643,229 +616,165 @@ export const getFooterContent = (relation = null, applicationType) => {
             </ol>
           </li>
 
+          <li>অপ্রাপ্তবয়স্ক উপযুক্ত নির্ভরশীল ব্যক্তির প্রাপ্য বেনিফিট তার আইনগত অভিভাবকের একাউন্টে পরিশোধ করা যাবে।</li>
+
           <li>
-            অপ্রাপ্তবয়স্ক উপযুক্ত নির্ভরশীল ব্যক্তির প্রাপ্য বেনিফিট তার
-            আইনগত অভিভাবকের একাউন্টে পরিশোধ করা যাবে।
+            উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু/বিবাহ) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ
+            সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
           </li>
 
           <li>
-            উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে
-            (মৃত্যু/বিবাহ) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে।
-            এক্ষেত্রে যাচাইকরণ সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে
-            ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
-          </li>
-
-          <li>
-            তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক
-            ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য
-            ই.আই.এস পাইলটকে অর্থায়ন করছে।
+            তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য ই.আই.এস পাইলটকে
+            অর্থায়ন করছে।
           </li>
         </ol>
       </FooterWrapper>
     );
   }
-  if (
-    [
-      "workforce.relation.dauther_with_mother",
-    ].includes(relation)
-  ) {
+  if (["workforce.relation.dauther_with_mother"].includes(relation)) {
     return (
       <FooterWrapper>
         <ol>
-        <li>
-          টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না—
-          <ol style={{ listStyleType: "none", paddingLeft: "20px", marginTop: "5px" }}>
-            <li>ক. উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন; অথবা</li>
-            <li>খ. </li>
-          </ol>
-        </li>
-        <li>
-          শ্রমিকের স্ত্রীর মৃত্যু হলে অথবা পুনরায় বিবাহ বন্ধনে আবদ্ধ হলে,
-          সেক্ষেত্রে তার প্রাপ্য মাসিক টপ-আপ বেনিফিট নিম্নউল্লেখিত হারে
-          মৃত শ্রমিকের উপযুক্ত নির্ভরশীল সন্তানদের মধ্যে প্রদেয় হবে।
-          <ol style={{ listStyleType: "none", paddingLeft: "20px", marginTop: "5px" }}>
-            <li>ক. </li>
-            <li>খ. </li>
-          </ol>
-        </li>
-        <li>
-          অপ্রাপ্তবয়স্ক উপযুক্ত নির্ভরশীল ব্যক্তির প্রাপ্য বেনিফিট তার
-          আইনগত অভিভাবকের একাউন্টে পরিশোধ করা যাবে।
-        </li>
-        <li>
-          উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু)
-          ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে।
-          এক্ষেত্রে যাচাইকরণ সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে
-          ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
-        </li>
-        <li>
-          তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক
-          ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য
-          ই.আই.এস পাইলটকে অর্থায়ন করছে।
-        </li>
-      </ol>
-      </FooterWrapper>
-    );
-  }
-  if (
-    [
-      "workforce.relation.minor_son_with_mother",
-    ].includes(relation)
-  ) {
-    return (
-      <FooterWrapper>
-       <ol>
-        <li>
-          টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না—
-          <ol style={{ listStyleType: "none", paddingLeft: "20px", marginTop: "5px" }}>
-            <li>
-              ক. উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন; অথবা
-            </li>
-            <li>
-              খ. প্রাপ্তবয়স্ক (১৮ বছর) হওয়া পর্যন্ত বেনিফিট পাবেন তবে
-              প্রতিবন্ধী সন্তানের ক্ষেত্রে প্রতিবন্ধিতা শেষ না হলে আমৃত্যু
-              বেনিফিট পাবেন।
-            </li>
-          </ol>
-        </li>
-        <li>
-          শ্রমিকের স্ত্রীর মৃত্যু হলে অথবা পুনরায় বিবাহ বন্ধনে আবদ্ধ হলে,
-          সেক্ষেত্রে তার প্রাপ্য মাসিক টপ-আপ বেনিফিট নিম্নউল্লেখিত হারে
-          মৃত শ্রমিকের উপযুক্ত নির্ভরশীল সন্তানদের মধ্যে প্রদেয় হবে।
-          <ol style={{ listStyleType: "none", paddingLeft: "20px", marginTop: "5px" }}>
-            <li>ক. এক ও দুই সন্তানের ক্ষেত্রে ৮৭.৫ শতাংশ</li>
-            <li>খ. দুই এর অধিক সন্তানের ক্ষেত্রে ১০০ শতাংশ</li>
-          </ol>
-        </li>
-
-        <li>
-          অপ্রাপ্তবয়স্ক উপযুক্ত নির্ভরশীল ব্যক্তির প্রাপ্য বেনিফিট তার
-          আইনগত অভিভাবকের একাউন্টে পরিশোধ করা যাবে।
-        </li>
-
-        <li>
-          উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু)
-          ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে।
-          এক্ষেত্রে যাচাইকরণ সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে
-          ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
-        </li>
-
-        <li>
-          তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক
-          ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য
-          ই.আই.এস পাইলটকে অর্থায়ন করছে।
-        </li>
-      </ol>
-
-      </FooterWrapper>
-    );
-  }
-  if (
-    [
-      "workforce.relation.widower_father",
-    ].includes(relation)
-  ) {
-    return (
-      <FooterWrapper>
-    <ol>
-      <li>
-        টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না উপযুক্ত নির্ভরশীল
-        ব্যক্তি মৃত্যুবরণ করেন।
-      </li>
-
-      <li>
-        উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু)
-        ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে
-        যাচাইকরণ সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল
-        ইউনিটকে প্রদান করতে হবে।
-      </li>
-
-      <li>
-        তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক
-        ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য
-        ই.আই.এস পাইলটকে অর্থায়ন করছে।
-      </li>
-    </ol>
-      </FooterWrapper>
-    );
-  }
-  if (
-    [
-      "workforce.relation.wife_with_child",
-    ].includes(relation)
-  ) {
-    return (
-      <FooterWrapper>
-    <ol>
-      <li>
-        টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না:
-        <ol type="a" style={{ marginTop: "5px" }}>
-          <li>উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন; অথবা</li>
-          <li>পুনঃবিবাহ করেন।</li>
+          <li>
+            টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না—
+            <ol style={{ listStyleType: "none", paddingLeft: "20px", marginTop: "5px" }}>
+              <li>ক. উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন; অথবা</li>
+              <li>খ. </li>
+            </ol>
+          </li>
+          <li>
+            শ্রমিকের স্ত্রীর মৃত্যু হলে অথবা পুনরায় বিবাহ বন্ধনে আবদ্ধ হলে, সেক্ষেত্রে তার প্রাপ্য মাসিক টপ-আপ বেনিফিট নিম্নউল্লেখিত হারে মৃত শ্রমিকের উপযুক্ত
+            নির্ভরশীল সন্তানদের মধ্যে প্রদেয় হবে।
+            <ol style={{ listStyleType: "none", paddingLeft: "20px", marginTop: "5px" }}>
+              <li>ক. </li>
+              <li>খ. </li>
+            </ol>
+          </li>
+          <li>অপ্রাপ্তবয়স্ক উপযুক্ত নির্ভরশীল ব্যক্তির প্রাপ্য বেনিফিট তার আইনগত অভিভাবকের একাউন্টে পরিশোধ করা যাবে।</li>
+          <li>
+            উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ সংক্রান্ত
+            প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
+          </li>
+          <li>
+            তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য ই.আই.এস পাইলটকে
+            অর্থায়ন করছে।
+          </li>
         </ol>
-      </li>
-
-      <li>
-        শ্রমিকের স্ত্রীর মৃত্যু হলে অথবা পুনরায় বিবাহ বন্ধনে আবদ্ধ হলে, সেক্ষেত্রে
-        তার প্রাপ্য মাসিক টপ-আপ বেনিফিট নিম্মউল্লেখিত হারে মৃত শ্রমিকের উপযুক্ত
-        নির্ভরশীল সন্তানদের মধ্যে প্রদেয় হবে।
-        <ol type="a" style={{ marginTop: "5px" }}>
-          <li>এক ও দুই সন্তানের ক্ষেত্রে ৮৭.৫ শতাংশ</li>
-          <li>দুই এর অধিক সন্তানের ক্ষেত্রে ১০০ শতাংশ</li>
-        </ol>
-      </li>
-
-      <li>
-        অপ্রাপ্তবয়স্ক উপযুক্ত নির্ভরশীল ব্যক্তির প্রাপ্য বেনিফিট তার আইনগত
-        অভিভাবকের একাউন্টে পরিশোধ করা যাবে।
-      </li>
-
-      <li>
-        উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু, বিবাহ)
-        ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ
-        সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান
-        করতে হবে।
-      </li>
-
-      <li>
-        তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক
-        ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য
-        ই.আই.এস পাইলটকে অর্থায়ন করছে।
-      </li>
-    </ol>
       </FooterWrapper>
     );
   }
-  if (
-    [
-      "workforce.relation.wife_without_child",
-    ].includes(relation)
-  ) {
+  if (["workforce.relation.minor_son_with_mother"].includes(relation)) {
     return (
       <FooterWrapper>
         <ol>
-        <li>
-          টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না:
-          <ol type="a" style={{ marginTop: "5px" }}>
-            <li>উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন; অথবা</li>
-            <li>পুনঃবিবাহ করেন।</li>
-          </ol>
-        </li>
+          <li>
+            টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না—
+            <ol style={{ listStyleType: "none", paddingLeft: "20px", marginTop: "5px" }}>
+              <li>ক. উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন; অথবা</li>
+              <li>খ. প্রাপ্তবয়স্ক (১৮ বছর) হওয়া পর্যন্ত বেনিফিট পাবেন তবে প্রতিবন্ধী সন্তানের ক্ষেত্রে প্রতিবন্ধিতা শেষ না হলে আমৃত্যু বেনিফিট পাবেন।</li>
+            </ol>
+          </li>
+          <li>
+            শ্রমিকের স্ত্রীর মৃত্যু হলে অথবা পুনরায় বিবাহ বন্ধনে আবদ্ধ হলে, সেক্ষেত্রে তার প্রাপ্য মাসিক টপ-আপ বেনিফিট নিম্নউল্লেখিত হারে মৃত শ্রমিকের উপযুক্ত
+            নির্ভরশীল সন্তানদের মধ্যে প্রদেয় হবে।
+            <ol style={{ listStyleType: "none", paddingLeft: "20px", marginTop: "5px" }}>
+              <li>ক. এক ও দুই সন্তানের ক্ষেত্রে ৮৭.৫ শতাংশ</li>
+              <li>খ. দুই এর অধিক সন্তানের ক্ষেত্রে ১০০ শতাংশ</li>
+            </ol>
+          </li>
 
-        <li>
-          উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু, বিবাহ)
-          ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে
-          যাচাইকরণ সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল
-          ইউনিটকে প্রদান করতে হবে।
-        </li>
+          <li>অপ্রাপ্তবয়স্ক উপযুক্ত নির্ভরশীল ব্যক্তির প্রাপ্য বেনিফিট তার আইনগত অভিভাবকের একাউন্টে পরিশোধ করা যাবে।</li>
 
-        <li>
-          তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক
-          ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য
-          ই.আই.এস পাইলটকে অর্থায়ন করছে।
-        </li>
-      </ol>
+          <li>
+            উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ সংক্রান্ত
+            প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
+          </li>
 
+          <li>
+            তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য ই.আই.এস পাইলটকে
+            অর্থায়ন করছে।
+          </li>
+        </ol>
+      </FooterWrapper>
+    );
+  }
+  if (["workforce.relation.widower_father"].includes(relation)) {
+    return (
+      <FooterWrapper>
+        <ol>
+          <li>টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন।</li>
+
+          <li>
+            উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ সংক্রান্ত
+            প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
+          </li>
+
+          <li>
+            তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য ই.আই.এস পাইলটকে
+            অর্থায়ন করছে।
+          </li>
+        </ol>
+      </FooterWrapper>
+    );
+  }
+  if (["workforce.relation.wife_with_child"].includes(relation)) {
+    return (
+      <FooterWrapper>
+        <ol>
+          <li>
+            টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না:
+            <ol type="a" style={{ marginTop: "5px" }}>
+              <li>উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন; অথবা</li>
+              <li>পুনঃবিবাহ করেন।</li>
+            </ol>
+          </li>
+
+          <li>
+            শ্রমিকের স্ত্রীর মৃত্যু হলে অথবা পুনরায় বিবাহ বন্ধনে আবদ্ধ হলে, সেক্ষেত্রে তার প্রাপ্য মাসিক টপ-আপ বেনিফিট নিম্মউল্লেখিত হারে মৃত শ্রমিকের উপযুক্ত
+            নির্ভরশীল সন্তানদের মধ্যে প্রদেয় হবে।
+            <ol type="a" style={{ marginTop: "5px" }}>
+              <li>এক ও দুই সন্তানের ক্ষেত্রে ৮৭.৫ শতাংশ</li>
+              <li>দুই এর অধিক সন্তানের ক্ষেত্রে ১০০ শতাংশ</li>
+            </ol>
+          </li>
+
+          <li>অপ্রাপ্তবয়স্ক উপযুক্ত নির্ভরশীল ব্যক্তির প্রাপ্য বেনিফিট তার আইনগত অভিভাবকের একাউন্টে পরিশোধ করা যাবে।</li>
+
+          <li>
+            উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু, বিবাহ) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ
+            সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
+          </li>
+
+          <li>
+            তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য ই.আই.এস পাইলটকে
+            অর্থায়ন করছে।
+          </li>
+        </ol>
+      </FooterWrapper>
+    );
+  }
+  if (["workforce.relation.wife_without_child"].includes(relation)) {
+    return (
+      <FooterWrapper>
+        <ol>
+          <li>
+            টপ-আপ বেনিফিট মাসিকভিত্তিতে প্রদান করা হবে যতক্ষণ না:
+            <ol type="a" style={{ marginTop: "5px" }}>
+              <li>উপযুক্ত নির্ভরশীল ব্যক্তি মৃত্যুবরণ করেন; অথবা</li>
+              <li>পুনঃবিবাহ করেন।</li>
+            </ol>
+          </li>
+
+          <li>
+            উপযুক্ত নির্ভরশীল ব্যক্তির জীবনাবস্থার কোন পরিবর্তন ঘটলে (মৃত্যু, বিবাহ) ই.আই.এস পাইলট স্পেশাল ইউনিটকে অবশ্যই অবহিত করতে হবে। এক্ষেত্রে যাচাইকরণ
+            সংক্রান্ত প্রমাণপত্র প্রতি বছরান্তে ই.আই.এস পাইলট স্পেশাল ইউনিটকে প্রদান করতে হবে।
+          </li>
+
+          <li>
+            তৈরী পোশাক শিল্পের ক্রেতা/ব্র্যান্ডরা স্বেচ্ছায় এবং সাময়িক ভিত্তিতে/অন্তর্বর্তীকালীন সমাধান হিসেবে টপ-আপ বেনিফিট প্রদানের জন্য ই.আই.এস পাইলটকে
+            অর্থায়ন করছে।
+          </li>
+        </ol>
       </FooterWrapper>
     );
   }
@@ -873,23 +782,86 @@ export const getFooterContent = (relation = null, applicationType) => {
   return null;
 };
 
+function calculateAge(birthDate) {
+  if (!birthDate) return 0;
+
+  const dob = new Date(birthDate);
+  const today = new Date();
+
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+
+  return age;
+}
+
+export function getRelationForApi(depObj) {
+  console.log("deps",depObj)
+  const age = calculateAge(depObj.birthDate);
+
+  const relation = depObj.relationWithWorker || depObj?.relationType;
+  const marital = depObj.maritalStatus;
+  const disability = depObj.disabilityStatus;
+
+  if (relation === "workforce.relation.brother") {
+    return age < 18;
+  } else if (relation === "workforce.relation.sister") {
+    return age < 18 || marital === "workforce.marital_status.unmarried" || marital === "workforce.marital_status.widowed";
+  } else if (relation === "workforce.relation.daughter") {
+    return disability === "yes" || age < 18 || marital === "workforce.marital_status.unmarried" || marital === "workforce.marital_status.widowed";
+  } else if (relation === "workforce.relation.son") {
+    return disability === "yes" || age < 18;
+  } else if (relation === "workforce.relation.husband") {
+    return true;
+  } else if (relation === "workforce.relation.wife") {
+    return true;
+  } else if (relation === "workforce.relation.father") {
+    console.log("depObj@",depObj)
+    return true;
+  } else if (relation === "workforce.relation.mother") {
+    return true;
+  } else if (relation === "workforce.relation.grand_father") {
+    return true;
+  } else if (relation === "workforce.relation.grand_mother") {
+    return true;
+  } else if (relation === "workforce.relation.grand_son") {
+    return age < 18;
+  } else if (relation === "workforce.relation.grand_daughter") {
+    return age < 18;
+  } else if (relation === "workforce.relation.grand_son_from_daughter") {
+    return age < 18;
+  } else if (relation === "workforce.relation.grand_daughter_from_daughter") {
+    return age < 18;
+  } else if (relation === "workforce.relation.daughter_in_law") {
+    return marital === "workforce.marital_status.widowed";
+  } else if (relation === "workforce.relation.illegitimate_son") {
+    return true;
+  } else if (relation === "workforce.relation.illegitimate_daughter") {
+    return marital === "workforce.marital_status.unmarried";
+  }else{
+    return false
+  }
+
+  // return false;
+}
+
 // -----------------------------
 // Reusable Wrapper
 // -----------------------------
 const FooterWrapper = ({ children }) => (
   <div style={{ marginTop: "15px", fontSize: "11px" }}>
-    <strong>
-      মাসিক টপ-আপ বেনিফিট ও ই.আই.এস পাইলট সম্পর্কে গুরুত্বপূর্ণ তথ্য:
-    </strong>
+    <strong>মাসিক টপ-আপ বেনিফিট ও ই.আই.এস পাইলট সম্পর্কে গুরুত্বপূর্ণ তথ্য:</strong>
     <ol style={{ marginTop: "5px", paddingLeft: "20px" }}>{children}</ol>
   </div>
 );
 
-
 export const isEisPath = () => {
-  if (typeof window !== "undefined") {
-    return window.location.href.includes("eis");
-  }
-  return false; // fallback if window is not defined (SSR)
-  // return true;
+  // if (typeof window !== "undefined") {
+  //   return window.location.href.includes("eis");
+  // }
+  // return false; // fallback if window is not defined (SSR)
+  return true;
 };
