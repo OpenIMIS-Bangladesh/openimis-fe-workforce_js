@@ -17,7 +17,7 @@ import {
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardApplicationModal from "./modals/ForwardApplicationModal";
-import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
+import { getUserTypeFromRights, isEisPath, isEmptyObject } from "../../utils/utils";
 import PrintIcon from "@material-ui/icons/Print";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
@@ -726,6 +726,10 @@ class ApplicationProcessSearcher extends Component {
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+      let organizationTypeIn = '["cf"]';
+      if(isEisPath()) {
+        organizationTypeIn = '["eis"]';
+      }
       this.setState({ displayVersion: showHistoryFilter });
 
       let defaultFilters = [];
@@ -737,15 +741,12 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["revert"]'
         ];
 
-        // if (this.props.factoryId) {
-        //   defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
-        // }
         if (loggedInUserId) {
           defaultFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
       }
       else if (this.props.returnedApplications) {
-        defaultFilters = ['status: "revert"', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: ["cf","eis"]'];
+        defaultFilters = ['status: "revert"', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: '+organizationTypeIn];
         if (this.props.factoryId) {
           defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
         }
@@ -753,16 +754,16 @@ class ApplicationProcessSearcher extends Component {
           defaultFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
       } else if (rejectedApplication) {
-        defaultFilters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: ["cf","eis"]'];
+        defaultFilters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: '+organizationTypeIn];
       } else if (this.props.applicationStatus) {
-        defaultFilters = ['statusIn: ["draft"]', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: ["cf","eis"]'];
+        defaultFilters = ['statusIn: ["draft"]', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: '+organizationTypeIn];
       } else if (this.props.submittedByApplicants) {
-        defaultFilters = ['statusIn: ["new"]', 'submittedByIn:["applicant"]', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: ["cf","eis"]'];
+        defaultFilters = ['statusIn: ["new"]', 'submittedByIn:["applicant"]', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: '+organizationTypeIn];
       }
       else if (this.props.forwardedApplications) {
-        defaultFilters = ['orderBy: ["-dateCreated"]', 'organizationTypeIn: ["cf","eis"]'];
+        defaultFilters = ['orderBy: ["-dateCreated"]', 'organizationTypeIn: '+organizationTypeIn];
       } else {
-        defaultFilters = ['statusIn: ["new","resubmitted_application"]', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: ["cf","eis"]'];
+        defaultFilters = ['statusIn: ["new","resubmitted_application"]', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: '+organizationTypeIn];
         // if (loggedInUserId) {
         //   defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
         // }
