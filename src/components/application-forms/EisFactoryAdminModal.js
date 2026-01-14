@@ -83,6 +83,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
   const [formData, setFormData] = useState(application || {});
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false); // ✅ Added Loading State
+  const [alertMessage, setAlertMessage] = useState(false)
 
   const { formatMessage } = useTranslations("workforce");
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
@@ -109,6 +110,13 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
     // 1. Validate Fields
     const newErrors = validateRequiredFields(stepRef, formatMessage);
     setErrors(newErrors);
+    const allAssociationDate = new Date(formData?.employeeFactory?.allAssociation?.startDate)
+    const accidentDate = new Date(formData?.employeeAccidentInfo?.accidentDate)
+
+    if (allAssociationDate<accidentDate) {
+      setAlertMessage(true)
+      return
+    }
 
     if (Object.keys(newErrors).length > 0) {
       return; // Stop if there are validation errors
