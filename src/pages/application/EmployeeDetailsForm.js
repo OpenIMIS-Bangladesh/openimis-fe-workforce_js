@@ -128,6 +128,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                       error={!!errors.phoneNumber}
                       helperText={errors.phoneNumber}
                     />
+                    {errors.phoneNumber && <FormHelperText error><FormattedMessage id={errors.phoneNumber} /></FormHelperText>}
                   </Grid>
                   <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                     <TextInput
@@ -177,12 +178,13 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                 <TextInput
                   id="nid"
                   label="workforce.employee.nid_or_birth_certificate"
-                  value={formData?.workforceEmployee?.nid || formData?.workforceEmployee?.birthCertificateNo || ""}
+                  value={formData?.workforceEmployee?.nid || formData?.deceasedWorkerInfo?.nid || ""}
                   formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
                   // inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*",maxLength: 17 }}
                   onChange={(v) => {
                     const numericValue = (v || "").replace(/\D/g, "").slice(0, 17);
                     setNidOrBcn({ ...nidOrBcn, nid: numericValue });
+                    handleChange("nid", v)
                   }}
                   type="text"
                   inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*" }}
@@ -191,6 +193,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   error={!!errors.nid}
                   helperText={errors.nid}
                 />
+                {errors.nid && <FormHelperText error><FormattedMessage id={errors.nid} /></FormHelperText>}
               </Grid>
 
               {/* <Grid item xs={6} className={classes.item}>
@@ -414,6 +417,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                       error={!!errors.spouseNid}
                       helperText={errors.spouseNid}
                     />
+                    {errors.nid && <FormHelperText error><FormattedMessage id="core.error.nidLength" /></FormHelperText>}
                   </Grid>
                   <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                     <PublishedComponent

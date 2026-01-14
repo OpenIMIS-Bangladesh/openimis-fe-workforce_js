@@ -26,6 +26,7 @@ import FileUploader from "../../pickers/FileUploader";
 import CustomDependentLocation from "../../components/application-forms/CustomDependentLocation";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
+import { getRelationForApi } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -175,12 +176,15 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
       {normalizedDependents?.map((dependent, index) => {
         const isFatherSelected = normalizedDependents.find((d) => d.relationType === "workforce.relation.father");
         const previousRelation = index > 0 && isFatherSelected != null ? "workforce.relation.father" : null;
-
+        const isEligible =getRelationForApi(normalizedDependents[index]);
+        console.log("Single Beneficiary",dependent)
+        console.log({isEligible})
+        const hasData = dependent.relationType && (dependent.birthDate || dependent.nid);
         return (
           <Accordion key={index} expanded={expanded === index} onChange={(_, isExpanded) => setExpanded(isExpanded ? index : false)}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Grid container spacing={0} alignItems="center">
-                <Grid item xs={12}>
+              <Grid container spacing={0} alignItems="center" justifyContent="space-between">
+                <Grid item xs={8} sm={9}>
                   <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
                     {applicationType === "financialAssistance" && formdata?.organizationType !== "eis" ? (
                       <FormattedMessage id="workforce.previewDetails.dependent" module="workforce" />
@@ -191,6 +195,28 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                     )}
                   </Typography>
                   <Typography>{dependent.nameEn || ""}</Typography>
+                </Grid>
+
+                <Grid item xs={4} sm={3} style={{ textAlign: "right", paddingRight: "8px" }}>
+                  {/* Only show the badge if there is enough data to make a decision, or remove 'hasData' to always show it */}
+                  {hasData && (
+                    <Typography
+                      variant="caption"
+                      style={{
+                        fontWeight: "bold",
+                        // 2. Use the calculated variable here
+                        color: isEligible ? "#2e7d32" : "#d32f2f", // Darker Green : Red
+                        border: `1px solid ${isEligible ? "#2e7d32" : "#d32f2f"}`,
+                        backgroundColor: isEligible ? "rgba(46, 125, 50, 0.04)" : "rgba(211, 47, 47, 0.04)", // Light background for better UI
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        display: "inline-block", // Ensures padding works correctly
+                      }}
+                    >
+                      {/* 3. Use the calculated variable for text */}
+                      {isEligible ? "Eligible" : "Ineligible"}
+                    </Typography>
+                  )}
                 </Grid>
               </Grid>
             </AccordionSummary>
@@ -274,6 +300,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       error={!!errors.nid}
                       helperText={errors.nid}
                     />
+                    {errors.nid && <FormHelperText error><FormattedMessage id={errors.nid} /></FormHelperText>}
                   </Grid>
 
                   <Grid item xs={6}>
@@ -283,6 +310,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       onChange={(v) => handleChange(index, "phoneNumber", v)}
                       type="number"
                     />
+                    {dependent?.phoneNumber.length !=11 && <FormHelperText error><FormattedMessage id="core.error.phoneNumberLength"/></FormHelperText> }
                   </Grid>
 
                   <Grid item xs={6}>

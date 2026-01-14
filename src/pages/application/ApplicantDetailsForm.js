@@ -136,6 +136,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   error={!!errors.phoneNumber}
                   helperText={errors.phoneNumber}
                 />
+                {errors.phoneNumber && <FormHelperText error><FormattedMessage id={errors.phoneNumber} /></FormHelperText>}
               </Grid>
 
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
@@ -185,6 +186,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   error={!!errors.nid}
                   helperText={errors.nid}
                 />
+                {errors.nid && <FormHelperText error><FormattedMessage id={errors.nid} /></FormHelperText>}
               </Grid>
 
               <Grid item xs={6} className={classes.item}>

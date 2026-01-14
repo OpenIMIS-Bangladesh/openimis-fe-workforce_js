@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
-import { Button, Box, Paper, Typography, LinearProgress, TextField } from "@material-ui/core";
+import { Button, Box, Paper, Typography, LinearProgress, TextField, FormHelperText } from "@material-ui/core";
 import { TextInput, useTranslations, useModulesManager, useHistory, FormattedMessage } from "@openimis/fe-core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import OtpInput from "react-otp-input";
@@ -231,49 +231,67 @@ const RegistrationPage = () => {
               {/* Step 1: Basic Info */}
               {step === 1 && (
                 <Box ref={stepRef}>
-                  <TextInput
-                    id="nameBn"
-                    required
-                    label="নাম (বাংলা)"
-                    fullWidth
-                    value={formData.firstNameBn}
-                    onChange={handleInputChange("firstNameBn")}
-                    error={!!errors?.nameBn}
-                    helperText={errors?.nameBn}
-                  />
-                  <TextInput
-                    id="nameEn"
-                    required
-                    label="নাম (ইংরেজি)"
-                    fullWidth
-                    value={formData.firstNameEn}
-                    onChange={handleInputChange("firstNameEn")}
-                    error={!!errors?.nameEn}
-                    helperText={errors?.nameEn}
-                  />
-                  <TextInput
-                    id="nid"
-                    required
-                    label="জাতীয় পরিচয়পত্র (এনআইডি) / জন্ম সনদ নম্বর (ইউজারনেম)"
-                    fullWidth
-                    onChange={(value) => setFormData({ ...formData, NID_BirthCertificate: value })}
-                    formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
-                    type="number"
-                    inputProps={{ maxLength: 17 }}
-                    error={!!errors?.nid}
-                    helperText={errors?.nid}
-                  />
-                  <TextInput
-                    id="phoneNumber"
-                    required
-                    label="মোবাইল নম্বর"
-                    fullWidth
-                    value={formData.mobile}
-                    onChange={handleInputChange("mobile")}
-                    type="number"
-                    error={!!errors?.phoneNumber}
-                    helperText={errors?.phoneNumber}
-                  />
+                  <Box style={{ padding: 2 }}>
+                    <TextInput
+                      id="nameBn"
+                      required
+                      label="নাম (বাংলা)"
+                      fullWidth
+                      value={formData.firstNameBn}
+                      onChange={handleInputChange("firstNameBn")}
+                      error={!!errors?.nameBn}
+                      helperText={errors?.nameBn}
+                    />
+                  </Box>
+                  <Box style={{ padding: 2 }}>
+                    <TextInput
+                      id="nameEn"
+                      required
+                      label="নাম (ইংরেজি)"
+                      fullWidth
+                      value={formData.firstNameEn}
+                      onChange={handleInputChange("firstNameEn")}
+                      error={!!errors?.nameEn}
+                      helperText={errors?.nameEn}
+                    />
+                  </Box>
+                  <Box style={{ padding: 2 }}>
+                    <TextInput
+                      id="nid"
+                      required
+                      label="জাতীয় পরিচয়পত্র (এনআইডি) / জন্ম সনদ নম্বর (ইউজারনেম)"
+                      fullWidth
+                      onChange={(value) => setFormData({ ...formData, NID_BirthCertificate: value })}
+                      formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
+                      type="number"
+                      inputProps={{ maxLength: 17 }}
+                      error={!!errors?.nid}
+                      helperText={errors?.nid}
+                    />
+                    {errors?.nid && (
+                      <FormHelperText error>
+                        <FormattedMessage id={errors?.nid} />
+                      </FormHelperText>
+                    )}
+                  </Box>
+                  <Box style={{ padding: 2 }}>
+                    <TextInput
+                      id="phoneNumber"
+                      required
+                      label="মোবাইল নম্বর"
+                      fullWidth
+                      value={formData.mobile}
+                      onChange={handleInputChange("mobile")}
+                      type="number"
+                      error={!!errors?.phoneNumber}
+                      helperText={errors?.phoneNumber}
+                    />
+                    {errors?.phoneNumber && (
+                      <FormHelperText error>
+                        <FormattedMessage id={errors?.phoneNumber} />
+                      </FormHelperText>
+                    )}
+                  </Box>
                 </Box>
               )}
 
