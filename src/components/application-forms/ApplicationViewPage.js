@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   Grid,
   Paper,
@@ -79,6 +79,12 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "center",
+  },
+  verificationBox: {
+    marginTop: theme.spacing(3),
+    padding: theme.spacing(2),
+    borderTop: "1px dashed #ccc",
+    backgroundColor: "#fffdf0", // Light yellow tint to distinguish verification area
   },
 }));
 
@@ -219,36 +225,31 @@ const renderDetails = (
   const mergeAddressAndLocation = (obj) => {
     const parsedObj = Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, tryParse(v)]));
     const newObj = { ...parsedObj };
-
-    // Structure specifically for presentAddressAndLocation
     if (parsedObj.presentAddress || parsedObj.presentLocation) {
-      newObj.presentAddressAndLocation = {
-        locationData: parsedObj.presentLocation,
-        addressData: parsedObj.presentAddress,
-      };
+      newObj.presentAddressAndLocation = { locationData: parsedObj.presentLocation, addressData: parsedObj.presentAddress };
       delete newObj.presentAddress;
       delete newObj.presentLocation;
     }
-
-    // Structure specifically for permanentAddressAndLocation
     if (parsedObj.permanentAddress || parsedObj.permanentLocation) {
-      newObj.permanentAddressAndLocation = {
-        locationData: parsedObj.permanentLocation,
-        addressData: parsedObj.permanentAddress,
-      };
+      newObj.permanentAddressAndLocation = { locationData: parsedObj.permanentLocation, addressData: parsedObj.permanentAddress };
       delete newObj.permanentAddress;
       delete newObj.permanentLocation;
     }
-
     return newObj;
   };
-
   const mergedData =
     typeof data === "object" && !Array.isArray(data)
       ? mergeAddressAndLocation(data)
       : Array.isArray(data)
       ? data.map((item) => (typeof item === "object" ? mergeAddressAndLocation(item) : tryParse(item)))
       : tryParse(data);
+
+  // const mergedData =
+  //   typeof data === "object" && !Array.isArray(data)
+  //     ? mergeAddressAndLocation(data)
+  //     : Array.isArray(data)
+  //     ? data.map((item) => (typeof item === "object" ? mergeAddressAndLocation(item) : tryParse(item)))
+  //     : tryParse(data);
 
   // Handle arrays of objects
   if (Array.isArray(mergedData)) {
@@ -329,7 +330,7 @@ const renderDetails = (
                   eligibilityMap,
                   handleEligibilityChange,
                   user_type,
-                  remarksMap, // <--- Pass down
+                  remarksMap,
                   handleRemarksChange
                 )}
               </Box>
@@ -408,16 +409,13 @@ const renderDetails = (
 
   // Handle object data
   if (typeof mergedData === "object" && mergedData !== null) {
-    // --- UPDATED: Specific Handling for Address Keys ---
     if (parentKey === "presentAddressAndLocation" || parentKey === "permanentAddressAndLocation") {
-      // Extract using the formatted function
       const { village, postOffice, thana, district } = formatAddress(mergedData.locationData, mergedData.addressData);
-
       return (
         <Grid container spacing={2}>
           <Grid item xs={6} className={classes.itemRow}>
             <Typography variant="body1" className={classes.value}>
-              <span className={classes.label}>{language === "en" ? "Village/Road/House" : "গ্রাম/রাস্তা/বাড়ি"}:</span> {village || "—"}
+              <span className={classes.label}>{language === "en" ? "Village/Road/House" : "গ্রাম/রাস্তা/বাড়ি"}:</span> {village || "—"}
             </Typography>
           </Grid>
           <Grid item xs={6} className={classes.itemRow}>
@@ -438,8 +436,6 @@ const renderDetails = (
         </Grid>
       );
     }
-
-    // --- STANDARD RENDERING (for everything else) ---
     const scalars = Object.entries(mergedData).filter(
       ([key, value]) => typeof value !== "object" && !hiddenKeys.includes(key) && value !== null && value !== undefined && value !== ""
     );
@@ -460,38 +456,17 @@ const renderDetails = (
             </Typography>
           </Grid>
         ))}
-
         {objects.map(([key, value]) => {
           const parsedValue = tryParse(value);
-          const sectionTitle =
-            key === "presentAddressAndLocation"
-              ? language === "en"
-                ? "Present Address & Location"
-                : "বর্তমান ঠিকানা"
-              : key === "permanentAddressAndLocation"
-              ? language === "en"
-                ? "Permanent Address & Location"
-                : "স্থায়ী ঠিকানা"
-              : formatKey(key, language);
-
           return (
             <Grid item xs={12} key={key}>
-              <Typography
-                variant="subtitle1"
-                className={classes.label}
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "large",
-                  background: "#EEFBFF",
-                  padding: 3,
-                }}
-              >
-                {sectionTitle}
+              <Typography variant="subtitle1" className={classes.label} style={{ fontWeight: "bold", fontSize: "large", background: "#EEFBFF", padding: 3 }}>
+                {formatKey(key, language)}
               </Typography>
               {renderDetails(
                 parsedValue,
                 classes,
-                key, // Pass key so next recursive call knows to hit the "if(parentKey...)" block
+                key,
                 language,
                 fileStates,
                 handleCommentChange,
@@ -500,7 +475,7 @@ const renderDetails = (
                 eligibilityMap,
                 handleEligibilityChange,
                 user_type,
-                remarksMap, // <--- Pass down
+                remarksMap,
                 handleRemarksChange
               )}
             </Grid>
@@ -535,6 +510,49 @@ const IGNORED_KEYS = [
   // We will combine this with 'hiddenKeys' in the logic below
 ];
 
+const VERIFICATION_FIELD_MAP = {
+  applicantInfo: {
+    statusKey: "applicantInfoVerification",
+    remarksKey: "applicantInfoVerificationRemarks",
+  },
+  deceasedWorkerInfo: {
+    statusKey: "deceasedWorkerInfoVerification",
+    remarksKey: "deceasedWorkerInfoVerificationRemarks",
+  },
+  doctorsEntry: {
+    statusKey: "doctorsEntryVerification",
+    remarksKey: "doctorsEntryVerificationRemarks",
+  },
+  employeeAccidentInfo: {
+    statusKey: "employeeAccidentInfoVerification",
+    remarksKey: "employeeAccidentInfoVerificationRemarks",
+  },
+  employeeBankingInfoApplication: {
+    statusKey: "employeeBankInfoVerification",
+    remarksKey: "employeeBankInfoVerificationRemarks",
+  },
+  workforceEmployeeDependentApplication: {
+    statusKey: "employeeDependentInfoVerification",
+    remarksKey: "employeeDependentInfoVerificationRemarks",
+  },
+  employeeChildrenInfo: {
+    statusKey: "employeeChildrenInfoVerification",
+    remarksKey: "employeeChildrenInfoVerificationRemarks",
+  },
+  institutionInfo: {
+    statusKey: "institutionInfoVerification",
+    remarksKey: "institutionInfoVerificationRemarks",
+  },
+  metadata: {
+    statusKey: "metadataVerification",
+    remarksKey: "metadataVerificationRemarks",
+  },
+  workforceEmployee: {
+    statusKey: "workforceEmployeeVerification",
+    remarksKey: "workforceEmployeeVerificationRemarks",
+  },
+};
+
 const ApplicationViewPage = ({
   application,
   filteredDocumentTypes,
@@ -559,6 +577,52 @@ const ApplicationViewPage = ({
   // --- Eligibility State ---
   const [eligibilityMap, setEligibilityMap] = useState({});
   const [remarksMap, setRemarksMap] = useState({});
+  const [verificationState, setVerificationState] = useState({});
+
+  useEffect(() => {
+    if (application) {
+      const initialState = {};
+      Object.keys(VERIFICATION_FIELD_MAP).forEach((sectionKey) => {
+        const config = VERIFICATION_FIELD_MAP[sectionKey];
+        if (application[config.statusKey] || application[config.remarksKey]) {
+          initialState[sectionKey] = {
+            status: application[config.statusKey],
+            remarks: application[config.remarksKey] || "",
+          };
+        }
+      });
+      setVerificationState(initialState);
+    }
+  }, [application]);
+
+  const handleVerificationChange = (sectionKey, field, value) => {
+    setVerificationState((prev) => ({
+      ...prev,
+      [sectionKey]: {
+        ...prev[sectionKey],
+        [field]: value,
+      },
+    }));
+  };
+
+  const saveVerification = (sectionKey) => {
+    const config = VERIFICATION_FIELD_MAP[sectionKey];
+    if (!config) return;
+
+    const currentData = verificationState[sectionKey] || {};
+
+    const payload = {
+      id: application.id,
+      [config.statusKey]: currentData.status,
+      [config.remarksKey]: currentData.remarks,
+    };
+
+    console.log("hello from verification update", payload);
+
+    dispatch(updateApplication(payload, `Update verification for ${sectionKey}`));
+    // Optional: reload or show toast
+    // .then(() => window.location.reload());
+  };
 
   // 1. Update Local Map
   const handleEligibilityChange = (id, value) => {
@@ -669,22 +733,16 @@ const ApplicationViewPage = ({
 
   const sortedKeys = useMemo(() => {
     if (!application) return [];
-
     const appKeys = Object.keys(application);
-
-    // A. Get keys that match your preferred order (if they exist in data)
     const ordered = PREFERRED_SECTION_ORDER.filter((key) => appKeys.includes(key));
-
-    // B. Get the rest of the keys, EXCLUDING preferred, ignored, and hidden keys
     const allIgnored = [...IGNORED_KEYS, ...hiddenKeys];
 
     const others = appKeys.filter((key) => !PREFERRED_SECTION_ORDER.includes(key) && !allIgnored.includes(key));
-
-    // C. Return Combined List
     return [...ordered, ...others];
   }, [application]);
 
   console.log({ view: application });
+  console.log({ verificationState });
 
   return (
     <>
@@ -789,7 +847,7 @@ const ApplicationViewPage = ({
         {/* Details Section */}
         <Grid item xs={12} md={8}>
           {sortedKeys.map((key) => {
-            const value = application[key]; // Extract value manually
+            const value = application[key];
 
             if (key === "workforceEmployee" && ["financialAssistance", "deadlyGrant"].includes(application?.applicationType)) {
               return null;
@@ -798,10 +856,33 @@ const ApplicationViewPage = ({
             const parsedValue = tryParse(value);
             if (!parsedValue || isEmpty(parsedValue)) return null;
 
+            const currentVerificationStatus = verificationState[key]?.status; 
+
             return (
               <Accordion key={key} className={classes.accordion} style={{ background: `${"#B7D4D8"}` }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography className={classes.sectionTitle}>{formatKey(key, language)}</Typography>
+                  <Box display="flex" alignItems="center" width="100%" justifyContent="space-between" pr={2}>
+                    {/* The Title */}
+                    <Typography className={classes.sectionTitle}>{formatKey(key, language)}</Typography>
+
+                    {/* 3. The Status Badge (Only show if a status exists) */}
+                    {currentVerificationStatus && (
+                      <Box
+                        style={{
+                          backgroundColor: currentVerificationStatus === "correct" ? "#4caf50" : "#f44336", // Green for Correct, Red for Incorrect
+                          color: "#fff",
+                          padding: "2px 10px",
+                          borderRadius: "12px",
+                          fontSize: "0.75rem",
+                          fontWeight: "bold",
+                          textTransform: "uppercase",
+                          marginLeft: "10px",
+                        }}
+                      >
+                        {currentVerificationStatus === "correct" ? (language === "en" ? "Correct" : "সঠিক") : language === "en" ? "Incorrect" : "ভুল"}
+                      </Box>
+                    )}
+                  </Box>
                 </AccordionSummary>
                 <AccordionDetails style={{ display: "block", background: `${"white"}` }}>
                   {/* Recursively Render Content */}
@@ -817,7 +898,7 @@ const ApplicationViewPage = ({
                     eligibilityMap,
                     handleEligibilityChange,
                     user_type,
-                    remarksMap, // <--- Pass down
+                    remarksMap,
                     handleRemarksChange
                   )}
 
@@ -859,6 +940,47 @@ const ApplicationViewPage = ({
                           />
                         ))}
                     </>
+                  )}
+
+                  {viewedFromFlag === "verify" && VERIFICATION_FIELD_MAP[key] && (
+                    <Box className={classes.verificationBox}>
+                      <Typography variant="subtitle1" style={{ fontWeight: "bold", marginBottom: 8 }}>
+                        {language === "en" ? "Section Verification" : "সেকশন যাচাইকরণ"}
+                      </Typography>
+
+                      <Grid container spacing={2} alignItems="center">
+                        <Grid item xs={12} sm={4}>
+                          <FormControl component="fieldset">
+                            <RadioGroup
+                              row
+                              name={`verify-${key}`}
+                              value={verificationState[key]?.status || ""}
+                              onChange={(e) => handleVerificationChange(key, "status", e.target.value)}
+                            >
+                              <FormControlLabel value="correct" control={<Radio color="primary" />} label={language === "en" ? "Correct" : "সঠিক"} />
+                              <FormControlLabel value="incorrect" control={<Radio color="primary" />} label={language === "en" ? "Incorrect" : "ভুল"} />
+                            </RadioGroup>
+                          </FormControl>
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                          <TextInput
+                            label={language === "en" ? "Remarks" : "মন্তব্য"}
+                            placeholder={language === "en" ? "Enter verification remarks" : "যাচাইকরণ মন্তব্য লিখুন"}
+                            value={verificationState[key]?.remarks || ""}
+                            onChange={(e) => handleVerificationChange(key, "remarks", typeof e === "string" ? e : e.target.value)}
+                            fullWidth
+                            multiline
+                          />
+                        </Grid>
+
+                        <Grid item xs={12} sm={2}>
+                          <Button variant="contained" color="primary" fullWidth onClick={() => saveVerification(key)}>
+                            {language === "en" ? "Update" : "আপডেট"}
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </Box>
                   )}
                 </AccordionDetails>
               </Accordion>
