@@ -310,7 +310,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       onChange={(v) => handleChange(index, "phoneNumber", v)}
                       type="number"
                     />
-                    {dependent?.phoneNumber.length !=11 && <FormHelperText error><FormattedMessage id="core.error.phoneNumberLength"/></FormHelperText> }
+                    {dependent?.phoneNumber?.length !=11 && <FormHelperText error><FormattedMessage id="core.error.phoneNumberLength"/></FormHelperText> }
                   </Grid>
 
                   <Grid item xs={6}>

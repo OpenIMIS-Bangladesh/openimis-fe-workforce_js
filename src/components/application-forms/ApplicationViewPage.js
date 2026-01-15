@@ -706,6 +706,15 @@ const ApplicationViewPage = ({
             " " +
             (application?.workforceEmployee?.lastNameBn != null ? application?.workforceEmployee?.lastNameBn : ""),
       ApplicantFactoryName: language === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn,
+      ...((user_type === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION||user_type ===WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION||user_type ===WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION||user_type ===WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION) && {
+        FactoryMembershipNo: application?.employeeFactory?.membershipNo || "—",
+        FactoryRegistrationDate: application?.employeeFactory?.registrationDate
+          ? conditionalEnToBn(application.employeeFactory.registrationDate.split("T")[0], language)
+          : "—",
+        FactoryRegistrationExpiryDate: application?.employeeFactory?.registrationExpiryDate
+          ? conditionalEnToBn(application.employeeFactory.registrationExpiryDate.split("T")[0], language)
+          : "—",
+      }),
       ApplicantDesignation: application?.workforceEmployee?.position,
       ApplicationType:
         (language === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn) || application?.applicationType,
