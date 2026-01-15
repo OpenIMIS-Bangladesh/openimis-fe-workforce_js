@@ -858,10 +858,116 @@ const FooterWrapper = ({ children }) => (
   </div>
 );
 
+export const getPaymentTypeString = (paymentType) => {
+  if(paymentType === "monthly"){
+    return "Monthly";
+  } else if(paymentType === "onetime"){
+    return "One Time";
+  } else if(paymentType === "installment"){
+    return "Tri Monthly Installment";
+  }
+};
+
+
+export const getRelationString = (depObj) => {
+  const age = calculateAge(depObj.birthDate);
+
+  const relation = depObj.relationWithWorker;
+  const marital = depObj.maritalStatus;
+  const disability = depObj.disabilityStatus;
+
+  if (relation === "workforce.relation.brother") {
+    return age < 18 ? "Dependent minor brother" : null;
+
+  } else if (relation === "workforce.relation.sister") {
+    if (age < 18) {
+      return "Dependent minor sister";
+    } else if (marital === "workforce.marital_status.unmarried") {
+      return "Dependent unmarried sister";
+    } else if (marital === "workforce.marital_status.widowed") {
+      return "Dependent widowed sister";
+    }
+    return null;
+
+  } else if (relation === "workforce.relation.daughter") {
+    if (disability === "yes") {
+      return "Dependent disabled daughter";
+    } else if (age < 18) {
+      return "Minor daughter";
+    } else if (marital === "workforce.marital_status.unmarried") {
+      return "Unmarried daughter";
+    } else if (marital === "workforce.marital_status.widowed") {
+      return "Dependent widowed daughter";
+    }
+    return null;
+
+  } else if (relation === "workforce.relation.son") {
+    if (disability === "yes") {
+      return "Dependent disabled son";
+    } else if (age < 18) {
+      return "Minor son";
+    }
+    return null;
+
+  } else if (relation === "workforce.relation.husband") {
+    return "Dependent widower";
+
+  } else if (relation === "workforce.relation.wife") {
+    return "Widow";
+
+  } else if (relation === "workforce.relation.father") {
+    return "Dependent father";
+
+  } else if (relation === "workforce.relation.mother") {
+    return "Mother";
+
+  } else if (relation === "workforce.relation.grand_father") {
+    return "Dependent paternal grandfather";
+
+  } else if (relation === "workforce.relation.grand_mother") {
+    return "Dependent paternal grandmother";
+
+  } else if (relation === "workforce.relation.grand_son") {
+    return age < 18
+      ? "Dependent minor son of a deceased son"
+      : null;
+
+  } else if (relation === "workforce.relation.grand_daughter") {
+    return age < 18
+      ? "Dependent minor daughter of a deceased son"
+      : null;
+
+  } else if (relation === "workforce.relation.grand_son_from_daughter") {
+    return age < 18
+      ? "Dependent minor son of a deceased daughter"
+      : null;
+
+  } else if (relation === "workforce.relation.grand_daughter_from_daughter") {
+    return age < 18
+      ? "Dependent minor daughter of a deceased daughter"
+      : null;
+
+  } else if (relation === "workforce.relation.daughter_in_law") {
+    return marital === "workforce.marital_status.widowed"
+      ? "Dependent widowed daughter-in-law"
+      : null;
+
+  } else if (relation === "workforce.relation.illegitimate_son") {
+    return "Dependent son born out of wedlock";
+
+  } else if (relation === "workforce.relation.illegitimate_daughter") {
+    return marital === "workforce.marital_status.unmarried"
+      ? "Dependent unmarried daughter born out of wedlock"
+      : null;
+  }
+
+  return null;
+}
+
 export const isEisPath = () => {
-  // if (typeof window !== "undefined") {
-  //   return window.location.href.includes("eis");
-  // }
-  // return false; // fallback if window is not defined (SSR)
-  return true;
+  if (typeof window !== "undefined") {
+    return window.location.href.includes("eis");
+  }
+  return false; // fallback if window is not defined (SSR)
+  // return true;
 };

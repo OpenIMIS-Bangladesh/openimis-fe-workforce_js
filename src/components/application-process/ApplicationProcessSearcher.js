@@ -736,7 +736,7 @@ class ApplicationProcessSearcher extends Component {
 
       if (revertedApplication) {
         defaultFilters = [
-          'organizationTypeIn: ["cf","eis"]',
+          'organizationTypeIn: '+organizationTypeIn,
           'orderBy: ["-dateCreated"]',
           'statusIn: ["revert"]'
         ];

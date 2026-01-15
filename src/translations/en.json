@@ -970,6 +970,7 @@
 
   "workforce.doctor.discussionRequired":"Discussion needed",
   "workforce.doctor.rejectRequest":"Reject",
-  "workforce.doctor.recommend":"Recommend"
+  "workforce.doctor.recommend":"Recommend",
+  "workforce.application.beneficiaryManagement": "Beneficiary Management"
 
 }

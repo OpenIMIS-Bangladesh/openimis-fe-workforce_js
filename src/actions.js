@@ -3002,7 +3002,9 @@ export function fetchEisPaymentProcess(applicationIds,mm) {
         bank {
           id
           nameEn
+          nameBn
           districtNameEn
+          districtNameBn
           bankCode
           branchCode
           routingNumber
@@ -3046,6 +3048,7 @@ export function fetchEisPaymentProcess(applicationIds,mm) {
           applicationType
           organizationType
           employeeAccidentInfo
+          deceasedWorkerInfo
           employeeBankInfo
           doctorsEntry
           dateCreated
@@ -3064,6 +3067,14 @@ export function fetchEisPaymentProcess(applicationIds,mm) {
           employeeFactory {
             id
             nameEn
+            nameBn
+            allAssociation{
+              id
+              nameEn
+              nameBn
+              shortNameBn
+              shortNameEn
+            }
           }
         }
       }
