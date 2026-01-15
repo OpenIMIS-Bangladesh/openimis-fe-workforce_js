@@ -1,20 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
-import { Button, Box, Paper, Typography, LinearProgress, TextField, FormHelperText } from "@material-ui/core";
+import { Button, Box, Paper, Typography, LinearProgress, FormHelperText } from "@material-ui/core";
 import { TextInput, useTranslations, useModulesManager, useHistory, FormattedMessage } from "@openimis/fe-core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import OtpInput from "react-otp-input";
 import { createWorkforceOtp, createWorkforceUser, fetchWorkforceOtp } from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
-import { validateRequiredFields } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
+    top: 0, bottom: 0, left: 0, right: 0,
     margin: "auto",
     display: "flex",
     justifyContent: "center",
@@ -25,13 +21,13 @@ const useStyles = makeStyles((theme) => ({
     width: 600,
     textAlign: "center",
     borderRadius: 12,
-    background: "#d9e9eb",
+    background: "#d9e9eb", // Original background
   },
   inputContainer: {
     textAlign: "left",
   },
   otpInput: {
-    width: "30rem",
+    width: "30rem", // Original size
     height: "3rem",
     margin: "0 2rem",
     fontSize: "2rem",
@@ -41,196 +37,130 @@ const useStyles = makeStyles((theme) => ({
     outline: "none",
     transition: "border-color 0.2s ease-in-out",
     "&:focus": {
-      borderColor: "#1976d2", // MUI primary color
+      borderColor: "#1976d2",
     },
   },
 }));
 
 const RegistrationPage = () => {
   const classes = useStyles();
-  const history = useHistory();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
-  const [otp, setOtp] = useState("");
-  const [errors, setErrors] = useState(null);
-  const stepRef = useRef(null);
+  
+  const [step, setStep] = useState(1);
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setSubmitting] = useState(false);
   const internalId = useSelector((state) => state.workforce?.mutation?.id);
 
-  const otpStatus = useSelector((state) => state.workforce["workforceOtp"]);
-
-  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     NID_BirthCertificate: "",
-    birthCertificate: "",
     mobile: "",
     firstNameBn: "",
     firstNameEn: "",
     otp: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [isSubmitting, setSubmitting] = useState(false);
-  const [serverResponse, setServerResponse] = useState({
-    status: "",
-    message: null,
+    password: "Password123", // Step 3 bypassed for now
+    confirmPassword: "Password123",
   });
 
-  // Fix: Get value directly, not e.target.value
+  const [serverResponse, setServerResponse] = useState({ status: "", message: null });
+
   const handleInputChange = (key) => (val) => {
+    setErrors({ ...errors, [key]: null });
     setFormData({ ...formData, [key]: val });
   };
 
-  useEffect(() => {
-    if (step === 2 && otpStatus) {
-      if (otpStatus.status === "active") {
-        setStep(3);
-      } else if (otpStatus.status === "invalid") {
-        setServerResponse({
-          status: "ERROR",
-          message: "ভুল OTP. দয়া করে আবার চেষ্টা করুন।",
-        });
-      }
+  const validateStep1 = () => {
+    let newErrors = {};
+    const idVal = (formData.NID_BirthCertificate || "").toString().trim();
+    const mobVal = (formData.mobile || "").toString().trim();
+
+    if (!formData.firstNameBn) newErrors.firstNameBn = "নাম (বাংলা) আবশ্যক";
+    if (!formData.firstNameEn) newErrors.firstNameEn = "Name (English) is required";
+    
+    if (![10, 13, 17].includes(idVal.length)) {
+      newErrors.nid = "এনআইডি অথবা জন্ম নিবন্ধন ১০, ১৩ অথবা ১৭ ডিজিট হতে হবে";
     }
-  }, [otpStatus]);
-
-  useEffect(() => {
-    if (isSubmitting && step === 3 && internalId) {
-      setServerResponse({
-        status: "SUCCESS",
-        message: "নিবন্ধন সফল হয়েছে!",
-      });
-
-      setTimeout(() => {
-        setSubmitting(false);
-        //history.push("/login");
-        window.location.href = "/";
-      }, 2000);
+    
+    if (mobVal.length !== 11) {
+      newErrors.phoneNumber = "মোবাইল নম্বর ১১ ডিজিট হতে হবে";
     }
-  }, [internalId]);
 
-  const validateStep1 = () =>
-    formData.NID_BirthCertificate &&
-    [10, 13, 17].includes((formData.NID_BirthCertificate || "").toString().trim().length) &&
-    formData.mobile &&
-    [11].includes((formData.mobile || "").toString().trim().length) &&
-    formData.firstNameBn &&
-    formData.firstNameEn;
-
-  const validateStep3 = () => formData.password && formData.confirmPassword && formData.password === formData.confirmPassword;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleNext = async () => {
     setServerResponse({ status: "", message: null });
-    const newErrors = validateRequiredFields(stepRef, formatMessage);
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length === 0) {
-      if (step === 1 && validateStep1()) {
-        const cleanedInput = (formData.NID_BirthCertificate || "").toString().trim();
-
-        if (cleanedInput.length === 17) {
-          const createOtpData = {
-            birthCertificateNo: formData.NID_BirthCertificate,
-            firstNameBn: formData.firstNameBn,
-            firstNameEn: formData.firstNameEn,
-            mobile: formData.mobile,
-          };
-          await dispatch(createWorkforceOtp(createOtpData, `Created Workforce Office ${createOtpData.firstNameEn}`));
-        } else if (cleanedInput.length === 10) {
-          const createOtpData = {
-            NID: formData.NID_BirthCertificate,
-            firstNameBn: formData.firstNameBn,
-            firstNameEn: formData.firstNameEn,
-            mobile: formData.mobile,
-          };
-          await dispatch(createWorkforceOtp(createOtpData, `Created Workforce Office ${createOtpData.firstNameEn}`));
-        } else {
-          setServerResponse({
-            status: "ERROR",
-            message: "দয়া করে সঠিক এনআইডি বা জন্ম সনদ নম্বর প্রদান করুন।",
-          });
-          return;
-        }
-
-        if (internalId !== "") {
-          setStep(2);
-        }
-      } else if (step === 2) {
-        //       if (formData.otp === "12345") {
-        //         // Bypass OTP verification for default test OTP
-        //         // setStep(3);
-        //         await handleSubmit();
-        //         //history.push("/");
-        // window.location.href='/';
-        //       }
-        await dispatch(fetchWorkforceOtp(modulesManager, [`id:"${internalId}",otp:"${formData.otp}"`])).then((res) => {
-          handleSubmit();
-          console.log(res);
-        });
-        // .finally((res)=>{
-        //   window.location.href='/';
-        // })
-      } else if (step === 3) {
-        await handleSubmit();
-        //history.push("/");
-        window.location.href = "/";
-      } else {
-        setServerResponse({
-          status: "ERROR",
-          message: step === 2 ? "ভুল OTP. দয়া করে আবার চেষ্টা করুন।" : "সকল প্রয়োজনীয় তথ্য সঠিকভাবে পূরণ করুন|",
-        });
+    if (step === 1 && validateStep1()) {
+      setSubmitting(true);
+      const payload = {
+        [formData.NID_BirthCertificate.length === 17 ? "birthCertificateNo" : "NID"]: formData.NID_BirthCertificate,
+        firstNameBn: formData.firstNameBn,
+        firstNameEn: formData.firstNameEn,
+        mobile: formData.mobile,
+      };
+      
+      try {
+        await dispatch(createWorkforceOtp(payload, `Created Workforce Office ${payload.firstNameEn}`));
+        setStep(2);
+      } catch (e) {
+        setServerResponse({ status: "ERROR", message: "OTP পাঠাতে সমস্যা হয়েছে" });
+      } finally {
+        setSubmitting(false);
       }
+    } else if (step === 2) {
+      setSubmitting(true);
+      // Original OTP verification call
+      await dispatch(fetchWorkforceOtp(modulesManager, [`id:"${internalId}",otp:"${formData.otp}"`]))
+        .then(() => handleSubmit())
+        .catch(() => {
+          setServerResponse({ status: "ERROR", message: "ভুল OTP. দয়া করে আবার চেষ্টা করুন।" });
+          setSubmitting(false);
+        });
     }
   };
 
   const handleSubmit = async () => {
-    const cleanedInput = (formData.NID_BirthCertificate || "").toString().trim();
-    if (cleanedInput.length === 17) {
-      const createUserData = {
-        birthCertificateNo: formData.NID_BirthCertificate,
-        firstNameBn: formData.firstNameBn,
-        firstNameEn: formData.firstNameEn,
-        mobile: formData.mobile,
-        password: formData.password,
-      };
-      await dispatch(createWorkforceUser(createUserData, `Created Workforce User ${createUserData.firstNameEn}`)).then((res) => {
-        window.location.href = "/";
-      });
-    } else {
-      const createUserData = {
-        NID: formData.NID_BirthCertificate,
-        firstNameBn: formData.firstNameBn,
-        firstNameEn: formData.firstNameEn,
-        mobile: formData.mobile,
-        password: formData.password,
-      };
-      await dispatch(createWorkforceUser(createUserData, `Created Workforce User ${createUserData.firstNameEn}`)).then((res) => {
-        window.location.href = "/";
-      });
-    }
-    setSubmitting(true);
+    const payload = {
+      [formData.NID_BirthCertificate.length === 17 ? "birthCertificateNo" : "NID"]: formData.NID_BirthCertificate,
+      firstNameBn: formData.firstNameBn,
+      firstNameEn: formData.firstNameEn,
+      mobile: formData.mobile,
+      password: formData.password,
+    };
+    await dispatch(createWorkforceUser(payload)).then(() => {
+      window.location.href = "/";
+    });
   };
-
-  console.log({ formData });
-  // console.log({otpStatus})
 
   return (
     <>
       {isSubmitting && <LinearProgress />}
       <div className={classes.container}>
         <Paper className={classes.paper} elevation={3}>
+          {/* Original Back Button Layout */}
           <Box display="flex" justifyContent="flex-start">
-            <Button startIcon={<ArrowBackIcon />} href={"https://eis-site-stage.skydigitalbd.com/"} variant="text" color="primary" style={{ padding: "3px" }}>
+            <Button 
+              startIcon={<ArrowBackIcon />} 
+              href={"https://eis-site-stage.skydigitalbd.com/"} 
+              variant="text" 
+              color="primary" 
+              style={{ padding: "3px" }}
+            >
               Back
             </Button>
           </Box>
+
           <Typography variant="h5" color="primary">
             <FormattedMessage module="workforce" id="workforce.registration.title" />
           </Typography>
+
           <form onSubmit={(e) => e.preventDefault()}>
             <Box mt={2} className={classes.inputContainer}>
-              {/* Step 1: Basic Info */}
+              
               {step === 1 && (
-                <Box ref={stepRef}>
+                <>
                   <Box style={{ padding: 2 }}>
                     <TextInput
                       id="nameBn"
@@ -239,10 +169,11 @@ const RegistrationPage = () => {
                       fullWidth
                       value={formData.firstNameBn}
                       onChange={handleInputChange("firstNameBn")}
-                      error={!!errors?.nameBn}
-                      helperText={errors?.nameBn}
+                      error={!!errors.firstNameBn}
                     />
+                    {errors.firstNameBn && <FormHelperText error>{errors.firstNameBn}</FormHelperText>}
                   </Box>
+
                   <Box style={{ padding: 2 }}>
                     <TextInput
                       id="nameEn"
@@ -251,29 +182,24 @@ const RegistrationPage = () => {
                       fullWidth
                       value={formData.firstNameEn}
                       onChange={handleInputChange("firstNameEn")}
-                      error={!!errors?.nameEn}
-                      helperText={errors?.nameEn}
+                      error={!!errors.firstNameEn}
                     />
+                    {errors.firstNameEn && <FormHelperText error>{errors.firstNameEn}</FormHelperText>}
                   </Box>
+
                   <Box style={{ padding: 2 }}>
                     <TextInput
                       id="nid"
                       required
                       label="জাতীয় পরিচয়পত্র (এনআইডি) / জন্ম সনদ নম্বর (ইউজারনেম)"
                       fullWidth
-                      onChange={(value) => setFormData({ ...formData, NID_BirthCertificate: value })}
-                      formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
-                      type="number"
-                      inputProps={{ maxLength: 17 }}
-                      error={!!errors?.nid}
-                      helperText={errors?.nid}
+                      value={formData.NID_BirthCertificate}
+                      onChange={(value) => handleInputChange("NID_BirthCertificate")(value.replace(/\D/g, ""))}
+                      error={!!errors.nid}
                     />
-                    {errors?.nid && (
-                      <FormHelperText error>
-                        <FormattedMessage id={errors?.nid} />
-                      </FormHelperText>
-                    )}
+                    {errors.nid && <FormHelperText error>{errors.nid}</FormHelperText>}
                   </Box>
+
                   <Box style={{ padding: 2 }}>
                     <TextInput
                       id="phoneNumber"
@@ -281,70 +207,42 @@ const RegistrationPage = () => {
                       label="মোবাইল নম্বর"
                       fullWidth
                       value={formData.mobile}
-                      onChange={handleInputChange("mobile")}
-                      type="number"
-                      error={!!errors?.phoneNumber}
-                      helperText={errors?.phoneNumber}
+                      onChange={(value) => handleInputChange("mobile")(value.replace(/\D/g, ""))}
+                      error={!!errors.phoneNumber}
                     />
-                    {errors?.phoneNumber && (
-                      <FormHelperText error>
-                        <FormattedMessage id={errors?.phoneNumber} />
-                      </FormHelperText>
-                    )}
+                    {errors.phoneNumber && <FormHelperText error>{errors.phoneNumber}</FormHelperText>}
                   </Box>
+                </>
+              )}
+
+              {step === 2 && (
+                <Box display="flex" justifyContent="center" my={3}>
+                  <OtpInput
+                    value={formData.otp}
+                    onChange={(val) => setFormData({ ...formData, otp: val })}
+                    numInputs={5}
+                    renderSeparator={<span>-</span>}
+                    inputStyle={classes.otpInput}
+                    renderInput={(props) => <input {...props} />}
+                  />
                 </Box>
               )}
 
-              {/* Step 2: OTP */}
-              {step === 2 && (
-                <OtpInput
-                  value={formData.otp}
-                  onChange={handleInputChange("otp")}
-                  numInputs={5}
-                  renderSeparator={<span>-</span>}
-                  inputStyle={classes.otpInput}
-                  renderInput={(props) => <input {...props} />}
-                />
-              )}
+              {/* Step 3 (Password) is currently commented out as requested */}
 
-              {/* Step 3: Password */}
-              {/* {step === 3 && (
-                <>
-                  <TextInput
-                    required
-                    type="password"
-                    label="পাসওয়ার্ড"
-                    fullWidth
-                    value={formData.password}
-                    onChange={handleInputChange("password")}
-                  />
-                  <TextInput
-                    required
-                    type="password"
-                    label="পাসওয়ার্ড নিশ্চিত করুন"
-                    fullWidth
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange("confirmPassword")}
-                  />
-                </>
-              )} */}
-
-              {/* Server Response */}
               {serverResponse?.message && (
-                <Box color={serverResponse.status === "ERROR" ? "error.main" : "success.main"} mt={2}>
+                <Box color={serverResponse.status === "ERROR" ? "error.main" : "success.main"} mt={2} textAlign="center">
                   {serverResponse.message}
                 </Box>
               )}
 
-              {/* Main Button */}
               <Button fullWidth onClick={handleNext} disabled={isSubmitting} color="primary" variant="contained" style={{ marginTop: 16 }}>
-                {step === 1 ? "সাবমিট করুন" : "পরবর্তী"}
+                {step === 1 ? "পরবর্তী" : "সাবমিট করুন"}
               </Button>
 
-              {/* Back Button */}
               <Button
                 fullWidth
-                onClick={() => (window.location.href = "/")} //history.push("/")}
+                onClick={() => (window.location.href = "/")}
                 startIcon={<ArrowBackIcon />}
                 color="primary"
                 variant="text"
