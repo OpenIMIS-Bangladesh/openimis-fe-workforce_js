@@ -7,20 +7,18 @@ import {
   Button,
   Divider,
   IconButton,
-  CircularProgress, // Import Loader
+  CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
-import EmployeeAccidentInfoForm from "../../pages/application/EmployeeAccidentInfoForm";
 import { useSelector, useDispatch } from "react-redux";
-import { createWorkforceDocument, updateApplication } from "../../actions";
-import { validateRequiredFields } from "../../utils/utils";
+import { createWorkforceDocument, updateApplication, testWorkforcePayment } from "../../actions";
+import { validateRequiredFields, getUserType } from "../../utils/utils";
 import { FormattedMessage, useTranslations } from "@openimis/fe-core";
 import FactoryAdminAccidentForm from "../../pages/application/FactoryAdminAccidentForm";
 import EisDoctorEntries from "../../pages/application/EisDoctorEntries";
-import { testWorkforcePayment } from "../../actions";
 import { WORKFORCE_USER_TYPE } from "../../constants";
-import { getUserType } from "../../utils/utils";
+import CustomSnackbar from "../shared/CustomSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -41,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     outline: "none",
     overflow: "hidden",
-    position: "relative", // Needed for absolute positioning of loader
+    position: "relative",
   },
   header: {
     display: "flex",
@@ -82,14 +80,22 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
   const classes = useStyles({ maxWidth });
   const [formData, setFormData] = useState(application || {});
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false); // ✅ Added Loading State
-  const [alertMessage, setAlertMessage] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(false);
 
   const { formatMessage } = useTranslations("workforce");
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const dispatch = useDispatch();
   const stepRef = useRef(null);
   const user_type = getUserType();
+
+  // 1. Identify if the current user is a Doctor (Reused logic)
+  const isDoctor =
+    application?.organizationType === "eis" &&
+    (user_type === WORKFORCE_USER_TYPE.DOCTOR ||
+      user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR ||
+      user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR ||
+      (user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.applicationType === "disabilityAssistance"));
 
   const handleChange = (key, value, parent = null) => {
     setFormData((prev) => {
@@ -107,23 +113,25 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
   };
 
   const handleSubmit = async () => {
-    // 1. Validate Fields
+    // 2. Validate Required Fields
     const newErrors = validateRequiredFields(stepRef, formatMessage);
     setErrors(newErrors);
-    const allAssociationDate = new Date(formData?.employeeFactory?.allAssociation?.startDate)
-    const accidentDate = new Date(formData?.employeeAccidentInfo?.accidentDate)
+    if (Object.keys(newErrors).length > 0) return;
 
-    if (allAssociationDate<accidentDate) {
-      setAlertMessage(true)
-      return
+    // 3. Date Validation (Only for Factory Admin)
+    if (!isDoctor) {
+      const allAssociationDate = new Date(formData?.employeeFactory?.allAssociation?.startDate);
+      const accidentDate = new Date(formData?.employeeAccidentInfo?.accidentDate);
+
+      if (allAssociationDate > accidentDate) {
+        setAlertMessage(true);
+        return; // Stop execution
+      }
     }
 
-    if (Object.keys(newErrors).length > 0) {
-      return; // Stop if there are validation errors
-    }
-    setLoading(true); // ✅ Start Loading
+    // 4. Unified Submission Logic
+    setLoading(true);
     try {
-      // 2. Upload Files Concurrently (Wait for all to finish)
       if (uploadFile && uploadFile.length > 0) {
         const uploadPromises = uploadFile.map((file) =>
           dispatch(createWorkforceDocument({ ...file, workforceApplicationId: application?.id }, `Created workforce document`))
@@ -131,105 +139,99 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
         await Promise.all(uploadPromises);
       }
 
-      // 3. Prepare Update Data
       const updateApplicationData = {
         id: application?.id,
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         doctorEntries: JSON.stringify(formData?.doctorEntries),
       };
 
-      console.log({ updateApplicationData });
-      const testPaymentData = {
-        id: application?.id,
-      };
-
-      // 4. Update Application (Wait for completion)
       await dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
-
-      await dispatch(testWorkforcePayment(testPaymentData, "create test payment")).then(() => {
-        // 5. Success & Reload
-        window.location.reload();
-      });
+      await dispatch(testWorkforcePayment({ id: application?.id }, "create test payment"));
+      
+      window.location.reload();
     } catch (error) {
       console.error("Submission failed:", error);
-      setLoading(false); // ✅ Stop loading only on error (on success page reloads)
-      // You might want to show a snackbar/toast error here
+      setLoading(false);
     }
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={loading ? null : onClose} // Prevent closing while loading
-      className={classes.modal}
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{ timeout: 300 }}
-    >
-      <Box className={classes.paper}>
-        {/* ✅ Loading Overlay */}
-        {loading && (
-          <div className={classes.loaderOverlay}>
-            <CircularProgress />
-            <Typography variant="body2" style={{ marginTop: 10 }}>
-              <FormattedMessage id="workforce.processing" defaultMessage="Processing..." />
+    <>
+      <Modal
+        open={open}
+        onClose={loading ? null : onClose}
+        className={classes.modal}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{ timeout: 300 }}
+      >
+        <Box className={classes.paper}>
+          {loading && (
+            <div className={classes.loaderOverlay}>
+              <CircularProgress />
+              <Typography variant="body2" style={{ marginTop: 10 }}>
+                <FormattedMessage id="workforce.processing" defaultMessage="Processing..." />
+              </Typography>
+            </div>
+          )}
+
+          <div className={classes.header}>
+            <Typography variant="h6" style={{ textAlign: "center", fontWeight: "bold" }}>
+              <FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />
             </Typography>
+            <IconButton onClick={onClose} size="small" style={{ color: "black" }} disabled={loading}>
+              <CloseIcon />
+            </IconButton>
           </div>
-        )}
+          <Divider />
 
-        {/* Header */}
-        <div className={classes.header}>
-          <Typography variant="h6" style={{ textAlign: "center", fontWeight: "bold" }}>
-            <FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />
-          </Typography>
-          <IconButton onClick={onClose} size="small" style={{ color: "black" }} disabled={loading}>
-            <CloseIcon />
-          </IconButton>
-        </div>
-        <Divider />
+          {/* Render based on isDoctor flag */}
+          {isDoctor ? (
+            <Box className={classes.content} ref={stepRef}>
+              <EisDoctorEntries
+                handleChange={(key, value) => handleChange(key, value, "doctorEntries")}
+                formData={formData}
+                setFormData={setFormData}
+                applicationType="disabilityAssistance"
+                errors={errors}
+              />
+            </Box>
+          ) : (
+            <Box className={classes.content} ref={stepRef}>
+              <FactoryAdminAccidentForm
+                handleChange={(key, value) => handleChange(key, value, "employeeAccidentInfo")}
+                formData={formData}
+                setFormData={setFormData}
+                applicationType={formData?.applicationType}
+                errors={errors}
+              />
+            </Box>
+          )}
 
-        {/* Scrollable Form Content */}
-        {application?.organizationType === "eis" &&
-        (user_type === WORKFORCE_USER_TYPE.DOCTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR || user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR || (user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.applicationType==="disabilityAssistance")) ? (
-          <Box className={classes.content} ref={stepRef}>
-            <EisDoctorEntries
-              handleChange={(key, value) => handleChange(key, value, "doctorEntries")}
-              formData={formData}
-              setFormData={setFormData}
-              applicationType="disabilityAssistance"
-              errors={errors}
-            />
-          </Box>
-        ) : (
-          <Box className={classes.content} ref={stepRef}>
-            <FactoryAdminAccidentForm
-              handleChange={(key, value) => handleChange(key, value, "employeeAccidentInfo")}
-              formData={formData}
-              setFormData={setFormData}
-              applicationType={formData?.applicationType}
-              errors={errors}
-            />
-          </Box>
-        )}
-
-        {/* Footer Actions */}
-        {showActions && (
-          <div className={classes.actions}>
-            <Button onClick={onClose} variant="outlined" disabled={loading}>
-              <FormattedMessage id="workforce.confirm.modal.cancel" />
-            </Button>
-            <Button
-              onClick={handleSubmit}
-              color="primary"
-              variant="contained"
-              disabled={loading ||user_type ===WORKFORCE_USER_TYPE.EIS_COORDINATOR} // ✅ Disable button while loading
-            >
-              <FormattedMessage id="workforce.submit" />
-            </Button>
-          </div>
-        )}
-      </Box>
-    </Modal>
+          {showActions && (
+            <div className={classes.actions}>
+              <Button onClick={onClose} variant="outlined" disabled={loading}>
+                <FormattedMessage id="workforce.confirm.modal.cancel" />
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                color="primary"
+                variant="contained"
+                disabled={loading || user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR}
+              >
+                <FormattedMessage id="workforce.submit" />
+              </Button>
+            </div>
+          )}
+        </Box>
+      </Modal>
+      <CustomSnackbar
+        open={alertMessage}
+        onClose={() => setAlertMessage(false)}
+        type="error"
+        message={<FormattedMessage id="workforce.application.before.association.startDate.error" module="workforce" />}
+      />
+    </>
   );
 };
 

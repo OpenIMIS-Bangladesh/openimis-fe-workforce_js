@@ -830,7 +830,7 @@ export function fetchApplication(mm, filters) {
     "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,occupation,email,phoneNumber,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,relationWithWorker,attachments,isEligible,remarks,status,employeeBankingDependents{edges{node{id}}},presentAddress,permanentAddress," + present_location_projection + permanent_location_projection + ",bankingInfo{id}}}}",
     "employeeBankingInfoApplication{edges{node{id,dateCreated,nameBn,nameEn,accountNo,accountHolderName,accountHolderType,status,branch{id,nameBn,nameEn,bankCode,branchCode,routingNumber,districtNameEn,districtNameBn,parent{id,nameBn,nameEn}},dependant{id},relationWithDependent}}}",
     "metadata",
-    "employeeFactory{id, nameBn, nameEn}",
+    "employeeFactory{id, nameBn, nameEn,allAssociation{id,nameBn,nameEn,startDate}}",
     "cfApplicationSummary{id}",
     "eisApplicationSummary{id}",
     "blwfApplicationSummary{id}",

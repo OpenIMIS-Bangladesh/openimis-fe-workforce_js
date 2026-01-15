@@ -955,6 +955,8 @@
   "workforce.unpaid": "Not Paid yet",
   "workforce.processing":"Loading ...",
   "workforce.employee.application.eisApproval.signature":"Eis Approval Signature",
+  "workforce.application.before.association.startDate.error":"The date of the accident can't be later than the start date of the relevant association of the factory.",
+
 
 
   "workforce.accident.placeOfDeath.label": "Place of Death",
