@@ -214,7 +214,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       }}
                     >
                       {/* 3. Use the calculated variable for text */}
-                      {isEligible ? "Eligible" : "Ineligible"}
+                      {isEligible ? <FormattedMessage id="workforce.dependent.eis.eligible"/> : <FormattedMessage id="workforce.dependent.eis.inEligible"/>}
                     </Typography>
                   )}
                 </Grid>

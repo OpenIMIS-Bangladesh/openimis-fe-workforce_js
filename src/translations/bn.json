@@ -858,6 +858,8 @@
   "workforce.accident.placeOfDeath.label": "মৃত্যুর স্থান",
   "workforce.accident.dateOfDeath.label": "মৃত্যুর তারিখ",
   "workforce.accident.timeOfDeath.label": "মৃত্যুর সময়",
+  "workforce.dependent.eis.eligible": "যোগ্য",
+  "workforce.dependent.eis.inEligible": "অযোগ্য",
 
   "workforce.accident.mainType.label": "দুর্ঘটনার ধরন",
   "workforce.employee.application.eisApproval.signature":"ই.আই.এস. অনুমোদনের স্বাক্ষর",

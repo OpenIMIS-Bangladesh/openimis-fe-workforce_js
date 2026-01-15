@@ -943,6 +943,9 @@
   "workforce.accident.releaseDate.label": "Date of Release/Discharge",
   "workforce.accident.hospitalDoctorName.label": "Doctor's Name (Hospital)",
 
+  "workforce.dependent.eis.eligible": "Eligible",
+  "workforce.dependent.eis.inEligible": "Ineligible",
+
 
   "workforce.other.compensationInfo": "Previous Compensation Info",
   "workforce.compensation.add": "Add Another Compensation",
