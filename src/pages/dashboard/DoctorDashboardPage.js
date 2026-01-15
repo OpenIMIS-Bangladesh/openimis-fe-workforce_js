@@ -1,6 +1,6 @@
-import React, { useState,useEffect} from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { FormattedMessage,useModulesManager } from "@openimis/fe-core";
+import { FormattedMessage, useModulesManager } from "@openimis/fe-core";
 import {
   Grid,
   List,
@@ -25,21 +25,22 @@ import {
   AccordionDetails,
 } from "@material-ui/core";
 import { fetchSummaryApplications } from "../../actions";
-import HourglassFullTwoToneIcon from '@material-ui/icons/HourglassFullTwoTone';
-import ForwardIcon from '@material-ui/icons/Forward';
-import RestorePageIcon from '@material-ui/icons/RestorePage';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
+import ForwardIcon from "@material-ui/icons/Forward";
+import RestorePageIcon from "@material-ui/icons/RestorePage";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
-import { WORKFORCE_USER_TYPE} from "../../constants";
+import { WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserType, getUserTypeFromRights } from "../../utils/utils";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     padding: theme.spacing(2),
-    height: 'calc(100vh - 64px)', // assuming 64px header/appbar, adjust as needed
-    overflow: 'hidden',
+    height: "calc(100vh - 64px)", // assuming 64px header/appbar, adjust as needed
+    overflow: "hidden",
   },
   sidebar: {
     position: "sticky",
@@ -50,8 +51,8 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "auto",
   },
   content: {
-    height: '100vh',
-    overflowY: 'auto',
+    height: "100vh",
+    overflowY: "auto",
     padding: theme.spacing(2),
   },
   tableContainer: {
@@ -79,62 +80,99 @@ const useStyles = makeStyles((theme) => ({
   tableHeader: {
     backgroundColor: "#B7D4D8",
   },
-   accordion: {
-  boxShadow: "1px 1px 1px 1px",
-  border: "none",
-  backgroundColor: "white",
-  marginBottom: "12px",
-  borderRadius: "6px",
-  "&::before": {
-    display: "none",
+  accordion: {
+    boxShadow: "1px 1px 1px 1px",
+    border: "none",
+    backgroundColor: "white",
+    marginBottom: "12px",
+    borderRadius: "6px",
+    "&::before": {
+      display: "none",
+    },
   },
-},
-accordionSummary: {
-  padding: "8px 16px",
-  backgroundColor: "white",
-  borderRadius: "6px",
-  "& .MuiTypography-root": {
-    color: "#015C63", // teal-like tone
-    fontWeight: 600,
+  accordionSummary: {
+    padding: "8px 16px",
+    backgroundColor: "white",
+    borderRadius: "6px",
+    "& .MuiTypography-root": {
+      color: "#015C63", // teal-like tone
+      fontWeight: 600,
+    },
   },
-},
-accordionDetails: {
-  backgroundColor: "white",
-  padding: "16px",
-  borderTop: "1px solid #ddd",
-},
+  accordionDetails: {
+    backgroundColor: "white",
+    padding: "16px",
+    borderTop: "1px solid #ddd",
+  },
 }));
 
-const SidebarMenu = [
-  {
-    id: "pendingApplications",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.application.pending" />
-    ),
-    icon: <HourglassFullTwoToneIcon />,
-  }, 
-  {
-    id: "forwardedApplications",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.application.forwarded" />
-    ),
-    icon: <ForwardIcon />,
-  }, 
-  {
-    id: "revertedApplications",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.application.reverted" />
-    ),
-    icon: <RestorePageIcon />,
-  }, 
-  {
-    id: "returnedApplications",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.application.returned" />
-    ),
-    icon: <ArrowBackIcon />,
-  }, 
-];
+const getSidebarMenu = (user_type) => {
+  const allMenu = [
+    {
+      id: "pendingMeetingSheet",
+      text: (
+        <FormattedMessage
+          module="workforce"
+          id="workforce.employee.application.pendingMeetingSheet"
+        />
+      ),
+      icon: <HourglassFullTwoToneIcon />,
+    },
+    {
+      id: "pendingApplications",
+      text: (
+        <FormattedMessage
+          module="workforce"
+          id="workforce.application.pending"
+        />
+      ),
+      icon: <HourglassFullTwoToneIcon />,
+    },
+    {
+      id: "forwardedApplications",
+      text: (
+        <FormattedMessage
+          module="workforce"
+          id="workforce.application.forwarded"
+        />
+      ),
+      icon: <ForwardIcon />,
+    },
+    {
+      id: "revertedApplications",
+      text: (
+        <FormattedMessage
+          module="workforce"
+          id="workforce.application.reverted"
+        />
+      ),
+      icon: <RestorePageIcon />,
+    },
+    {
+      id: "returnedApplications",
+      text: (
+        <FormattedMessage
+          module="workforce"
+          id="workforce.application.returned"
+        />
+      ),
+      icon: <ArrowBackIcon />,
+    },
+  ];
+
+  if (user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
+    return allMenu.filter((m) => m.id === "pendingMeetingSheet"); 
+  }
+
+  if (
+    user_type === WORKFORCE_USER_TYPE.DOCTOR ||
+    user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR
+  ) {
+    return allMenu.filter((m) => m.id !== "pendingMeetingSheet");
+  }
+
+  return [];
+};
 
 // ----------- Components to Render in Main Content -----------
 
@@ -147,7 +185,7 @@ const ForwardedApplications = () => {
         forwardedApplications={true}
         loggedInUserId={loggedInUserId}
         disableButtons={1}
-        dynamicTableTitle= {"workforce.application.forwarded"}
+        dynamicTableTitle={"workforce.application.forwarded"}
       />
       {/* Pagination */}
       <div className={classes.pagination}>
@@ -159,8 +197,8 @@ const ForwardedApplications = () => {
         </Button>
       </div>
     </>
-  )
-}
+  );
+};
 
 const RevertedApplications = () => {
   const classes = useStyles();
@@ -171,7 +209,7 @@ const RevertedApplications = () => {
         revertedApplications={true}
         loggedInUserId={loggedInUserId}
         disableButtons={1}
-        dynamicTableTitle= {"workforce.application.reverted"}
+        dynamicTableTitle={"workforce.application.reverted"}
       />
       {/* Pagination */}
       <div className={classes.pagination}>
@@ -183,8 +221,8 @@ const RevertedApplications = () => {
         </Button>
       </div>
     </>
-  )
-}
+  );
+};
 
 const ReturnedApplications = () => {
   const classes = useStyles();
@@ -195,7 +233,7 @@ const ReturnedApplications = () => {
         returnedApplications={true}
         loggedInUserId={loggedInUserId}
         disableButtons={1}
-        dynamicTableTitle= {"workforce.application.returned"}
+        dynamicTableTitle={"workforce.application.returned"}
       />
       {/* Pagination */}
       <div className={classes.pagination}>
@@ -207,58 +245,139 @@ const ReturnedApplications = () => {
         </Button>
       </div>
     </>
-  )
-}
+  );
+};
 
-const FiledApplications = () =>{ 
-  const classes = useStyles()
+const FiledApplications = () => {
+  const classes = useStyles();
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   return (
-  <>
-   <Card className={classes.tableContainer}>
+    <>
+      <Card className={classes.tableContainer}>
         <CardContent>
-            <ApplicationProcessSearcher loggedInUserId={loggedInUserId}
-              coloredRow={true}
-            />
-          </CardContent>
+          <ApplicationProcessSearcher
+            loggedInUserId={loggedInUserId}
+            coloredRow={true}
+          />
+        </CardContent>
       </Card>
 
-    {/* Pagination */}
-    <div className={classes.pagination}>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.back" />
-      </Button>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.next" />
-      </Button>
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  );
+};
+
+const PendingMeetingSheet = ({ summaryData = [], disableButtons = 0 }) => {
+  const classes = useStyles();
+  const [expanded, setExpanded] = useState(null);
+
+  const handleChange = (panelId) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panelId : null);
+  };
+  console.log("clear");
+  console.log("summary data", summaryData);
+  return (
+    <div className={classes.accordionPadding}>
+      {summaryData.map((item, index) => (
+        <Accordion
+          key={index}
+          expanded={expanded === item.id}
+          onChange={handleChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography
+              variant="body2"
+              style={{ marginLeft: "auto", color: "#015C63" }}
+            >
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {expanded === item.id && (
+                  <ApplicationProcessSearcher
+                    summaryId={item.id}
+                    disableButtons={disableButtons}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
     </div>
-  </>
-);}
+  );
+};
 
 // ------------------------------------------------------------
 
 const DoctorDashboard = () => {
   const classes = useStyles();
-  const dispatch = useDispatch()
-  const modulesManager = useModulesManager()
-  const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); 
-  
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
   const user_type = getUserType();
-  const data = useSelector(
-      (state) => state.workforce[`applicationsSummary`] ?? []
+  const SidebarMenu = useMemo(() => getSidebarMenu(user_type), [user_type]);
+  const [selectedMenu, setSelectedMenu] = useState(
+    user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR
+      ? "pendingMeetingSheet"
+      : "pendingApplications"
+  );
+
+  useEffect(() => {
+    return dispatch(
+      fetchSummaryApplications(modulesManager, ['organizationType:"eis"'])
     );
+  }, []);
+  const data = useSelector(
+    (state) => state.workforce[`applicationsSummary`] ?? []
+  );
+
+  const pendingSummaryData = data.filter(
+    (d) => d.status === "forward_to_doctor" && d.organizationType === "eis"
+  );
 
   const renderContent = () => {
+    const user_type = getUserType();
+
+    if (user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
+      return (
+        <PendingMeetingSheet
+          summaryData={pendingSummaryData}
+          disableButtons={1}
+        />
+      );
+    }
     switch (selectedMenu) {
+      case "pendingMeetingSheet":
       case "pendingApplications":
         return <FiledApplications />;
+
       case "forwardedApplications":
         return <ForwardedApplications />;
+
       case "revertedApplications":
         return <RevertedApplications />;
+
       case "returnedApplications":
         return <ReturnedApplications />;
+
       default:
         return <FiledApplications />;
     }
@@ -290,13 +409,22 @@ const DoctorDashboard = () => {
         <Grid item xs={12} md={9} className={classes.content}>
           <Typography variant="h5" gutterBottom>
             {user_type === WORKFORCE_USER_TYPE.DOCTOR && (
-              <FormattedMessage module="workforce" id="workforce.section.cf.doctor.dashboard" />
+              <FormattedMessage
+                module="workforce"
+                id="workforce.section.cf.doctor.dashboard"
+              />
             )}
             {user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR && (
-              <FormattedMessage module="workforce" id="workforce.section.blwf.doctor.dashboard" />
+              <FormattedMessage
+                module="workforce"
+                id="workforce.section.blwf.doctor.dashboard"
+              />
             )}
             {user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR && (
-              <FormattedMessage module="workforce" id="workforce.section.eis.doctor.dashboard" />
+              <FormattedMessage
+                module="workforce"
+                id="workforce.section.eis.doctor.dashboard"
+              />
             )}
           </Typography>
           {renderContent()}

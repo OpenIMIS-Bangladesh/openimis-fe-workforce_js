@@ -1084,34 +1084,40 @@ class ApplicationProcessSearcher extends Component {
         }
         this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
       }
+    } else if  (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
+        this.setState({ displayVersion: showHistoryFilter });
+
+        let defaultStatusFilters = [];
+
+        if (this.props.returnedApplications) {
+          defaultStatusFilters = ['statusIn: ["revert"]'];
+          if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        } else if (this.props.revertedApplications) {
+          defaultStatusFilters = ['statusIn: ["revert"]'];
+          if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        } else if (this.props.forwardedApplications) {
+          defaultStatusFilters = ['statusIn: ["approved_by_doctor"]'];
+          if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        } else if (this.props.summaryId) {
+          defaultStatusFilters = [
+            `organizationTypeIn: ["eis"]`,
+            `eisApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`
+          ];
+          if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
+
+        const organizationType = "eis";
+
+        this.props.fetchApplicationsSummary(
+          this.props.modulesManager,
+          defaultStatusFilters,
+          [`organizationTypeIn: ["${organizationType}"]`, 'orderBy: ["-dateCreated"]']
+        );
+
+      // ---------------- DOCTOR / BLWF_DOCTOR ----------------
     } else if (
-      getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
-      getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE
-    ) {
-      this.setState({ displayVersion: showHistoryFilter });
-
-      const filters = [
-        `organizationTypeIn: ["eis"]`,
-        `orderBy: ["-dateCreated"]`,
-        `eisApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`
-      ];
-
-      if (loggedInUserId) {
-        filters.push(`applicationTo: "${loggedInUserId}"`);
-      }
-
-      this.props.fetchApplicationsSummary(
-        this.props.modulesManager,
-        [filters.join(", ")]
-      );
-
-    } else {
-      const userType = getUserTypeFromRights(userRights);
-
-      if (
-        userType === WORKFORCE_USER_TYPE.DOCTOR ||
-        userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR ||
-        userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+         (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) ||
+        (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DOCTOR)
       ) {
         this.setState({ displayVersion: showHistoryFilter });
 
@@ -1119,29 +1125,20 @@ class ApplicationProcessSearcher extends Component {
 
         if (this.props.returnedApplications) {
           defaultStatusFilters = ['statusIn: ["revert"]'];
-          if (loggedInUserId) {
-            defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-          }
+          if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
         } else if (this.props.revertedApplications) {
           defaultStatusFilters = ['statusIn: ["revert"]'];
-          if (loggedInUserId) {
-            defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-          }
+          if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         } else if (this.props.forwardedApplications) {
           defaultStatusFilters = ['statusIn: ["approved_by_doctor"]'];
-          if (loggedInUserId) {
-            defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-          }
+          if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
         } else if (loggedInUserId) {
           defaultStatusFilters = ['statusIn: ["forward_to_doctor"]'];
           defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
+
         const organizationType =
-          userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
-            ? "blwf"
-            : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
-              ? "eis"
-              : "cf";
+          (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DOCTOR) ? "blwf" : "cf";
 
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
@@ -1149,9 +1146,8 @@ class ApplicationProcessSearcher extends Component {
           [`organizationTypeIn: ["${organizationType}"]`, 'orderBy: ["-dateCreated"]']
         );
       }
-
     }
-  }
+
 
 
   rowIdentifier = (r) => r.id;
