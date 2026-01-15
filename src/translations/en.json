@@ -943,6 +943,9 @@
   "workforce.accident.releaseDate.label": "Date of Release/Discharge",
   "workforce.accident.hospitalDoctorName.label": "Doctor's Name (Hospital)",
 
+  "workforce.dependent.eis.eligible": "Eligible",
+  "workforce.dependent.eis.inEligible": "Ineligible",
+
 
   "workforce.other.compensationInfo": "Previous Compensation Info",
   "workforce.compensation.add": "Add Another Compensation",
@@ -955,6 +958,8 @@
   "workforce.unpaid": "Not Paid yet",
   "workforce.processing":"Loading ...",
   "workforce.employee.application.eisApproval.signature":"Eis Approval Signature",
+  "workforce.application.before.association.startDate.error":"The date of the accident can't be later than the start date of the relevant association of the factory.",
+
 
 
   "workforce.accident.placeOfDeath.label": "Place of Death",
