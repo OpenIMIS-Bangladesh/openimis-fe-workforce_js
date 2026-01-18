@@ -176,7 +176,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
       {normalizedDependents?.map((dependent, index) => {
         const isFatherSelected = normalizedDependents.find((d) => d.relationType === "workforce.relation.father");
         const previousRelation = index > 0 && isFatherSelected != null ? "workforce.relation.father" : null;
-        const isEligible =getRelationForApi(normalizedDependents[index]);
+        const isEligible =getRelationForApi(normalizedDependents[index],formdata?.workforceEmployee?.birthDate);
         console.log("Single Beneficiary",dependent)
         console.log({isEligible})
         const hasData = dependent.relationType && (dependent.birthDate || dependent.nid);
