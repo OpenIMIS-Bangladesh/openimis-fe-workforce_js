@@ -123,7 +123,7 @@ const DoctorsEntries = ({ application }) => {
               fullwidth
               // disabled={isNotEmpty(application?.doctorsEntry)}
             >
-              {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
+              {(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.applicationType === "disabilityAssistance") ?<FormattedMessage id="workforce.eis.coordinator.accidentInfo.button.disability" module="workforce" /> :<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
             </Button>
           </Grid>
         )}

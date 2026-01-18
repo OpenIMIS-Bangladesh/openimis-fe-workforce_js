@@ -780,6 +780,7 @@
   "workforce.dependent.isDisabled":"নির্ভরশীলটি কি প্রতিবন্ধী?",
   "workforce.dependent.disabilityType":"প্রতিবন্ধিতার ধরন বর্ণনা করুন",
   "workforce.eis.factory.admin.accidentInfo.button":"দুর্ঘটনা ও চিকিৎসার বিবরণ",
+  "workforce.eis.coordinator.accidentInfo.button.disability":"প্রতিবন্ধিতা মূল্যায়ন সভা",
   "workforce.application.acknowledgement.text":"আমি নিশ্চিত করছি যে উপরের দেওয়া সমস্ত তথ্য সঠিক এবং সম্পূর্ণ।",
   "workforce.application.accident.otherAccidentType":"অন্যান্য দুর্ঘটনার ধরন বর্ণনা করুন",
   "workforce.application.progressMovement":"আবেদন প্রক্রিয়ার অগ্রগতি",

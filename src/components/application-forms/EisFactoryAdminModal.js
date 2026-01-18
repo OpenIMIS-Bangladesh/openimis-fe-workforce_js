@@ -40,6 +40,11 @@ const useStyles = makeStyles((theme) => ({
     outline: "none",
     overflow: "hidden",
     position: "relative",
+    // Remove background/shadows when printing
+    "@media print": {
+      boxShadow: "none",
+      background: "none",
+    },
   },
   header: {
     display: "flex",
@@ -73,6 +78,50 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
+  },
+  "@global": {
+    "@media print": {
+      // 1. Reset Body/HTML to allow full scrolling
+      "html, body": {
+        height: "100vh",
+        margin: 0,
+        padding: 0,
+        overflow: "visible !important",
+      },
+      // 2. Hide EVERYTHING by default
+      "body *": {
+        visibility: "hidden",
+      },
+      // 3. Hide the Modal Backdrop specifically (grey overlay)
+      ".MuiBackdrop-root": {
+        display: "none !important",
+      },
+      // 4. Style the specific printable area
+      "#printable-content": {
+        visibility: "visible !important",
+        // FIXED position breaks it out of the Modal's Flexbox/Scroll container
+        position: "fixed !important", 
+        left: 0,
+        top: 0,
+        width: "100vw !important",
+        height: "auto !important",
+        margin: 0,
+        padding: "20px",
+        zIndex: 99999, // Ensure it is on top
+        backgroundColor: "white",
+        overflow: "visible !important", // CRITICAL: Allows content to expand
+        display: "block !important",
+      },
+      // 5. Ensure all children of the printable area are visible
+      "#printable-content *": {
+        visibility: "visible !important",
+        overflow: "visible !important",
+      },
+      // 6. Hide scrollbars to prevent ugly print lines
+      "::-webkit-scrollbar": {
+        display: "none",
+      },
+    },
   },
 }));
 
@@ -187,7 +236,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
 
           {/* Render based on isDoctor flag */}
           {isDoctor ? (
-            <Box className={classes.content} ref={stepRef}>
+            <Box className={classes.content} ref={stepRef} id="printable-content">
               <EisDoctorEntries
                 handleChange={(key, value) => handleChange(key, value, "doctorEntries")}
                 formData={formData}
@@ -221,6 +270,11 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
               >
                 <FormattedMessage id="workforce.submit" />
               </Button>
+              {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+                <Button onClick={()=>window.print()} variant="outlined" disabled={loading}>
+                <FormattedMessage id="workforce.modal.print" />
+              </Button>
+              )}
             </div>
           )}
         </Box>
