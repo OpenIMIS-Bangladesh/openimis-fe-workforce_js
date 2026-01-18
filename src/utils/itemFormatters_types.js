@@ -1302,18 +1302,23 @@ export const itemFormattersDoctor = (
   ));
 
   // --- APPROVE BUTTON ---
-  formatters.push((application) => (
+ formatters.push((application) => {
+  if (application?.status === "approved_by_doctor") return null;
+
+  return (
     <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="Approve">
         <IconButton
           disabled={application?.isHistory}
           onClick={() => component.handleApprovalByDoctor(application)}
         >
-          <CheckIcon style={{color:"#006273"}}/>
+          <CheckIcon style={{ color: "#006273" }} />
         </IconButton>
       </Tooltip>
     </div>
-  ));
+  );
+});
+
 
   // --- REVERT BUTTON ---
   formatters.push((application) => (
