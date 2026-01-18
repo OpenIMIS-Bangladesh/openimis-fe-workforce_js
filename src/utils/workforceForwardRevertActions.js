@@ -103,130 +103,143 @@ export const forwardToAssociation = async ({
   }
 };
 
-export async function handleBulkSelectedByAssociationLogic({
+export const handleBulkSelectedByAssociationLogic = async ({
   selectedApplicationIds,
   loggedInUserId,
+  userRights,
+  fetchWorkforceDocument,
   updateApplication,
   createApplicationMovement,
-  testWorkforcePayment,
   setServerResponse,
   setConfirmModalOpen,
   setConfirmModalMessage,
   setConfirmModalCallback,
-  userRights,
-  fetchWorkforceDocument,
-  modulesManager
-}) {
-  if (!selectedApplicationIds || selectedApplicationIds.length === 0) {
-    alert("Please select at least one application.");
+  modulesManager,
+}) => {
+  const userType = getUserTypeFromRights(userRights);
+  let confirmModalMessage = "";
+
+  if (
+    userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+    userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+  ) {
+    confirmModalMessage = "workforce.application.forward.message.toSectionAdmin";
+  } else if (
+    userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+    userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+  ) {
+    confirmModalMessage = "workforce.application.forward.message.toEisCoordinator";
+  }
+
+  if (!selectedApplicationIds?.length) {
+    setServerResponse({
+      status: "ERROR",
+      message: "Please select at least one application.",
+    });
     return;
   }
 
+  setConfirmModalMessage(confirmModalMessage);
   setConfirmModalOpen(true);
-  setConfirmModalMessage(isEisPath()?"workforce.application.forward.message.toEisCoordinator":"workforce.application.forward.message.toSectionAdmin");
 
   setConfirmModalCallback(async (confirmed) => {
-    if (confirmed) {
-      try {
-        const userType = getUserTypeFromRights(userRights);
-        await Promise.all(
-          selectedApplicationIds.map(async (selectedItem) => {
-            const decodedId = safeDecodeId(selectedItem?.id);
-            const res = await fetchWorkforceDocument(modulesManager, [
-                `workforceApplication_Id: "${decodedId}"`,
-              ]);
-
-              const documents =
-                res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
-
-              const allVerified = documents.every(
-                (doc) => doc.status?.toLowerCase() === "verified"
-              );
-
-              if (!allVerified) {
-                setServerResponse({
-                  status: "ERROR",
-                  message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
-                });
-                return;
-              }
-            const updateApplicationData = {
-              id: decodedId,
-              status:  userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-                ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
-                : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-                ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
-                : null,
-            };
-            const createApplicationMovementData = {
-              applicationId: decodedId,
-               status:  userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-                ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
-                : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-                ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
-                : null,       
-
-              note: "আবেদন শাখায় প্রেরণ করা হয়েছে",
-              action: userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-                          ? "forward_to_cf_section"
-                          : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-                          ? "forward_to_eis_coordinator"
-                          : null,
-              applicationFromId: loggedInUserId,
-              applicationToId: userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-                          ? 139
-                          : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-                          ? 194
-                          : null,
-              toRoleId: 32,
-            };
-
-            //   const testPaymentData = {
-            //   id: decodedId,
-            // };
-
-            await updateApplication(
-              updateApplicationData,
-              "update workforce application"
-            );
-            await createApplicationMovement(
-              createApplicationMovementData,
-              "create workforce movement"
-            );
-            // if(selectedItem?.organizationType==="eis" && selectedItem?.applicationType == "financialAssistance")
-            // {
-            //   await testWorkforcePayment(
-            //     testPaymentData,
-            //     "create test payment"
-            //   );
-            // }
-            // if(isEisPath())
-            // {
-            //   await updateWorkforceEmployeeDependentEligibility(decodedId);
-            // }
-          })
-        );
-
-        setServerResponse({
-          status: "SUCCESS",
-          message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
-        });
-      } catch (error) {
-        console.error("Bulk selection failed:", error);
-        setServerResponse({
-          status: "ERROR",
-          message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
-        });
-      } finally {
-        window.location.reload();
-      }
+    if (!confirmed) {
+      setConfirmModalOpen(false);
+      return;
     }
 
-    // always close the modal
-    setConfirmModalOpen(false);
-    setConfirmModalCallback(null);
+    try {
+      for (const selectedItem of selectedApplicationIds) {
+        const decodedId = safeDecodeId(selectedItem?.id);
+
+        const res = await fetchWorkforceDocument(modulesManager, [
+          `workforceApplication_Id: "${decodedId}"`,
+        ]);
+
+        const documents =
+          res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
+
+        const allVerified = documents.every(
+          (doc) => doc.status?.toLowerCase() === "verified"
+        );
+
+        if (!allVerified) {
+          setServerResponse({
+            status: "ERROR",
+            message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
+          });
+          return;
+        }
+
+        const updateApplicationData = {
+          id: decodedId,
+          status:
+            userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+            userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+              ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
+              : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+                userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+              ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
+              : null,
+        };
+
+        const createApplicationMovementData = {
+          applicationId: decodedId,
+          status:
+            userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+            userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+              ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
+              : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+                userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+              ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
+              : null,
+          note: "আবেদন শাখায় প্রেরণ করা হয়েছে",
+          action:
+            userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+            userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+              ? "forward_to_cf_section"
+              : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+                userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+              ? "forward_to_eis_coordinator"
+              : null,
+          applicationFromId: loggedInUserId,
+          applicationToId:
+            userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+            userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+              ? 139
+              : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+                userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+              ? 194
+              : null,
+          toRoleId: 32,
+        };
+
+        await updateApplication(updateApplicationData, "update workforce application");
+        await createApplicationMovement(
+          createApplicationMovementData,
+          "create workforce movement"
+        );
+      }
+
+      setServerResponse({
+        status: "SUCCESS",
+        message: "সফলভাবে ফরওয়ার্ড করা হয়েছে!",
+      });
+    } catch (error) {
+      console.error("Bulk selection failed:", error);
+      setServerResponse({
+        status: "ERROR",
+        message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
+      });
+    } finally {
+     setTimeout(() => {
+        window.location.reload();
+      }, 200);
+      setConfirmModalOpen(false);
+      setConfirmModalCallback(null);
+    }
   });
-}
+};
 
 export const handleBulkSelectedByCheckerLogic = async ({
   selectedApplicationIds,
