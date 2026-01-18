@@ -232,6 +232,11 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
     console.log({ newErrors });
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
+      const resolvedFactoryId = formData?.factory?.id 
+        ? safeDecodeId(formData?.factory?.id) 
+        : formData?.workforceEmployee?.factory?.id 
+        ? safeDecodeId(formData?.workforceEmployee?.factory?.id) 
+        : null;
       if (organizationType === "eis" && eisSteps.length - 1 === activeStep) setShowPreview(true);
       if (
         ((nextStep === 1 && organizationType === "eis") || (nextStep === 2 && organizationType !== "eis")) &&
@@ -306,7 +311,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
             id: safeApplicationId(applicationId, parsedApplicationData),
             workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
+            factory: resolvedFactoryId,
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -325,7 +330,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
+            factory: resolvedFactoryId,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
             metadata: JSON.stringify(formData.metadata),
             status: WORKFORCE_STATUS.DRAFT,
@@ -352,7 +357,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
             id: safeApplicationId(applicationId, parsedApplicationData),
             workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
             company: formData?.workforceEmployee?.company?.id,
-            factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
+            factory: resolvedFactoryId,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -372,6 +377,11 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
   const handleSubmit = async () => {
+    const resolvedFactoryId = formData?.factory?.id 
+        ? safeDecodeId(formData?.factory?.id) 
+        : formData?.workforceEmployee?.factory?.id 
+        ? safeDecodeId(formData?.workforceEmployee?.factory?.id) 
+        : null;
     console.log({ tazwer: formData });
     if (uploadBankFile) {
       await uploadBankFile.map((file) => {
@@ -390,7 +400,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
       id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
       company: formData?.workforceEmployee?.company?.id,
-      factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
+      factory: resolvedFactoryId,
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       grantAmount: formData?.employeeAccidentInfo.grantAmount,
