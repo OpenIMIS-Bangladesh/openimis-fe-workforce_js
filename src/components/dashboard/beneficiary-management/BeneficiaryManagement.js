@@ -229,7 +229,7 @@ const BeneficiaryManagement = () => {
                             alert(`open beneficiary management modal with the beneficiary ID: ${row.beneficiaryId}`);
                         }}
                     >
-                      Manage
+                      Manage Beneficiary
                     </Button>
                   </TableCell>
                 </TableRow>
