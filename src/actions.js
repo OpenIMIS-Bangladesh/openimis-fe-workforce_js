@@ -3138,10 +3138,12 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
   const payload = `
     {
       workforceEisPaymentProcess(
-        workforceApplicationTrackingNumber: "${filters?.workforceApplicationTrackingNumber}"
-        workforceFactoryId: "${filters?.workforceFactoryId}"
-        allAssociationId: "${filters?.allAssociationId}"
-        beneficiaryId: "${filters?.beneficiaryId}"
+        workforceApplicationId: "${filters?.workforceApplicationId??""}"
+        workforceApplicationTrackingNumber: "${filters?.workforceApplicationTrackingNumber??""}"
+        workforceFactoryId: "${filters?.workforceFactoryId??""}"
+        allAssociationId: "${filters?.allAssociationId??""}"
+        beneficiaryId: "${filters?.beneficiaryId??""}"
+        status: "${filters?.status??""}"
       ) {
         id
         monthIndex
@@ -3166,6 +3168,7 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
         lastLiveCheckDate
         liveCheckRemarks
         isDisbursed
+        isEligible
         approved
         bank {
           id

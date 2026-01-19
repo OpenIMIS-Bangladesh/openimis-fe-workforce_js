@@ -15,6 +15,7 @@ import {
 } from "../../../actions";
 import { useModulesManager } from "@openimis/fe-core";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
+import BeneficiaryManageModal from "../modals/BeneficiaryManageModal";
 
 
 const BeneficiaryManagement = () => {
@@ -34,18 +35,32 @@ const BeneficiaryManagement = () => {
     beneficiaryId: ""
   });
 
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
+
+  const handleOpenModal = (row) => {
+    setSelectedBeneficiary(row);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedBeneficiary(null);
+  };
+
+
   // 1. Updated Fetching Logic to accept filter parameters
   const loadData = async () => {
     setLoading(true);
     try {
-        console.log("Applying Filters:", filters);
       // Pass the filter state directly to the backend action
       const [processRes, factoryRes, assocRes] = await Promise.all([
         dispatch(fetchEisPaymentProcessWithFilters({
             workforceApplicationTrackingNumber: filters.trackingNo,
             workforceFactoryId: safeDecodeId(filters.factory)??"",
             allAssociationId: safeDecodeId(filters.association)??"",
-            beneficiaryId: filters.beneficiaryId
+            beneficiaryId: filters.beneficiaryId,
+            status: "active"
         }, modulesManager)),
         dispatch(fetchWorkforceFactoriesSummary(modulesManager, [])),
         dispatch(fetchWorkforceAllAssociationSummary(modulesManager, []))
@@ -89,19 +104,11 @@ const BeneficiaryManagement = () => {
     loadData();
   };
 
-  if (loading) {
-    return (
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="400px">
-        <CircularProgress size={30} />
-        <Box mt={2}><Typography variant="caption">Loading Report Data...</Typography></Box>
-      </Box>
-    );
-  }
 
   return (
     <Box bgcolor="#fafafa" minHeight="100vh">
       {/* Header Area */}
-      <Box mb={4} display="flex" justifyContent="space-between" alignItems="flex-end">
+      <Box mb={2} display="flex" justifyContent="space-between" alignItems="flex-end">
         <Box>
           <Typography variant="h5" style={{ fontWeight: 700, marginBottom: 4 }}>
             Beneficiary Management
@@ -152,7 +159,7 @@ const BeneficiaryManagement = () => {
           <Grid item xs={12} md={2}>
             <Box display="flex" gap="8px">
             
-              <Button onClick={handleSearchClick} fullWidth variant="primary" color="default" startIcon={<SearchIcon />}>
+              <Button onClick={handleSearchClick} fullWidth variant="contained" color="primary" startIcon={<SearchIcon />}>
                 Search
               </Button>
               <Button onClick={clearFilters} fullWidth variant="text" color="default" startIcon={<ClearAllIcon />}>
@@ -162,87 +169,94 @@ const BeneficiaryManagement = () => {
           </Grid>
         </Grid>
       </Paper>
+      {loading?(
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+          <CircularProgress />
+        </Box>
+      ):
+      (
+        <TableContainer component={Paper} elevation={0} style={{ borderRadius: '12px', border: '1px solid #e0e0e0' }}>
+          <Table>
+            <TableHead style={{ backgroundColor: '#f8fafd' }}>
+              <TableRow>
+                <TableCell style={{ fontWeight: 600 }}>Beneficiary Details</TableCell>
+                <TableCell style={{ fontWeight: 600 }}>Worker, Factory & Association</TableCell>
+                <TableCell style={{ fontWeight: 600 }}>Payment Method</TableCell>
+                <TableCell align="right" style={{ fontWeight: 600 }}>Amounts</TableCell>
+                <TableCell align="center" style={{ fontWeight: 600 }}>Status</TableCell>
+                <TableCell align="center" style={{ fontWeight: 600 }}>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {/* Using raw data directly as it's now filtered by the backend */}
+              {data.map((row) => {
+                const dep = row?.workforceEmployeeDependent?.[0] || {};
+                const worker = row?.workforceApplication?.applicationType === "financialAssistance" || 
+                              row?.workforceApplication?.applicationType === "deadlyGrant" 
+                              ? safeParse(row?.workforceApplication?.deceasedWorkerInfo)?.nameBn 
+                              : row?.workforceApplication?.workforceEmployee?.firstNameBn;
 
-      {/* Table Card */}
-      <TableContainer component={Paper} elevation={0} style={{ borderRadius: '12px', border: '1px solid #e0e0e0' }}>
-        <Table>
-          <TableHead style={{ backgroundColor: '#f8fafd' }}>
-            <TableRow>
-              <TableCell style={{ fontWeight: 600 }}>Beneficiary Details</TableCell>
-              <TableCell style={{ fontWeight: 600 }}>Worker, Factory & Association</TableCell>
-              <TableCell style={{ fontWeight: 600 }}>Payment Method</TableCell>
-              <TableCell align="right" style={{ fontWeight: 600 }}>Amounts</TableCell>
-              <TableCell align="center" style={{ fontWeight: 600 }}>Status</TableCell>
-              <TableCell align="center" style={{ fontWeight: 600 }}>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {/* Using raw data directly as it's now filtered by the backend */}
-            {data.map((row) => {
-              const dep = row?.workforceEmployeeDependent?.[0] || {};
-              const worker = row?.workforceApplication?.applicationType === "financialAssistance" || 
-                             row?.workforceApplication?.applicationType === "deadlyGrant" 
-                             ? safeParse(row?.workforceApplication?.deceasedWorkerInfo)?.nameBn 
-                             : row?.workforceApplication?.workforceEmployee?.firstNameBn+ " " + row?.workforceApplication?.workforceEmployee?.lastNameBn;
+                return (
+                  <TableRow key={row.id} hover>
+                    <TableCell>
+                      <Typography variant="subtitle2" style={{ fontWeight: 600 }}>{dep?.nameEn || dep?.nameBn || row?.workforceApplication?.workforceEmployee?.firstNameBn || "—"}</Typography>
+                      <Typography variant="caption" color="primary">{getRelationString(dep)}</Typography>
+                      <Box mt={0.5}><Chip label={row.beneficiaryId} size="small" variant="outlined" style={{ height: 20, fontSize: 10 }} /></Box>
+                    </TableCell>
+                    
+                    <TableCell>
+                      <Typography variant="body2" style={{ fontWeight: 500 }}>{worker}</Typography>
+                      <Typography variant="caption" display="block" color="textSecondary">
+                        {row?.workforceApplication?.employeeFactory?.nameBn}
+                      </Typography>
+                      <Typography variant="caption" display="block" color="textSecondary">
+                        {row?.workforceApplication?.employeeFactory?.allAssociation?.shortNameBn || row?.workforceApplication?.employeeFactory?.allAssociation?.nameEn || "N/A"}
+                      </Typography>
+                    </TableCell>
 
-              return (
-                <TableRow key={row.id} hover>
-                  <TableCell>
-                    <Typography variant="subtitle2" style={{ fontWeight: 600 }}>{dep?.nameEn || dep?.nameBn || row?.workforceApplication?.workforceEmployee?.firstNameBn+ " " + row?.workforceApplication?.workforceEmployee?.lastNameBn || "—"}</Typography>
-                    <Typography variant="caption" color="primary">{getRelationString(dep)}</Typography>
-                    <Box mt={0.5}><Chip label={row.beneficiaryId} size="small" variant="outlined" style={{ height: 20, fontSize: 10 }} /></Box>
-                  </TableCell>
-                  
-                  <TableCell>
-                    <Typography variant="body2" style={{ fontWeight: 500 }}>{worker}</Typography>
-                    <Typography variant="caption" display="block" color="textSecondary">
-                      {row?.workforceApplication?.employeeFactory?.nameBn}
-                    </Typography>
-                    <Typography variant="caption" display="block" color="textSecondary">
-                      {row?.workforceApplication?.employeeFactory?.allAssociation?.shortNameBn || row?.workforceApplication?.employeeFactory?.allAssociation?.nameEn || "N/A"}
-                    </Typography>
-                  </TableCell>
+                    <TableCell>
+                      <Typography variant="body2">{row.bank?.parent?.nameEn || "N/A"}</Typography>
+                      <Typography variant="body2">{row.bank?.nameEn + " (Routing #" + row.bank?.routingNumber + ")" || "N/A"}</Typography>
+                      <Typography variant="caption" color="textSecondary">{"A/C: "+row.bankAccountNo}</Typography>
+                    </TableCell>
 
-                  <TableCell>
-                    <Typography variant="body2">{row.bank?.parent?.nameEn || "N/A"}</Typography>
-                    <Typography variant="body2">{row.bank?.nameEn + " (Routing #" + row.bank?.routingNumber + ")" || "N/A"}</Typography>
-                    <Typography variant="caption" color="textSecondary">{"A/C: "+row.bankAccountNo}</Typography>
-                  </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row.eisInitialMonthlyAmount).toLocaleString("en-BD") ?? Number(row.eisMonthlyAmount).toLocaleString("en-BD")}</Typography>
+                      <Typography variant="caption" color="textSecondary">{"Total: "+ (Number(row?.eisApprovedAmount).toLocaleString("en-BD") ?? "--")}</Typography>
+                      <Typography variant="body2" style={{ fontWeight: 700 }}>{getPaymentTypeString(row.eisPaymentType)}</Typography>
+                    </TableCell>
 
-                  <TableCell align="right">
-                    <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row.eisInitialMonthlyAmount).toLocaleString("en-BD") ?? Number(row.eisMonthlyAmount).toLocaleString("en-BD")}</Typography>
-                    <Typography variant="caption" color="textSecondary">{"Total: "+ (Number(row?.eisApprovedAmount).toLocaleString("en-BD") ?? "--")}</Typography>
-                    <Typography variant="body2" style={{ fontWeight: 700 }}>{getPaymentTypeString(row.eisPaymentType)}</Typography>
-                  </TableCell>
+                    <TableCell align="center">
+                      {getStatusChip(row)}
+                    </TableCell>
 
-                  <TableCell align="center">
-                    {getStatusChip(row)}
-                  </TableCell>
-
-                  <TableCell>
-                    <Button
+                    <TableCell>
+                      <Button
                         variant="contained"
                         color="primary"
                         size="small"
-                        onClick={() => {
-                            // Implement view details action
-                            alert(`open beneficiary management modal with the beneficiary ID: ${row.beneficiaryId}`);
-                        }}
-                    >
-                      Manage Beneficiary
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        {data.length === 0 && (
-          <Box p={5} textAlign="center">
-            <Typography color="textSecondary">No data found matching current filters.</Typography>
-          </Box>
-        )}
-      </TableContainer>
+                        onClick={() => handleOpenModal(row)}
+                      >
+                        Manage
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+          {data.length === 0 && (
+            <Box p={5} textAlign="center">
+              <Typography color="textSecondary">No data found matching current filters.</Typography>
+            </Box>
+          )}
+        </TableContainer>
+      )}
+      <BeneficiaryManageModal
+        open={openModal}
+        onClose={handleCloseModal}
+        beneficiary={selectedBeneficiary}
+      />
     </Box>
   );
 };
