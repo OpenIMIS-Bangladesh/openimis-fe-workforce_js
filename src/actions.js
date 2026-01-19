@@ -3128,3 +3128,126 @@ export function updateWorkforceEisPaymentProcessApproval(eisPaymentData) {
   `;
   return graphql(mutation, "UPDATE_WORKFORCE_EIS_PAYMENT_PROCESS_APPROVAL");
 }
+
+
+export function fetchEisPaymentProcessWithFilters(filters,mm) {
+  const present_location_projection =
+    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const payload = `
+    {
+      workforceEisPaymentProcess(
+        workforceApplicationTrackingNumber: "${filters?.workforceApplicationTrackingNumber}"
+        workforceFactoryId: "${filters?.workforceFactoryId}"
+        allAssociationId: "${filters?.allAssociationId}"
+        beneficiaryId: "${filters?.beneficiaryId}"
+      ) {
+        id
+        monthIndex
+        year
+        eisMonthlyAmount
+        eisInitialMonthlyAmount
+        eisPaymentType
+        eisApprovedAmount
+        eisCalculatedAmount
+        eisInitialReplacementRate
+        incrementAmount
+        decrementAmount
+        totalAdjustmentAmount
+        processingDate
+        beneficiaryId
+        beneficiaryStatus
+        remarriageOrDeathDate
+        closingReason
+        closingRemarks
+        holdReason
+        holdRemarks
+        lastLiveCheckDate
+        liveCheckRemarks
+        isDisbursed
+        approved
+        bank {
+          id
+          nameEn
+          nameBn
+          districtNameEn
+          districtNameBn
+          bankCode
+          branchCode
+          routingNumber
+          parent
+          {
+            nameEn
+            nameBn
+          }
+        }
+        bankAccountNo
+        bankAccountHolderName
+        workforceEmployeeDependent{
+          status
+          nameEn
+          nameBn
+          relationWithWorker
+          disabilityStatus
+          birthDate
+          maritalStatus
+          nid
+          permanentAddress
+          presentAddress
+          ${
+          present_location_projection +
+          permanent_location_projection }
+          bankAccountNo
+          bank{
+            nameBn
+            districtNameBn
+            bankCode
+            routingNumber
+            parent{
+              nameBn
+            }
+          }
+        }
+        workforceApplication {
+          id
+          lastBaseSalary
+          associationType
+          applicationType
+          organizationType
+          employeeAccidentInfo
+          deceasedWorkerInfo
+          employeeBankInfo
+          doctorsEntry
+          dateCreated
+          workforceEmployee {         
+            id
+            firstNameBn
+            firstNameEn
+            nid
+            permanentAddress
+            presentAddress
+            ${
+            present_location_projection +
+            permanent_location_projection }
+
+          }
+          employeeFactory {
+            id
+            nameEn
+            nameBn
+            allAssociation{
+              id
+              nameEn
+              nameBn
+              shortNameBn
+              shortNameEn
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  return graphql(payload, "EIS_PAYMENT_PROCESS");
+}

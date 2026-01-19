@@ -13,7 +13,7 @@ import {
   Divider,
 } from '@material-ui/core';
 import { EIS_PAYMENT_TYPES, RELATION_LABEL_MAP, WORKFORCE_USER_TYPE } from "../../constants";
-import { getApprovalStatus, getUserType, getUserTypeFromRights, isBase64Encoded } from "../../utils/utils";
+import { getApprovalStatus, getUserType, getUserTypeFromRights, isBase64Encoded, safeParse, getRelationString } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
 import { createApplicationSummary, testWorkforcePayment, updateApplication, updateApplicationSummary, updateWorkforceEisPaymentProcessApproval, updateWorkforceEisPaymentProcessPaymentType } from "../../actions";
@@ -934,7 +934,11 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                 <div>
                   <Typography><strong>EIS Worker ID:</strong> {first?.beneficiaryId}</Typography>
                   {selectedApplicationIds.length === 1 && (
-                    <Typography><strong>Worker Name:</strong> {first?.workforceApplication?.workforceEmployee?.firstNameEn} {first?.workforceApplication?.workforceEmployee?.lastNameEn}</Typography>
+                    first?.workforceApplication?.applicationType ==='financialAssistance' || first?.workforceApplication?.applicationType ==='deadlyGrant' ? (
+                        <Typography><strong>Worker Name:</strong> {safeParse(first?.workforceApplication?.deceasedWorkerInfo).nameBn}</Typography>
+                    ) : (
+                        <Typography><strong>Worker Name:</strong> {first?.workforceApplication?.workforceEmployee?.firstNameEn} {first?.workforceApplication?.workforceEmployee?.lastNameEn}</Typography>
+                    ) 
                   )}
                   <Typography><strong>Date of Accident:</strong> {accidentDate}</Typography>
                   {appType === "Death" ? (
@@ -989,10 +993,16 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                       <TableRow key={index}>
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{row?.beneficiaryId}</TableCell>
-                        <TableCell>{row?.workforceApplication?.workforceEmployee?.firstNameEn} {row?.workforceApplication?.workforceEmployee?.lastNameEn}</TableCell>
+                        <TableCell>
+                          {row?.workforceApplication?.applicationType ==='financialAssistance' || row?.workforceApplication?.applicationType ==='deadlyGrant' ? (
+                            <>{safeParse(row?.workforceApplication?.deceasedWorkerInfo).nameBn}</>
+                              ) : (
+                            <>{row?.workforceApplication?.workforceEmployee?.firstNameEn} {row?.workforceApplication?.workforceEmployee?.lastNameEn}</>
+                          )}
+                        </TableCell>
                         <TableCell>
                           {row?.workforceEmployeeDependent?.[0]
-                            ? `${row.workforceEmployeeDependent[0].nameEn} (${RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker] || ''})`
+                            ? `${getRelationString(row?.workforceEmployeeDependent[0])}`
                             : ""}
                         </TableCell>
                         <TableCell>{row?.workforceApplication?.workforceEmployee?.nid}</TableCell>
