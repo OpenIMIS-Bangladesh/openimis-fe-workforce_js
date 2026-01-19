@@ -11,11 +11,11 @@ import {
   FormControl,
   FormLabel,
   FormHelperText,
-  Select,
-  MenuItem,
+  Button, IconButton
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-
+import DeleteIcon from "@material-ui/icons/Delete"; 
+import AddIcon from "@material-ui/icons/Add";
 // Existing Custom Pickers/Components
 import EmployeeAccidentTypePicker from "../../pickers/EmployeeAccidentTypePicker"; // Used for S.L 07 (Workplace Specific Type)
 import EmployeeDutyStatusPicker from "../../pickers/EmployeeDutyStatusPicker"; // Used for S.L 10, 16
@@ -67,7 +67,48 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
   const [officialOrderIssued, setOfficialOrderIssued] = useState(formData?.employeeAccidentInfo?.officialOrderIssued || "no");
   const [officialComplaint, setOfficialComplaint] = useState(formData?.employeeAccidentInfo?.officialComplaint || "no");
   const [otherInjured, setOtherInjured] = useState(formData?.employeeAccidentInfo?.otherInjured || "no");
+  const [hospitalList, setHospitalList] = useState(
+    formData?.employeeAccidentInfo?.hospitalList?.length > 0
+      ? formData.employeeAccidentInfo.hospitalList
+      : [{
+          hospitalName: formData?.employeeAccidentInfo?.hospitalName || "",
+          admitDate: formData?.employeeAccidentInfo?.admitDate || null,
+          admitTime: formData?.employeeAccidentInfo?.admitTime || null,
+          hospitalAddress: formData?.employeeAccidentInfo?.hospitalAddress || "",
+          releaseDate: formData?.employeeAccidentInfo?.releaseDate || null,
+          hospitalDoctorName: formData?.employeeAccidentInfo?.hospitalDoctorName || "",
+        }]
+  );
 
+  // Handler to add a new empty hospital form
+  const handleAddHospital = () => {
+    const newList = [...hospitalList, {
+      hospitalName: "",
+      admitDate: null,
+      admitTime: null,
+      hospitalAddress: "",
+      releaseDate: null,
+      hospitalDoctorName: ""
+    }];
+    setHospitalList(newList);
+    handleChange("hospitalList", newList); // Updates parent formData with the array
+  };
+
+  // Handler to remove a hospital form by index
+  const handleRemoveHospital = (index) => {
+    const newList = [...hospitalList];
+    newList.splice(index, 1);
+    setHospitalList(newList);
+    handleChange("hospitalList", newList);
+  };
+
+  // Handler to update specific fields within a specific hospital entry
+  const handleHospitalFieldChange = (index, fieldName, value) => {
+    const newList = [...hospitalList];
+    newList[index] = { ...newList[index], [fieldName]: value };
+    setHospitalList(newList);
+    handleChange("hospitalList", newList);
+  };
 
   useEffect(() => {
     if (!formData?.employeeAccidentInfo?.aidReasonType) {
@@ -578,56 +619,100 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
             </Grid>
 
             {isAdmitted === "yes" && (
-              <>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.accident.hospitalName.label"
-                    value={formData?.employeeAccidentInfo?.hospitalName || ""}
-                    onChange={(v) => handleChange("hospitalName", v )}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <PublishedComponent
-                    pubRef="workforce.DatePicker"
-                    label="workforce.accident.admitDate.label"
-                    value={formData?.employeeAccidentInfo?.admitDate || ""}
-                    onChange={(v) => handleChange("admitDate", v )}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <CustomTimePicker
-                    label="workforce.accident.admitTime.label"
-                    value={formData?.employeeAccidentInfo?.admitTime || ""}
-                    onChange={(value) => handleChange("admitTime", value )}
-                  />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                  <TextInput
-                    label="workforce.accident.hospitalAddress.label"
-                    value={formData?.employeeAccidentInfo?.hospitalAddress || ""}
-                    onChange={(v) => handleChange("hospitalAddress", v )}
-                    multiline
-                  />
-                </Grid>
-                {/* Adding release date and hospital doctor name for consistency with disease section (if needed) */}
-                <Grid item xs={6} className={classes.item}>
-                    <PublishedComponent
-                        pubRef="workforce.DatePicker"
-                        label={"workforce.employee.accident.info.releaseDate"}
-                        value={formData?.employeeAccidentInfo?.releaseDate || ""}
-                        onChange={(v) => handleChange("releaseDate", v )}
-                        readOnly={false}
-                        required
-                    />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
-                    <TextInput
-                        label={"workforce.accident.hospitalDoctorName.label"}
-                        value={formData?.employeeAccidentInfo?.hospitalDoctorName || ""}
-                        onChange={(v) => handleChange("hospitalDoctorName", v )}
-                    />
-                </Grid>
-              </>
+              <Grid item xs={12}>
+                {hospitalList.map((hospital, index) => (
+                  <Box 
+                    key={index} 
+                    mb={2} 
+                    p={2} 
+                    border={1} 
+                    borderColor="grey.300" 
+                    borderRadius={4}
+                    style={{ backgroundColor: "#fafafa" }}
+                  >
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
+                           {/* Translate "Hospital Information" or use static text */}
+                           <FormattedMessage id="workforce.accident.hospitalInfo.title" defaultMessage="Hospital Information" /> #{index + 1}
+                        </Typography>
+                        
+                        {/* Only show delete button if there is more than 1 entry */}
+                        {hospitalList.length > 1 && (
+                          <IconButton size="small" onClick={() => handleRemoveHospital(index)} style={{color:"red"}}>
+                            <DeleteIcon />
+                          </IconButton>
+                        )}
+                      </Grid>
+
+                      <Grid item xs={6}>
+                        <TextInput
+                          label="workforce.accident.hospitalName.label"
+                          value={hospital.hospitalName || ""}
+                          onChange={(v) => handleHospitalFieldChange(index, "hospitalName", v)}
+                        />
+                      </Grid>
+                      
+                      <Grid item xs={6}>
+                        <PublishedComponent
+                          pubRef="workforce.DatePicker"
+                          label="workforce.accident.admitDate.label"
+                          value={hospital.admitDate || ""}
+                          onChange={(v) => handleHospitalFieldChange(index, "admitDate", v)}
+                        />
+                      </Grid>
+                      
+                      <Grid item xs={6}>
+                        <CustomTimePicker
+                          label="workforce.accident.admitTime.label"
+                          value={hospital.admitTime || ""}
+                          onChange={(v) => handleHospitalFieldChange(index, "admitTime", v)}
+                        />
+                      </Grid>
+                      
+                      <Grid item xs={6}>
+                        <TextInput
+                          label="workforce.accident.hospitalAddress.label"
+                          value={hospital.hospitalAddress || ""}
+                          onChange={(v) => handleHospitalFieldChange(index, "hospitalAddress", v)}
+                          multiline
+                        />
+                      </Grid>
+
+                      <Grid item xs={6}>
+                        <PublishedComponent
+                          pubRef="workforce.DatePicker"
+                          label="workforce.employee.accident.info.releaseDate"
+                          value={hospital.releaseDate || ""}
+                          onChange={(v) => handleHospitalFieldChange(index, "releaseDate", v)}
+                          readOnly={false}
+                          required
+                        />
+                      </Grid>
+                      
+                      <Grid item xs={6}>
+                        <TextInput
+                          label="workforce.accident.hospitalDoctorName.label"
+                          value={hospital.hospitalDoctorName || ""}
+                          onChange={(v) => handleHospitalFieldChange(index, "hospitalDoctorName", v)}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Box>
+                ))}
+
+                {/* ADD BUTTON */}
+                <Box mt={1}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<AddIcon />}
+                    onClick={handleAddHospital}
+                  >
+                    <FormattedMessage id="workforce.accident.addHospital.btn" defaultMessage="Add Another Hospital" />
+                  </Button>
+                </Box>
+              </Grid>
             )}
 
             {/* --- Applicable for Death Case (S.L 28-30) --- */}

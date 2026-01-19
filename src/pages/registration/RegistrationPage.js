@@ -102,7 +102,7 @@ const RegistrationPage = () => {
       };
       
       try {
-        await dispatch(createWorkforceOtp(payload, `Created Workforce Office ${payload.firstNameEn}`));
+        dispatch(createWorkforceOtp(payload, `Created Workforce Office ${payload.firstNameEn}`)).then((res)=>console.log("hello",res)).catch((err)=>console.log("hello2",err))
         setStep(2);
       } catch (e) {
         setServerResponse({ status: "ERROR", message: "OTP পাঠাতে সমস্যা হয়েছে" });

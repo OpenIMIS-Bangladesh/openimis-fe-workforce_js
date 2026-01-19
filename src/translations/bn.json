@@ -865,6 +865,9 @@
   "workforce.accident.mainType.label": "দুর্ঘটনার ধরন",
   "workforce.employee.application.eisApproval.signature":"ই.আই.এস. অনুমোদনের স্বাক্ষর",
   "workforce.application.before.association.startDate.error":"আবদেনে উল্লেখিত দূর্ঘটনার তারিখ কারখানার সংশ্লিষ্ট এসোসিয়েশনের শুরুর তারিখ হতে পরে হতে পারবে না।",
+  "workforce.accident.hospitalInfo.title":"হাসপাতালের তথ্য",
+"workforce.accident.addHospital.btn":"হাসপাতালের তথ্য যোগ করুন",
+
 
    "profile.mainMenu": "প্রোফাইল",
   "profile.menu.changePassword": "পাসওয়ার্ড পরিবর্তন করুন",
