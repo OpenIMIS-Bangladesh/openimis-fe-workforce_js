@@ -325,17 +325,45 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
 
 };
 
-export const statusOptions = [
-  { value: "active", label: "সক্রিয়" },
-  { value: "inactive", label: "নিষ্ক্রিয়" },
+export const cfStatusOptions = [
+  { value: "new", label: "নতুন" },
   { value: "pending", label: "অপেক্ষমাণ" },
   { value: "draft", label: "খসড়া" },
-  { value: "initial", label: "প্রাথমিক" },
   { value: "suspended", label: "বহিষ্কৃত" },
-  { value: "terminated", label: "বাতিল" },
-  { value: "on_leave", label: "ছুটিতে" },
+  { value: "approved_by_dg", label: "মহাপরিচালক দ্বারা অনুমোদিত" },
+  { value: "approved_by_director", label: "পরিচালক দ্বারা অনুমোদিত" },
+  { value: "approved_by_doctor", label: "ডাক্তার দ্বারা অনুমোদিত" },
+  { value: "rejected", label: "বাতিলকৃত" },
+  { value: "rejected_by_dg", label: "ডিজি কর্তৃক বাতিলকৃত" },
+  { value: "deactivated", label: "নিষ্ক্রিয় করা হয়েছে" },
+  { value: "under_review", label: "পর্যালোচনায় রয়েছে" },
+  { value: "canceled", label: "বাতিল করা হয়েছে" },
+  { value: "expired", label: "মেয়াদোত্তীর্ণ" },
+  { value: "disabled", label: "অক্ষম" },
+  { value: "reassigned", label: "পুনরায় বরাদ্দকৃত" },
+  { value: "resigned", label: "পদত্যাগ করেছেন" },
+  { value: "forward_to_dg", label: "মহাপরিচালকের কাছে প্রেরণ" },
+  { value: "forward_to_director", label: "পরিচালকের কাছে প্রেরণ" },
+  { value: "forward_to_comiitee", label: "কমিটির কাছে প্রেরণ" },
+  { value: "second_forward", label: "দ্বিতীয় দফা প্রেরণ" },
+  { value: "revert_to_applicant", label: "আবেদনকারীর কাছে ফেরত" },
+  { value: "revert_to_checker", label: "যাচাইকরণকারীর কাছে ফেরত" },
+  { value: "revert", label: "আবেদন ফেরত পাঠানো হয়েছে" },
+  { value: "forward_to_association", label: "অ্যাসোসিয়েশনের কাছে প্রেরণ" },
+  { value: "forward_to_cf_section", label: "সিএফ শাখায় প্রেরণ" },
+  { value: "forward_to_cf_section_one", label: "সিএফ শাখা-১ এ প্রেরণ" },
+  { value: "forward_to_cf_section_two", label: "সিএফ শাখা-২ এ প্রেরণ" },
+  { value: "forward_to_doctor", label: "ডক্টরের কাছে প্রেরণ" },
+  { value: "selected", label: "নির্বাচিত" },
+  { value: "meeting_created", label: "সভা তৈরি হয়েছে" },
+  { value: "amended_application", label: "সংশোধিত আবেদন" },
+  { value: "approved_by_committee", label: "কমিটি দ্বারা অনুমোদিত" },
+];
+export const blwfStatusOptions = [
+  { value: "new", label: "নতুন" },
+  { value: "pending", label: "অপেক্ষমাণ" },
+  { value: "draft", label: "খসড়া" },
   { value: "completed", label: "সম্পন্ন" },
-  { value: "archived", label: "আর্কাইভকৃত" },
   { value: "approved_by_dg", label: "মহাপরিচালক দ্বারা অনুমোদিত" },
   { value: "approved_by_director", label: "পরিচালক দ্বারা অনুমোদিত" },
   { value: "approved_by_doctor", label: "ডাক্তার দ্বারা অনুমোদিত" },
@@ -356,15 +384,34 @@ export const statusOptions = [
   { value: "forward_to_director", label: "পরিচালকের কাছে প্রেরণ" },
   { value: "forward_to_comiitee", label: "কমিটির কাছে প্রেরণ" },
   { value: "second_forward", label: "দ্বিতীয় দফা প্রেরণ" },
-  { value: "third_forward", label: "তৃতীয় দফা প্রেরণ" },
-  { value: "new", label: "নতুন" },
   { value: "revert_to_applicant", label: "আবেদনকারীর কাছে ফেরত" },
   { value: "revert_to_checker", label: "যাচাইকরণকারীর কাছে ফেরত" },
   { value: "revert", label: "আবেদন ফেরত পাঠানো হয়েছে" },
   { value: "forward_to_association", label: "অ্যাসোসিয়েশনের কাছে প্রেরণ" },
-  { value: "forward_to_cf_section", label: "সিএফ শাখায় প্রেরণ" },
-  { value: "forward_to_cf_section_one", label: "সিএফ শাখা-১ এ প্রেরণ" },
-  { value: "forward_to_cf_section_two", label: "সিএফ শাখা-২ এ প্রেরণ" },
+  { value: "forward_to_doctor", label: "ডক্টরের কাছে প্রেরণ" },
+  { value: "selected", label: "নির্বাচিত" },
+  { value: "meeting_created", label: "সভা তৈরি হয়েছে" },
+  { value: "amended_application", label: "সংশোধিত আবেদন" },
+  { value: "approved_by_committee", label: "কমিটি দ্বারা অনুমোদিত" },
+];
+export const eisStatusOptions = [
+  { value: "new", label: "নতুন" },
+  { value: "pending", label: "অপেক্ষমাণ" },
+  { value: "draft", label: "খসড়া" },
+  { value: "approved_by_dg", label: "মহাপরিচালক দ্বারা অনুমোদিত" },
+  { value: "approved_by_director", label: "পরিচালক দ্বারা অনুমোদিত" },
+  { value: "approved_by_doctor", label: "ডাক্তার দ্বারা অনুমোদিত" },
+  { value: "rejected", label: "বাতিলকৃত" },
+  { value: "rejected_by_dg", label: "ডিজি কর্তৃক বাতিলকৃত" },
+  { value: "under_review", label: "পর্যালোচনায় রয়েছে" },
+  { value: "forward_to_dg", label: "মহাপরিচালকের কাছে প্রেরণ" },
+  { value: "forward_to_director", label: "পরিচালকের কাছে প্রেরণ" },
+  { value: "forward_to_comiitee", label: "কমিটির কাছে প্রেরণ" },
+  { value: "second_forward", label: "দ্বিতীয় দফা প্রেরণ" },
+  { value: "revert_to_applicant", label: "আবেদনকারীর কাছে ফেরত" },
+  { value: "revert_to_checker", label: "যাচাইকরণকারীর কাছে ফেরত" },
+  { value: "revert", label: "আবেদন ফেরত পাঠানো হয়েছে" },
+  { value: "forward_to_association", label: "অ্যাসোসিয়েশনের কাছে প্রেরণ" },
   { value: "forward_to_doctor", label: "ডক্টরের কাছে প্রেরণ" },
   { value: "selected", label: "নির্বাচিত" },
   { value: "meeting_created", label: "সভা তৈরি হয়েছে" },
@@ -374,12 +421,31 @@ export const statusOptions = [
   { value: "approved_by_eis_advisor", label: "ইআইএস উপদেষ্টা দ্বারা অনুমোদিত" },
 ];
 
-export const applicationTypeOptions = [
+export const cfApplicationTypeOptions = [
   { value: "medicalAssistance", label: "চিকিৎসা অনুদান" },
   { value: "scholarship", label: "শিক্ষা অনুদান" },
   { value: "financialAssistance", label: "মৃত্যুজনিত অনুদান" },
   { value: "maternityGrant", label: "মাতৃত্বজনিত অনুদান" },
   { value: "disabilityAssistance", label: "স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তা" },
+];
+export const blwfApplicationTypeOptions = [
+  { value: "medicalDonation", label: "চিকিৎসা অনুদান" },
+  { value: "educationGrant", label: "শিক্ষা অনুদান" },
+  { value: "deadlyGrant", label: "মৃত্যুজনিত অনুদান" },
+  { value: "maternityGrant", label: "মাতৃত্বজনিত অনুদান" },
+];
+export const eisApplicationTypeOptions = [
+  { value: "financialAssistance", label: "মৃত্যুজনিত অনুদান" },
+  { value: "disabilityAssistance", label: "স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তা" },
+];
+export const cfAssociationOptions = [
+  { value: "BGMEA", label: "বিজিএমইএ" },
+  { value: "BKMEA", label: "বিকেএমইএ" },
+
+];
+export const eisAssociationOptions = [
+  { value: "BEPZA", label: "বেপজা" },
+  { value: "LFMEAB", label: "এলএফএমইএবি" },
 ];
 
 
