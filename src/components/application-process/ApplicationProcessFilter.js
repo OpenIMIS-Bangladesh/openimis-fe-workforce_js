@@ -68,12 +68,30 @@ class ApplicationProcessFilter extends Component {
     const { classes, filters, onChangeFilters } = this.props;
     const userType = getUserTypeFromRights(this.props.userRights);
 
-    let applicationTypeOptions = "";
+    let applicationTypeOptions;
+    let organizationTypeIn;
+
+    const type = userType?.toLowerCase() || "";
+
     if (isEisPath()) {
+      organizationTypeIn = "eis";
       applicationTypeOptions = eisApplicationTypeOptions;
+    } else if (type.includes("blwf")) {
+      organizationTypeIn = "blwf";
+      applicationTypeOptions = blwfApplicationTypeOptions;
     } else {
+      organizationTypeIn = "cf";
       applicationTypeOptions = cfApplicationTypeOptions;
     }
+
+
+
+    // let applicationTypeOptions = "";
+    // if (isEisPath()) {
+    //   applicationTypeOptions = eisApplicationTypeOptions;
+    // } else {
+    //   applicationTypeOptions = cfApplicationTypeOptions;
+    // }
 
     let asociationOptions = "";
     if (isEisPath()) {
