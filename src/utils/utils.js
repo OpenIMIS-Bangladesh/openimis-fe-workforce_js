@@ -798,47 +798,32 @@ function calculateAge(birthDate) {
   return age;
 }
 
-export function getRelationForApi(depObj, workerBirthDate) {
-  console.log("deps", depObj);
-
+export function getRelationForApi(depObj) {
+  console.log("deps",depObj)
   const age = calculateAge(depObj.birthDate);
-  const workerAge = calculateAge(workerBirthDate); 
 
   const relation = depObj.relationWithWorker || depObj?.relationType;
   const marital = depObj.maritalStatus;
-  const disability = depObj.isDisabled;
+  const disability = depObj.disabilityStatus;
 
-  if (relation !== "workforce.relation.wife" && age < 18 && marital === "workforce.marital_status.married") {
-    return false;
-  }
-
-  if (relation === "workforce.relation.wife") {
-    return age >= 16 && marital === "workforce.marital_status.widow";
-
-  } else if (relation === "workforce.relation.husband") {
-    return age > 18 && marital === "workforce.marital_status.widower";
-
-  } else if (relation === "workforce.relation.son") {
-    if (age < 18) return true;
-    if (age >= 18 && disability === "yes") return true;
-    return false;
-
-  } else if (relation === "workforce.relation.daughter") {
-    return marital === "workforce.marital_status.single";
-
-  } else if (relation === "workforce.relation.brother") {
+  if (relation === "workforce.relation.brother") {
     return age < 18;
-
   } else if (relation === "workforce.relation.sister") {
-    return marital === "workforce.marital_status.single";
-
+    return age < 18 || marital === "workforce.marital_status.unmarried" || marital === "workforce.marital_status.widowed";
+  } else if (relation === "workforce.relation.daughter") {
+    return disability === "yes" || age < 18 || marital === "workforce.marital_status.unmarried" || marital === "workforce.marital_status.widowed";
+  } else if (relation === "workforce.relation.son") {
+    return disability === "yes" || age < 18;
+  } else if (relation === "workforce.relation.husband") {
+    return true;
+  } else if (relation === "workforce.relation.wife") {
+    return true;
   } else if (relation === "workforce.relation.father") {
-    return age > workerAge;
-
+    console.log("depObj@",depObj)
+    return true;
   } else if (relation === "workforce.relation.mother") {
-    return age > workerAge;
-  } 
-  else if (relation === "workforce.relation.grand_father") {
+    return true;
+  } else if (relation === "workforce.relation.grand_father") {
     return true;
   } else if (relation === "workforce.relation.grand_mother") {
     return true;
@@ -856,9 +841,11 @@ export function getRelationForApi(depObj, workerBirthDate) {
     return true;
   } else if (relation === "workforce.relation.illegitimate_daughter") {
     return marital === "workforce.marital_status.unmarried";
-  } else {
-    return false;
+  }else{
+    return false
   }
+
+  // return false;
 }
 
 // -----------------------------

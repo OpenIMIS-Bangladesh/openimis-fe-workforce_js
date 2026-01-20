@@ -243,6 +243,7 @@
     "workforce.employee.application.phone": "Phone",
     "workforce.employee.application.applicationType": "Application Type",
     "workforce.employee.application.organizationType": "Organization Type",
+    "workforce.employee.application.associationType": "Association Type",
     "workforce.employee.application.email": "E-mail",
     "workforce.employee.application.occupation": "Occupation",
     "workforce.employee.application.gender": "Gender",

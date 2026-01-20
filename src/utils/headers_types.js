@@ -119,6 +119,7 @@
   "workforce.employee.name",
   "workforce.employee.application.factoryName",
   "workforce.employee.application.applicationType",
+  "workforce.employee.application.associationType",
   // "workforce.employee.application.moneyAmount",
   "workforce.employee.application.nid",
   "workforce.employee.application.receivedDate",

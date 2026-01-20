@@ -53,9 +53,6 @@
   "workforce.employee.accident.info.disabilityPerSchedule": "অক্ষমতা (উপার্জন হ্রাস) % বিএলএ সূচি ১ অনুযায়ী",
 
 
-
-
-
   "workforce.employee.workforce_employer": "নিয়োগকারী কোম্পানির নাম",
   "workforce.employee.workforce_office": "অফিস",
   "workforce.employee.workforce_factory": "শ্রমিকের কর্মরত প্রতিষ্ঠান / কারখানার নাম",
@@ -118,6 +115,7 @@
   "workforce.employee.application.phone": "ফোন নম্বর",
   "workforce.employee.application.applicationType": "আবেদনের ধরন",
   "workforce.employee.application.organizationType": "সংগঠনের ধরন",
+  "workforce.employee.application.associationType": "অ্যাসোসিয়েশনের ধরন",
   "workforce.employee.application.email": "ই-মেইল",
   "workforce.employee.application.occupation": "পেশা",
   "workforce.employee.application.gender": "লিঙ্গ",
