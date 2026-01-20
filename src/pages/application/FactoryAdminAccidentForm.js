@@ -700,7 +700,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
                     </Grid>
                   </Box>
                 ))}
-
+                <Typography style={{color:"red"}}>**<FormattedMessage id="workforce.add.hospital.info" />**</Typography>
                 {/* ADD BUTTON */}
                 <Box mt={1}>
                   <Button

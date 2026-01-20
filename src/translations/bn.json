@@ -867,7 +867,7 @@
   "workforce.application.before.association.startDate.error":"আবদেনে উল্লেখিত দূর্ঘটনার তারিখ কারখানার সংশ্লিষ্ট এসোসিয়েশনের শুরুর তারিখ হতে পরে হতে পারবে না।",
   "workforce.accident.hospitalInfo.title":"হাসপাতালের তথ্য",
 "workforce.accident.addHospital.btn":"হাসপাতালের তথ্য যোগ করুন",
-
+"workforce.add.hospital.info":"একাধিক হাসপাতালে চিকিৎসা গ্রহণ করলে এখানে ক্লিক করুন",
 
    "profile.mainMenu": "প্রোফাইল",
   "profile.menu.changePassword": "পাসওয়ার্ড পরিবর্তন করুন",

@@ -962,6 +962,8 @@
   "workforce.application.before.association.startDate.error":"The date of the accident can't be later than the start date of the relevant association of the factory.",
   "workforce.accident.hospitalInfo.title":"Hospital Info",
 "workforce.accident.addHospital.btn":"Add Hospital Info",
+"workforce.add.hospital.info":"If treated at more than one hospital, click here",
+
 
 
 
