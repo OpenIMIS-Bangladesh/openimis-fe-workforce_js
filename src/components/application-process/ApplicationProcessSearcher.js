@@ -134,7 +134,7 @@ class ApplicationProcessSearcher extends Component {
 
   fetch = async (prms) => {
     const { applicationType, userRights, revertedApplication, rejectedApplication, userName, workforceEmployeesFactoryId, dynamicTableTitle, loggedInUserId } = this.props;
-    const { showHistoryFilter } = this.state;
+    const { showHistoryFilter, startDate, endDate } = this.state;
     if (dynamicTableTitle) {
       this.dynamicTableTitle = dynamicTableTitle;
     }
@@ -1038,6 +1038,9 @@ class ApplicationProcessSearcher extends Component {
         finalFilters = [...defaultStatusFilters, ...additionalFilters, orderByFilter];
       }
 
+      if (startDate) finalFilters.push(`dateCreatedFrom: "${startDate}"`);
+      if (endDate) finalFilters.push(`dateCreatedTo: "${endDate}"`);
+
       // Final safety: remove duplicates by argument name
       finalFilters = finalFilters.filter(
         (f, i, arr) =>
@@ -1047,6 +1050,8 @@ class ApplicationProcessSearcher extends Component {
             if (x.includes("orderBy") && f.includes("orderBy")) return true;
             if (x.includes("organizationTypeIn") && f.includes("organizationTypeIn")) return true;
             if (x.includes("associationTypeIn") && f.includes("associationTypeIn")) return true;
+            if (x.includes("dateCreatedFrom") && f.includes("dateCreatedFrom")) return true;
+            if (x.includes("dateCreatedTo") && f.includes("dateCreatedTo")) return true;
             return x === f;
           })
       );

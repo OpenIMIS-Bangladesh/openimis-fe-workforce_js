@@ -521,6 +521,8 @@
   "resetFilterTooltip": "ফিল্টার রিসেট করুন",
   "refreshFilterTooltip": "অনুসন্ধান করুন",
   "workforce.application.submittedBy": "জমাদানকারী",
+  "workforce.application.startDate": "শুরুর তারিখ",
+  "workforce.application.endDate": "শেষ তারিখ",
   "workforce.association.name.en": "নাম (ইংরেজি)",
   "workforce.association.shortName.en": "নাম (ইংরেজি)",
   "workforce.association.name.bn": "নাম (বাংলা)",

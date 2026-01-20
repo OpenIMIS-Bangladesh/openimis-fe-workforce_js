@@ -139,8 +139,8 @@ class ApplicationProcessFilter extends Component {
           </Grid>
         }
       />
-       {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR &&(
-
+    {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR &&(
+    <>
       <ControlledField
         module={MODULE_NAME}
         id="workforce.employee.application.associationType"
@@ -177,7 +177,43 @@ class ApplicationProcessFilter extends Component {
           </Grid>
         }
       />
-       )}
+      <Grid item xs={3} className={classes.item}>
+        <PublishedComponent
+          pubRef="workforce.DatePicker"
+          label="workforce.application.startDate"
+          value={this._filterValue("dateCreatedFrom") || ""}
+          onChange={(v) =>
+            this.debouncedOnChangeFilter([
+              {
+                id: "dateCreatedFrom",
+                value: v,
+                filter: `dateCreatedFrom: "${v}"`,
+              },
+            ])
+          }
+          readOnly={false}
+        />
+      </Grid>
+
+      <Grid item xs={3} className={classes.item}>
+        <PublishedComponent
+          pubRef="workforce.DatePicker"
+          label="workforce.application.endDate"
+          value={this._filterValue("dateCreatedTo") || ""}
+          onChange={(v) =>
+            this.debouncedOnChangeFilter([
+              {
+                id: "dateCreatedTo",
+                value: v,
+                filter: `dateCreatedTo: "${v}"`,
+              },
+            ])
+          }
+          readOnly={false}
+        />
+      </Grid>
+      </>
+    )}
        <ControlledField
         module={MODULE_NAME}
         id="workforce.employee.application.status"
