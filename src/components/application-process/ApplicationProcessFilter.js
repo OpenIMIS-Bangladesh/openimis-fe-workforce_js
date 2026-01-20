@@ -84,28 +84,22 @@ class ApplicationProcessFilter extends Component {
       applicationTypeOptions = cfApplicationTypeOptions;
     }
 
-
-
-    // let applicationTypeOptions = "";
-    // if (isEisPath()) {
-    //   applicationTypeOptions = eisApplicationTypeOptions;
-    // } else {
-    //   applicationTypeOptions = cfApplicationTypeOptions;
-    // }
-
-    let asociationOptions = "";
+    let asociationOptions;
     if (isEisPath()) {
       asociationOptions = eisAssociationOptions;
     } else {
       asociationOptions = cfAssociationOptions;
     }
 
-    let statusOptions = "";
+    let statusOptions;
     if (isEisPath()) {
       statusOptions = eisStatusOptions;
+    } else if (type.includes("blwf")) {
+      statusOptions = blwfStatusOptions;
     } else {
       statusOptions = cfStatusOptions;
     }
+
 
     return (
       <Grid container className={classes.form}>
