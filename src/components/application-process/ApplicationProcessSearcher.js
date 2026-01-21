@@ -1059,41 +1059,105 @@ class ApplicationProcessSearcher extends Component {
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_OFFICER) {
       this.setState({ displayVersion: showHistoryFilter });
+      let defaultStatusFilters = [];
 
-      const defaultStatusFilters = [
-        'applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'organizationTypeIn: ["eis"]'
-      ];
       if (this.props.filedApplications) {
-        defaultStatusFilters.push('statusIn:["forward_for_verification"]');
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo:"${loggedInUserId}"`);
-        }
-      }
-      else if (this.props.forwardedApplications) {
-        defaultStatusFilters.push('statusIn:["verified"]');
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationFrom:"${loggedInUserId}"`);
-        }
-      } else if (revertedApplication) {
-
         defaultStatusFilters.push(
-          'statusIn: ["revert"]'
+          'statusIn: ["forward_for_verification"]',
+          'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
+          'organizationTypeIn: ["eis"]',
+          'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
-      }
-      else if (this.props.returnedApplications) {
-        defaultStatusFilters.push('statusIn:["revert"]');
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationFrom:"${loggedInUserId}"`);
-        }
+        if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+      } else if (this.props.forwardedApplications) {
+        defaultStatusFilters.push(
+          'statusIn: ["verified"]',
+          'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
+          'organizationTypeIn: ["eis"]',
+          'associationTypeIn: ["BEPZA","LFMEAB"]'
+        );
+        if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+      } else if (revertedApplication) {
+        defaultStatusFilters.push(
+          'statusIn: ["revert"]',
+          'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
+          'organizationTypeIn: ["eis"]',
+          'associationTypeIn: ["BEPZA","LFMEAB"]'
+        );
+        if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+      } else if (this.props.returnedApplications) {
+        defaultStatusFilters.push(
+          'statusIn: ["revert"]',
+          'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
+          'organizationTypeIn: ["eis"]',
+          'associationTypeIn: ["BEPZA","LFMEAB"]'
+        );
+        if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+      } else {
+        defaultStatusFilters.push(
+          'statusIn: ["forward_to_eis_officer"]',
+          'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
+          'organizationTypeIn: ["eis"]',
+          'associationTypeIn: ["BEPZA","LFMEAB"]'
+        );
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
-      defaultStatusFilters.push(orderByFilter);
 
-      this.props.fetchApplicationsSummary(this.props.modulesManager, defaultStatusFilters);
+      let finalFilters = [];
+
+       if (prms?.length) {
+        finalFilters = [...prms];
+
+        const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
+        const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
+        const hasApplicationTypeIn = finalFilters.some(f => f.includes("applicationTypeIn"));
+        const hasAssociationTypeIn = finalFilters.some(f => f.includes("associationTypeIn"));
+
+        if (!hasStatusIn)
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("statusIn")),
+            ...finalFilters
+          ];
+        if (!hasApplicationTypeIn)
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("applicationTypeIn")),
+            ...finalFilters
+          ];
+        if (!hasAssociationTypeIn)
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("associationTypeIn")),
+            ...finalFilters
+          ];
+        if (!finalFilters.some(f => f.includes("organizationTypeIn")))
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("organizationTypeIn")),
+            ...finalFilters
+          ];
+        if (!hasOrderBy) finalFilters.push(orderByFilter);
+        
+      } else {
+        finalFilters = [...defaultStatusFilters, orderByFilter];
+      }
+
+      if (startDate) finalFilters.push(`dateCreatedFrom: "${startDate}"`);
+      if (endDate) finalFilters.push(`dateCreatedTo: "${endDate}"`);
+
+      finalFilters = finalFilters.filter((f, i, arr) =>
+        i === arr.findIndex(x => {
+          if (x.includes("applicationTypeIn") && f.includes("applicationTypeIn")) return true;
+          if (x.includes("statusIn") && f.includes("statusIn")) return true;
+          if (x.includes("orderBy") && f.includes("orderBy")) return true;
+          if (x.includes("organizationTypeIn") && f.includes("organizationTypeIn")) return true;
+          if (x.includes("associationTypeIn") && f.includes("associationTypeIn")) return true;
+          if (x.includes("dateCreatedFrom") && f.includes("dateCreatedFrom")) return true;
+          if (x.includes("dateCreatedTo") && f.includes("dateCreatedTo")) return true;
+          return x === f;
+        })
+      );
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
       this.setState({ displayVersion: showHistoryFilter });
       if (this.props.summaryId) {
