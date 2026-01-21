@@ -119,7 +119,8 @@ const RegistrationPage = () => {
         dispatch(createWorkforceOtp(payload, `Created Workforce Office ${payload.firstNameEn}`))
           .then((res) => {
             console.log("hello", res);
-            const resErrMsg = res?.payload?.data?.createWorkforceOtp?.error;
+            // Add .trim() to remove extra spaces
+            const resErrMsg = res?.payload?.data?.createWorkforceOtp?.error?.trim();
             const isInternalId = res?.payload?.data?.createWorkforceOtp?.internalId;
             const errorMessage = REGISTRATION_ERROR_BN[resErrMsg]
             console.log({errorMessage})

@@ -215,7 +215,7 @@ const EisCommitteeDashboardPage = () => {
   useEffect(async() => {
      await dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"eis"'])).then((res)=>{
         console.log("hello from res",res)
-        const response = res?.payload?.data?.workforceApplicationSummary?.edges
+        const response = parseData(res?.payload?.data?.workforceApplicationSummary?.edges)
         console.log({response})
         setData(response)}
       )
