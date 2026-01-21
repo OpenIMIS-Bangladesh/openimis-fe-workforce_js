@@ -139,7 +139,7 @@ class ApplicationProcessFilter extends Component {
           </Grid>
         }
       />
-    {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR &&(
+    {userType.toLowerCase().includes("eis") && (
     <>
       <ControlledField
         module={MODULE_NAME}
