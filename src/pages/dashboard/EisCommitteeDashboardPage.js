@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(2),
     height: "calc(100vh - 64px)",
-    overflow: "hidden",
+    overflow: "visible",
   },
   sidebar: {
     position: "sticky",
@@ -129,9 +129,13 @@ const SidebarMenu = [
 const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
-  const [renderedData, setRenderedData] = useState(summaryData);
+  const [renderedData, setRenderedData] = useState([]);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
   const user_type = getUserType();
+
+  useEffect(() => {
+    setRenderedData(summaryData);
+  }, [summaryData]);
 
   const handleChange = (panelId) => (event, isExpanded) => {
     if (isExpanded) {
@@ -222,9 +226,11 @@ const EisCommitteeDashboardPage = () => {
   );
 
   const pendingSummaryData = data.filter(d => d.status === "forward_to_comiitee");
-  const sentSummaryData = data.filter(d => d.status === "forward_to_dg" || d.status ==='forward_to_director');
+  const sentSummaryData = data.filter(d => d.status === "approved_by_committee");
+  console.log("Pending Summary Data:", pendingSummaryData);
 
   const renderContent = () => {
+    console.log("Selected Menu:", selectedMenu);
     switch (selectedMenu) {
       case "pendingMeetingSheet":
         return (
@@ -233,7 +239,7 @@ const EisCommitteeDashboardPage = () => {
       case "approveMeetingSheet":
         return <FiledApplications summaryData={sentSummaryData} disableButtons={1}/>;
       default:
-        return <FiledApplications />;
+        return <FiledApplications summaryData={pendingSummaryData}/>;
     }
   };
 
