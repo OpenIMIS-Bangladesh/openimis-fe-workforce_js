@@ -863,12 +863,17 @@
   "workforce.dependent.eis.eligible": "যোগ্য",
   "workforce.dependent.eis.inEligible": "অযোগ্য",
 
+  "workforce.dependent.eligibility.btn":"সমস্ত নির্ভরশীল সংরক্ষণ করুন",
+
   "workforce.accident.mainType.label": "দুর্ঘটনার ধরন",
   "workforce.employee.application.eisApproval.signature":"ই.আই.এস. অনুমোদনের স্বাক্ষর",
   "workforce.application.before.association.startDate.error":"আবদেনে উল্লেখিত দূর্ঘটনার তারিখ কারখানার সংশ্লিষ্ট এসোসিয়েশনের শুরুর তারিখ হতে পরে হতে পারবে না।",
+  "workforce.application.before.eis.startDate.error":"২১ জুন ২০২২ এর আগে সংঘটিত কোনো ঘটনার জন্য EIS পাইলট প্রকল্পে আবেদন গ্রহণযোগ্য নয়।",
   "workforce.accident.hospitalInfo.title":"হাসপাতালের তথ্য",
 "workforce.accident.addHospital.btn":"হাসপাতালের তথ্য যোগ করুন",
 "workforce.add.hospital.info":"একাধিক হাসপাতালে চিকিৎসা গ্রহণ করলে এখানে ক্লিক করুন",
+
+  "workforce.update.btn":"আপডেট",
 
    "profile.mainMenu": "প্রোফাইল",
   "profile.menu.changePassword": "পাসওয়ার্ড পরিবর্তন করুন",

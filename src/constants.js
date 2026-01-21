@@ -668,7 +668,8 @@ export const banglaLabels = {
   factory:"কারখানা",
   hospitalList:"হাসপাতালের তথ্য",
   admitTime:"ভর্তি সময়",
-  hospitalAddress:"হাসপাতালের ঠিকানা"
+  hospitalAddress:"হাসপাতালের ঠিকানা",
+  isEligible:"যোগ্য"
 };
 
 export const roleMaxDayCount = {

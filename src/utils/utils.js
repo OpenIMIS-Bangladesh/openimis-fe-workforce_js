@@ -808,9 +808,9 @@ export function getRelationForApi(depObj, workerBirthDate) {
   const marital = depObj.maritalStatus;
   const disability = depObj.isDisabled;
 
-  if (relation !== "workforce.relation.wife" && age < 18 && marital === "workforce.marital_status.married") {
-    return false;
-  }
+  // if (relation !== "workforce.relation.wife" && age < 18 && marital === "workforce.marital_status.married") {
+  //   return false;
+  // }
 
   if (relation === "workforce.relation.wife") {
     return age >= 16 && marital === "workforce.marital_status.widow";

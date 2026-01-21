@@ -966,11 +966,13 @@
   "workforce.processing":"Loading ...",
   "workforce.employee.application.eisApproval.signature":"Eis Approval Signature",
   "workforce.application.before.association.startDate.error":"The date of the accident can't be later than the start date of the relevant association of the factory.",
+  "workforce.application.before.eis.startDate.error":"Applications are not allowed for incidents occurring before 21 June 2022 (EIS Pilot start date).",
   "workforce.accident.hospitalInfo.title":"Hospital Info",
 "workforce.accident.addHospital.btn":"Add Hospital Info",
 "workforce.add.hospital.info":"If treated at more than one hospital, click here",
 
-
+  "workforce.dependent.eligibility.btn":"Save All Dependents",
+  "workforce.update.btn":"Update",
 
 
   "workforce.accident.placeOfDeath.label": "Place of Death",

@@ -138,9 +138,9 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
           type="error"
           message={<FormattedMessage id="workforce.financialAssistance.error.message" module="workforce" />}
         />
-
         {!showForm ? (
           <>
+          <Typography style={{color:"#990F02",textAlign:"center",fontWeight:800,fontSize:"large" }}><FormattedMessage id="workforce.application.before.eis.startDate.error" module="workforce" /></Typography>
             <EisApplicationTypeSelector
               workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}

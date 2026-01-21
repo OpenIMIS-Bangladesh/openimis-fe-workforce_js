@@ -32,6 +32,7 @@ import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
 import EmployeeDeathAccountInfoForm from "../EmployeeDeathAccountInfoForm";
+import CustomSnackbar from "../../../components/shared/CustomSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -61,13 +62,21 @@ const steps = [
   // "workforce.application.steps.upload.documents",
 ];
 
-const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selectedApplicationType, parsedApplicationData, applicationForSelf,selectedFactory }) => {
+const FinancialAssistanceForm = ({
+  workforceFactoryId,
+  organizationType,
+  selectedApplicationType,
+  parsedApplicationData,
+  applicationForSelf,
+  selectedFactory,
+}) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
-
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("workforce");
   const stepRef = useRef(null);
+
+  const [alertMessage, setAlertMessage] = useState(false);
   const [errors, setErrors] = useState({});
   const [acknowledged, setAcknowledged] = useState(false);
   let applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? null);
@@ -148,7 +157,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
     },
     deathType: deathType,
     company: null,
-    factory: selectedFactory||null,
+    factory: selectedFactory || null,
     workforceFactoryId: workforceFactoryId || "",
     isSubmitted: "no",
     organizationType: "" || organizationType,
@@ -239,15 +248,17 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
           permanentLocation: parsedApplicationData?.deceasedWorkerInfo?.permanentLocation || "",
           presentLocation: parsedApplicationData?.deceasedWorkerInfo?.presentLocation || "",
           presentAddress: parsedApplicationData?.deceasedWorkerInfo?.presentAddress || "",
-          factory:formData?.factory
+          factory: formData?.factory,
         },
         company: employeeData?.company || formData?.workforceEmployee?.company?.id || null,
-        factory:formData?.factory||
+        factory:
+          formData?.factory ||
           formData?.employeeFactory?.id ||
           employeeData.factory ||
           formData?.workforceEmployee?.factory?.id ||
           parsedApplicationData?.employeeFactory ||
-          workforceFactoryId||selectedFactory ||
+          workforceFactoryId ||
+          selectedFactory ||
           null,
         applicationForSelf: applicationForSelf,
         workforceFactoryId: workforceFactoryId || "",
@@ -286,6 +297,8 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
 
   const handleNext = async () => {
     const newErrors = validateRequiredFields(stepRef, formatMessage);
+    const allAssociationDate = new Date("2022-06-21");
+    const deathDate = new Date(formData?.metadata?.deathDate);
     setErrors(newErrors);
     console.log(newErrors);
 
@@ -295,6 +308,10 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
       } else {
+        if (formData?.organizationType === "eis" && allAssociationDate > deathDate) {
+          setAlertMessage(true);
+          return;
+        }
         setActiveStep(nextStep);
         if (nextStep === 3 || nextStep === 4) {
           const workforceEmployeeData = {
@@ -359,8 +376,8 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
             workforceEmployeeId: employeeData?.id || reduxState.core.user.id || "",
             company: formData?.workforceEmployee?.company?.id,
             factory:
-              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory
-                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory?.id)
+              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory
+                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory?.id)
                 : null,
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
@@ -380,7 +397,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
             const applicationMutation = await formatMutation(
               "createWorkforceApplication",
               formatApplicationeGQL(createApplicationData),
-              `Created application `
+              `Created application `,
             );
             const applicationClientMutationId = applicationMutation.clientMutationId;
             await dispatch(createApplication(applicationMutation, `Created workforce application `)).then((res) => {
@@ -390,8 +407,8 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
                   modulesManager,
                   "workforceApplication",
                   applicationClientMutationId,
-                  "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID"
-                )
+                  "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID",
+                ),
               );
               let applicationgetId = getInfoId(fetchRes, "workforceApplication");
               if (!applicationgetId && applicationId) {
@@ -411,8 +428,8 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
             workforceEmployeeId: employeeData?.id || reduxState.core.user.id,
             company: formData?.workforceEmployee?.company?.id,
             factory:
-              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory
-                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory?.id)
+              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory
+                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory?.id)
                 : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
@@ -441,8 +458,8 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
               return dispatch(
                 createWorkforceDocument(
                   { ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) },
-                  `Created workforce document`
-                )
+                  `Created workforce document`,
+                ),
               );
             });
           }
@@ -459,8 +476,8 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
             workforceEmployeeId: employeeData?.id || reduxState.core.user.id,
             company: formData?.workforceEmployee?.company?.id,
             factory:
-              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory
-                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory?.id)
+              formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory
+                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory?.id)
                 : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
@@ -490,8 +507,8 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
               return dispatch(
                 createWorkforceDocument(
                   { ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) },
-                  `Created workforce document`
-                )
+                  `Created workforce document`,
+                ),
               );
             });
           }
@@ -532,7 +549,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
     if (uploadBankFile) {
       await uploadBankFile.map((file) => {
         return dispatch(
-          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`)
+          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
         );
       });
     }
@@ -540,7 +557,7 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
       // const createDocumentData = { ...file, workforceApplicationId: safeApplicationId(applicationId,parsedApplicationData) }
       // console.log({createDocumentData})
       return dispatch(
-        createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document `)
+        createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document `),
       );
     });
 
@@ -551,9 +568,10 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
       id: safeApplicationId(applicationId, parsedApplicationData),
       workforceEmployeeId: safeDecodeId(formData?.workforceEmployee.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
       company: formData?.workforceEmployee?.company?.id,
-      factory:formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory
-                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id ||formData?.factory?.id)
-                : null,
+      factory:
+        formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory
+          ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory?.id)
+          : null,
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       grantAmount: formData?.employeeAccidentInfo.grantAmount,
@@ -708,24 +726,6 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
                 {!isDependentSaved ? (
                   <b>loading ...</b>
                 ) : (
-                  // <EmployeeAccountInfoForm
-                  //   formdata={formData}
-                  //   accounts={formData.employeeBankInfo}
-                  //   handleChange={(index, key, value) => handleArrayFieldChange("employeeBankInfo", index, key, value)}
-                  //   addItem={() =>
-                  //     addArrayFieldItem("employeeBankInfo", {
-                  //       accountHolderName: "",
-                  //       bankName: "",
-                  //       accountNumber: "",
-                  //       branchName: "",
-                  //     })
-                  //   }
-                  //   removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
-                  //   expanded={expanded}
-                  //   setExpanded={setExpanded}
-                  //   applicationId={applicationId}
-                  //   errors={errors}
-                  // />
                   <EmployeeDeathAccountInfoForm
                     formdata={formData}
                     accounts={formData.employeeBankInfo}
@@ -780,6 +780,13 @@ const FinancialAssistanceForm = ({ workforceFactoryId, organizationType, selecte
           )}
         </div>
       </Paper>
+      <CustomSnackbar
+        open={alertMessage}
+        onClose={() => setAlertMessage(false)}
+        type="error"
+        message={<FormattedMessage id="workforce.application.before.eis.startDate.error" module="workforce" />}
+        duration={5000}
+      />
     </div>
   );
 };
