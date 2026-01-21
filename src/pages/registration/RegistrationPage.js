@@ -283,7 +283,7 @@ const RegistrationPage = () => {
           open={alertMessage.openErrorModal}
           onClose={() => setAlertMessage({ openErrorModal: false, errorMessage: "" })}
           type="error"
-          message={<FormattedMessage id={alertMessage?.errorMessage} />}
+          message={alertMessage?.errorMessage}
           duration={5000}
         />
       </div>
