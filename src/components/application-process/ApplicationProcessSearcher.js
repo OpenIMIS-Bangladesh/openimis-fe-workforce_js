@@ -1057,6 +1057,100 @@ class ApplicationProcessSearcher extends Component {
       );
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+    } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COMMITTEE || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE) {
+      this.setState({ displayVersion: showHistoryFilter });
+
+      let defaultStatusFilters = [];
+      let additionalFilters = [];
+      defaultStatusFilters.push('applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
+
+      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+
+
+      if (summaryId) {
+        additionalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
+      }
+
+
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const nidFilters = this.props.nidFilters || [];
+
+      let finalFilters = [];
+
+      if (nidFilters.length) {
+        finalFilters = [...nidFilters];
+
+        if (!finalFilters.some(f => f.includes("orderBy"))) {
+          finalFilters.push(orderByFilter);
+        }
+
+        if (summaryId && !finalFilters.some(f => f.includes("eisApplicationSummary_Id"))) {
+          finalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
+        }
+      } else if (prms?.length) {
+        finalFilters = [...prms];
+
+        const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
+        const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
+        const hasApplicationTypeIn = finalFilters.some(f => f.includes("applicationTypeIn"));
+        const hasAssociationTypeIn = finalFilters.some(f => f.includes("associationTypeIn"));
+
+        if (!hasStatusIn) {
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("statusIn")),
+            ...finalFilters
+          ];
+        }
+
+        if (!hasApplicationTypeIn) {
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("applicationTypeIn")),
+            ...finalFilters
+          ];
+        }
+        if (!hasAssociationTypeIn) {
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("associationTypeIn")),
+            ...finalFilters
+          ];
+        }
+        if (!finalFilters.some(f => f.includes("organizationTypeIn"))) {
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("organizationTypeIn")),
+            ...finalFilters
+          ];
+        }
+
+        if (!hasOrderBy) finalFilters.push(orderByFilter);
+
+        if (summaryId && !finalFilters.some(f => f.includes("eisApplicationSummary_Id"))) {
+          finalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
+        }
+
+      } else {
+        finalFilters = [...defaultStatusFilters, ...additionalFilters, orderByFilter];
+      }
+
+      if (startDate) finalFilters.push(`dateCreatedFrom: "${startDate}"`);
+      if (endDate) finalFilters.push(`dateCreatedTo: "${endDate}"`);
+
+      // Final safety: remove duplicates by argument name
+      finalFilters = finalFilters.filter(
+        (f, i, arr) =>
+          i === arr.findIndex(x => {
+            if (x.includes("applicationTypeIn") && f.includes("applicationTypeIn")) return true;
+            if (x.includes("statusIn") && f.includes("statusIn")) return true;
+            if (x.includes("orderBy") && f.includes("orderBy")) return true;
+            if (x.includes("organizationTypeIn") && f.includes("organizationTypeIn")) return true;
+            if (x.includes("associationTypeIn") && f.includes("associationTypeIn")) return true;
+            if (x.includes("dateCreatedFrom") && f.includes("dateCreatedFrom")) return true;
+            if (x.includes("dateCreatedTo") && f.includes("dateCreatedTo")) return true;
+            return x === f;
+          })
+      );
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_OFFICER) {
       this.setState({ displayVersion: showHistoryFilter });
       let defaultStatusFilters = [];
