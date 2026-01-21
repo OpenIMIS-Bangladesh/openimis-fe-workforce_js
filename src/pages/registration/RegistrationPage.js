@@ -242,7 +242,7 @@ const RegistrationPage = () => {
 
               <Button
                 fullWidth
-                onClick={() => (window.location.href = "/")}
+                onClick={() => {setStep(step - 1); setServerResponse({ status: "", message: null });}}
                 startIcon={<ArrowBackIcon />}
                 color="primary"
                 variant="text"

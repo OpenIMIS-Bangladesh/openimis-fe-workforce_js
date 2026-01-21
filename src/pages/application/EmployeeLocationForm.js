@@ -3,6 +3,7 @@ import { Grid, Box, Paper, Divider, Checkbox, FormControlLabel, FormHelperText }
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, useModulesManager, useHistory, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import CustomDetailedLocation from "../../components/application-forms/CustomDetailedLocation";
+import { useSelector, useDispatch } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -18,6 +19,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
   const history = useHistory();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
+  const locale = useSelector((state)=>state.core?.user?.i_user?.language)
 
   const [sameAsPresent, setSameAsPresent] = useState(false);
 
@@ -75,7 +77,7 @@ const EmployeeLocationForm = ({ handleChange, formData, errors, applicationId })
 
   const getDeathLabel = (labelKey) => {
     return formData.applicationType === "financialAssistance"
-      ? `${formatMessage("workforce.dead")} শ্রমিকের  ${formatMessage(labelKey)}`
+      ? `${formatMessage("workforce.dead")} ${formatMessage("workforce.worker.label")}  ${formatMessage(labelKey)}`
       : formatMessage(labelKey);
   };
 

@@ -1879,7 +1879,7 @@ function reducer(
       return dispatchMutationReq(state, action);
     }
     case "OTP_MUTATION_ERR":
-      return dispatchMutationErr(state, action);
+      return dispatchMutationErr(state,action);
     case "OTP_CREATE_OTP_RESP":
       return dispatchMutationResp(state, "createWorkforceOtp", action);
     case "OTP_UPDATE_OTP_RESP":

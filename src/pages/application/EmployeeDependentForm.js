@@ -45,6 +45,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
+  const locale = useSelector((state)=>state.core?.user?.i_user?.language)
 
   const normalizedDependents = useMemo(() => (Array.isArray(dependents) ? dependents : dependents ? [dependents] : []), [dependents]);
 
@@ -78,7 +79,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
   const getRelationAwareLabel = useCallback(
     (dependent, labelKey) => {
       return applicationType === "financialAssistance" && dependent?.relationType
-        ? `${formatMessage(dependent.relationType)}র ${formatMessage(labelKey)}`
+        ? `${formatMessage(dependent.relationType)}${locale==="en"?"'s":"র"} ${formatMessage(labelKey)}`
         : formatMessage(labelKey);
     },
     [applicationType, formatMessage]

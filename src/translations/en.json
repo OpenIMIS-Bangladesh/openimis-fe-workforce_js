@@ -707,6 +707,7 @@
     "workforce.previewDetails.educations":"Educational info of Self / Child",
     "workforce.previewDetails.employeeDependentInfo":"Employee Dependent Info",
     "workforce.previewDetails.dependent":"Dependent Info",
+    "workforce.previewDetails.eis.dependent":"Dependent Info",
     "workforce.previewDetails.metadata":"Needed info about application",
 
     "workforce.application.death.reason":"Death Reason",
@@ -724,6 +725,8 @@
 "workforce.application.deathReason.pneumonia": "Pneumonia",
 "workforce.application.deathReason.chronic": "Chronic Disease",
 "workforce.application.deathReason.OTHER_OPTION": "Others",
+
+"workforce.worker.label":"worker",
     
 
 
