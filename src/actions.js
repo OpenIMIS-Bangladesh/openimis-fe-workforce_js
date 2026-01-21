@@ -39,6 +39,16 @@ import {
 import { WORKFORCE_STATUS } from "./constants";
 
 
+function escapeQuotes(data) {
+  // Check if it's a string and needs escaping
+  if (typeof data === "string") {
+    return `"${data.replace(/"/g, "\\\"")}"`;
+  }
+  // If it's not a string, stringify it properly
+  return `"${JSON.stringify(data).replace(/"/g, "\\\"")}"`;
+}
+
+
 export function fetchOrganizationsSummary(mm, filters) {
   const projections = [
     "id",
@@ -3164,10 +3174,8 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
         beneficiaryId
         beneficiaryStatus
         remarriageOrDeathDate
-        closingReason
-        closingRemarks
-        holdReason
-        holdRemarks
+        reason
+        remarks
         lastLiveCheckDate
         liveCheckRemarks
         isDisbursed
@@ -3256,4 +3264,30 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
   `;
 
   return graphql(payload, "EIS_PAYMENT_PROCESS");
+}
+
+
+export function updateWorkforceEisBeneficiary(beneficiary) {
+  const mutation = `
+    mutation {
+      updateWorkforceEisBeneficiary(
+        beneficiaryId: "${beneficiary?.beneficiaryId??""}"
+        incrementAmount: "${beneficiary?.incrementAmount??""}"
+        incrementDate: "${beneficiary?.incrementDate??""}"
+        decrementAmount: "${beneficiary?.decrementAmount??""}"
+        decrementDate: "${beneficiary?.decrementDate??""}"
+        beneficiaryStatus: "${beneficiary?.beneficiaryStatus??""}"
+        reason: "${beneficiary?.reason??""}"
+        remarks: "${beneficiary?.remarks??""}"
+        remarriageOrDeathDate: "${beneficiary?.remarriageOrDeathDate??""}"
+        lastLiveCheckDate: "${beneficiary?.lastLiveCheckDate??""}"
+        liveCheckRemarks: "${beneficiary?.liveCheckRemarks??""}"
+        otherBeneficiaryData: ${beneficiary?.otherBeneficiaryData? escapeQuotes(beneficiary?.otherBeneficiaryData):""}
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "UPDATE_WORKFORCE_EIS_BENEFICIARY");
 }
