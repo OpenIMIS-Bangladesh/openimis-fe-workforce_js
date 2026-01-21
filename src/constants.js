@@ -46,6 +46,11 @@ export const ORGANIZATION_TYPE_NAME_EN = {
   eis:"Employee Injury Scheme"
 }
 
+export const REGISTRATION_ERROR_BN = {
+  phone_number_already_exists:"জাতীয় পরিচয়পত্র/জন্ম সনদ নম্বর ইতিমধ্যেই নিবন্ধিত",
+  login_name_already_exists:"ফোন নম্বর ইতিমধ্যে নিবন্ধিত",
+}
+
 export const WORKFORCE_COMPANY_STATUS = [
   "Draft",
   "Pending",

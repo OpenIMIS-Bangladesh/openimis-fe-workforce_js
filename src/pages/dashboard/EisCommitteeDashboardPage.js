@@ -214,7 +214,8 @@ const EisCommitteeDashboardPage = () => {
   const [data,setData]= useState()
   useEffect(() => {
      dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"eis"'])).then((res)=>{
-        const response = parseData(res?.payload?.data?.applicationsSummary)
+        console.log("hello from res",res)
+        const response = parseData(res?.payload?.data?.workforceApplicationSummary)
         console.log({response})
         setData(response)})
   }, []);

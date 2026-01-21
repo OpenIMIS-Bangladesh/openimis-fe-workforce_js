@@ -974,7 +974,8 @@
   "workforce.dependent.eligibility.btn":"Save All Dependents",
   "workforce.update.btn":"Update",
   "worforce.dependent.suffix":"'s",
-
+  "workforce.login_name_already_exists":"NID/BirthCertificate number already registered",
+  "workforce.phone_number_already_exists":"Phone number already registered",
 
   "workforce.accident.placeOfDeath.label": "Place of Death",
   "workforce.accident.dateOfDeath.label": "Date of Death",
