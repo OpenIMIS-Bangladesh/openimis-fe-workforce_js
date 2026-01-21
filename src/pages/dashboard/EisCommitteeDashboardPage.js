@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { FormattedMessage, useModulesManager } from "@openimis/fe-core";
+import { FormattedMessage, useModulesManager,parseData } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Grid,
@@ -211,18 +211,22 @@ const EisCommitteeDashboardPage = () => {
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
   const [selectedMenu, setSelectedMenu] = useState("pendingMeetingSheet"); // Default first menu
-  useEffect(() => {
-    return dispatch(
-      fetchSummaryApplications(modulesManager, ['organizationType:"eis"'])
-    );
-  }, []);
+  const [data,setData]= useState()
+  useEffect(async() => {
+     await dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"eis"'])).then((res)=>{
+        console.log("hello from res",res)
+        const response = parseData(res?.payload?.data?.workforceApplicationSummary?.edges)
+        console.log({response})
+        setData(response)}
+      )
+  }, [dispatch,modulesManager]);
 
-  const data = useSelector(
-    (state) => state.workforce[`applicationsSummary`] ?? []
-  );
+  // const data = useSelector(
+  //   (state) => state.workforce[`applicationsSummary`] ?? []
+  // );
 
-  const pendingSummaryData = data.filter(d => d.status === "forward_to_comiitee");
-  const sentSummaryData = data.filter(d => d.status === "forward_to_dg" || d.status ==='forward_to_director');
+  const pendingSummaryData = data?.filter(d => d.status === "forward_to_comiitee");
+  const sentSummaryData = data?.filter(d => d.status === "forward_to_dg" || d.status ==='forward_to_director');
 
   const renderContent = () => {
     switch (selectedMenu) {

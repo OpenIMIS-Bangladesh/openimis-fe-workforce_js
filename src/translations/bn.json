@@ -53,9 +53,6 @@
   "workforce.employee.accident.info.disabilityPerSchedule": "অক্ষমতা (উপার্জন হ্রাস) % বিএলএ সূচি ১ অনুযায়ী",
 
 
-
-
-
   "workforce.employee.workforce_employer": "নিয়োগকারী কোম্পানির নাম",
   "workforce.employee.workforce_office": "অফিস",
   "workforce.employee.workforce_factory": "শ্রমিকের কর্মরত প্রতিষ্ঠান / কারখানার নাম",
@@ -118,6 +115,7 @@
   "workforce.employee.application.phone": "ফোন নম্বর",
   "workforce.employee.application.applicationType": "আবেদনের ধরন",
   "workforce.employee.application.organizationType": "সংগঠনের ধরন",
+  "workforce.employee.application.associationType": "অ্যাসোসিয়েশনের ধরন",
   "workforce.employee.application.email": "ই-মেইল",
   "workforce.employee.application.occupation": "পেশা",
   "workforce.employee.application.gender": "লিঙ্গ",
@@ -523,6 +521,8 @@
   "resetFilterTooltip": "ফিল্টার রিসেট করুন",
   "refreshFilterTooltip": "অনুসন্ধান করুন",
   "workforce.application.submittedBy": "জমাদানকারী",
+  "workforce.application.startDate": "শুরুর তারিখ",
+  "workforce.application.endDate": "শেষ তারিখ",
   "workforce.association.name.en": "নাম (ইংরেজি)",
   "workforce.association.shortName.en": "নাম (ইংরেজি)",
   "workforce.association.name.bn": "নাম (বাংলা)",
@@ -551,6 +551,7 @@
 
   "workforce.previewDetails.dependent":"ওয়ারিশদের তথ্য",
   "workforce.previewDetails.eis.dependent":"পৌষ্যদের তথ্য",
+  "workforce.worker.label":"শ্রমিকের",
 
   "workforce.application.death.reason":"মৃত্যুর কারণ নির্দিষ্ট করুন",
   "workforce.application.other.death.reason":"মৃত্যুর কারণ নির্দিষ্ট করুন ",
@@ -862,9 +863,20 @@
   "workforce.dependent.eis.eligible": "যোগ্য",
   "workforce.dependent.eis.inEligible": "অযোগ্য",
 
+  "workforce.dependent.eligibility.btn":"সমস্ত নির্ভরশীল সংরক্ষণ করুন",
+
   "workforce.accident.mainType.label": "দুর্ঘটনার ধরন",
   "workforce.employee.application.eisApproval.signature":"ই.আই.এস. অনুমোদনের স্বাক্ষর",
   "workforce.application.before.association.startDate.error":"আবদেনে উল্লেখিত দূর্ঘটনার তারিখ কারখানার সংশ্লিষ্ট এসোসিয়েশনের শুরুর তারিখ হতে পরে হতে পারবে না।",
+  "workforce.application.before.eis.startDate.error":"২১ জুন ২০২২ এর আগে সংঘটিত কোনো ঘটনার জন্য EIS পাইলট প্রকল্পে আবেদন গ্রহণযোগ্য নয়।",
+  "workforce.accident.hospitalInfo.title":"হাসপাতালের তথ্য",
+"workforce.accident.addHospital.btn":"হাসপাতালের তথ্য যোগ করুন",
+"workforce.add.hospital.info":"একাধিক হাসপাতালে চিকিৎসা গ্রহণ করলে এখানে ক্লিক করুন",
+
+  "workforce.update.btn":"আপডেট",
+  "worforce.dependent.suffix":"র",
+  "workforce.login_name_already_exists":"জাতীয় পরিচয়পত্র/জন্ম সনদ নম্বর ইতিমধ্যেই নিবন্ধিত",
+  "workforce.phone_number_already_exists":"ফোন নম্বর ইতিমধ্যে নিবন্ধিত",
 
    "profile.mainMenu": "প্রোফাইল",
   "profile.menu.changePassword": "পাসওয়ার্ড পরিবর্তন করুন",

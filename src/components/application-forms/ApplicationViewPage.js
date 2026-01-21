@@ -575,6 +575,7 @@ const ApplicationViewPage = ({
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
   const [openCompensationInfoModal, setOpenCompensationInfoModal] = useState(false);
   const [openSalaryButton, setOpenSalaryButton] = useState(false);
+  const [loading,setLoading] = useState(false)
 
   // --- Eligibility State ---
   const [eligibilityMap, setEligibilityMap] = useState({});
@@ -608,6 +609,7 @@ const ApplicationViewPage = ({
   };
 
   const saveVerification = (sectionKey) => {
+    setLoading(true)
     const config = VERIFICATION_FIELD_MAP[sectionKey];
     if (!config) return;
 
@@ -621,7 +623,7 @@ const ApplicationViewPage = ({
 
     console.log("hello from verification update", payload);
 
-    dispatch(updateApplication(payload, `Update verification for ${sectionKey}`));
+    dispatch(updateApplication(payload, `Update verification for ${sectionKey}`)).then(()=>setLoading(false))
     // Optional: reload or show toast
     // .then(() => window.location.reload());
   };
@@ -640,6 +642,7 @@ const ApplicationViewPage = ({
 
   // 2. Bulk Save Function
   const handleSaveAllDependents = () => {
+    setLoading(true)
     const currentDependents = application?.workforceEmployeeDependentApplication || [];
 
     const formattedDependentsList = currentDependents.map((dep) => {
@@ -681,7 +684,7 @@ const ApplicationViewPage = ({
       employeeDependentInfo: JSON.stringify(formattedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
     };
     console.log("update application payload", payload);
-    dispatch(updateApplication(payload, "update workforce dependent info")).then(() => window.location.reload());
+    dispatch(updateApplication(payload, "update workforce dependent info")).then(() => {setLoading(false);window.location.reload()});
   };
 
   const hasUnsavedChanges = Object.keys(eligibilityMap).length > 0 || Object.keys(remarksMap).length > 0;
@@ -921,8 +924,8 @@ const ApplicationViewPage = ({
                           ? "Select eligibility for dependents above, then click save."
                           : "উপরের নির্ভরশীলদের জন্য যোগ্যতা নির্বাচন করুন, তারপর সংরক্ষণ করুন এ ক্লিক করুন।"}
                       </Typography>
-                      <Button variant="contained" color="primary" onClick={handleSaveAllDependents} disabled={!hasUnsavedChanges}>
-                        {language === "en" ? "Save All Dependents" : "সমস্ত নির্ভরশীল সংরক্ষণ করুন"}
+                      <Button variant="contained" color="primary" onClick={handleSaveAllDependents} disabled={!hasUnsavedChanges || loading}>
+                        {loading ?<FormattedMessage id="core.table.resultsLoading" />:<FormattedMessage id="workforce.dependent.eligibility.btn"/>}
                       </Button>
                     </Box>
                   )}
@@ -986,8 +989,8 @@ const ApplicationViewPage = ({
                         </Grid>
 
                         <Grid item xs={12} sm={2}>
-                          <Button variant="contained" color="primary" fullWidth onClick={() => saveVerification(key)}>
-                            {language === "en" ? "Update" : "আপডেট"}
+                          <Button variant="contained" color="primary" fullWidth onClick={() => saveVerification(key)} disabled={loading}>
+                            {loading ? <FormattedMessage id="core.table.resultsLoading" />:<FormattedMessage id="workforce.update.btn"/>}
                           </Button>
                         </Grid>
                       </Grid>

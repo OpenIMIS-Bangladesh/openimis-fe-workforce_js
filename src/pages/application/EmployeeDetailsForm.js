@@ -100,7 +100,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   readOnly={false}
                   required
                 />
-                {errors.rdmp && <FormHelperText error>{formatMessage(errors?.rdmp)}</FormHelperText>}
+                {errors.rdmp && <FormHelperText error>{<FormattedMessage id={errors?.rdmp}/>}</FormHelperText>}
               </Grid>
 
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>

@@ -6,11 +6,16 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import OtpInput from "react-otp-input";
 import { createWorkforceOtp, createWorkforceUser, fetchWorkforceOtp } from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
+import CustomSnackbar from "../../components/shared/CustomSnackbar";
+// import { REGISTRATION_ERROR_BN } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     position: "absolute",
-    top: 0, bottom: 0, left: 0, right: 0,
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
     margin: "auto",
     display: "flex",
     justifyContent: "center",
@@ -42,15 +47,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+ const REGISTRATION_ERROR_BN = {
+  phone_number_already_exists:"জাতীয় পরিচয়পত্র/জন্ম সনদ নম্বর ইতিমধ্যেই নিবন্ধিত",
+  login_name_already_exists:"ফোন নম্বর ইতিমধ্যে নিবন্ধিত",
+}
+
 const RegistrationPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
-  
+
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setSubmitting] = useState(false);
+  const [alertMessage, setAlertMessage] = useState({
+    openErrorModal: false,
+    errorMessage: "",
+  });
   const internalId = useSelector((state) => state.workforce?.mutation?.id);
 
   const [formData, setFormData] = useState({
@@ -77,11 +91,11 @@ const RegistrationPage = () => {
 
     if (!formData.firstNameBn) newErrors.firstNameBn = "নাম (বাংলা) আবশ্যক";
     if (!formData.firstNameEn) newErrors.firstNameEn = "Name (English) is required";
-    
+
     if (![10, 13, 17].includes(idVal.length)) {
       newErrors.nid = "এনআইডি অথবা জন্ম নিবন্ধন ১০, ১৩ অথবা ১৭ ডিজিট হতে হবে";
     }
-    
+
     if (mobVal.length !== 11) {
       newErrors.phoneNumber = "মোবাইল নম্বর ১১ ডিজিট হতে হবে";
     }
@@ -100,10 +114,26 @@ const RegistrationPage = () => {
         firstNameEn: formData.firstNameEn,
         mobile: formData.mobile,
       };
-      
+
       try {
-        await dispatch(createWorkforceOtp(payload, `Created Workforce Office ${payload.firstNameEn}`));
-        setStep(2);
+        dispatch(createWorkforceOtp(payload, `Created Workforce Office ${payload.firstNameEn}`))
+          .then((res) => {
+            console.log("hello", res);
+            // Add .trim() to remove extra spaces
+            const resErrMsg = res?.payload?.data?.createWorkforceOtp?.error?.trim();
+            const isInternalId = res?.payload?.data?.createWorkforceOtp?.internalId;
+            const errorMessage = REGISTRATION_ERROR_BN[resErrMsg]
+            console.log({errorMessage})
+            if (isInternalId === null) {
+              setAlertMessage({
+                openErrorModal: true,
+                errorMessage: errorMessage,
+              });
+            } else {
+              setStep(2);
+            }
+          })
+          .catch((err) => console.log("hello2", err));
       } catch (e) {
         setServerResponse({ status: "ERROR", message: "OTP পাঠাতে সমস্যা হয়েছে" });
       } finally {
@@ -141,13 +171,7 @@ const RegistrationPage = () => {
         <Paper className={classes.paper} elevation={3}>
           {/* Original Back Button Layout */}
           <Box display="flex" justifyContent="flex-start">
-            <Button 
-              startIcon={<ArrowBackIcon />} 
-              href={"https://eis-site-stage.skydigitalbd.com/"} 
-              variant="text" 
-              color="primary" 
-              style={{ padding: "3px" }}
-            >
+            <Button startIcon={<ArrowBackIcon />} href={"https://eis-site-stage.skydigitalbd.com/"} variant="text" color="primary" style={{ padding: "3px" }}>
               Back
             </Button>
           </Box>
@@ -158,7 +182,6 @@ const RegistrationPage = () => {
 
           <form onSubmit={(e) => e.preventDefault()}>
             <Box mt={2} className={classes.inputContainer}>
-              
               {step === 1 && (
                 <>
                   <Box style={{ padding: 2 }}>
@@ -242,7 +265,10 @@ const RegistrationPage = () => {
 
               <Button
                 fullWidth
-                onClick={() => (window.location.href = "/")}
+                onClick={() => {
+                  setStep(step - 1);
+                  setServerResponse({ status: "", message: null });
+                }}
                 startIcon={<ArrowBackIcon />}
                 color="primary"
                 variant="text"
@@ -253,6 +279,13 @@ const RegistrationPage = () => {
             </Box>
           </form>
         </Paper>
+        <CustomSnackbar
+          open={alertMessage.openErrorModal}
+          onClose={() => setAlertMessage({ openErrorModal: false, errorMessage: "" })}
+          type="error"
+          message={alertMessage?.errorMessage}
+          duration={5000}
+        />
       </div>
     </>
   );

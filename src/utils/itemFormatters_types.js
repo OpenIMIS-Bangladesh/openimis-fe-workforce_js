@@ -813,6 +813,7 @@ export const itemFormattersSectionAdmin = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
+    (application) => application?.associationType,
     (application) => application?.workforceEmployee?.nid,
     (application) =>application?.applicationReceiveDate 
         ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",

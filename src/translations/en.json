@@ -243,6 +243,7 @@
     "workforce.employee.application.phone": "Phone",
     "workforce.employee.application.applicationType": "Application Type",
     "workforce.employee.application.organizationType": "Organization Type",
+    "workforce.employee.application.associationType": "Association Type",
     "workforce.employee.application.email": "E-mail",
     "workforce.employee.application.occupation": "Occupation",
     "workforce.employee.application.gender": "Gender",
@@ -691,6 +692,8 @@
     "resetFilterTooltip": "Reset Filters",
     "refreshFilterTooltip": "Search",
     "workforce.application.submittedBy": "Submitted By",
+    "workforce.application.startDate": "Start Date",
+    "workforce.application.endDate": "End Date",
 
     "workforce.previewDetails.personalInfo": "Personal Info",
     "workforce.previewDetails.statusInfo": "Status Info",
@@ -704,6 +707,7 @@
     "workforce.previewDetails.educations":"Educational info of Self / Child",
     "workforce.previewDetails.employeeDependentInfo":"Employee Dependent Info",
     "workforce.previewDetails.dependent":"Dependent Info",
+    "workforce.previewDetails.eis.dependent":"Dependent Info",
     "workforce.previewDetails.metadata":"Needed info about application",
 
     "workforce.application.death.reason":"Death Reason",
@@ -721,6 +725,8 @@
 "workforce.application.deathReason.pneumonia": "Pneumonia",
 "workforce.application.deathReason.chronic": "Chronic Disease",
 "workforce.application.deathReason.OTHER_OPTION": "Others",
+
+"workforce.worker.label":"worker",
     
 
 
@@ -960,8 +966,16 @@
   "workforce.processing":"Loading ...",
   "workforce.employee.application.eisApproval.signature":"Eis Approval Signature",
   "workforce.application.before.association.startDate.error":"The date of the accident can't be later than the start date of the relevant association of the factory.",
+  "workforce.application.before.eis.startDate.error":"Applications are not allowed for incidents occurring before 21 June 2022 (EIS Pilot start date).",
+  "workforce.accident.hospitalInfo.title":"Hospital Info",
+"workforce.accident.addHospital.btn":"Add Hospital Info",
+"workforce.add.hospital.info":"If treated at more than one hospital, click here",
 
-
+  "workforce.dependent.eligibility.btn":"Save All Dependents",
+  "workforce.update.btn":"Update",
+  "worforce.dependent.suffix":"'s",
+  "workforce.login_name_already_exists":"NID/BirthCertificate number already registered",
+  "workforce.phone_number_already_exists":"Phone number already registered",
 
   "workforce.accident.placeOfDeath.label": "Place of Death",
   "workforce.accident.dateOfDeath.label": "Date of Death",

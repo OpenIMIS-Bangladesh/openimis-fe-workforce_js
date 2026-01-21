@@ -808,9 +808,9 @@ export function getRelationForApi(depObj, workerBirthDate) {
   const marital = depObj.maritalStatus;
   const disability = depObj.isDisabled;
 
-  if (relation !== "workforce.relation.wife" && age < 18 && marital === "workforce.marital_status.married") {
-    return false;
-  }
+  // if (relation !== "workforce.relation.wife" && age < 18 && marital === "workforce.marital_status.married") {
+  //   return false;
+  // }
 
   if (relation === "workforce.relation.wife") {
     return age >= 16 && marital === "workforce.marital_status.widow";
@@ -978,9 +978,9 @@ export const getRelationString = (depObj) => {
 }
 
 export const isEisPath = () => {
-  // if (typeof window !== "undefined") {
-  //   return window.location.href.includes("eis");
-  // }
-  // return false; // fallback if window is not defined (SSR)
-  return true;
+  if (typeof window !== "undefined") {
+    return window.location.href.includes("eis");
+  }
+  return false; // fallback if window is not defined (SSR)
+  // return true;
 };

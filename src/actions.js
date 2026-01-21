@@ -1332,6 +1332,9 @@ export function createWorkforceOtp(workforceOtp, clientMutationLabel) {
     status: "${WORKFORCE_STATUS.ACTIVE}"
   ) {
     internalId
+    error
+    message
+    code
   }
 }`;
   // const mutation = formatMutation(

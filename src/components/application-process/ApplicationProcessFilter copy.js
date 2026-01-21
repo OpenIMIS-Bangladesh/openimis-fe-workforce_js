@@ -14,7 +14,7 @@ import {
   formatMessage,
   FormattedMessage
 } from "@openimis/fe-core";
-import { MODULE_NAME, cfStatusOptions,blwfStatusOptions,eisStatusOptions,cfApplicationTypeOptions,blwfApplicationTypeOptions,eisApplicationTypeOptions,eisAssociationOptions,cfAssociationOptions,submittedByOptions,WORKFORCE_USER_TYPE } from "../../constants";
+import { MODULE_NAME, statusOptions,applicationTypeOptions,submittedByOptions,WORKFORCE_USER_TYPE } from "../../constants";
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
   dialogContent: theme.dialog.content,
@@ -26,7 +26,7 @@ const styles = (theme) => ({
   },
   paperDivider: theme.paper.divider,
 });
-import { getUserTypeFromRights, isEmptyObject,isEisPath } from "../../utils/utils";
+import { getUserTypeFromRights, isEmptyObject } from "../../utils/utils";
 
 const APPLICATION_PROCESS_FILTER_CONTRIBUTION_KEY =
   "application.process.Filter";
@@ -63,44 +63,10 @@ class ApplicationProcessFilter extends Component {
     this.props.onChangeFilters(filters);
     this.props.setShowHistoryFilter(value);
   };
- 
+
   render() {
     const { classes, filters, onChangeFilters } = this.props;
     const userType = getUserTypeFromRights(this.props.userRights);
-
-    let applicationTypeOptions;
-    let organizationTypeIn;
-
-    const type = userType?.toLowerCase() || "";
-
-    if (isEisPath()) {
-      organizationTypeIn = "eis";
-      applicationTypeOptions = eisApplicationTypeOptions;
-    } else if (type.includes("blwf")) {
-      organizationTypeIn = "blwf";
-      applicationTypeOptions = blwfApplicationTypeOptions;
-    } else {
-      organizationTypeIn = "cf";
-      applicationTypeOptions = cfApplicationTypeOptions;
-    }
-
-    let asociationOptions;
-    if (isEisPath()) {
-      asociationOptions = eisAssociationOptions;
-    } else {
-      asociationOptions = cfAssociationOptions;
-    }
-
-    let statusOptions;
-    if (isEisPath()) {
-      statusOptions = eisStatusOptions;
-    } else if (type.includes("blwf")) {
-      statusOptions = blwfStatusOptions;
-    } else {
-      statusOptions = cfStatusOptions;
-    }
-
-
     return (
       <Grid container className={classes.form}>
       <ControlledField
@@ -128,92 +94,16 @@ class ApplicationProcessFilter extends Component {
                   ])
                 }
               >
-               {applicationTypeOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-
+                {applicationTypeOptions.map((opt) => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
           </Grid>
         }
       />
-    {userType.toLowerCase().includes("eis") && (
-    <>
-      <ControlledField
-        module={MODULE_NAME}
-        id="workforce.employee.application.associationType"
-        field={
-          <Grid item xs={3} className={classes.item}>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel>
-                <FormattedMessage
-                  id="workforce.employee.application.associationType"
-                  defaultMessage="Application Type"
-                />
-              </InputLabel>
-              <Select
-                label="workforce.employee.application.associationType"
-                value={this._filterValue("associationType") || ""}
-                onChange={(e) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "associationType",
-                      value: e.target.value,
-                      filter: `associationTypeIn: ["${e.target.value}"]`,
-                    },
-                  ])
-                }
-              >
-               {asociationOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-
-              </Select>
-            </FormControl>
-          </Grid>
-        }
-      />
-      <Grid item xs={3} className={classes.item}>
-        <PublishedComponent
-          pubRef="workforce.DatePicker"
-          label="workforce.application.startDate"
-          value={this._filterValue("dateCreatedFrom") || ""}
-          onChange={(v) =>
-            this.debouncedOnChangeFilter([
-              {
-                id: "dateCreatedFrom",
-                value: v,
-                filter: `dateCreatedFrom: "${v}"`,
-              },
-            ])
-          }
-          readOnly={false}
-        />
-      </Grid>
-
-      <Grid item xs={3} className={classes.item}>
-        <PublishedComponent
-          pubRef="workforce.DatePicker"
-          label="workforce.application.endDate"
-          value={this._filterValue("dateCreatedTo") || ""}
-          onChange={(v) =>
-            this.debouncedOnChangeFilter([
-              {
-                id: "dateCreatedTo",
-                value: v,
-                filter: `dateCreatedTo: "${v}"`,
-              },
-            ])
-          }
-          readOnly={false}
-        />
-      </Grid>
-      </>
-    )}
        <ControlledField
         module={MODULE_NAME}
         id="workforce.employee.application.status"
