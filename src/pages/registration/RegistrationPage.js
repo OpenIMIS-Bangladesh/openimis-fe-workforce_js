@@ -7,7 +7,7 @@ import OtpInput from "react-otp-input";
 import { createWorkforceOtp, createWorkforceUser, fetchWorkforceOtp } from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
-import { REGISTRATION_ERROR_BN } from "../../constants";
+// import { REGISTRATION_ERROR_BN } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -46,6 +46,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+
+ const REGISTRATION_ERROR_BN = {
+  phone_number_already_exists:"জাতীয় পরিচয়পত্র/জন্ম সনদ নম্বর ইতিমধ্যেই নিবন্ধিত",
+  login_name_already_exists:"ফোন নম্বর ইতিমধ্যে নিবন্ধিত",
+}
 
 const RegistrationPage = () => {
   const classes = useStyles();
@@ -116,10 +121,12 @@ const RegistrationPage = () => {
             console.log("hello", res);
             const resErrMsg = res?.payload?.data?.createWorkforceOtp?.error;
             const isInternalId = res?.payload?.data?.createWorkforceOtp?.internalId;
+            const errorMessage = REGISTRATION_ERROR_BN[resErrMsg]
+            console.log({errorMessage})
             if (isInternalId === null) {
               setAlertMessage({
                 openErrorModal: true,
-                errorMessage: resErrMsg,
+                errorMessage: errorMessage,
               });
             } else {
               setStep(2);
@@ -275,7 +282,7 @@ const RegistrationPage = () => {
           open={alertMessage.openErrorModal}
           onClose={() => setAlertMessage({ openErrorModal: false, errorMessage: "" })}
           type="error"
-          message={<FormattedMessage id={REGISTRATION_ERROR_BN[alertMessage?.errorMessage]} />}
+          message={<FormattedMessage id={alertMessage?.errorMessage} />}
           duration={5000}
         />
       </div>

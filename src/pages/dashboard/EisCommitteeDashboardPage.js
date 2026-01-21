@@ -212,13 +212,14 @@ const EisCommitteeDashboardPage = () => {
   const modulesManager = useModulesManager();
   const [selectedMenu, setSelectedMenu] = useState("pendingMeetingSheet"); // Default first menu
   const [data,setData]= useState()
-  useEffect(() => {
-     dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"eis"'])).then((res)=>{
+  useEffect(async() => {
+     await dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"eis"'])).then((res)=>{
         console.log("hello from res",res)
-        const response = parseData(res?.payload?.data?.workforceApplicationSummary)
+        const response = res?.payload?.data?.workforceApplicationSummary?.edges
         console.log({response})
-        setData(response)})
-  }, []);
+        setData(response)}
+      )
+  }, [dispatch,modulesManager]);
 
   // const data = useSelector(
   //   (state) => state.workforce[`applicationsSummary`] ?? []
