@@ -39,6 +39,7 @@ const getMyCookie = (name) =>
   }, null);
 
 export default function LoginForm() {
+  const [lang, setLang] = useState("en");
   const classes = useStyles();
   const [credentials, setCredentials] = useState({});
   const [mobileNumber, setMobileNumber] = useState("");
@@ -121,7 +122,7 @@ export default function LoginForm() {
     // ✅ Only send OTP if user verified reCAPTCHA
     const sendOtp = async () => {
         if (!recaptchaToken) {
-        alert("অনুগ্রহ করে 'আমি রোবট নই' চেকবক্সটি টিক দিন।");
+        alert(lang === "bn" ? "অনুগ্রহ করে 'আমি রোবট নই' চেকবক্সটি টিক দিন।" : "Please tick the 'I am not a robot' checkbox.");
         return;
         }
 
@@ -167,7 +168,7 @@ export default function LoginForm() {
         <Grid item style={{ marginTop: "1rem" }}>
           <TextInput
             required
-            label="মোবাইল নাম্বার"
+            label={lang === "bn" ? "মোবাইল নাম্বার" : "Mobile Number"}
             fullWidth
             defaultValue=""
             onChange={(mobileNumber) => setInput("mobile_number", mobileNumber)}
@@ -186,7 +187,7 @@ export default function LoginForm() {
           <>
             <Grid item style={{ marginTop: "1rem" }}>
               <InputLabel required fullWidth shrink style={{ marginBottom: 8 }}>
-                ওটিপি কোড
+                {lang === "bn" ? "ওটিপি কোড" : "OTP Code"}
               </InputLabel>
               <OtpInput
                 value={credentials.password}
@@ -206,7 +207,7 @@ export default function LoginForm() {
                 variant="contained"
                 onClick={onSubmit}
               >
-                লগইন
+                {lang === "bn" ? "লগইন করুন" : "Login"}
               </Button>
             </Grid>
           </>
@@ -219,7 +220,7 @@ export default function LoginForm() {
               variant="contained"
               onClick={sendOtp}
             >
-              ওটিপি প্রেরণ করুন
+              {lang === "bn" ? "ওটিপি পাঠান" : "Send OTP"}
             </Button>
           </Grid>
         )}

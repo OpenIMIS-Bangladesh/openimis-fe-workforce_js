@@ -24,46 +24,59 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 export default function LoginHeader() {
+    const [lang, setLang] = useState("en");
     const classes = useStyles();
     return (
         <>
-        <Box display="flex" justifyContent="flex-start" >
-                <Button startIcon={<ArrowBackIcon />} href={isEisPath()?"https://eis-site-stage.skydigitalbd.com/":"https://cf-site-stage.skydigitalbd.com/"} variant="text" color="primary" style={{padding:"3px"}}>
-                  Back
+            <Box display="flex" justifyContent="flex-start" >
+                <Button startIcon={<ArrowBackIcon />} href={isEisPath() ? "https://eis-site-stage.skydigitalbd.com/" : "https://cf-site-stage.skydigitalbd.com/"} variant="text" color="primary" style={{ padding: "3px" }}>
+                    {lang === "bn" ? "পেছনে যান" : "Back"}
                 </Button>
-              </Box>
-        <Grid item container direction="row" alignItems="center" justifyContent="center">
-            <img className={classes.logo} src={"/api/workforce/logo"} />
-            <>
-                <div>
-                    <Box
-                        pl={2}
-                        fontWeight="fontWeightBold"
-                        fontSize="h6.fontSize"
-                        textAlign="center"
-                    >
-                        শ্রম ও কর্মসংস্থান মন্ত্রণালয়
-                    </Box>
+            </Box>
+            <Box display="flex" justifyContent="flex-end" mt={-4}>
+                <Button variant="primary" color="primary" style={{ padding: "3px" }} onClick={() => setLang(lang == "bn" ? "en" : "bn")}>
+                    {lang == "bn" ? "বাংলা" : "English"}
+                </Button>
+            </Box>
+            <Grid item container direction="row" alignItems="center" justifyContent="center">
+                <img className={classes.logo} src={"/api/workforce/logo"} />
+                <>
+                    <div>
+                        <Box
+                            pl={2}
+                            fontWeight="fontWeightBold"
+                            fontSize="h6.fontSize"
+                            textAlign="center"
+                        >
+                            {lang === "bn" ? "শ্রম ও কর্মসংস্থান মন্ত্রণালয়" : "Ministry of Labour and Employment"}
+                        </Box>
 
-                    <Divider
-                        style={{
-                            flex: '1 1 0%', // Shorthand for flex-grow, flex-shrink, flex-basis
-                            marginTop: '1rem',
-                            marginBottom: '1rem',
-                            background: '#006273'
-                        }}
-                    />
-                    <Box
-                        pl={2}
-                        fontWeight="fontWeightBold"
-                        fontSize="h6.fontSize"
-                        textAlign="center" /* Make sure all props are complete */
-                    >
-                     { isEisPath()? "ই.আই.এস. ম্যানেজমেন্ট সিস্টেম":  "শ্রমিক কল্যাণ সহায়তার আবেদন ব্যবস্থাপনা সিস্টেম"}
-                    </Box>
-                </div>
-            </>
-        </Grid>
+                        <Divider
+                            style={{
+                                flex: '1 1 0%', // Shorthand for flex-grow, flex-shrink, flex-basis
+                                marginTop: '1rem',
+                                marginBottom: '1rem',
+                                background: '#006273'
+                            }}
+                        />
+                        <Box
+                            pl={2}
+                            fontWeight="fontWeightBold"
+                            fontSize="h6.fontSize"
+                            textAlign="center" /* Make sure all props are complete */
+                        >
+                            {
+                                isEisPath()
+                                    ? (lang === "bn" ? "ই.আই.এস. ম্যানেজমেন্ট সিস্টেম" : "EIS Management System")
+                                    : (lang === "bn"
+                                        ? "শ্রমিক কল্যাণ সহায়তার আবেদন ব্যবস্থাপনা সিস্টেম"
+                                        : "Worker Welfare Assistance Application Management System")
+                            }
+
+                        </Box>
+                    </div>
+                </>
+            </Grid>
         </>
-        )
+    )
 }

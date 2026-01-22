@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const RegistrationButton = () => {
+  const [lang, setLang] = useState("en");
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();
@@ -43,8 +44,8 @@ const RegistrationButton = () => {
 
   return (
     <Box className={classes.container}>
-      <Typography varient="p" className={classes.title}><FormattedMessage module="workforce" id={"workforce.registration.desclaimer"} /></Typography>
-      <Button className={classes.inlineButton}  onClick={redirectToRegistrationPage}><FormattedMessage module="workforce" id={"workforce.register.button"} /></Button>
+      <Typography varient="p" className={classes.title}><FormattedMessage module="workforce" id={lang === "bn" ? "workforce.registration.desclaimer" : "New here? Register today!"} /></Typography>
+      <Button className={classes.inlineButton}  onClick={redirectToRegistrationPage}><FormattedMessage module="workforce" id={lang === "bn" ? "workforce.register.button" : "Register"} /></Button>
     </Box>
   );
 };
