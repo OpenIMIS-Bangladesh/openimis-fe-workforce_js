@@ -280,7 +280,7 @@ const RegistrationPage = () => {
               <Button
                 fullWidth
                 onClick={() => {
-                  setStep(step - 1);
+                  step==1? window.location.href='/': setStep(step - 1);
                   setServerResponse({ status: "", message: null });
                 }}
                 startIcon={<ArrowBackIcon />}
