@@ -214,7 +214,7 @@ const RegistrationPage = () => {
                     <TextInput
                       id="nid"
                       required
-                      label="জাতীয় পরিচয়পত্র (এনআইডি) / জন্ম সনদ নম্বর (ইউজারনেম)"
+                      label="জাতীয় পরিচয়পত্র (এনআইডি) / জন্ম সনদ নম্বর"
                       fullWidth
                       value={formData.NID_BirthCertificate}
                       onChange={(value) => handleInputChange("NID_BirthCertificate")(value.replace(/\D/g, ""))}
@@ -227,7 +227,7 @@ const RegistrationPage = () => {
                     <TextInput
                       id="phoneNumber"
                       required
-                      label="মোবাইল নম্বর"
+                      label="মোবাইল নম্বর (ইউজারনেম)"
                       fullWidth
                       value={formData.mobile}
                       onChange={(value) => handleInputChange("mobile")(value.replace(/\D/g, ""))}
