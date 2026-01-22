@@ -9,6 +9,8 @@ import { useSelector, useDispatch } from "react-redux";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
 // import { REGISTRATION_ERROR_BN } from "../../constants";
 
+
+
 const useStyles = makeStyles((theme) => ({
   container: {
     position: "absolute",
@@ -47,12 +49,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
- const REGISTRATION_ERROR_BN = {
+
+const REGISTRATION_ERROR_BN = {
   phone_number_already_exists:"ফোন নম্বর ইতিমধ্যে নিবন্ধিত",
   login_name_already_exists:"জাতীয় পরিচয়পত্র/জন্ম সনদ নম্বর ইতিমধ্যেই নিবন্ধিত",
 }
+const REGISTRATION_ERROR_EN = {
+  phone_number_already_exists:"Phone number already exists",
+  login_name_already_exists:"NID/Birth Certificate number already exists",
+}
 
 const RegistrationPage = () => {
+  const [lang, setLang] = useState("en");
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
@@ -89,15 +97,15 @@ const RegistrationPage = () => {
     const idVal = (formData.NID_BirthCertificate || "").toString().trim();
     const mobVal = (formData.mobile || "").toString().trim();
 
-    if (!formData.firstNameBn) newErrors.firstNameBn = "নাম (বাংলা) আবশ্যক";
+    if (!formData.firstNameBn) newErrors.firstNameBn = lang=="bn" ? "নাম (বাংলা) আবশ্যক" : "Name (Bangla) is required";
     if (!formData.firstNameEn) newErrors.firstNameEn = "Name (English) is required";
 
     if (![10, 13, 17].includes(idVal.length)) {
-      newErrors.nid = "এনআইডি অথবা জন্ম নিবন্ধন ১০, ১৩ অথবা ১৭ ডিজিট হতে হবে";
+      newErrors.nid = lang=="bn" ? "এনআইডি অথবা জন্ম নিবন্ধন ১০, ১৩ অথবা ১৭ ডিজিট হতে হবে" : "NID or Birth Certificate must be 10, 13 or 17 digits";
     }
 
     if (mobVal.length !== 11) {
-      newErrors.phoneNumber = "মোবাইল নম্বর ১১ ডিজিট হতে হবে";
+      newErrors.phoneNumber = lang=="bn" ? "মোবাইল নম্বর ১১ ডিজিট হতে হবে" : "Mobile number must be 11 digits";
     }
 
     setErrors(newErrors);
@@ -122,7 +130,7 @@ const RegistrationPage = () => {
             // Add .trim() to remove extra spaces
             const resErrMsg = res?.payload?.data?.createWorkforceOtp?.error?.trim();
             const isInternalId = res?.payload?.data?.createWorkforceOtp?.internalId;
-            const errorMessage = REGISTRATION_ERROR_BN[resErrMsg]
+            const errorMessage = lang === "bn" ? REGISTRATION_ERROR_BN[resErrMsg] : REGISTRATION_ERROR_EN[resErrMsg];
             console.log({errorMessage})
             if (isInternalId === null) {
               setAlertMessage({
@@ -135,7 +143,7 @@ const RegistrationPage = () => {
           })
           .catch((err) => console.log("hello2", err));
       } catch (e) {
-        setServerResponse({ status: "ERROR", message: "OTP পাঠাতে সমস্যা হয়েছে" });
+        setServerResponse({ status: "ERROR", message: lang=="bn" ? "OTP পাঠাতে সমস্যা হয়েছে" : "Problem sending OTP" });
       } finally {
         setSubmitting(false);
       }
@@ -145,7 +153,7 @@ const RegistrationPage = () => {
       await dispatch(fetchWorkforceOtp(modulesManager, [`id:"${internalId}",otp:"${formData.otp}"`]))
         .then(() => handleSubmit())
         .catch(() => {
-          setServerResponse({ status: "ERROR", message: "ভুল OTP. দয়া করে আবার চেষ্টা করুন।" });
+          setServerResponse({ status: "ERROR", message: lang=="bn" ? "ভুল OTP. দয়া করে আবার চেষ্টা করুন।" : "Invalid OTP. Please try again." });
           setSubmitting(false);
         });
     }
@@ -175,9 +183,15 @@ const RegistrationPage = () => {
               Back
             </Button>
           </Box>
+          <Box display="flex" justifyContent="flex-end" mt={-4}>
+            <Button variant="primary" color="primary" style={{ padding: "3px" }} onClick={() => setLang(lang=="bn" ? "en" : "bn")}>
+              {lang=="bn" ? "বাংলা" : "English"}
+            </Button>
+          </Box>
 
           <Typography variant="h5" color="primary">
-            <FormattedMessage module="workforce" id="workforce.registration.title" />
+            {/* <FormattedMessage module="workforce" id="workforce.registration.title" /> */}
+            {lang=="bn" ? "উপকারভোগী নিবন্ধন ফর্ম" : "Beneficiary Registration Form"}
           </Typography>
 
           <form onSubmit={(e) => e.preventDefault()}>
@@ -188,7 +202,7 @@ const RegistrationPage = () => {
                     <TextInput
                       id="nameBn"
                       required
-                      label="নাম (বাংলা)"
+                      label={lang=="bn" ? "নাম (বাংলা)" : "Name (Bangla)"}
                       fullWidth
                       value={formData.firstNameBn}
                       onChange={handleInputChange("firstNameBn")}
@@ -201,7 +215,7 @@ const RegistrationPage = () => {
                     <TextInput
                       id="nameEn"
                       required
-                      label="নাম (ইংরেজি)"
+                      label={lang=="bn" ? "নাম (ইংরেজি)" : "Name (English)"}
                       fullWidth
                       value={formData.firstNameEn}
                       onChange={handleInputChange("firstNameEn")}
@@ -214,7 +228,7 @@ const RegistrationPage = () => {
                     <TextInput
                       id="nid"
                       required
-                      label="জাতীয় পরিচয়পত্র (এনআইডি) / জন্ম সনদ নম্বর"
+                      label={lang=="bn" ? "জাতীয় পরিচয়পত্র (এনআইডি) / জন্ম সনদ নম্বর" : "National ID / Birth Certificate Number"}
                       fullWidth
                       value={formData.NID_BirthCertificate}
                       onChange={(value) => handleInputChange("NID_BirthCertificate")(value.replace(/\D/g, ""))}
@@ -227,7 +241,7 @@ const RegistrationPage = () => {
                     <TextInput
                       id="phoneNumber"
                       required
-                      label="মোবাইল নম্বর (ইউজারনেম)"
+                      label={lang=="bn" ? "মোবাইল নম্বর (ইউজারনেম)" : "Mobile Number (Username)"}
                       fullWidth
                       value={formData.mobile}
                       onChange={(value) => handleInputChange("mobile")(value.replace(/\D/g, ""))}
@@ -260,7 +274,7 @@ const RegistrationPage = () => {
               )}
 
               <Button fullWidth onClick={handleNext} disabled={isSubmitting} color="primary" variant="contained" style={{ marginTop: 16 }}>
-                {step === 1 ? "পরবর্তী" : "সাবমিট করুন"}
+                {step === 1 ? (lang=="bn" ? "পরবর্তী" : "Next") : (lang=="bn" ? "সাবমিট করুন" : "Submit")}
               </Button>
 
               <Button
@@ -274,7 +288,7 @@ const RegistrationPage = () => {
                 variant="text"
                 style={{ marginTop: 8 }}
               >
-                পিছনে
+                {lang=="bn" ? "পিছনে" : "Back"}
               </Button>
             </Box>
           </form>

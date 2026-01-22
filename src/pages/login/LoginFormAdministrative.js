@@ -63,6 +63,7 @@ const getMyCookie= (name) =>{
 };
 
 export default function LoginFormAdministrative() {
+    const [lang, setLang] = useState("en");
     const classes = useStyles();
     const modulesManager = useModulesManager();
     const { formatMessage } = useTranslations("core.LoginPage", modulesManager);
@@ -135,7 +136,7 @@ export default function LoginFormAdministrative() {
                                         <TextInput
                                             required
                                             readOnly={isAuthenticating}
-                                            label="ইউজারনেম"
+                                            label={lang === "bn" ? "ইউজারনেম" : "Username"}
                                             fullWidth
                                             defaultValue={credentials.username}
                                             onChange={(username) => setCredentials({ ...credentials, username })}
@@ -146,7 +147,7 @@ export default function LoginFormAdministrative() {
                                             required
                                             readOnly={isAuthenticating}
                                             type="password"
-                                            label="পাসওয়ার্ড"
+                                            label={lang === "bn" ? "পাসওয়ার্ড" : "Password"}
                                             fullWidth
                                             onChange={(password) => setCredentials({ ...credentials, password })}
                                         />
@@ -165,12 +166,12 @@ export default function LoginFormAdministrative() {
                                             color="primary"
                                             variant="contained"
                                         >
-                                            {formatMessage("loginBtn")}
+                                            {lang === "bn" ? "লগইন করুন" : "Login"}
                                         </Button>
                                     </Grid>
 
                                     <Grid item>
-                                        <Button onClick={redirectToForgotPassword}>{formatMessage("forgotPassword")}</Button>
+                                        <Button onClick={redirectToForgotPassword}>{lang === "bn" ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot Password?"}</Button>
                                     </Grid>
                                 </>
                             </Grid>
