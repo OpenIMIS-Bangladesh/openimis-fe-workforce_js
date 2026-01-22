@@ -300,7 +300,7 @@
     "workforce.employee.application.sentDate":"Sent Date",
     "workforce.employee.application.advisorApproveMeetingSheet": "Special Advisor Approve Meeting Sheet",
     "workforce.employee.application.sentMeetingSheet": "Sent Application",
-    "workforce.employee.application.paymentProcess": "Payment Process",
+    "workforce.employee.application.paymentProcess": "Payment Calculation",
     "workforce.application.verified": "Verified Application",
     "workforce.application.sentforverification":"Application Sent for Verification",
     "workforce.application.providePaymentInfo":"Do you want to calculate payment for selected applications?",
