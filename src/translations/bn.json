@@ -877,6 +877,7 @@
   "worforce.dependent.suffix":"র",
   "workforce.login_name_already_exists":"জাতীয় পরিচয়পত্র/জন্ম সনদ নম্বর ইতিমধ্যেই নিবন্ধিত",
   "workforce.phone_number_already_exists":"ফোন নম্বর ইতিমধ্যে নিবন্ধিত",
+  "workforce.rejoinDate.error":"পুনরায় যোগদানের তারিখ দুর্ঘটনার তারিখের আগে হতে পারে না।",
 
    "profile.mainMenu": "প্রোফাইল",
   "profile.menu.changePassword": "পাসওয়ার্ড পরিবর্তন করুন",

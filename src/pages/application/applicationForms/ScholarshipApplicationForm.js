@@ -240,7 +240,7 @@ const ScholarshipApplicationForm = ({
 
   const handleNext = async () => {
     console.log({ formData });
-    const newErrors = validateRequiredFields(stepRef, formatMessage);
+    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {

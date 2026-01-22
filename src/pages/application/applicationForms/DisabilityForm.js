@@ -227,7 +227,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
 
   const handleNext = async () => {
     console.log({ formData });
-    const newErrors = validateRequiredFields(stepRef, formatMessage);
+    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
     setErrors(newErrors);
     console.log({ newErrors });
     if (Object.keys(newErrors).length === 0) {

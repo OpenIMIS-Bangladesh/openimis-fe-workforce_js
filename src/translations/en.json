@@ -976,6 +976,7 @@
   "worforce.dependent.suffix":"'s",
   "workforce.login_name_already_exists":"NID/BirthCertificate number already registered",
   "workforce.phone_number_already_exists":"Phone number already registered",
+  "workforce.rejoinDate.error":"The re-joining date cannot be earlier than the date of the accident.",
 
   "workforce.accident.placeOfDeath.label": "Place of Death",
   "workforce.accident.dateOfDeath.label": "Date of Death",

@@ -227,7 +227,7 @@ const MedicalAssistanceForm = ({
 
   const handleNext = async () => {
     console.log(activeStep);
-    const newErrors = validateRequiredFields(stepRef, formatMessage);
+    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {

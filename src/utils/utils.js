@@ -363,7 +363,7 @@ export const isNotFutureDate = (dateString) => {
   return selectedDate <= today;
 };
 
-export const validateRequiredFields = (containerRef, formatMessage) => {
+export const validateRequiredFields = (containerRef, formatMessage,formdata) => {
   const fields = containerRef.current.querySelectorAll("[required]");
   console.log({ fields });
   const errors = {};
@@ -417,6 +417,15 @@ export const validateRequiredFields = (containerRef, formatMessage) => {
       if (!(value.length === 10 || value.length === 13 || value.length === 17)) {
         errors[field.id] = formatMessage("core.error.nidLength");
         console.warn(`Validation failed for phoneNumber: expected 11 digits, got ${value.length}`);
+      }
+    }
+
+    if (formdata?.employeeAccidentInfo?.dateOfRejoining) {
+      const accidentDate = new Date(formdata?.employeeAccidentInfo?.accidentDate)
+      const rejoinDate = new Date(formdata?.employeeAccidentInfo?.dateOfRejoining)
+      if (rejoinDate<accidentDate) {
+        errors["dateOfRejoining"] = formatMessage("workforce.rejoinDate.error");
+        console.warn(`The re-joining date cannot be earlier than the date of the accident.`);
       }
     }
 

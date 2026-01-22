@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Grid,
   Box,
@@ -233,6 +233,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
       return accidentMins > endMins && accidentMins < startMins;
     }
   };
+
   console.log(formData)
   // --- RENDERING STARTS HERE ---
   return (
@@ -311,7 +312,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
                 onChange={(v) => handleChange("accidentDate", v )}
                 required
               />
-              {errors?.accidentDate && <FormHelperText error><FormattedMessage id={errors?.accidentDate} /></FormHelperText>}
+              {errors?.rdmp && <FormHelperText error><FormattedMessage id={errors?.rdmp} /></FormHelperText>}
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <CustomTimePicker
@@ -359,6 +360,8 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
                             value={formData?.employeeAccidentInfo?.otherAccidentType || ""}
                             required
                             onChange={(v) => handleChange("otherAccidentType", v )}
+                            error={!!errors.otherAccidentType}
+                            helperText={errors.otherAccidentType}
                         />
                     </Grid>
                 )}
@@ -384,6 +387,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
                       onChange={(v) => handleChange("dutyStatusWorkplace", v )}
                       required
                     />
+                    {errors?.dutyStatusWorkplace && <FormHelperText error>{errors?.dutyStatusWorkplace}</FormHelperText>}
                   </Grid>
 
                 {/* Specify the Place of Accident (S.L 09) - If Out of Factory is selected - xs=12 if needed for a longer text, but keeping xs=6 for consistency */}
@@ -393,10 +397,13 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
                 ) && (
                   <Grid item xs={6} className={classes.item}>
                     <TextInput
+                      id="outOfFactoryPlace"
                       label={"workforce.accident.outOfFactoryPlace.label"}
                       value={formData?.employeeAccidentInfo?.outOfFactoryPlace || ""}
                       onChange={(v) => handleChange("outOfFactoryPlace", v )}
                       required
+                      error={!!errors.outOfFactoryPlace}
+                      helperText={errors.outOfFactoryPlace}
                     />
                   </Grid>
                 )}
@@ -418,30 +425,39 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
                 {/* Starting Point of Journey (S.L 12) */}
                 <Grid item xs={6} className={classes.item}>
                     <TextInput
+                        id="journeyStartPoint"
                         label="workforce.accident.journeyStartPoint.label"
                         value={formData?.employeeAccidentInfo?.journeyStartPoint || ""}
                         onChange={(v) => handleChange("journeyStartPoint", v )}
                         required
+                        error={!!errors.journeyStartPoint}
+                        helperText={errors.journeyStartPoint}
                     />
                 </Grid>
                 
                 {/* Destination of journey (S.L 13) */}
                 <Grid item xs={6} className={classes.item}>
                     <TextInput
+                        id="journeyDestination"
                         label="workforce.accident.journeyDestination.label"
                         value={formData?.employeeAccidentInfo?.journeyDestination || ""}
                         onChange={(v) => handleChange("journeyDestination", v )}
                         required
+                        error={!!errors.journeyDestination}
+                        helperText={errors.journeyDestination}
                     />
                 </Grid>
 
                 {/* Mode of Travelling (S.L 14) */}
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
+                    id="modeOfTravel"
                     label="workforce.accident.modeOfTravel.label"
                     value={formData?.employeeAccidentInfo?.modeOfTravel || ""}
                     onChange={(v) => handleChange("modeOfTravel", v )}
                     required
+                    error={!!errors.modeOfTravel}
+                    helperText={errors.modeOfTravel}
                   />
                 </Grid>
 
@@ -470,14 +486,18 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
                     onChange={(v) => handleChange("dutyStatusRTA", v )}
                     required
                   />
+                  {errors?.dutyStatusRTA && <FormHelperText error>{errors?.dutyStatusRTA}</FormHelperText>}
                 </Grid>
                 {/* Purpose of Travelling (S.L 17) */}
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
+                    id="travelPurpose"
                     label="workforce.accident.travelPurpose.label"
                     value={formData?.employeeAccidentInfo?.travelPurpose || ""}
                     onChange={(v) => handleChange("travelPurpose", v )}
                     required
+                    error={!!errors.travelPurpose}
+                    helperText={errors.travelPurpose}
                   />
                 </Grid>
                 
@@ -688,6 +708,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
                           readOnly={false}
                           required
                         />
+                        {errors?.rdmp && <FormHelperText error><FormattedMessage id={errors?.rdmp} /></FormHelperText>}
                       </Grid>
                       
                       <Grid item xs={6}>
@@ -759,12 +780,14 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
                 </Grid>
                 {hasRejoined === "yes" && (
                     <Grid item xs={6} className={classes.item}>
-                    <PublishedComponent
-                        pubRef="workforce.DatePicker"
-                        label="workforce.employee.accident.info.reJoiningDate"
-                        value={formData?.employeeAccidentInfo?.dateOfRejoining || ""}
-                        onChange={(v) => handleChange("dateOfRejoining", v )}
-                    />
+                      <PublishedComponent
+                          pubRef="workforce.DatePicker"
+                          label="workforce.employee.accident.info.reJoiningDate"
+                          value={formData?.employeeAccidentInfo?.dateOfRejoining || ""}
+                          onChange={(v) => handleChange("dateOfRejoining", v )}
+                          required
+                      />
+                      {errors?.dateOfRejoining && <FormHelperText error>{errors?.dateOfRejoining}</FormHelperText>}
                     </Grid>
                 )}
                 </>

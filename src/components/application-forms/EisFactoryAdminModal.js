@@ -163,7 +163,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
 
   const handleSubmit = async () => {
     // 2. Validate Required Fields
-    const newErrors = validateRequiredFields(stepRef, formatMessage);
+    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 

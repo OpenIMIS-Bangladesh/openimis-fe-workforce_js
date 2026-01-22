@@ -296,7 +296,7 @@ const FinancialAssistanceForm = ({
   };
 
   const handleNext = async () => {
-    const newErrors = validateRequiredFields(stepRef, formatMessage);
+    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
     const allAssociationDate = new Date("2022-06-21");
     const deathDate = new Date(formData?.metadata?.deathDate);
     setErrors(newErrors);
