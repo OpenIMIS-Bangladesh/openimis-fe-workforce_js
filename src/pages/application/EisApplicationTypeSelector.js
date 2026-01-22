@@ -74,7 +74,7 @@ const EisApplicationTypeSelector = ({ workforceFactoryId,modulesManager, onSelec
             <Grid item xs={8}>
               <WorkforceEmployeePicker
                 modulesManager={modulesManager}
-                workforceFactoryId={workforceFactoryId}
+                workforceFactoryId={workforceFactoryId?.id}
                 value={selectedEmployee}
                 onChange={handleEmployeeChange}
                 required={true}

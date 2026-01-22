@@ -77,7 +77,7 @@ class AddWorkforceEmployeePage extends Component {
       lastNameEn: stateEdited?.lastNameEn || stateEdited.lastNameEn,
       phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
       email: stateEdited?.email || stateEdited.email,
-      gender: stateEdited?.gender.id || stateEdited.gender.id,
+      gender: stateEdited?.gender?.id || stateEdited.gender?.id,
       birthDate: stateEdited?.birthDate || stateEdited.birthDate,
       joinDate: stateEdited?.joinDate || stateEdited.joinDate,
       deathDate: stateEdited?.deathDate || stateEdited.deathDate,

@@ -113,7 +113,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
     },
     deathType: "",
     company: null,
-    factory: selectedFactory || null,
+    factory: selectedFactory ||workforceFactoryId|| null,
     workforceFactoryId: workforceFactoryId || "",
     isSubmitted: "no",
     organizationType: "",
@@ -227,16 +227,16 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
 
   const handleNext = async () => {
     console.log({ formData });
-    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
+    const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
     setErrors(newErrors);
     console.log({ newErrors });
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      const resolvedFactoryId = formData?.factory?.id 
-        ? safeDecodeId(formData?.factory?.id) 
-        : formData?.workforceEmployee?.factory?.id 
-        ? safeDecodeId(formData?.workforceEmployee?.factory?.id) 
-        : null;
+      const resolvedFactoryId = formData?.factory?.id
+        ? safeDecodeId(formData?.factory?.id)
+        : formData?.workforceEmployee?.factory?.id
+          ? safeDecodeId(formData?.workforceEmployee?.factory?.id)
+          : null;
       if (organizationType === "eis" && eisSteps.length - 1 === activeStep) setShowPreview(true);
       if (
         ((nextStep === 1 && organizationType === "eis") || (nextStep === 2 && organizationType !== "eis")) &&
@@ -377,16 +377,16 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
   const handleSubmit = async () => {
-    const resolvedFactoryId = formData?.factory?.id 
-        ? safeDecodeId(formData?.factory?.id) 
-        : formData?.workforceEmployee?.factory?.id 
-        ? safeDecodeId(formData?.workforceEmployee?.factory?.id) 
+    const resolvedFactoryId = formData?.factory?.id
+      ? safeDecodeId(formData?.factory?.id)
+      : formData?.workforceEmployee?.factory?.id
+        ? safeDecodeId(formData?.workforceEmployee?.factory?.id)
         : null;
     console.log({ tazwer: formData });
     if (uploadBankFile) {
       await uploadBankFile.map((file) => {
         return dispatch(
-          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`)
+          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
         );
       });
     }

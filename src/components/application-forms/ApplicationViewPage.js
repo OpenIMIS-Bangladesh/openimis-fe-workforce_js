@@ -147,6 +147,7 @@ const hiddenKeys = [
   "metadataVerificationRemarks",
   "workforceEmployeeVerification",
   "workforceEmployeeVerificationRemarks",
+  "metadata"
 ];
 
 const formatKey = (key, language) => {

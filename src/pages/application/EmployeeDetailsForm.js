@@ -221,7 +221,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   <FactoryPicker
                     id="factory"
                     required={true}
-                    value={formData?.workforceFactoryId || formData?.factory?.id || formData?.workforceEmployee?.factory?.id}
+                    value={formData?.workforceFactoryId?.id || formData?.factory?.id || formData?.workforceEmployee?.factory?.id}
                     label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
                     companyId={formData?.workforceEmployee?.company?.id}
                     onChange={(v) => {

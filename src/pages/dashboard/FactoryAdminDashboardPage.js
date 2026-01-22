@@ -536,11 +536,12 @@ const FactoryAdminDashboard = () => {
       dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
         const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
         const node = edges[0]?.node;
-        const factoryId = node?.workforceFactory?.id || null;
+        const factoryId = node?.workforceFactory || null;
         setWorkforceFactoryId(factoryId);
       });
     }
   }, [loggedInUserId]);
+  console.log({workforceFactoryId})
 
   const renderContent = () => {
     switch (selectedMenu) {

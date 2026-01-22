@@ -368,16 +368,12 @@ class VerifyApplicationPage extends Component {
       deceasedWorkerInfo: this.safeParse(deceasedWorkerInfo),
       doctorsEntry: this.safeParse(doctorsEntryInfo),
       metadata: this.safeParse(metaInfo),
+      otherInfo: this.safeParse(metaInfo),
       workforceEmployeeDependentApplication: parsedWorkforceEmployeeDependentApplication,
       employeeBankingInfoApplication:tempBankInfo
     };
     console.log(documentType);
-    // const filteredDocumentTypes = documentType?.filter((doc) => {
-    //   const matchedFile = fileStates?.find((file) => {
-    //     return file?.workforceDocumentType?.id === doc?.id  && file?.workforceDocumentType?.mandatoryForApplicant === false;
-    //   });
-    //   return matchedFile
-    // });
+
     const filteredDocumentTypes = documentType?.filter((doc) => {
       // check if there’s already a file uploaded for this doc
       const isUploaded = fileStates?.some((file) => file?.workforceDocumentType?.id === doc?.id);
