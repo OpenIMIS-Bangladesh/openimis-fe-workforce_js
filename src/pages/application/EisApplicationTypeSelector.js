@@ -55,6 +55,7 @@ const EisApplicationTypeSelector = ({ workforceFactoryId,modulesManager, onSelec
       payload: employee,
     });
   };
+  console.log({workforceFactoryId})
 
   return (
     <Paper className={classes.paper} elevation={0}>

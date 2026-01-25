@@ -97,7 +97,7 @@ console.log("tazwer",application)
           <EmployeeDependentForm
             applicationType={formData.applicationType}
             // FIX 2: Point to the variable that is actually being updated (employeeDependentInfo)
-            dependents={formData.employeeDependentInfo} 
+            dependents={formData?.employeeDependentInfo} 
             handleChange={(index, key, value) => handleArrayFieldChange("employeeDependentInfo", index, key, value)}
             // Ensure default values are provided so the form doesn't crash on render
             addItem={() => addArrayFieldItem("employeeDependentInfo", { 

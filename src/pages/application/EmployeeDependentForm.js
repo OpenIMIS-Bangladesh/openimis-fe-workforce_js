@@ -228,7 +228,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   <Grid item xs={12}>
                     <RelationWithWorkerPicker
                       id="relationType"
-                      value={dependent?.relationType || ""}
+                      value={dependent?.relationType||dependent?.relationWithWorker || ""}
                       required
                       onChange={(v) => onPickerChange(v, index)}
                       readOnly={false}

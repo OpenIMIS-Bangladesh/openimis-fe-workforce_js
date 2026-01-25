@@ -813,7 +813,7 @@ export function getRelationForApi(depObj, workerBirthDate) {
   const age = calculateAge(depObj.birthDate);
   const workerAge = calculateAge(workerBirthDate); 
 
-  const relation = depObj.relationWithWorker || depObj?.relationType;
+  const relation = depObj?.relationWithWorker || depObj?.relationType;
   const marital = depObj.maritalStatus;
   const disability = depObj.isDisabled;
 
