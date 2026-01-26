@@ -45,7 +45,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
-  const locale = useSelector((state)=>state.core?.user?.i_user?.language)
+  const locale = useSelector((state) => state.core?.user?.i_user?.language);
 
   const normalizedDependents = useMemo(() => (Array.isArray(dependents) ? dependents : dependents ? [dependents] : []), [dependents]);
 
@@ -73,7 +73,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
       handleChange(index, "permanentLocation", isChecked ? presentLocation : null);
       handleChange(index, "permanentAddress", isChecked ? presentAddress : "");
     },
-    [dependents, handleChange]
+    [dependents, handleChange],
   );
 
   const getRelationAwareLabel = useCallback(
@@ -82,7 +82,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
         ? `${formatMessage(dependent.relationType)}${formatMessage("worforce.dependent.suffix")} ${formatMessage(labelKey)}`
         : formatMessage(labelKey);
     },
-    [applicationType, formatMessage]
+    [applicationType, formatMessage],
   );
 
   const handleAttachmentChange = useCallback(
@@ -99,7 +99,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   documentType: value.documentType,
                   documentPropId: value.documentPropId,
                 }
-              : att
+              : att,
           )
         : [
             ...currentAttachments,
@@ -113,7 +113,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
 
       handleChange(index, "attachments", updatedAttachments);
     },
-    [dependents, handleChange]
+    [dependents, handleChange],
   );
 
   const onPickerChange = (v, index) => {
@@ -177,10 +177,11 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
       {normalizedDependents?.map((dependent, index) => {
         const isFatherSelected = normalizedDependents.find((d) => d.relationType === "workforce.relation.father");
         const previousRelation = index > 0 && isFatherSelected != null ? "workforce.relation.father" : null;
-        const isEligible =getRelationForApi(normalizedDependents[index],formdata?.workforceEmployee?.birthDate);
-        console.log("Single Beneficiary",dependent)
-        console.log({isEligible})
-        const hasData = dependent.relationType && (dependent.birthDate || dependent.nid);
+        const workerBirthDate = formdata?.workforceEmployee?.birthDate || formdata?.deceasedWorkerInfo?.birthDate;
+        const isEligible = getRelationForApi(normalizedDependents[index], workerBirthDate);
+        console.log("Single Beneficiary", dependent);
+        console.log({ isEligible });
+        const hasData = (dependent?.relationType || dependent?.relationWithWorker) && (dependent?.birthDate || dependent?.nid);
         return (
           <Accordion key={index} expanded={expanded === index} onChange={(_, isExpanded) => setExpanded(isExpanded ? index : false)}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -215,7 +216,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       }}
                     >
                       {/* 3. Use the calculated variable for text */}
-                      {isEligible ? <FormattedMessage id="workforce.dependent.eis.eligible"/> : <FormattedMessage id="workforce.dependent.eis.inEligible"/>}
+                      {isEligible ? <FormattedMessage id="workforce.dependent.eis.eligible" /> : <FormattedMessage id="workforce.dependent.eis.inEligible" />}
                     </Typography>
                   )}
                 </Grid>
@@ -228,7 +229,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   <Grid item xs={12}>
                     <RelationWithWorkerPicker
                       id="relationType"
-                      value={dependent?.relationType||dependent?.relationWithWorker || ""}
+                      value={dependent?.relationType || dependent?.relationWithWorker || ""}
                       required
                       onChange={(v) => onPickerChange(v, index)}
                       readOnly={false}
@@ -301,7 +302,11 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       error={!!errors.nid}
                       helperText={errors.nid}
                     />
-                    {errors.nid && <FormHelperText error><FormattedMessage id={errors.nid} /></FormHelperText>}
+                    {errors.nid && (
+                      <FormHelperText error>
+                        <FormattedMessage id={errors.nid} />
+                      </FormHelperText>
+                    )}
                   </Grid>
 
                   <Grid item xs={6}>
@@ -311,7 +316,11 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       onChange={(v) => handleChange(index, "phoneNumber", v)}
                       type="number"
                     />
-                    {dependent?.phoneNumber?.length !=11 && <FormHelperText error><FormattedMessage id="core.error.phoneNumberLength"/></FormHelperText> }
+                    {dependent?.phoneNumber?.length != 11 && (
+                      <FormHelperText error>
+                        <FormattedMessage id="core.error.phoneNumberLength" />
+                      </FormHelperText>
+                    )}
                   </Grid>
 
                   <Grid item xs={6}>

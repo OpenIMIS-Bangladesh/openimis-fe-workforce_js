@@ -58,6 +58,13 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
       );
       setLoading(false);
     }
+    if (applicationId && !applicationId[0]?.id) {
+      setLoading(true);
+      dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(applicationId)}"`])).then((res) =>
+        console.log("from account dependent", res)
+      );
+      setLoading(false);
+    }
   }, [applicationId]);
 
   if (loading) return <b>Loading...</b>;

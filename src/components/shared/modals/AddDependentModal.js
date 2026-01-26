@@ -1,9 +1,11 @@
 import React, { useRef, useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, makeStyles } from "@material-ui/core";
-import { FormattedMessage } from "@openimis/fe-core";
+import { FormattedMessage,useModulesManager } from "@openimis/fe-core";
 import { useDispatch } from "react-redux";
-import { updateApplication } from "../../../actions";
+import { fetchEmployeeDependent, updateApplication } from "../../../actions";
 import EmployeeDependentForm from "../../../pages/application/EmployeeDependentForm";
+import EmployeeDeathAccountInfoForm from "../../../pages/application/EmployeeDeathAccountInfoForm"; 
+import { safeDecodeId } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,38 +19,36 @@ const useStyles = makeStyles((theme) => ({
 
 const AddDependentModal = ({ open, onClose, application }) => {
   const classes = useStyles();
+  const modulesManager = useModulesManager()
   const dispatch = useDispatch();
   const stepRef = useRef(null);
 
+  // 0 = Dependents, 1 = Bank Info
+  const [activeStep, setActiveStep] = useState(0); 
   const [expanded, setExpanded] = useState(0);
   const [errors, setErrors] = useState({});
 
-  const [formData, setFormData] = useState(() => {
-    let parsedDependents = [];
+  // const [formData, setFormData] = useState(() => {
+  //   // --- Helper to parse JSON fields safely ---
+  //   const parseField = (fieldValue) => {
+  //     if (Array.isArray(fieldValue)) return fieldValue;
+  //     if (typeof fieldValue === "string") {
+  //       try {
+  //         return JSON.parse(fieldValue);
+  //       } catch (e) {
+  //         return [];
+  //       }
+  //     }
+  //     return [];
+  //   };
 
-    // Prioritize existing array, otherwise parse string
-    if (Array.isArray(application?.workforceEmployeeDependentApplication)) {
-      parsedDependents = application.workforceEmployeeDependentApplication;
-    } else if (application?.employeeDependentInfo) {
-      try {
-        parsedDependents =
-          typeof application.employeeDependentInfo === "string"
-            ? JSON.parse(application.employeeDependentInfo)
-            : application.employeeDependentInfo;
-      } catch (error) {
-        console.error("Error parsing dependents:", error);
-        parsedDependents = [];
-      }
-    }
-
-    if (!Array.isArray(parsedDependents)) parsedDependents = [];
-
-    return {
-      ...application,
-      // FIX 1: Assign the parsed array to the key we will be editing
-      employeeDependentInfo: parsedDependents, 
-    };
-  });
+  //   return {
+  //     ...application,
+  //     employeeDependentInfo: parseField(application?.employeeDependentInfo || application?.workforceEmployeeDependentApplication),
+  //     employeeBankInfo: parseField(application?.employeeBankInfo || application?.workforceEmployeeBankInfo),
+  //   };
+  // });
+  const [formData, setFormData] = useState(application)
 
   const handleArrayFieldChange = (fieldKey, index, key, value) => {
     setFormData((prev) => {
@@ -62,7 +62,6 @@ const AddDependentModal = ({ open, onClose, application }) => {
     setFormData((prev) => {
       const items = prev[fieldKey] ? [...prev[fieldKey]] : [];
       const updated = [...items, defaultItem];
-      // Auto-expand the new item
       setExpanded(updated.length - 1);
       return { ...prev, [fieldKey]: updated };
     });
@@ -76,51 +75,134 @@ const AddDependentModal = ({ open, onClose, application }) => {
     });
   };
 
-  const handleSubmit = () => {
+  // Helper to format JSON for your specific backend requirement
+  const formatPayloadJson = (data) => 
+    JSON.stringify(data).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}");
+
+  // --- STEP 1 SUBMISSION: Save Dependents & Go Next ---
+  const handleSaveDependents = () => {
     const finalDependentList = formData.employeeDependentInfo || [];
+
     const payload = {
       id: application.id,
-      employeeDependentInfo: JSON.stringify(finalDependentList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
+      // We only send dependent info here to save it immediately
+      employeeDependentInfo: formatPayloadJson(finalDependentList),
     };
 
-    dispatch(updateApplication(payload, "update dependent info"));
+    // 1. Call Mutation
+    dispatch(updateApplication(payload, "update dependent info")).then((res)=>{
+      dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(application?.id)}"`])).then((res) =>
+              console.log("from account dependent", res)
+            );
+    })
+    
+    // 2. Move to Next Step
+    setActiveStep(1);
+    setExpanded(0); 
+  };
+
+  // --- STEP 2 SUBMISSION: Save Bank Info & Close ---
+  const handleSaveBankInfo = () => {
+    const finalBankList = formData.employeeBankInfo || [];
+
+    const payload = {
+      id: application.id,
+      // We only send bank info here (or both if you prefer safety)
+      employeeBankInfo: formatPayloadJson(finalBankList),
+    };
+
+    // 1. Call Mutation
+    dispatch(updateApplication(payload, "update bank info"));
+
+    // 2. Close Modal
     onClose();
   };
-console.log("tazwer",application)
+
+  // --- Navigation: Back Button ---
+  const handleBack = () => {
+    setActiveStep(0);
+    setExpanded(0);
+  };
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
+        {activeStep === 0 ? (
+          <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
+        ) : (
+          <FormattedMessage id="workforce.application.steps.bankInfo" defaultMessage="Bank Account Info" />
+        )}
       </DialogTitle>
+      
       <DialogContent>
         <Box mt={0} ref={stepRef}>
-          <EmployeeDependentForm
-            applicationType={formData.applicationType}
-            // FIX 2: Point to the variable that is actually being updated (employeeDependentInfo)
-            dependents={formData?.employeeDependentInfo} 
-            handleChange={(index, key, value) => handleArrayFieldChange("employeeDependentInfo", index, key, value)}
-            // Ensure default values are provided so the form doesn't crash on render
-            addItem={() => addArrayFieldItem("employeeDependentInfo", { 
-                fullName: "", 
-                relationship: "", 
-                // Initialize boolean fields to avoid controlled/uncontrolled warnings
-                isDisabled: "no" 
-            })}
-            removeItem={(index) => removeArrayFieldItem("employeeDependentInfo", index)}
-            expanded={expanded}
-            setExpanded={setExpanded}
-            formdata={formData}
-            errors={errors}
-          />
+          
+          {/* STEP 1: DEPENDENT FORM */}
+          {activeStep === 0 && (
+            <EmployeeDependentForm
+              applicationType={formData.applicationType}
+              dependents={formData?.employeeDependentInfo}
+              handleChange={(index, key, value) => handleArrayFieldChange("employeeDependentInfo", index, key, value)}
+              addItem={() => addArrayFieldItem("employeeDependentInfo", { 
+                  fullName: "", 
+                  relationship: "", 
+                  isDisabled: "no" 
+              })}
+              removeItem={(index) => removeArrayFieldItem("employeeDependentInfo", index)}
+              expanded={expanded}
+              setExpanded={setExpanded}
+              formdata={formData}
+              errors={errors}
+            />
+          )}
+
+          {/* STEP 2: BANK INFO FORM */}
+          {activeStep === 1 && (
+            <EmployeeDeathAccountInfoForm
+              formdata={formData}
+              accounts={formData.employeeBankInfo}
+              handleChange={(index, key, value) => handleArrayFieldChange("employeeBankInfo", index, key, value)}
+              addItem={() =>
+                addArrayFieldItem("employeeBankInfo", {
+                  accountHolderName: "",
+                  bankName: "",
+                  accountNumber: "",
+                  branchName: "",
+                })
+              }
+              removeItem={(index) => removeArrayFieldItem("employeeBankInfo", index)}
+              expanded={expanded}
+              setExpanded={setExpanded}
+              applicationId={application?.id}
+              errors={errors}
+            />
+          )}
+
         </Box>
       </DialogContent>
+      
       <DialogActions>
         <Button onClick={onClose} color="secondary" variant="outlined">
           <FormattedMessage id="workforce.cancel" defaultMessage="Cancel" />
         </Button>
-        <Button onClick={handleSubmit} color="primary" variant="contained">
-          <FormattedMessage id="workforce.save" defaultMessage="Save" />
-        </Button>
+
+        {/* BUTTON LOGIC */}
+        {activeStep === 0 ? (
+          // STEP 1: Calls handleSaveDependents (Mutation + Next)
+          <Button onClick={handleSaveDependents} color="primary" variant="contained">
+            <FormattedMessage id="workforce.next" defaultMessage="Next" />
+          </Button>
+        ) : (
+          // STEP 2: Calls handleSaveBankInfo (Mutation + Close)
+          <>
+            <Button onClick={handleBack} color="primary" variant="outlined">
+              <FormattedMessage id="workforce.back" defaultMessage="Back" />
+            </Button>
+            <Button onClick={handleSaveBankInfo} color="primary" variant="contained">
+              <FormattedMessage id="workforce.save" defaultMessage="Save" />
+            </Button>
+          </>
+        )}
       </DialogActions>
     </Dialog>
   );
