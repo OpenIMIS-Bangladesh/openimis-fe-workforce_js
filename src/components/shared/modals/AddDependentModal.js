@@ -28,27 +28,27 @@ const AddDependentModal = ({ open, onClose, application }) => {
   const [expanded, setExpanded] = useState(0);
   const [errors, setErrors] = useState({});
 
-  // const [formData, setFormData] = useState(() => {
-  //   // --- Helper to parse JSON fields safely ---
-  //   const parseField = (fieldValue) => {
-  //     if (Array.isArray(fieldValue)) return fieldValue;
-  //     if (typeof fieldValue === "string") {
-  //       try {
-  //         return JSON.parse(fieldValue);
-  //       } catch (e) {
-  //         return [];
-  //       }
-  //     }
-  //     return [];
-  //   };
+  const [formData, setFormData] = useState(() => {
+    // --- Helper to parse JSON fields safely ---
+    const parseField = (fieldValue) => {
+      if (Array.isArray(fieldValue)) return fieldValue;
+      if (typeof fieldValue === "string") {
+        try {
+          return JSON.parse(fieldValue);
+        } catch (e) {
+          return [];
+        }
+      }
+      return [];
+    };
 
-  //   return {
-  //     ...application,
-  //     employeeDependentInfo: parseField(application?.employeeDependentInfo || application?.workforceEmployeeDependentApplication),
-  //     employeeBankInfo: parseField(application?.employeeBankInfo || application?.workforceEmployeeBankInfo),
-  //   };
-  // });
-  const [formData, setFormData] = useState(application)
+    return {
+      ...application,
+      employeeDependentInfo: parseField(application?.workforceEmployeeDependentApplication),
+      employeeBankInfo: parseField(application?.employeeBankingInfoApplication),
+    };
+  });
+  // const [formData, setFormData] = useState(application)
 
   const handleArrayFieldChange = (fieldKey, index, key, value) => {
     setFormData((prev) => {

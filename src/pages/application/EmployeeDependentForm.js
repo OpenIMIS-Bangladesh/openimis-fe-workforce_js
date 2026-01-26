@@ -87,9 +87,9 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
 
   const handleAttachmentChange = useCallback(
     (index, fieldKey, value) => {
-      const currentAttachments = dependents?.[index]?.attachments || [];
+      const currentAttachments = typeof dependents?.[index]?.attachments ==="string"? JSON.parse(dependents?.[index]?.attachments):dependents?.[index]?.attachments || [];
 
-      const updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
+      const updatedAttachments = currentAttachments?.some((att) => att.fieldKey === fieldKey)
         ? currentAttachments.map((att) =>
             att.fieldKey === fieldKey
               ? {
@@ -178,7 +178,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
         const isFatherSelected = normalizedDependents.find((d) => d.relationType === "workforce.relation.father");
         const previousRelation = index > 0 && isFatherSelected != null ? "workforce.relation.father" : null;
         const workerBirthDate = formdata?.workforceEmployee?.birthDate || formdata?.deceasedWorkerInfo?.birthDate;
-        const isEligible = getRelationForApi(normalizedDependents[index], workerBirthDate);
+        const isEligible =dependent?.isEligible?dependent?.isEligible: getRelationForApi(normalizedDependents[index], workerBirthDate);
         console.log("Single Beneficiary", dependent);
         console.log({ isEligible });
         const hasData = (dependent?.relationType || dependent?.relationWithWorker) && (dependent?.birthDate || dependent?.nid);
