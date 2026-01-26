@@ -39,7 +39,7 @@ const getMyCookie = (name) =>
   }, null);
 
 export default function LoginForm() {
-  const [lang, setLang] = useState("en");
+  const [lang, setLang] = useState("bn");
   const classes = useStyles();
   const [credentials, setCredentials] = useState({});
   const [mobileNumber, setMobileNumber] = useState("");

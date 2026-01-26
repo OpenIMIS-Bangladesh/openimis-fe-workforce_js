@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const RegistrationButton = () => {
-  const [lang, setLang] = useState("en");
+  const [lang, setLang] = useState("bn");
   const classes = useStyles();
   const history = useHistory();
   const modulesManager = useModulesManager();

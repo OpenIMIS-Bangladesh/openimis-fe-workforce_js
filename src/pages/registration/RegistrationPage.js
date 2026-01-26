@@ -60,7 +60,7 @@ const REGISTRATION_ERROR_EN = {
 }
 
 const RegistrationPage = () => {
-  const [lang, setLang] = useState("en");
+  const [lang, setLang] = useState("bn");
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();

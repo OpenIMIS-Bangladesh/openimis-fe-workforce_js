@@ -63,7 +63,7 @@ const getMyCookie= (name) =>{
 };
 
 export default function LoginFormAdministrative() {
-    const [lang, setLang] = useState("en");
+    const [lang, setLang] = useState("bn");
     const classes = useStyles();
     const modulesManager = useModulesManager();
     const { formatMessage } = useTranslations("core.LoginPage", modulesManager);

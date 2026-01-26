@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 export default function LoginHeader() {
-    const [lang, setLang] = useState("en");
+    const [lang, setLang] = useState("bn");
     const classes = useStyles();
     return (
         <>
