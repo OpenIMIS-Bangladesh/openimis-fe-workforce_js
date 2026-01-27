@@ -918,7 +918,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
 
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
                 <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
-                  EIS-GB Sub Committee Meeting No: 16
+                  {first?.workforceApplication?.eisApplicationSummary?.name?? ""}
                 </Typography>
                 <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
                   Date: {benefitDate}

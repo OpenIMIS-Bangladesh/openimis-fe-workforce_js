@@ -3065,6 +3065,10 @@ export function fetchEisPaymentProcess(applicationIds,mm) {
           employeeBankInfo
           doctorsEntry
           dateCreated
+          eisApplicationSummary{
+            id
+            name
+          }
           workforceEmployee {         
             id
             firstNameBn
