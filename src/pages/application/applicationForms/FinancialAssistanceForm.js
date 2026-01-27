@@ -26,7 +26,15 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReason from "../FormsComponents/FinancialAssistance/ApplicationReason";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getInfoId, isAtLeast18YearsOld, isNotFutureDate, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
+import {
+  getInfoId,
+  getRelationForApi,
+  isAtLeast18YearsOld,
+  isNotFutureDate,
+  safeApplicationId,
+  safeDecodeId,
+  validateRequiredFields,
+} from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -77,6 +85,7 @@ const FinancialAssistanceForm = ({
   const stepRef = useRef(null);
 
   const [alertMessage, setAlertMessage] = useState(false);
+  const [dependentErr, setDependentErr] = useState(false);
   const [errors, setErrors] = useState({});
   const [acknowledged, setAcknowledged] = useState(false);
   let applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? null);
@@ -94,6 +103,7 @@ const FinancialAssistanceForm = ({
   const [showPreview, setShowPreview] = useState(false);
   const [deathType, setDeathType] = useState("");
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
+  const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
   const [nidOrBcn, setNidOrBcn] = useState({
     nid: formData?.workforceEmployee?.nid || "",
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
@@ -296,18 +306,42 @@ const FinancialAssistanceForm = ({
   };
 
   const handleNext = async () => {
-    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
+    const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
     const allAssociationDate = new Date("2022-06-21");
     const deathDate = new Date(formData?.metadata?.deathDate);
     setErrors(newErrors);
     console.log(newErrors);
-
+    if (Object.keys(newErrors).length > 0) {
+      setShowErrorSnackbar(true);
+    } else {
+      setShowErrorSnackbar(false);
+    }
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
       if (nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
       } else {
+        if (nextStep === 5 && formData?.organizationType === "eis") {
+          const workerBirthDate = formData?.workforceEmployee?.birthDate || formData?.deceasedWorkerInfo?.birthDate;
+
+          // Safety check: ensure dependents exists
+          const currentDependents = formData?.dependents || [];
+
+          // Filter logic
+          const validDependents = currentDependents.filter((dep) => getRelationForApi(dep, workerBirthDate));
+
+          // Compare lengths
+          if (validDependents.length !== currentDependents.length) {
+            setFormData({
+              ...formData,
+              dependents: validDependents,
+            });
+            setDependentErr(true);
+            return; // Block navigation
+          }
+        }
+
         if (formData?.organizationType === "eis" && allAssociationDate > deathDate) {
           setAlertMessage(true);
           return;
@@ -785,6 +819,20 @@ const FinancialAssistanceForm = ({
         onClose={() => setAlertMessage(false)}
         type="error"
         message={<FormattedMessage id="workforce.application.before.eis.startDate.error" module="workforce" />}
+        duration={5000}
+      />
+      <CustomSnackbar
+        open={showErrorSnackbar} // Use the new state
+        onClose={() => setShowErrorSnackbar(false)} // Allow it to close
+        type="error"
+        message={<FormattedMessage id="core.error.generel" module="workforce" />}
+        duration={4000}
+      />
+      <CustomSnackbar
+        open={dependentErr}
+        onClose={() => setDependentErr(false)}
+        type="error"
+        message={<FormattedMessage id={"core.error.inEligible.dependent"} />}
         duration={5000}
       />
     </div>

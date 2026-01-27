@@ -29,26 +29,12 @@ const AddDependentModal = ({ open, onClose, application }) => {
   const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState(() => {
-    // --- Helper to parse JSON fields safely ---
-    const parseField = (fieldValue) => {
-      if (Array.isArray(fieldValue)) return fieldValue;
-      if (typeof fieldValue === "string") {
-        try {
-          return JSON.parse(fieldValue);
-        } catch (e) {
-          return [];
-        }
-      }
-      return [];
-    };
-
     return {
       ...application,
-      employeeDependentInfo: parseField(application?.workforceEmployeeDependentApplication),
-      employeeBankInfo: parseField(application?.employeeBankingInfoApplication),
+      employeeDependentInfo: application?.workforceEmployeeDependentApplication,
+      employeeBankInfo: application?.employeeBankingInfoApplication,
     };
   });
-  // const [formData, setFormData] = useState(application)
 
   const handleArrayFieldChange = (fieldKey, index, key, value) => {
     setFormData((prev) => {
@@ -75,47 +61,36 @@ const AddDependentModal = ({ open, onClose, application }) => {
     });
   };
 
-  // Helper to format JSON for your specific backend requirement
   const formatPayloadJson = (data) => 
     JSON.stringify(data).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}");
 
-  // --- STEP 1 SUBMISSION: Save Dependents & Go Next ---
   const handleSaveDependents = () => {
     const finalDependentList = formData.employeeDependentInfo || [];
-
     const payload = {
       id: application.id,
-      // We only send dependent info here to save it immediately
       employeeDependentInfo: formatPayloadJson(finalDependentList),
     };
-
     // 1. Call Mutation
     dispatch(updateApplication(payload, "update dependent info")).then((res)=>{
       dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(application?.id)}"`])).then((res) =>
               console.log("from account dependent", res)
             );
     })
-    
     // 2. Move to Next Step
     setActiveStep(1);
     setExpanded(0); 
   };
 
-  // --- STEP 2 SUBMISSION: Save Bank Info & Close ---
   const handleSaveBankInfo = () => {
     const finalBankList = formData.employeeBankInfo || [];
-
     const payload = {
       id: application.id,
-      // We only send bank info here (or both if you prefer safety)
       employeeBankInfo: formatPayloadJson(finalBankList),
     };
 
-    // 1. Call Mutation
-    dispatch(updateApplication(payload, "update bank info"));
-
+    dispatch(updateApplication(payload, "update bank info")).then((res)=>onClose())
     // 2. Close Modal
-    onClose();
+    // onClose();
   };
 
   // --- Navigation: Back Button ---

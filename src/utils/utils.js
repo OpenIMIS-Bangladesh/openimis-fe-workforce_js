@@ -365,6 +365,7 @@ export const isNotFutureDate = (dateString) => {
 
 export const validateRequiredFields = (containerRef, formatMessage,formdata) => {
   const fields = containerRef.current.querySelectorAll("[required]");
+  const dependents = formdata?.dependents ||formdata?.employeeDependentInfo || formdata?.workforceEmployeeDependentApplication
   console.log({ fields });
   const errors = {};
 
@@ -416,7 +417,14 @@ export const validateRequiredFields = (containerRef, formatMessage,formdata) => 
     if (field.id === "nid") {
       if (!(value.length === 10 || value.length === 13 || value.length === 17)) {
         errors[field.id] = formatMessage("core.error.nidLength");
-        console.warn(`Validation failed for phoneNumber: expected 11 digits, got ${value.length}`);
+        console.warn(`Validation failed for nid: expected 10, 13 or 17 digits, got ${value.length}`);
+      } else {
+        // FIX: Check if the NID appears MORE THAN ONCE in the array
+        const duplicateCount = dependents?.filter((obj) => obj.nid === value).length;
+        
+        if (duplicateCount > 1) {
+          errors[field.id] = formatMessage("core.error.nid.repeat");
+        }
       }
     }
 
@@ -987,9 +995,9 @@ export const getRelationString = (depObj) => {
 }
 
 export const isEisPath = () => {
-  // if (typeof window !== "undefined") {
-  //   return window.location.href.includes("eis");
-  // }
-  // return false; // fallback if window is not defined (SSR)
-  return true;
+  if (typeof window !== "undefined") {
+    return window.location.href.includes("eis");
+  }
+  return false; // fallback if window is not defined (SSR)
+  // return true;
 };

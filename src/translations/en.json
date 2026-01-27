@@ -810,12 +810,17 @@
   "workforce.account.entry":"",
   "core.error.required":"Required field",
   "core.error.phoneNumberLength":"Phone number must be exactly 11 digits",
-  "core.error.nidLength":"Nid/BirthCertificate number is not valid",
+  "core.error.nidLength":"NID/Birth Certificate number must be 10, 13 or 17 digits.",
+  "core.error.nid.repeat":"The same NID number cannot be used for multiple dependents.",
   "core.error.workerAge":"A worker’s age must be a minimum of 18 years.",
   "core.error.deathTime":"Death date is not valid",
   "core.error.dateTime":"Date is not valid",
   "core.error.accidentDate":"Accident date is not valid",
   "core.error.accountNumberLength":"Account number must be 8 to 17",
+  "core.error.generel":"Please check that you have filled in all the required information correctly.",
+  "core.error.inEligible.dependent":"You were not considered a suitable dependent.",
+
+
 
   "workforce.employee.accident.info.hasRejoined":"Have you rejoined the workplace after recovery?",
 

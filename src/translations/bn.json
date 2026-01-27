@@ -658,12 +658,14 @@
   "core.error.required":"এই তথ্যটি  আবশ্যক",
   "core.error.phoneNumberLength":"ফোন নম্বর অবশ্যই ১১ সংখ্যার হতে হবে",
   "core.error.nidLength":"এনআইডি/জন্মসনদ নম্বরটি অবশ্যই ১০,১৩ অথবা ১৭ সংখ্যার হতে হবে",
+  "core.error.nid.repeat":"একাধিক নির্ভরশীলের জন্য একই জাতীয় পরিচয়পত্র নম্বর ব্যবহার করা যাবে না",
   "core.error.workerAge":"শ্রমিকের বয়স ন্যূনতম ১৮ বছর হতে হবে।",
   "core.error.deathTime":"মৃত্যুর তারিখ সঠিক নয়।",
   "core.error.dateTime":"তারিখ সঠিক নয়।",
   "core.error.accidentDate":"দুর্ঘটনার তারিখ বৈধ নয়",
   "core.error.accountNumberLength":"অ্যাকাউন্ট নম্বর অবশ্যই ৮ থেকে ১৭ অঙ্কের হতে হবে",
-
+  "core.error.generel":"অনুগ্রহ করে পরীক্ষা করে দেখুন যে আপনি সমস্ত প্রয়োজনীয় তথ্য সঠিকভাবে পূরণ করেছেন।",
+  "core.error.inEligible.dependent":"আপনাকে উপযুক্ত পোষ্য (নির্ভরশীল) হিসেবে বিবেচনা করা হয়নি।",
 
 
   "calendar.clearButton": "মুছে ফেলুন",

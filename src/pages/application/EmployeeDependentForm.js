@@ -199,27 +199,24 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   <Typography>{dependent.nameEn || ""}</Typography>
                 </Grid>
 
-                <Grid item xs={4} sm={3} style={{ textAlign: "right", paddingRight: "8px" }}>
-                  {/* Only show the badge if there is enough data to make a decision, or remove 'hasData' to always show it */}
+                {/* <Grid item xs={4} sm={3} style={{ textAlign: "right", paddingRight: "8px" }}>
                   {hasData && (
                     <Typography
                       variant="caption"
                       style={{
                         fontWeight: "bold",
-                        // 2. Use the calculated variable here
-                        color: isEligible ? "#2e7d32" : "#d32f2f", // Darker Green : Red
+                        color: isEligible ? "#2e7d32" : "#d32f2f", 
                         border: `1px solid ${isEligible ? "#2e7d32" : "#d32f2f"}`,
-                        backgroundColor: isEligible ? "rgba(46, 125, 50, 0.04)" : "rgba(211, 47, 47, 0.04)", // Light background for better UI
+                        backgroundColor: isEligible ? "rgba(46, 125, 50, 0.04)" : "rgba(211, 47, 47, 0.04)", 
                         padding: "4px 8px",
                         borderRadius: "4px",
-                        display: "inline-block", // Ensures padding works correctly
+                        display: "inline-block", 
                       }}
                     >
-                      {/* 3. Use the calculated variable for text */}
                       {isEligible ? <FormattedMessage id="workforce.dependent.eis.eligible" /> : <FormattedMessage id="workforce.dependent.eis.inEligible" />}
                     </Typography>
                   )}
-                </Grid>
+                </Grid> */}
               </Grid>
             </AccordionSummary>
             <AccordionDetails>
