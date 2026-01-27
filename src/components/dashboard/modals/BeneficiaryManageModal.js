@@ -162,19 +162,19 @@ const BeneficiaryManageModal = ({ open, onClose, beneficiary }) => {
             <DialogContent>
                 {/* Beneficiary Info */}
                 <Grid container spacing={2}>
-                    <Grid item md={4}>
+                    <Grid item md={3}>
                         <Box mb={2}>
                             <Typography variant="subtitle2"><strong>Beneficiary ID</strong></Typography>
                             <Typography>{beneficiary.beneficiaryId}</Typography>
                         </Box>
                     </Grid>
-                    <Grid item md={4}>
+                    <Grid item md={3}>
                         <Box mb={2}>
                             <Typography variant="subtitle2"><strong>Name</strong></Typography>
                             <Typography>{dep?.nameBn || dep?.nameEn || "N/A"}</Typography>
                         </Box>
                     </Grid>
-                    <Grid item md={4}>
+                    <Grid item md={3}>
                         <Box mb={2}>
                             <Typography variant="subtitle2"><strong>Worker's Detail</strong></Typography>
                             <Typography variant="body2" style={{ fontWeight: 500 }}>{worker}</Typography>
@@ -186,21 +186,43 @@ const BeneficiaryManageModal = ({ open, onClose, beneficiary }) => {
                             </Typography>
                         </Box>
                     </Grid>
-                    <Grid item md={4}>
+                    <Grid item md={3}>
+                        <Box mb={2}>
+                            <Typography variant="subtitle2"><strong>Current Status</strong></Typography>
+                            <Chip label={beneficiary.beneficiaryStatus} size="small" color="primary" />
+                            {beneficiary.remarriageOrDeathDate && (
+                                <Typography variant="caption" display="block" color="textSecondary">
+                                    {beneficiary.reason === "remarried" ? "Beneficiary Remarried on: " : beneficiary.reason==="died"?"Beneficiary Died on: ":"Beneficiary Denied Last Live Check on: "}
+                                    {beneficiary.remarriageOrDeathDate ? new Date(beneficiary.remarriageOrDeathDate).toLocaleDateString("en-BD") : "N/A"}
+                                </Typography>
+                            )}
+                            <Typography variant="caption" style={{ fontWeight: 700 }}>{beneficiary?.remarks??""}</Typography>
+                        </Box>
+                    </Grid>
+                    <Grid item md={3}>
                         <Box mb={2}>
                             <Typography variant="subtitle2"><strong>Payment Detail:</strong></Typography>
                             <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(beneficiary.eisInitialMonthlyAmount).toLocaleString("en-BD") ?? Number(beneficiary.eisMonthlyAmount).toLocaleString("en-BD")}</Typography>
                             <Typography variant="caption" color="textSecondary">{"Total: " + (Number(beneficiary?.eisApprovedAmount).toLocaleString("en-BD") ?? "--")}</Typography>
                             <Typography variant="body2" style={{ fontWeight: 700 }}>{getPaymentTypeString(beneficiary.eisPaymentType)}</Typography>
                         </Box>
+                    </Grid>
+                    <Grid item md={3}>
                         <Box mb={2}>
-                            <Typography variant="subtitle2"><strong>Current Status</strong></Typography>
-                            <Chip label={beneficiary.beneficiaryStatus} size="small" color="primary" />
+                            <Typography variant="subtitle2"><strong>Last Changes</strong></Typography>
+                            <Typography variant="caption" display="block" color="textSecondary">
+                                <strong>Last Increament:</strong> {Number(beneficiary?.incrementAmount?? 0).toLocaleString("en-BD")} {" "}
+                                ({beneficiary?.incrementDate ? new Date(beneficiary.incrementDate).toLocaleDateString("en-BD") : "N/A"})
+                            </Typography>
+                            <Typography variant="caption" display="block" color="textSecondary">
+                               <strong>Last Decrement:</strong> {Number(beneficiary?.decrementAmount ?? 0).toLocaleString("en-BD")}{" "}
+                            ({beneficiary?.decrementDate ? new Date(beneficiary.decrementDate).toLocaleDateString("en-BD") : "N/A"})
+                            </Typography>
                         </Box>
                     </Grid>
                     
                     {/* Main Beneficiary Adjustments */}
-                    <Grid item md={4}>
+                    <Grid item md={3}>
                         <Box p={2} borderRadius={8} bgcolor="#f1f8e9" border="1px solid #dcedc8">
                             <Typography variant="subtitle2" style={{ fontWeight: 600, marginBottom: 8, color: "#558b2f" }}>
                                 Increment
@@ -229,7 +251,7 @@ const BeneficiaryManageModal = ({ open, onClose, beneficiary }) => {
                             </Grid>
                         </Box>
                     </Grid>
-                    <Grid item md={4}>
+                    <Grid item md={3}>
                         <Box p={2} borderRadius={8} bgcolor="#fdecea" border="1px solid #f5c6cb">
                             <Typography variant="subtitle2" style={{ fontWeight: 600, marginBottom: 8, color: "#c62828" }}>
                                 Decrement
@@ -271,6 +293,7 @@ const BeneficiaryManageModal = ({ open, onClose, beneficiary }) => {
                         size="small"
                         value={formData.reason}
                         onChange={handleReasonChange}
+                        disabled={beneficiary.beneficiaryStatus === "closed"}
                     >
                         <MenuItem value=""><em>Select status</em></MenuItem>
                         <MenuItem value="remarried">Beneficiary Remarried</MenuItem>
@@ -340,14 +363,22 @@ const BeneficiaryManageModal = ({ open, onClose, beneficiary }) => {
                         <Table>
                             <TableHead style={{ backgroundColor: '#f8fafd' }}>
                                 <TableRow>
-                                    <TableCell colspan={5}><strong>Other Beneficiaries</strong></TableCell>
+                                    <TableCell colspan={5}>
+                                        <strong>Other Beneficiaries</strong>
+                                        <Typography variant="caption" display="block" color="textSecondary">
+                                            Adjust increments/decrements for other beneficiaries linked to the same worker.
+                                            <span style={{ display: 'block', marginTop: 4, color: '#c90000' }}>
+                                                Note: Decrements are automatically calculated based on the main beneficiary's changes.
+                                            </span>
+                                        </Typography>
+                                    </TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell style={{ fontWeight: 600 }}>Beneficiary Details</TableCell>
                                     <TableCell style={{ fontWeight: 600 }}>Payment Method</TableCell>
                                     <TableCell align="right" style={{ fontWeight: 600 }}>Amounts</TableCell>
                                     <TableCell align="right" style={{ fontWeight: 600 }}>Increment</TableCell>
-                                    <TableCell align="right" style={{ fontWeight: 600 }}>Decrement</TableCell>
+                                    {/* <TableCell align="right" style={{ fontWeight: 600 }}>Decrement</TableCell> */}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -398,7 +429,7 @@ const BeneficiaryManageModal = ({ open, onClose, beneficiary }) => {
                                                 </Box>
                                             </TableCell>
                                             {/* Other Beneficiary Decrement */}
-                                            <TableCell>
+                                            {/* <TableCell>
                                                 <Box p={2} borderRadius={8} bgcolor="#fdecea" border="1px solid #f5c6cb">
                                                     <Typography variant="subtitle2" style={{ fontWeight: 600, marginBottom: 8, color: "#c62828" }}>Decrement</Typography>
                                                     <Grid container spacing={2}>
@@ -420,7 +451,7 @@ const BeneficiaryManageModal = ({ open, onClose, beneficiary }) => {
                                                         </Grid>
                                                     </Grid>
                                                 </Box>
-                                            </TableCell>
+                                            </TableCell> */}
                                         </TableRow>
                                     );
                                 })}

@@ -3169,6 +3169,8 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
         eisInitialReplacementRate
         incrementAmount
         decrementAmount
+        incrementDate
+        decrementDate
         totalAdjustmentAmount
         processingDate
         beneficiaryId
