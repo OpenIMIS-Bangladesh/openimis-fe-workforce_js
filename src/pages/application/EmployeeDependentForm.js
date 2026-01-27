@@ -199,8 +199,8 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   <Typography>{dependent.nameEn || ""}</Typography>
                 </Grid>
 
-                {/* <Grid item xs={4} sm={3} style={{ textAlign: "right", paddingRight: "8px" }}>
-                  {hasData && (
+                <Grid item xs={4} sm={3} style={{ textAlign: "right", paddingRight: "8px" }}>
+                  {hasData && !isEligible && (
                     <Typography
                       variant="caption"
                       style={{
@@ -213,10 +213,10 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                         display: "inline-block", 
                       }}
                     >
-                      {isEligible ? <FormattedMessage id="workforce.dependent.eis.eligible" /> : <FormattedMessage id="workforce.dependent.eis.inEligible" />}
+                      {!isEligible && <FormattedMessage id="workforce.dependent.eis.inEligible" />}
                     </Typography>
                   )}
-                </Grid> */}
+                </Grid>
               </Grid>
             </AccordionSummary>
             <AccordionDetails>

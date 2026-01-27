@@ -324,21 +324,15 @@ const FinancialAssistanceForm = ({
       } else {
         if (nextStep === 5 && formData?.organizationType === "eis") {
           const workerBirthDate = formData?.workforceEmployee?.birthDate || formData?.deceasedWorkerInfo?.birthDate;
-
-          // Safety check: ensure dependents exists
           const currentDependents = formData?.dependents || [];
-
-          // Filter logic
           const validDependents = currentDependents.filter((dep) => getRelationForApi(dep, workerBirthDate));
-
-          // Compare lengths
           if (validDependents.length !== currentDependents.length) {
-            setFormData({
-              ...formData,
-              dependents: validDependents,
-            });
+            // setFormData({
+            //   ...formData,
+            //   dependents: validDependents,
+            // });
             setDependentErr(true);
-            return; // Block navigation
+            return; 
           }
         }
 
