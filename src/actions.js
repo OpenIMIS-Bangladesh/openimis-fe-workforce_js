@@ -3065,6 +3065,10 @@ export function fetchEisPaymentProcess(applicationIds,mm) {
           employeeBankInfo
           doctorsEntry
           dateCreated
+          eisApplicationSummary{
+            id
+            name
+          }
           workforceEmployee {         
             id
             firstNameBn
@@ -3169,6 +3173,8 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
         eisInitialReplacementRate
         incrementAmount
         decrementAmount
+        incrementDate
+        decrementDate
         totalAdjustmentAmount
         processingDate
         beneficiaryId

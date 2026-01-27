@@ -872,7 +872,7 @@ export function getRelationForApi(depObj, workerBirthDate) {
   } else if (relation === "workforce.relation.illegitimate_son") {
     return true;
   } else if (relation === "workforce.relation.illegitimate_daughter") {
-    return marital === "workforce.marital_status.unmarried";
+    return marital === "workforce.marital_status.single";
   } else {
     return false;
   }
@@ -912,7 +912,7 @@ export const getRelationString = (depObj) => {
   } else if (relation === "workforce.relation.sister") {
     if (age < 18) {
       return "Dependent minor sister";
-    } else if (marital === "workforce.marital_status.unmarried") {
+    } else if (marital === "workforce.marital_status.single") {
       return "Dependent unmarried sister";
     } else if (marital === "workforce.marital_status.widowed") {
       return "Dependent widowed sister";
@@ -924,7 +924,7 @@ export const getRelationString = (depObj) => {
       return "Dependent disabled daughter";
     } else if (age < 18) {
       return "Minor daughter";
-    } else if (marital === "workforce.marital_status.unmarried") {
+    } else if (marital === "workforce.marital_status.single") {
       return "Unmarried daughter";
     } else if (marital === "workforce.marital_status.widowed") {
       return "Dependent widowed daughter";
@@ -986,7 +986,7 @@ export const getRelationString = (depObj) => {
     return "Dependent son born out of wedlock";
 
   } else if (relation === "workforce.relation.illegitimate_daughter") {
-    return marital === "workforce.marital_status.unmarried"
+    return marital === "workforce.marital_status.single"
       ? "Dependent unmarried daughter born out of wedlock"
       : null;
   }

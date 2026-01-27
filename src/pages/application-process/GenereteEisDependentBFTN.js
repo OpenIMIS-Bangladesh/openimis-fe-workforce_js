@@ -247,7 +247,8 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
     const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
     const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
     const accidentDate = parsedAccidentInfo?.accidentDate || "";
-    const effectiveDate = benefitDate || "";
+    // const effectiveDate = benefitDate || "";
+    const effectiveDate = parsedAccidentInfo?.dateOfDeath || "";
 
     const leftItems = [
       ["EIS Worker ID", data?.beneficiaryId || ""],
@@ -917,7 +918,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
 
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
                 <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
-                  EIS-GB Sub Committee Meeting No: 16
+                  {first?.workforceApplication?.eisApplicationSummary?.name?? ""}
                 </Typography>
                 <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
                   Date: {benefitDate}
@@ -975,8 +976,9 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                     <TableRow style={{ backgroundColor: "#f0f0f0" }}>
                       <TableCell><strong>SL #</strong></TableCell>
                       <TableCell><strong>EIS Worker ID</strong></TableCell>
-                      <TableCell><strong>Worker Name</strong></TableCell>
-                      <TableCell><strong>Dependent Name</strong></TableCell>
+                      {appType === "Death" ? (<TableCell><strong>Dependent Name</strong></TableCell>) : (
+                        <TableCell><strong>Worker Name</strong></TableCell>
+                      )}
                       <TableCell><strong>NID/Birth Cert</strong></TableCell>
                       <TableCell><strong>Benefit Rate (%)</strong></TableCell>
                       <TableCell><strong>Total Amount</strong></TableCell>
@@ -995,18 +997,15 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                         <TableCell>{row?.beneficiaryId}</TableCell>
                         <TableCell>
                           {row?.workforceApplication?.applicationType ==='financialAssistance' || row?.workforceApplication?.applicationType ==='deadlyGrant' ? (
-                            <>{safeParse(row?.workforceApplication?.deceasedWorkerInfo).nameBn}</>
+                            <>
+                              {row?.workforceEmployeeDependent?.[0]?.nameEn} ({row?.workforceEmployeeDependent?.[0]? `${getRelationString(row?.workforceEmployeeDependent[0])}`: ""})
+                            </>
                               ) : (
                             <>{row?.workforceApplication?.workforceEmployee?.firstNameEn} {row?.workforceApplication?.workforceEmployee?.lastNameEn}</>
                           )}
                         </TableCell>
-                        <TableCell>
-                          {row?.workforceEmployeeDependent?.[0]
-                            ? `${getRelationString(row?.workforceEmployeeDependent[0])}`
-                            : ""}
-                        </TableCell>
                         <TableCell>{row?.workforceApplication?.workforceEmployee?.nid}</TableCell>
-                        <TableCell>{row?.eisInitialReplacementRate ? (Number(row.eisInitialReplacementRate) * 100).toFixed(0) + "%" : ""}</TableCell>
+                        <TableCell>{row?.eisInitialReplacementRate ? (Number(row.eisInitialReplacementRate) * 100).toFixed(2) + "%" : ""}</TableCell>
                         <TableCell>{row?.eisCalculatedAmount}</TableCell>
                         <TableCell>{row?.eisApprovedAmount}</TableCell>
                         <TableCell>{row?.eisInitialMonthlyAmount}</TableCell>
