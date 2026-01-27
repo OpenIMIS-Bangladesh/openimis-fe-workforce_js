@@ -998,7 +998,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                         <TableCell>
                           {row?.workforceApplication?.applicationType ==='financialAssistance' || row?.workforceApplication?.applicationType ==='deadlyGrant' ? (
                             <>
-                              {safeParse(row?.workforceApplication?.deceasedWorkerInfo).nameBn} ({row?.workforceEmployeeDependent?.[0]? `${getRelationString(row?.workforceEmployeeDependent[0])}`: ""})
+                              {row?.workforceEmployeeDependent?.[0]?.nameEn} ({row?.workforceEmployeeDependent?.[0]? `${getRelationString(row?.workforceEmployeeDependent[0])}`: ""})
                             </>
                               ) : (
                             <>{row?.workforceApplication?.workforceEmployee?.firstNameEn} {row?.workforceApplication?.workforceEmployee?.lastNameEn}</>
