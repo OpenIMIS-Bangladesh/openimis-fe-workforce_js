@@ -178,7 +178,8 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
         const isFatherSelected = normalizedDependents.find((d) => d.relationType === "workforce.relation.father");
         const previousRelation = index > 0 && isFatherSelected != null ? "workforce.relation.father" : null;
         const workerBirthDate = formdata?.workforceEmployee?.birthDate || formdata?.deceasedWorkerInfo?.birthDate;
-        const isEligible =dependent?.isEligible?dependent?.isEligible: getRelationForApi(normalizedDependents[index], workerBirthDate);
+        // const isEligible =dependent?.isEligible?dependent?.isEligible: getRelationForApi(normalizedDependents[index], workerBirthDate);
+        const isEligible =getRelationForApi(normalizedDependents[index], workerBirthDate);
         console.log("Single Beneficiary", dependent);
         console.log({ isEligible });
         const hasData = (dependent?.relationType || dependent?.relationWithWorker) && (dependent?.birthDate || dependent?.nid);
@@ -347,7 +348,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   )}
 
                   {formdata?.organizationType === "eis" &&
-                    (dependent?.relationType === "workforce.relation.son" || dependent?.relationType === "workforce.relation.daughter") && (
+                    ((dependent?.relationType||dependent?.relationWithWorker) === "workforce.relation.son" || (dependent?.relationType||dependent?.relationWithWorker) === "workforce.relation.daughter") && (
                       <>
                         <Grid item xs={6} className={classes.item}>
                           <FormControl component="fieldset">
