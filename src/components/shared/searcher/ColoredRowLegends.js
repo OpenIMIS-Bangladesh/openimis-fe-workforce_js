@@ -1,15 +1,17 @@
 import React from "react";
 import { colorCode } from "../../../constants"; 
+import { useSelector } from "react-redux";
 
 const ColoredRowLegends = () => {
+  const locale = useSelector((state) => state.core?.user?.i_user?.language  ?? "en");
   // প্রতিটি শতাংশের সঙ্গে টেক্সট মেপ করছি
   const legends = [
-    { percent: 0, label: "সম্প্রতি প্রাপ্ত" },
-    { percent: 20, label: "পর্যাপ্ত সময়" },
-    { percent: 40, label: "জরুরী" },
-    { percent: 60, label: "অগ্রাধিকার" },
-    { percent: 80, label: "সর্বোচ্চ অগ্রাধিকার" },
-    { percent: 100, label: "সময় শেষ" },
+    { percent: 0, label: locale === "fr" ? "সম্প্রতি প্রাপ্ত" : "Recently Received" },
+    { percent: 20, label: locale === "fr" ? "পর্যাপ্ত সময়" : "Sufficient Time" },
+    { percent: 40, label: locale === "fr" ? "জরুরী" : "Urgent" },
+    { percent: 60, label: locale === "fr" ? "অগ্রাধিকার" : "Priority" },
+    { percent: 80, label: locale === "fr" ? "সর্বোচ্চ অগ্রাধিকার" : "Highest Priority" },
+    { percent: 100, label: locale === "fr" ? "সময় শেষ" : "Time Expired" },
   ];
 
   return (

@@ -34,7 +34,7 @@ const INITIAL_STATE = {
     adjustments: {} 
 };
 
-const BeneficiaryManageModal = ({ open, onClose, beneficiary }) => {
+const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
     if (!beneficiary) return null;
     
     const dispatch = useDispatch();
@@ -145,8 +145,9 @@ const BeneficiaryManageModal = ({ open, onClose, beneficiary }) => {
 
         console.log("Payload to submit:", payload);
 
-        dispatch(updateWorkforceEisBeneficiary(payload))
-        // onClose();
+        dispatch(updateWorkforceEisBeneficiary(payload)).then(() => {
+            onSuccess();
+        });
     };
 
     const worker = beneficiary?.workforceApplication?.applicationType === "financialAssistance" ||
@@ -416,7 +417,7 @@ const BeneficiaryManageModal = ({ open, onClose, beneficiary }) => {
                                                                 onChange={(e) => updateAdjustment(row.beneficiaryId, 'incrementAmount', e.target.value)}
                                                             />
                                                         </Grid>
-                                                        <Grid item xs={12}>
+                                                        {/* <Grid item xs={12}>
                                                             <PublishedComponent
                                                                 pubRef="workforce.DatePicker"
                                                                 label="Effective Date"
@@ -424,7 +425,7 @@ const BeneficiaryManageModal = ({ open, onClose, beneficiary }) => {
                                                                 onChange={(date) => updateAdjustment(row.beneficiaryId, 'incrementDate', date)}
                                                                 required
                                                             />
-                                                        </Grid>
+                                                        </Grid> */}
                                                     </Grid>
                                                 </Box>
                                             </TableCell>
@@ -467,7 +468,10 @@ const BeneficiaryManageModal = ({ open, onClose, beneficiary }) => {
                     variant="contained"
                     color="primary"
                     disabled={!formData.reason || !formData.status}
-                    onClick={handleSave}
+                    onClick={() => {
+                        handleSave();
+                        // onClose();
+                    }}
                 >
                     Save Changes
                 </Button>
