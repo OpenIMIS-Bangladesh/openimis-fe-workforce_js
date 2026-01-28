@@ -37,10 +37,10 @@ const AddDependentModal = ({ open, onClose, application }) => {
       const parseAttachments = JSON.parse(dep?.attachments)
       return {...dep,attachments:parseAttachments}
     })
-    const fullyParsedBankInfo = application?.employeeBankingInfoApplication?.map((bank)=>{
-      const parseAttachments = JSON.parse(bank?.attachments)
-      return {...bank,attachments:parseAttachments}
-    })
+    // const fullyParsedBankInfo = application?.employeeBankingInfoApplication?.map((bank)=>{
+    //   const parseAttachments = JSON.parse(bank?.attachments)
+    //   return {...bank,attachments:parseAttachments}
+    // })
     return {
       ...application,
       employeeDependentInfo: fullyParsedDependentInfo,
@@ -127,7 +127,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
     };
 
     dispatch(updateApplication(payload, "update bank info")).then((res) => {
-      // onClose()
+      onClose()
   });
     // 2. Close Modal
     // onClose();
