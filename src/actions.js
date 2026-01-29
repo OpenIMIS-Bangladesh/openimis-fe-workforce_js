@@ -3169,6 +3169,7 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
         approvalDateTo: "${filters?.approvalDateTo??""}"
         month: "${filters?.month??""}"
         year: "${filters?.year??""}"
+        notInStage: "${filters?.notInStage?? ""}"
       ) {
         id
         monthIndex
@@ -3306,4 +3307,172 @@ export function updateWorkforceEisBeneficiary(beneficiary) {
     }
   `;
   return graphql(mutation, "UPDATE_WORKFORCE_EIS_BENEFICIARY");
+}
+
+
+
+export function createWorkforceEisPaymentStage(ids, month, year) {
+  const idsString = ids.map(id => `"${id}"`).join(",");
+  const mutation = `
+    mutation {
+      createWorkforceEisPaymentStage(
+        workforceEisPaymentProcessIdIn: [${idsString}]
+        month: "${month}"
+        year: "${year}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "CREATE_WORKFORCE_EIS_PAYMENT_STAGE");
+}
+
+export function deleteWorkforceEisPaymentStage(ids) {
+  const idsString = ids.map(id => `"${id}"`).join(",");
+  const mutation = `
+    mutation {
+      deleteWorkforceEisPaymentStage(
+        workforceEisPaymentStageIdIn: [${idsString}]
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "CREATE_WORKFORCE_EIS_PAYMENT_STAGE");
+}
+
+
+
+export function fetchWorkforceEisPaymentDisbursementStage(filters,mm) {
+  const present_location_projection =
+    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const payload = `
+    {
+      workforceEisPaymentDisbursementStage(
+        month: "${filters?.month??""}"
+        year: "${filters?.year??""}"
+        isDisbursed: "${filters?.isDisbursed??""}"
+        notInDisburse: "${filters?.notInDisburse?? ""}"
+      ) {
+        id
+        monthIndex
+        year
+        eisMonthlyAmount
+        paidAmount
+        eisInitialMonthlyAmount
+        eisPaymentType
+        eisApprovedAmount
+        eisCalculatedAmount
+        eisInitialReplacementRate
+        incrementAmount
+        decrementAmount
+        totalAdjustmentAmount
+        processingDate
+        disbursementDate
+        beneficiaryId
+        isDisbursed
+        bank {
+          id
+          nameEn
+          nameBn
+          districtNameEn
+          districtNameBn
+          bankCode
+          branchCode
+          routingNumber
+          parent
+          {
+            nameEn
+            nameBn
+          }
+        }
+        bankAccountNo
+        bankAccountHolderName
+        workforceEmployeeDependent{
+          status
+          nameEn
+          nameBn
+          relationWithWorker
+          disabilityStatus
+          birthDate
+          maritalStatus
+          nid
+          permanentAddress
+          presentAddress
+          ${
+          present_location_projection +
+          permanent_location_projection }
+          bankAccountNo
+          bank{
+            nameBn
+            districtNameBn
+            bankCode
+            routingNumber
+            parent{
+              nameBn
+            }
+          }
+        }
+        workforceApplication {
+          id
+          lastBaseSalary
+          associationType
+          applicationType
+          organizationType
+          employeeAccidentInfo
+          deceasedWorkerInfo
+          employeeBankInfo
+          doctorsEntry
+          dateCreated
+          trackingNumber
+          workforceEmployee {         
+            id
+            firstNameBn
+            firstNameEn
+            nid
+            permanentAddress
+            presentAddress
+            ${
+            present_location_projection +
+            permanent_location_projection }
+
+          }
+          employeeFactory {
+            id
+            nameEn
+            nameBn
+            allAssociation{
+              id
+              nameEn
+              nameBn
+              shortNameBn
+              shortNameEn
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  return graphql(payload, "EIS_PAYMENT_PROCESS");
+}
+
+
+export function createWorkforceEisPaymentDisbursement(ids) {
+  const idsString = ids.map(id => `"${id}"`).join(",");
+  const mutation = `
+    mutation {
+      createWorkforceEisPaymentDisbursement(
+        workforceEisPaymentStageIdIn: [${idsString}]
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "CREATE_WORKFORCE_EIS_PAYMENT_DISBURSEMENT");
 }

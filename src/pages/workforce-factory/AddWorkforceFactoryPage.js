@@ -425,7 +425,7 @@ const mapStateToProps = (state) => ({
   representativeId: state.workforce.fetchedRepresentativeByClientMutationId,
   factoryId: state.workforce.fetchedWorkforceFactoryId,
   uploadFile: state.workforce.uploadFile,
-  userType: getUserTypeFromRights(state.core.user.i_user.rights),
+  // userType: getUserTypeFromRights(state.core.user.i_user.rights),
 });
 
 const mapDispatchToProps = (dispatch) =>

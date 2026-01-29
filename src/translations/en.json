@@ -993,6 +993,7 @@
   "workforce.doctor.rejectRequest":"Reject",
   "workforce.doctor.recommend":"Recommend",
   "workforce.application.beneficiaryManagement": "Beneficiary Management",
-  "workforce.application.beneficiaryPaymentProcess": "Beneficiary Payment Process"
+  "workforce.application.beneficiaryPaymentProcess": "Beneficiary Payment Process",
+  "workforce.application.beneficiaryProcessedPaymentList": "Processed Payments"
 
 }
