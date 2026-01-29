@@ -631,6 +631,10 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
 
   const applicationType =
   row?.workforceApplication?.applicationType;
+  const jsonEmployeeAccidentInfo = JSON.parse(row?.workforceApplication?.employeeAccidentInfo);
+  const employeeAccidentInfo = JSON.parse(jsonEmployeeAccidentInfo);
+  const jsonDoctorEntryInfo = JSON.parse(row?.workforceApplication?.doctorEntryInfo);
+  const doctorEntryInfo = JSON.parse(jsonDoctorEntryInfo);
   // --- Original Logic Ends ---
 
   // NOTE: We do NOT use 'useStyles()' here anymore because classes are global strings.
@@ -693,12 +697,61 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
             <tr>
               <td className="noa-label">ঠিকানা:</td>
               <td className="noa-value">
-                {/* গ্রামঃ {employeePresentAddress?.village || ""}, ডাকঘরঃ {employeePresentAddress?.postOffice || ""} , <br />
-                উপজেলা/থানাঃ {employeePresentAddress?.thana || ""}, জেলাঃ  {employeePresentAddress?.district || ""} */}
+                গ্রামঃ {employeePresentAddress?.village || ""}, ডাকঘরঃ {employeePresentAddress?.postOffice || ""} , <br />
+                উপজেলা/থানাঃ {employeePresentAddress?.thana || ""}, জেলাঃ  {employeePresentAddress?.district || ""} 
               </td>
             </tr>
-
+            <tr>
+              <td className="noa-label">কর্মস্থলে দুর্ঘটনার তারিখ:</td>
+              <td className="noa-value">{employeeAccidentInfo?.accidentDate || ""}</td>
+            </tr>
+            <tr>
+              <td className="noa-label">পুনরায় কর্মস্থলে যোগদানের তারিখ: (মাস/দিন/বছর)</td>
+              <td className="noa-value">{employeeAccidentInfo?.dateOfRejoining || ""}</td>
+            </tr>
+            <tr>
+              <td className="noa-label">যে কারখানায় দুর্ঘটনা ঘটেছে তার নাম:</td>
+              <td className="noa-value">{employeeAccidentInfo?.dateOfRejoining || ""}</td>
+            </tr>
+            <tr>
+              <td className="noa-label">দুর্ঘটনা ঘটার সময়কালীন শ্রমিকের মাসিক মজুরি:</td>
+              <td className="noa-value">{row?.workforceApplication?.lastBaseSalary || ""}</td>
+            </tr>
+        {applicationType === "disabilityAssistance" && (
+            <>
+            <tr>
+              <td className="noa-label">স্থায়ী অক্ষমতার (উপার্জনক্ষমতা হ্রাস) হার:</td>
+              <td className="noa-value">{doctorEntryInfo?.disabilityPerSchedule || ""}</td>
+            </tr>
+            <tr>
+              <td className="noa-label">স্থায়ী অক্ষমতা নিরীক্ষণের তারিখ:</td>
+              <td className="noa-value">{doctorEntryInfo?.dateOfAssessment || ""}</td>
+            </tr>
+            <tr>
+              <td className="noa-label">শ্রমিকের এম.আই.এস আইডি নম্বর:</td>
+              <td className="noa-value">{row?.beneficiaryId || ""}</td>
+            </tr>
+            <tr>
+              <td className="noa-label">কেন্দ্রীয় তহবিল থেকে প্রদত্ত অর্থের পরিমাণ:</td>
+              <td className="noa-value">{OtherCompensationAmount}</td>
+            </tr>
+            <tr>
+              <td className="noa-label">
+                সর্বমোট প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
+              </td>
+              <td className="noa-value">{cfAndEisAmount || ""}</td>
+            </tr>
+            <tr>
+              <td className="noa-label">
+                মাসিক ই.আই.এস টপ-আপ বেনিফিটের কার্যকরী তারিখ:
+              </td>
+              <td className="noa-value">{row?.processingDate || ""}</td>
+            </tr>
+            </>
+          )}
             {/* Section 2 */}
+        {applicationType === "financialAssistance" && (
+            <>
             <tr>
               <td colSpan={2} className="noa-section">
                 উপযুক্ত নির্ভরশীল ব্যক্তির তথ্য:
@@ -780,6 +833,8 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
               </td>
               <td className="noa-value">{row?.processingDate || ""}</td>
             </tr>
+            </>
+          )}
           </tbody>
         </table>
 
