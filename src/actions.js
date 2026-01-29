@@ -3075,6 +3075,7 @@ export function fetchEisPaymentProcess(applicationIds,mm) {
             firstNameBn
             firstNameEn
             nid
+            birthDate
             permanentAddress
             presentAddress
             ${

@@ -698,6 +698,14 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
               <td className="noa-label">শ্রমিকের জাতীয় পরিচয়পত্র নম্বর:</td>
               <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.nid || ""}</td>
             </tr>
+          {applicationType === "disabilityAssistance" && (
+            <>
+            <tr>
+              <td className="noa-label">শ্রমিকের জন্ম তারিখ:</td>
+              <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.birthDate || ""}</td>
+            </tr>
+              </>
+          )}
 
             <tr>
               <td className="noa-label">ঠিকানা:</td>
@@ -716,7 +724,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
             </tr>
             <tr>
               <td className="noa-label">যে কারখানায় দুর্ঘটনা ঘটেছে তার নাম:</td>
-              <td className="noa-value">{employeeAccidentInfo?.dateOfRejoining || ""}</td>
+              <td className="noa-value">{row?.workforceApplication?.employeeFactory?.nameBn || ""}</td>
             </tr>
             <tr>
               <td className="noa-label">দুর্ঘটনা ঘটার সময়কালীন শ্রমিকের মাসিক মজুরি:</td>
