@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
@@ -7,34 +7,27 @@ import {
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import SearchIcon from '@material-ui/icons/Search';
 
-import { 
-  fetchEisPaymentProcess, 
-  fetchWorkforceFactoriesSummary, 
-  fetchWorkforceAllAssociationSummary, 
-  fetchEisPaymentProcessWithFilters
+import {
+  fetchEisPaymentProcessWithFilters,
+  fetchWorkforceFactoriesSummary,
+  fetchWorkforceAllAssociationSummary
 } from "../../../actions";
 import { useModulesManager, PublishedComponent } from "@openimis/fe-core";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
 import BeneficiaryManageModal from "../modals/BeneficiaryManageModal";
 
 
-const BeneficiaryManagement = () => {
+const BeneficiaryPaymentProcess = () => {
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
-  
+
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [factories, setFactories] = useState([]);
   const [associations, setAssociations] = useState([]);
-  const [searchBtnClicked, setSearchBtnClicked] = useState(false);
-
   const [filters, setFilters] = useState({
-    trackingNo: "",
-    factory: "",
-    association: "",
-    beneficiaryId: "",
-    approvalDateFrom: "",
-    approvalDateTo: ""
+    month: "",
+    year: ""
   });
 
   const [openModal, setOpenModal] = useState(false);
@@ -50,22 +43,22 @@ const BeneficiaryManagement = () => {
     setSelectedBeneficiary(null);
   };
 
+  // Generate years dynamically (previous year to 10 years back)
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1; // Months are 0-indexed
+  const yearOptions = Array.from({ length: 11 }, (_, i) => currentYear - i);
+  const monthOptions = Array.from({ length: 12 }, (_, i) => i + 1);
 
-  // 1. Updated Fetching Logic to accept filter parameters
   const loadData = async () => {
     setLoading(true);
     try {
-      // Pass the filter state directly to the backend action
       const [processRes, factoryRes, assocRes] = await Promise.all([
         dispatch(fetchEisPaymentProcessWithFilters({
-            workforceApplicationTrackingNumber: filters.trackingNo,
-            workforceFactoryId: safeDecodeId(filters.factory)??"",
-            allAssociationId: safeDecodeId(filters.association)??"",
-            beneficiaryId: filters.beneficiaryId,
-            status: "active",
-            approved: "yes",
-            approvalDateFrom: filters.approvalDateFrom,
-            approvalDateTo: filters.approvalDateTo
+          month: filters.month,
+          year: filters.year,
+          status: "active",
+          beneficiaryStatus: "eligible",
+          approved: "yes"
         }, modulesManager)),
         dispatch(fetchWorkforceFactoriesSummary(modulesManager, [])),
         dispatch(fetchWorkforceAllAssociationSummary(modulesManager, []))
@@ -74,53 +67,37 @@ const BeneficiaryManagement = () => {
       setData(processRes?.payload?.data?.workforceEisPaymentProcess || []);
       setFactories(factoryRes?.payload?.data?.workforceEmployerFactories?.edges || []);
       setAssociations(assocRes?.payload?.data?.workforceAllAssociation?.edges || []);
-      
+
     } catch (err) {
       console.error("Data Load Error:", err);
     } finally {
       setLoading(false);
     }
-    // Dependency includes filters so it updates when they change
   };
 
   useEffect(() => {
     loadData();
-  }, [dispatch, modulesManager]);
+  }, [dispatch, modulesManager, filters]);
 
-  // 2. Filter Handlers
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleDateChange = (field, value) => {
-        setFilters(prev => ({
-            ...prev,
-            [field]: value
-        }));
-    };
-
-
   const clearFilters = () => {
-    setFilters({ trackingNo: "", factory: "", association: "", beneficiaryId: "", approvalDateFrom: "", approvalDateTo: "" });
+    setFilters({ month: "", year: "" });
   };
 
-  // 3. Status Chip Helper
-  const getStatusChip = (row) => {
-    if (row?.beneficiaryStatus ==="eligible") return <Chip label="Eligible" size="small" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }} />;
-    if (row?.beneficiaryStatus ==="closed") return <Chip label="Closed" size="small" style={{ backgroundColor: '#f5e8e8ff', color: '#7d2e2eff' }}/>;
-    if (row?.beneficiaryStatus ==="hold") return <Chip label="On Hold" size="small" style={{ backgroundColor: '#f5f4e8ff', color: '#787d2eff' }} />;
-    return <Chip label={row?.beneficiaryStatus} size="small" variant="outlined" />;
-  };
-
-  const handleSearchClick = () => {
-    loadData();
-  };
-
+    const getStatusChip = (row) => {
+      if (row?.beneficiaryStatus ==="eligible") return <Chip label="Eligible" size="small" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }} />;
+      if (row?.beneficiaryStatus ==="closed") return <Chip label="Closed" size="small" style={{ backgroundColor: '#f5e8e8ff', color: '#7d2e2eff' }}/>;
+      if (row?.beneficiaryStatus ==="hold") return <Chip label="On Hold" size="small" style={{ backgroundColor: '#f5f4e8ff', color: '#787d2eff' }} />;
+      return <Chip label={row?.beneficiaryStatus} size="small" variant="outlined" />;
+    };
+  
 
   return (
     <Box bgcolor="#fafafa" minHeight="100vh">
-      {/* Header Area */}
       <Box mb={2} display="flex" justifyContent="space-between" alignItems="flex-end">
         <Box>
           <Typography variant="h5" style={{ fontWeight: 700, marginBottom: 4 }}>
@@ -132,69 +109,44 @@ const BeneficiaryManagement = () => {
         </Box>
       </Box>
 
-      {/* Filter Card */}
       <Paper elevation={0} style={{ padding: '24px', marginBottom: '24px', borderRadius: '12px', border: '1px solid #eceff1' }}>
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} sm={6} md={3}>
             <TextField
-              fullWidth label="Application Tracking No" name="trackingNo" variant="outlined" size="small"
-              value={filters.trackingNo} onChange={handleFilterChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <TextField
-              fullWidth label="Beneficiary ID" name="beneficiaryId" variant="outlined" size="small"
-              value={filters.beneficiaryId} onChange={handleFilterChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <TextField
-              fullWidth select label="Factory" name="factory" variant="outlined" size="small"
-              value={filters.factory} onChange={handleFilterChange}
+              fullWidth
+              select
+              label="Month"
+              name="month"
+              variant="outlined"
+              size="small"
+              value={filters.month || currentMonth}
+              onChange={handleFilterChange}
             >
-              <MenuItem value=""><em>All Factories</em></MenuItem>
-              {factories.map(f => (
-                <MenuItem key={f.node.id} value={f.node.id}>{f.node.nameBn || f.node.nameEn}</MenuItem>
+              <MenuItem value=""><em>All Months</em></MenuItem>
+              {monthOptions.map(month => (
+                <MenuItem key={month} value={month}>{month}</MenuItem>
               ))}
             </TextField>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <TextField
-              fullWidth select label="Association" name="association" variant="outlined" size="small"
-              value={filters.association} onChange={handleFilterChange}
+              fullWidth
+              select
+              label="Year"
+              name="year"
+              variant="outlined"
+              size="small"
+              value={filters.year || currentYear }
+              onChange={handleFilterChange}
             >
-              <MenuItem value=""><em>All Associations</em></MenuItem>
-              {associations.map(a => (
-                <MenuItem key={a.node.id} value={a.node.id}>{a.node.shortNameBn || a.node.nameEn}</MenuItem>
+              {yearOptions.map(year => (
+                <MenuItem key={year} value={year}>{year}</MenuItem>
               ))}
             </TextField>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Box mb style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px'}} display="flex" alignItems="center">
-              <PublishedComponent
-                  pubRef="workforce.DatePicker"
-                  label="Approval Date From"
-                  value={filters.approvalDateFrom}
-                  onChange={(date) => handleDateChange("approvalDateFrom", date)}
-                  required
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Box style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px'}} display="flex" alignItems="center">
-              <PublishedComponent
-                  pubRef="workforce.DatePicker"
-                  label="Approval Date To"
-                  value={filters.approvalDateTo}
-                  onChange={(date) => handleDateChange("approvalDateTo", date)}
-                  required
-              />
-            </Box>
           </Grid>
           <Grid item xs={12} md={2}>
             <Box display="flex" gap="8px">
-            
-              <Button onClick={handleSearchClick} fullWidth variant="contained" color="primary" startIcon={<SearchIcon />}>
+              <Button onClick={loadData} fullWidth variant="contained" color="primary" startIcon={<SearchIcon />}>
                 Search
               </Button>
               <Button onClick={clearFilters} fullWidth variant="text" color="default" startIcon={<ClearAllIcon />}>
@@ -204,12 +156,12 @@ const BeneficiaryManagement = () => {
           </Grid>
         </Grid>
       </Paper>
-      {loading?(
+
+      {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
           <CircularProgress />
         </Box>
-      ):
-      (
+      ) : (
         <TableContainer component={Paper} elevation={0} style={{ borderRadius: '12px', border: '1px solid #e0e0e0' }}>
           <Table>
             <TableHead style={{ backgroundColor: '#f8fafd' }}>
@@ -223,7 +175,6 @@ const BeneficiaryManagement = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {/* Using raw data directly as it's now filtered by the backend */}
               {data.map((row) => {
                 const dep = row?.workforceEmployeeDependent?.[0] || {};
                 const worker = row?.workforceApplication?.applicationType === "financialAssistance" || 
@@ -290,12 +241,13 @@ const BeneficiaryManagement = () => {
           )}
         </TableContainer>
       )}
+
       <BeneficiaryManageModal
         open={openModal}
         onClose={handleCloseModal}
         onSuccess={() => {
           handleCloseModal();
-          loadData(); // 👈 re-fetch table data
+          loadData(); // Re-fetch table data after modal action
         }}
         beneficiary={selectedBeneficiary}
       />
@@ -303,4 +255,4 @@ const BeneficiaryManagement = () => {
   );
 };
 
-export default BeneficiaryManagement;
+export default BeneficiaryPaymentProcess;

@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
       overflow: "visible !important",
     },
   },
-    "@global": {
+  "@global": {
     "@media print": {
       "body *": {
         visibility: "hidden",
@@ -567,7 +567,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
     const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
     const effectiveDate = dateOfRejoining || dateOfAssessment || "";
     const accidentDate = parsedAccidentInfo?.accidentDate || "";
-    const dateOfDeath= parsedAccidentInfo?.dateOfDeath || "";
+    const dateOfDeath = parsedAccidentInfo?.dateOfDeath || "";
 
 
     const leftItems = [
@@ -831,46 +831,51 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
 
   const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
   const accidentDate = parsedAccidentInfo?.accidentDate || "";
-  const dateOfDeath= parsedAccidentInfo?.dateOfDeath || "";
+  const dateOfDeath = parsedAccidentInfo?.dateOfDeath || "";
   const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
   const effectiveDate = benefitDate || "";
 
-  const handlePaymentTypeChange = async (paymentType, beneficiaryId, rowId) => {
 
-    setPaymentTypeMap((prev) => ({
+  const [rowStateMap, setRowStateMap] = useState({});
+
+  const handlePaymentTypeChange = async (paymentType, beneficiaryId) => {
+    setRowStateMap(prev => ({
       ...prev,
-      [rowId]: paymentType,
+      [beneficiaryId]: {
+        ...prev[beneficiaryId],
+        eisPaymentType: paymentType,
+      },
     }));
 
-    const data = {
-      beneficiaryId,
-      eisPaymentType: paymentType,
-    };
-
     try {
-      await dispatch(updateWorkforceEisPaymentProcessPaymentType(data));
+      await dispatch(updateWorkforceEisPaymentProcessPaymentType({
+        beneficiaryId,
+        eisPaymentType: paymentType,
+      }));
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleApprovalChange = async (value, beneficiaryId, rowId) => {
-    setPaymentTypeMap((prev) => ({
+  const handleApprovalChange = async (value, beneficiaryId) => {
+    setRowStateMap(prev => ({
       ...prev,
-      [rowId]: value,
+      [beneficiaryId]: {
+        ...prev[beneficiaryId],
+        approved: value,
+      },
     }));
 
-    const data = {
-      beneficiaryId,
-      approved: value,
-    };
-
     try {
-      await dispatch(updateWorkforceEisPaymentProcessApproval(data));
+      await dispatch(updateWorkforceEisPaymentProcessApproval({
+        beneficiaryId,
+        approved: value,
+      }));
     } catch (error) {
       console.error(error);
     }
   };
+
   const user_type = getUserTypeFromRights(userRights)
 
   return (
@@ -918,7 +923,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
 
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
                 <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
-                  {first?.workforceApplication?.eisApplicationSummary?.name?? ""}
+                  {first?.workforceApplication?.eisApplicationSummary?.name ?? ""}
                 </Typography>
                 <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
                   Date: {benefitDate}
@@ -935,11 +940,11 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                 <div>
                   <Typography><strong>EIS Worker ID:</strong> {first?.beneficiaryId}</Typography>
                   {selectedApplicationIds.length === 1 && (
-                    first?.workforceApplication?.applicationType ==='financialAssistance' || first?.workforceApplication?.applicationType ==='deadlyGrant' ? (
-                        <Typography><strong>Worker Name:</strong> {safeParse(first?.workforceApplication?.deceasedWorkerInfo).nameBn}</Typography>
+                    first?.workforceApplication?.applicationType === 'financialAssistance' || first?.workforceApplication?.applicationType === 'deadlyGrant' ? (
+                      <Typography><strong>Worker Name:</strong> {safeParse(first?.workforceApplication?.deceasedWorkerInfo).nameBn}</Typography>
                     ) : (
-                        <Typography><strong>Worker Name:</strong> {first?.workforceApplication?.workforceEmployee?.firstNameEn} {first?.workforceApplication?.workforceEmployee?.lastNameEn}</Typography>
-                    ) 
+                      <Typography><strong>Worker Name:</strong> {first?.workforceApplication?.workforceEmployee?.firstNameEn} {first?.workforceApplication?.workforceEmployee?.lastNameEn}</Typography>
+                    )
                   )}
                   <Typography><strong>Date of Accident:</strong> {accidentDate}</Typography>
                   {appType === "Death" ? (
@@ -963,7 +968,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                   <Typography>
                     <strong>Type of Accident:</strong>{" "}
                     {parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace" ? "Workplace Accident" :
-                     parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA" ? "On Duty RTA" : "Commuting"}
+                      parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA" ? "On Duty RTA" : "Commuting"}
                   </Typography>
                 </div>
               </div>
@@ -996,11 +1001,11 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{row?.beneficiaryId}</TableCell>
                         <TableCell>
-                          {row?.workforceApplication?.applicationType ==='financialAssistance' || row?.workforceApplication?.applicationType ==='deadlyGrant' ? (
+                          {row?.workforceApplication?.applicationType === 'financialAssistance' || row?.workforceApplication?.applicationType === 'deadlyGrant' ? (
                             <>
-                              {row?.workforceEmployeeDependent?.[0]?.nameEn} ({row?.workforceEmployeeDependent?.[0]? `${getRelationString(row?.workforceEmployeeDependent[0])}`: ""})
+                              {row?.workforceEmployeeDependent?.[0]?.nameEn} ({row?.workforceEmployeeDependent?.[0] ? `${getRelationString(row?.workforceEmployeeDependent[0])}` : ""})
                             </>
-                              ) : (
+                          ) : (
                             <>{row?.workforceApplication?.workforceEmployee?.firstNameEn} {row?.workforceApplication?.workforceEmployee?.lastNameEn}</>
                           )}
                         </TableCell>
@@ -1012,11 +1017,15 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                         <TableCell>{row?.eisMonthlyAmount}</TableCell>
                         <TableCell>
                           {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
-                           user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
-                           user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
-                           user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
+                            user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
+                            user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
+                            user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
                             <select
-                              value={paymentTypeMap[index]?.eisPaymentType ?? row?.eisPaymentType ?? ""}
+                              value={
+                                rowStateMap[row.beneficiaryId]?.eisPaymentType ??
+                                row.eisPaymentType ??
+                                ""
+                              }
                               onChange={(e) => handlePaymentTypeChange(e.target.value, row?.beneficiaryId, index)}
                             >
                               <option value="" disabled>Select</option>
@@ -1028,9 +1037,12 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                         </TableCell>
                         <TableCell>
                           {user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
-                           user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
+                            user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
                             <select
-                              value={paymentTypeMap[index]?.approved ?? (row?.isApproved ? "yes" : "")}
+                              value={
+                                rowStateMap[row.beneficiaryId]?.approved ??
+                                (row?.approved ? "yes" : "")
+                              }
                               onChange={(e) => handleApprovalChange(e.target.value, row?.beneficiaryId, index)}
                             >
                               <option value="">Not Approved</option>

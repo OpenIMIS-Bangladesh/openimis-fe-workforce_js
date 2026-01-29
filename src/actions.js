@@ -3065,6 +3065,7 @@ export function fetchEisPaymentProcess(applicationIds,mm) {
           employeeBankInfo
           doctorsEntry
           dateCreated
+          trackingNumber
           eisApplicationSummary{
             id
             name
@@ -3161,6 +3162,12 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
         allAssociationId: "${filters?.allAssociationId??""}"
         beneficiaryId: "${filters?.beneficiaryId??""}"
         status: "${filters?.status??""}"
+        beneficiaryStatus: "${filters?.beneficiaryStatus??""}"
+        approved: "${filters?.approved??""}"
+        approvalDateFrom: "${filters?.approvalDateFrom??""}"
+        approvalDateTo: "${filters?.approvalDateTo??""}"
+        month: "${filters?.month??""}"
+        year: "${filters?.year??""}"
       ) {
         id
         monthIndex
@@ -3175,6 +3182,7 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
         decrementAmount
         incrementDate
         decrementDate
+        decrementEndDate
         totalAdjustmentAmount
         processingDate
         beneficiaryId
@@ -3240,6 +3248,7 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
           employeeBankInfo
           doctorsEntry
           dateCreated
+          trackingNumber
           workforceEmployee {         
             id
             firstNameBn

@@ -43,6 +43,7 @@ import AssignmentReturnedIcon from '@material-ui/icons/AssignmentReturned';
 import ForwardIcon from '@material-ui/icons/Forward';
 import BeneficiaryReport from "../reports/BeneficiaryReport";
 import BeneficiaryManagement from "../../components/dashboard/beneficiary-management/BeneficiaryManagement";
+import BeneficiaryPaymentProcess from "../../components/dashboard/beneficiary-management/BeneficiaryPaymentProcess";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -193,6 +194,13 @@ const SidebarMenu = [
     id: "beneficiaryManagement",
     text: (
       <FormattedMessage module="workforce" id="workforce.application.beneficiaryManagement" />
+    ),
+    icon: <AssignmentIcon />,
+  },
+  {
+    id: "beneficiaryPaymentProcess",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.beneficiaryPaymentProcess" />
     ),
     icon: <AssignmentIcon />,
   },
@@ -641,6 +649,8 @@ const EisCoordinatorDashboardPage = () => {
         return <BeneficiaryReportSheet />;
       case "beneficiaryManagement":
         return <BeneficiaryManagement />;
+      case "beneficiaryPaymentProcess":
+        return <BeneficiaryPaymentProcess />;
       default:
         return <FiledApplications />;
     }
