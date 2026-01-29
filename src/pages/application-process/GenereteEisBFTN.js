@@ -635,6 +635,9 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
   const employeeAccidentInfo = JSON.parse(jsonEmployeeAccidentInfo);
   const jsonDoctorEntryInfo = JSON.parse(row?.workforceApplication?.doctorsEntry);
   const doctorEntryInfo = JSON.parse(jsonDoctorEntryInfo);
+  let logo= <img src={`workforce_assets/centralfund.png`} alt="Logo" style={{ width: "70px", position:"absolute", top:"0",right:"30pt"}} />;
+  let eisLogo= <img src={`workforce_assets/eis.png`} alt="Logo" style={{ width: "80px", position:"absolute", top:"10pt",left:"30pt"}} />;
+
   // --- Original Logic Ends ---
 
   // NOTE: We do NOT use 'useStyles()' here anymore because classes are global strings.
@@ -646,12 +649,14 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
       <div className="noa-header">
         {/* We can use standard HTML tags since styling is handled by global CSS targeting .noa-header children */}
         <div>
+          {eisLogo}
           <p style={{ margin: 0 }}>ব্যক্তিগত</p>
           <h3 style={{ margin: "5px 0" }}>এমপ্লয়মেন্ট ইনজুরি স্কীম-(ই.আই.এস) পাইলট</h3>
           <p style={{ margin: "2px 0" }}>
             ১৯৬, ১০ম তলা, শ্রম ভবন, শহীদ সৈয়দ নজরুল ইসলাম সরনী, বিজয়নগর,
             ঢাকা-১০০০
           </p>
+          {logo}
           <p style={{ margin: "2px 0" }}>
             মোবাইল: ০১৮৮৬-৯২১০৩০ | ই-মেইল: verification@eis-pilot-bd.org |
             ওয়েবসাইট: eis-pilot-bd.org
