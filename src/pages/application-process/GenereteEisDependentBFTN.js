@@ -363,7 +363,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
       const excelRow = sheet.addRow([
         index + 1,
         row?.beneficiaryId || "",
-        row?.workforceEmployeeDependent?.[0]?.nid || "",
+        row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid || "",
         `${benefitRate * 100}%`,
         row?.eisInitialMonthlyAmount || 0,
         row?.eisMonthlyAmount || 0,
@@ -681,7 +681,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
       if (benefitRateTotal === null) { benefitRateTotal = benefitRate; }
       const excelRow = sheet.addRow([index + 1,
       row?.beneficiaryId,
-      row?.workforceEmployeeDependent?.[0]?.nid || "",
+      row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid || "",
       RELATION_LABEL_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker] || "",
       `${benefitRate * 100}%`,
       row?.eisInitialMonthlyAmount || 0,
@@ -1009,7 +1009,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                             <>{row?.workforceApplication?.workforceEmployee?.firstNameEn} {row?.workforceApplication?.workforceEmployee?.lastNameEn}</>
                           )}
                         </TableCell>
-                        <TableCell>{row?.workforceEmployeeDependent?.[0]?.nid}</TableCell>
+                        <TableCell>{row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid}</TableCell>
                         <TableCell>{row?.eisInitialReplacementRate ? (Number(row.eisInitialReplacementRate) * 100).toFixed(2) + "%" : ""}</TableCell>
                         <TableCell>{row?.eisCalculatedAmount}</TableCell>
                         <TableCell>{row?.eisApprovedAmount}</TableCell>

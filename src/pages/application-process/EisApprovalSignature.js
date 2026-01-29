@@ -404,7 +404,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
       sheet.addRow([
         index + 1,
         row?.beneficiaryId,
-        row?.workforceApplication?.workforceEmployee?.nid,
+        row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid,
         Number(row?.eisInitialReplacementRate) * 100 + "%",
         row?.eisInitialMonthlyAmount,
         row?.eisMonthlyAmount,
@@ -587,7 +587,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                           ? `${row.workforceEmployeeDependent[0].nameEn} (${RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker] || ""})`
                           : "N/A"}
                       </td>
-                      <td>{row?.workforceApplication?.workforceEmployee?.nid}</td>
+                      <td>{ow?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid}</td>
                       <td style={{ textAlign: "center" }}>{benefitRate}%</td>
                       <td style={{ textAlign: "right" }}>{row?.eisInitialMonthlyAmount}</td>
                       <td style={{ textAlign: "right" }}>{row?.eisCalculatedAmount}</td>
