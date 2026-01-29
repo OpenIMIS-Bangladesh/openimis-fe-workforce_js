@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, makeStyles } from "@material-ui/core";
 import { FormattedMessage, useModulesManager, useTranslations } from "@openimis/fe-core";
-import { useDispatch } from "react-redux";
-import { fetchEmployeeDependent, updateApplication } from "../../../actions";
+import { useDispatch, useSelector } from "react-redux";
+import { createWorkforceDocument, fetchEmployeeDependent, updateApplication } from "../../../actions";
 import EmployeeDependentForm from "../../../pages/application/EmployeeDependentForm";
 import EmployeeDeathAccountInfoForm from "../../../pages/application/EmployeeDeathAccountInfoForm";
 import { getRelationForApi, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
@@ -31,12 +31,14 @@ const AddDependentModal = ({ open, onClose, application }) => {
   const [errors, setErrors] = useState({});
   const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
   const [dependentErr, setDependentErr] = useState(false);
+  const uploadDependentFile = useSelector((state) => state.workforce.uploadDependentFile);
+  const uploadBankFile = useSelector((state) => state.workforce.uploadBankFile);
 
   const [formData, setFormData] = useState(() => {
-    const fullyParsedDependentInfo = application?.workforceEmployeeDependentApplication?.map((dep)=>{
-      const parseAttachments = JSON.parse(dep?.attachments)
-      return {...dep,attachments:parseAttachments}
-    })
+    const fullyParsedDependentInfo = application?.workforceEmployeeDependentApplication?.map((dep) => {
+      const parseAttachments = JSON.parse(dep?.attachments);
+      return { ...dep, attachments: parseAttachments };
+    });
     // const fullyParsedBankInfo = application?.employeeBankingInfoApplication?.map((bank)=>{
     //   const parseAttachments = JSON.parse(bank?.attachments)
     //   return {...bank,attachments:parseAttachments}
@@ -75,7 +77,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
 
   const formatPayloadJson = (data) => JSON.stringify(data).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}");
 
-  const handleSaveDependents = () => {
+  const handleSaveDependents = async () => {
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
     setErrors(newErrors);
 
@@ -87,17 +89,17 @@ const AddDependentModal = ({ open, onClose, application }) => {
 
     if (Object.keys(newErrors).length === 0) {
       // 1. Safe extraction of Worker Birth Date
-      let workerBirthDate = formData?.deceasedWorkerInfo?.birthDate||formData?.workforceEmployee?.birthDate ;
-      console.log("Worker Birth Date used for validation:", workerBirthDate); 
+      let workerBirthDate = formData?.deceasedWorkerInfo?.birthDate || formData?.workforceEmployee?.birthDate;
+      console.log("Worker Birth Date used for validation:", workerBirthDate);
 
       const currentDependents = formData?.employeeDependentInfo || [{}];
 
       const validDependents = currentDependents?.filter((dep) => {
-        const validFlag = getRelationForApi(dep, workerBirthDate)
-        console.log({validFlag})
-        return validFlag
-      }) 
-      console.log({validDependents})
+        const validFlag = getRelationForApi(dep, workerBirthDate);
+        console.log({ validFlag });
+        return validFlag;
+      });
+      console.log({ validDependents });
       if (validDependents?.length !== currentDependents?.length) {
         // If we found invalid items, stop and show error
         setDependentErr(true);
@@ -108,18 +110,32 @@ const AddDependentModal = ({ open, onClose, application }) => {
           id: application.id,
           employeeDependentInfo: formatPayloadJson(finalDependentList),
         };
-        
+        if (uploadDependentFile) {
+          await uploadDependentFile.map((file) => {
+            const appId = application?.id || formData?.id;
+            return dispatch(
+              createWorkforceDocument({ ...file, status: "verified", workforceApplicationId: safeDecodeId(application?.id) }, `Created workforce document`),
+            );
+          });
+        }
         dispatch(updateApplication(payload, "update dependent info")).then((res) => {
           dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(application?.id)}"`]));
         });
-        
+
         setActiveStep(1);
         setExpanded(0);
       }
     }
   };
 
-  const handleSaveBankInfo = () => {
+  const handleSaveBankInfo = async () => {
+    if (uploadBankFile) {
+      await uploadBankFile.map((file) => {
+        return dispatch(
+          createWorkforceDocument({ ...file, status: "verified", workforceApplicationId: safeDecodeId(application?.id) }, `Created workforce document`),
+        );
+      });
+    }
     const finalBankList = formData.employeeBankInfo || [];
     const payload = {
       id: application.id,
@@ -127,8 +143,8 @@ const AddDependentModal = ({ open, onClose, application }) => {
     };
 
     dispatch(updateApplication(payload, "update bank info")).then((res) => {
-      onClose()
-  });
+      onClose();
+    });
     // 2. Close Modal
     // onClose();
   };
@@ -138,7 +154,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
     setActiveStep(0);
     setExpanded(0);
   };
-  console.log({tazwer:formData})
+  console.log({ tazwer: formData });
 
   return (
     <>
