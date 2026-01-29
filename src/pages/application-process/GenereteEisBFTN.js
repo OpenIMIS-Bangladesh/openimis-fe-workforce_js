@@ -633,7 +633,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
   row?.workforceApplication?.applicationType;
   const jsonEmployeeAccidentInfo = JSON.parse(row?.workforceApplication?.employeeAccidentInfo);
   const employeeAccidentInfo = JSON.parse(jsonEmployeeAccidentInfo);
-  const jsonDoctorEntryInfo = JSON.parse(row?.workforceApplication?.doctorEntryInfo);
+  const jsonDoctorEntryInfo = JSON.parse(row?.workforceApplication?.doctorsEntry);
   const doctorEntryInfo = JSON.parse(jsonDoctorEntryInfo);
   // --- Original Logic Ends ---
 
