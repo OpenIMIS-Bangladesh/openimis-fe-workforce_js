@@ -587,7 +587,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                           ? `${row.workforceEmployeeDependent[0].nameEn} (${RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker] || ""})`
                           : "N/A"}
                       </td>
-                      <td>{ow?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid}</td>
+                      <td>{row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid}</td>
                       <td style={{ textAlign: "center" }}>{benefitRate}%</td>
                       <td style={{ textAlign: "right" }}>{row?.eisInitialMonthlyAmount}</td>
                       <td style={{ textAlign: "right" }}>{row?.eisCalculatedAmount}</td>
