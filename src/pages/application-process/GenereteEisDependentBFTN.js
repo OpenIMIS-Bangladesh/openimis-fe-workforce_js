@@ -90,6 +90,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
   const [appType, setAppType] = useState("");
   const [benefitDate, setBenefitDate] = useState("");
   const modulesManager = useModulesManager();
+  const user_type = getUserTypeFromRights(userRights)
 
   const getTotalAmount = () => {
     return eisPayments
@@ -110,7 +111,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
         };
 
         await dispatch(
-          eisPaymentProcessWithoutDate(eisPaymentData, "yes")
+          eisPaymentProcessWithoutDate(eisPaymentData, user_type===WORKFORCE_USER_TYPE.EIS_COORDINATOR?"yes":"no")
         );
       }
 
@@ -876,7 +877,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
     }
   };
 
-  const user_type = getUserTypeFromRights(userRights)
+
 
   return (
     <Dialog
