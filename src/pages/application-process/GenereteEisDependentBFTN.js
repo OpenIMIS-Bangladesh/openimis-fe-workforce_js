@@ -110,7 +110,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
         };
 
         await dispatch(
-          eisPaymentProcessWithoutDate(eisPaymentData, "Create Payment Process")
+          eisPaymentProcessWithoutDate(eisPaymentData, "yes")
         );
       }
 

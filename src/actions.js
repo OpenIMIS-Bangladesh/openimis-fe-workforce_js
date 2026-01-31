@@ -2435,11 +2435,12 @@ export function eisPaymentProcess(eisPaymentData) {
   return graphql(mutation, "WORKFORCE_EIS_PAYMENT_PROCESS");
 }
 
-export function eisPaymentProcessWithoutDate(eisPaymentData) {
+export function eisPaymentProcessWithoutDate(eisPaymentData, recall="no") {
   const mutation = `
     mutation {
       createWorkforceEisPaymentProcess(
         workforceApplicationId: "${eisPaymentData?.workforceApplicationId}"
+        recall: "${recall}"
       ) {
         success
         errors
