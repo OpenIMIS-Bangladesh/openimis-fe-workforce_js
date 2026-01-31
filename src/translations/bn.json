@@ -909,5 +909,7 @@
   "profile.updated.successfully": "তথ্য সফলভাবে আপডেট হয়েছে",
   "workforce.application.beneficiaryManagement": "সুবিধাভোগী ব্যবস্থাপনা",
   "workforce.application.beneficiaryPaymentProcess": "সুবিধাভোগী পেমেন্ট প্রসেসিং",
-  "workforce.application.beneficiaryProcessedPaymentList": "প্রসেসকৃত পেমেন্টের তালিকা"
+  "workforce.application.beneficiaryProcessedPaymentList": "প্রসেসকৃত পেমেন্টের তালিকা",
+  "workforce.modal.saveCalculation": "ক্যালকুলেশন সেভ করুন",
+  "workforce.modal.recalculate": "পুনরায় ক্যালকুলেশন করুন"
 }

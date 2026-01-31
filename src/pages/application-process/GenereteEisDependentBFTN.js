@@ -90,7 +90,8 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
   const [appType, setAppType] = useState("");
   const [benefitDate, setBenefitDate] = useState("");
   const modulesManager = useModulesManager();
-  const user_type = getUserTypeFromRights(userRights)
+  const user_type = getUserTypeFromRights(userRights);
+  const [recall, setRecall] = useState(0);
 
   const getTotalAmount = () => {
     return eisPayments
@@ -111,7 +112,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
         };
 
         await dispatch(
-          eisPaymentProcessWithoutDate(eisPaymentData, user_type===WORKFORCE_USER_TYPE.EIS_COORDINATOR?"yes":"no")
+          eisPaymentProcessWithoutDate(eisPaymentData, recall==1?"yes":"no")
         );
       }
 
@@ -132,14 +133,14 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
         } else if (first?.workforceApplication?.applicationType == 'financialAssistance') {
           setAppType("Death");
         }
-        console.log("fetchedEisPayments", fetchedData);
         setBenefitDate(first?.workforceApplication?.dateCreated ? first?.workforceApplication?.dateCreated.split("T")[0] : "fg");
         // setBenefitDate(first?.workforceApplication?.dateCreated ? new Date(first?.workforceApplication?.dateCreated).toLocaleDateString("en-BD", {
         //   timeZone: "Asia/Dhaka",
         // }) : "fg");
-      })
+      });
+      setRecall(0);
     }
-  }, [open]);
+  }, [open, recall]);
 
 
 
@@ -1077,9 +1078,14 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
             </Button>
             {
               user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
-                <Button onClick={onClose} variant="contained" color="primary">
-                  <FormattedMessage id="ক্যালকুলেশন সেভ করুন" />
-                </Button>
+                <>
+                  <Button onClick={()=>setRecall(1)} variant="contained" color="primary">
+                    <FormattedMessage id="workforce.modal.recalculate" />
+                  </Button>
+                  <Button onClick={onClose} variant="contained" color="primary">
+                    <FormattedMessage id="workforce.modal.saveCalculation" />
+                  </Button>
+                </>
               )
             }
 

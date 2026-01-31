@@ -994,6 +994,8 @@
   "workforce.doctor.recommend":"Recommend",
   "workforce.application.beneficiaryManagement": "Beneficiary Management",
   "workforce.application.beneficiaryPaymentProcess": "Beneficiary Payment Process",
-  "workforce.application.beneficiaryProcessedPaymentList": "Processed Payments"
+  "workforce.application.beneficiaryProcessedPaymentList": "Processed Payments",
+  "workforce.modal.saveCalculation": "Save Calculation",
+  "workforce.modal.recalculate": "Recalculate"
 
 }
