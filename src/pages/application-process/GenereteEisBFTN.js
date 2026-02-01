@@ -719,10 +719,6 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
               <td className="noa-value">{employeeAccidentInfo?.accidentDate || ""}</td>
             </tr>
             <tr>
-              <td className="noa-label">পুনরায় কর্মস্থলে যোগদানের তারিখ: (মাস/দিন/বছর)</td>
-              <td className="noa-value">{employeeAccidentInfo?.dateOfRejoining || ""}</td>
-            </tr>
-            <tr>
               <td className="noa-label">যে কারখানায় দুর্ঘটনা ঘটেছে তার নাম:</td>
               <td className="noa-value">{row?.workforceApplication?.employeeFactory?.nameBn || ""}</td>
             </tr>
@@ -732,6 +728,10 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
             </tr>
         {applicationType === "disabilityAssistance" && (
             <>
+              <tr>
+              <td className="noa-label">পুনরায় কর্মস্থলে যোগদানের তারিখ: (মাস/দিন/বছর)</td>
+              <td className="noa-value">{employeeAccidentInfo?.dateOfRejoining || ""}</td>
+            </tr>
             <tr>
               <td className="noa-label">স্থায়ী অক্ষমতার (উপার্জনক্ষমতা হ্রাস) হার:</td>
               <td className="noa-value">{doctorEntryInfo?.disabilityPerSchedule || ""}</td>
@@ -765,6 +765,10 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
             {/* Section 2 */}
         {applicationType === "financialAssistance" && (
             <>
+             <tr>
+              <td className="noa-label">মৃত্যুর তারিখ:</td>
+              <td className="noa-value">{employeeAccidentInfo?.dateOfDeath || ""}</td>
+            </tr>
             <tr>
               <td colSpan={2} className="noa-section">
                 উপযুক্ত নির্ভরশীল ব্যক্তির তথ্য:
