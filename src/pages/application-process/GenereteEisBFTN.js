@@ -752,13 +752,13 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
             </tr>
             <tr>
               <td className="noa-label">কেন্দ্রীয় তহবিল থেকে প্রদত্ত অর্থের পরিমাণ:</td>
-              <td className="noa-value">{OtherCompensationAmount}</td>
+              <td className="noa-value">  {OtherCompensationAmount ? Number(OtherCompensationAmount).toFixed(2) : ""}</td>
             </tr>
             <tr>
               <td className="noa-label">
                 সর্বমোট প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
               </td>
-              <td className="noa-value">{cfAndEisAmount || ""}</td>
+              <td className="noa-value"> {cfAndEisAmount ? Number(cfAndEisAmount).toFixed(2) : ""}</td>
             </tr>
             <tr>
               <td className="noa-label">
@@ -816,6 +816,10 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
             </tr>
 
             <tr>
+              <td className="noa-label">অপ্রাপ্ত বয়স্ক নির্ভরশীল ব্যক্তির আইনগত অভিভাবক:</td>
+              <td className="noa-value"></td>
+            </tr>
+            <tr>
               <td className="noa-label">এম.আই.এস বেনিফিশিয়ারি নম্বর:</td>
               <td className="noa-value">{row?.beneficiaryId || ""}</td>
             </tr>
@@ -824,7 +828,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
               <td className="noa-label">
                 কেন্দ্রীয় তহবিল থেকে প্রদত্ত অর্থের পরিমাণ:
               </td>
-              <td className="noa-value">{OtherCompensationAmount}</td>
+              <td className="noa-value">{OtherCompensationAmount ? Number(OtherCompensationAmount).toFixed(2) : ""}</td>
             </tr>
 
             {/* Section 3 */}
@@ -838,7 +842,11 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
               <td className="noa-label">
                 মাসিক প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
               </td>
-              <td className="noa-value">{row?.eisMonthlyAmount || ""}</td>
+              <td className="noa-value">
+                {row.eisInitialMonthlyAmount ?
+                  Number(row.eisInitialMonthlyAmount).toFixed(2)
+                  : ""}
+              </td>
             </tr>
 
             <tr>
@@ -847,7 +855,11 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
                 <br />
                 মাসিক ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
               </td>
-              <td className="noa-value">{cfAndEisAmount || ""}</td>
+            <td className="noa-value">
+              {row?.eisMonthlyAmount
+                ? Number(row.eisMonthlyAmount).toFixed(2)
+                : ""}
+            </td>
             </tr>
 
             <tr>
