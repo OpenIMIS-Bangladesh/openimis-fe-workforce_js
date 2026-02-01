@@ -13,7 +13,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import { WORKFORCE_USER_TYPE } from "../../constants";
-import { getUserTypeFromRights, safeDecodeId, getFooterContent  } from "../../utils/utils";
+import { getUserTypeFromRights, safeDecodeId, getFooterContent, safeParse, getFooterContentNew  } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS, RELATION_LABEL_MAP } from "../../constants";
 import { createApplicationSummary, updateApplication, updateApplicationSummary } from "../../actions";
@@ -628,6 +628,12 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
 
   const relation =
   row?.workforceEmployeeDependent?.[0]?.relationWithWorker;
+  const devObj =
+  row?.workforceEmployeeDependent?.[0];
+  console.log("devobj",row)
+  const deceasedWorkerInfo= safeParse(row?.workforceApplication?.deceasedWorkerInfo)
+  const workerBirthDate = deceasedWorkerInfo?.birthDate?? row?.workforceApplication?.workforceEmployee?.birthDate?? "2026-01-01"
+  const paymentType = row?.paymentType || 'monthly'
 
   const applicationType =
   row?.workforceApplication?.applicationType;
@@ -855,7 +861,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
           </tbody>
         </table>
 
-       {getFooterContent(relation, applicationType)}
+       {getFooterContentNew(devObj,workerBirthDate,applicationType,paymentType)}
       </div>
 
       {/* ===== FOOTER ===== */}

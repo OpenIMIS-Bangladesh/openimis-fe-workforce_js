@@ -3071,6 +3071,7 @@ export function fetchEisPaymentProcess(applicationIds,mm) {
             id
             name
           }
+          deceasedWorkerInfo
           workforceEmployee {         
             id
             firstNameBn
