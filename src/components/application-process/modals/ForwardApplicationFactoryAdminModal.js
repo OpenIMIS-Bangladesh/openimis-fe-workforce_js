@@ -188,7 +188,7 @@ const ForwardApplicationFactoryAdminModal = ({
           gutterBottom
           style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
         >
-          অ্যাসোসিয়েশন অফিসে পাঠান
+          আপনি কি নির্বাচিত আবেদনসমূহ অ্যাসোসিয়েশনের কাছে ফরওয়ার্ড করতে চান?
         </Typography>
 
         <Typography
@@ -220,7 +220,7 @@ const ForwardApplicationFactoryAdminModal = ({
         <Divider style={{ marginBottom: 24 }} />
 
         {/* Form Fields */}
-        <Paper className={classes.sectionPaper} elevation={1}>
+        {/* <Paper className={classes.sectionPaper} elevation={1}>
           <Grid container spacing={3} style={{ marginTop: 3 }}>
             <Typography
               variant="subtitle1"
@@ -249,11 +249,11 @@ const ForwardApplicationFactoryAdminModal = ({
               </FormControl>
             </Grid>
           </Grid>
-        </Paper>
+        </Paper> */}
 
         {/* Action Buttons */}
         <div className={classes.buttonGroup}>
-          <Button onClick={onClose} variant="outlined" color="secondary">
+          <Button onClick={onClose} variant="contained" color="secondary">
             বাতিল করুন
           </Button>
           <Button

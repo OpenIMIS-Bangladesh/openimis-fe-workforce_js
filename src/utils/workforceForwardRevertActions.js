@@ -1,6 +1,7 @@
 import { decodeId } from "@openimis/fe-core";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../constants";
 import { getUserTypeFromRights, isEisPath, safeDecodeId } from "./utils";
+import { fetchApplicationFactoryAssociation } from "../actions";
 
 export const forwardToAssociation = async ({
   selectedApplicationIds,
@@ -25,6 +26,13 @@ export const forwardToAssociation = async ({
           ])
         );
 
+        const workforceApplicationRes = await dispatch(
+          fetchApplicationFactoryAssociation(decodedId)
+        );
+
+        const workforceApplication = workforceApplicationRes?.payload?.data?.workforceApplication?.edges[0]?.node;
+        let associationType = workforceApplication?.employeeFactory?.allAssociation?.shortNameEn??"";
+
         const documents =
           res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
@@ -42,7 +50,8 @@ export const forwardToAssociation = async ({
       const updateApplicationData = {
         id: decodedId,
         status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,
-        associationType: formData?.association,
+        associationType: associationType,
+        // associationType: formData?.association,
       };
 
       const createApplicationMovementData = {
@@ -51,13 +60,22 @@ export const forwardToAssociation = async ({
         note: "অ্যাসোসিয়েশনের কাছে প্রেরণ",
         action: "forward_to_association",
         applicationFromId: loggedInUserId,
-        applicationToId: formData?.association === "BGMEA"
+        // applicationToId: formData?.association === "BGMEA"
+        //           ? 93
+        //           : formData?.association === "BKMEA"
+        //           ? 276
+        //           : formData?.association === "BEPZA"
+        //           ? 219
+        //           : formData?.association === "LFMEAB"
+        //           ? 203
+        //           : null,
+        applicationToId: associationType === "BGMEA"
                           ? 93
-                          : formData?.association === "BKMEA"
+                          : associationType === "BKMEA"
                           ? 276
-                          : formData?.association === "BEPZA"
+                          : associationType === "BEPZA"
                           ? 219
-                          : formData?.association === "LFMEAB"
+                          : associationType === "LFMEAB"
                           ? 203
                           : null,
         toRoleId: 31,

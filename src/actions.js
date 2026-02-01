@@ -113,12 +113,12 @@ export function fetchWorkforceOtp(mm, filters) {
 }
 
 export function fetchBranchPick(mm, filters) {
-  const projections = ["id", "nameEn","nameBn", "parent{id},bankCode,routingNumber","districtCode","districtNameEn","districtNameBn"];
+  const projections = ["id", "nameEn", "nameBn", "parent{id},bankCode,routingNumber", "districtCode", "districtNameEn", "districtNameBn"];
   const payload = formatPageQuery("workforceBanks", filters, projections);
   return graphql(payload, "WORKFORCE_BRANCH_PICKER");
 }
 export function fetchDistrictBanksPick(mm, filters) {
-  const projections = ["id", "nameEn","nameBn", "parent{id},bankCode,routingNumber","districtCode","districtNameEn","districtNameBn"];
+  const projections = ["id", "nameEn", "nameBn", "parent{id},bankCode,routingNumber", "districtCode", "districtNameEn", "districtNameBn"];
   const payload = formatPageQuery("workforceBanks", filters, projections);
   return graphql(payload, "WORKFORCE_DISTRICT_BANKS_PICKER");
 }
@@ -753,7 +753,7 @@ export function fetchApplicationsSummary(mm, filters) {
     present_location_projection +
     permanent_location_projection +
     "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate,relatedUser{id}}",
-    "applicantInfo",   
+    "applicantInfo",
     "dateCreated",
     "dateUpdated",
     "organizationType",
@@ -824,7 +824,7 @@ export function fetchApplication(mm, filters) {
   const projections = [
     "id",
     "workforceEmployee{" + present_location_projection + permanent_location_projection + ",id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate,relatedUser{id}}",
-    "applicantInfo",   
+    "applicantInfo",
     "organizationType",
     "dateCreated",
     "applicationType",
@@ -860,25 +860,25 @@ export function fetchApplication(mm, filters) {
     "lastBaseSalary",
     "doctorsEntry",
     "applicantInfoVerification",
-        "applicantInfoVerificationRemarks",
-        "deceasedWorkerInfoVerification",
-        "deceasedWorkerInfoVerificationRemarks",
-        "doctorsEntryVerification",
-        "doctorsEntryVerificationRemarks",
-        "employeeAccidentInfoVerification",
-        "employeeAccidentInfoVerificationRemarks",
-        "employeeBankInfoVerification",
-        "employeeBankInfoVerificationRemarks",
-        "employeeChildrenInfoVerification",
-        "employeeChildrenInfoVerificationRemarks",
-        "employeeDependentInfoVerification",
-        "employeeDependentInfoVerificationRemarks",
-        "institutionInfoVerification",
-        "institutionInfoVerificationRemarks",
-        "metadataVerification",
-        "metadataVerificationRemarks",
-        "workforceEmployeeVerification",
-        "workforceEmployeeVerificationRemarks"
+    "applicantInfoVerificationRemarks",
+    "deceasedWorkerInfoVerification",
+    "deceasedWorkerInfoVerificationRemarks",
+    "doctorsEntryVerification",
+    "doctorsEntryVerificationRemarks",
+    "employeeAccidentInfoVerification",
+    "employeeAccidentInfoVerificationRemarks",
+    "employeeBankInfoVerification",
+    "employeeBankInfoVerificationRemarks",
+    "employeeChildrenInfoVerification",
+    "employeeChildrenInfoVerificationRemarks",
+    "employeeDependentInfoVerification",
+    "employeeDependentInfoVerificationRemarks",
+    "institutionInfoVerification",
+    "institutionInfoVerificationRemarks",
+    "metadataVerification",
+    "metadataVerificationRemarks",
+    "workforceEmployeeVerification",
+    "workforceEmployeeVerificationRemarks"
   ];
   // const filterArray = filters
   //   ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)
@@ -906,7 +906,7 @@ export function fetchWorkforceUserRoleWiseUser(mm, variables) {
       }
     `,
     variables,
-["ADMIN_WORKFORCE_ROLE_WISE_USERS_REQ", "ADMIN_WORKFORCE_ROLE_WISE_USERS_RESP", "ADMIN_WORKFORCE_ROLE_WISE_USERS_ERR"]
+    ["ADMIN_WORKFORCE_ROLE_WISE_USERS_REQ", "ADMIN_WORKFORCE_ROLE_WISE_USERS_RESP", "ADMIN_WORKFORCE_ROLE_WISE_USERS_ERR"]
   );
 }
 
@@ -2280,7 +2280,7 @@ export function fetchEmployeeDependent(mm, filters) {
     "id",
     "nid",
     "nameBn",
-        "nameEn"
+    "nameEn"
   ];
   const payload = formatPageQueryWithCount("workforceEmployeeDependent", filters, projections);
   return graphql(payload, "WORKFORCE_DEPENDENT");
@@ -2435,7 +2435,7 @@ export function eisPaymentProcess(eisPaymentData) {
   return graphql(mutation, "WORKFORCE_EIS_PAYMENT_PROCESS");
 }
 
-export function eisPaymentProcessWithoutDate(eisPaymentData, recall="no") {
+export function eisPaymentProcessWithoutDate(eisPaymentData, recall = "no") {
   const mutation = `
     mutation {
       createWorkforceEisPaymentProcess(
@@ -2874,7 +2874,7 @@ export function fetchApplicationMonthWise(months, organizationType) {
 
   if (months > 0) {
     args.push(`monthsBetween: "${months}"`);
-  } 
+  }
 
   const argString = args.length > 0 ? `(${args.join(", ")})` : "";
 
@@ -2908,7 +2908,7 @@ export function fetchGenderWiseApplicationMatrixByDate(months, fromDate, toDate,
   }
   if (months > 0) {
     args.push(`lastMonths: "${months}"`);
-  } 
+  }
   else if (fromDate && toDate) {
     args.push(`dateBetween: ["${fromDate}", "${toDate}"]`);
   }
@@ -2927,10 +2927,10 @@ export function fetchGenderWiseApplicationMatrixByDate(months, fromDate, toDate,
 }
 
 export function fetchApplicationTimeWiseMatrix(organizationType, applicationType, daycount) {
-  const organization= organizationType=='সব' || organizationType=='All' || organizationType=='all' ? '' : `organizationType:"${organizationType}"`;
+  const organization = organizationType == 'সব' || organizationType == 'All' || organizationType == 'all' ? '' : `organizationType:"${organizationType}"`;
   console.log(organizationType);
   const typeList = applicationType.map(type => `"${type}"`).join(", ");
-  const dayWiseCount= daycount!=null || daycount!=''? `dayCount: "${daycount}"` : '';
+  const dayWiseCount = daycount != null || daycount != '' ? `dayCount: "${daycount}"` : '';
   const payload = `
     query {
       workforceApplicationTimewiseMatrix(
@@ -2961,7 +2961,7 @@ export function fetchApplicationTimeWiseMatrix(organizationType, applicationType
   return graphql(payload, "WORKFORCE_APPLICATIONS_TIME_WISE_MATRIX");
 
 
-  
+
 }
 
 export function fetchUserDistrictsUnauthorized() {
@@ -2971,7 +2971,7 @@ export function fetchUserDistrictsUnauthorized() {
 
 
 export function updateWorkforceEmployeeDependentEligibility(applicationId) {
-  const mutation= `
+  const mutation = `
       mutation {
         updateWorkforceEmployeeDependentEligibility(
         workforceApplicationId: "${applicationId}"
@@ -2985,7 +2985,7 @@ export function updateWorkforceEmployeeDependentEligibility(applicationId) {
   return graphql(mutation, "WORKFORCE_EMPLOYEE_DEPENDENT_ELIGIBILITY_UPDATE");
 }
 
-export function fetchEisPaymentProcess(applicationIds,mm) {
+export function fetchEisPaymentProcess(applicationIds, mm) {
   const idsArray = Array.isArray(applicationIds)
     ? applicationIds
     : [applicationIds];
@@ -3041,9 +3041,8 @@ export function fetchEisPaymentProcess(applicationIds,mm) {
           nid
           permanentAddress
           presentAddress
-          ${
-          present_location_projection +
-          permanent_location_projection }
+          ${present_location_projection +
+    permanent_location_projection}
           bankAccountNo
           bank{
             nameBn
@@ -3080,9 +3079,8 @@ export function fetchEisPaymentProcess(applicationIds,mm) {
             birthDate
             permanentAddress
             presentAddress
-            ${
-            present_location_projection +
-            permanent_location_projection }
+            ${present_location_projection +
+    permanent_location_projection}
 
           }
           employeeFactory {
@@ -3151,7 +3149,7 @@ export function updateWorkforceEisPaymentProcessApproval(eisPaymentData) {
 }
 
 
-export function fetchEisPaymentProcessWithFilters(filters,mm) {
+export function fetchEisPaymentProcessWithFilters(filters, mm) {
   const present_location_projection =
     "presentLocation" + mm.getProjection("location.Location.FlatProjection");
   const permanent_location_projection =
@@ -3159,19 +3157,19 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
   const payload = `
     {
       workforceEisPaymentProcess(
-        workforceApplicationId: "${filters?.workforceApplicationId??""}"
-        workforceApplicationTrackingNumber: "${filters?.workforceApplicationTrackingNumber??""}"
-        workforceFactoryId: "${filters?.workforceFactoryId??""}"
-        allAssociationId: "${filters?.allAssociationId??""}"
-        beneficiaryId: "${filters?.beneficiaryId??""}"
-        status: "${filters?.status??""}"
-        beneficiaryStatus: "${filters?.beneficiaryStatus??""}"
-        approved: "${filters?.approved??""}"
-        approvalDateFrom: "${filters?.approvalDateFrom??""}"
-        approvalDateTo: "${filters?.approvalDateTo??""}"
-        month: "${filters?.month??""}"
-        year: "${filters?.year??""}"
-        notInStage: "${filters?.notInStage?? ""}"
+        workforceApplicationId: "${filters?.workforceApplicationId ?? ""}"
+        workforceApplicationTrackingNumber: "${filters?.workforceApplicationTrackingNumber ?? ""}"
+        workforceFactoryId: "${filters?.workforceFactoryId ?? ""}"
+        allAssociationId: "${filters?.allAssociationId ?? ""}"
+        beneficiaryId: "${filters?.beneficiaryId ?? ""}"
+        status: "${filters?.status ?? ""}"
+        beneficiaryStatus: "${filters?.beneficiaryStatus ?? ""}"
+        approved: "${filters?.approved ?? ""}"
+        approvalDateFrom: "${filters?.approvalDateFrom ?? ""}"
+        approvalDateTo: "${filters?.approvalDateTo ?? ""}"
+        month: "${filters?.month ?? ""}"
+        year: "${filters?.year ?? ""}"
+        notInStage: "${filters?.notInStage ?? ""}"
       ) {
         id
         monthIndex
@@ -3227,9 +3225,8 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
           nid
           permanentAddress
           presentAddress
-          ${
-          present_location_projection +
-          permanent_location_projection }
+          ${present_location_projection +
+    permanent_location_projection}
           bankAccountNo
           bank{
             nameBn
@@ -3260,9 +3257,8 @@ export function fetchEisPaymentProcessWithFilters(filters,mm) {
             nid
             permanentAddress
             presentAddress
-            ${
-            present_location_projection +
-            permanent_location_projection }
+            ${present_location_projection +
+    permanent_location_projection}
 
           }
           employeeFactory {
@@ -3290,18 +3286,18 @@ export function updateWorkforceEisBeneficiary(beneficiary) {
   const mutation = `
     mutation {
       updateWorkforceEisBeneficiary(
-        beneficiaryId: "${beneficiary?.beneficiaryId??""}"
-        incrementAmount: "${beneficiary?.incrementAmount??""}"
-        incrementDate: "${beneficiary?.incrementDate??""}"
-        decrementAmount: "${beneficiary?.decrementAmount??""}"
-        decrementDate: "${beneficiary?.decrementDate??""}"
-        beneficiaryStatus: "${beneficiary?.beneficiaryStatus??""}"
-        reason: "${beneficiary?.reason??""}"
-        remarks: "${beneficiary?.remarks??""}"
-        remarriageOrDeathDate: "${beneficiary?.remarriageOrDeathDate??""}"
-        lastLiveCheckDate: "${beneficiary?.lastLiveCheckDate??""}"
-        liveCheckRemarks: "${beneficiary?.liveCheckRemarks??""}"
-        otherBeneficiaryData: ${beneficiary?.otherBeneficiaryData? escapeQuotes(beneficiary?.otherBeneficiaryData):""}
+        beneficiaryId: "${beneficiary?.beneficiaryId ?? ""}"
+        incrementAmount: "${beneficiary?.incrementAmount ?? ""}"
+        incrementDate: "${beneficiary?.incrementDate ?? ""}"
+        decrementAmount: "${beneficiary?.decrementAmount ?? ""}"
+        decrementDate: "${beneficiary?.decrementDate ?? ""}"
+        beneficiaryStatus: "${beneficiary?.beneficiaryStatus ?? ""}"
+        reason: "${beneficiary?.reason ?? ""}"
+        remarks: "${beneficiary?.remarks ?? ""}"
+        remarriageOrDeathDate: "${beneficiary?.remarriageOrDeathDate ?? ""}"
+        lastLiveCheckDate: "${beneficiary?.lastLiveCheckDate ?? ""}"
+        liveCheckRemarks: "${beneficiary?.liveCheckRemarks ?? ""}"
+        otherBeneficiaryData: ${beneficiary?.otherBeneficiaryData ? escapeQuotes(beneficiary?.otherBeneficiaryData) : ""}
       ) {
         success
         errors
@@ -3347,7 +3343,7 @@ export function deleteWorkforceEisPaymentStage(ids) {
 
 
 
-export function fetchWorkforceEisPaymentDisbursementStage(filters,mm) {
+export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
   const present_location_projection =
     "presentLocation" + mm.getProjection("location.Location.FlatProjection");
   const permanent_location_projection =
@@ -3355,10 +3351,10 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters,mm) {
   const payload = `
     {
       workforceEisPaymentDisbursementStage(
-        month: "${filters?.month??""}"
-        year: "${filters?.year??""}"
-        isDisbursed: "${filters?.isDisbursed??""}"
-        notInDisburse: "${filters?.notInDisburse?? ""}"
+        month: "${filters?.month ?? ""}"
+        year: "${filters?.year ?? ""}"
+        isDisbursed: "${filters?.isDisbursed ?? ""}"
+        notInDisburse: "${filters?.notInDisburse ?? ""}"
       ) {
         id
         monthIndex
@@ -3405,9 +3401,8 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters,mm) {
           nid
           permanentAddress
           presentAddress
-          ${
-          present_location_projection +
-          permanent_location_projection }
+          ${present_location_projection +
+    permanent_location_projection}
           bankAccountNo
           bank{
             nameBn
@@ -3438,9 +3433,8 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters,mm) {
             nid
             permanentAddress
             presentAddress
-            ${
-            present_location_projection +
-            permanent_location_projection }
+            ${present_location_projection +
+    permanent_location_projection}
 
           }
           employeeFactory {
@@ -3477,4 +3471,32 @@ export function createWorkforceEisPaymentDisbursement(ids) {
     }
   `;
   return graphql(mutation, "CREATE_WORKFORCE_EIS_PAYMENT_DISBURSEMENT");
+}
+
+
+
+
+export function fetchApplicationFactoryAssociation(id) {
+  const payload = `
+    {
+      workforceApplication(id: "${id}"){
+        edges{
+          node{
+            id
+            employeeFactory{
+              id
+              allAssociation
+              {
+                id
+                shortNameBn
+                shortNameEn
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  return graphql(payload, "WORKFORCE_APPLICATION_FACTORY_ASSOCIATION");
 }
