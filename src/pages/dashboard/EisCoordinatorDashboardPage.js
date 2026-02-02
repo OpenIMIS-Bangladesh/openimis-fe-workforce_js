@@ -1,6 +1,6 @@
-import React, { useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { FormattedMessage,useModulesManager,useHistory } from "@openimis/fe-core";
+import { FormattedMessage, useModulesManager, useHistory } from "@openimis/fe-core";
 import {
   Grid,
   List,
@@ -91,30 +91,30 @@ const useStyles = makeStyles((theme) => ({
   tableHeader: {
     backgroundColor: "#B7D4D8",
   },
-   accordion: {
-  boxShadow: "1px 1px 1px 1px",
-  border: "none",
-  backgroundColor: "white",
-  marginBottom: "12px",
-  borderRadius: "6px",
-  "&::before": {
-    display: "none",
+  accordion: {
+    boxShadow: "1px 1px 1px 1px",
+    border: "none",
+    backgroundColor: "white",
+    marginBottom: "12px",
+    borderRadius: "6px",
+    "&::before": {
+      display: "none",
+    },
   },
-},
-accordionSummary: {
-  padding: "8px 16px",
-  backgroundColor: "white",
-  borderRadius: "6px",
-  "& .MuiTypography-root": {
-    color: "#015C63", // teal-like tone
-    fontWeight: 600,
+  accordionSummary: {
+    padding: "8px 16px",
+    backgroundColor: "white",
+    borderRadius: "6px",
+    "& .MuiTypography-root": {
+      color: "#015C63", // teal-like tone
+      fontWeight: 600,
+    },
   },
-},
-accordionDetails: {
-  backgroundColor: "white",
-  padding: "16px",
-  borderTop: "1px solid #ddd",
-},
+  accordionDetails: {
+    backgroundColor: "white",
+    padding: "16px",
+    borderTop: "1px solid #ddd",
+  },
 }));
 
 const SidebarMenu = [
@@ -151,9 +151,9 @@ const SidebarMenu = [
     text: (
       <FormattedMessage module="workforce" id="workforce.employee.application.pendingMeetingSheet" />
     ),
-    icon: <HourglassFullTwoToneIcon  />,
+    icon: <HourglassFullTwoToneIcon />,
   },
-   {
+  {
     id: "advisorApproveMeetingSheet",
     text: (
       <FormattedMessage module="workforce" id="workforce.employee.application.advisorApproveMeetingSheet"
@@ -166,7 +166,7 @@ const SidebarMenu = [
     text: (
       <FormattedMessage module="workforce" id="workforce.application.reverted" />
     ),
-    icon: <RestorePageIcon  />,
+    icon: <RestorePageIcon />,
   },
   {
     id: "sentMeetingSheet",
@@ -216,38 +216,39 @@ const SidebarMenu = [
 
 // ----------- Components to Render in Main Content -----------
 
-const FiledApplications = () =>{ 
+const FiledApplications = () => {
   const classes = useStyles()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   return (
-  <>
-    <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.eis.coordinator.dashboard" />
-    </Typography>
-   <Card className={classes.tableContainer}>
+    <>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.eis.coordinator.dashboard" />
+      </Typography>
+      <Card className={classes.tableContainer}>
         <CardContent>
-            <ApplicationProcessSearcher
-               loggedInUserId={loggedInUserId}    
-               coloredRow={true} 
-               roleIds = {["47"]}
-            />
-          </CardContent>
+          <ApplicationProcessSearcher
+            loggedInUserId={loggedInUserId}
+            coloredRow={true}
+            roleIds={["47"]}
+          />
+        </CardContent>
       </Card>
 
-    {/* Pagination */}
-    <div className={classes.pagination}>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.back" />
-      </Button>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.next" />
-      </Button>
-    </div>
-  </>
-);}
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  );
+}
 
-const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
+const ApprovedApplications = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
 
@@ -258,39 +259,39 @@ const ApprovedApplications = ({ summaryData = [], disableButtons=0 }) => {
   console.log("summary data", summaryData);
   return (
     <div className={classes.accordionPadding}>
-        {summaryData         
-          .map((item, index) => (
-            <Accordion
-              key={index}
-              expanded={expanded === item.id}
-              onChange={handleChange(item.id)}
-              className={classes.accordion}
+      {summaryData
+        .map((item, index) => (
+          <Accordion
+            key={index}
+            expanded={expanded === item.id}
+            onChange={handleChange(item.id)}
+            className={classes.accordion}
+          >
+            <AccordionSummary
+              className={classes.accordionSummary}
+              expandIcon={<ExpandMoreIcon className="material-icons" />}
             >
-              <AccordionSummary
-                className={classes.accordionSummary}
-                expandIcon={<ExpandMoreIcon className="material-icons" />}
+              <Typography variant="subtitle1" style={{ flex: 1 }}>
+                <strong>{item.name}</strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                style={{ marginLeft: "auto", color: "#015C63" }}
               >
-                <Typography variant="subtitle1" style={{ flex: 1 }}>
-                  <strong>{item.name}</strong>
-                </Typography>
-                <Typography
-                  variant="body2"
-                  style={{ marginLeft: "auto", color: "#015C63" }}
-                >
-                  {item.meetingDate} | {item.month} {item.year}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.accordionDetails}>
-                <Card style={{ width: "100%" }}>
-                  <CardContent>
-                    {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons}/>
-                    )}
-                  </CardContent>
-                </Card>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+                {item.meetingDate} | {item.month} {item.year}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails className={classes.accordionDetails}>
+              <Card style={{ width: "100%" }}>
+                <CardContent>
+                  {expanded === item.id && (
+                    <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons} />
+                  )}
+                </CardContent>
+              </Card>
+            </AccordionDetails>
+          </Accordion>
+        ))}
     </div>
   );
 };
@@ -305,43 +306,43 @@ const AdvisorApprovedApplications = ({ summaryData = [] }) => {
   console.log("summary data", summaryData);
   return (
     <div className={classes.accordionPadding}>
-        {summaryData         
-          .map((item, index) => (
-            <Accordion
-              key={index}
-              expanded={expanded === item.id}
-              onChange={handleChange(item.id)}
-              className={classes.accordion}
+      {summaryData
+        .map((item, index) => (
+          <Accordion
+            key={index}
+            expanded={expanded === item.id}
+            onChange={handleChange(item.id)}
+            className={classes.accordion}
+          >
+            <AccordionSummary
+              className={classes.accordionSummary}
+              expandIcon={<ExpandMoreIcon className="material-icons" />}
             >
-              <AccordionSummary
-                className={classes.accordionSummary}
-                expandIcon={<ExpandMoreIcon className="material-icons" />}
+              <Typography variant="subtitle1" style={{ flex: 1 }}>
+                <strong>{item.name}</strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                style={{ marginLeft: "auto", color: "#015C63" }}
               >
-                <Typography variant="subtitle1" style={{ flex: 1 }}>
-                  <strong>{item.name}</strong>
-                </Typography>
-                <Typography
-                  variant="body2"
-                  style={{ marginLeft: "auto", color: "#015C63" }}
-                >
-                  {item.meetingDate} | {item.month} {item.year}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.accordionDetails}>
-                <Card style={{ width: "100%" }}>
-                  <CardContent>
-                    {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} approvedButton={1} roleIds = {["49"]}/>
-                    )}
-                  </CardContent>
-                </Card>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+                {item.meetingDate} | {item.month} {item.year}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails className={classes.accordionDetails}>
+              <Card style={{ width: "100%" }}>
+                <CardContent>
+                  {expanded === item.id && (
+                    <ApplicationProcessSearcher summaryId={item.id} approvedButton={1} roleIds={["49"]} meetingForwardButton={0} />
+                  )}
+                </CardContent>
+              </Card>
+            </AccordionDetails>
+          </Accordion>
+        ))}
     </div>
   );
 };
-const SentMeetingSheet = ({ summaryData = [], disableButtons=0 }) => {
+const SentMeetingSheet = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
 
@@ -352,99 +353,101 @@ const SentMeetingSheet = ({ summaryData = [], disableButtons=0 }) => {
   console.log("summary data", summaryData);
   return (
     <div className={classes.accordionPadding}>
-        {summaryData         
-          .map((item, index) => (
-            <Accordion
-              key={index}
-              expanded={expanded === item.id}
-              onChange={handleChange(item.id)}
-              className={classes.accordion}
+      {summaryData
+        .map((item, index) => (
+          <Accordion
+            key={index}
+            expanded={expanded === item.id}
+            onChange={handleChange(item.id)}
+            className={classes.accordion}
+          >
+            <AccordionSummary
+              className={classes.accordionSummary}
+              expandIcon={<ExpandMoreIcon className="material-icons" />}
             >
-              <AccordionSummary
-                className={classes.accordionSummary}
-                expandIcon={<ExpandMoreIcon className="material-icons" />}
+              <Typography variant="subtitle1" style={{ flex: 1 }}>
+                <strong>{item.name}</strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                style={{ marginLeft: "auto", color: "#015C63" }}
               >
-                <Typography variant="subtitle1" style={{ flex: 1 }}>
-                  <strong>{item.name}</strong>
-                </Typography>
-                <Typography
-                  variant="body2"
-                  style={{ marginLeft: "auto", color: "#015C63" }}
-                >
-                  {item.meetingDate} | {item.month} {item.year}
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails className={classes.accordionDetails}>
-                <Card style={{ width: "100%" }}>
-                  <CardContent>
-                    {expanded === item.id && (
-                      <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons}/>
-                    )}
-                  </CardContent>
-                </Card>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+                {item.meetingDate} | {item.month} {item.year}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails className={classes.accordionDetails}>
+              <Card style={{ width: "100%" }}>
+                <CardContent>
+                  {expanded === item.id && (
+                    <ApplicationProcessSearcher summaryId={item.id} disableButtons={disableButtons} />
+                  )}
+                </CardContent>
+              </Card>
+            </AccordionDetails>
+          </Accordion>
+        ))}
     </div>
   );
 };
 
-const SentForVerificationApplications = () =>{ 
+const SentForVerificationApplications = () => {
   const classes = useStyles()
   return (
-  <>
-    <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.application.sentforverification" />
-    </Typography>
-   <Card className={classes.tableContainer}>
+    <>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.application.sentforverification" />
+      </Typography>
+      <Card className={classes.tableContainer}>
         <CardContent>
-            <ApplicationProcessSearcher
-              sentForVerificationApplications={true}
-            />
-          </CardContent>
+          <ApplicationProcessSearcher
+            sentForVerificationApplications={true}
+          />
+        </CardContent>
       </Card>
 
-    {/* Pagination */}
-    <div className={classes.pagination}>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.back" />
-      </Button>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.next" />
-      </Button>
-    </div>
-  </>
-);}
-const VerifiedApplications = () =>{ 
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  );
+}
+const VerifiedApplications = () => {
   const classes = useStyles()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   return (
-  <>
-    <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.application.verified" />
-    </Typography>
-   <Card className={classes.tableContainer}>
+    <>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.application.verified" />
+      </Typography>
+      <Card className={classes.tableContainer}>
         <CardContent>
-            <ApplicationProcessSearcher
-              verifiedApplications={true}
-              meetingForwardButton={1}
-              loggedInUserId={loggedInUserId}
-            />
-          </CardContent>
+          <ApplicationProcessSearcher
+            verifiedApplications={true}
+            meetingForwardButton={1}
+            loggedInUserId={loggedInUserId}
+          />
+        </CardContent>
       </Card>
 
-    {/* Pagination */}
-    <div className={classes.pagination}>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.back" />
-      </Button>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.next" />
-      </Button>
-    </div>
-  </>
-);}
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  );
+}
 
 
 const BeneficiaryReportSheet = () => {
@@ -467,13 +470,13 @@ const ApplicationStatus = () => {
   const classes = useStyles()
   const [hasResults, setHasResults] = useState(true);
   const handleApplicationSearch = () => {
-  const filters = [`workforceEmployee_Nid: "${nid}"`];
-  dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
-    const edges = res.payload?.data?.workforceApplication?.edges || [];
-    setApplicationData(edges.map((e) => e.node));
-    setShowResult(true);
-  });
-};
+    const filters = [`workforceEmployee_Nid: "${nid}"`];
+    dispatch(fetchApplicationsSummary(mm, filters)).then((res) => {
+      const edges = res.payload?.data?.workforceApplication?.edges || [];
+      setApplicationData(edges.map((e) => e.node));
+      setShowResult(true);
+    });
+  };
 
 
   return (
@@ -497,19 +500,19 @@ const ApplicationStatus = () => {
               style={{ marginBottom: 16 }}
             />
             <Button variant="contained" color="primary" fullWidth onClick={handleApplicationSearch}>
-                <FormattedMessage module="workforce" id="workforce.search.here" />
+              <FormattedMessage module="workforce" id="workforce.search.here" />
             </Button>
           </Grid>
         </Grid>
 
-       {showResult && (
+        {showResult && (
           <>
             <Card className={classes.tableContainer} style={{ marginTop: 10 }}>
               <CardContent>
                 <ApplicationProcessSearcher
                   nidFilters={[`workforceEmployee_Nid: "${nid}"`]}
                   onDataLoaded={(data) => setHasResults(data && data.length > 0)}
-                  disableButtons= {1}
+                  disableButtons={1}
                 />
               </CardContent>
             </Card>
@@ -535,30 +538,31 @@ const RevertApplication = () => {
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   return (
-  <>
-    <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.application.reverted" />
-    </Typography>
-   <Card className={classes.tableContainer}>
-       <CardContent>
-             <ApplicationProcessSearcher
-                revertedApplication={true}
-                loggedInUserId={loggedInUserId}
-              />
-            </CardContent>
+    <>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.application.reverted" />
+      </Typography>
+      <Card className={classes.tableContainer}>
+        <CardContent>
+          <ApplicationProcessSearcher
+            revertedApplication={true}
+            loggedInUserId={loggedInUserId}
+          />
+        </CardContent>
       </Card>
 
-    {/* Pagination */}
-    <div className={classes.pagination}>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.back" />
-      </Button>
-      <Button>
-        <FormattedMessage module="workforce" id="workforce.next" />
-      </Button>
-    </div>
-  </>
-)}
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
 
 const RejectApplication = () => {
   const classes = useStyles()
@@ -566,7 +570,7 @@ const RejectApplication = () => {
     <>
       <ApplicationProcessSearcher
         rejectedApplication={true}
-        dynamicTableTitle= {"workforce.application.rejectedApplication"}
+        dynamicTableTitle={"workforce.application.rejectedApplication"}
       />
       {/* Pagination */}
       <div className={classes.pagination}>
@@ -588,7 +592,7 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
       {/* Render each summaryData item as an accordion */}
       {summaryData.map((item, index) => (
         <Accordion key={index} defaultExpanded={false} className={classes.accordion}>
-          <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon  className="material-icons"/>}>
+          <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon className="material-icons" />}>
             <Typography variant="subtitle1" style={{ flex: 1 }}>
               <strong>{item.name}</strong>
             </Typography>
@@ -599,7 +603,7 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
           <AccordionDetails className={classes.AccordionDetails}>
             <Card style={{ width: "100%" }}>
               <CardContent>
-                <ApplicationProcessSearcher summaryId={item.id}/>
+                <ApplicationProcessSearcher summaryId={item.id} />
               </CardContent>
             </Card>
           </AccordionDetails>
@@ -616,20 +620,20 @@ const EisCoordinatorDashboardPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch()
   const modulesManager = useModulesManager()
-  const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); 
- useEffect(() => {
-      return dispatch(fetchSummaryApplications(modulesManager,['organizationType:"eis"']));
-    }, []);
+  const [selectedMenu, setSelectedMenu] = useState("pendingApplications");
+  useEffect(() => {
+    return dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"eis"']));
+  }, []);
   const data = useSelector(
-      (state) => state.workforce[`applicationsSummary`] ?? []
-    );
+    (state) => state.workforce[`applicationsSummary`] ?? []
+  );
 
   const pendingSummaryData = data.filter(d => d.status !== "approved_by_dg");
   const approvedSummaryData = data.filter(d => d.status === "approved_by_committee");
   const advisorApprovedSummaryData = data.filter(d => d.status === "approved_by_eis_advisor");
   const sentSummaryData = data.filter(d => d.status === "forward_to_comiitee");
 
- 
+
 
   const renderContent = () => {
     switch (selectedMenu) {

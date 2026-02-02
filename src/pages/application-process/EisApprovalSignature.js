@@ -184,7 +184,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
       if (typeof rawData === "string") {
         try {
           rawMovements = JSON.parse(rawData);
-        } catch (e) {}
+        } catch (e) { }
       } else {
         rawMovements = rawData || [];
       }
@@ -261,7 +261,10 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
   }, [open]);
 
   // --- 2. CALCULATIONS ---
-  const getTotalAmount = () => {
+  const getMonthlyTotalAmount = () => {
+    return eisPayments.reduce((sum, item) => sum + (parseFloat(item.eisInitialMonthlyAmount) || 0), 0).toFixed(2);
+  };
+  const getNetMonthlyTotalAmount = () => {
     return eisPayments.reduce((sum, item) => sum + (parseFloat(item.eisMonthlyAmount) || 0), 0).toFixed(2);
   };
   const getNetTotal = () => {
@@ -358,7 +361,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     try {
       parsedAccidentInfo = JSON.parse(JSON.parse(data.workforceApplication?.employeeAccidentInfo || "{}"));
       parsedDoctorEntry = JSON.parse(JSON.parse(data.workforceApplication?.doctorsEntry || "{}"));
-    } catch (e) {}
+    } catch (e) { }
 
     const leftItems = [
       ["EIS Worker ID", data?.beneficiaryId || ""],
@@ -452,7 +455,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     if (rawAccident) parsedAccidentInfo = JSON.parse(JSON.parse(rawAccident));
     const rawDoctor = firstData?.workforceApplication?.doctorsEntry;
     if (rawDoctor) parsedDoctorEntry = JSON.parse(JSON.parse(rawDoctor));
-  } catch (e) {}
+  } catch (e) { }
 
   const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
   const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
@@ -545,8 +548,8 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                     {parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace"
                       ? "Workplace Accident"
                       : parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA"
-                      ? "On Duty RTA"
-                      : "Commuting"}
+                        ? "On Duty RTA"
+                        : "Commuting"}
                   </td>
                 </tr>
               </tbody>
@@ -563,9 +566,19 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                   <th>Dependent Name (Relation)</th>
                   <th>NID/Birth Cert.</th>
                   <th>Benefit Rate (%)</th>
+                  {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
+                    ? null
+                    :
+                    (
+                      firstData?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee" ? (
+                        <>
+                          <th>Total Time Amount</th>
+                          <th>After Adjustment</th>
+                        </>
+                      ) : null
+                    )}
                   <th>Monthly Payable (BDT)</th>
-                  <th>Total Time Amount</th>
-                  <th>After Adjustment</th>
+                  <th>Net Payable (BDT)</th>
                   <th>Payment Type</th>
                   <th>Approval Status</th>
                   <th>Remarks</th>
@@ -589,72 +602,52 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                       </td>
                       <td>{row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid}</td>
                       <td style={{ textAlign: "center" }}>{benefitRate}%</td>
+                      {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
+                        ? null
+                        : (
+                          firstData?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee" ? (
+                            <>
+                              <td style={{ textAlign: "right" }}>{row?.eisCalculatedAmount}</td>
+                              <td style={{ textAlign: "right" }}>{row?.eisApprovedAmount}</td>
+                            </>
+                          ) : null
+                        )
+                      }
                       <td style={{ textAlign: "right" }}>{row?.eisInitialMonthlyAmount}</td>
-                      <td style={{ textAlign: "right" }}>{row?.eisCalculatedAmount}</td>
-                      <td style={{ textAlign: "right" }}>{row?.eisApprovedAmount}</td>
+                      <td style={{ textAlign: "right" }}>{row?.eisMonthlyAmount}</td>
 
                       {/* Interactive Controls (Hidden in Print via text replacement logic or CSS) */}
                       <td style={{ textAlign: "center" }}>
-                        {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
-                        user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
-                        user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
-                          <>
-                            <select
-                              className={classes.noPrint}
-                              style={{ width: "100%", border: "none", background: "transparent" }}
-                              value={currentPaymentType}
-                              onChange={(e) => handlePaymentTypeChange(e.target.value, row?.beneficiaryId, index)}
-                            >
-                              <option value="" disabled>
-                                Select
-                              </option>
-                              <option value="monthly">Monthly</option>
-                              <option value="onetime">One-time</option>
-                              <option value="installment">Tri Monthly Installment</option>
-                            </select>
-                            {/* Text for print */}
-                            <span style={{ display: "none" }} className="print-show">
+                        <>
+                          {/* Text for print */}
+                          {EIS_PAYMENT_TYPES[row?.eisPaymentType]}
+                          {/* <span style={{ display: "none" }} className="print-show">
                               {EIS_PAYMENT_TYPES[currentPaymentType] || currentPaymentType}
-                            </span>
-                            {/* Simple inline style hack for print text */}
-                            <style>{`@media print { .print-show { display: block !important; } }`}</style>
-                          </>
-                        ) : (
-                          EIS_PAYMENT_TYPES[row?.eisPaymentType]
-                        )}
+                            </span> */}
+                          {/* Simple inline style hack for print text */}
+                          <style>{`@media print { .print-show { display: block !important; } }`}</style>
+                        </>
                       </td>
 
                       <td style={{ textAlign: "center" }}>
-                        {user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ? (
-                          <>
-                            <select
-                              className={classes.noPrint}
-                              style={{ width: "100%", border: "none", background: "transparent" }}
-                              value={currentApproval}
-                              onChange={(e) => handleApprovalChange(e.target.value, row?.beneficiaryId, index)}
-                            >
-                              <option value="">Not Approved</option>
-                              <option value="yes">Approved</option>
-                            </select>
-                            <span style={{ display: "none" }} className="print-show">
-                              {currentApproval === "yes" ? "Approved" : "Not Approved"}
-                            </span>
-                          </>
-                        ) : (
-                          getApprovalStatus(row?.isApproved)
-                        )}
+                        <>
+                          {getApprovalStatus(row?.isApproved)}
+                          {/* <span style={{ display: "none" }} className="print-show">
+                              {getApprovalStatus(row?.isApproved)}
+                            </span> */}
+                        </>
                       </td>
-                      <td></td>
+                      <td>{row?.eisPaymentType ?? ""}</td>
                     </tr>
                   );
                 })}
                 {/* Totals */}
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "right", fontWeight: "bold" }}>
+                  <td colSpan={[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)? 6: firstData?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee"? 8: 6} style={{ textAlign: "right", fontWeight: "bold" }}>
                     Total:
                   </td>
-                  <td style={{ textAlign: "right", fontWeight: "bold" }}>{getTotalAmount()}</td>
-                  <td style={{ textAlign: "right", fontWeight: "bold" }}>{getNetTotal()}</td>
+                  <td style={{ textAlign: "right", fontWeight: "bold" }}>{getMonthlyTotalAmount()}</td>
+                  <td style={{ textAlign: "right", fontWeight: "bold" }}>{getNetMonthlyTotalAmount()}</td>
                   <td colSpan={4}></td>
                 </tr>
               </tbody>
@@ -695,14 +688,8 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
           <FormattedMessage id="workforce.modal.close" />
         </Button>
 
-        {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
-          <Button onClick={onClose} variant="contained" color="primary">
-            <FormattedMessage id="ক্যালকুলেশন সেভ করুন" />
-          </Button>
-        )}
-
         <Button onClick={() => window.print()} variant="contained" color="primary">
-          <FormattedMessage id="workforce.modal.print.advice" />
+          <FormattedMessage id="workforce.modal.print" />
         </Button>
 
         <Button onClick={exportToExcel} variant="contained" style={{ backgroundColor: "#4caf50", color: "white" }}>

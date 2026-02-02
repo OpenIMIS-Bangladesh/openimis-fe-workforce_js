@@ -3013,6 +3013,9 @@ export function fetchEisPaymentProcess(applicationIds, mm) {
         beneficiaryId
         isDisbursed
         approved
+        paymentTypeRemarks
+        onetimeAmount
+        trimonthlyAmount
         bank {
           id
           nameEn
@@ -3066,6 +3069,7 @@ export function fetchEisPaymentProcess(applicationIds, mm) {
           doctorsEntry
           dateCreated
           trackingNumber
+          status
           eisApplicationSummary{
             id
             name
@@ -3197,6 +3201,9 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
         isDisbursed
         isEligible
         approved
+        paymentTypeRemarks
+        onetimeAmount
+        trimonthlyAmount
         bank {
           id
           nameEn
@@ -3250,6 +3257,7 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
           doctorsEntry
           dateCreated
           trackingNumber
+          status
           workforceEmployee {         
             id
             firstNameBn

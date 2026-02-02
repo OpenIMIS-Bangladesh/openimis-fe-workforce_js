@@ -2727,16 +2727,20 @@ class ApplicationProcessSearcher extends Component {
                       id="workforce.employee.application.forwardToSelectionOffice"
                     />
                   </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.handleOpenEisDependentBFTN}
-                  >
-                    <FormattedMessage
-                      module="workforce"
-                      id="workforce.employee.application.paymentProcess"
-                    />
-                  </Button>
+                  {this.props.verifiedApplications && (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.handleOpenEisDependentBFTN}
+                      >
+                        <FormattedMessage
+                          module="workforce"
+                          id="workforce.employee.application.paymentProcess"
+                        />
+                      </Button>
+                    </>
+                  )}
                   
                 </>
               )}
@@ -2849,13 +2853,13 @@ class ApplicationProcessSearcher extends Component {
                         <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
                       </Button>
                     )}
-                    {WORKFORCE_USER_TYPE.EIS_COORDINATOR.includes(userType) && (
+                    {/* {WORKFORCE_USER_TYPE.EIS_COORDINATOR.includes(userType) && (
                       <>
                         <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenEIS: true })}>
                           <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
                         </Button>
                       </>
-                    )}
+                    )} */}
                   </>
                 )}
               </>
@@ -3084,10 +3088,14 @@ class ApplicationProcessSearcher extends Component {
               </Button>
               {/* <Button variant="contained" color="primary" onClick={()=>{this.setState({openEisApprovalSignature:true})}}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.eisApproval.signature" />
-              </Button> */}
-              <IconButton onClick={this.handleOpenEisDependentBFTN}>
-                <PrintIcon />
-              </IconButton>
+              </Button>
+              {/* <IconButton onClick={this.handleOpenEisDependentBFTN}>
+              <PrintIcon />
+              </IconButton> */}
+              <Button variant="outlined" color="primary" onClick={this.handleOpenEisDependentBFTN}>
+                <FormattedMessage module="workforce" id="workforce.employee.application.eisApproval" />
+              </Button>
+          
               <RevertApplicationModal
                 open={revertModalOpen}
                 onClose={this.handleCloseRevertModal}

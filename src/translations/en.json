@@ -983,6 +983,7 @@
   "workforce.unpaid": "Not Paid yet",
   "workforce.processing":"Loading ...",
   "workforce.employee.application.eisApproval.signature":"Eis Approval Signature",
+  "workforce.employee.application.eisApproval":"Beneficairy Approval Note",
   "workforce.application.before.association.startDate.error":"The date of the accident can't be later than the start date of the relevant association of the factory.",
   "workforce.application.before.deathDate.error":"The date of the accident cannot be later than the date of death.",
   "workforce.application.before.eis.startDate.error":"Applications are not allowed for incidents occurring before 21 June 2022 (EIS Pilot start date).",

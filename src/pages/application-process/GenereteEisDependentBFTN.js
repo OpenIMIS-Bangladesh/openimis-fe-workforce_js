@@ -100,8 +100,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
   };
 
 
-
-  useEffect(async () => {
+  const loadData = async () => {
     if (selectedApplicationIds?.length > 0) {
       setLoading(true);
       // setDataCreated(false);
@@ -112,7 +111,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
         };
 
         await dispatch(
-          eisPaymentProcessWithoutDate(eisPaymentData, recall==1?"yes":"no")
+          eisPaymentProcessWithoutDate(eisPaymentData, recall == 1 ? "yes" : "no")
         );
       }
 
@@ -140,7 +139,12 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
       });
       setRecall(0);
     }
-  }, [open, recall]);
+  };
+
+
+  useEffect(async () => {
+    loadData();
+  }, [open, recall === 1]);
 
 
 
@@ -854,6 +858,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
         beneficiaryId,
         eisPaymentType: paymentType,
       }));
+      loadData();
     } catch (error) {
       console.error(error);
     }
@@ -988,8 +993,15 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                       )}
                       <TableCell><strong>NID/Birth Cert</strong></TableCell>
                       <TableCell><strong>Benefit Rate (%)</strong></TableCell>
-                      <TableCell><strong>Total Amount</strong></TableCell>
-                      <TableCell><strong>After Adjustment</strong></TableCell>
+                      {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
+                        ? null
+                        : (
+                          <>
+                            <TableCell><strong>Total Amount</strong></TableCell>
+                            <TableCell><strong>After Adjustment</strong></TableCell>
+                          </>
+                        )
+                      }
                       <TableCell><strong>Monthly Benefit</strong></TableCell>
                       <TableCell><strong>Net Monthly</strong></TableCell>
                       <TableCell><strong>Type of Payment</strong></TableCell>
@@ -1013,8 +1025,15 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                         </TableCell>
                         <TableCell>{row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid}</TableCell>
                         <TableCell>{row?.eisInitialReplacementRate ? (Number(row.eisInitialReplacementRate) * 100).toFixed(2) + "%" : ""}</TableCell>
-                        <TableCell>{row?.eisCalculatedAmount}</TableCell>
-                        <TableCell>{row?.eisApprovedAmount}</TableCell>
+                        {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
+                          ? null
+                          : (
+                            <>
+                              <TableCell>{row?.eisCalculatedAmount}</TableCell>
+                              <TableCell>{row?.eisApprovedAmount}</TableCell>
+                            </>
+                          )
+                        }
                         <TableCell>{row?.eisInitialMonthlyAmount}</TableCell>
                         <TableCell>{row?.eisMonthlyAmount}</TableCell>
                         <TableCell>
@@ -1052,11 +1071,11 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                             </select>
                           ) : getApprovalStatus(row?.isApproved)}
                         </TableCell>
-                        <TableCell></TableCell>
+                        <TableCell>{row?.paymentTypeRemarks ?? ""}</TableCell>
                       </TableRow>
                     ))}
                     <TableRow>
-                      <TableCell colSpan={9} align="right"><strong>Total Monthly Amount (BDT):</strong></TableCell>
+                      <TableCell colSpan={8} align="right"><strong>Total Monthly Amount (BDT):</strong></TableCell>
                       <TableCell align="center"><strong>{getTotalAmount()}</strong></TableCell>
                       <TableCell colSpan={3}></TableCell>
                     </TableRow>
@@ -1077,20 +1096,20 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
               <FormattedMessage id="workforce.modal.close" />
             </Button>
             {
-              user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+              user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR && first?.workforceApplication?.status && first?.workforceApplication?.status === "verified" ? (
                 <>
-                  <Button onClick={()=>setRecall(1)} variant="contained" color="primary">
+                  <Button onClick={() => setRecall(1)} variant="contained" color="primary">
                     <FormattedMessage id="workforce.modal.recalculate" />
                   </Button>
                   <Button onClick={onClose} variant="contained" color="primary">
                     <FormattedMessage id="workforce.modal.saveCalculation" />
                   </Button>
                 </>
-              )
+              ) :null
             }
 
             <Button onClick={() => window.print()} variant="contained" color="primary">
-              <FormattedMessage id="workforce.modal.print.advice" />
+              <FormattedMessage id="workforce.modal.print" />
             </Button>
 
             <Button onClick={exportToExcel} variant="contained" color="success">
