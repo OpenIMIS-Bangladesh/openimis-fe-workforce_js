@@ -131,6 +131,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState(false);
+  const [deathAlertMessage, setDeathAlertMessage] = useState(false);
 
   const { formatMessage } = useTranslations("workforce");
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
@@ -171,10 +172,16 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
     if (!isDoctor) {
       const allAssociationDate = new Date(formData?.employeeFactory?.allAssociation?.startDate);
       const accidentDate = new Date(formData?.employeeAccidentInfo?.accidentDate);
+      const deathDate = new Date(formData?.employeeAccidentInfo?.dateOfDeath);
 
       if (allAssociationDate > accidentDate) {
         setAlertMessage(true);
         return; // Stop execution
+      }
+
+      if (accidentDate>deathDate) {
+        setDeathAlertMessage(true)
+        return
       }
     }
 
@@ -193,7 +200,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
         employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
         doctorEntries: JSON.stringify(formData?.doctorEntries),
       };
-
+      console.log({updateApplicationData})
       await dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
       await dispatch(testWorkforcePayment({ id: application?.id }, "create test payment"));
       
@@ -284,6 +291,12 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
         onClose={() => setAlertMessage(false)}
         type="error"
         message={<FormattedMessage id="workforce.application.before.association.startDate.error" module="workforce" />}
+      />
+      <CustomSnackbar
+        open={deathAlertMessage}
+        onClose={() => setDeathAlertMessage(false)}
+        type="error"
+        message={<FormattedMessage id="workforce.application.before.deathDate.error" module="workforce" />}
       />
     </>
   );

@@ -180,6 +180,7 @@ const FinancialAssistanceForm = ({
     id: "",
   });
 
+
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
     if (reduxState.workforce.selectedEmployee) {
@@ -283,9 +284,6 @@ const FinancialAssistanceForm = ({
         deceasedWorkerInfo: parsedApplicationData?.deceasedWorkerInfo || {},
       });
     }
-    // if (parsedApplicationData?.id) {
-    //   applicationId=parsedApplicationData?.id
-    // }
   }, [employeeData?.id, parsedApplicationData]);
 
   // Handle form input changes

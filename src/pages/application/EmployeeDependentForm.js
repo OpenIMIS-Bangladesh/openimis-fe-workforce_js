@@ -79,7 +79,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
   const getRelationAwareLabel = useCallback(
     (dependent, labelKey) => {
       return applicationType === "financialAssistance" && dependent?.relationType
-        ? `${formatMessage(dependent.relationType)}${formatMessage("worforce.dependent.suffix")} ${formatMessage(labelKey)}`
+        ? `${formatMessage(dependent.relationType+".suffix")} ${formatMessage(labelKey)}`
         : formatMessage(labelKey);
     },
     [applicationType, formatMessage],

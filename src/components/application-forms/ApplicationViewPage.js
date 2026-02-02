@@ -691,11 +691,12 @@ const ApplicationViewPage = ({
   const hasUnsavedChanges = Object.keys(eligibilityMap).length > 0 || Object.keys(remarksMap).length > 0;
 
   const handleLastSalaryAmount = (amount) => {
+    setOpenSalaryButton(true)
     const updateApplicationData = {
       id: application?.id,
       lastBaseSalary: amount,
     };
-    dispatch(updateApplication(updateApplicationData, "update workforce application")).then(() => setOpenSalaryButton(true));
+    dispatch(updateApplication(updateApplicationData, "update workforce application")).then(() => {setOpenSalaryButton(false);window.location.reload()});
   };
 
   // Sidebar summary fields
@@ -720,6 +721,9 @@ const ApplicationViewPage = ({
           : "—",
       }),
       ApplicantDesignation: application?.workforceEmployee?.position,
+      ...((user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) && {
+        lastGrossSalary: application?.lastBaseSalary || "—",
+      }),
       ApplicationType:
         (language === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn) || application?.applicationType,
       OrganizationType: language === "en" ? ORGANIZATION_TYPE_NAME_EN[application?.organizationType] : ORGANIZATION_TYPE_NAME_BN[application?.organizationType],
@@ -795,7 +799,7 @@ const ApplicationViewPage = ({
               <Grid item xs={9}>
                 <TextInput
                   label={"workforce.application.lastBaseSalary.byFactoryAdmin"}
-                  value={lastSalaryAmount || ""}
+                  value={lastSalaryAmount||application?.lastBaseSalary || ""}
                   onChange={(e) => setLastSalaryAmount(e)}
                 />
               </Grid>
@@ -803,10 +807,10 @@ const ApplicationViewPage = ({
                 <Button
                   variant="contained"
                   color="primary"
-                  disabled={application?.lastBaseSalary !== null ? true : openSalaryButton ? true : false}
+                  // disabled={application?.lastBaseSalary !== null ? true : openSalaryButton ? true : false}
                   onClick={() => handleLastSalaryAmount(lastSalaryAmount)}
                 >
-                  {<FormattedMessage id="workforce.submit" module="workforce" />}
+                  {openSalaryButton?<FormattedMessage id="core.table.resultsLoading" module="workforce" /> :<FormattedMessage id="workforce.submit" module="workforce" />}
                 </Button>
               </Grid>
               {application?.organizationType === "eis" && (

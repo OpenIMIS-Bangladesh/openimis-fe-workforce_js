@@ -3082,9 +3082,9 @@ class ApplicationProcessSearcher extends Component {
               <Button variant="contained" color="primary" onClick={this.handleBulkApproveByEisAdvisor}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
               </Button>
-              <Button variant="contained" color="primary" onClick={()=>{this.setState({openEisApprovalSignature:true})}}>
+              {/* <Button variant="contained" color="primary" onClick={()=>{this.setState({openEisApprovalSignature:true})}}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.eisApproval.signature" />
-              </Button>
+              </Button> */}
               <IconButton onClick={this.handleOpenEisDependentBFTN}>
                 <PrintIcon />
               </IconButton>
