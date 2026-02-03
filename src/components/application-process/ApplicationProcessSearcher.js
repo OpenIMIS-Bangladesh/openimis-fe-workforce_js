@@ -1194,7 +1194,9 @@ class ApplicationProcessSearcher extends Component {
           'organizationTypeIn: ["eis"]',
           'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
+        if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
       }
+      
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
 
