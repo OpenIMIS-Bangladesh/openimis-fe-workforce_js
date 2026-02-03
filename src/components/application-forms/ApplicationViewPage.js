@@ -147,7 +147,8 @@ const hiddenKeys = [
   "metadataVerificationRemarks",
   "workforceEmployeeVerification",
   "workforceEmployeeVerificationRemarks",
-  "metadata"
+  "metadata",
+  "workforceFactoryId"
 ];
 
 const formatKey = (key, language) => {
@@ -220,7 +221,7 @@ const renderDetails = (
   handleEligibilityChange,
   user_type,
   remarksMap, // <--- NEW ARGUMENT
-  handleRemarksChange
+  handleRemarksChange,
 ) => {
   if (!data) return null;
 
@@ -244,8 +245,8 @@ const renderDetails = (
     typeof data === "object" && !Array.isArray(data)
       ? mergeAddressAndLocation(data)
       : Array.isArray(data)
-      ? data.map((item) => (typeof item === "object" ? mergeAddressAndLocation(item) : tryParse(item)))
-      : tryParse(data);
+        ? data.map((item) => (typeof item === "object" ? mergeAddressAndLocation(item) : tryParse(item)))
+        : tryParse(data);
 
   // const mergedData =
   //   typeof data === "object" && !Array.isArray(data)
@@ -260,10 +261,10 @@ const renderDetails = (
       if (typeof item !== "object" || !item) return null;
 
       const scalars = Object.entries(item).filter(
-        ([key, value]) => typeof value !== "object" && ![...hiddenKeys].includes(key) && value !== null && value !== undefined && value !== ""
+        ([key, value]) => typeof value !== "object" && ![...hiddenKeys].includes(key) && value !== null && value !== undefined && value !== "",
       );
       const objects = Object.entries(item).filter(
-        ([key, value]) => typeof value === "object" && value && ![...hiddenKeys, "attachments", "employeeBankingDependents"].includes(key)
+        ([key, value]) => typeof value === "object" && value && ![...hiddenKeys, "attachments", "employeeBankingDependents"].includes(key),
       );
 
       let matchingFiles = [];
@@ -314,10 +315,10 @@ const renderDetails = (
                       ? "Present Address & Location"
                       : "বর্তমান ঠিকানা"
                     : key === "permanentAddressAndLocation"
-                    ? language === "en"
-                      ? "Permanent Address & Location"
-                      : "স্থায়ী ঠিকানা"
-                    : formatKey(key, language)}
+                      ? language === "en"
+                        ? "Permanent Address & Location"
+                        : "স্থায়ী ঠিকানা"
+                      : formatKey(key, language)}
                 </Typography>
 
                 {/* --- RECURSIVE CALL --- */}
@@ -334,7 +335,7 @@ const renderDetails = (
                   handleEligibilityChange,
                   user_type,
                   remarksMap,
-                  handleRemarksChange
+                  handleRemarksChange,
                 )}
               </Box>
             ))}
@@ -376,10 +377,10 @@ const renderDetails = (
                           eligibilityMap?.[item.id] !== undefined
                             ? eligibilityMap[item.id]
                             : item?.isEligible === true
-                            ? "yes"
-                            : item?.isEligible === false
-                            ? "no"
-                            : ""
+                              ? "yes"
+                              : item?.isEligible === false
+                                ? "no"
+                                : ""
                         }
                         onChange={(e) => handleEligibilityChange(item.id, e.target.value)}
                       >
@@ -440,7 +441,7 @@ const renderDetails = (
       );
     }
     const scalars = Object.entries(mergedData).filter(
-      ([key, value]) => typeof value !== "object" && !hiddenKeys.includes(key) && value !== null && value !== undefined && value !== ""
+      ([key, value]) => typeof value !== "object" && !hiddenKeys.includes(key) && value !== null && value !== undefined && value !== "",
     );
     const objects = Object.entries(mergedData).filter(([key, value]) => {
       const parsed = tryParse(value);
@@ -479,7 +480,7 @@ const renderDetails = (
                 handleEligibilityChange,
                 user_type,
                 remarksMap,
-                handleRemarksChange
+                handleRemarksChange,
               )}
             </Grid>
           );
@@ -510,7 +511,6 @@ const IGNORED_KEYS = [
   "submittedBy",
   "dateCreated",
   "employeeDependentInfo",
-  // We will combine this with 'hiddenKeys' in the logic below
 ];
 
 const VERIFICATION_FIELD_MAP = {
@@ -576,7 +576,7 @@ const ApplicationViewPage = ({
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
   const [openCompensationInfoModal, setOpenCompensationInfoModal] = useState(false);
   const [openSalaryButton, setOpenSalaryButton] = useState(false);
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   // --- Eligibility State ---
   const [eligibilityMap, setEligibilityMap] = useState({});
@@ -610,7 +610,7 @@ const ApplicationViewPage = ({
   };
 
   const saveVerification = (sectionKey) => {
-    setLoading(true)
+    setLoading(true);
     const config = VERIFICATION_FIELD_MAP[sectionKey];
     if (!config) return;
 
@@ -624,7 +624,7 @@ const ApplicationViewPage = ({
 
     console.log("hello from verification update", payload);
 
-    dispatch(updateApplication(payload, `Update verification for ${sectionKey}`)).then(()=>setLoading(false))
+    dispatch(updateApplication(payload, `Update verification for ${sectionKey}`)).then(() => setLoading(false));
     // Optional: reload or show toast
     // .then(() => window.location.reload());
   };
@@ -643,7 +643,7 @@ const ApplicationViewPage = ({
 
   // 2. Bulk Save Function
   const handleSaveAllDependents = () => {
-    setLoading(true)
+    setLoading(true);
     const currentDependents = application?.workforceEmployeeDependentApplication || [];
 
     const formattedDependentsList = currentDependents.map((dep) => {
@@ -685,18 +685,24 @@ const ApplicationViewPage = ({
       employeeDependentInfo: JSON.stringify(formattedDependentsList).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
     };
     console.log("update application payload", payload);
-    dispatch(updateApplication(payload, "update workforce dependent info")).then(() => {setLoading(false);window.location.reload()});
+    dispatch(updateApplication(payload, "update workforce dependent info")).then(() => {
+      setLoading(false);
+      window.location.reload();
+    });
   };
 
   const hasUnsavedChanges = Object.keys(eligibilityMap).length > 0 || Object.keys(remarksMap).length > 0;
 
   const handleLastSalaryAmount = (amount) => {
-    setOpenSalaryButton(true)
+    setOpenSalaryButton(true);
     const updateApplicationData = {
       id: application?.id,
       lastBaseSalary: amount,
     };
-    dispatch(updateApplication(updateApplicationData, "update workforce application")).then(() => {setOpenSalaryButton(false);window.location.reload()});
+    dispatch(updateApplication(updateApplicationData, "update workforce application")).then(() => {
+      setOpenSalaryButton(false);
+      window.location.reload();
+    });
   };
 
   // Sidebar summary fields
@@ -711,7 +717,10 @@ const ApplicationViewPage = ({
             " " +
             (application?.workforceEmployee?.lastNameBn != null ? application?.workforceEmployee?.lastNameBn : ""),
       ApplicantFactoryName: language === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn,
-      ...((user_type === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION||user_type ===WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION||user_type ===WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION||user_type ===WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION) && {
+      ...((user_type === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+        user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+        user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ||
+        user_type === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION) && {
         FactoryMembershipNo: application?.employeeFactory?.membershipNo || "—",
         FactoryRegistrationDate: application?.employeeFactory?.registrationDate
           ? conditionalEnToBn(application.employeeFactory.registrationDate.split("T")[0], language)
@@ -721,7 +730,7 @@ const ApplicationViewPage = ({
           : "—",
       }),
       ApplicantDesignation: application?.workforceEmployee?.position,
-      ...((user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) && {
+      ...(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && {
         lastGrossSalary: application?.lastBaseSalary || "—",
       }),
       ApplicationType:
@@ -734,7 +743,7 @@ const ApplicationViewPage = ({
       ApplicationFor:
         application?.applicationFor == "self" ? (language === "en" ? "Self" : "নিজের জন্য") : language === "en" ? "Dependent" : "নির্ভরশীলের জন্য",
     }),
-    [application]
+    [application],
   );
 
   const mapFormStepNo = (fileStepNo, sectionKey, application) => {
@@ -754,7 +763,7 @@ const ApplicationViewPage = ({
     if (!application) return [];
     const appKeys = Object.keys(application);
     const ordered = PREFERRED_SECTION_ORDER.filter((key) => appKeys.includes(key));
-    const allIgnored = [...IGNORED_KEYS, ...hiddenKeys];
+    const allIgnored = [...IGNORED_KEYS, ...hiddenKeys.filter(item => (!application?.status && (item ==="employeeBankInfo"|| item ==="employeeDependentInfo"||item ==="metadata")?false:true) )];
 
     const others = appKeys.filter((key) => !PREFERRED_SECTION_ORDER.includes(key) && !allIgnored.includes(key));
     return [...ordered, ...others];
@@ -799,7 +808,7 @@ const ApplicationViewPage = ({
               <Grid item xs={9}>
                 <TextInput
                   label={"workforce.application.lastBaseSalary.byFactoryAdmin"}
-                  value={lastSalaryAmount||application?.lastBaseSalary || ""}
+                  value={lastSalaryAmount || application?.lastBaseSalary || ""}
                   onChange={(e) => setLastSalaryAmount(e)}
                 />
               </Grid>
@@ -810,7 +819,11 @@ const ApplicationViewPage = ({
                   // disabled={application?.lastBaseSalary !== null ? true : openSalaryButton ? true : false}
                   onClick={() => handleLastSalaryAmount(lastSalaryAmount)}
                 >
-                  {openSalaryButton?<FormattedMessage id="core.table.resultsLoading" module="workforce" /> :<FormattedMessage id="workforce.submit" module="workforce" />}
+                  {openSalaryButton ? (
+                    <FormattedMessage id="core.table.resultsLoading" module="workforce" />
+                  ) : (
+                    <FormattedMessage id="workforce.submit" module="workforce" />
+                  )}
                 </Button>
               </Grid>
               {application?.organizationType === "eis" && (
@@ -875,7 +888,7 @@ const ApplicationViewPage = ({
             const parsedValue = tryParse(value);
             if (!parsedValue || isEmpty(parsedValue)) return null;
 
-            const currentVerificationStatus = verificationState[key]?.status; 
+            const currentVerificationStatus = verificationState[key]?.status;
 
             return (
               <Accordion key={key} className={classes.accordion} style={{ background: `${"#B7D4D8"}` }}>
@@ -918,7 +931,7 @@ const ApplicationViewPage = ({
                     handleEligibilityChange,
                     user_type,
                     remarksMap,
-                    handleRemarksChange
+                    handleRemarksChange,
                   )}
 
                   {/* ----- NEW: BULK SAVE BUTTON FOR DEPENDENTS ----- */}
@@ -930,7 +943,7 @@ const ApplicationViewPage = ({
                           : "উপরের নির্ভরশীলদের জন্য যোগ্যতা নির্বাচন করুন, তারপর সংরক্ষণ করুন এ ক্লিক করুন।"}
                       </Typography>
                       <Button variant="contained" color="primary" onClick={handleSaveAllDependents} disabled={!hasUnsavedChanges || loading}>
-                        {loading ?<FormattedMessage id="core.table.resultsLoading" />:<FormattedMessage id="workforce.dependent.eligibility.btn"/>}
+                        {loading ? <FormattedMessage id="core.table.resultsLoading" /> : <FormattedMessage id="workforce.dependent.eligibility.btn" />}
                       </Button>
                     </Box>
                   )}
@@ -995,7 +1008,7 @@ const ApplicationViewPage = ({
 
                         <Grid item xs={12} sm={2}>
                           <Button variant="contained" color="primary" fullWidth onClick={() => saveVerification(key)} disabled={loading}>
-                            {loading ? <FormattedMessage id="core.table.resultsLoading" />:<FormattedMessage id="workforce.update.btn"/>}
+                            {loading ? <FormattedMessage id="core.table.resultsLoading" /> : <FormattedMessage id="workforce.update.btn" />}
                           </Button>
                         </Grid>
                       </Grid>

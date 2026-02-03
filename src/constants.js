@@ -670,6 +670,8 @@ export const banglaLabels = {
   otherInjuredBenefit:"অন্যান্য আহত সুবিধা",
   otherInjuredTracking:"অন্যান্য আহত ট্র্যাকিং নম্বর",
   relationWithWorker:"শ্রমিকের সাথে সম্পর্ক",
+  presentAddressAndLocation:"বর্তমান ঠিকানা এবং অবস্থান",
+  permanentAddressAndLocation:"স্থায়ী ঠিকানা এবং অবস্থান",
   factory:"কারখানা",
   hospitalList:"হাসপাতালের তথ্য",
   admitTime:"ভর্তি সময়",

@@ -110,6 +110,9 @@ const FinancialAssistanceForm = ({
   });
 
   const reduxState = useSelector((state) => state);
+  const loggedId = useSelector((state) => state.core?.user?.i_user?.id);
+  console.log({loggedId})
+  console.log({employeeData})
   const user_type = getUserType();
 
   const [formData, setFormData] = useState({
@@ -206,11 +209,13 @@ const FinancialAssistanceForm = ({
   }, [reduxState.core.user.username]);
 
   useEffect(() => {
+    const isLoggedInApplicant = loggedId == safeDecodeId(employeeData?.relatedUser?.id)
+    console.log({isLoggedInApplicant})
     if (employeeData) {
       // When employeeData is fetched, set it into the form state
       setFormData({
         id: parsedApplicationData?.id || "",
-        workforceApplicant: {
+        workforceApplicant:(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && isLoggedInApplicant)? {
           nameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameEn : employeeData?.firstNameEn || "",
           nameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameBn : employeeData?.firstNameBn || "",
 
@@ -220,6 +225,7 @@ const FinancialAssistanceForm = ({
           motherNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.motherNameBn : employeeData?.motherNameBn || "",
           spouseNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameEn : employeeData?.spouseNameEn || "",
           spouseNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameBn : employeeData?.spouseNameBn || "",
+          citizenship: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.citizenship : employeeData?.citizenship || "",
           phoneNumber: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.phoneNumber : employeeData?.phoneNumber || "",
           relationWithApplicant: parsedApplicationData?.applicantInfo?.relationWithApplicant,
           birthDate: parsedApplicationData?.applicantInfo?.birthDate,
@@ -233,8 +239,32 @@ const FinancialAssistanceForm = ({
           permanentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.permanentLocation : employeeData?.permanentLocation || "",
           presentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentLocation : employeeData?.presentLocation || "",
           presentAddress: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentAddress : employeeData?.presentAddress || "",
-        },
-        workforceEmployee: {
+        }:parsedApplicationData?.applicantInfo,
+        workforceEmployee:(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && !isLoggedInApplicant)? {
+          nameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameEn : employeeData?.firstNameEn || "",
+          nameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameBn : employeeData?.firstNameBn || "",
+
+          fatherNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.fatherNameEn : employeeData?.fatherNameEn || "",
+          fatherNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.fatherNameBn : employeeData?.fatherNameBn || "",
+          motherNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.motherNameEn : employeeData?.motherNameEn || "",
+          motherNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.motherNameBn : employeeData?.motherNameBn || "",
+          spouseNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameEn : employeeData?.spouseNameEn || "",
+          spouseNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameBn : employeeData?.spouseNameBn || "",
+          phoneNumber: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.phoneNumber : employeeData?.phoneNumber || "",
+          citizenship: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.citizenship : employeeData?.citizenship || "",
+          relationWithApplicant: parsedApplicationData?.applicantInfo?.relationWithApplicant,
+          birthDate: parsedApplicationData?.applicantInfo?.birthDate,
+          gender: parsedApplicationData?.applicantInfo?.gender,
+          citizenship: parsedApplicationData?.applicantInfo?.citizenship,
+
+          nid: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nid : employeeData?.nid || "",
+          birthCertificateNo: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.birthCertificateNo : employeeData?.birthCertificateNo || "",
+
+          permanentAddress: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.permanentAddress : employeeData?.permanentAddress || "",
+          permanentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.permanentLocation : employeeData?.permanentLocation || "",
+          presentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentLocation : employeeData?.presentLocation || "",
+          presentAddress: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentAddress : employeeData?.presentAddress || "",
+        }:{
           nameEn: parsedApplicationData?.deceasedWorkerInfo?.nameEn || "",
           nameBn: parsedApplicationData?.deceasedWorkerInfo?.nameBn || "",
 
@@ -281,7 +311,31 @@ const FinancialAssistanceForm = ({
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
         applicantInfo: parsedApplicationData?.applicantInfo || employeeData?.metadata || {},
-        deceasedWorkerInfo: parsedApplicationData?.deceasedWorkerInfo || {},
+        deceasedWorkerInfo:(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && !isLoggedInApplicant)? {
+          nameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameEn : employeeData?.firstNameEn || "",
+          nameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameBn : employeeData?.firstNameBn || "",
+
+          fatherNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.fatherNameEn : employeeData?.fatherNameEn || "",
+          fatherNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.fatherNameBn : employeeData?.fatherNameBn || "",
+          motherNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.motherNameEn : employeeData?.motherNameEn || "",
+          motherNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.motherNameBn : employeeData?.motherNameBn || "",
+          spouseNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameEn : employeeData?.spouseNameEn || "",
+          spouseNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameBn : employeeData?.spouseNameBn || "",
+          citizenship: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.citizenship : employeeData?.citizenship || "",
+          phoneNumber: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.phoneNumber : employeeData?.phoneNumber || "",
+          relationWithApplicant: parsedApplicationData?.applicantInfo?.relationWithApplicant,
+          birthDate: parsedApplicationData?.applicantInfo?.birthDate,
+          gender: parsedApplicationData?.applicantInfo?.gender,
+          citizenship: parsedApplicationData?.applicantInfo?.citizenship,
+
+          nid: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nid : employeeData?.nid || "",
+          birthCertificateNo: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.birthCertificateNo : employeeData?.birthCertificateNo || "",
+
+          permanentAddress: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.permanentAddress : employeeData?.permanentAddress || "",
+          permanentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.permanentLocation : employeeData?.permanentLocation || "",
+          presentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentLocation : employeeData?.presentLocation || "",
+          presentAddress: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentAddress : employeeData?.presentAddress || "",
+        }:parsedApplicationData?.deceasedWorkerInfo || {},
       });
     }
   }, [employeeData?.id, parsedApplicationData]);
@@ -620,14 +674,6 @@ const FinancialAssistanceForm = ({
       applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
       submittedBy,
     };
-    // const createApplicationMovementData = {
-    //   applicationId: safeApplicationId(applicationId, parsedApplicationData),
-    //   status: WORKFORCE_STATUS.NEW,
-    //   note: "একটি নতুন আবেদন করা হয়েছে",
-    //   applicationFromId: reduxState.core?.user?.i_user?.id,
-    //   applicationToId: 165,
-    //   toRoleId: 25,
-    // };
 
     dispatch(updateApplication(updateApplicationData, `update workforce application `));
 
@@ -773,12 +819,6 @@ const FinancialAssistanceForm = ({
                 )}
               </>
             ) : null
-            // <EmployeeDetailsForm2
-            //   selectedApplicationType={selectedApplicationType}
-            //   handleChange={handleChange}
-            //   formData={formData}
-            //   formStepNo={"workforceDocument"}
-            // />
           }
         </Box>
         {activeStep === steps.length - 1 && (
