@@ -228,6 +228,7 @@ const FiledApplications = () => {
       <Card className={classes.tableContainer}>
         <CardContent>
           <ApplicationProcessSearcher
+            filedApplications={true}
             loggedInUserId={loggedInUserId}
             coloredRow={true}
             roleIds={["47"]}

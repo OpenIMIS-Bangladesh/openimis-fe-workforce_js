@@ -2853,13 +2853,13 @@ class ApplicationProcessSearcher extends Component {
                         <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
                       </Button>
                     )}
-                    {/* {WORKFORCE_USER_TYPE.EIS_COORDINATOR.includes(userType) && (
+                    {WORKFORCE_USER_TYPE.EIS_COORDINATOR.includes(userType) && this.props.filedApplications && (
                       <>
                         <Button variant="contained" color="primary" onClick={() => this.setState({ forwardModalOpenEIS: true })}>
                           <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
                         </Button>
                       </>
-                    )} */}
+                    )}
                   </>
                 )}
               </>
