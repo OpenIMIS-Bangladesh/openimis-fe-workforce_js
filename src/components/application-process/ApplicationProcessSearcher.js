@@ -1154,7 +1154,7 @@ class ApplicationProcessSearcher extends Component {
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_OFFICER) {
       this.setState({ displayVersion: showHistoryFilter });
       let defaultStatusFilters = [];
-
+      
       if (this.props.filedApplications) {
         defaultStatusFilters.push(
           'statusIn: ["forward_for_verification"]',
@@ -1162,7 +1162,11 @@ class ApplicationProcessSearcher extends Component {
           'organizationTypeIn: ["eis"]',
           'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
-        if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        if (loggedInUserId) 
+          {
+            console.log("loggedin user id", loggedInUserId);
+            defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+          }
       } else if (this.props.forwardedApplications) {
         defaultStatusFilters.push(
           'statusIn: ["verified"]',
@@ -1209,6 +1213,8 @@ class ApplicationProcessSearcher extends Component {
         const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
         const hasApplicationTypeIn = finalFilters.some(f => f.includes("applicationTypeIn"));
         const hasAssociationTypeIn = finalFilters.some(f => f.includes("associationTypeIn"));
+        const hasApplicationTo = finalFilters.some(f => f.includes("applicationTo"));
+        const hasApplicationFrom = finalFilters.some(f => f.includes("applicationFrom"));
 
         if (!hasStatusIn)
           finalFilters = [
@@ -1230,6 +1236,18 @@ class ApplicationProcessSearcher extends Component {
             ...defaultStatusFilters.filter(f => f.includes("organizationTypeIn")),
             ...finalFilters
           ];
+
+        if (!hasApplicationTo)
+            finalFilters = [
+              ...defaultStatusFilters.filter(f => f.includes("applicationTo")),
+              ...finalFilters
+            ];
+            
+        if (!hasApplicationFrom)
+            finalFilters = [
+              ...defaultStatusFilters.filter(f => f.includes("applicationFrom")),
+              ...finalFilters
+            ];
         if (!hasOrderBy) finalFilters.push(orderByFilter);
         
       } else {
@@ -1251,6 +1269,8 @@ class ApplicationProcessSearcher extends Component {
           return x === f;
         })
       );
+
+      console.log("finalFilters", finalFilters);
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
