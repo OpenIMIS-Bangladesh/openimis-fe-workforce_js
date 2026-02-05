@@ -761,13 +761,13 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: "20px" }}>
                 <div>
                   <Typography><strong>EIS Worker ID:</strong> {first?.beneficiaryId}</Typography>
-                  {selectedApplicationIds.length === 1 && (
+                  {/* {selectedApplicationIds.length === 1 && (
                     first?.workforceApplication?.applicationType === 'financialAssistance' || first?.workforceApplication?.applicationType === 'deadlyGrant' ? (
                       <Typography><strong>Worker Name:</strong> {safeParse(first?.workforceApplication?.deceasedWorkerInfo).nameBn}</Typography>
                     ) : (
                       <Typography><strong>Worker Name:</strong> {first?.workforceApplication?.workforceEmployee?.firstNameEn} {first?.workforceApplication?.workforceEmployee?.lastNameEn}</Typography>
                     )
-                  )}
+                  )} */}
                   <Typography><strong>Date of Accident:</strong> {accidentDate}</Typography>
                   {appType === "Death" ? (
                     <Typography><strong>Date of Death:</strong> {dateOfDeath}</Typography>
@@ -803,10 +803,11 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                     <TableRow style={{ backgroundColor: "#f0f0f0" }}>
                       <TableCell><strong>SL #</strong></TableCell>
                       <TableCell><strong>EIS Worker ID</strong></TableCell>
-                      {appType === "Death" ? (<TableCell><strong>Dependent Name</strong></TableCell>) : (
+                      {/* {appType === "Death" ? (<TableCell><strong>Dependent Name</strong></TableCell>) : (
                         <TableCell><strong>Worker Name</strong></TableCell>
-                      )}
-                      <TableCell><strong>NID/Birth Cert</strong></TableCell>
+                      )} */}
+                      <TableCell><strong>NID/Birth Certificate of {appType=="Death" ? " Beneficiary" : " Worker"}</strong></TableCell>
+                      {appType === "Death" ? (<TableCell><strong>Relationship with worker</strong></TableCell>) : null}
                       <TableCell><strong>Benefit Rate (%)</strong></TableCell>
                       {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
                         ? null
@@ -829,7 +830,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                       <TableRow key={index}>
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{row?.beneficiaryId}</TableCell>
-                        <TableCell>
+                        {/* <TableCell>
                           {row?.workforceApplication?.applicationType === 'financialAssistance' || row?.workforceApplication?.applicationType === 'deadlyGrant' ? (
                             <>
                               {row?.workforceEmployeeDependent?.[0]?.nameEn} ({row?.workforceEmployeeDependent?.[0] ? `${getRelationString(row?.workforceEmployeeDependent[0])}` : ""})
@@ -837,8 +838,11 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                           ) : (
                             <>{row?.workforceApplication?.workforceEmployee?.firstNameEn} {row?.workforceApplication?.workforceEmployee?.lastNameEn}</>
                           )}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>{row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid}</TableCell>
+
+                        {row?.workforceApplication?.applicationType === 'financialAssistance' && (<TableCell>{getRelationString(row?.workforceEmployeeDependent?.[0])}</TableCell>)}
+
                         <TableCell>{row?.eisInitialReplacementRate ? (Number(row.eisInitialReplacementRate) * 100).toFixed(2) + "%" : ""}</TableCell>
                         {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
                           ? null
@@ -891,8 +895,8 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                     ))}
                     <TableRow>
                       <TableCell colSpan={[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
-                        ? 6
-                        : 8
+                        ? appType === "Death" ?  6: 5
+                        : appType === "Death" ? 8 : 7
                       } align="right"><strong>Total Monthly Amount (BDT):</strong></TableCell>
                       <TableCell align="center"><strong>{Number(getTotalAmount() || 0).toFixed(2)}</strong></TableCell>
                       <TableCell colSpan={3}></TableCell>
