@@ -148,7 +148,7 @@ const hiddenKeys = [
   "workforceEmployeeVerification",
   "workforceEmployeeVerificationRemarks",
   "metadata",
-  "workforceFactoryId"
+  "workforceFactoryId",
 ];
 
 const formatKey = (key, language) => {
@@ -447,6 +447,7 @@ const renderDetails = (
       const parsed = tryParse(value);
       return typeof parsed === "object" && parsed && !hiddenKeys.includes(key);
     });
+    
 
     return (
       <Grid container spacing={2}>
@@ -502,16 +503,7 @@ const PREFERRED_SECTION_ORDER = [
 ];
 
 // 2. Define keys to ignore (these were previously inside your map function)
-const IGNORED_KEYS = [
-  "applicationType",
-  "organizationType",
-  "trackingNumber",
-  "status",
-  "grantAmount",
-  "submittedBy",
-  "dateCreated",
-  "employeeDependentInfo",
-];
+const IGNORED_KEYS = ["applicationType", "organizationType", "trackingNumber", "status", "grantAmount", "submittedBy", "dateCreated", "employeeDependentInfo"];
 
 const VERIFICATION_FIELD_MAP = {
   applicantInfo: {
@@ -763,11 +755,23 @@ const ApplicationViewPage = ({
     if (!application) return [];
     const appKeys = Object.keys(application);
     const ordered = PREFERRED_SECTION_ORDER.filter((key) => appKeys.includes(key));
-    const allIgnored = [...IGNORED_KEYS, ...hiddenKeys.filter(item => (!application?.status && (item ==="employeeBankInfo"|| item ==="employeeDependentInfo"||item ==="metadata")?false:true) )];
+    const allIgnored = [
+      ...IGNORED_KEYS,
+      ...hiddenKeys.filter((item) =>
+        !application?.status && (item === "employeeBankInfo" || item === "employeeDependentInfo" || item === "metadata") ? false : true,
+      ),
+    ];
 
     const others = appKeys.filter((key) => !PREFERRED_SECTION_ORDER.includes(key) && !allIgnored.includes(key));
     return [...ordered, ...others];
   }, [application]);
+
+  const RESTRICTED_VERIFICATION_ROLES = [
+      WORKFORCE_USER_TYPE.APPLICANT,
+      WORKFORCE_USER_TYPE.EIS_ADVISOR,
+      WORKFORCE_USER_TYPE.EIS_COMMITTEE,
+      WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE,
+    ];
 
   console.log({ view: application });
   console.log({ verificationState });
@@ -974,7 +978,7 @@ const ApplicationViewPage = ({
                     </>
                   )}
 
-                  {viewedFromFlag === "verify" && VERIFICATION_FIELD_MAP[key] && (
+                  {viewedFromFlag === "verify" && VERIFICATION_FIELD_MAP[key] && !RESTRICTED_VERIFICATION_ROLES.includes(user_type) && (
                     <Box className={classes.verificationBox}>
                       <Typography variant="subtitle1" style={{ fontWeight: "bold", marginBottom: 8 }}>
                         {language === "en" ? "Section Verification" : "সেকশন যাচাইকরণ"}

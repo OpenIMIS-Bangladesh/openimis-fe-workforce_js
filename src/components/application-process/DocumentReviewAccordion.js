@@ -53,24 +53,6 @@ const DocumentReviewAccordion = ({ file, key, index, onCommentChange, onVerify, 
           <Grid container spacing={2}>
             <Grid item xs={12}>
               {type === "image" && <img src={file.url} alt="preview" style={{ width: "100%", maxHeight: 300, objectFit: "contain" }} />}
-
-              {/* {type === "pdf" && (
-              <div
-                style={{
-                  height: "500px",
-                  overflow: "auto",
-                  border: "1px solid #ccc",
-                  padding: "8px",
-                  textAlign: "center",
-                }}
-              >
-                <Document file={file.url} onLoadSuccess={handlePDFLoadSuccess}>
-                  {Array.from(new Array(numPages), (_, index) => (
-                    <Page key={`page_${index + 1}`} pageNumber={index + 1} width={550} />
-                  ))}
-                </Document>
-              </div>
-            )} */}
               {type === "pdf" && <iframe title="PDF Viewer" src={file.url} width="100%" height="600px" style={{ border: "1px solid #ccc", borderRadius: 4 }} />}
 
               {type === "docx" && (

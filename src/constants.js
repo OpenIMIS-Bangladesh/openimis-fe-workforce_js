@@ -677,7 +677,7 @@ export const banglaLabels = {
   admitTime:"ভর্তি সময়",
   hospitalAddress:"হাসপাতালের ঠিকানা",
   isEligible:"যোগ্য",
-  lastGrossSalary:"শেষ বেস বেতন"
+  lastGrossSalary:"সর্বশেষ মোট (গ্রস) বেতন"
 };
 
 export const roleMaxDayCount = {
