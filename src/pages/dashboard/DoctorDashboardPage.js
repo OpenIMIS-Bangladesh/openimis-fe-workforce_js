@@ -107,71 +107,99 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const getSidebarMenu = (user_type) => {
-  const allMenu = [
-    {
-      id: "pendingMeetingSheet",
-      text: (
-        <FormattedMessage
-          module="workforce"
-          id="workforce.employee.application.pendingMeetingSheet"
-        />
-      ),
-      icon: <HourglassFullTwoToneIcon />,
-    },
-    {
-      id: "pendingApplications",
-      text: (
-        <FormattedMessage
-          module="workforce"
-          id="workforce.application.pending"
-        />
-      ),
-      icon: <HourglassFullTwoToneIcon />,
-    },
-    {
-      id: "forwardedApplications",
-      text: (
-        <FormattedMessage
-          module="workforce"
-          id="workforce.application.forwarded"
-        />
-      ),
-      icon: <ForwardIcon />,
-    },
-    {
-      id: "revertedApplications",
-      text: (
-        <FormattedMessage
-          module="workforce"
-          id="workforce.application.reverted"
-        />
-      ),
-      icon: <RestorePageIcon />,
-    },
-    {
-      id: "returnedApplications",
-      text: (
-        <FormattedMessage
-          module="workforce"
-          id="workforce.application.returned"
-        />
-      ),
-      icon: <ArrowBackIcon />,
-    },
-  ];
+  let allMenu = [];
+  if (user_type=== WORKFORCE_USER_TYPE.EIS_DOCTOR) {
+    allMenu = [
+      {
+        id: "pendingMeetingSheet",
+        text: (
+          <FormattedMessage
+            module="workforce"
+            id="workforce.employee.application.pendingMeetingSheet"
+          />
+        ),
+        icon: <HourglassFullTwoToneIcon />,
+      },
+      // {
+      //   id: "forwardedMeetingSheet",
+      //   text: (
+      //     <FormattedMessage
+      //       module="workforce"
+      //       id="workforce.employee.application.forwardedMeetingSheet"
+      //     />
+      //   ),
+      //   icon: <ForwardIcon />,
+      // },
+      {
+        id: "forwardedApplications",
+        text: (
+          <FormattedMessage
+            module="workforce"
+            id="workforce.application.forwarded"
+          />
+        ),
+        icon: <ForwardIcon />,
+      },
+    ];
+  }
+  else{
+    allMenu = [
+      {
+        id: "pendingApplications",
+        text: (
+          <FormattedMessage
+            module="workforce"
+            id="workforce.application.pending"
+          />
+        ),
+        icon: <HourglassFullTwoToneIcon />,
+      },
+      {
+        id: "forwardedApplications",
+        text: (
+          <FormattedMessage
+            module="workforce"
+            id="workforce.application.forwarded"
+          />
+        ),
+        icon: <ForwardIcon />,
+      },
+      {
+        id: "revertedApplications",
+        text: (
+          <FormattedMessage
+            module="workforce"
+            id="workforce.application.reverted"
+          />
+        ),
+        icon: <RestorePageIcon />,
+      },
+      {
+        id: "returnedApplications",
+        text: (
+          <FormattedMessage
+            module="workforce"
+            id="workforce.application.returned"
+          />
+        ),
+        icon: <ArrowBackIcon />,
+      },
+    ];
 
-  if (user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
-    return allMenu.filter((m) => m.id === "pendingMeetingSheet"); 
   }
 
-  if (
-    user_type === WORKFORCE_USER_TYPE.DOCTOR ||
-    user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR
-  ) {
-    return allMenu.filter((m) => m.id !== "pendingMeetingSheet");
-  }
+  // if (user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
+  //   return allMenu.filter((m) => m.id === "pendingMeetingSheet"); 
+  // }
 
-  return [];
+  // if (
+  //   user_type === WORKFORCE_USER_TYPE.DOCTOR ||
+  //   user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR
+  // ) {
+  //   return allMenu.filter((m) => m.id !== "pendingMeetingSheet");
+  // }
+
+  return allMenu;
 };
 
 // ----------- Components to Render in Main Content -----------
@@ -276,15 +304,15 @@ const FiledApplications = () => {
   );
 };
 
-const PendingMeetingSheet = ({ summaryData = [], disableButtons = 0 }) => {
+const MeetingSheet = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
 
   const handleChange = (panelId) => (event, isExpanded) => {
     setExpanded(isExpanded ? panelId : null);
   };
-  console.log("clear");
-  console.log("summary data", summaryData);
   return (
     <div className={classes.accordionPadding}>
       {summaryData.map((item, index) => (
@@ -314,7 +342,8 @@ const PendingMeetingSheet = ({ summaryData = [], disableButtons = 0 }) => {
                 {expanded === item.id && (
                   <ApplicationProcessSearcher
                     summaryId={item.id}
-                    disableButtons={disableButtons}
+                    loggedInUserId={loggedInUserId}
+                    // disableButtons={disableButtons}
                   />
                 )}
               </CardContent>
@@ -352,34 +381,47 @@ const DoctorDashboard = () => {
   const pendingSummaryData = data.filter(
     (d) => d.status === "forward_to_doctor" && d.organizationType === "eis"
   );
+  const forwardedSummaryData = data.filter(
+    (d) => d.status === "approved_by_doctor" && d.organizationType === "eis"
+  );
 
   const renderContent = () => {
     const user_type = getUserType();
 
     if (user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
-      return (
-        <PendingMeetingSheet
-          summaryData={pendingSummaryData}
-          disableButtons={1}
-        />
-      );
+
+      switch (selectedMenu) {
+        case "pendingMeetingSheet":
+          return (
+            <MeetingSheet
+              summaryData={pendingSummaryData}
+              disableButtons={1}
+            />
+          );
+        case "forwardedApplications":
+          return <ForwardedApplications />;
+
+        default:
+          return <FiledApplications />;
+      }
     }
-    switch (selectedMenu) {
-      case "pendingMeetingSheet":
-      case "pendingApplications":
-        return <FiledApplications />;
-
-      case "forwardedApplications":
-        return <ForwardedApplications />;
-
-      case "revertedApplications":
-        return <RevertedApplications />;
-
-      case "returnedApplications":
-        return <ReturnedApplications />;
-
-      default:
-        return <FiledApplications />;
+    else{
+      switch (selectedMenu) {
+        case "pendingApplications":
+          return <FiledApplications />;
+  
+        case "forwardedApplications":
+          return <ForwardedApplications />;
+  
+        case "revertedApplications":
+          return <RevertedApplications />;
+  
+        case "returnedApplications":
+          return <ReturnedApplications />;
+  
+        default:
+          return <FiledApplications />;
+      }
     }
   };
 

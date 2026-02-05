@@ -1,66 +1,69 @@
-  export const headersAdmin = (component) => [
+import { isEisPath } from "./utils";
+
+export const headersAdmin = (component) => [
   "workforce.application.tracking.number",
   "workforce.employee.application.applicationDate",
   "workforce.employee.name",
   "workforce.employee.application.factoryName",
   "workforce.employee.application.applicationType",
-  "workforce.employee.application.moneyAmount",
+  // "workforce.employee.application.moneyAmount",
+  ...(isEisPath()?[]:["workforce.employee.application.moneyAmount"]),
   "workforce.employee.application.status",
 
   // 1️⃣ View header — always visible
   "view",
   // 2️⃣ Revert header — visible only when disableButtons !== 1
-  component.props.disableButtons !== 1 && "revert" ,
+  component.props.disableButtons !== 1 && "revert",
 
   // 3️⃣ Reject header — visible only when disableButtons !== 1
-  component.props.disableButtons !== 1 && "reject" ,
+  component.props.disableButtons !== 1 && "reject",
 ];
 
-  export const headerDirector = (component) => [
-    //  "",
-    "workforce.application.tracking.number",
-    "workforce.employee.application.applicationDate",
-    "workforce.employee.name",
-    "workforce.employee.application.factoryName",
-    "workforce.employee.application.applicationType",
-    "workforce.employee.application.moneyAmount",
-    "workforce.employee.application.receivedDate",
-    "workforce.employee.application.sentDate",
-    "workforce.employee.application.status",
-    component.isShowHistory() ? "workforce.version" : "",
-  ];
+export const headerDirector = (component) => [
+  //  "",
+  "workforce.application.tracking.number",
+  "workforce.employee.application.applicationDate",
+  "workforce.employee.name",
+  "workforce.employee.application.factoryName",
+  "workforce.employee.application.applicationType",
+  ...(isEisPath()?[]:["workforce.employee.application.moneyAmount"]),
+  "workforce.employee.application.receivedDate",
+  "workforce.employee.application.sentDate",
+  "workforce.employee.application.status",
+  component.isShowHistory() ? "workforce.version" : "",
+];
 
-  export const headerApplicant = (component) => [
-    "workforce.application.tracking.number",
-    "workforce.employee.application.applicationDate",
-    "workforce.employee.name",
-    "workforce.employee.application.factoryName",
-    "workforce.employee.application.serviceProviderName",
-    "workforce.employee.application.applicationType",
-    "workforce.employee.application.status",
-    "view",
-    component.isShowHistory() ? "workforce.version" : "",
-  ];
-  export const headerFactoryAdmin = (component) => [
-    // "",
-    "workforce.application.tracking.number",
-    "workforce.employee.application.applicationDate",
-    "workforce.employee.name",
-    "workforce.employee.application.factoryName",
-    "workforce.employee.application.applicationType",
-    "workforce.employee.application.receivedDate",
-    "workforce.employee.application.sentDate",
-    "workforce.employee.application.status",
-    "workforce.application.submittedBy",
-    "view",
-   ...(component.props.disableButtons !== 1 && !component.props.revertedApplication
+export const headerApplicant = (component) => [
+  "workforce.application.tracking.number",
+  "workforce.employee.application.applicationDate",
+  "workforce.employee.name",
+  "workforce.employee.application.factoryName",
+  "workforce.employee.application.serviceProviderName",
+  "workforce.employee.application.applicationType",
+  "workforce.employee.application.status",
+  "view",
+  component.isShowHistory() ? "workforce.version" : "",
+];
+export const headerFactoryAdmin = (component) => [
+  // "",
+  "workforce.application.tracking.number",
+  "workforce.employee.application.applicationDate",
+  "workforce.employee.name",
+  "workforce.employee.application.factoryName",
+  "workforce.employee.application.applicationType",
+  "workforce.employee.application.receivedDate",
+  "workforce.employee.application.sentDate",
+  "workforce.employee.application.status",
+  "workforce.application.submittedBy",
+  "view",
+  ...(component.props.disableButtons !== 1 && !component.props.revertedApplication
     ? ["verify", "revert"]
     : []),
-    // "verify",
-    // "revert",
-    component.isShowHistory() ? "workforce.version" : "",
-  ];
-  export const headerChecker = (component) => [
+  // "verify",
+  // "revert",
+  component.isShowHistory() ? "workforce.version" : "",
+];
+export const headerChecker = (component) => [
   "workforce.application.tracking.number",
   "workforce.employee.application.applicationDate",
   "workforce.employee.name",
@@ -83,37 +86,37 @@
   ...(component.isShowHistory() ? ["workforce.version"] : []),
 ];
 
-  export const headerCheckerTwo = (component) => [
-    // "",
-    "workforce.application.tracking.number",
-    "workforce.employee.application.applicationDate",
-    "workforce.employee.name",
-    "workforce.employee.application.factoryName",
-    "workforce.employee.application.applicationType",
-    // "workforce.employee.application.moneyAmount",
-    "workforce.employee.application.receivedDate",
-    "workforce.employee.application.sentDate",
-    "workforce.employee.application.status",
-    "view",
-    "verify",
-    component.isShowHistory() ? "workforce.version" : "",
-  ];
-  export const headerDeputyAsstDirector = (component) => [
-    // "",
-    "workforce.application.tracking.number",
-    "workforce.employee.application.applicationDate",
-    "workforce.employee.name",
-    "workforce.employee.application.factoryName",
-    "workforce.employee.application.applicationType",
-    // "workforce.employee.application.moneyAmount",
-    "workforce.employee.application.receivedDate",
-    "workforce.employee.application.sentDate",
-    "workforce.employee.application.status",
-    "view",
-    "verify",
-    component.isShowHistory() ? "workforce.version" : "", 
-  ];
-  export const headerSectionAdmin = (component) => [
+export const headerCheckerTwo = (component) => [
+  // "",
+  "workforce.application.tracking.number",
+  "workforce.employee.application.applicationDate",
+  "workforce.employee.name",
+  "workforce.employee.application.factoryName",
+  "workforce.employee.application.applicationType",
+  // "workforce.employee.application.moneyAmount",
+  "workforce.employee.application.receivedDate",
+  "workforce.employee.application.sentDate",
+  "workforce.employee.application.status",
+  "view",
+  "verify",
+  component.isShowHistory() ? "workforce.version" : "",
+];
+export const headerDeputyAsstDirector = (component) => [
+  // "",
+  "workforce.application.tracking.number",
+  "workforce.employee.application.applicationDate",
+  "workforce.employee.name",
+  "workforce.employee.application.factoryName",
+  "workforce.employee.application.applicationType",
+  // "workforce.employee.application.moneyAmount",
+  "workforce.employee.application.receivedDate",
+  "workforce.employee.application.sentDate",
+  "workforce.employee.application.status",
+  "view",
+  "verify",
+  component.isShowHistory() ? "workforce.version" : "",
+];
+export const headerSectionAdmin = (component) => [
   "workforce.application.tracking.number",
   "workforce.employee.application.applicationDate",
   "workforce.employee.name",
@@ -141,7 +144,7 @@
   ...(component.props.revertedApplication ? ["resend"] : []),
 ];
 
-  export const headerSectionTwoAdmin = (component) => [
+export const headerSectionTwoAdmin = (component) => [
   "workforce.application.tracking.number",
   "workforce.employee.application.applicationDate",
   "workforce.employee.name",
@@ -170,12 +173,12 @@
     : []),
 ];
 
-   export const headerBlwfSectionAdmin = (component) => [
+export const headerBlwfSectionAdmin = (component) => [
   "workforce.application.tracking.number",
   "workforce.employee.application.applicationDate",
   "workforce.employee.name",
   "workforce.employee.application.applicationType",
-  "workforce.employee.application.moneyAmount",
+  ...(isEisPath()?[]:["workforce.employee.application.moneyAmount"]),
   "workforce.employee.application.nid",
   "workforce.employee.application.receivedDate",
   "workforce.employee.application.sentDate",
@@ -198,13 +201,13 @@
     : []),
 ];
 
-  export const headerDoctor = (component) => [
+export const headerDoctor = (component) => [
   "workforce.application.tracking.number",
   "workforce.employee.application.applicationDate",
   "workforce.employee.name",
   "workforce.employee.application.factoryName",
   "workforce.employee.application.applicationType",
-  "workforce.employee.application.moneyAmount",
+  ...(isEisPath()?[]:["workforce.employee.application.moneyAmount"]),
   "workforce.employee.application.receivedDate",
   "workforce.employee.application.sentDate",
   "workforce.employee.application.status",
@@ -226,7 +229,7 @@
     : []),
 ];
 
- export const headerAssociation = (component) => [
+export const headerAssociation = (component) => [
   "workforce.application.tracking.number",
   "workforce.employee.application.applicationDate",
   "workforce.employee.name",
@@ -248,15 +251,15 @@
   ...(component.isShowHistory() ? ["workforce.version"] : []),
 ];
 
-  export const headerApprover = (component) => [
-    //  "",
-    "workforce.application.tracking.number",
-    "workforce.employee.application.applicationDate",
-    "workforce.employee.name",
-    "workforce.employee.application.applicationType",
-    "workforce.employee.application.moneyAmount",
-    "workforce.employee.application.receivedDate",
-    "workforce.employee.application.sentDate",
-    "workforce.employee.application.status",
-    component.isShowHistory() ? "workforce.version" : "",
-  ];
+export const headerApprover = (component) => [
+  //  "",
+  "workforce.application.tracking.number",
+  "workforce.employee.application.applicationDate",
+  "workforce.employee.name",
+  "workforce.employee.application.applicationType",
+  ...(isEisPath()?[]:["workforce.employee.application.moneyAmount"]),
+  "workforce.employee.application.receivedDate",
+  "workforce.employee.application.sentDate",
+  "workforce.employee.application.status",
+  component.isShowHistory() ? "workforce.version" : "",
+];
