@@ -129,12 +129,15 @@ export const itemAdminFormatters = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
-    (application) => (
-      <TextInput
-        value={application?.grantAmount}
-        onChange={(v) => component.setState({ editedGrantMoney: v })}
-      />
-    ),
+    ...(isEisPath()?[]:[
+      (application) => (
+        <TextInput
+          value={application?.grantAmount}
+          onChange={(v) => component.setState({ editedGrantMoney: v })}
+        />
+      ),
+    ]),
+
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -159,7 +162,7 @@ export const itemAdminFormatters = (
             );
           }}
         >
-          <TabIcon style={{color:"blue"}} />
+          <TabIcon style={{ color: "blue" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -174,7 +177,7 @@ export const itemAdminFormatters = (
             disabled={application?.isHistory}
             onClick={() => component.handleOpenRevertModal(application)}
           >
-            <UndoIcon style={{color:"red"}}/>
+            <UndoIcon style={{ color: "red" }} />
           </IconButton>
         </Tooltip>
       </div>
@@ -197,7 +200,7 @@ export const itemAdminFormatters = (
               }
               color="error"
             >
-              <CloseIcon style={{color:"#750506"}} />
+              <CloseIcon style={{ color: "#750506" }} />
             </IconButton>
           </span>
         </Tooltip>
@@ -223,22 +226,24 @@ export const itemFormattersDirector = (
       locale === "en"
         ? application?.employeeFactory?.nameEn
         : application?.employeeFactory?.nameBn,
-      (application) =>
+    (application) =>
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
 
-       (application) => (
-      <TextInput
-        value={application?.grantAmount}
-        onChange={(v) => component.setState({ editedGrantMoney: v })}
-      />
-    ),
+     ...(isEisPath()?[]:[
+      (application) => (
+        <TextInput
+          value={application?.grantAmount}
+          onChange={(v) => component.setState({ editedGrantMoney: v })}
+        />
+      ),
+    ]),
     // (application) => application?.grantAmount,
-     (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
-    (application) =>application?.applicationForwardDate 
-        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",
+    (application) => application?.applicationReceiveDate
+      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.applicationForwardDate
+      ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -264,9 +269,9 @@ export const itemFormattersDirector = (
           <TabIcon />
         </IconButton>
       </Tooltip>
-      {component.props.disableButtons!==1 && (
+      {component.props.disableButtons !== 1 && (
         <>
-            <Tooltip title="Revert">
+          <Tooltip title="Revert">
             <IconButton
               disabled={application?.isHistory}
               onClick={() => component.handleOpenRevertModal(application)}
@@ -290,7 +295,7 @@ export const itemFormattersDirector = (
           </Tooltip>
         </>
       )}
-      
+
     </div>
   ));
   return formatters;
@@ -312,7 +317,7 @@ export const itemFormattersApplicant = (
       locale === "en"
         ? application?.employeeFactory?.nameEn ?? "N/A"
         : application?.employeeFactory?.nameBn ?? "প্রযোজ্য নয়",
-    (application) => locale==="en"? ORGANIZATION_TYPE_NAME_EN[application?.organizationType] : ORGANIZATION_TYPE_NAME_BN[application?.organizationType],
+    (application) => locale === "en" ? ORGANIZATION_TYPE_NAME_EN[application?.organizationType] : ORGANIZATION_TYPE_NAME_BN[application?.organizationType],
     (application) =>
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
@@ -351,20 +356,20 @@ export const itemFormattersApplicant = (
             disabled={application?.isHistory}
             onClick={() => {
               isEisPath() ?
-              historyPush(
-                modulesManager,
-                history,
-                "workforce.route.application.eis",
-                [decodeId(application?.id)],
-                false
-              )
-              :historyPush(
-                modulesManager,
-                history,
-                "workforce.route.application",
-                [decodeId(application?.id)],
-                false
-              );
+                historyPush(
+                  modulesManager,
+                  history,
+                  "workforce.route.application.eis",
+                  [decodeId(application?.id)],
+                  false
+                )
+                : historyPush(
+                  modulesManager,
+                  history,
+                  "workforce.route.application",
+                  [decodeId(application?.id)],
+                  false
+                );
             }}
           >
             <DoubleArrowIcon />
@@ -372,9 +377,9 @@ export const itemFormattersApplicant = (
         </Tooltip>
       )}
     </div>
-    
+
   ));
-  formatters.push((application)=>(
+  formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       {component.props.revertedApplication && (
         <Tooltip title="Resend">
@@ -394,7 +399,7 @@ export const itemFormattersApplicant = (
           </IconButton>
         </Tooltip>
       )}
-      </div>
+    </div>
   ))
   return formatters;
 };
@@ -419,10 +424,10 @@ export const itemFormattersChecker = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
     // (application) => conditionalEnToBn(application?.grantAmount, locale),
-    (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
-    (application) =>application?.applicationForwardDate 
-        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
+    (application) => application?.applicationReceiveDate
+      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.applicationForwardDate
+      ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -446,7 +451,7 @@ export const itemFormattersChecker = (
             );
           }}
         >
-          <TabIcon style={{color:"blue"}} />
+          <TabIcon style={{ color: "blue" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -468,7 +473,7 @@ export const itemFormattersChecker = (
             );
           }}
         >
-          <VerifiedUserIcon style={{color:"green"}}/>
+          <VerifiedUserIcon style={{ color: "green" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -482,7 +487,7 @@ export const itemFormattersChecker = (
           disabled={application?.isHistory}
           onClick={() => component.handleOpenRevertModal(application)}
         >
-          <UndoIcon style={{color:"red"}}/>
+          <UndoIcon style={{ color: "red" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -495,7 +500,7 @@ export const itemFormattersChecker = (
           disabled={application?.isHistory}
           onClick={() => component.handleOpenRevertModal(application)}
         >
-          <RestorePageIcon style={{color:"#1976D2"}}/>
+          <RestorePageIcon style={{ color: "#1976D2" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -525,10 +530,10 @@ export const itemFormattersCheckerTwo = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
     (application) => conditionalEnToBn(application?.grantAmount, locale),
-    (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
-    (application) =>application?.applicationForwardDate 
-        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
+    (application) => application?.applicationReceiveDate
+      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.applicationForwardDate
+      ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -551,7 +556,7 @@ export const itemFormattersCheckerTwo = (
             );
           }}
         >
-          <TabIcon style={{color:"blue"}} />
+          <TabIcon style={{ color: "blue" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -572,12 +577,12 @@ export const itemFormattersCheckerTwo = (
             );
           }}
         >
-          <VerifiedUserIcon style={{color:"green"}} />
+          <VerifiedUserIcon style={{ color: "green" }} />
         </IconButton>
       </Tooltip>
     </div>
   ));
-     // --- REVERT BUTTON ---
+  // --- REVERT BUTTON ---
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       {component.props.disableButtons !== 1 && !component.props.revertedApplication && (
@@ -589,7 +594,7 @@ export const itemFormattersCheckerTwo = (
               component.setState({ revertByChecker: true });
             }}
           >
-            <UndoIcon style={{color:"red"}}/>
+            <UndoIcon style={{ color: "red" }} />
           </IconButton>
         </Tooltip>
       )}
@@ -603,7 +608,7 @@ export const itemFormattersCheckerTwo = (
         <Tooltip title="Reject">
           <span>
             <IconButton onClick={() => component.handleReject(application)}>
-              <CloseIcon style={{color:"#750506"}}/>
+              <CloseIcon style={{ color: "#750506" }} />
             </IconButton>
           </span>
         </Tooltip>
@@ -633,10 +638,10 @@ export const itemFormattersDeputyAsstDirector = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
     // (application) => conditionalEnToBn(application?.grantAmount, locale),
-    (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
-    (application) =>application?.applicationForwardDate 
-        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
+    (application) => application?.applicationReceiveDate
+      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.applicationForwardDate
+      ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -659,14 +664,14 @@ export const itemFormattersDeputyAsstDirector = (
             );
           }}
         >
-          <TabIcon style={{color:"blue"}}/>
+          <TabIcon style={{ color: "blue" }} />
         </IconButton>
       </Tooltip>
     </div>
   ));
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
-       <Tooltip title="Verify">
+      <Tooltip title="Verify">
         <IconButton
           disabled={application?.isHistory}
           onClick={() => {
@@ -679,12 +684,12 @@ export const itemFormattersDeputyAsstDirector = (
             );
           }}
         >
-          <VerifiedUserIcon style={{color:"green"}}/>
+          <VerifiedUserIcon style={{ color: "green" }} />
         </IconButton>
       </Tooltip>
     </div>
   ));
-   // --- REVERT BUTTON ---
+  // --- REVERT BUTTON ---
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       {component.props.disableButtons !== 1 && !component.props.revertedApplication && (
@@ -696,7 +701,7 @@ export const itemFormattersDeputyAsstDirector = (
               component.setState({ revertByChecker: true });
             }}
           >
-            <UndoIcon style={{color:"red"}}/>
+            <UndoIcon style={{ color: "red" }} />
           </IconButton>
         </Tooltip>
       )}
@@ -710,7 +715,7 @@ export const itemFormattersDeputyAsstDirector = (
         <Tooltip title="Reject">
           <span>
             <IconButton onClick={() => component.handleReject(application)}>
-              <CloseIcon style={{color:"#750506"}}/>
+              <CloseIcon style={{ color: "#750506" }} />
             </IconButton>
           </span>
         </Tooltip>
@@ -740,10 +745,10 @@ export const itemFormattersS2DeputyAsstDirector = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
     (application) => conditionalEnToBn(application?.grantAmount, locale),
-    (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
-    (application) =>application?.applicationForwardDate 
-        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
+    (application) => application?.applicationReceiveDate
+      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.applicationForwardDate
+      ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -766,7 +771,7 @@ export const itemFormattersS2DeputyAsstDirector = (
             );
           }}
         >
-          <TabIcon style={{color:"blue"}} />
+          <TabIcon style={{ color: "blue" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -786,7 +791,7 @@ export const itemFormattersS2DeputyAsstDirector = (
             );
           }}
         >
-          <VerifiedUserIcon style={{color:"green"}} />
+          <VerifiedUserIcon style={{ color: "green" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -815,10 +820,10 @@ export const itemFormattersSectionAdmin = (
         : application?.grantMoney?.applicationTypeNameBn,
     (application) => application?.associationType,
     (application) => application?.workforceEmployee?.nid,
-    (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
-    (application) =>application?.applicationForwardDate 
-        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
+    (application) => application?.applicationReceiveDate
+      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.applicationForwardDate
+      ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -842,7 +847,7 @@ export const itemFormattersSectionAdmin = (
             );
           }}
         >
-          <TabIcon style={{color:"blue"}} />
+          <TabIcon style={{ color: "blue" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -865,7 +870,7 @@ export const itemFormattersSectionAdmin = (
               );
             }}
           >
-            <VerifiedUserIcon style={{color:"green"}}/>
+            <VerifiedUserIcon style={{ color: "green" }} />
           </IconButton>
         </Tooltip>
       )}
@@ -884,7 +889,7 @@ export const itemFormattersSectionAdmin = (
               component.setState({ revertByChecker: true });
             }}
           >
-            <UndoIcon style={{color:"red"}}/>
+            <UndoIcon style={{ color: "red" }} />
           </IconButton>
         </Tooltip>
       )}
@@ -898,7 +903,7 @@ export const itemFormattersSectionAdmin = (
         <Tooltip title="Reject">
           <span>
             <IconButton onClick={() => component.handleReject(application)}>
-              <CloseIcon style={{color:"#750506"}}/>
+              <CloseIcon style={{ color: "#750506" }} />
             </IconButton>
           </span>
         </Tooltip>
@@ -923,7 +928,7 @@ export const itemFormattersSectionAdmin = (
               );
             }}
           >
-            <RestorePageIcon style={{color:"#1976D2"}} />
+            <RestorePageIcon style={{ color: "#1976D2" }} />
           </IconButton>
         </Tooltip>
       )}
@@ -955,10 +960,10 @@ export const itemFormattersSectionTwoAdmin = (
         : application?.grantMoney?.applicationTypeNameBn,
     // (application) => conditionalEnToBn(application?.grantAmount, locale),
     (application) => application?.workforceEmployee?.nid,
-    (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
-    (application) =>application?.applicationForwardDate 
-        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",   
+    (application) => application?.applicationReceiveDate
+      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.applicationForwardDate
+      ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -982,7 +987,7 @@ export const itemFormattersSectionTwoAdmin = (
             )
           }
         >
-          <TabIcon style={{color:"blue"}} />
+          <TabIcon style={{ color: "blue" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -1004,7 +1009,7 @@ export const itemFormattersSectionTwoAdmin = (
             )
           }
         >
-          <VerifiedUserIcon style={{color:"green"}}/>
+          <VerifiedUserIcon style={{ color: "green" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -1022,7 +1027,7 @@ export const itemFormattersSectionTwoAdmin = (
               component.setState({ revertByChecker: true });
             }}
           >
-            <UndoIcon style={{color:"red"}}/>
+            <UndoIcon style={{ color: "red" }} />
           </IconButton>
         </Tooltip>
       )}
@@ -1036,7 +1041,7 @@ export const itemFormattersSectionTwoAdmin = (
         <Tooltip title="Reject">
           <span>
             <IconButton onClick={() => component.handleReject(application)}>
-              <CloseIcon style={{color:"#750506"}}/>
+              <CloseIcon style={{ color: "#750506" }} />
             </IconButton>
           </span>
         </Tooltip>
@@ -1061,7 +1066,7 @@ export const itemFormattersSectionTwoAdmin = (
               )
             }
           >
-            <RestorePageIcon style={{color:"#1976D2"}}/>
+            <RestorePageIcon style={{ color: "#1976D2" }} />
           </IconButton>
         </Tooltip>
       )}
@@ -1087,12 +1092,14 @@ export const itemFormattersBlwfSectionAdmin = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
-    (application) => conditionalEnToBn(application?.grantAmount, locale),
+    ...(isEisPath()?[]:[
+      (application) => conditionalEnToBn(application?.grantAmount, locale),
+    ]),
     (application) => application?.workforceEmployee?.nid,
-    (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
-    (application) =>application?.applicationForwardDate 
-        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
+    (application) => application?.applicationReceiveDate
+      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.applicationForwardDate
+      ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -1118,7 +1125,7 @@ export const itemFormattersBlwfSectionAdmin = (
             );
           }}
         >
-          <TabIcon style={{color:"blue"}}/>
+          <TabIcon style={{ color: "blue" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -1143,7 +1150,7 @@ export const itemFormattersBlwfSectionAdmin = (
               );
             }}
           >
-            <VerifiedUserIcon style={{color:"green"}} />
+            <VerifiedUserIcon style={{ color: "green" }} />
           </IconButton>
         </Tooltip>
       )}
@@ -1165,7 +1172,7 @@ export const itemFormattersBlwfSectionAdmin = (
                 component.setState({ revertByChecker: true });
               }}
             >
-              <UndoIcon style={{color:"red"}} />
+              <UndoIcon style={{ color: "red" }} />
             </IconButton>
           </Tooltip>
         )}
@@ -1184,7 +1191,7 @@ export const itemFormattersBlwfSectionAdmin = (
               <IconButton
                 onClick={() => component.handleReject(application)}
               >
-                <CloseIcon style={{color:"#750506"}}/>
+                <CloseIcon style={{ color: "#750506" }} />
               </IconButton>
             </span>
           </Tooltip>
@@ -1211,7 +1218,7 @@ export const itemFormattersBlwfSectionAdmin = (
               );
             }}
           >
-            <RestorePageIcon style={{color:"#1976D2"}}/>
+            <RestorePageIcon style={{ color: "#1976D2" }} />
           </IconButton>
         </Tooltip>
       )}
@@ -1241,16 +1248,18 @@ export const itemFormattersDoctor = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
-    (application) => (
-      <TextInput
-        value={application?.grantAmount}
-        onChange={(v) => component.setState({ editedGrantMoney: v })}
-      />
-    ),
-    (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
-    (application) =>application?.applicationForwardDate 
-        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",    
+     ...(isEisPath()?[]:[
+      (application) => (
+        <TextInput
+          value={application?.grantAmount}
+          onChange={(v) => component.setState({ editedGrantMoney: v })}
+        />
+      ),
+    ]),
+    (application) => application?.applicationReceiveDate
+      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.applicationForwardDate
+      ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -1274,93 +1283,101 @@ export const itemFormattersDoctor = (
             );
           }}
         >
-          <TabIcon style={{color:"blue"}} />
+          <TabIcon style={{ color: "blue" }} />
         </IconButton>
       </Tooltip>
     </div>
   ));
 
   // --- VERIFY BUTTON ---
-  formatters.push((application) => (
-    <div className={component.props.classes.horizontalButtonContainer}>
-      <Tooltip title="Verify">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.verify",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <VerifiedUserIcon style={{color:"green"}}/>
-        </IconButton>
-      </Tooltip>
-    </div>
-  ));
-
-  // --- APPROVE BUTTON ---
- formatters.push((application) => {
-  if (application?.status === "approved_by_doctor") return null;
-
-  return (
-    <div className={component.props.classes.horizontalButtonContainer}>
-      <Tooltip title="Approve">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => component.handleApprovalByDoctor(application)}
-        >
-          <CheckIcon style={{ color: "#006273" }} />
-        </IconButton>
-      </Tooltip>
-    </div>
-  );
-});
-
-
-  // --- REVERT BUTTON ---
-  formatters.push((application) => (
-    <div className={component.props.classes.horizontalButtonContainer}>
-      <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            component.handleOpenRevertModal(application);
-            component.setState({ revertByChecker: true });
-          }}
-        >
-          <UndoIcon style={{color:"red"}}/>
-        </IconButton>
-      </Tooltip>
-    </div>
-  ));
-
-  // --- RESEND BUTTON ---
-  formatters.push((application) => (
-    <div className={component.props.classes.horizontalButtonContainer}>
-      {component.props.revertedApplication && (
-        <Tooltip title="Resend">
+  if (component.props.disableButtons != 1) {
+    formatters.push((application) => (
+      <div className={component.props.classes.horizontalButtonContainer}>
+        <Tooltip title="Verify">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
               historyPush(
                 modulesManager,
                 history,
-                "workforce.route.applications.application.process.resend",
+                "workforce.route.applications.application.verify",
                 [decodeId(application?.id)],
                 false
               );
             }}
           >
-            <RestorePageIcon style={{color:"#1976D2"}}/>
+            <VerifiedUserIcon style={{ color: "green" }} />
           </IconButton>
         </Tooltip>
-      )}
-    </div>
-  ));
+      </div>
+    ));
+  }
+
+  // --- APPROVE BUTTON ---
+  if (component.props.disableButtons != 1) {
+    formatters.push((application) => {
+      if (application?.status === "approved_by_doctor") return null;
+
+      return (
+        <div className={component.props.classes.horizontalButtonContainer}>
+          <Tooltip title="Approve">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => component.handleApprovalByDoctor(application)}
+            >
+              <CheckIcon style={{ color: "#006273" }} />
+            </IconButton>
+          </Tooltip>
+        </div>
+      );
+    });
+  }
+
+
+  // --- REVERT BUTTON ---
+  if (component.props.disableButtons != 1) {
+    formatters.push((application) => (
+      <div className={component.props.classes.horizontalButtonContainer}>
+        <Tooltip title="Revert">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              component.handleOpenRevertModal(application);
+              component.setState({ revertByChecker: true });
+            }}
+          >
+            <UndoIcon style={{ color: "red" }} />
+          </IconButton>
+        </Tooltip>
+      </div>
+    ));
+  }
+
+  // --- RESEND BUTTON ---
+  if (component.props.disableButtons != 1) {
+    formatters.push((application) => (
+      <div className={component.props.classes.horizontalButtonContainer}>
+        {component.props.revertedApplication && (
+          <Tooltip title="Resend">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => {
+                historyPush(
+                  modulesManager,
+                  history,
+                  "workforce.route.applications.application.process.resend",
+                  [decodeId(application?.id)],
+                  false
+                );
+              }}
+            >
+              <RestorePageIcon style={{ color: "#1976D2" }} />
+            </IconButton>
+          </Tooltip>
+        )}
+      </div>
+    ));
+  }
 
   return formatters;
 };
@@ -1385,10 +1402,10 @@ export const itemFormattersAssociation = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
-    (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A", 
-    (application) =>application?.applicationForwardDate 
-        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",       
+    (application) => application?.applicationReceiveDate
+      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.applicationForwardDate
+      ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -1510,10 +1527,10 @@ export const itemFormattersFactoryAdmin = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
-    (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
-    (application) =>application?.applicationForwardDate 
-        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",
+    (application) => application?.applicationReceiveDate
+      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.applicationForwardDate
+      ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -1544,7 +1561,7 @@ export const itemFormattersFactoryAdmin = (
             );
           }}
         >
-          <TabIcon style={{color:"blue"}}/>
+          <TabIcon style={{ color: "blue" }} />
         </IconButton>
       </Tooltip>
     </div>
@@ -1567,7 +1584,7 @@ export const itemFormattersFactoryAdmin = (
               );
             }}
           >
-            <VerifiedUserIcon style={{color:"green"}}/>
+            <VerifiedUserIcon style={{ color: "green" }} />
           </IconButton>
         </Tooltip>
 
@@ -1586,7 +1603,7 @@ export const itemFormattersFactoryAdmin = (
               component.setState({ revertByChecker: true });
             }}
           >
-            <UndoIcon style={{color:"red"}}/>
+            <UndoIcon style={{ color: "red" }} />
           </IconButton>
         </Tooltip>
       </div>
@@ -1610,7 +1627,7 @@ export const itemFormattersFactoryAdmin = (
               );
             }}
           >
-            <RestorePageIcon style={{color:"#1976D2"}}/>
+            <RestorePageIcon style={{ color: "#1976D2" }} />
           </IconButton>
         </Tooltip>
       </div>
@@ -1637,11 +1654,13 @@ export const itemFormattersApprover = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
-    (application) => conditionalEnToBn(application?.grantAmount, locale),
-    (application) =>application?.applicationReceiveDate 
-        ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale): "N/A",
-    (application) =>application?.applicationForwardDate 
-        ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale): "N/A",
+    ...(isEisPath()?[]:[
+      (application) => conditionalEnToBn(application?.grantAmount, locale),
+    ]),
+    (application) => application?.applicationReceiveDate
+      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.applicationForwardDate
+      ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
@@ -1684,9 +1703,9 @@ export const itemFormattersApprover = (
           <VerifiedUserIcon />
         </IconButton>
       </Tooltip>
-      {component.props.disableButtons!==1 && (
+      {component.props.disableButtons !== 1 && (
         <>
-        <Tooltip title="Revert">
+          <Tooltip title="Revert">
             <IconButton
               disabled={application?.isHistory}
               onClick={() => {
@@ -1702,11 +1721,11 @@ export const itemFormattersApprover = (
               <IconButton
                 onClick={() => component.handleReject(application)}
               >
-                <CloseIcon style={{color:"#750506"}}/>
+                <CloseIcon style={{ color: "#750506" }} />
               </IconButton>
             </span>
           </Tooltip>
-           {component.props.revertedApplication && (
+          {component.props.revertedApplication && (
             <Tooltip title="Resend">
               <IconButton
                 disabled={application?.isHistory}
@@ -1720,10 +1739,10 @@ export const itemFormattersApprover = (
                   );
                 }}
               >
-                <RestorePageIcon style={{color:"#1976D2"}}/>
+                <RestorePageIcon style={{ color: "#1976D2" }} />
               </IconButton>
             </Tooltip>
-          )}  
+          )}
         </>
       )}
     </div>

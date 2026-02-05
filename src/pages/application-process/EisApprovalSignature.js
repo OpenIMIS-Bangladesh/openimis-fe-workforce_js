@@ -894,9 +894,9 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                 <tr>
                   <th>Sl #</th>
                   <th>EIS Worker/Beneficiary ID</th>
-                  <th>Worker Name</th>
-                  <th>Dependent Name (Relation)</th>
-                  <th>NID/Birth Cert.</th>
+                  {/* <th>Worker Name</th> */}
+                  <th>NID/Birth Certificate of {isDeathCase?" Beneficiary":" Worker"}</th>
+                  {isDeathCase ? <th>Relation with worker</th>:null}
                   <th>Benefit Rate (%)</th>
                   {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
                     ? null
@@ -926,13 +926,22 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                     <tr key={index}>
                       <td style={{ textAlign: "center" }}>{index + 1}</td>
                       <td>{row?.beneficiaryId}</td>
-                      <td>{row?.workforceApplication?.workforceEmployee?.firstNameEn}</td>
-                      <td>
+                      {/* <td>{row?.workforceApplication?.workforceEmployee?.firstNameEn}</td> */}
+                      <td>{row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid}</td>
+                      {/* <td>
                         {row?.workforceEmployeeDependent?.length > 0
                           ? `${row.workforceEmployeeDependent[0].nameEn} (${RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker] || ""})`
                           : "N/A"}
-                      </td>
-                      <td>{row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid}</td>
+                      </td> */}
+                      {
+                        isDeathCase ? (
+                          <td>
+                            {row?.workforceEmployeeDependent?.length > 0  
+                              ? (RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker] || row.workforceEmployeeDependent[0].relationWithWorker || "N/A")
+                              : "N/A"}
+                          </td>
+                        ) : null
+                      }
                       <td style={{ textAlign: "center" }}>{benefitRate}%</td>
                       {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
                         ? null
@@ -975,7 +984,17 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                 })}
                 {/* Totals */}
                 <tr>
-                  <td colSpan={[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)? 6: firstData?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee"? 8: 6} style={{ textAlign: "right", fontWeight: "bold" }}>
+                  <td colSpan={[
+                    WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
+                      ?
+                     (isDeathCase?5:4)
+                     : 
+                     firstData?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee"
+                     ? 
+                     (isDeathCase?7:6)
+                     : 
+                     (isDeathCase?5:4)
+                     } style={{ textAlign: "right", fontWeight: "bold" }}>
                     Total:
                   </td>
                   <td style={{ textAlign: "right", fontWeight: "bold" }}>{Number(getMonthlyTotalAmount() || 0).toFixed(2)}</td>
