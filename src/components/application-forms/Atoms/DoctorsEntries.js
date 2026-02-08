@@ -60,7 +60,7 @@ const DoctorsEntries = ({ application }) => {
     <>
       <Grid container spacing={2} style={{ marginTop: "10px" }}>
         {/* Proposed Amount */}
-        {user_type != WORKFORCE_USER_TYPE.EIS_COORDINATOR &&(
+        {(user_type != WORKFORCE_USER_TYPE.EIS_COORDINATOR||user_type != WORKFORCE_USER_TYPE.EIS_DOCTOR) &&(
         <Grid item xs={12}>
           <TextInput label="workforce.application.proposedAmount.byDoctor" value={proposedAmount || ""} onChange={(v) => setProposedAmount(v)} />
         </Grid>
