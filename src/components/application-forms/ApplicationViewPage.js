@@ -447,7 +447,6 @@ const renderDetails = (
       const parsed = tryParse(value);
       return typeof parsed === "object" && parsed && !hiddenKeys.includes(key);
     });
-    
 
     return (
       <Grid container spacing={2}>
@@ -767,11 +766,11 @@ const ApplicationViewPage = ({
   }, [application]);
 
   const RESTRICTED_VERIFICATION_ROLES = [
-      WORKFORCE_USER_TYPE.APPLICANT,
-      WORKFORCE_USER_TYPE.EIS_ADVISOR,
-      WORKFORCE_USER_TYPE.EIS_COMMITTEE,
-      WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE,
-    ];
+    WORKFORCE_USER_TYPE.APPLICANT,
+    WORKFORCE_USER_TYPE.EIS_ADVISOR,
+    WORKFORCE_USER_TYPE.EIS_COMMITTEE,
+    WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE,
+  ];
 
   console.log({ view: application });
   console.log({ verificationState });
@@ -1000,6 +999,14 @@ const ApplicationViewPage = ({
                         </Grid>
 
                         <Grid item xs={12} sm={6}>
+                          {/* <TextInput
+                            label={language === "en" ? "Remarks" : "মন্তব্য"}
+                            placeholder={language === "en" ? "Enter verification remarks" : "যাচাইকরণ মন্তব্য লিখুন"}
+                            value={verificationState[key]?.remarks || ""}
+                            onChange={(e) => handleVerificationChange(key, "remarks", typeof e === "string" ? e : e.target.value)}
+                            fullWidth
+                            multiline
+                          /> */}
                           <TextInput
                             label={language === "en" ? "Remarks" : "মন্তব্য"}
                             placeholder={language === "en" ? "Enter verification remarks" : "যাচাইকরণ মন্তব্য লিখুন"}
@@ -1007,11 +1014,26 @@ const ApplicationViewPage = ({
                             onChange={(e) => handleVerificationChange(key, "remarks", typeof e === "string" ? e : e.target.value)}
                             fullWidth
                             multiline
+                            // --- ADD THESE LINES ---
+                            required={verificationState[key]?.status === "incorrect"}
+                            error={
+                              verificationState[key]?.status === "incorrect" &&
+                              (!verificationState[key]?.remarks || verificationState[key]?.remarks.trim() === "")
+                            }
+                            helperText={
+                              verificationState[key]?.status === "incorrect" &&
+                              (!verificationState[key]?.remarks || verificationState[key]?.remarks.trim() === "")
+                                ? language === "en"
+                                  ? "Remarks required"
+                                  : "মন্তব্য আবশ্যক"
+                                : ""
+                            }
+                            // -----------------------
                           />
                         </Grid>
 
                         <Grid item xs={12} sm={2}>
-                          <Button variant="contained" color="primary" fullWidth onClick={() => saveVerification(key)} disabled={loading}>
+                          <Button variant="contained" color="primary" fullWidth onClick={() => saveVerification(key)} disabled={loading ||(verificationState[key]?.status === "incorrect"&& !verificationState[key]?.remarks)}>
                             {loading ? <FormattedMessage id="core.table.resultsLoading" /> : <FormattedMessage id="workforce.update.btn" />}
                           </Button>
                         </Grid>
