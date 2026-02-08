@@ -20,6 +20,7 @@ import {
 } from "../../../actions";
 import { useModulesManager, PublishedComponent } from "@openimis/fe-core";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
+import GenerateBeneficiaryAdvice from "./GenerateBeneficiaryAdvice";
 
 
 const BeneficiaryProcessedPaymentList = () => {
@@ -29,12 +30,12 @@ const BeneficiaryProcessedPaymentList = () => {
   const currentMonth = new Date().getMonth() + 1; // Months are 0-indexed
   const yearOptions = Array.from({ length: 11 }, (_, i) => currentYear - i);
   const monthOptions = Array.from({ length: 12 }, (_, i) => i + 1);
-  const monthNames= ["January", "February", "March", "April", "May", "June",
+  const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
 
 
   const modulesManager = useModulesManager();
-
+  const [openGenerateBeneficiaryAdvice, setOpenGenerateBeneficiaryAdvice] = useState(false);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
@@ -281,13 +282,13 @@ const BeneficiaryProcessedPaymentList = () => {
                     <TableCell align="center">
                       {getStatusChip(row)}
                       <Box mt={2}>
-                        <Typography variant="caption" style={{display: "block"}} color="textSecondary">
+                        <Typography variant="caption" style={{ display: "block" }} color="textSecondary">
                           {row?.isDisbursed && row?.disbursementDate
                             ? `Disbursed on: ${new Date(row?.disbursementDate).toLocaleDateString("en-GB")}`
                             : ``}
                         </Typography>
-                        
-                        <Typography variant="caption" style={{display: "block"}} color="textSecondary">
+
+                        <Typography variant="caption" style={{ display: "block" }} color="textSecondary">
                           {row?.processingDate
                             ? `Payment Processed on: ${new Date(row?.processingDate).toLocaleDateString("en-GB")}`
                             : ``}
@@ -333,29 +334,40 @@ const BeneficiaryProcessedPaymentList = () => {
       )}
       <Box mt={2} display="flex" justifyContent="flex-end" alignItems="center" gap="8px">
         {selectedIds.length > 0 && (
-          <>
+          filters.isDisbursed === "yes" ? (
             <Button
               variant="contained"
               color="primary"
               disabled={!selectedIds.length}
-              // onClick={() => handleApprove(selectedIds)}
-              onClick={() => openApproveConfirm(selectedIds)}
-
+              onClick={() => setOpenGenerateBeneficiaryAdvice(true)}
             >
-              Disburse Selected
-            </Button> 
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={!selectedIds.length}
-              onClick={() => handleRevert(selectedIds)}
-            >
-              Revert Selected
+              Print Advice
             </Button>
-          </>
+          ) : (
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={!selectedIds.length}
+                // onClick={() => handleApprove(selectedIds)}
+                onClick={() => openApproveConfirm(selectedIds)}
+
+              >
+                Disburse Selected
+              </Button>
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={!selectedIds.length}
+                onClick={() => handleRevert(selectedIds)}
+              >
+                Revert Selected
+              </Button>
+            </>
+          )
         )}
       </Box>
       <Dialog open={confirmOpen} onClose={closeApproveConfirm}>
@@ -366,7 +378,7 @@ const BeneficiaryProcessedPaymentList = () => {
             Are you sure you want to disburse payment {pendingApproveIds.length > 1
               ? `s for ${pendingApproveIds.length} beneficiaries`
               : " for this beneficiary"} You will not be able to undo or revert this operation!
-            
+
           </Typography>
         </DialogContent>
 
@@ -386,8 +398,13 @@ const BeneficiaryProcessedPaymentList = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
+      <GenerateBeneficiaryAdvice
+        open={openGenerateBeneficiaryAdvice}
+        onClose={() => setOpenGenerateBeneficiaryAdvice(false)}
+        paymentData= {data}
+      />
     </Box>
+
 
   );
 
