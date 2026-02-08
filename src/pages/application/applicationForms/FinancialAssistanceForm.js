@@ -215,7 +215,7 @@ const FinancialAssistanceForm = ({
       // When employeeData is fetched, set it into the form state
       setFormData({
         id: parsedApplicationData?.id || "",
-        workforceApplicant:(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && isLoggedInApplicant)? {
+        workforceApplicant:!(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN)? {
           nameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameEn : employeeData?.firstNameEn || "",
           nameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameBn : employeeData?.firstNameBn || "",
 
@@ -240,7 +240,7 @@ const FinancialAssistanceForm = ({
           presentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentLocation : employeeData?.presentLocation || "",
           presentAddress: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentAddress : employeeData?.presentAddress || "",
         }:parsedApplicationData?.applicantInfo,
-        workforceEmployee:(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && !isLoggedInApplicant)? {
+        workforceEmployee:(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN)? {
           nameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameEn : employeeData?.firstNameEn || "",
           nameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameBn : employeeData?.firstNameBn || "",
 
@@ -311,7 +311,7 @@ const FinancialAssistanceForm = ({
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
         applicantInfo: parsedApplicationData?.applicantInfo || employeeData?.metadata || {},
-        deceasedWorkerInfo:(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && !isLoggedInApplicant)? {
+        deceasedWorkerInfo:(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN)? {
           nameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameEn : employeeData?.firstNameEn || "",
           nameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameBn : employeeData?.firstNameBn || "",
 

@@ -179,6 +179,7 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   onChange={(v) => {
                     const numericValue = (v || "").replace(/\D/g, "").slice(0, 17);
                     setNidOrBcn({ ...nidOrBcn, nid: numericValue });
+                    handleChange("nid", v)
                   }}
                   type="number"
                   required
