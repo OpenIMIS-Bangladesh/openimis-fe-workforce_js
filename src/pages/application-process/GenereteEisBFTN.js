@@ -583,8 +583,8 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
             {applicationType === "financialAssistance"
               ? "নোটিশ অফ অ্যাওয়ার্ড- কর্মরত অবস্থায় দুর্ঘটনাজনিত মৃত্যু"
               : applicationType === "disabilityAssistance"
-              ? "নোটিশ অফ অ্যাওয়ার্ড- কর্মরত অবস্থায় দুর্ঘটনাজনিত স্থায়ী আংশিক/সম্পূর্ণ অক্ষমতা"
-              : ""}
+                ? "নোটিশ অফ অ্যাওয়ার্ড- কর্মরত অবস্থায় দুর্ঘটনাজনিত স্থায়ী আংশিক/সম্পূর্ণ অক্ষমতা"
+                : ""}
           </h4>
 
           <div style={{ display: "flex", justifyContent: "space-between", padding: "0 25mm", marginTop: "10px" }}>
@@ -600,7 +600,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
             {/* Section 1 */}
             <tr>
               <td colSpan={2} className="noa-section">
-                 {applicationType==="financialAssistance"?"মৃত":"অক্ষম"} শ্রমিকের তথ্য:
+                {applicationType === "financialAssistance" ? "মৃত" : "অক্ষম"} শ্রমিকের তথ্য:
               </td>
             </tr>
 
@@ -662,19 +662,19 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
                 <tr>
                   <td className="noa-label">কেন্দ্রীয় তহবিল থেকে প্রদত্ত অর্থের পরিমাণ:</td>
                   <td className="noa-value">  {OtherCompensationAmount ? Number(OtherCompensationAmount).toLocaleString("bn-BD", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          }) : ""}</td>
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }) : ""}</td>
                 </tr>
                 <tr>
                   <td className="noa-label">
                     সর্বমোট প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
                   </td>
                   <td className="noa-value"> {cfAndEisAmount ? Number(cfAndEisAmount).toLocaleString("bn-BD", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })
- : ""}</td>
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                    : ""}</td>
                 </tr>
                 <tr>
                   <td className="noa-label">
@@ -745,9 +745,9 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
                     কেন্দ্রীয় তহবিল থেকে প্রদত্ত অর্থের পরিমাণ:
                   </td>
                   <td className="noa-value">{OtherCompensationAmount ? Number(OtherCompensationAmount).toLocaleString("bn-BD", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          }) : ""}</td>
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }) : ""}</td>
                 </tr>
 
                 {/* Section 3 */}
@@ -780,9 +780,9 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
                   <td className="noa-value">
                     {row?.eisMonthlyAmount
                       ? Number(row.eisMonthlyAmount).toLocaleString("bn-BD", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })
                       : ""}
                   </td>
                 </tr>

@@ -203,7 +203,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                     <Grid item md={3}>
                         <Box mb={2}>
                             <Typography variant="subtitle2"><strong>Payment Detail:</strong></Typography>
-                            <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(beneficiary.eisInitialMonthlyAmount).toLocaleString("en-BD") ?? Number(beneficiary.eisMonthlyAmount).toLocaleString("en-BD")}</Typography>
+                            <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(beneficiary?.payableAmount).toLocaleString("en-BD") ?? Number(beneficiary?.payableAmount).toLocaleString("en-BD")}</Typography>
                             <Typography variant="caption" color="textSecondary">{"Total: " + (Number(beneficiary?.eisApprovedAmount).toLocaleString("en-BD") ?? "--")}</Typography>
                             <Typography variant="body2" style={{ fontWeight: 700 }}>{getPaymentTypeString(beneficiary.eisPaymentType)}</Typography>
                         </Box>
@@ -401,7 +401,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                                                 <Typography variant="caption" color="textSecondary">{"A/C: " + row.bankAccountNo}</Typography>
                                             </TableCell>
                                             <TableCell align="right">
-                                                <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row.eisInitialMonthlyAmount).toLocaleString("en-BD") ?? Number(row.eisMonthlyAmount).toLocaleString("en-BD")}</Typography>
+                                                <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row?.payableAmount).toLocaleString("en-BD") ?? Number(row?.payableAmount).toLocaleString("en-BD")}</Typography>
                                                 <Typography variant="caption" color="textSecondary">{"Total: " + (Number(row?.eisApprovedAmount).toLocaleString("en-BD") ?? "--")}</Typography>
                                                 <Typography variant="body2" style={{ fontWeight: 700 }}>{getPaymentTypeString(row.eisPaymentType)}</Typography>
                                             </TableCell>

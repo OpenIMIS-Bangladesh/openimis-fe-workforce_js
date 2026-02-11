@@ -3016,6 +3016,7 @@ export function fetchEisPaymentProcess(applicationIds, mm) {
         paymentTypeRemarks
         onetimeAmount
         trimonthlyAmount
+        payableAmount
         bank {
           id
           nameEn
@@ -3204,6 +3205,7 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
         paymentTypeRemarks
         onetimeAmount
         trimonthlyAmount
+        payableAmount
         bank {
           id
           nameEn

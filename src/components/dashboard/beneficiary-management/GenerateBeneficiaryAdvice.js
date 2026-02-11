@@ -73,7 +73,7 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData }) => {
 
   const getTotalAmount = () => {
     return eisPayments
-      .reduce((sum, item) => sum + (parseFloat(item.eisMonthlyAmount) || 0), 0)
+      .reduce((sum, item) => sum + (parseFloat(item.paidAmount) || 0), 0)
       .toFixed(2);
   };
 
@@ -198,7 +198,7 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData }) => {
         row?.bank?.nameEn || "",
         row?.bank?.districtNameEn || "",
         row?.bank?.routingNumber || "",
-        row?.eisMonthlyAmount || 0,
+        row?.paidAmount || 0,
         row?.beneficiaryId || "",
         payFrom,
         payTo,
@@ -346,7 +346,7 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData }) => {
                   <TableCell>{row?.bank?.nameEn}</TableCell>
                   <TableCell>{row?.bank?.districtNameEn}</TableCell>
                   <TableCell>{row?.bank?.routingNumber}</TableCell>
-                  <TableCell align="right">{row?.eisMonthlyAmount}</TableCell>
+                  <TableCell align="right">{row?.paidAmount}</TableCell>
                   <TableCell align="right">{row?.beneficiaryId}</TableCell>
                   <TableCell align="right">01.{monthFormatted}.{year}</TableCell>
                   <TableCell align="right">{lastDay}.{monthFormatted}.{year}</TableCell>

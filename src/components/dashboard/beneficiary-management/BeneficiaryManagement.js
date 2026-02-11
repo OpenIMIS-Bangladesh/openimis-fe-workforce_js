@@ -259,7 +259,7 @@ const BeneficiaryManagement = () => {
                     </TableCell>
 
                     <TableCell align="right">
-                      <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row.eisInitialMonthlyAmount).toLocaleString("en-BD") ?? Number(row.eisMonthlyAmount).toLocaleString("en-BD")}</Typography>
+                      <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row.payableAmount).toLocaleString("en-BD") ?? Number(row.payableAmount).toLocaleString("en-BD")}</Typography>
                       <Typography variant="caption" color="textSecondary">{"Total: "+ (Number(row?.eisApprovedAmount).toLocaleString("en-BD") ?? "--")}</Typography>
                       <Typography variant="body2" style={{ fontWeight: 700 }}>{getPaymentTypeString(row.eisPaymentType)}</Typography>
                     </TableCell>
