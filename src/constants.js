@@ -740,6 +740,21 @@ export const RELATION_LABEL_MAP = {
   "workforce.relation.grand_mother": "Grand Mother",
 };
 
+export const RELATION_LABEL_BANGLA_MAP = {
+  "workforce.relation.father": "পিতা",
+  "workforce.relation.mother": "মাতা",
+  "workforce.relation.wife": "স্ত্রী",
+  "workforce.relation.husband": "স্বামী",
+  "workforce.relation.son": "পুত্র",
+  "workforce.relation.daughter": "কন্যা",
+  "workforce.relation.brother": "ভাই",
+  "workforce.relation.sister": "বোন",
+  "workforce.relation.grand_daughter": "নাতনি",
+  "workforce.relation.grand_son": "নাতি",
+  "workforce.relation.grand_father": "দাদা",
+  "workforce.relation.grand_mother": "দাদি",
+};
+
 
 export const EIS_PAYMENT_TYPES = {
   "monthly": "Monthly",

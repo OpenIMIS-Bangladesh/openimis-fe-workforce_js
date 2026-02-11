@@ -12,8 +12,8 @@ import {
   Button,
   Divider,
 } from "@material-ui/core";
-import { WORKFORCE_USER_TYPE } from "../../constants";
-import { getUserTypeFromRights, safeDecodeId, getFooterContent, safeParse, getFooterContentNew } from "../../utils/utils";
+import { RELATION_LABEL_BANGLA_MAP, WORKFORCE_USER_TYPE } from "../../constants";
+import { getUserTypeFromRights, safeDecodeId, getFooterContent, safeParse, getFooterContentNew, toBanglaNumber } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS, RELATION_LABEL_MAP } from "../../constants";
 import { createApplicationSummary, updateApplication, updateApplicationSummary } from "../../actions";
@@ -550,9 +550,11 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
   const cfAndEisAmount = (parseFloat(row?.eisMonthlyAmount) || 0) + (parseFloat(OtherCompensationAmount) || 0);
 
   const applicationType = row?.workforceApplication?.applicationType;
-  const jsonEmployeeAccidentInfo = JSON.parse(row?.workforceApplication?.employeeAccidentInfo || "{}");
+  const jsonEmployeeAccidentInfo = safeParse(row?.workforceApplication?.employeeAccidentInfo || "{}");
+  console.log({ jsonEmployeeAccidentInfo });
   const employeeAccidentInfo = jsonEmployeeAccidentInfo;
-  const jsonDoctorEntryInfo = JSON.parse(row?.workforceApplication?.doctorsEntry || "{}");
+  const jsonDoctorEntryInfo = safeParse(row?.workforceApplication?.doctorsEntry || "{}");
+  console.log({ jsonDoctorEntryInfo });
   const doctorEntryInfo = jsonDoctorEntryInfo;
 
   // Use absolute paths for assets (adjust if your public folder path is different)
@@ -611,7 +613,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
 
             <tr>
               <td className="noa-label">শ্রমিকের জাতীয় পরিচয়পত্র নম্বর:</td>
-              <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.nid || ""}</td>
+              <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.nid? toBanglaNumber(row?.workforceApplication?.workforceEmployee?.nid):""}</td>
             </tr>
             {applicationType === "disabilityAssistance" && (
               <>
@@ -704,14 +706,14 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
 
                 <tr>
                   <td className="noa-label">মৃত শ্রমিকের সাথে সম্পর্ক:</td>
-                  <td className="noa-value">{RELATION_LABEL_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker || ""]}</td>
+                  <td className="noa-value">{RELATION_LABEL_BANGLA_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker || ""]}</td>
                 </tr>
 
                 <tr>
                   <td className="noa-label">
                     নির্ভরশীল ব্যক্তির জাতীয় পরিচয়পত্র / জন্মসনদ নম্বর:
                   </td>
-                  <td className="noa-value">{row?.workforceEmployeeDependent?.[0]?.nid || ""}</td>
+                  <td className="noa-value">{row?.workforceEmployeeDependent?.[0]?.nid? toBanglaNumber(row?.workforceEmployeeDependent?.[0]?.nid):""}</td>
                 </tr>
 
                 <tr>

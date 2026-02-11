@@ -1350,6 +1350,15 @@ export const getRelationString = (depObj) => {
   return null;
 }
 
+
+export const toBanglaNumber = (str) => {  
+  const banglaDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+
+  return str
+    .toString()
+    .replace(/\d/g, d => banglaDigits[d]);
+};
+
 export const isEisPath = () => {
   if (typeof window !== "undefined") {
     return window.location.href.includes("eis");
