@@ -3049,9 +3049,12 @@ class ApplicationProcessSearcher extends Component {
             <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyEisCommittee}>
               <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
             </Button>
-            <IconButton onClick={this.handleOpenEisDependentBFTN}>
+            <Button variant="contained" color="primary" onClick={this.handleOpenEisDependentBFTN}>
+              <FormattedMessage module="workforce" id="workforce.employee.application.eisApproval" />
+            </Button>
+            {/* <IconButton onClick={this.handleOpenEisDependentBFTN}>
               <PrintIcon />
-            </IconButton>
+            </IconButton> */}
             <GenereteEisDependentBFTN
               open={openGenerateEisDependentBFTN}
               onClose={this.handleCloseEisDependentBFTN}

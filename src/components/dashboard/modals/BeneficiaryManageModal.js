@@ -212,12 +212,12 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                         <Box mb={2}>
                             <Typography variant="subtitle2"><strong>Last Changes</strong></Typography>
                             <Typography variant="caption" display="block" color="textSecondary">
-                                <strong>Last Increament:</strong> {Number(beneficiary?.incrementAmount?? 0).toLocaleString("en-BD")} {" "}
+                                <strong>Last Increament: </strong> {Number(beneficiary?.incrementAmount?? 0).toLocaleString("en-BD")} {" "}
                                 ({beneficiary?.incrementDate ? new Date(beneficiary.incrementDate).toLocaleDateString("en-BD") : "N/A"})
                             </Typography>
                             <Typography variant="caption" display="block" color="textSecondary">
-                               <strong>Last Decrement:</strong> {Number(beneficiary?.decrementAmount ?? 0).toLocaleString("en-BD")}{" "}
-                            ({beneficiary?.decrementDate ? new Date(beneficiary.decrementDate).toLocaleDateString("en-BD") : "N/A"})
+                                <strong>Last Decrement: </strong> {Number(beneficiary?.decrementAmount ?? 0).toLocaleString("en-BD")}{" "}
+                                <strong>Decrement End Date: </strong>({beneficiary?.decrementEndDate ? new Date(beneficiary.decrementEndDate).toLocaleDateString("en-BD") : "N/A"})
                             </Typography>
                         </Box>
                     </Grid>
