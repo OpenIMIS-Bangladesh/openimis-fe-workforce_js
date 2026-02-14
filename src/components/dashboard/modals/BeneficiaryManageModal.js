@@ -128,26 +128,31 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
     const handleSave = () => {
         // You can now access all data from 'formData'
         console.log("Submitting Complete Form Data:", formData);
+        if(formData.incrementAmount > 0 || formData.decrementAmount > 0 || (formData.reason && formData.status)){
+            const payload = {
+                beneficiaryId: beneficiary.beneficiaryId || null,
+                reason: formData.reason || null,
+                beneficiaryStatus: formData.status || null,
+                remarks: formData.remarks || null,
+                remarriageOrDeathDate: formData.remarriageOrDeathDate || null,
+                incrementAmount: formData.incrementAmount || null,
+                incrementDate: formData.incrementDate || null,
+                decrementAmount: formData.decrementAmount || null,
+                decrementDate: formData.decrementDate || null,
+                otherBeneficiaryData: JSON.stringify(formData.adjustments),
+                // Include other fields if your API needs them
+            };
+    
+            console.log("Payload to submit:", payload);
+    
+            dispatch(updateWorkforceEisBeneficiary(payload)).then(() => {
+                onSuccess();
+            });
+        }
+        else{
+            return alert("Please provide at least one change (Increment/Decrement/Status Change) to save.");
+        }
 
-        const payload = {
-            beneficiaryId: beneficiary.beneficiaryId || null,
-            reason: formData.reason || null,
-            beneficiaryStatus: formData.status || null,
-            remarks: formData.remarks || null,
-            remarriageOrDeathDate: formData.remarriageOrDeathDate || null,
-            incrementAmount: formData.incrementAmount || null,
-            incrementDate: formData.incrementDate || null,
-            decrementAmount: formData.decrementAmount || null,
-            decrementDate: formData.decrementDate || null,
-            otherBeneficiaryData: JSON.stringify(formData.adjustments),
-            // Include other fields if your API needs them
-        };
-
-        console.log("Payload to submit:", payload);
-
-        dispatch(updateWorkforceEisBeneficiary(payload)).then(() => {
-            onSuccess();
-        });
     };
 
     const worker = beneficiary?.workforceApplication?.applicationType === "financialAssistance" ||
@@ -212,7 +217,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                         <Box mb={2}>
                             <Typography variant="subtitle2"><strong>Last Changes</strong></Typography>
                             <Typography variant="caption" display="block" color="textSecondary">
-                                <strong>Last Increament: </strong> {Number(beneficiary?.incrementAmount?? 0).toLocaleString("en-BD")} {" "}
+                                <strong>Last Increment: </strong> {Number(beneficiary?.incrementAmount?? 0).toLocaleString("en-BD")} {" "}
                                 ({beneficiary?.incrementDate ? new Date(beneficiary.incrementDate).toLocaleDateString("en-BD") : "N/A"})
                             </Typography>
                             <Typography variant="caption" display="block" color="textSecondary">
@@ -240,7 +245,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                                         onChange={(e) => handleChange("incrementAmount", e.target.value)}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                {/* <Grid item xs={12}>
                                     <PublishedComponent
                                         pubRef="workforce.DatePicker"
                                         label="Effective Date"
@@ -248,7 +253,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                                         onChange={(date) => handleChange("incrementDate", date)}
                                         required
                                     />
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                         </Box>
                     </Grid>
@@ -269,7 +274,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                                         onChange={(e) => handleChange("decrementAmount", e.target.value)}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                {/* <Grid item xs={12}>
                                     <PublishedComponent
                                         pubRef="workforce.DatePicker"
                                         label="Effective Date"
@@ -277,7 +282,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                                         onChange={(date) => handleChange("decrementDate", date)}
                                         required
                                     />
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                         </Box>
                     </Grid>
@@ -359,7 +364,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                 </Box>
 
                 {/* Other Beneficiaries Table */}
-                {(isClosedStatus || formData.status === 'closed') && otherBeneficiaries.length > 0 ? (
+                {(formData.status === 'closed') && otherBeneficiaries.length > 0 ? (
                     <TableContainer component={Paper} elevation={0} style={{ borderRadius: '12px', border: '1px solid #e0e0e0', marginTop: '24px' }}>
                         <Table>
                             <TableHead style={{ backgroundColor: '#f8fafd' }}>
@@ -467,7 +472,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                 <Button
                     variant="contained"
                     color="primary"
-                    disabled={!formData.reason || !formData.status}
+                    // disabled={!formData.reason || !formData.status ||!formData.incrementAmount <= 0 || formData.incrementAmount <= 0}
                     onClick={() => {
                         handleSave();
                         // onClose();

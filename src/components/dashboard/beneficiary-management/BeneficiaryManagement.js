@@ -16,6 +16,7 @@ import {
 import { useModulesManager, PublishedComponent } from "@openimis/fe-core";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
 import BeneficiaryManageModal from "../modals/BeneficiaryManageModal";
+import AssociationManageModal from "../modals/AssociationManageModal";
 
 
 const BeneficiaryManagement = () => {
@@ -38,7 +39,9 @@ const BeneficiaryManagement = () => {
   });
 
   const [openModal, setOpenModal] = useState(false);
+  const [openAssociationModal, setOpenAssociationModal] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
+  const [selectedAssiciation, setSelectedAssociation] = useState(null);
 
   const handleOpenModal = (row) => {
     setSelectedBeneficiary(row);
@@ -48,6 +51,16 @@ const BeneficiaryManagement = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedBeneficiary(null);
+  };
+
+  const handleOpenAssociationModal = () => {
+    setSelectedAssociation(filters.association);
+    setOpenAssociationModal(true);
+  };
+
+  const handleCloseAssociationModal = () => {
+    setOpenAssociationModal(false);
+    setSelectedAssociation(null);
   };
 
 
@@ -91,6 +104,7 @@ const BeneficiaryManagement = () => {
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
+    loadData(); // Trigger data reload on filter change
   };
 
   const handleDateChange = (field, value) => {
@@ -98,6 +112,7 @@ const BeneficiaryManagement = () => {
             ...prev,
             [field]: value
         }));
+        loadData(); // Trigger data reload on date change
     };
 
 
@@ -191,15 +206,24 @@ const BeneficiaryManagement = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} md={2}>
+          <Grid item xs={12} md={6}>
             <Box display="flex" gap="8px">
-            
               <Button onClick={handleSearchClick} fullWidth variant="contained" color="primary" startIcon={<SearchIcon />}>
                 Search
               </Button>
               <Button onClick={clearFilters} fullWidth variant="text" color="default" startIcon={<ClearAllIcon />}>
                 Reset
               </Button>
+              {filters.association != "" && (
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={handleOpenAssociationModal}
+                >
+                  Manage Association
+                </Button>
+              )}
             </Box>
           </Grid>
         </Grid>
@@ -290,6 +314,7 @@ const BeneficiaryManagement = () => {
           )}
         </TableContainer>
       )}
+
       <BeneficiaryManageModal
         open={openModal}
         onClose={handleCloseModal}
@@ -298,6 +323,15 @@ const BeneficiaryManagement = () => {
           loadData(); // 👈 re-fetch table data
         }}
         beneficiary={selectedBeneficiary}
+      />
+      <AssociationManageModal
+        open={openAssociationModal}
+        onClose={handleCloseAssociationModal}
+        onSuccess={() => {
+          handleCloseAssociationModal();
+          loadData();
+        }}
+        association={associations.find(a => a.node.id === filters.association)?.node}
       />
     </Box>
   );

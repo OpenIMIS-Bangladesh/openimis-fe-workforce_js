@@ -3305,8 +3305,8 @@ export function updateWorkforceEisBeneficiary(beneficiary) {
         reason: "${beneficiary?.reason ?? ""}"
         remarks: "${beneficiary?.remarks ?? ""}"
         remarriageOrDeathDate: "${beneficiary?.remarriageOrDeathDate ?? ""}"
-        lastLiveCheckDate: "${beneficiary?.lastLiveCheckDate ?? ""}"
-        liveCheckRemarks: "${beneficiary?.liveCheckRemarks ?? ""}"
+        lastLiveCheckDate: "${beneficiary?.remarriageOrDeathDate ?? ""}"
+        liveCheckRemarks: "${beneficiary?.remarks ?? ""}"
         otherBeneficiaryData: ${beneficiary?.otherBeneficiaryData ? escapeQuotes(beneficiary?.otherBeneficiaryData) : ""}
       ) {
         success
@@ -3509,4 +3509,22 @@ export function fetchApplicationFactoryAssociation(id) {
   `;
 
   return graphql(payload, "WORKFORCE_APPLICATION_FACTORY_ASSOCIATION");
+}
+
+
+
+export function updateWorkforceEisPaymentByAssociation(payload) {
+  const mutation = `
+    mutation {
+      updateWorkforceEisPaymentByAssociation(
+        associationId: "${payload?.associationId ?? ""}"
+        increment: "${payload?.increment ?? ""}"
+        decrement: "${payload?.decrement ?? ""}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "UPDATE_WORKFORCE_EIS_PAYMENT_BY_ASSOCIATION");
 }

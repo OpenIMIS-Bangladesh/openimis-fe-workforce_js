@@ -50,19 +50,19 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     padding: theme.spacing(2),
-    height: 'calc(100vh - 64px)', // assuming 64px header/appbar, adjust as needed
+    height: '100%', // assuming 64px header/appbar, adjust as needed
     overflow: 'visible',
   },
   sidebar: {
     position: "sticky",
-    top: 0,
+    top: '100px',
     height: "70vh",
     backgroundColor: theme.palette.background.paper,
     borderRight: `1px solid ${theme.palette.divider}`,
     overflowY: "auto",
   },
   content: {
-    height: '100vh',
+    height: '100%',
     overflowY: 'visible',
     padding: theme.spacing(2),
   },
