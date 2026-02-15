@@ -16,7 +16,9 @@ import SearchIcon from '@material-ui/icons/Search';
 import {
   fetchWorkforceEisPaymentDisbursementStage,
   createWorkforceEisPaymentDisbursement,
-  deleteWorkforceEisPaymentStage
+  deleteWorkforceEisPaymentStage,
+  fetchWorkforceFactoriesSummary,
+  fetchWorkforceAllAssociationSummary
 } from "../../../actions";
 import { useModulesManager, PublishedComponent } from "@openimis/fe-core";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
@@ -41,6 +43,9 @@ const BeneficiaryProcessedPaymentList = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingApproveIds, setPendingApproveIds] = useState([]);
+  const [factories, setFactories] = useState([]);
+  const [associations, setAssociations] = useState([]);
+
 
   const openApproveConfirm = (ids) => {
     setPendingApproveIds(ids);
@@ -57,18 +62,24 @@ const BeneficiaryProcessedPaymentList = () => {
   const [filters, setFilters] = useState({
     month: currentMonth,
     year: currentYear,
-    isDisbursed: "all"
+    isDisbursed: "all",
+    factory: "",
+    association: "",
   });
 
 
   const loadData = async () => {
     setLoading(true);
     try {
+      dispatch(fetchWorkforceFactoriesSummary(modulesManager, [])).then(res => setFactories(res?.payload?.data?.workforceEmployerFactories?.edges || []));
+      dispatch(fetchWorkforceAllAssociationSummary(modulesManager, [])).then(res => setAssociations(res?.payload?.data?.workforceAllAssociation?.edges || []));
       const [processRes] = await Promise.all([
         dispatch(fetchWorkforceEisPaymentDisbursementStage({
           month: filters.month,
           year: filters.year,
           isDisbursed: filters.isDisbursed,
+          workforceFactoryId: safeDecodeId(filters.factory) ?? "",
+          allAssociationId: safeDecodeId(filters.association) ?? "",
           // notInDisburse: "yes"
         }, modulesManager)),
 
@@ -93,7 +104,7 @@ const BeneficiaryProcessedPaymentList = () => {
   };
 
   const clearFilters = () => {
-    setFilters({ month: currentMonth, year: currentYear, isDisbursed: "all" });
+    setFilters({ month: currentMonth, year: currentYear, isDisbursed: "all", factory: "", association: "" });
   };
 
   const getStatusChip = (row) => {
@@ -143,6 +154,28 @@ const BeneficiaryProcessedPaymentList = () => {
 
       <Paper elevation={0} style={{ padding: '24px', marginBottom: '24px', borderRadius: '12px', border: '1px solid #eceff1' }}>
         <Grid container spacing={3} alignItems="center">
+          <Grid item xs={12} sm={6} md={3}>
+            <TextField
+              fullWidth select label="Factory" name="factory" variant="outlined" size="small"
+              value={filters.factory} onChange={handleFilterChange}
+            >
+              <MenuItem value=""><em>All Factories</em></MenuItem>
+              {factories.map(f => (
+                <MenuItem key={f.node.id} value={f.node.id}>{f.node.nameBn || f.node.nameEn}</MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <TextField
+              fullWidth select label="Association" name="association" variant="outlined" size="small"
+              value={filters.association} onChange={handleFilterChange}
+            >
+              <MenuItem value=""><em>All Associations</em></MenuItem>
+              {associations.map(a => (
+                <MenuItem key={a.node.id} value={a.node.id}>{a.node.shortNameBn || a.node.nameEn}</MenuItem>
+              ))}
+            </TextField>
+          </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <TextField
               fullWidth
@@ -401,7 +434,7 @@ const BeneficiaryProcessedPaymentList = () => {
       <GenerateBeneficiaryAdvice
         open={openGenerateBeneficiaryAdvice}
         onClose={() => setOpenGenerateBeneficiaryAdvice(false)}
-        paymentData= {data}
+        paymentData={data}
       />
     </Box>
 

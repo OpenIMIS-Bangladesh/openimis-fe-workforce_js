@@ -69,7 +69,13 @@ const BeneficiaryManagement = () => {
     setLoading(true);
     try {
       // Pass the filter state directly to the backend action
-      const [processRes, factoryRes, assocRes] = await Promise.all([
+      dispatch(fetchWorkforceFactoriesSummary(modulesManager, [])).then(factoryRes => {
+        setFactories(factoryRes?.payload?.data?.workforceEmployerFactories?.edges || []);
+      });
+      dispatch(fetchWorkforceAllAssociationSummary(modulesManager, [])).then(assocRes => {
+        setAssociations(assocRes?.payload?.data?.workforceAllAssociation?.edges || []);
+      });
+      const [processRes] = await Promise.all([
         dispatch(fetchEisPaymentProcessWithFilters({
             workforceApplicationTrackingNumber: filters.trackingNo,
             workforceFactoryId: safeDecodeId(filters.factory)??"",
@@ -80,13 +86,9 @@ const BeneficiaryManagement = () => {
             approvalDateFrom: filters.approvalDateFrom,
             approvalDateTo: filters.approvalDateTo
         }, modulesManager)),
-        dispatch(fetchWorkforceFactoriesSummary(modulesManager, [])),
-        dispatch(fetchWorkforceAllAssociationSummary(modulesManager, []))
       ]);
 
       setData(processRes?.payload?.data?.workforceEisPaymentProcess || []);
-      setFactories(factoryRes?.payload?.data?.workforceEmployerFactories?.edges || []);
-      setAssociations(assocRes?.payload?.data?.workforceAllAssociation?.edges || []);
       
     } catch (err) {
       console.error("Data Load Error:", err);

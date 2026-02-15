@@ -3365,6 +3365,8 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
         year: "${filters?.year ?? ""}"
         isDisbursed: "${filters?.isDisbursed ?? ""}"
         notInDisburse: "${filters?.notInDisburse ?? ""}"
+        workforceFactoryId: "${filters?.workforceFactoryId ?? ""}"
+        allAssociationId: "${filters?.allAssociationId ?? ""}"
       ) {
         id
         monthIndex
