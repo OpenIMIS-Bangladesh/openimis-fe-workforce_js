@@ -3530,3 +3530,17 @@ export function updateWorkforceEisPaymentByAssociation(payload) {
   `;
   return graphql(mutation, "UPDATE_WORKFORCE_EIS_PAYMENT_BY_ASSOCIATION");
 }
+
+
+export function fetchInteractiveUsers(mm, filters) {
+  const projections = [
+    "id",
+    "loginName",
+  ];
+  const payload = formatPageQueryWithCount(
+    "interactiveUsers",
+    filters,
+    projections
+  );
+  return graphql(payload, "INTERACTIVE_USERS");
+}

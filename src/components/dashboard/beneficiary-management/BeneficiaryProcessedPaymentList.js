@@ -277,7 +277,7 @@ const BeneficiaryProcessedPaymentList = () => {
                         type="checkbox"
                         checked={selectedIds.includes(row.id)}
                         onChange={() => handleRowSelect(row.id)}
-                        disabled={row?.isDisbursed}
+                      // disabled={row?.isDisbursed}
                       />
                     </TableCell>
 
@@ -367,40 +367,40 @@ const BeneficiaryProcessedPaymentList = () => {
       )}
       <Box mt={2} display="flex" justifyContent="flex-end" alignItems="center" gap="8px">
         {selectedIds.length > 0 && (
-          filters.isDisbursed === "yes" ? (
+          <>
             <Button
               variant="contained"
               color="primary"
-              disabled={!selectedIds.length}
+              disabled={!selectedIds.length || selectedIds.length == 0}
               onClick={() => setOpenGenerateBeneficiaryAdvice(true)}
             >
               Print Advice
             </Button>
-          ) : (
-            <>
-              <Button
-                variant="contained"
-                color="primary"
-                disabled={!selectedIds.length}
-                // onClick={() => handleApprove(selectedIds)}
-                onClick={() => openApproveConfirm(selectedIds)}
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={!selectedIds.length}
+              // onClick={() => handleApprove(selectedIds)}
+              onClick={() => openApproveConfirm(selectedIds)}
 
-              >
-                Disburse Selected
-              </Button>
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <Button
-                variant="contained"
-                color="primary"
-                disabled={!selectedIds.length}
-                onClick={() => handleRevert(selectedIds)}
-              >
-                Revert Selected
-              </Button>
-            </>
-          )
+            >
+              Disburse Selected
+            </Button>
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={!selectedIds.length}
+              onClick={() => handleRevert(selectedIds)}
+            >
+              Revert Selected
+            </Button>
+          </>
         )}
       </Box>
       <Dialog open={confirmOpen} onClose={closeApproveConfirm}>
@@ -434,7 +434,7 @@ const BeneficiaryProcessedPaymentList = () => {
       <GenerateBeneficiaryAdvice
         open={openGenerateBeneficiaryAdvice}
         onClose={() => setOpenGenerateBeneficiaryAdvice(false)}
-        paymentData={data}
+        paymentData={data.filter(d => selectedIds.includes(d.id))}
       />
     </Box>
 
