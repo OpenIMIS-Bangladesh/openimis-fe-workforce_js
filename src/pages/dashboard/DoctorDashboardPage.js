@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { FormattedMessage, useModulesManager } from "@openimis/fe-core";
 import {
+  Box,
   Grid,
   List,
   ListItem,
@@ -10,6 +11,7 @@ import {
   Typography,
   Card,
   CardContent,
+  CardHeader,
   Select,
   MenuItem,
   TextField,
@@ -18,16 +20,20 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  useTheme,
   Button,
   Paper,
   Accordion,
   AccordionSummary,
   AccordionDetails,
 } from "@material-ui/core";
+// Actions (Assuming your previous imports)
+import { fetchApplicationByDate, fetchApplicationMonthWise } from "../../actions";
 import { fetchSummaryApplications } from "../../actions";
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
 import ForwardIcon from "@material-ui/icons/Forward";
 import RestorePageIcon from "@material-ui/icons/RestorePage";
+import DashboardIcon from '@material-ui/icons/Dashboard';
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
@@ -108,16 +114,16 @@ const useStyles = makeStyles((theme) => ({
 
 const getSidebarMenu = (user_type) => {
   let allMenu = [];
-  if (user_type=== WORKFORCE_USER_TYPE.EIS_DOCTOR) {
+  if (user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
     allMenu = [
       {
+        id: "dashboard",
+        text: <FormattedMessage module="workforce" id="workforce.application.dashboard" />,
+        icon: <DashboardIcon />,
+      },
+      {
         id: "pendingMeetingSheet",
-        text: (
-          <FormattedMessage
-            module="workforce"
-            id="workforce.employee.application.pendingMeetingSheet"
-          />
-        ),
+        text: <FormattedMessage module="workforce" id="workforce.employee.application.pendingMeetingSheet" />,
         icon: <HourglassFullTwoToneIcon />,
       },
       // {
@@ -132,64 +138,42 @@ const getSidebarMenu = (user_type) => {
       // },
       {
         id: "forwardedApplications",
-        text: (
-          <FormattedMessage
-            module="workforce"
-            id="workforce.application.forwarded"
-          />
-        ),
+        text: <FormattedMessage module="workforce" id="workforce.application.forwarded" />,
         icon: <ForwardIcon />,
       },
     ];
-  }
-  else{
+  } else {
     allMenu = [
       {
+        id: "dashboard",
+        text: <FormattedMessage module="workforce" id="workforce.application.dashboard" />,
+        icon: <DashboardIcon />,
+      },
+      {
         id: "pendingApplications",
-        text: (
-          <FormattedMessage
-            module="workforce"
-            id="workforce.application.pending"
-          />
-        ),
+        text: <FormattedMessage module="workforce" id="workforce.application.pending" />,
         icon: <HourglassFullTwoToneIcon />,
       },
       {
         id: "forwardedApplications",
-        text: (
-          <FormattedMessage
-            module="workforce"
-            id="workforce.application.forwarded"
-          />
-        ),
+        text: <FormattedMessage module="workforce" id="workforce.application.forwarded" />,
         icon: <ForwardIcon />,
       },
       {
         id: "revertedApplications",
-        text: (
-          <FormattedMessage
-            module="workforce"
-            id="workforce.application.reverted"
-          />
-        ),
+        text: <FormattedMessage module="workforce" id="workforce.application.reverted" />,
         icon: <RestorePageIcon />,
       },
       {
         id: "returnedApplications",
-        text: (
-          <FormattedMessage
-            module="workforce"
-            id="workforce.application.returned"
-          />
-        ),
+        text: <FormattedMessage module="workforce" id="workforce.application.returned" />,
         icon: <ArrowBackIcon />,
       },
     ];
-
   }
 
   // if (user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
-  //   return allMenu.filter((m) => m.id === "pendingMeetingSheet"); 
+  //   return allMenu.filter((m) => m.id === "pendingMeetingSheet");
   // }
 
   // if (
@@ -284,10 +268,7 @@ const FiledApplications = () => {
     <>
       <Card className={classes.tableContainer}>
         <CardContent>
-          <ApplicationProcessSearcher
-            loggedInUserId={loggedInUserId}
-            coloredRow={true}
-          />
+          <ApplicationProcessSearcher loggedInUserId={loggedInUserId} coloredRow={true} />
         </CardContent>
       </Card>
 
@@ -304,11 +285,142 @@ const FiledApplications = () => {
   );
 };
 
+const DashboardCard = ({ title, children }) => (
+  <Card style={{ height: "100%", borderRadius: "16px", boxShadow: "0 4px 12px 0 rgba(0,0,0,0.05)", padding: "10px" }}>
+    <CardHeader
+      title={
+        <Typography variant="h6" style={{ fontWeight: "bold" }}>
+          {title}
+        </Typography>
+      }
+    />
+    <CardContent style={{ paddingTop: 0 }}>{children}</CardContent>
+  </Card>
+);
+
+const StatRow = ({ label, count, color }) => (
+  <Box display="flex" justifyContent="space-between" py={1} borderBottom="1px solid #f0f0f0">
+    <Typography style={{ color: color || "inherit" }}>{label}</Typography>
+    <Typography variant="subtitle1" style={{ fontWeight: "bold", color: color || "inherit" }}>
+      {count}
+    </Typography>
+  </Box>
+);
+
+const Dashboard = () => {
+  const dispatch = useDispatch();
+  const theme = useTheme();
+  const reduxState = useSelector((state) => state);
+  const locale = reduxState?.core?.user?.i_user?.language || "en";
+
+  // --- 1. RETAINED STATE FOR EFFECTS ---
+  const [months, setMonths] = useState(0);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [filter, setFilter] = useState("eis");
+  const [graphMonths, setGraphMonths] = useState(6);
+
+  // --- 2. NEW ASSESSMENT SPECIFIC STATE ---
+  const [previousAssessments, setPreviousAssessments] = useState({
+    male: 0,
+    female: 0,
+  });
+
+  const [ongoingAssessments, setOngoingAssessments] = useState({
+    male: 0,
+    female: 0,
+  });
+
+  const [totalAssessments, setTotalAssessments] = useState({
+    gender: { male: 0, female: 0 },
+    accidentType: { commuting: 0, workplace: 0, rta: 0 },
+  });
+
+  // --- 3. RETAINED EFFECTS ---
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const orgType = filter === "সব" || filter === "All" ? "" : filter.toLowerCase();
+        // Retained background fetch logic as requested
+        await dispatch(fetchApplicationByDate(months, fromDate, toDate, orgType));
+      } catch (err) {
+        console.error("Failed to fetch data", err);
+      }
+    }
+    loadData();
+  }, [months, fromDate, toDate, filter, dispatch]);
+
+  useEffect(() => {
+    async function loadMonthWiseData() {
+      try {
+        await dispatch(fetchApplicationMonthWise(graphMonths));
+      } catch (err) {
+        console.error("Failed to fetch month wise data", err);
+      }
+    }
+    loadMonthWiseData();
+  }, [graphMonths, dispatch]);
+
+  // --- 4. NEW ASSESSMENT DATA EFFECT ---
+  useEffect(() => {
+    async function loadAssessmentData() {
+      // TODO: Dispatch specific actions for the Assessment user here
+      // Example:
+      // const res = await dispatch(fetchAssessmentOverview(fromDate, toDate));
+      // setPreviousAssessments(res.previous);
+      // setOngoingAssessments(res.ongoing);
+      // setTotalAssessments(res.total);
+    }
+    loadAssessmentData();
+  }, [fromDate, toDate]);
+
+  return (
+    <Grid container spacing={3} style={{ marginTop: "20px" }}>
+      {/* Card 1: Previous Assessments */}
+      <Grid item xs={12} md={4}>
+        <DashboardCard title={<FormattedMessage id="workforce.dashboard.assessments.previous" />}>
+          <StatRow label={<FormattedMessage id="workforce.dashboard.assessments.maleCount" />} count={previousAssessments.male} />
+          <StatRow label={<FormattedMessage id="workforce.dashboard.assessments.femaleCount" />} count={previousAssessments.female} />
+        </DashboardCard>
+      </Grid>
+
+      {/* Card 2: Ongoing Assessments */}
+      <Grid item xs={12} md={4}>
+        <DashboardCard title={<FormattedMessage id="workforce.dashboard.assessments.ongoing" />}>
+          <StatRow label={<FormattedMessage id="workforce.dashboard.assessments.maleCount" />} count={ongoingAssessments.male} color="#ed6c02" />
+          <StatRow label={<FormattedMessage id="workforce.dashboard.assessments.femaleCount" />} count={ongoingAssessments.female} color="#ed6c02" />
+        </DashboardCard>
+      </Grid>
+
+      {/* Card 3: Total Assessments */}
+      <Grid item xs={12} md={4}>
+        <DashboardCard title={<FormattedMessage id="workforce.dashboard.assessments.total" />}>
+          <Typography variant="subtitle2" style={{ color: "#1976d2", marginTop: 10 }}>
+            <FormattedMessage id="workforce.dashboard.assessments.byGender" />
+          </Typography>
+          <Box pl={2} mb={2}>
+            <StatRow label={<FormattedMessage id="workforce.dashboard.assessments.maleOnly" />} count={totalAssessments.gender.male} />
+            <StatRow label={<FormattedMessage id="workforce.dashboard.assessments.femaleOnly" />} count={totalAssessments.gender.female} />
+          </Box>
+
+          <Typography variant="subtitle2" style={{ color: "#d32f2f" }}>
+            <FormattedMessage id="workforce.dashboard.assessments.byAccidentType" />
+          </Typography>
+          <Box pl={2}>
+            <StatRow label={<FormattedMessage id="workforce.dashboard.assessments.commuting" />} count={totalAssessments.accidentType.commuting} />
+            <StatRow label={<FormattedMessage id="workforce.dashboard.assessments.workplace" />} count={totalAssessments.accidentType.workplace} />
+            <StatRow label={<FormattedMessage id="workforce.dashboard.assessments.rta" />} count={totalAssessments.accidentType.rta} />
+          </Box>
+        </DashboardCard>
+      </Grid>
+    </Grid>
+  );
+};
+
 const MeetingSheet = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-
 
   const handleChange = (panelId) => (event, isExpanded) => {
     setExpanded(isExpanded ? panelId : null);
@@ -316,23 +428,12 @@ const MeetingSheet = ({ summaryData = [], disableButtons = 0 }) => {
   return (
     <div className={classes.accordionPadding}>
       {summaryData.map((item, index) => (
-        <Accordion
-          key={index}
-          expanded={expanded === item.id}
-          onChange={handleChange(item.id)}
-          className={classes.accordion}
-        >
-          <AccordionSummary
-            className={classes.accordionSummary}
-            expandIcon={<ExpandMoreIcon className="material-icons" />}
-          >
+        <Accordion key={index} expanded={expanded === item.id} onChange={handleChange(item.id)} className={classes.accordion}>
+          <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon className="material-icons" />}>
             <Typography variant="subtitle1" style={{ flex: 1 }}>
               <strong>{item.name}</strong>
             </Typography>
-            <Typography
-              variant="body2"
-              style={{ marginLeft: "auto", color: "#015C63" }}
-            >
+            <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
               {item.meetingDate} | {item.month} {item.year}
             </Typography>
           </AccordionSummary>
@@ -363,64 +464,49 @@ const DoctorDashboard = () => {
   const modulesManager = useModulesManager();
   const user_type = getUserType();
   const SidebarMenu = useMemo(() => getSidebarMenu(user_type), [user_type]);
-  const [selectedMenu, setSelectedMenu] = useState(
-    user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR
-      ? "pendingMeetingSheet"
-      : "pendingApplications"
-  );
+  const [selectedMenu, setSelectedMenu] = useState(user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR ? "dashboard" : "dashboard");
 
   useEffect(() => {
-    return dispatch(
-      fetchSummaryApplications(modulesManager, ['organizationType:"eis"'])
-    );
+    return dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"eis"']));
   }, []);
-  const data = useSelector(
-    (state) => state.workforce[`applicationsSummary`] ?? []
-  );
+  const data = useSelector((state) => state.workforce[`applicationsSummary`] ?? []);
 
-  const pendingSummaryData = data.filter(
-    (d) => d.status === "forward_to_doctor" && d.organizationType === "eis"
-  );
-  const forwardedSummaryData = data.filter(
-    (d) => d.status === "approved_by_doctor" && d.organizationType === "eis"
-  );
+  const pendingSummaryData = data.filter((d) => d.status === "forward_to_doctor" && d.organizationType === "eis");
+  const forwardedSummaryData = data.filter((d) => d.status === "approved_by_doctor" && d.organizationType === "eis");
 
   const renderContent = () => {
     const user_type = getUserType();
 
     if (user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
-
       switch (selectedMenu) {
+        case "dashboard":
+          return <Dashboard />;
         case "pendingMeetingSheet":
-          return (
-            <MeetingSheet
-              summaryData={pendingSummaryData}
-              disableButtons={1}
-            />
-          );
+          return <MeetingSheet summaryData={pendingSummaryData} disableButtons={1} />;
         case "forwardedApplications":
           return <ForwardedApplications />;
 
         default:
-          return <FiledApplications />;
+          return <Dashboard />;
       }
-    }
-    else{
+    } else {
       switch (selectedMenu) {
+        case "dashboard":
+          return <Dashboard />;
         case "pendingApplications":
           return <FiledApplications />;
-  
+
         case "forwardedApplications":
           return <ForwardedApplications />;
-  
+
         case "revertedApplications":
           return <RevertedApplications />;
-  
+
         case "returnedApplications":
           return <ReturnedApplications />;
-  
+
         default:
-          return <FiledApplications />;
+          return <Dashboard />;
       }
     }
   };
@@ -433,12 +519,7 @@ const DoctorDashboard = () => {
           <Paper className={classes.sidebar}>
             <List>
               {SidebarMenu.map((item) => (
-                <ListItem
-                  button
-                  key={item.id}
-                  selected={selectedMenu === item.id}
-                  onClick={() => setSelectedMenu(item.id)}
-                >
+                <ListItem button key={item.id} selected={selectedMenu === item.id} onClick={() => setSelectedMenu(item.id)}>
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} />
                 </ListItem>
@@ -450,24 +531,9 @@ const DoctorDashboard = () => {
         {/* Main Content */}
         <Grid item xs={12} md={9} className={classes.content}>
           <Typography variant="h5" gutterBottom>
-            {user_type === WORKFORCE_USER_TYPE.DOCTOR && (
-              <FormattedMessage
-                module="workforce"
-                id="workforce.section.cf.doctor.dashboard"
-              />
-            )}
-            {user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR && (
-              <FormattedMessage
-                module="workforce"
-                id="workforce.section.blwf.doctor.dashboard"
-              />
-            )}
-            {user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR && (
-              <FormattedMessage
-                module="workforce"
-                id="workforce.section.eis.doctor.dashboard"
-              />
-            )}
+            {user_type === WORKFORCE_USER_TYPE.DOCTOR && <FormattedMessage module="workforce" id="workforce.section.cf.doctor.dashboard" />}
+            {user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR && <FormattedMessage module="workforce" id="workforce.section.blwf.doctor.dashboard" />}
+            {user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR && <FormattedMessage module="workforce" id="workforce.section.eis.doctor.dashboard" />}
           </Typography>
           {renderContent()}
         </Grid>

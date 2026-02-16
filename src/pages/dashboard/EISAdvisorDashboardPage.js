@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Grid,
   List,
@@ -25,18 +25,25 @@ import {
   TableCell,
   TableFooter,
   Link,
+  Select,       // <-- Added for new Association filter
+  MenuItem,     // <-- Added for new Association filter
+  FormControl,  // <-- Added for new Association filter
+  InputLabel    // <-- Added for new Association filter
 } from "@material-ui/core";
+
+import { makeStyles, withStyles } from "@material-ui/core/styles";
+import Badge from '@material-ui/core/Badge';
 
 import {
   useHistory,
   PublishedComponent,
+  FormattedMessage,
+  useModulesManager
 } from "@openimis/fe-core";
-import Badge from '@material-ui/core/Badge';
-import { withStyles } from '@material-ui/core/styles';
-import { makeStyles } from "@material-ui/core/styles";
-import { FormattedMessage, useModulesManager } from "@openimis/fe-core";
+
 import { useSelector, useDispatch } from "react-redux";
-import { getUserType, getUserTypeFromRights } from "../../utils/utils";
+
+// Icons
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
 import DescriptionIcon from '@material-ui/icons/Description';
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
@@ -44,13 +51,19 @@ import LocalAtmIcon from '@material-ui/icons/LocalAtm';
 import PersonIcon from '@material-ui/icons/Person';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+
+// Charts
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+
+// Local Utilities & Components
+import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 import ApplicationSummaryPage from "../application-process/ApplicationSummaryPage";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise } from "../../actions";
-import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN } from "../../constants";
 import AgingReportModal from "../reports/modals/AgingReportModal";
 
+// Actions & Constants
+import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise } from "../../actions";
+import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -134,10 +147,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
-
-
 const ReturnedApplications = () => {
   const classes = useStyles();
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
@@ -159,16 +168,13 @@ const ReturnedApplications = () => {
         </Button>
       </div>
     </>
-  )
+  );
 };
 const RejectApplication = () => {
-  const classes = useStyles()
+  const classes = useStyles();
   return (
     <>
-      <ApplicationProcessSearcher
-        rejectedApplication={true}
-        dynamicTableTitle={"workforce.application.rejectedApplication"}
-      />
+      <ApplicationProcessSearcher rejectedApplication={true} dynamicTableTitle={"workforce.application.rejectedApplication"} />
       {/* Pagination */}
       <div className={classes.pagination}>
         <Button>
@@ -179,9 +185,30 @@ const RejectApplication = () => {
         </Button>
       </div>
     </>
-  )
-}
+  );
+};
 
+// --- Reusable UI Wrapper for New Cards ---
+const DashboardCard = ({ title, subtitle, children }) => (
+  <Card style={{ height: "100%", borderRadius: "16px", boxShadow: "0 4px 12px 0 rgba(0,0,0,0.05)", padding: "10px" }}>
+    <CardHeader 
+      title={<Typography variant="h6" style={{ fontWeight: "bold" }}>{title}</Typography>}
+      subheader={subtitle ? <Typography variant="body2" color="textSecondary">{subtitle}</Typography> : null}
+    />
+    <CardContent style={{ paddingTop: 0 }}>{children}</CardContent>
+  </Card>
+);
+
+const StatRow = ({ label, count, onClick, color }) => (
+  <Box display="flex" justifyContent="space-between" py={1} borderBottom="1px solid #f0f0f0">
+    <Typography style={{ color: color || "inherit" }}>{label}</Typography>
+    {onClick ? (
+      <Link component="button" variant="subtitle1" style={{ fontWeight: "bold" }} onClick={onClick}>{count}</Link>
+    ) : (
+      <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>{count}</Typography>
+    )}
+  </Box>
+);
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -189,29 +216,69 @@ const Dashboard = () => {
   const history = useHistory();
   const user_type = getUserType();
   const reduxState = useSelector((state) => state);
-  const locale = reduxState?.core?.user?.i_user?.language || 'en';
+  const locale = reduxState?.core?.user?.i_user?.language || "en";
+  const isBn = locale === "fr" || locale === "bn";
 
-  const applicationTypeNames = locale == 'en' ? APP_TYPE_DASHBOARD_EN : APP_TYPE_DASHBOARD_BN;
-  const applicantTypeNames = locale == 'en' ? APPLICANT_TYPE_EN : APPLICANT_TYPE_BN;
+  const applicationTypeNames = locale === "en" ? APP_TYPE_DASHBOARD_EN : APP_TYPE_DASHBOARD_BN;
+  const applicantTypeNames = locale === "en" ? APPLICANT_TYPE_EN : APPLICANT_TYPE_BN;
+
+  // --- 1. ORIGINAL STATE ---
   let buttonOptions = {};
-  if (locale == 'fr') {
-
-    buttonOptions = {
-      1: "১ মাস",
-      3: "৩ মাস",
-      6: "৬ মাস",
-      12: "১২ মাস",
-    };
-  }
-  else {
-    buttonOptions = {
-      1: "1 Month",
-      3: "3 Months",
-      6: "6 Months",
-      12: "12 Months",
-    };
+  if (isBn) {
+    buttonOptions = { 1: "১ মাস", 3: "৩ মাস", 6: "৬ মাস", 12: "১২ মাস" };
+  } else {
+    buttonOptions = { 1: "1 Month", 3: "3 Months", 6: "6 Months", 12: "12 Months" };
   }
 
+  const [months, setMonths] = useState(0);
+  const [monthString, setMonthString] = useState("");
+  const [filter, setFilter] = useState("eis");
+  const [fromDate, setFromDate] = useState("");
+  const [fromDateString, setFromDateString] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [toDateString, setToDateString] = useState(isBn ? " আজ পর্যন্ত" : " To Date");
+  const [organizationName, setOrganizationName] = useState(isBn ? "সকল তহবিল" : "All Funds");
+
+  const [graphMonths, setGraphMonths] = useState(6);
+  const [graphFromDate, setGraphFromDate] = useState("");
+  const [graphToDate, setGraphToDate] = useState("");
+
+  const [tableRows, setTableRows] = useState([]);
+  const [totals, setTotals] = useState({ total: 0, approved: 0, cancelled: 0, processing: 0 });
+  const [pendingApplicationTypes, setPendingApplicationTypes] = useState([]);
+  const [applicationTypes, setApplicationTypes] = useState([]);
+  const [applicationCounts, setApplicationCounts] = useState([]);
+  const [totalBenefitAmount, setTotalBenefitAmount] = useState(0);
+  const [pieData, setPieData] = useState([]);
+  const [barData, setBarData] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedType, setSelectedType] = useState(null);
+
+  // --- 2. GLOBAL FILTERS STATE ---
+  const [accFromDate, setAccFromDate] = useState("");
+  const [accToDate, setAccToDate] = useState("");
+  const [association, setAssociation] = useState("all");
+
+  // --- 4. PREVIOUS OVERVIEW STATES ---
+  const [pipelineCounts, setPipelineCounts] = useState({ factory: 0, association: 0, eis: 0 });
+  const [pendingCounts, setPendingCounts] = useState({ verified: { death: 0, disability: 0 }, nonVerified: { death: 0, disability: 0 } });
+  const [overviewCounts, setOverviewCounts] = useState({ death: { male: 0, female: 0 }, disability: { male: 0, female: 0 } });
+  const [accidentCounts, setAccidentCounts] = useState({ death: { workplace: 0, commuting: 0, rta: 0 }, disability: { workplace: 0, commuting: 0, rta: 0 } });
+  const [financialCounts, setFinancialCounts] = useState({ paid: { death: 0, disability: 0 }, lifetime: { death: 0, disability: 0 } });
+
+  // Chart Strings
+  const chartLabels = {
+    processing: isBn ? "প্রক্রিয়াধীন" : "Processing",
+    approved: isBn ? "অনুমোদিত" : "Approved",
+    reverted: isBn ? "বাতিল" : "Reverted",
+    medical: isBn ? "চিকিৎসা" : "Medical",
+    death: isBn ? "মৃত্যু" : "Death",
+    educational: isBn ? "শিক্ষা" : "Educational",
+    maternity: isBn ? "মাতৃত্ব" : "Maternity",
+    disability: isBn ? "স্থায়ী ও অস্থায়ী অক্ষমতা" : "Permanent Or Curable Disability"
+  };
+
+  // --- HELPER FUNCTIONS ---
   const getMonthName = (index, locale = "en-US") => {
     const date = new Date(2000, index, 1);
     return date.toLocaleString(locale, { month: "long" });
@@ -219,148 +286,74 @@ const Dashboard = () => {
 
   const getBanglaDate = (dateStr) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('bn-BD')
-  }
-
-  const [months, setMonths] = useState(0);
-  const [monthString, setMonthString] = useState("");
-  const [filter, setFilter] = useState(locale == 'fr' ? "eis" : "eis");
-  const [fromDate, setFromDate] = useState("");
-  const [fromDateString, setFromDateString] = useState("");
-  const [toDate, setToDate] = useState("");
-  const [toDateString, setToDateString] = useState(locale=="fr"? " আজ পর্যন্ত" : " To Date");
-  const [organizationName, setOrganizationName] = useState(locale == 'fr' ? "সকল তহবিল" : "All Funds"); 
-
-  const [graphMonths, setGraphMonths] = useState(6);
-  const [graphFromDate, setGraphFromDate] = useState("");
-  const [graphToDate, setGraphToDate] = useState("");
+    return date.toLocaleDateString("bn-BD");
+  };
 
   const handleFilter = (f) => {
     setFilter(f);
-    if(f === (locale == 'fr' ? "সব" : "All") || f=="") {
-      setOrganizationName(locale == 'fr' ? "সকল তহবিল" : "All Funds");
-    }else if(f === "CF") {
-      setOrganizationName(locale == 'fr' ? "কেন্দ্রীয় তহবিল" : "Central Fund");
-    }else if(f === "BLWF") {
-      setOrganizationName(locale == 'fr' ? "বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন" : "Bangladesh Labour Welfare Foundation");
-    }else if(f === "EIS") {
-      setOrganizationName(locale == 'fr' ? "এমপ্লয়ি ইন্জুরি স্কিম" : "Employee Injury Scheme");
-    }
+    if (f === (isBn ? "সব" : "All") || f === "") setOrganizationName(isBn ? "সকল তহবিল" : "All Funds");
+    else if (f === "CF") setOrganizationName(isBn ? "কেন্দ্রীয় তহবিল" : "Central Fund");
+    else if (f === "BLWF") setOrganizationName(isBn ? "বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন" : "Bangladesh Labour Welfare Foundation");
+    else if (f === "EIS") setOrganizationName(isBn ? "এমপ্লয়ি ইন্জুরি স্কিম" : "Employee Injury Scheme");
   };
 
   const handleMonthChange = (month) => {
     setMonths(month);
-    if(locale == 'fr') {
-      setMonthString("সর্বশেষ "+Number(month).toLocaleString("bn-BD")+" মাসের তথ্য");
-    }
-    else
-    {
-      setMonthString("Last "+month+" Month(s) Data");
-    }
+    if (isBn) setMonthString("সর্বশেষ " + Number(month).toLocaleString("bn-BD") + " মাসের তথ্য");
+    else setMonthString("Last " + month + " Month(s) Data");
   };
 
   const handleFromDateChange = (date) => {
     setFromDate(date);
-    if(locale == 'fr') {
-      let datestr= getBanglaDate(date);
-      datestr+=' হতে ';
-      setFromDateString(datestr);
-    }
-    else {
-      setFromDateString("From "+date);
-    }
-  }
+    if (isBn) setFromDateString(getBanglaDate(date) + " হতে ");
+    else setFromDateString("From " + date);
+  };
 
   const handleToDateChange = (date) => {
     setToDate(date);
-    if(locale == 'fr') {
-      let datestr= getBanglaDate(date);
-      setToDateString(datestr + " পর্যন্ত");
-    }
-    else {
-      setToDateString(" To "+date);
-    }
-  }
-
-  useEffect(() => {
-    if (months > 0) {
-      setFromDate("");
-      setToDate("");
-    }
-  }, [
-    months
-  ]);
-
-  useEffect(() => {
-    setMonths(0);
-    setMonthString("");
-  }, [
-    fromDate, toDate
-  ]);
-
-
-  const handleGraphMonthChange = (month) => {
-    setGraphMonths(month);
-    setGraphFromDate("");
-    setGraphToDate("");
+    if (isBn) setToDateString(getBanglaDate(date) + " পর্যন্ত");
+    else setToDateString(" To " + date);
   };
 
-  const handleGraphFromDateChange = (date) => {
-    setGraphFromDate(date);
-    setGraphMonths(0);
-  }
+  const handleGraphMonthChange = (month) => {
+    setGraphMonths(month); setGraphFromDate(""); setGraphToDate("");
+  };
 
-  const handleGraphToDateChange = (date) => {
-    setGraphToDate(date);
-    setGraphMonths(0);
-  }
+  const navigateToBeneficiaries = () => history.push("/beneficiary-management");
 
-  const [tableRows, setTableRows] = useState([]);
-  const [totals, setTotals] = useState({
-    total: 0,
-    approved: 0,
-    cancelled: 0,
-    processing: 0,
-  });
+  const getBeneficiaryCount = (key) => {
+    const found = applicationCounts.find(item => item.type === applicantTypeNames[key]);
+    return found ? found.count : 0;
+  };
 
-  const [pendingApplicationTypes, setPendingApplicationTypes] = useState([]);
-  const [applicationTypes, setApplicationTypes] = useState([]);
-  const [applicationCounts, setApplicationCounts] = useState([]);
-  const [totalBenefitAmount, setTotalBenefitAmount] = useState(0);
-  const [pieData, setPieData] = useState([]);
-  const [barData, setBarData] = useState([]);
+  // --- EFFECTS ---
+  useEffect(() => {
+    if (months > 0) { setFromDate(""); setToDate(""); }
+  }, [months]);
 
-
+  useEffect(() => {
+    setMonths(0); setMonthString("");
+  }, [fromDate, toDate]);
 
   useEffect(() => {
     async function loadData() {
       try {
         const orgType = filter === "সব" || filter === "All" ? "" : filter.toLowerCase();
-        console.log(orgType);
-
         let res = [];
         await dispatch(fetchApplicationByDate(months, fromDate, toDate, orgType)).then((response) => {
           res = response.payload?.data?.workforceApplicationMatrix || [];
         });
-        // Map API response to table structure
+
         let rows = [];
+        let appTypes = [];
+        let pendingAppTypes = [];
+
         res.forEach((item) => {
           const type = item.applicationType;
-
           let allow = false;
-
-          if (orgType === "blwf") {
-            // include all except disabilityAssistance
-            allow = type !== "disabilityAssistance";
-
-          } else if (orgType === "eis") {
-            // include only disabilityAssistance and financialAssistance
-            allow = ["disabilityAssistance", "financialAssistance", "death"].includes(type);
-
-          } else {
-            // include all
-            allow = true;
-          }
+          if (orgType === "blwf") allow = type !== "disabilityAssistance";
+          else if (orgType === "eis") allow = ["disabilityAssistance", "financialAssistance", "death"].includes(type);
+          else allow = true;
 
           if (allow) {
             rows.push({
@@ -368,122 +361,56 @@ const Dashboard = () => {
               total: Number(item.applicationCount),
               approved: Number(item.approvedCount),
               cancelled: Number(item.rejectedCount),
-              processing:
-                Number(item.applicationCount) -
-                (Number(item.approvedCount) + Number(item.rejectedCount)),
+              processing: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount)),
             });
-          } else {
-            console.log("Skipping", type, "for org:", orgType);
+            appTypes.push({ appType: type, type: applicationTypeNames[type], count: Number(item.applicationCount) });
+            pendingAppTypes.push({ appType: type, type: applicationTypeNames[type], count: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount)) });
           }
         });
-        // const rows = res.map((item) => ({
-        //   type: applicationTypeNames[item.applicationType],
-        //   total: Number(item.applicationCount),
-        //   approved: Number(item.approvedCount),
-        //   cancelled: Number(item.rejectedCount),
-        //   processing: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount)),
-        // }));
-        let appTypes = [];
-        let pendingAppTypes = [];
-
-        res.forEach((item) => {
-          const type = item.applicationType;
-
-          let allow = false;
-
-          if (orgType === "blwf") {
-            // include all except disabilityAssistance
-            allow = type !== "disabilityAssistance";
-
-          } else if (orgType === "eis") {
-            // include only disabilityAssistance and financialAssistance
-            allow = ["disabilityAssistance", "financialAssistance", "death"].includes(type);
-
-          } else {
-            // include all types
-            allow = true;
-          }
-
-          if (allow) {
-            appTypes.push({
-              appType: type,
-              type: applicationTypeNames[type],
-              count: Number(item.applicationCount),
-            });
-
-            pendingAppTypes.push({
-              appType: type,
-              type: applicationTypeNames[type],
-              count:
-                Number(item.applicationCount) -
-                (Number(item.approvedCount) + Number(item.rejectedCount)),
-            });
-          }
-        });
-
 
         setApplicationTypes(appTypes);
         setPendingApplicationTypes(pendingAppTypes);
 
+        const totalsCalc = rows.reduce((acc, r) => {
+          acc.total += Number(r.total); acc.approved += Number(r.approved);
+          acc.cancelled += Number(r.cancelled); acc.processing += Number(r.processing);
+          return acc;
+        }, { total: 0, approved: 0, cancelled: 0, processing: 0 });
 
-        // Calculate totals
-        const totalsCalc = rows.reduce(
-          (acc, r) => {
-            acc.total += Number(r.total);
-            acc.approved += Number(r.approved);
-            acc.cancelled += Number(r.cancelled);
-            acc.processing += Number(r.processing);
-            return acc;
-          },
-          { total: 0, approved: 0, cancelled: 0, processing: 0 }
-        );
-        let approvedTotal = 0;
-        let cancelledTotal = 0;
-        let processingTotal = 0;
-
+        let approvedTotal = 0; let cancelledTotal = 0; let processingTotal = 0;
         rows.map((r) => {
-          approvedTotal += Number(r.approved);
-          cancelledTotal += Number(r.cancelled);
-          processingTotal += Number(r.processing);
+          approvedTotal += Number(r.approved); cancelledTotal += Number(r.cancelled); processingTotal += Number(r.processing);
         });
 
         setPieData([
-          { name: locale == 'fr' ? "প্রক্রিয়াধীন" : 'Processing', value: processingTotal, color: "#6cdfdfff" },
-          { name: locale == 'fr' ? "অনুমোদিত" : 'Approved', value: approvedTotal, color: "#68b88cff" },
-          { name: locale == 'fr' ? "বাতিল" : 'Reverted', value: cancelledTotal, color: "#d48aa3ff" },
+          { name: chartLabels.processing, value: processingTotal, color: "#6cdfdfff" },
+          { name: chartLabels.approved, value: approvedTotal, color: "#68b88cff" },
+          { name: chartLabels.reverted, value: cancelledTotal, color: "#d48aa3ff" },
         ]);
 
         setTableRows(rows);
         setTotals(totalsCalc);
 
         let genderRes = [];
-
         await dispatch(fetchGenderWiseApplicationMatrixByDate(months, fromDate, toDate, orgType)).then((response) => {
           genderRes = response.payload?.data?.workforceGenderwiseMatrix[0] || [];
         });
 
-        const applicationCounts = [
-          { type: applicantTypeNames['totalApplicant'], count: genderRes.totalApplicant },
-          { type: applicantTypeNames['maleApplicant'], count: genderRes.maleApplicant },
-          { type: applicantTypeNames['femaleApplicant'], count: genderRes.femaleApplicant },
-          { type: applicantTypeNames['totalDependent'], count: genderRes.totalDependent },
-          // { type: applicantTypeNames['maleDependent'], count: genderRes.maleDependent },
-          // { type: applicantTypeNames['femaleDependent'], count: genderRes.femaleDependent },
+        const appCounts = [
+          { type: applicantTypeNames["totalApplicant"], count: genderRes.totalApplicant },
+          { type: applicantTypeNames["maleApplicant"], count: genderRes.maleApplicant },
+          { type: applicantTypeNames["femaleApplicant"], count: genderRes.femaleApplicant },
+          { type: applicantTypeNames["totalDependent"], count: genderRes.totalDependent },
         ];
-        setApplicationCounts(applicationCounts);
+        setApplicationCounts(appCounts);
         setTotalBenefitAmount(genderRes.totalBenefitAmount || 0);
 
-
-      } catch (err) {
-        console.error("Failed to fetch data", err);
-      }
+      } catch (err) { console.error("Failed to fetch data", err); }
     }
-
     loadData();
-  }, [months, fromDate, toDate, filter]);
+  }, [months, fromDate, toDate, filter, chartLabels.processing, chartLabels.approved, chartLabels.reverted]);
 
   useEffect(() => {
-    console.log("graphMonths/From/To changed");
     async function loadMonthWiseData() {
       try {
         let monthWiseRes = [];
@@ -491,536 +418,276 @@ const Dashboard = () => {
           monthWiseRes = response.payload?.data?.workforceMonthwiseApplications || [];
         });
 
-        console.log("monthWiseRes", monthWiseRes);
-
         let barDataArray = [];
         monthWiseRes.map((item) => {
           barDataArray.push({
             month: getMonthName(Number(item.month) - 1),
-            [locale == 'fr' ? "চিকিৎসা" : "Medical"]: item.medical,
-            [locale == 'fr' ? "মৃত্যু" : "Death"]: item.death,
-            [locale == 'fr' ? "শিক্ষা" : "Educational"]: item.educational,
-            [locale == 'fr' ? "মাতৃত্ব" : "Maternity"]: item.maternityGrant,
-            [locale == 'fr' ? "স্থায়ী ও অস্থায়ী অক্ষমতা" : "Permanent Or Curable Disability"]: item.disabilityAssistance,
+            [chartLabels.medical]: item.medical,
+            [chartLabels.death]: item.death,
+            [chartLabels.educational]: item.educational,
+            [chartLabels.maternity]: item.maternityGrant,
+            [chartLabels.disability]: item.disabilityAssistance,
           });
         });
-
         setBarData(barDataArray);
-
-      } catch (err) {
-        console.error("Failed to fetch month wise data", err);
-      }
+      } catch (err) { console.error("Failed to fetch month wise data", err); }
     }
     loadMonthWiseData();
-  }, [graphMonths, graphFromDate, graphToDate]);
+  }, [graphMonths, chartLabels.medical, chartLabels.death, chartLabels.educational, chartLabels.maternity, chartLabels.disability]);
 
-
-
-
-
-  const application_status_count_data = useSelector(
-    (state) => state.workforce[`workforceApplicationStatusCount`]
-  );
-
-  const application_status_count = [];
-
-  if (user_type === WORKFORCE_USER_TYPE.DIRECTOR) {
-    application_status_count.pending = application_status_count_data?.pendingForDirector?.totalCount;
-    application_status_count.rejected = application_status_count_data?.rejectedForDirector?.totalCount;
-    application_status_count.approved = application_status_count_data?.approvedForDirector?.totalCount;
-  } else {
-    application_status_count.pending = application_status_count_data?.pending?.totalCount;
-    application_status_count.rejected = application_status_count_data?.rejected?.totalCount;
-    application_status_count.approved = application_status_count_data?.approved?.totalCount;
-  }
-
-
-
-
-
-
-  const newCard = {
-    height: "100%",
-    borderRadius: "20px",
-    boxShadow: theme.shadows[2],
-    // color: "#000",
-    padding: "10px",
-  };
-
-
-  const [openModal, setOpenModal] = useState(false);
-
-
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
-
-
-  const [selectedType, setSelectedType] = useState(null);
-
-
-  const Filters = () => {
-    return (
-      <Grid container spacing={2} style={{marginTop:"15px", marginBottom:"10px", color: "red" }}>
-        <Grid item xs={6} md={6} >
-            {organizationName}
-        </Grid>
-        <Grid item xs={6} md={6} style={{ textAlign: "right" }}>
-          {fromDate && fromDate!="" ?fromDateString + toDateString :""}
-          {monthString!="" ? monthString :""}
-        </Grid>
-      </Grid>
-    )
-  };
-
-  const handleOpenModal = (type) => {
-    setSelectedType(type);
-    setOpenModal(true);
-  };
-
+  useEffect(() => {
+    async function loadNewDashboardRequirements() {
+      // Dispatch new API actions here using accFromDate, accToDate, association
+    }
+    loadNewDashboardRequirements();
+  }, [accFromDate, accToDate, association, fromDate, toDate]);
 
   return (
-    <>
-      <Grid container spacing={2}>
-        {/* Left Card */}
-        <Grid item xs={12} md={12}>
-          <Card style={{ ...newCard, padding: "30px", borderRadius: "15px", overflow: "visible" }}>
-            <Grid container spacing={2} style={{ marginBottom: "10px" }}>
-              <Grid item xs={12} md={12}>
-                <Typography style={{ fontWeight: "bold" }}><FormattedMessage id="workforce.select.time.range" /></Typography>
-                <Box gap={2}>
-                  <ButtonGroup variant="outlined" style={{ display: "flex", margin: "auto", gap: "10px" }}>
-                    {Object.entries(buttonOptions).map(([key, label]) => (
-                      <Button
-                        key={key}
-                        variant={months === key ? "contained" : "outlined"}
-                        onClick={() => handleMonthChange(key)}
-                        style={{ border: "1px solid #aaa", borderRadius: "10px", width: "100%" }}
-                      >
-                        {label}
-                      </Button>
-                    ))}
-                  </ButtonGroup>
-                </Box>
-              </Grid>
-              <Grid item md={12}>
-                <Card style={{ ...newCard, padding: "10px", borderRadius: "15px", overflow: "visible" }}>
-                  <Grid container spacing={2}>
-                    <Grid item md={3} xs={3} style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                      <PublishedComponent
-                        pubRef="workforce.DatePicker"
-                        label={"workforce.from.date"}
-                        onChange={(datevalue) => handleFromDateChange(datevalue)}
-                        width="100%"
-                        style={{ border: "1px solid #aaa", padding: "10px", borderRadius: "10px", width: "100%" }}
-                      />
-                    </Grid>
-                    <Grid item md={3} xs={3} style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                      <PublishedComponent
-                        pubRef="workforce.DatePicker"
-                        label={"workforce.to.date"}
-                        onChange={(datevalue) => handleToDateChange(datevalue)}
-                        style={{ border: "1px solid #aaa", padding: "10px", borderRadius: "10px" }}
-                      />
-                    </Grid>
-                    <Grid item md={6} xs={6}>
-                      <Card style={{ ...newCard, padding: "10px", borderRadius: "15px", overflow: "visible", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                        {/* Filters row */}
-                        <Typography component="div">
-                          {locale == 'fr' ? "তহবিল নির্বাচন করুন" : "Fund Type"}
-                        </Typography>
-                        <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
-                          <Box>
-                            <ButtonGroup size="small" variant="outlined">
-                              {[locale == 'fr' ? "সব" : "All", "CF", "EIS"].map((l) => (
-                                <Button
-                                  key={l}
-                                  variant={filter === l ? "contained" : "outlined"}
-                                  onClick={() => handleFilter(l)}
-                                >
-                                  {l}
-                                </Button>
-                              ))}
-                            </ButtonGroup>
-                          </Box>
-                          <Box>
-                            <Typography variant="caption" style={{color:"red"}}>
-                              {locale == 'fr' ? "নির্বাচিত তহবিল" : "Selected Fund"}: <strong>{organizationName}</strong>
-                            </Typography>
-                          </Box>
-                        </Box>
-                      </Card>
-                    </Grid>
-                  </Grid>
-                </Card>
-              </Grid>
-            </Grid>
-          </Card>
-        </Grid>
-
-        {/* AT A GLANCE */}
-        {/* Left Card */}
-        <Grid item xs={12} md={4}>
-          <Card style={newCard}>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                {/* <FormattedMessage id="workforce.dashboard.application.types"/> */}
-                {locale == 'fr' ? "প্রক্রিয়াধীন আবেদনসমূহ" : "Pending Applications"}
-                <DescriptionIcon style={{ verticalAlign: 'middle', marginRight: 8, float: "right" }} />
+    <Grid container spacing={3}>
+      {/* --- OVERALL FILTERS SECTION --- */}
+      <Grid item xs={12}>
+        <Card style={{ borderRadius: "16px", padding: "20px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
+          <Typography variant="h6" style={{ marginBottom: "15px", fontWeight: "bold" }}>
+            <FormattedMessage id="workforce.dashboard.overallFilters" />
+          </Typography>
+          <Grid container spacing={3} alignItems="flex-end">
+            
+            <Grid item xs={12} md={3}>
+              <Typography variant="caption" color="textSecondary">
+                <FormattedMessage id="workforce.dashboard.appSubmissionDate" />
               </Typography>
-              <Filters/>
-              <table cellPadding={"6px"} style={{ width: "100%" }}>
-                <tbody>
-                  {pendingApplicationTypes.map((item) => (
-                    <tr style={{ paddingTop: "10px", paddingBottom: "10px" }}>
-                      <th style={{ textAlign: "left" }}><Typography>{item.type}</Typography></th>
-                      <td style={{ textAlign: "right" }}>
-                        <Link
-                          component="button"
-                          variant="body2"
-                          onClick={() => handleOpenModal(item)}
-                        >
-                          <Typography>{item.count}</Typography>
-                        </Link>
-                      </td>
-                    </tr>
+              <Box display="flex" gridGap={10}>
+                <TextField type="date" size="small" variant="outlined" fullWidth value={fromDate} onChange={(e) => handleFromDateChange(e.target.value)} />
+                <TextField type="date" size="small" variant="outlined" fullWidth value={toDate} onChange={(e) => handleToDateChange(e.target.value)} />
+              </Box>
+            </Grid>
+            
+            <Grid item xs={12} md={3}>
+              <Typography variant="caption" color="textSecondary">
+                <FormattedMessage id="workforce.dashboard.accidentDate" />
+              </Typography>
+              <Box display="flex" gridGap={10}>
+                <TextField type="date" size="small" variant="outlined" fullWidth value={accFromDate} onChange={(e) => setAccFromDate(e.target.value)} />
+                <TextField type="date" size="small" variant="outlined" fullWidth value={accToDate} onChange={(e) => setAccToDate(e.target.value)} />
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} md={3}>
+              <FormControl variant="outlined" size="small" fullWidth>
+                <Select value={association} onChange={(e) => setAssociation(e.target.value)} displayEmpty>
+                  <MenuItem value="all"><FormattedMessage id="workforce.dashboard.allAssociations" /></MenuItem>
+                  <MenuItem value="bgmea">BGMEA</MenuItem>
+                  <MenuItem value="bkmea">BKMEA</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} md={3}>
+               <ButtonGroup size="small" variant="outlined" fullWidth>
+                  {["All", "CF", "EIS"].map((f) => (
+                    <Button key={f} variant={filter === f ? "contained" : "outlined"} onClick={() => handleFilter(f)}>
+                      {f === "All" ? <FormattedMessage id="workforce.dashboard.filter.all" defaultMessage="All"/> : f}
+                    </Button>
                   ))}
-                </tbody>
-              </table>
-              {/* Attach modal here */}
-              <AgingReportModal open={openModal} onClose={handleCloseModal} data={selectedType} organizationType={filter.toLowerCase()} />
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Middle Card */}
-        <Grid item xs={12} md={4}>
-          <Card style={newCard}>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                <FormattedMessage id="workforce.dashboard.applicant.types" />
-                <PeopleAltIcon style={{ verticalAlign: 'middle', marginRight: 8, float: "right" }} />
-              </Typography>
-              <Filters/>
-              {applicationCounts.map((item) => (
-                <Card style={{ ...newCard, margin: "10px", padding: "0px" }}>
-                  <CardContent>
-                    <Typography>{item.type}
-                      <PersonIcon style={{ verticalAlign: 'middle', marginLeft: 8, float: "right" }} />
-                    </Typography>
-                    <Typography variant="h5"><b>{item.count}</b></Typography>
-                  </CardContent>
-                </Card>
-              ))}
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* Right Card */}
-        <Grid item xs={12} md={4}>
-          <Grid container spacing={2} style={{ marginBottom: "10px" }}>
-            <Grid item xs={12} md={12}>
-              <Card style={newCard}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {/* <FormattedMessage id="workforce.dashboard.application.types"/> */}
-                    {locale == 'fr' ? "মোট আবেদন" : "Total Applications"}
-                    <DescriptionIcon style={{ verticalAlign: 'middle', marginRight: 8, float: "right" }} />
-                  </Typography>
-                  <Filters/>
-                  <table cellPadding={"6px"} style={{ width: "100%" }}>
-                    <tbody>
-                      {applicationTypes.map((type) => (
-                        <tr style={{ paddingTop: "10px", paddingBottom: "10px" }}>
-                          <th style={{ textAlign: "left" }}><Typography>{type.type}</Typography></th>
-                          <td style={{ textAlign: "right" }}><Typography>{type.count}</Typography></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={12}>
-              <Card style={newCard}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    <FormattedMessage id="workforce.dashboard.financial.info" />
-                    <LocalAtmIcon style={{ verticalAlign: 'middle', marginRight: 8, float: "right" }} />
-                  </Typography>
-                  <Filters/>
-                  <Card style={{ ...newCard, margin: "10px", padding: "0px" }}>
-                    <CardContent>
-                      <Typography><FormattedMessage id="workforce.dashboard.total.beneficiary.amount" /></Typography>
-                      <Typography variant="h5"><b>৳ {locale == 'fr' ? Number(totalBenefitAmount).toLocaleString('bn') : Number(totalBenefitAmount).toLocaleString('en')}</b></Typography>
-                    </CardContent>
-                  </Card>
-                  {/* <Card style={{ ...newCard, margin: "10px", padding:"0px" }}>
-                      <CardContent>
-                          <Typography>মাসিক মোট সুবিধা</Typography>
-                          <Typography variant="h5"><b>৳ ৫,০০,০০০</b></Typography>
-                          <Typography>(সর্বোচ্চ: ৭.৫ লাখ | সর্বনিম্ন: ২.০ লাখ)</Typography>
-                      </CardContent>
-                    </Card> */}
-                </CardContent>
-              </Card>
+               </ButtonGroup>
             </Grid>
           </Grid>
-        </Grid>
-
-
-        <Grid item xs={12} md={12}>
-          <Card style={{ ...newCard, overflow: "visible" }} sx={{ borderRadius: "12px", boxShadow: 2 }}>
-            <CardHeader
-              title={
-                <Box>
-                  <Typography variant="h6" component="div">
-                    {locale == 'fr' ? "আবেদন প্রকার ম্যাট্রিক্স" : "Application Type Matrix"}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    {locale == 'fr' ? "বিস্তারিত আবেদনের প্রতিবেদন - ফান্ড প্রকার অনুসারে" : "Detailed Application Report - By Fund Type"}
-                  </Typography>
-                </Box>
-              }
-              action={<Filters/>}
-            />
-            <CardContent>
-              {/* Table */}
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ fontWeight: "bold" }}>{locale == 'fr' ? "মোট আবেদন" : "Total Applications"}</TableCell>
-                    <TableCell align="right" style={{ fontWeight: "bold" }}>{locale == 'fr' ? "আবেদনের প্রকার" : "Application Type"}</TableCell>
-                    <TableCell align="right" style={{ fontWeight: "bold" }}>{locale == 'fr' ? "অনুমোদিত/ সুপারিশকৃত" : "Approved/ Recommended"}</TableCell>
-                    <TableCell align="right" style={{ fontWeight: "bold" }}>{locale == 'fr' ? "বাতিল/ ফেরত" : "Reverted/ Rejected"}</TableCell>
-                    <TableCell align="right" style={{ fontWeight: "bold" }}>{locale == 'fr' ? "প্রক্রিয়াধীন" : "Processing"}</TableCell>
-                    <TableCell align="center" style={{ fontWeight: "bold" }}>{locale == 'fr' ? "বিস্তারিত" : "Detail"}</TableCell>
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {tableRows.map((r, idx) => (
-                    <TableRow key={idx} hover>
-                      <TableCell>{r.type}</TableCell>
-                      <TableCell align="right">{r.total}</TableCell>
-                      <TableCell align="right">{r.approved}</TableCell>
-                      <TableCell align="right">{r.cancelled}</TableCell>
-                      <TableCell align="right">{r.processing}</TableCell>
-                      <TableCell align="center">
-                        <Link
-                          component="button"
-                          variant="body2"
-                          onClick={() => {
-                            // replace with real navigation
-                            console.log("বিস্তারিত:", r.type);
-                          }}
-                          sx={{ color: "#138a66" }}
-                        >
-                          {locale == 'fr' ? "বিস্তারিত দেখুন" : "See Detail"}
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-
-                <TableFooter>
-                  <TableRow>
-                    <TableCell>
-                      <Typography variant="subtitle2">{locale == 'fr' ? "মোট" : "Total"}</Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="subtitle2" fontWeight="bold">
-                        {totals.total}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="subtitle2" fontWeight="bold">
-                        {totals.approved}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="subtitle2" fontWeight="bold">
-                        {totals.cancelled}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="subtitle2" fontWeight="bold">
-                        {totals.processing}
-                      </Typography>
-                    </TableCell>
-                    <TableCell />
-                  </TableRow>
-                </TableFooter>
-              </Table>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} md={7}>
-          <Card style={newCard} sx={{ borderRadius: "16px", boxShadow: 3 }}>
-            <CardHeader
-              title={locale == 'fr' ? 'মাসিক ডেটা ওভারভিউ' : 'Monthly Data Overview'}
-              subheader={locale == 'fr' ? 'আবেদনের ধরণ অনুসারে' : 'By Application Type'}
-              action={
-                <>
-                  <Card style={{ padding: "10px", borderRadius: "12px" }}>
-                    <Typography style={{ textAlign: "center", fontWeight: "bold" }}><FormattedMessage id="workforce.select.time.range" /></Typography>
-                    <ButtonGroup variant="outlined" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                      {Object.entries(buttonOptions).map(([key, label]) => (
-                        <Button
-                          key={key}
-                          variant={graphMonths === key ? "contained" : "outlined"}
-                          onClick={() => handleGraphMonthChange(key)}
-                        >
-                          {label}
-                        </Button>
-                      ))}
-                    </ButtonGroup>
-                    {/* <Grid container spacing={1} style={{marginTop:"10px"}}>
-                     <Grid item xs={6} md={6}>
-                        <PublishedComponent
-                          pubRef="workforce.DatePicker"
-                          label={"তারিখ হতে"}
-                          onChange={(datevalue) => handleGraphFromDateChange(datevalue)}
-                        />
-                      </Grid>
-                      <Grid item xs={6} md={6}>
-                        <PublishedComponent
-                          pubRef="workforce.DatePicker"
-                          label={"তারিখ পর্যন্ত"}
-                          onChange={(datevalue) => handleGraphToDateChange(datevalue)}
-                        />
-                      </Grid>
-                  </Grid> */}
-                  </Card>
-                </>
-              }
-            />
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={barData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey={locale == 'fr' ? "চিকিৎসা" : "Medical"} stackId="a" fill="#009688" />
-                  <Bar dataKey={locale == 'fr' ? "মৃত্যু" : "Death"} stackId="a" fill="#90CAF9" />
-                  <Bar dataKey={locale == 'fr' ? "শিক্ষা" : "Educational"} stackId="a" fill="#FBC02D" />
-                  <Bar dataKey={locale == 'fr' ? "মাতৃত্ব" : "Maternity"} stackId="a" fill="#FF9800" />
-                  <Bar dataKey={locale == 'fr' ? "স্থায়ী ও অস্থায়ী অক্ষমতা" : "Permanent Or Curable Disability"} stackId="a" fill="#212121" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} md={5}>
-          <Card style={newCard} sx={{ borderRadius: "16px", boxShadow: 3 }}>
-            <CardHeader 
-              title={locale == 'fr' ? 'আবেদনের অবস্থা' : 'Application Status'} subheader={locale == 'fr' ? 'একনজরে আবেদনসমূহের অবস্থা' : 'Status At a Glance'}
-              action={<Filters/>}
-            />
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    dataKey="value"
-                    nameKey="name"
-                    innerRadius={60}
-                    outerRadius={100}
-                    label
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend
-                    verticalAlign="bottom"
-                    align="center"
-                    iconType="circle" // optional: circle, square, line
-                    layout="horizontal"
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </Grid>
-
+        </Card>
       </Grid>
-    </>
+
+      {/* --- DASHBOARD METRICS --- */}
+      <Grid item xs={12}>
+        <DashboardCard 
+          title={<FormattedMessage id="workforce.dashboard.pipeline" />} 
+          subtitle={<FormattedMessage id="workforce.dashboard.pipeline.subtitle" />}
+        >
+          <Grid container spacing={4}>
+             <Grid item xs={4}><StatRow label={<FormattedMessage id="workforce.dashboard.pipeline.factory" />} count={pipelineCounts.factory} /></Grid>
+             <Grid item xs={4}><StatRow label={<FormattedMessage id="workforce.dashboard.pipeline.association" />} count={pipelineCounts.association} /></Grid>
+             <Grid item xs={4}><StatRow label={<FormattedMessage id="workforce.dashboard.pipeline.eis" />} count={pipelineCounts.eis} /></Grid>
+          </Grid>
+        </DashboardCard>
+      </Grid>
+
+      <Grid item xs={12} md={4}>
+        <DashboardCard 
+          title={<FormattedMessage id="workforce.dashboard.pending" />} 
+          subtitle={<FormattedMessage id="workforce.dashboard.pending.subtitle" />}
+        >
+           <Typography variant="subtitle2" style={{ color: "#1976d2", marginTop: 10 }}>
+             <FormattedMessage id="workforce.dashboard.pending.verified" />
+           </Typography>
+           <Box pl={2} mb={2}>
+              <StatRow label={<FormattedMessage id="workforce.dashboard.pending.death" />} count={pendingCounts.verified.death} />
+              <StatRow label={<FormattedMessage id="workforce.dashboard.pending.disability" />} count={pendingCounts.verified.disability} />
+           </Box>
+           <Typography variant="subtitle2" style={{ color: "#d32f2f" }}>
+             <FormattedMessage id="workforce.dashboard.pending.nonVerified" />
+           </Typography>
+           <Box pl={2}>
+              <StatRow label={<FormattedMessage id="workforce.dashboard.pending.death" />} count={pendingCounts.nonVerified.death} />
+              <StatRow label={<FormattedMessage id="workforce.dashboard.pending.disability" />} count={pendingCounts.nonVerified.disability} />
+           </Box>
+        </DashboardCard>
+      </Grid>
+
+      <Grid item xs={12} md={4}>
+        <DashboardCard 
+          title={<FormattedMessage id="workforce.dashboard.overview" />} 
+          subtitle={<FormattedMessage id="workforce.dashboard.overview.subtitle" />}
+        >
+           <Typography variant="subtitle2" style={{ marginTop: 10 }}>
+             <FormattedMessage id="workforce.dashboard.overview.death" />
+           </Typography>
+           <Box pl={2} mb={2}>
+              <StatRow label={<FormattedMessage id="workforce.dashboard.overview.deadMale" />} count={overviewCounts.death.male} />
+              <StatRow label={<FormattedMessage id="workforce.dashboard.overview.deadFemale" />} count={overviewCounts.death.female} />
+           </Box>
+           <Typography variant="subtitle2">
+             <FormattedMessage id="workforce.dashboard.overview.disability" />
+           </Typography>
+           <Box pl={2}>
+              <StatRow label={<FormattedMessage id="workforce.dashboard.overview.maleWorker" />} count={overviewCounts.disability.male} />
+              <StatRow label={<FormattedMessage id="workforce.dashboard.overview.femaleWorker" />} count={overviewCounts.disability.female} />
+           </Box>
+        </DashboardCard>
+      </Grid>
+
+      <Grid item xs={12} md={4}>
+        <DashboardCard 
+          title={<FormattedMessage id="workforce.dashboard.beneficiary" />} 
+          subtitle={<FormattedMessage id="workforce.dashboard.beneficiary.subtitle" />}
+        >
+           <StatRow label={<FormattedMessage id="workforce.dashboard.beneficiary.male" />} count={getBeneficiaryCount("maleApplicant")} onClick={navigateToBeneficiaries} />
+           <StatRow label={<FormattedMessage id="workforce.dashboard.beneficiary.female" />} count={getBeneficiaryCount("femaleApplicant")} onClick={navigateToBeneficiaries} />
+           <Box mt={2} p={1} bgcolor="#f9f9f9" borderRadius="8px">
+             <StatRow label={<FormattedMessage id="workforce.dashboard.beneficiary.total" />} count={getBeneficiaryCount("totalApplicant")} onClick={navigateToBeneficiaries} />
+           </Box>
+        </DashboardCard>
+      </Grid>
+
+      <Grid item xs={12} md={6}>
+        <DashboardCard 
+          title={<FormattedMessage id="workforce.dashboard.accidentSegregation" />} 
+          subtitle={<FormattedMessage id="workforce.dashboard.accidentSegregation.subtitle" />}
+        >
+           <Grid container spacing={3}>
+             <Grid item xs={6}>
+               <Typography variant="subtitle2" style={{ marginTop: 10 }}>
+                 <FormattedMessage id="workforce.dashboard.overview.death" />
+               </Typography>
+               <StatRow label={<FormattedMessage id="workforce.dashboard.accidentSegregation.workplace" />} count={accidentCounts.death.workplace} />
+               <StatRow label={<FormattedMessage id="workforce.dashboard.accidentSegregation.commuting" />} count={accidentCounts.death.commuting} />
+               <StatRow label={<FormattedMessage id="workforce.dashboard.accidentSegregation.rta" />} count={accidentCounts.death.rta} />
+             </Grid>
+             <Grid item xs={6}>
+               <Typography variant="subtitle2" style={{ marginTop: 10 }}>
+                 <FormattedMessage id="workforce.dashboard.overview.disability" />
+               </Typography>
+               <StatRow label={<FormattedMessage id="workforce.dashboard.accidentSegregation.workplace" />} count={accidentCounts.disability.workplace} />
+               <StatRow label={<FormattedMessage id="workforce.dashboard.accidentSegregation.commuting" />} count={accidentCounts.disability.commuting} />
+               <StatRow label={<FormattedMessage id="workforce.dashboard.accidentSegregation.rta" />} count={accidentCounts.disability.rta} />
+             </Grid>
+           </Grid>
+        </DashboardCard>
+      </Grid>
+
+      <Grid item xs={12} md={6}>
+        <DashboardCard title={<FormattedMessage id="workforce.dashboard.financialOverview" />}>
+           <Grid container spacing={3}>
+             <Grid item xs={6}>
+               <Typography variant="subtitle2" style={{ marginTop: 10, color: "#2e7d32" }}>
+                 <FormattedMessage id="workforce.dashboard.financial.paidTillNow" />
+               </Typography>
+               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />} count={`৳ ${financialCounts.paid.death}`} />
+               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />} count={`৳ ${financialCounts.paid.disability}`} />
+             </Grid>
+             <Grid item xs={6}>
+               <Typography variant="subtitle2" style={{ marginTop: 10, color: "#ed6c02" }}>
+                 <FormattedMessage id="workforce.dashboard.financial.approxLifetime" />
+               </Typography>
+               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />} count={`৳ ${financialCounts.lifetime.death}`} />
+               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />} count={`৳ ${financialCounts.lifetime.disability}`} />
+             </Grid>
+           </Grid>
+        </DashboardCard>
+      </Grid>
+
+      <Grid item xs={12} md={5}>
+         <DashboardCard title={<FormattedMessage id="workforce.dashboard.appSegregation" />}>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={100} label>
+                  {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                </Pie>
+                <Tooltip />
+                <Legend verticalAlign="bottom" align="center" />
+              </PieChart>
+            </ResponsiveContainer>
+         </DashboardCard>
+      </Grid>
+
+      <Grid item xs={12} md={7}>
+         <DashboardCard title={<FormattedMessage id="workforce.dashboard.accidentVsTime" />}>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={barData}> 
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis label={{ value: isBn ? "দুর্ঘটনার সংখ্যা" : "Number of accidents", angle: -90, position: 'insideLeft' }} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey={chartLabels.death} stackId="death" fill="#d32f2f" />
+                <Bar dataKey={chartLabels.disability} stackId="disability" fill="#1976d2" />
+              </BarChart>
+            </ResponsiveContainer>
+         </DashboardCard>
+      </Grid>
+
+      <AgingReportModal open={openModal} onClose={() => setOpenModal(false)} data={selectedType} organizationType={filter.toLowerCase()} />
+    </Grid>
   );
 };
 
-const EISAdvisorDashboardPage = () => {
 
+const EISAdvisorDashboardPage = () => {
   const reduxState = useSelector((state) => state);
   const user_rights = reduxState.core.user.i_user.rights;
-  const approvedTextId = getUserTypeFromRights(user_rights) === WORKFORCE_USER_TYPE.DIRECTOR ? "workforce.application.forwarded" : "workforce.application.approved";
+  const approvedTextId =
+    getUserTypeFromRights(user_rights) === WORKFORCE_USER_TYPE.DIRECTOR ? "workforce.application.forwarded" : "workforce.application.approved";
 
   const SidebarMenu = [
     {
       id: "dashboard",
-      text: (
-        <FormattedMessage
-          module="workforce"
-          id="workforce.application.dashboard"
-        />
-      ),
+      text: <FormattedMessage module="workforce" id="workforce.application.dashboard" />,
       icon: <DashboardIcon />,
     },
     {
       id: "waitingApplications",
-      text: (
-        <FormattedMessage
-          module="workforce"
-          id="workforce.employee.application.meetingSheet"
-        />
-      ),
+      text: <FormattedMessage module="workforce" id="workforce.employee.application.meetingSheet" />,
       icon: <DashboardIcon />,
     },
     {
       id: "rejectedApplications",
-      text: (
-        <FormattedMessage
-          module="workforce"
-          id="workforce.application.rejectedApplication"
-        />
-      ),
+      text: <FormattedMessage module="workforce" id="workforce.application.rejectedApplication" />,
       icon: <DashboardIcon />,
     },
     {
       id: "approvedApplications",
-      text: (
-        <FormattedMessage
-          module="workforce"
-          id={approvedTextId}
-        />
-      ),
+      text: <FormattedMessage module="workforce" id={approvedTextId} />,
       icon: <DashboardIcon />,
     },
     {
       id: "returnedApplications",
-      text: (
-        <FormattedMessage
-          module="workforce"
-          id="workforce.application.returned"
-        />
-      ),
+      text: <FormattedMessage module="workforce" id="workforce.application.returned" />,
       icon: <DashboardIcon />,
     },
   ];
-
 
   const theme = useTheme();
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
   const [selectedMenu, setSelectedMenu] = useState("dashboard");
-
 
   const urlParams = new URLSearchParams(window.location.search);
   const status = urlParams.get("status");
@@ -1045,21 +712,18 @@ const EISAdvisorDashboardPage = () => {
     }
   }, [status]);
 
-
   const renderContent = () => {
     switch (selectedMenu) {
       case "dashboard":
-        return (
-          <Dashboard />
-        );
+        return <Dashboard />;
       case "waitingApplications":
-        return (<ApplicationSummaryPage status="pending" />);
+        return <ApplicationSummaryPage status="pending" />;
       case "rejectedApplications":
         return <RejectApplication />;
       case "approvedApplications":
-        return (<ApplicationSummaryPage status="approved" disableButtons={1} />);
+        return <ApplicationSummaryPage status="approved" disableButtons={1} />;
       case "returnedApplications":
-        return (<ReturnedApplications />);
+        return <ReturnedApplications />;
       default:
         return <Dashboard />;
     }
@@ -1072,12 +736,7 @@ const EISAdvisorDashboardPage = () => {
           <Paper className={classes.sidebar}>
             <List>
               {SidebarMenu.map((item) => (
-                <ListItem
-                  button
-                  key={item.id}
-                  selected={selectedMenu === item.id}
-                  onClick={() => setSelectedMenu(item.id)}
-                >
+                <ListItem button key={item.id} selected={selectedMenu === item.id} onClick={() => setSelectedMenu(item.id)}>
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} />
                 </ListItem>
@@ -1091,8 +750,6 @@ const EISAdvisorDashboardPage = () => {
       </Grid>
     </div>
   );
-
 };
-
 
 export default EISAdvisorDashboardPage;
