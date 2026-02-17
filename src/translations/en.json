@@ -1128,6 +1128,7 @@
   "workforce.application.beneficiaryPaymentProcess": "Beneficiary Payment Process",
   "workforce.application.beneficiaryProcessedPaymentList": "Processed Payments",
   "workforce.modal.saveCalculation": "Save Calculation",
-  "workforce.modal.recalculate": "Recalculate"
+  "workforce.modal.recalculate": "Recalculate",
+  "workforce.dashboard": "Dashboard"
 
 }

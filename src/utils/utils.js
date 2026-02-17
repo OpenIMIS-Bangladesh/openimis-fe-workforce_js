@@ -92,6 +92,8 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION;
   } else if (user_rights.includes(815000)) {
     user_type = WORKFORCE_USER_TYPE.SECRETARY;
+  }else if (user_rights.includes(836001)) {
+    user_type = WORKFORCE_USER_TYPE.ASSOCIATION;
   } else if (!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }
@@ -1360,9 +1362,9 @@ export const toBanglaNumber = (str) => {
 };
 
 export const isEisPath = () => {
-  if (typeof window !== "undefined") {
-    return window.location.href.includes("eis");
-  }
-  return false; // fallback if window is not defined
-  // return true;
+  // if (typeof window !== "undefined") {
+  //   return window.location.href.includes("eis");
+  // }
+  // return false; // fallback if window is not defined
+  return true;
 };

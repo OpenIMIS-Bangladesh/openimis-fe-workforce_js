@@ -34,7 +34,8 @@ import {
   formatEisPaymentProcessGQL,
   formatWorkforceDependentGQL,
   formatWorkforceOtherCompensationGQL,
-  formatWorkforceAssociationGQL
+  formatWorkforceAssociationGQL,
+  formatWorkforceAssociationUserMapGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 
@@ -3544,5 +3545,56 @@ export function fetchInteractiveUsers(mm, filters) {
     filters,
     projections
   );
-  return graphql(payload, "INTERACTIVE_USERS");
+  return graphql(payload, "INTERACTIVE_USERS_WORKFORCE");
+}
+
+
+export function fetchWorkforceAssociationUserMaps(filters) {
+  const projections = [
+    "allAssociation {id,nameEn,nameBn, shortNameEn, shortNameBn}",
+    "user {id,loginName}",
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceAssociationUserMap",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_ASSOCIATION_USER_MAPS");
+}
+
+export function fetchUsersByRoleId(roleIdsArray) {
+  console.log(roleIdsArray);
+  const roleIds = roleIdsArray.map(id => `"${id}"`).join(",");
+  const payload =
+    `query
+      {
+        workforceUserRole(roleIdIn:[${roleIds}]) {
+        {
+        userId
+        }
+      }`;
+  return graphql(payload, "WORKFORCE_USERS_BY_ROLE_ID");
+}
+
+
+export function createWorkforceAssociationUserMap(association, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceAssociationUserMap",
+    formatWorkforceAssociationUserMapGQL(association),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_ASSOCIATION_USER_MAP_REQ",
+      "WORKFORCE_ASSOCIATION_USER_MAP_RESP",
+      "WORKFORCE_ASSOCIATION_USER_MAP_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
 }

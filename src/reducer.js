@@ -392,6 +392,13 @@ function reducer(
     workforceAllAssociation: null,
     workforceAllAssociationPageInfo: { totalCount: 0 },
 
+
+    fetchingWorkforceAssociationMap: false,
+    errorWorkforceAssociationMap: null,
+    fetchedWorkforceAssociationMap: false,
+    workforceAssociationMap: null,
+    workforceAssociationMapPageInfo: { totalCount: 0 },
+
     fetchedSignatureData: [],
 
 
@@ -483,33 +490,31 @@ function reducer(
         error: formatServerError(action.payload),
       };
 
-    case "WORKFORCE_ALL_ASSOCIATION_REQ":
+    case "WORKFORCE_ASSOCIATION_USER_MAP_REQ":
       return {
         ...state,
-        fetchingWorkforceAllAssociation: true,
-        fetchedWorkforceAllAssociation: false,
-        workforceAllAssociation: null,
-        workforceAllAssociationPageInfo: { totalCount: 0 },
-        errorWorkforceAllAssociation: null,
+        fetchingWorkforceAssociationMap: true,
+        fetchedWorkforceAssociationMap: false,
+        workforceAssociationMap: null,
+        workforceAssociationMapPageInfo: { totalCount: 0 },
+        errorWorkforceAssociationMap: null,
       };
-    case "WORKFORCE_ALL_ASSOCIATION_RESP":
+    case "WORKFORCE_ASSOCIATION_USER_MAP_RESP":
       return {
         ...state,
-        fetchingWorkforceAllAssociation: false,
-        fetchedWorkforceAllAssociation: true,
-        workforceAllAssociation: parseData(action.payload.data.workforceAllAssociation).map((association) => ({
-          ...association,
-          id: decodeId(association.id),
-        }))?.[0],
-        workforceAllAssociationPageInfo: pageInfo(action.payload.data.workforceAllAssociation),
-        errorWorkforceAllAssociation: formatGraphQLError(action.payload),
+        fetchingWorkforceAssociationMap: false,
+        fetchedWorkforceAssociationMap: true,
+        workforceAssociationMap: parseData(action.payload.data.workforceAssociationUserMap),
+        workforceAssociationMapPageInfo: pageInfo(action.payload.data.workforceAssociationUserMap),
+        errorWorkforceAssociationMap: formatGraphQLError(action.payload),
       };
-    case "WORKFORCE_ALL_ASSOCIATION_ERR":
+    case "WORKFORCE_ASSOCIATION_USER_MAP_ERR":
       return {
         ...state,
-        fetching: false,
-        error: formatServerError(action.payload),
+        fetchingWorkforceAssociationMap: false,
+        errorWorkforceAssociationMap: formatServerError(action.payload),
       };
+
 
     case "WORKFORCE_ORGANIZATIONS_REQ":
       return {

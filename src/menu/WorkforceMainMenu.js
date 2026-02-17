@@ -24,7 +24,8 @@ import {
   ROUTE_WORKFORCE_APPLICATIONS_PROCESS,
   ROUTE_WORKFORCE_DOCUMENTS,
   ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION,
-  ROUTE_WORKFORCE_ASSOCIATIONS
+  ROUTE_WORKFORCE_ASSOCIATIONS,
+  ROUTE_WORKFORCE_ASSOCIATION_USER_MAP
 } from "../routes";
 import { RIGHT_WORKFORCE_EMPLOYER_APPROVE } from "../permission-rights";
 import { getUserType, isEmptyObject } from "../utils/utils";
@@ -146,6 +147,13 @@ function WorkforceMainMenu(props) {
       id: `menu.workforce.documents`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.association.user.map" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_ASSOCIATION_USER_MAP}`,
+      id: `menu.workforce.association.user.map`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
     // {
     //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.employee.factory" />,
     //   icon: <ListAlt />,
@@ -177,7 +185,7 @@ function WorkforceMainMenu(props) {
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
   ];
-  if (user_type === WORKFORCE_USER_TYPE.ADMIN) {
+  if (user_type === WORKFORCE_USER_TYPE.ADMIN || user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
     return (
       <MainMenuContribution
         {...props}

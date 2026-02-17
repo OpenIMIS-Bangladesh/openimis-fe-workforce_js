@@ -45,6 +45,8 @@ console.log("userTpe",user_type)
     return <DashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION || user_type === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || user_type === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION) {
     return <AssociationDashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.ASSOCIATION) {
+    return <AssociationDashboardPage />; 
   } else if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
     return <FactoryAdminDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {

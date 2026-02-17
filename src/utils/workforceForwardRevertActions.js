@@ -1,7 +1,8 @@
 import { decodeId } from "@openimis/fe-core";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../constants";
 import { getUserTypeFromRights, isEisPath, safeDecodeId } from "./utils";
-import { fetchApplicationFactoryAssociation } from "../actions";
+import { fetchApplicationFactoryAssociation, fetchUsersByRoleId, fetchWorkforceAssociationUserMaps, fetchWorkforceUserRoleWiseUser } from "../actions";
+import { useState } from "react";
 
 export const forwardToAssociation = async ({
   selectedApplicationIds,
@@ -32,6 +33,11 @@ export const forwardToAssociation = async ({
 
         const workforceApplication = workforceApplicationRes?.payload?.data?.workforceApplication?.edges[0]?.node;
         let associationType = workforceApplication?.employeeFactory?.allAssociation?.shortNameEn??"";
+        let associationId = safeDecodeId(workforceApplication?.employeeFactory?.allAssociation?.id);
+        console.log("associationType", associationType)
+        const userToResp = await dispatch(fetchWorkforceAssociationUserMaps([`allAssociationId: "${associationId}"`]));
+        const applicationToUser= safeDecodeId(userToResp?.payload?.data?.workforceAssociationUserMap?.edges[0]?.node?.user.id);
+        console.log("applicationToUser", applicationToUser)
 
         const documents =
           res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
@@ -69,15 +75,16 @@ export const forwardToAssociation = async ({
         //           : formData?.association === "LFMEAB"
         //           ? 203
         //           : null,
-        applicationToId: associationType === "BGMEA"
-                          ? 93
-                          : associationType === "BKMEA"
-                          ? 276
-                          : associationType === "BEPZA"
-                          ? 219
-                          : associationType === "LFMEAB"
-                          ? 203
-                          : null,
+        // applicationToId: associationType === "BGMEA"
+        //                   ? 93
+        //                   : associationType === "BKMEA"
+        //                   ? 276
+        //                   : associationType === "BEPZA"
+        //                   ? 219
+        //                   : associationType === "LFMEAB"
+        //                   ? 203
+        //                   : null,
+        applicationToId: applicationToUser,
         toRoleId: 31,
       };
 
@@ -138,13 +145,15 @@ export const handleBulkSelectedByAssociationLogic = async ({
   let confirmModalMessage = "";
 
   if (
-    userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
-    userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+    !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+      //   userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+  //   userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
   ) {
     confirmModalMessage = "workforce.application.forward.message.toSectionAdmin";
   } else if (
-    userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
-    userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+    isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+    // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+    // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
   ) {
     confirmModalMessage = "workforce.application.forward.message.toEisCoordinator";
   }
@@ -189,14 +198,21 @@ export const handleBulkSelectedByAssociationLogic = async ({
           return;
         }
 
+        console.log("documents porjnto aise");
+        const applicationToResp= await fetchUsersByRoleId([isEisPath()? "46" : "32"]);
+        const applicationToUser = safeDecodeId(applicationToResp?.payload?.data?.workforceUserRole[0]?.userId);
+
         const updateApplicationData = {
           id: decodedId,
           status:
-            userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
-            userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+            // userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+            // userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+              !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
               ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
-              : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
-                userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+              : 
+              // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+              //   userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+                isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
               ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
               : null,
         };
@@ -204,32 +220,41 @@ export const handleBulkSelectedByAssociationLogic = async ({
         const createApplicationMovementData = {
           applicationId: decodedId,
           status:
-            userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
-            userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+            // userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+            // userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+              !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
               ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
-              : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
-                userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+              : 
+              // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+              // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+                isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
               ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
               : null,
           note: "আবেদন শাখায় প্রেরণ করা হয়েছে",
           action:
-            userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
-            userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+            // userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+            // userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+              !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
               ? "forward_to_cf_section"
-              : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
-                userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+              : 
+              // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+              // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+                isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
               ? "forward_to_eis_coordinator"
               : null,
           applicationFromId: loggedInUserId,
-          applicationToId:
-            userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
-            userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-              ? 139
-              : userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
-                userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-              ? 194
-              : null,
-          toRoleId: 32,
+          applicationToId: applicationToUser,
+            // userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+            // userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+              // !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+              // ? 139
+              // : 
+                // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+                // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+              //   isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+              // ? 194
+              // : null,
+          toRoleId: isEisPath()? 46 : 32,
         };
 
         await updateApplication(updateApplicationData, "update workforce application");
@@ -250,9 +275,9 @@ export const handleBulkSelectedByAssociationLogic = async ({
         message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
       });
     } finally {
-     setTimeout(() => {
-        window.location.reload();
-      }, 200);
+    //  setTimeout(() => {
+    //     window.location.reload();
+    //   }, 200);
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
     }
@@ -380,7 +405,7 @@ export const handleBulkSelectedByCheckerLogic = async ({
         message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
       });
     } finally {
-       window.location.reload();
+      //  window.location.reload();
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
     }

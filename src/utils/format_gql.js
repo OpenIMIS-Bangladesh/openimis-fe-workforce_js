@@ -588,3 +588,11 @@ export function formatWorkforceCompanyStatusGql(company) {
     ${company?.status ? `status: "${company.status}"` : ""}
   `;
 }
+
+
+export function formatWorkforceAssociationUserMapGQL(associationUserMap) {
+  return `
+    ${associationUserMap?.associationId ? `allAssociationId: "${formatGQLString(associationUserMap?.associationId)}"` : ""}
+    ${associationUserMap.userId ? `userId: ${formatGQLString(associationUserMap.userId)}` : ""}
+  `;
+}

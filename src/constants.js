@@ -236,6 +236,7 @@ export const WORKFORCE_USER_TYPE = {
   APPLICANT: "applicant",
   FACTORY_ADMIN: "factory_admin",
   DIRECTOR: "director",
+  ASSOCIATION: "association",
   BGMEA_ASSOCIATION: "bgmea_association",
   BKMEA_ASSOCIATION: "bkmea_association",
   SECTION_ADMIN: "section_admin",

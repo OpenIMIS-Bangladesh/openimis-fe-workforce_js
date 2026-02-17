@@ -17,7 +17,7 @@ import {
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardApplicationModal from "./modals/ForwardApplicationModal";
-import { getUserTypeFromRights, isEisPath, isEmptyObject } from "../../utils/utils";
+import { getUserTypeFromRights, isEisPath, isEmptyObject, safeDecodeId } from "../../utils/utils";
 import PrintIcon from "@material-ui/icons/Print";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
@@ -140,6 +140,8 @@ class ApplicationProcessSearcher extends Component {
     }
     this.props.fetchOrganizationEmployee(this.props.modulesManager, [`username:"${userName}"`]);
     await this.fetchApplicant();
+    console.log(this.props.i_user)
+    console.log("user_type: "+ getUserTypeFromRights(userRights));
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
 
@@ -697,6 +699,61 @@ class ApplicationProcessSearcher extends Component {
       }
       else {
         defaultStatusFilters.push('statusIn: ["forward_to_association","resubmitted_application"]', 'associationTypeIn: ["LFMEAB"]');
+        // if (loggedInUserId) {
+        //   defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        // }
+      }
+
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const hasStatusIn = prms?.some(f => f.includes("statusIn"));
+      const hasOrderBy = prms?.some(f => f.includes("orderBy"));
+
+      let finalFilters = [];
+
+      if (prms?.length) {
+        finalFilters = [...prms];
+
+        if (!hasStatusIn) {
+          finalFilters = [...defaultStatusFilters, ...finalFilters];
+        }
+
+        if (!hasOrderBy) {
+          finalFilters.push(orderByFilter);
+        }
+      } else {
+        finalFilters = [...defaultStatusFilters, orderByFilter];
+      }
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+
+    } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.ASSOCIATION) {
+      this.setState({ displayVersion: showHistoryFilter });
+
+      let defaultStatusFilters = [];
+      if (this.props.associationIds && this.props.associationIds.length>0) {
+        defaultStatusFilters.push(`allAssociationIdIn: [${this.props.associationIds.map(id => `"${safeDecodeId(id)}"`).join(",")}]`);
+      }
+      if (revertedApplication) {
+        defaultStatusFilters = [
+          'statusIn: ["revert"]',
+        ];
+
+        // if (loggedInUserId) {
+        //   defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        // }
+      }
+      else if (this.props.forwardedApplications) {
+        defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator","revert_to_applicant"]');
+      }
+      else if (this.props.returnedApplications) {
+        defaultStatusFilters = ['statusIn: ["revert"]'];
+        // if (loggedInUserId) {
+        //   defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        // }
+      }
+      else {
+        defaultStatusFilters.push('statusIn: ["forward_to_association","resubmitted_application"]');
         // if (loggedInUserId) {
         //   defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         // }
@@ -1970,7 +2027,6 @@ class ApplicationProcessSearcher extends Component {
   handleBulkSelectedbyAssociation = () => {
     const { selectedApplicationIds } = this.state;
     const { loggedInUserId, updateApplication, createApplicationMovement, userRights, modulesManager, fetchWorkforceDocument, testWorkforcePayment } = this.props;
-    console.log("hi payment call", testWorkforcePayment)
     handleBulkSelectedByAssociationLogic({
       selectedApplicationIds,
       loggedInUserId,
@@ -2985,7 +3041,7 @@ class ApplicationProcessSearcher extends Component {
             )}
           </Box>
         ) : null}
-        {userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION ? (
+        {userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION ||  userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.ASSOCIATION? (
           <Box
             style={{
               marginTop: 10,
@@ -3418,6 +3474,7 @@ class ApplicationProcessSearcher extends Component {
 }
 
 const mapStateToProps = (state) => ({
+  i_user: state.core && state.core.user && state.core.user.i_user,
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
   applications: state.workforce.applications,
   eisPayments: state.workforce.eisPayments,
