@@ -785,7 +785,9 @@ export function fetchApplicationsSummary(mm, filters) {
     "eisInitialMonthlyAmount",
     "eisMonthlyAmount",
     "initialReplacementRate",
-    "pvFactor"
+    "pvFactor",
+    "eisVerified",
+    "deceasedWorkerInfo"
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
