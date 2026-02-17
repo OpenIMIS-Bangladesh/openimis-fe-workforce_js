@@ -18,10 +18,14 @@ import {
     TableHead,
     TableRow,
     Paper,
-    Typography
+    Typography,
+    TextField,
+    IconButton
 } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
-import { createWorkforceAssociationUserMap, fetchInteractiveUsers, fetchWorkforceAllAssociationSummary, fetchWorkforceAssociationUserMaps } from '../../actions';
+import { createWorkforceAssociationUserMap, deleteWorkforceAssociationUserMap, fetchInteractiveUsers, fetchWorkforceAllAssociationSummary, fetchWorkforceAssociationUserMaps, fetchWorkforceInteractiveUsers } from '../../actions';
 import { safeDecodeId } from '../../utils/utils';
 
 
@@ -63,8 +67,8 @@ const AssociationUserMappingPage = () => {
         dispatch(fetchWorkforceAllAssociationSummary(filters)).then((response) => {
             setAssociations(response?.payload?.data?.workforceAllAssociation?.edges || []);
         });
-        dispatch(fetchInteractiveUsers(filters)).then((response) => {
-            setUsers(response?.payload?.data?.interactiveUsers?.edges || []);
+        dispatch(fetchWorkforceInteractiveUsers(filters)).then((response) => {
+            setUsers(response?.payload?.data?.workforceInteractiveUsers || []);
         });
         dispatch(fetchWorkforceAssociationUserMaps(filters)).then((response) => {
             setMappings(response?.payload?.data?.workforceAssociationUserMap?.edges || []);
@@ -96,6 +100,24 @@ const AssociationUserMappingPage = () => {
             });
     };
 
+    const handleDelete = (mappingId) => {
+        if (!confirm("Are you sure you want to delete this mapping?")) {
+            return;
+        }
+        console.log("Attempting to delete mapping with ID:", safeDecodeId(mappingId));
+        dispatch(deleteWorkforceAssociationUserMap({id: safeDecodeId(mappingId)}, "deleteWorkforceAssociationUserMap"))
+        .then(() => {
+            setSelectedAssociation('');
+            setSelectedUser('');
+            dispatch(fetchWorkforceAssociationUserMaps([])).then((response) => {
+                setMappings(response?.payload?.data?.workforceAssociationUserMap?.edges || []);
+            });
+        })
+        .catch((error) => {
+            console.error("Failed to delete association user mapping:", error);
+        });
+    };
+
     return (
         <div>
             {/* MAPPING FORM CARD */}
@@ -109,46 +131,58 @@ const AssociationUserMappingPage = () => {
 
                         {/* Association Dropdown */}
                         <Grid item xs={12} md={5}>
-                            <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel id="association-select-label">Association</InputLabel>
-                                <Select
-                                    labelId="association-select-label"
-                                    value={selectedAssociation}
-                                    onChange={(e) => setSelectedAssociation(e.target.value)}
-                                    label="Association"
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    {associations.map((assoc) => (
-                                        <MenuItem key={assoc.node.id} value={assoc.node.id}>
-                                            {assoc.node.nameEn} ({assoc.node.shortNameEn}) {/* Adjust property based on API */}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                             <Autocomplete
+                                id="association-select-autocomplete"
+                                options={associations}
+                                getOptionLabel={(option) => `${option.node.nameEn} (${option.node.shortNameEn})`}
+
+                                // IMPORTANT FOR MUI v4: This prevents warnings when React compares the selected object to the options array
+                                getOptionSelected={(option, value) => option.node.id === value.node.id}
+
+                                value={selectedAssociation ? associations.find(assoc => assoc.node.id === selectedAssociation) || null : null}
+
+                                onChange={(event, newValue) => {
+                                    setSelectedAssociation(newValue ? newValue.node.id : "");
+                                }}
+
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Association"
+                                        variant="outlined"
+                                        // Apply your existing class here to maintain spacing/styling
+                                        className={classes.formControl}
+                                    />
+                                )}
+                            />
                         </Grid>
 
                         {/* User Dropdown */}
                         <Grid item xs={12} md={5}>
-                            <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel id="user-select-label">Interactive User</InputLabel>
-                                <Select
-                                    labelId="user-select-label"
-                                    value={selectedUser}
-                                    onChange={(e) => setSelectedUser(e.target.value)}
-                                    label="Interactive User"
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    {users.map((user) => (
-                                        <MenuItem key={user.node.id} value={user.node.id}>
-                                            {user.node.loginName}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                            <Autocomplete
+                                id="user-select-autocomplete"
+                                options={users}
+                                getOptionLabel={(option) => `${option.loginName} (${option.lastName})`}
+
+                                // IMPORTANT FOR MUI v4: This prevents warnings when React compares the selected object to the options array
+                                getOptionSelected={(option, value) => option.id === value.id}
+
+                                value={users.find((user) => user.id === selectedUser) || null}
+
+                                onChange={(event, newValue) => {
+                                    setSelectedUser(newValue ? newValue.id : "");
+                                }}
+
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Interactive User"
+                                        variant="outlined"
+                                        // Apply your existing class here to maintain spacing/styling
+                                        className={classes.formControl}
+                                    />
+                                )}
+                            />
                         </Grid>
 
                         {/* Submit Button */}
@@ -161,6 +195,7 @@ const AssociationUserMappingPage = () => {
                                 startIcon={<SaveIcon />}
                                 onClick={handleSaveMapping}
                                 disabled={!selectedAssociation || !selectedUser}
+                                style={{marginTop:"-7px"}}
                             >
                                 Save
                             </Button>
@@ -182,14 +217,20 @@ const AssociationUserMappingPage = () => {
                                     <TableRow>
                                         <TableCell className={classes.tableHeader}>Association</TableCell>
                                         <TableCell className={classes.tableHeader}>User</TableCell>
+                                        <TableCell className={classes.tableHeader}>Actions</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {mappings.map((row) => (
                                         <TableRow key={row.node.id}>
                                             {/* Adjust these properties to match your actual payload response */}
-                                            <TableCell>{row.node.allAssociation?.nameEn?? ""}</TableCell>
+                                            <TableCell>{row.node.allAssociation?.nameEn ?? ""}</TableCell>
                                             <TableCell>{row.node.user?.loginName || row.node.userId}</TableCell>
+                                            <TableCell>
+                                                <IconButton color="error" onClick={() => handleDelete(row.node.id)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>

@@ -1043,5 +1043,6 @@
   "workforce.application.beneficiaryProcessedPaymentList": "প্রসেসকৃত পেমেন্টের তালিকা",
   "workforce.modal.saveCalculation": "ক্যালকুলেশন সেভ করুন",
   "workforce.modal.recalculate": "পুনরায় ক্যালকুলেশন করুন",
-  "workforce.dashboard": "ড্যাশবোর্ড"
+  "workforce.dashboard": "ড্যাশবোর্ড",
+  "menu.workforce.association.user.map": "এসোসিয়েশনের সাথে ইউজার ম্যাপিং"
 }

@@ -1129,6 +1129,7 @@
   "workforce.application.beneficiaryProcessedPaymentList": "Processed Payments",
   "workforce.modal.saveCalculation": "Save Calculation",
   "workforce.modal.recalculate": "Recalculate",
-  "workforce.dashboard": "Dashboard"
+  "workforce.dashboard": "Dashboard",
+  "menu.workforce.association.user.map": "Association User Mapping"
 
 }

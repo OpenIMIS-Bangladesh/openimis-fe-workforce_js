@@ -3535,7 +3535,7 @@ export function updateWorkforceEisPaymentByAssociation(payload) {
 }
 
 
-export function fetchInteractiveUsers(mm, filters) {
+export function fetchInteractiveUsers(filters) {
   const projections = [
     "id",
     "loginName",
@@ -3551,6 +3551,7 @@ export function fetchInteractiveUsers(mm, filters) {
 
 export function fetchWorkforceAssociationUserMaps(filters) {
   const projections = [
+    "id",
     "allAssociation {id,nameEn,nameBn, shortNameEn, shortNameBn}",
     "user {id,loginName}",
   ];
@@ -3577,10 +3578,10 @@ export function fetchUsersByRoleId(roleIdsArray) {
 }
 
 
-export function createWorkforceAssociationUserMap(association, clientMutationLabel) {
+export function createWorkforceAssociationUserMap(map, clientMutationLabel) {
   const mutation = formatMutation(
     "createWorkforceAssociationUserMap",
-    formatWorkforceAssociationUserMapGQL(association),
+    formatWorkforceAssociationUserMapGQL(map),
     clientMutationLabel
   );
   const requestedDateTime = new Date();
@@ -3597,4 +3598,33 @@ export function createWorkforceAssociationUserMap(association, clientMutationLab
       requestedDateTime,
     }
   );
+}
+
+export function deleteWorkforceAssociationUserMap(payload) {
+  const mutation = `
+    mutation {
+      deleteWorkforceAssociationUserMap(
+        mapId: "${payload?.id ?? ""}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "DELETE_WORKFORCE_ASSOCIATION_USER_MAP");
+}
+
+
+export function fetchWorkforceInteractiveUsers(filters) {
+  const payload =`
+  query{
+  workforceInteractiveUsers{
+        id
+        loginName
+        lastName
+        otherNames
+      }
+    }
+  `;
+  return graphql(payload, "WORKFORCE_INTERACTIVE_USERS");
 }

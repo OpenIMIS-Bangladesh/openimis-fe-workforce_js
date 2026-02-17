@@ -592,6 +592,7 @@ export function formatWorkforceCompanyStatusGql(company) {
 
 export function formatWorkforceAssociationUserMapGQL(associationUserMap) {
   return `
+    ${associationUserMap?.id ? `id: "${formatGQLString(associationUserMap?.id)}"` : ""}
     ${associationUserMap?.associationId ? `allAssociationId: "${formatGQLString(associationUserMap?.associationId)}"` : ""}
     ${associationUserMap.userId ? `userId: ${formatGQLString(associationUserMap.userId)}` : ""}
   `;
