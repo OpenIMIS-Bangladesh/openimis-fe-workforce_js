@@ -464,7 +464,6 @@ const Dashboard = () => {
       })
 
       dispatch(fetchWorkforceEisPaymentDisbursementStage({isDisbursed: true}, modulesManager)).then(r =>{
-        console.log({baller:r})
         const response = r?.payload?.data?.workforceEisPaymentDisbursementStage
         setDisbursedApplication(response)
         console.log({response})
@@ -623,15 +622,15 @@ const Dashboard = () => {
                <Typography variant="subtitle2" style={{ marginTop: 10, color: "#2e7d32" }}>
                  <FormattedMessage id="workforce.dashboard.financial.paidTillNow" />
                </Typography>
-               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />} count={`৳ ${financialCounts.paid.death}`} />
-               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />} count={`৳ ${financialCounts.paid.disability}`} />
+               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />} count={`৳ ${disbursedApplication.filter(item=>item.workforceApplication?.applicationType ==="financialAssistance").reduce((acc, obj) => acc + (Number((parseFloat(obj?.paidAmount)).toFixed(2)) || 0), 0)}`} />
+               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />} count={`৳ ${disbursedApplication.filter(item=>item.workforceApplication?.applicationType ==="disabilityAssistance").reduce((acc, obj) => acc + (Number((parseFloat(obj?.paidAmount)).toFixed(2)) || 0), 0)}`} />
              </Grid>
              <Grid item xs={6}>
                <Typography variant="subtitle2" style={{ marginTop: 10, color: "#ed6c02" }}>
                  <FormattedMessage id="workforce.dashboard.financial.approxLifetime" />
                </Typography>
-               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />} count={`৳ ${financialCounts.lifetime.death}`} />
-               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />} count={`৳ ${financialCounts.lifetime.disability}`} />
+               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />} count={`৳ ${disbursedApplication.filter(item=>item.workforceApplication?.applicationType ==="financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0)}`} />
+               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />} count={`৳ ${disbursedApplication.filter(item=>item.workforceApplication?.applicationType ==="financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0)}`} />
              </Grid>
            </Grid>
         </DashboardCard>

@@ -26,7 +26,7 @@ import {
   ButtonGroup,  
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { fetchSummaryApplications, fetchApplicationsSummary } from "../../actions";
+import { fetchSummaryApplications, fetchApplicationsSummary, fetchWorkforceEisPaymentDisbursementStage } from "../../actions";
 import { getUserType, getUserTypeFromRights } from "../../utils/utils";
 import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise } from "../../actions";
 import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN } from "../../constants";
@@ -492,6 +492,7 @@ const Dashboard = () => {
 
   // --- 1. ORIGINAL STATE ---
   const [applications, setApplications] = useState([]);
+  const [disbursedApplication, setDisbursedApplication] = useState([]);
   const [months, setMonths] = useState(0);
   const [monthString, setMonthString] = useState("");
   const [filter, setFilter] = useState("eis");
@@ -705,6 +706,13 @@ const Dashboard = () => {
           setApplications(formData)
           console.log({fromEISAdvisor:formData})
         })
+
+        dispatch(fetchWorkforceEisPaymentDisbursementStage({isDisbursed: true}, modulesManager)).then(r =>{
+                const response = r?.payload?.data?.workforceEisPaymentDisbursementStage
+                setDisbursedApplication(response)
+                console.log({response})
+        
+              })
       }
       loadNewDashboardRequirements();
     }, []);
@@ -723,7 +731,7 @@ const Dashboard = () => {
             <FormattedMessage id="workforce.dashboard.overallFilters" />
           </Typography>
           <Grid container spacing={3} alignItems="flex-end">
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={4}>
               <Typography variant="caption" color="textSecondary">
                 <FormattedMessage id="workforce.dashboard.appSubmissionDate" />
               </Typography>
@@ -733,7 +741,7 @@ const Dashboard = () => {
               </Box>
             </Grid>
             
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={4}>
               <Typography variant="caption" color="textSecondary">
                 <FormattedMessage id="workforce.dashboard.accidentDate" />
               </Typography>
@@ -743,7 +751,7 @@ const Dashboard = () => {
               </Box>
             </Grid>
 
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={4}>
               <FormControl variant="outlined" size="small" fullWidth>
                 <Select value={association} onChange={(e) => setAssociation(e.target.value)} displayEmpty>
                   <MenuItem value="all"><FormattedMessage id="workforce.dashboard.allAssociations" /></MenuItem>
@@ -855,22 +863,22 @@ const Dashboard = () => {
 
       <Grid item xs={12} md={6}>
         <DashboardCard title={<FormattedMessage id="workforce.dashboard.financialOverview" />}>
-           <Grid container spacing={3}>
-             <Grid item xs={6}>
-               <Typography variant="subtitle2" style={{ marginTop: 10, color: "#2e7d32" }}>
-                 <FormattedMessage id="workforce.dashboard.financial.paidTillNow" />
-               </Typography>
-               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />} count={`৳ ${financialCounts.paid.death}`} />
-               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />} count={`৳ ${financialCounts.paid.disability}`} />
-             </Grid>
-             <Grid item xs={6}>
-               <Typography variant="subtitle2" style={{ marginTop: 10, color: "#ed6c02" }}>
-                 <FormattedMessage id="workforce.dashboard.financial.approxLifetime" />
-               </Typography>
-               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />} count={`৳ ${financialCounts.lifetime.death}`} />
-               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />} count={`৳ ${financialCounts.lifetime.disability}`} />
-             </Grid>
-           </Grid>
+                   <Grid container spacing={3}>
+                     <Grid item xs={6}>
+                       <Typography variant="subtitle2" style={{ marginTop: 10, color: "#2e7d32" }}>
+                         <FormattedMessage id="workforce.dashboard.financial.paidTillNow" />
+                       </Typography>
+                       <StatRow label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />} count={`৳ ${disbursedApplication.filter(item=>item.workforceApplication?.applicationType ==="financialAssistance").reduce((acc, obj) => acc + (Number((parseFloat(obj?.paidAmount)).toFixed(2)) || 0), 0)}`} />
+                       <StatRow label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />} count={`৳ ${disbursedApplication.filter(item=>item.workforceApplication?.applicationType ==="disabilityAssistance").reduce((acc, obj) => acc + (Number((parseFloat(obj?.paidAmount)).toFixed(2)) || 0), 0)}`} />
+                     </Grid>
+                     <Grid item xs={6}>
+                       <Typography variant="subtitle2" style={{ marginTop: 10, color: "#ed6c02" }}>
+                         <FormattedMessage id="workforce.dashboard.financial.approxLifetime" />
+                       </Typography>
+                       <StatRow label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />} count={`৳ ${disbursedApplication.filter(item=>item.workforceApplication?.applicationType ==="financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0)}`} />
+                       <StatRow label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />} count={`৳ ${disbursedApplication.filter(item=>item.workforceApplication?.applicationType ==="financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0)}`} />
+                     </Grid>
+                   </Grid>
         </DashboardCard>
       </Grid>
 
