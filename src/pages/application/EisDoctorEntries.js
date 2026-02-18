@@ -109,6 +109,53 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
   const [lastRevertMovement, setLastRevertMovement] = useState(null);
   const [revertNotes, setRevertNotes] = useState([]);
   const [eisApprovalSignature, setEisApprovalSignature] = useState([]);
+  const summaryData = useSelector((state) => state.workforce[`applicationsSummary`] ?? [])
+//   const meetingData = summaryData?.find(m => {
+//   if (!m?.applicationData) return false;
+
+//   try {
+//     const rawArray = JSON.parse(m.applicationData);           // ["base64id1", "base64id2", ...]
+//     console.log("Raw applicationData array:", rawArray);
+
+//     if (!Array.isArray(rawArray) || rawArray.length === 0) {
+//       console.warn("applicationData parsed but not useful array", rawArray);
+//       return false;
+//     }
+
+//     // Try both ways — most projects are inconsistent here
+//     const decodedIds = rawArray.map(id => {
+//       const dec = safeDecodeId(id);
+//       console.log(`Decoded: ${id} → ${dec}`);
+//       return dec;
+//     });
+
+//     const targetId = formData?.id;
+//     console.log("Target formData.id =", targetId);
+
+//     // Variant A: compare decoded vs decoded
+//     const foundA = decodedIds.some(decoded => decoded === targetId);
+    
+//     // Variant B: compare encoded vs encoded (most common bug pattern)
+//     const foundB = rawArray.some(encoded => encoded === targetId);
+
+//     console.log({ foundA, foundB, targetId });
+
+//     return foundA || foundB;
+
+//   } catch (err) {
+//     console.error("Failed to parse applicationData:", m.id, err);
+//     return false;
+//   }
+// });
+
+  const meetingData = summaryData?.filter(m=> {
+    const parsedApplicationData= JSON.parse(m?.applicationData)
+    console.log({parsedApplicationData})
+    // const decodedApplicationData = safeDecodeId(parsedApplicationData)
+    return parsedApplicationData?.includes(formData?.id)
+  })
+console.log("Final meetingData:", meetingData);
+console.log({ fromDoctor: meetingData });
 
   const [hasLimitations, setHasLimitations] = useState(formData?.employeeAccidentInfo?.hasLimitations || "no");
 
@@ -183,6 +230,8 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
 
   useEffect(async () => {
     fetchApplicationMovement();
+    handleChange("dateOfAssessment", meetingData?.[0]?.meetingDate)
+    handleChange("nameOfAssessmentMeeting", meetingData?.[0]?.name)
   }, []);
 
   const handleLimitationsChange = (event) => {
@@ -191,7 +240,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
     handleChange("hasLimitations", value);
   };
 
-  console.log(eisApprovalSignature);
+  // console.log({fromDoctor:meetingData});
   return (
     <Box mt={2}>
       {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
@@ -231,7 +280,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
             <PublishedComponent
               pubRef="workforce.DatePicker"
               label="workforce.disability.dateOfAssessment"
-              value={formData?.employeeAccidentInfo?.dateOfAssessment || formData?.doctorsEntry?.dateOfAssessment || ""}
+              value={meetingData?.[0]?.meetingDate||formData?.doctorsEntry?.dateOfAssessment ||formData?.employeeAccidentInfo?.dateOfAssessment ||  ""}
               onChange={(v) => handleChange("dateOfAssessment", v)}
               required
               readOnly={user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR}
@@ -240,7 +289,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
           <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
             <TextInput
               label="workforce.disability.nameOfAssessmentMeeting"
-              value={formData?.employeeAccidentInfo?.nameOfAssessmentMeeting || formData?.doctorsEntry?.nameOfAssessmentMeeting || ""}
+              value={meetingData?.[0]?.name||formData?.doctorsEntry?.nameOfAssessmentMeeting || formData?.employeeAccidentInfo?.nameOfAssessmentMeeting || ""}
               onChange={(v) => handleChange("nameOfAssessmentMeeting", v)}
               required
               readOnly={user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR}

@@ -117,7 +117,9 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
 
               <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
                 <EmployeeGenderPicker
-                  value={formData?.workforceApplicant?.gender}
+                  value={
+                    typeof formData?.workforceEmployee?.gender === "object" ? formData?.workforceEmployee?.gender?.name : formData?.workforceEmployee?.gender
+                  }
                   label={<FormattedMessage id="workforce.employee.gender" module="workforce" />}
                   onChange={(v) => handleChange("gender", v)}
                   readOnly={false}

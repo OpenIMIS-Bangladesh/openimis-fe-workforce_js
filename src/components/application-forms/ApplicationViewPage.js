@@ -397,9 +397,18 @@ const renderDetails = (
                       placeholder={language === "en" ? "Enter remarks here..." : "এখানে মন্তব্য লিখুন..."}
                       value={remarksMap?.[item.id] !== undefined ? remarksMap[item.id] : item?.remarks || ""}
                       onChange={(value) => handleRemarksChange(item.id, value)}
-                      // Note: If TextInput expects an event object instead of value directly, use (e) => handleRemarksChange(item.id, e.target.value)
                       fullWidth
                       multiline
+                      required={eligibilityMap[item.id]}
+                      error={eligibilityMap[item.id]}
+                      helperText={
+                        eligibilityMap[item?.id] &&
+                        (!remarksMap[item?.id] || remarksMap[item?.id].trim() === "")
+                                ? language === "en"
+                                  ? "Remarks required"
+                                  : "মন্তব্য আবশ্যক"
+                                : ""
+                      }
                     />
                   </Grid>
                 </Grid>
