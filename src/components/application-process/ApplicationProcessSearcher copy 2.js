@@ -783,116 +783,52 @@ class ApplicationProcessSearcher extends Component {
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
-      this.setState({ displayVersion: showHistoryFilter });
       let organizationTypeIn = '["cf"]';
-      if (isEisPath()) {
+      if(isEisPath()) {
         organizationTypeIn = '["eis"]';
       }
+      this.setState({ displayVersion: showHistoryFilter });
 
-      let defaultStatusFilters = [];
+      let defaultFilters = [];
+
       if (revertedApplication) {
-        defaultStatusFilters.push(
-          'statusIn: ["revert"]',
-          `organizationTypeIn: ${organizationTypeIn}`
-        );
+        defaultFilters = [
+          'organizationTypeIn: '+organizationTypeIn,
+          'orderBy: ["-dateCreated"]',
+          'statusIn: ["revert"]'
+        ];
+
         if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+          defaultFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
-      } else if (this.props.returnedApplications) {
-        defaultStatusFilters.push(
-          'statusIn: ["revert"]',
-          `organizationTypeIn: ${organizationTypeIn}`
-        );
+      }
+      else if (this.props.returnedApplications) {
+        defaultFilters = ['status: "revert"', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: '+organizationTypeIn];
+        if (this.props.factoryId) {
+          defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
+        }
         if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+          defaultFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
       } else if (rejectedApplication) {
-        defaultStatusFilters.push(
-          'statusIn: ["rejected"]',
-          `organizationTypeIn: ${organizationTypeIn}`
-        );
+        defaultFilters = ['statusIn: ["rejected"]', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: '+organizationTypeIn];
+      } else if (this.props.applicationStatus) {
+        defaultFilters = ['statusIn: ["draft"]', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: '+organizationTypeIn];
       } else if (this.props.submittedByApplicants) {
-        defaultStatusFilters.push(
-          'statusIn: ["new"]',
-          'submittedByIn:["applicant"]',
-          `organizationTypeIn: ${organizationTypeIn}`
-        );
-      } else if (this.props.forwardedApplications) {
-        defaultStatusFilters.push(
-          `organizationTypeIn: ${organizationTypeIn}`
-        );
-      } else {
-        defaultStatusFilters.push(
-          'statusIn: ["new","resubmitted_application"]',
-          `organizationTypeIn: ${organizationTypeIn}`
-        );
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
+        defaultFilters = ['statusIn: ["new"]', 'submittedByIn:["applicant"]', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: '+organizationTypeIn];
       }
-
-      const orderByFilter = 'orderBy: ["-dateCreated"]';
-      let finalFilters = [];
-      if (prms?.length) {
-
-        finalFilters = [...prms];
-
-        const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
-        const hasApplicationTypeIn = finalFilters.some(f => f.includes("applicationTypeIn"));
-        const hasOrganizationTypeIn = finalFilters.some(f => f.includes("organizationTypeIn"));
-        const hasApplicationTo = finalFilters.some(f => f.includes("applicationTo"));
-        const hasApplicationFrom = finalFilters.some(f => f.includes("applicationFrom"));
-        const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
-
-        if (!hasStatusIn)
-          finalFilters = [
-            ...defaultStatusFilters.filter(f => f.includes("statusIn")),
-            ...finalFilters
-          ];
-        if (!hasApplicationTypeIn)
-          finalFilters = [
-            ...defaultStatusFilters.filter(f => f.includes("applicationTypeIn")),
-            ...finalFilters
-          ];
-        if (!hasOrganizationTypeIn)
-          finalFilters = [
-            ...defaultStatusFilters.filter(f => f.includes("organizationTypeIn")),
-            ...finalFilters
-          ];
-
-        if (!hasApplicationTo)
-          finalFilters = [
-            ...defaultStatusFilters.filter(f => f.includes("applicationTo")),
-            ...finalFilters
-          ];
-
-        if (!hasApplicationFrom)
-          finalFilters = [
-            ...defaultStatusFilters.filter(f => f.includes("applicationFrom")),
-            ...finalFilters
-          ];
-
-        if (!hasOrderBy)
-          finalFilters.push(orderByFilter);
-
+      else if (this.props.forwardedApplications) {
+        defaultFilters = ['orderBy: ["-dateCreated"]', 'organizationTypeIn: '+organizationTypeIn];
       } else {
-
-        finalFilters = [...defaultStatusFilters, orderByFilter];
+        defaultFilters = ['statusIn: ["new","resubmitted_application"]', 'orderBy: ["-dateCreated"]', 'organizationTypeIn: '+organizationTypeIn];
+        // if (loggedInUserId) {
+        //   defaultFilters.push(`applicationTo: "${loggedInUserId}"`);
+        // }
       }
-
-      finalFilters = finalFilters.filter((f, i, arr) =>
-        i === arr.findIndex(x => {
-          if (x.includes("applicationTypeIn") && f.includes("applicationTypeIn")) return true;
-          if (x.includes("statusIn") && f.includes("statusIn")) return true;
-          if (x.includes("orderBy") && f.includes("orderBy")) return true;
-          if (x.includes("organizationTypeIn") && f.includes("organizationTypeIn")) return true;
-          if (x.includes("applicationTo") && f.includes("applicationTo")) return true;
-          if (x.includes("applicationFrom") && f.includes("applicationFrom")) return true;
-          return x === f;
-        })
-      );
-
-      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+      if (this.props.factoryId) {
+        defaultFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
+      }
+      this.props.fetchApplicationsSummary(this.props.modulesManager, defaultFilters);
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER) {
       this.setState({ displayVersion: showHistoryFilter });
       let filters = [
