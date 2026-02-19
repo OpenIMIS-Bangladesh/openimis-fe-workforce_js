@@ -255,156 +255,248 @@ class ApplicationProcessSearcher extends Component {
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, defaultStatusFilters);
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
-      this.setState({ displayVersion: showHistoryFilter });
+        this.setState({ displayVersion: showHistoryFilter });
 
-      let defaultStatusFilters = [];
-      let additionalFilters = [];
+        let defaultStatusFilters = [];
+        let additionalFilters = [];
+        const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+        const sectionApplicationTypes =
+          'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]';
 
-      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+        if (rejectedApplication) {
+          defaultStatusFilters.push(
+            'statusIn: ["rejected"]',
+            'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant","financialAssistance","disabilityAssistance"]'
+          );
+        } else if (revertedApplication) {
+          defaultStatusFilters.push(
+            'statusIn: ["revert"]',
+            sectionApplicationTypes
+          );
+        } else if (this.props.returnedApplications) {
+          defaultStatusFilters.push(
+            'statusIn: ["revert"]',
+            sectionApplicationTypes
+          );
+          if (loggedInUserId) {
+            defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+          }
+        } else if (this.props.sentForVerificationApplications) {
+          defaultStatusFilters.push(
+            'statusIn: ["forward_for_verification","forward_to_doctor"]',
+            sectionApplicationTypes
+          );
+        } else if (this.props.verifiedApplications) {
+          defaultStatusFilters.push(
+            'statusIn: ["approved_by_doctor","verified"]',
+            sectionApplicationTypes
+          );
+        } else if (summaryId) {
+          defaultStatusFilters.push(sectionApplicationTypes);
+          additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+        } else {
+          defaultStatusFilters.push(
+            'statusIn: ["forward_to_cf_section"]',
+            sectionApplicationTypes
+          );
+        }
 
-      if (rejectedApplication) {
-        defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant", "financialAssistance", "disabilityAssistance"]');
-      } else if (revertedApplication) {
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
 
-        defaultStatusFilters.push(
-          'statusIn: ["revert"]'
+        const orderByFilter = 'orderBy: ["-dateCreated"]';
+        const nidFilters = this.props.nidFilters || [];
+        let finalFilters = [];
+        if (nidFilters.length) {
+          finalFilters = [...nidFilters];
+          if (!finalFilters.some(f => f.includes("orderBy"))) {
+            finalFilters.push(orderByFilter);
+          }
+
+          if (
+            summaryId &&
+            !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))
+          ) {
+            finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+          }
+        } else if (prms?.length) {
+
+          finalFilters = [...prms];
+
+          const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
+          const hasAppType = finalFilters.some(f => f.includes("applicationTypeIn"));
+          const hasApplicationTo = finalFilters.some(f => f.includes("applicationTo"));
+          const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
+
+          if (!hasStatusIn)
+            finalFilters = [
+              ...defaultStatusFilters.filter(f => f.includes("statusIn")),
+              ...finalFilters
+            ];
+
+          if (!hasAppType)
+            finalFilters = [
+              ...defaultStatusFilters.filter(f => f.includes("applicationTypeIn")),
+              ...finalFilters
+            ];
+
+          if (!hasApplicationTo)
+            finalFilters = [
+              ...defaultStatusFilters.filter(f => f.includes("applicationTo")),
+              ...finalFilters
+            ];
+
+          if (!hasOrderBy)
+            finalFilters.push(orderByFilter);
+
+          if (
+            summaryId &&
+            !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))
+          ) {
+            finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+          }
+        } else {
+
+          finalFilters = [
+            ...defaultStatusFilters,
+            ...additionalFilters,
+            orderByFilter
+          ];
+        }
+
+        finalFilters = finalFilters.filter((f, i, arr) =>
+          i === arr.findIndex(x => {
+            if (x.includes("statusIn") && f.includes("statusIn")) return true;
+            if (x.includes("applicationTypeIn") && f.includes("applicationTypeIn")) return true;
+            if (x.includes("applicationTo") && f.includes("applicationTo")) return true;
+            if (x.includes("applicationFrom") && f.includes("applicationFrom")) return true;
+            if (x.includes("orderBy") && f.includes("orderBy")) return true;
+            if (x.includes("cfApplicationSummary_Id") && f.includes("cfApplicationSummary_Id")) return true;
+            return x === f;
+          })
         );
-        console.log("Reverted", loggedInUserId);
-
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
-      }
-      else if (this.props.returnedApplications) {
-        defaultStatusFilters = ['statusIn: ["revert"]'];
-        console.log("Reverted", loggedInUserId);
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-        }
-      }
-      else if (this.props.sentForVerificationApplications) {
-        defaultStatusFilters.push('statusIn: ["forward_for_verification","forward_to_doctor"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
-      }
-      else if (this.props.verifiedApplications) {
-        defaultStatusFilters.push('statusIn: ["approved_by_doctor","verified"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
-      }
-      else if (summaryId) {
-        defaultStatusFilters.push('applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
-        // defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
-        additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
-      }
-      else {
-        defaultStatusFilters.push('statusIn: ["forward_to_cf_section"]', 'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]');
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
-      }
-
-      const orderByFilter = 'orderBy: ["-dateCreated"]';
-
-      const nidFilters = this.props.nidFilters || [];
-
-      let finalFilters = [];
-
-      if (nidFilters.length) {
-        finalFilters = [...nidFilters];
-
-        if (!finalFilters.some(f => f.includes("orderBy"))) {
-          finalFilters.push(orderByFilter);
-        }
-
-        if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
-          finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
-        }
-      } else if (prms?.length) {
-        finalFilters = [...prms];
-
-        const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
-        const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
-
-        if (!hasStatusIn) {
-          finalFilters = [...defaultStatusFilters, ...finalFilters];
-        }
-        if (!hasOrderBy) finalFilters.push(orderByFilter);
-        if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
-          finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
-        }
-      } else {
-        finalFilters = [...defaultStatusFilters, ...additionalFilters, orderByFilter];
-      }
-
-      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+        this.props.fetchApplicationsSummary(this.props.modulesManager,finalFilters);
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
       this.setState({ displayVersion: showHistoryFilter });
 
       let defaultStatusFilters = [];
       let additionalFilters = [];
 
-      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+      const summaryId = this.props.summaryId
+        ? decodeId(this.props.summaryId)
+        : null;
+
+      const sectionTwoApplicationTypes =
+        'applicationTypeIn: ["disabilityAssistance","financialAssistance"]';
 
       if (rejectedApplication) {
-        defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
+        defaultStatusFilters.push(
+          'statusIn: ["rejected"]',
+          sectionTwoApplicationTypes
+        );
       } else if (revertedApplication) {
         defaultStatusFilters.push(
-          // 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]'
-          'statusIn: ["revert"]'
+          'statusIn: ["revert"]',
+          sectionTwoApplicationTypes
         );
-
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
-
-      }
-      else if (this.props.returnedApplications) {
-        defaultStatusFilters = ['statusIn: ["revert"]'];
+      } else if (this.props.returnedApplications) {
+        defaultStatusFilters.push(
+          'statusIn: ["revert"]',
+          sectionTwoApplicationTypes
+        );
         if (loggedInUserId) {
           defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
-      }
-      else if (summaryId) {
-        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
+      } else if (summaryId) {
+        defaultStatusFilters.push(
+          'statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]',
+          sectionTwoApplicationTypes
+        );
+
         additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
       } else {
-        defaultStatusFilters.push('statusIn: ["forward_to_cf_section","approved_by_doctor","verified"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
+        defaultStatusFilters.push(
+          'statusIn: ["forward_to_cf_section","approved_by_doctor","verified"]',
+          sectionTwoApplicationTypes
+        );
+      }
+      if (loggedInUserId) {
+        defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
-
       const nidFilters = this.props.nidFilters || [];
-
       let finalFilters = [];
 
       if (nidFilters.length) {
-        // If NID search is present, ignore default status filters
         finalFilters = [...nidFilters];
-
-        // Optionally add orderBy if not already present
         if (!finalFilters.some(f => f.includes("orderBy"))) {
           finalFilters.push(orderByFilter);
         }
-
-        // Keep summaryId filter if present
-        if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
+        if (
+          summaryId &&
+          !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))
+        ) {
           finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
         }
       } else if (prms?.length) {
+
         finalFilters = [...prms];
 
         const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
+        const hasAppType = finalFilters.some(f => f.includes("applicationTypeIn"));
+        const hasApplicationTo = finalFilters.some(f => f.includes("applicationTo"));
         const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
 
-        if (!hasStatusIn) {
-          finalFilters = [...defaultStatusFilters, ...finalFilters];
-        }
-        if (!hasOrderBy) finalFilters.push(orderByFilter);
-        if (summaryId && !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))) {
+        if (!hasStatusIn)
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("statusIn")),
+            ...finalFilters
+          ];
+
+        if (!hasAppType)
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("applicationTypeIn")),
+            ...finalFilters
+          ];
+
+        if (!hasApplicationTo)
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("applicationTo")),
+            ...finalFilters
+          ];
+
+        if (!hasOrderBy)
+          finalFilters.push(orderByFilter);
+
+        if (
+          summaryId &&
+          !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))
+        ) {
           finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
         }
       } else {
-        finalFilters = [...defaultStatusFilters, ...additionalFilters, orderByFilter];
+
+        finalFilters = [
+          ...defaultStatusFilters,
+          ...additionalFilters,
+          orderByFilter
+        ];
       }
 
-      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+      finalFilters = finalFilters.filter((f, i, arr) =>
+        i === arr.findIndex(x => {
+          if (x.includes("statusIn") && f.includes("statusIn")) return true;
+          if (x.includes("applicationTypeIn") && f.includes("applicationTypeIn")) return true;
+          if (x.includes("applicationTo") && f.includes("applicationTo")) return true;
+          if (x.includes("applicationFrom") && f.includes("applicationFrom")) return true;
+          if (x.includes("orderBy") && f.includes("orderBy")) return true;
+          if (x.includes("cfApplicationSummary_Id") && f.includes("cfApplicationSummary_Id")) return true;
+          return x === f;
+        })
+      );
+      this.props.fetchApplicationsSummary(this.props.modulesManager,finalFilters);
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
 
