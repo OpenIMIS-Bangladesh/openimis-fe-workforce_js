@@ -550,7 +550,7 @@ export function fetchWorkforceEmployeesSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_EMPLOYEES");
 }
-export function fetchWorkforceAllAssociationSummary(mm, filters) {
+export function fetchWorkforceAllAssociationSummary(filters) {
   const projections = [
     "id",
     "nameEn",
@@ -3564,7 +3564,6 @@ export function fetchWorkforceAssociationUserMaps(filters) {
 }
 
 export function fetchUsersByRoleId(roleIdsArray) {
-  console.log(roleIdsArray);
   const roleIds = roleIdsArray.map(id => `"${id}"`).join(",");
   const payload =
     `query

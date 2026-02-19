@@ -122,13 +122,13 @@ const SidebarMenu = [
     ),
     icon: <ArrowForwardIcon />,
   },
-  {
-    id: "revertedApplication",
-    text: (
-      <FormattedMessage module="workforce" id="workforce.application.reverted" />
-    ),
-    icon: <RestorePageIcon />,
-  },
+  // {
+  //   id: "revertedApplication",
+  //   text: (
+  //     <FormattedMessage module="workforce" id="workforce.application.reverted" />
+  //   ),
+  //   icon: <RestorePageIcon />,
+  // },
   {
     id: "returnedApplication",
     text: (
@@ -150,7 +150,6 @@ const FiledApplications = () => {
 
   const [associationNames, setAssociationNames] = useState("");
   const [associations, setAssociations] = useState([]);
-  const [associationTypes, setAssociationTypes] = useState([]);
 
   useEffect(() => {
     if (!loggedInUserId) return;
@@ -164,10 +163,6 @@ const FiledApplications = () => {
           response?.payload?.data?.workforceAssociationUserMap?.edges ?? [];
 
         setAssociations(edges.map(a => a?.node?.allAssociation.id));
-
-        setAssociationTypes(
-          edges.map(a => a?.node?.allAssociation?.shortNameEn)
-        );
 
         const names = edges
           .map(a =>
@@ -188,7 +183,7 @@ const FiledApplications = () => {
   return (
     <>
       <Typography variant="h5" gutterBottom>
-        {associationNames}{" "}
+        {associationNames && associationNames!="" ? associationNames + " " : ""}
         <FormattedMessage module="workforce" id="workforce.dashboard" />
       </Typography>
 
@@ -217,12 +212,48 @@ const FiledApplications = () => {
 
 const ReturnedApplications = () => {
   const classes = useStyles();
+  const dispatch = useDispatch()
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const language = useSelector((state) => state.core?.user?.i_user?.language);
+
+  const [associationNames, setAssociationNames] = useState("");
+  const [associations, setAssociations] = useState([]);
+
+  useEffect(() => {
+    if (!loggedInUserId) return;
+
+    const filters = [];
+    filters.push("userId:" + loggedInUserId);
+
+    dispatch(fetchWorkforceAssociationUserMaps(filters))
+      .then(response => {
+        const edges =
+          response?.payload?.data?.workforceAssociationUserMap?.edges ?? [];
+
+        setAssociations(edges.map(a => a?.node?.allAssociation.id));
+
+        const names = edges
+          .map(a =>
+            language === "en"
+              ? a?.node?.allAssociation?.shortNameEn
+              : a?.node?.allAssociation?.shortNameBn
+          )
+          .join(", ");
+
+        setAssociationNames(names);
+      })
+      .catch(err => {
+        console.error("Association fetch error:", err);
+      });
+
+  }, [dispatch, loggedInUserId, language]);
+  
   return (
     <>
       <ApplicationProcessSearcher
         returnedApplications={true}
         loggedInUserId={loggedInUserId}
+        associationIds={associations}
         disableButtons={1}
         dynamicTableTitle={"workforce.application.returned"}
       />
@@ -241,10 +272,44 @@ const ReturnedApplications = () => {
 
 const ForwardedApplications = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const language = useSelector((state) => state.core?.user?.i_user?.language);
+  const [associationNames, setAssociationNames] = useState("");
+  const [associations, setAssociations] = useState([]);
+  useEffect(() => {
+    if (!loggedInUserId) return;
+
+    const filters = [];
+    filters.push("userId:" + loggedInUserId);
+
+    dispatch(fetchWorkforceAssociationUserMaps(filters))
+      .then(response => {
+        const edges =
+          response?.payload?.data?.workforceAssociationUserMap?.edges ?? [];
+
+        setAssociations(edges.map(a => a?.node?.allAssociation.id));
+
+        const names = edges
+          .map(a =>
+            language === "en"
+              ? a?.node?.allAssociation?.shortNameEn
+              : a?.node?.allAssociation?.shortNameBn
+          )
+          .join(", ");
+
+        setAssociationNames(names);
+      })
+      .catch(err => {
+        console.error("Association fetch error:", err);
+      });
+
+  }, [dispatch, loggedInUserId, language]);
   return (
     <>
       <ApplicationProcessSearcher
         forwardedApplications={true}
+        associationIds={associations}
         disableButtons={1}
         dynamicTableTitle={"workforce.application.forwarded"}
       />
@@ -281,8 +346,8 @@ const AssociationDashboard = () => {
         return <FiledApplications />;
       case "forwardedApplications":
         return <ForwardedApplications />;
-      case "revertedApplication":
-        return <RevertApplication />;
+      // case "revertedApplication":
+      //   return <RevertApplication />;
       case "returnedApplication":
         return <ReturnedApplications />;
       default:

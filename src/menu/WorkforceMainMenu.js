@@ -184,6 +184,13 @@ function WorkforceMainMenu(props) {
       id: `menu.workforce.employees`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.association.user.map" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_ASSOCIATION_USER_MAP}`,
+      id: `menu.workforce.association.user.map`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
   ];
   if (user_type === WORKFORCE_USER_TYPE.ADMIN || user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
     return (
