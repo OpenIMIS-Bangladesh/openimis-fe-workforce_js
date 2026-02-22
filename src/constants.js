@@ -364,6 +364,8 @@ export const cfStatusOptions = [
   { value: "meeting_created", label: "সভা তৈরি হয়েছে" },
   { value: "amended_application", label: "সংশোধিত আবেদন" },
   { value: "approved_by_committee", label: "কমিটি দ্বারা অনুমোদিত" },
+  { value: "forward_for_verification", label: "যাচাইয়ের জন্য প্রেরণ" },
+
 ];
 export const blwfStatusOptions = [
   { value: "new", label: "নতুন" },
@@ -399,6 +401,7 @@ export const blwfStatusOptions = [
   { value: "meeting_created", label: "সভা তৈরি হয়েছে" },
   { value: "amended_application", label: "সংশোধিত আবেদন" },
   { value: "approved_by_committee", label: "কমিটি দ্বারা অনুমোদিত" },
+  { value: "forward_for_verification", label: "যাচাইয়ের জন্য প্রেরণ" },
 ];
 export const eisStatusOptions = [
   { value: "new", label: "নতুন" },

@@ -214,6 +214,7 @@ class ApplicationProcessFilter extends Component {
       </Grid>
       </>
     )}
+     {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR &&(
        <ControlledField
         module={MODULE_NAME}
         id="workforce.employee.application.status"
@@ -249,6 +250,7 @@ class ApplicationProcessFilter extends Component {
           </Grid>
         }
       />
+  )}
  {userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN &&(
      <ControlledField mt={3}
           module={MODULE_NAME}
