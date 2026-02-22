@@ -21,7 +21,7 @@ const isEmpty = (value) => {
 
 const DoctorsEntries = ({ application }) => {
   const dispatch = useDispatch();
- const user_type = getUserType();
+  const user_type = getUserType();
   const [proposedAmount, setProposedAmount] = useState(application?.grantAmount || "");
   const [doctorDiagnosis, setDoctorDiagnosis] = useState("");
   const [doctorComment, setDoctorComment] = useState("");
@@ -60,10 +60,10 @@ const DoctorsEntries = ({ application }) => {
     <>
       <Grid container spacing={2} style={{ marginTop: "10px" }}>
         {/* Proposed Amount */}
-        {(user_type != WORKFORCE_USER_TYPE.EIS_COORDINATOR||user_type != WORKFORCE_USER_TYPE.EIS_DOCTOR) &&(
-        <Grid item xs={12}>
-          <TextInput label="workforce.application.proposedAmount.byDoctor" value={proposedAmount || ""} onChange={(v) => setProposedAmount(v)} />
-        </Grid>
+        {user_type !== WORKFORCE_USER_TYPE.EIS_COORDINATOR && user_type !== WORKFORCE_USER_TYPE.EIS_DOCTOR && (
+          <Grid item xs={12}>
+            <TextInput label="workforce.application.proposedAmount.byDoctor" value={proposedAmount || ""} onChange={(v) => setProposedAmount(v)} />
+          </Grid>
         )}
 
         {/* Radio Group */}
@@ -105,14 +105,13 @@ const DoctorsEntries = ({ application }) => {
         )}
 
         {/* Submit Button */}
-         {user_type != WORKFORCE_USER_TYPE.EIS_COORDINATOR &&(
-
-        <Grid item xs={3}>
-          <Button variant="contained" color="primary" onClick={handleUpdateGrantAmount} disabled={!doctorsActions || !proposedAmount}>
-            <FormattedMessage id="workforce.submit" module="workforce" />
-          </Button>
-        </Grid>
-         )}
+        {user_type !== WORKFORCE_USER_TYPE.EIS_COORDINATOR && user_type !== WORKFORCE_USER_TYPE.EIS_DOCTOR && (
+          <Grid item xs={3}>
+            <Button variant="contained" color="primary" onClick={handleUpdateGrantAmount} disabled={!doctorsActions || !proposedAmount}>
+              <FormattedMessage id="workforce.submit" module="workforce" />
+            </Button>
+          </Grid>
+        )}
 
         {application?.organizationType === "eis" && (
           <Grid item xs={12}>
@@ -123,7 +122,11 @@ const DoctorsEntries = ({ application }) => {
               fullwidth
               // disabled={isNotEmpty(application?.doctorsEntry)}
             >
-              {(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.applicationType === "disabilityAssistance") ?<FormattedMessage id="workforce.eis.coordinator.accidentInfo.button.disability" module="workforce" /> :<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
+              {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.applicationType === "disabilityAssistance" ? (
+                <FormattedMessage id="workforce.eis.coordinator.accidentInfo.button.disability" module="workforce" />
+              ) : (
+                <FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />
+              )}
             </Button>
           </Grid>
         )}

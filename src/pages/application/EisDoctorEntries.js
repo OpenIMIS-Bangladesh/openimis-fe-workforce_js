@@ -295,10 +295,10 @@ console.log({ fromDoctor: meetingData });
               readOnly={user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR}
             />
           </Grid>
-          <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
+          <Grid item xs={12} className={clsx(classes.item, classes.overrideReadOnly)}>
             <TextInput
               multiline
-              rows={4}
+              rows={6}
               label="workforce.disability.briefInjuryDescription"
               value={formData?.employeeAccidentInfo?.briefInjuryDescription || formData?.doctorsEntry?.briefInjuryDescription || ""}
               onChange={(v) => handleChange("briefInjuryDescription", v)}
@@ -306,10 +306,10 @@ console.log({ fromDoctor: meetingData });
               readOnly={user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR}
             />
           </Grid>
-          <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
+          <Grid item xs={12} className={clsx(classes.item, classes.overrideReadOnly)}>
             <TextInput
               multiline
-              rows={4}
+              rows={6}
               label="workforce.disability.briefTreatmentDescription"
               value={formData?.employeeAccidentInfo?.briefTreatmentDescription || formData?.doctorsEntry?.briefTreatmentDescription || ""}
               onChange={(v) => handleChange("briefTreatmentDescription", v)}

@@ -1930,7 +1930,7 @@ class ApplicationProcessSearcher extends Component {
 
     this.setState({
       confirmModalOpen: true,
-      confirmModalMessage: "workforce.application.approve.message",
+      confirmModalMessage: "workforce.application.doctor.approve.message",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
           this.setState({

@@ -729,7 +729,10 @@ const ApplicationViewPage = ({
           ? conditionalEnToBn(application.employeeFactory.registrationExpiryDate.split("T")[0], language)
           : "—",
       }),
-      ApplicantDesignation: application?.workforceEmployee?.position,
+      ...(application?.applicationType !=="financialAssistance" && {
+        ApplicantDesignation: application?.workforceEmployee?.position,
+      }),
+      
       ...(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && {
         lastGrossSalary: application?.lastBaseSalary || "—",
       }),

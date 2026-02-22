@@ -263,13 +263,6 @@ const Dashboard = () => {
   const [accToDate, setAccToDate] = useState("");
   const [association, setAssociation] = useState("all");
 
-  // --- 4. PREVIOUS OVERVIEW STATES ---
-  const [pipelineCounts, setPipelineCounts] = useState({ factory: 0, association: 0, eis: 0 });
-  const [pendingCounts, setPendingCounts] = useState({ verified: { death: 0, disability: 0 }, nonVerified: { death: 0, disability: 0 } });
-  const [overviewCounts, setOverviewCounts] = useState({ death: { male: 0, female: 0 }, disability: { male: 0, female: 0 } });
-  const [accidentCounts, setAccidentCounts] = useState({ death: { workplace: 0, commuting: 0, rta: 0 }, disability: { workplace: 0, commuting: 0, rta: 0 } });
-  const [financialCounts, setFinancialCounts] = useState({ paid: { death: 0, disability: 0 }, lifetime: { death: 0, disability: 0 } });
-
   // Chart Strings
   const chartLabels = {
     processing: isBn ? "প্রক্রিয়াধীন" : "Processing",
