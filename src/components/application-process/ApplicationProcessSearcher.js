@@ -1487,41 +1487,112 @@ class ApplicationProcessSearcher extends Component {
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
-    } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
+   } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
       this.setState({ displayVersion: showHistoryFilter });
-      if (this.props.summaryId) {
-        const filtersBase = [
-          'statusIn: ["forward_to_eis_advisor","approved_by_eis_director"]',
-          'organizationTypeIn: ["eis"]',
-          'orderBy: ["-dateCreated"]',
-        ];
+      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
 
-        const Filters = [...filtersBase, `eisApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+      let defaultStatusFilters = [];
+      let additionalFilters = [];
+      defaultStatusFilters.push(
+        'statusIn: ["forward_to_eis_advisor","approved_by_eis_director"]'
+      );
 
-        const [] = await Promise.all([
-          this.props.fetchApplicationsSummary(this.props.modulesManager, Filters),
-        ]);
-      } else if (rejectedApplication) {
-        const filtersBase = [
-          'statusIn: ["rejected_by_dg"]',
-          'organizationTypeIn: ["eis"]',
-          'orderBy: ["-dateCreated"]'
-        ];
-        if (loggedInUserId) {
-          filtersBase.push(`applicationTo:"${loggedInUserId}"`);
-        }
-        await this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
-      } else if (this.props.returnedApplications) {
-        const filtersBase = [
-          'statusIn: ["revert"]',
-          'organizationTypeIn: ["eis"]',
-          'orderBy: ["-dateCreated"]'
-        ];
-        if (loggedInUserId) {
-          filtersBase.push(`applicationFrom:"${loggedInUserId}"`);
-        }
-        this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
+      defaultStatusFilters.push(
+        'applicationTypeIn: ["disabilityAssistance","financialAssistance"]'
+      );
+
+      defaultStatusFilters.push('organizationTypeIn: ["eis"]');
+
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+      if (summaryId) {
+        additionalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
       }
+      const nidFilters = this.props.nidFilters || [];
+
+      let finalFilters = [];
+      if (nidFilters.length) {
+
+        finalFilters = [...nidFilters];
+
+        if (!finalFilters.some(f => f.includes("orderBy"))) {
+          finalFilters.push(orderByFilter);
+        }
+        if (
+          summaryId &&
+          !finalFilters.some(f => f.includes("eisApplicationSummary_Id"))
+        ) {
+          finalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
+        }
+
+      } else if (prms?.length) {
+
+        finalFilters = [...prms];
+        const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
+        const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
+        const hasApplicationTypeIn = finalFilters.some(f =>
+          f.includes("applicationTypeIn")
+        );
+        const hasOrganizationTypeIn = finalFilters.some(f =>
+          f.includes("organizationTypeIn")
+        );
+        if (!hasStatusIn) {
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("statusIn")),
+            ...finalFilters,
+          ];
+        }
+        if (!hasApplicationTypeIn) {
+          finalFilters = [
+            ...defaultStatusFilters.filter(f =>
+              f.includes("applicationTypeIn")
+            ),
+            ...finalFilters,
+          ];
+        }
+        if (!hasOrganizationTypeIn) {
+          finalFilters = [
+            ...defaultStatusFilters.filter(f =>
+              f.includes("organizationTypeIn")
+            ),
+            ...finalFilters,
+          ];
+        }
+        if (!hasOrderBy) finalFilters.push(orderByFilter);
+        if (
+          summaryId &&
+          !finalFilters.some(f => f.includes("eisApplicationSummary_Id"))
+        ) {
+          finalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
+        }
+      } else {
+
+        finalFilters = [
+          ...defaultStatusFilters,
+          ...additionalFilters,
+          orderByFilter,
+        ];
+      }
+
+      if (startDate)
+        finalFilters.push(`dateCreatedFrom: "${startDate}"`);
+      if (endDate)
+        finalFilters.push(`dateCreatedTo: "${endDate}"`);
+
+      finalFilters = finalFilters.filter(
+        (f, i, arr) =>
+          i ===
+          arr.findIndex(x => {
+            if (x.includes("statusIn") && f.includes("statusIn")) return true;
+            if (x.includes("applicationTypeIn") && f.includes("applicationTypeIn")) return true;
+            if (x.includes("organizationTypeIn") && f.includes("organizationTypeIn")) return true;
+            if (x.includes("orderBy") && f.includes("orderBy")) return true;
+            if (x.includes("dateCreatedFrom") && f.includes("dateCreatedFrom")) return true;
+            if (x.includes("dateCreatedTo") && f.includes("dateCreatedTo")) return true;
+            return x === f;
+          })
+      );
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager,finalFilters);
     } else if  (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
         this.setState({ displayVersion: showHistoryFilter });
 
