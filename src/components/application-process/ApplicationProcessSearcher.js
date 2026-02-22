@@ -1487,15 +1487,18 @@ class ApplicationProcessSearcher extends Component {
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
 
-   } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
+    } else if ([WORKFORCE_USER_TYPE.EIS_ADVISOR, WORKFORCE_USER_TYPE.EIS_DOCTOR].includes(getUserTypeFromRights(userRights))) {
       this.setState({ displayVersion: showHistoryFilter });
       const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
 
       let defaultStatusFilters = [];
       let additionalFilters = [];
-      defaultStatusFilters.push(
-        'statusIn: ["forward_to_eis_advisor","approved_by_eis_director"]'
-      );
+      const userType = getUserTypeFromRights(userRights);
+      if (userType === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
+        defaultStatusFilters.push('statusIn: ["forward_to_eis_advisor","approved_by_eis_director"]');
+      } else if (userType === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
+        defaultStatusFilters.push('statusIn: ["approved_by_doctor"]');
+      }
 
       defaultStatusFilters.push(
         'applicationTypeIn: ["disabilityAssistance","financialAssistance"]'
@@ -1593,36 +1596,6 @@ class ApplicationProcessSearcher extends Component {
       );
 
       this.props.fetchApplicationsSummary(this.props.modulesManager,finalFilters);
-    } else if  (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
-        this.setState({ displayVersion: showHistoryFilter });
-
-        let defaultStatusFilters = [];
-
-        if (this.props.returnedApplications) {
-          defaultStatusFilters = ['statusIn: ["revert"]'];
-          if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-        } else if (this.props.revertedApplications) {
-          defaultStatusFilters = ['statusIn: ["revert"]'];
-          if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        } else if (this.props.forwardedApplications) {
-          defaultStatusFilters = ['statusIn: ["approved_by_doctor"]'];
-          if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-        } else if (this.props.summaryId) {
-          defaultStatusFilters = [
-            `organizationTypeIn: ["eis"]`,
-            `eisApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`
-          ];
-          if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
-
-        const organizationType = "eis";
-
-        this.props.fetchApplicationsSummary(
-          this.props.modulesManager,
-          defaultStatusFilters,
-          [`organizationTypeIn: ["${organizationType}"]`, 'orderBy: ["-dateCreated"]']
-        );
-
       // ---------------- DOCTOR / BLWF_DOCTOR ----------------
     } else if (
          (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) ||
