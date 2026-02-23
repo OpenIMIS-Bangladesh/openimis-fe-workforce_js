@@ -1470,26 +1470,24 @@ export const itemFormattersAssociation = (
       )}
     </div>
   ));
-  formatters.push((application) => (
+
+   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       {component.props.disableButtons !== 1 && !component.props.revertedApplication && (
-        <>
-          <Tooltip title="Revert">
-            <IconButton
-              disabled={application?.isHistory}
-              onClick={() => {
-                component.handleOpenRevertModal(application);
-                component.setState({ revertByChecker: true });
-              }}
-            >
-              <UndoIcon style={{ color: "red" }} />
-            </IconButton>
-          </Tooltip>
-        </>
+        <Tooltip title="Revert">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              component.handleOpenRevertModal(application);
+              component.setState({ revertByChecker: true });
+            }}
+          >
+            <UndoIcon style={{ color: "red" }} />
+          </IconButton>
+        </Tooltip>
       )}
     </div>
   ));
-
   // --- RESEND BUTTON ---
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
