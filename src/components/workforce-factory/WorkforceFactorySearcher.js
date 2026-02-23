@@ -71,9 +71,8 @@ class WorkforceFactorySearcher extends Component {
   fetch = (prms) => {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
-    if(this.props.association && this.props.association !== ""){
-      const associationType= this.props.association.toUpperCase();
-      prms.push(`associationType: "${associationType}"`);
+    if(this.props.association){
+      prms.push(`allAssociationIdIn: [${this.props.association}]`);
     }
     this.props.fetchWorkforceFactoriesSummary(
       this.props.modulesManager,

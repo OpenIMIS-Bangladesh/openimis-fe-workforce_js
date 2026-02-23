@@ -192,6 +192,18 @@ function WorkforceMainMenu(props) {
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
   ];
+
+
+  const factory_admin_entries = [
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.employee" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_EMPLOYEES}`,
+      id: `menu.workforce.employees`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+
+  ];
   if (user_type === WORKFORCE_USER_TYPE.ADMIN || user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
     return (
       <MainMenuContribution
@@ -202,13 +214,22 @@ function WorkforceMainMenu(props) {
       />
     );
   } 
-  else if (user_type.includes("association")
-  ) {
+  else if (user_type.includes("association")) {
     return (
       <MainMenuContribution 
         {...props}
         header={<FormattedMessage module="workforce" id="menu.factory.management" />}
         entries={factory_entries}
+        menuId="WorkforceMainMenu"
+      />
+    )
+  }
+  else if (user_type== WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+    return (
+      <MainMenuContribution 
+        {...props}
+        header={<FormattedMessage module="workforce" id="menu.factory.management" />}
+        entries={factory_admin_entries}
         menuId="WorkforceMainMenu"
       />
     )
