@@ -24,7 +24,7 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReasonForDisability from "../FormsComponents/Disability/ApplicationReasonForDisability";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
-import { isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
+import { isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateMandatoryDocuments, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -55,6 +55,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
   const { formatMessage } = useTranslations("workforce");
   const stepRef = useRef(null);
   const [errors, setErrors] = useState({});
+  const [documentError, setDocumentError] = useState({});
   const applicationId = useSelector((state) => state.workforce["fetchedApplicationIdByClientMutationId"] ?? []);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -72,6 +73,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
   });
   const reduxState = useSelector((state) => state);
+  const documentType = useSelector((state) => state.workforce.documentType);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const uploadBankFile = useSelector((state) => state.workforce.uploadBankFile);
   const user_type = getUserType();
@@ -228,8 +230,15 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
   const handleNext = async () => {
     console.log({ formData });
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
+    const documentValidation = validateMandatoryDocuments(documentType, uploadFile);
+    if (!documentValidation.isValid) {
+      // Attaches document errors to newErrors, ensuring Object.keys(newErrors).length > 0
+      newErrors.documents = documentValidation.errors; 
+    }
     setErrors(newErrors);
     console.log({ newErrors });
+    console.log({ uploadFile });
+    console.log({ documentType });
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
       const resolvedFactoryId = formData?.factory?.id

@@ -437,7 +437,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
           </Paper>
         </Grid>
       </Grid>
-      <EmployeeDetailsForm2 handleChange={() => {}} formData={formData} selectedApplicationType={formData.applicationType} formStepNo={"workforceEmployee"} />
+      <EmployeeDetailsForm2 errors={errors} handleChange={() => {}} formData={formData} selectedApplicationType={formData.applicationType} formStepNo={"workforceEmployee"} />
     </Box>
   );
 };

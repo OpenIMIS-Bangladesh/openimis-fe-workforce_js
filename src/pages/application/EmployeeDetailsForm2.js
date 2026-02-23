@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 const EmployeeDetailsForm2 = ({
   handleChange,
+  errors,
   formData,
   setFormData,
   selectedApplicationType,
@@ -56,7 +57,7 @@ const EmployeeDetailsForm2 = ({
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData?.organizationType}"`,
             `formStepNo:"${formStepNo}"`,
-          ])
+          ]),
         );
       } else if (formData?.applicationType === "disabilityAssistance") {
         if (formData?.metadata.disabilityType === "permanent") {
@@ -67,7 +68,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData?.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         } else {
           return dispatch(
@@ -77,7 +78,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData?.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         }
       } else if (formData?.applicationType === "financialAssistance") {
@@ -89,7 +90,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData?.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         } else {
           return dispatch(
@@ -99,7 +100,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData?.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         }
       } else if (formData?.applicationType === "deadlyGrant") {
@@ -111,7 +112,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData?.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         } else if (formData?.metadata.deathType === "normalDeath" && formData?.institutionInfo.workerType === "informal") {
           return dispatch(
@@ -121,7 +122,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         } else {
           return dispatch(
@@ -131,7 +132,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData?.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         }
         // return dispatch(
@@ -152,7 +153,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         } else {
           return dispatch(
@@ -162,7 +163,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         }
       } else if (formData.applicationType === "medicalDonation" && formData.applicationForSelf === "no" && formData.organizationType === "blwf") {
@@ -174,7 +175,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         } else {
           return dispatch(
@@ -184,7 +185,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         }
       } else if (formData.applicationType === "maternityGrant" && formData.organizationType === "blwf" && formData.applicationForSelf === "yes") {
@@ -196,7 +197,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         } else {
           return dispatch(
@@ -206,7 +207,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         }
       } else if (formData.applicationType === "maternityGrant" && formData.organizationType === "blwf" && formData.applicationForSelf === "no") {
@@ -218,7 +219,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         } else {
           return dispatch(
@@ -228,7 +229,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         }
       } else if (formData.applicationType === "educationGrant" && formData.organizationType === "blwf") {
@@ -240,7 +241,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         } else {
           return dispatch(
@@ -250,7 +251,7 @@ const EmployeeDetailsForm2 = ({
               `applicationType:"${selectedApplicationType}"`,
               `organizationType:"${formData.organizationType}"`,
               `formStepNo:"${formStepNo}"`,
-            ])
+            ]),
           );
         }
       } else {
@@ -261,7 +262,7 @@ const EmployeeDetailsForm2 = ({
             `applicationType:"${selectedApplicationType}"`,
             `organizationType:"${formData.organizationType}"`,
             `formStepNo:"${formStepNo}"`,
-          ])
+          ]),
         );
       }
     }
@@ -317,6 +318,7 @@ const EmployeeDetailsForm2 = ({
             <Grid container className={classes.item} spacing={2}>
               {data.map((document, index) => {
                 console.log({ isDisabled });
+                const hasError = errors?.documents?.some((err) => err.documentType === document.documentType);
                 if (document?.documentType === "disability_certificate" && (isDisabled === "no" || isDisabled === undefined)) {
                   return null;
                 }
@@ -334,8 +336,8 @@ const EmployeeDetailsForm2 = ({
                 return (
                   <Grid container spacing={2} alignItems="center" style={{ marginBottom: "12px", border: "1px solid #006273" }} key={document.fieldId}>
                     <Grid item xs={5}>
-                      <Typography>
-                        {index + 1}. {document.nameBn} {document?.mandatoryForApplicant && <sup>*</sup>}
+                      <Typography style={{ color: hasError ? "red" : "inherit" }}>
+                        {index + 1}. {document.nameBn} {document?.mandatoryForApplicant && <sup style={{ color: "red" }}>*</sup>}
                       </Typography>
                     </Grid>
                     <Grid item xs={6}>
@@ -346,12 +348,12 @@ const EmployeeDetailsForm2 = ({
                           applicationId={applicationId}
                           documentType={document.documentType}
                           documentProp={document}
-                          uploadedBy={formStepNo === "employeeDependentInfo" ? "dependent" :formStepNo==="employeeBankInfo"?"bank": "applicant"}
+                          uploadedBy={formStepNo === "employeeDependentInfo" ? "dependent" : formStepNo === "employeeBankInfo" ? "bank" : "applicant"}
                         />
                       ) : (
                         <FileUploader
                           fieldKey={uniqueFieldKey}
-                          onFileChange={handleChange.length>0? handleChange: handleFileChange}
+                          onFileChange={handleChange.length > 0 ? handleChange : handleFileChange}
                           applicationId={applicationId}
                           documentType={document.documentType}
                           documentProp={document}

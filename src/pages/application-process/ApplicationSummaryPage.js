@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import {Grid, Fab, Accordion, AccordionSummary, Typography, AccordionDetails, Card, CardContent } from "@material-ui/core";
+import {Grid, Fab, Accordion, AccordionSummary, Typography, AccordionDetails, Card, CardContent, Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
@@ -19,6 +19,8 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { getUserTypeFromRights } from "../../utils/utils";
 import { useSelector, useDispatch } from "react-redux";
+import RescheduleMeetingDialog from "../../components/shared/modals/RescheduleMeetingDialog";
+
 
 const styles = (theme) => ({
   page: theme.page,
@@ -50,9 +52,37 @@ class ApplicationSummaryPage extends Component {
       value: props.value || 0,
       openGenerateBFTN: false,
       expanded: null,
-      reorderedData: null, // <-- store reordered data
+      reorderedData: null, 
+      // ADDED: State for Reschedule Dialog
+      rescheduleDialogOpen: false,
+      selectedRescheduleId: null,
     };
   } 
+
+  // ADDED: Handlers for Reschedule Dialog
+  handleOpenReschedule = (event, id) => {
+    event.stopPropagation(); // Prevents the accordion from expanding/collapsing
+    this.setState({ rescheduleDialogOpen: true, selectedRescheduleId: id });
+  };
+
+ handleCloseReschedule = () => {
+    this.setState({ 
+        rescheduleDialogOpen: false, 
+        selectedRescheduleId: null 
+    }, () => {
+        // This callback runs AFTER the state is updated
+        const { modulesManager, fetchSummaryApplications } = this.props;
+        fetchSummaryApplications(modulesManager);
+    });
+};
+
+  handleRescheduleSuccess = () => {
+    const { modulesManager, fetchSummaryApplications } = this.props;
+    // Refresh the data
+    fetchSummaryApplications(modulesManager);
+    // Close the dialog automatically after success
+    this.handleCloseReschedule();
+};
 
   handleCloseBFTN = () => {
     this.setState({ openGenerateBFTN: false })
@@ -73,8 +103,6 @@ class ApplicationSummaryPage extends Component {
     historyPush(this.props.modulesManager, this.props.history, "workforce.route.application");
   };
 
-
-
   a11yProps(index) {
     return {
       id: `simple-tab-${index}`,
@@ -91,7 +119,6 @@ class ApplicationSummaryPage extends Component {
   handleAccordionChange = (panelId) => (event, isExpanded) => {
     this.setState((prev) => {
       if (isExpanded) {
-        // ✅ Reorder based on filtered renderSummaryData
         const { renderSummaryData } = this;
         const reordered = [
           renderSummaryData.find((i) => i.id === panelId),
@@ -99,30 +126,26 @@ class ApplicationSummaryPage extends Component {
         ];
         return { expanded: panelId, reorderedData: reordered };
       } else {
-        // Reset to original filtered order
         return { expanded: null, reorderedData: null };
       }
     });
   };
+  
   componentDidMount() {
     const { modulesManager, fetchSummaryApplications } = this.props;
     fetchSummaryApplications(modulesManager);
   }
 
-
   render() {
     const { classes, rights, applications, summaryData, loggedInUserId, status, disableButtons = 0 } = this.props;
-    const { value, openGenerateBFTN, expanded, reorderedData } = this.state;
-    // const summaryData = this.props.summaryData || [];
-    // const { loggedInUserId } = this.props;
-    // const status = this.props.status || "";
-
-    // console.clear();
-    console.log('status data', status);
+    // EXTRACTED new state variables
+    const { value, openGenerateBFTN, expanded, reorderedData, rescheduleDialogOpen, selectedRescheduleId } = this.state;
 
     let renderSummaryData = [];
+    
+    const currentUserType = getUserTypeFromRights(rights);
 
-    if(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.DIRECTOR)
+    if(currentUserType === WORKFORCE_USER_TYPE.DIRECTOR)
     {
       if(status === "pending")
       {
@@ -141,7 +164,7 @@ class ApplicationSummaryPage extends Component {
         renderSummaryData = summaryData.filter(item => item.status === "forward_to_dg" && item.organizationType==='cf');
       }
     }
-    else if(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR)
+    else if(currentUserType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR)
     {
       if(status === "pending")
       {
@@ -160,7 +183,7 @@ class ApplicationSummaryPage extends Component {
         renderSummaryData = summaryData.filter(item => item.status === "forward_to_dg" && item.organizationType==='blwf');
       }
     }
-    else if(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.ADMIN)
+    else if(currentUserType === WORKFORCE_USER_TYPE.ADMIN)
     {
       if(status === "pending")
       {
@@ -179,7 +202,7 @@ class ApplicationSummaryPage extends Component {
         renderSummaryData = summaryData.filter(item => item.status === "approved_by_dg");
       }
     }
-    else if(getUserTypeFromRights(rights) === WORKFORCE_USER_TYPE.EIS_ADVISOR)
+    else if(currentUserType === WORKFORCE_USER_TYPE.EIS_ADVISOR)
     {
       if(status === "pending")
       {
@@ -200,7 +223,6 @@ class ApplicationSummaryPage extends Component {
     }
 
     this.renderSummaryData = renderSummaryData;
-
     const dataToRender = reorderedData || renderSummaryData;
 
     return (
@@ -223,9 +245,22 @@ class ApplicationSummaryPage extends Component {
                   </Typography>
                   <Typography
                     variant="body2"
-                    style={{ marginLeft: "auto", color: "#015C63" }}
+                    style={{ marginLeft: "auto", color: "#015C63", display: "flex", alignItems: "center" }}
                   >
                     {item.meetingDate} | {item.month} {item.year}
+                    
+                    {currentUserType === WORKFORCE_USER_TYPE.EIS_ADVISOR && (
+                      <Button 
+                        variant="outlined" 
+                        size="small" 
+                        color="primary"
+                        style={{ marginLeft: "16px" }}
+                        onClick={(e) => this.handleOpenReschedule(e, item.id)} // CHANGED: Calls our new handler
+                      >
+                        Reschedule
+                      </Button>
+                    )}
+
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails className={classes.accordionDetails}>
@@ -253,6 +288,15 @@ class ApplicationSummaryPage extends Component {
               applications={applications}
               userRights={rights}
             />
+            
+            {/* ADDED: The Dialog component rendered at the root of the page to prevent nesting issues */}
+            <RescheduleMeetingDialog 
+              open={rescheduleDialogOpen}
+              onClose={this.handleCloseReschedule}
+              summaryId={selectedRescheduleId}
+              onSuccess={this.handleRescheduleSuccess}
+            />
+
           </Grid>
         </Grid>
       </div>
@@ -265,14 +309,12 @@ const mapStateToProps = (state) => ({
   applications: state.workforce.applications,
   summaryData: state.workforce.applicationsSummary ?? [],
   loggedInUserId: state.core?.user?.i_user?.id,
-
 });
 
 const mapDispatchToProps = (dispatch) => ({
   fetchSummaryApplications: (modulesManager) =>
     dispatch(fetchSummaryApplications(modulesManager, "")),
 });
-
 
 export default withModulesManager(
   withHistory(
@@ -281,4 +323,3 @@ export default withModulesManager(
     ),
   ),
 );
-

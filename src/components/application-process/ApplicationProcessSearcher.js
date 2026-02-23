@@ -3365,7 +3365,7 @@ class ApplicationProcessSearcher extends Component {
               }}
             >
               <Button variant="contained" color="primary" onClick={this.handleBulkApproveByEisAdvisor}>
-                <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
+                <FormattedMessage module="workforce" id="workforce.employee.application.eis_advisor.recommended" />
               </Button>
               {/* <Button variant="contained" color="primary" onClick={()=>{this.setState({openEisApprovalSignature:true})}}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.eisApproval.signature" />
