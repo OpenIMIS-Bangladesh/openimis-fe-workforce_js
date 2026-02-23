@@ -20,7 +20,7 @@ export const forwardToAssociation = async ({
     const userType = getUserTypeFromRights(userRights);
     for (const selectedItem of selectedApplicationIds) {
 
-        const decodedId = decodeId(selectedItem?.id);
+        const decodedId = safeDecodeId(selectedItem?.id);
         const res = await dispatch(
           fetchWorkforceDocument(modulesManager, [
             `workforceApplication_Id: "${decodedId}"`,
