@@ -36,56 +36,56 @@ function WorkforceMainMenu(props) {
   const user_type = getUserType();
 
   const entries = [
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_ORGANIZATIONS}`,
-      id: `menu.workforce.organizations`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
-    },
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.unit" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_ORGANIZATIONS_UNITS}`,
-      id: `menu.workforce.organizations.unit`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
-    },
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.unit.designation" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS}`,
-      id: `menu.workforce.organizations.unit.designation`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
-    },
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.employee" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES}`,
-      id: `menu.workforce.organizations.employee`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
-    },
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.employee.designation" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION}`,
-      id: `menu.workforce.organizations.employee.designation`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
-    },
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.company" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_COMPANIES}`,
-      id: `menu.workforce.companies`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
-    },
+    // {
+    //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations" />,
+    //   icon: <ListAlt />,
+    //   route: `/${ROUTE_WORKFORCE_ORGANIZATIONS}`,
+    //   id: `menu.workforce.organizations`,
+    //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    // },
+    // {
+    //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.unit" />,
+    //   icon: <ListAlt />,
+    //   route: `/${ROUTE_WORKFORCE_ORGANIZATIONS_UNITS}`,
+    //   id: `menu.workforce.organizations.unit`,
+    //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    // },
+    // {
+    //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.unit.designation" />,
+    //   icon: <ListAlt />,
+    //   route: `/${ROUTE_ORGANIZATIONS_UNIT_DESIGNATIONS}`,
+    //   id: `menu.workforce.organizations.unit.designation`,
+    //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    // },
+    // {
+    //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.employee" />,
+    //   icon: <ListAlt />,
+    //   route: `/${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES}`,
+    //   id: `menu.workforce.organizations.employee`,
+    //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    // },
+    // {
+    //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.organizations.employee.designation" />,
+    //   icon: <ListAlt />,
+    //   route: `/${ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION}`,
+    //   id: `menu.workforce.organizations.employee.designation`,
+    //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    // },
+    // {
+    //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.company" />,
+    //   icon: <ListAlt />,
+    //   route: `/${ROUTE_WORKFORCE_COMPANIES}`,
+    //   id: `menu.workforce.companies`,
+    //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    // },
 
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.office" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_OFFICES}`,
-      id: `menu.workforce.offices`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
-    },
+    // {
+    //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.office" />,
+    //   icon: <ListAlt />,
+    //   route: `/${ROUTE_WORKFORCE_OFFICES}`,
+    //   id: `menu.workforce.offices`,
+    //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    // },
     {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.factory" />,
       icon: <ListAlt />,
@@ -93,20 +93,20 @@ function WorkforceMainMenu(props) {
       id: `menu.workforce.factories`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.factory.employee.designation" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION}`,
-      id: `menu.workforce.factory.employee.designation`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
-    },
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.approve.company" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_APPROVE_COMPANIES}`,
-      id: `menu.workforce.approve.company`,
-      filter: (rights) => rights.includes(RIGHT_WORKFORCE_EMPLOYER_APPROVE),
-    },
+    // {
+    //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.factory.employee.designation" />,
+    //   icon: <ListAlt />,
+    //   route: `/${ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION}`,
+    //   id: `menu.workforce.factory.employee.designation`,
+    //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    // },
+    // {
+    //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.approve.company" />,
+    //   icon: <ListAlt />,
+    //   route: `/${ROUTE_WORKFORCE_APPROVE_COMPANIES}`,
+    //   id: `menu.workforce.approve.company`,
+    //   filter: (rights) => rights.includes(RIGHT_WORKFORCE_EMPLOYER_APPROVE),
+    // },
     {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.employee" />,
       icon: <ListAlt />,
@@ -140,13 +140,13 @@ function WorkforceMainMenu(props) {
       id: `menu.workforce.association`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.documents" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_DOCUMENTS}`,
-      id: `menu.workforce.documents`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
-    },
+    // {
+    //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.documents" />,
+    //   icon: <ListAlt />,
+    //   route: `/${ROUTE_WORKFORCE_DOCUMENTS}`,
+    //   id: `menu.workforce.documents`,
+    //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    // },
     {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.association.user.map" />,
       icon: <ListAlt />,
@@ -161,7 +161,7 @@ function WorkforceMainMenu(props) {
     //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     // },
   ];
-  const factory_entries = [
+  const association_entries = [
     {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.factory" />,
       icon: <ListAlt />,
@@ -169,13 +169,13 @@ function WorkforceMainMenu(props) {
       id: `menu.workforce.factories`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
-    {
-      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.factory.employee.designation" />,
-      icon: <ListAlt />,
-      route: `/${ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION}`,
-      id: `menu.workforce.factory.employee.designation`,
-      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
-    },
+    // {
+    //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.factory.employee.designation" />,
+    //   icon: <ListAlt />,
+    //   route: `/${ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION}`,
+    //   id: `menu.workforce.factory.employee.designation`,
+    //   // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    // },
 
     {
       text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.employee" />,
@@ -219,7 +219,7 @@ function WorkforceMainMenu(props) {
       <MainMenuContribution 
         {...props}
         header={<FormattedMessage module="workforce" id="menu.factory.management" />}
-        entries={factory_entries}
+        entries={association_entries}
         menuId="WorkforceMainMenu"
       />
     )

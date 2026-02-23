@@ -64,48 +64,71 @@ class AddWorkforceEmployeePage extends Component {
   save = async () => {
     const { stateEdited, workforceFactoryId } = this.state;
     const { dispatch, loggedInUserId } = this.props;
+    const { createWorkforceEmployee } = this.props;
 
-    const workforceEmployeeData = {
-      // company: stateEdited?.company.id || stateEdited.company.id,
-      workforceFactoryId: decodeId(stateEdited?.factory?.id),
-      firstNameBn: stateEdited?.firstNameBn || stateEdited.firstNameBn,
-      lastNameBn: stateEdited?.lastNameBn || stateEdited.lastNameBn,
-      otherName: stateEdited?.otherName || stateEdited.otherName,
-      firstNameEn: stateEdited?.firstNameEn || stateEdited.firstNameEn,
-      lastNameEn: stateEdited?.lastNameEn || stateEdited.lastNameEn,
-      phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber,
-      email: stateEdited?.email || stateEdited.email,
-      gender: stateEdited?.gender?.id || stateEdited.gender?.id,
-      birthDate: stateEdited?.birthDate || stateEdited.birthDate,
-      joinDate: stateEdited?.joinDate || stateEdited.joinDate,
-      deathDate: stateEdited?.deathDate || stateEdited.deathDate,
-      employeeType: stateEdited?.employeeType || stateEdited.employeeType,
-      lifeStatus: stateEdited?.lifeStatus || stateEdited.lifeStatus,
-      permanentAddress: stateEdited?.permanentAddress || stateEdited.permanentAddress,
-      presentAddress: stateEdited?.presentAddress || stateEdited.presentAddress,
-      position: stateEdited?.position || stateEdited.position,
-      monthlyEarning: stateEdited?.monthlyEarning || stateEdited.monthlyEarning,
-      fatherNameBn: stateEdited?.fatherNameBn || stateEdited.fatherNameBn,
-      fatherNameEn: stateEdited?.fatherNameEn || stateEdited.fatherNameEn,
-      motherNameBn: stateEdited?.motherNameBn || stateEdited.motherNameBn,
-      motherNameEn: stateEdited?.motherNameEn || stateEdited.motherNameEn,
-      spouseNameBn: stateEdited?.spouseNameBn || stateEdited.spouseNameBn,
-      spouseNameEn: stateEdited?.spouseNameEn || stateEdited.spouseNameEn,
-      insuranceNumber: stateEdited?.insuranceNumber || stateEdited.insuranceNumber,
-      birthCertificateNo: stateEdited?.birthCertificateNo || stateEdited.birthCertificateNo,
-      passportNo: stateEdited?.passportNo || stateEdited.passportNo,
-      nid: stateEdited?.nid || stateEdited.nid,
-      citizenship: stateEdited?.citizenship || stateEdited.citizenship,
-      privacyLaw: stateEdited?.privacyLaw || stateEdited.privacyLaw,
-      maritalStatus: stateEdited?.maritalStatus || stateEdited.maritalStatus,
-      presentLocation: stateEdited?.presentLocation || stateEdited.presentLocation,
-      permanentLocation: stateEdited?.permanentLocation || stateEdited.permanentLocation,
-      workforceEmployee: stateEdited.workforceEmployee,
-    };
+    // const workforceEmployeeData = {
+    //   // company: stateEdited?.company.id || stateEdited.company.id,
+    //   workforceFactoryId: safeDecodeId(stateEdited?.factory?.id) || null,
+    //   firstNameBn: stateEdited?.firstNameBn || stateEdited.firstNameBn || null,
+    //   // lastNameBn: stateEdited?.lastNameBn || stateEdited.lastNameBn,
+    //   // otherName: stateEdited?.otherName || stateEdited.otherName,
+    //   firstNameEn: stateEdited?.firstNameEn || stateEdited.firstNameEn || null,
+    //   // lastNameEn: stateEdited?.lastNameEn || stateEdited.lastNameEn,
+    //   phoneNumber: stateEdited?.phoneNumber || stateEdited.phoneNumber || null,
+    //   email: stateEdited?.email || stateEdited.email || null,
+    //   gender: stateEdited?.gender?.id || stateEdited.gender?.id || null,
+    //   birthDate: stateEdited?.birthDate || stateEdited.birthDate || null,
+    //   // joinDate: stateEdited?.joinDate || stateEdited.joinDate,
+    //   // deathDate: stateEdited?.deathDate || stateEdited.deathDate,
+    //   // employeeType: stateEdited?.employeeType || stateEdited.employeeType,
+    //   // lifeStatus: stateEdited?.lifeStatus || stateEdited.lifeStatus,
+    //   permanentAddress: stateEdited?.permanentAddress || stateEdited.permanentAddress || null,
+    //   presentAddress: stateEdited?.presentAddress || stateEdited.presentAddress || null,
+    //   // position: stateEdited?.position || stateEdited.position,
+    //   monthlyEarning: stateEdited?.monthlyEarning || stateEdited.monthlyEarning,
+    //   fatherNameBn: stateEdited?.fatherNameBn || stateEdited.fatherNameBn || null,
+    //   fatherNameEn: stateEdited?.fatherNameEn || stateEdited.fatherNameEn || null,
+    //   motherNameBn: stateEdited?.motherNameBn || stateEdited.motherNameBn || null,
+    //   motherNameEn: stateEdited?.motherNameEn || stateEdited.motherNameEn || null,
+    //   spouseNameBn: stateEdited?.spouseNameBn || stateEdited.spouseNameBn || null,
+    //   spouseNameEn: stateEdited?.spouseNameEn || stateEdited.spouseNameEn || null,
+    //   // insuranceNumber: stateEdited?.insuranceNumber || stateEdited.insuranceNumber,
+    //   // birthCertificateNo: stateEdited?.birthCertificateNo || stateEdited.birthCertificateNo,
+    //   // passportNo: stateEdited?.passportNo || stateEdited.passportNo,
+    //   nid: stateEdited?.nid || stateEdited.nid,
+    //   // citizenship: stateEdited?.citizenship || stateEdited.citizenship,
+    //   // privacyLaw: stateEdited?.privacyLaw || stateEdited.privacyLaw,
+    //   // maritalStatus: stateEdited?.maritalStatus || stateEdited.maritalStatus,
+    //   presentLocation: stateEdited?.presentLocation || stateEdited.presentLocation || null,
+    //   permanentLocation: stateEdited?.permanentLocation || stateEdited.permanentLocation || null,
+    //   workforceEmployee: stateEdited.workforceEmployee || null,
+    // };
+  
+      const workforceEmployeeData = {
+        workforceFactoryId: safeDecodeId(stateEdited.factory?.id) || null,
+        firstNameBn: stateEdited.firstNameBn || null,
+        firstNameEn: stateEdited.firstNameEn || null,
+        phoneNumber: stateEdited.phoneNumber || null,
+        email: stateEdited.email || null,
+        gender: stateEdited.gender?.id || null,
+        birthDate: stateEdited.birthDate || null,
+        permanentAddress: stateEdited.permanentAddress || null,
+        presentAddress: stateEdited.presentAddress || null,
+        monthlyEarning: stateEdited.monthlyEarning || null,
+        fatherNameBn: stateEdited.fatherNameBn || null,
+        fatherNameEn: stateEdited.fatherNameEn || null,
+        motherNameBn: stateEdited.motherNameBn || null,
+        motherNameEn: stateEdited.motherNameEn || null,
+        spouseNameBn: stateEdited.spouseNameBn || null,
+        spouseNameEn: stateEdited.spouseNameEn || null,
+        nid: stateEdited.nid || null,
+        // presentLocation: stateEdited.presentLocation || null,
+        // permanentLocation: stateEdited.permanentLocation || null,
+      };
 
     console.log({ workforceEmployeeData });
 
-    await dispatch(createWorkforceEmployee(workforceEmployeeData, `Created Workforce Employee ${stateEdited.title}`));
+    await createWorkforceEmployee(workforceEmployeeData, `Created Workforce Employee ${stateEdited.title}`);
 
     this.setState({ isSaved: true });
   };
@@ -182,7 +205,7 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={workforceEmployee?.workforceFactory ?? isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                {/* <Grid item xs={6} className={classes.item}>
                   <EmployeeLifeStatusPicker
                     value={stateEdited.lifeStatus || ""}
                     label={<FormattedMessage id="workforce.employee.lifeStatus" module="workforce" />}
@@ -190,8 +213,8 @@ class AddWorkforceEmployeePage extends Component {
                     onChange={(v) => this.updateAttribute("lifeStatus", v)}
                     readOnly={isSaved}
                   />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
+                </Grid> */}
+                {/* <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="workforce.DatePicker"
                     label={"workforce.employee.deathdate"}
@@ -200,7 +223,7 @@ class AddWorkforceEmployeePage extends Component {
                     onChange={(v) => this.updateAttribute("deathDate", v)}
                     // readOnly={isSaved}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={6} className={classes.item}>
                   <EmployeeGenderPicker
                     value={stateEdited?.gender?.id}
@@ -214,11 +237,11 @@ class AddWorkforceEmployeePage extends Component {
                     label="workforce.employee.monthly_earning"
                     value={stateEdited.monthlyEarning || ""}
                     onChange={(v) => this.updateAttribute("monthlyEarning", v)}
-                    required
+                    // required
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                {/* <Grid item xs={6} className={classes.item}>
                   <PublishedComponent
                     pubRef="workforce.DatePicker"
                     label={"workforce.employee.joindate"}
@@ -227,7 +250,7 @@ class AddWorkforceEmployeePage extends Component {
                     required
                     readOnly={isSaved}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.first.name.en"
@@ -246,7 +269,7 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                {/* <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.last.name.en"
                     value={stateEdited.lastNameEn || ""}
@@ -263,8 +286,8 @@ class AddWorkforceEmployeePage extends Component {
                     required
                     readOnly={isSaved}
                   />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
+                </Grid> */}
+                {/* <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.other.name"
                     value={stateEdited.otherName || ""}
@@ -272,23 +295,23 @@ class AddWorkforceEmployeePage extends Component {
                     required
                     readOnly={isSaved}
                   />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
+                </Grid> */}
+                {/* <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.position"
                     value={stateEdited.position || ""}
                     onChange={(v) => this.updateAttribute("position", v)}
                     readOnly={isSaved}
                   />
-                </Grid>
-                {/*<Grid item xs={6} className={classes.item}>*/}
-                {/*  <TextInput*/}
-                {/*    label="workforce.employee.employee_type"*/}
-                {/*    value={stateEdited.employeeType || ""}*/}
-                {/*    onChange={(v) => this.updateAttribute("employeeType", v)}*/}
-                {/*    readOnly={isSaved}*/}
-                {/*  />*/}
-                {/*</Grid>*/}
+                </Grid> */}
+                {/* <Grid item xs={6} className={classes.item}>
+                 <TextInput
+                   label="workforce.employee.employee_type"
+                   value={stateEdited.employeeType || ""}
+                   onChange={(v) => this.updateAttribute("employeeType", v)}
+                   readOnly={isSaved}
+                 />
+                </Grid> */}
                 <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.fathers_name.en"
@@ -358,7 +381,7 @@ class AddWorkforceEmployeePage extends Component {
                     readOnly={isSaved}
                   />
                 </Grid>
-                <Grid item xs={6} className={classes.item}>
+                {/* <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.citizenship"
                     value={stateEdited.citizenship || ""}
@@ -373,9 +396,9 @@ class AddWorkforceEmployeePage extends Component {
                     onChange={(v) => this.updateAttribute("privacyLaw", v)}
                     readOnly={isSaved}
                   />
-                </Grid>
+                </Grid> */}
 
-                <Grid item xs={6} className={classes.item}>
+                {/* <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.birth_certificate_no"
                     value={stateEdited.birthCertificateNo || ""}
@@ -383,8 +406,8 @@ class AddWorkforceEmployeePage extends Component {
                     type={"number"}
                     readOnly={isSaved}
                   />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
+                </Grid> */}
+                {/* <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.insurance_number"
                     value={stateEdited.insuranceNumber || ""}
@@ -392,9 +415,9 @@ class AddWorkforceEmployeePage extends Component {
                     required
                     readOnly={isSaved}
                   />
-                </Grid>
+                </Grid> */}
 
-                <Grid item xs={6} className={classes.item}>
+                {/* <Grid item xs={6} className={classes.item}>
                   <TextInput
                     label="workforce.employee.passport_no"
                     value={stateEdited.passportNo || ""}
@@ -402,8 +425,8 @@ class AddWorkforceEmployeePage extends Component {
                     type={"number"}
                     readOnly={isSaved}
                   />
-                </Grid>
-                <Grid item xs={6} className={classes.item}>
+                </Grid> */}
+                {/* <Grid item xs={6} className={classes.item}>
                   <EmployeeMaritalStatusPicker
                     value={stateEdited.maritalStatus || ""}
                     label={<FormattedMessage id="workforce.employee.marital_status" module="workforce" />}
@@ -411,8 +434,8 @@ class AddWorkforceEmployeePage extends Component {
                     onChange={(v) => this.updateAttribute("maritalStatus", v)}
                     readOnly={isSaved}
                   />
-                </Grid>
-                <Grid item xs={12} className={classes.item}>
+                </Grid> */}
+                {/* <Grid item xs={12} className={classes.item}>
                   <p>Present Location</p>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
@@ -423,16 +446,16 @@ class AddWorkforceEmployeePage extends Component {
                     required
                     split={true}
                   />
-                </Grid>
-                <Grid item xs={12} className={classes.item}>
+                </Grid> */}
+                {/* <Grid item xs={12} className={classes.item}>
                   <TextInput
                     label="workforce.employee.present_address"
                     value={stateEdited.presentAddress || ""}
                     onChange={(v) => this.updateAttribute("presentAddress", v)}
                     readOnly={isSaved}
                   />
-                </Grid>
-                <Grid item xs={12} className={classes.item}>
+                </Grid> */}
+                {/* <Grid item xs={12} className={classes.item}>
                   <p>Permanent Location</p>
                   <PublishedComponent
                     pubRef="location.DetailedLocation"
@@ -443,15 +466,15 @@ class AddWorkforceEmployeePage extends Component {
                     required
                     split={true}
                   />
-                </Grid>
-                <Grid item xs={12} className={classes.item}>
+                </Grid> */}
+                {/* <Grid item xs={12} className={classes.item}>
                   <TextInput
                     label="workforce.employee.permanent_address"
                     value={stateEdited.permanentAddress || ""}
                     onChange={(v) => this.updateAttribute("permanentAddress", v)}
                     readOnly={isSaved}
                   />
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs={11} className={classes.item} />
                 <Grid item xs={1} className={classes.item}>
@@ -480,6 +503,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       fetchFactoryEmployee,
+      createWorkforceEmployee,
     },
     dispatch,
   );
