@@ -493,18 +493,28 @@ export const itemFormattersChecker = (
     </div>
   ));
   ///---RESEND BUTTON ---
-  formatters.push((application) => (
-    <div className={component.props.classes.horizontalButtonContainer}>
-      <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => component.handleOpenRevertModal(application)}
-        >
-          <RestorePageIcon style={{ color: "#1976D2" }} />
-        </IconButton>
-      </Tooltip>
-    </div>
-  ));
+    formatters.push((application) =>
+    component.props.disableButtons !== 1 && component.props.revertedApplication ? (
+      <div className={component.props.classes.horizontalButtonContainer}>
+        <Tooltip title="Resend">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.process.resend",
+                [decodeId(application?.id)],
+                false
+              );
+            }}
+          >
+            <RestorePageIcon style={{ color: "#1976D2" }} />
+          </IconButton>
+        </Tooltip>
+      </div>
+    ) : null
+  );
 
   return formatters;
 };
