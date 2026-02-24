@@ -63,7 +63,7 @@ import ApplicationProcessSearcher from "../../components/application-process/App
 import AgingReportModal from "../reports/modals/AgingReportModal";
 
 // Actions & Constants
-import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise, fetchApplicationsSummary, fetchWorkforceEisPaymentDisbursementStage } from "../../actions";
+import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise, fetchApplicationsSummary, fetchWorkforceEisPaymentDisbursementStage, fetchApplicationsSummaryDashboard } from "../../actions";
 import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -432,7 +432,7 @@ const Dashboard = () => {
           'organizationTypeIn: ["eis"]',
           'orderBy: ["-dateCreated"]',
         ]
-      dispatch(fetchApplicationsSummary(modulesManager, filtersBase)).then((res)=>{
+      dispatch(fetchApplicationsSummaryDashboard(modulesManager, filtersBase)).then((res)=>{
         const response = parseData(res?.payload?.data?.workforceApplication)
         const formData =response?.map((application)=>{
           const parsedMetadata = JSON.parse(application?.metadata)

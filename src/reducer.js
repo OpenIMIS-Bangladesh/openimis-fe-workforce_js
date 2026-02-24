@@ -331,6 +331,12 @@ function reducer(
     applications: [],
     applicationsPageInfo: { totalCount: 0 },
 
+    fetchingApplicationsDashboard: false,
+    errorApplicationsDashboard: null,
+    fetchedApplicationsDashboard: false,
+    applicationsDashboard: [],
+    applicationsDashboardPageInfo: { totalCount: 0 },
+
     ///fetch diseases
     fetchingDiseases: false,
     errorDiseases: null,
@@ -1665,6 +1671,34 @@ function reducer(
         errorApplications: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_APPLICATIONS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
+    case "WORKFORCE_APPLICATIONS_DASHBOARD_REQ":
+      return {
+        ...state,
+        fetchingApplicationsDashboard: true,
+        fetchedApplicationsDashboard: false,
+        applicationsDashboard: [],
+        applicationsDashboardPageInfo: { totalCount: 0 },
+        errorApplicationsDashboard: null,
+      };
+    case "WORKFORCE_APPLICATIONS_DASHBOARD_RESP":
+      return {
+        ...state,
+        fetchingApplicationsDashboard: false,
+        fetchedApplicationsDashboard: true,
+        applicationsDashboard: parseData(action.payload.data.workforceApplication).map((application) => ({
+          ...application,
+          educations: parseData(application.educations),
+        })),
+        applicationsDashboardPageInfo: pageInfo(action.payload.data.workforceApplication),
+        errorApplicationsDashboard: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_APPLICATIONS_DASHBOARD_ERR":
       return {
         ...state,
         fetching: false,

@@ -797,6 +797,61 @@ export function fetchApplicationsSummary(mm, filters) {
   );
   return graphql(payload, "WORKFORCE_APPLICATIONS");
 }
+export function fetchApplicationsSummaryDashboard(mm, filters) {
+  const present_location_projection =
+    "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection =
+    "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+
+  const projections = [
+    "id",
+    "workforceEmployee{" +
+    present_location_projection +
+    permanent_location_projection +
+    "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate,relatedUser{id}}",
+    "applicantInfo",
+    "dateCreated",
+    "dateUpdated",
+    "organizationType",
+    "applicationType",
+    "status",
+    "employeeFactory{id,nameEn,nameBn}",
+    "trackingNumber",
+    "employeeDependentInfo",
+    "employeeBankInfo",
+    "employeeAccidentInfo",
+    "employeeChildrenInfo",
+    "institutionInfo",
+    "metadata",
+    "educations{edges{node{id,childNameEn,childNameBn}}}",
+    "cfApplicationSummary{id}",
+    "eisApplicationSummary{id}",
+    "blwfApplicationSummary{id}",
+    "grantMoney {id,grantMoney,applicationTypeNameEn,applicationTypeNameBn}",
+    "grantAmount",
+    "submittedBy",
+    "associationType",
+    "applicationFor",
+    "applicationReceiveDate",
+    "applicationForwardDate",
+    "deceasedWorkerInfo",
+    "eisApprovedAmount",
+    "eisCalculatedAmount",
+    "eisPaymentType",
+    "eisInitialMonthlyAmount",
+    "eisMonthlyAmount",
+    "initialReplacementRate",
+    "pvFactor",
+    "eisVerified",
+    "deceasedWorkerInfo"
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceApplication",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_APPLICATIONS");
+}
 export function fetchSummaryApplications(mm, filters) {
   const projections = [
     "id",

@@ -289,6 +289,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                 </Grid>
               </AccordionDetails>
               <EmployeeDetailsForm2
+                errors={errors}
                 handleChange={(fieldKey, value) => handleAttachmentChange(index, fieldKey, value)}
                 formData={formdata}
                 selectedApplicationType={formdata.applicationType}

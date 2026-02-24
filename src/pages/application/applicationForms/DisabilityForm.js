@@ -230,7 +230,14 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
   const handleNext = async () => {
     console.log({ formData });
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
-    const documentValidation = validateMandatoryDocuments(documentType, uploadFile);
+    const isBankStep = 
+      (organizationType === "eis" && activeStep === 2) || 
+      (organizationType !== "eis" && activeStep === 3);
+
+    const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
+
+    // 3. Run the document validation with the correctly selected array
+    const documentValidation = validateMandatoryDocuments(documentType, filesToValidate);
     if (!documentValidation.isValid) {
       // Attaches document errors to newErrors, ensuring Object.keys(newErrors).length > 0
       newErrors.documents = documentValidation.errors; 
