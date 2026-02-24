@@ -358,6 +358,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
             </AccordionDetails>
 
             <EmployeeDetailsForm2
+              errors={errors}
               handleChange={(fieldKey, value) => handleAttachmentChange(index, fieldKey, value)}
               formData={formdata}
               selectedApplicationType={formdata.applicationType}

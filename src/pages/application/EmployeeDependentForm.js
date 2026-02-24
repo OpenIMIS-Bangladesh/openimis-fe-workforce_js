@@ -450,6 +450,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
 
                   <Grid item xs={12}>
                     <EmployeeDetailsForm2
+                      errors={errors}
                       handleChange={(fieldKey, value) => handleAttachmentChange(index, fieldKey, value)}
                       formData={formdata}
                       selectedApplicationType={applicationType}
