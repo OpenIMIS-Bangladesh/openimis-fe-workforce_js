@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { useTranslations, Autocomplete, decodeId } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchPostOfficesPick } from "../actions";
+import { fixBrokenUnicode } from "../utils/utils";
 
 // Custom debounce hook
 const useDebounce = (callback, delay) => {
@@ -131,9 +132,9 @@ const PostOfficePicker = ({
       readOnly={readOnly}
       options={options}  
       isLoading={isLoading}
-      value={selectedOption}
+      value={fixBrokenUnicode(selectedOption)}
       getOptionLabel={(option) =>
-        locale === "en" ? option?.nameEn || "" : option?.nameBn || ""
+        fixBrokenUnicode(locale === "en" ? option?.nameEn || "" : option?.nameBn || "")
       }
       onChange={(option) => onChange(option)}
       filterOptions={filterOptions}

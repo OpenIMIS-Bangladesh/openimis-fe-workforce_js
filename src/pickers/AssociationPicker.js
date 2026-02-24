@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations, Autocomplete,decodeId } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchFactoriesPick, fetchWorkforceEmployee, fetchWorkforceEmployeeWithoutProjection } from "../actions";
+import { fetchFactoriesPick, fetchWorkforceAllAssociation, fetchWorkforceEmployee, fetchWorkforceEmployeeWithoutProjection } from "../actions";
 import {encodeId, useModulesManager } from "@openimis/fe-core";
 import { safeDecodeId } from "../utils/utils";
-const FactoryPicker = ({
+const AssociationPicker = ({
   id,
   modulesManager,
   onChange,
@@ -22,7 +22,6 @@ const FactoryPicker = ({
 }) => {
   const [searchString, setSearchString] = useState(null);
   const { formatMessage } = useTranslations("workforce");
-  const [userFactory, setUserFactory] = useState([]);
   const loggedInUserId= useSelector((state) => state.core?.user?.i_user?.id);
   const mm= useModulesManager();
 
@@ -35,18 +34,18 @@ const FactoryPicker = ({
       const response = await dispatch(fetchWorkforceEmployee(mm, [`relatedUserId: "${encodeId(mm, "InteractiveUserGQLType", loggedInUserId)}"`]));
       const edges = response?.payload?.data?.workforceEmployerEmployees?.edges || [];
       const node = edges[0]?.node || {};
-      const factoryId = safeDecodeId(node?.workforceFactory?.id) || null;
-      return dispatch(fetchFactoriesPick(mm, factoryId!=null?[`id: "${factoryId}"`]:[]));
+      const associationId = safeDecodeId(node?.allAssociation?.id) || null;
+      return dispatch(fetchWorkforceAllAssociation(mm, associationId!=null?[`id: "${associationId}"`]:[]));
   }, []);
 
   const isLoading = useSelector(
-    (state) => state.workforce[`fetchingWorkforceFactoriesPick`],
+    (state) => state.workforce[`fetchingWorkforceAllAssociations`],
   );
   const data = useSelector(
-    (state) => state.workforce[`workforceFactoriesPick`] ?? []
+    (state) => state.workforce[`workforceAllAssociations`] ?? []
   );
   const error = useSelector(
-    (state) => state.workforce["errorWorkforceFactoriesPick"]
+    (state) => state.workforce["errorWorkforceAllAssociations"]
   );
 
   // const data = useMemo(() => {
@@ -58,6 +57,7 @@ const FactoryPicker = ({
       () => data.find((option) => option.id === value) || null,
       [value,data]
     )
+  console.log("association data", data);
   return (
     <Autocomplete
       id={id}
@@ -72,7 +72,7 @@ const FactoryPicker = ({
       options={data}
       isLoading={isLoading}
       value={selectedOption}
-      getOptionLabel={(option) =>locale === "en" ? `${option.nameEn}`:`${option.nameBn}`}
+      getOptionLabel={(option) =>locale === "en" ? `${option.nameEn} (${option.shortNameEn})`:`${option.nameBn} (${option.shortNameEn})`}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}
@@ -81,4 +81,4 @@ const FactoryPicker = ({
   );
 };
 
-export default FactoryPicker;
+export default AssociationPicker;

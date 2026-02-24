@@ -416,7 +416,7 @@ export function fetchOfficesPick(filters) {
   return graphql(payload, "WORKFORCE_OFFICES_PICKER");
 }
 
-export function fetchFactoriesPick(filters) {
+export function fetchFactoriesPick(mm, filters) {
   const projections = ["id", "nameEn", "nameBn", "workforceEmployer{id}"];
   const payload = formatPageQueryWithCount(
     "workforceEmployerFactories",
@@ -591,7 +591,7 @@ export function fetchWorkforceAllAssociation(mm, filters) {
     filters,
     projections
   );
-  return graphql(payload, "WORKFORCE_ALL_ASSOCIATION");
+  return graphql(payload, "WORKFORCE_ALL_ASSOCIATIONS");
 }
 
 
@@ -1189,6 +1189,7 @@ export function fetchWorkforceEmployee(mm, filters) {
     "lifeStatus",
     "deathDate",
     "relatedUser{id}",
+    "workforceFactory{id,nameEn,nameBn}",
     present_location_projection,
     permanent_location_projection,
   ];
@@ -3681,4 +3682,48 @@ export function fetchWorkforceInteractiveUsers(filters) {
     }
   `;
   return graphql(payload, "WORKFORCE_INTERACTIVE_USERS");
+}
+
+
+export function fetchWorkforceEmployeeWithoutProjection(filters) {
+  const projections = [
+    "id",
+    "firstNameBn",
+    "lastNameBn",
+    "firstNameEn",
+    "lastNameEn",
+    "otherName",
+    "phoneNumber",
+    "email",
+    "status",
+    "gender",
+    "birthCertificateNo",
+    "nid",
+    "passportNo",
+    "permanentAddress",
+    "presentAddress",
+    "position",
+    "monthlyEarning",
+    "fatherNameBn",
+    "fatherNameEn",
+    "motherNameBn",
+    "motherNameEn",
+    "spouseNameBn",
+    "spouseNameEn",
+    "maritalStatus",
+    "citizenship",
+    "privacyLaw",
+    "insuranceNumber",
+    "birthDate",
+    "employeeType",
+    "lifeStatus",
+    "deathDate",
+    "relatedUser{id}",
+  ];
+  const payload = formatPageQueryWithCount(
+    "workforceEmployerEmployees",
+    filters,
+    projections
+  );
+  return graphql(payload, "WORKFORCE_EMPLOYEE");
 }

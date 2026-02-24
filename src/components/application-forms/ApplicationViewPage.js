@@ -24,7 +24,7 @@ import FileUploader from "../../pickers/FileUploader";
 import DocumentReviewAccordion from "../application-process/DocumentReviewAccordion";
 import { banglaLabels, ORGANIZATION_TYPE_NAME_BN, ORGANIZATION_TYPE_NAME_EN, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
-import { conditionalEnToBn, enToBn, getUserType, safeDecodeId } from "../../utils/utils";
+import { conditionalEnToBn, enToBn, fixBrokenUnicode, getUserType, safeDecodeId } from "../../utils/utils";
 import { updateApplication } from "../../actions";
 import DoctorsEntries from "./Atoms/DoctorsEntries";
 import EisFactoryAdminModal from "./EisFactoryAdminModal";
@@ -187,11 +187,11 @@ const isEmpty = (value) => {
 };
 const formatAddress = (locationData, addressData) => {
   // TryParse handles both JSON strings and objects
-  const address = tryParse(addressData) || {};
-  const location = tryParse(locationData) || {};
+  const address = fixBrokenUnicode(tryParse(addressData)) || {};
+  const location = fixBrokenUnicode(tryParse(locationData)) || {};
 
-  const postOffice = address?.postOffice?.nameBn || address?.postOffice;
-  const village = [address.houseName, address.paraMahalla, address.villageRoad].filter(Boolean).join(", ");
+  const postOffice = fixBrokenUnicode(address?.postOffice?.nameBn || address?.postOffice?.nameEn || "—");
+  const village = [fixBrokenUnicode(address.houseName), fixBrokenUnicode(address.paraMahalla), fixBrokenUnicode(address.villageRoad)].filter(Boolean).join(", ");
 
   // Navigate location parents for Thana/District
   const thana = location?.parent?.name || location?.name; // Fallback if structure varies

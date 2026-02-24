@@ -214,7 +214,7 @@ function WorkforceMainMenu(props) {
       />
     );
   } 
-  else if (user_type.includes("association")) {
+  else if (user_type === WORKFORCE_USER_TYPE.ASSOCIATION) {
     return (
       <MainMenuContribution 
         {...props}

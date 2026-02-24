@@ -141,6 +141,12 @@ const getSidebarMenu = (user_type) => {
         text: <FormattedMessage module="workforce" id="workforce.application.forwarded" />,
         icon: <ForwardIcon />,
       },
+
+      {
+        id: "returnedApplications",
+        text: <FormattedMessage module="workforce" id="workforce.application.returned" />,
+        icon: <ArrowBackIcon />,
+      },
     ];
   } else {
     allMenu = [
@@ -444,6 +450,7 @@ const MeetingSheet = ({ summaryData = [], disableButtons = 0 }) => {
                   <ApplicationProcessSearcher
                     summaryId={item.id}
                     loggedInUserId={loggedInUserId}
+                    filedMeetingSheet={true}
                     // disableButtons={disableButtons}
                   />
                 )}
@@ -485,7 +492,8 @@ const DoctorDashboard = () => {
           return <MeetingSheet summaryData={pendingSummaryData} disableButtons={1} />;
         case "forwardedApplications":
           return <ForwardedApplications />;
-
+        case "returnedApplications":
+          return <ReturnedApplications />;
         default:
           return <Dashboard />;
       }

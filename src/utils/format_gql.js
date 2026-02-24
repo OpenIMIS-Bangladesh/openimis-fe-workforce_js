@@ -239,6 +239,7 @@ export function formatWorkforceEmployeeGQL(employee) {
     ${employee.status ? `status: "${employee.status}"` : ""}
     ${employee.lifeStatus ? `lifeStatus: "${employee.lifeStatus}"` : ""}
     ${employee?.relatedUserId ? `relatedUserId: "${employee.relatedUserId}"` : ""}
+    ${employee?.roleId ? `roleId: ${employee.roleId}` : ""}
   `;
 }
 export function formatWorkforceAssociationGQL(association) {

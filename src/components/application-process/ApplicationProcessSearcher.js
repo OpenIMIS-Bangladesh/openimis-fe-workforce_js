@@ -1497,7 +1497,20 @@ class ApplicationProcessSearcher extends Component {
       if (userType === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
         defaultStatusFilters.push('statusIn: ["forward_to_eis_advisor","approved_by_eis_director"]');
       } else if (userType === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
-        defaultStatusFilters.push('statusIn: ["approved_by_doctor"]');
+        // defaultStatusFilters.push('statusIn: ["approved_by_doctor"]');
+        if(this.props.filedMeetingSheet) {
+          defaultStatusFilters.push('statusIn: ["forward_to_doctor"]');
+          if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
+        else if(this.props.forwardedApplications){
+          defaultStatusFilters.push('statusIn: ["approved_by_doctor"]');
+          if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+        else if (this.props.returnedApplications)
+        {
+          defaultStatusFilters.push('statusIn: ["revert"]');
+          if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
       }
 
       defaultStatusFilters.push(
@@ -1508,6 +1521,7 @@ class ApplicationProcessSearcher extends Component {
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
       if (summaryId) {
+        console.log("summaryId", summaryId);
         additionalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
       }
       const nidFilters = this.props.nidFilters || [];
