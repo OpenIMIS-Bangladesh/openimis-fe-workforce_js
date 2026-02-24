@@ -140,7 +140,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
         console.log("create document data", createDocumentData);
         dispatch(
           createWorkforceDocument(
-            { ...createDocumentData, workforceApplicationId: uploadedBy ? applicationId : safeApplicationId(applicationId),status:"verified" },
+            { ...createDocumentData, workforceApplicationId: uploadedBy ? applicationId : safeApplicationId(applicationId) },
             `Created workforce document `
           )
         );

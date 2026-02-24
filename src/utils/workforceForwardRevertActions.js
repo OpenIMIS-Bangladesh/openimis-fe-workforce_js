@@ -42,9 +42,18 @@ export const forwardToAssociation = async ({
         const documents =
           res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-        const allVerified = documents.every(
-          (doc) => doc.status?.toLowerCase() === "verified"
-        );
+        const allVerified = documents.every((doc) => {
+        const status = doc.status?.toLowerCase();
+
+        if (doc.holderType === "applicant") {
+          return status === "verified";
+        }
+
+        if (doc.holderType === "factoryAdmin") {
+          return status !== "verified";
+        }
+        return true;
+      });
 
         if (!allVerified) {
           setServerResponse({
