@@ -22,7 +22,8 @@ import {
   ORGANIZATION_TYPE_NAME_EN,
   ORGANIZATION_TYPE_NAME_BN,
 } from "../constants";
-import { conditionalEnToBn, isEisPath } from "./utils";
+import { conditionalEnToBn, isEisPath, safeParse } from "./utils";
+import { useSelector } from "react-redux";
 
 // export const itemAdminFormatters = (
 //   isShowHistory,
@@ -1675,7 +1676,6 @@ export const itemFormattersApprover = (
     },
     isShowHistory() ? application?.version : null,
   ];
-
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="View">
@@ -1713,6 +1713,20 @@ export const itemFormattersApprover = (
       </Tooltip>
       {component.props.disableButtons !== 1 && (
         <>
+          {!safeParse(application?.eisApprovedByIds)?.includes(component.props.loggedInUserId)?
+          (
+            <Tooltip title="Sign for Approval">
+              <IconButton
+                disabled={application?.isHistory}
+                onClick={() => {
+                  component.handleApprovalByEisCommittee(application);
+                  component.setState({ revertByChecker: true });
+                }}
+              >
+                <CheckIcon style={{ color: "#00730f" }} />
+              </IconButton>
+            </Tooltip>
+          ):null}
           <Tooltip title="Revert">
             <IconButton
               disabled={application?.isHistory}

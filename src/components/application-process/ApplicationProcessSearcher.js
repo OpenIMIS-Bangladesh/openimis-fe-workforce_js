@@ -17,7 +17,7 @@ import {
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardApplicationModal from "./modals/ForwardApplicationModal";
-import { getUserTypeFromRights, isEisPath, isEmptyObject, safeDecodeId } from "../../utils/utils";
+import { getUserTypeFromRights, isEisPath, isEmptyObject, safeDecodeId, safeParse } from "../../utils/utils";
 import PrintIcon from "@material-ui/icons/Print";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
@@ -141,7 +141,7 @@ class ApplicationProcessSearcher extends Component {
     this.props.fetchOrganizationEmployee(this.props.modulesManager, [`username:"${userName}"`]);
     await this.fetchApplicant();
     console.log(this.props.i_user)
-    console.log("user_type: "+ getUserTypeFromRights(userRights));
+    console.log("user_type: " + getUserTypeFromRights(userRights));
     if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.CHECKER || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR) {
       this.setState({ displayVersion: showHistoryFilter });
 
@@ -255,128 +255,128 @@ class ApplicationProcessSearcher extends Component {
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, defaultStatusFilters);
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
-        this.setState({ displayVersion: showHistoryFilter });
+      this.setState({ displayVersion: showHistoryFilter });
 
-        let defaultStatusFilters = [];
-        let additionalFilters = [];
-        const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
-        const sectionApplicationTypes =
-          'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]';
+      let defaultStatusFilters = [];
+      let additionalFilters = [];
+      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+      const sectionApplicationTypes =
+        'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]';
 
-        if (rejectedApplication) {
-          defaultStatusFilters.push(
-            'statusIn: ["rejected"]',
-            'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant","financialAssistance","disabilityAssistance"]'
-          );
-        } else if (revertedApplication) {
-          defaultStatusFilters.push(
-            'statusIn: ["revert"]',
-            sectionApplicationTypes
-          );
-        } else if (this.props.returnedApplications) {
-          defaultStatusFilters.push(
-            'statusIn: ["revert"]',
-            sectionApplicationTypes
-          );
-          if (loggedInUserId) {
-            defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-          }
-        } else if (this.props.sentForVerificationApplications) {
-          defaultStatusFilters.push(
-            'statusIn: ["forward_for_verification","forward_to_doctor"]',
-            sectionApplicationTypes
-          );
-        } else if (this.props.verifiedApplications) {
-          defaultStatusFilters.push(
-            'statusIn: ["approved_by_doctor","verified"]',
-            sectionApplicationTypes
-          );
-        } else if (summaryId) {
-          defaultStatusFilters.push(sectionApplicationTypes);
-          additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
-        } else {
-          defaultStatusFilters.push(
-            'statusIn: ["forward_to_cf_section"]',
-            sectionApplicationTypes
-          );
-        }
-
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
-
-        const orderByFilter = 'orderBy: ["-dateCreated"]';
-        const nidFilters = this.props.nidFilters || [];
-        let finalFilters = [];
-        if (nidFilters.length) {
-          finalFilters = [...nidFilters];
-          if (!finalFilters.some(f => f.includes("orderBy"))) {
-            finalFilters.push(orderByFilter);
-          }
-
-          if (
-            summaryId &&
-            !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))
-          ) {
-            finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
-          }
-        } else if (prms?.length) {
-
-          finalFilters = [...prms];
-
-          const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
-          const hasAppType = finalFilters.some(f => f.includes("applicationTypeIn"));
-          const hasApplicationTo = finalFilters.some(f => f.includes("applicationTo"));
-          const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
-
-          if (!hasStatusIn)
-            finalFilters = [
-              ...defaultStatusFilters.filter(f => f.includes("statusIn")),
-              ...finalFilters
-            ];
-
-          if (!hasAppType)
-            finalFilters = [
-              ...defaultStatusFilters.filter(f => f.includes("applicationTypeIn")),
-              ...finalFilters
-            ];
-
-          if (!hasApplicationTo)
-            finalFilters = [
-              ...defaultStatusFilters.filter(f => f.includes("applicationTo")),
-              ...finalFilters
-            ];
-
-          if (!hasOrderBy)
-            finalFilters.push(orderByFilter);
-
-          if (
-            summaryId &&
-            !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))
-          ) {
-            finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
-          }
-        } else {
-
-          finalFilters = [
-            ...defaultStatusFilters,
-            ...additionalFilters,
-            orderByFilter
-          ];
-        }
-
-        finalFilters = finalFilters.filter((f, i, arr) =>
-          i === arr.findIndex(x => {
-            if (x.includes("statusIn") && f.includes("statusIn")) return true;
-            if (x.includes("applicationTypeIn") && f.includes("applicationTypeIn")) return true;
-            if (x.includes("applicationTo") && f.includes("applicationTo")) return true;
-            if (x.includes("applicationFrom") && f.includes("applicationFrom")) return true;
-            if (x.includes("orderBy") && f.includes("orderBy")) return true;
-            if (x.includes("cfApplicationSummary_Id") && f.includes("cfApplicationSummary_Id")) return true;
-            return x === f;
-          })
+      if (rejectedApplication) {
+        defaultStatusFilters.push(
+          'statusIn: ["rejected"]',
+          'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant","financialAssistance","disabilityAssistance"]'
         );
-        this.props.fetchApplicationsSummary(this.props.modulesManager,finalFilters);
+      } else if (revertedApplication) {
+        defaultStatusFilters.push(
+          'statusIn: ["revert"]',
+          sectionApplicationTypes
+        );
+      } else if (this.props.returnedApplications) {
+        defaultStatusFilters.push(
+          'statusIn: ["revert"]',
+          sectionApplicationTypes
+        );
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
+      } else if (this.props.sentForVerificationApplications) {
+        defaultStatusFilters.push(
+          'statusIn: ["forward_for_verification","forward_to_doctor"]',
+          sectionApplicationTypes
+        );
+      } else if (this.props.verifiedApplications) {
+        defaultStatusFilters.push(
+          'statusIn: ["approved_by_doctor","verified"]',
+          sectionApplicationTypes
+        );
+      } else if (summaryId) {
+        defaultStatusFilters.push(sectionApplicationTypes);
+        additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+      } else {
+        defaultStatusFilters.push(
+          'statusIn: ["forward_to_cf_section"]',
+          sectionApplicationTypes
+        );
+      }
+
+      if (loggedInUserId) {
+        defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+      }
+
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+      const nidFilters = this.props.nidFilters || [];
+      let finalFilters = [];
+      if (nidFilters.length) {
+        finalFilters = [...nidFilters];
+        if (!finalFilters.some(f => f.includes("orderBy"))) {
+          finalFilters.push(orderByFilter);
+        }
+
+        if (
+          summaryId &&
+          !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))
+        ) {
+          finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+        }
+      } else if (prms?.length) {
+
+        finalFilters = [...prms];
+
+        const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
+        const hasAppType = finalFilters.some(f => f.includes("applicationTypeIn"));
+        const hasApplicationTo = finalFilters.some(f => f.includes("applicationTo"));
+        const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
+
+        if (!hasStatusIn)
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("statusIn")),
+            ...finalFilters
+          ];
+
+        if (!hasAppType)
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("applicationTypeIn")),
+            ...finalFilters
+          ];
+
+        if (!hasApplicationTo)
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("applicationTo")),
+            ...finalFilters
+          ];
+
+        if (!hasOrderBy)
+          finalFilters.push(orderByFilter);
+
+        if (
+          summaryId &&
+          !finalFilters.some(f => f.includes("cfApplicationSummary_Id"))
+        ) {
+          finalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+        }
+      } else {
+
+        finalFilters = [
+          ...defaultStatusFilters,
+          ...additionalFilters,
+          orderByFilter
+        ];
+      }
+
+      finalFilters = finalFilters.filter((f, i, arr) =>
+        i === arr.findIndex(x => {
+          if (x.includes("statusIn") && f.includes("statusIn")) return true;
+          if (x.includes("applicationTypeIn") && f.includes("applicationTypeIn")) return true;
+          if (x.includes("applicationTo") && f.includes("applicationTo")) return true;
+          if (x.includes("applicationFrom") && f.includes("applicationFrom")) return true;
+          if (x.includes("orderBy") && f.includes("orderBy")) return true;
+          if (x.includes("cfApplicationSummary_Id") && f.includes("cfApplicationSummary_Id")) return true;
+          return x === f;
+        })
+      );
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
       this.setState({ displayVersion: showHistoryFilter });
 
@@ -496,7 +496,7 @@ class ApplicationProcessSearcher extends Component {
           return x === f;
         })
       );
-      this.props.fetchApplicationsSummary(this.props.modulesManager,finalFilters);
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
       this.setState({ displayVersion: showHistoryFilter });
 
@@ -823,7 +823,7 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
 
       let defaultStatusFilters = [];
-      if (this.props.associationIds && this.props.associationIds.length>0) {
+      if (this.props.associationIds && this.props.associationIds.length > 0) {
         defaultStatusFilters.push(`allAssociationIdIn: [${this.props.associationIds.map(id => `"${safeDecodeId(id)}"`).join(",")}]`);
       }
       if (revertedApplication) {
@@ -1367,7 +1367,7 @@ class ApplicationProcessSearcher extends Component {
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_OFFICER) {
       this.setState({ displayVersion: showHistoryFilter });
       let defaultStatusFilters = [];
-      
+
       if (this.props.filedApplications) {
         defaultStatusFilters.push(
           'statusIn: ["forward_for_verification"]',
@@ -1375,11 +1375,10 @@ class ApplicationProcessSearcher extends Component {
           'organizationTypeIn: ["eis"]',
           'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
-        if (loggedInUserId) 
-          {
-            console.log("loggedin user id", loggedInUserId);
-            defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-          }
+        if (loggedInUserId) {
+          console.log("loggedin user id", loggedInUserId);
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       } else if (this.props.forwardedApplications) {
         defaultStatusFilters.push(
           'statusIn: ["verified"]',
@@ -1413,13 +1412,13 @@ class ApplicationProcessSearcher extends Component {
         );
         if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
       }
-      
+
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
 
       let finalFilters = [];
 
-       if (prms?.length) {
+      if (prms?.length) {
         finalFilters = [...prms];
 
         const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
@@ -1451,18 +1450,18 @@ class ApplicationProcessSearcher extends Component {
           ];
 
         if (!hasApplicationTo)
-            finalFilters = [
-              ...defaultStatusFilters.filter(f => f.includes("applicationTo")),
-              ...finalFilters
-            ];
-            
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("applicationTo")),
+            ...finalFilters
+          ];
+
         if (!hasApplicationFrom)
-            finalFilters = [
-              ...defaultStatusFilters.filter(f => f.includes("applicationFrom")),
-              ...finalFilters
-            ];
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("applicationFrom")),
+            ...finalFilters
+          ];
         if (!hasOrderBy) finalFilters.push(orderByFilter);
-        
+
       } else {
         finalFilters = [...defaultStatusFilters, orderByFilter];
       }
@@ -1498,16 +1497,15 @@ class ApplicationProcessSearcher extends Component {
         defaultStatusFilters.push('statusIn: ["forward_to_eis_advisor","approved_by_eis_director"]');
       } else if (userType === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
         // defaultStatusFilters.push('statusIn: ["approved_by_doctor"]');
-        if(this.props.filedMeetingSheet) {
+        if (this.props.filedMeetingSheet) {
           defaultStatusFilters.push('statusIn: ["forward_to_doctor"]');
           if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
-        else if(this.props.forwardedApplications){
+        else if (this.props.forwardedApplications) {
           defaultStatusFilters.push('statusIn: ["approved_by_doctor"]');
           if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
-        else if (this.props.returnedApplications)
-        {
+        else if (this.props.returnedApplications) {
           defaultStatusFilters.push('statusIn: ["revert"]');
           if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
@@ -1609,40 +1607,40 @@ class ApplicationProcessSearcher extends Component {
           })
       );
 
-      this.props.fetchApplicationsSummary(this.props.modulesManager,finalFilters);
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
       // ---------------- DOCTOR / BLWF_DOCTOR ----------------
     } else if (
-         (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) ||
-        (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DOCTOR)
-      ) {
-        this.setState({ displayVersion: showHistoryFilter });
+      (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DOCTOR) ||
+      (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DOCTOR)
+    ) {
+      this.setState({ displayVersion: showHistoryFilter });
 
-        let defaultStatusFilters = [];
+      let defaultStatusFilters = [];
 
-        if (this.props.returnedApplications) {
-          defaultStatusFilters = ['statusIn: ["revert"]'];
-          if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-        } else if (this.props.revertedApplications) {
-          defaultStatusFilters = ['statusIn: ["revert"]'];
-          if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        } else if (this.props.forwardedApplications) {
-          defaultStatusFilters = ['statusIn: ["approved_by_doctor"]'];
-          if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
-        } else if (loggedInUserId) {
-          defaultStatusFilters = ['statusIn: ["forward_to_doctor"]'];
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        }
-
-        const organizationType =
-          (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DOCTOR) ? "blwf" : "cf";
-
-        this.props.fetchApplicationsSummary(
-          this.props.modulesManager,
-          defaultStatusFilters,
-          [`organizationTypeIn: ["${organizationType}"]`, 'orderBy: ["-dateCreated"]']
-        );
+      if (this.props.returnedApplications) {
+        defaultStatusFilters = ['statusIn: ["revert"]'];
+        if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+      } else if (this.props.revertedApplications) {
+        defaultStatusFilters = ['statusIn: ["revert"]'];
+        if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+      } else if (this.props.forwardedApplications) {
+        defaultStatusFilters = ['statusIn: ["approved_by_doctor"]'];
+        if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+      } else if (loggedInUserId) {
+        defaultStatusFilters = ['statusIn: ["forward_to_doctor"]'];
+        defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
       }
+
+      const organizationType =
+        (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DOCTOR) ? "blwf" : "cf";
+
+      this.props.fetchApplicationsSummary(
+        this.props.modulesManager,
+        defaultStatusFilters,
+        [`organizationTypeIn: ["${organizationType}"]`, 'orderBy: ["-dateCreated"]']
+      );
     }
+  }
 
 
 
@@ -2809,10 +2807,140 @@ class ApplicationProcessSearcher extends Component {
   handleBulkSelectedbyEisCommittee = () => {
     const { selectedApplicationIds } = this.state;
     const { loggedInUserId } = this.props;
-    if (selectedApplicationIds.length === 0) {
+
+    if (!selectedApplicationIds || selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
     }
+
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.forward.message.toEisCoordinator",
+      confirmModalCallback: async (confirmed) => {
+        if (!confirmed) {
+          this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+          return;
+        }
+
+        const {
+          updateApplication,
+          createApplicationMovement,
+          updateApplicationSummary,
+        } = this.props;
+
+        try {
+          /* -------------------------------------------------
+             STEP 1: Validate Majority Approval For ALL
+          ------------------------------------------------- */
+
+          const allHaveMajority = selectedApplicationIds.every((item) => {
+            const approvalUserIds = item?.eisApprovalIds
+              ? safeParse(item.eisApprovalIds)
+              : [];
+
+            const approvedUserIds = item?.eisApprovedByIds
+              ? safeParse(item.eisApprovedByIds)
+              : [];
+
+            const totalApprovals = Array.isArray(approvalUserIds) && approvalUserIds.length > 0
+              ? approvalUserIds.length
+              : 1;
+
+            const totalApproved = Array.isArray(approvedUserIds)
+              ? approvedUserIds.length
+              : 0;
+
+            if (totalApprovals === 0) return false;
+
+            return totalApproved / totalApprovals > 0.5;
+          });
+
+          /* -------------------------------------------------
+             STEP 2: Stop If Any Application Fails
+          ------------------------------------------------- */
+
+          if (!allHaveMajority) {
+            this.setState({
+              serverResponse: {
+                status: "ERROR",
+                message:
+                  "অন্ততঃ একটি নির্বাচিত আবেদন মেজরিটি অনুমোদনপ্রাপ্ত নয়! অনুগ্রহ করে কমিটি সদস্যদের অনুমোদন প্রদান করতে বলুন",
+              },
+            });
+            return;
+          }
+
+          /* -------------------------------------------------
+             STEP 3: Run Updates (Only If All Passed)
+          ------------------------------------------------- */
+
+          await Promise.all(
+            selectedApplicationIds.map(async (item) => {
+              const decodedId = decodeId(item?.id);
+
+              const updateApplicationData = {
+                id: decodedId,
+                status: WORKFORCE_STATUS.APPROVED_BY_COMMITTEE,
+              };
+
+              const createApplicationMovementData = {
+                applicationId: decodedId,
+                status: WORKFORCE_STATUS.APPROVED_BY_DG,
+                note: "আবেদন কমিটি দ্বারা অনুমোদন করা হয়েছে",
+                action: "approved_by_committee",
+                applicationFromId: loggedInUserId,
+                applicationToId: 173,
+                toRoleId: 42,
+              };
+
+              await updateApplication(
+                updateApplicationData,
+                "update workforce application"
+              );
+
+              await createApplicationMovement(
+                createApplicationMovementData,
+                "create workforce movement"
+              );
+            })
+          );
+
+          // Update summary once (outside loop)
+          await updateApplicationSummary(
+            {
+              id: decodeId(this.props.summaryId),
+              status: WORKFORCE_STATUS.APPROVED_BY_COMMITTEE,
+            },
+            "update workforce application summary"
+          );
+
+          this.setState({
+            serverResponse: {
+              status: "SUCCESS",
+              message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+            },
+          });
+          window.location.reload();
+        } catch (error) {
+          console.error("Bulk selection failed:", error);
+
+          this.setState({
+            serverResponse: {
+              status: "ERROR",
+              message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+            },
+          });
+        }
+
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+      },
+    });
+  };
+
+
+  handleApprovalByEisCommittee = (selectedItem) => {
+    const { loggedInUserId } = this.props;
+    let majorityApproved = false;
     this.setState({
       confirmModalOpen: true,
       confirmModalMessage: "workforce.application.forward.message.toEisCoordinator",
@@ -2820,47 +2948,71 @@ class ApplicationProcessSearcher extends Component {
         if (confirmed) {
           const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
           try {
-            await Promise.all(
-              selectedApplicationIds.map(async (selectedItem) => {
-                const decodedId = decodeId(selectedItem?.id);
-                const updateApplicationData = {
-                  id: decodedId,
-                  status: WORKFORCE_STATUS.APPROVED_BY_COMMITTEE,
-                };
-                const createApplicationMovementData = {
-                  applicationId: decodedId,
-                  status: WORKFORCE_STATUS.APPROVED_BY_DG,
-                  note: "আবেদন কমিটি দ্বারা অনুমোদন করা হয়েছে",
-                  action: "approved_by_committee",
-                  applicationFromId: loggedInUserId,
-                  applicationToId: 173,
-                  toRoleId: 42,
-                };
-                const updateApplicationSummaryData = {
-                  id: decodeId(this.props.summaryId),
-                  status: WORKFORCE_STATUS.APPROVED_BY_COMMITTEE,
-                };
-                await updateApplication(updateApplicationData, "update workforce application");
-                await createApplicationMovement(createApplicationMovementData, "create workforce movement");
-                await updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
-              })
-            );
+            const approvalUserIds = selectedItem?.eisApprovalIds ? safeParse(selectedItem?.eisApprovalIds) : [];
+            let approvedUserIds = selectedItem?.eisApprovedByIds ? safeParse(selectedItem?.eisApprovedByIds) : [];
+            if (!approvedUserIds.includes(loggedInUserId)) {
+              approvedUserIds.push(loggedInUserId);
+            }
+            else {
+              this.setState({
+                serverResponse: {
+                  status: "ERROR",
+                  message: "আপনি ইতিমধ্যে এই আবেদনটি অনুমোদন করেছেন!",
+                },
+              });
+              return;
+            }
+            const numberOfApprovals = approvalUserIds?.length > 0 ? approvalUserIds?.length : 1;
+            const numberOfApproved = approvedUserIds?.length > 0 ? approvedUserIds?.length : 0;
+
+
+            if (numberOfApprovals > 0) {
+              majorityApproved = numberOfApproved / numberOfApprovals > 0.5;
+            }
+            else {
+              majorityApproved = true;
+            }
+            const decodedId = decodeId(selectedItem?.id);
+
+            const updateApplicationData = {
+              id: decodedId,
+              status: majorityApproved ? WORKFORCE_STATUS.APPROVED_BY_COMMITTEE : selectedItem?.status,
+              eisApprovedByIds: JSON.stringify(approvedUserIds),
+            };
+            // const createApplicationMovementData = {
+            //   applicationId: decodedId,
+            //   status: WORKFORCE_STATUS.APPROVED_BY_DG,
+            //   note: "আবেদন কমিটি দ্বারা অনুমোদন করা হয়েছে",
+            //   action: "approved_by_committee",
+            //   applicationFromId: loggedInUserId,
+            //   applicationToId: 173,
+            //   toRoleId: 42,
+            // };
+            // const updateApplicationSummaryData = {
+            //   id: decodeId(this.props.summaryId),
+            //   status: WORKFORCE_STATUS.APPROVED_BY_COMMITTEE,
+            // };
+            await updateApplication(updateApplicationData, "update workforce application");
+            // if (majorityApproved) {
+            //   await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+            //   await updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
+            // }
             this.setState({
               serverResponse: {
                 status: "SUCCESS",
-                message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
+                message: "নির্বাচিত আবেদনটির অনুমোদনের জন্য আপনার সাক্ষর গৃহিত হয়েছে। অপেক্ষা করুন যতক্ষণ না কমিটির অন্যান্য সদস্যরাও তাদের অনুমোদন প্রদান করেন।",
+                // message: majorityApproved?"নির্বাচিত আবেদনটিতে মেজরিটি অনুমোদন প্রাপ্ত হয়েছে এবং আবেদনটি অনুমোদিত হয়েছে" :"নির্বাচিত আবেদনটির অনুমোদনের জন্য আপনার সাক্ষর গৃহিত হয়েছে। অপেক্ষা করুন যতক্ষণ না কমিটির অন্যান্য সদস্যরাও তাদের অনুমোদন প্রদান করেন।",
               },
             });
             window.location.reload();
           } catch (error) {
-            console.error("Bulk selection failed:", error);
+            console.error("Approval failed:", error);
             this.setState({
               serverResponse: {
                 status: "ERROR",
-                message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
+                message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
               },
             });
-            window.location.reload();
           }
         }
         this.setState({ confirmModalOpen: false, confirmModalCallback: null });
@@ -3033,11 +3185,11 @@ class ApplicationProcessSearcher extends Component {
                       </Button>
                     </>
                   )}
-                  
+
                 </>
               )}
 
-              
+
 
             {disableButtons == 1 ? (
               <>
@@ -3051,7 +3203,7 @@ class ApplicationProcessSearcher extends Component {
                     <IconButton onClick={this.handleOpenEisBFTN}>
                       <PrintIcon />
                     </IconButton>
-                    <Button variant="contained" color="primary" onClick={()=>{this.setState({openEisApprovalSignature:true})}}>
+                    <Button variant="contained" color="primary" onClick={() => { this.setState({ openEisApprovalSignature: true }) }}>
                       <FormattedMessage module="workforce" id="workforce.employee.application.eisApproval.signature" />
                     </Button>
                   </>
@@ -3191,7 +3343,7 @@ class ApplicationProcessSearcher extends Component {
                 </Button>
               </>
             ) : (
-            disableButtons != 1 && (
+              disableButtons != 1 && (
                 <Button
                   variant="contained"
                   color="primary"
@@ -3255,7 +3407,7 @@ class ApplicationProcessSearcher extends Component {
             )}
           </Box>
         ) : null}
-        {userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION ||  userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.ASSOCIATION? (
+        {userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION || userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION || userType === WORKFORCE_USER_TYPE.ASSOCIATION ? (
           <Box
             style={{
               marginTop: 10,
@@ -3390,7 +3542,7 @@ class ApplicationProcessSearcher extends Component {
               <Button variant="outlined" color="primary" onClick={this.handleOpenEisDependentBFTN}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.eisApproval" />
               </Button>
-          
+
               <RevertApplicationModal
                 open={revertModalOpen}
                 onClose={this.handleCloseRevertModal}
@@ -3408,7 +3560,7 @@ class ApplicationProcessSearcher extends Component {
               />
               <EisApprovalSignature
                 open={openEisApprovalSignature}
-                onClose={()=>this.setState({openEisApprovalSignature:false})}
+                onClose={() => this.setState({ openEisApprovalSignature: false })}
                 eisPayments={eisPayments}
                 status="approved_by_committee"
                 userRights={userRights}
@@ -3561,7 +3713,7 @@ class ApplicationProcessSearcher extends Component {
                     />
                     <EisApprovalSignature
                       open={openEisApprovalSignature}
-                      onClose={()=>this.setState({openEisApprovalSignature:false})}
+                      onClose={() => this.setState({ openEisApprovalSignature: false })}
                       eisPayments={eisPayments}
                       status="approved_by_committee"
                       userRights={userRights}
@@ -3672,6 +3824,18 @@ class ApplicationProcessSearcher extends Component {
                   />
                 </>
               )
+            );
+          } else if (userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE) {
+            return (
+              <>
+                <RevertApplicationModal
+                  open={revertModalOpen}
+                  onClose={this.handleCloseRevertModal}
+                  revertByChecker={revertByChecker}
+                  selectedApplication={this.state.selectedApplication}
+                  onSubmitRevert={this.handleRevertSubmit}
+                />
+              </>
             );
           }
           return null;

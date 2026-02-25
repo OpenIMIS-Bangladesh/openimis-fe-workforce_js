@@ -788,7 +788,9 @@ export function fetchApplicationsSummary(mm, filters) {
     "initialReplacementRate",
     "pvFactor",
     "eisVerified",
-    "deceasedWorkerInfo"
+    "deceasedWorkerInfo",
+    "eisApprovalIds",
+    "eisApprovedByIds"
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
@@ -3130,6 +3132,8 @@ export function fetchEisPaymentProcess(applicationIds, mm) {
           dateCreated
           trackingNumber
           status
+          eisApprovalIds
+          eisApprovedByIds
           eisApplicationSummary{
             id
             name
