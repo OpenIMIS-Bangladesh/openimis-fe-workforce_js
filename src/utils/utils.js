@@ -1150,7 +1150,7 @@ export function getFooterContentNew(depObj, workerBirthDate, applicationType, pa
   }
 }
 
-function calculateAge(birthDate) {
+export function calculateAge(birthDate) {
   if (!birthDate) return 0;
 
   const dob = new Date(birthDate);

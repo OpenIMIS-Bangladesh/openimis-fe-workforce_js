@@ -11,9 +11,11 @@ import {
   Typography,
   Button,
   Divider,
+  Paper,
+  Grid
 } from "@material-ui/core";
 import { RELATION_LABEL_BANGLA_MAP, WORKFORCE_USER_TYPE } from "../../constants";
-import { getUserTypeFromRights, safeDecodeId, getFooterContent, safeParse, getFooterContentNew, toBanglaNumber } from "../../utils/utils";
+import { getUserTypeFromRights, safeDecodeId, getFooterContent, safeParse, getFooterContentNew, toBanglaNumber, calculateAge } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS, RELATION_LABEL_MAP } from "../../constants";
 import { createApplicationSummary, updateApplication, updateApplicationSummary } from "../../actions";
@@ -426,57 +428,129 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
           <Typography variant="h6"><FormattedMessage id="Eis Bank Payment Advice (BEFTN)" /></Typography>
         </DialogTitle>
         <DialogContent dividers>
+
+          {/* ================= EMPLOYEE SUMMARY SECTION ================= */}
+          {eisPayments.length > 0 && (() => {
+            const firstRow = eisPayments[0];
+            const employeeInfo =
+              firstRow?.workforceApplication.applicationType === "financialAssistance"
+                ? safeParse(firstRow?.workforceApplication?.deceasedWorkerInfo)
+                : firstRow?.workforceApplication?.workforceEmployee;
+
+            const accidentInfo = safeParse(firstRow?.workforceApplication.employeeAccidentInfo);
+            const applicationType = firstRow?.workforceApplication.applicationType;
+            const lastSalary = Number(firstRow?.workforceApplication?.lastBaseSalary || 0);
+
+            return (
+              <Paper elevation={2} style={{ padding: 16, marginBottom: 20 }}>
+                <Grid container spacing={2}>
+
+                  <Grid item xs={12}>
+                    <Typography variant="h6">
+                      Worker Information
+                    </Typography>
+                    <Divider style={{ marginTop: 8, marginBottom: 16 }} />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <strong>Name of Worker:</strong>{" "}
+                    {applicationType === "financialAssistance"
+                      ? employeeInfo?.nameEn
+                      : employeeInfo?.firstNameEn}
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <strong>Application Type:</strong>{" "}
+                    {applicationType === "financialAssistance" ? "Death" : "Disability"}
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    {applicationType === "financialAssistance" ? (
+                      <>
+                        <strong>Date of Death:</strong>{" "}
+                        {new Date(accidentInfo?.dateOfDeath).toLocaleDateString("BD-en")}
+                      </>
+                    ) : (
+                      <>
+                        <strong>Date of Accident:</strong>{" "}
+                        {new Date(accidentInfo?.accidentDate).toLocaleDateString("BD-en")}
+                        <br />
+                        <strong>Date of Rejoining:</strong>{" "}
+                        {new Date(accidentInfo?.dateOfRejoining).toLocaleDateString("BD-en")}
+                      </>
+                    )}
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <strong>Last Salary:</strong>{" "}
+                    {lastSalary.toLocaleString("BD-en", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </Grid>
+
+                </Grid>
+              </Paper>
+            );
+          })()}
+
+
+          {/* ================= BENEFICIARY TABLE ================= */}
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>NOA Print</TableCell>
                 <TableCell>SL</TableCell>
-                <TableCell>Account Title</TableCell>
-                <TableCell>Account No</TableCell>
-                <TableCell>Bank</TableCell>
-                <TableCell>Branch</TableCell>
-                <TableCell>District</TableCell>
-                <TableCell>Routing</TableCell>
-                <TableCell align="right">Amount</TableCell>
-                <TableCell align="right">Beneficiary ID</TableCell>
-                <TableCell align="right">Pay From</TableCell>
-                <TableCell align="right">Pay To</TableCell>
+                <TableCell>Beneficiary ID</TableCell>
+                <TableCell>Dependent Info</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {eisPayments.map((row, index) => {
-                const year = row?.year || "";
-                const monthIndex = row?.monthIndex || "";
-                const monthFormatted = String(monthIndex).padStart(2, "0");
-                const lastDay = new Date(year, monthIndex, 0).getDate();
+                const dependent = row?.workforceEmployeeDependent?.[0] ?? null;
 
                 return (
                   <TableRow key={index}>
                     <TableCell>
-                      <Button size="small" color="primary" onClick={() => handleRowPrint(row)}>
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleRowPrint(row)}
+                      >
                         Print
                       </Button>
                     </TableCell>
+
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{row?.bankAccountHolderName}</TableCell>
-                    <TableCell>{row?.bankAccountNo}</TableCell>
-                    <TableCell>{row?.bank?.parent?.nameEn}</TableCell>
-                    <TableCell>{row?.bank?.nameEn}</TableCell>
-                    <TableCell>{row?.bank?.districtNameEn}</TableCell>
-                    <TableCell>{row?.bank?.routingNumber}</TableCell>
-                    <TableCell align="right">{row?.eisMonthlyAmount}</TableCell>
-                    <TableCell align="right">{row?.beneficiaryId}</TableCell>
-                    <TableCell align="right">01.{monthFormatted}.{year}</TableCell>
-                    <TableCell align="right">{lastDay}.{monthFormatted}.{year}</TableCell>
+                    <TableCell>{row?.beneficiaryId}</TableCell>
+
+                    <TableCell>
+                      {dependent ? (
+                        <>
+                          <Typography variant="subtitle2">
+                            <strong>{dependent.nameEn}</strong>
+                          </Typography>
+                          <Typography variant="body2">
+                            {RELATION_LABEL_BANGLA_MAP[dependent.relationWithWorker]}
+                          </Typography>
+                          <Typography variant="body2">
+                            Age: {calculateAge(dependent.birthDate)}
+                          </Typography>
+                        </>
+                      ) : (
+                        <Typography variant="body2" color="textSecondary">
+                          No Dependent
+                        </Typography>
+                      )}
+                    </TableCell>
                   </TableRow>
                 );
               })}
-              <TableRow>
-                <TableCell colSpan={8}><strong>Total Amount</strong></TableCell>
-                <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
-              </TableRow>
             </TableBody>
           </Table>
+
         </DialogContent>
         <Divider />
         <DialogActions>
@@ -613,7 +687,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
 
             <tr>
               <td className="noa-label">শ্রমিকের জাতীয় পরিচয়পত্র নম্বর:</td>
-              <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.nid? toBanglaNumber(row?.workforceApplication?.workforceEmployee?.nid):""}</td>
+              <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.nid ? toBanglaNumber(row?.workforceApplication?.workforceEmployee?.nid) : ""}</td>
             </tr>
             {applicationType === "disabilityAssistance" && (
               <>
@@ -713,7 +787,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
                   <td className="noa-label">
                     নির্ভরশীল ব্যক্তির জাতীয় পরিচয়পত্র / জন্মসনদ নম্বর:
                   </td>
-                  <td className="noa-value">{row?.workforceEmployeeDependent?.[0]?.nid? toBanglaNumber(row?.workforceEmployeeDependent?.[0]?.nid):""}</td>
+                  <td className="noa-value">{row?.workforceEmployeeDependent?.[0]?.nid ? toBanglaNumber(row?.workforceEmployeeDependent?.[0]?.nid) : ""}</td>
                 </tr>
 
                 <tr>
@@ -732,11 +806,16 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
                     {depentPresentAddress?.district || ""}
                   </td>
                 </tr>
+                {
+                  calculateAge(row?.workforceEmployeeDependent?.[0]?.birthDate) >= 18 ?
+                    (
+                      <tr>
+                        <td className="noa-label">অপ্রাপ্ত বয়স্ক নির্ভরশীল ব্যক্তির আইনগত অভিভাবক:</td>
+                        <td className="noa-value"></td>
+                      </tr>
 
-                <tr>
-                  <td className="noa-label">অপ্রাপ্ত বয়স্ক নির্ভরশীল ব্যক্তির আইনগত অভিভাবক:</td>
-                  <td className="noa-value"></td>
-                </tr>
+                    ) : null
+                }
                 <tr>
                   <td className="noa-label">এম.আই.এস বেনিফিশিয়ারি নম্বর:</td>
                   <td className="noa-value">{row?.beneficiaryId || ""}</td>
@@ -793,7 +872,10 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
                   <td className="noa-label">
                     মাসিক ই.আই.এস টপ-আপ বেনিফিটের কার্যকরী তারিখ:
                   </td>
-                  <td className="noa-value">{row?.processingDate ? new Date(row?.processingDate).toLocaleDateString("bn-BD") : ""}</td>
+                  {/* <td className="noa-value">{row?.processingDate ? new Date(row?.processingDate).toLocaleDateString("bn-BD") : ""}</td> */}
+                  <td className="noa-value">{applicationType == 'financialAssistance' ? new Date(employeeAccidentInfo.dateOfDeath).toLocaleDateString("bn-BD") :
+                    employeeAccidentInfo.dateOfRejoining ? new Date(employeeAccidentInfo.dateOfRejoining).toLocaleDateString("bn-BD") : new Date(employeeAccidentInfo.accidentDate).toLocaleDateString("bn-BD")}
+                  </td>
                 </tr>
               </>
             )}
