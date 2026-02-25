@@ -850,7 +850,7 @@ export function fetchApplicationsSummaryDashboard(mm, filters) {
     filters,
     projections
   );
-  return graphql(payload, "WORKFORCE_APPLICATIONS");
+  return graphql(payload, "WORKFORCE_APPLICATIONS_DASHBOARD");
 }
 export function fetchSummaryApplications(mm, filters) {
   const projections = [

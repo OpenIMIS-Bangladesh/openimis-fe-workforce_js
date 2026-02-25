@@ -972,13 +972,13 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
 
                       <td style={{ textAlign: "center" }}>
                         <>
-                          {getApprovalStatus(row?.isApproved)}
+                          {getApprovalStatus(row?.approved)}
                           {/* <span style={{ display: "none" }} className="print-show">
                               {getApprovalStatus(row?.isApproved)}
                             </span> */}
                         </>
                       </td>
-                      <td>{row?.eisPaymentType ?? ""}</td>
+                      <td>{row?.paymentTypeRemarks ?? ""}</td>
                     </tr>
                   );
                 })}

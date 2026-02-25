@@ -29,18 +29,16 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
   const workforceEmployee = useSelector((state) => state.workforce.workforceEmployee);
   const mutation = useSelector((state) => state.workforce.mutation);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-  const loggedInUserRole= useSelector((state) => state.core?.user?.i_user);
-  console.log("loggedInUserRole", loggedInUserRole);
 
   const [stateEdited, setStateEdited] = useState({});
   const [isSaved, setIsSaved] = useState(false);
   const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
 
-  useEffect(() => {
-    if (!submittingMutation && mutation) {
-      dispatch(journalize(mutation));
-    }
-  }, [submittingMutation, mutation, dispatch]);
+  // useEffect(() => {
+  //   if (!submittingMutation && mutation) {
+  //     dispatch(journalize(mutation));
+  //   }
+  // }, [submittingMutation, mutation, dispatch]);
 
   const toggleSecondaryCalendar = () => {
     const isSecondaryCalendarEnabled = true;
@@ -65,7 +63,7 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
 
   const save = async () => {
     const workforceEmployeeData = {
-      workforceFactoryId: safeDecodeId(stateEdited.factory?.id) || null,
+      workforceFactoryId: safeDecodeId(stateEdited.factory?.id) || safeDecodeId(workforceEmployee?.workforceFactory?.id) || null,
       firstNameBn: stateEdited.firstNameBn || null,
       firstNameEn: stateEdited.firstNameEn || null,
       phoneNumber: stateEdited.phoneNumber || null,
@@ -90,6 +88,9 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
     await dispatch(createWorkforceEmployee(workforceEmployeeData, `Created Workforce Employee ${stateEdited.title}`));
 
     setIsSaved(true);
+    setTimeout(()=>{
+      window.location.reload();
+    }, 2000)
   };
 
   const updateAttribute = (key, value) => {
@@ -101,7 +102,6 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
   };
 
   const isSaveDisabled = false;
-  console.log("from add factory page", workforceEmployee);
   return (
     <div className={classes.page}>
       <Grid container>
@@ -126,15 +126,6 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
                   readOnly={isSaved}
                 />
               </Grid>
-              <Grid item xs={6} className={classes.item}>
-                <PublishedComponent
-                  pubRef="workforce.DatePicker"
-                  label={"workforce.employee.birthdate"}
-                  value={stateEdited.birthDate || ""}
-                  onChange={(v) => updateAttribute("birthDate", v)}
-                  readOnly={isSaved}
-                />
-              </Grid>
               {/* <Grid item xs={6} className={classes.item}>
                 <CompanyPicker
                   value={stateEdited?.company?.id}
@@ -151,7 +142,7 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
               </Grid> */}
               <Grid item xs={6} className={classes.item}>
                 <FactoryPicker
-                  value={stateEdited?.factory?.id ||workforceEmployee?.workforceFactory?.id}
+                  value={stateEdited?.factory?.id || workforceEmployee?.workforceFactory?.id}
                   label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
                   required
                   companyId={stateEdited?.company?.id}
@@ -186,23 +177,8 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
                   // readOnly={isSaved}
                 />
               </Grid> */}
-              <Grid item xs={6} className={classes.item}>
-                <EmployeeGenderPicker
-                  value={stateEdited?.gender?.id}
-                  label={<FormattedMessage id="workforce.employee.gender" module="workforce" />}
-                  onChange={(v) => updateAttribute("gender", v)}
-                  readOnly={isSaved}
-                />
-              </Grid>
-              <Grid item xs={6} className={classes.item}>
-                <TextInput
-                  label="workforce.employee.monthly_earning"
-                  value={stateEdited.monthlyEarning || ""}
-                  onChange={(v) => updateAttribute("monthlyEarning", v)}
-                  // required
-                  readOnly={isSaved}
-                />
-              </Grid>
+
+
               {/* <Grid item xs={6} className={classes.item}>
                 <PublishedComponent
                   pubRef="workforce.DatePicker"
@@ -228,6 +204,32 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
                   value={stateEdited.firstNameBn || ""}
                   onChange={(v) => updateAttribute("firstNameBn", v)}
                   required
+                  readOnly={isSaved}
+                />
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <EmployeeGenderPicker
+                  value={stateEdited?.gender?.id}
+                  label={<FormattedMessage id="workforce.employee.gender" module="workforce" />}
+                  onChange={(v) => updateAttribute("gender", v)}
+                  readOnly={isSaved}
+                />
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <PublishedComponent
+                  pubRef="workforce.DatePicker"
+                  label={"workforce.employee.birthdate"}
+                  value={stateEdited.birthDate || ""}
+                  onChange={(v) => updateAttribute("birthDate", v)}
+                  readOnly={isSaved}
+                />
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <TextInput
+                  label="workforce.employee.monthly_earning"
+                  value={stateEdited.monthlyEarning || ""}
+                  onChange={(v) => updateAttribute("monthlyEarning", v)}
+                  // required
                   readOnly={isSaved}
                 />
               </Grid>
