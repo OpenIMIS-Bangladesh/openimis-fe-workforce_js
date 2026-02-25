@@ -209,6 +209,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
         const updateApplicationData = {
           id: decodeId(encodedId?.id),
           status: forwardStatus,
+          eisApprovalIds: JSON.stringify(formData.userIds)
         };
 
         await dispatch(
@@ -258,9 +259,9 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
 
   useEffect(() => {
     if (serverResponse?.status === "SUCCESS") {
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 2000);
     }
   }, [serverResponse]);
 

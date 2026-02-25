@@ -370,6 +370,8 @@ export function formatApplicationeGQL(application) {
   ${application?.metadataVerificationRemarks ? `metadataVerificationRemarks: "${(application?.metadataVerificationRemarks)}"` : ""}
   ${application?.workforceEmployeeVerification ? `workforceEmployeeVerification: "${(application?.workforceEmployeeVerification)}"` : ""}
   ${application?.workforceEmployeeVerificationRemarks ? `workforceEmployeeVerificationRemarks: "${(application?.workforceEmployeeVerificationRemarks)}"` : ""}
+  ${application?.eisApprovalIds ? `eisApprovalIds: ${escapeQuotes(application?.eisApprovalIds)}` : ""}
+  ${application?.eisApprovedByIds ? `eisApprovedByIds: ${escapeQuotes(application?.eisApprovedByIds)}` : ""}
 `;
 }
 ///application movement ////
