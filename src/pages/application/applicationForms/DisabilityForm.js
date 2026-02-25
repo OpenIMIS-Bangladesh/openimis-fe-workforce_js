@@ -49,8 +49,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData, selectedFactory }) => {
-  const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
-
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("workforce");
   const stepRef = useRef(null);
@@ -115,7 +113,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
     },
     deathType: "",
     company: null,
-    factory: selectedFactory ||workforceFactoryId|| null,
+    factory: selectedFactory || workforceFactoryId || null,
     workforceFactoryId: workforceFactoryId || "",
     isSubmitted: "no",
     organizationType: "",
@@ -126,6 +124,10 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
     metadata: {},
     id: "",
   });
+  const employeeData =
+    user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+      ? useSelector((state) => state.workforce["selectedEmployee"] ?? [])
+      : useSelector((state) => state.workforce["workforceEmployee"] ?? []);
 
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
@@ -228,20 +230,55 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
   };
 
   const handleNext = async () => {
-    console.log({ formData });
-    const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
-    const isBankStep = 
-      (organizationType === "eis" && activeStep === 2) || 
-      (organizationType !== "eis" && activeStep === 3);
+    console.log({ activeStep });
+    console.log({ handleNext: formData });
+    let newErrors = validateRequiredFields(stepRef, formatMessage, formData);
 
+  // 2. ALWAYS clear previous document errors first (this prevents the "sticky" error after back/forth)
+  delete newErrors.documents;
+
+  // 3. Identify current step type
+  const isBankStep =
+    (formData?.organizationType === "eis" && activeStep === 2) ||
+    (formData?.organizationType !== "eis" && activeStep === 3);
+
+  // 4. Which steps actually have document uploaders?
+  //    Adjust these arrays if you have more document steps (e.g. accident info)
+  const regularDocumentSteps = formData?.organizationType === "eis" 
+    ? [0]          // EIS: step 0 = EmployeeDetailsForm (NID, BC, etc.)
+    : [1, 4];      // Normal: step 1 = Details, step 4 = AccidentInfo (add/remove as needed)
+
+  const isRegularDocumentStep = regularDocumentSteps.includes(activeStep);
+  const isDocumentStep = isBankStep || isRegularDocumentStep;
+
+  // 5. Only validate documents when leaving a step that actually has uploads
+  if (isDocumentStep) {
     const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
 
-    // 3. Run the document validation with the correctly selected array
-    const documentValidation = validateMandatoryDocuments(documentType, filesToValidate);
-    if (!documentValidation.isValid) {
-      // Attaches document errors to newErrors, ensuring Object.keys(newErrors).length > 0
-      newErrors.documents = documentValidation.errors; 
+    // 6. Prevent cross-step pollution (most important part)
+    //    Only check the documents that belong to the current uploader
+    const BANK_DOC_NAME = "applicants bank check copy";   // exact string from your error
+
+    let docsToCheck = documentType || [];
+
+    if (isBankStep) {
+      // Bank step → only check bank document(s)
+      docsToCheck = docsToCheck.filter(
+        (doc) => doc.documentType === BANK_DOC_NAME
+      );
+    } else {
+      // Other steps (details, accident, etc.) → exclude bank document
+      docsToCheck = docsToCheck.filter(
+        (doc) => doc.documentType !== BANK_DOC_NAME
+      );
     }
+
+    const documentValidation = validateMandatoryDocuments(docsToCheck, filesToValidate);
+
+    if (!documentValidation.isValid && docsToCheck.length > 0) {
+      newErrors.documents = documentValidation.errors;
+    }
+  }
     setErrors(newErrors);
     console.log({ newErrors });
     console.log({ uploadFile });
@@ -390,7 +427,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
     // setActiveStep((prevStep) => prevStep + 1);
   };
 
-  const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
+  const handleBack = () => setActiveStep(activeStep - 1);
 
   const handleSubmit = async () => {
     const resolvedFactoryId = formData?.factory?.id

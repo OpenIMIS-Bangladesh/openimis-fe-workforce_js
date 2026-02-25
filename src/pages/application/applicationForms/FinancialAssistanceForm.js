@@ -34,6 +34,7 @@ import {
   safeApplicationId,
   safeDecodeId,
   validateMandatoryDocuments,
+  validateMandatoryDocumentsForDependents,
   validateRequiredFields,
 } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
@@ -377,16 +378,27 @@ const FinancialAssistanceForm = ({
     const isBankStep = (organizationType === "eis" && activeStep === 5) || (organizationType !== "eis" && activeStep === 5);
     const isDependentStep = (organizationType === "eis" && activeStep === 4) || (organizationType !== "eis" && activeStep === 4);
 
-    const filesToValidate = isBankStep ? uploadBankFile :isDependentStep? uploadDependentFile: uploadFile;
+    let documentValidation;
 
-    // 3. Run the document validation with the correctly selected array
-    const documentValidation = validateMandatoryDocuments(documentType, filesToValidate);
-    if (!documentValidation.isValid) {
-      // Attaches document errors to newErrors, ensuring Object.keys(newErrors).length > 0
+    if (isDependentStep) {
+      // ← NEW PER-DEPENDENT VALIDATION
+      documentValidation = validateMandatoryDocumentsForDependents(
+        documentType, // your document configs
+        uploadDependentFile || [], // flat uploaded files
+        formData.dependents || [], // current dependents array
+      );
       newErrors.documents = documentValidation.errors;
+      console.log(documentValidation);
+    } else {
+      // normal validation for other steps
+      const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
+      documentValidation = validateMandatoryDocuments(documentType, filesToValidate || []);
+      console.log(documentValidation);
+      !documentValidation.isValid && (newErrors.documents = documentValidation.errors);
     }
     setErrors(newErrors);
-    console.log(newErrors);
+    console.log({ newErrors });
+    console.log({ documentValidation });
     if (Object.keys(newErrors).length > 0) {
       setShowErrorSnackbar(true);
     } else {
@@ -762,7 +774,7 @@ const FinancialAssistanceForm = ({
   }
 
   console.log({ tazwer: formData });
-  console.log({ fahimTazwer: uploadBankFile });
+  console.log({ fahimTazwer: uploadDependentFile });
 
   return (
     <div className={classes.container}>

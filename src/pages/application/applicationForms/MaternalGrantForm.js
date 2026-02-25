@@ -24,7 +24,7 @@ import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getParsedApplication, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
+import { getParsedApplication, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateMandatoryDocuments, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -68,6 +68,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
   const [showPreview, setShowPreview] = useState(false);
   const reduxState = useSelector((state) => state);
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
+  const documentType = useSelector((state) => state.workforce.documentType);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const uploadBankFile = useSelector((state) => state.workforce.uploadBankFile);
   const user_type = getUserType();
@@ -225,7 +226,17 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
 
   const handleNext = async () => {
     console.log(activeStep);
-    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
+    const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
+    const isBankStep = (organizationType === "eis" && activeStep === 2) || (organizationType !== "eis" && activeStep === 2);
+    
+    const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
+
+    // 3. Run the document validation with the correctly selected array
+    const documentValidation = validateMandatoryDocuments(documentType, filesToValidate);
+    if (!documentValidation.isValid) {
+      // Attaches document errors to newErrors, ensuring Object.keys(newErrors).length > 0
+      newErrors.documents = documentValidation.errors;
+    }
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
@@ -363,7 +374,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
     if (uploadBankFile) {
       await uploadBankFile.map((file) => {
         return dispatch(
-          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`)
+          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
         );
       });
     }
