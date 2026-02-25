@@ -1308,17 +1308,16 @@ export const getRelationString = (depObj) => {
   return null;
 };
 
+
 export function validateMandatoryDocuments(type1Array, type2Array) {
   let errors = [];
 
-  // Loop through the configured documents (Type 1)
   for (const docConfig of type1Array) {
-    // Check if the document is mandatory for the applicant
     if (docConfig.mandatoryForApplicant === true) {
-      // Look for a match in the uploaded documents (Type 2) based on 'documentType'
-      const isUploaded = type2Array.some((uploadedDoc) => uploadedDoc.documentType === docConfig.documentType);
+      const isUploaded = type2Array.some(
+        (uploadedDoc) => uploadedDoc.documentType === docConfig.documentType
+      );
 
-      // If it is mandatory but not found in the uploaded array, generate an error
       if (!isUploaded) {
         errors.push({
           documentType: docConfig.documentType,
@@ -1328,19 +1327,71 @@ export function validateMandatoryDocuments(type1Array, type2Array) {
     }
   }
 
-  // If there are errors, return false along with the error objects
-  if (errors.length > 0) {
-    return {
-      isValid: false,
-      errors: errors,
-    };
-  }
+  return errors.length > 0
+    ? { isValid: false, errors }
+    : { isValid: true, errors: null };
+}
 
-  // If everything is perfectly uploaded, return true
-  return {
-    isValid: true,
-    errors: null,
-  };
+/**
+ * FIXED: Per-Dependent Document Validator
+ * Now checks BOTH:
+ *   1. Pending uploads (uploadDependentFile)
+ *   2. Already saved attachments inside formData.dependents[index].attachments
+ */
+export function validateMandatoryDocumentsForDependents(
+  documentConfigs,     // documentType from Redux (type1Array)
+  uploadedFiles,       // uploadDependentFile (pending uploads)
+  dependents           // formData.dependents (contains attachments when saved/loaded)
+) {
+  const allErrors = [];
+
+  dependents.forEach((dep, index) => {
+    if (!dep) return;
+
+    const isDisabled = dep.isDisabled === "yes";   // key missing or "no" → false
+
+    // Build required documents for THIS dependent
+    const requiredConfigs = documentConfigs.filter((doc) => {
+      if (doc.mandatoryForApplicant !== true) return false;
+      if (doc.documentType === "disability_certificate" && !isDisabled) return false;
+      return true;
+    });
+
+    const depPrefix = `dependent_${index}_`;
+
+    // 1. Pending uploads (newly selected files)
+    const pending = (uploadedFiles || []).filter(
+      (f) => f.fieldKey?.startsWith(depPrefix)
+    );
+
+    // 2. Already saved attachments (from your JSON)
+    const saved = (dep.attachments || []).filter(
+      (att) => att.fieldKey?.startsWith(depPrefix)
+    );
+
+    // Combine both sources
+    const allFilesForThisDep = [...pending, ...saved];
+    console.log({requiredConfigs})
+    // Check every required document
+    requiredConfigs.forEach((docConfig) => {
+      const hasFile = allFilesForThisDep.some(
+        (item) => item.documentType === docConfig.documentType
+      );
+
+      if (!hasFile) {
+        allErrors.push({
+          dependentIndex: index,
+          dependentName: dep.nameEn || dep.nameBn || `Dependent ${index + 1}`,
+          documentType: docConfig.documentType,
+          message: `Missing mandatory document for ${dep.nameEn || `Dependent ${index + 1}`}: ${docConfig.nameEn} (${docConfig.nameBn})`,
+        });
+      }
+    });
+  });
+
+  return allErrors.length > 0
+    ? { isValid: false, errors: allErrors }
+    : { isValid: true, errors: null };
 }
 
 export const toBanglaNumber = (str) => {
