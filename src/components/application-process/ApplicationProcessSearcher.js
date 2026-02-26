@@ -1163,11 +1163,11 @@ class ApplicationProcessSearcher extends Component {
       const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
 
       if (rejectedApplication) {
-        defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'organizationTypeIn: ["eis"]', 'associationTypeIn: ["BEPZA","LFMEAB"]');
+        defaultStatusFilters.push('statusIn: ["rejected"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'organizationTypeIn: ["eis"]');
       } else if (revertedApplication) {
         defaultStatusFilters.push(
           // 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]','organizationTypeIn: ["eis"]'
-          'statusIn: ["revert"],  applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'organizationTypeIn: ["eis"]', 'associationTypeIn: ["BEPZA","LFMEAB"]'
+          'statusIn: ["revert"],  applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'organizationTypeIn: ["eis"]'
         );
 
         if (loggedInUserId) {
@@ -1175,20 +1175,20 @@ class ApplicationProcessSearcher extends Component {
         }
       }
       else if (this.props.sentForVerificationApplications) {
-        defaultStatusFilters.push('statusIn: ["forward_for_verification","forward_to_doctor"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'organizationTypeIn: ["eis"]', 'associationTypeIn: ["BEPZA","LFMEAB"]');
+        defaultStatusFilters.push('statusIn: ["forward_for_verification","forward_to_doctor"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'organizationTypeIn: ["eis"]');
       }
       else if (this.props.verifiedApplications) {
-        defaultStatusFilters.push('statusIn: ["approved_by_doctor","verified"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'organizationTypeIn: ["eis"]', 'associationTypeIn: ["BEPZA","LFMEAB"]');
+        defaultStatusFilters.push('statusIn: ["approved_by_doctor","verified"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'organizationTypeIn: ["eis"]');
       }
       else if (summaryId) {
         defaultStatusFilters.push('applicationTypeIn: ["disabilityAssistance","financialAssistance"]');
         additionalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
       }
       else {
-        defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'organizationTypeIn: ["eis"]', 'associationTypeIn: ["BEPZA","LFMEAB"]');
-        // if (loggedInUserId) {
-        //   defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        // }
+        defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator"]', 'applicationTypeIn: ["disabilityAssistance","financialAssistance"]', 'organizationTypeIn: ["eis"]');
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
@@ -1373,7 +1373,7 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["forward_for_verification"]',
           'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
           'organizationTypeIn: ["eis"]',
-          'associationTypeIn: ["BEPZA","LFMEAB"]'
+          // 'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
         if (loggedInUserId) {
           console.log("loggedin user id", loggedInUserId);
@@ -1384,7 +1384,7 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["verified"]',
           'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
           'organizationTypeIn: ["eis"]',
-          'associationTypeIn: ["BEPZA","LFMEAB"]'
+          // 'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
         if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
       } else if (revertedApplication) {
@@ -1392,7 +1392,7 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["revert"]',
           'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
           'organizationTypeIn: ["eis"]',
-          'associationTypeIn: ["BEPZA","LFMEAB"]'
+          // 'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
         if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
       } else if (this.props.returnedApplications) {
@@ -1400,7 +1400,7 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["revert"]',
           'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
           'organizationTypeIn: ["eis"]',
-          'associationTypeIn: ["BEPZA","LFMEAB"]'
+          // 'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
         if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
       } else {
@@ -1408,7 +1408,7 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["forward_to_eis_officer"]',
           'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
           'organizationTypeIn: ["eis"]',
-          'associationTypeIn: ["BEPZA","LFMEAB"]'
+          // 'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
         if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
       }
@@ -3418,7 +3418,8 @@ class ApplicationProcessSearcher extends Component {
           >
             <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyAssociation}>
               {/* <FormattedMessage module="workforce" id="workforce.employee.application.forwardToSectionAdmin" /> */}
-              <FormattedMessage module="workforce" id="workforce.employee.application.forwardToDG" />
+              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+              {/* <FormattedMessage module="workforce" id="workforce.employee.application.forwardToDG" /> */}
             </Button>
           </Box>
         ) : null}
