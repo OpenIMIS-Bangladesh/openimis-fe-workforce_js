@@ -80,7 +80,7 @@ const FinancialAssistanceForm = ({
   applicationForSelf,
   selectedFactory,
 }) => {
-  const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
+  
   const applicantData = useSelector((state) => state.workforce["workforceApplicant"] ?? []);
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("workforce");
@@ -186,6 +186,11 @@ const FinancialAssistanceForm = ({
     id: "",
   });
 
+  const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
+  const selectedEmployeeData = useSelector((state) => state.workforce["selectedEmployee"] ?? []);
+  console.log({ fromFactoryAdminSelectedData: selectedEmployeeData });
+  const pickedEmployeeData =user_type===WORKFORCE_USER_TYPE.FACTORY_ADMIN && selectedEmployeeData? selectedEmployeeData:useSelector((state) => state.workforce["workforceEmployee"] ?? []);
+
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
     if (reduxState.workforce.selectedEmployee) {
@@ -217,7 +222,7 @@ const FinancialAssistanceForm = ({
       // When employeeData is fetched, set it into the form state
       setFormData({
         id: parsedApplicationData?.id || "",
-        workforceApplicant: !(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN)
+        workforceApplicant: !(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && !parsedApplicationData?.applicantInfo)
           ? {
               nameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameEn : employeeData?.firstNameEn || "",
               nameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameBn : employeeData?.firstNameBn || "",
@@ -242,6 +247,32 @@ const FinancialAssistanceForm = ({
               permanentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.permanentLocation : employeeData?.permanentLocation || "",
               presentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentLocation : employeeData?.presentLocation || "",
               presentAddress: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentAddress : employeeData?.presentAddress || "",
+            }
+          :(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && !parsedApplicationData?.applicantInfo)
+          ? {
+              nameEn: pickedEmployeeData?.firstNameEn || "",
+              nameBn: pickedEmployeeData?.firstNameBn || "",
+
+              fatherNameEn: pickedEmployeeData?.fatherNameEn || "",
+              fatherNameBn: pickedEmployeeData?.fatherNameBn || "",
+              motherNameEn: pickedEmployeeData?.motherNameEn || "",
+              motherNameBn: pickedEmployeeData?.motherNameBn || "",
+              spouseNameEn: pickedEmployeeData?.spouseNameEn || "",
+              spouseNameBn: pickedEmployeeData?.spouseNameBn || "",
+              citizenship: pickedEmployeeData?.citizenship || "",
+              phoneNumber: pickedEmployeeData?.phoneNumber || "",
+              relationWithApplicant: parsedApplicationData?.applicantInfo?.relationWithApplicant|| formData?.workforceApplicant?.relationWithApplicant,
+              birthDate: parsedApplicationData?.applicantInfo?.birthDate||formData?.workforceApplicant?.birthDate,
+              gender: parsedApplicationData?.applicantInfo?.gender ||formData?.workforceApplicant?.gender,
+              citizenship: parsedApplicationData?.applicantInfo?.citizenship||formData?.workforceApplicant?.citizenship,
+
+              nid: pickedEmployeeData?.nid || "",
+              birthCertificateNo: pickedEmployeeData?.birthCertificateNo || "",
+
+              permanentAddress: pickedEmployeeData?.permanentAddress || "",
+              permanentLocation: pickedEmployeeData?.permanentLocation || "",
+              presentLocation: pickedEmployeeData?.presentLocation || "",
+              presentAddress: pickedEmployeeData?.presentAddress || "",
             }
           : parsedApplicationData?.applicantInfo,
         workforceEmployee:
@@ -323,31 +354,31 @@ const FinancialAssistanceForm = ({
         deceasedWorkerInfo:
           user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
             ? {
-                nameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameEn : employeeData?.firstNameEn || "",
-                nameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nameBn : employeeData?.firstNameBn || "",
+                nameEn: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.nameEn : employeeData?.firstNameEn || "",
+                nameBn: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.nameBn : employeeData?.firstNameBn || "",
 
-                fatherNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.fatherNameEn : employeeData?.fatherNameEn || "",
-                fatherNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.fatherNameBn : employeeData?.fatherNameBn || "",
-                motherNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.motherNameEn : employeeData?.motherNameEn || "",
-                motherNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.motherNameBn : employeeData?.motherNameBn || "",
-                spouseNameEn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameEn : employeeData?.spouseNameEn || "",
-                spouseNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameBn : employeeData?.spouseNameBn || "",
-                citizenship: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.citizenship : employeeData?.citizenship || "",
-                phoneNumber: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.phoneNumber : employeeData?.phoneNumber || "",
-                relationWithApplicant: parsedApplicationData?.applicantInfo?.relationWithApplicant,
-                birthDate: parsedApplicationData?.applicantInfo?.birthDate,
-                gender: parsedApplicationData?.applicantInfo?.gender,
-                citizenship: parsedApplicationData?.applicantInfo?.citizenship,
+                fatherNameEn: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.fatherNameEn : employeeData?.fatherNameEn || "",
+                fatherNameBn: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.fatherNameBn : employeeData?.fatherNameBn || "",
+                motherNameEn: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.motherNameEn : employeeData?.motherNameEn || "",
+                motherNameBn: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.motherNameBn : employeeData?.motherNameBn || "",
+                spouseNameEn: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.spouseNameEn : employeeData?.spouseNameEn || "",
+                spouseNameBn: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.spouseNameBn : employeeData?.spouseNameBn || "",
+                citizenship: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.citizenship : employeeData?.citizenship || "",
+                phoneNumber: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.phoneNumber : employeeData?.phoneNumber || "",
+                relationWithApplicant: parsedApplicationData?.deceasedWorkerInfo?.relationWithApplicant,
+                birthDate: parsedApplicationData?.deceasedWorkerInfo?.birthDate,
+                gender: parsedApplicationData?.deceasedWorkerInfo?.gender,
+                citizenship: parsedApplicationData?.deceasedWorkerInfo?.citizenship,
 
-                nid: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nid : employeeData?.nid || "",
+                nid: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.nid : employeeData?.nid || "",
                 birthCertificateNo: parsedApplicationData?.id
-                  ? parsedApplicationData?.applicantInfo?.birthCertificateNo
+                  ? parsedApplicationData?.deceasedWorkerInfo?.birthCertificateNo
                   : employeeData?.birthCertificateNo || "",
 
-                permanentAddress: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.permanentAddress : employeeData?.permanentAddress || "",
-                permanentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.permanentLocation : employeeData?.permanentLocation || "",
-                presentLocation: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentLocation : employeeData?.presentLocation || "",
-                presentAddress: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.presentAddress : employeeData?.presentAddress || "",
+                permanentAddress: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.permanentAddress : employeeData?.permanentAddress || "",
+                permanentLocation: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.permanentLocation : employeeData?.permanentLocation || "",
+                presentLocation: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.presentLocation : employeeData?.presentLocation || "",
+                presentAddress: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.presentAddress : employeeData?.presentAddress || "",
               }
             : parsedApplicationData?.deceasedWorkerInfo || {},
       });
@@ -373,6 +404,7 @@ const FinancialAssistanceForm = ({
 
   const handleNext = async () => {
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
+    delete newErrors.documents;
     const allAssociationDate = new Date("2022-06-21");
     const deathDate = new Date(formData?.metadata?.deathDate);
     const isBankStep = (organizationType === "eis" && activeStep === 5) || (organizationType !== "eis" && activeStep === 5);
@@ -415,10 +447,6 @@ const FinancialAssistanceForm = ({
           const currentDependents = formData?.dependents || [];
           const validDependents = currentDependents.filter((dep) => getRelationForApi(dep, workerBirthDate));
           if (validDependents.length !== currentDependents.length) {
-            // setFormData({
-            //   ...formData,
-            //   dependents: validDependents,
-            // });
             setDependentErr(true);
             return;
           }
@@ -456,13 +484,13 @@ const FinancialAssistanceForm = ({
             presentLocation: formData?.workforceEmployee?.presentLocation,
             permanentLocation: formData?.workforceEmployee?.permanentLocation,
 
-            id: formData?.workforceEmployee?.id || reduxState.core.user.id,
+            id: safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(reduxState.core.user.id),
           };
           // await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
           const updateApplicationData = {
             // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
             id: safeApplicationId(applicationId, parsedApplicationData),
-            workforceEmployeeId: employeeData?.id || reduxState.core.user.id,
+            workforceEmployeeId: safeDecodeId(employeeData?.id) || safeDecodeId(reduxState.core.user.id),
             company: formData?.workforceEmployee?.company?.id,
             factory:
               formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id
@@ -489,7 +517,7 @@ const FinancialAssistanceForm = ({
           dispatch(updateApplication(updateApplicationData, `update workforce application`));
         } else if (nextStep === 1) {
           const createApplicationData = {
-            workforceEmployeeId: employeeData?.id || reduxState.core.user.id || "",
+            workforceEmployeeId: safeDecodeId(employeeData?.id)|| safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(reduxState.core.user.id),
             company: formData?.workforceEmployee?.company?.id,
             factory:
               formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory
@@ -541,7 +569,7 @@ const FinancialAssistanceForm = ({
           const updateApplicationData = {
             // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
             id: safeApplicationId(applicationId, parsedApplicationData),
-            workforceEmployeeId: employeeData?.id || reduxState.core.user.id,
+            workforceEmployeeId: safeDecodeId(employeeData?.id) || safeDecodeId(reduxState.core.user.id),
             company: formData?.workforceEmployee?.company?.id,
             factory:
               formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory
@@ -589,7 +617,7 @@ const FinancialAssistanceForm = ({
           const updateApplicationData = {
             // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
             id: safeApplicationId(applicationId, parsedApplicationData),
-            workforceEmployeeId: employeeData?.id || reduxState.core.user.id,
+            workforceEmployeeId: safeDecodeId(employeeData?.id) || safeDecodeId(reduxState.core.user.id),
             company: formData?.workforceEmployee?.company?.id,
             factory:
               formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory
@@ -682,7 +710,7 @@ const FinancialAssistanceForm = ({
     const updateApplicationData = {
       // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
       id: safeApplicationId(applicationId, parsedApplicationData),
-      workforceEmployeeId: safeDecodeId(formData?.workforceEmployee.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
+      workforceEmployeeId: safeDecodeId(formData?.workforceEmployee.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id)||safeDecodeId(employeeData?.id),
       company: formData?.workforceEmployee?.company?.id,
       factory:
         formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory
@@ -773,6 +801,7 @@ const FinancialAssistanceForm = ({
     return <ApplicationFormSubmitted />;
   }
 
+  console.log({ fromFactoryAdmin: employeeData });
   console.log({ tazwer: formData });
   console.log({ fahimTazwer: uploadDependentFile });
 

@@ -132,6 +132,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState(false);
   const [deathAlertMessage, setDeathAlertMessage] = useState(false);
+  const [accidentDateAlertMessage, setAccidentDateAlertMessage] = useState(false);
 
   const { formatMessage } = useTranslations("workforce");
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
@@ -173,6 +174,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
       const allAssociationDate = new Date(formData?.employeeFactory?.allAssociation?.startDate);
       const accidentDate = new Date(formData?.employeeAccidentInfo?.accidentDate);
       const deathDate = new Date(formData?.employeeAccidentInfo?.dateOfDeath);
+      const joiningDate = new Date(formData?.employeeAccidentInfo?.joiningDate);
 
       if (allAssociationDate > accidentDate) {
         setAlertMessage(true);
@@ -181,6 +183,11 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
 
       if (accidentDate>deathDate) {
         setDeathAlertMessage(true)
+        return
+      }
+
+      if (joiningDate>accidentDate) {
+        setAccidentDateAlertMessage(true)
         return
       }
     }
@@ -297,6 +304,12 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
         onClose={() => setDeathAlertMessage(false)}
         type="error"
         message={<FormattedMessage id="workforce.application.before.deathDate.error" module="workforce" />}
+      />
+      <CustomSnackbar
+        open={accidentDateAlertMessage}
+        onClose={() => setAccidentDateAlertMessage(false)}
+        type="error"
+        message={<FormattedMessage id="workforce.application.before.joiningDate.error" module="workforce" />}
       />
     </>
   );

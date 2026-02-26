@@ -234,51 +234,21 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
     console.log({ handleNext: formData });
     let newErrors = validateRequiredFields(stepRef, formatMessage, formData);
 
-  // 2. ALWAYS clear previous document errors first (this prevents the "sticky" error after back/forth)
-  delete newErrors.documents;
+    // 2. ALWAYS clear previous document errors first (this prevents the "sticky" error after back/forth)
+    delete newErrors.documents;
 
-  // 3. Identify current step type
-  const isBankStep =
-    (formData?.organizationType === "eis" && activeStep === 2) ||
-    (formData?.organizationType !== "eis" && activeStep === 3);
+    // 3. Identify current step type
+    const isBankStep = (formData?.organizationType === "eis" && activeStep === 2) || (formData?.organizationType !== "eis" && activeStep === 3);
 
-  // 4. Which steps actually have document uploaders?
-  //    Adjust these arrays if you have more document steps (e.g. accident info)
-  const regularDocumentSteps = formData?.organizationType === "eis" 
-    ? [0]          // EIS: step 0 = EmployeeDetailsForm (NID, BC, etc.)
-    : [1, 4];      // Normal: step 1 = Details, step 4 = AccidentInfo (add/remove as needed)
+    const files = isBankStep ? uploadBankFile : uploadFile;
+    const BANK_DOC = "applicants bank check copy";
 
-  const isRegularDocumentStep = regularDocumentSteps.includes(activeStep);
-  const isDocumentStep = isBankStep || isRegularDocumentStep;
+    const docs = (documentType || []).filter((doc) => (isBankStep ? doc.documentType === BANK_DOC : doc.documentType !== BANK_DOC));
 
-  // 5. Only validate documents when leaving a step that actually has uploads
-  if (isDocumentStep) {
-    const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
-
-    // 6. Prevent cross-step pollution (most important part)
-    //    Only check the documents that belong to the current uploader
-    const BANK_DOC_NAME = "applicants bank check copy";   // exact string from your error
-
-    let docsToCheck = documentType || [];
-
-    if (isBankStep) {
-      // Bank step → only check bank document(s)
-      docsToCheck = docsToCheck.filter(
-        (doc) => doc.documentType === BANK_DOC_NAME
-      );
-    } else {
-      // Other steps (details, accident, etc.) → exclude bank document
-      docsToCheck = docsToCheck.filter(
-        (doc) => doc.documentType !== BANK_DOC_NAME
-      );
+    const val = validateMandatoryDocuments(docs, files);
+    if (!val.isValid && docs.length) {
+      newErrors.documents = val.errors;
     }
-
-    const documentValidation = validateMandatoryDocuments(docsToCheck, filesToValidate);
-
-    if (!documentValidation.isValid && docsToCheck.length > 0) {
-      newErrors.documents = documentValidation.errors;
-    }
-  }
     setErrors(newErrors);
     console.log({ newErrors });
     console.log({ uploadFile });
@@ -326,13 +296,13 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
             maritalStatus: formData?.workforceEmployee?.maritalStatus,
             presentLocation: formData?.workforceEmployee?.presentLocation,
             permanentLocation: formData?.workforceEmployee?.permanentLocation,
-            id: formData?.workforceEmployee?.id || reduxState.core.user.id,
+            id: safeDecodeId(employeeData?.id)|| safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(reduxState.core.user.id),
           };
           console.log("Update Submitting formData:", formData);
           await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
           if (organizationType === "eis" && nextStep === 1) {
             const createApplicationData = {
-              workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
+              workforceEmployeeId:safeDecodeId(employeeData?.id)|| safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
               organizationType: formData.organizationType,
               applicationType: formData.applicationType,
               company: formData?.workforceEmployee?.company?.id,
@@ -362,7 +332,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
           console.log("Create application formData:", formData);
           const updateApplicationData = {
             id: safeApplicationId(applicationId, parsedApplicationData),
-            workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
+            workforceEmployeeId:safeDecodeId(employeeData?.id)|| safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
             company: formData?.workforceEmployee?.company?.id,
             factory: resolvedFactoryId,
             organizationType: formData.organizationType,
@@ -379,7 +349,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
           dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
         } else if ((nextStep === 1 && organizationType !== "eis") || (nextStep === 3 && organizationType === "eis")) {
           const createApplicationData = {
-            workforceEmployeeId: formData?.workforceEmployee?.id || parsedApplicationData?.workforceEmployee?.id,
+            workforceEmployeeId:safeDecodeId(employeeData?.id)|| safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
             company: formData?.workforceEmployee?.company?.id,
@@ -408,7 +378,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
           const updateApplicationData = {
             // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
             id: safeApplicationId(applicationId, parsedApplicationData),
-            workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
+            workforceEmployeeId: safeDecodeId(formData?.workforceEmployee.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id)||safeDecodeId(employeeData?.id),
             company: formData?.workforceEmployee?.company?.id,
             factory: resolvedFactoryId,
             organizationType: organizationType || parsedApplicationData?.organizationType,
@@ -451,7 +421,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
     const updateApplicationData = {
       // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
       id: safeApplicationId(applicationId, parsedApplicationData),
-      workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
+      workforceEmployeeId: safeDecodeId(formData?.workforceEmployee.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id)||safeDecodeId(employeeData?.id),
       company: formData?.workforceEmployee?.company?.id,
       factory: resolvedFactoryId,
       organizationType: organizationType || parsedApplicationData?.organizationType,

@@ -59,7 +59,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
   const [selectedDiseases, setSelectedDiseases] = useState(formData?.employeeAccidentInfo?.cronicDiseaseType || []);
   const [isAdmitted, setIsAdmitted] = useState(formData?.employeeAccidentInfo?.admitted || "no");
   const [disAbilityEffect, setDisAbilityEffect] = useState(formData?.employeeAccidentInfo?.disAbilityEffect || "no");
-  const [hasRejoined, setHasRejoined] = useState(formData?.employeeAccidentInfo?.hasRejoined || "no");
+  const [hasRejoined, setHasRejoined] = useState(formData?.employeeAccidentInfo?.hasRejoined || "yes");
 
   // NEW STATES BASED ON DOCX REQUIREMENTS
   const [selectedDocxAccidentType, setSelectedDocxAccidentType] = useState(formData?.employeeAccidentInfo?.accidentMainType || DOCX_ACCIDENT_TYPES.WORKPLACE);
