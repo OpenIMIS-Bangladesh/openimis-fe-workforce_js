@@ -1373,7 +1373,7 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["forward_for_verification"]',
           'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
           'organizationTypeIn: ["eis"]',
-          'associationTypeIn: ["BEPZA","LFMEAB"]'
+          // 'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
         if (loggedInUserId) {
           console.log("loggedin user id", loggedInUserId);
@@ -1384,7 +1384,7 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["verified"]',
           'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
           'organizationTypeIn: ["eis"]',
-          'associationTypeIn: ["BEPZA","LFMEAB"]'
+          // 'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
         if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
       } else if (revertedApplication) {
@@ -1392,7 +1392,7 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["revert"]',
           'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
           'organizationTypeIn: ["eis"]',
-          'associationTypeIn: ["BEPZA","LFMEAB"]'
+          // 'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
         if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
       } else if (this.props.returnedApplications) {
@@ -1400,7 +1400,7 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["revert"]',
           'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
           'organizationTypeIn: ["eis"]',
-          'associationTypeIn: ["BEPZA","LFMEAB"]'
+          // 'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
         if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
       } else {
@@ -1408,7 +1408,7 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["forward_to_eis_officer"]',
           'applicationTypeIn: ["disabilityAssistance","financialAssistance"]',
           'organizationTypeIn: ["eis"]',
-          'associationTypeIn: ["BEPZA","LFMEAB"]'
+          // 'associationTypeIn: ["BEPZA","LFMEAB"]'
         );
         if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
       }
