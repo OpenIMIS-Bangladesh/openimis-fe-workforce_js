@@ -189,7 +189,7 @@ const FinancialAssistanceForm = ({
   // Fetch employee data based on username
   const fetchEmployeeWithUser = () => {
     if (reduxState.workforce.selectedEmployee) {
-      dispatch(fetchWorkforceEmployee(modulesManager, [`id: "${decodeId(reduxState.workforce.selectedEmployee.id)}"`]));
+      dispatch(fetchWorkforceEmployee(modulesManager, [`id: "${safeDecodeId(reduxState.workforce.selectedEmployee.id)}"`]));
     } else {
       dispatch(fetchWorkforceEmployee(modulesManager, [`relatedUser_LoginName_Iexact: "${reduxState.core.user.username}"`]));
     }
@@ -230,10 +230,10 @@ const FinancialAssistanceForm = ({
               spouseNameBn: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.spouseNameBn : employeeData?.spouseNameBn || "",
               citizenship: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.citizenship : employeeData?.citizenship || "",
               phoneNumber: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.phoneNumber : employeeData?.phoneNumber || "",
-              relationWithApplicant: parsedApplicationData?.applicantInfo?.relationWithApplicant,
-              birthDate: parsedApplicationData?.applicantInfo?.birthDate,
-              gender: parsedApplicationData?.applicantInfo?.gender,
-              citizenship: parsedApplicationData?.applicantInfo?.citizenship,
+              relationWithApplicant: parsedApplicationData?.applicantInfo?.relationWithApplicant|| formData?.workforceApplicant?.relationWithApplicant,
+              birthDate: parsedApplicationData?.applicantInfo?.birthDate||formData?.workforceApplicant?.birthDate,
+              gender: parsedApplicationData?.applicantInfo?.gender ||formData?.workforceApplicant?.gender,
+              citizenship: parsedApplicationData?.applicantInfo?.citizenship||formData?.workforceApplicant?.citizenship,
 
               nid: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.nid : employeeData?.nid || "",
               birthCertificateNo: parsedApplicationData?.id ? parsedApplicationData?.applicantInfo?.birthCertificateNo : employeeData?.birthCertificateNo || "",
@@ -399,12 +399,12 @@ const FinancialAssistanceForm = ({
     setErrors(newErrors);
     console.log({ newErrors });
     console.log({ documentValidation });
-    if (Object.keys(newErrors).length > 0) {
+    if (Object.keys(newErrors).length > 0 && !newErrors?.documents) {
       setShowErrorSnackbar(true);
     } else {
       setShowErrorSnackbar(false);
     }
-    if (Object.keys(newErrors).length === 0) {
+    if (Object.keys(newErrors).length === 0 || newErrors?.documents===null) {
       const nextStep = activeStep + 1;
       if (nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
@@ -466,7 +466,7 @@ const FinancialAssistanceForm = ({
             company: formData?.workforceEmployee?.company?.id,
             factory:
               formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id
-                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id)
+                ? safeDecodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id)
                 : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
@@ -493,7 +493,7 @@ const FinancialAssistanceForm = ({
             company: formData?.workforceEmployee?.company?.id,
             factory:
               formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory
-                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory?.id)
+                ? safeDecodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory?.id)
                 : null,
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
@@ -545,7 +545,7 @@ const FinancialAssistanceForm = ({
             company: formData?.workforceEmployee?.company?.id,
             factory:
               formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory
-                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory?.id)
+                ? safeDecodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory?.id)
                 : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
@@ -593,7 +593,7 @@ const FinancialAssistanceForm = ({
             company: formData?.workforceEmployee?.company?.id,
             factory:
               formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory
-                ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory?.id)
+                ? safeDecodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory?.id)
                 : null,
             organizationType: organizationType || parsedApplicationData?.organizationType,
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
@@ -686,7 +686,7 @@ const FinancialAssistanceForm = ({
       company: formData?.workforceEmployee?.company?.id,
       factory:
         formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory
-          ? decodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory?.id)
+          ? safeDecodeId(formData?.workforceEmployee?.factory?.id || formData?.deceasedWorkerInfo?.factory?.id || formData?.factory?.id)
           : null,
       organizationType: organizationType || parsedApplicationData?.organizationType,
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
