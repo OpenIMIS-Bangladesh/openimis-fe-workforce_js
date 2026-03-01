@@ -991,6 +991,7 @@
   "workforce.application.before.association.startDate.error":"The date of the accident can't be later than the start date of the relevant association of the factory.",
   "workforce.application.before.deathDate.error":"The date of the accident cannot be later than the date of death.",
   "workforce.application.before.joiningDate.error":"The date of the accident cannot be earlier than the date of joining.",
+  "workforce.application.factory.activation.error":"The factory is not yet operational.",
   "workforce.application.before.eis.startDate.error":"Applications are not allowed for incidents occurring before 21 June 2022 (EIS Pilot start date).",
   "workforce.accident.hospitalInfo.title":"Hospital Info",
 "workforce.accident.addHospital.btn":"Add Hospital Info",

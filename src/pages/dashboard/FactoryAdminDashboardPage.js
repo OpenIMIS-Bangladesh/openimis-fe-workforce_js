@@ -38,7 +38,7 @@ import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import EisMultiStepApplyForm from "../application/EisMultiStepApplyForm";
-import { isEisPath,conditionalEnToBn } from "../../utils/utils";
+import { isEisPath, conditionalEnToBn } from "../../utils/utils";
 import {
   STATUS_MAP_BN,
   STATUS_MAP_EN,
@@ -47,6 +47,7 @@ import {
   ORGANIZATION_TYPE_NAME_EN,
   ORGANIZATION_TYPE_NAME_BN,
 } from "../../constants";
+import CustomSnackbar from "../../components/shared/CustomSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -217,7 +218,7 @@ const ApplicationStatus = () => {
   const [applicationData, setApplicationData] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const reduxState = useSelector((state) => state);
-  const locale = reduxState?.core?.user?.i_user?.language || 'en';
+  const locale = reduxState?.core?.user?.i_user?.language || "en";
 
   const handleApplicationSearch = () => {
     const filters = [`trackingNumber: "${trackingNumber}"`];
@@ -253,62 +254,49 @@ const ApplicationStatus = () => {
             </Button>
           </Grid>
         </Grid>
-        {showResult && (
-          applicationData ? (
-            <Box
-              mt={4}
-              p={3}
-              border={1}
-              borderColor="#ccc"
-              borderRadius={2}
-              textAlign="left"
-              maxWidth={800}
-              margin="32px auto 0"
-            >
+        {showResult &&
+          (applicationData ? (
+            <Box mt={4} p={3} border={1} borderColor="#ccc" borderRadius={2} textAlign="left" maxWidth={800} margin="32px auto 0">
               <Typography variant="h6" gutterBottom style={{ textAlign: "center" }}>
-                <FormattedMessage
-                  module="workforce"
-                  id="workforce.tracking.summary"
-                  defaultMessage="ট্র্যাকিং সারাংশ"
-                />
+                <FormattedMessage module="workforce" id="workforce.tracking.summary" defaultMessage="ট্র্যাকিং সারাংশ" />
               </Typography>
 
               <Grid container style={{ marginTop: 16 }} spacing={2}>
                 <Grid item xs={6}>
                   <Typography>
-                    <strong><FormattedMessage module="workforce" id="workforce.application.tracking.number" />:</strong> {applicationData.trackingNumber}
+                    <strong>
+                      <FormattedMessage module="workforce" id="workforce.application.tracking.number" />:
+                    </strong>{" "}
+                    {applicationData.trackingNumber}
                   </Typography>
                   <Typography>
-                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.currentStatus" />:
-                    </strong>{(locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN)[applicationData?.status] 
-                    || applicationData?.status}
+                    <strong>
+                      <FormattedMessage module="workforce" id="workforce.employee.application.currentStatus" />:
+                    </strong>
+                    {(locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN)[applicationData?.status] || applicationData?.status}
                   </Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <Typography>
-                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.applicationType" />:
-                    </strong> {locale === "en" ? applicationData?.grantMoney?.applicationTypeNameEn : applicationData?.grantMoney?.applicationTypeNameBn}
+                    <strong>
+                      <FormattedMessage module="workforce" id="workforce.employee.application.applicationType" />:
+                    </strong>{" "}
+                    {locale === "en" ? applicationData?.grantMoney?.applicationTypeNameEn : applicationData?.grantMoney?.applicationTypeNameBn}
                   </Typography>
                   <Typography>
-                    <strong><FormattedMessage module="workforce" id="workforce.employee.application.applicationDate" />:
-                    </strong> {applicationData?.dateCreated
-                            ? conditionalEnToBn(applicationData?.dateCreated?.split("T")[0], locale)
-                            : "-"
-                        }
+                    <strong>
+                      <FormattedMessage module="workforce" id="workforce.employee.application.applicationDate" />:
+                    </strong>{" "}
+                    {applicationData?.dateCreated ? conditionalEnToBn(applicationData?.dateCreated?.split("T")[0], locale) : "-"}
                   </Typography>
                 </Grid>
               </Grid>
             </Box>
           ) : (
             <Typography color="error" style={{ marginTop: 32 }}>
-              <FormattedMessage
-                module="workforce"
-                id="workforce.tracking.notfound"
-                defaultMessage="কোনো আবেদন পাওয়া যায়নি।"
-              />
+              <FormattedMessage module="workforce" id="workforce.tracking.notfound" defaultMessage="কোনো আবেদন পাওয়া যায়নি।" />
             </Typography>
-          )
-        )}
+          ))}
       </CardContent>
     </Card>
   );
@@ -514,7 +502,6 @@ const ForwardedApplications = () => {
   );
 };
 
-
 // ------------------------------------------------------------
 
 const FactoryAdminDashboard = () => {
@@ -523,6 +510,7 @@ const FactoryAdminDashboard = () => {
   // const path = window.location.href;
   // const isEisPath = path.includes("eis");
   // console.log({ isEisPath });
+  const [showActivationError, setShowActivationError] = useState(false); // Default first menu
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
   const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
   const dispatch = useDispatch();
@@ -541,14 +529,20 @@ const FactoryAdminDashboard = () => {
       });
     }
   }, [loggedInUserId]);
-  console.log({workforceFactoryId})
+
+  useEffect(() => {
+    if (workforceFactoryId?.status === "draft") {
+      setSelectedMenu("newApplications");
+    }
+  }, [workforceFactoryId]);
+  console.log({ workforceFactoryId });
 
   const renderContent = () => {
     switch (selectedMenu) {
       case "pendingApplications":
         return <FiledApplications />;
       case "newApplications":
-        return isEisPath() ? <EisMultiStepApplyForm workforceFactoryId={workforceFactoryId}/> : <MultiStepApplyForm workforceFactoryId={workforceFactoryId}/>;
+        return isEisPath() ? <EisMultiStepApplyForm workforceFactoryId={workforceFactoryId} /> : <MultiStepApplyForm workforceFactoryId={workforceFactoryId} />;
       case "submittedByApplicants":
         return <SubmittedByApplicants />;
       case "forwardedApplications":
@@ -574,13 +568,41 @@ const FactoryAdminDashboard = () => {
         {/* Sidebar */}
         <Grid item xs={12} md={3}>
           <Paper className={classes.sidebar}>
+            {workforceFactoryId?.status === "draft" && <Typography style={{color:"red",textAlign:"center",fontWeight:"bold"}}><FormattedMessage id="workforce.application.factory.activation.error" /></Typography>}
             <List>
-              {SidebarMenu.map((item) => (
-                <ListItem button key={item.id} selected={selectedMenu === item.id} onClick={() => setSelectedMenu(item.id)}>
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} />
-                </ListItem>
-              ))}
+              {SidebarMenu.map((item) => {
+                // Determine if this item should be disabled
+                const isDraftStatus = workforceFactoryId?.status === "draft";
+                const isNotNewApplication = item.id !== "newApplications";
+                const isDisabled = isDraftStatus && isNotNewApplication;
+
+                return (
+                  <ListItem
+                    button
+                    key={item.id}
+                    selected={selectedMenu === item.id}
+                    // Disable the click and apply the disabled look
+                    disabled={isDisabled}
+                    onClick={() => {
+                      if (!isDisabled) {
+                        setSelectedMenu(item.id);
+                      } else {
+                        setShowActivationError(true);
+                      }
+                    }}
+                  >
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.text} />
+                    {/* Optional: Show a hint why it's disabled */}
+                    {/* {isDisabled && isDraftStatus && (
+                      <Typography variant="caption" color="error">
+                        {" "}
+                        (Required){" "}
+                      </Typography>
+                    )} */}
+                  </ListItem>
+                );
+              })}
             </List>
           </Paper>
         </Grid>
@@ -590,6 +612,13 @@ const FactoryAdminDashboard = () => {
           {renderContent()}
         </Grid>
       </Grid>
+
+      <CustomSnackbar
+        open={showActivationError}
+        onClose={() => setShowActivationError(false)}
+        type="error"
+        message={<FormattedMessage id="workforce.application.factory.activation.error" module="workforce" />}
+      />
     </div>
   );
 };

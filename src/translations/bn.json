@@ -888,6 +888,7 @@
   "workforce.application.before.association.startDate.error":"আবদেনে উল্লেখিত দূর্ঘটনার তারিখ কারখানার সংশ্লিষ্ট এসোসিয়েশনের শুরুর তারিখ হতে পরে হতে পারবে না।",
   "workforce.application.before.deathDate.error":"দুর্ঘটনার তারিখ মৃত্যুর তারিখের পরে হতে পারবে না।",
   "workforce.application.before.joiningDate.error":"দুর্ঘটনার তারিখ যোগদানের তারিখের আগের হতে পারে না।",
+  "workforce.application.factory.activation.error":"কারখানাটি এখনও সক্রিয় হয়নি।",
   "workforce.application.before.eis.startDate.error":"২১ জুন ২০২২ এর আগে সংঘটিত কোনো ঘটনার জন্য EIS পাইলট প্রকল্পে আবেদন গ্রহণযোগ্য নয়।",
   "workforce.accident.hospitalInfo.title":"হাসপাতালের তথ্য",
 "workforce.accident.addHospital.btn":"হাসপাতালের তথ্য যোগ করুন",

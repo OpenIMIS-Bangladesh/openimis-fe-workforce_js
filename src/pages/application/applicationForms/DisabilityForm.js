@@ -232,6 +232,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
   const handleNext = async () => {
     console.log({ activeStep });
     console.log({ handleNext: formData });
+    console.log({uploadFile})
     let newErrors = validateRequiredFields(stepRef, formatMessage, formData);
 
     // 2. ALWAYS clear previous document errors first (this prevents the "sticky" error after back/forth)
