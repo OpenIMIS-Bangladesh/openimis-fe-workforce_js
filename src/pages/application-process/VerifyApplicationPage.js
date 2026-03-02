@@ -318,6 +318,8 @@ class VerifyApplicationPage extends Component {
         setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
         setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
         setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+        history: this.props.history,
+
       });
     } else {
       handleBulkSelectedByAssociationLogic({

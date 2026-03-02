@@ -1,4 +1,4 @@
-import { decodeId } from "@openimis/fe-core";
+import { decodeId,useHistory } from "@openimis/fe-core";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../constants";
 import { getUserTypeFromRights, isEisPath, safeDecodeId } from "./utils";
 import { fetchApplicationFactoryAssociation, fetchUsersByRoleId, fetchWorkforceAssociationUserMaps, fetchWorkforceUserRoleWiseUser } from "../actions";
@@ -305,6 +305,7 @@ export const handleBulkSelectedByCheckerLogic = async ({
   setConfirmModalMessage,
   setConfirmModalCallback,
   modulesManager,
+  history
 }) => {
   const userType = getUserTypeFromRights(userRights);
   let confirmModalMessage = "";
@@ -343,7 +344,7 @@ export const handleBulkSelectedByCheckerLogic = async ({
  
     try {
       for (const selectedItem of selectedApplicationIds) {
-        const decodedId = decodeId(selectedItem?.id);
+        const decodedId = safeDecodeId(selectedItem?.id);
         const res = await fetchWorkforceDocument(modulesManager, [
           `workforceApplication_Id: "${decodedId}"`,
         ]);
@@ -385,15 +386,15 @@ export const handleBulkSelectedByCheckerLogic = async ({
               ? 139
               : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
                 userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
-              ? 187
+              ? 187 : userType === WORKFORCE_USER_TYPE.EIS_OFFICER ? 194
               : null,
           toRoleId:
             userType === WORKFORCE_USER_TYPE.CHECKER
-              ? 32
+              ? 32 : userType === WORKFORCE_USER_TYPE.EIS_OFFICER ? 47
               : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
                 userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
               ? 40
-              : 42,
+              : null,
         };
 
         await updateApplication(updateApplicationData, "update workforce application");
@@ -414,7 +415,7 @@ export const handleBulkSelectedByCheckerLogic = async ({
         message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
       });
     } finally {
-       window.location.reload();
+      history.push("/home");
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
     }
