@@ -71,25 +71,28 @@ const useStyles = makeStyles((theme) => ({
 
 const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, documentProp, uploadedBy }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [webcamOpen, setWebcamOpen] = useState(false);
   const webcamRef = useRef(null);
+
+  // 1. Get initial files from Redux to keep UI in sync
   const savedFiles = useSelector((state) => state.workforce.uploadedFilesByField?.[fieldKey] || []);
   const [files, setFiles] = useState([]);
-  const [uploadFilePaths, setUploadedFilePaths] = useState(null);
-  const dispatch = useDispatch();
 
+  // Sync local state when Redux updates
   useEffect(() => {
-    if (savedFiles?.length > 0) {
-      setFiles(savedFiles);
-    }
-  }, []);
+    const savedFilesString = JSON.stringify(savedFiles);
+    const currentFilesString = JSON.stringify(files);
 
-  // const jwtToken = localStorage.getItem("token"); // Replace with how you store token
+    if (savedFilesString !== currentFilesString) {
+      setFiles(savedFiles || []);
+    }
+  }, [savedFiles, fieldKey]);
 
   const uploadFileToApi = async (file) => {
     const formData = new FormData();
-    formData.append("file", file); // actual file content
-    formData.append("name", file.name); // optional field if backend expects this
+    formData.append("file", file);
+    formData.append("name", file.name);
 
     try {
       const response = await fetch("/api/workforce/document/upload", {
@@ -99,116 +102,97 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error(`Upload failed for ${file.name}:`, errorData);
+        console.error(`Upload failed for ${file.name}`);
+        return null;
       }
+
       const responseData = await response.json();
-      console.log(`Upload successful for ${file.name}:`, responseData);
+
+      // Construct standardized file object
       const fileWithInfo = {
-        file,
-        uploadInfo: responseData, // contains path, url, etc.
         name: file.name,
+        path: responseData.file_path,
+        url: responseData.file_url,
       };
-      dispatch(setUploadedFiles(fieldKey, [...files, fileWithInfo]));
-      setUploadedFilePaths(responseData);
+
+      // 2. Update Redux Field Tracking (UI list)
+      const updatedSavedFiles = [...savedFiles, fileWithInfo];
+      dispatch(setUploadedFiles(fieldKey, updatedSavedFiles));
+
       const createDocumentData = {
         path: responseData.file_path,
         url: responseData.file_url,
         workforceDocumentTypeId: documentProp?.id ? decodeId(documentProp.id) : "",
-        // workforceApplicationId: safeApplicationId(applicationId),
         documentType: documentType,
         holder: "57",
-        holderType: uploadedBy || "applicant",
+        holderType: "applicant",
       };
-      if (uploadedBy === "dependent") {
-        dispatch({
-          type: "SET_UPLOAD_DEPENDENT_FILE_DATA",
-          payload: { ...createDocumentData, holderType: "applicant" },
-        });
-      }else if (uploadedBy === "bank") {
-        dispatch({
-          type: "SET_UPLOAD_DEPENDENT_BANK_DATA",
-          payload: { ...createDocumentData, holderType: "applicant" },
-        });
-      } else {
-        dispatch({
-          type: "SET_UPLOAD_FILE_DATA",
-          payload: createDocumentData,
-        });
-      }
-      if (applicationId && uploadedBy==="factoryAdmin") {
-        console.log("create document data", createDocumentData);
+
+      // 3. Update Global Validation Arrays (Filtered by NextStep)
+      let actionType = "SET_UPLOAD_FILE_DATA";
+      if (uploadedBy === "dependent") actionType = "SET_UPLOAD_DEPENDENT_FILE_DATA";
+      if (uploadedBy === "bank") actionType = "SET_UPLOAD_DEPENDENT_BANK_DATA";
+
+      dispatch({ type: actionType, payload: createDocumentData });
+
+      // 4. Handle Persistent DB Storage if Application ID exists
+      if (applicationId) {
         dispatch(
           createWorkforceDocument(
-            { ...createDocumentData, workforceApplicationId: uploadedBy ? applicationId : safeApplicationId(applicationId) },
-            `Created workforce document `
+            { ...createDocumentData, workforceApplicationId: safeApplicationId(applicationId) },
+            `Created workforce document`
           )
         );
       }
 
-      if (applicationId && uploadedBy != "factoryAdmin") {
-        console.log("create document data", createDocumentData);
-        dispatch(
-          createWorkforceDocument(
-            { ...createDocumentData, workforceApplicationId: uploadedBy ? applicationId : safeApplicationId(applicationId) },
-            `Created workforce document `
-          )
-        );
-      }
-
-      return responseData;
+      return fileWithInfo;
     } catch (error) {
-      console.error(`Upload error for ${file.name}:`, error);
+      console.error(`Upload error:`, error);
+      return null;
+    }
+  };
+
+  const onDrop = useCallback(async (acceptedFiles) => {
+    // We do NOT update setFiles here to avoid duplicates.
+    // We wait for the API response which updates Redux, triggering the useEffect sync.
+    for (const file of acceptedFiles) {
+      await uploadFileToApi(file);
+    }
+  }, [savedFiles, fieldKey]);
+
+  const removeFile = (fileName) => {
+    // Find file object to get the unique 'path'
+    const fileToRemove = files.find((f) => f.name === fileName);
+
+    if (fileToRemove) {
+      const identifier = fileToRemove.path;
+
+      // A. Remove from Field Tracking (UI list)
+      dispatch(removeUploadedFile(fieldKey, fileName));
+
+      // B. Remove from Validation Arrays (Filtering by path)
+      let removeType = "REMOVE_UPLOAD_FILE_DATA";
+      if (uploadedBy === "dependent") removeType = "REMOVE_UPLOAD_DEPENDENT_FILE_DATA";
+      if (uploadedBy === "bank") removeType = "REMOVE_UPLOAD_DEPENDENT_BANK_DATA";
+
+      dispatch({ type: removeType, payload: identifier });
+      
+      // Notify parent of the change
+      if (onFileChange) {
+        const filtered = files.filter((f) => f.name !== fileName);
+        onFileChange(fieldKey, filtered);
+      }
     }
   };
 
   const captureAndUpload = async () => {
     const imageSrc = webcamRef.current.getScreenshot();
-
-    // Convert base64 to a file
     const response = await fetch(imageSrc);
     const blob = await response.blob();
     const file = new File([blob], `capture_${Date.now()}.jpg`, { type: "image/jpeg" });
 
-    setFiles([...files, file]);
-    onFileChange(fieldKey, [...files, file]);
     await uploadFileToApi(file);
     setWebcamOpen(false);
-  };
-
-  const onDrop = useCallback(
-    async (acceptedFiles) => {
-      const newFiles = [...files, ...acceptedFiles];
-      setFiles(newFiles);
-
-      // Upload each file and collect API response
-      const uploadedResponses = [];
-      for (const file of acceptedFiles) {
-        const res = await uploadFileToApi(file);
-        if (res) uploadedResponses.push(res);
-      }
-
-      // 🔹 Combine file info with upload response
-      const attachments = newFiles.map((file, i) => ({
-        file,
-        uploadInfo: uploadedResponses[i] || null, // contains file_path, file_url, etc.
-      }));
-
-      // 🔹 Pass it upward
-      onFileChange(fieldKey, {
-        files: attachments,
-        documentType,
-        documentPropId: documentProp?.id,
-      });
-    },
-    [files, fieldKey, onFileChange, documentType, documentProp]
-  );
-
-  const removeFile = (fileName) => {
-    dispatch(removeUploadedFile(fieldKey, fileName));
-    const updatedFiles = files.filter((file) => file.name !== fileName);
-    setFiles(updatedFiles);
-    onFileChange(fieldKey, updatedFiles);
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -224,13 +208,10 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
     },
   });
 
-  console.log("upload files", files);
-
   return (
     <div>
       <Paper className={classes.dropzone}>
         <Box display="flex" alignItems="center" justifyContent="center" style={{ gap: "24px" }}>
-          {/* Upload Option - only this part gets getRootProps */}
           <Box {...getRootProps()} display="flex" alignItems="center" style={{ gap: "8px", cursor: "pointer" }}>
             <input {...getInputProps()} />
             <CloudUploadIcon className={classes.uploadIcon} />
@@ -239,7 +220,6 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
             </FormattedMessage>
           </Box>
 
-          {/* Camera Option */}
           <Box
             onClick={() => {
               if (/Mobi|Android/i.test(navigator.userAgent)) {
@@ -256,7 +236,6 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
             </FormattedMessage>
           </Box>
 
-          {/* Mobile capture input (only one!) */}
           <input
             id="cameraCaptureInput"
             type="file"
@@ -294,13 +273,15 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
                 variant="body2"
                 className={classes.fileName}
                 onClick={() => {
-                  const fileUrl = file.url || URL.createObjectURL(file);
-                  const link = document.createElement("a");
-                  link.href = fileUrl;
-                  link.download = file.name;
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
+                  const fileUrl = file.url || (file.file ? URL.createObjectURL(file.file) : null);
+                  if (fileUrl) {
+                    const link = document.createElement("a");
+                    link.href = fileUrl;
+                    link.download = file.name;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }
                 }}
                 style={{ cursor: "pointer", textDecoration: "underline", color: "#005f67" }}
               >
@@ -312,12 +293,13 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
                   <DeleteIcon color="secondary" className={classes.deleteIcon} />
                 </IconButton>
 
-                {/* ➕ Add icon (beside delete) */}
-                <IconButton size="small" onClick={() => document.getElementById(`additionalFileInput-${fieldKey}-${index}`).click()}>
+                <IconButton
+                  size="small"
+                  onClick={() => document.getElementById(`additionalFileInput-${fieldKey}-${index}`).click()}
+                >
                   <AddIcon style={{ fontSize: "1.2rem", color: "#005f67" }} />
                 </IconButton>
 
-                {/* Hidden input for upload */}
                 <input
                   id={`additionalFileInput-${fieldKey}-${index}`}
                   type="file"

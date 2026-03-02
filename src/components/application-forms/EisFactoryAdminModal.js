@@ -13,7 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import { useSelector, useDispatch } from "react-redux";
 import { createWorkforceDocument, updateApplication, testWorkforcePayment } from "../../actions";
-import { validateRequiredFields, getUserType } from "../../utils/utils";
+import { validateRequiredFields, getUserType, validateMandatoryDocuments } from "../../utils/utils";
 import { FormattedMessage, useTranslations } from "@openimis/fe-core";
 import FactoryAdminAccidentForm from "../../pages/application/FactoryAdminAccidentForm";
 import EisDoctorEntries from "../../pages/application/EisDoctorEntries";
@@ -135,6 +135,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
   const [accidentDateAlertMessage, setAccidentDateAlertMessage] = useState(false);
 
   const { formatMessage } = useTranslations("workforce");
+  const documentType = useSelector((state) => state.workforce.documentType);
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const dispatch = useDispatch();
   const stepRef = useRef(null);
@@ -166,6 +167,11 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
   const handleSubmit = async () => {
     // 2. Validate Required Fields
     const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
+    delete newErrors.documents;
+    let documentValidation = validateMandatoryDocuments(documentType, uploadFile);
+    if (!documentValidation?.isValid) {
+      newErrors.documents = documentValidation?.errors
+    }
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 

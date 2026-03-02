@@ -47,9 +47,10 @@ const RelationWithWorkerPicker = ({
   ]
 
   const options = useMemo(() => {
-    const baseOptions = (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && applicantInfo === "factory_admin")
-      ? EMPLOYEE_RELATION_APPLICANT
-      : EMPLOYEE_RELATION;
+    // const baseOptions = (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && applicantInfo === "factory_admin")
+    //   ? EMPLOYEE_RELATION_APPLICANT
+    //   : EMPLOYEE_RELATION;
+    const baseOptions = EMPLOYEE_RELATION
 
     if (!excludeRelation) return baseOptions;
 

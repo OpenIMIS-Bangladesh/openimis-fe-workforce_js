@@ -353,7 +353,7 @@
   "workforce.success.message": "✅ আবেদন সফলভাবে জমা দেওয়া হয়েছে!",
   "workforce.success.message.doctor": "✅ আপনার তথ্য সফলভাবে সংরক্ষণ করা হয়েছে!",
 
-  "workforce.registration.title": "উপকারভোগী নিবন্ধন ফর্ম",
+  "workforce.registration.title": "ওটিপি প্রধান করুন।",
 
   "workforce.employee.name.en": "নাম (ইংরেজি)",
   "workforce.employee.name.bn": "নাম (বাংলা)",
@@ -865,7 +865,7 @@
   "workforce.other.compensationInfo": "ক্ষতিপূরণের তথ্য",
   "workforce.compensation.add": "আরেকটি ক্ষতিপূরণ যোগ করুন",
   "workforce.compensation.date": "ক্ষতিপূরণের তারিখ",
-  "workforce.compensation.recievedFrom": "ক্ষতিপূরণ গ্রহণকৃত প্রতিষ্ঠানের নাম",
+  "workforce.compensation.recievedFrom": "ক্ষতিপূরণ প্রদানকারী প্রতিষ্ঠানের নাম",
   "workforce.compensation.remarks": "মন্তব্য",
   "workforce.compensation.eligible.ForEISAdjustment": "ই.আই.এস. সুবিধা সমন্বয়ের জন্য যোগ্য",
   "workforce.compensation.paymentStatus": "পেমেন্টের অবস্থা",

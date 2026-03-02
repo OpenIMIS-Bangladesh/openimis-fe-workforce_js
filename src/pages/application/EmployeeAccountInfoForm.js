@@ -245,7 +245,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                                 value={account?.accountHolderName || dependent?.[index]?.nameBn || formdata?.workforceEmployee?.nameBn}
                                 onChange={(v) => handleAccountChange(index, "accountHolderName", v)}
                                 required
-                                readOnly={false}
+                                readOnly={account?.accountHolderName || dependent?.[index]?.nameBn || formdata?.workforceEmployee?.nameBn}
                                 error={!!errors.accountHolderName}
                                 helperText={errors.accountHolderName}
                               />

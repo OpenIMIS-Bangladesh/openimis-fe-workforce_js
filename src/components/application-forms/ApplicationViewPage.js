@@ -818,7 +818,7 @@ const ApplicationViewPage = ({
             </Typography>
           )}
           {/* ... [Rest of Sidebar logic for salary, accident info etc] ... */}
-          {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && viewedFromFlag === "verify" && (
+          {(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) && viewedFromFlag === "verify" && (
             <Grid container spacing={2} style={{ marginTop: "10px" }}>
               <Grid item xs={9}>
                 <TextInput
@@ -849,7 +849,7 @@ const ApplicationViewPage = ({
                       color="primary"
                       onClick={() => setOpenAccidentInfoModal(true)}
                       fullwidth
-                      disabled={isNotEmpty(application?.employeeAccidentInfo)}
+                      disabled={!user_type===WORKFORCE_USER_TYPE.EIS_COORDINATOR && isNotEmpty(application?.employeeAccidentInfo)}
                     >
                       {<FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />}
                     </Button>

@@ -398,7 +398,6 @@ function reducer(
     workforceAllAssociation: null,
     workforceAllAssociationPageInfo: { totalCount: 0 },
 
-
     fetchingWorkforceAssociationMap: false,
     errorWorkforceAssociationMap: null,
     fetchedWorkforceAssociationMap: false,
@@ -406,7 +405,6 @@ function reducer(
     workforceAssociationMapPageInfo: { totalCount: 0 },
 
     fetchedSignatureData: [],
-
 
     ///file upload state
     uploadedFilesByField: {},
@@ -422,7 +420,7 @@ function reducer(
 
     workforceApplicationStatusCount: {},
   },
-  action
+  action,
 ) {
   switch (action.type) {
     case "SET_UPLOADED_FILES":
@@ -434,6 +432,11 @@ function reducer(
         },
       };
 
+    case "REMOVE_UPLOAD_FILE_DATA":
+  return {
+    ...state,
+    uploadFile: state.uploadFile.filter((item) => item.path !== action.payload),
+  };
     case "REMOVE_UPLOADED_FILE":
       return {
         ...state,
@@ -458,19 +461,29 @@ function reducer(
         ...state,
         uploadDependentFile: [...(state.uploadDependentFile || []), action.payload],
       };
+    case "REMOVE_UPLOAD_DEPENDENT_FILE_DATA":
+  return {
+    ...state,
+    uploadDependentFile: state.uploadDependentFile.filter((item) => item.path !== action.payload),
+  };
     case "SET_UPLOAD_DEPENDENT_BANK_DATA":
       return {
         ...state,
         uploadBankFile: [...(state.uploadBankFile || []), action.payload],
       };
-    
-      case "SET_SELECTED_EMPLOYEE":
+    case "REMOVE_UPLOAD_DEPENDENT_BANK_DATA":
+  return {
+    ...state,
+    uploadBankFile: state.uploadBankFile.filter((item) => item.path !== action.payload),
+  };
+
+    case "SET_SELECTED_EMPLOYEE":
       return {
         ...state,
         selectedEmployee: action.payload,
       };
 
-           /// all associations////
+    /// all associations////
     case "WORKFORCE_ALL_ASSOCIATIONS_REQ":
       return {
         ...state,
@@ -520,7 +533,6 @@ function reducer(
         fetchingWorkforceAssociationMap: false,
         errorWorkforceAssociationMap: formatServerError(action.payload),
       };
-
 
     case "WORKFORCE_ORGANIZATIONS_REQ":
       return {
@@ -1578,7 +1590,7 @@ function reducer(
         ...state,
         verifyNidDetails: action.payload.data.workforceNidVerification,
       };
-    
+
     case "WORKFORCE_SIGNATURE_RESP":
       return {
         ...state,
@@ -1881,7 +1893,6 @@ function reducer(
         grievanceConfig: null,
       };
 
-   
     case "WORKFORCE_APPLICATION_STATUS_COUNT_RESP":
       return {
         ...state,
@@ -1918,7 +1929,7 @@ function reducer(
       return dispatchMutationReq(state, action);
     }
     case "OTP_MUTATION_ERR":
-      return dispatchMutationErr(state,action);
+      return dispatchMutationErr(state, action);
     case "OTP_CREATE_OTP_RESP":
       return dispatchMutationResp(state, "createWorkforceOtp", action);
     case "OTP_UPDATE_OTP_RESP":

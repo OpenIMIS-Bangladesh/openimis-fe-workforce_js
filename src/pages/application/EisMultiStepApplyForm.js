@@ -67,6 +67,7 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
   const modulesManager = useModulesManager();
   const { application_uuid } = useParams();
   const dispatch = useDispatch();
+   const selectedEmployeeData = useSelector((state) => state.workforce["selectedEmployee"] ?? []);
   const [parsedApplicationData, setParsedApplicationData] = useState();
   const [showForm, setShowForm] = useState(false);
   const [applicationForSelf, setApplicationForSelf] = useState("");
@@ -171,6 +172,7 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
               </Typography>
             </div>
             <DisabilityForm
+              selectedEmployeeData={selectedEmployeeData}
               workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}
               organizationType={organizationType}
@@ -191,6 +193,7 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
               </Typography>
             </div>
             <FinancialAssistanceForm
+              selectedEmployeeData={selectedEmployeeData}
               workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}
               organizationType={organizationType}

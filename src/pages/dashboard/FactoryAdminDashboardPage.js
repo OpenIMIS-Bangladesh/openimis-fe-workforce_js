@@ -575,6 +575,7 @@ const FactoryAdminDashboard = () => {
                 const isDraftStatus = workforceFactoryId?.status === "draft";
                 const isNotNewApplication = item.id !== "newApplications";
                 const isDisabled = isDraftStatus && isNotNewApplication;
+                // const isDisabled = false;
 
                 return (
                   <ListItem

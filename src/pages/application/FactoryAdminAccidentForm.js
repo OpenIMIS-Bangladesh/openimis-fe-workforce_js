@@ -317,9 +317,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
                 required
               />
               {errors?.rdmp && (
-                <FormHelperText error>
-                  <FormattedMessage id={errors?.rdmp} />
-                </FormHelperText>
+                <FormHelperText error><FormattedMessage id={errors?.rdmp} /></FormHelperText>
               )}
             </Grid>
             <Grid item xs={6} className={classes.item}>
@@ -331,13 +329,12 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
                 required
               />
               {errors?.rdmp && (
-                <FormHelperText error>
-                  <FormattedMessage id={errors?.rdmp} />
-                </FormHelperText>
+                <FormHelperText error><FormattedMessage id={errors?.rdmp} /></FormHelperText>
               )}
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <CustomTimePicker
+                id="accidentTime"
                 label={"workforce.employee.accident.info.timeOfAccident"}
                 value={formData?.employeeAccidentInfo?.accidentTime || ""}
                 onChange={(value) => handleChange("accidentTime", value)}
@@ -577,6 +574,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
             <Grid item xs={12} className={classes.item}>
               {/* Details of Accident (S.L 20/23) - Full width text input */}
               <TextInput
+                id="detailsOfAccident"
                 label="workforce.accident.detailsOfAccident.label"
                 value={formData?.employeeAccidentInfo?.detailsOfAccident || ""}
                 onChange={(v) => handleChange("detailsOfAccident", v)}
@@ -846,7 +844,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
                       onChange={(v) => handleChange("dateOfRejoining", v)}
                       required
                     />
-                    {errors?.dateOfRejoining && <FormHelperText error>{errors?.dateOfRejoining}</FormHelperText>}
+                    {errors?.rdmp && <FormHelperText error>{errors?.rdmp}</FormHelperText>}
                   </Grid>
                 )}
               </>
@@ -857,6 +855,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
 
       {formData?.applicationType === "disabilityAssistance" && (
         <EmployeeDetailsForm2
+          errors={errors}
           handleChange={() => {}}
           formData={formData}
           selectedApplicationType={formData.applicationType}

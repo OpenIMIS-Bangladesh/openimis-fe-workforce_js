@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomTimePicker = ({ label = "সময়", value, onChange }) => {
+const CustomTimePicker = ({id, label = "সময়", value, onChange }) => {
   const classes = useStyles();
   const language = useSelector((state) => state?.core?.user?.i_user?.language ?? "en");
 
