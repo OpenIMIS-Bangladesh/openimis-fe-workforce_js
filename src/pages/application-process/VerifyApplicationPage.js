@@ -39,7 +39,7 @@ import FileUploader from "../../pickers/FileUploader";
 import { getUserTypeFromRights, tryParse } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
-import { handleBulkSelectedByAssociationLogic, handleBulkSelectedByCheckerLogic } from "../../utils/workforceForwardRevertActions";
+import { handleBulkSelectedByAssociationLogic, handleBulkSelectedByCheckerLogic, handleApprovalByDoctor} from "../../utils/workforceForwardRevertActions";
 import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
 import RevertApplicationModal from "../../components/application-process/modals/RevertApplicationModal";
 import ForwardApplicationFactoryAdminModal from "../../components/application-process/modals/ForwardApplicationFactoryAdminModal";
@@ -321,6 +321,24 @@ class VerifyApplicationPage extends Component {
         history: this.props.history,
 
       });
+    } else if (
+      user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR
+    ) {
+      handleApprovalByDoctor({
+        selectedApplicationIds: [{ id: application?.id }],
+        loggedInUserId: this.props.loggedInUserId,
+        userRights: this.props.user_rights,
+        fetchWorkforceDocument: this.props.fetchWorkforceDocument,
+        updateApplication: this.props.updateApplication,
+        createApplicationMovement: this.props.createApplicationMovement,
+        modulesManager: this.props.modulesManager,
+        setServerResponse: (res) => this.setState({ serverResponse: res }),
+        setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
+        setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
+        setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+        history: this.props.history,
+
+      });
     } else {
       handleBulkSelectedByAssociationLogic({
         selectedApplicationIds: [{ id: application?.id }],
@@ -426,7 +444,8 @@ class VerifyApplicationPage extends Component {
           user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
           user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ||
           user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
-          user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) && (
+          user_type === WORKFORCE_USER_TYPE.EIS_OFFICER ||
+          user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
           <Grid container spacing={2} style={{ marginTop: "16px", padding: 4 }}>
             <Grid item xs={6}></Grid>
             {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && application?.applicationType ==="financialAssistance") && (

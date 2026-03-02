@@ -421,3 +421,108 @@ export const handleBulkSelectedByCheckerLogic = async ({
     }
   });
 };
+
+ export const handleApprovalByDoctor = async ({
+  selectedApplicationIds,
+  loggedInUserId,
+  userRights,
+  updateApplication,
+  createApplicationMovement,
+  setServerResponse,
+  setConfirmModalOpen,
+  setConfirmModalMessage,
+  setConfirmModalCallback,
+  modulesManager,
+  history,
+  editedGrantMoney
+}) => {
+
+  const userType = getUserTypeFromRights(userRights);
+
+  let confirmModalMessage =
+    "workforce.application.doctor.approve.message";
+
+  if (!selectedApplicationIds?.length) {
+    setServerResponse({
+      status: "ERROR",
+      message: "Please select at least one application.",
+    });
+    return;
+  }
+
+  setConfirmModalMessage(confirmModalMessage);
+  setConfirmModalOpen(true);
+
+  setConfirmModalCallback(async (confirmed) => {
+    if (!confirmed) {
+      setConfirmModalOpen(false);
+      return;
+    }
+
+    try {
+      for (const selectedItem of selectedApplicationIds) {
+
+        const decodedId = safeDecodeId(selectedItem?.id);
+
+        const updateApplicationData = {
+          id: decodedId,
+          status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
+          grantAmount: editedGrantMoney,
+        };
+
+        const createApplicationMovementData = {
+          applicationId: decodedId,
+          status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
+          note: "আবেদন ডাক্তার দ্বারা অনুমোদন করা হয়েছে",
+          action: "approved_by_doctor",
+          applicationFromId: loggedInUserId,
+
+          applicationToId:
+            userType === WORKFORCE_USER_TYPE.DOCTOR
+              ? 139
+              : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
+              ? 187
+              : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+              ? 173
+              : null,
+
+          toRoleId:
+            userType === WORKFORCE_USER_TYPE.DOCTOR
+              ? 32
+              : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
+              ? 40
+              : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+              ? 42
+              : null,
+        };
+
+        await updateApplication(
+          updateApplicationData,
+          "update workforce application"
+        );
+
+        await createApplicationMovement(
+          createApplicationMovementData,
+          "create workforce movement"
+        );
+      }
+
+      setServerResponse({
+        status: "SUCCESS",
+        message: "আবেদনসমূহ সফলভাবে অনুমোদন করা হয়েছে!",
+      });
+
+    } catch (error) {
+      console.error("Bulk doctor approval failed:", error);
+
+      setServerResponse({
+        status: "ERROR",
+        message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
+      });
+    } finally {
+      history.push("/home");
+      setConfirmModalOpen(false);
+      setConfirmModalCallback(null);
+    }
+  });
+};
