@@ -6,6 +6,8 @@ import {
 } from "@material-ui/core";
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import SearchIcon from '@material-ui/icons/Search';
+import EditIcon from '@material-ui/icons/Edit';
+import ListIcon from '@material-ui/icons/List';
 
 import { 
   fetchEisPaymentProcess, 
@@ -16,6 +18,7 @@ import {
 import { useModulesManager, PublishedComponent } from "@openimis/fe-core";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
 import BeneficiaryManageModal from "../modals/BeneficiaryManageModal";
+import BeneficiaryEditModal from "../modals/BeneficiaryEditModal";
 import AssociationManageModal from "../modals/AssociationManageModal";
 
 
@@ -40,6 +43,7 @@ const BeneficiaryManagement = () => {
 
   const [openModal, setOpenModal] = useState(false);
   const [openAssociationModal, setOpenAssociationModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
   const [selectedAssiciation, setSelectedAssociation] = useState(null);
 
@@ -50,6 +54,17 @@ const BeneficiaryManagement = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    setSelectedBeneficiary(null);
+  };
+
+
+  const handleOpenEditModal = (row) => {
+    setSelectedBeneficiary(row);
+    setOpenEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
     setSelectedBeneficiary(null);
   };
 
@@ -299,9 +314,21 @@ const BeneficiaryManagement = () => {
                         variant="contained"
                         color="primary"
                         size="small"
+                        startIcon= {<ListIcon/>}
+                        title= "Manage Beneficiary"
                         onClick={() => handleOpenModal(row)}
+                        style= {{margin: "5px"}}
                       >
-                        Manage
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        startIcon= {<EditIcon/>}
+                        title= "Edit Information"
+                        onClick={() => handleOpenEditModal(row)}
+                        style= {{margin: "5px"}}
+                      >
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -322,7 +349,16 @@ const BeneficiaryManagement = () => {
         onClose={handleCloseModal}
         onSuccess={() => {
           handleCloseModal();
-          loadData(); // 👈 re-fetch table data
+          loadData();
+        }}
+        beneficiary={selectedBeneficiary}
+      />
+      <BeneficiaryEditModal
+        open={openEditModal}
+        onClose={handleCloseEditModal}
+        onSuccess={() => {
+          handleCloseEditModal();
+          loadData();
         }}
         beneficiary={selectedBeneficiary}
       />
