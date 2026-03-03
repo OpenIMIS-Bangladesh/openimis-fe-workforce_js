@@ -3089,6 +3089,7 @@ export function fetchEisPaymentProcess(applicationIds, mm) {
           routingNumber
           parent
           {
+            id
             nameEn
             nameBn
           }
@@ -3280,6 +3281,8 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
           routingNumber
           parent
           {
+            id
+            bankCode
             nameEn
             nameBn
           }
