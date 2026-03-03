@@ -526,3 +526,104 @@ export const handleBulkSelectedByCheckerLogic = async ({
     }
   });
 };
+
+export const handleApprovalByEisCommittee = async ({
+  selectedApplicationIds,
+  loggedInUserId,
+  updateApplication,
+  setServerResponse,
+  setConfirmModalOpen,
+  setConfirmModalMessage,
+  setConfirmModalCallback,
+  history,
+}) => {
+
+  let confirmModalMessage =
+    "workforce.application.forward.message.toEisCoordinator";
+
+  if (!selectedApplicationIds?.length) {
+    setServerResponse({
+      status: "ERROR",
+      message: "Please select at least one application.",
+    });
+    return;
+  }
+
+  setConfirmModalMessage(confirmModalMessage);
+  setConfirmModalOpen(true);
+
+  setConfirmModalCallback(async (confirmed) => {
+    if (!confirmed) {
+      setConfirmModalOpen(false);
+      return;
+    }
+
+    try {
+
+      for (const selectedItem of selectedApplicationIds) {
+
+        const decodedId = safeDecodeId(selectedItem?.id);
+
+        const approvalUserIds = selectedItem?.eisApprovalIds
+          ? safeParse(selectedItem?.eisApprovalIds)
+          : [];
+
+        let approvedUserIds = selectedItem?.eisApprovedByIds
+          ? safeParse(selectedItem?.eisApprovedByIds)
+          : [];
+
+        if (approvedUserIds.includes(loggedInUserId)) {
+          setServerResponse({
+            status: "ERROR",
+            message: "আপনি ইতিমধ্যে এই আবেদনটি অনুমোদন করেছেন!",
+          });
+          return;
+        }
+
+        approvedUserIds.push(loggedInUserId);
+
+        const totalApprovers =
+          approvalUserIds?.length > 0 ? approvalUserIds.length : 1;
+
+        const totalApproved =
+          approvedUserIds?.length > 0 ? approvedUserIds.length : 0;
+
+        const majorityApproved =
+          totalApprovers > 0
+            ? totalApproved / totalApprovers > 0.5
+            : true;
+
+        const updateApplicationData = {
+          id: decodedId,
+          status: majorityApproved
+            ? WORKFORCE_STATUS.APPROVED_BY_COMMITTEE
+            : selectedItem?.status,
+          eisApprovedByIds: JSON.stringify(approvedUserIds),
+        };
+
+        await updateApplication(
+          updateApplicationData,
+          "update workforce application"
+        );
+      }
+
+      setServerResponse({
+        status: "SUCCESS",
+        message:
+          "নির্বাচিত আবেদনগুলোর জন্য আপনার অনুমোদন গৃহীত হয়েছে। মেজরিটি পূর্ণ হলে আবেদন অনুমোদিত হবে।",
+      });
+
+    } catch (error) {
+      console.error("Bulk committee approval failed:", error);
+
+      setServerResponse({
+        status: "ERROR",
+        message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
+      });
+    } finally {
+      history.push("/home");
+      setConfirmModalOpen(false);
+      setConfirmModalCallback(null);
+    }
+  });
+};

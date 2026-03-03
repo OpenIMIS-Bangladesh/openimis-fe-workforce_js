@@ -1325,24 +1325,24 @@ export const itemFormattersDoctor = (
   }
 
   // --- APPROVE BUTTON ---
-  if (component.props.disableButtons != 1) {
-    formatters.push((application) => {
-      if (application?.status === "approved_by_doctor") return null;
+  // if (component.props.disableButtons != 1) {
+  //   formatters.push((application) => {
+  //     if (application?.status === "approved_by_doctor") return null;
 
-      return (
-        <div className={component.props.classes.horizontalButtonContainer}>
-          <Tooltip title="Approve">
-            <IconButton
-              disabled={application?.isHistory}
-              onClick={() => component.handleApprovalByDoctor(application)}
-            >
-              <CheckIcon style={{ color: "#006273" }} />
-            </IconButton>
-          </Tooltip>
-        </div>
-      );
-    });
-  }
+  //     return (
+  //       <div className={component.props.classes.horizontalButtonContainer}>
+  //         <Tooltip title="Approve">
+  //           <IconButton
+  //             disabled={application?.isHistory}
+  //             onClick={() => component.handleApprovalByDoctor(application)}
+  //           >
+  //             <CheckIcon style={{ color: "#006273" }} />
+  //           </IconButton>
+  //         </Tooltip>
+  //       </div>
+  //     );
+  //   });
+  // }
 
 
   // --- REVERT BUTTON ---
