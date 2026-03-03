@@ -1,7 +1,7 @@
 import { decodeId,useHistory } from "@openimis/fe-core";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../constants";
 import { getUserTypeFromRights, isEisPath, safeDecodeId } from "./utils";
-import { fetchApplicationFactoryAssociation, fetchUsersByRoleId, fetchWorkforceAssociationUserMaps, fetchWorkforceUserRoleWiseUser } from "../actions";
+import { fetchApplicationFactoryAssociation, fetchUsersByRoleId, fetchWorkforceAssociationUserMaps, fetchWorkforceOtherCompensation, fetchWorkforceUserRoleWiseUser } from "../actions";
 import { useState } from "react";
 
 export const forwardToAssociation = async ({
@@ -18,6 +18,19 @@ export const forwardToAssociation = async ({
 }) => {
   try {
     const userType = getUserTypeFromRights(userRights);
+    const id =selectedApplicationIds[0]?.id
+    let fetchOtherCompensation
+    dispatch(fetchWorkforceOtherCompensation(modulesManager, [`workforceApplicationId:"${id}"`]))
+            .then((res) => {
+              fetchOtherCompensation = parseData(res?.payload?.data?.workforceOtherCompensationInfo);
+              console.log({fetchOtherCompensation});
+              // if (fetchOtherCompensation && fetchOtherCompensation.length > 0) {
+              //   setFormData(fetchOtherCompensation);
+              // } else {
+              //   // If empty array or null, reset to initial entry
+              //   setFormData([{ ...initialEntry }]);
+              // }
+            })
     for (const selectedItem of selectedApplicationIds) {
 
         const decodedId = safeDecodeId(selectedItem?.id);
