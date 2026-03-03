@@ -40,10 +40,19 @@ const useStyles = makeStyles((theme) => ({
     outline: "none",
     overflow: "hidden",
     position: "relative",
-    // Remove background/shadows when printing
+    // 1. Let the paper flow downwards freely
     "@media print": {
-      boxShadow: "none",
-      background: "none",
+      display: "block !important",
+      position: "static !important", 
+      width: "100% !important",
+      maxWidth: "100% !important",
+      height: "auto !important",
+      maxHeight: "none !important",
+      overflow: "visible !important",
+      boxShadow: "none !important",
+      background: "white !important",
+      margin: "0 !important",
+      padding: "20px !important", 
     },
   },
   header: {
@@ -51,81 +60,69 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: theme.spacing(2),
+    "@media print": { display: "none !important" },
   },
   content: {
     flex: 1,
-    overflowY: "auto",
+    overflowY: "auto", 
     overflowX: "hidden",
     marginBottom: theme.spacing(2),
     paddingRight: theme.spacing(1),
     boxSizing: "border-box",
+    // 2. Remove scrolling constraints so it can overflow onto Page 2
+    "@media print": {
+      overflow: "visible !important",
+      height: "auto !important",
+      maxHeight: "none !important",
+      display: "block !important",
+    },
   },
   actions: {
     display: "flex",
     justifyContent: "flex-end",
     gap: theme.spacing(1),
     marginTop: theme.spacing(1),
+    "@media print": { display: "none !important" },
   },
   loaderOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
-    zIndex: 10,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
+    /* keep your existing loaderOverlay styles */
   },
   "@global": {
     "@media print": {
-      // 1. Reset Body/HTML to allow full scrolling
       "html, body": {
-        height: "100vh",
-        margin: 0,
-        padding: 0,
+        height: "auto !important",
+        minHeight: "100% !important",
         overflow: "visible !important",
+        backgroundColor: "white !important",
       },
-      // 2. Hide EVERYTHING by default
-      "body *": {
-        visibility: "hidden",
-      },
-      // 3. Hide the Modal Backdrop specifically (grey overlay)
-      ".MuiBackdrop-root": {
+      // 3. Hide the background application safely
+      // MUI Modals get appended to the body with role="presentation"
+      "body > *:not([role='presentation'])": {
         display: "none !important",
       },
-      // 4. Style the specific printable area
-      "#printable-content": {
-        visibility: "visible !important",
-        // FIXED position breaks it out of the Modal's Flexbox/Scroll container
-        position: "fixed !important", 
-        left: 0,
-        top: 0,
-        width: "100vw !important",
+      // 4. Kill the Flexbox centering and Fixed positioning on the Modal wrapper!
+      "body > [role='presentation'], .MuiModal-root": {
+        display: "block !important",   // Kills the flex centering (fixes the top gap)
+        position: "static !important", // Kills fixed position (fixes the pagination issue)
         height: "auto !important",
-        margin: 0,
-        padding: "20px",
-        zIndex: 99999, // Ensure it is on top
-        backgroundColor: "white",
-        overflow: "visible !important", // CRITICAL: Allows content to expand
-        display: "block !important",
+        overflow: "visible !important",
+        inset: "auto !important",
       },
-      // 5. Ensure all children of the printable area are visible
-      "#printable-content *": {
-        visibility: "visible !important",
+      // Ensure intermediate wrappers flow properly
+      "body > [role='presentation'] > div": {
+        display: "block !important",
+        position: "static !important",
+        height: "auto !important",
         overflow: "visible !important",
       },
-      // 6. Hide scrollbars to prevent ugly print lines
-      "::-webkit-scrollbar": {
-        display: "none",
+      ".MuiBackdrop-root": {
+        display: "none !important",
       },
     },
   },
 }));
 
-const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, maxWidth }) => {
+const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, maxWidth,viewType }) => {
   const classes = useStyles({ maxWidth });
   const [formData, setFormData] = useState(application || {});
   const [errors, setErrors] = useState({});
@@ -146,8 +143,9 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
     application?.organizationType === "eis" &&
     (user_type === WORKFORCE_USER_TYPE.DOCTOR ||
       user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR ||
-      user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR ||
-      (user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.applicationType === "disabilityAssistance"));
+      user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR);
+
+  const renderDoctorEntries = viewType === "doctorEntries" || isDoctor;
 
   const handleChange = (key, value, parent = null) => {
     setFormData((prev) => {
@@ -233,8 +231,8 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{ timeout: 300 }}
-      >
-        <Box className={classes.paper}>
+      >    
+        <Box className={classes.paper} id="print-paper">
           {loading && (
             <div className={classes.loaderOverlay}>
               <CircularProgress />
@@ -255,7 +253,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
           <Divider />
 
           {/* Render based on isDoctor flag */}
-          {isDoctor ? (
+          {renderDoctorEntries ? (
             <Box className={classes.content} ref={stepRef} id="printable-content">
               <EisDoctorEntries
                 handleChange={(key, value) => handleChange(key, value, "doctorEntries")}

@@ -27,6 +27,7 @@ const DoctorsEntries = ({ application }) => {
   const [doctorComment, setDoctorComment] = useState("");
   const [doctorsActions, setDoctorsActions] = useState("");
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
+  const [modalViewType, setModalViewType] = useState("")
   const [openSnackBar, setOpenSnackBar] = useState({ openResponseBar: false, status: "workforce.success.message.doctor", type: "success" });
 
   const handleSelectCheckbox = (event) => {
@@ -114,24 +115,50 @@ const DoctorsEntries = ({ application }) => {
         )}
 
         {application?.organizationType === "eis" && (
-          <Grid item xs={12}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setOpenAccidentInfoModal(true)}
-              fullwidth
-              // disabled={isNotEmpty(application?.doctorsEntry)}
-            >
-              {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.applicationType === "disabilityAssistance" ? (
-                <FormattedMessage id="workforce.eis.coordinator.accidentInfo.button.disability" module="workforce" />
-              ) : (
+          <Grid item xs={12} style={{ display: 'flex', gap: '16px' }}>
+            {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.applicationType === "disabilityAssistance" ? (
+              <>
+                {/* Button 1: Disability (Opens Doctor Entries) */}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    setModalViewType("doctorEntries");
+                    setOpenAccidentInfoModal(true);
+                  }}
+                >
+                  <FormattedMessage id="workforce.eis.coordinator.accidentInfo.button.disability" module="workforce" />
+                </Button>
+
+                {/* Button 2: Accident Info (Opens Accident Form) */}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    setModalViewType("accidentInfo");
+                    setOpenAccidentInfoModal(true);
+                  }}
+                >
+                  <FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  setModalViewType(""); // Default fallback
+                  setOpenAccidentInfoModal(true);
+                }}
+                fullwidth
+              >
                 <FormattedMessage id="workforce.eis.factory.admin.accidentInfo.button" module="workforce" />
-              )}
-            </Button>
+              </Button>
+            )}
           </Grid>
         )}
       </Grid>
-      {openAccidentInfoModal && <EisFactoryAdminModal open={openAccidentInfoModal} onClose={() => setOpenAccidentInfoModal(false)} application={application} />}
+      {openAccidentInfoModal && <EisFactoryAdminModal open={openAccidentInfoModal} viewType={modalViewType} onClose={() => setOpenAccidentInfoModal(false)} application={application} />}
       <CustomSnackbar
         open={openSnackBar?.openResponseBar}
         onClose={() => setOpenSnackBar({ ...openSnackBar, openResponseBar: false })}

@@ -33,10 +33,14 @@ const useStyles = makeStyles((theme) => ({
     "@media print": {
       padding: 0,
       border: "none",
+      boxShadow: "none", // Good to add for print
     },
   },
   item: {
     marginBottom: theme.spacing(2),
+    "@media print": {
+      pageBreakInside: "avoid",
+    }
   },
   title: {
     fontWeight: 800,
@@ -54,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   removeBtn: {
     color: theme.palette.error.main,
   },
-   docTitle: {
+  docTitle: {
     fontWeight: "bold",
     fontSize: "18px",
     textAlign: "center",
@@ -78,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "60px",
     width: "100%",
     // Ensure the signature block doesn't break across pages awkwardly
-    pageBreakInside: "avoid", 
+    pageBreakInside: "avoid",
   },
   signatureBlock: {
     marginTop: "40px",
@@ -109,53 +113,53 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
   const [lastRevertMovement, setLastRevertMovement] = useState(null);
   const [revertNotes, setRevertNotes] = useState([]);
   const [eisApprovalSignature, setEisApprovalSignature] = useState([]);
-  const summaryData = useSelector((state) => state.workforce[`applicationsSummary`] ?? [])
-//   const meetingData = summaryData?.find(m => {
-//   if (!m?.applicationData) return false;
+  const summaryData = useSelector((state) => state.workforce[`applicationsSummary`] ?? []);
+  //   const meetingData = summaryData?.find(m => {
+  //   if (!m?.applicationData) return false;
 
-//   try {
-//     const rawArray = JSON.parse(m.applicationData);           // ["base64id1", "base64id2", ...]
-//     console.log("Raw applicationData array:", rawArray);
+  //   try {
+  //     const rawArray = JSON.parse(m.applicationData);           // ["base64id1", "base64id2", ...]
+  //     console.log("Raw applicationData array:", rawArray);
 
-//     if (!Array.isArray(rawArray) || rawArray.length === 0) {
-//       console.warn("applicationData parsed but not useful array", rawArray);
-//       return false;
-//     }
+  //     if (!Array.isArray(rawArray) || rawArray.length === 0) {
+  //       console.warn("applicationData parsed but not useful array", rawArray);
+  //       return false;
+  //     }
 
-//     // Try both ways — most projects are inconsistent here
-//     const decodedIds = rawArray.map(id => {
-//       const dec = safeDecodeId(id);
-//       console.log(`Decoded: ${id} → ${dec}`);
-//       return dec;
-//     });
+  //     // Try both ways — most projects are inconsistent here
+  //     const decodedIds = rawArray.map(id => {
+  //       const dec = safeDecodeId(id);
+  //       console.log(`Decoded: ${id} → ${dec}`);
+  //       return dec;
+  //     });
 
-//     const targetId = formData?.id;
-//     console.log("Target formData.id =", targetId);
+  //     const targetId = formData?.id;
+  //     console.log("Target formData.id =", targetId);
 
-//     // Variant A: compare decoded vs decoded
-//     const foundA = decodedIds.some(decoded => decoded === targetId);
-    
-//     // Variant B: compare encoded vs encoded (most common bug pattern)
-//     const foundB = rawArray.some(encoded => encoded === targetId);
+  //     // Variant A: compare decoded vs decoded
+  //     const foundA = decodedIds.some(decoded => decoded === targetId);
 
-//     console.log({ foundA, foundB, targetId });
+  //     // Variant B: compare encoded vs encoded (most common bug pattern)
+  //     const foundB = rawArray.some(encoded => encoded === targetId);
 
-//     return foundA || foundB;
+  //     console.log({ foundA, foundB, targetId });
 
-//   } catch (err) {
-//     console.error("Failed to parse applicationData:", m.id, err);
-//     return false;
-//   }
-// });
+  //     return foundA || foundB;
 
-  const meetingData = summaryData?.filter(m=> {
-    const parsedApplicationData= JSON.parse(m?.applicationData)
-    console.log({parsedApplicationData})
+  //   } catch (err) {
+  //     console.error("Failed to parse applicationData:", m.id, err);
+  //     return false;
+  //   }
+  // });
+
+  const meetingData = summaryData?.filter((m) => {
+    const parsedApplicationData = JSON.parse(m?.applicationData);
+    console.log({ parsedApplicationData });
     // const decodedApplicationData = safeDecodeId(parsedApplicationData)
-    return parsedApplicationData?.includes(formData?.id)
-  })
-console.log("Final meetingData:", meetingData);
-console.log({ fromDoctor: meetingData });
+    return parsedApplicationData?.includes(formData?.id);
+  });
+  console.log("Final meetingData:", meetingData);
+  console.log({ fromDoctor: meetingData });
 
   const [hasLimitations, setHasLimitations] = useState(formData?.employeeAccidentInfo?.hasLimitations || "no");
 
@@ -230,8 +234,8 @@ console.log({ fromDoctor: meetingData });
 
   useEffect(async () => {
     fetchApplicationMovement();
-    handleChange("dateOfAssessment", meetingData?.[0]?.meetingDate)
-    handleChange("nameOfAssessmentMeeting", meetingData?.[0]?.name)
+    handleChange("dateOfAssessment", meetingData?.[0]?.meetingDate);
+    handleChange("nameOfAssessmentMeeting", meetingData?.[0]?.name);
   }, []);
 
   const handleLimitationsChange = (event) => {
@@ -263,15 +267,6 @@ console.log({ fromDoctor: meetingData });
         </>
       )}
       <Paper className={classes.paper} elevation={0}>
-        {/* <Typography mb={4} style={{ textAlign: "center", fontWeight: "bold", fontSize: "small", margin: "15px" }}>
-          <FormattedMessage id="workforce.application.steps.treatment.info" module="workforce" />
-        </Typography>
-
-        <Divider style={{ margin: "16px 0" }} /> */}
-
-        {/* Doctor Creation Section */}
-
-        {/* Assessment Details */}
         <Typography variant="h6" className={classes.sectionTitle}>
           <FormattedMessage id="workforce.disability.assessmentDetails" defaultMessage="Assessment Details" />
         </Typography>
@@ -280,7 +275,7 @@ console.log({ fromDoctor: meetingData });
             <PublishedComponent
               pubRef="workforce.DatePicker"
               label="workforce.disability.dateOfAssessment"
-              value={meetingData?.[0]?.meetingDate||formData?.doctorsEntry?.dateOfAssessment ||formData?.employeeAccidentInfo?.dateOfAssessment ||  ""}
+              value={meetingData?.[0]?.meetingDate || formData?.doctorsEntry?.dateOfAssessment || formData?.employeeAccidentInfo?.dateOfAssessment || ""}
               onChange={(v) => handleChange("dateOfAssessment", v)}
               required
               readOnly={user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR}
@@ -289,7 +284,7 @@ console.log({ fromDoctor: meetingData });
           <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
             <TextInput
               label="workforce.disability.nameOfAssessmentMeeting"
-              value={meetingData?.[0]?.name||formData?.doctorsEntry?.nameOfAssessmentMeeting || formData?.employeeAccidentInfo?.nameOfAssessmentMeeting || ""}
+              value={meetingData?.[0]?.name || formData?.doctorsEntry?.nameOfAssessmentMeeting || formData?.employeeAccidentInfo?.nameOfAssessmentMeeting || ""}
               onChange={(v) => handleChange("nameOfAssessmentMeeting", v)}
               required
               readOnly={user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR}
@@ -365,15 +360,7 @@ console.log({ fromDoctor: meetingData });
               </RadioGroup>
             </FormControl>
           </Grid>
-          {/* <Grid item xs={6} className={classes.item}>
-            <TextInput
-              label="workforce.disability.lossOfEarningPercent"
-              value={formData?.employeeAccidentInfo?.lossOfEarningPercent || ""}
-              onChange={(v) => handleChange("lossOfEarningPercent", v)}
-              type="number"
-              required
-            />
-          </Grid> */}
+
           <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
             <TextInput
               label={"workforce.employee.accident.info.disabilityPerSchedule"}
@@ -392,30 +379,30 @@ console.log({ fromDoctor: meetingData });
           </Grid>
         </Grid>
       </Paper>
-      {user_type===WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
-      <Box mt={4}>
-        <Typography style={{ fontWeight: "bold", textDecoration: "underline", color: "#000" }}>Signature of EIS Doctors:</Typography>
-        <Grid container spacing={2} className={classes.signatureContainer}>
-          {eisApprovalSignature
-            ?.filter((sig) => ["eis doctor"].includes(sig?.role?.name?.toLowerCase()))
-            .map((sig, i) => (
-              <Grid item xs={3} key={i}>
-                {sig?.workforce_document?.url ? (
-                  <img src={sig.workforce_document.url} alt="signature" style={{ width: "100%", maxHeight: 80, objectFit: "contain" }} />
-                ) : (
-                  <Typography variant="caption" style={{ fontStyle: "italic", color: "#999" }}>
-                    Signature not available
-                  </Typography>
-                )}
+      {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+        <Box mt={4}>
+          <Typography style={{ fontWeight: "bold", textDecoration: "underline", color: "#000" }}>Signature of EIS Doctors:</Typography>
+          <Grid container spacing={2} className={classes.signatureContainer}>
+            {eisApprovalSignature
+              ?.filter((sig) => ["eis doctor"].includes(sig?.role?.name?.toLowerCase()))
+              .map((sig, i) => (
+                <Grid item xs={3} key={i}>
+                  {sig?.workforce_document?.url ? (
+                    <img src={sig.workforce_document.url} alt="signature" style={{ width: "100%", maxHeight: 80, objectFit: "contain" }} />
+                  ) : (
+                    <Typography variant="caption" style={{ fontStyle: "italic", color: "#999" }}>
+                      Signature not available
+                    </Typography>
+                  )}
 
-                <div className={classes.signatureBlock}>
-                  <p>{sig?.last_name}</p>
-                  <p>{sig?.role?.name}</p>
-                </div>
-              </Grid>
-            ))}
-        </Grid>
-      </Box>
+                  <div className={classes.signatureBlock}>
+                    <p>{sig?.last_name}</p>
+                    <p>{sig?.role?.name}</p>
+                  </div>
+                </Grid>
+              ))}
+          </Grid>
+        </Box>
       )}
     </Box>
   );

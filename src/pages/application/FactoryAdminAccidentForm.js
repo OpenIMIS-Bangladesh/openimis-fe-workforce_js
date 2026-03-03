@@ -25,6 +25,8 @@ import DiseaseMultiSelectPicker from "../../pickers/DiseaseMultiSelectPicker"; /
 import { useTranslations, useModulesManager, TextInput, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import CustomTimePicker from "../../pickers/CustomTimePicker"; // Used for Time fields
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
+import { getUserType } from "../../utils/utils";
+import { WORKFORCE_USER_TYPE } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -50,6 +52,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
   const classes = useStyles();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
+  const user_type = getUserType();
 
   // PRESERVED ORIGINAL STATES
   const [aidReasonType, setAidReasonType] = useState(
@@ -853,7 +856,7 @@ const FactoryAdminAccidentForm = ({ handleChange, formData, setFormData, applica
         )}
       </Paper>
 
-      {formData?.applicationType === "disabilityAssistance" && (
+    {formData?.applicationType === "disabilityAssistance" && user_type!=WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
         <EmployeeDetailsForm2
           errors={errors}
           handleChange={() => {}}
