@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import { useSelector, useDispatch } from "react-redux";
-import { useModulesManager, decodeId, FormattedMessage } from "@openimis/fe-core";
+import { useModulesManager, decodeId, FormattedMessage, useHistory } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import ReactQuill from "react-quill";
 import {
@@ -101,6 +101,7 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
 
   const appIdDecoded = useMemo(() => selectedApplication?.id ? safeDecodeId(selectedApplication.id) : null, [selectedApplication?.id]);
   const applicantName = useMemo(() => selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী", [selectedApplication?.workforceEmployee?.firstNameBn]);
+  const history = useHistory()
 
   useEffect(() => {
     if (!open) {
@@ -181,7 +182,7 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
       setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
       setTimeout(() => {
         onClose();
-        window.location.reload(); 
+        history.push("/home");
       }, 1000);
     } catch (err) {
       console.error(err);
