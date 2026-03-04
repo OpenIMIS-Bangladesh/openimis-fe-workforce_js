@@ -1,7 +1,7 @@
-import { decodeId,useHistory } from "@openimis/fe-core";
+import { decodeId,useHistory,parseData } from "@openimis/fe-core";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../constants";
 import { getUserTypeFromRights, isEisPath, safeDecodeId } from "./utils";
-import { fetchApplicationFactoryAssociation, fetchUsersByRoleId, fetchWorkforceAssociationUserMaps, fetchWorkforceOtherCompensation, fetchWorkforceUserRoleWiseUser } from "../actions";
+import { fetchApplication, fetchApplicationFactoryAssociation, fetchUsersByRoleId, fetchWorkforceAssociationUserMaps, fetchWorkforceOtherCompensation, fetchWorkforceUserRoleWiseUser } from "../actions";
 import { useState } from "react";
 
 export const forwardToAssociation = async ({
@@ -18,44 +18,62 @@ export const forwardToAssociation = async ({
 }) => {
   try {
     const userType = getUserTypeFromRights(userRights);
-    const id =selectedApplicationIds[0]?.id
-    let fetchOtherCompensation
-    dispatch(fetchWorkforceOtherCompensation(modulesManager, [`workforceApplicationId:"${id}"`]))
-            .then((res) => {
-              fetchOtherCompensation = parseData(res?.payload?.data?.workforceOtherCompensationInfo);
-              console.log({fetchOtherCompensation});
-              // if (fetchOtherCompensation && fetchOtherCompensation.length > 0) {
-              //   setFormData(fetchOtherCompensation);
-              // } else {
-              //   // If empty array or null, reset to initial entry
-              //   setFormData([{ ...initialEntry }]);
-              // }
-            })
+    const id = selectedApplicationIds[0]?.id;
+
+    // Await the fetch so data is ready before checks/loops
+    const res = await dispatch(fetchApplication(modulesManager, [`id: "${safeDecodeId(id)}"`]));
+    const fetchOtherCompensation = parseData(res?.payload?.data?.workforceApplication)?.[0];
+    console.log({ fetchOtherCompensation });
+
+    // Safe double-parse and check for empty accident info
+    let hasAccidentInfo = false;
+    if (fetchOtherCompensation?.employeeAccidentInfo) {
+      try {
+        const parsedOnce = JSON.parse(fetchOtherCompensation.employeeAccidentInfo);
+        const parsedTwice = JSON.parse(parsedOnce);
+        // Check if it's a non-empty object (handles {} or null-like after parse)
+        hasAccidentInfo = parsedTwice && typeof parsedTwice === 'object' && Object.keys(parsedTwice).length > 0;
+      } catch (e) {
+        console.warn("Failed to parse employeeAccidentInfo:", e);
+        // Treat parse failure as empty/missing
+        hasAccidentInfo = false;
+      }
+    }
+
+    // The check you want: if eis and no accident info, error and return
+    if (fetchOtherCompensation?.organizationType === "eis" && !hasAccidentInfo) {
+      setServerResponse({
+        status: "ERROR",
+        message: "দুর্ঘটনার তথ্য ফর্মটি পূরণ করুন।",
+      });
+      return;
+    }
+
+    // Now proceed with the loop (documents, etc.)
     for (const selectedItem of selectedApplicationIds) {
+      const decodedId = safeDecodeId(selectedItem?.id);
+      const res = await dispatch(
+        fetchWorkforceDocument(modulesManager, [
+          `workforceApplication_Id: "${decodedId}"`,
+        ])
+      );
 
-        const decodedId = safeDecodeId(selectedItem?.id);
-        const res = await dispatch(
-          fetchWorkforceDocument(modulesManager, [
-            `workforceApplication_Id: "${decodedId}"`,
-          ])
-        );
+      const workforceApplicationRes = await dispatch(
+        fetchApplicationFactoryAssociation(decodedId)
+      );
 
-        const workforceApplicationRes = await dispatch(
-          fetchApplicationFactoryAssociation(decodedId)
-        );
+      const workforceApplication = workforceApplicationRes?.payload?.data?.workforceApplication?.edges[0]?.node;
+      let associationType = workforceApplication?.employeeFactory?.allAssociation?.shortNameEn ?? "";
+      let associationId = safeDecodeId(workforceApplication?.employeeFactory?.allAssociation?.id);
+      console.log("associationType", associationType);
+      const userToResp = await dispatch(fetchWorkforceAssociationUserMaps([`allAssociationId: "${associationId}"`]));
+      const applicationToUser = safeDecodeId(userToResp?.payload?.data?.workforceAssociationUserMap?.edges[0]?.node?.user.id);
+      console.log("applicationToUser", applicationToUser);
 
-        const workforceApplication = workforceApplicationRes?.payload?.data?.workforceApplication?.edges[0]?.node;
-        let associationType = workforceApplication?.employeeFactory?.allAssociation?.shortNameEn??"";
-        let associationId = safeDecodeId(workforceApplication?.employeeFactory?.allAssociation?.id);
-        console.log("associationType", associationType)
-        const userToResp = await dispatch(fetchWorkforceAssociationUserMaps([`allAssociationId: "${associationId}"`]));
-        const applicationToUser= safeDecodeId(userToResp?.payload?.data?.workforceAssociationUserMap?.edges[0]?.node?.user.id);
-        console.log("applicationToUser", applicationToUser)
+      const documents =
+        res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-        const documents =
-          res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
-
-        const allVerified = documents.every((doc) => {
+      const allVerified = documents.every((doc) => {
         const status = doc.status?.toLowerCase();
 
         if (doc.holderType === "applicant") {
@@ -68,13 +86,15 @@ export const forwardToAssociation = async ({
         return true;
       });
 
-        if (!allVerified) {
-          setServerResponse({
-            status: "ERROR",
-            message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
-          });
-          return;
-        }
+      // Document check (removed the bad extra condition)
+      if (!allVerified) {
+        setServerResponse({
+          status: "ERROR",
+          message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
+        });
+        return;
+      }
+
       const updateApplicationData = {
         id: decodedId,
         status: WORKFORCE_STATUS.FORWARD_TO_ASSOCIATION,

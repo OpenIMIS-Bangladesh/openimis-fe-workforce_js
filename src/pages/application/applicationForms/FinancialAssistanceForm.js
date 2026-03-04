@@ -398,32 +398,32 @@ const FinancialAssistanceForm = ({
     const IS_DEPENDENT_STEP = activeStep === 4;
     const IS_BANK_STEP = activeStep === 5;
 
-    // 4. Document Validation Logic
-    let documentValidation = { isValid: true, errors: null };
-    const BANK_DOC_TYPE = "applicants bank check copy";
+    // // 4. Document Validation Logic
+    // let documentValidation = { isValid: true, errors: null };
+    // const BANK_DOC_TYPE = "applicants bank check copy";
 
-    if (IS_DEPENDENT_STEP) {
-      // Specialized validation for the Dependent Step
-      documentValidation = validateMandatoryDocumentsForDependents(documentType, uploadDependentFile || [], formData.dependents || []);
-    } else if (IS_BANK_STEP) {
-      // Filter only for Bank Documents
-      const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC_TYPE);
-      documentValidation = validateMandatoryDocuments(bankDocsConfig, uploadBankFile || []);
-    } else if (IS_EMPLOYEE_STEP || IS_APPLICANT_STEP) {
-      // Filter out Bank Documents for general info steps
-      const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC_TYPE);
-      documentValidation = validateMandatoryDocuments(generalDocsConfig, uploadFile || []);
-    }
+    // if (IS_DEPENDENT_STEP) {
+    //   // Specialized validation for the Dependent Step
+    //   documentValidation = validateMandatoryDocumentsForDependents(documentType, uploadDependentFile || [], formData.dependents || []);
+    // } else if (IS_BANK_STEP) {
+    //   // Filter only for Bank Documents
+    //   const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC_TYPE);
+    //   documentValidation = validateMandatoryDocuments(bankDocsConfig, uploadBankFile || []);
+    // } else if (IS_EMPLOYEE_STEP || IS_APPLICANT_STEP) {
+    //   // Filter out Bank Documents for general info steps
+    //   const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC_TYPE);
+    //   documentValidation = validateMandatoryDocuments(generalDocsConfig, uploadFile || []);
+    // }
 
-    // 5. Assign Document Errors if the current step is a "document step"
-    if (!documentValidation.isValid) {
-      newErrors.documents = documentValidation.errors;
-    }
+    // // 5. Assign Document Errors if the current step is a "document step"
+    // if (!documentValidation.isValid) {
+    //   newErrors.documents = documentValidation.errors;
+    // }
 
     setErrors(newErrors);
 
     console.log({ newErrors });
-    console.log({ documentValidation });
+    // console.log({ documentValidation });
     if (Object.keys(newErrors).length > 0 && !newErrors?.documents) {
       setShowErrorSnackbar(true);
     } else {

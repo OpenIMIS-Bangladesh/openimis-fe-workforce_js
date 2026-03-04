@@ -25,33 +25,27 @@ import {
   TableCell,
   TableFooter,
   Link,
-  Select,       // <-- Added for new Association filter
-  MenuItem,     // <-- Added for new Association filter
-  FormControl,  // <-- Added for new Association filter
-  InputLabel    // <-- Added for new Association filter
+  Select, // <-- Added for new Association filter
+  MenuItem, // <-- Added for new Association filter
+  FormControl, // <-- Added for new Association filter
+  InputLabel, // <-- Added for new Association filter
 } from "@material-ui/core";
 
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import Badge from '@material-ui/core/Badge';
+import Badge from "@material-ui/core/Badge";
 
-import {
-  useHistory,
-  PublishedComponent,
-  FormattedMessage,
-  useModulesManager,
-  parseData
-} from "@openimis/fe-core";
+import { useHistory, PublishedComponent, FormattedMessage, useModulesManager, parseData } from "@openimis/fe-core";
 
 import { useSelector, useDispatch } from "react-redux";
 
 // Icons
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
-import DescriptionIcon from '@material-ui/icons/Description';
-import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
-import LocalAtmIcon from '@material-ui/icons/LocalAtm';
-import PersonIcon from '@material-ui/icons/Person';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import DescriptionIcon from "@material-ui/icons/Description";
+import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
+import LocalAtmIcon from "@material-ui/icons/LocalAtm";
+import PersonIcon from "@material-ui/icons/Person";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 // Charts
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
@@ -63,7 +57,14 @@ import ApplicationProcessSearcher from "../../components/application-process/App
 import AgingReportModal from "../reports/modals/AgingReportModal";
 
 // Actions & Constants
-import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise, fetchApplicationsSummary, fetchWorkforceEisPaymentDisbursementStage, fetchApplicationsSummaryDashboard } from "../../actions";
+import {
+  fetchApplicationByDate,
+  fetchGenderWiseApplicationMatrixByDate,
+  fetchApplicationMonthWise,
+  fetchApplicationsSummary,
+  fetchWorkforceEisPaymentDisbursementStage,
+  fetchApplicationsSummaryDashboard,
+} from "../../actions";
 import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -192,9 +193,19 @@ const RejectApplication = () => {
 // --- Reusable UI Wrapper for New Cards ---
 const DashboardCard = ({ title, subtitle, children }) => (
   <Card style={{ height: "100%", borderRadius: "16px", boxShadow: "0 4px 12px 0 rgba(0,0,0,0.05)", padding: "10px" }}>
-    <CardHeader 
-      title={<Typography variant="h6" style={{ fontWeight: "bold" }}>{title}</Typography>}
-      subheader={subtitle ? <Typography variant="body2" color="textSecondary">{subtitle}</Typography> : null}
+    <CardHeader
+      title={
+        <Typography variant="h6" style={{ fontWeight: "bold" }}>
+          {title}
+        </Typography>
+      }
+      subheader={
+        subtitle ? (
+          <Typography variant="body2" color="textSecondary">
+            {subtitle}
+          </Typography>
+        ) : null
+      }
     />
     <CardContent style={{ paddingTop: 0 }}>{children}</CardContent>
   </Card>
@@ -204,9 +215,13 @@ const StatRow = ({ label, count, onClick, color }) => (
   <Box display="flex" justifyContent="space-between" py={1} borderBottom="1px solid #f0f0f0">
     <Typography style={{ color: color || "inherit" }}>{label}</Typography>
     {onClick ? (
-      <Link component="button" variant="subtitle1" style={{ fontWeight: "bold" }} onClick={onClick}>{count}</Link>
+      <Link component="button" variant="subtitle1" style={{ fontWeight: "bold" }} onClick={onClick}>
+        {count}
+      </Link>
     ) : (
-      <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>{count}</Typography>
+      <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
+        {count}
+      </Typography>
     )}
   </Box>
 );
@@ -272,7 +287,7 @@ const Dashboard = () => {
     death: isBn ? "মৃত্যু" : "Death",
     educational: isBn ? "শিক্ষা" : "Educational",
     maternity: isBn ? "মাতৃত্ব" : "Maternity",
-    disability: isBn ? "স্থায়ী ও অস্থায়ী অক্ষমতা" : "Permanent Or Curable Disability"
+    disability: isBn ? "স্থায়ী ও অস্থায়ী অক্ষমতা" : "Permanent Or Curable Disability",
   };
 
   // --- HELPER FUNCTIONS ---
@@ -305,23 +320,29 @@ const Dashboard = () => {
   };
 
   const handleGraphMonthChange = (month) => {
-    setGraphMonths(month); setGraphFromDate(""); setGraphToDate("");
+    setGraphMonths(month);
+    setGraphFromDate("");
+    setGraphToDate("");
   };
 
   const navigateToBeneficiaries = () => history.push("/beneficiary-management");
 
   const getBeneficiaryCount = (key) => {
-    const found = applicationCounts.find(item => item.type === applicantTypeNames[key]);
+    const found = applicationCounts.find((item) => item.type === applicantTypeNames[key]);
     return found ? found.count : 0;
   };
 
   // --- EFFECTS ---
   useEffect(() => {
-    if (months > 0) { setFromDate(""); setToDate(""); }
+    if (months > 0) {
+      setFromDate("");
+      setToDate("");
+    }
   }, [months]);
 
   useEffect(() => {
-    setMonths(0); setMonthString("");
+    setMonths(0);
+    setMonthString("");
   }, [fromDate, toDate]);
 
   useEffect(() => {
@@ -353,22 +374,35 @@ const Dashboard = () => {
               processing: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount)),
             });
             appTypes.push({ appType: type, type: applicationTypeNames[type], count: Number(item.applicationCount) });
-            pendingAppTypes.push({ appType: type, type: applicationTypeNames[type], count: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount)) });
+            pendingAppTypes.push({
+              appType: type,
+              type: applicationTypeNames[type],
+              count: Number(item.applicationCount) - (Number(item.approvedCount) + Number(item.rejectedCount)),
+            });
           }
         });
 
         setApplicationTypes(appTypes);
         setPendingApplicationTypes(pendingAppTypes);
 
-        const totalsCalc = rows.reduce((acc, r) => {
-          acc.total += Number(r.total); acc.approved += Number(r.approved);
-          acc.cancelled += Number(r.cancelled); acc.processing += Number(r.processing);
-          return acc;
-        }, { total: 0, approved: 0, cancelled: 0, processing: 0 });
+        const totalsCalc = rows.reduce(
+          (acc, r) => {
+            acc.total += Number(r.total);
+            acc.approved += Number(r.approved);
+            acc.cancelled += Number(r.cancelled);
+            acc.processing += Number(r.processing);
+            return acc;
+          },
+          { total: 0, approved: 0, cancelled: 0, processing: 0 },
+        );
 
-        let approvedTotal = 0; let cancelledTotal = 0; let processingTotal = 0;
+        let approvedTotal = 0;
+        let cancelledTotal = 0;
+        let processingTotal = 0;
         rows.map((r) => {
-          approvedTotal += Number(r.approved); cancelledTotal += Number(r.cancelled); processingTotal += Number(r.processing);
+          approvedTotal += Number(r.approved);
+          cancelledTotal += Number(r.cancelled);
+          processingTotal += Number(r.processing);
         });
 
         setPieData([
@@ -393,8 +427,9 @@ const Dashboard = () => {
         ];
         setApplicationCounts(appCounts);
         setTotalBenefitAmount(genderRes.totalBenefitAmount || 0);
-
-      } catch (err) { console.error("Failed to fetch data", err); }
+      } catch (err) {
+        console.error("Failed to fetch data", err);
+      }
     }
     loadData();
   }, [months, fromDate, toDate, filter, chartLabels.processing, chartLabels.approved, chartLabels.reverted]);
@@ -419,7 +454,9 @@ const Dashboard = () => {
           });
         });
         setBarData(barDataArray);
-      } catch (err) { console.error("Failed to fetch month wise data", err); }
+      } catch (err) {
+        console.error("Failed to fetch month wise data", err);
+      }
     }
     loadMonthWiseData();
   }, [graphMonths, chartLabels.medical, chartLabels.death, chartLabels.educational, chartLabels.maternity, chartLabels.disability]);
@@ -428,40 +465,39 @@ const Dashboard = () => {
     async function loadNewDashboardRequirements() {
       // Dispatch new API actions here using accFromDate, accToDate, association
       const filtersBase = [
-          // 'statusIn: ["forward_to_eis_advisor","approved_by_eis_director"]',
-          'organizationTypeIn: ["eis"]',
-          'orderBy: ["-dateCreated"]',
-        ]
-      dispatch(fetchApplicationsSummaryDashboard(modulesManager, filtersBase)).then((res)=>{
-        const response = parseData(res?.payload?.data?.workforceApplication)
-        const formData =response?.map((application)=>{
-          const parsedMetadata = JSON.parse(application?.metadata)
-          const parsedApplicantInfo = JSON.parse(application?.applicantInfo)
-          const parsedDeceasedWorkerInfo = JSON.parse(application?.deceasedWorkerInfo)
-          const parsedEmployeeAccidentInfo = JSON.parse(application?.employeeAccidentInfo)
+        // 'statusIn: ["forward_to_eis_advisor","approved_by_eis_director"]',
+        'organizationTypeIn: ["eis"]',
+        'orderBy: ["-dateCreated"]',
+      ];
+      dispatch(fetchApplicationsSummaryDashboard(modulesManager, filtersBase)).then((res) => {
+        const response = parseData(res?.payload?.data?.workforceApplication);
+        const formData = response?.map((application) => {
+          const parsedMetadata = JSON.parse(application?.metadata);
+          const parsedApplicantInfo = JSON.parse(application?.applicantInfo);
+          const parsedDeceasedWorkerInfo = JSON.parse(application?.deceasedWorkerInfo);
+          const parsedEmployeeAccidentInfo = JSON.parse(application?.employeeAccidentInfo);
           // const parsedEmployeeDependentInfo = JSON.parse(application?.employeeDependentInfo)
           // const parsedEmployeeBankInfo = JSON.parse(application?.employeeBankInfo)
 
           return {
             ...application,
-            applicantInfo:JSON.parse(parsedApplicantInfo),
-            metadata:JSON.parse(parsedMetadata),
-            deceasedWorkerInfo:JSON.parse(parsedDeceasedWorkerInfo),
-            employeeAccidentInfo:JSON.parse(parsedEmployeeAccidentInfo),
+            applicantInfo: JSON.parse(parsedApplicantInfo),
+            metadata: JSON.parse(parsedMetadata),
+            deceasedWorkerInfo: JSON.parse(parsedDeceasedWorkerInfo),
+            employeeAccidentInfo: JSON.parse(parsedEmployeeAccidentInfo),
             // employeeDependentInfo:JSON.parse(parsedEmployeeDependentInfo),
             // employeeBankInfo:JSON.parse(parsedEmployeeBankInfo)
-          }
-        })
-        setApplications(formData)
-        console.log({fromEISAdvisor:formData})
-      })
+          };
+        });
+        setApplications(formData);
+        console.log({ fromEISAdvisor: formData });
+      });
 
-      dispatch(fetchWorkforceEisPaymentDisbursementStage({isDisbursed: true}, modulesManager)).then(r =>{
-        const response = r?.payload?.data?.workforceEisPaymentDisbursementStage
-        setDisbursedApplication(response)
-        console.log({response})
-
-      })
+      dispatch(fetchWorkforceEisPaymentDisbursementStage({ isDisbursed: true }, modulesManager)).then((r) => {
+        const response = r?.payload?.data?.workforceEisPaymentDisbursementStage;
+        setDisbursedApplication(response);
+        console.log({ response });
+      });
     }
     loadNewDashboardRequirements();
   }, []);
@@ -475,7 +511,6 @@ const Dashboard = () => {
             <FormattedMessage id="workforce.dashboard.overallFilters" />
           </Typography>
           <Grid container spacing={3} alignItems="flex-end">
-            
             <Grid item xs={12} md={4}>
               <Typography variant="caption" color="textSecondary">
                 <FormattedMessage id="workforce.dashboard.appSubmissionDate" />
@@ -485,7 +520,7 @@ const Dashboard = () => {
                 <TextField type="date" size="small" variant="outlined" fullWidth value={toDate} onChange={(e) => handleToDateChange(e.target.value)} />
               </Box>
             </Grid>
-            
+
             <Grid item xs={12} md={4}>
               <Typography variant="caption" color="textSecondary">
                 <FormattedMessage id="workforce.dashboard.accidentDate" />
@@ -499,171 +534,322 @@ const Dashboard = () => {
             <Grid item xs={12} md={4}>
               <FormControl variant="outlined" size="small" fullWidth>
                 <Select value={association} onChange={(e) => setAssociation(e.target.value)} displayEmpty>
-                  <MenuItem value="all"><FormattedMessage id="workforce.dashboard.allAssociations" /></MenuItem>
+                  <MenuItem value="all">
+                    <FormattedMessage id="workforce.dashboard.allAssociations" />
+                  </MenuItem>
                   <MenuItem value="bgmea">BGMEA</MenuItem>
                   <MenuItem value="bkmea">BKMEA</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-
-            
           </Grid>
         </Card>
       </Grid>
 
       {/* --- DASHBOARD METRICS --- */}
       <Grid item xs={12}>
-        <DashboardCard 
-          title={<FormattedMessage id="workforce.dashboard.pipeline" />} 
+        <DashboardCard
+          title={<FormattedMessage id="workforce.dashboard.pipeline" />}
           subtitle={<FormattedMessage id="workforce.dashboard.pipeline.subtitle" />}
         >
           <Grid container spacing={4}>
-             <Grid item xs={4}><StatRow label={<FormattedMessage id="workforce.dashboard.pipeline.factory" />} count={applications?.filter(item=>item.status ==="new").length} /></Grid>
-             <Grid item xs={4}><StatRow label={<FormattedMessage id="workforce.dashboard.pipeline.association" />} count={applications?.filter(item=>item.status ==="forward_to_association").length} /></Grid>
-             <Grid item xs={4}><StatRow label={<FormattedMessage id="workforce.dashboard.pipeline.eis" />} count={applications?.filter(item=>item.status !="forward_to_association"||item.status !="new"||item.status !="draft").length} /></Grid>
+            <Grid item xs={4}>
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.pipeline.factory" />}
+                count={applications?.filter((item) => item.status === "new").length}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.pipeline.association" />}
+                count={applications?.filter((item) => item.status === "forward_to_association").length}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.pipeline.eis" />}
+                count={applications?.filter((item) => item.status != "forward_to_association" || item.status != "new" || item.status != "draft").length}
+              />
+            </Grid>
           </Grid>
         </DashboardCard>
       </Grid>
 
       <Grid item xs={12} md={4}>
-        <DashboardCard 
-          title={<FormattedMessage id="workforce.dashboard.pending" />} 
-          subtitle={<FormattedMessage id="workforce.dashboard.pending.subtitle" />}
-        >
-           <Typography variant="subtitle2" style={{ color: "#1976d2", marginTop: 10 }}>
-             <FormattedMessage id="workforce.dashboard.pending.verified" />
-           </Typography>
-           <Box pl={2} mb={2}>
-              <StatRow label={<FormattedMessage id="workforce.dashboard.pending.death" />} count={applications?.filter(item=>item.applicationType ==="financialAssistance" && item?.eisVerified).length} />
-              <StatRow label={<FormattedMessage id="workforce.dashboard.pending.disability" />} count={applications?.filter(item=>item.applicationType ==="disabilityAssistance" && item?.eisVerified).length} />
-           </Box>
-           <Typography variant="subtitle2" style={{ color: "#d32f2f" }}>
-             <FormattedMessage id="workforce.dashboard.pending.nonVerified" />
-           </Typography>
-           <Box pl={2}>
-              <StatRow label={<FormattedMessage id="workforce.dashboard.pending.death" />} count={applications?.filter(item=>item.applicationType ==="financialAssistance" && !item?.eisVerified).length} />
-              <StatRow label={<FormattedMessage id="workforce.dashboard.pending.disability" />} count={applications?.filter(item=>item.applicationType ==="disabilityAssistance" && !item?.eisVerified).length} />
-           </Box>
+        <DashboardCard title={<FormattedMessage id="workforce.dashboard.pending" />} subtitle={<FormattedMessage id="workforce.dashboard.pending.subtitle" />}>
+          <Typography variant="subtitle2" style={{ color: "#1976d2", marginTop: 10 }}>
+            <FormattedMessage id="workforce.dashboard.pending.verified" />
+          </Typography>
+          <Box pl={2} mb={2}>
+            <StatRow
+              label={<FormattedMessage id="workforce.dashboard.pending.death" />}
+              count={applications?.filter((item) => item.applicationType === "financialAssistance" && item?.eisVerified).length}
+            />
+            <StatRow
+              label={<FormattedMessage id="workforce.dashboard.pending.disability" />}
+              count={applications?.filter((item) => item.applicationType === "disabilityAssistance" && item?.eisVerified).length}
+            />
+          </Box>
+          <Typography variant="subtitle2" style={{ color: "#d32f2f" }}>
+            <FormattedMessage id="workforce.dashboard.pending.nonVerified" />
+          </Typography>
+          <Box pl={2}>
+            <StatRow
+              label={<FormattedMessage id="workforce.dashboard.pending.death" />}
+              count={applications?.filter((item) => item.applicationType === "financialAssistance" && !item?.eisVerified).length}
+            />
+            <StatRow
+              label={<FormattedMessage id="workforce.dashboard.pending.disability" />}
+              count={applications?.filter((item) => item.applicationType === "disabilityAssistance" && !item?.eisVerified).length}
+            />
+          </Box>
         </DashboardCard>
       </Grid>
 
       <Grid item xs={12} md={4}>
-        <DashboardCard 
-          title={<FormattedMessage id="workforce.dashboard.overview" />} 
+        <DashboardCard
+          title={<FormattedMessage id="workforce.dashboard.overview" />}
           subtitle={<FormattedMessage id="workforce.dashboard.overview.subtitle" />}
         >
-           <Typography variant="subtitle2" style={{ marginTop: 10 }}>
-             <FormattedMessage id="workforce.dashboard.overview.death" />
-           </Typography>
-           <Box pl={2} mb={2}>
-              <StatRow label={<FormattedMessage id="workforce.dashboard.overview.deadMale" />} count={applications?.filter(item=>item.applicationType ==="financialAssistance" && item?.status === "approved_by_committee"&& item?.deceasedWorkerInfo?.gender?.name ==="workforce.gender.male").length} />
-              <StatRow label={<FormattedMessage id="workforce.dashboard.overview.deadFemale" />} count={applications?.filter(item=>item.applicationType ==="financialAssistance" && item?.status === "approved_by_committee"&& item?.deceasedWorkerInfo?.gender?.name ==="workforce.gender.female").length} />
-           </Box>
-           <Typography variant="subtitle2">
-             <FormattedMessage id="workforce.dashboard.overview.disability" />
-           </Typography>
-           <Box pl={2}>
-              <StatRow label={<FormattedMessage id="workforce.dashboard.overview.maleWorker" />} count={applications?.filter(item=>item.applicationType ==="disabilityAssistance" && item?.status === "approved_by_committee"&& item?.workforceEmployee?.gender ==="workforce.gender.male").length} />
-              <StatRow label={<FormattedMessage id="workforce.dashboard.overview.femaleWorker" />} count={applications?.filter(item=>item.applicationType ==="disabilityAssistance" && item?.status === "approved_by_committee"&& item?.workforceEmployee?.gender ==="workforce.gender.female").length} />
-           </Box>
+          <Typography variant="subtitle2" style={{ marginTop: 10 }}>
+            <FormattedMessage id="workforce.dashboard.overview.death" />
+          </Typography>
+          <Box pl={2} mb={2}>
+            <StatRow
+              label={<FormattedMessage id="workforce.dashboard.overview.deadMale" />}
+              count={
+                applications?.filter(
+                  (item) =>
+                    item.applicationType === "financialAssistance" &&
+                    item?.status === "approved_by_committee" &&
+                    item?.deceasedWorkerInfo?.gender?.name === "workforce.gender.male",
+                ).length
+              }
+            />
+            <StatRow
+              label={<FormattedMessage id="workforce.dashboard.overview.deadFemale" />}
+              count={
+                applications?.filter(
+                  (item) =>
+                    item.applicationType === "financialAssistance" &&
+                    item?.status === "approved_by_committee" &&
+                    item?.deceasedWorkerInfo?.gender?.name === "workforce.gender.female",
+                ).length
+              }
+            />
+          </Box>
+          <Typography variant="subtitle2">
+            <FormattedMessage id="workforce.dashboard.overview.disability" />
+          </Typography>
+          <Box pl={2}>
+            <StatRow
+              label={<FormattedMessage id="workforce.dashboard.overview.maleWorker" />}
+              count={
+                applications?.filter(
+                  (item) =>
+                    item.applicationType === "disabilityAssistance" &&
+                    item?.status === "approved_by_committee" &&
+                    item?.workforceEmployee?.gender === "workforce.gender.male",
+                ).length
+              }
+            />
+            <StatRow
+              label={<FormattedMessage id="workforce.dashboard.overview.femaleWorker" />}
+              count={
+                applications?.filter(
+                  (item) =>
+                    item.applicationType === "disabilityAssistance" &&
+                    item?.status === "approved_by_committee" &&
+                    item?.workforceEmployee?.gender === "workforce.gender.female",
+                ).length
+              }
+            />
+          </Box>
         </DashboardCard>
       </Grid>
 
       <Grid item xs={12} md={4}>
-        <DashboardCard 
-          title={<FormattedMessage id="workforce.dashboard.beneficiary" />} 
+        <DashboardCard
+          title={<FormattedMessage id="workforce.dashboard.beneficiary" />}
           subtitle={<FormattedMessage id="workforce.dashboard.beneficiary.subtitle" />}
         >
-           <StatRow label={<FormattedMessage id="workforce.dashboard.beneficiary.male" />} count={getBeneficiaryCount("maleApplicant")} onClick={navigateToBeneficiaries} />
-           <StatRow label={<FormattedMessage id="workforce.dashboard.beneficiary.female" />} count={getBeneficiaryCount("femaleApplicant")} onClick={navigateToBeneficiaries} />
-           <Box mt={2} p={1} bgcolor="#f9f9f9" borderRadius="8px">
-             <StatRow label={<FormattedMessage id="workforce.dashboard.beneficiary.total" />} count={getBeneficiaryCount("totalApplicant")} onClick={navigateToBeneficiaries} />
-           </Box>
+          <StatRow
+            label={<FormattedMessage id="workforce.dashboard.beneficiary.male" />}
+            count={getBeneficiaryCount("maleApplicant")}
+            onClick={navigateToBeneficiaries}
+          />
+          <StatRow
+            label={<FormattedMessage id="workforce.dashboard.beneficiary.female" />}
+            count={getBeneficiaryCount("femaleApplicant")}
+            onClick={navigateToBeneficiaries}
+          />
+          <Box mt={2} p={1} bgcolor="#f9f9f9" borderRadius="8px">
+            <StatRow
+              label={<FormattedMessage id="workforce.dashboard.beneficiary.total" />}
+              count={getBeneficiaryCount("totalApplicant")}
+              onClick={navigateToBeneficiaries}
+            />
+          </Box>
         </DashboardCard>
       </Grid>
 
       <Grid item xs={12} md={6}>
-        <DashboardCard 
-          title={<FormattedMessage id="workforce.dashboard.accidentSegregation" />} 
+        <DashboardCard
+          title={<FormattedMessage id="workforce.dashboard.accidentSegregation" />}
           subtitle={<FormattedMessage id="workforce.dashboard.accidentSegregation.subtitle" />}
         >
-           <Grid container spacing={3}>
-             <Grid item xs={6}>
-               <Typography variant="subtitle2" style={{ marginTop: 10 }}>
-                 <FormattedMessage id="workforce.dashboard.overview.death" />
-               </Typography>
-               <StatRow label={<FormattedMessage id="workforce.dashboard.accidentSegregation.workplace" />} count={applications?.filter(item=>item.applicationType ==="financialAssistance" && item?.employeeAccidentInfo?.accidentMainType ==="workforce.accident.mainType.workplace").length} />
-               <StatRow label={<FormattedMessage id="workforce.dashboard.accidentSegregation.commuting" />} count={applications?.filter(item=>item.applicationType ==="financialAssistance" && item?.employeeAccidentInfo?.accidentMainType ==="workforce.accident.mainType.commuting").length} />
-               <StatRow label={<FormattedMessage id="workforce.dashboard.accidentSegregation.rta" />} count={applications?.filter(item=>item.applicationType ==="financialAssistance" && item?.employeeAccidentInfo?.accidentMainType ==="workforce.accident.mainType.onDutyRTA").length} />
-             </Grid>
-             <Grid item xs={6}>
-               <Typography variant="subtitle2" style={{ marginTop: 10 }}>
-                 <FormattedMessage id="workforce.dashboard.overview.disability" />
-               </Typography>
-               <StatRow label={<FormattedMessage id="workforce.dashboard.accidentSegregation.workplace" />} count={applications?.filter(item=>item.applicationType ==="disabilityAssistance" && item?.employeeAccidentInfo?.accidentMainType==="workforce.accident.mainType.workplace").length} />
-               <StatRow label={<FormattedMessage id="workforce.dashboard.accidentSegregation.commuting" />} count={applications?.filter(item=>item.applicationType ==="financialAssistance" && item?.employeeAccidentInfo?.accidentMainType ==="workforce.accident.mainType.commuting").length} />
-               <StatRow label={<FormattedMessage id="workforce.dashboard.accidentSegregation.rta" />} count={applications?.filter(item=>item.applicationType ==="financialAssistance" && item?.employeeAccidentInfo?.accidentMainType ==="workforce.accident.mainType.onDutyRTA").length} />
-             </Grid>
-           </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <Typography variant="subtitle2" style={{ marginTop: 10 }}>
+                <FormattedMessage id="workforce.dashboard.overview.death" />
+              </Typography>
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.accidentSegregation.workplace" />}
+                count={
+                  applications?.filter(
+                    (item) =>
+                      item.applicationType === "financialAssistance" &&
+                      item?.employeeAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace",
+                  ).length
+                }
+              />
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.accidentSegregation.commuting" />}
+                count={
+                  applications?.filter(
+                    (item) =>
+                      item.applicationType === "financialAssistance" &&
+                      item?.employeeAccidentInfo?.accidentMainType === "workforce.accident.mainType.commuting",
+                  ).length
+                }
+              />
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.accidentSegregation.rta" />}
+                count={
+                  applications?.filter(
+                    (item) =>
+                      item.applicationType === "financialAssistance" &&
+                      item?.employeeAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA",
+                  ).length
+                }
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle2" style={{ marginTop: 10 }}>
+                <FormattedMessage id="workforce.dashboard.overview.disability" />
+              </Typography>
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.accidentSegregation.workplace" />}
+                count={
+                  applications?.filter(
+                    (item) =>
+                      item.applicationType === "disabilityAssistance" &&
+                      item?.employeeAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace",
+                  ).length
+                }
+              />
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.accidentSegregation.commuting" />}
+                count={
+                  applications?.filter(
+                    (item) =>
+                      item.applicationType === "financialAssistance" &&
+                      item?.employeeAccidentInfo?.accidentMainType === "workforce.accident.mainType.commuting",
+                  ).length
+                }
+              />
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.accidentSegregation.rta" />}
+                count={
+                  applications?.filter(
+                    (item) =>
+                      item.applicationType === "financialAssistance" &&
+                      item?.employeeAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA",
+                  ).length
+                }
+              />
+            </Grid>
+          </Grid>
         </DashboardCard>
       </Grid>
 
       <Grid item xs={12} md={6}>
         <DashboardCard title={<FormattedMessage id="workforce.dashboard.financialOverview" />}>
-           <Grid container spacing={3}>
-             <Grid item xs={6}>
-               <Typography variant="subtitle2" style={{ marginTop: 10, color: "#2e7d32" }}>
-                 <FormattedMessage id="workforce.dashboard.financial.paidTillNow" />
-               </Typography>
-               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />} count={`৳ ${disbursedApplication.filter(item=>item.workforceApplication?.applicationType ==="financialAssistance").reduce((acc, obj) => acc + (Number((parseFloat(obj?.paidAmount)).toFixed(2)) || 0), 0)}`} />
-               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />} count={`৳ ${disbursedApplication.filter(item=>item.workforceApplication?.applicationType ==="disabilityAssistance").reduce((acc, obj) => acc + (Number((parseFloat(obj?.paidAmount)).toFixed(2)) || 0), 0)}`} />
-             </Grid>
-             <Grid item xs={6}>
-               <Typography variant="subtitle2" style={{ marginTop: 10, color: "#ed6c02" }}>
-                 <FormattedMessage id="workforce.dashboard.financial.approxLifetime" />
-               </Typography>
-               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />} count={`৳ ${disbursedApplication.filter(item=>item.workforceApplication?.applicationType ==="financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0)}`} />
-               <StatRow label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />} count={`৳ ${disbursedApplication.filter(item=>item.workforceApplication?.applicationType ==="financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0)}`} />
-             </Grid>
-           </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <Typography variant="subtitle2" style={{ marginTop: 10, color: "#2e7d32" }}>
+                <FormattedMessage id="workforce.dashboard.financial.paidTillNow" />
+              </Typography>
+
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />}
+                count={`৳ ${disbursedApplication
+                  .filter((item) => item.workforceApplication?.applicationType === "financialAssistance")
+                  .reduce((acc, obj) => acc + (parseFloat(obj?.paidAmount) || 0), 0)
+                  .toFixed(2)}`}
+              />
+
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />}
+                count={`৳ ${disbursedApplication
+                  .filter((item) => item.workforceApplication?.applicationType === "disabilityAssistance")
+                  .reduce((acc, obj) => acc + (parseFloat(obj?.paidAmount) || 0), 0)
+                  .toFixed(2)}`}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle2" style={{ marginTop: 10, color: "#ed6c02" }}>
+                <FormattedMessage id="workforce.dashboard.financial.approxLifetime" />
+              </Typography>
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />}
+                count={`৳ ${disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0)}`}
+              />
+              <StatRow
+                label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />}
+                count={`৳ ${disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0)}`}
+              />
+            </Grid>
+          </Grid>
         </DashboardCard>
       </Grid>
 
       <Grid item xs={12} md={5}>
-         <DashboardCard title={<FormattedMessage id="workforce.dashboard.appSegregation" />}>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={100} label>
-                  {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
-                </Pie>
-                <Tooltip />
-                <Legend verticalAlign="bottom" align="center" />
-              </PieChart>
-            </ResponsiveContainer>
-         </DashboardCard>
+        <DashboardCard title={<FormattedMessage id="workforce.dashboard.appSegregation" />}>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={100} label>
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend verticalAlign="bottom" align="center" />
+            </PieChart>
+          </ResponsiveContainer>
+        </DashboardCard>
       </Grid>
 
       <Grid item xs={12} md={7}>
-         <DashboardCard title={<FormattedMessage id="workforce.dashboard.accidentVsTime" />}>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={barData}> 
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis label={{ value: isBn ? "দুর্ঘটনার সংখ্যা" : "Number of accidents", angle: -90, position: 'insideLeft' }} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey={chartLabels.death} stackId="death" fill="#d32f2f" />
-                <Bar dataKey={chartLabels.disability} stackId="disability" fill="#1976d2" />
-              </BarChart>
-            </ResponsiveContainer>
-         </DashboardCard>
+        <DashboardCard title={<FormattedMessage id="workforce.dashboard.accidentVsTime" />}>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={barData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis label={{ value: isBn ? "দুর্ঘটনার সংখ্যা" : "Number of accidents", angle: -90, position: "insideLeft" }} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey={chartLabels.death} stackId="death" fill="#d32f2f" />
+              <Bar dataKey={chartLabels.disability} stackId="disability" fill="#1976d2" />
+            </BarChart>
+          </ResponsiveContainer>
+        </DashboardCard>
       </Grid>
 
       <AgingReportModal open={openModal} onClose={() => setOpenModal(false)} data={selectedType} organizationType={filter.toLowerCase()} />
     </Grid>
   );
 };
-
 
 const EISAdvisorDashboardPage = () => {
   const reduxState = useSelector((state) => state);
