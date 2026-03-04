@@ -21,7 +21,10 @@ import { fetchEisPaymentProcessWithFilters, updateWorkforceEisBeneficiary } from
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
 import DistrictBanks from "../../../pickers/DistrictBanks";
 import BranchPicker from "../../../pickers/BranchPicker";
-
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  useHistory,FormattedMessage, TextInput
+} from "@openimis/fe-core";
 const INITIAL_STATE = {
     reason: "",
     remarriageOrDeathDate: null,
@@ -33,19 +36,32 @@ const INITIAL_STATE = {
     decrementAmount: "",
     decrementDate: null,
     // Other Beneficiaries Adjustments (Nested Object)
-    adjustments: {} 
+    adjustments: {}
 };
 
+const useStyles = makeStyles((theme) => ({
+    paper: {
+        padding: theme.spacing(2),
+    },
+    item: {
+        marginBottom: theme.spacing(2),
+    },
+    buttonContainer: {
+        marginTop: theme.spacing(2),
+    },
+}));
+
+
 const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
-    if (!beneficiary) return null;
-    
+    const classes = useStyles();
+
     const dispatch = useDispatch();
     const modulesManager = useModulesManager();
     const dep = beneficiary?.workforceEmployeeDependent?.[0];
 
     // 1. Single State Variable for all form data
     const [formData, setFormData] = useState(INITIAL_STATE);
-    
+
     // API Data state (kept separate from form state as per best practice)
     const [otherBeneficiaries, setOtherBeneficiaries] = useState([]);
 
@@ -54,7 +70,7 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
     // This prevents state desync issues.
     const isClosedStatus = formData.reason === "remarried" || formData.reason === "died";
     const statusSelectable = formData.reason === "live_check_denial";
-    
+
     let dateFieldLabel = "";
     if (formData.reason === "remarried") dateFieldLabel = "Date of Remarriage";
     else if (formData.reason === "died") dateFieldLabel = "Date of Death";
@@ -130,7 +146,7 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
     const handleSave = () => {
         // You can now access all data from 'formData'
         console.log("Submitting Complete Form Data:", formData);
-        if(formData.incrementAmount > 0 || formData.decrementAmount > 0 || (formData.reason && formData.status)){
+        if (formData.incrementAmount > 0 || formData.decrementAmount > 0 || (formData.reason && formData.status)) {
             const payload = {
                 beneficiaryId: beneficiary.beneficiaryId || null,
                 reason: formData.reason || null,
@@ -144,14 +160,14 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
                 otherBeneficiaryData: JSON.stringify(formData.adjustments),
                 // Include other fields if your API needs them
             };
-    
+
             console.log("Payload to submit:", payload);
-    
+
             dispatch(updateWorkforceEisBeneficiary(payload)).then(() => {
                 onSuccess();
             });
         }
-        else{
+        else {
             return alert("Please provide at least one change (Increment/Decrement/Status Change) to save.");
         }
 
@@ -161,6 +177,9 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
         beneficiary?.workforceApplication?.applicationType === "deadlyGrant"
         ? safeParse(beneficiary?.workforceApplication?.deceasedWorkerInfo)?.nameBn
         : beneficiary?.workforceApplication?.workforceEmployee?.firstNameBn;
+
+
+    if (!beneficiary) return null;
 
     /* -------------------- RENDER -------------------- */
     return (
@@ -200,11 +219,11 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
                             <Chip label={beneficiary.beneficiaryStatus} size="small" color="primary" />
                             {beneficiary.remarriageOrDeathDate && (
                                 <Typography variant="caption" display="block" color="textSecondary">
-                                    {beneficiary.reason === "remarried" ? "Beneficiary Remarried on: " : beneficiary.reason==="died"?"Beneficiary Died on: ":"Beneficiary Denied Last Live Check on: "}
+                                    {beneficiary.reason === "remarried" ? "Beneficiary Remarried on: " : beneficiary.reason === "died" ? "Beneficiary Died on: " : "Beneficiary Denied Last Live Check on: "}
                                     {beneficiary.remarriageOrDeathDate ? new Date(beneficiary.remarriageOrDeathDate).toLocaleDateString("en-BD") : "N/A"}
                                 </Typography>
                             )}
-                            <Typography variant="caption" style={{ fontWeight: 700 }}>{beneficiary?.remarks??""}</Typography>
+                            <Typography variant="caption" style={{ fontWeight: 700 }}>{beneficiary?.remarks ?? ""}</Typography>
                         </Box>
                     </Grid>
                     <Grid item md={3}>
@@ -219,7 +238,7 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
                         <Box mb={2}>
                             <Typography variant="subtitle2"><strong>Last Changes</strong></Typography>
                             <Typography variant="caption" display="block" color="textSecondary">
-                                <strong>Last Increment: </strong> {Number(beneficiary?.incrementAmount?? 0).toLocaleString("en-BD")} {" "}
+                                <strong>Last Increment: </strong> {Number(beneficiary?.incrementAmount ?? 0).toLocaleString("en-BD")} {" "}
                                 ({beneficiary?.incrementDate ? new Date(beneficiary.incrementDate).toLocaleDateString("en-BD") : "N/A"})
                             </Typography>
                             <Typography variant="caption" display="block" color="textSecondary">
@@ -230,72 +249,72 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
                     </Grid>
                 </Grid>
                 <Grid container>
-                        <Grid item xs={6} className={classes.item}>
-                              <PublishedComponent
-                                pubRef="workforce.BanksPicker"
-                                value={beneficiary?.bank?.parent?.id || null}
-                                label={<FormattedMessage id="workforce.bank.picker" />}
-                                // onChange={(v) => handleAccountChange(index, "bank", v)}
-                                required
-                                readOnly={false}
-                              />
-                              {errors.bank && <FormHelperText error>{errors.bank}</FormHelperText>}
-                            </Grid>
-                            <Grid item xs={6} className={classes.item}>
-                              <DistrictBanks
-                                id={"districtBank"}
-                                value={beneficiary?.bank?.id || null} // Pass the whole object, not just id
-                                label={<FormattedMessage id="workforce.district.branch.picker" />}
-                                bankId={account?.bank?.bankCode}
-                                // onChange={(v) => handleAccountChange(index, "district", v)} // Save full object
-                                required
-                                readOnly={false}
-                              />
-                              {errors.districtBank && <FormHelperText error>{errors.districtBank}</FormHelperText>}
-                            </Grid>
-                            <Grid item xs={6} className={classes.item}>
-                              <BranchPicker
-                                id={"branch"}
-                                value={beneficiary?.bank || ""}
-                                label={<FormattedMessage id="workforce.branch.picker" />}
-                                bankId={beneficiary?.bank?.bankCode}
-                                districtName={beneficiary?.bank?.districtNameBn}
-                                // onChange={(v) => handleAccountChange(index, "branch", v)}
-                                required
-                                readOnly={false}
-                              />
-                            </Grid>
+                    <Grid item xs={6} className={classes.item}>
+                        <PublishedComponent
+                            pubRef="workforce.BanksPicker"
+                            value={beneficiary?.bank?.parent?.id || null}
+                            label={<FormattedMessage id="workforce.bank.picker" />}
+                            // onChange={(v) => handleAccountChange(index, "bank", v)}
+                            required
+                            readOnly={false}
+                        />
+                        {/* {errors.bank && <FormHelperText error>{errors.bank}</FormHelperText>} */}
+                    </Grid>
+                    <Grid item xs={6} className={classes.item}>
+                        <DistrictBanks
+                            id={"districtBank"}
+                            value={beneficiary?.bank?.id || null} // Pass the whole object, not just id
+                            label={<FormattedMessage id="workforce.district.branch.picker" />}
+                            bankId={beneficiary?.bank?.bankCode}
+                            // onChange={(v) => handleAccountChange(index, "district", v)} // Save full object
+                            required
+                            readOnly={false}
+                        />
+                        {/* {errors.districtBank && <FormHelperText error>{errors.districtBank}</FormHelperText>} */}
+                    </Grid>
+                    <Grid item xs={6} className={classes.item}>
+                        <BranchPicker
+                            id={"branch"}
+                            value={beneficiary?.bank || ""}
+                            label={<FormattedMessage id="workforce.branch.picker" />}
+                            bankId={beneficiary?.bank?.bankCode}
+                            districtName={beneficiary?.bank?.districtNameBn}
+                            // onChange={(v) => handleAccountChange(index, "branch", v)}
+                            required
+                            readOnly={false}
+                        />
+                    </Grid>
 
-                            <Grid item xs={6} className={classes.item}>
-                              <TextInput
-                                id="accountHolderName"
-                                label="workforce.employee.account.info.accountHolderName"
-                                value={beneficiary?.bankAccountHolderName || ""}
-                                // onChange={(v) => handleAccountChange(index, "accountHolderName", v)}
-                                required
-                                readOnly={false}
-                              />
-                            </Grid>
-                            <Grid item xs={6} className={classes.item}>
-                              <TextInput
-                                id="routingNumber"
-                                label="workforce.employee.account.info.routingNumber"
-                                value={beneficiary?.bank?.routingNumber || ""}
-                                // onChange={(v) => handleAccountChange(index, "routingNumber", v)}
-                                readOnly={false}
-                                required
-                              />
-                            </Grid>
-                            <Grid item xs={6} className={classes.item}>
-                              <TextInput
-                                id="accountNumber"
-                                label="workforce.employee.account.info.accountNumber"
-                                value={beneficiary?.bankAccountNo || ""}
-                                // onChange={(v) => handleAccountChange(index, "accountNumber", v)}
-                                required
-                                readOnly={false}
-                              />
-                            </Grid>
+                    <Grid item xs={6} className={classes.item}>
+                        <TextInput
+                            id="accountHolderName"
+                            label="workforce.employee.account.info.accountHolderName"
+                            value={beneficiary?.bankAccountHolderName || ""}
+                            // onChange={(v) => handleAccountChange(index, "accountHolderName", v)}
+                            required
+                            readOnly={false}
+                        />
+                    </Grid>
+                    <Grid item xs={6} className={classes.item}>
+                        <TextInput
+                            id="routingNumber"
+                            label="workforce.employee.account.info.routingNumber"
+                            value={beneficiary?.bank?.routingNumber || ""}
+                            // onChange={(v) => handleAccountChange(index, "routingNumber", v)}
+                            readOnly={false}
+                            required
+                        />
+                    </Grid>
+                    <Grid item xs={6} className={classes.item}>
+                        <TextInput
+                            id="accountNumber"
+                            label="workforce.employee.account.info.accountNumber"
+                            value={beneficiary?.bankAccountNo || ""}
+                            // onChange={(v) => handleAccountChange(index, "accountNumber", v)}
+                            required
+                            readOnly={false}
+                        />
+                    </Grid>
                 </Grid>
             </DialogContent>
             <Divider />

@@ -191,7 +191,7 @@ const RegistrationPage = () => {
 
           <Typography variant="h5" color="primary">
             {/* <FormattedMessage module="workforce" id="workforce.registration.title" /> */}
-            {lang=="bn" ? "ওটিপি প্রধান করুন।" : "Enter the OTP"}
+            {lang=="bn" ? "ওটিপি প্রদান করুন।" : "Enter the OTP"}
           </Typography>
 
           <form onSubmit={(e) => e.preventDefault()}>

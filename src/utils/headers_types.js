@@ -56,7 +56,7 @@ export const headerFactoryAdmin = (component) => [
   "workforce.employee.application.status",
   "workforce.application.submittedBy",
   "view",
-  ...(component.props.disableButtons !== 1 && !component.props.revertedApplication
+  ...(component.props.disableButtons !== 1 && !component.props.revertedApplication && !component.props.isDraft
     ? ["verify", "revert"]
     : []),
   // "verify",

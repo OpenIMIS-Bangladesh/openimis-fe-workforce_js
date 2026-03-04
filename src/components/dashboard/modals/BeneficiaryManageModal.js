@@ -31,19 +31,18 @@ const INITIAL_STATE = {
     decrementAmount: "",
     decrementDate: null,
     // Other Beneficiaries Adjustments (Nested Object)
-    adjustments: {} 
+    adjustments: {}
 };
 
 const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
-    if (!beneficiary) return null;
-    
+
     const dispatch = useDispatch();
     const modulesManager = useModulesManager();
     const dep = beneficiary?.workforceEmployeeDependent?.[0];
 
     // 1. Single State Variable for all form data
     const [formData, setFormData] = useState(INITIAL_STATE);
-    
+
     // API Data state (kept separate from form state as per best practice)
     const [otherBeneficiaries, setOtherBeneficiaries] = useState([]);
 
@@ -52,7 +51,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
     // This prevents state desync issues.
     const isClosedStatus = formData.reason === "remarried" || formData.reason === "died";
     const statusSelectable = formData.reason === "live_check_denial";
-    
+
     let dateFieldLabel = "";
     if (formData.reason === "remarried") dateFieldLabel = "Date of Remarriage";
     else if (formData.reason === "died") dateFieldLabel = "Date of Death";
@@ -69,19 +68,47 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
     };
 
     // Helper for updating nested adjustments for other beneficiaries
-    const updateAdjustment = (beneficiaryId, field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            adjustments: {
-                ...prev.adjustments,
-                [beneficiaryId]: {
-                    ...prev.adjustments[beneficiaryId],
-                    [field]: value
-                }
-            }
-        }));
-    };
+   const updateAdjustment = (beneficiaryId, field, value) => {
+    setFormData(prev => {
 
+        const numericValue = Number(value) || 0;
+        const maxAllowed = Number(beneficiary?.payableAmount) || 0;
+
+        // Create a copy of adjustments with updated value
+        const updatedAdjustments = {
+            ...prev.adjustments,
+            [beneficiaryId]: {
+                ...prev.adjustments[beneficiaryId],
+                [field]: numericValue
+            }
+        };
+
+        // Only validate for incrementAmount fields
+        if (field === "incrementAmount") {
+
+            // Calculate total of all incrementAmount fields
+            const totalIncrement = Object.values(updatedAdjustments)
+                .reduce((sum, adj) => {
+                    return sum + (Number(adj?.incrementAmount) || 0);
+                }, 0);
+
+            if (totalIncrement > maxAllowed) {
+                alert(
+                    `Total increment amount (${totalIncrement.toLocaleString("en-BD")}) 
+                     cannot exceed payable amount (${maxAllowed.toLocaleString("en-BD")})`
+                );
+
+                // Revert only current field to 0
+                updatedAdjustments[beneficiaryId].incrementAmount = 0;
+            }
+        }
+
+        return {
+            ...prev,
+            adjustments: updatedAdjustments
+        };
+    });
+};
     /* -------------------- RESET ON OPEN -------------------- */
     useEffect(() => {
         if (open) {
@@ -128,7 +155,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
     const handleSave = () => {
         // You can now access all data from 'formData'
         console.log("Submitting Complete Form Data:", formData);
-        if(formData.incrementAmount > 0 || formData.decrementAmount > 0 || (formData.reason && formData.status)){
+        if (formData.incrementAmount > 0 || formData.decrementAmount > 0 || (formData.reason && formData.status)) {
             const payload = {
                 beneficiaryId: beneficiary.beneficiaryId || null,
                 reason: formData.reason || null,
@@ -142,14 +169,14 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                 otherBeneficiaryData: JSON.stringify(formData.adjustments),
                 // Include other fields if your API needs them
             };
-    
+
             console.log("Payload to submit:", payload);
-    
+
             dispatch(updateWorkforceEisBeneficiary(payload)).then(() => {
                 onSuccess();
             });
         }
-        else{
+        else {
             return alert("Please provide at least one change (Increment/Decrement/Status Change) to save.");
         }
 
@@ -161,6 +188,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
         : beneficiary?.workforceApplication?.workforceEmployee?.firstNameBn;
 
     /* -------------------- RENDER -------------------- */
+    if (!beneficiary) return null;
     return (
         <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
             <DialogTitle>Manage Beneficiary</DialogTitle>
@@ -198,11 +226,11 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                             <Chip label={beneficiary.beneficiaryStatus} size="small" color="primary" />
                             {beneficiary.remarriageOrDeathDate && (
                                 <Typography variant="caption" display="block" color="textSecondary">
-                                    {beneficiary.reason === "remarried" ? "Beneficiary Remarried on: " : beneficiary.reason==="died"?"Beneficiary Died on: ":"Beneficiary Denied Last Live Check on: "}
+                                    {beneficiary.reason === "remarried" ? "Beneficiary Remarried on: " : beneficiary.reason === "died" ? "Beneficiary Died on: " : "Beneficiary Denied Last Live Check on: "}
                                     {beneficiary.remarriageOrDeathDate ? new Date(beneficiary.remarriageOrDeathDate).toLocaleDateString("en-BD") : "N/A"}
                                 </Typography>
                             )}
-                            <Typography variant="caption" style={{ fontWeight: 700 }}>{beneficiary?.remarks??""}</Typography>
+                            <Typography variant="caption" style={{ fontWeight: 700 }}>{beneficiary?.remarks ?? ""}</Typography>
                         </Box>
                     </Grid>
                     <Grid item md={3}>
@@ -217,7 +245,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                         <Box mb={2}>
                             <Typography variant="subtitle2"><strong>Last Changes</strong></Typography>
                             <Typography variant="caption" display="block" color="textSecondary">
-                                <strong>Last Increment: </strong> {Number(beneficiary?.incrementAmount?? 0).toLocaleString("en-BD")} {" "}
+                                <strong>Last Increment: </strong> {Number(beneficiary?.incrementAmount ?? 0).toLocaleString("en-BD")} {" "}
                                 ({beneficiary?.incrementDate ? new Date(beneficiary.incrementDate).toLocaleDateString("en-BD") : "N/A"})
                             </Typography>
                             <Typography variant="caption" display="block" color="textSecondary">
@@ -226,7 +254,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
                             </Typography>
                         </Box>
                     </Grid>
-                    
+
                     {/* Main Beneficiary Adjustments */}
                     <Grid item md={3}>
                         <Box p={2} borderRadius={8} bgcolor="#f1f8e9" border="1px solid #dcedc8">
