@@ -913,6 +913,9 @@ class ApplicationProcessSearcher extends Component {
         defaultStatusFilters.push(
           `organizationTypeIn: ${organizationTypeIn}`
         );
+         if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        }
       } else {
         defaultStatusFilters.push(
           'statusIn: ["new","resubmitted_application"]',
