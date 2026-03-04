@@ -38,7 +38,7 @@ import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import EisMultiStepApplyForm from "../application/EisMultiStepApplyForm";
-import { isEisPath, conditionalEnToBn } from "../../utils/utils";
+import { isEisPath, conditionalEnToBn, safeDecodeId } from "../../utils/utils";
 import {
   STATUS_MAP_BN,
   STATUS_MAP_EN,
@@ -203,9 +203,32 @@ const newApplications = () => (
 
 const DraftApplications = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
+
+  const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
+
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  useEffect(() => {
+    if (loggedInUserId) {
+      const filters = [`relatedUser_Id: "${encodeId(modulesManager, "InteractiveUserGQLType", loggedInUserId)}"`];
+      dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
+        const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+        const node = edges[0]?.node;
+        const factoryId = node?.workforceFactory?.id || null;
+        setWorkforceFactoryId(safeDecodeId(factoryId));
+      });
+    }
+  }, [loggedInUserId]);
   return (
     <>
-      <ApplicationProcessSearcher applicationStatus={"draft"} dynamicTableTitle={"workforce.application.draft_applications"} />
+      <ApplicationProcessSearcher 
+        isDraft={true} 
+        applicationStatus={"draft"} 
+        factoryId= {workforceFactoryId}
+        dynamicTableTitle={"workforce.application.draft_applications"} 
+      />
     </>
   );
 };

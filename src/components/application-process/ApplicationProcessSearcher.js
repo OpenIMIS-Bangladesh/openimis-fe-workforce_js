@@ -916,7 +916,18 @@ class ApplicationProcessSearcher extends Component {
          if (loggedInUserId) {
           defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
-      } else {
+      }
+      else if(this.props.isDraft)
+      {
+        defaultStatusFilters.push(
+          'statusIn: ["draft"]',
+          `organizationTypeIn: ${organizationTypeIn}`
+        );
+        if (this.props.factoryId) {
+          defaultStatusFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
+        }
+      }
+      else {
         defaultStatusFilters.push(
           'statusIn: ["new","resubmitted_application"]',
           `organizationTypeIn: ${organizationTypeIn}`

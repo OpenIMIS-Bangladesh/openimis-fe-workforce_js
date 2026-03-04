@@ -121,7 +121,7 @@ const BeneficiaryManagement = () => {
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
-    loadData(); // Trigger data reload on filter change
+    // loadData(); // Trigger data reload on filter change
   };
 
   const handleDateChange = (field, value) => {
@@ -129,7 +129,7 @@ const BeneficiaryManagement = () => {
             ...prev,
             [field]: value
         }));
-        loadData(); // Trigger data reload on date change
+        // loadData(); // Trigger data reload on date change
     };
 
 

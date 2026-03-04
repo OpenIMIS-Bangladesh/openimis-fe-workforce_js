@@ -352,7 +352,7 @@ export const itemFormattersApplicant = (
           </Tooltip>
         </>
       ) : (
-        <Tooltip title="Resend">
+        <Tooltip title="Complete Application">
           <IconButton
             disabled={application?.isHistory}
             onClick={() => {
@@ -1553,95 +1553,130 @@ export const itemFormattersFactoryAdmin = (
     },
     isShowHistory() ? application?.version : null,
   ];
-
-  // View button
-  formatters.push((application) => (
-    <div className={component.props.classes.horizontalButtonContainer}>
-      <Tooltip title="ভিউ">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.process.view",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <TabIcon style={{ color: "blue" }} />
-        </IconButton>
-      </Tooltip>
-    </div>
-  ));
-
-  // Verify + Revert
-  formatters.push((application) =>
-    component.props.disableButtons !== 1 && !component.props.revertedApplication ? (
-      <div className={component.props.classes.horizontalButtonContainer}>
-        <Tooltip title="যাচাই">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                modulesManager,
-                history,
-                "workforce.route.applications.application.verify",
-                [decodeId(application?.id)],
-                false
-              );
-            }}
-          >
-            <VerifiedUserIcon style={{ color: "green" }} />
-          </IconButton>
-        </Tooltip>
-
-      </div>
-    ) : null
-  );
-  formatters.push((application) =>
-    component.props.disableButtons !== 1 && !component.props.revertedApplication ? (
-      <div className={component.props.classes.horizontalButtonContainer}>
-
-        <Tooltip title="রিভার্ট">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              component.handleOpenRevertModal(application);
-              component.setState({ revertByChecker: true });
-            }}
-          >
-            <UndoIcon style={{ color: "red" }} />
-          </IconButton>
-        </Tooltip>
-      </div>
-    ) : null
-  );
-
-  // Resend
-  formatters.push((application) =>
-    component.props.disableButtons !== 1 && component.props.revertedApplication ? (
-      <div className={component.props.classes.horizontalButtonContainer}>
-        <Tooltip title="Resend">
-          <IconButton
-            disabled={application?.isHistory}
-            onClick={() => {
-              historyPush(
-                modulesManager,
-                history,
-                "workforce.route.applications.application.process.resend",
-                [decodeId(application?.id)],
-                false
-              );
-            }}
-          >
-            <RestorePageIcon style={{ color: "#1976D2" }} />
-          </IconButton>
-        </Tooltip>
-      </div>
-    ) : null
-  );
+  
+  if (component.props.isDraft)
+  {
+    formatters.push((application) => (
+        <div className={component.props.classes.horizontalButtonContainer}>
+          <Tooltip title="Resend">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => {
+                isEisPath() ?
+                  historyPush(
+                    modulesManager,
+                    history,
+                    "workforce.route.application.eis",
+                    [decodeId(application?.id)],
+                    false
+                  )
+                  : historyPush(
+                    modulesManager,
+                    history,
+                    "workforce.route.application",
+                    [decodeId(application?.id)],
+                    false
+                  );
+              }}
+            >
+              <DoubleArrowIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+      )
+    )
+  }
+  else
+  {
+      // View button
+      formatters.push((application) => (
+        <div className={component.props.classes.horizontalButtonContainer}>
+          <Tooltip title="ভিউ">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => {
+                historyPush(
+                  modulesManager,
+                  history,
+                  "workforce.route.applications.application.process.view",
+                  [decodeId(application?.id)],
+                  false
+                );
+              }}
+            >
+              <TabIcon style={{ color: "blue" }} />
+            </IconButton>
+          </Tooltip>
+        </div>
+      ));
+    
+      // Verify + Revert
+      formatters.push((application) =>
+        component.props.disableButtons !== 1 && !component.props.revertedApplication ? (
+          <div className={component.props.classes.horizontalButtonContainer}>
+            <Tooltip title="যাচাই">
+              <IconButton
+                disabled={application?.isHistory}
+                onClick={() => {
+                  historyPush(
+                    modulesManager,
+                    history,
+                    "workforce.route.applications.application.verify",
+                    [decodeId(application?.id)],
+                    false
+                  );
+                }}
+              >
+                <VerifiedUserIcon style={{ color: "green" }} />
+              </IconButton>
+            </Tooltip>
+    
+          </div>
+        ) : null
+      );
+      formatters.push((application) =>
+        component.props.disableButtons !== 1 && !component.props.revertedApplication ? (
+          <div className={component.props.classes.horizontalButtonContainer}>
+    
+            <Tooltip title="রিভার্ট">
+              <IconButton
+                disabled={application?.isHistory}
+                onClick={() => {
+                  component.handleOpenRevertModal(application);
+                  component.setState({ revertByChecker: true });
+                }}
+              >
+                <UndoIcon style={{ color: "red" }} />
+              </IconButton>
+            </Tooltip>
+          </div>
+        ) : null
+      );
+    
+      // Resend
+      formatters.push((application) =>
+        component.props.disableButtons !== 1 && component.props.revertedApplication ? (
+          <div className={component.props.classes.horizontalButtonContainer}>
+            <Tooltip title="Resend">
+              <IconButton
+                disabled={application?.isHistory}
+                onClick={() => {
+                  historyPush(
+                    modulesManager,
+                    history,
+                    "workforce.route.applications.application.process.resend",
+                    [decodeId(application?.id)],
+                    false
+                  );
+                }}
+              >
+                <RestorePageIcon style={{ color: "#1976D2" }} />
+              </IconButton>
+            </Tooltip>
+          </div>
+        ) : null
+      );
+  }
 
   return formatters;
 };
