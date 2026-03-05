@@ -3126,7 +3126,7 @@ class ApplicationProcessSearcher extends Component {
       )
     };
 
-    console.log({ faltu: selectedApplicationIds })
+    console.log({ Ids: selectedApplicationIds })
     const disableButtons = this.props.disableButtons ? decodeId(this.props.disableButtons) : null;
     const approvedButton = this.props.approvedButton ? decodeId(this.props.approvedButton) : null;
     const meetingForwardButton = this.props.meetingForwardButton ? decodeId(this.props.meetingForwardButton) : null;

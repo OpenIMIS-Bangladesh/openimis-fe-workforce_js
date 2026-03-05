@@ -326,7 +326,7 @@ const FinancialAssistanceForm = ({
         dependents: parsedApplicationData?.employeeDependentInfo || [{}],
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
-        metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
+        metadata: parsedApplicationData?.metadata || formData?.metadata|| {},
         applicantInfo: parsedApplicationData?.applicantInfo || employeeData?.metadata || {},
         deceasedWorkerInfo:
           user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
