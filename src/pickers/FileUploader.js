@@ -126,6 +126,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
         documentType: documentType,
         holder: "57",
         holderType: "applicant",
+        fieldKey: fieldKey,
       };
 
       // 3. Update Global Validation Arrays (Filtered by NextStep)

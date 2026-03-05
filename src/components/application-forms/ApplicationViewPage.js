@@ -771,7 +771,7 @@ const ApplicationViewPage = ({
         (key) => key !== "employeeBankInfo" && key !== "employeeBankingInfoApplication"
       );
     }
-    const ordered = PREFERRED_SECTION_ORDER.filter((key) => appKeys.includes(key));
+    const ordered = currentPreferredSectionOrder.filter((key) => appKeys.includes(key));
     const allIgnored = [
       ...IGNORED_KEYS,
       ...hiddenKeys.filter((item) =>
@@ -786,7 +786,7 @@ const ApplicationViewPage = ({
         !(user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR && (key === "employeeBankInfo" || key === "employeeBankingInfoApplication"))
     );
     return [...ordered, ...others];
-  }, [application]);
+  }, [application,user_type]);
 
   const RESTRICTED_VERIFICATION_ROLES = [
     WORKFORCE_USER_TYPE.APPLICANT,
