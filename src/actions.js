@@ -3237,6 +3237,8 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
         approved: "${filters?.approved ?? ""}"
         approvalDateFrom: "${filters?.approvalDateFrom ?? ""}"
         approvalDateTo: "${filters?.approvalDateTo ?? ""}"
+        accidentDateFrom: "${filters?.accidentDateFrom ?? ""}"
+        accidentDateTo: "${filters?.accidentDateTo ?? ""}"
         month: "${filters?.month ?? ""}"
         year: "${filters?.year ?? ""}"
         notInStage: "${filters?.notInStage ?? ""}"

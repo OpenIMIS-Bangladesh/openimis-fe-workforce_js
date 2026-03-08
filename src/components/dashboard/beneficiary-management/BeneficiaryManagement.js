@@ -38,7 +38,9 @@ const BeneficiaryManagement = () => {
     association: "",
     beneficiaryId: "",
     approvalDateFrom: "",
-    approvalDateTo: ""
+    approvalDateTo: "",
+    accidentDateFrom: "",
+    accidentDateTo: ""
   });
 
   const [openModal, setOpenModal] = useState(false);
@@ -98,8 +100,10 @@ const BeneficiaryManagement = () => {
             beneficiaryId: filters.beneficiaryId,
             status: "active",
             approved: "yes",
-            approvalDateFrom: filters.approvalDateFrom,
-            approvalDateTo: filters.approvalDateTo
+            approvalDateFrom: filters.approvalDateFrom??"",
+            approvalDateTo: filters.approvalDateTo??"",
+            accidentDateFrom: filters.accidentDateFrom??"",
+            accidentDateTo: filters.accidentDateTo??"",
         }, modulesManager)),
       ]);
 
@@ -134,7 +138,7 @@ const BeneficiaryManagement = () => {
 
 
   const clearFilters = () => {
-    setFilters({ trackingNo: "", factory: "", association: "", beneficiaryId: "", approvalDateFrom: "", approvalDateTo: "" });
+    setFilters({ trackingNo: "", factory: "", association: "", beneficiaryId: "", approvalDateFrom: "", approvalDateTo: "", accidentDateFrom: "", accidentDateTo: "" });
   };
 
   // 3. Status Chip Helper
@@ -219,6 +223,28 @@ const BeneficiaryManagement = () => {
                   label="Approval Date To"
                   value={filters.approvalDateTo}
                   onChange={(date) => handleDateChange("approvalDateTo", date)}
+                  required
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Box mb style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px'}} display="flex" alignItems="center">
+              <PublishedComponent
+                  pubRef="workforce.DatePicker"
+                  label="Approval Date From"
+                  value={filters.accidentDateFrom}
+                  onChange={(date) => handleDateChange("accidentDateFrom", date)}
+                  required
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Box style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px'}} display="flex" alignItems="center">
+              <PublishedComponent
+                  pubRef="workforce.DatePicker"
+                  label="Approval Date To"
+                  value={filters.accidentDateTo}
+                  onChange={(date) => handleDateChange("accidentDateTo", date)}
                   required
               />
             </Box>
