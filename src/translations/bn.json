@@ -740,6 +740,7 @@
   "workforce.confirm.modal.cancel": "বাতিল করুন",
   "workforce.modal.print": "প্রিন্ট করুন",
   "workforce.modal.print.advice": "এডভাইস প্রিন্ট করুন",
+  "workforce.modal.save.advice": "এডভাইস সংরক্ষণ করুন",
   "workforce.modal.excel": "এক্সেল ফাইল ডাউনলোড করুন",
   "workforce.modal.word": "ওয়ার্ড ফাইল ডাউনলোড করুন",
   "workforce.application.info":"আবেদনের তথ্য",
@@ -1049,5 +1050,6 @@
   "workforce.modal.saveCalculation": "ক্যালকুলেশন সেভ করুন",
   "workforce.modal.recalculate": "পুনরায় ক্যালকুলেশন করুন",
   "workforce.dashboard": "ড্যাশবোর্ড",
-  "menu.workforce.association.user.map": "এসোসিয়েশনের সাথে ইউজার ম্যাপিং"
+  "menu.workforce.association.user.map": "এসোসিয়েশনের সাথে ইউজার ম্যাপিং",
+  "workforce.application.beneficiaryBankAdviceList": "জেনারেটকৃত ব্যাংক এডভাইস-সমূহ"
 }

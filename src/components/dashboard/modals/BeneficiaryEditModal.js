@@ -184,7 +184,7 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
     /* -------------------- RENDER -------------------- */
     return (
         <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
-            <DialogTitle>Manage Beneficiary</DialogTitle>
+            <DialogTitle>Edit Beneficiary Information</DialogTitle>
             <Divider />
             <DialogContent>
                 {/* Beneficiary Info */}
@@ -310,6 +310,16 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
                             id="accountNumber"
                             label="workforce.employee.account.info.accountNumber"
                             value={beneficiary?.bankAccountNo || ""}
+                            // onChange={(v) => handleAccountChange(index, "accountNumber", v)}
+                            required
+                            readOnly={false}
+                        />
+                    </Grid>
+                    <Grid item xs={6} className={classes.item}>
+                        <TextInput
+                            id="phoneNumber"
+                            label="workforce.employee.phone"
+                            value={beneficiary?.phoneNumber || ""}
                             // onChange={(v) => handleAccountChange(index, "accountNumber", v)}
                             required
                             readOnly={false}

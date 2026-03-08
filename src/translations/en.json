@@ -859,6 +859,7 @@
   "workforce.confirm.modal.ok": "OK",
   "workforce.modal.print": "Print",
   "workforce.modal.print.advice": "Print Advice",
+  "workforce.modal.save.advice": "Save Advice",
   "workforce.modal.excel": "Export Excel",
   "workforce.modal.word": "Export Word",
   "workforce.modal.close": "Close",
@@ -1135,6 +1136,7 @@
   "workforce.modal.saveCalculation": "Save Calculation",
   "workforce.modal.recalculate": "Recalculate",
   "workforce.dashboard": "Dashboard",
-  "menu.workforce.association.user.map": "Association User Mapping"
+  "menu.workforce.association.user.map": "Association User Mapping",
+  "workforce.application.beneficiaryBankAdviceList": "Generated Bank Advice List"
 
 }

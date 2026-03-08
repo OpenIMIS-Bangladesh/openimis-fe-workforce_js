@@ -18,8 +18,12 @@ import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import {
   FormattedMessage,
+  useModulesManager
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
+import { createWorkforceEisBankAdvice, fetchWorkforceEisPaymentDisbursementStage } from '../../../actions';
+import { useDispatch } from "react-redux";
+import { safeDecodeId } from '../../../utils/utils';
 
 const useStyles = makeStyles((theme) => ({
   noPrint: {
@@ -67,7 +71,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData }) => {
+const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fromAdviceList=false}) => {
+  const dispatch= useDispatch();
+  const modulesManager= useModulesManager();
   const classes = useStyles();
   const [eisPayments, setEisPayments] = useState([]);
 
@@ -78,7 +84,11 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData }) => {
   };
 
   useEffect(() => {
-    setEisPayments(paymentData);
+    const loadData= async ()=>{
+      setEisPayments(paymentData);
+    };
+
+    loadData();
   }, [open]);
 
   // -----------------------------
@@ -269,6 +279,29 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData }) => {
     window.print();
   };
 
+
+  const handleSaveAdvice = () => {
+    if(window.confirm("Are You sure you want to save this Bank Advice?"))
+    {
+      let ids= [];
+      paymentData.forEach(data =>{
+        ids.push(data.id);
+      })
+      try{
+        dispatch(createWorkforceEisBankAdvice(ids, month, year)).then((response) => {
+          onClose();
+        });
+      }
+      catch(e) {
+        alert("Bank Advice Creation Failed!")
+      }
+    }
+    else
+    {
+      alert("Bank Advice Creation Failed!")
+    }
+  };
+
   return (
     <Dialog
       open={open}
@@ -299,7 +332,7 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData }) => {
           style={{ fontWeight: "bold", textDecoration: "underline" }}
           paragraph
         >
-          Subject: Bank Advice Letter (EIS Top-up Benefit)
+          <strong>Subject:</strong> Bank Advice Letter (EIS Top-up Benefit)
         </Typography>
 
         <Typography paragraph>Dear Sir:</Typography>
@@ -394,12 +427,21 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData }) => {
         <Button onClick={onClose} variant="outlined" color="primary">
           <FormattedMessage id="workforce.modal.close" />
         </Button>
-        <Button onClick={handleDialogPrint} variant="contained" color="primary">
-          <FormattedMessage id="workforce.modal.print.advice" />
-        </Button>
-        <Button onClick={exportToExcel} variant="contained" color="secondary">
-          <FormattedMessage id="workforce.modal.excel" />
-        </Button>
+        {fromAdviceList? (
+          <>
+            <Button onClick={handleDialogPrint} variant="contained" color="primary">
+              <FormattedMessage id="workforce.modal.print.advice" />
+            </Button>
+            <Button onClick={exportToExcel} variant="contained" color="secondary">
+              <FormattedMessage id="workforce.modal.excel" />
+            </Button>
+          </>
+        ):
+        (
+          <Button onClick={handleSaveAdvice} variant="contained" color="primary">
+            <FormattedMessage id="workforce.modal.save.advice" />
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

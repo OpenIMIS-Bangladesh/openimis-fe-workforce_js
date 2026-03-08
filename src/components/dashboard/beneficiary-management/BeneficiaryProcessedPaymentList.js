@@ -435,6 +435,8 @@ const BeneficiaryProcessedPaymentList = () => {
         open={openGenerateBeneficiaryAdvice}
         onClose={() => setOpenGenerateBeneficiaryAdvice(false)}
         paymentData={data.filter(d => selectedIds.includes(d.id))}
+        month= {filters.month}
+        year= {filters.year}
       />
     </Box>
 

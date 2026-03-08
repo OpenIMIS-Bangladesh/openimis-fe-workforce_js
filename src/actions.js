@@ -3078,6 +3078,7 @@ export function fetchEisPaymentProcess(applicationIds, mm) {
         onetimeAmount
         trimonthlyAmount
         payableAmount
+        phoneNumber
         bank {
           id
           nameEn
@@ -3270,6 +3271,7 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
         onetimeAmount
         trimonthlyAmount
         payableAmount
+        phoneNumber
         bank {
           id
           nameEn
@@ -3433,6 +3435,7 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
         notInDisburse: "${filters?.notInDisburse ?? ""}"
         workforceFactoryId: "${filters?.workforceFactoryId ?? ""}"
         allAssociationId: "${filters?.allAssociationId ?? ""}"
+        workforceEisBankAdviceId: "${filters?.workforceEisBankAdviceId ?? ""}"
       ) {
         id
         monthIndex
@@ -3451,6 +3454,7 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
         disbursementDate
         beneficiaryId
         isDisbursed
+        phoneNumber
         bank {
           id
           nameEn
@@ -3733,4 +3737,61 @@ export function fetchWorkforceEmployeeWithoutProjection(filters) {
     projections
   );
   return graphql(payload, "WORKFORCE_EMPLOYEE");
+}
+
+
+
+export function createWorkforceEisBankAdvice(stageIds, month, year) {
+  const idsString = stageIds.map(id => `"${id}"`).join(",");
+  const mutation = `
+    mutation {
+      createWorkforceEisBankAdvice(
+        paymentDisbursementStageIds: [${idsString}]
+        month: "${month}"
+        year: "${year}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "CREATE_WORKFORCE_EIS_BANK_ADVICE");
+}
+
+
+export function updateWorkforceEisBankAdvice(advice_id) {
+  const mutation = `
+    mutation {
+      updateWorkforceEisBankAdvice(
+        id: "${advice_id}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "UPDATE_WORKFORCE_EIS_BANK_ADVICE");
+}
+
+
+export function fetchWorkforceEisBankAdvice(filters) {
+  const isConfirmString= filters.isConfirmed!==null?`isConfirmed:`+filters.isConfirmed:``
+  const payload = `
+    {
+      workforceEisBankAdvice(
+        month: "${filters?.month ?? ""}"
+        year: "${filters?.year ?? ""}"
+        `+isConfirmString+`
+      ) {
+        id
+        adviceDate
+        isConfirmed
+        remarks
+        month
+        year
+      }
+    }
+  `;
+
+  return graphql(payload, "WORKFORCE_EIS_BANK_ADVICE");
 }

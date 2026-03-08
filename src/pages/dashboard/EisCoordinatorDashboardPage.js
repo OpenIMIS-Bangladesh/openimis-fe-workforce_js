@@ -52,6 +52,7 @@ import BeneficiaryReport from "../reports/BeneficiaryReport";
 import BeneficiaryManagement from "../../components/dashboard/beneficiary-management/BeneficiaryManagement";
 import BeneficiaryPaymentProcess from "../../components/dashboard/beneficiary-management/BeneficiaryPaymentProcess";
 import BeneficiaryProcessedPaymentList from "../../components/dashboard/beneficiary-management/BeneficiaryProcessedPaymentList";
+import BeneficiaryBankAdviceList from "../../components/dashboard/beneficiary-management/BeneficiaryBankAdviceList";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -193,6 +194,11 @@ const SidebarMenu = [
   {
     id: "beneficiaryProcessedPaymentList",
     text: <FormattedMessage module="workforce" id="workforce.application.beneficiaryProcessedPaymentList" />,
+    icon: <AssignmentIcon />,
+  },
+  {
+    id: "beneficiaryBankAdviceList",
+    text: <FormattedMessage module="workforce" id="workforce.application.beneficiaryBankAdviceList" />,
     icon: <AssignmentIcon />,
   },
 ];
@@ -1335,6 +1341,8 @@ const EisCoordinatorDashboardPage = () => {
         return <BeneficiaryPaymentProcess />;
       case "beneficiaryProcessedPaymentList":
         return <BeneficiaryProcessedPaymentList />;
+      case "beneficiaryBankAdviceList":
+        return <BeneficiaryBankAdviceList />;
       default:
         return <Dashboard selectedMenu={selectedMenu}/>;
     }
