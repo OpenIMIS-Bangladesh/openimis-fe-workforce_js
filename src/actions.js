@@ -3280,6 +3280,7 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
           nameBn
           districtNameEn
           districtNameBn
+          districtCode
           bankCode
           branchCode
           routingNumber
@@ -3287,6 +3288,9 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
           {
             id
             bankCode
+            districtCode
+            districtNameEn
+            districtNameBn
             nameEn
             nameBn
           }
@@ -3310,10 +3314,13 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
           bank{
             nameBn
             districtNameBn
+            districtNameEn
             bankCode
             routingNumber
             parent{
               nameBn
+              districtNameEn
+              districtNameBn
             }
           }
         }
@@ -3796,4 +3803,23 @@ export function fetchWorkforceEisBankAdvice(filters) {
   `;
 
   return graphql(payload, "WORKFORCE_EIS_BANK_ADVICE");
+}
+
+
+export function updateWorkforceEisBeneficiaryBank(beneficiary) {
+  const mutation = `
+    mutation {
+      updateWorkforceEisBeneficiaryBank(
+        beneficiaryId: "${beneficiary?.beneficiaryId ?? ""}"
+        bankId: "${beneficiary?.branch ?? ""}"
+        bankAccountHolderName: "${beneficiary?.bankAccountHolderName ?? ""}"
+        bankAccountNo: "${beneficiary?.bankAccountNo ?? ""}"
+        phoneNumber: "${beneficiary?.phoneNumber ?? ""}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "UPDATE_WORKFORCE_EIS_BENEFICIARY");
 }
