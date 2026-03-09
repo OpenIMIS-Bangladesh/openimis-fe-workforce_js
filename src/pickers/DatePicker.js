@@ -11,7 +11,7 @@ const useStyles = makeStyles(() => ({
 
     "& .MuiInputBase-root": {
       borderRadius: 12,
-      backgroundColor: "#f9fafb",
+      // backgroundColor: "#f9fafb",
       transition: "all 0.3s ease",
       boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
     },
