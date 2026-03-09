@@ -356,11 +356,12 @@ const EmployeeDetailsForm2 = ({
                       ) : (
                         <FileUploader
                           fieldKey={uniqueFieldKey}
-                          onFileChange={handleChange.length > 0 ? handleChange : handleFileChange}
+                          onFileChange={handleChange ? handleChange : handleFileChange}
                           applicationId={applicationId}
                           documentType={document.documentType}
                           documentProp={document}
-                          uploadedBy={formStepNo === "employeeDependentInfo" ? "dependent" : formStepNo === "employeeBankInfo" ? "bank" : "applicant"}
+                          // uploadedBy={formStepNo === "employeeDependentInfo" ? "dependent" : formStepNo === "employeeBankInfo" ? "bank" : "applicant"}
+                          uploadedBy={formStepNo === "employeeDependentInfo" ? "dependent" : "applicant"}
                         />
                       )}
                     </Grid>

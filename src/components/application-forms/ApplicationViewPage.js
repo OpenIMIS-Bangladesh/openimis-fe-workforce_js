@@ -797,6 +797,8 @@ const ApplicationViewPage = ({
 
   console.log({ view: application });
   console.log({ verificationState });
+  console.log({ fileStates });
+  console.log({ filteredDocumentTypes });
 
   return (
     <>

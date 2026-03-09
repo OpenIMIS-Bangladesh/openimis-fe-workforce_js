@@ -1332,12 +1332,6 @@ export function validateMandatoryDocuments(type1Array, type2Array) {
     : { isValid: true, errors: null };
 }
 
-/**
- * FIXED: Per-Dependent Document Validator
- * Now checks BOTH:
- *   1. Pending uploads (uploadDependentFile)
- *   2. Already saved attachments inside formData.dependents[index].attachments
- */
 export function validateMandatoryDocumentsForDependents(
   documentConfigs,     // documentType from Redux (type1Array)
   uploadedFiles,       // uploadDependentFile (pending uploads)
@@ -1371,7 +1365,7 @@ export function validateMandatoryDocumentsForDependents(
 
     // Combine both sources
     const allFilesForThisDep = [...pending, ...saved];
-    console.log({requiredConfigs})
+    
     // Check every required document
     requiredConfigs.forEach((docConfig) => {
       const hasFile = allFilesForThisDep.some(

@@ -732,7 +732,7 @@
   "workforce.application.forward.message.toEisCoordinator": "আপনি কি যাচাইকৃত আবেদন গুলো ফরওয়ার্ড করতে চান?",
   "workforce.application.forward.message.toEisCommittee": "আপনি কি নির্বাচিত আবেদনসমূহ ইআইএস কমিটির কাছে ফরওয়ার্ড করতে চান?",
   "workforce.application.select.message": "আপনি কি এই আবেদনসমূহ নির্বাচন করতে চান?",
-  "workforce.application.approve.message": "আপনি কি নির্বাচিত আবেদনসমূহ অনুমোদন করতে চান?",
+  "workforce.application.approve.message": "আপনি কি নির্বাচিত আবেদনসমূহ সুপারিশ করতে চান?",
   "workforce.application.doctor.approve.message": "আপনি কি অক্ষমতার হার নিশ্চিত করতে চান?",
   "workforce.application.reject.message": "আপনি কি নির্বাচিত আবেদনসমূহ বাতিল করতে চান?",
   "workforce.application.resent.message": "আপনি কি নির্বাচিত আবেদনসমূহ  করতে চান?",

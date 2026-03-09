@@ -853,7 +853,7 @@
   "workforce.application.forward.message.toEisCoordinator": "Are you sure you want to forward these applications to Eis Pilot?",
   "workforce.application.forward.message.toEisCommittee": "Are you sure you want to forward these applications to Eis Committe?",
   "workforce.application.select.message": "Are you sure you want to select these applications?",
-  "workforce.application.approve.message": "Are you sure you want to approve these applications?",
+  "workforce.application.approve.message": "Are you sure you want to recommend these applications?",
   "workforce.application.doctorapplicationview.approve.message": "Do you want to confirm the disability rate?",
   "workforce.application.reject.message": "Are you sure you want to reject this application?",
   "workforce.confirm.modal.ok": "OK",

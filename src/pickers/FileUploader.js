@@ -125,24 +125,45 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
         workforceDocumentTypeId: documentProp?.id ? decodeId(documentProp.id) : "",
         documentType: documentType,
         holder: "57",
-        holderType: "applicant",
+        holderType: uploadedBy || "applicant",
         fieldKey: fieldKey,
       };
 
       // 3. Update Global Validation Arrays (Filtered by NextStep)
-      let actionType = "SET_UPLOAD_FILE_DATA";
-      if (uploadedBy === "dependent") actionType = "SET_UPLOAD_DEPENDENT_FILE_DATA";
-      if (uploadedBy === "bank") actionType = "SET_UPLOAD_DEPENDENT_BANK_DATA";
-
-      dispatch({ type: actionType, payload: createDocumentData });
-
+      if (uploadedBy === "dependent") {
+        dispatch({
+          type: "SET_UPLOAD_DEPENDENT_FILE_DATA",
+          payload: { ...createDocumentData, holderType: "applicant" },
+        });
+      } else if (uploadedBy === "bank") {
+        dispatch({
+          type: "SET_UPLOAD_DEPENDENT_BANK_DATA",
+          payload: { ...createDocumentData, holderType: "applicant" },
+        });
+      } else {
+        dispatch({
+          type: "SET_UPLOAD_FILE_DATA",
+          payload: createDocumentData,
+        });
+      }
       // 4. Handle Persistent DB Storage if Application ID exists
-      if (applicationId) {
+      if (applicationId && uploadedBy === "factoryAdmin") {
+        console.log("create document data", createDocumentData);
         dispatch(
           createWorkforceDocument(
-            { ...createDocumentData, workforceApplicationId: safeApplicationId(applicationId) },
-            `Created workforce document`
-          )
+            { ...createDocumentData, workforceApplicationId: uploadedBy ? applicationId : safeApplicationId(applicationId) },
+            `Created workforce document `,
+          ),
+        );
+      }
+
+      if (applicationId && uploadedBy != "factoryAdmin") {
+        console.log("create document data", createDocumentData);
+        dispatch(
+          createWorkforceDocument(
+            { ...createDocumentData, workforceApplicationId: uploadedBy ? applicationId : safeApplicationId(applicationId) },
+            `Created workforce document `,
+          ),
         );
       }
 
@@ -153,13 +174,29 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
     }
   };
 
-  const onDrop = useCallback(async (acceptedFiles) => {
-    // We do NOT update setFiles here to avoid duplicates.
-    // We wait for the API response which updates Redux, triggering the useEffect sync.
-    for (const file of acceptedFiles) {
-      await uploadFileToApi(file);
-    }
-  }, [savedFiles, fieldKey]);
+  const onDrop = useCallback(
+    async (acceptedFiles) => {
+      // 1. Collect all newly uploaded file data
+      const uploadedResponses = [];
+      for (const file of acceptedFiles) {
+        const res = await uploadFileToApi(file);
+        if (res) uploadedResponses.push(res);
+      }
+
+      // 2. Combine the previously saved files with the new ones
+      const allFiles = [...savedFiles, ...uploadedResponses];
+
+      // 3. CRITICAL FIX: Notify the parent component so formData.attachments is updated!
+      if (onFileChange) {
+        onFileChange(fieldKey, {
+          files: allFiles,
+          documentType: documentType,
+          documentPropId: documentProp?.id,
+        });
+      }
+    },
+    [savedFiles, fieldKey, onFileChange, documentType, documentProp] // Ensure dependencies are correct
+  );
 
   const removeFile = (fileName) => {
     // Find file object to get the unique 'path'
@@ -177,11 +214,15 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
       if (uploadedBy === "bank") removeType = "REMOVE_UPLOAD_DEPENDENT_BANK_DATA";
 
       dispatch({ type: removeType, payload: identifier });
-      
-      // Notify parent of the change
+
+      // C. CRITICAL FIX: Notify parent of the deletion using the CORRECT object structure
       if (onFileChange) {
         const filtered = files.filter((f) => f.name !== fileName);
-        onFileChange(fieldKey, filtered);
+        onFileChange(fieldKey, {
+          files: filtered,
+          documentType: documentType,
+          documentPropId: documentProp?.id,
+        });
       }
     }
   };
@@ -294,10 +335,7 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
                   <DeleteIcon color="secondary" className={classes.deleteIcon} />
                 </IconButton>
 
-                <IconButton
-                  size="small"
-                  onClick={() => document.getElementById(`additionalFileInput-${fieldKey}-${index}`).click()}
-                >
+                <IconButton size="small" onClick={() => document.getElementById(`additionalFileInput-${fieldKey}-${index}`).click()}>
                   <AddIcon style={{ fontSize: "1.2rem", color: "#005f67" }} />
                 </IconButton>
 
