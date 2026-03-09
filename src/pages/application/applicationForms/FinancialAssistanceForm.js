@@ -250,7 +250,7 @@ const FinancialAssistanceForm = ({
         },
         workforceEmployee: user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
           ? {
-              ...prev.workforceEmployee, // Preserve typed data
+              ...prev.workforceEmployee,
               nameEn: prev.workforceEmployee?.nameEn || pickedEmployeeData?.firstNameEn || "",
               nameBn: prev.workforceEmployee?.nameBn || pickedEmployeeData?.firstNameBn || "",
               fatherNameEn: prev.workforceEmployee?.fatherNameEn || pickedEmployeeData?.fatherNameEn || "",
@@ -272,10 +272,27 @@ const FinancialAssistanceForm = ({
               presentAddress: prev.workforceEmployee?.presentAddress || pickedEmployeeData?.presentAddress || "",
             }
           : {
-              // ...prev.workforceEmployee,
-              ...parsedApplicationData?.deceasedWorkerInfo,
+              ...prev.workforceEmployee, 
+              ...parsedApplicationData?.deceasedWorkerInfo, 
               nameEn: prev.workforceEmployee?.nameEn || parsedApplicationData?.deceasedWorkerInfo?.nameEn || "",
               nameBn: prev.workforceEmployee?.nameBn || parsedApplicationData?.deceasedWorkerInfo?.nameBn || "",
+              fatherNameEn: prev.workforceEmployee?.fatherNameEn || parsedApplicationData?.deceasedWorkerInfo?.fatherNameEn || "",
+              fatherNameBn: prev.workforceEmployee?.fatherNameBn || parsedApplicationData?.deceasedWorkerInfo?.fatherNameBn || "",
+              motherNameEn: prev.workforceEmployee?.motherNameEn || parsedApplicationData?.deceasedWorkerInfo?.motherNameEn || "",
+              motherNameBn: prev.workforceEmployee?.motherNameBn || parsedApplicationData?.deceasedWorkerInfo?.motherNameBn || "",
+              spouseNameEn: prev.workforceEmployee?.spouseNameEn || parsedApplicationData?.deceasedWorkerInfo?.spouseNameEn || "",
+              spouseNameBn: prev.workforceEmployee?.spouseNameBn || parsedApplicationData?.deceasedWorkerInfo?.spouseNameBn || "",
+              phoneNumber: prev.workforceEmployee?.phoneNumber || parsedApplicationData?.deceasedWorkerInfo?.phoneNumber || "",
+              birthDate: prev.workforceEmployee?.birthDate || parsedApplicationData?.deceasedWorkerInfo?.birthDate || "",
+              gender: prev.workforceEmployee?.gender || parsedApplicationData?.deceasedWorkerInfo?.gender || "",
+              citizenship: prev.workforceEmployee?.citizenship || parsedApplicationData?.deceasedWorkerInfo?.citizenship || "",
+              maritalStatus: prev.workforceEmployee?.maritalStatus || parsedApplicationData?.deceasedWorkerInfo?.maritalStatus || "",
+              nid: prev.workforceEmployee?.nid || parsedApplicationData?.deceasedWorkerInfo?.nid || "",
+              birthCertificateNo: prev.workforceEmployee?.birthCertificateNo || parsedApplicationData?.deceasedWorkerInfo?.birthCertificateNo || "",
+              permanentAddress: prev.workforceEmployee?.permanentAddress || parsedApplicationData?.deceasedWorkerInfo?.permanentAddress || "",
+              permanentLocation: prev.workforceEmployee?.permanentLocation || parsedApplicationData?.deceasedWorkerInfo?.permanentLocation || "",
+              presentLocation: prev.workforceEmployee?.presentLocation || parsedApplicationData?.deceasedWorkerInfo?.presentLocation || "",
+              presentAddress: prev.workforceEmployee?.presentAddress || parsedApplicationData?.deceasedWorkerInfo?.presentAddress || "",
             },
         company: employeeData?.company || formData?.workforceEmployee?.company?.id || null,
         factory:
