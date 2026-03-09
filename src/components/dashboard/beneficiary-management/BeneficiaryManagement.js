@@ -231,7 +231,7 @@ const BeneficiaryManagement = () => {
             <Box mb style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px'}} display="flex" alignItems="center">
               <PublishedComponent
                   pubRef="workforce.DatePicker"
-                  label="Approval Date From"
+                  label="Accident Date From"
                   value={filters.accidentDateFrom}
                   onChange={(date) => handleDateChange("accidentDateFrom", date)}
                   required
@@ -242,7 +242,7 @@ const BeneficiaryManagement = () => {
             <Box style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px'}} display="flex" alignItems="center">
               <PublishedComponent
                   pubRef="workforce.DatePicker"
-                  label="Approval Date To"
+                  label="Accident Date To"
                   value={filters.accidentDateTo}
                   onChange={(date) => handleDateChange("accidentDateTo", date)}
                   required
