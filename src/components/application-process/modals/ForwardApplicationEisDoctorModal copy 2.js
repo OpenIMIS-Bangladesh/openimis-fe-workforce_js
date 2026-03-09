@@ -13,17 +13,16 @@ import {
   TextField
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useModulesManager, decodeId,PublishedComponent,formatMutation, FormattedMessage  } from "@openimis/fe-core";
+import { useModulesManager, decodeId,PublishedComponent,formatMutation  } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import {
   updateApplication,
   createApplicationMovement,
   fetchWorkforceUserRoleWiseUser,
   createApplicationSummary,
-  fetchApplicationSummaryByClientMutationId,
-  fetchApplicationPackage 
+  fetchApplicationSummaryByClientMutationId 
 } from "../../../actions";
-import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE,STATUS_MAP_EN, STATUS_MAP_BN } from "../../../constants";
+import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserTypeFromRights } from "../../../utils/utils";
 import { formatApplicationSummaryGQL } from "../../../utils/format_gql";
 
@@ -77,8 +76,7 @@ const ForwardApplicationEisDoctorModal = ({
   const modulesManager = useModulesManager();
   const userType = getUserTypeFromRights(userRights);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-  const [meetingList, setMeetingList] = useState([]);
-  const locale = useSelector((state) => state.core?.locale || "bn");
+
   const [formData, setFormData] = useState({});
   const [serverResponse, setServerResponse] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -102,45 +100,6 @@ const ForwardApplicationEisDoctorModal = ({
       }
     }
   }, [open, userType]);
-
-  useEffect(() => {
-    if (!open) return;
-  
-    dispatch(
-      fetchApplicationPackage(modulesManager, [
-        `organizationType: "eis"`,
-        'orderBy: ["-meetingDate"]'
-      ])
-    ).then((response) => {
-      const meetings =
-        response?.payload?.data?.workforceApplicationSummary?.edges || [];
-  
-      const formattedMeetings = meetings.map((item) => item.node);
-  
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-  
-      const includeddStatuses = [
-        "forward_to_doctor",
-      ];
-  
-      const filteredMeetings = formattedMeetings.filter((meeting) => {
-        if (!meeting?.meetingDate) return false;
-  
-        // safely parse YYYY-MM-DD
-        const [year, month, day] = meeting.meetingDate.split("-").map(Number);
-        const meetingDate = new Date(year, month - 1, day);
-  
-        // difference in days
-        const diffTime = meetingDate.getTime() - today.getTime();
-        const diffDays = diffTime / (1000 * 60 * 60 * 24);
-  
-        return diffDays >= 3 && includeddStatuses.includes(meeting.status);
-      });
-  
-      setMeetingList(filteredMeetings);
-    });
-  }, [open]);
 
   const handleForward = async (e) => {
     e.preventDefault();
@@ -236,53 +195,6 @@ console.log("createApplicationSummaryData", createApplicationSummaryData);
     }
   };
 
-  const handleAddApplication = async (meetingId, meetingStatus) => {
-    if (!selectedApplicationIds || selectedApplicationIds.length === 0) {
-      setServerResponse({
-        status: "ERROR",
-        message: "দয়া করে অন্তত একটি আবেদন নির্বাচন করুন।",
-      });
-      return;
-    }
-  
-    setSubmitting(true);
-  
-    try {
-      for (const encodedId of selectedApplicationIds) {
-        const updateData = {
-          id: decodeId(encodedId.id),
-          eisApplicationSummaryId: decodeId(meetingId),
-          status: meetingStatus,
-        };
-  
-        await dispatch(updateApplication(updateData, "Update application summary"));
-      }
-  
-      setServerResponse({
-        status: "SUCCESS",
-        message: "আবেদন সফলভাবে মিটিং এর সাথে যুক্ত হয়েছে।",
-      });
-  
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-  
-    } catch (error) {
-      console.error(error);
-      setServerResponse({
-        status: "ERROR",
-        message: "আবেদন মিটিং এর সাথে যুক্ত করতে ব্যর্থ হয়েছে।",
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-  
-  const getStatusDisplay = (status) => {
-    const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
-    return statusMap[status] || status;
-  };
-
   useEffect(() => {
     if (serverResponse?.status === "SUCCESS") {
       setTimeout(() => window.location.reload(), 1000);
@@ -308,79 +220,6 @@ console.log("createApplicationSummaryData", createApplicationSummaryData);
         )}
 
         <Divider style={{ marginBottom: 24 }} />
-
-         {/* show previous meeting list */}
-        <Paper className={classes.sectionPaper} elevation={1}>
-          <Typography
-            variant="h6"
-            style={{ fontWeight: "bold", marginBottom: 16 }}
-          >
-            <FormattedMessage
-              module="workforce"
-              id="workforce.employee.application.preMeetingList"
-            />
-          </Typography>
-  
-          <Divider style={{ marginBottom: 16 }} />
-  
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <table
-                style={{
-                  width: "100%",
-                  borderCollapse: "collapse",
-                  textAlign: "left",
-                }}
-              >
-                <thead>
-                  <tr style={{ background: "#f5f5f5" }}>
-                    <th style={{ padding: 10 }}>মিটিং নাম</th>
-                    <th style={{ padding: 10 }}>বছর</th>
-                    <th style={{ padding: 10 }}>মাস</th>
-                    <th style={{ padding: 10 }}>মিটিং তারিখ</th>
-                    <th style={{ padding: 10 }}>স্ট্যাটাস</th>
-                    <th style={{ padding: 10 }}>অ্যাকশন</th>
-                  </tr>
-                </thead>
-                <tbody>
-                {meetingList?.map((meeting, index) => (
-                  <tr key={meeting.id} style={{ borderBottom: "1px solid #ddd" }}>
-                    <td style={{ padding: 10 }}>{meeting.name}</td>
-                    <td style={{ padding: 10 }}>{meeting.year}</td>
-                    <td style={{ padding: 10 }}>{meeting.month}</td>
-                    <td style={{ padding: 10 }}>{meeting.meetingDate}</td>
-  
-                    <td style={{ padding: 10 }}>
-                      <Typography
-                        style={{
-                          background: "#e3f2fd",
-                          padding: "4px 10px",
-                          borderRadius: 6,
-                          display: "inline-block",
-                          fontSize: 12,
-                        }}
-                      >
-                {getStatusDisplay(meeting.status)}
-                      </Typography>
-                    </td> 
-  
-                    <td style={{ padding: 10 }}>
-                      <Button
-                        size="small"
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleAddApplication(meeting.id,meeting.status)}
-                      >
-                        <FormattedMessage module="workforce" id="workforce.employee.application.addApplication" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              </table>
-            </Grid>
-          </Grid>
-        </Paper>
 
         {/* ===== Meeting Info ===== */}
         <Paper className={classes.sectionPaper}>
@@ -446,60 +285,61 @@ console.log("createApplicationSummaryData", createApplicationSummaryData);
 
         {/* ===== Doctor Select ===== */}
        {/* ===== Doctor Select (OLD UI, SAME COLOR) ===== */}
-        <Paper className={classes.sectionPaper} elevation={1}>
-          <Grid container spacing={3} style={{ marginTop: 3 }}>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              style={{
-                fontWeight: "bold",
-                marginTop: 3,
-                textAlign: "center",
-              }}
-            >
-              ডক্টর নির্বাচন করুন
-            </Typography>
+<Paper className={classes.sectionPaper} elevation={1}>
+  <Grid container spacing={3} style={{ marginTop: 3 }}>
+    <Typography
+      variant="subtitle1"
+      gutterBottom
+      style={{
+        fontWeight: "bold",
+        marginTop: 3,
+        textAlign: "center",
+      }}
+    >
+      ডক্টর নির্বাচন করুন
+    </Typography>
 
-            <Grid item xs={12} sm={12}>
-              <FormControl fullWidth>
-                <Select
-                  multiple
-                  value={formData?.userIds || []}
-                  onChange={(e) =>
-                    setFormData({ ...formData, userIds: e.target.value })
-                  }
-                  renderValue={(selected) =>
-                    officers
-                      .filter((officer) => selected.includes(officer.userId))
-                      .map((officer) => officer.otherNames)
-                      .join(", ")
-                  }
-                  displayEmpty
-                  MenuProps={{
-                    PaperProps: {
-                      style: {
-                        backgroundColor: "#fff",
-                        color: "#000",
-                      },
-                    },
-                  }}
-                >
-                  {officers.map((officer) => (
-                    <MenuItem key={officer.id} value={officer.userId}>
-                      <Checkbox
-                        checked={formData?.userIds?.includes(officer.userId)}
-                        style={{ color: "#000" }}
-                      />
-                      <Typography style={{ color: "#000" }}>
-                        {officer.otherNames}
-                      </Typography>
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-        </Paper>
+    <Grid item xs={12} sm={12}>
+      <FormControl fullWidth>
+        <Select
+          multiple
+          value={formData?.userIds || []}
+          onChange={(e) =>
+            setFormData({ ...formData, userIds: e.target.value })
+          }
+          renderValue={(selected) =>
+            officers
+              .filter((officer) => selected.includes(officer.userId))
+              .map((officer) => officer.otherNames)
+              .join(", ")
+          }
+          displayEmpty
+          MenuProps={{
+            PaperProps: {
+              style: {
+                backgroundColor: "#fff",
+                color: "#000",
+              },
+            },
+          }}
+        >
+          {officers.map((officer) => (
+            <MenuItem key={officer.id} value={officer.userId}>
+              <Checkbox
+                checked={formData?.userIds?.includes(officer.userId)}
+                style={{ color: "#000" }}
+              />
+              <Typography style={{ color: "#000" }}>
+                {officer.otherNames}
+              </Typography>
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Grid>
+  </Grid>
+</Paper>
+
 
         <div className={classes.buttonGroup}>
           <Button onClick={onClose} variant="outlined" color="secondary">

@@ -425,7 +425,7 @@ useEffect(() => {
 
         <Divider style={{ marginBottom: 24 }} />
 
-        {/* Created Meeting List */}
+         {/* show previous meeting list */}
       <Paper className={classes.sectionPaper} elevation={1}>
         <Typography
           variant="h6"
@@ -493,7 +493,6 @@ useEffect(() => {
                 </tr>
               ))}
             </tbody>
-
             </table>
           </Grid>
         </Grid>
