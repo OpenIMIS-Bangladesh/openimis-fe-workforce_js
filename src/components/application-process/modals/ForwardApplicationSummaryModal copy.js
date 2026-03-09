@@ -33,7 +33,7 @@ import {
   fetchApplicationSummaryByClientMutationId,
   createApplicationMovement
 } from "../../../actions";
-import { WORKFORCE_STATUS, STATUS_MAP_EN, STATUS_MAP_BN } from "../../../constants";
+import { WORKFORCE_STATUS } from "../../../constants";
 import ForwardAdminPanel from "./ForwardAdminPanel";
 import ForwardApplicationModal from "./ForwardApplicationModal";
 import { formatApplicationSummaryGQL } from "../../../utils/format_gql";
@@ -43,12 +43,11 @@ import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../../constants";
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
     position: "absolute",
-    top: "5%",
+    top: "50%",
     left: "50%",
-    transform: "translateX(-50%)",
-    width: "90%",
-    maxWidth: 1400,
-    height: "90vh",
+    transform: "translate(-50%, -50%)",
+    width: 700,
+    maxHeight: "90vh",
     backgroundColor: theme.palette.background.paper,
     borderRadius: theme.spacing(1.5),
     boxShadow: theme.shadows[5],
@@ -96,8 +95,6 @@ const ForwardApplicationSummaryModal = ({
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
-  const [meetingList, setMeetingList] = useState([]);
-  const locale = useSelector((state) => state.core?.locale || "bn");
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
   const data = useSelector((state) => state.workforce[`application`] ?? []);
@@ -120,47 +117,6 @@ const ForwardApplicationSummaryModal = ({
       );
     }
   }, [open]);
-
-
-useEffect(() => {
-  if (!open) return;
-
-  dispatch(
-    fetchApplicationPackage(modulesManager, [
-      `organizationType: "eis"`,
-      'orderBy: ["-meetingDate"]'
-    ])
-  ).then((response) => {
-    const meetings =
-      response?.payload?.data?.workforceApplicationSummary?.edges || [];
-
-    const formattedMeetings = meetings.map((item) => item.node);
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // normalize
-
-    const excludedStatuses = [
-      "forward_to_doctor",
-      "approved_by_committee",
-    ];
-
-    const filteredMeetings = formattedMeetings.filter((meeting) => {
-      if (!meeting?.meetingDate) return false;
-
-      // safely parse YYYY-MM-DD
-      const [year, month, day] = meeting.meetingDate.split("-").map(Number);
-      const meetingDate = new Date(year, month - 1, day);
-
-      // difference in days
-      const diffTime = meetingDate.getTime() - today.getTime();
-      const diffDays = diffTime / (1000 * 60 * 60 * 24);
-
-      return diffDays >= 3 && !excludedStatuses.includes(meeting.status);
-    });
-
-    setMeetingList(filteredMeetings);
-  });
-}, [open]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -330,52 +286,6 @@ const handleSave = async () => {
   setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
 };
 
-const handleAddApplication = async (meetingId, meetingStatus) => {
-  if (!selectedApplicationIds || selectedApplicationIds.length === 0) {
-    setServerResponse({
-      status: "ERROR",
-      message: "দয়া করে অন্তত একটি আবেদন নির্বাচন করুন।",
-    });
-    return;
-  }
-
-  setSubmitting(true);
-
-  try {
-    for (const encodedId of selectedApplicationIds) {
-      const updateData = {
-        id: decodeId(encodedId.id),
-        eisApplicationSummaryId: decodeId(meetingId),
-        status: meetingStatus,
-      };
-
-      await dispatch(updateApplication(updateData, "Update application summary"));
-    }
-
-    setServerResponse({
-      status: "SUCCESS",
-      message: "আবেদন সফলভাবে মিটিং এর সাথে যুক্ত হয়েছে।",
-    });
-
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
-
-  } catch (error) {
-    console.error(error);
-    setServerResponse({
-      status: "ERROR",
-      message: "আবেদন মিটিং এর সাথে যুক্ত করতে ব্যর্থ হয়েছে।",
-    });
-  } finally {
-    setSubmitting(false);
-  }
-};
-
-const getStatusDisplay = (status) => {
-  const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
-  return statusMap[status] || status;
-};
 
 useEffect(() => {
   if (serverResponse?.status === "SUCCESS") {
@@ -424,77 +334,6 @@ useEffect(() => {
         )}
 
         <Divider style={{ marginBottom: 24 }} />
-
-        {/* Created Meeting List */}
-      <Paper className={classes.sectionPaper} elevation={1}>
-        <Typography
-          variant="h6"
-          style={{ fontWeight: "bold", marginBottom: 16 }}
-        >
-          পূর্ববর্তী মিটিং তালিকা
-        </Typography>
-
-        <Divider style={{ marginBottom: 16 }} />
-
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                textAlign: "left",
-              }}
-            >
-              <thead>
-                <tr style={{ background: "#f5f5f5" }}>
-                  <th style={{ padding: 10 }}>মিটিং নাম</th>
-                  <th style={{ padding: 10 }}>বছর</th>
-                  <th style={{ padding: 10 }}>মাস</th>
-                  <th style={{ padding: 10 }}>মিটিং তারিখ</th>
-                  <th style={{ padding: 10 }}>স্ট্যাটাস</th>
-                  <th style={{ padding: 10 }}>অ্যাকশন</th>
-                </tr>
-              </thead>
-              <tbody>
-              {meetingList?.map((meeting, index) => (
-                <tr key={meeting.id} style={{ borderBottom: "1px solid #ddd" }}>
-                  <td style={{ padding: 10 }}>{meeting.name}</td>
-                  <td style={{ padding: 10 }}>{meeting.year}</td>
-                  <td style={{ padding: 10 }}>{meeting.month}</td>
-                  <td style={{ padding: 10 }}>{meeting.meetingDate}</td>
-
-                  <td style={{ padding: 10 }}>
-                    <Typography
-                      style={{
-                        background: "#e3f2fd",
-                        padding: "4px 10px",
-                        borderRadius: 6,
-                        display: "inline-block",
-                        fontSize: 12,
-                      }}
-                    >
-              {getStatusDisplay(meeting.status)}
-                    </Typography>
-                  </td> 
-
-                  <td style={{ padding: 10 }}>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleAddApplication(meeting.id,meeting.status)}
-                    >
-                      আবেদন যোগ করুন
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-
-            </table>
-          </Grid>
-        </Grid>
-      </Paper>
 
         {/* Form Fields */}
         <Paper className={classes.sectionPaper} elevation={1}>
