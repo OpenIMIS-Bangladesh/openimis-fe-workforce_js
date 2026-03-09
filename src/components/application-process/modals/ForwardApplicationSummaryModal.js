@@ -431,7 +431,10 @@ useEffect(() => {
           variant="h6"
           style={{ fontWeight: "bold", marginBottom: 16 }}
         >
-          পূর্ববর্তী মিটিং তালিকা
+         <FormattedMessage
+            module="workforce"
+            id="workforce.employee.application.preMeetingList"
+          />
         </Typography>
 
         <Divider style={{ marginBottom: 16 }} />
@@ -484,7 +487,7 @@ useEffect(() => {
                       color="primary"
                       onClick={() => handleAddApplication(meeting.id,meeting.status)}
                     >
-                      আবেদন যোগ করুন
+                      <FormattedMessage module="workforce" id="workforce.employee.application.addApplication" />
                     </Button>
                   </td>
                 </tr>
