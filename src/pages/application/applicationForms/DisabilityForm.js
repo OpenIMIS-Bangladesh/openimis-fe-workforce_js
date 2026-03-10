@@ -261,7 +261,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
         : formData?.workforceEmployee?.factory?.id
           ? safeDecodeId(formData?.workforceEmployee?.factory?.id)
           : null;
-      if (organizationType === "eis" && eisSteps.length - 1 === activeStep) setShowPreview(true);
+      // if (organizationType === "eis" && eisSteps.length - 1 === activeStep) setShowPreview(true);
       if (
         ((nextStep === 1 && organizationType === "eis") || (nextStep === 2 && organizationType !== "eis")) &&
         !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)
@@ -269,6 +269,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
         console.log({ fakeErrors });
+        return false;
       } else {
         setActiveStep(nextStep);
         if ((nextStep === 1 && organizationType === "eis") || nextStep === 2 || (nextStep === 3 && organizationType !== "eis")) {
@@ -393,8 +394,10 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
           };
           dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
         }
+        return true;
       }
     }
+    return false;
     // setActiveStep((prevStep) => prevStep + 1);
   };
 
@@ -701,24 +704,20 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
                 <FormattedMessage module="workforce" id="workforce.save.next" />
               </Button>
             ) : (
-              <>
-                {formData?.organizationType === "eis" ? (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    disabled={!acknowledged}
-                    onClick={() => {
-                      organizationType === "eis" ? handleNext() : setShowPreview(true);
-                    }}
-                  >
-                    <FormattedMessage module="workforce" id="workforce.submit" />
-                  </Button>
-                ) : (
-                  <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
-                    <FormattedMessage module="workforce" id="workforce.submit" />
-                  </Button>
-                )}
-              </>
+              // 👇 Cleaned up Submit Button for ALL cases
+              <Button 
+                variant="contained" 
+                color="primary" 
+                disabled={!acknowledged} 
+                onClick={async () => {
+                  const isSuccess = await handleNext();
+                  if (isSuccess) {
+                    setShowPreview(true);
+                  }
+                }}
+              >
+                <FormattedMessage module="workforce" id="workforce.submit" />
+              </Button>
             )}
           </div>
         </Box>

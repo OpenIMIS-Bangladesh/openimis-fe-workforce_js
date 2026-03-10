@@ -361,7 +361,7 @@ const EmployeeDetailsForm2 = ({
                           documentType={document.documentType}
                           documentProp={document}
                           // uploadedBy={formStepNo === "employeeDependentInfo" ? "dependent" : formStepNo === "employeeBankInfo" ? "bank" : "applicant"}
-                          uploadedBy={formStepNo === "employeeDependentInfo" ? "dependent" : "applicant"}
+                          uploadedBy={formStepNo === "employeeDependentInfo" ? "dependent" : formStepNo === "employeeBankInfo" ? "bank" : "applicant"}
                         />
                       )}
                     </Grid>
