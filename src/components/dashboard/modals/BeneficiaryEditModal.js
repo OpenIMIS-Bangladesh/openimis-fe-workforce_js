@@ -70,6 +70,10 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
             else if (field === "districtBank") {
                 updated.branch= null;
             }
+            else if(field ==="branch")
+            {
+                updated.routingNumber= value.routingNumber;
+            }
 
             return updated;
         });
