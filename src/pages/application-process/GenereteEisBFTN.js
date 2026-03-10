@@ -637,7 +637,8 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
 
   const deceasedWorkerInfo = safeParse(row?.workforceApplication?.deceasedWorkerInfo);
   const workerBirthDate = deceasedWorkerInfo?.birthDate ?? row?.workforceApplication?.workforceEmployee?.birthDate ?? "2026-01-01";
-  const paymentType = row?.paymentType || 'monthly';
+  const paymentType = row?.eisPaymentType;
+  console.log("payment type",paymentType)
 
   return (
     <div className="noa-page">
@@ -743,23 +744,56 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
                   }) : ""}</td>
                 </tr>
                 <tr>
-                  <td className="noa-label">
-                    সর্বমোট প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
+                  <td colSpan={2} className="noa-section">
+                    মাসিক প্রদেয় টপ-আপ বেনেফিটের তথ্য:
                   </td>
-                  <td className="noa-value"> {cfAndEisAmount ? Number(cfAndEisAmount).toLocaleString("bn-BD", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })
-                    : ""}</td>
                 </tr>
-                <tr>
-                  <td className="noa-label">
-                    মাসিক ই.আই.এস টপ-আপ বেনিফিটের কার্যকরী তারিখ:
-                  </td>
-                  <td className="noa-value">{row?.processingDate ? new Date(row?.processingDate).toLocaleDateString("bn-BD") : ""}</td>
-                </tr>
+              {(paymentType === "onetime" || paymentType === "installment") && (  
+                  <>
+                    <tr>
+                      <td className="noa-label">
+                        সর্বমোট প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
+                      </td>
+                      <td className="noa-value"> {cfAndEisAmount ? Number(cfAndEisAmount).toLocaleString("bn-BD", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })
+                        : ""}</td>
+                    </tr>
+                    <tr>
+                      <td className="noa-label">
+                        মাসিক ই.আই.এস টপ-আপ বেনিফিটের কার্যকরী তারিখ:
+                      </td>
+                      <td className="noa-value">{row?.processingDate ? new Date(row?.processingDate).toLocaleDateString("bn-BD") : ""}</td>
+                    </tr>
+                    </>
+                  )}
+              {(paymentType === "monthly") && (  
+                  <>
+                    <tr>
+                      <td className="noa-label">
+                        মাসিক প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
+                      </td>
+                      <td className="noa-value">
+                      {row?.eisMonthlyAmount
+                        ? Number(row.eisMonthlyAmount).toLocaleString("bn-BD", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                        : ""}
+                    </td>
+                    </tr>
+                    <tr>
+                      <td className="noa-label">
+                        মাসিক ই.আই.এস টপ-আপ বেনিফিটের কার্যকরী তারিখ:
+                      </td>
+                      <td className="noa-value">{row?.processingDate ? new Date(row?.processingDate).toLocaleDateString("bn-BD") : ""}</td>
+                    </tr>
+                    </>
+                  )}
               </>
             )}
+            
             {/* Section 2 */}
             {applicationType === "financialAssistance" && (
               <>
