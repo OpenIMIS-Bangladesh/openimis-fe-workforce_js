@@ -817,19 +817,19 @@ const Dashboard = ({selectedMenu}) => {
             <Grid item xs={4}>
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.pipeline.factory" />}
-                count={applications?.filter((item) => item.status === "new").length}
+                count={applications!==null ? applications?.filter((item) => item.status === "new").length : 0}
               />
             </Grid>
             <Grid item xs={4}>
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.pipeline.association" />}
-                count={applications?.filter((item) => item.status === "forward_to_association").length}
+                count={applications!==null ? applications?.filter((item) => item.status === "forward_to_association").length: 0}
               />
             </Grid>
             <Grid item xs={4}>
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.pipeline.eis" />}
-                count={applications?.filter((item) => item.status != "forward_to_association" || item.status != "new" || item.status != "draft").length}
+                count={applications!==null ? applications?.filter((item) => item.status != "forward_to_association" || item.status != "new" || item.status != "draft").length: 0}
               />
             </Grid>
           </Grid>
@@ -844,11 +844,11 @@ const Dashboard = ({selectedMenu}) => {
           <Box pl={2} mb={2}>
             <StatRow
               label={<FormattedMessage id="workforce.dashboard.pending.death" />}
-              count={applications?.filter((item) => item.applicationType === "financialAssistance" && item?.eisVerified).length}
+              count={applications!==null ? applications?.filter((item) => item.applicationType === "financialAssistance" && item?.eisVerified).length: 0}
             />
             <StatRow
               label={<FormattedMessage id="workforce.dashboard.pending.disability" />}
-              count={applications?.filter((item) => item.applicationType === "disabilityAssistance" && item?.eisVerified).length}
+              count={applications!==null ? applications?.filter((item) => item.applicationType === "disabilityAssistance" && item?.eisVerified).length: 0}
             />
           </Box>
           <Typography variant="subtitle2" style={{ color: "#d32f2f" }}>
@@ -857,11 +857,11 @@ const Dashboard = ({selectedMenu}) => {
           <Box pl={2}>
             <StatRow
               label={<FormattedMessage id="workforce.dashboard.pending.death" />}
-              count={applications?.filter((item) => item.applicationType === "financialAssistance" && !item?.eisVerified).length}
+              count={applications!==null ? applications?.filter((item) => item.applicationType === "financialAssistance" && !item?.eisVerified).length: 0}
             />
             <StatRow
               label={<FormattedMessage id="workforce.dashboard.pending.disability" />}
-              count={applications?.filter((item) => item.applicationType === "disabilityAssistance" && !item?.eisVerified).length}
+              count={applications!==null ? applications?.filter((item) => item.applicationType === "disabilityAssistance" && !item?.eisVerified).length: 0}
             />
           </Box>
         </DashboardCard>
@@ -879,23 +879,23 @@ const Dashboard = ({selectedMenu}) => {
             <StatRow
               label={<FormattedMessage id="workforce.dashboard.overview.deadMale" />}
               count={
-                applications?.filter(
+                applications!==null ? applications?.filter(
                   (item) =>
                     item.applicationType === "financialAssistance" &&
                     item?.status === "approved_by_committee" &&
                     item?.deceasedWorkerInfo?.gender?.name === "workforce.gender.male",
-                ).length
+                ).length: 0
               }
             />
             <StatRow
               label={<FormattedMessage id="workforce.dashboard.overview.deadFemale" />}
               count={
-                applications?.filter(
+                applications!==null ? applications?.filter(
                   (item) =>
                     item.applicationType === "financialAssistance" &&
                     item?.status === "approved_by_committee" &&
                     item?.deceasedWorkerInfo?.gender?.name === "workforce.gender.female",
-                ).length
+                ).length : 0
               }
             />
           </Box>
@@ -906,23 +906,23 @@ const Dashboard = ({selectedMenu}) => {
             <StatRow
               label={<FormattedMessage id="workforce.dashboard.overview.maleWorker" />}
               count={
-                applications?.filter(
+                applications!==null ? applications?.filter(
                   (item) =>
                     item.applicationType === "disabilityAssistance" &&
                     item?.status === "approved_by_committee" &&
                     item?.workforceEmployee?.gender === "workforce.gender.male",
-                ).length
+                ).length: 0
               }
             />
             <StatRow
               label={<FormattedMessage id="workforce.dashboard.overview.femaleWorker" />}
               count={
-                applications?.filter(
+                applications!==null ? applications?.filter(
                   (item) =>
                     item.applicationType === "disabilityAssistance" &&
                     item?.status === "approved_by_committee" &&
                     item?.workforceEmployee?.gender === "workforce.gender.female",
-                ).length
+                ).length: 0
               }
             />
           </Box>
@@ -967,31 +967,31 @@ const Dashboard = ({selectedMenu}) => {
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.accidentSegregation.workplace" />}
                 count={
-                  applications?.filter(
+                  applications!==null ? applications?.filter(
                     (item) =>
                       item.applicationType === "financialAssistance" &&
                       item?.employeeAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace",
-                  ).length
+                  ).length: 0
                 }
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.accidentSegregation.commuting" />}
                 count={
-                  applications?.filter(
+                  applications!==null ? applications?.filter(
                     (item) =>
                       item.applicationType === "financialAssistance" &&
                       item?.employeeAccidentInfo?.accidentMainType === "workforce.accident.mainType.commuting",
-                  ).length
+                  ).length: 0
                 }
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.accidentSegregation.rta" />}
                 count={
-                  applications?.filter(
+                  applications!==null ? applications?.filter(
                     (item) =>
                       item.applicationType === "financialAssistance" &&
                       item?.employeeAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA",
-                  ).length
+                  ).length: 0
                 }
               />
             </Grid>
@@ -1002,31 +1002,31 @@ const Dashboard = ({selectedMenu}) => {
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.accidentSegregation.workplace" />}
                 count={
-                  applications?.filter(
+                  applications!==null ? applications?.filter(
                     (item) =>
                       item.applicationType === "disabilityAssistance" &&
                       item?.employeeAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace",
-                  ).length
+                  ).length: 0
                 }
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.accidentSegregation.commuting" />}
                 count={
-                  applications?.filter(
+                  applications!==null ? applications?.filter(
                     (item) =>
                       item.applicationType === "financialAssistance" &&
                       item?.employeeAccidentInfo?.accidentMainType === "workforce.accident.mainType.commuting",
-                  ).length
+                  ).length: 0
                 }
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.accidentSegregation.rta" />}
                 count={
-                  applications?.filter(
+                  applications!==null ? applications?.filter(
                     (item) =>
                       item.applicationType === "financialAssistance" &&
                       item?.employeeAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA",
-                  ).length
+                  ).length: 0
                 }
               />
             </Grid>
@@ -1043,11 +1043,11 @@ const Dashboard = ({selectedMenu}) => {
               </Typography>
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />}
-                count={`৳ ${disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0)}`}
+                count={`৳ ${ disbursedApplication!==null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0): 0}`}
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />}
-                count={`৳ ${disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "disabilityAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0)}`}
+                count={`৳ ${disbursedApplication!==null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "disabilityAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0): 0}`}
               />
             </Grid>
             <Grid item xs={6}>
@@ -1056,11 +1056,11 @@ const Dashboard = ({selectedMenu}) => {
               </Typography>
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />}
-                count={`৳ ${disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0)}`}
+                count={`৳ ${disbursedApplication!==null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0):0}`}
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />}
-                count={`৳ ${disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0)}`}
+                count={`৳ ${disbursedApplication!==null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0): 0}`}
               />
             </Grid>
           </Grid>

@@ -101,25 +101,25 @@ const AgingReportModal = ({ open, onClose, data, organizationType }) => {
       try {
         let res= null;
         let applicationType = [];
-        if (organizationType === 'cf') {
+        if (organizationType === 'cf' && data.appType) {
           if (data.appType === 'medical') applicationType = ['medicalAssistance'];
           else if (data.appType === 'death') applicationType = ['financialAssistance'];
           else if (data.appType === 'educational') applicationType = ['scholarship'];
           else if (data.appType === 'maternityGrant') applicationType = ['maternityGrant'];
           else if (data.appType === 'disabilityAssistance') applicationType = ['disabilityAssistance'];
         }
-        else if (organizationType === 'blwf') {
+        else if (organizationType === 'blwf' && data.appType) {
           if (data.appType === 'medical') applicationType = ['medicalDonation'];
           else if (data.appType === 'death') applicationType = ['deadlyGrant'];
           else if (data.appType === 'educational') applicationType = ['educationGrant'];
           else if (data.appType === 'maternityGrant') applicationType = ['maternityGrant'];
         }
         else {
-          if (data.appType === 'medical') applicationType = ['medicalAssistance', 'medicalDonation'];
-          else if (data.appType === 'death') applicationType = ['financialAssistance', 'deadlyGrant'];
-          else if (data.appType === 'educational') applicationType = ['scholarship', 'educationGrant'];
-          else if (data.appType === 'maternityGrant') applicationType = ['maternityGrant'];
-          else if (data.appType === 'disabilityAssistance') applicationType = ['disabilityAssistance'];
+          if (data.appType === 'medical' && data.appType) applicationType = ['medicalAssistance', 'medicalDonation'];
+          else if (data.appType === 'death' && data.appType) applicationType = ['financialAssistance', 'deadlyGrant'];
+          else if (data.appType === 'educational' && data.appType) applicationType = ['scholarship', 'educationGrant'];
+          else if (data.appType === 'maternityGrant' && data.appType) applicationType = ['maternityGrant'];
+          else if (data.appType === 'disabilityAssistance' && data.appType) applicationType = ['disabilityAssistance'];
         }
 
         setThisApplicationType(applicationType);
