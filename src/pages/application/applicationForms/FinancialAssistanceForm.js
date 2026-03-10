@@ -420,6 +420,7 @@ const FinancialAssistanceForm = ({
       if (nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
+        return false;
       } else {
         if (nextStep === 5 && formData?.organizationType === "eis") {
           const workerBirthDate = formData?.workforceEmployee?.birthDate || formData?.deceasedWorkerInfo?.birthDate;
@@ -427,13 +428,13 @@ const FinancialAssistanceForm = ({
           const validDependents = currentDependents.filter((dep) => getRelationForApi(dep, workerBirthDate));
           if (validDependents.length !== currentDependents.length) {
             setDependentErr(true);
-            return;
+            return false;
           }
         }
 
         if (formData?.organizationType === "eis" && allAssociationDate > deathDate) {
           setAlertMessage(true);
-          return;
+          return false;
         }
         setActiveStep(nextStep);
         if (nextStep === 3 || nextStep === 4) {
@@ -637,8 +638,10 @@ const FinancialAssistanceForm = ({
           }
           dispatch(updateApplication(updateApplicationData, `update workforce application`));
         }
+        return true
       }
     }
+    return false;
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -883,7 +886,10 @@ const FinancialAssistanceForm = ({
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
+            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={async () => {
+                const isSuccess = await handleNext(); 
+                if (isSuccess) setShowPreview(true);
+              }}>
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
