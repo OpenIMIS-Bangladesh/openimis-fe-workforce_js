@@ -38,6 +38,7 @@ import {
   formatWorkforceAssociationUserMapGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
+import { safeDecodeId } from "./utils/utils";
 
 
 function escapeQuotes(data) {
@@ -3811,7 +3812,7 @@ export function updateWorkforceEisBeneficiaryBank(beneficiary) {
     mutation {
       updateWorkforceEisBeneficiaryBank(
         beneficiaryId: "${beneficiary?.beneficiaryId ?? ""}"
-        bankId: "${beneficiary?.branch ?? ""}"
+        bankId: "${beneficiary?.branch?.id? safeDecodeId(beneficiary?.branch?.id): ""}"
         bankAccountHolderName: "${beneficiary?.bankAccountHolderName ?? ""}"
         bankAccountNo: "${beneficiary?.bankAccountNo ?? ""}"
         phoneNumber: "${beneficiary?.phoneNumber ?? ""}"

@@ -24,6 +24,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const INITIAL_STATE = {
     bank: null,
+    bankObj: null,
     districtBank: null,
     branch: null,
     accountHolderName: "",
@@ -62,6 +63,12 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
 
             if (field === "bank") {
                 updated.bank= value?.id??null;
+                updated.bankObj= value;
+                updated.districtBank= null;
+                updated.branch= null;
+            }
+            else if (field === "districtBank") {
+                updated.branch= null;
             }
 
             return updated;
@@ -81,6 +88,7 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
             setFormData({
                 ...INITIAL_STATE,
                 bank: beneficiary?.bank?.parent?.id || null,
+                bankObj: beneficiary?.bank?.parent || null,
                 districtBank: beneficiary?.bank || null,
                 branch: beneficiary?.bank || null,
                 accountHolderName: beneficiary?.bankAccountHolderName || "",
@@ -97,6 +105,7 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
         const payload = {
             beneficiaryId: beneficiary.beneficiaryId || null,
             bank: formData.bank,
+            bankObjs: formData.bankObj,
             districtBank: formData.districtBank,
             branch: formData.branch,
             bankAccountHolderName: formData.accountHolderName,
@@ -270,7 +279,7 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
                             id={"districtBank"}
                             value={formData.districtBank}
                             label={<FormattedMessage id="workforce.district.branch.picker" />}
-                            bankId={formData.bank?.bankCode || formData.bank}
+                            bankId={formData.bankObj?.bankCode || formData.bank}
                             onChange={(v) => handleAccountChange("districtBank", v)}
                             required
                         />
@@ -281,7 +290,7 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
                             id={"branch"}
                             value={formData.branch}
                             label={<FormattedMessage id="workforce.branch.picker" />}
-                            bankId={formData.bank?.bankCode || formData.bank}
+                            bankId={formData.bankObj?.bankCode || formData.bank}
                             districtName={formData.districtBank?.districtNameBn}
                             onChange={(v) => handleAccountChange("branch", v)}
                             required
@@ -304,6 +313,7 @@ const BeneficiaryEditModal = ({ open, onClose, onSuccess, beneficiary }) => {
                             label="workforce.employee.account.info.routingNumber"
                             value={formData.routingNumber}
                             onChange={(v) => handleAccountChange("routingNumber", v)}
+                            readonly={true}
                             required
                         />
                     </Grid>
