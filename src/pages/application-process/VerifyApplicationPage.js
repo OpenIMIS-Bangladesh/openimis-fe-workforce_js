@@ -319,7 +319,7 @@ class VerifyApplicationPage extends Component {
         setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
         setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
         history: this.props.history,
-
+        dispatch:this.props.dispatch
       });
     } else if (
       user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR
@@ -574,8 +574,8 @@ const mapStateToProps = (state, props) => ({
   locale: state.core?.user?.i_user?.language,
 });
 
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators(
     {
       fetchApplication,
       fetchWorkforceDocument,
@@ -587,6 +587,8 @@ const mapDispatchToProps = (dispatch) =>
       createApplicationMovement,
     },
     dispatch
-  );
+  ),
+  dispatch, 
+});
 
 export default withModulesManager(withHistory(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(VerifyApplicationPage))));
