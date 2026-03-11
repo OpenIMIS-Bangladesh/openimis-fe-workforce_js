@@ -178,6 +178,7 @@
   "workforce.employee.application.bulkSelect": "বাল্ক নির্বাচন করুন",
   "workforce.employee.application.bulkApprove": "বাল্ক অনুমোদন করুন",
   "workforce.employee.application.eis_advisor.recommended": "সুপারিশ করুন",
+  "workforce.employee.application.eis_committee.recommended": "সুপারিশ করুন",
   "workforce.employee.application.printAndForwardToDirector": "প্রিন্ট এবং পরিচালকের কাছে প্রেরণ",
   "workforce.employee.application.receivedDate": "প্রাপ্তির তারিখ",
   "workforce.employee.application.sentDate": "প্রেরণের তারিখ",

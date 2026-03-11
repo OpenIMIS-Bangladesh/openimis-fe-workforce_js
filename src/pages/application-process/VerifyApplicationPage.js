@@ -88,6 +88,10 @@ leftGrid: {
   cardSpacing: {
     marginBottom: theme.spacing(2),
   },
+
+  gridRightPad: {
+    paddingRight: "30px !important",
+  },
 });
 
 class VerifyApplicationPage extends Component {
@@ -355,7 +359,12 @@ class VerifyApplicationPage extends Component {
         setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
         setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
         setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
-        history: this.props.history,
+        summaryId: application?.eisApplicationSummary?.id,
+        eisApprovalIds: application?.eisApprovalIds,
+        eisApprovedByIds: application?.eisApprovedByIds,
+        modulesManager: this.props.modulesManager,
+        dispatch:this.props.dispatch,
+        history: this.props.history
 
       });
     } else {
@@ -424,29 +433,10 @@ class VerifyApplicationPage extends Component {
 
     console.log("filteredDocumentTypes", filteredDocumentTypes);
     console.log({ user_type });
+    console.log("ei lo user id", this.props.application?.eisApprovedByIds);
     return (
       <>
-        <Grid container spacing={3} className={classes.rootGrid}>
-          {/* User Summary */}
-          <Grid item xs={12} md={12} className={classes.leftGrid}>
-            {user_type !== WORKFORCE_USER_TYPE.APPLICANT && filteredDocumentTypes ? (
-              <ApplicationViewPage
-                application={formData}
-                language={locale}
-                filteredDocumentTypes={filteredDocumentTypes}
-                applicationUuid={applicationUuid}
-                onFileChange={this.handleFileChange}
-                fileStates={fileStates}
-                handleCommentChange={this.handleFileCommentChange}
-                handleFileVerify={this.handleFileVerify}
-                handleFileReject={this.handleFileReject}
-                viewedFromFlag={"verify"}
-              />
-            ) : (
-              <ApplicationViewPage application={formData} language={locale} fileStates={fileStates} viewedFromFlag={"verify"} />
-            )}
-          </Grid>
-        </Grid>
+        
         {(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
           user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
           user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ||
@@ -465,8 +455,8 @@ class VerifyApplicationPage extends Component {
           user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
           user_type === WORKFORCE_USER_TYPE.EIS_OFFICER ||
           user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
-          <Grid container spacing={2} style={{ marginTop: "16px", padding: 4 }}>
-            <Grid item xs={6}></Grid>
+          <Grid container spacing={2} className={classes.gridRightPad} style={{ marginTop: "16px", padding: 4, display: "flex", justifyContent: "flex-end" }}>
+            {/* <Grid item xs={6}></Grid> */}
             {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && application?.applicationType ==="financialAssistance") && (
               <Grid item xs={2}>
                  <Button 
@@ -493,16 +483,16 @@ class VerifyApplicationPage extends Component {
             )}
             {user_type ===WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type=== WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ?
             (
-              !safeParse(application?.eisApprovedByIds)?.includes(this.props.loggedInUserId)?
+              !safeParse(this.props.application?.eisApprovedByIds)?.includes(this.props.loggedInUserId)?
                 (
                   <Grid item xs={2}>
                     <Button variant="contained" color="primary" fullWidth
-                      disabled={application?.isHistory}
+                      disabled={this.props.application?.isHistory}
                       onClick={() => {
                         this.handleForward();
                       }}
                     >
-                      <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                      <FormattedMessage module="workforce" id="workforce.employee.application.eis_committee.recommended" />
                     </Button>
                   </Grid>
                 ):
@@ -524,6 +514,28 @@ class VerifyApplicationPage extends Component {
             </Grid>
           </Grid>
         )}
+
+        <Grid container spacing={3} className={classes.rootGrid}>
+          {/* User Summary */}
+          <Grid item xs={12} md={12} className={classes.leftGrid}>
+            {user_type !== WORKFORCE_USER_TYPE.APPLICANT && filteredDocumentTypes ? (
+              <ApplicationViewPage
+                application={formData}
+                language={locale}
+                filteredDocumentTypes={filteredDocumentTypes}
+                applicationUuid={applicationUuid}
+                onFileChange={this.handleFileChange}
+                fileStates={fileStates}
+                handleCommentChange={this.handleFileCommentChange}
+                handleFileVerify={this.handleFileVerify}
+                handleFileReject={this.handleFileReject}
+                viewedFromFlag={"verify"}
+              />
+            ) : (
+              <ApplicationViewPage application={formData} language={locale} fileStates={fileStates} viewedFromFlag={"verify"} />
+            )}
+          </Grid>
+        </Grid>
 
         {this.state.addDependentModalOpen && (
           <AddDependentModal 

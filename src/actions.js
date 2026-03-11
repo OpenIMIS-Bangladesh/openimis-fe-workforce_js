@@ -846,7 +846,9 @@ export function fetchApplicationsSummaryDashboard(mm, filters) {
     "initialReplacementRate",
     "pvFactor",
     "eisVerified",
-    "deceasedWorkerInfo"
+    "deceasedWorkerInfo",
+    "eisApprovalIds",
+    "eisApprovedByIds"
   ];
   const payload = formatPageQueryWithCount(
     "workforceApplication",
@@ -939,7 +941,9 @@ export function fetchApplication(mm, filters) {
     "metadataVerification",
     "metadataVerificationRemarks",
     "workforceEmployeeVerification",
-    "workforceEmployeeVerificationRemarks"
+    "workforceEmployeeVerificationRemarks",
+    "eisApprovalIds",
+    "eisApprovedByIds"
   ];
   // const filterArray = filters
   //   ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)

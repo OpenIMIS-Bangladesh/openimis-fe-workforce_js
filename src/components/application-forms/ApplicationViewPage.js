@@ -511,7 +511,7 @@ const PREFERRED_SECTION_ORDER = [
 ];
 
 // 2. Define keys to ignore (these were previously inside your map function)
-const IGNORED_KEYS = ["applicationType", "organizationType", "trackingNumber", "status", "grantAmount", "submittedBy", "dateCreated", "employeeDependentInfo"];
+const IGNORED_KEYS = ["applicationType", "organizationType", "trackingNumber", "status", "grantAmount", "submittedBy", "dateCreated", "employeeDependentInfo", "eisApprovedByIds", "eisApprovalIds"];
 
 const VERIFICATION_FIELD_MAP = {
   applicantInfo: {

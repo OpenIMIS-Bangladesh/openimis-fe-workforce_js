@@ -301,6 +301,7 @@
     "workforce.employee.application.bulkSelect":"Bulk Select",
     "workforce.employee.application.bulkApprove":"Approve",
     "workforce.employee.application.eis_advisor.recommended": "Recommended",
+    "workforce.employee.application.eis_committee.recommended": "Recommended",
     "workforce.employee.application.receivedDate":"Received Date",
     "workforce.employee.application.sentDate":"Sent Date",
     "workforce.employee.application.advisorApproveMeetingSheet": "Special Advisor Approve Meeting Sheet",
