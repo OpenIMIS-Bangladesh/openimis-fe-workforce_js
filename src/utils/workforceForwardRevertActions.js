@@ -610,6 +610,16 @@ export const handleApprovalByEisCommittee = async ({
         };
 
         await updateApplication(updateApplicationData, "update workforce application");
+
+        if (majorityApproved)
+        {
+          await createApplicationMovement(
+            createApplicationMovementData,
+            "create workforce movement"
+          );
+        }
+
+        
       }
 
       setServerResponse({
@@ -624,7 +634,11 @@ export const handleApprovalByEisCommittee = async ({
         message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
       });
     } finally {
-      history.push("/home");
+      // history.push("/home");
+      // window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
     }

@@ -852,6 +852,7 @@
   "workforce.application.forward.message.toSectionAdmin": "Are you sure you want to forward these applications to Section Admin?",
   "workforce.application.forward.message.toSectionUser": "Are you sure you want to forward these applications to Section Data Entry Operator?",
   "workforce.application.forward.message.toDoctor": "Are you sure you want to forward these applications to Doctor?",
+  "workforce.application.sign.message.toEisCoordinator": "Are you sure you want to apply your recommendation for this application?",
   "workforce.application.forward.message.toEisCoordinator": "Are you sure you want to forward these applications to Eis Pilot?",
   "workforce.application.forward.message.withoutCompensation.toEisCoordinator": "No Compensation Information provided. Do you want to proceed without adding compensation details?",
   "workforce.application.forward.message.withoutCompensation.eisOfficer.toEisCoordinator": "Please select the Compensation option (Yes or No) before proceeding.",
