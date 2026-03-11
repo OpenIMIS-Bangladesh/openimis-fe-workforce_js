@@ -1,7 +1,14 @@
-import { decodeId,useHistory,parseData } from "@openimis/fe-core";
+import { decodeId, useHistory, parseData } from "@openimis/fe-core";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../constants";
 import { getUserTypeFromRights, isEisPath, safeDecodeId } from "./utils";
-import { fetchApplication, fetchApplicationFactoryAssociation, fetchUsersByRoleId, fetchWorkforceAssociationUserMaps, fetchWorkforceOtherCompensation, fetchWorkforceUserRoleWiseUser } from "../actions";
+import {
+  fetchApplication,
+  fetchApplicationFactoryAssociation,
+  fetchUsersByRoleId,
+  fetchWorkforceAssociationUserMaps,
+  fetchWorkforceOtherCompensation,
+  fetchWorkforceUserRoleWiseUser,
+} from "../actions";
 import { useState } from "react";
 
 export const forwardToAssociation = async ({
@@ -14,7 +21,7 @@ export const forwardToAssociation = async ({
   setServerResponse,
   userRights,
   fetchWorkforceDocument,
-  modulesManager
+  modulesManager,
 }) => {
   try {
     const userType = getUserTypeFromRights(userRights);
@@ -32,7 +39,7 @@ export const forwardToAssociation = async ({
         const parsedOnce = JSON.parse(fetchApplicationById.employeeAccidentInfo);
         const parsedTwice = JSON.parse(parsedOnce);
         // Check if it's a non-empty object (handles {} or null-like after parse)
-        hasAccidentInfo = parsedTwice && typeof parsedTwice === 'object' && Object.keys(parsedTwice).length > 0;
+        hasAccidentInfo = parsedTwice && typeof parsedTwice === "object" && Object.keys(parsedTwice).length > 0;
       } catch (e) {
         console.warn("Failed to parse employeeAccidentInfo:", e);
         // Treat parse failure as empty/missing
@@ -52,15 +59,9 @@ export const forwardToAssociation = async ({
     // Now proceed with the loop (documents, etc.)
     for (const selectedItem of selectedApplicationIds) {
       const decodedId = safeDecodeId(selectedItem?.id);
-      const res = await dispatch(
-        fetchWorkforceDocument(modulesManager, [
-          `workforceApplication_Id: "${decodedId}"`,
-        ])
-      );
+      const res = await dispatch(fetchWorkforceDocument(modulesManager, [`workforceApplication_Id: "${decodedId}"`]));
 
-      const workforceApplicationRes = await dispatch(
-        fetchApplicationFactoryAssociation(decodedId)
-      );
+      const workforceApplicationRes = await dispatch(fetchApplicationFactoryAssociation(decodedId));
 
       const workforceApplication = workforceApplicationRes?.payload?.data?.workforceApplication?.edges[0]?.node;
       let associationType = workforceApplication?.employeeFactory?.allAssociation?.shortNameEn ?? "";
@@ -70,8 +71,7 @@ export const forwardToAssociation = async ({
       const applicationToUser = safeDecodeId(userToResp?.payload?.data?.workforceAssociationUserMap?.edges[0]?.node?.user.id);
       console.log("applicationToUser", applicationToUser);
 
-      const documents =
-        res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
+      const documents = res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
       const allVerified = documents.every((doc) => {
         const status = doc.status?.toLowerCase();
@@ -131,15 +131,8 @@ export const forwardToAssociation = async ({
       };
 
       if (dispatch) {
-        await dispatch(
-          updateApplication(updateApplicationData, "update workforce application")
-        );
-        await dispatch(
-          createApplicationMovement(
-            createApplicationMovementData,
-            "create workforce movement"
-          )
-        );
+        await dispatch(updateApplication(updateApplicationData, "update workforce application"));
+        await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
         // if(isEisPath())
         // {
         //   console.log("Workforce Employee Dependent Eligibility updated for application ID:", decodeId);
@@ -187,13 +180,15 @@ export const handleBulkSelectedByAssociationLogic = async ({
   let confirmModalMessage = "";
 
   if (
-    !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
-      //   userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
-  //   userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+    !isEisPath() &&
+    WORKFORCE_USER_TYPE.ASSOCIATION
+    //   userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+    //   userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
   ) {
     confirmModalMessage = "workforce.application.forward.message.toSectionAdmin";
   } else if (
-    isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+    isEisPath() &&
+    WORKFORCE_USER_TYPE.ASSOCIATION
     // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
     // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
   ) {
@@ -221,16 +216,11 @@ export const handleBulkSelectedByAssociationLogic = async ({
       for (const selectedItem of selectedApplicationIds) {
         const decodedId = safeDecodeId(selectedItem?.id);
 
-        const res = await fetchWorkforceDocument(modulesManager, [
-          `workforceApplication_Id: "${decodedId}"`,
-        ]);
+        const res = await fetchWorkforceDocument(modulesManager, [`workforceApplication_Id: "${decodedId}"`]);
 
-        const documents =
-          res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
+        const documents = res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-        const allVerified = documents.every(
-          (doc) => doc.status?.toLowerCase() === "verified"
-        );
+        const allVerified = documents.every((doc) => doc.status?.toLowerCase() === "verified");
 
         if (!allVerified) {
           setServerResponse({
@@ -241,7 +231,7 @@ export const handleBulkSelectedByAssociationLogic = async ({
         }
 
         console.log("documents porjnto aise");
-        const applicationToResp= await fetchUsersByRoleId([isEisPath()? "46" : "32"]);
+        const applicationToResp = await fetchUsersByRoleId([isEisPath() ? "46" : "32"]);
         const applicationToUser = safeDecodeId(applicationToResp?.payload?.data?.workforceUserRole[0]?.userId);
 
         const updateApplicationData = {
@@ -249,14 +239,13 @@ export const handleBulkSelectedByAssociationLogic = async ({
           status:
             // userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
             // userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-              !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+            !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
               ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
-              : 
-              // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
-              //   userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+              : // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+                //   userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
                 isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
-              ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
-              : null,
+                ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
+                : null,
         };
 
         const createApplicationMovementData = {
@@ -264,46 +253,41 @@ export const handleBulkSelectedByAssociationLogic = async ({
           status:
             // userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
             // userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-              !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+            !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
               ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
-              : 
-              // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
-              // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+              : // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+                // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
                 isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
-              ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
-              : null,
+                ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
+                : null,
           note: "আবেদন শাখায় প্রেরণ করা হয়েছে",
           action:
             // userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
             // userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-              !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+            !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
               ? "forward_to_cf_section"
-              : 
-              // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
-              // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+              : // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+                // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
                 isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
-              ? "forward_to_eis_coordinator"
-              : null,
+                ? "forward_to_eis_coordinator"
+                : null,
           applicationFromId: loggedInUserId,
           applicationToId: applicationToUser,
-            // userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
-            // userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-              // !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
-              // ? 139
-              // : 
-                // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
-                // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-              //   isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
-              // ? 194
-              // : null,
-          toRoleId: isEisPath()? 46 : 32,
+          // userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+          // userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
+          // !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+          // ? 139
+          // :
+          // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+          // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+          //   isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+          // ? 194
+          // : null,
+          toRoleId: isEisPath() ? 46 : 32,
         };
 
         await updateApplication(updateApplicationData, "update workforce application");
-        await createApplicationMovement(
-          createApplicationMovementData,
-          "create workforce movement"
-        );
+        await createApplicationMovement(createApplicationMovementData, "create workforce movement");
       }
 
       setServerResponse({
@@ -317,7 +301,7 @@ export const handleBulkSelectedByAssociationLogic = async ({
         message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
       });
     } finally {
-     setTimeout(() => {
+      setTimeout(() => {
         window.location.reload();
       }, 200);
       setConfirmModalOpen(false);
@@ -339,10 +323,11 @@ export const handleBulkSelectedByCheckerLogic = async ({
   setConfirmModalCallback,
   modulesManager,
   history,
-  dispatch
+  dispatch,
 }) => {
   const userType = getUserTypeFromRights(userRights);
   let confirmModalMessage = "";
+  let allEmpty= false
 
   if (
     userType === WORKFORCE_USER_TYPE.CHECKER ||
@@ -355,118 +340,122 @@ export const handleBulkSelectedByCheckerLogic = async ({
   ) {
     confirmModalMessage = "workforce.application.forward.message.toSectionAdmin";
   } else if (userType === WORKFORCE_USER_TYPE.EIS_OFFICER) {
-    const id = selectedApplicationIds[0]?.id
-    console.log({checkerId:id})
+    const id = selectedApplicationIds[0]?.id;
+    console.log({ checkerId: id });
     const res = await dispatch(fetchWorkforceOtherCompensation(modulesManager, [`workforceApplicationId: "${safeDecodeId(id)}"`]));
-    const fetchOtherCompensation =await parseData(res?.payload?.data?.workforceOtherCompensationInfo);
-    console.log({ fetchOtherCompensation });
-    if(fetchOtherCompensation?.length ===0){
+    const fetchOtherCompensation = await parseData(res?.payload?.data?.workforceOtherCompensationInfo);
+    allEmpty = fetchOtherCompensation?.every((item) => item.isEisBenefitAdjustmentEligible === "");
+    console.log({ allEmpty });
+
+    if (fetchOtherCompensation?.length === 0) {
       confirmModalMessage = "workforce.application.forward.message.withoutCompensation.toEisCoordinator";
-    }else{
+    }else if (allEmpty) {
+      confirmModalMessage = "workforce.application.forward.message.withoutCompensation.eisOfficer.toEisCoordinator";
+    } else {
       confirmModalMessage = "workforce.application.forward.message.toEisCoordinator";
     }
-
   }
 
-  // if (!selectedApplicationIds?.length) {
-  //   setServerResponse({
-  //     status: "ERROR",
-  //     message: "Please select at least one application.",
-  //   });
-  //   return;
-  // }
+  if (!selectedApplicationIds?.length) {
+    setServerResponse({
+      status: "ERROR",
+      message: "Please select at least one application.",
+    });
+    return;
+  }
 
   // 🧠 open modal confirmation
   setConfirmModalMessage(confirmModalMessage);
   setConfirmModalOpen(true);
 
-  // setConfirmModalCallback(async (confirmed) => {
-  //   if (!confirmed) {
-  //     setConfirmModalOpen(false);
-  //     return;
-  //   }
- 
-  //   try {
-  //     for (const selectedItem of selectedApplicationIds) {
-  //       const decodedId = safeDecodeId(selectedItem?.id);
-  //       const res = await fetchWorkforceDocument(modulesManager, [
-  //         `workforceApplication_Id: "${decodedId}"`,
-  //       ]);
+  if (allEmpty) return
+  setConfirmModalCallback(async (confirmed) => {
+    if (!confirmed) {
+      setConfirmModalOpen(false);
+      return;
+    }
 
-  //       const documents =
-  //         res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
+    try {
+      for (const selectedItem of selectedApplicationIds) {
+        const decodedId = safeDecodeId(selectedItem?.id);
+        const res = await fetchWorkforceDocument(modulesManager, [
+          `workforceApplication_Id: "${decodedId}"`,
+        ]);
 
-  //       const allVerified = documents.every(
-  //         (doc) => doc.status?.toLowerCase() === "verified"
-  //       );
+        const documents =
+          res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-  //       if (!allVerified) {
-  //         setServerResponse({
-  //           status: "ERROR",
-  //           message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
-  //         });
-  //         return;
-  //       }
+        const allVerified = documents.every(
+          (doc) => doc.status?.toLowerCase() === "verified"
+        );
 
-  //       const updateApplicationData = {
-  //         id: decodedId,
-  //         status:
-  //           userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
-  //             ? WORKFORCE_STATUS.VERIFIED_BY_DOL_DIFE
-  //             : WORKFORCE_STATUS.VERIFIED,
-  //       };
+        if (!allVerified) {
+          setServerResponse({
+            status: "ERROR",
+            message: "অনুগ্রহ করে সমস্ত নথি যাচাই করুন",
+          });
+          return;
+        }
 
-  //       const createApplicationMovementData = {
-  //         applicationId: decodedId,
-  //         status:
-  //           userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
-  //             ? WORKFORCE_STATUS.VERIFIED_BY_DOL_DIFE
-  //             : WORKFORCE_STATUS.VERIFIED,
-  //         note: "আবেদন যাচাইকৃত হয়েছে",
-  //         action: "verified",
-  //         applicationFromId: loggedInUserId,
-  //         applicationToId:
-  //           userType === WORKFORCE_USER_TYPE.CHECKER
-  //             ? 139
-  //             : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
-  //               userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
-  //             ? 187 : userType === WORKFORCE_USER_TYPE.EIS_OFFICER ? 194
-  //             : null,
-  //         toRoleId:
-  //           userType === WORKFORCE_USER_TYPE.CHECKER
-  //             ? 32 : userType === WORKFORCE_USER_TYPE.EIS_OFFICER ? 47
-  //             : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
-  //               userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
-  //             ? 40
-  //             : null,
-  //       };
+        const updateApplicationData = {
+          id: decodedId,
+          status:
+            userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+              ? WORKFORCE_STATUS.VERIFIED_BY_DOL_DIFE
+              : WORKFORCE_STATUS.VERIFIED,
+        };
 
-  //       await updateApplication(updateApplicationData, "update workforce application");
-  //       await createApplicationMovement(
-  //         createApplicationMovementData,
-  //         "create workforce movement"
-  //       );
-  //     }
+        const createApplicationMovementData = {
+          applicationId: decodedId,
+          status:
+            userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+              ? WORKFORCE_STATUS.VERIFIED_BY_DOL_DIFE
+              : WORKFORCE_STATUS.VERIFIED,
+          note: "আবেদন যাচাইকৃত হয়েছে",
+          action: "verified",
+          applicationFromId: loggedInUserId,
+          applicationToId:
+            userType === WORKFORCE_USER_TYPE.CHECKER
+              ? 139
+              : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
+                userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+              ? 187 : userType === WORKFORCE_USER_TYPE.EIS_OFFICER ? 194
+              : null,
+          toRoleId:
+            userType === WORKFORCE_USER_TYPE.CHECKER
+              ? 32 : userType === WORKFORCE_USER_TYPE.EIS_OFFICER ? 47
+              : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
+                userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+              ? 40
+              : null,
+        };
 
-  //     setServerResponse({
-  //       status: "SUCCESS",
-  //       message: "সফলভাবে ফরওয়ার্ড করা হয়েছে!",
-  //     });
-  //   } catch (error) {
-  //     console.error("Bulk selection failed:", error);
-  //     setServerResponse({
-  //       status: "ERROR",
-  //       message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
-  //     });
-  //   } finally {
-  //     history.push("/home");
-  //     setConfirmModalOpen(false);
-  //     setConfirmModalCallback(null);
-  //   }
-  // });
+        await updateApplication(updateApplicationData, "update workforce application");
+        await createApplicationMovement(
+          createApplicationMovementData,
+          "create workforce movement"
+        );
+      }
+
+      setServerResponse({
+        status: "SUCCESS",
+        message: "সফলভাবে ফরওয়ার্ড করা হয়েছে!",
+      });
+    } catch (error) {
+      console.error("Bulk selection failed:", error);
+      setServerResponse({
+        status: "ERROR",
+        message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
+      });
+    } finally {
+      history.push("/home");
+      setConfirmModalOpen(false);
+      setConfirmModalCallback(null);
+    }
+  });
 };
 
- export const handleApprovalByDoctor = async ({
+export const handleApprovalByDoctor = async ({
   selectedApplicationIds,
   loggedInUserId,
   userRights,
@@ -478,13 +467,11 @@ export const handleBulkSelectedByCheckerLogic = async ({
   setConfirmModalCallback,
   modulesManager,
   history,
-  editedGrantMoney
+  editedGrantMoney,
 }) => {
-
   const userType = getUserTypeFromRights(userRights);
 
-  let confirmModalMessage =
-    "workforce.application.doctor.approve.message";
+  let confirmModalMessage = "workforce.application.doctor.approve.message";
 
   if (!selectedApplicationIds?.length) {
     setServerResponse({
@@ -505,7 +492,6 @@ export const handleBulkSelectedByCheckerLogic = async ({
 
     try {
       for (const selectedItem of selectedApplicationIds) {
-
         const decodedId = safeDecodeId(selectedItem?.id);
 
         const updateApplicationData = {
@@ -525,37 +511,30 @@ export const handleBulkSelectedByCheckerLogic = async ({
             userType === WORKFORCE_USER_TYPE.DOCTOR
               ? 139
               : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
-              ? 187
-              : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
-              ? 173
-              : null,
+                ? 187
+                : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+                  ? 173
+                  : null,
 
           toRoleId:
             userType === WORKFORCE_USER_TYPE.DOCTOR
               ? 32
               : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
-              ? 40
-              : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
-              ? 42
-              : null,
+                ? 40
+                : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+                  ? 42
+                  : null,
         };
 
-        await updateApplication(
-          updateApplicationData,
-          "update workforce application"
-        );
+        await updateApplication(updateApplicationData, "update workforce application");
 
-        await createApplicationMovement(
-          createApplicationMovementData,
-          "create workforce movement"
-        );
+        await createApplicationMovement(createApplicationMovementData, "create workforce movement");
       }
 
       setServerResponse({
         status: "SUCCESS",
         message: "আবেদনসমূহ সফলভাবে অনুমোদন করা হয়েছে!",
       });
-
     } catch (error) {
       console.error("Bulk doctor approval failed:", error);
 
@@ -581,9 +560,7 @@ export const handleApprovalByEisCommittee = async ({
   setConfirmModalCallback,
   history,
 }) => {
-
-  let confirmModalMessage =
-    "workforce.application.forward.message.toEisCoordinator";
+  let confirmModalMessage = "workforce.application.forward.message.toEisCoordinator";
 
   if (!selectedApplicationIds?.length) {
     setServerResponse({
@@ -603,18 +580,12 @@ export const handleApprovalByEisCommittee = async ({
     }
 
     try {
-
       for (const selectedItem of selectedApplicationIds) {
-
         const decodedId = safeDecodeId(selectedItem?.id);
 
-        const approvalUserIds = selectedItem?.eisApprovalIds
-          ? safeParse(selectedItem?.eisApprovalIds)
-          : [];
+        const approvalUserIds = selectedItem?.eisApprovalIds ? safeParse(selectedItem?.eisApprovalIds) : [];
 
-        let approvedUserIds = selectedItem?.eisApprovedByIds
-          ? safeParse(selectedItem?.eisApprovedByIds)
-          : [];
+        let approvedUserIds = selectedItem?.eisApprovedByIds ? safeParse(selectedItem?.eisApprovedByIds) : [];
 
         if (approvedUserIds.includes(loggedInUserId)) {
           setServerResponse({
@@ -626,37 +597,25 @@ export const handleApprovalByEisCommittee = async ({
 
         approvedUserIds.push(loggedInUserId);
 
-        const totalApprovers =
-          approvalUserIds?.length > 0 ? approvalUserIds.length : 1;
+        const totalApprovers = approvalUserIds?.length > 0 ? approvalUserIds.length : 1;
 
-        const totalApproved =
-          approvedUserIds?.length > 0 ? approvedUserIds.length : 0;
+        const totalApproved = approvedUserIds?.length > 0 ? approvedUserIds.length : 0;
 
-        const majorityApproved =
-          totalApprovers > 0
-            ? totalApproved / totalApprovers > 0.5
-            : true;
+        const majorityApproved = totalApprovers > 0 ? totalApproved / totalApprovers > 0.5 : true;
 
         const updateApplicationData = {
           id: decodedId,
-          status: majorityApproved
-            ? WORKFORCE_STATUS.APPROVED_BY_COMMITTEE
-            : selectedItem?.status,
+          status: majorityApproved ? WORKFORCE_STATUS.APPROVED_BY_COMMITTEE : selectedItem?.status,
           eisApprovedByIds: JSON.stringify(approvedUserIds),
         };
 
-        await updateApplication(
-          updateApplicationData,
-          "update workforce application"
-        );
+        await updateApplication(updateApplicationData, "update workforce application");
       }
 
       setServerResponse({
         status: "SUCCESS",
-        message:
-          "নির্বাচিত আবেদনগুলোর জন্য আপনার অনুমোদন গৃহীত হয়েছে। মেজরিটি পূর্ণ হলে আবেদন অনুমোদিত হবে।",
+        message: "নির্বাচিত আবেদনগুলোর জন্য আপনার অনুমোদন গৃহীত হয়েছে। মেজরিটি পূর্ণ হলে আবেদন অনুমোদিত হবে।",
       });
-
     } catch (error) {
       console.error("Bulk committee approval failed:", error);
 

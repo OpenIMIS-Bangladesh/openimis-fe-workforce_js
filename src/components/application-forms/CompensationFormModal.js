@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Grid, IconButton, Typography, makeStyles, MenuItem, Paper, Fade, Backdrop, TextField, Select } from "@material-ui/core";
+import { Modal, Button, Grid, IconButton, Typography, makeStyles, MenuItem, Paper, Fade, Backdrop, TextField, Select,Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import CloseIcon from "@material-ui/icons/Close";
@@ -144,11 +144,13 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
         receivedFromOrganization: item?.receivedFrom,
         statusOfPayment: item.paymentStatus, // Map State -> API
         // Map String "Yes"/"No" -> Boolean
-        isEisBenefitAdjustmentEligible: item.eisBenefitAdjustment,
+        isEisBenefitAdjustmentEligible: item.eisBenefitAdjustment ?? item.isEisBenefitAdjustmentEligible,
         remarks: item.remarks,
         // Optional: Map receivedFrom to paymentType if that's the intention
         // paymentType: item.receivedFrom
       };
+
+      console.log("SENDING TO DATABASE:", payload);
 
       if (item.id) {
         // UPDATE: Include the ID in the payload for the update action
@@ -252,18 +254,31 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
 
                     {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && (
                       <>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            select
-                            label={<FormattedMessage id="workforce.compensation.eligible.ForEISAdjustment" />}
-                            fullWidth
-                            value={entry.eisBenefitAdjustment || entry?.isEisBenefitAdjustmentEligible || "No"}
-                            onChange={handleChange(index, "eisBenefitAdjustment")}
-                            helperText="If Yes, value passes to VBA"
-                          >
-                            <MenuItem value="Yes">Yes</MenuItem>
-                            <MenuItem value="No">No</MenuItem>
-                          </TextField>
+                        <Grid item xs={12}>
+                          <FormControl component="fieldset">
+                            <FormLabel component="legend">
+                              <FormattedMessage id="workforce.compensation.eligible.ForEISAdjustment" />
+                            </FormLabel>
+                            <RadioGroup
+                              row
+                              // This logic ensures that if the DB sends true/false, the radio stays checked
+                              value={
+                                entry.eisBenefitAdjustment === true || entry.isEisBenefitAdjustmentEligible === true
+                                  ? "true"
+                                  : entry.eisBenefitAdjustment === false || entry.isEisBenefitAdjustmentEligible === false
+                                    ? "false"
+                                    : ""
+                              }
+                              onChange={(e) => {
+                                // Convert the string "true"/"false" from the radio back into a real boolean immediately
+                                const val = e.target.value === "true";
+                                handleChange(index, "eisBenefitAdjustment")(val);
+                              }}
+                            >
+                              <FormControlLabel value="true" control={<Radio color="primary" />} label="Yes" />
+                              <FormControlLabel value="false" control={<Radio color="primary" />} label="No" />
+                            </RadioGroup>
+                          </FormControl>
                         </Grid>
 
                         <Grid item xs={12} sm={6}>
