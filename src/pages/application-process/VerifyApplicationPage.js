@@ -36,7 +36,7 @@ import {
 } from "../../actions";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import FileUploader from "../../pickers/FileUploader";
-import { getUserTypeFromRights, tryParse } from "../../utils/utils";
+import { getUserTypeFromRights, safeParse, tryParse } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
 import { handleBulkSelectedByAssociationLogic, handleBulkSelectedByCheckerLogic, handleApprovalByDoctor, handleApprovalByEisCommittee} from "../../utils/workforceForwardRevertActions";
@@ -46,6 +46,7 @@ import ForwardApplicationFactoryAdminModal from "../../components/application-pr
 import ForwardApplicationSectionAdminModal from "../../components/application-process/modals/ForwardApplicationSectionAdminModal";
 import AddDependentModal from "../../components/shared/modals/AddDependentModal";
 import GenereteEisDependentBFTN from "./GenereteEisDependentBFTN";
+import { useSelector, useDispatch } from "react-redux";
 
 const styles = (theme) => ({
   paper: {
@@ -340,7 +341,7 @@ class VerifyApplicationPage extends Component {
 
       });
     } else if (
-      user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE
+      user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE
     ) {
       handleApprovalByEisCommittee({
         selectedApplicationIds: [{ id: application?.id }],
@@ -490,11 +491,32 @@ class VerifyApplicationPage extends Component {
                  </Button>
               </Grid>
             )}
-            <Grid item xs={2}>
-              <Button variant="contained" color="primary" fullWidth onClick={this.handleForward}>
-                <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-              </Button>
-            </Grid>
+            {user_type ===WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type=== WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ?
+            (
+              !safeParse(application?.eisApprovedByIds)?.includes(this.props.loggedInUserId)?
+                (
+                  <Grid item xs={2}>
+                    <Button variant="contained" color="primary" fullWidth
+                      disabled={application?.isHistory}
+                      onClick={() => {
+                        this.handleForward();
+                      }}
+                    >
+                      <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                    </Button>
+                  </Grid>
+                ):
+                (
+                  <></>
+                )
+            ):(
+              <Grid item xs={2}>
+                <Button variant="contained" color="primary" fullWidth onClick={this.handleForward}>
+                  <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                </Button>
+              </Grid>
+
+            )}
             <Grid item xs={2}>
               <Button variant="contained" color="primary" fullWidth onClick={this.handleRevert}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.revert" />
@@ -572,6 +594,7 @@ const mapStateToProps = (state, props) => ({
   documentType: state.workforce.documentType,
   user_rights: state.core?.user?.i_user?.rights,
   locale: state.core?.user?.i_user?.language,
+  loggedInUserId: state.core?.user?.i_user?.id
 });
 
 const mapDispatchToProps = (dispatch) => ({

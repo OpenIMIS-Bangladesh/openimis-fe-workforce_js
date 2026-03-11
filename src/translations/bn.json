@@ -733,6 +733,7 @@
   "workforce.application.forward.message.toDoctor": "আপনি কি নির্বাচিত আবেদনসমূহ ডক্টরের কাছে ফরওয়ার্ড করতে চান?",
   "workforce.application.forward.message.toEisCoordinator": "আপনি কি যাচাইকৃত আবেদন গুলো ফরওয়ার্ড করতে চান?",
   "workforce.application.forward.message.withoutCompensation.toEisCoordinator": "কোনও ক্ষতিপূরণ তথ্য দেওয়া হয়নি। আপনি কি ক্ষতিপূরণের বিবরণ যোগ না করেই এগিয়ে যেতে চান?",
+    "workforce.application.sign.message.toEisCoordinator": "আপনি কি এই আবেদনটি সুপারিশ করতে চান?",
   "workforce.application.forward.message.toEisCommittee": "আপনি কি নির্বাচিত আবেদনসমূহ ইআইএস কমিটির কাছে ফরওয়ার্ড করতে চান?",
   "workforce.application.select.message": "আপনি কি এই আবেদনসমূহ নির্বাচন করতে চান?",
   "workforce.application.approve.message": "আপনি কি নির্বাচিত আবেদনসমূহ সুপারিশ করতে চান?",

@@ -3483,9 +3483,9 @@ class ApplicationProcessSearcher extends Component {
               justifyContent: "space-between",
             }}
           >
-            <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyEisCommittee}>
+            {/* <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyEisCommittee}>
               <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-            </Button>
+            </Button> */}
             <Button variant="contained" color="primary" onClick={this.handleOpenEisDependentBFTN}>
               <FormattedMessage module="workforce" id="workforce.employee.application.eisApproval" />
             </Button>

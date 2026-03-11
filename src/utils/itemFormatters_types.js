@@ -1748,7 +1748,7 @@ export const itemFormattersApprover = (
       </Tooltip>
       {component.props.disableButtons !== 1 && (
         <>
-          {!safeParse(application?.eisApprovedByIds)?.includes(component.props.loggedInUserId)?
+          {/* {!safeParse(application?.eisApprovedByIds)?.includes(component.props.loggedInUserId)?
           (
             <Tooltip title="Sign for Approval">
               <IconButton
@@ -1761,7 +1761,7 @@ export const itemFormattersApprover = (
                 <CheckIcon style={{ color: "#00730f" }} />
               </IconButton>
             </Tooltip>
-          ):null}
+          ):null} */}
           <Tooltip title="Revert">
             <IconButton
               disabled={application?.isHistory}
