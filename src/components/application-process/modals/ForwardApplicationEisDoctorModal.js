@@ -143,6 +143,16 @@ const ForwardApplicationEisDoctorModal = ({
   }, [open]);
 
   const handleForward = async (e) => {
+    
+    const invalidApplication = selectedApplicationIds?.find(
+    (app) =>
+      app?.applicationType !== "disabilityAssistance");
+
+    if (invalidApplication) {
+      alert("আবেদনটি মিটিং এ পাঠানোর জন্য উপযুক্ত নয়, শুধুমাত্র স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তা আবেদন মিটিং এ পাঠানো যাবে।");
+      window.location.href = "/home";
+      return;
+    }
     e.preventDefault();
     try {
       setSubmitting(true);
