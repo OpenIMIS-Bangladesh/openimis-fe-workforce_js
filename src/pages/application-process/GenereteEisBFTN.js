@@ -557,9 +557,9 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
           <Button onClick={onClose} variant="outlined" color="primary">
             <FormattedMessage id="workforce.modal.close" />
           </Button>
-          <Button onClick={handleDialogPrint} variant="contained" color="primary">
+          {/* <Button onClick={handleDialogPrint} variant="contained" color="primary">
             <FormattedMessage id="workforce.modal.print.advice" />
-          </Button>
+          </Button> */}
           <Button onClick={exportToExcel} variant="contained" color="success">
             <FormattedMessage id="workforce.modal.excel" />
           </Button>
@@ -638,7 +638,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
   const deceasedWorkerInfo = safeParse(row?.workforceApplication?.deceasedWorkerInfo);
   const workerBirthDate = deceasedWorkerInfo?.birthDate ?? row?.workforceApplication?.workforceEmployee?.birthDate ?? "2026-01-01";
   const paymentType = row?.eisPaymentType;
-  console.log("payment type",paymentType)
+  console.log("payment type", paymentType)
 
   return (
     <div className="noa-page">
@@ -748,7 +748,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
                     মাসিক প্রদেয় টপ-আপ বেনেফিটের তথ্য:
                   </td>
                 </tr>
-              {(paymentType === "onetime" || paymentType === "installment") && (  
+                {(paymentType === "onetime" || paymentType === "installment") && (
                   <>
                     <tr>
                       <td className="noa-label">
@@ -766,22 +766,22 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
                       </td>
                       <td className="noa-value">{row?.processingDate ? new Date(row?.processingDate).toLocaleDateString("bn-BD") : ""}</td>
                     </tr>
-                    </>
-                  )}
-              {(paymentType === "monthly") && (  
+                  </>
+                )}
+                {(paymentType === "monthly") && (
                   <>
                     <tr>
                       <td className="noa-label">
                         মাসিক প্রদেয় ই.আই.এস টপ-আপ বেনেফিটের পরিমাণ:
                       </td>
                       <td className="noa-value">
-                      {row?.eisMonthlyAmount
-                        ? Number(row.eisMonthlyAmount).toLocaleString("bn-BD", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })
-                        : ""}
-                    </td>
+                        {row?.eisMonthlyAmount
+                          ? Number(row.eisMonthlyAmount).toLocaleString("bn-BD", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })
+                          : ""}
+                      </td>
                     </tr>
                     <tr>
                       <td className="noa-label">
@@ -789,11 +789,11 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
                       </td>
                       <td className="noa-value">{row?.processingDate ? new Date(row?.processingDate).toLocaleDateString("bn-BD") : ""}</td>
                     </tr>
-                    </>
-                  )}
+                  </>
+                )}
               </>
             )}
-            
+
             {/* Section 2 */}
             {applicationType === "financialAssistance" && (
               <>

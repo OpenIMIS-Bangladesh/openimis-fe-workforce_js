@@ -463,7 +463,8 @@ export const handleBulkSelectedByCheckerLogic = async ({
         message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
       });
     } finally {
-      history.push("/home");
+      // history.push("/home");
+      window.location.reload();
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
     }

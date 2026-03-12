@@ -913,12 +913,11 @@ class ApplicationProcessSearcher extends Component {
         defaultStatusFilters.push(
           `organizationTypeIn: ${organizationTypeIn}`
         );
-         if (loggedInUserId) {
+        if (loggedInUserId) {
           defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
       }
-      else if(this.props.isDraft)
-      {
+      else if (this.props.isDraft) {
         defaultStatusFilters.push(
           'statusIn: ["draft"]',
           `organizationTypeIn: ${organizationTypeIn}`
@@ -2360,6 +2359,7 @@ class ApplicationProcessSearcher extends Component {
       setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
       setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
       setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+      dispatch: this.props.dispatch
     });
 
     // if (userType === WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO || userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE || WORKFORCE_USER_TYPE.BLWF_CHECKER || WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR || WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR) {
@@ -3888,23 +3888,25 @@ const mapStateToProps = (state) => ({
   locale: state.core?.user?.i_user?.language || "en",
 });
 
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators(
-    {
-      fetchApplicationsSummary,
-      fetchApplicationMovementsSummary,
-      fetchOrganizationEmployeeDesignation,
-      updateApplication,
-      updateApplicationSummary,
-      createApplicationMovement,
-      fetchOrganizationEmployee,
-      fetchFactoryEmployee,
-      fetchWorkforceDocument,
-      testWorkforcePayment,
-      journalize,
-      coreConfirm,
-    },
-    dispatch
-  );
+const mapDispatchToProps = (dispatch) => (
+  {
+    ...bindActionCreators(
+      {
+        fetchApplicationsSummary,
+        fetchApplicationMovementsSummary,
+        fetchOrganizationEmployeeDesignation,
+        updateApplication,
+        updateApplicationSummary,
+        createApplicationMovement,
+        fetchOrganizationEmployee,
+        fetchFactoryEmployee,
+        fetchWorkforceDocument,
+        testWorkforcePayment,
+        journalize,
+        coreConfirm,
+      },
+      dispatch
+    ), dispatch
+  });
 
 export default withModulesManager(withHistory(connect(mapStateToProps, mapDispatchToProps)(withTheme(withStyles(styles)(ApplicationProcessSearcher)))));
