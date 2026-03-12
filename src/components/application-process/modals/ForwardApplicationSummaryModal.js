@@ -173,6 +173,18 @@ useEffect(() => {
   };
 
   const handleForward = async () => {
+
+      const invalidApplication = selectedApplicationIds?.find(
+      (app) =>
+        app?.applicationType === "disabilityAssistance" &&
+        app?.status !== "approved_by_doctor"
+    );
+
+    if (invalidApplication) {
+      alert("ডাক্তার দ্বারা সুপারিশকৃত ছাড়া স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তা আবেদন মিটিং এ পাঠানো যাবে না।");
+      window.location.href = "/home";
+      return;
+    }
     if (!formData?.year || !formData?.month) {
     setServerResponse({
       status: "ERROR",
