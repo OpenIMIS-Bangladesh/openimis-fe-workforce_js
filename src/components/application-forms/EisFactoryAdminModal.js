@@ -201,7 +201,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
     try {
       if (uploadFile && uploadFile.length > 0) {
         const uploadPromises = uploadFile.map((file) =>
-          dispatch(createWorkforceDocument({ ...file, workforceApplicationId: application?.id }, `Created workforce document`))
+          dispatch(createWorkforceDocument({ ...file,status:"verified", workforceApplicationId: application?.id }, `Created workforce document`))
         );
         await Promise.all(uploadPromises);
       }
