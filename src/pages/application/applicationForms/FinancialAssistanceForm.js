@@ -786,7 +786,9 @@ const FinancialAssistanceForm = ({
 
   console.log({ fromFactoryAdmin: employeeData });
   console.log({ tazwer: formData });
-  console.log({ fahimTazwer: uploadDependentFile });
+  console.log({ uploadFile: uploadFile });
+  console.log({ uploadBankFile: uploadBankFile });
+  console.log({ uploadDependentFile: uploadDependentFile });
 
   return (
     <div className={classes.container}>

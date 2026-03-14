@@ -483,7 +483,7 @@ class VerifyApplicationPage extends Component {
             )}
             {user_type ===WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type=== WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ?
             (
-              !safeParse(this.props.application?.eisApprovedByIds)?.includes(this.props.loggedInUserId)?
+              !safeParse(this.props.application?.eisApprovedByIds)?.includes(this.props.loggedInUserId) &&
                 (
                   <Grid item xs={2}>
                     <Button variant="contained" color="primary" fullWidth
@@ -495,9 +495,6 @@ class VerifyApplicationPage extends Component {
                       <FormattedMessage module="workforce" id="workforce.employee.application.eis_committee.recommended" />
                     </Button>
                   </Grid>
-                ):
-                (
-                  <></>
                 )
             ):(
               <Grid item xs={2}>
@@ -505,7 +502,6 @@ class VerifyApplicationPage extends Component {
                   <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
                 </Button>
               </Grid>
-
             )}
             <Grid item xs={2}>
               <Button variant="contained" color="primary" fullWidth onClick={this.handleRevert}>

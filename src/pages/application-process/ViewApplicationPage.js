@@ -6,8 +6,8 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 
 import PreviewDetails from "../../components/application-forms/PreviewDetails";
 import ForwardApplicationAdminModal from "../../components/application-process/modals/ForwardApplicationAdminModal";
-import { WORKFORCE_USER_TYPE } from "../../constants";
-import { conditionalEnToBn, getUserTypeFromRights } from "../../utils/utils";
+import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../constants";
+import { conditionalEnToBn, getUserTypeFromRights, safeDecodeId, safeParse } from "../../utils/utils";
 import { createApplicationMovement, fetchApplicationWiseMovementList, fetchWorkforceDocument, updateApplication } from "../../actions";
 import { bindActionCreators } from "redux";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
@@ -17,8 +17,13 @@ import CloseIcon from "@material-ui/icons/Close";
 import { ApplicationPrintPreview } from "../../components/shared/ApplicationPrintPreview";
 import ForwardApplicationFactoryAdminModal from "../../components/application-process/modals/ForwardApplicationFactoryAdminModal";
 import RevertApplicationModal from "../../components/application-process/modals/RevertApplicationModal";
-import { handleBulkSelectedByAssociationLogic } from "../../utils/workforceForwardRevertActions";
+import {
+  handleApprovalByEisCommittee,
+  handleBulkSelectedByAssociationLogic,
+  handleBulkSelectedByCheckerLogic,
+} from "../../utils/workforceForwardRevertActions";
 import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
+import GenereteEisDependentBFTN from "./GenereteEisDependentBFTN";
 
 const styles = (theme) => ({
   paper: {
@@ -68,8 +73,10 @@ class ViewApplicationPage extends Component {
       confirmModalMessage: "",
       serverResponse: "",
       confirmModalCallback: null,
-      movementLogs:null,
+      movementLogs: null,
       open: false,
+      selectedApplication: null,
+      eisDependentBFTNModalOpen: false,
     };
   }
 
@@ -116,62 +123,166 @@ class ViewApplicationPage extends Component {
   handlePrint = () => {
     this.setState({ open: true });
   };
+  handleReject = (application) => {
+    const { selectedApplication } = this.state;
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.reject.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          this.setState(
+            {
+              selectedApplication: {
+                ...application,
+                isHistory: true,
+              },
+            },
+            async () => {
+              const updateApplicationData = {
+                id: safeDecodeId(application?.id),
+                status: WORKFORCE_STATUS.REJECTED,
+              };
+              const createApplicationMovementData = {
+                applicationId: safeDecodeId(application?.id),
+                status: WORKFORCE_STATUS.REJECTED,
+                note: "আবেদন বাতিল করা হয়েছে",
+                action: "rejected",
+              };
+              try {
+                await this.props.updateApplication(updateApplicationData, "update workforce application");
+                await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
+                this.setState({
+                  serverResponse: {
+                    status: "SUCCESS",
+                    message: "আবেদন বাতিল করা হয়েছে!",
+                  },
+                });
+                window.location.reload();
+              } catch (error) {
+                console.error("Approval failed:", error);
+                this.setState({
+                  serverResponse: {
+                    status: "ERROR",
+                    message: "আবেদন বাতিল ব্যর্থ হয়েছে!",
+                  },
+                });
+              }
+            },
+          );
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+      },
+    });
+  };
 
   handleForward = () => {
     const { user_rights, application, loggedInUserId } = this.props;
     const user_type = getUserTypeFromRights(user_rights);
 
-    user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
-      ? this.setState({ forwardModalOpenFA: true })
-      : handleBulkSelectedByAssociationLogic({
-          selectedApplicationIds: [{ id: application?.id }],
-          user_rights,
-          loggedInUserId,
-          updateApplication: this.props.updateApplication,
-          createApplicationMovement: this.props.createApplicationMovement,
-          setServerResponse: (res) => this.setState({ serverResponse: res }),
-          setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
-          setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
-          setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
-        });
+    if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+      this.setState({ forwardModalOpenFA: true });
+    } else if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+      this.setState({ forwardModalOpenSA: true });
+    } else if (
+      user_type === WORKFORCE_USER_TYPE.CHECKER ||
+      user_type === WORKFORCE_USER_TYPE.CHECKER_TWO ||
+      user_type === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR ||
+      user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR ||
+      user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
+      user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ||
+      user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
+      user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
+    ) {
+      handleBulkSelectedByCheckerLogic({
+        selectedApplicationIds: [{ id: application?.id }],
+        loggedInUserId: this.props.loggedInUserId,
+        userRights: this.props.user_rights,
+        fetchWorkforceDocument: this.props.fetchWorkforceDocument,
+        updateApplication: this.props.updateApplication,
+        createApplicationMovement: this.props.createApplicationMovement,
+        modulesManager: this.props.modulesManager,
+        setServerResponse: (res) => this.setState({ serverResponse: res }),
+        setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
+        setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
+        setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+        history: this.props.history,
+        dispatch: this.props.dispatch,
+      });
+    } else if (user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE) {
+      handleApprovalByEisCommittee({
+        selectedApplicationIds: [{ id: application?.id }],
+        loggedInUserId: this.props.loggedInUserId,
+        userRights: this.props.user_rights,
+        fetchWorkforceDocument: this.props.fetchWorkforceDocument,
+        updateApplication: this.props.updateApplication,
+        createApplicationMovement: this.props.createApplicationMovement,
+        modulesManager: this.props.modulesManager,
+        setServerResponse: (res) => this.setState({ serverResponse: res }),
+        setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
+        setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
+        setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+        summaryId: application?.eisApplicationSummary?.id,
+        eisApprovalIds: application?.eisApprovalIds,
+        eisApprovedByIds: application?.eisApprovedByIds,
+        modulesManager: this.props.modulesManager,
+        dispatch: this.props.dispatch,
+        history: this.props.history,
+      });
+    } else {
+      handleBulkSelectedByAssociationLogic({
+        selectedApplicationIds: [{ id: application?.id }],
+        loggedInUserId,
+        updateApplication: this.props.updateApplication,
+        createApplicationMovement: this.props.createApplicationMovement,
+        setServerResponse: (res) => this.setState({ serverResponse: res }),
+        setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
+        setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
+        setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+      });
+    }
+  };
+
+  handleRevert = () => {
+    this.setState({ revertModalOpen: true, selectedApplication: this.props.application });
   };
 
   componentDidMount() {
     const { dispatch, modulesManager, application } = this.props;
     this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${application?.id}"`]);
-    this.props.fetchApplicationWiseMovementList(modulesManager, {
-            applicationId: application?.id,
-            orderBy: ["-dateCreated"],
-          })
-          .then((res) => {
-            console.log(res);
-            const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
-            const allUsers = edges.flatMap(({ node }) => (node.applicationTo ? [node.applicationTo] : [])).filter(Boolean);
-            console.log({edges})
-            console.log({allUsers})
-            const users = [
-              {
-                id: "applicant001",
-                name: application?.workforceEmployee?.firstNameBn || "আবেদনকারী",
-                note:"একটি নতুন আবেদন করা হয়েছে",
-                status:"new",
-                role: "Applicant",
-                date: conditionalEnToBn(application?.dateCreated?.split("T")[0],this.props.locale),
-              },
-              ...allUsers.map((u,index) => ({
-                id: u.id,
-                name: u.loginName,
-                role: u?.userRoles?.[0]?.role?.name || "User",
-                note: edges?.[index]?.node?.note,
-                status: edges?.[index]?.node?.status,
-                revertNote: edges?.[index]?.node?.revertNote,
-                date: conditionalEnToBn(edges?.[index]?.node?.dateCreated?.split("T")[0],this.props.locale)
-              })),
-            ];
-            // setMovementLogs(users);
-            this.setState({movementLogs:users})
-          })
-          .catch((err) => console.error("Movement fetch failed", err))
+    this.props
+      .fetchApplicationWiseMovementList(modulesManager, {
+        applicationId: application?.id,
+        orderBy: ["-dateCreated"],
+      })
+      .then((res) => {
+        console.log(res);
+        const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
+        const allUsers = edges.flatMap(({ node }) => (node.applicationTo ? [node.applicationTo] : [])).filter(Boolean);
+        console.log({ edges });
+        console.log({ allUsers });
+        const users = [
+          {
+            id: "applicant001",
+            name: application?.workforceEmployee?.firstNameBn || "আবেদনকারী",
+            note: "একটি নতুন আবেদন করা হয়েছে",
+            status: "new",
+            role: "Applicant",
+            date: conditionalEnToBn(application?.dateCreated?.split("T")[0], this.props.locale),
+          },
+          ...allUsers.map((u, index) => ({
+            id: u.id,
+            name: u.loginName,
+            role: u?.userRoles?.[0]?.role?.name || "User",
+            note: edges?.[index]?.node?.note,
+            status: edges?.[index]?.node?.status,
+            revertNote: edges?.[index]?.node?.revertNote,
+            date: conditionalEnToBn(edges?.[index]?.node?.dateCreated?.split("T")[0], this.props.locale),
+          })),
+        ];
+        // setMovementLogs(users);
+        this.setState({ movementLogs: users });
+      })
+      .catch((err) => console.error("Movement fetch failed", err));
   }
 
   render() {
@@ -186,14 +297,14 @@ class ViewApplicationPage extends Component {
     const dependentInfo = this.safeParse(stateEdited?.employeeDependentInfo);
     const childrenInfo = this.safeParse(stateEdited?.employeeChildrenInfo);
     const applicantInfo = this.safeParse(stateEdited?.applicantInfo);
-    const institutionInfo = this.safeParse(stateEdited?.institutionInfo)
-    const deceasedWorkerInfo = this.safeParse(stateEdited?.deceasedWorkerInfo)
+    const institutionInfo = this.safeParse(stateEdited?.institutionInfo);
+    const deceasedWorkerInfo = this.safeParse(stateEdited?.deceasedWorkerInfo);
     const metaInfo = this.safeParse(stateEdited?.metadata);
     const doctorsEntry = this.safeParse(stateEdited?.doctorsEntry);
     const parsedWorkforceEmployeeDependentApplication = application?.workforceEmployeeDependentApplication;
-    const tempBankInfo = application?.employeeBankingInfoApplication?.map(item=>{
-      return {...item,bank:{...item?.branch?.parent}}
-    })
+    const tempBankInfo = application?.employeeBankingInfoApplication?.map((item) => {
+      return { ...item, bank: { ...item?.branch?.parent } };
+    });
 
     // ✅ Safely parse nested stringified objects
     const formData = {
@@ -208,8 +319,8 @@ class ViewApplicationPage extends Component {
       doctorsEntry: this.safeParse(doctorsEntry),
       deceasedWorkerInfo: this.safeParse(deceasedWorkerInfo),
       workforceEmployeeDependentApplication: parsedWorkforceEmployeeDependentApplication,
-      metadata: this.safeParse(metaInfo), 
-      employeeBankingInfoApplication:tempBankInfo
+      metadata: this.safeParse(metaInfo),
+      employeeBankingInfoApplication: tempBankInfo,
     };
 
     const uploadByApplicant = documents?.filter((doc) => doc.holderType === "applicant");
@@ -220,28 +331,70 @@ class ViewApplicationPage extends Component {
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>
+          <Grid container spacing={2} className={classes.gridRightPad} style={{ marginTop: "16px", padding: 4, display: "flex", justifyContent: "flex-end" }}>
+            {(user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE) && (
+              <>
+                <Grid item xs={2}>
+                  <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ eisDependentBFTNModalOpen: true })}>
+                    <FormattedMessage id="workforce.employee.application.paymentProcess" defaultMessage="Payment Calculation" />
+                  </Button>
+                </Grid>
+                {!safeParse(this.props.application?.eisApprovedByIds)?.includes(this.props.loggedInUserId) && (
+                  <Grid item xs={2}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      disabled={this.props.application?.isHistory}
+                      onClick={() => {
+                        this.handleForward();
+                      }}
+                    >
+                      <FormattedMessage module="workforce" id="workforce.employee.application.eis_committee.recommended" />
+                    </Button>
+                  </Grid>
+                )}
+                <Grid item xs={2}>
+                  <Button variant="contained" color="primary" fullWidth onClick={this.handleRevert}>
+                    <FormattedMessage module="workforce" id="workforce.employee.application.revert.further.investigation" />
+                  </Button>
+                </Grid>
+                <Grid item xs={2}>
+                  <Button variant="outlined" style={{ backgroundColor: "#D10000", color: "white" }} fullWidth onClick={this.handleReject}>
+                    <FormattedMessage module="workforce" id="workforce.application.reject" />
+                  </Button>
+                </Grid>
+              </>
+            )}
+          </Grid>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <ApplicationViewPage application={formData} language={locale} fileStates={documents} viewedFromFlag={"view"} movementLogs={this.state.movementLogs}/>
+              <ApplicationViewPage
+                application={formData}
+                language={locale}
+                fileStates={documents}
+                viewedFromFlag={"view"}
+                movementLogs={this.state.movementLogs}
+              />
             </Grid>
             <Grid item xs={8}></Grid>
             {user_type != WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
             user_type != WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
-            user_type != WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-            ||  user_type != WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION
-            ||  user_type != WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION ? (
+            user_type != WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ||
+            user_type != WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+            user_type != WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION ? (
               <Grid item xs={2}></Grid>
-            ):null}
+            ) : null}
             <Grid item xs={2} style={{ textAlign: "center" }}>
               <Button variant="contained" color="primary" onClick={this.handlePrint} fullWidth>
-                <PrintIcon /> {" "} {<FormattedMessage id="workforce.modal.print" module="workforce" />}
+                <PrintIcon /> {<FormattedMessage id="workforce.modal.print" module="workforce" />}
               </Button>
             </Grid>
             {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
             user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
-            user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-            ||  user_type === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION
-            ||  user_type === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION ? (
+            user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ||
+            user_type === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
+            user_type === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION ? (
               <>
                 <Grid item xs={1}>
                   <Button
@@ -308,6 +461,15 @@ class ViewApplicationPage extends Component {
             />
           </>
         )}
+        {this.state.eisDependentBFTNModalOpen && (
+          <GenereteEisDependentBFTN
+            open={this.state.eisDependentBFTNModalOpen}
+            onClose={() => this.setState({ eisDependentBFTNModalOpen: false })}
+            status="approved_by_committee"
+            userRights={this.props.user_rights}
+            selectedApplicationIds={[{ id: this.props.application?.id }]}
+          />
+        )}
         {user_type !== WORKFORCE_USER_TYPE.APPLICANT && (
           <>
             {this.state.revertModalOpen && (
@@ -355,7 +517,7 @@ const mapDispatchToProps = (dispatch) =>
       journalize,
       coreConfirm,
     },
-    dispatch
+    dispatch,
   );
 
 export default withModulesManager(withHistory(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ViewApplicationPage))));
