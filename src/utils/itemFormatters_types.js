@@ -1730,7 +1730,7 @@ export const itemFormattersApprover = (
         </IconButton>
       </Tooltip>
 
-      <Tooltip title="Veify">
+      {/* <Tooltip title="Veify">
         <IconButton
           disabled={application?.isHistory}
           onClick={() => {
@@ -1745,7 +1745,7 @@ export const itemFormattersApprover = (
         >
           <VerifiedUserIcon />
         </IconButton>
-      </Tooltip>
+      </Tooltip> */}
       {component.props.disableButtons !== 1 && (
         <>
           {/* {!safeParse(application?.eisApprovedByIds)?.includes(component.props.loggedInUserId)?
@@ -1762,7 +1762,7 @@ export const itemFormattersApprover = (
               </IconButton>
             </Tooltip>
           ):null} */}
-          <Tooltip title="Revert">
+          {/* <Tooltip title="Revert">
             <IconButton
               disabled={application?.isHistory}
               onClick={() => {
@@ -1799,7 +1799,7 @@ export const itemFormattersApprover = (
                 <RestorePageIcon style={{ color: "#1976D2" }} />
               </IconButton>
             </Tooltip>
-          )}
+          )} */}
         </>
       )}
     </div>
