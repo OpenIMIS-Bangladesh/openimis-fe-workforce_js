@@ -3600,12 +3600,16 @@ export function fetchApplicationFactoryAssociation(id) {
 
 
 export function updateWorkforceEisPaymentByAssociation(payload) {
+  const paymentProcessIds= payload.selectedIds.map(id => `"${id}"`).join(",");
   const mutation = `
     mutation {
       updateWorkforceEisPaymentByAssociation(
         associationId: "${payload?.associationId ?? ""}"
+        paymentProcessIds: [${paymentProcessIds}]
         increment: "${payload?.increment ?? ""}"
         decrement: "${payload?.decrement ?? ""}"
+        incrementDate: "${payload?.incrementDate ?? ""}"
+        decrementDate: "${payload?.decrementDate ?? ""}"
       ) {
         success
         errors

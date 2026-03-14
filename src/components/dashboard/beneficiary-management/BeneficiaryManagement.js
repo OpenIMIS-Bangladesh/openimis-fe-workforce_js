@@ -9,10 +9,10 @@ import SearchIcon from '@material-ui/icons/Search';
 import EditIcon from '@material-ui/icons/Edit';
 import ListIcon from '@material-ui/icons/List';
 
-import { 
-  fetchEisPaymentProcess, 
-  fetchWorkforceFactoriesSummary, 
-  fetchWorkforceAllAssociationSummary, 
+import {
+  fetchEisPaymentProcess,
+  fetchWorkforceFactoriesSummary,
+  fetchWorkforceAllAssociationSummary,
   fetchEisPaymentProcessWithFilters
 } from "../../../actions";
 import { useModulesManager, PublishedComponent } from "@openimis/fe-core";
@@ -20,17 +20,19 @@ import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from
 import BeneficiaryManageModal from "../modals/BeneficiaryManageModal";
 import BeneficiaryEditModal from "../modals/BeneficiaryEditModal";
 import AssociationManageModal from "../modals/AssociationManageModal";
+import IncrementDecrementModal from "../modals/IncrementDecrementModal";
 
 
 const BeneficiaryManagement = () => {
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
-  
+
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [factories, setFactories] = useState([]);
   const [associations, setAssociations] = useState([]);
   const [searchBtnClicked, setSearchBtnClicked] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const [filters, setFilters] = useState({
     trackingNo: "",
@@ -45,6 +47,7 @@ const BeneficiaryManagement = () => {
 
   const [openModal, setOpenModal] = useState(false);
   const [openAssociationModal, setOpenAssociationModal] = useState(false);
+  const [openIncrementDecrementModal, setOpenIncrementDecrementModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
   const [selectedAssiciation, setSelectedAssociation] = useState(null);
@@ -81,6 +84,32 @@ const BeneficiaryManagement = () => {
   };
 
 
+  const handleOpenIcrementDecrementModal = () => {
+    setSelectedAssociation(filters.association);
+    setOpenIncrementDecrementModal(true);
+  };
+
+  const handleCloseIncrementDecrementModal = () => {
+    setOpenIncrementDecrementModal(false);
+    setSelectedAssociation(null);
+  };
+
+  const handleRowSelect = (id) => {
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
+
+
+  const handleSelectAll = (checked) => {
+    if (checked) {
+      setSelectedIds(data.map(row => row.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+
   // 1. Updated Fetching Logic to accept filter parameters
   const loadData = async () => {
     setLoading(true);
@@ -94,21 +123,21 @@ const BeneficiaryManagement = () => {
       });
       const [processRes] = await Promise.all([
         dispatch(fetchEisPaymentProcessWithFilters({
-            workforceApplicationTrackingNumber: filters.trackingNo,
-            workforceFactoryId: safeDecodeId(filters.factory)??"",
-            allAssociationId: safeDecodeId(filters.association)??"",
-            beneficiaryId: filters.beneficiaryId,
-            status: "active",
-            approved: "yes",
-            approvalDateFrom: filters.approvalDateFrom??"",
-            approvalDateTo: filters.approvalDateTo??"",
-            accidentDateFrom: filters.accidentDateFrom??"",
-            accidentDateTo: filters.accidentDateTo??"",
+          workforceApplicationTrackingNumber: filters.trackingNo,
+          workforceFactoryId: safeDecodeId(filters.factory) ?? "",
+          allAssociationId: safeDecodeId(filters.association) ?? "",
+          beneficiaryId: filters.beneficiaryId,
+          status: "active",
+          approved: "yes",
+          approvalDateFrom: filters.approvalDateFrom ?? "",
+          approvalDateTo: filters.approvalDateTo ?? "",
+          accidentDateFrom: filters.accidentDateFrom ?? "",
+          accidentDateTo: filters.accidentDateTo ?? "",
         }, modulesManager)),
       ]);
 
       setData(processRes?.payload?.data?.workforceEisPaymentProcess || []);
-      
+
     } catch (err) {
       console.error("Data Load Error:", err);
     } finally {
@@ -129,12 +158,12 @@ const BeneficiaryManagement = () => {
   };
 
   const handleDateChange = (field, value) => {
-        setFilters(prev => ({
-            ...prev,
-            [field]: value
-        }));
-        // loadData(); // Trigger data reload on date change
-    };
+    setFilters(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    // loadData(); // Trigger data reload on date change
+  };
 
 
   const clearFilters = () => {
@@ -143,9 +172,9 @@ const BeneficiaryManagement = () => {
 
   // 3. Status Chip Helper
   const getStatusChip = (row) => {
-    if (row?.beneficiaryStatus ==="eligible") return <Chip label="Eligible" size="small" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }} />;
-    if (row?.beneficiaryStatus ==="closed") return <Chip label="Closed" size="small" style={{ backgroundColor: '#f5e8e8ff', color: '#7d2e2eff' }}/>;
-    if (row?.beneficiaryStatus ==="hold") return <Chip label="On Hold" size="small" style={{ backgroundColor: '#f5f4e8ff', color: '#787d2eff' }} />;
+    if (row?.beneficiaryStatus === "eligible") return <Chip label="Eligible" size="small" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }} />;
+    if (row?.beneficiaryStatus === "closed") return <Chip label="Closed" size="small" style={{ backgroundColor: '#f5e8e8ff', color: '#7d2e2eff' }} />;
+    if (row?.beneficiaryStatus === "hold") return <Chip label="On Hold" size="small" style={{ backgroundColor: '#f5f4e8ff', color: '#787d2eff' }} />;
     return <Chip label={row?.beneficiaryStatus} size="small" variant="outlined" />;
   };
 
@@ -206,46 +235,46 @@ const BeneficiaryManagement = () => {
             </TextField>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Box mb style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px'}} display="flex" alignItems="center">
+            <Box mb style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px' }} display="flex" alignItems="center">
               <PublishedComponent
-                  pubRef="workforce.DatePicker"
-                  label="Approval Date From"
-                  value={filters.approvalDateFrom}
-                  onChange={(date) => handleDateChange("approvalDateFrom", date)}
-                  required
+                pubRef="workforce.DatePicker"
+                label="Approval Date From"
+                value={filters.approvalDateFrom}
+                onChange={(date) => handleDateChange("approvalDateFrom", date)}
+                required
               />
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Box style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px'}} display="flex" alignItems="center">
+            <Box style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px' }} display="flex" alignItems="center">
               <PublishedComponent
-                  pubRef="workforce.DatePicker"
-                  label="Approval Date To"
-                  value={filters.approvalDateTo}
-                  onChange={(date) => handleDateChange("approvalDateTo", date)}
-                  required
+                pubRef="workforce.DatePicker"
+                label="Approval Date To"
+                value={filters.approvalDateTo}
+                onChange={(date) => handleDateChange("approvalDateTo", date)}
+                required
               />
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Box mb style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px'}} display="flex" alignItems="center">
+            <Box mb style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px' }} display="flex" alignItems="center">
               <PublishedComponent
-                  pubRef="workforce.DatePicker"
-                  label="Accident Date From"
-                  value={filters.accidentDateFrom}
-                  onChange={(date) => handleDateChange("accidentDateFrom", date)}
-                  required
+                pubRef="workforce.DatePicker"
+                label="Accident Date From"
+                value={filters.accidentDateFrom}
+                onChange={(date) => handleDateChange("accidentDateFrom", date)}
+                required
               />
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Box style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px'}} display="flex" alignItems="center">
+            <Box style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '8px 12px' }} display="flex" alignItems="center">
               <PublishedComponent
-                  pubRef="workforce.DatePicker"
-                  label="Accident Date To"
-                  value={filters.accidentDateTo}
-                  onChange={(date) => handleDateChange("accidentDateTo", date)}
-                  required
+                pubRef="workforce.DatePicker"
+                label="Accident Date To"
+                value={filters.accidentDateTo}
+                onChange={(date) => handleDateChange("accidentDateTo", date)}
+                required
               />
             </Box>
           </Grid>
@@ -257,7 +286,8 @@ const BeneficiaryManagement = () => {
               <Button onClick={clearFilters} fullWidth variant="text" color="default" startIcon={<ClearAllIcon />}>
                 Reset
               </Button>
-              {filters.association != "" && (
+              {/* Dont Delete this comment!!!!!!!!!!!! */}
+              {/* {filters.association != "" && (
                 <Button
                   fullWidth
                   variant="contained"
@@ -266,109 +296,144 @@ const BeneficiaryManagement = () => {
                 >
                   Manage Association
                 </Button>
-              )}
+              )} */}
+              {/* Dont Delete this comment!!!!!!!!!!!! */}
             </Box>
           </Grid>
         </Grid>
       </Paper>
-      {loading?(
+      {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
           <CircularProgress />
         </Box>
-      ):
-      (
-        <TableContainer component={Paper} elevation={0} style={{ borderRadius: '12px', border: '1px solid #e0e0e0' }}>
-          <Table>
-            <TableHead style={{ backgroundColor: '#f8fafd' }}>
-              <TableRow>
-                <TableCell style={{ fontWeight: 600 }}>Beneficiary Details</TableCell>
-                <TableCell style={{ fontWeight: 600 }}>Worker, Factory & Association</TableCell>
-                <TableCell style={{ fontWeight: 600 }}>Payment Method</TableCell>
-                <TableCell align="right" style={{ fontWeight: 600 }}>Amounts</TableCell>
-                <TableCell align="center" style={{ fontWeight: 600 }}>Status</TableCell>
-                <TableCell align="center" style={{ fontWeight: 600 }}>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {/* Using raw data directly as it's now filtered by the backend */}
-              {data.map((row) => {
-                const dep = row?.workforceEmployeeDependent?.[0] || {};
-                const worker = row?.workforceApplication?.applicationType === "financialAssistance" || 
-                              row?.workforceApplication?.applicationType === "deadlyGrant" 
-                              ? safeParse(row?.workforceApplication?.deceasedWorkerInfo)?.nameBn 
-                              : row?.workforceApplication?.workforceEmployee?.firstNameBn;
+      ) :
+        (
+          <TableContainer component={Paper} elevation={0} style={{ borderRadius: '12px', border: '1px solid #e0e0e0' }}>
+            <Table>
+              <TableHead style={{ backgroundColor: '#f8fafd' }}>
+                <TableRow>
+                  <TableCell padding="checkbox" align="center">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.length === data.length && data.length > 0}
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                    />
+                  </TableCell>
+                  <TableCell style={{ fontWeight: 600 }}>Beneficiary Details</TableCell>
+                  <TableCell style={{ fontWeight: 600 }}>Worker, Factory & Association</TableCell>
+                  <TableCell style={{ fontWeight: 600 }}>Payment Method</TableCell>
+                  <TableCell align="right" style={{ fontWeight: 600 }}>Amounts</TableCell>
+                  <TableCell align="center" style={{ fontWeight: 600 }}>Status</TableCell>
+                  <TableCell align="center" style={{ fontWeight: 600 }}>Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {/* Using raw data directly as it's now filtered by the backend */}
+                {data.map((row) => {
+                  const dep = row?.workforceEmployeeDependent?.[0] || {};
+                  const worker = row?.workforceApplication?.applicationType === "financialAssistance" ||
+                    row?.workforceApplication?.applicationType === "deadlyGrant"
+                    ? safeParse(row?.workforceApplication?.deceasedWorkerInfo)?.nameBn
+                    : row?.workforceApplication?.workforceEmployee?.firstNameBn;
 
-                return (
-                  <TableRow key={row.id} hover>
-                    <TableCell>
-                      <Typography variant="subtitle2" style={{ fontWeight: 600 }}>{dep?.nameEn || dep?.nameBn || row?.workforceApplication?.workforceEmployee?.firstNameBn || "—"}</Typography>
-                      <Typography variant="caption" color="primary">{getRelationString(dep)}</Typography>
-                      <Box mt={0.5} mb={0.5}><Chip label={row.beneficiaryId} variant="outlined" style={{ height: 20 }} /></Box>
-                      <Typography variant="caption" display="block" color="textSecondary">
-                        {"ATN: " + row?.workforceApplication?.trackingNumber || "N/A"}
-                      </Typography>
-                    </TableCell>
-                    
-                    <TableCell>
-                      <Typography variant="body2" style={{ fontWeight: 500 }}>{worker}</Typography>
-                      <Typography variant="caption" display="block" color="textSecondary">
-                        {row?.workforceApplication?.employeeFactory?.nameBn}
-                      </Typography>
-                      <Typography variant="caption" display="block" color="textSecondary">
-                        {row?.workforceApplication?.employeeFactory?.allAssociation?.shortNameBn || row?.workforceApplication?.employeeFactory?.allAssociation?.nameEn || "N/A"}
-                      </Typography>
-                    </TableCell>
+                  return (
+                    <TableRow key={row.id} hover>
+                      <TableCell padding="checkbox" align="center">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(row.id)}
+                          onChange={() => handleRowSelect(row.id)}
+                        // disabled={row?.isDisbursed}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="subtitle2" style={{ fontWeight: 600 }}>{dep?.nameEn || dep?.nameBn || row?.workforceApplication?.workforceEmployee?.firstNameBn || "—"}</Typography>
+                        <Typography variant="caption" color="primary">{getRelationString(dep)}</Typography>
+                        <Box mt={0.5} mb={0.5}><Chip label={row.beneficiaryId} variant="outlined" style={{ height: 20 }} /></Box>
+                        <Typography variant="caption" display="block" color="textSecondary">
+                          {"ATN: " + row?.workforceApplication?.trackingNumber || "N/A"}
+                        </Typography>
+                      </TableCell>
 
-                    <TableCell>
-                      <Typography variant="body2">{row.bank?.parent?.nameEn || "N/A"}</Typography>
-                      <Typography variant="body2">{row.bank?.nameEn + " (Routing #" + row.bank?.routingNumber + ")" || "N/A"}</Typography>
-                      <Typography variant="caption" color="textSecondary">{"A/C: "+row.bankAccountNo}</Typography>
-                    </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" style={{ fontWeight: 500 }}>{worker}</Typography>
+                        <Typography variant="caption" display="block" color="textSecondary">
+                          {row?.workforceApplication?.employeeFactory?.nameBn}
+                        </Typography>
+                        <Typography variant="caption" display="block" color="textSecondary">
+                          {row?.workforceApplication?.employeeFactory?.allAssociation?.shortNameBn || row?.workforceApplication?.employeeFactory?.allAssociation?.nameEn || "N/A"}
+                        </Typography>
+                      </TableCell>
 
-                    <TableCell align="right">
-                      <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row.payableAmount).toLocaleString("en-BD") ?? Number(row.payableAmount).toLocaleString("en-BD")}</Typography>
-                      <Typography variant="caption" color="textSecondary">{"Total: "+ (Number(row?.eisApprovedAmount).toLocaleString("en-BD") ?? "--")}</Typography>
-                      <Typography variant="body2" style={{ fontWeight: 700 }}>{getPaymentTypeString(row.eisPaymentType)}</Typography>
-                    </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">{row.bank?.parent?.nameEn || "N/A"}</Typography>
+                        <Typography variant="body2">{row.bank?.nameEn + " (Routing #" + row.bank?.routingNumber + ")" || "N/A"}</Typography>
+                        <Typography variant="caption" color="textSecondary">{"A/C: " + row.bankAccountNo}</Typography>
+                      </TableCell>
 
-                    <TableCell align="center">
-                      {getStatusChip(row)}
-                    </TableCell>
+                      <TableCell align="right">
+                        <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row.payableAmount).toLocaleString("en-BD") ?? Number(row.payableAmount).toLocaleString("en-BD")}</Typography>
+                        <Typography variant="caption" color="textSecondary">{"Total: " + (Number(row?.eisApprovedAmount).toLocaleString("en-BD") ?? "--")}</Typography>
+                        <Typography variant="body2" style={{ fontWeight: 700 }}>{getPaymentTypeString(row.eisPaymentType)}</Typography>
+                      </TableCell>
 
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        startIcon= {<ListIcon/>}
-                        title= "Manage Beneficiary"
-                        onClick={() => handleOpenModal(row)}
-                        style= {{margin: "5px"}}
-                      >
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        startIcon= {<EditIcon/>}
-                        title= "Edit Information"
-                        onClick={() => handleOpenEditModal(row)}
-                        style= {{margin: "5px"}}
-                      >
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-          {data.length === 0 && (
-            <Box p={5} textAlign="center">
-              <Typography color="textSecondary">No data found matching current filters.</Typography>
-            </Box>
+                      <TableCell align="center">
+                        {getStatusChip(row)}
+                      </TableCell>
+
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          startIcon={<ListIcon />}
+                          title="Manage Beneficiary"
+                          onClick={() => handleOpenModal(row)}
+                          style={{ margin: "5px" }}
+                        >
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          startIcon={<EditIcon />}
+                          title="Edit Information"
+                          onClick={() => handleOpenEditModal(row)}
+                          style={{ margin: "5px" }}
+                        >
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+            {data.length === 0 && (
+              <Box p={5} textAlign="center">
+                <Typography color="textSecondary">No data found matching current filters.</Typography>
+              </Box>
+            )}
+          </TableContainer>
+        )}
+
+        <Box spacing="15px">
+
+          {selectedIds.length>0 && filters.association!=="" && filters.association!==null ? (
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              // startIcon={<EditIcon />}
+              title="Set Increment or Decrement"
+              onClick={() => handleOpenIcrementDecrementModal()}
+              style={{ margin: "5px" }}
+            >
+              Set Increment or Decrement
+            </Button>
+          ): (
+            <></>
           )}
-        </TableContainer>
-      )}
+        </Box>
 
       <BeneficiaryManageModal
         open={openModal}
@@ -396,6 +461,16 @@ const BeneficiaryManagement = () => {
           loadData();
         }}
         association={associations.find(a => a.node.id === filters.association)?.node}
+      />
+      <IncrementDecrementModal
+        open={openIncrementDecrementModal}
+        onClose={handleCloseIncrementDecrementModal}
+        onSuccess={() => {
+          handleCloseIncrementDecrementModal();
+          loadData();
+        }}
+        association={associations.find(a => a.node.id === filters.association)?.node}
+        selectedIds= {selectedIds}
       />
     </Box>
   );
