@@ -567,19 +567,22 @@ export const handleApprovalByDoctor = async ({
 };
 
 export const handleApprovalByEisCommittee = async ({
-  selectedApplicationIds,
-  loggedInUserId,
-  updateApplication,
-  setServerResponse,
-  setConfirmModalOpen,
-  setConfirmModalMessage,
-  setConfirmModalCallback,
-  summaryId,
-  eisApprovalIds,
-  eisApprovedByIds,
-  modulesManager,
-  dispatch,
-  history
+          selectedApplicationIds,
+          loggedInUserId,
+          userRights,
+          modulesManager,
+          fetchWorkforceDocument,
+          updateApplication,
+          createApplicationMovement,
+          updateApplicationSummary,
+          setServerResponse,
+          setConfirmModalOpen,
+          setConfirmModalMessage,
+          setConfirmModalCallback,
+          summaryId,
+          eisApprovalIds,
+          eisApprovedByIds,
+          history
 }) => {
 
   let confirmModalMessage =
@@ -640,6 +643,15 @@ export const handleApprovalByEisCommittee = async ({
               ? totalApproved / totalApprovers >= 0.5
               : true;
 
+          if (majorityApproved)
+          {
+            console.log("majority hoiche");
+          }
+          else
+          {
+            console.log("majority hoynai");
+          }
+
 
           const updateApplicationData = {
             id: decodedId,
@@ -658,38 +670,40 @@ export const handleApprovalByEisCommittee = async ({
             applicationToId: 173,
             toRoleId: 42,
           };
-          const updateApplicationSummaryData = {
-            id: safeDecodeId(summaryId),
-            status: WORKFORCE_STATUS.APPROVED_BY_COMMITTEE,
-          };
+          // const updateApplicationSummaryData = {
+          //   id: safeDecodeId(summaryId),
+          //   status: WORKFORCE_STATUS.APPROVED_BY_COMMITTEE,
+          // };
+          
           await updateApplication(updateApplicationData, "update workforce application");
+          //CODED THIS WHOLE AUTO SUMMARY FORWARD PROCESS IN BACKEND
 
-          if (majorityApproved) {
-            console.log("ekhane dhukse");
-            await dispatch(createApplicationMovement(
-              createApplicationMovementData,
-              "create workforce movement"
-            ));
+          // const summaryApplicationRes = await dispatch(fetchApplication(modulesManager, [
+          //     `eisApplicationSummaryId: "${safeDecodeId(summaryId)}"`,
+          //     `statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_COMIITEE}"]`
+          //   ]))
+          // ;
+          
+          // const summaryApplicationsLength = Number(
+            //   summaryApplicationRes?.payload?.data?.workforceApplication?.totalCount ?? 0
+            // );
+            
+            if (majorityApproved) {
+              console.log("ekhane dhukse");
+              await createApplicationMovement(
+                createApplicationMovementData,
+                "create workforce movement"
+              );
           }
 
-          const summaryApplicationRes = await dispatch(
-            fetchApplication(modulesManager, [
-              `eisApplicationSummaryId: "${safeDecodeId(summaryId)}"`,
-              `statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_COMIITEE}"]`
-            ])
-          );
 
-          const summaryApplicationsLength = Number(
-            summaryApplicationRes?.payload?.data?.workforceApplication?.totalCount ?? 0
-          );
-
-          if (majorityApproved && summaryApplicationsLength < 1) {
-            console.log("ekhaneo dhukse");
-            await dispatch(updateApplicationSummary(
-              updateApplicationSummaryData,
-              "update workforce application summary"
-            ));
-          }
+          // if (majorityApproved && summaryApplicationsLength <= 1) {
+          //   console.log("ekhaneo dhukse");
+          //   await updateApplicationSummary(
+          //     updateApplicationSummaryData,
+          //     "update workforce application summary"
+          //   );
+          // }
 
         }
 
@@ -712,7 +726,7 @@ export const handleApprovalByEisCommittee = async ({
       // window.location.reload();
       setTimeout(() => {
         window.location.reload();
-      }, 2000);
+      }, 500);
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
     }
