@@ -376,7 +376,7 @@ export const validateRequiredFields = (containerRef, formatMessage, formdata) =>
 
     if (!value && field.tagName !== "DIV") {
       if (
-        !field.id &&
+        (!field.id|| field.id === "rdmp") &&
         field.parentElement.previousElementSibling?.classList &&
         Array.from(field.parentElement.previousElementSibling.classList).some((c) => c.startsWith("openIMISDatePicker-label"))
       ) {
@@ -398,7 +398,7 @@ export const validateRequiredFields = (containerRef, formatMessage, formdata) =>
 
     if (value && field.tagName !== "DIV") {
       if (
-        !field.id &&
+        (!field.id || field.id === "rdmp")&&
         field.parentElement.previousElementSibling?.classList &&
         Array.from(field.parentElement.previousElementSibling.classList).some((c) => c.startsWith("openIMISDatePicker-label")) &&
         !isNotFutureDateBangla(value)

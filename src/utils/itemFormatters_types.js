@@ -1762,7 +1762,7 @@ export const itemFormattersApprover = (
               </IconButton>
             </Tooltip>
           ):null} */}
-          {/* <Tooltip title="Revert">
+          <Tooltip title="Revert">
             <IconButton
               disabled={application?.isHistory}
               onClick={() => {
@@ -1782,7 +1782,7 @@ export const itemFormattersApprover = (
               </IconButton>
             </span>
           </Tooltip>
-          {component.props.revertedApplication && (
+          {/* {component.props.revertedApplication && (
             <Tooltip title="Resend">
               <IconButton
                 disabled={application?.isHistory}
