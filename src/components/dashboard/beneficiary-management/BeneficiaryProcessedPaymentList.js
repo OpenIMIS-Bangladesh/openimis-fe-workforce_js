@@ -376,7 +376,7 @@ const BeneficiaryProcessedPaymentList = () => {
             >
               Generate Advice
             </Button>
-            &nbsp;
+            {/* &nbsp;
             &nbsp;
             &nbsp;
             <Button
@@ -388,7 +388,7 @@ const BeneficiaryProcessedPaymentList = () => {
 
             >
               Disburse Selected
-            </Button>
+            </Button> */}
             &nbsp;
             &nbsp;
             &nbsp;
