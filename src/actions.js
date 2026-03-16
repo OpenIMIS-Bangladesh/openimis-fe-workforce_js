@@ -3186,11 +3186,16 @@ export const setUploadedFiles = (fieldKey, files) => ({
   payload: { fieldKey, files },
 });
 
-export const removeUploadedFile = (fieldKey, fileName) => ({
-  type: "REMOVE_UPLOADED_FILE",
-  payload: { fieldKey, fileName },
-});
-
+export const removeUploadedFile = (fieldKey, fileName) => {
+  return {
+    type: "REMOVE_UPLOADED_FILE",
+    // It is crucial that the payload is an object containing BOTH keys
+    payload: { 
+      fieldKey: fieldKey, 
+      fileName: fileName 
+    }
+  };
+};
 
 export function updateWorkforceEisPaymentProcessPaymentType(eisPaymentData) {
   const mutation = `
