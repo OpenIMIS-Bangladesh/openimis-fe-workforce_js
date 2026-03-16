@@ -235,6 +235,7 @@ const BeneficiaryPaymentProcess = () => {
                 <TableCell style={{ fontWeight: 600 }}>Worker, Factory & Association</TableCell>
                 <TableCell style={{ fontWeight: 600 }}>Payment Method</TableCell>
                 <TableCell align="right" style={{ fontWeight: 600 }}>Amounts</TableCell>
+                <TableCell align="right" style={{ fontWeight: 600 }}>This Month Payable</TableCell>
                 <TableCell align="center" style={{ fontWeight: 600 }}>Status</TableCell>
                 <TableCell align="center" style={{ fontWeight: 600 }}>Action</TableCell>
               </TableRow>
@@ -286,6 +287,15 @@ const BeneficiaryPaymentProcess = () => {
                       <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row?.payableAmount).toLocaleString("en-BD") ?? Number(row?.payableAmount).toLocaleString("en-BD")}</Typography>
                       <Typography variant="caption" color="textSecondary">{"Total: " + (Number(row?.eisApprovedAmount).toLocaleString("en-BD") ?? "--")}</Typography>
                       <Typography variant="body2" style={{ fontWeight: 700 }}>{getPaymentTypeString(row.eisPaymentType)}</Typography>
+                    </TableCell>
+                    
+                    <TableCell align="right">
+                      <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row?.arrearPaymentMonth)=== Number(filters.month)-1 && Number(row?.arrearPaymentYear)=== Number(filters.year) ? (Number(row?.payableAmount) + Number(row?.arrearAmount)).toLocaleString("en-BD") : Number(row?.payableAmount).toLocaleString("en-BD")}</Typography>
+                      {Number(row?.arrearPaymentMonth)=== Number(filters.month)-1 && Number(row?.arrearPaymentYear)=== Number(filters.year) ? (
+                        <Typography variant="caption" color="textSecondary">{"Includes increments of previous months of amount:" + Number(row?.arrearAmount).toLocaleString("en-BD")}</Typography>
+                      ) : (
+                        <Typography variant="caption" color="textSecondary">{"Payable for selected Month"}</Typography>
+                      )}
                     </TableCell>
 
                     <TableCell align="center">

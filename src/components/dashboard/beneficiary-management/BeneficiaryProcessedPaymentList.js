@@ -108,7 +108,7 @@ const BeneficiaryProcessedPaymentList = () => {
   };
 
   const getStatusChip = (row) => {
-    if (row?.isDisbursed) return (<Chip label="Disbursed" size="small" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }} />);
+    if (row?.isDisbursed || row?.workforceEisBankAdvice?.isConfirmed) return (<Chip label="Disbursed" size="small" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }} />);
     return <Chip label={"Processed"} size="small" variant="outlined" />;
   };
 
@@ -316,8 +316,8 @@ const BeneficiaryProcessedPaymentList = () => {
                       {getStatusChip(row)}
                       <Box mt={2}>
                         <Typography variant="caption" style={{ display: "block" }} color="textSecondary">
-                          {row?.isDisbursed && row?.disbursementDate
-                            ? `Disbursed on: ${new Date(row?.disbursementDate).toLocaleDateString("en-GB")}`
+                          {(row?.isDisbursed && row?.disbursementDate) || (row?.workforceEisBankAdvice?.isConfirmed && row?.workforceEisBankAdvice?.confirmationDate)
+                            ? `Disbursed on: ${new Date(row?.disbursementDate || row?.workforceEisBankAdvice?.confirmationDate).toLocaleDateString("en-GB")}`
                             : ``}
                         </Typography>
 
@@ -329,11 +329,11 @@ const BeneficiaryProcessedPaymentList = () => {
                       </Box>
                     </TableCell>
                     <TableCell align="center">
-                      {row?.isDisbursed ? (
+                      {row?.isDisbursed || row?.workforceEisBankAdvice?.isConfirmed ? (
                         <></>
                       ) : (
                         <>
-                          <Button
+                          {/* <Button
                             variant="outlined"
                             size="small"
                             // onClick={() => handleApprove([row.id])}
@@ -341,7 +341,7 @@ const BeneficiaryProcessedPaymentList = () => {
                             style={{ marginLeft: 6 }}
                           >
                             Disburse Now
-                          </Button>
+                          </Button> */}
                           <Button
                             variant="outlined"
                             size="small"
@@ -374,7 +374,7 @@ const BeneficiaryProcessedPaymentList = () => {
               disabled={!selectedIds.length || selectedIds.length == 0}
               onClick={() => setOpenGenerateBeneficiaryAdvice(true)}
             >
-              Print Advice
+              Generate Advice
             </Button>
             &nbsp;
             &nbsp;
