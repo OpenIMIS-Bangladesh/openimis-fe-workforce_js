@@ -32,11 +32,12 @@ import {
   fetchDocumentType,
   fetchWorkforceDocument,
   updateApplication,
+  updateApplicationSummary,
   updateWorkforceDocument,
 } from "../../actions";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import FileUploader from "../../pickers/FileUploader";
-import { getUserTypeFromRights, safeParse, tryParse } from "../../utils/utils";
+import { getUserTypeFromRights, safeDecodeId, safeParse, tryParse } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
 import { handleBulkSelectedByAssociationLogic, handleBulkSelectedByCheckerLogic, handleApprovalByDoctor, handleApprovalByEisCommittee} from "../../utils/workforceForwardRevertActions";
@@ -347,14 +348,25 @@ class VerifyApplicationPage extends Component {
     } else if (
       user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE
     ) {
+
+      const summaryApplicationRes = this.props.dispatch(fetchApplication(this.props.modulesManager, [
+              `eisApplicationSummaryId: "${safeDecodeId(summaryId)}"`,
+              `statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_COMIITEE}"]`
+            ]))
+          ;
+
+          const summaryApplicationsLength = Number(
+            summaryApplicationRes?.payload?.data?.workforceApplication?.totalCount ?? 0
+          );
       handleApprovalByEisCommittee({
         selectedApplicationIds: [{ id: application?.id }],
         loggedInUserId: this.props.loggedInUserId,
         userRights: this.props.user_rights,
+        modulesManager: this.props.modulesManager,
         fetchWorkforceDocument: this.props.fetchWorkforceDocument,
         updateApplication: this.props.updateApplication,
         createApplicationMovement: this.props.createApplicationMovement,
-        modulesManager: this.props.modulesManager,
+        updateApplicationSummary: this.props.updateApplicationSummary,
         setServerResponse: (res) => this.setState({ serverResponse: res }),
         setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
         setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
@@ -362,10 +374,7 @@ class VerifyApplicationPage extends Component {
         summaryId: application?.eisApplicationSummary?.id,
         eisApprovalIds: application?.eisApprovalIds,
         eisApprovedByIds: application?.eisApprovedByIds,
-        modulesManager: this.props.modulesManager,
-        dispatch:this.props.dispatch,
         history: this.props.history
-
       });
     } else {
       handleBulkSelectedByAssociationLogic({
@@ -615,6 +624,8 @@ const mapDispatchToProps = (dispatch) => ({
       journalize,
       coreConfirm,
       updateApplication,
+      createApplicationMovement,
+      updateApplicationSummary,
       createApplicationMovement,
     },
     dispatch

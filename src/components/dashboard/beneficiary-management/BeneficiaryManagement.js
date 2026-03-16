@@ -154,6 +154,9 @@ const BeneficiaryManagement = () => {
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
+    if(name!=="approvalDateFrom" && name!=="approvalDateTo" && name!=="accidentDateFrom" && name!=="accidentDateTo"){
+      loadData(); // Trigger data reload on filter change
+    }
     // loadData(); // Trigger data reload on filter change
   };
 

@@ -59,7 +59,7 @@ const IncrementDecrementModal = ({ open, onClose, onSuccess, association, select
     /* -------------------- SAVE -------------------- */
     const handleSave = () => {
         setLoading(true);
-        if(formData.increment > 0 || formData.decrement > 0){
+        if(formData.increment > 0 || formData.decrement > 0 || formData?.associationId!=="" || formData?.associationId!==null){
             const payload = {
                 associationId: association?.id || null,
                 selectedIds: selectedIds || null,
@@ -81,7 +81,7 @@ const IncrementDecrementModal = ({ open, onClose, onSuccess, association, select
             });
         }
         else{
-            return alert("Please provide at least one change (Increment or Decrement) to save.");
+            return alert("Please provide at least one change (Increment or Decrement) and Select an Association to save.");
         }
 
     };

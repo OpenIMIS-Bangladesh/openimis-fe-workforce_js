@@ -3284,6 +3284,9 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
         trimonthlyAmount
         payableAmount
         phoneNumber
+        arrearAmount
+        arrearPaymentMonth
+        arrearPaymentYear
         bank {
           id
           nameEn
@@ -3474,6 +3477,11 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
         beneficiaryId
         isDisbursed
         phoneNumber
+        workforceEisBankAdvice{
+        id
+        isConfirmed
+        confirmationDate
+        }
         bank {
           id
           nameEn
