@@ -1410,9 +1410,9 @@ export const fixBrokenUnicode = (text) => {
 
   
 export const isEisPath = () => {
-  // if (typeof window !== "undefined") {
-  //   return window.location.href.includes("eis");
-  // }
-  // return false; // fallback if window is not defined
-  return true;
+  if (typeof window !== "undefined") {
+    return window.location.href.includes("eis");
+  }
+  return false; // fallback if window is not defined
+  // return true;
 };
