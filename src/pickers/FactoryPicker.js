@@ -36,7 +36,7 @@ const FactoryPicker = ({
       const edges = response?.payload?.data?.workforceEmployerEmployees?.edges || [];
       const node = edges[0]?.node || {};
       const factoryId = safeDecodeId(node?.workforceFactory?.id) || null;
-      return dispatch(fetchFactoriesPick(mm, factoryId!=null?[`id: "${factoryId}"`]:[]));
+      return dispatch(fetchFactoriesPick(mm, factoryId!=null?[`id: "${factoryId}"`]:[`status:"active"`]));
   }, []);
 
   const isLoading = useSelector(

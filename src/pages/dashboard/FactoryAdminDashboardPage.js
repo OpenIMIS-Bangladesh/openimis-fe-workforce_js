@@ -553,12 +553,12 @@ const FactoryAdminDashboard = () => {
     }
   }, [loggedInUserId]);
 
-  useEffect(() => {
-    if (workforceFactoryId?.status === "draft") {
-      setSelectedMenu("newApplications");
-    }
-  }, [workforceFactoryId]);
-  console.log({ workforceFactoryId });
+  // useEffect(() => {
+  //   if (workforceFactoryId?.status === "draft") {
+  //     setSelectedMenu("newApplications");
+  //   }
+  // }, [workforceFactoryId]);
+  // console.log({ workforceFactoryId });
 
   const renderContent = () => {
     switch (selectedMenu) {
@@ -597,7 +597,8 @@ const FactoryAdminDashboard = () => {
                 // Determine if this item should be disabled
                 const isDraftStatus = workforceFactoryId?.status === "draft";
                 const isNotNewApplication = item.id !== "newApplications";
-                const isDisabled = isDraftStatus && isNotNewApplication;
+                // const isDisabled = isDraftStatus && isNotNewApplication;
+                const isDisabled = isDraftStatus;
                 // const isDisabled = false;
 
                 return (
