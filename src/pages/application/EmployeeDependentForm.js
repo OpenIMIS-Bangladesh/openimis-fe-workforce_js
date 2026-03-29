@@ -87,29 +87,34 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
 
   const handleAttachmentChange = useCallback(
     (index, fieldKey, value) => {
-      const currentAttachments = typeof dependents?.[index]?.attachments ==="string"? JSON.parse(dependents?.[index]?.attachments):dependents?.[index]?.attachments || [];
+      const currentAttachments = typeof dependents?.[index]?.attachments === "string" ? JSON.parse(dependents?.[index]?.attachments) : dependents?.[index]?.attachments || [];
 
-      const updatedAttachments = currentAttachments?.some((att) => att.fieldKey === fieldKey)
-        ? currentAttachments.map((att) =>
-            att.fieldKey === fieldKey
-              ? {
-                  ...att,
-                  fieldKey,
-                  files: value.files, // [{ file, uploadInfo }]
-                  documentType: value.documentType,
-                  documentPropId: value.documentPropId,
-                }
-              : att,
-          )
-        : [
-            ...currentAttachments,
-            {
-              fieldKey,
-              files: value.files, // [{ file, uploadInfo }]
-              documentType: value.documentType,
-              documentPropId: value.documentPropId,
-            },
-          ];
+      let updatedAttachments = currentAttachments;
+      if (!value?.files?.length) {
+        updatedAttachments = currentAttachments.filter((att) => att.fieldKey !== fieldKey);
+      } else {
+        updatedAttachments = currentAttachments?.some((att) => att.fieldKey === fieldKey)
+          ? currentAttachments.map((att) =>
+              att.fieldKey === fieldKey
+                ? {
+                    ...att,
+                    fieldKey,
+                    files: value.files, // [{ file, uploadInfo }]
+                    documentType: value.documentType,
+                    documentPropId: value.documentPropId,
+                  }
+                : att,
+            )
+          : [
+              ...currentAttachments,
+              {
+                fieldKey,
+                files: value.files, // [{ file, uploadInfo }]
+                documentType: value.documentType,
+                documentPropId: value.documentPropId,
+              },
+            ];
+      }
 
       handleChange(index, "attachments", updatedAttachments);
     },

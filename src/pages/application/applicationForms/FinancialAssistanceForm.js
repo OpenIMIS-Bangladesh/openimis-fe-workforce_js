@@ -405,6 +405,39 @@ const FinancialAssistanceForm = ({
     });
   };
 
+  const validateMandatoryBankDocumentsForAccounts = (docsConfig, uploadedBankFiles, bankAccounts) => {
+    const errors = [];
+    const accounts = Array.isArray(bankAccounts) ? bankAccounts : [];
+
+    accounts.forEach((account, accountIndex) => {
+      const accountPrefix = `account_${accountIndex}_`;
+      const pending = (uploadedBankFiles || []).filter((file) => file.fieldKey?.startsWith(accountPrefix));
+      const saved = ((account?.attachments && typeof account.attachments === "string") ? JSON.parse(account.attachments) : account?.attachments || []).filter(
+        (att) => att.fieldKey?.startsWith(accountPrefix),
+      );
+      const allFilesForAccount = [...pending, ...saved];
+
+      docsConfig.forEach((docConfig) => {
+        const hasFile = allFilesForAccount.some((item) => {
+          const typeMatches = item.documentType === docConfig.documentType;
+          if (!typeMatches) return false;
+          if (Array.isArray(item.files)) return item.files.length > 0;
+          return !!(item.path || item.url || item.name);
+        });
+
+        if (!hasFile) {
+          errors.push({
+            accountIndex,
+            documentType: docConfig.documentType,
+            message: `Missing mandatory bank document for account ${accountIndex + 1}: ${docConfig.nameEn} (${docConfig.nameBn})`,
+          });
+        }
+      });
+    });
+
+    return errors.length > 0 ? { isValid: false, errors } : { isValid: true, errors: null };
+  };
+
   const handleNext = async () => {
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
     delete newErrors.documents;
@@ -430,7 +463,7 @@ const FinancialAssistanceForm = ({
     } else if (IS_BANK_STEP) {
       // Filter only for Bank Documents
       const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC_TYPE);
-      documentValidation = validateMandatoryDocuments(bankDocsConfig, uploadBankFile || []);
+      documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
     } else if (IS_EMPLOYEE_STEP || IS_APPLICANT_STEP) {
       // Filter out Bank Documents for general info steps
       const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC_TYPE);

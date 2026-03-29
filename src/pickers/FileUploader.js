@@ -78,6 +78,9 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
   // 1. Get initial files from Redux to keep UI in sync
   const savedFiles = useSelector((state) => state.workforce.uploadedFilesByField?.[fieldKey] || []);
   const [files, setFiles] = useState([]);
+  const globalUploadFile = useSelector(state => state.workforce.uploadFile || []);
+const globalDependentFile = useSelector(state => state.workforce.uploadDependentFile || []);
+const globalBankFile = useSelector(state => state.workforce.uploadBankFile || []);
 
   // Sync local state when Redux updates
   useEffect(() => {
@@ -115,9 +118,9 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
         url: responseData.file_url,
       };
 
-      // 2. Update Redux Field Tracking (UI list)
-      const updatedSavedFiles = [...savedFiles, fileWithInfo];
-      dispatch(setUploadedFiles(fieldKey, updatedSavedFiles));
+      // // 2. Update Redux Field Tracking (UI list)
+      // const updatedSavedFiles = [...savedFiles, fileWithInfo];
+      // dispatch(setUploadedFiles(fieldKey, updatedSavedFiles));
 
       const createDocumentData = {
         path: responseData.file_path,
@@ -186,6 +189,9 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
       // 2. Combine the previously saved files with the new ones
       const allFiles = [...savedFiles, ...uploadedResponses];
 
+      // ✅ ADD THIS ONE EXACT LINE HERE:
+      dispatch(setUploadedFiles(fieldKey, allFiles));
+
       // 3. CRITICAL FIX: Notify the parent component so formData.attachments is updated!
       if (onFileChange) {
         onFileChange(fieldKey, {
@@ -195,31 +201,35 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
         });
       }
     },
-    [savedFiles, fieldKey, onFileChange, documentType, documentProp] // Ensure dependencies are correct
+    // ✅ Make sure 'dispatch' is in this dependency array at the bottom!
+    [savedFiles, fieldKey, onFileChange, documentType, documentProp, dispatch] 
   );
 
   const removeFile = (fileName) => {
-    // Find file object to get the unique 'path'
-    const fileToRemove = files.find((f) => f.name === fileName);
+    const fileToRemove = files.find((f) => f?.name === fileName);
 
     if (fileToRemove) {
       const identifier = fileToRemove.path;
 
-      // A. Remove from Field Tracking (UI list)
-      dispatch(removeUploadedFile(fieldKey, fileName));
+      // 1. Update the local UI state array directly
+      const filteredFiles = files.filter((f) => f?.name !== fileName);
+      setFiles(filteredFiles);
 
-      // B. Remove from Validation Arrays (Filtering by path)
-      let removeType = "REMOVE_UPLOAD_FILE_DATA";
-      if (uploadedBy === "dependent") removeType = "REMOVE_UPLOAD_DEPENDENT_FILE_DATA";
-      if (uploadedBy === "bank") removeType = "REMOVE_UPLOAD_DEPENDENT_BANK_DATA";
+      // 2. OVERWRITE the UI list in Redux using the action you already know works!
+      // (This safely replaces the broken removeUploadedFile line)
+      dispatch(setUploadedFiles(fieldKey, filteredFiles));
+
+      // 3. Dispatch UNIQUE actions to prevent crashing the other module
+      let removeType = "WORKFORCE_REMOVE_UPLOAD_FILE";
+      if (uploadedBy === "dependent") removeType = "WORKFORCE_REMOVE_DEPENDENT_FILE";
+      if (uploadedBy === "bank") removeType = "WORKFORCE_REMOVE_BANK_FILE";
 
       dispatch({ type: removeType, payload: identifier });
 
-      // C. CRITICAL FIX: Notify parent of the deletion using the CORRECT object structure
+      // 4. Notify parent component
       if (onFileChange) {
-        const filtered = files.filter((f) => f.name !== fileName);
         onFileChange(fieldKey, {
-          files: filtered,
+          files: filteredFiles,
           documentType: documentType,
           documentPropId: documentProp?.id,
         });
@@ -309,51 +319,56 @@ const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, doc
 
       {files.length > 0 && (
         <Paper className={classes.fileList}>
-          {files.map((file, index) => (
-            <Box key={`${file.name}-${index}`} className={classes.fileItem}>
-              <Typography
-                variant="body2"
-                className={classes.fileName}
-                onClick={() => {
-                  const fileUrl = file.url || (file.file ? URL.createObjectURL(file.file) : null);
-                  if (fileUrl) {
-                    const link = document.createElement("a");
-                    link.href = fileUrl;
-                    link.download = file.name;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                  }
-                }}
-                style={{ cursor: "pointer", textDecoration: "underline", color: "#005f67" }}
-              >
-                {file.name}
-              </Typography>
+          {files.map((file, index) => {
+            // ✅ ADD THIS SAFETY CHECK: If file is undefined, skip it!
+            if (!file) return null; 
 
-              <Box display="flex" alignItems="center">
-                <IconButton onClick={() => removeFile(file.name)} size="small">
-                  <DeleteIcon color="secondary" className={classes.deleteIcon} />
-                </IconButton>
-
-                <IconButton size="small" onClick={() => document.getElementById(`additionalFileInput-${fieldKey}-${index}`).click()}>
-                  <AddIcon style={{ fontSize: "1.2rem", color: "#005f67" }} />
-                </IconButton>
-
-                <input
-                  id={`additionalFileInput-${fieldKey}-${index}`}
-                  type="file"
-                  multiple
-                  hidden
-                  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.gif"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0) {
-                      onDrop(Array.from(e.target.files));
+            return (
+              <Box key={`${file.name}-${index}`} className={classes.fileItem}>
+                <Typography
+                  variant="body2"
+                  className={classes.fileName}
+                  onClick={() => {
+                    const fileUrl = file.url || (file.file ? URL.createObjectURL(file.file) : null);
+                    if (fileUrl) {
+                      const link = document.createElement("a");
+                      link.href = fileUrl;
+                      link.download = file.name;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
                     }
                   }}
-                />
+                  style={{ cursor: "pointer", textDecoration: "underline", color: "#005f67" }}
+                >
+                  {file.name}
+                </Typography>
+
+                <Box display="flex" alignItems="center">
+                  <IconButton onClick={() => removeFile(file.name)} size="small">
+                    <DeleteIcon color="secondary" className={classes.deleteIcon} />
+                  </IconButton>
+
+                  <IconButton size="small" onClick={() => document.getElementById(`additionalFileInput-${fieldKey}-${index}`).click()}>
+                    <AddIcon style={{ fontSize: "1.2rem", color: "#005f67" }} />
+                  </IconButton>
+
+                  <input
+                    id={`additionalFileInput-${fieldKey}-${index}`}
+                    type="file"
+                    multiple
+                    hidden
+                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.gif"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        onDrop(Array.from(e.target.files));
+                      }
+                    }}
+                  />
+                </Box>
               </Box>
-            </Box>
-          ))}
+            );
+          })}
         </Paper>
       )}
     </div>

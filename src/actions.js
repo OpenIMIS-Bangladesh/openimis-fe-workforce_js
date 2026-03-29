@@ -3189,11 +3189,10 @@ export const setUploadedFiles = (fieldKey, files) => ({
 export const removeUploadedFile = (fieldKey, fileName) => {
   return {
     type: "REMOVE_UPLOADED_FILE",
-    // It is crucial that the payload is an object containing BOTH keys
     payload: { 
       fieldKey: fieldKey, 
       fileName: fileName 
-    }
+    } // <-- This MUST be an object!
   };
 };
 

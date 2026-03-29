@@ -114,27 +114,32 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
       (index, fieldKey, value) => {
         const currentAttachments = accounts?.[index]?.attachments || [];
   
-        const updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
-          ? currentAttachments.map((att) =>
-              att.fieldKey === fieldKey
-                ? {
-                    ...att,
-                    fieldKey,
-                    files: value.files, // [{ file, uploadInfo }]
-                    documentType: value.documentType,
-                    documentPropId: value.documentPropId,
-                  }
-                : att
-            )
-          : [
-              ...currentAttachments,
-              {
-                fieldKey,
-                files: value.files, // [{ file, uploadInfo }]
-                documentType: value.documentType,
-                documentPropId: value.documentPropId,
-              },
-            ];
+        let updatedAttachments = currentAttachments;
+        if (!value?.files?.length) {
+          updatedAttachments = currentAttachments.filter((att) => att.fieldKey !== fieldKey);
+        } else {
+          updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
+            ? currentAttachments.map((att) =>
+                att.fieldKey === fieldKey
+                  ? {
+                      ...att,
+                      fieldKey,
+                      files: value.files, // [{ file, uploadInfo }]
+                      documentType: value.documentType,
+                      documentPropId: value.documentPropId,
+                    }
+                  : att
+              )
+            : [
+                ...currentAttachments,
+                {
+                  fieldKey,
+                  files: value.files, // [{ file, uploadInfo }]
+                  documentType: value.documentType,
+                  documentPropId: value.documentPropId,
+                },
+              ];
+        }
   
         handleChange(index, "attachments", updatedAttachments);
       },

@@ -333,9 +333,12 @@ const EmployeeDetailsForm2 = ({
 
                 const hasFiles = (uploadedFilesByField[uniqueFieldKey]?.length || 0) > 0;
                 // const hasFiles = (uploadedFilesByField[fieldKey]?.length || 0) > 0;
-                const hasError = errors?.documents?.some(
-                  (err) => err.documentType === document.documentType && err.dependentIndex === dependentIndex, // ← this is the key change!
-                );
+                const hasError = errors?.documents?.some((err) => {
+                  if (err.documentType !== document.documentType) return false;
+                  if (dependentIndex !== undefined) return err.dependentIndex === dependentIndex;
+                  if (accountIndex !== undefined) return err.accountIndex === accountIndex;
+                  return false;
+                });
                 return (
                   <Grid container spacing={2} alignItems="center" style={{ marginBottom: "12px", border: "1px solid #006273" }} key={document.fieldId}>
                     <Grid item xs={5}>

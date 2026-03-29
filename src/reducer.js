@@ -435,15 +435,15 @@ function reducer(
     case "REMOVE_UPLOAD_FILE_DATA":
       return {
         ...state,
-        uploadFile: state.uploadFile.filter((item) => item.path !== action.payload),
+        uploadFile: (state.uploadFile || []).filter((item) => item.path !== action.payload),
       };
+
     case "REMOVE_UPLOADED_FILE":
       return {
         ...state,
         uploadedFilesByField: {
           ...state.uploadedFilesByField,
-          // Add the ? before .name
-          [action.payload.fieldKey]: state.uploadedFilesByField[action.payload.fieldKey]?.filter((f) => f?.name !== action.payload.fileName) || [],
+          [action.payload.fieldKey]: (state.uploadedFilesByField[action.payload.fieldKey] || []).filter((f) => f?.name !== action.payload.fileName),
         },
       };
 
@@ -452,38 +452,67 @@ function reducer(
         ...state,
         uploadedFilesByField: {},
       };
+
     case "SET_UPLOAD_FILE_DATA":
       return {
         ...state,
         uploadFile: [...(state.uploadFile || []), action.payload],
       };
+
     case "SET_UPLOAD_DEPENDENT_FILE_DATA":
       return {
         ...state,
         uploadDependentFile: [...(state.uploadDependentFile || []), action.payload],
       };
+
     case "REMOVE_UPLOAD_DEPENDENT_FILE_DATA":
       return {
         ...state,
-        uploadDependentFile: state.uploadDependentFile.filter((item) => item.path !== action.payload),
+        uploadDependentFile: (state.uploadDependentFile || []).filter((item) => item.path !== action.payload),
       };
+
     case "SET_UPLOAD_DEPENDENT_BANK_DATA":
       return {
         ...state,
         uploadBankFile: [...(state.uploadBankFile || []), action.payload],
       };
+
     case "REMOVE_UPLOAD_DEPENDENT_BANK_DATA":
       return {
         ...state,
-        uploadBankFile: state.uploadBankFile.filter((item) => item.path !== action.payload),
+        uploadBankFile: (state.uploadBankFile || []).filter((item) => item.path !== action.payload),
       };
-
+      
     case "SET_SELECTED_EMPLOYEE":
       return {
         ...state,
         selectedEmployee: action.payload,
       };
+    
+    case "REPLACE_UPLOAD_FILE_DATA":
+      return { ...state, uploadFile: action.payload };
+    case "REPLACE_UPLOAD_DEPENDENT_FILE_DATA":
+      return { ...state, uploadDependentFile: action.payload };
+    case "REPLACE_UPLOAD_DEPENDENT_BANK_DATA":
+      return { ...state, uploadBankFile: action.payload };
 
+    case "WORKFORCE_REMOVE_UPLOAD_FILE":
+      return {
+        ...state,
+        uploadFile: (state.uploadFile || []).filter((item) => item.path !== action.payload),
+      };
+
+    case "WORKFORCE_REMOVE_DEPENDENT_FILE":
+      return {
+        ...state,
+        uploadDependentFile: (state.uploadDependentFile || []).filter((item) => item.path !== action.payload),
+      };
+
+    case "WORKFORCE_REMOVE_BANK_FILE":
+      return {
+        ...state,
+        uploadBankFile: (state.uploadBankFile || []).filter((item) => item.path !== action.payload),
+      };
     /// all associations////
     case "WORKFORCE_ALL_ASSOCIATIONS_REQ":
       return {

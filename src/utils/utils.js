@@ -1368,9 +1368,18 @@ export function validateMandatoryDocumentsForDependents(
     
     // Check every required document
     requiredConfigs.forEach((docConfig) => {
-      const hasFile = allFilesForThisDep.some(
-        (item) => item.documentType === docConfig.documentType
-      );
+      const hasFile = allFilesForThisDep.some((item) => {
+        const hasMatchingType = item.documentType === docConfig.documentType;
+        if (!hasMatchingType) {
+          return false;
+        }
+
+        if (Array.isArray(item.files)) {
+          return item.files.length > 0;
+        }
+
+        return !!(item.path || item.url || item.name);
+      });
 
       if (!hasFile) {
         allErrors.push({
