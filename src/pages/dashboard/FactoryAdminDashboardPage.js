@@ -829,7 +829,7 @@ const FactoryAdminDashboard = () => {
         const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
         const node = edges[0]?.node;
         const factoryId = node?.workforceFactory || null;
-        setWorkforceFactoryId(safeDecodeId(factoryId));
+        setWorkforceFactoryId(factoryId);
       });
     }
   }, [loggedInUserId]);
