@@ -132,9 +132,10 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   label="workforce.employee.phone"
                   value={formData?.workforceApplicant?.phoneNumber || ""}
                   onChange={(v) => handleChange("phoneNumber", v)}
-                  type={"number"}
-                  readOnly={false}
+                  type={"text"}
                   required
+                  readOnly={false}
+                  inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*" }}
                   error={!!errors.phoneNumber}
                   helperText={errors.phoneNumber}
                 />
