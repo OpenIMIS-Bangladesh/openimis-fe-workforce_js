@@ -909,6 +909,10 @@ class ApplicationProcessSearcher extends Component {
           'submittedByIn:["applicant"]',
           `organizationTypeIn: ${organizationTypeIn}`
         );
+        if (this.props.factoryId) {
+          console.log("factoryId from aps:", this.props.factoryId);
+          defaultStatusFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
+        }
       } else if (this.props.forwardedApplications) {
         defaultStatusFilters.push(
           `organizationTypeIn: ${organizationTypeIn}`
@@ -948,6 +952,7 @@ class ApplicationProcessSearcher extends Component {
         const hasApplicationTo = finalFilters.some(f => f.includes("applicationTo"));
         const hasApplicationFrom = finalFilters.some(f => f.includes("applicationFrom"));
         const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
+        const hasEmployeeFactoryId = finalFilters.some(f => f.includes("employeeFactoryId"));
 
         if (!hasStatusIn)
           finalFilters = [
@@ -980,6 +985,12 @@ class ApplicationProcessSearcher extends Component {
         if (!hasOrderBy)
           finalFilters.push(orderByFilter);
 
+        if (!hasEmployeeFactoryId)
+          finalFilters = [
+            ...defaultStatusFilters.filter(f => f.includes("employeeFactoryId")),
+            ...finalFilters
+          ];
+
       } else {
 
         finalFilters = [...defaultStatusFilters, orderByFilter];
@@ -993,6 +1004,7 @@ class ApplicationProcessSearcher extends Component {
           if (x.includes("organizationTypeIn") && f.includes("organizationTypeIn")) return true;
           if (x.includes("applicationTo") && f.includes("applicationTo")) return true;
           if (x.includes("applicationFrom") && f.includes("applicationFrom")) return true;
+          if (x.includes("employeeFactoryId") && f.includes("employeeFactoryId")) return true;
           return x === f;
         })
       );

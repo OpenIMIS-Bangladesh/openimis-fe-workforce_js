@@ -84,7 +84,8 @@ export const forwardToAssociation = async ({
         }
 
         if (doc.holderType === "factoryAdmin") {
-          return status !== "verified";
+          // return status !== "verified";
+          return true;
         }
         return true;
       });
