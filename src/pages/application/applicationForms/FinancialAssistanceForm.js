@@ -283,8 +283,14 @@ const FinancialAssistanceForm = ({
                 presentAddress:
                   prev.workforceApplicant?.presentAddress || parsedApplicationData?.applicantInfo?.presentAddress || employeeData?.presentAddress || "",
               },
-        workforceEmployee:
-          user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+        workforceEmployee:parsedApplicationData
+          ? {
+              // Replace with deceasedWorkerInfo data
+              ...parsedApplicationData.deceasedWorkerInfo,
+              // Retain the existing workforceEmployee id
+              id: prev.workforceEmployee?.id, 
+            }
+          :user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
             ? {
                 ...prev.workforceEmployee,
                 nameEn: prev.workforceEmployee?.nameEn || pickedEmployeeData?.firstNameEn || "",
@@ -368,6 +374,7 @@ const FinancialAssistanceForm = ({
                 birthDate: parsedApplicationData?.deceasedWorkerInfo?.birthDate,
                 gender: parsedApplicationData?.deceasedWorkerInfo?.gender,
                 citizenship: parsedApplicationData?.deceasedWorkerInfo?.citizenship,
+                position:parsedApplicationData?.id?parsedApplicationData?.deceasedWorkerInfo?.position: formData?.workforceEmployee?.position,
 
                 nid: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.nid : employeeData?.nid || "",
                 birthCertificateNo: parsedApplicationData?.id
