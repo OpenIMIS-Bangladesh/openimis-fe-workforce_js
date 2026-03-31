@@ -300,7 +300,9 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       label={getRelationAwareLabel(dependent, "workforce.application.employee.children.nidOrBirthRegistry")}
                       value={dependent.nid || ""}
                       onChange={(v) => handleChange(index, "nid", v)}
-                      type="number"
+                      formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
+                      type="text"
+                      inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*" }}
                       required
                       error={!!errors.nid}
                       helperText={errors.nid}

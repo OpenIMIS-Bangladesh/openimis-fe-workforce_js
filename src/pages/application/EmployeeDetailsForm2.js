@@ -337,7 +337,7 @@ const EmployeeDetailsForm2 = ({
                   if (err.documentType !== document.documentType) return false;
                   if (dependentIndex !== undefined) return err.dependentIndex === dependentIndex;
                   if (accountIndex !== undefined) return err.accountIndex === accountIndex;
-                  return false;
+                  return err.dependentIndex === undefined && err.accountIndex === undefined;
                 });
                 return (
                   <Grid container spacing={2} alignItems="center" style={{ marginBottom: "12px", border: "1px solid #006273" }} key={document.fieldId}>
