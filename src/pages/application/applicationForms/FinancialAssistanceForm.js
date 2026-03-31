@@ -375,7 +375,7 @@ const FinancialAssistanceForm = ({
                 gender: parsedApplicationData?.deceasedWorkerInfo?.gender,
                 citizenship: parsedApplicationData?.deceasedWorkerInfo?.citizenship,
                 position:parsedApplicationData?.id?parsedApplicationData?.deceasedWorkerInfo?.position: formData?.workforceEmployee?.position,
-
+                maritalStatus: prev.workforceEmployee?.maritalStatus || parsedApplicationData?.deceasedWorkerInfo?.maritalStatus || "",
                 nid: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.nid : employeeData?.nid || "",
                 birthCertificateNo: parsedApplicationData?.id
                   ? parsedApplicationData?.deceasedWorkerInfo?.birthCertificateNo
