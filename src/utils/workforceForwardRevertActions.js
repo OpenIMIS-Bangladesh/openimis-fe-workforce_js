@@ -76,7 +76,7 @@ export const forwardToAssociation = async ({
 
       const documents = res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-      const allVerified = documents.every((doc) => {
+      const allVerified = documents.filter(doc=>doc?.workforceDocumentType?.mandatoryForApplicant === true).every((doc) => {
         const status = doc.status?.toLowerCase();
 
         if (doc.holderType === "applicant") {

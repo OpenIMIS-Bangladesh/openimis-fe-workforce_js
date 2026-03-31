@@ -191,7 +191,9 @@ const formatAddress = (locationData, addressData) => {
   const location = fixBrokenUnicode(tryParse(locationData)) || {};
 
   const postOffice = fixBrokenUnicode(address?.postOffice?.nameBn || address?.postOffice?.nameEn || "—");
-  const village = [fixBrokenUnicode(address.houseName), fixBrokenUnicode(address.paraMahalla), fixBrokenUnicode(address.villageRoad)].filter(Boolean).join(", ");
+  const village = [fixBrokenUnicode(address.houseName), fixBrokenUnicode(address.paraMahalla), fixBrokenUnicode(address.villageRoad)]
+    .filter(Boolean)
+    .join(", ");
 
   // Navigate location parents for Thana/District
   const thana = location?.parent?.name || location?.name; // Fallback if structure varies
@@ -402,12 +404,11 @@ const renderDetails = (
                       required={eligibilityMap[item.id]}
                       error={eligibilityMap[item.id]}
                       helperText={
-                        eligibilityMap[item?.id] &&
-                        (!remarksMap[item?.id] || remarksMap[item?.id].trim() === "")
-                                ? language === "en"
-                                  ? "Remarks required"
-                                  : "মন্তব্য আবশ্যক"
-                                : ""
+                        eligibilityMap[item?.id] && (!remarksMap[item?.id] || remarksMap[item?.id].trim() === "")
+                          ? language === "en"
+                            ? "Remarks required"
+                            : "মন্তব্য আবশ্যক"
+                          : ""
                       }
                     />
                   </Grid>
@@ -511,7 +512,18 @@ const PREFERRED_SECTION_ORDER = [
 ];
 
 // 2. Define keys to ignore (these were previously inside your map function)
-const IGNORED_KEYS = ["applicationType", "organizationType", "trackingNumber", "status", "grantAmount", "submittedBy", "dateCreated", "employeeDependentInfo", "eisApprovedByIds", "eisApprovalIds"];
+const IGNORED_KEYS = [
+  "applicationType",
+  "organizationType",
+  "trackingNumber",
+  "status",
+  "grantAmount",
+  "submittedBy",
+  "dateCreated",
+  "employeeDependentInfo",
+  "eisApprovedByIds",
+  "eisApprovalIds",
+];
 
 const VERIFICATION_FIELD_MAP = {
   applicantInfo: {
@@ -729,10 +741,10 @@ const ApplicationViewPage = ({
           ? conditionalEnToBn(application.employeeFactory.registrationExpiryDate.split("T")[0], language)
           : "—",
       }),
-      ...(application?.applicationType !=="financialAssistance" && {
+      ...(application?.applicationType !== "financialAssistance" && {
         ApplicantDesignation: application?.workforceEmployee?.position,
       }),
-      
+
       ...(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && {
         lastGrossSalary: application?.lastBaseSalary || "—",
       }),
@@ -767,9 +779,7 @@ const ApplicationViewPage = ({
     const appKeys = Object.keys(application);
     let currentPreferredSectionOrder = [...PREFERRED_SECTION_ORDER];
     if (user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
-      currentPreferredSectionOrder = currentPreferredSectionOrder.filter(
-        (key) => key !== "employeeBankInfo" && key !== "employeeBankingInfoApplication"
-      );
+      currentPreferredSectionOrder = currentPreferredSectionOrder.filter((key) => key !== "employeeBankInfo" && key !== "employeeBankingInfoApplication");
     }
     const ordered = currentPreferredSectionOrder.filter((key) => appKeys.includes(key));
     const allIgnored = [
@@ -783,10 +793,10 @@ const ApplicationViewPage = ({
       (key) =>
         !currentPreferredSectionOrder.includes(key) &&
         !allIgnored.includes(key) &&
-        !(user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR && (key === "employeeBankInfo" || key === "employeeBankingInfoApplication"))
+        !(user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR && (key === "employeeBankInfo" || key === "employeeBankingInfoApplication")),
     );
     return [...ordered, ...others];
-  }, [application,user_type]);
+  }, [application, user_type]);
 
   const RESTRICTED_VERIFICATION_ROLES = [
     WORKFORCE_USER_TYPE.APPLICANT,
@@ -831,7 +841,7 @@ const ApplicationViewPage = ({
             </Typography>
           )}
           {/* ... [Rest of Sidebar logic for salary, accident info etc] ... */}
-          {(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) && viewedFromFlag === "verify" && (
+          {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && viewedFromFlag === "verify" && (
             <Grid container spacing={2} style={{ marginTop: "10px" }}>
               <Grid item xs={9}>
                 <TextInput
@@ -1057,7 +1067,13 @@ const ApplicationViewPage = ({
                         </Grid>
 
                         <Grid item xs={12} sm={2}>
-                          <Button variant="contained" color="primary" fullWidth onClick={() => saveVerification(key)} disabled={loading ||(verificationState[key]?.status === "incorrect"&& !verificationState[key]?.remarks)}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            onClick={() => saveVerification(key)}
+                            disabled={loading || (verificationState[key]?.status === "incorrect" && !verificationState[key]?.remarks)}
+                          >
                             {loading ? <FormattedMessage id="core.table.resultsLoading" /> : <FormattedMessage id="workforce.update.btn" />}
                           </Button>
                         </Grid>
@@ -1078,7 +1094,7 @@ const ApplicationViewPage = ({
               {fileStates
                 ?.filter((item, originalIdx) => {
                   item._originalIndex = originalIdx;
-                  return item?.workforceDocumentType?.formStepNo === "workforceDocument";
+                  return item?.workforceDocumentType?.formStepNo === "workforceDocument" || item?.workforceDocumentType?.mandatoryForApplicant === false;
                 })
                 .map((file) => (
                   <DocumentReviewAccordion
