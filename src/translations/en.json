@@ -1027,7 +1027,7 @@
   "workforce.dashboard.lastMeeting.presented": "Total number of applications presented",
   "workforce.dashboard.lastMeeting.approved": "Total number of approved applications",
   "workforce.dashboard.lastMeeting.rejected": "Total number of rejected applications",
-  "workforce.dashboard.lastMeeting.reverted": "d. Total number of reverted applications",
+  "workforce.dashboard.lastMeeting.reverted": "Total number of reverted applications",
   
   "workforce.dashboard.ongoingMeetingOverview": "Ongoing Meeting Overview",
   "workforce.dashboard.ongoingMeeting.caseType": "Case Type:",

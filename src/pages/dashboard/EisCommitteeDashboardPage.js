@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { FormattedMessage, useModulesManager,useHistory } from "@openimis/fe-core";
+import { FormattedMessage, useModulesManager,useHistory,parseData } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Box,
@@ -27,7 +27,7 @@ import {
   ButtonGroup,  
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { fetchSummaryApplications, fetchApplicationsSummary } from "../../actions";
+import { fetchSummaryApplications, fetchApplicationsSummary, fetchApplicationsSummaryDashboard, fetchWorkforceEisPaymentDisbursementStage } from "../../actions";
 import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise } from "../../actions";
 import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN } from "../../constants";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
@@ -211,10 +211,13 @@ const Dashboard = () => {
   const theme = useTheme();
   const history = useHistory();
   const reduxState = useSelector((state) => state);
+  const modulesManager = useModulesManager();
   const locale = reduxState?.core?.user?.i_user?.language || "en";
   const isBn = locale === "fr" || locale === "bn"; // Handling your existing language toggle
 
   // --- 1. GLOBAL FILTERS STATE ---
+  const [applications, setApplications] = useState([]);
+  const [disbursedApplication, setDisbursedApplication] = useState([]);
   const [filter, setFilter] = useState("eis");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -322,6 +325,49 @@ const Dashboard = () => {
     loadBarData();
   }, [graphMonths, chartLabels.death, chartLabels.disability]);
 
+  useEffect(() => {
+      async function loadNewDashboardRequirements() {
+        // Dispatch new API actions here using accFromDate, accToDate, association
+        const filtersBase = [
+          'statusIn: ["forward_to_eis_advisor","approved_by_committee","forward_to_committee","approved_by_eis_advisor"]',
+          'organizationTypeIn: ["eis"]',
+          'orderBy: ["-dateCreated"]',
+        ];
+        dispatch(fetchApplicationsSummaryDashboard(modulesManager, filtersBase)).then((res) => {
+          console.log({fromEIScommittee:res})
+          const response = parseData(res?.payload?.data?.workforceApplication);
+          const formData = response?.map((application) => {
+            const parsedMetadata = JSON.parse(application?.metadata);
+            const parsedApplicantInfo = JSON.parse(application?.applicantInfo);
+            const parsedDeceasedWorkerInfo = JSON.parse(application?.deceasedWorkerInfo);
+            const parsedEmployeeAccidentInfo = JSON.parse(application?.employeeAccidentInfo);
+            // const parsedEmployeeDependentInfo = JSON.parse(application?.employeeDependentInfo)
+            // const parsedEmployeeBankInfo = JSON.parse(application?.employeeBankInfo)
+  
+            return {
+              ...application,
+              applicantInfo: JSON.parse(parsedApplicantInfo),
+              metadata: JSON.parse(parsedMetadata),
+              deceasedWorkerInfo: JSON.parse(parsedDeceasedWorkerInfo),
+              employeeAccidentInfo: JSON.parse(parsedEmployeeAccidentInfo),
+              // employeeDependentInfo:JSON.parse(parsedEmployeeDependentInfo),
+              // employeeBankInfo:JSON.parse(parsedEmployeeBankInfo)
+            };
+          });
+          setApplications(formData);
+          console.log({ fromEISAdvisor: formData });
+        });
+  
+        dispatch(fetchWorkforceEisPaymentDisbursementStage({ isDisbursed: true }, modulesManager)).then((r) => {
+          const response = r?.payload?.data?.workforceEisPaymentDisbursementStage;
+          setDisbursedApplication(response);
+          console.log({ response });
+        });
+      }
+      loadNewDashboardRequirements();
+    }, []);
+
+    // console.log({fromEIScommittee:applications})
   return (
     <Grid container spacing={3}>
       {/* --- 1. OVERALL FILTERS SECTION --- */}
@@ -377,8 +423,8 @@ const Dashboard = () => {
       {/* --- 2. NEW METRICS: MEETING OVERVIEWS --- */}
       <Grid item xs={12} md={6}>
         <DashboardCard title={<FormattedMessage id="workforce.dashboard.lastMeetingOverview" />}>
-          <StatRow label={<FormattedMessage id="workforce.dashboard.lastMeeting.presented" />} count={lastMeetingOverview.presented} />
-          <StatRow label={<FormattedMessage id="workforce.dashboard.lastMeeting.approved" />} count={lastMeetingOverview.approved} color="#2e7d32" />
+          <StatRow label={<FormattedMessage id="workforce.dashboard.lastMeeting.presented" />} count={applications.length} />
+          <StatRow label={<FormattedMessage id="workforce.dashboard.lastMeeting.approved" />} count={applications.filter(application=>application?.eisVerified ===true).length} color="#2e7d32" />
           <StatRow label={<FormattedMessage id="workforce.dashboard.lastMeeting.rejected" />} count={lastMeetingOverview.rejected} color="#d32f2f" />
           <StatRow label={<FormattedMessage id="workforce.dashboard.lastMeeting.reverted" />} count={lastMeetingOverview.reverted} color="#ed6c02" />
         </DashboardCard>
