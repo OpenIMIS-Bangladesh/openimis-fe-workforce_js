@@ -82,8 +82,10 @@ const RegistrationPage = () => {
     firstNameBn: "",
     firstNameEn: "",
     otp: "",
-    password: "Password@123", // Step 3 bypassed for now
-    confirmPassword: "Password@123",
+    password: "OpenBDcfEis@2025!", // Step 3 bypassed for now and new password by tahir for overcome password validation issue
+    confirmPassword: "OpenBDcfEis@2025!",
+    // password: "Password@123", // Step 3 bypassed for now
+    // confirmPassword: "Password@123",
   });
 
   const [serverResponse, setServerResponse] = useState({ status: "", message: null });
