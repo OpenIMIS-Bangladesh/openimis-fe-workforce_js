@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox, Grid, FormControlLabel } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage, useTranslations } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage, useTranslations,parseData } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -17,6 +17,7 @@ import {
   updateApplication,
   updateWorkforceEmployee,
   createApplicationMovement,
+  fetchWorkforceEmployeesSummary,
 } from "../../../actions";
 import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
@@ -274,9 +275,9 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
         setActiveStep(nextStep);
         if ((nextStep === 1 && organizationType === "eis") || nextStep === 2 || (nextStep === 3 && organizationType !== "eis")) {
           const workforceEmployeeData = {
-            nameEn: formData?.workforceEmployee?.nameEn,
-            nameBn: formData?.workforceEmployee?.nameBn,
-            lastNameEn: "",
+            firstNameEn: formData?.workforceEmployee?.nameEn,
+            firstNameBn: formData?.workforceEmployee?.nameBn,
+            nid: formData?.workforceEmployee?.nid,
             phoneNumber: formData?.workforceEmployee?.phoneNumber,
             email: formData?.workforceEmployee?.email,
             gender: formData?.workforceEmployee?.gender?.name,
@@ -298,10 +299,22 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
             maritalStatus: formData?.workforceEmployee?.maritalStatus,
             presentLocation: formData?.workforceEmployee?.presentLocation,
             permanentLocation: formData?.workforceEmployee?.permanentLocation,
+            workforceFactoryId: safeDecodeId(formData?.factory?.id),
             id: safeDecodeId(employeeData?.id)|| safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(reduxState.core.user.id),
           };
           console.log("Update Submitting formData:", formData);
-          await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
+          const workforceSummaryResponse = await dispatch(
+            fetchWorkforceEmployeesSummary(modulesManager, [
+              `nid:"${formData?.workforceEmployee?.nid}"`,
+              `phoneNumber:"${formData?.workforceEmployee?.phoneNumber}"`,
+            ]),
+          );
+          const existingEmployees = parseData(workforceSummaryResponse?.payload?.data?.workforceEmployerEmployees) || [];
+          if (existingEmployees.length === 0) {
+            await dispatch(createWorkforceEmployee({...workforceEmployeeData,id:null}, `create Workforce Employee ${workforceEmployeeData.nameEn}`));
+          } else {
+            await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
+          }
           if (organizationType === "eis" && nextStep === 1) {
             const createApplicationData = {
               workforceEmployeeId:safeDecodeId(employeeData?.id)|| safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),

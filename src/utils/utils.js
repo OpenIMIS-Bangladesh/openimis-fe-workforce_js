@@ -1419,11 +1419,11 @@ export const fixBrokenUnicode = (text) => {
 
   
 export const isEisPath = () => {
-  if (typeof window !== "undefined") {
-    console.log("Current URL:", window.location.href);
-    return window.location.href.includes("eis");
-  }
-  console.log("Current URL:", window.location.href);
-  return false; // fallback if window is not defined
-  // return true;
+  // if (typeof window !== "undefined") {
+  //   console.log("Current URL:", window.location.href);
+  //   return window.location.href.includes("eis");
+  // }
+  // console.log("Current URL:", window.location.href);
+  // return false; // fallback if window is not defined
+  return true;
 };
