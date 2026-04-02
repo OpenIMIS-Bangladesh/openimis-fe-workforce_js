@@ -7,6 +7,7 @@ import OtpInput from "react-otp-input";
 import { createWorkforceOtp, createWorkforceUser, fetchWorkforceOtp } from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
+import { isEisPath } from "../../utils/utils";
 // import { REGISTRATION_ERROR_BN } from "../../constants";
 
 
@@ -81,8 +82,8 @@ const RegistrationPage = () => {
     firstNameBn: "",
     firstNameEn: "",
     otp: "",
-    password: "Password123", // Step 3 bypassed for now
-    confirmPassword: "Password123",
+    password: "Password@123", // Step 3 bypassed for now
+    confirmPassword: "Password@123",
   });
 
   const [serverResponse, setServerResponse] = useState({ status: "", message: null });
@@ -179,7 +180,7 @@ const RegistrationPage = () => {
         <Paper className={classes.paper} elevation={3}>
           {/* Original Back Button Layout */}
           <Box display="flex" justifyContent="flex-start">
-            <Button startIcon={<ArrowBackIcon />} href={"https://eis-site-stage.skydigitalbd.com/"} variant="text" color="primary" style={{ padding: "3px" }}>
+            <Button startIcon={<ArrowBackIcon />} href={isEisPath()? "https://mis.eis-pilot-bd.org" : "https://labourwelfare.gov.bd"} variant="text" color="primary" style={{ padding: "3px" }}>
               Back
             </Button>
           </Box>
@@ -191,7 +192,8 @@ const RegistrationPage = () => {
 
           <Typography variant="h5" color="primary">
             {/* <FormattedMessage module="workforce" id="workforce.registration.title" /> */}
-            {lang=="bn" ? "ওটিপি প্রদান করুন।" : "Enter the OTP"}
+            {lang=="bn" ? "উপকারভোগী নিবন্ধন ফর্ম" : "Beneficiary Registration Form"}
+
           </Typography>
 
           <form onSubmit={(e) => e.preventDefault()}>
