@@ -154,9 +154,24 @@ const RegistrationPage = () => {
       setSubmitting(true);
       // Original OTP verification call
       await dispatch(fetchWorkforceOtp(modulesManager, [`id:"${internalId}",otp:"${formData.otp}"`]))
-        .then(() => handleSubmit())
+        .then((res) => {
+          const isValidOtp = res?.payload?.data?.workforceOtp?.status === "active";
+          if (isValidOtp) {
+            handleSubmit();
+          } else {
+            setServerResponse({
+              status: "ERROR",
+              message: lang === "bn" ? "ভুল OTP. দয়া করে আবার চেষ্টা করুন।" : "Invalid OTP. Please try again."
+            });
+          }
+        })
         .catch(() => {
-          setServerResponse({ status: "ERROR", message: lang=="bn" ? "ভুল OTP. দয়া করে আবার চেষ্টা করুন।" : "Invalid OTP. Please try again." });
+          setServerResponse({
+            status: "ERROR",
+            message: lang === "bn" ? "OTP যাচাই করতে সমস্যা হয়েছে।" : "Problem verifying OTP."
+          });
+        })
+        .finally(() => {
           setSubmitting(false);
         });
     }
