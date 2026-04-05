@@ -24,10 +24,10 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FileUploader from "../../pickers/FileUploader";
 import { updateApplication, fetchApplicationWiseMovementList, fetchWorkforceDocument, updateWorkforceDocument, createApplicationMovement, createWorkforceDocument } from "../../actions";
 import { bindActionCreators } from "redux";
-import { WORKFORCE_STATUS } from "../../constants";
+import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../constants";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
-import { safeApplicationId } from "../../utils/utils";
+import { getUserTypeFromRights, safeApplicationId, safeDecodeId } from "../../utils/utils";
 import CustomConfirmModal from "../../components/shared/CustomConfirmModal";
 
 const styles = (theme) => ({
@@ -213,15 +213,15 @@ class ResendApplicationPage extends Component {
     this.setState({ comment: e.target.value });
   };
 
-  handleFileChange = (fieldKey, files) => {
+  handleFileChange = (fieldKey, fileData) => {
     this.setState((prevState) => {
       const existingIndex = prevState.uploadedFiles.findIndex((item) => item.fieldKey === fieldKey);
 
       let updatedFiles = [...prevState.uploadedFiles];
       if (existingIndex !== -1) {
-        updatedFiles[existingIndex] = { fieldKey, files };
+        updatedFiles[existingIndex] = { fieldKey, ...fileData };
       } else {
-        updatedFiles.push({ fieldKey, files });
+        updatedFiles.push({ fieldKey, ...fileData });
       }
 
       return { uploadedFiles: updatedFiles };
@@ -244,21 +244,6 @@ class ResendApplicationPage extends Component {
     } catch (err) {
       console.error("Mutation error:", err);
     }
-  };
-
-  handleFileChange = (fieldKey, files) => {
-    this.setState((prevState) => {
-      const existingIndex = prevState.uploadedFiles.findIndex((item) => item.fieldKey === fieldKey);
-
-      let updatedFiles = [...prevState.uploadedFiles];
-      if (existingIndex !== -1) {
-        updatedFiles[existingIndex] = { fieldKey, files };
-      } else {
-        updatedFiles.push({ fieldKey, files });
-      }
-
-      return { uploadedFiles: updatedFiles };
-    });
   };
 
   fetchApplicationMovement = async () => {
@@ -290,8 +275,9 @@ class ResendApplicationPage extends Component {
     }
   };
   handleForward = async () => {
-    const { applicationUuid, updateApplication, lastRevertMovement } = this.props;
+    const { applicationUuid, updateApplication, lastRevertMovement,userRights } = this.props;
     const { lastRevertMovement: stateRevertMovement } = this.state;
+    const user_type = getUserTypeFromRights(userRights)
 
     const targetMovement = lastRevertMovement || stateRevertMovement;
     if (!targetMovement?.applicationFrom?.id) {
@@ -318,18 +304,30 @@ class ResendApplicationPage extends Component {
         status: WORKFORCE_STATUS.RESUBMITTED_APPLICATION,
       };
 
-    await this.props.createApplicationMovement(createApplicationMovementData, "create workforce application movement");
-    console.log("New movement inserted:", createApplicationMovementData);
-    this.setState(
-      {
-      confirmModalOpen: true,
-      confirmModalMessage: "DONE",
-      confirmModalCallback: true,
-      }
-    )
+      await this.props.createApplicationMovement(createApplicationMovementData, "create workforce application movement");
+      console.log("New movement inserted:", createApplicationMovementData);
+      this.setState({
+        confirmModalOpen: true,
+        confirmModalMessage: "DONE",
+        confirmModalCallback: true,
+      });
 
-      this.props.uploadFile.map((file, index) => {
-        this.props.createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(this.props.applicationUuid) }, `Created workforce document `);
+      this.state.uploadedFiles.forEach(({ documentId, files }) => {
+        if (!documentId || !files?.length) return;
+
+        files.forEach((file) => {
+          this.props.updateWorkforceDocument(
+            {
+              id: safeDecodeId(documentId),
+              path: file.path,
+              url: file.url,
+              workforceApplicationId: safeApplicationId(this.props.applicationUuid),
+              note: "Resubmitted document",
+              holderType:user_type
+            },
+            `update workforce document`
+          );
+        });
       });
     } catch (err) {
       console.error("Forward mutation error:", err);
@@ -347,8 +345,9 @@ class ResendApplicationPage extends Component {
   };
 
   render() {
-    const { classes, applicationUuid, documents, locale } = this.props;
+    const { classes, applicationUuid, documents, locale,uploadFile,userRights } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType, revertNotes, lastRevertMovement } = this.state;
+    console.log({ uploadFile: uploadFile });
     console.log({ revertNotes: revertNotes });
 
     return (
@@ -357,9 +356,10 @@ class ResendApplicationPage extends Component {
         <Grid item xs={12} className={classes.rightGrid}>
           {documents?.map((file, index) => (
             <DocumentReviewAccordion
-              key={index}
+              key={file?.id || index}
               file={file}
               index={index}
+              documentId={file?.id}
               onFileChange={this.handleFileChange}
               onCommentChange={this.handleFileCommentChange}
               onVerify={this.handleFileVerify}
@@ -419,6 +419,7 @@ const mapStateToProps = (state, props) => ({
   documents: state.workforce.document,
   uploadFile: state.workforce.uploadFile,
   locale: state.core?.user?.i_user?.language,
+  userRights: state.core.user.i_user.rights,
 });
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(withTheme(withStyles(styles)(ResendApplicationPage)))));

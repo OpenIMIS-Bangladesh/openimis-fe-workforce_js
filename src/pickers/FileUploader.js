@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FileUploader = ({ fieldKey, onFileChange, applicationId, documentType, documentProp, uploadedBy }) => {
+const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, documentType, documentProp, uploadedBy }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [webcamOpen, setWebcamOpen] = useState(false);
@@ -116,6 +116,8 @@ const globalBankFile = useSelector(state => state.workforce.uploadBankFile || []
         name: file.name,
         path: responseData.file_path,
         url: responseData.file_url,
+        documentId,
+        documentPropId: documentProp?.id,
       };
 
       // // 2. Update Redux Field Tracking (UI list)
@@ -130,6 +132,7 @@ const globalBankFile = useSelector(state => state.workforce.uploadBankFile || []
         holder: "57",
         holderType: uploadedBy || "applicant",
         fieldKey: fieldKey,
+        documentId,
       };
 
       // 3. Update Global Validation Arrays (Filtered by NextStep)
@@ -198,6 +201,7 @@ const globalBankFile = useSelector(state => state.workforce.uploadBankFile || []
           files: allFiles,
           documentType: documentType,
           documentPropId: documentProp?.id,
+          documentId,
         });
       }
     },
@@ -232,6 +236,7 @@ const globalBankFile = useSelector(state => state.workforce.uploadBankFile || []
           files: filteredFiles,
           documentType: documentType,
           documentPropId: documentProp?.id,
+          documentId,
         });
       }
     }
