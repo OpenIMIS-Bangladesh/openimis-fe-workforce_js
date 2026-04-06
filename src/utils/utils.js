@@ -1418,12 +1418,16 @@ export const fixBrokenUnicode = (text) => {
   };
 
   
+export const isVerify = () => {
+  if (typeof window !== "undefined") {
+    return window.location.href.includes("verify");
+  }
+  return false; // fallback if window is not defined
+};
 export const isEisPath = () => {
   if (typeof window !== "undefined") {
-    console.log("Current URL:", window.location.href);
     return window.location.href.includes("eis");
   }
-  console.log("Current URL:", window.location.href);
   return false; // fallback if window is not defined
   // return true;
 };

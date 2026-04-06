@@ -149,6 +149,8 @@ const hiddenKeys = [
   "workforceEmployeeVerificationRemarks",
   "metadata",
   "workforceFactoryId",
+  "uploadedNidFile",
+  "uploadedBirthCertificateFile"
 ];
 
 const formatKey = (key, language) => {

@@ -26,7 +26,7 @@ import FileUploader from "../../pickers/FileUploader";
 import CustomDependentLocation from "../../components/application-forms/CustomDependentLocation";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
-import { getRelationForApi } from "../../utils/utils";
+import { getRelationForApi, isVerify } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -182,7 +182,8 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
       {normalizedDependents?.map((dependent, index) => {
         const isFatherSelected = normalizedDependents.find((d) => d.relationType === "workforce.relation.father");
         const previousRelation = index > 0 && isFatherSelected != null ? "workforce.relation.father" : null;
-        const workerBirthDate = formdata?.workforceEmployee?.birthDate || formdata?.deceasedWorkerInfo?.birthDate;
+        const isVerified = isVerify()
+        const workerBirthDate =isVerified?formdata?.deceasedWorkerInfo?.birthDate: formdata?.workforceEmployee?.birthDate;
         // const isEligible =dependent?.isEligible?dependent?.isEligible: getRelationForApi(normalizedDependents[index], workerBirthDate);
         const isEligible =getRelationForApi(normalizedDependents[index], workerBirthDate);
         console.log("Single Beneficiary", dependent);
