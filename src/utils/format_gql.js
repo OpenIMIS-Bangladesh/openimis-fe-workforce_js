@@ -601,3 +601,23 @@ export function formatWorkforceAssociationUserMapGQL(associationUserMap) {
     ${associationUserMap.userId ? `userId: ${formatGQLString(associationUserMap.userId)}` : ""}
   `;
 }
+
+
+export function formatWorkforceCommitteeGQL(committee) {
+  return `
+    ${committee?.id ? `id: "${committee.id}"` : ""}
+    ${committee.nameBn ? `nameBn: "${committee.nameBn}"` : ""}
+    ${committee.nameEn ? `nameEn: "${committee.nameEn}"` : ""}  
+    ${committee.associations ? `associations: ${escapeQuotes(committee.associations)}` : ""}
+  `;
+}
+
+
+export function formatWorkforceCommitteeUserMapGQL(usermap) {
+  return `
+    ${usermap?.id ? `id: "${usermap.id}"` : ""}
+    ${usermap?.committeeId ? `committeeId: "${usermap.committeeId}"` : ""}
+    ${usermap.userId ? `userId: ${usermap.userId}` : ""}
+    ${usermap?.isNoaSignatureUser !== undefined ? `isNoaSignatureUser: ${usermap.isNoaSignatureUser}` : ""}  
+  `;
+}

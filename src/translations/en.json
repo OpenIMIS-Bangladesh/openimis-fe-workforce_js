@@ -1144,6 +1144,7 @@
   "workforce.modal.recalculate": "Recalculate",
   "workforce.dashboard": "Dashboard",
   "menu.workforce.association.user.map": "Association User Mapping",
-  "workforce.application.beneficiaryBankAdviceList": "Generated Bank Advice List"
+  "workforce.application.beneficiaryBankAdviceList": "Generated Bank Advice List",
+  "menu.workforce.committee.management": "Committee Management"
 
 }

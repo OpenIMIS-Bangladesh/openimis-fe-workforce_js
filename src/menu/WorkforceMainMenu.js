@@ -25,7 +25,8 @@ import {
   ROUTE_WORKFORCE_DOCUMENTS,
   ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION,
   ROUTE_WORKFORCE_ASSOCIATIONS,
-  ROUTE_WORKFORCE_ASSOCIATION_USER_MAP
+  ROUTE_WORKFORCE_ASSOCIATION_USER_MAP,
+  ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT
 } from "../routes";
 import { RIGHT_WORKFORCE_EMPLOYER_APPROVE } from "../permission-rights";
 import { getUserType, isEmptyObject } from "../utils/utils";
@@ -154,6 +155,21 @@ function WorkforceMainMenu(props) {
       id: `menu.workforce.association.user.map`,
       // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
     },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.association.user.map" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_ASSOCIATION_USER_MAP}`,
+      id: `menu.workforce.association.user.map`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+    {
+      text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.committee.management" />,
+      icon: <ListAlt />,
+      route: `/${ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT}`,
+      id: `menu.workforce.committee.management`,
+      // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+    },
+
     // {
     //   text: <FormattedMessage module={MODULE_NAME} id="menu.workforce.employee.factory" />,
     //   icon: <ListAlt />,

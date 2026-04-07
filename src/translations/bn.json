@@ -1058,5 +1058,6 @@
   "workforce.modal.recalculate": "পুনরায় ক্যালকুলেশন করুন",
   "workforce.dashboard": "ড্যাশবোর্ড",
   "menu.workforce.association.user.map": "এসোসিয়েশনের সাথে ইউজার ম্যাপিং",
-  "workforce.application.beneficiaryBankAdviceList": "জেনারেটকৃত ব্যাংক এডভাইস-সমূহ"
+  "workforce.application.beneficiaryBankAdviceList": "জেনারেটকৃত ব্যাংক এডভাইস-সমূহ",
+  "menu.workforce.committee.management": "কমিটি ব্যবস্থাপনা"
 }

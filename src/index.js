@@ -51,7 +51,8 @@ import {
   ROUTE_WORKFORCE_APPLICATION_EIS,
   ROUTE_WORKFORCE_ASSOCIATIONS,
   ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION,
-  ROUTE_WORKFORCE_ASSOCIATION_USER_MAP
+  ROUTE_WORKFORCE_ASSOCIATION_USER_MAP,
+  ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -111,6 +112,7 @@ import EisMultiStepApplyForm from "./pages/application/EisMultiStepApplyForm";
 import WorkforceAsociationsPage from "./pages/workforce-association/WorkforceAsociationsPage";
 import WorkforceAsociationPage from "./pages/workforce-association/WorkforceAssociationPage";
 import AssociationUserMappingPage from "./pages/workforce-association/AssociationUserMappingPage";
+import CommitteeManagementPage from "./pages/workforce-committee/CommitteeManagementPage";
 
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
@@ -201,6 +203,7 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.associations", ref: ROUTE_WORKFORCE_ASSOCIATIONS },
     { key: "workforce.route.associations.association", ref: ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION },
     { key: "workforce.route.associations.association.user.map", ref: ROUTE_WORKFORCE_ASSOCIATION_USER_MAP },
+    { key: "workforce.route.committee.management", ref: ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT },
     
     { key: "workforce.route.reports.beneficiaryReport", ref: ROUTE_WORKFORCE_REPORTS_BENEFICIARY_REPORT },
 
@@ -285,6 +288,7 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION, component: WorkforceAsociationPage },
     { path: `${ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION}/:workforce_association_uuid`, component: WorkforceAsociationPage },
     { path: `${ROUTE_WORKFORCE_ASSOCIATION_USER_MAP}`, component: AssociationUserMappingPage },
+    { path: `${ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT}`, component: CommitteeManagementPage },
 
     { path: ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION, component: OrganizationEmployeeDesignationPage },
     { path: ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION, component: WorkforceEmployeeDesignationPage },
