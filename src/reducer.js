@@ -392,6 +392,14 @@ function reducer(
     workforceAllAssociations: [],
     workforceAllAssociationsPageInfo: { totalCount: 0 },
 
+
+    ////workforce committees state
+    fetchingWorkforceCommittees: false,
+    errorWorkforceCommittees: null,
+    fetchedWorkforceCommittees: false,
+    workforceCommittees: [],
+    workforceCommitteesPageInfo: { totalCount: 0 },
+
     fetchingWorkforceAllAssociation: false,
     errorWorkforceAllAssociation: null,
     fetchedWorkforceAllAssociation: false,
@@ -533,6 +541,66 @@ function reducer(
         errorWorkforceAllAssociations: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ALL_ASSOCIATIONS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
+
+    //workforce committee
+
+    case "WORKFORCE_COMMITTEES_REQ":
+      return {
+        ...state,
+        
+        fetchingWorkforceCommittees: true,
+        fetchedWorkforceCommittees: false,
+        workforceCommittees: [],
+        workforceCommitteesPageInfo: { totalCount: 0 },
+        errorworkforceCommittees: null,
+      };
+    case "WORKFORCE_COMMITTEES_RESP":
+      return {
+        ...state,
+        fetchingWorkforceCommittees: false,
+        fetchedWorkforceCommittees: true,
+        workforceCommittees: parseData(action.payload.data.workforceCommittee),
+        workforceCommitteesPageInfo: pageInfo(action.payload.data.workforceCommittee),
+        errorworkforceCommittees: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_COMMITTEES_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
+
+    // workforce committee user map
+
+    //workforce committee
+
+    case "WORKFORCE_COMMITTEE_USER_MAP_REQ":
+      return {
+        ...state,
+        
+        fetchingWorkforceCommitteeUserMap: true,
+        fetchedWorkforceCommitteeUserMap: false,
+        workforceCommitteeUserMap: [],
+        workforceCommitteeUserMapPageInfo: { totalCount: 0 },
+        errorWorkforceCommitteeUserMap: null,
+      };
+    case "WORKFORCE_COMMITTEE_USER_MAP_RESP":
+      return {
+        ...state,
+        fetchingWorkforceCommitteeUserMap: false,
+        fetchedWorkforceCommitteeUserMap: true,
+        workforceCommitteeUserMap: parseData(action.payload.data.workforceCommitteeUserMap),
+        workforceCommitteeUserMapPageInfo: pageInfo(action.payload.data.workforceCommitteeUserMap),
+        errorWorkforceCommitteeUserMap: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_COMMITTEE_USER_MAP_ERR":
       return {
         ...state,
         fetching: false,

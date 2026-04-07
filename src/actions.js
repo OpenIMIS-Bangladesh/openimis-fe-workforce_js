@@ -35,7 +35,9 @@ import {
   formatWorkforceDependentGQL,
   formatWorkforceOtherCompensationGQL,
   formatWorkforceAssociationGQL,
-  formatWorkforceAssociationUserMapGQL
+  formatWorkforceAssociationUserMapGQL,
+  formatWorkforceCommitteeGQL,
+  formatWorkforceCommitteeUserMapGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 import { safeDecodeId } from "./utils/utils";
@@ -3843,4 +3845,145 @@ export function updateWorkforceEisBeneficiaryBank(beneficiary) {
     }
   `;
   return graphql(mutation, "UPDATE_WORKFORCE_EIS_BENEFICIARY");
+}
+
+
+
+export function createWorkforceCommittee(payload, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceCommittee",
+    formatWorkforceCommitteeGQL(payload),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_COMMITTEES_REQ",
+      "WORKFORCE_COMMITTEES_RESP",
+      "WORKFORCE_COMMITTEES_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+
+
+export function fetchWorkforceCommittees() {
+  const payload = `
+    {
+      workforceCommittees {
+        id
+        nameEn
+        nameBn
+        assignedRole{
+        id
+        name
+        }
+        }
+    }
+    `;
+
+  return graphql(payload, "WORKFORCE_COMMITTEES");
+}
+
+
+
+export function createWorkforceCommitteeUserMap(payload, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceCommitteeUserMap",
+    formatWorkforceCommitteeUserMapGQL(payload),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_COMMITTEE_USER_MAP_REQ",
+      "WORKFORCE_COMMITTEE_USER_MAP_RESP",
+      "WORKFORCE_COMMITTEE_USER_MAP_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+
+
+export function fetchWorkforceCommitteeUserMap(filters) {
+  const payload = `
+    {
+      workforceCommitteeUserMaps(
+        committeeId: "${filters?.committeeId ?? ""}"
+      ){
+        id
+        committee{
+          id
+          nameEn
+          nameBn
+          }
+        user{
+          id
+          loginName
+          lastName
+          otherNames
+          phone
+          }
+          isNoaSignatureUser
+          }
+    }
+    `;
+
+    return graphql(payload, "WORKFORCE_COMMITTEE_USER_MAPS");
+  }
+
+export function updateWorkforceCommitteeUserMapNoaSignature(committeeId, mapId, isNoaSignatureUser, clientMutationLabel = "updateWorkforceCommitteeUserMapNoaSignature") {
+  const mutation = `
+  mutation {
+      updateWorkforceCommitteeUserMapNoaSignature(
+        committeeId: "${committeeId}"
+        mapId: "${mapId}"
+        isNoaSignatureUser: ${isNoaSignatureUser}
+      ) {
+        success
+        errors
+      }
+      }
+  `;
+  return graphql(mutation, "UPDATE_WORKFORCE_COMMITTEE_USER_MAP_NOA_SIGNATURE");
+}
+
+
+export function deleteWorkforceCommitteeUserMap(mappingId) {
+  const mutation = `
+    mutation {
+      deleteWorkforceCommitteeUserMap(
+        id: "${mappingId}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "DELETE_WORKFORCE_COMMITTEE_USER_MAP");
+}
+
+
+export function deleteWorkforceCommittee(committeeId) {
+  const mutation = `
+    mutation {
+      deleteWorkforceCommittee(
+        id: "${committeeId}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "DELETE_WORKFORCE_COMMITTEE");
 }

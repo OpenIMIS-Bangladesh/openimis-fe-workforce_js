@@ -30,9 +30,10 @@ import {
   createApplicationMovement,
   fetchWorkforceUserRoleWiseUser,
   updateApplicationSummary,
+  fetchWorkforceCommittees,
 } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
-import { getUserTypeFromRights } from "../../../utils/utils";
+import { getUserTypeFromRights, safeDecodeId } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -97,15 +98,38 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
   });
   const userType = getUserTypeFromRights(userRights);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-
-  const officers = useSelector((state) => state.workforce.roleWiseUsers || []);
+  const [committees, setCommittees] = useState([]);
+  
+  // Separated raw redux data to reliably trigger our auto-select effect
+  const officersRaw = useSelector((state) => state.workforce.roleWiseUsers);
+  const officers = officersRaw || [];
   console.log("jjjjjjjjj", officers);
+
+  // ADDED: Effect to auto-select all loaded users by default whenever officers data updates
+  useEffect(() => {
+    if (officersRaw && Array.isArray(officersRaw)) {
+      setFormData((prevData) => {
+        if (!prevData) return prevData;
+        return {
+          ...prevData,
+          userIds: officersRaw.map((o) => o.userId), // Automatically extract and set all userIds
+        };
+      });
+    }
+  }, [officersRaw]);
+
   useEffect(() => {
     if (!open) {
       setEditorContent("");
       setSubmitting(false);
       setServerResponse(null);
       setFormData(null);
+    }
+    if (open) {
+      const committeesResponse = dispatch(fetchWorkforceCommittees());
+      committeesResponse.then((response) => {
+        setCommittees(response?.payload?.data?.workforceCommittees || []);
+      });
     }
     if (selectedApplication) {
       return dispatch(
@@ -114,13 +138,12 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
         ])
       );
     }
-  }, [open]);
+  }, [open, dispatch, modulesManager, selectedApplication]);
 
-  const ROLE_OPTIONS = [
-    { id: "49", name: "EIS Committee" },
-    { id: "58", name: "EIS Association Committee" },
-    { id: "66", name: "EIS-GB Sub Committee" },
-  ];
+  const ROLE_OPTIONS = committees.map((committee) => ({
+    id: safeDecodeId(committee.assignedRole.id),
+    name: committee.nameEn || committee.nameBn || committee.id,
+  }));
 
   useEffect(() => {
     if (!open) {
@@ -152,7 +175,8 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
   }, [open]);
 
   useEffect(() => {
-    if (!Array.isArray(formData.roleIds)) return;
+    // added safe check for formData nullability to prevent crashing on close
+    if (!formData || !Array.isArray(formData.roleIds)) return;
     if (formData.roleIds.length === 0) return;
 
     dispatch(
@@ -161,7 +185,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
         orderBy: "id",
       })
     );
-  }, [formData.roleIds, dispatch, modulesManager]);
+  }, [formData?.roleIds, dispatch, modulesManager]);
 
   const data = useSelector((state) => state.workforce[`application`] ?? []);
 
@@ -201,7 +225,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
       } else {
         setServerResponse({
           status: "ERROR",
-          message: "সঠিক রোল আইডি পাওয়া যায়নি!",
+          message: "সঠিক রোল আইডি পাওয়া যায়নি!",
         });
         return;
       }
@@ -250,10 +274,10 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
         }
       }
   
-      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
     } catch (error) {
       console.error("Forwarding error:", error);
-      setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
+      setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
     }
   };
   
@@ -319,12 +343,12 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
 
                 <Select
                   multiple
-                  value={formData.roleIds}
+                  value={formData?.roleIds || []}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
                       roleIds: e.target.value,
-                      userIds: [],
+                      userIds: [], // Changing roles correctly resets previously loaded explicit users before the new fetch populates them automatically
                     })
                   }
                   renderValue={(selected) =>
@@ -345,7 +369,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
                   {ROLE_OPTIONS.map((role) => (
                     <MenuItem key={role.id} value={role.id}>
                       <Checkbox
-                        checked={formData.roleIds.includes(role.id)}
+                        checked={formData?.roleIds?.includes(role.id) || false}
                         style={{ color: "#000" }}
                       />
                       <Typography>{role.name}</Typography>
@@ -368,7 +392,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
               <FormControl fullWidth>
                 <Select
                   multiple
-                  value={formData.userIds}
+                  value={formData?.userIds || []}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
@@ -394,7 +418,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
                   {officers.map((officer) => (
                     <MenuItem key={officer.id} value={officer.userId}>
                       <Checkbox
-                        checked={formData.userIds.includes(officer.userId)}
+                        checked={formData?.userIds?.includes(officer.userId) || false}
                         style={{ color: "#000" }}
                       />
                       <Typography>{officer.otherNames}</Typography>
@@ -421,7 +445,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
               await handleForward();
             }}
           >
-            {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"}
+            {submitting ? "ফরওয়ার্ড করা হচ্ছে..." : "ফরওয়ার্ড করুন"}
           </Button>
         </div>
       </form>
