@@ -39,14 +39,14 @@ const AddDependentModal = ({ open, onClose, application }) => {
       const parseAttachments = JSON.parse(dep?.attachments);
       return { ...dep, attachments: parseAttachments };
     });
-    // const fullyParsedBankInfo = application?.employeeBankingInfoApplication?.map((bank)=>{
-    //   const parseAttachments = JSON.parse(bank?.attachments)
-    //   return {...bank,attachments:parseAttachments}
-    // })
+    const fullyParsedBankInfo = application?.employeeBankingInfoApplication?.map((bank)=>{
+      // const parseAttachments = JSON.parse(bank?.attachments)
+      return {...bank,accountNumber:bank?.accountNo}
+    })
     return {
       ...application,
       employeeDependentInfo: fullyParsedDependentInfo,
-      employeeBankInfo: [{}],
+      employeeBankInfo: fullyParsedBankInfo,
     };
   });
 

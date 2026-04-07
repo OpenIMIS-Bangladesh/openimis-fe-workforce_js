@@ -1016,6 +1016,7 @@
   "workforce.accident.timeOfDeath.label": "Time of Death",
 
   "workforce.accident.mainType.label": "Type of Accident",
+  "workforce.application.steps.bankInfo":"Bank Info",
 
   "workforce.dashboard.overallFilters": "Overall Filters",
   "workforce.dashboard.appSubmissionDate": "Application Submission Date",
