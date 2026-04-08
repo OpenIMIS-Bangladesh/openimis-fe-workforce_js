@@ -766,7 +766,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                   {first?.workforceApplication?.eisApplicationSummary?.name ?? ""}
                 </Typography>
                 <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
-                  Date: {benefitDate}
+                  Date: {new Date().toLocaleDateString()}
                 </Typography>
               </div>
 
