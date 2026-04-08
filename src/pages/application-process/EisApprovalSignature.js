@@ -878,7 +878,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                 )}
                 <tr>
                   <td style={{ fontWeight: "bold" }}>Effective date of Benefit</td>
-                  <td>{parsedAccidentInfo?.dateOfDeath || ""}</td>
+                  <td>{firstData?.workforceApplication?.applicationType === "financialAssistance" ? parsedAccidentInfo?.dateOfDeath : dateOfRejoining || dateOfAssessment || parsedAccidentInfo?.accidentDate || ""}</td>
                   <td style={{ border: "none" }}></td>
                   <td style={{ fontWeight: "bold" }}>Type of Accident</td>
                   <td>
