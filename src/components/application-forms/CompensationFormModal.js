@@ -1,5 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Grid, IconButton, Typography, makeStyles, MenuItem, Paper, Fade, Backdrop, TextField, Select,Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from "@material-ui/core";
+import {
+  Modal,
+  Button,
+  Grid,
+  IconButton,
+  Typography,
+  makeStyles,
+  MenuItem,
+  Paper,
+  Fade,
+  Backdrop,
+  TextField,
+  Select,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+} from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import CloseIcon from "@material-ui/icons/Close";
@@ -80,12 +98,14 @@ const initialEntry = {
 const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType = "factory" }) => {
   const classes = useStyles();
   const [formData, setFormData] = useState([initialEntry]);
+  const [loader, setLoader] = useState(false);
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
   const user_type = getUserType();
 
   useEffect(() => {
     // Only fetch if modal is open and we have an application ID
+    setLoader(true);
     if (open && application?.id) {
       dispatch(fetchWorkforceOtherCompensation(modulesManager, [`workforceApplicationId:"${application?.id}"`]))
         .then((res) => {
@@ -101,6 +121,9 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
         .catch((err) => {
           console.error("Error fetching compensation:", err);
           setFormData([{ ...initialEntry }]);
+        })
+        .finally(() => {
+          setLoader(false);
         });
     } else if (open) {
       // If opening without an ID (new application context), reset form
@@ -168,6 +191,33 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
   };
 
   const isOfficer = entryType === "officer";
+
+  if (loader) {
+    return (
+      <Modal
+        className={classes.modal}
+        open={open}
+        onClose={onClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <Paper className={classes.modalPaper}>
+            <div className={classes.modalHeader}>
+              <Typography variant="h6">{isOfficer ? "Officer Compensation Entry" : "Factory Compensation Entry"}</Typography>
+              <IconButton onClick={onClose} size="small">
+                <CloseIcon />
+              </IconButton>
+            </div>
+            <Typography variant="h4">Loading ...</Typography>
+          </Paper>
+        </Fade>
+      </Modal>
+    );
+  }
 
   return (
     <Modal

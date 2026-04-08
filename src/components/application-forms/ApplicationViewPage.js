@@ -900,7 +900,7 @@ const ApplicationViewPage = ({
               ))}
             </>
           )}
-          {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER || user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) && application?.organizationType === "eis" && (
+          {(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR||user_type === WORKFORCE_USER_TYPE.EIS_OFFICER || user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) && application?.organizationType === "eis" && (
             <Grid container spacing={2} style={{ marginTop: "10px" }}>
               <Grid item xs={12}>
                 <Button variant="contained" color="primary" onClick={() => setOpenCompensationInfoModal(true)} fullwidth>
