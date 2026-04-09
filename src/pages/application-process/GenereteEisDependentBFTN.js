@@ -132,7 +132,25 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
         } else if (first?.workforceApplication?.applicationType == 'financialAssistance') {
           setAppType("Death");
         }
-        setBenefitDate(first?.workforceApplication?.dateCreated ? first?.workforceApplication?.dateCreated.split("T")[0] : "fg");
+
+        const parsingAccidentInfo = JSON.parse(first?.workforceApplication?.employeeAccidentInfo || "{}");
+        const parsedAccidentInfo = typeof parsingAccidentInfo === 'string' ? JSON.parse(parsingAccidentInfo) : parsingAccidentInfo;
+        const parsingDoctorEntry = JSON.parse(first?.workforceApplication?.doctorsEntry || "{}");
+        const parsedDoctorEntry = typeof parsingDoctorEntry === 'string' ? JSON.parse(parsingDoctorEntry) : parsingDoctorEntry;
+
+        const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
+        const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
+        let dateOfBenefitStart = "";
+        if (first?.workforceApplication?.applicationType == 'disabilityAssistance') {
+          dateOfBenefitStart= dateOfRejoining || dateOfAssessment || parsedAccidentInfo?.accidentDate || "";
+        }
+        else{
+          dateOfBenefitStart = parsedAccidentInfo?.dateOfDeath || "";
+        }
+          
+
+        setBenefitDate(dateOfBenefitStart || "Not Available");
+        // setBenefitDate(first?.workforceApplication?.dateCreated ? first?.workforceApplication?.dateCreated.split("T")[0] : "fg");
         // setBenefitDate(first?.workforceApplication?.dateCreated ? new Date(first?.workforceApplication?.dateCreated).toLocaleDateString("en-BD", {
         //   timeZone: "Asia/Dhaka",
         // }) : "fg");
@@ -748,7 +766,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                   {first?.workforceApplication?.eisApplicationSummary?.name ?? ""}
                 </Typography>
                 <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
-                  Date: {benefitDate}
+                  Date: {new Date().toLocaleDateString()}
                 </Typography>
               </div>
 
