@@ -22,6 +22,7 @@ export const ROUTE_WORKFORCE_COMPANIES_COMPANY = "workforce/companies/company";
 export const ROUTE_WORKFORCE_EDIT_COMPANIES_COMPANY = "workforce/edit/companies/company";
 export const ROUTE_WORKFORCE_FACTORIES = "workforce/factories";
 export const ROUTE_WORKFORCE_FACTORIES_FACTORY = "workforce/factories/factory";
+export const ROUTE_WORKFORCE_FACTORIES_FACTORY_VIEW = "workforce/factories/factory/view";
 export const ROUTE_WORKFORCE_EMPLOYEES = "workforce/employees";
 export const ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE = "workforce/employees/employee";
 export const ROUTE_WORKFORCE_EMPLOYEES_DEPENDENTS = "workforce/employees/dependents";

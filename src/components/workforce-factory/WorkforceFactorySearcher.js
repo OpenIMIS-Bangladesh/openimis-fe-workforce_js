@@ -17,6 +17,7 @@ import {
   decodeId,
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 import { MODULE_NAME } from "../../constants";
 import {
   Check as CheckIcon,
@@ -142,6 +143,22 @@ class WorkforceFactorySearcher extends Component {
     
          formatters.push((workforcefactory) => (
           <>
+           <Tooltip title="View">
+             <IconButton
+               disabled={workforcefactory?.isHistory}
+               onClick={() => {
+                 historyPush(
+                   this.props.modulesManager,
+                   this.props.history,
+                   'workforce.route.factories.factory.view',
+                   [decodeId(workforcefactory.id)],
+                   false,
+                 );
+               }}
+             >
+               <VisibilityIcon />
+             </IconButton>
+           </Tooltip>
            <Tooltip title="Edit">
              <IconButton
                disabled={workforcefactory?.isHistory}

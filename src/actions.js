@@ -210,6 +210,7 @@ export function fetchWorkforceOffice(mm, filters) {
 
 export function fetchWorkforceFactoriesSummary(mm, filters) {
   const location_projection = "location" + mm.getProjection("location.Location.FlatProjection");
+  const office_location_projection = "officeLocation" + mm.getProjection("location.Location.FlatProjection");
   const projections = [
     "id",
     "nameEn",
@@ -220,9 +221,22 @@ export function fetchWorkforceFactoriesSummary(mm, filters) {
     "email",
     "status",
     "website",
-    "officeLocation{id}",
+    "registrationExpiryDate",
+    "registrationDate",
+    "officeAddress",
+    "approximateNumberOfEmployee",
+    "limaRegistrationNumber",
+    "licenseNo",
+    "businessSector",
+    "membershipNo",
+    "dateOfFactoryEstablishment",
+    "dateOfEisIncorporation",
+    "futureDate",
+    "licenseType",
+    "groupName",
     "workforceRepresentative { id,nameBn,nameEn,position,email,nid,address,phoneNumber}",
     location_projection,
+    office_location_projection
   ];
   const payload = formatPageQueryWithCount("workforceEmployerFactories", filters, projections);
   return graphql(payload, "WORKFORCE_ORGANIZATION_FACTORIES");
@@ -230,6 +244,7 @@ export function fetchWorkforceFactoriesSummary(mm, filters) {
 
 export function fetchWorkforceFactory(mm, filters) {
   const location_projection = "location" + mm.getProjection("location.Location.FlatProjection");
+  const office_location_projection = "officeLocation" + mm.getProjection("location.Location.FlatProjection");
   const projections = [
     "id",
     "nameEn",
@@ -240,9 +255,23 @@ export function fetchWorkforceFactory(mm, filters) {
     "email",
     "status",
     "website",
+    "registrationExpiryDate",
+    "registrationDate",
+    "officeAddress",
+    "approximateNumberOfEmployee",
+    "limaRegistrationNumber",
+    "licenseNo",
+    "businessSector",
+    "membershipNo",
+    "dateOfFactoryEstablishment",
+    "dateOfEisIncorporation",
+    "futureDate",
+    "licenseType",
+    "groupName",
     location_projection,
+    office_location_projection,
     "workforceEmployer{id}",
-    "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, officeLocation{id}, " +
+    "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
       location_projection +
       "}",
   ];

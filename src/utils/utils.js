@@ -1424,6 +1424,15 @@ export const isVerify = () => {
   }
   return false; // fallback if window is not defined
 };
+
+
+export const formatLabel = (str) => {
+  return str
+    .replace(/_/g, ' ')                 // replace underscores with spaces
+    .replace(/\b\w/g, c => c.toUpperCase()); // capitalize each word
+};
+
+
 export const isEisPath = () => {
   if (typeof window !== "undefined") {
     return window.location.href.includes("eis");

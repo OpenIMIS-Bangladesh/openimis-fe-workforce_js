@@ -18,6 +18,7 @@ import {
   ROUTE_WORKFORCE_COMPANIES,
   ROUTE_WORKFORCE_FACTORIES,
   ROUTE_WORKFORCE_FACTORIES_FACTORY,
+  ROUTE_WORKFORCE_FACTORIES_FACTORY_VIEW,
   ROUTE_WORKFORCE_EMPLOYEES,
   ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE,
   ROUTE_WORKFORCE_APPROVE_COMPANIES,
@@ -75,6 +76,7 @@ import OrganizationCompaniesPage from "./pages/workforce-company/WorkforceCompan
 import OrganizationCompanyPage from "./pages/workforce-company/WorkforceCompanyPage";
 import OrganizationFactoriesPage from "./pages/workforce-factory/WorkforceFactoriesPage";
 import OrganizationFactoryPage from "./pages/workforce-factory/WorkforceFactoryPage";
+import WorkforceFactoryViewPage from "./pages/workforce-factory/WorkforceFactoryViewPage";
 import WorkforceEmployeesPage from "./pages/workforce-employee/WorkforceEmployeesPage";
 import WorkforceEmployeePage from "./pages/workforce-employee/WorkforceEmployeePage";
 import WorkforceBanksPage from "./pages/workforce-banks/WorkforceBanksPage";
@@ -159,6 +161,7 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.approve.companies", ref: ROUTE_WORKFORCE_APPROVE_COMPANIES },
 
     { key: "workforce.route.factories.factory", ref: ROUTE_WORKFORCE_FACTORIES_FACTORY },
+    { key: "workforce.route.factories.factory.view", ref: ROUTE_WORKFORCE_FACTORIES_FACTORY_VIEW },
     { key: "workforce.route.factories", ref: ROUTE_WORKFORCE_FACTORIES },
 
     { key: "workforce.route.employees.employee", ref: ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE },
@@ -264,6 +267,7 @@ const DEFAULT_CONFIG = {
 
     { path: ROUTE_WORKFORCE_FACTORIES, component: OrganizationFactoriesPage },
     { path: `${ROUTE_WORKFORCE_FACTORIES_FACTORY}/:workforce_factory_uuid`, component: OrganizationFactoryPage },
+    { path: `${ROUTE_WORKFORCE_FACTORIES_FACTORY_VIEW}/:workforce_factory_uuid`, component: WorkforceFactoryViewPage },
 
     { path: ROUTE_WORKFORCE_EMPLOYEES, component: WorkforceEmployeesPage },
     { path: ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE, component: WorkforceEmployeePage },
