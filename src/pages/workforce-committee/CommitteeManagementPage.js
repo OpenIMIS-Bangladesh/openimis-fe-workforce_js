@@ -17,11 +17,11 @@ import {
     Typography,
     TextField,
     IconButton,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Chip
+    Chip,
+    MenuItem,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Alert from '@material-ui/lab/Alert';
@@ -30,14 +30,11 @@ import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
-import { createWorkforceCommittee, createWorkforceCommitteeUserMap, fetchWorkforceAllAssociation, fetchWorkforceCommittees, fetchWorkforceInteractiveUsers, fetchWorkforceCommitteeUserMap, updateWorkforceCommitteeUserMapNoaSignature, deleteWorkforceCommitteeUserMap, deleteWorkforceCommittee } from '../../actions';
-import {
-    Accordion,
-    AccordionSummary,
-    AccordionDetails
-} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { createWorkforceCommittee, createWorkforceCommitteeUserMap, fetchWorkforceAllAssociation, fetchWorkforceCommittees, fetchInteractiveUsers, fetchWorkforceCommitteeUserMap, updateWorkforceCommitteeUserMapNoaSignature, deleteWorkforceCommitteeUserMap, deleteWorkforceCommittee, createWorkforceCommitteeUser, fetchWorkforceCommitteeUser, fetchWorkforceInteractiveUsers } from '../../actions';
 import { fixBrokenUnicode, safeDecodeId } from '../../utils/utils';
+import AddCommitteeDialog from './AddCommitteeDialog';
+import AddUserDialog from './AddUserDialog';
 
 const useStyles = makeStyles((theme) => ({
     pageContainer: {
@@ -112,14 +109,16 @@ const CommitteeManagementPage = () => {
     // ==================== STATE MANAGEMENT ====================
     const [committees, setCommittees] = useState([]);
     const [mappings, setMappings] = useState([]);
-    const [users, setUsers] = useState([]);
+    const [committeeUsers, setCommitteeUsers] = useState([]); // For Map User to Committee dropdown
     const [associations, setAssociations] = useState([]); // For Included Sectors
 
     const [selectedCommittee, setSelectedCommittee] = useState('');
     const [selectedUser, setSelectedUser] = useState('');
+    const [selectedRole, setSelectedRole] = useState('');
 
     const [openAddCommitteeDialog, setOpenAddCommitteeDialog] = useState(false);
     const [openEditCommitteeDialog, setOpenEditCommitteeDialog] = useState(false);
+    const [openAddUserDialog, setOpenAddUserDialog] = useState(false);
 
     const [newCommittee, setNewCommittee] = useState({
         nameEn: '',
@@ -127,6 +126,19 @@ const CommitteeManagementPage = () => {
         description: '',
         status: 'ACTIVE',
         includedSectors: []
+    });
+
+    const [newUser, setNewUser] = useState({
+        loginName: '',
+        representativeName: '',
+        representativeNameBn: '',
+        organizationName: '',
+        designation: '',
+        representativeType: '',
+        phoneNumber: '',
+        email: '',
+        officeAddress: '',
+        currentAddress: ''
     });
 
     const [editingCommittee, setEditingCommittee] = useState(null);
@@ -181,13 +193,14 @@ const CommitteeManagementPage = () => {
      * TODO: Replace with actual mapUserToCommittee API
      * Expected to create a mapping between committee and user
      */
-    const mapUserToCommittee = async (committeeId, userId) => {
+    const mapUserToCommittee = async (committeeId, userId, roleInCommittee) => {
         try {
             const payload = {
                 committeeId: safeDecodeId(committeeId),
-                userId
+                userId,
+                roleInCommittee
             };
-            console.log('Mapping user to committee:', { committeeId, userId });
+            console.log('Mapping user to committee:', { committeeId, userId, roleInCommittee });
             await dispatch(createWorkforceCommitteeUserMap(payload, "createWorkforceCommitteeUserMap"));
             setSuccessMessage("Committee Mapped with selected User successfully!");
             setTimeout(() => setSuccessMessage(''), 3000);
@@ -227,9 +240,9 @@ const CommitteeManagementPage = () => {
             const committeesData = await dispatch(fetchWorkforceCommittees([]));
             setCommittees(committeesData?.payload?.data?.workforceCommittees || []);
 
-            // Fetch available users
-            const usersData = await dispatch(fetchWorkforceInteractiveUsers([]));
-            setUsers(usersData?.payload?.data?.workforceInteractiveUsers || []);
+            // Fetch committee users for Map User to Committee dropdown
+            const committeeUsersData = await dispatch(fetchWorkforceCommitteeUser([]));
+            setCommitteeUsers(committeeUsersData?.payload?.data?.workforceCommitteeUsers || []);
 
             // Fetch associations
             const associationsData = await dispatch(fetchWorkforceAllAssociation([]));
@@ -240,6 +253,24 @@ const CommitteeManagementPage = () => {
             setMappings(mappingsData?.payload?.data?.workforceCommitteeUserMaps || []);
         } catch (error) {
             console.error('Failed to fetch preload data:', error);
+        }
+    };
+
+    // ==================== LOGIN NAME VALIDATION ====================
+    /**
+     * Check if a loginName already exists using the fetchInteractiveUsers API
+     * instead of checking against a preloaded array
+     */
+    const checkLoginNameExists = async (loginName) => {
+        try {
+            const result = await dispatch(fetchWorkforceInteractiveUsers({ loginName }));
+            const users = result?.payload?.data?.workforceInteractiveUsers || [];
+            return users.length > 0;
+        } catch (error) {
+            console.error('Error checking login name:', error);
+            // If there's an error checking, we'll allow the user to proceed
+            // and let the backend handle any duplicate key constraints
+            return false;
         }
     };
 
@@ -344,18 +375,17 @@ const CommitteeManagementPage = () => {
     };
 
     const handleSaveMapping = async () => {
-        if (!selectedCommittee || !selectedUser) {
-            alert('Please select both committee and user');
+        if (!selectedCommittee || !selectedUser || !selectedRole) {
+            alert('Please select committee, user, and role');
             return;
         }
 
         try {
-            await mapUserToCommittee(selectedCommittee, selectedUser);
-            setSuccessMessage('User mapped to committee successfully!');
-            setTimeout(() => setSuccessMessage(''), 3000);
+            await mapUserToCommittee(selectedCommittee, safeDecodeId(selectedUser), selectedRole);
+            // Reset form fields after successful mapping
             setSelectedCommittee('');
             setSelectedUser('');
-            fetchPreloadData();
+            setSelectedRole('');
         } catch (error) {
             alert('Failed to map user to committee: ' + error.message);
         }
@@ -367,7 +397,7 @@ const CommitteeManagementPage = () => {
         }
 
         try {
-            await deleteCommitteeMapping(mappingId);
+            await dispatch(deleteCommitteeMapping(mappingId));
             setSuccessMessage('Mapping deleted successfully!');
             setTimeout(() => setSuccessMessage(''), 3000);
             fetchPreloadData();
@@ -403,6 +433,76 @@ const CommitteeManagementPage = () => {
         }
     };
 
+    // ==================== USER HANDLER FUNCTIONS ====================
+
+    const handleOpenAddUserDialog = () => {
+        setNewUser({
+            loginName: '',
+            representativeName: '',
+            representativeNameBn: '',
+            organizationName: '',
+            designation: '',
+            representativeType: '',
+            phoneNumber: '',
+            email: '',
+            officeAddress: '',
+            currentAddress: ''
+        });
+        setOpenAddUserDialog(true);
+    };
+
+    const handleCloseAddUserDialog = () => {
+        setOpenAddUserDialog(false);
+        setNewUser({
+            loginName: '',
+            representativeName: '',
+            representativeNameBn: '',
+            organizationName: '',
+            designation: '',
+            representativeType: '',
+            phoneNumber: '',
+            email: '',
+            officeAddress: '',
+            currentAddress: ''
+        });
+    };
+
+    const handleAddUser = async () => {
+        if (!newUser.loginName || !newUser.representativeName || !newUser.representativeNameBn || !newUser.organizationName || !newUser.representativeType) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        // Check if loginName already exists by querying the API
+        const loginNameExists = await checkLoginNameExists(newUser.loginName);
+        if (loginNameExists) {
+            alert(`Login ID "${newUser.loginName}" already exists. Please use a different Login ID.`);
+            return;
+        }
+
+        try {
+            const payload = {
+                loginName: newUser.loginName,
+                representativeName: newUser.representativeName,
+                representativeNameBn: newUser.representativeNameBn,
+                organizationName: newUser.organizationName,
+                designation: newUser.designation,
+                representativeType: newUser.representativeType,
+                phoneNumber: newUser.phoneNumber,
+                email: newUser.email,
+                officeAddress: newUser.officeAddress,
+                currentAddress: newUser.currentAddress
+            };
+            await dispatch(createWorkforceCommitteeUser(payload, "createWorkforceCommitteeUser"));
+            setSuccessMessage("User created successfully!");
+            setOpenAddUserDialog(false);
+            setTimeout(() => setSuccessMessage(''), 3000);
+            fetchPreloadData();
+        } catch (error) {
+            console.error("Error creating user:", error);
+            alert('Failed to create user: ' + error.message);
+        }
+    };
 
 
     // ==================== FETCH ASSOCIATIONS ====================
@@ -463,129 +563,47 @@ const CommitteeManagementPage = () => {
                 </Card>
 
                 {/* Add Committee Dialog */}
-                <Dialog 
-                    open={openAddCommitteeDialog} 
+                <AddCommitteeDialog
+                    open={openAddCommitteeDialog}
                     onClose={handleCloseAddCommitteeDialog}
-                    maxWidth="sm"
-                    fullWidth
-                >
-                    <DialogTitle>
-                        {locale === 'fr' ? "নতুন কমিটি যোগ করুন" : "Add New Committee"}
-                    </DialogTitle>
-                    <DialogContent className={classes.dialogForm}>
-                        <TextField
-                            label={locale === 'fr' ? "কমিটির নাম (ইংরেজি) *" : "Committee Name (English) *"}
-                            value={newCommittee.nameEn}
-                            onChange={(e) => setNewCommittee({ ...newCommittee, nameEn: e.target.value })}
-                            fullWidth
-                            variant="outlined"
-                            required
-                        />
-                        <TextField
-                            label={locale === 'fr' ? "কমিটির নাম (বাংলা) *" : "Committee Name (Bangla) *"}
-                            value={newCommittee.nameBn}
-                            onChange={(e) => setNewCommittee({ ...newCommittee, nameBn: e.target.value })}
-                            fullWidth
-                            variant="outlined"
-                            required
-                        />
-                        <TextField
-                            label={locale === 'fr' ? "বিবরণ" : "Description"}
-                            value={newCommittee.description}
-                            onChange={(e) => setNewCommittee({ ...newCommittee, description: e.target.value })}
-                            fullWidth
-                            variant="outlined"
-                            multiline
-                            rows={3}
-                        />
-                        <Autocomplete
-                            multiple
-                            id="included-sectors-autocomplete"
-                            options={associations}
-                            getOptionLabel={(option) => locale === 'fr' ? `${option.node.nameBn} (${option.node.shortNameBn})` : `${option.node.nameEn} (${option.node.shortNameEn})`}
-                            getOptionSelected={(option, value) => option.node.id === value.node.id}
-                            value={newCommittee.includedSectors || []}
-                            onChange={(event, newValue) => {
-                                setNewCommittee({ ...newCommittee, includedSectors: newValue });
-                            }}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label={locale === 'fr' ? "অন্তর্ভুক্ত সেক্টর" : "Included Sectors"}
-                                    variant="outlined"
-                                    required
-                                />
-                            )}
-                        />
-                    </DialogContent>
-                    <DialogActions className={classes.dialogActions}>
-                        <Button onClick={handleCloseAddCommitteeDialog} color="default">
-                            {locale === 'fr' ? "বাতিল" : "Cancel"}
-                        </Button>
-                        <Button 
-                            onClick={handleAddCommittee} 
-                            color="primary" 
-                            variant="contained"
-                            startIcon={<SaveIcon />}
-                        >
-                            {locale === 'fr' ? "সংরক্ষণ করুন" : "Save"}
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-
-                {/* Edit Committee Dialog */}
-                <Dialog 
-                    open={openEditCommitteeDialog} 
-                    onClose={handleCloseEditCommitteeDialog}
-                    maxWidth="sm"
-                    fullWidth
-                >
-                    <DialogTitle>
-                        {locale === 'fr' ? "কমিটি সম্পাদনা করুন" : "Edit Committee"}
-                    </DialogTitle>
-                    <DialogContent className={classes.dialogForm}>
-                        <TextField
-                            label={locale === 'fr' ? "কমিটির নাম (ইংরেজি) *" : "Committee Name (English) *"}
-                            value={newCommittee.nameEn}
-                            onChange={(e) => setNewCommittee({ ...newCommittee, nameEn: e.target.value })}
-                            fullWidth
-                            variant="outlined"
-                            required
-                        />
-                        <TextField
-                            label={locale === 'fr' ? "কমিটির নাম (বাংলা) *" : "Committee Name (Bangla) *"}
-                            value={newCommittee.nameBn}
-                            onChange={(e) => setNewCommittee({ ...newCommittee, nameBn: e.target.value })}
-                            fullWidth
-                            variant="outlined"
-                            required
-                        />
-                        <TextField
-                            label={locale === 'fr' ? "বিবরণ" : "Description"}
-                            value={newCommittee.description}
-                            onChange={(e) => setNewCommittee({ ...newCommittee, description: e.target.value })}
-                            fullWidth
-                            variant="outlined"
-                            multiline
-                            rows={3}
-                        />
-                    </DialogContent>
-                    <DialogActions className={classes.dialogActions}>
-                        <Button onClick={handleCloseEditCommitteeDialog} color="default">
-                            {locale === 'fr' ? "বাতিল" : "Cancel"}
-                        </Button>
-                        <Button 
-                            onClick={handleUpdateCommittee} 
-                            color="primary" 
-                            variant="contained"
-                            startIcon={<SaveIcon />}
-                        >
-                            {locale === 'fr' ? "আপডেট করুন" : "Update"}
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                    onSave={handleAddCommittee}
+                    committee={newCommittee}
+                    setCommittee={setNewCommittee}
+                    associations={associations}
+                    locale={locale}
+                />
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={3}>
+                <Card className={classes.card} elevation={2} style={{ height: '89%' }}>
+                    <CardHeader
+                        title={locale === 'fr' ? "নতুন ইউজার" : "Create User"}
+                        subheader={locale === 'fr' ? "কমিটির জন্য নতুন ইউজার যোগ করুন" : "Create a new user for committee"}
+                    />
+                    <CardContent>
+                        <Button
+                                variant="contained"
+                                color="primary"
+                                startIcon={<AddIcon />}
+                                onClick={handleOpenAddUserDialog}
+                                className={classes.addButton}
+                            >
+                                {locale === 'fr' ? "যোগ করুন" : "Add"}
+                            </Button>
+                    </CardContent>
+                </Card>
+
+                {/* Add User Dialog */}
+                <AddUserDialog
+                    open={openAddUserDialog}
+                    onClose={handleCloseAddUserDialog}
+                    onSave={handleAddUser}
+                    user={newUser}
+                    setUser={setNewUser}
+                    // users={users}
+                    locale={locale}
+                />
+              </Grid>
+              <Grid item md={6}>
                 {/* ==================== MAP USER TO COMMITTEE SECTION ==================== */}
                 <Card className={classes.card} elevation={2}>
                     <CardHeader
@@ -620,12 +638,12 @@ const CommitteeManagementPage = () => {
                             <Grid item xs={12} md={5} className={classes.formGrid}>
                                 <Autocomplete
                                     id="user-select-autocomplete"
-                                    options={users}
-                                    getOptionLabel={(option) => locale === 'fr' ? `${option.loginName} (${fixBrokenUnicode(option.otherNames)})` : `${option.loginName} (${fixBrokenUnicode(option.lastName)})`}
-                                    getOptionSelected={(option, value) => option.id === value.id}
-                                    value={users.find((user) => user.id === selectedUser) || null}
+                                    options={committeeUsers}
+                                    getOptionLabel={(option) => locale === 'fr' ? `${option.loginName} (${fixBrokenUnicode(option.representativeNameBn)})` : `${option.loginName} (${fixBrokenUnicode(option.representativeName)})`}
+                                    getOptionSelected={(option, value) => option.relatedUser.id === value.relatedUser.id}
+                                    value={committeeUsers.find((user) => user.relatedUser.id === selectedUser) || null}
                                     onChange={(event, newValue) => {
-                                        setSelectedUser(newValue ? newValue.id : "");
+                                        setSelectedUser(newValue ? newValue.relatedUser.id : "");
                                     }}
                                     renderInput={(params) => (
                                         <TextField
@@ -637,6 +655,32 @@ const CommitteeManagementPage = () => {
                                 />
                             </Grid>
 
+                            {/* Role Dropdown */}
+                            <Grid item xs={12} md={5} className={classes.formGrid}>
+                                <TextField
+                                    select
+                                    label={locale === 'fr' ? "কমিটিতে ভূমিকা *" : "Role in Committee *"}
+                                    value={selectedRole}
+                                    onChange={(e) => setSelectedRole(e.target.value)}
+                                    fullWidth
+                                    variant="outlined"
+                                    required
+                                >
+                                    <MenuItem value="">
+                                        {locale === 'fr' ? "নির্বাচন করুন" : "Select"}
+                                    </MenuItem>
+                                    <MenuItem value="Chairman">
+                                        {locale === 'fr' ? "চেয়ারম্যান" : "Chairman"}
+                                    </MenuItem>
+                                    <MenuItem value="Member Secretary">
+                                        {locale === 'fr' ? "সদস্য সচিব" : "Member Secretary"}
+                                    </MenuItem>
+                                    <MenuItem value="Member">
+                                        {locale === 'fr' ? "সদস্য" : "Member"}
+                                    </MenuItem>
+                                </TextField>
+                            </Grid>
+
                             {/* Submit Button */}
                             <Grid item xs={12} md={2}>
                                 <Button
@@ -646,7 +690,7 @@ const CommitteeManagementPage = () => {
                                     className={classes.submitButton}
                                     startIcon={<SaveIcon />}
                                     onClick={handleSaveMapping}
-                                    disabled={!selectedCommittee || !selectedUser}
+                                    disabled={!selectedCommittee || !selectedUser || !selectedRole}
                                     style={{ marginTop: "-10px" }}
                                 >
                                     {locale === 'fr' ? "সংরক্ষণ করুন" : "Save"}
@@ -713,8 +757,26 @@ const CommitteeManagementPage = () => {
                                                         <TableCell className={classes.tableHeader}>
                                                             {locale === 'fr' ? "ভূমিকা" : "Role"}
                                                         </TableCell>
+                                                        <TableCell className={classes.tableHeader}>
+                                                            {locale === 'fr' ? "প্রতিষ্ঠান" : "Organization"}
+                                                        </TableCell>
+                                                        <TableCell className={classes.tableHeader}>
+                                                            {locale === 'fr' ? "পদবী" : "Designation"}
+                                                        </TableCell>
+                                                        <TableCell className={classes.tableHeader}>
+                                                            {locale === 'fr' ? "প্রতিনিধির ধরণ" : "Representative Type"}
+                                                        </TableCell>
+                                                        <TableCell className={classes.tableHeader}>
+                                                            {locale === 'fr' ? "ফোন" : "Phone Number"}
+                                                        </TableCell>
+                                                        <TableCell className={classes.tableHeader}>
+                                                            {locale === 'fr' ? "ইমেইল" : "Email"}
+                                                        </TableCell>
+                                                        <TableCell className={classes.tableHeader}>
+                                                            {locale === 'fr' ? "ঠিকানা" : "Addresses"}
+                                                        </TableCell>
                                                         <TableCell className={classes.tableHeader} align="right">
-                                                            {locale === 'fr' ? "ক্রিয়া" : "Actions"}
+                                                            {locale === 'fr' ? "একশন" : "Actions"}
                                                         </TableCell>
                                                     </TableRow>
                                                 </TableHead>
@@ -737,6 +799,27 @@ const CommitteeManagementPage = () => {
                                                             <TableCell>
                                                                 {mapping.role || 'Member'}
                                                             </TableCell>
+                                                            <TableCell>
+                                                                {mapping.workforceCommitteeUser?.organizationName || ''}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {mapping.workforceCommitteeUser?.designation || ''}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {mapping.workforceCommitteeUser?.representativeType || ''}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {mapping.workforceCommitteeUser?.phoneNumber || ''}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {mapping.workforceCommitteeUser?.email || ''}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {locale === 'fr' ? "অফিসের ঠিকানা" : "Office Address"}: {mapping.workforceCommitteeUser?.officeAddress || ''}
+                                                                <br/>
+                                                                {locale === 'fr' ? "বর্তমান ঠিকানা" : "Current Address"}: {mapping.workforceCommitteeUser?.currentAddress || ''}
+                                                            </TableCell>
+
                                                             <TableCell align="right">
                                                                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
                                                                     {!mapping.isNoaSignatureUser ? (

@@ -639,3 +639,20 @@ export function formatWorkforceCommitteeUserMapGQL(usermap) {
     ${usermap?.isNoaSignatureUser !== undefined ? `isNoaSignatureUser: ${usermap.isNoaSignatureUser}` : ""}  
   `;
 }
+
+
+export function formatWorkforceCommitteeUserGQL(user) {
+  return `
+    ${user?.loginName ? `loginName: "${user.loginName}"` : ""}
+    ${user?.representativeName ? `representativeName: "${user.representativeName}"` : ""}
+    ${user?.representativeNameBn ? `representativeNameBn: "${user.representativeNameBn}"` : ""}
+    ${user?.organizationName ? `organizationName: "${user.organizationName}"` : ""}
+    ${user?.designation ? `designation: "${user.designation}"` : ""}
+    ${user?.representativeType ? `representativeType: "${user.representativeType}"` : ""}
+    ${user?.committeeRole ? `committeeRole: "${user.committeeRole}"` : ""}
+    ${user?.phoneNumber ? `phoneNumber: "${user.phoneNumber}"` : ""}
+    ${user?.email ? `email: "${user.email}"` : ""}
+    ${user?.officeAddress ? `officeAddress: "${user.officeAddress}"` : ""}
+    ${user?.currentAddress ? `currentAddress: "${user.currentAddress}"` : ""}
+  `;
+}

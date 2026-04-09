@@ -3241,7 +3241,7 @@ class ApplicationProcessSearcher extends Component {
                   </>
                 )}
 
-                <Button
+                {/* <Button
                   variant="contained"
                   color="primary"
                   onClick={() => this.setState({ forwardModalOpenSummarySA: true })}
@@ -3250,7 +3250,7 @@ class ApplicationProcessSearcher extends Component {
                     module="workforce"
                     id="workforce.employee.application.disburse"
                   />
-                </Button>
+                </Button> */}
 
 
               </>

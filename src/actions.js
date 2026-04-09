@@ -32,6 +32,7 @@ import {
   formatWorkforceCommitteeGQL,
   formatWorkforceCommitteeUserMapGQL,
   formatWorkforceDocumentMapGQL,
+  formatWorkforceCommitteeUserGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 import { safeDecodeId } from "./utils/utils";
@@ -2799,7 +2800,9 @@ export function deleteWorkforceAssociationUserMap(payload) {
 export function fetchWorkforceInteractiveUsers(filters) {
   const payload = `
   query{
-  workforceInteractiveUsers{
+  workforceInteractiveUsers(
+    loginName: "${filters?.loginName ?? ""}"
+  ){
         id
         loginName
         lastName
@@ -2980,8 +2983,20 @@ export function fetchWorkforceCommitteeUserMap(filters) {
           otherNames
           phone
           }
-          isNoaSignatureUser
-          }
+        isNoaSignatureUser
+        roleInCommittee
+        workforceCommitteeUser{
+            representativeName
+            representativeNameBn
+            organizationName
+            designation
+            representativeType
+            phoneNumber
+            email
+            officeAddress
+            currentAddress
+            }
+        }
     }
     `;
 
@@ -3047,3 +3062,57 @@ export function fetchRoles(loggedInUserId) {
   }`;
   return graphql(mutation, "WORKFORCE_USER_ROLES");
 }
+
+export function createWorkforceCommitteeUser(payload, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceCommitteeUser",
+    formatWorkforceCommitteeUserGQL(payload),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_COMMITTEE_USER_REQ",
+      "WORKFORCE_COMMITTEE_USER_RESP",
+      "WORKFORCE_COMMITTEE_USER_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+
+
+
+export function fetchWorkforceCommitteeUser(filters) {
+  const payload = `
+    {
+      workforceCommitteeUsers{
+        loginName
+        representativeName
+        representativeNameBn
+        organizationName
+        designation
+        representativeType        
+        phoneNumber
+        email
+        officeAddress
+        currentAddress
+        relatedUser{
+          id
+          loginName
+          lastName
+          otherNames
+          phone
+        }
+      }
+    }
+    `;
+
+    return graphql(payload, "WORKFORCE_COMMITTEE_USERS");
+  }
+
+
