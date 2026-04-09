@@ -655,30 +655,17 @@ const CommitteeManagementPage = () => {
                                 />
                             </Grid>
 
-                            {/* Role Dropdown */}
+                            {/* Role Text Field */}
                             <Grid item xs={12} md={5} className={classes.formGrid}>
                                 <TextField
-                                    select
                                     label={locale === 'fr' ? "কমিটিতে ভূমিকা *" : "Role in Committee *"}
                                     value={selectedRole}
                                     onChange={(e) => setSelectedRole(e.target.value)}
                                     fullWidth
                                     variant="outlined"
                                     required
-                                >
-                                    <MenuItem value="">
-                                        {locale === 'fr' ? "নির্বাচন করুন" : "Select"}
-                                    </MenuItem>
-                                    <MenuItem value="Chairman">
-                                        {locale === 'fr' ? "চেয়ারম্যান" : "Chairman"}
-                                    </MenuItem>
-                                    <MenuItem value="Member Secretary">
-                                        {locale === 'fr' ? "সদস্য সচিব" : "Member Secretary"}
-                                    </MenuItem>
-                                    <MenuItem value="Member">
-                                        {locale === 'fr' ? "সদস্য" : "Member"}
-                                    </MenuItem>
-                                </TextField>
+                                    placeholder={locale === 'fr' ? "ভূমিকা লিখুন" : "Enter role"}
+                                />
                             </Grid>
 
                             {/* Submit Button */}

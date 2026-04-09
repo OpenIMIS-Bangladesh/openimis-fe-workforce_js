@@ -18,7 +18,7 @@ import { RELATION_LABEL_BANGLA_MAP, WORKFORCE_USER_TYPE } from "../../constants"
 import { getUserTypeFromRights, safeDecodeId, getFooterContent, safeParse, getFooterContentNew, toBanglaNumber, calculateAge } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS, RELATION_LABEL_MAP } from "../../constants";
-import { createApplicationSummary, updateApplication, updateApplicationSummary } from "../../actions";
+import { createApplicationSummary, fetchWorkforceNoaSignatureByApprovers, updateApplication, updateApplicationSummary, fetchWorkforceNoaSignerUserByApprovers } from "../../actions";
 import { useDispatch } from "react-redux";
 import React, { Component, useState, useEffect, useRef } from "react";
 import { enToBn } from "../../utils/utils";
@@ -43,6 +43,7 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
   const [selectedRow, setSelectedRow] = useState(null);
   const [otherCompAmount, setOtherCompAmount] = useState(0);
   const [eisPayments, setEisPayments] = useState([]);
+
   console.log({ selectedApplicationIds });
 
   const handleRowPrint = (row) => {
@@ -86,50 +87,60 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
       color: #000;
     }
     body {
-      padding: 20mm 25mm;
+      padding: 8mm 10mm;
     }
     @media print {
       body {
-        padding: 0;
+        padding: 5mm 8mm;
       }
       @page {
         size: A4 portrait;
-        margin: 15mm 20mm 20mm 20mm;
+        margin: 8mm 8mm 8mm 8mm;
       }
     }
     .noa-page {
       position: relative;
       width: 100%;
       box-sizing: border-box;
-      font-size: 10px;
+      font-size: 12px;
+      page-break-inside: avoid;
     }
     .noa-header {
       position: relative;
       text-align: center;
-      margin-bottom: 10mm;
+      margin-bottom: 4mm;
     }
     .noa-header h3, .noa-header h4, .noa-header p {
-      margin: 2px 0;
+      margin: 1px 0;
+      line-height: 1.2;
+    }
+    .noa-header h3 {
+      font-size: 12px;
+    }
+    .noa-header h4 {
+      font-size: 12px;
+      margin: 3px 0 2px 0;
     }
     .noa-body {
       margin-top: 0;
     }
     .noa-footer {
       position: relative;
-      margin-top: 20mm;
+      margin-top: 3mm;
       page-break-inside: avoid;
     }
     .noa-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 15px;
+      margin-bottom: 2px;
       table-layout: fixed;
     }
     .noa-table td {
       border: 1px solid #000;
-      padding: 6px 10px;
+      padding: 2px 4px;
       vertical-align: top;
       word-wrap: break-word;
+      font-size: 12px;
     }
     .noa-label {
       width: 35%;
@@ -143,14 +154,17 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
       font-weight: bold;
       text-align: center;
       background-color: #e0e0e0;
-      padding: 8px;
+      padding: 2px 2px;
+      font-size: 12px;
     }
     .noa-signature {
       text-align: right;
       font-weight: bold;
+      font-size: 12px;
     }
-    img {
-      max-width: 100px;
+    .noa-signature p {
+      margin: 1px 0;
+      line-height: 1.1;
     }
     * {
       -webkit-print-color-adjust: exact !important;
@@ -582,6 +596,7 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
 };
 
 const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
+  const dispatch = useDispatch();
   const tryParse = (value) => {
     if (typeof value === "string") {
       try {
@@ -595,6 +610,25 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
     }
     return value;
   };
+
+  const [noaSigner, setNoaSigner]= useState(null);
+  const [noaSignature, setNoaSignature]= useState(null);
+
+  const fetchNoaSigner = async () => {
+    const eisApprovedByIds= safeParse(row?.workforceApplication?.eisApprovedByIds) || [];
+    if(eisApprovedByIds.length > 0){
+      const noaSignature= await dispatch(fetchWorkforceNoaSignatureByApprovers(eisApprovedByIds));
+      setNoaSignature(noaSignature.payload?.data?.fetchNoaSignatureByApprovers || null);
+      const noaSigner= await dispatch(fetchWorkforceNoaSignerUserByApprovers(eisApprovedByIds));
+      setNoaSigner(noaSigner.payload?.data?.fetchWorkforceNoaSignerUserByApprovers || null);
+
+    }
+  };
+  useEffect(()=>{
+    fetchNoaSigner();
+  }, [row])
+
+
 
   const formatAddress = (locationData, addressData) => {
     const address = tryParse(addressData) || {};
@@ -639,6 +673,12 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
   const workerBirthDate = deceasedWorkerInfo?.birthDate ?? row?.workforceApplication?.workforceEmployee?.birthDate ?? "2026-01-01";
   const paymentType = row?.eisPaymentType;
   console.log("payment type", paymentType)
+
+
+  let noaSignatureLogo= <img src={window.location.origin + (noaSignature?.url??"")} alt="Central Fund Logo" style={{ height: "70px" }} />;
+
+
+  
 
   return (
     <div className="noa-page">
@@ -921,10 +961,16 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
 
       <div className="noa-footer">
         <div className="noa-signature">
-          <p style={{ margin: "2px 0" }}>মহাপরিচালক</p>
+          {noaSignatureLogo}
+          <p style={{ margin: "2px 0" }}>{noaSigner?.workforceCommitteeUser?.designation}</p>
+          <p style={{ margin: "2px 0" }}>{noaSigner?.workforceCommitteeUser?.organizationName}</p>
+          <p style={{ margin: "2px 0" }}>ও</p>
+          <p style={{ margin: "2px 0" }}>{noaSigner?.roleInCommittee}, {noaSigner?.committee?.nameBn}</p>
+
+          {/* <p style={{ margin: "2px 0" }}>মহাপরিচালক</p>
           <p style={{ margin: "2px 0" }}>কেন্দ্রীয় তহবিল</p>
           <p style={{ margin: "2px 0" }}>ও</p>
-          <p style={{ margin: "2px 0" }}>সদস্য সচিব-ইআইএস গভর্নেন্স বোর্ড</p>
+          <p style={{ margin: "2px 0" }}>সদস্য সচিব-ইআইএস গভর্নেন্স বোর্ড</p> */}
         </div>
       </div>
     </div>

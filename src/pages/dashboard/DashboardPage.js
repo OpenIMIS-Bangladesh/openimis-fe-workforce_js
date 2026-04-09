@@ -190,6 +190,8 @@ const Dashboard = () => {
   const user_type = getUserType();
   const reduxState = useSelector((state) => state);
   const locale = reduxState?.core?.user?.i_user?.language || 'en';
+  const thisuser = useSelector((state) => state.core?.user?.i_user);
+  console.log('ei holo tor user',thisuser);
 
   const applicationTypeNames = locale == 'en' ? APP_TYPE_DASHBOARD_EN : APP_TYPE_DASHBOARD_BN;
   const applicantTypeNames = locale == 'en' ? APPLICANT_TYPE_EN : APPLICANT_TYPE_BN;

@@ -2965,10 +2965,12 @@ export function createWorkforceCommitteeUserMap(payload, clientMutationLabel) {
 }
 
 export function fetchWorkforceCommitteeUserMap(filters) {
+  const userIds= Array.isArray(filters?.userIds) ? filters.userIds.map((id) => `"${id}"`).join(",") : "";
   const payload = `
     {
       workforceCommitteeUserMaps(
         committeeId: "${filters?.committeeId ?? ""}"
+        userIdIn: [${userIds}]
       ){
         id
         committee{
@@ -3114,5 +3116,58 @@ export function fetchWorkforceCommitteeUser(filters) {
 
     return graphql(payload, "WORKFORCE_COMMITTEE_USERS");
   }
+
+
+  export function fetchWorkforceNoaSignatureByApprovers(userIds) {
+  const passUserIds= Array.isArray(userIds) ? userIds.map((id) => `"${id}"`).join(",") : "";
+  const payload = `
+  {
+    fetchNoaSignatureByApprovers(
+      userIdIn: [${passUserIds}]
+    )
+      {
+        id
+        documentType
+        url
+      }
+  
+  }
+    `;
+
+  return graphql(payload, "WORKFORCE_NOA_SIGNATURE_BY_APPROVERS");
+  }
+
+
+  export function fetchWorkforceNoaSignerUserByApprovers(userIds) {
+  const passUserIds= Array.isArray(userIds) ? userIds.map((id) => `"${id}"`).join(",") : "";
+  const payload = `
+  {
+    fetchWorkforceNoaSignerUserByApprovers(
+      userIdIn: [${passUserIds}]
+    )
+      {
+        id
+        roleInCommittee
+        committee
+        {
+          id
+          nameEn
+          nameBn
+        }
+        workforceCommitteeUser{
+          id
+          representativeName
+          representativeNameBn
+          organizationName
+          designation
+          
+        }
+      }
+  
+  }
+    `;
+
+  return graphql(payload, "WORKFORCE_NOA_SIGNATURE_BY_APPROVERS");
+}
 
 

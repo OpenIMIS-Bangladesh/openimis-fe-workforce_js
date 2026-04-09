@@ -637,6 +637,7 @@ export function formatWorkforceCommitteeUserMapGQL(usermap) {
     ${usermap?.committeeId ? `committeeId: "${usermap.committeeId}"` : ""}
     ${usermap.userId ? `userId: ${usermap.userId}` : ""}
     ${usermap?.isNoaSignatureUser !== undefined ? `isNoaSignatureUser: ${usermap.isNoaSignatureUser}` : ""}  
+    ${usermap?.roleInCommittee ? `roleInCommittee: "${usermap.roleInCommittee}"` : ""}  
   `;
 }
 
