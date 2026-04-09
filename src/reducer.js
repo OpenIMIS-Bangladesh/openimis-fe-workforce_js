@@ -426,6 +426,8 @@ function reducer(
     uploadDependentFile: [],
     uploadBankFile: [],
 
+    roles:[],
+
     workforceApplicationStatusCount: {},
   },
   action,
@@ -690,7 +692,10 @@ function reducer(
         ...state,
         fetchingDocument: false,
         fetchedDocument: true,
-        document: parseData(action.payload.data.workforceDocuments),
+        document: parseData(action.payload.data.workforceDocuments).map((doc)=>({
+          ...doc,
+          worforceDocumentMap:parseData(doc?.workforceDocumentMapDocumentId)
+        })),
         errorDocument: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_OTHER_COMPENSATION_REQ":
@@ -1815,6 +1820,12 @@ function reducer(
         error: formatServerError(action.payload),
       };
 
+    case "WORKFORCE_USER_ROLES_RESP":
+      return {
+        ...state,
+        roles: action?.payload?.data?.fetchUserRoleByUserId,
+      };
+
     case "WORKFORCE_DISEASES_REQ":
       return {
         ...state,
@@ -2051,6 +2062,16 @@ function reducer(
     case "DOCUMENT_CREATE_DOCUMENT_RESP":
       return dispatchMutationResp(state, "createWorkforceDocument", action);
     case "DOCUMENT_UPDATE_DOCUMENT_RESP":
+      return dispatchMutationResp(state, "updateWorkforceDocument", action);
+
+    case "DOCUMENT_MUTATION_MAP_REQ": {
+      return dispatchMutationReq(state, action);
+    }
+    case "DOCUMENT_MUTATION_MAP_ERR":
+      return dispatchMutationErr(state, action);
+    case "DOCUMENT_MAP_CREATE_DOCUMENT_RESP":
+      return dispatchMutationResp(state, "createWorkforceDocument", action);
+    case "DOCUMENT_MAP_UPDATE_DOCUMENT_RESP":
       return dispatchMutationResp(state, "updateWorkforceDocument", action);
 
     case "COMPANY_STATUS_MUTATION_REQ": {

@@ -4,7 +4,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { FormattedMessage } from "@openimis/fe-core";
 import { Document, Page, pdfjs } from "react-pdf";
 import { getUserType } from "../../utils/utils";
-import { WORKFORCE_USER_TYPE } from "../../constants";
+import { WORKFORCE_DOCUMENT_MAP_BN, WORKFORCE_DOCUMENT_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
 import FileUploader from "../../pickers/FileUploader";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -43,8 +43,8 @@ const DocumentReviewAccordion = ({ file, index, documentId, onCommentChange, onV
               </Typography>
             </Grid>
             <Grid item>
-              {file.status === "verified" && <Typography style={{ color: "green", fontWeight: "bold" }}>✅ Verified</Typography>}
-              {file.status === "rejected" && <Typography style={{ color: "red", fontWeight: "bold" }}>❌ Rejected</Typography>}
+              <Typography style={{ color: "green", fontWeight: "bold" }}>{locale ==="fr"?WORKFORCE_DOCUMENT_MAP_BN[file?.status]:WORKFORCE_DOCUMENT_MAP_EN[file?.status]}</Typography>
+              
             </Grid>
           </Grid>
         </AccordionSummary>

@@ -575,10 +575,28 @@ export function formatWorkforceDocumentGQL(workforceDocumentType) {
 
     ${workforceDocumentType?.documentType ? `documentType: "${formatGQLString(workforceDocumentType?.documentType)}"` : ""}
     ${workforceDocumentType?.holderType ? `holderType: "${workforceDocumentType?.holderType}"` : ""}
-    ${workforceDocumentType?.verifierId ? `verifierId: "${formatGQLString(workforceDocumentType?.verifierId)}"` : ""}
+    ${workforceDocumentType?.verifierId ? `verifierId: "${(workforceDocumentType?.verifierId)}"` : ""}
     ${workforceDocumentType?.approverId ? `approverId: "${formatGQLString(workforceDocumentType?.approverId)}"` : ""}
     ${workforceDocumentType?.submissionDate ? `submissionDate: "${formatGQLString(workforceDocumentType?.submissionDate)}"` : ""}
+    ${workforceDocumentType?.verificationDate ? `verificationDate: "${workforceDocumentType?.verificationDate}"` : ""}
     ${workforceDocumentType?.approvalDate ? `approvalDate: "${formatGQLString(workforceDocumentType?.approvalDate)}"` : ""}
+    ${workforceDocumentType?.remarks ? `remarks: "${formatGQLString(workforceDocumentType?.remarks)}"` : ""}
+    ${workforceDocumentType?.status ? `status: "${formatGQLString(workforceDocumentType?.status)}"` : ""}
+    ${workforceDocumentType?.note ? `note: "${formatGQLString(workforceDocumentType?.note)}"` : ""}
+    ${workforceDocumentType?.isDeleted ? `isDeleted: "${workforceDocumentType?.isDeleted}"` : ""}
+  `;
+}
+
+export function formatWorkforceDocumentMapGQL(workforceDocumentType) {
+
+  return `
+    ${workforceDocumentType?.id ? `id: "${workforceDocumentType?.id}"` : ""}
+    ${workforceDocumentType?.workforceApplicationId ? `workforceApplicationId: "${workforceDocumentType?.workforceApplicationId}"` : ""}
+    ${workforceDocumentType?.workforceDocumentId ? `workforceDocumentId: "${workforceDocumentType?.workforceDocumentId}"` : ""}
+    ${workforceDocumentType?.verifiedById ? `verifiedById: "${workforceDocumentType?.verifiedById}"` : ""}
+    ${workforceDocumentType?.verifiedByRoleId ? `verifiedByRoleId: "${workforceDocumentType?.verifiedByRoleId}"` : ""}
+    ${workforceDocumentType?.verificationDate ? `verificationDate: "${workforceDocumentType?.verificationDate}"` : ""}
+
     ${workforceDocumentType?.remarks ? `remarks: "${formatGQLString(workforceDocumentType?.remarks)}"` : ""}
     ${workforceDocumentType?.status ? `status: "${formatGQLString(workforceDocumentType?.status)}"` : ""}
     ${workforceDocumentType?.note ? `note: "${formatGQLString(workforceDocumentType?.note)}"` : ""}

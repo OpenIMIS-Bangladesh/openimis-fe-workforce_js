@@ -13,6 +13,7 @@ import {
   fetchFactoryEmployee,
   fetchWorkforceDocument,
   testWorkforcePayment,
+  fetchRoles,
 } from "../../actions";
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
@@ -129,7 +130,9 @@ class ApplicationProcessSearcher extends Component {
   }
 
   async fetchApplicant() {
+    // const {loggedInUserId} = this.props
     await this.props.fetchFactoryEmployee(this.props.modulesManager, [`relatedUser_LoginName_Iexact:"${this.props.userName}"`]);
+    // await this.props.fetchRoles(loggedInUserId)
   }
 
   fetch = async (prms) => {
@@ -1665,6 +1668,7 @@ class ApplicationProcessSearcher extends Component {
         [`organizationTypeIn: ["${organizationType}"]`, 'orderBy: ["-dateCreated"]']
       );
     }
+    this.props.fetchRoles(loggedInUserId)
   }
 
 
@@ -2263,7 +2267,7 @@ class ApplicationProcessSearcher extends Component {
   };
   handleBulkSelectedbyAssociation = () => {
     const { selectedApplicationIds } = this.state;
-    const { loggedInUserId, updateApplication, createApplicationMovement, userRights, modulesManager, fetchWorkforceDocument, testWorkforcePayment } = this.props;
+    const { loggedInUserId, updateApplication, createApplicationMovement, userRights, modulesManager, fetchWorkforceDocument, testWorkforcePayment,roles } = this.props;
     handleBulkSelectedByAssociationLogic({
       selectedApplicationIds,
       loggedInUserId,
@@ -2273,6 +2277,7 @@ class ApplicationProcessSearcher extends Component {
       fetchWorkforceDocument,
       testWorkforcePayment,
       modulesManager,
+      roles,
       setServerResponse: (resp) => this.setState({ serverResponse: resp }),
       setConfirmModalOpen: (v) => this.setState({ confirmModalOpen: v }),
       setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
@@ -3121,7 +3126,8 @@ class ApplicationProcessSearcher extends Component {
       organizationEmployee,
       isApproved,
       coloredRow,
-      eisPayments
+      eisPayments,
+      roles
     } = this.props;
 
     const count = applicationsPageInfo.totalCount;
@@ -3658,6 +3664,7 @@ class ApplicationProcessSearcher extends Component {
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
                   organizationEmployee={organizationEmployee}
+                  roles={roles}
                 />
                 <RevertApplicationModal
                   open={revertModalOpen}
@@ -3898,6 +3905,8 @@ const mapStateToProps = (state) => ({
   workforceEmployeesFactoryId: state.workforce.workforceEmployee?.edges?.[0]?.employeeDesignationEmployeeId?.edges?.[0]?.node?.workforceFactory?.id ?? null,
   workforceEmployee: state.workforce.workforceEmployee,
   locale: state.core?.user?.i_user?.language || "en",
+  loggedInUserId: state.core?.user?.i_user?.id,
+  roles: state?.workforce?.roles,
 });
 
 const mapDispatchToProps = (dispatch) => (
@@ -3914,6 +3923,7 @@ const mapDispatchToProps = (dispatch) => (
         fetchFactoryEmployee,
         fetchWorkforceDocument,
         testWorkforcePayment,
+        fetchRoles,
         journalize,
         coreConfirm,
       },

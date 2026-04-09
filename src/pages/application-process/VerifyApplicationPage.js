@@ -28,8 +28,10 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { bindActionCreators } from "redux";
 import {
   createApplicationMovement,
+  createWorkforceDocumentMap,
   fetchApplication,
   fetchDocumentType,
+  fetchRoles,
   fetchWorkforceDocument,
   updateApplication,
   updateApplicationSummary,
@@ -38,9 +40,14 @@ import {
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import FileUploader from "../../pickers/FileUploader";
 import { getUserTypeFromRights, safeDecodeId, safeParse, tryParse } from "../../utils/utils";
-import { WORKFORCE_USER_TYPE } from "../../constants";
+import { WORKFORCE_DOCUMENT_STATUS, WORKFORCE_USER_TYPE } from "../../constants";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
-import { handleBulkSelectedByAssociationLogic, handleBulkSelectedByCheckerLogic, handleApprovalByDoctor, handleApprovalByEisCommittee} from "../../utils/workforceForwardRevertActions";
+import {
+  handleBulkSelectedByAssociationLogic,
+  handleBulkSelectedByCheckerLogic,
+  handleApprovalByDoctor,
+  handleApprovalByEisCommittee,
+} from "../../utils/workforceForwardRevertActions";
 import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
 import RevertApplicationModal from "../../components/application-process/modals/RevertApplicationModal";
 import ForwardApplicationFactoryAdminModal from "../../components/application-process/modals/ForwardApplicationFactoryAdminModal";
@@ -72,14 +79,14 @@ const styles = (theme) => ({
       color: `${theme.palette.text.primary} !important`,
     },
   },
- rootGrid: {
-  height: "auto",
-  overflow: "visible",
-},
-leftGrid: {
-  overflowY: "visible",
-  height: "auto",
-},
+  rootGrid: {
+    height: "auto",
+    overflow: "visible",
+  },
+  leftGrid: {
+    overflowY: "visible",
+    height: "auto",
+  },
 
   rightGrid: {
     height: "100%",
@@ -150,7 +157,7 @@ class VerifyApplicationPage extends Component {
   }
 
   async componentDidMount() {
-    const { dispatch, modulesManager, applicationUuid } = this.props;
+    const { dispatch, modulesManager, applicationUuid, loggedInUserId } = this.props;
     await this.props.fetchApplication(modulesManager, [`id:"${applicationUuid}"`]);
 
     const { application } = this.props;
@@ -204,6 +211,7 @@ class VerifyApplicationPage extends Component {
       ]);
     }
     this.props.fetchWorkforceDocument(modulesManager, [`workforceApplication_Id:"${applicationUuid}"`]);
+    this?.props?.fetchRoles(loggedInUserId);
   }
 
   handlePreviewOpen = (file) => {
@@ -231,38 +239,115 @@ class VerifyApplicationPage extends Component {
   };
 
   handleFileVerify = (index) => {
+    const { user_rights, application, loggedInUserId, user, roles } = this.props;
+    const user_type = getUserTypeFromRights(user_rights);
     const file = this.state.fileStates[index];
+    const today = new Date().toLocaleDateString('en-CA');
     const payload = {
       ...file,
-      id: decodeId(file.id),
-      status: "verified",
+      id: safeDecodeId(file.id),
+      status:
+        user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+          ? WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_VERIFIED
+          : user_type === WORKFORCE_USER_TYPE.ASSOCIATION
+            ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_VERIFIED
+            : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
+              ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
+              : "",
       note: file.note,
+      verifierId: loggedInUserId,
+      verificationDate: today,
     };
 
-    this.props.updateWorkforceDocument(payload, `update workforce document`);
+    this.props.updateWorkforceDocument(payload, `update workforce document`).then(() => {
+      const payload = {
+        ...file,
+        id: safeDecodeId(file.id),
+        workforceApplicationId: safeDecodeId(application?.id),
+        workforceDocumentId: safeDecodeId(file?.id),
+        status:
+          user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+            ? WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_VERIFIED
+            : user_type === WORKFORCE_USER_TYPE.ASSOCIATION
+              ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_VERIFIED
+              : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
+                ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
+                : "",
+        note: file.note,
+        verifiedById: loggedInUserId,
+        verifiedByRoleId: roles[0]?.roleId,
+        verificationDate: today,
+      };
+      this.props.createWorkforceDocumentMap(payload,`create document map data`)
+    });
 
     // optionally update UI optimistically
     this.setState((prevState) => {
       const updated = [...prevState.fileStates];
-      updated[index].status = "verified";
+      updated[index].status = user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+          ? WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_REJECTED
+          : user_type === WORKFORCE_USER_TYPE.ASSOCIATION
+            ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_REJECTED
+            : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
+              ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_REJECTED
+              : "";
       return { fileStates: updated };
     });
   };
 
   handleFileReject = (index) => {
+    const { user_rights, application, loggedInUserId, user, roles } = this.props;
+    const user_type = getUserTypeFromRights(user_rights);
     const file = this.state.fileStates[index];
+    const today = new Date().toLocaleDateString('en-CA');
+
     const payload = {
       ...file,
-      id: decodeId(file.id),
-      status: "rejected",
+      id: safeDecodeId(file.id),
+      status:
+        user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+          ? WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_REJECTED
+          : user_type === WORKFORCE_USER_TYPE.ASSOCIATION
+            ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_REJECTED
+            : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
+              ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_REJECTED
+              : "",
       note: file.note,
+      verifierId: loggedInUserId,
+      verificationDate: today,
     };
 
-    this.props.updateWorkforceDocument(payload, `update workforce document`); // 👈 dispatch here
+    this.props.updateWorkforceDocument(payload, `update workforce document`).then(() => {
+      const payload = {
+        ...file,
+        id: safeDecodeId(file.id),
+        workforceApplicationId: safeDecodeId(application?.id),
+        workforceDocumentId: safeDecodeId(file?.id),
+        status:
+          user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+            ? WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_REJECTED
+            : user_type === WORKFORCE_USER_TYPE.ASSOCIATION
+              ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_REJECTED
+              : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
+                ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_REJECTED
+                : "",
+        note: file.note,
+        verifiedById: loggedInUserId,
+        verifiedByRoleId: roles[0]?.roleId,
+        verificationDate: today,
+      };
+      this.props.createWorkforceDocumentMap(payload,`create document map data`)
+    });
 
     this.setState((prevState) => {
       const updated = [...prevState.fileStates];
-      updated[index].status = "rejected";
+      updated[index].status = user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+          ? WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_REJECTED
+          : user_type === WORKFORCE_USER_TYPE.ASSOCIATION
+            ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_REJECTED
+            : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
+              ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_REJECTED
+              : "";
       return { fileStates: updated };
     });
   };
@@ -325,11 +410,9 @@ class VerifyApplicationPage extends Component {
         setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
         setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
         history: this.props.history,
-        dispatch:this.props.dispatch
+        dispatch: this.props.dispatch,
       });
-    } else if (
-      user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR
-    ) {
+    } else if (user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
       handleApprovalByDoctor({
         selectedApplicationIds: [{ id: application?.id }],
         loggedInUserId: this.props.loggedInUserId,
@@ -343,21 +426,15 @@ class VerifyApplicationPage extends Component {
         setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
         setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
         history: this.props.history,
-
       });
-    } else if (
-      user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE
-    ) {
-
-      const summaryApplicationRes = this.props.dispatch(fetchApplication(this.props.modulesManager, [
-              `eisApplicationSummaryId: "${safeDecodeId(summaryId)}"`,
-              `statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_COMIITEE}"]`
-            ]))
-          ;
-
-          const summaryApplicationsLength = Number(
-            summaryApplicationRes?.payload?.data?.workforceApplication?.totalCount ?? 0
-          );
+    } else if (user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE) {
+      const summaryApplicationRes = this.props.dispatch(
+        fetchApplication(this.props.modulesManager, [
+          `eisApplicationSummaryId: "${safeDecodeId(summaryId)}"`,
+          `statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_COMIITEE}"]`,
+        ]),
+      );
+      const summaryApplicationsLength = Number(summaryApplicationRes?.payload?.data?.workforceApplication?.totalCount ?? 0);
       handleApprovalByEisCommittee({
         selectedApplicationIds: [{ id: application?.id }],
         loggedInUserId: this.props.loggedInUserId,
@@ -374,7 +451,7 @@ class VerifyApplicationPage extends Component {
         summaryId: application?.eisApplicationSummary?.id,
         eisApprovalIds: application?.eisApprovalIds,
         eisApprovedByIds: application?.eisApprovedByIds,
-        history: this.props.history
+        history: this.props.history,
       });
     } else {
       handleBulkSelectedByAssociationLogic({
@@ -395,7 +472,7 @@ class VerifyApplicationPage extends Component {
   };
 
   render() {
-    const { classes, applicationUuid, documents, application, documentType, locale, user_rights } = this.props;
+    const { classes, applicationUuid, documents, application, documentType, locale, user_rights, user, roles } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType } = this.state;
     const user_type = getUserTypeFromRights(user_rights);
     const bankInfo = this.safeParse(application?.employeeBankInfo);
@@ -403,16 +480,16 @@ class VerifyApplicationPage extends Component {
     const dependentInfo = this.safeParse(application?.employeeDependentInfo);
     const childrenInfo = this.safeParse(application?.employeeChildrenInfo);
     const applicantInfo = this.safeParse(application?.applicantInfo);
-    const institutionInfo = this.safeParse(stateEdited?.institutionInfo)
-    const deceasedWorkerInfo = this.safeParse(stateEdited?.deceasedWorkerInfo)
-    const doctorsEntryInfo = this.safeParse(stateEdited?.doctorsEntry)
+    const institutionInfo = this.safeParse(stateEdited?.institutionInfo);
+    const deceasedWorkerInfo = this.safeParse(stateEdited?.deceasedWorkerInfo);
+    const doctorsEntryInfo = this.safeParse(stateEdited?.doctorsEntry);
     const metaInfo = this.safeParse(application?.metadata);
     const parsedWorkforceEmployeeDependentApplication = application?.workforceEmployeeDependentApplication;
-    const tempBankInfo = application?.employeeBankingInfoApplication?.map(item=>{
-      return {...item,bank:{...item?.branch?.parent}}
-    })
+    const tempBankInfo = application?.employeeBankingInfoApplication?.map((item) => {
+      return { ...item, bank: { ...item?.branch?.parent } };
+    });
 
-    console.log("verify application",application)
+    console.log("verify application", application);
     const formData = {
       ...application,
       workforceEmployee: application?.workforceEmployee,
@@ -427,9 +504,8 @@ class VerifyApplicationPage extends Component {
       metadata: this.safeParse(metaInfo),
       otherInfo: this.safeParse(metaInfo),
       workforceEmployeeDependentApplication: parsedWorkforceEmployeeDependentApplication,
-      employeeBankingInfoApplication:tempBankInfo
+      employeeBankingInfoApplication: tempBankInfo,
     };
-    console.log(documentType);
 
     const filteredDocumentTypes = documentType?.filter((doc) => {
       // check if there’s already a file uploaded for this doc
@@ -440,12 +516,9 @@ class VerifyApplicationPage extends Component {
       return !isUploaded;
     });
 
-    console.log("filteredDocumentTypes", filteredDocumentTypes);
-    console.log({ user_type });
-    console.log("ei lo user id", this.props.application?.eisApprovedByIds);
+    console.log({ roles });
     return (
       <>
-        
         {(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
           user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
           user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ||
@@ -466,46 +539,40 @@ class VerifyApplicationPage extends Component {
           user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
           <Grid container spacing={2} className={classes.gridRightPad} style={{ marginTop: "16px", padding: 4, display: "flex", justifyContent: "flex-end" }}>
             {/* <Grid item xs={6}></Grid> */}
-            {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && application?.applicationType ==="financialAssistance") && (
+            {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && application?.applicationType === "financialAssistance" && (
               <Grid item xs={2}>
-                 <Button 
-                   variant="contained" 
-                   color="primary" 
-                   fullWidth 
-                   onClick={() => this.setState({ addDependentModalOpen: true })}
-                 >
-                   <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add Dependent" />
-                 </Button>
+                <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ addDependentModalOpen: true })}>
+                  <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add Dependent" />
+                </Button>
               </Grid>
             )}
-            {(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) && (
+            {(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
+              user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ||
+              user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
+              user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) && (
               <Grid item xs={2}>
-                 <Button 
-                   variant="contained" 
-                   color="primary" 
-                   fullWidth 
-                   onClick={() => this.setState({ eisDependentBFTNModalOpen: true })}
-                 >
-                   <FormattedMessage id="workforce.employee.application.paymentProcess" defaultMessage="Payment Calculation" />
-                 </Button>
+                <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ eisDependentBFTNModalOpen: true })}>
+                  <FormattedMessage id="workforce.employee.application.paymentProcess" defaultMessage="Payment Calculation" />
+                </Button>
               </Grid>
             )}
-            {user_type ===WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type=== WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ?
-            (
-              !safeParse(this.props.application?.eisApprovedByIds)?.includes(this.props.loggedInUserId) &&
-                (
-                  <Grid item xs={2}>
-                    <Button variant="contained" color="primary" fullWidth
-                      disabled={this.props.application?.isHistory}
-                      onClick={() => {
-                        this.handleForward();
-                      }}
-                    >
-                      <FormattedMessage module="workforce" id="workforce.employee.application.eis_committee.recommended" />
-                    </Button>
-                  </Grid>
-                )
-            ):(
+            {user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
+              !safeParse(this.props.application?.eisApprovedByIds)?.includes(this.props.loggedInUserId) && (
+                <Grid item xs={2}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    disabled={this.props.application?.isHistory}
+                    onClick={() => {
+                      this.handleForward();
+                    }}
+                  >
+                    <FormattedMessage module="workforce" id="workforce.employee.application.eis_committee.recommended" />
+                  </Button>
+                </Grid>
+              )
+            ) : (
               <Grid item xs={2}>
                 <Button variant="contained" color="primary" fullWidth onClick={this.handleForward}>
                   <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
@@ -543,11 +610,7 @@ class VerifyApplicationPage extends Component {
         </Grid>
 
         {this.state.addDependentModalOpen && (
-          <AddDependentModal 
-            open={this.state.addDependentModalOpen}
-            onClose={() => this.setState({ addDependentModalOpen: false })}
-            application={formData}
-          />
+          <AddDependentModal open={this.state.addDependentModalOpen} onClose={() => this.setState({ addDependentModalOpen: false })} application={formData} />
         )}
         {this.state.eisDependentBFTNModalOpen && (
           <GenereteEisDependentBFTN
@@ -565,6 +628,7 @@ class VerifyApplicationPage extends Component {
             onClose={() => this.setState({ forwardModalOpenFA: false })}
             selectedApplicationIds={[{ id: this.props.application?.id }]}
             organizationEmployee={this.props.organizationEmployee}
+            roles = {roles}
           />
         )}
 
@@ -611,7 +675,9 @@ const mapStateToProps = (state, props) => ({
   documentType: state.workforce.documentType,
   user_rights: state.core?.user?.i_user?.rights,
   locale: state.core?.user?.i_user?.language,
-  loggedInUserId: state.core?.user?.i_user?.id
+  loggedInUserId: state.core?.user?.i_user?.id,
+  user: state.profile.user,
+  roles: state?.workforce?.roles,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -627,10 +693,12 @@ const mapDispatchToProps = (dispatch) => ({
       createApplicationMovement,
       updateApplicationSummary,
       createApplicationMovement,
+      createWorkforceDocumentMap,
+      fetchRoles,
     },
-    dispatch
+    dispatch,
   ),
-  dispatch, 
+  dispatch,
 });
 
 export default withModulesManager(withHistory(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(VerifyApplicationPage))));

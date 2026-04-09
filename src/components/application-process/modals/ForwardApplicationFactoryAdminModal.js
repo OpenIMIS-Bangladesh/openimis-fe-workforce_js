@@ -75,7 +75,8 @@ const ForwardApplicationFactoryAdminModal = ({
   selectedApplication,
   selectedApplicationIds,
   onSubmitForward,
-  organizationEmployee
+  organizationEmployee,
+  roles
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -130,7 +131,8 @@ const ForwardApplicationFactoryAdminModal = ({
     setServerResponse,
     userRights,
     modulesManager,
-    fetchWorkforceDocument
+    fetchWorkforceDocument,
+    roles
   });
 //     for (const encodedId of selectedApplicationIds) {
 

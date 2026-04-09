@@ -1,5 +1,5 @@
 import { decodeId, useHistory, parseData } from "@openimis/fe-core";
-import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../constants";
+import { WORKFORCE_DOCUMENT_STATUS, WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../constants";
 import { getUserTypeFromRights, isEisPath, safeDecodeId, safeParse } from "./utils";
 import {
   fetchApplication,
@@ -9,9 +9,9 @@ import {
   fetchWorkforceOtherCompensation,
   fetchWorkforceUserRoleWiseUser,
   createApplicationMovement,
-  updateApplicationSummary 
+  updateApplicationSummary,
 } from "../actions";
-import { } from "../actions";
+import {} from "../actions";
 import { useState } from "react";
 
 export const forwardToAssociation = async ({
@@ -25,6 +25,7 @@ export const forwardToAssociation = async ({
   userRights,
   fetchWorkforceDocument,
   modulesManager,
+  roles,
 }) => {
   try {
     const userType = getUserTypeFromRights(userRights);
@@ -76,19 +77,34 @@ export const forwardToAssociation = async ({
 
       const documents = res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-      const allVerified = documents.filter(doc=>doc?.workforceDocumentType?.mandatoryForApplicant === true).every((doc) => {
-        const status = doc.status?.toLowerCase();
+      const allVerified = documents
+        ?.filter((doc) => doc?.workforceDocumentType?.mandatoryForApplicant === true)
+        ?.every((doc) => {
+          const documentMapData = parseData(doc?.workforceDocumentMapDocumentId);
+          console.log({ documentMapData }); // Keep for debugging
+          const status = documentMapData?.find(
+            (mapdata) => {
+              const decodedRoleId = safeDecodeId(mapdata?.verifiedByRole?.id);
+              const roleMatch = decodedRoleId === roles[0]?.roleId;
+              const statusMatch = mapdata?.status === WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_VERIFIED;
+              console.log("Decoded verifiedByRole.id:", decodedRoleId);
+              console.log("roles[0]?.id:", roles[0]?.roleId);
+              console.log("Role match:", roleMatch);
+              console.log("Status match:", statusMatch);
+              console.log("Mapdata status:", mapdata?.status);
+              return roleMatch && statusMatch;
+            }
+          );
+          console.log({ status }); // Keep for debugging
 
-        if (doc.holderType === "applicant") {
-          return status === "verified";
-        }
-
-        if (doc.holderType === "factoryAdmin") {
-          // return status !== "verified";
-          return true;
-        }
-        return true;
-      });
+          if (doc.holderType === "applicant") {
+            return !!status; // Only pass if status exists (verified)
+          }
+          if (doc.holderType === "factoryAdmin") {
+            return true; // Always pass (as per current logic)
+          }
+          return true; // Pass for other types
+        });
 
       // Document check (removed the bad extra condition)
       if (!allVerified) {
@@ -174,6 +190,7 @@ export const handleBulkSelectedByAssociationLogic = async ({
   fetchWorkforceDocument,
   updateApplication,
   createApplicationMovement,
+  roles,
   setServerResponse,
   setConfirmModalOpen,
   setConfirmModalMessage,
@@ -224,7 +241,36 @@ export const handleBulkSelectedByAssociationLogic = async ({
 
         const documents = res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-        const allVerified = documents.every((doc) => doc.status?.toLowerCase() === "verified");
+        const allVerified = documents
+        ?.filter((doc) => doc?.workforceDocumentType?.mandatoryForApplicant === false)
+        ?.every((doc) => {
+          const documentMapData = parseData(doc?.workforceDocumentMapDocumentId);
+          console.log({ documentMapData }); // Keep for debugging
+          const status = documentMapData?.find(
+            (mapdata) => {
+              const decodedRoleId = safeDecodeId(mapdata?.verifiedByRole?.id);
+              const roleMatch = decodedRoleId === roles[0]?.roleId;
+              const statusMatch = mapdata?.status === WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_VERIFIED;
+              console.log("Decoded verifiedByRole.id:", decodedRoleId);
+              console.log("roles[0]?.id:", roles[0]?.roleId);
+              console.log("Role match:", roleMatch);
+              console.log("Status match:", statusMatch);
+              console.log("Mapdata status:", mapdata?.status);
+              return roleMatch && statusMatch;
+            }
+          );
+          console.log({ status }); // Keep for debugging
+
+          // if (doc.holderType === "applicant") {
+          //   return true; // Only pass if status exists (verified)
+          // }
+          // if (doc.holderType === "factoryAdmin") {
+          //   return !!status; // Always pass (as per current logic)
+          // }
+          return !!status; // Pass for other types
+        });
+
+        console.log({ allVerified });
 
         if (!allVerified) {
           setServerResponse({
@@ -246,8 +292,8 @@ export const handleBulkSelectedByAssociationLogic = async ({
             !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
               ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
               : // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
-              //   userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-              isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+                //   userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+                isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
                 ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
                 : null,
         };
@@ -260,8 +306,8 @@ export const handleBulkSelectedByAssociationLogic = async ({
             !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
               ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
               : // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
-              // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-              isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+                // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+                isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
                 ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
                 : null,
           note: "আবেদন শাখায় প্রেরণ করা হয়েছে",
@@ -271,8 +317,8 @@ export const handleBulkSelectedByAssociationLogic = async ({
             !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
               ? "forward_to_cf_section"
               : // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
-              // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-              isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+                // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
+                isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
                 ? "forward_to_eis_coordinator"
                 : null,
           applicationFromId: loggedInUserId,
@@ -305,9 +351,9 @@ export const handleBulkSelectedByAssociationLogic = async ({
         message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
       });
     } finally {
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 200);
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
     }
@@ -331,7 +377,7 @@ export const handleBulkSelectedByCheckerLogic = async ({
 }) => {
   const userType = getUserTypeFromRights(userRights);
   let confirmModalMessage = "";
-  let allEmpty = false
+  let allEmpty = false;
 
   if (
     userType === WORKFORCE_USER_TYPE.CHECKER ||
@@ -372,7 +418,7 @@ export const handleBulkSelectedByCheckerLogic = async ({
   setConfirmModalMessage(confirmModalMessage);
   setConfirmModalOpen(true);
 
-  if (allEmpty) return
+  if (allEmpty) return;
   setConfirmModalCallback(async (confirmed) => {
     if (!confirmed) {
       setConfirmModalOpen(false);
@@ -394,16 +440,11 @@ export const handleBulkSelectedByCheckerLogic = async ({
     try {
       for (const selectedItem of selectedApplicationIds) {
         const decodedId = safeDecodeId(selectedItem?.id);
-        const res = await fetchWorkforceDocument(modulesManager, [
-          `workforceApplication_Id: "${decodedId}"`,
-        ]);
+        const res = await fetchWorkforceDocument(modulesManager, [`workforceApplication_Id: "${decodedId}"`]);
 
-        const documents =
-          res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
+        const documents = res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-        const allVerified = documents.every(
-          (doc) => doc.status?.toLowerCase() === "verified"
-        );
+        const allVerified = documents.every((doc) => doc.status?.toLowerCase() === "verified");
 
         if (!allVerified) {
           setServerResponse({
@@ -415,42 +456,35 @@ export const handleBulkSelectedByCheckerLogic = async ({
 
         const updateApplicationData = {
           id: decodedId,
-          status:
-            userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
-              ? WORKFORCE_STATUS.VERIFIED_BY_DOL_DIFE
-              : WORKFORCE_STATUS.VERIFIED,
+          status: userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ? WORKFORCE_STATUS.VERIFIED_BY_DOL_DIFE : WORKFORCE_STATUS.VERIFIED,
         };
 
         const createApplicationMovementData = {
           applicationId: decodedId,
-          status:
-            userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
-              ? WORKFORCE_STATUS.VERIFIED_BY_DOL_DIFE
-              : WORKFORCE_STATUS.VERIFIED,
+          status: userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ? WORKFORCE_STATUS.VERIFIED_BY_DOL_DIFE : WORKFORCE_STATUS.VERIFIED,
           note: "আবেদন যাচাইকৃত হয়েছে",
           action: "verified",
           applicationFromId: loggedInUserId,
           applicationToId:
             userType === WORKFORCE_USER_TYPE.CHECKER
               ? 139
-              : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
-                userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
-                ? 187 : userType === WORKFORCE_USER_TYPE.EIS_OFFICER ? 194
+              : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+                ? 187
+                : userType === WORKFORCE_USER_TYPE.EIS_OFFICER
+                  ? 194
                   : null,
           toRoleId:
             userType === WORKFORCE_USER_TYPE.CHECKER
-              ? 32 : userType === WORKFORCE_USER_TYPE.EIS_OFFICER ? 47
-                : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
-                  userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+              ? 32
+              : userType === WORKFORCE_USER_TYPE.EIS_OFFICER
+                ? 47
+                : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
                   ? 40
                   : null,
         };
 
         await updateApplication(updateApplicationData, "update workforce application");
-        await createApplicationMovement(
-          createApplicationMovementData,
-          "create workforce movement"
-        );
+        await createApplicationMovement(createApplicationMovementData, "create workforce movement");
       }
 
       setServerResponse({
@@ -568,26 +602,24 @@ export const handleApprovalByDoctor = async ({
 };
 
 export const handleApprovalByEisCommittee = async ({
-          selectedApplicationIds,
-          loggedInUserId,
-          userRights,
-          modulesManager,
-          fetchWorkforceDocument,
-          updateApplication,
-          createApplicationMovement,
-          updateApplicationSummary,
-          setServerResponse,
-          setConfirmModalOpen,
-          setConfirmModalMessage,
-          setConfirmModalCallback,
-          summaryId,
-          eisApprovalIds,
-          eisApprovedByIds,
-          history
+  selectedApplicationIds,
+  loggedInUserId,
+  userRights,
+  modulesManager,
+  fetchWorkforceDocument,
+  updateApplication,
+  createApplicationMovement,
+  updateApplicationSummary,
+  setServerResponse,
+  setConfirmModalOpen,
+  setConfirmModalMessage,
+  setConfirmModalCallback,
+  summaryId,
+  eisApprovalIds,
+  eisApprovedByIds,
+  history,
 }) => {
-
-  let confirmModalMessage =
-    "workforce.application.sign.message.toEisCoordinator";
+  let confirmModalMessage = "workforce.application.sign.message.toEisCoordinator";
 
   if (!selectedApplicationIds?.length) {
     setServerResponse({
@@ -610,55 +642,38 @@ export const handleApprovalByEisCommittee = async ({
       for (const selectedItem of selectedApplicationIds) {
         const decodedId = safeDecodeId(selectedItem?.id);
 
-        const approvalUserIds = eisApprovalIds
-          ? safeParse(eisApprovalIds)
-          : [];
+        const approvalUserIds = eisApprovalIds ? safeParse(eisApprovalIds) : [];
 
-        let approvedUserIds = eisApprovedByIds
-          ? safeParse(eisApprovedByIds)
-          : [];
+        let approvedUserIds = eisApprovedByIds ? safeParse(eisApprovedByIds) : [];
 
         if (approvedUserIds.includes(loggedInUserId)) {
           setServerResponse({
             status: "ERROR",
             message: "আপনি ইতিমধ্যে এই আবেদনটি অনুমোদন করেছেন!",
           });
-        }
-        else {
+        } else {
           let majorityApproved = false;
 
           approvedUserIds.push(loggedInUserId);
 
-          const totalApprovers =
-            approvalUserIds?.length > 0 ? approvalUserIds.length : 1;
+          const totalApprovers = approvalUserIds?.length > 0 ? approvalUserIds.length : 1;
 
-          const totalApproved =
-            approvedUserIds?.length > 0 ? approvedUserIds.length : 0;
-
+          const totalApproved = approvedUserIds?.length > 0 ? approvedUserIds.length : 0;
 
           console.log("totalApprovers", totalApprovers);
           console.log("totalApproved", totalApproved);
 
-          majorityApproved =
-            totalApprovers > 0
-              ? totalApproved / totalApprovers >= 0.5
-              : true;
+          majorityApproved = totalApprovers > 0 ? totalApproved / totalApprovers >= 0.5 : true;
 
-          if (majorityApproved)
-          {
+          if (majorityApproved) {
             console.log("majority hoiche");
-          }
-          else
-          {
+          } else {
             console.log("majority hoynai");
           }
 
-
           const updateApplicationData = {
             id: decodedId,
-            status: majorityApproved
-              ? WORKFORCE_STATUS.APPROVED_BY_COMMITTEE
-              : WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+            status: majorityApproved ? WORKFORCE_STATUS.APPROVED_BY_COMMITTEE : WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
             eisApprovedByIds: JSON.stringify(approvedUserIds),
           };
 
@@ -675,7 +690,7 @@ export const handleApprovalByEisCommittee = async ({
           //   id: safeDecodeId(summaryId),
           //   status: WORKFORCE_STATUS.APPROVED_BY_COMMITTEE,
           // };
-          
+
           await updateApplication(updateApplicationData, "update workforce application");
           //CODED THIS WHOLE AUTO SUMMARY FORWARD PROCESS IN BACKEND
 
@@ -684,19 +699,15 @@ export const handleApprovalByEisCommittee = async ({
           //     `statusIn: ["${WORKFORCE_STATUS.FORWARD_TO_COMIITEE}"]`
           //   ]))
           // ;
-          
-          // const summaryApplicationsLength = Number(
-            //   summaryApplicationRes?.payload?.data?.workforceApplication?.totalCount ?? 0
-            // );
-            
-            if (majorityApproved) {
-              console.log("ekhane dhukse");
-              await createApplicationMovement(
-                createApplicationMovementData,
-                "create workforce movement"
-              );
-          }
 
+          // const summaryApplicationsLength = Number(
+          //   summaryApplicationRes?.payload?.data?.workforceApplication?.totalCount ?? 0
+          // );
+
+          if (majorityApproved) {
+            console.log("ekhane dhukse");
+            await createApplicationMovement(createApplicationMovementData, "create workforce movement");
+          }
 
           // if (majorityApproved && summaryApplicationsLength <= 1) {
           //   console.log("ekhaneo dhukse");
@@ -705,16 +716,12 @@ export const handleApprovalByEisCommittee = async ({
           //     "update workforce application summary"
           //   );
           // }
-
         }
-
       }
       setServerResponse({
         status: "SUCCESS",
         message: "নির্বাচিত আবেদনগুলোর জন্য আপনার অনুমোদন গৃহীত হয়েছে। মেজরিটি পূর্ণ হলে আবেদন অনুমোদিত হবে।",
       });
-
-
     } catch (error) {
       console.error("Bulk committee approval failed:", error);
 
@@ -733,6 +740,3 @@ export const handleApprovalByEisCommittee = async ({
     }
   });
 };
-
-
-
