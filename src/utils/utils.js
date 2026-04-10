@@ -1225,7 +1225,7 @@ export function getRelationForApi(depObj, workerBirthDate) {
 // Reusable Wrapper
 // -----------------------------
 const FooterWrapper = ({ children }) => (
-  <div style={{ marginTop: "15px", fontSize: "11px" }}>
+  <div style={{ marginTop: "15px"}}>
     <strong>মাসিক টপ-আপ বেনিফিট ও ই.আই.এস পাইলট সম্পর্কে গুরুত্বপূর্ণ তথ্য:</strong>
     <ol style={{ marginTop: "5px", paddingLeft: "20px" }}>{children}</ol>
   </div>

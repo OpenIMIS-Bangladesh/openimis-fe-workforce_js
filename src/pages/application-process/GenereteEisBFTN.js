@@ -41,37 +41,67 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
   const modulesManager = useModulesManager();
 
   const [selectedRow, setSelectedRow] = useState(null);
+  const [printReady, setPrintReady] = useState(false);
+  const [printWindow, setPrintWindow] = useState(null);
+  const [noaSignerInfo, setNoaSignerInfo] = useState({ noaSigner: null, noaSignature: null });
   const [otherCompAmount, setOtherCompAmount] = useState(0);
   const [eisPayments, setEisPayments] = useState([]);
 
   console.log({ selectedApplicationIds });
 
-  const handleRowPrint = (row) => {
+  const handleRowPrint = async (row) => {
     const year = row?.year || "";
     const monthIndex = row?.monthIndex || "";
     const monthFormatted = String(monthIndex).padStart(2, "0");
     const lastDay = new Date(year, monthIndex, 0).getDate();
 
-    setSelectedRow({
+    const selected = {
       ...row,
       payFrom: `01.${monthFormatted}.${year}`,
       payTo: `${lastDay}.${monthFormatted}.${year}`,
-    });
+    };
+
+    const popup = window.open("", "_blank", "width=1000,height=800,scrollbars=yes,resizable=yes");
+    if (popup) {
+      popup.document.write("<html><body><p>Preparing print preview...</p></body></html>");
+      popup.document.close();
+      popup.focus();
+    }
+    setPrintWindow(popup);
+    setPrintReady(false);
+    setSelectedRow(selected);
+
+    const eisApprovedByIds = safeParse(row?.workforceApplication?.eisApprovedByIds) || [];
+    if (eisApprovedByIds.length > 0) {
+      const [signatureResult, signerResult] = await Promise.all([
+        dispatch(fetchWorkforceNoaSignatureByApprovers(eisApprovedByIds)),
+        dispatch(fetchWorkforceNoaSignerUserByApprovers(eisApprovedByIds)),
+      ]);
+
+      setNoaSignerInfo({
+        noaSignature: signatureResult.payload?.data?.fetchNoaSignatureByApprovers || null,
+        noaSigner: signerResult.payload?.data?.fetchWorkforceNoaSignerUserByApprovers || null,
+      });
+    } else {
+      setNoaSignerInfo({ noaSignature: null, noaSigner: null });
+    }
+
+    setPrintReady(true);
   };
 
   // New tab print logic (opens formatted preview in new tab)
   useEffect(() => {
-    if (selectedRow) {
+    if (selectedRow && printReady && printWindow) {
       // Give React time to render the hidden template
       const timer = setTimeout(() => {
         const container = document.getElementById("print-area-container");
         if (container && container.innerHTML.trim()) {
           const content = container.innerHTML;
 
-          const printWindow = window.open("", "_blank", "width=1000,height=800,scrollbars=yes,resizable=yes");
-
-          if (printWindow) {
-            printWindow.document.write(`
+          const popup = printWindow;
+          if (!popup.closed) {
+            popup.document.open();
+            popup.document.write(`
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -124,10 +154,17 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
     .noa-body {
       margin-top: 0;
     }
+    .noa-additional-info{
+      position: relative;
+      margin-top: 3mm;
+      page-break-inside: avoid;
+      font-size: 12px;
+    }
     .noa-footer {
       position: relative;
       margin-top: 3mm;
       page-break-inside: avoid;
+      font-size: 12px;
     }
     .noa-table {
       width: 100%;
@@ -182,19 +219,20 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
 </script>
 </html>
             `);
-            printWindow.document.close();
-            printWindow.focus();
+            popup.document.close();
+            popup.focus();
             // Uncomment the line below if you want auto-print (print dialog opens immediately)
-            // printWindow.print();
+            // popup.print();
           }
         }
         // Reset so next row can be printed
         setSelectedRow(null);
+        setPrintWindow(null);
       }, 800);
 
       return () => clearTimeout(timer);
     }
-  }, [selectedRow]);
+  }, [selectedRow, printReady, printWindow]);
 
   useEffect(() => {
     if (selectedApplicationIds.length > 0) {
@@ -582,12 +620,14 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
 
       {/* Hidden container used only to render the NOA template for copying */}
       <div id="print-area-container" className={classes.printContainer}>
-        {selectedRow && (
+        {selectedRow && printReady && (
           <NOAPrintTemplate
             row={selectedRow}
             payFrom={selectedRow.payFrom}
             payTo={selectedRow.payTo}
             OtherCompensationAmount={otherCompAmount}
+            noaSigner={noaSignerInfo.noaSigner}
+            noaSignature={noaSignerInfo.noaSignature}
           />
         )}
       </div>
@@ -595,8 +635,7 @@ const GenerateEisBFTN = ({ open, onClose, userRights, status, summary_Id, select
   );
 };
 
-const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
-  const dispatch = useDispatch();
+const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount, noaSigner, noaSignature }) => {
   const tryParse = (value) => {
     if (typeof value === "string") {
       try {
@@ -611,22 +650,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
     return value;
   };
 
-  const [noaSigner, setNoaSigner]= useState(null);
-  const [noaSignature, setNoaSignature]= useState(null);
 
-  const fetchNoaSigner = async () => {
-    const eisApprovedByIds= safeParse(row?.workforceApplication?.eisApprovedByIds) || [];
-    if(eisApprovedByIds.length > 0){
-      const noaSignature= await dispatch(fetchWorkforceNoaSignatureByApprovers(eisApprovedByIds));
-      setNoaSignature(noaSignature.payload?.data?.fetchNoaSignatureByApprovers || null);
-      const noaSigner= await dispatch(fetchWorkforceNoaSignerUserByApprovers(eisApprovedByIds));
-      setNoaSigner(noaSigner.payload?.data?.fetchWorkforceNoaSignerUserByApprovers || null);
-
-    }
-  };
-  useEffect(()=>{
-    fetchNoaSigner();
-  }, [row])
 
 
 
@@ -672,7 +696,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
   const deceasedWorkerInfo = safeParse(row?.workforceApplication?.deceasedWorkerInfo);
   const workerBirthDate = deceasedWorkerInfo?.birthDate ?? row?.workforceApplication?.workforceEmployee?.birthDate ?? "2026-01-01";
   const paymentType = row?.eisPaymentType;
-  console.log("payment type", paymentType)
+  console.log("noa signature", noaSignature)
 
 
   let noaSignatureLogo= <img src={window.location.origin + (noaSignature?.url??"")} alt="Central Fund Logo" style={{ height: "70px" }} />;
@@ -955,8 +979,9 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount }) => {
             )}
           </tbody>
         </table>
-
-        {getFooterContentNew(row?.workforceEmployeeDependent?.[0], workerBirthDate, applicationType, paymentType)}
+          <div className="noa-additional-info">
+            {getFooterContentNew(row?.workforceEmployeeDependent?.[0], workerBirthDate, applicationType, paymentType)}
+          </div>
       </div>
 
       <div className="noa-footer">
