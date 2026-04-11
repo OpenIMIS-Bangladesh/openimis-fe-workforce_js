@@ -32,6 +32,12 @@ function reducer(
     fetchedOrganizationsPick: false,
     organizationsPick: [],
 
+    fetchingNotificationData: false,
+    errorNotificationData: null,
+    fetchedNotificationData: false,
+    notificationData: [],
+    notificationDataPageInfo:null,
+
     fetchingDocumentType: false,
     errorDocumentType: null,
     fetchedDocumentType: false,
@@ -734,6 +740,31 @@ function reducer(
         errorUnitDesignations: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_ORGANIZATION_UNIT_DESIGNATIONS_ERR":
+      return {
+        ...state,
+        fetching: false,
+        error: formatServerError(action.payload),
+      };
+
+    case "WORKFORCE_NOTIFICATION_DATA_REQ":
+      return {
+        ...state,
+        fetchingNotificationData: true,
+        fetchedNotificationData: false,
+        notificationData: [],
+        notificationDataPageInfo: { totalCount: 0 },
+        errorNotificationData: null,
+      };
+    case "WORKFORCE_NOTIFICATION_DATA_RESP":
+      return {
+        ...state,
+        fetchingNotificationData: false,
+        fetchedNotificationData: true,
+        notificationData: parseData(action.payload.data.workforceOrganizationNotificationData),
+        notificationDataPageInfo: pageInfo(action.payload.data.workforceOrganizationNotificationData),
+        errorNotificationData: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_NOTIFICATION_DATA_ERR":
       return {
         ...state,
         fetching: false,

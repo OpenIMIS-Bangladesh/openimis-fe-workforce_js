@@ -32,7 +32,8 @@ import {
   formatWorkforceCommitteeGQL,
   formatWorkforceCommitteeUserMapGQL,
   formatWorkforceDocumentMapGQL,
-  formatWorkforceCommitteeUserGQL
+  formatWorkforceCommitteeUserGQL,
+  formatWorkforceNotificationGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 import { safeDecodeId } from "./utils/utils";
@@ -3199,4 +3200,37 @@ export function fetchWorkforceCommitteeUser(filters) {
   return graphql(payload, "WORKFORCE_NOA_SIGNATURE_BY_APPROVERS");
 }
 
+export function fetchNotificationData(filters) {
+  const projections = [
+    "id",
+    "isRead",
+    "notification",
+    "userId",
+    "status"
+  ];
+  const payload = formatPageQueryWithCount("workforceOrganizationUnits", filters, projections);
+  return graphql(payload, "WORKFORCE_NOTIFICATION_DATA");
+}
 
+
+export function updateNotification(payload, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateNotification",
+    formatWorkforceNotificationGQL(payload),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_COMMITTEE_USER_REQ",
+      "WORKFORCE_COMMITTEE_USER_RESP",
+      "WORKFORCE_COMMITTEE_USER_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}

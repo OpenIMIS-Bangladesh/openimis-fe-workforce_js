@@ -115,6 +115,7 @@ import WorkforceAsociationsPage from "./pages/workforce-association/WorkforceAso
 import WorkforceAsociationPage from "./pages/workforce-association/WorkforceAssociationPage";
 import AssociationUserMappingPage from "./pages/workforce-association/AssociationUserMappingPage";
 import CommitteeManagementPage from "./pages/workforce-committee/CommitteeManagementPage";
+import PushNotification from "./components/app-bar/PushNotification";
 
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
@@ -340,7 +341,7 @@ const DEFAULT_CONFIG = {
   "core.LoginPage": RegistrationButton,
   "core.LoginPageLogo": LoginHeader,
   "core.LoginPageForm": LoginForm,
-  // "core.AppBar": NotificationBar,
+  "core.AppBar": PushNotification,
   "core.userInfo": UserInfo,
   "home.HomePage.Blocks": DashboardRelay,
   "core.showJournalSidebar":false

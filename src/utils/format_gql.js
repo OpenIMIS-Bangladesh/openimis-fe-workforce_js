@@ -657,3 +657,12 @@ export function formatWorkforceCommitteeUserGQL(user) {
     ${user?.currentAddress ? `currentAddress: "${user.currentAddress}"` : ""}
   `;
 }
+export function formatWorkforceNotificationGQL(user) {
+  return `
+    ${user?.id ? `id: "${user.id}"` : ""}
+    ${user?.isRead ? `isRead: "${user.isRead}"` : ""}
+    ${user?.notification ? `notification: "${user.notification}"` : ""}
+    ${user?.userId ? `userId: "${user.userId}"` : ""}
+    ${user?.status ? `status: "${user.status}"` : ""}
+  `;
+}
