@@ -43,7 +43,7 @@ const DocumentReviewAccordion = ({ file, index, documentId, onCommentChange, onV
               </Typography>
             </Grid>
             <Grid item>
-              <Typography style={{ color: file?.status.includes("verified") ? "green" : file?.status.includes("rejected") ? "red" : "black", fontWeight: "bold" }}>{locale ==="fr"?WORKFORCE_DOCUMENT_MAP_BN[file?.status]:WORKFORCE_DOCUMENT_MAP_EN[file?.status]}</Typography>
+              <Typography style={{ color: file?.status?.includes("verified") ? "green" : file?.status?.includes("rejected") ? "red" : "black", fontWeight: "bold" }}>{locale ==="fr"?WORKFORCE_DOCUMENT_MAP_BN[file?.status]:WORKFORCE_DOCUMENT_MAP_EN[file?.status]}</Typography>
               
             </Grid>
           </Grid>

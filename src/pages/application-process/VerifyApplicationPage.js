@@ -55,6 +55,7 @@ import ForwardApplicationSectionAdminModal from "../../components/application-pr
 import AddDependentModal from "../../components/shared/modals/AddDependentModal";
 import GenereteEisDependentBFTN from "./GenereteEisDependentBFTN";
 import { useSelector, useDispatch } from "react-redux";
+import CustomSnackbar from "../../components/shared/CustomSnackbar";
 
 const styles = (theme) => ({
   paper: {
@@ -652,6 +653,14 @@ class VerifyApplicationPage extends Component {
             selectedApplication={this.state.selectedApplication}
           />
         )}
+
+        <CustomSnackbar
+          open={!!this.state.serverResponse}
+          onClose={() => this.setState({ serverResponse: null })}
+          autoHideDuration={3000}
+          type={this.state.serverResponse?.status?.toLowerCase() || "info"}
+          message={this.state.serverResponse?.message}
+        />
 
         <ConfirmModal
           open={this.state.confirmModalOpen}
