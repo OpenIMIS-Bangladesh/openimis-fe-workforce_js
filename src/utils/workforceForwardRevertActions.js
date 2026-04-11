@@ -82,19 +82,17 @@ export const forwardToAssociation = async ({
         ?.every((doc) => {
           const documentMapData = parseData(doc?.workforceDocumentMapDocumentId);
           console.log({ documentMapData }); // Keep for debugging
-          const status = documentMapData?.find(
-            (mapdata) => {
-              const decodedRoleId = safeDecodeId(mapdata?.verifiedByRole?.id);
-              const roleMatch = decodedRoleId === roles[0]?.roleId;
-              const statusMatch = mapdata?.status === WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_VERIFIED;
-              console.log("Decoded verifiedByRole.id:", decodedRoleId);
-              console.log("roles[0]?.id:", roles[0]?.roleId);
-              console.log("Role match:", roleMatch);
-              console.log("Status match:", statusMatch);
-              console.log("Mapdata status:", mapdata?.status);
-              return roleMatch && statusMatch;
-            }
-          );
+          const status = documentMapData?.find((mapdata) => {
+            const decodedRoleId = safeDecodeId(mapdata?.verifiedByRole?.id);
+            const roleMatch = decodedRoleId === roles[0]?.roleId;
+            const statusMatch = mapdata?.status === WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_VERIFIED;
+            console.log("Decoded verifiedByRole.id:", decodedRoleId);
+            console.log("roles[0]?.id:", roles[0]?.roleId);
+            console.log("Role match:", roleMatch);
+            console.log("Status match:", statusMatch);
+            console.log("Mapdata status:", mapdata?.status);
+            return roleMatch && statusMatch;
+          });
           console.log({ status }); // Keep for debugging
 
           if (doc.holderType === "applicant") {
@@ -242,12 +240,11 @@ export const handleBulkSelectedByAssociationLogic = async ({
         const documents = res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
         const allVerified = documents
-        ?.filter((doc) => doc?.workforceDocumentType?.mandatoryForApplicant === false)
-        ?.every((doc) => {
-          const documentMapData = parseData(doc?.workforceDocumentMapDocumentId);
-          console.log({ documentMapData }); // Keep for debugging
-          const status = documentMapData?.find(
-            (mapdata) => {
+          ?.filter((doc) => doc?.workforceDocumentType?.mandatoryForApplicant === false)
+          ?.every((doc) => {
+            const documentMapData = parseData(doc?.workforceDocumentMapDocumentId);
+            console.log({ documentMapData }); // Keep for debugging
+            const status = documentMapData?.find((mapdata) => {
               const decodedRoleId = safeDecodeId(mapdata?.verifiedByRole?.id);
               const roleMatch = decodedRoleId === roles[0]?.roleId;
               const statusMatch = mapdata?.status === WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_VERIFIED;
@@ -257,18 +254,17 @@ export const handleBulkSelectedByAssociationLogic = async ({
               console.log("Status match:", statusMatch);
               console.log("Mapdata status:", mapdata?.status);
               return roleMatch && statusMatch;
-            }
-          );
-          console.log({ status }); // Keep for debugging
+            });
+            console.log({ status }); // Keep for debugging
 
-          // if (doc.holderType === "applicant") {
-          //   return true; // Only pass if status exists (verified)
-          // }
-          // if (doc.holderType === "factoryAdmin") {
-          //   return !!status; // Always pass (as per current logic)
-          // }
-          return !!status; // Pass for other types
-        });
+            // if (doc.holderType === "applicant") {
+            //   return true; // Only pass if status exists (verified)
+            // }
+            // if (doc.holderType === "factoryAdmin") {
+            //   return !!status; // Always pass (as per current logic)
+            // }
+            return !!status; // Pass for other types
+          });
 
         console.log({ allVerified });
 
@@ -367,6 +363,7 @@ export const handleBulkSelectedByCheckerLogic = async ({
   fetchWorkforceDocument,
   updateApplication,
   createApplicationMovement,
+  roles,
   setServerResponse,
   setConfirmModalOpen,
   setConfirmModalMessage,
@@ -424,18 +421,6 @@ export const handleBulkSelectedByCheckerLogic = async ({
       setConfirmModalOpen(false);
       return;
     }
-    // setConfirmModalCallback(async (confirmed) => {
-    //   if (!confirmed) {
-    //     setConfirmModalOpen(false);
-    //     return;
-    //   }
-
-    //   try {
-    //     for (const selectedItem of selectedApplicationIds) {
-    //       const decodedId = safeDecodeId(selectedItem?.id);
-    //       const res = await fetchWorkforceDocument(modulesManager, [
-    //         `workforceApplication_Id: "${decodedId}"`,
-    //       ]);
 
     try {
       for (const selectedItem of selectedApplicationIds) {
@@ -444,7 +429,24 @@ export const handleBulkSelectedByCheckerLogic = async ({
 
         const documents = res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-        const allVerified = documents.every((doc) => doc.status?.toLowerCase() === "verified");
+        const allVerified = documents
+          ?.every((doc) => {
+            const documentMapData = parseData(doc?.workforceDocumentMapDocumentId);
+            console.log({ documentMapData }); // Keep for debugging
+            const status = documentMapData?.find((mapdata) => {
+              const decodedRoleId = safeDecodeId(mapdata?.verifiedByRole?.id);
+              const roleMatch = decodedRoleId === roles[0]?.roleId;
+              const statusMatch = mapdata?.status === WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED;
+              console.log("Decoded verifiedByRole.id:", decodedRoleId);
+              console.log("roles[0]?.id:", roles[0]?.roleId);
+              console.log("Role match:", roleMatch);
+              console.log("Status match:", statusMatch);
+              console.log("Mapdata status:", mapdata?.status);
+              return roleMatch && statusMatch;
+            });
+            console.log({ status }); // Keep for debugging
+            return !!status; // Pass for other types
+          });
 
         if (!allVerified) {
           setServerResponse({
@@ -499,7 +501,7 @@ export const handleBulkSelectedByCheckerLogic = async ({
       });
     } finally {
       // history.push("/home");
-      window.location.reload();
+      // window.location.reload();
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
     }

@@ -2360,6 +2360,7 @@ class ApplicationProcessSearcher extends Component {
       updateApplication,
       createApplicationMovement,
       modulesManager,
+      roles
     } = this.props;
     const userType = getUserTypeFromRights(this.props.userRights);
     let confirmModalMessage = "";
@@ -2372,6 +2373,7 @@ class ApplicationProcessSearcher extends Component {
       updateApplication,
       createApplicationMovement,
       modulesManager,
+      roles,
       setServerResponse: (res) => this.setState({ serverResponse: res }),
       setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
       setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
@@ -3412,7 +3414,7 @@ class ApplicationProcessSearcher extends Component {
         <CustomSnackbar
           open={!!this.state.serverResponse}
           onClose={() => this.setState({ serverResponse: null })}
-          autoHideDuration={4000}
+          autoHideDuration={3000}
           type={this.state.serverResponse?.status?.toLowerCase() || "info"}
           message={this.state.serverResponse?.message}
         />

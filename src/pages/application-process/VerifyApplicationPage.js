@@ -285,11 +285,11 @@ class VerifyApplicationPage extends Component {
     this.setState((prevState) => {
       const updated = [...prevState.fileStates];
       updated[index].status = user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
-          ? WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_REJECTED
+          ? WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_VERIFIED
           : user_type === WORKFORCE_USER_TYPE.ASSOCIATION
-            ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_REJECTED
+            ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_VERIFIED
             : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
-              ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_REJECTED
+              ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
               : "";
       return { fileStates: updated };
     });
@@ -380,7 +380,7 @@ class VerifyApplicationPage extends Component {
   };
 
   handleForward = () => {
-    const { user_rights, application, loggedInUserId } = this.props;
+    const { user_rights, application, loggedInUserId,roles } = this.props;
     const user_type = getUserTypeFromRights(user_rights);
 
     if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
@@ -398,13 +398,14 @@ class VerifyApplicationPage extends Component {
       user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
     ) {
       handleBulkSelectedByCheckerLogic({
-        selectedApplicationIds: [{ id: application?.id }],
+        selectedApplicationIds: [{ id: safeDecodeId(application?.id) }],
         loggedInUserId: this.props.loggedInUserId,
         userRights: this.props.user_rights,
         fetchWorkforceDocument: this.props.fetchWorkforceDocument,
         updateApplication: this.props.updateApplication,
         createApplicationMovement: this.props.createApplicationMovement,
         modulesManager: this.props.modulesManager,
+        roles,
         setServerResponse: (res) => this.setState({ serverResponse: res }),
         setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
         setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
