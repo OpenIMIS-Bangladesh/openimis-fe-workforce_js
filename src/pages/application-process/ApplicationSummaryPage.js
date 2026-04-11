@@ -228,6 +228,15 @@ class ApplicationSummaryPage extends Component {
     return (
        <div>
         <Grid container spacing={2}>
+          {
+            dataToRender.length === 0 && (
+              <Grid item xs={12}>
+                <Typography variant="h6" align="center" style={{ marginTop: "20px" }}>
+                  Loading...
+                </Typography>
+              </Grid>
+            )
+          }
           <Grid item xs={12}>
             {dataToRender.map((item, index) => (
               <Accordion

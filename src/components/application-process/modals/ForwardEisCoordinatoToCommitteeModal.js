@@ -265,6 +265,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
             const updateApplicationSummaryData = {
               id: decodeId(summaryId),
               status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
+              userIds: JSON.stringify(formData.userIds)
             };
   
             await dispatch(
@@ -275,6 +276,9 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
       }
   
       setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (error) {
       console.error("Forwarding error:", error);
       setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });

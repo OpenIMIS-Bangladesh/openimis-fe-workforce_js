@@ -101,6 +101,7 @@ export function formatApplicationSummaryGQL(applicationSummary) {
     ${applicationSummary?.sectionType ? `sectionType: "${applicationSummary.sectionType}"` : ""}
     ${applicationSummary?.month ? `month: "${formatGQLString(applicationSummary.month)}"` : ""}
     ${applicationSummary?.organizationType ? `organizationType: "${formatGQLString(applicationSummary.organizationType)}"` : ""}
+    ${applicationSummary?.userIds ? `userIds: ${escapeQuotes(applicationSummary.userIds)}` : ""}
   `;
 }
 
@@ -660,9 +661,10 @@ export function formatWorkforceCommitteeUserGQL(user) {
 export function formatWorkforceNotificationGQL(user) {
   return `
     ${user?.id ? `id: "${user.id}"` : ""}
-    ${user?.isRead ? `isRead: "${user.isRead}"` : ""}
+    ${user?.isRead ? `isRead: ${user.isRead}` : ""}
     ${user?.notification ? `notification: "${user.notification}"` : ""}
-    ${user?.userId ? `userId: "${user.userId}"` : ""}
+    ${user?.notificationBn ? `notificationBn: "${user.notificationBn}"` : ""}
+    ${user?.userId ? `userId: ${user.userId}` : ""}
     ${user?.status ? `status: "${user.status}"` : ""}
   `;
 }

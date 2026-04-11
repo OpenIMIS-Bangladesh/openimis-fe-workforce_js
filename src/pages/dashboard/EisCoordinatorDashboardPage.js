@@ -275,6 +275,11 @@ const AdvisorApprovedApplications = ({ summaryData = [] }) => {
   console.log("summary data", summaryData);
   return (
     <div className={classes.accordionPadding}>
+      {summaryData.length === 0 && (
+        <Typography variant="h6" align="center" style={{ marginTop: "20px" }}>
+          Loading...
+        </Typography>
+      )}
       {summaryData.map((item, index) => (
         <Accordion key={index} expanded={expanded === item.id} onChange={handleChange(item.id)} className={classes.accordion}>
           <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon className="material-icons" />}>

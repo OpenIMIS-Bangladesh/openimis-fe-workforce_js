@@ -680,7 +680,7 @@ export function fetchApplicationsSummaryDashboard(mm, filters) {
   return graphql(payload, "WORKFORCE_APPLICATIONS_DASHBOARD");
 }
 export function fetchSummaryApplications(mm, filters) {
-  const projections = ["id", "dateCreated", "organizationType", "applicationData", "status", "name", "meetingDate", "month", "year", "sectionType"];
+  const projections = ["id", "dateCreated", "organizationType", "applicationData", "status", "name", "meetingDate", "month", "year", "sectionType", "userIds"];
   const payload = formatPageQueryWithCount("workforceApplicationSummary", filters, projections);
   return graphql(payload, "WORKFORCE_APPLICATIONS_SUMMARY");
 }
@@ -911,7 +911,7 @@ export function fetchApplicationMovement(mm, filters) {
 }
 
 export function fetchApplicationPackage(mm, filters) {
-  const projections = ["id", "applicationData", "meetingDate", "status", "name", "remarks", "year", "month", "organizationType", "sectionType"];
+  const projections = ["id", "applicationData", "meetingDate", "status", "name", "remarks", "year", "month", "organizationType", "sectionType", "userIds"];
   const payload = formatPageQueryWithCount("workforceApplicationSummary", filters, projections);
   return graphql(payload, "WORKFORCE_APPLICATION_SUMMARY");
 }
@@ -3205,17 +3205,18 @@ export function fetchNotificationData(filters) {
     "id",
     "isRead",
     "notification",
-    "userId",
+    "notificationBn",
+    "user{id, loginName}",
     "status"
   ];
-  const payload = formatPageQueryWithCount("workforceOrganizationUnits", filters, projections);
+  const payload = formatPageQueryWithCount("workforceNotifications", filters, projections);
   return graphql(payload, "WORKFORCE_NOTIFICATION_DATA");
 }
 
 
 export function updateNotification(payload, clientMutationLabel) {
   const mutation = formatMutation(
-    "updateNotification",
+    "updateWorkforceNotification",
     formatWorkforceNotificationGQL(payload),
     clientMutationLabel
   );
@@ -3223,9 +3224,9 @@ export function updateNotification(payload, clientMutationLabel) {
   return graphql(
     mutation.payload,
     [
-      "WORKFORCE_COMMITTEE_USER_REQ",
-      "WORKFORCE_COMMITTEE_USER_RESP",
-      "WORKFORCE_COMMITTEE_USER_ERR",
+      "WORKFORCE_WORKFORCE_NOTIFICATION_REQ",
+      "WORKFORCE_WORKFORCE_NOTIFICATION_RESP",
+      "WORKFORCE_WORKFORCE_NOTIFICATION_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,

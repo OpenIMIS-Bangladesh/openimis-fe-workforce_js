@@ -582,11 +582,12 @@ const Dashboard = () => {
 const EisCommitteeDashboardPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
   const modulesManager = useModulesManager();
   const [selectedMenu, setSelectedMenu] = useState("dashboard"); // Default first menu
   useEffect(() => {
-    return dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"eis"']));
-  }, []);
+    return dispatch(fetchSummaryApplications(modulesManager, [`organizationType:"eis"`, `userId:"${loggedInUserId}"`]));
+  }, [loggedInUserId]);
 
   const data = useSelector((state) => state.workforce[`applicationsSummary`] ?? []);
 
