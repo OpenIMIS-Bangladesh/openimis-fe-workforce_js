@@ -57,6 +57,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     wordBreak: 'break-word',
   },
+  badge: {
+    backgroundColor: '#f44336',
+    color: '#ffffff',
+  },
   statusText: {
     marginTop: theme.spacing(0.5),
     color: theme.palette.text.secondary,
@@ -187,7 +191,7 @@ const PushNotification = () => {
         aria-label="show notifications"
         color="inherit"
       >
-        <Badge badgeContent={locale === "en" ? unreadCount : Number(unreadCount).toLocaleString("bn-BD")} color="secondary">
+        <Badge badgeContent={locale === "en" ? unreadCount : Number(unreadCount).toLocaleString("bn-BD")} classes={{ badge: classes.badge }}>
           <NotificationsIcon className={classes.bellIcon} />
         </Badge>
       </IconButton>
