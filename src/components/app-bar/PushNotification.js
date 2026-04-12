@@ -158,6 +158,7 @@ const PushNotification = () => {
         status: notification.status,
         notification: notification.notification,
         notificationBn: notification.notificationBn,
+        workforceApplicationId: safeDecodeId(notification.workforceApplication.id),
       };
 
       await dispatch(
@@ -172,6 +173,7 @@ const PushNotification = () => {
         )
       );
       setUnreadCount((prev) => Math.max(prev - 1, 0));
+      window.location.href = window.location.origin + '/front/workforce/applications/application/verify/'+safeDecodeId(notification.workforceApplication.id);
     } catch (error) {
       console.error('Failed to mark notification read:', error);
     }

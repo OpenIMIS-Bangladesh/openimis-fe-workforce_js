@@ -666,5 +666,6 @@ export function formatWorkforceNotificationGQL(user) {
     ${user?.notificationBn ? `notificationBn: "${user.notificationBn}"` : ""}
     ${user?.userId ? `userId: ${user.userId}` : ""}
     ${user?.status ? `status: "${user.status}"` : ""}
+    ${user?.workforceApplicationId ? `workforceApplicationId: "${user.workforceApplicationId}"` : ""}
   `;
 }

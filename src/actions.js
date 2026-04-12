@@ -3207,6 +3207,7 @@ export function fetchNotificationData(filters) {
     "notification",
     "notificationBn",
     "user{id, loginName}",
+    "workforceApplication{id, trackingNumber}",
     "status"
   ];
   const payload = formatPageQueryWithCount("workforceNotifications", filters, projections);
