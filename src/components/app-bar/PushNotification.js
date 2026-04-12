@@ -16,7 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Box from '@material-ui/core/Box';
 
-const POLL_INTERVAL_MS = 30000;
+const POLL_INTERVAL_MS = 300000;
 
 const useStyles = makeStyles((theme) => ({
   '@keyframes glow': {
