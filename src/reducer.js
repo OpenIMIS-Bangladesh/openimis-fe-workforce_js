@@ -760,8 +760,8 @@ function reducer(
         ...state,
         fetchingNotificationData: false,
         fetchedNotificationData: true,
-        notificationData: parseData(action.payload.data.workforceOrganizationNotificationData),
-        notificationDataPageInfo: pageInfo(action.payload.data.workforceOrganizationNotificationData),
+        notificationData: parseData(action.payload.data.workforceNotification),
+        notificationDataPageInfo: pageInfo(action.payload.data.workforceNotification),
         errorNotificationData: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_NOTIFICATION_DATA_ERR":

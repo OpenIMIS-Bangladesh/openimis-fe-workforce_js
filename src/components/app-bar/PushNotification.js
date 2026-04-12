@@ -16,13 +16,13 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Box from '@material-ui/core/Box';
 
-const POLL_INTERVAL_MS = 15000;
+const POLL_INTERVAL_MS = 30000;
 
 const useStyles = makeStyles((theme) => ({
   '@keyframes glow': {
-    '0%': { boxShadow: '0 0 0px rgba(25, 118, 210, 0)' },
-    '50%': { boxShadow: '0 0 15px rgba(25, 118, 210, 0.8), 0 0 5px rgba(25, 118, 210, 0.5)' },
-    '100%': { boxShadow: '0 0 0px rgba(25, 118, 210, 0)' },
+    '0%': { boxShadow: '0 0 0px rgba(0, 98, 115, 0)' },
+    '50%': { boxShadow: '0 0 15px rgba(0, 98, 115, 0.8), 0 0 5px rgba(0, 98, 115, 0.5)' },
+    '100%': { boxShadow: '0 0 0px rgba(0, 98, 115, 0)' },
   },
   glowingIcon: {
     animation: '$glow 2s infinite alternate',
@@ -189,13 +189,17 @@ const PushNotification = () => {
     <>
       <IconButton
         onClick={handleBellClick}
-        className={hasNotifications ? classes.glowingIcon : classes.defaultIcon}
+        className={classes.defaultIcon}
         aria-label="show notifications"
         color="inherit"
       >
-        <Badge badgeContent={locale === "en" ? unreadCount : Number(unreadCount).toLocaleString("bn-BD")} classes={{ badge: classes.badge }}>
+        {unreadCount > 0 ? (
+          <Badge badgeContent={locale === "en" ? unreadCount : Number(unreadCount).toLocaleString("bn-BD")} classes={{ badge: classes.badge }}>
+            <NotificationsIcon className={classes.glowingIcon} />
+          </Badge>
+        ) : (
           <NotificationsIcon className={classes.bellIcon} />
-        </Badge>
+        )}
       </IconButton>
       <Menu
         anchorEl={anchorEl}
