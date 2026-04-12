@@ -347,9 +347,9 @@ export const handleBulkSelectedByAssociationLogic = async ({
         message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
       });
     } finally {
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 200);
+      setTimeout(() => {
+        window.location.reload();
+      }, 200);
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
     }
@@ -501,7 +501,9 @@ export const handleBulkSelectedByCheckerLogic = async ({
       });
     } finally {
       // history.push("/home");
-      // window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 200);
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
     }
