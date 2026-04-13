@@ -180,12 +180,12 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
       // 3. Parse Data
       let rawData = response?.payload?.data?.workforceApplicationMovement;
       let rawMovements = [];
-
+      console.log({ rawData });
       // Handle parsing if it's a string, or use directly if object
       if (typeof rawData === "string") {
         try {
           rawMovements = JSON.parse(rawData);
-        } catch (e) { }
+        } catch (e) {}
       } else {
         rawMovements = rawData || [];
       }
@@ -205,16 +205,15 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
       const senderIds = [
         ...new Set(
           actualNodes
-            .filter((item) => item?.status === "forward_to_comiitee")
+            .filter((item) => (item?.status === "forward_to_comiitee" || item?.status ==="approved_by_committee"))
             .map((item) => {
               const node = item.node || item; // Handle if double nested
-              return node?.applicationTo?.id
-                ? decodeId(node.applicationTo.id)
-                : null;
+              return node?.applicationTo?.id ? decodeId(node.applicationTo.id) : null;
             })
-            .filter((id) => id !== null)
+            .filter((id) => id !== null),
         ),
       ];
+      console.log({ actualNodes });
       await dispatch(fetchWorkforceSignatures([...senderIds])).then((res) => {
         setEisApprovalSignature(res?.payload?.data?.workforceSignatures);
       });
@@ -286,7 +285,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
         updateWorkforceEisPaymentProcessPaymentType({
           beneficiaryId,
           eisPaymentType: paymentType,
-        })
+        }),
       );
     } catch (error) {
       console.error(error);
@@ -303,7 +302,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
         updateWorkforceEisPaymentProcessApproval({
           beneficiaryId,
           approved: value,
-        })
+        }),
       );
     } catch (error) {
       console.error(error);
@@ -379,7 +378,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     sheet.getCell("A6").alignment = { horizontal: "left" };
 
     sheet.mergeCells("G6:I6");
-    sheet.getCell("G6").value = "Date: " + (typeof benefitDate !== 'undefined' ? benefitDate : ""); // handling variable scope safety
+    sheet.getCell("G6").value = "Date: " + (typeof benefitDate !== "undefined" ? benefitDate : ""); // handling variable scope safety
     sheet.getCell("G6").font = { bold: true };
     sheet.getCell("G6").alignment = { horizontal: "right" };
 
@@ -388,9 +387,9 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     // ==========================
     const data = eisPayments?.[0] || {};
     const parsingAccidentInfo = JSON.parse(data.workforceApplication?.employeeAccidentInfo || "{}");
-    const parsedAccidentInfo = typeof parsingAccidentInfo === 'string' ? JSON.parse(parsingAccidentInfo) : parsingAccidentInfo;
+    const parsedAccidentInfo = typeof parsingAccidentInfo === "string" ? JSON.parse(parsingAccidentInfo) : parsingAccidentInfo;
     const parsingDoctorEntry = JSON.parse(data.workforceApplication?.doctorsEntry || "{}");
-    const parsedDoctorEntry = typeof parsingDoctorEntry === 'string' ? JSON.parse(parsingDoctorEntry) : parsingDoctorEntry;
+    const parsedDoctorEntry = typeof parsingDoctorEntry === "string" ? JSON.parse(parsingDoctorEntry) : parsingDoctorEntry;
 
     const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
     const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
@@ -411,7 +410,14 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
       ["Name of Association", data.workforceApplication?.associationType || ""],
       ["Gross Salary (BDT)", data.workforceApplication?.lastBaseSalary || ""],
       ["Percentage of Disability", parsedDoctorEntry?.disabilityPerSchedule || ""],
-      ["Type of Accident", (parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace" ? "Workplace Accident" : parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA" ? "On Duty RTA" : "Commuting") || ""],
+      [
+        "Type of Accident",
+        (parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace"
+          ? "Workplace Accident"
+          : parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA"
+            ? "On Duty RTA"
+            : "Commuting") || "",
+      ],
     ];
 
     // Section Title
@@ -438,10 +444,10 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
       ["A", "B", "D", "E"].forEach((col) => {
         const cell = sheet.getCell(`${col}${row.number}`);
         // Only draw border if there is content or it's within the valid list range
-        if (i < leftItems.length && (col === 'A' || col === 'B')) {
+        if (i < leftItems.length && (col === "A" || col === "B")) {
           cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, right: { style: "thin" } };
         }
-        if (i < rightItems.length && (col === 'D' || col === 'E')) {
+        if (i < rightItems.length && (col === "D" || col === "E")) {
           cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, right: { style: "thin" } };
         }
 
@@ -460,10 +466,16 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     sheet.addRow([]);
 
     const tableHeader = [
-      "Sl #", "EIS Worker ID", "NID/Birth Certificate of Worker", "Benefit Rate (%) of Gross Salary",
-      "Monthly Payable Benefit (BDT)", "Net Monthly Payable After Adjustment (BDT)",
+      "Sl #",
+      "EIS Worker ID",
+      "NID/Birth Certificate of Worker",
+      "Benefit Rate (%) of Gross Salary",
+      "Monthly Payable Benefit (BDT)",
+      "Net Monthly Payable After Adjustment (BDT)",
       // "Total time amount (individual)", "After adjustment (individual)",
-      "Type of Payment", "Approval Status", "Remarks",
+      "Type of Payment",
+      "Approval Status",
+      "Remarks",
     ];
 
     const headerRow = sheet.addRow(tableHeader);
@@ -485,7 +497,9 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
       const excelRow = sheet.addRow([
         index + 1,
         row?.beneficiaryId || "",
-        row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid || "",
+        row?.workforceApplication?.applicationType === "financialAssistance"
+          ? row?.workforceEmployeeDependent?.[0]?.nid
+          : row?.workforceApplication?.workforceEmployee?.nid || "",
         `${benefitRate * 100}%`,
         Number(row?.eisInitialMonthlyAmount || 0).toFixed(2),
         Number(row?.eisMonthlyAmount || 0).toFixed(2),
@@ -515,11 +529,15 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     // ==========================
     // Footer
     // ==========================
-    sheet.addRow([]); sheet.addRow([]); sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
     const footerHeader = sheet.addRow(["Signature of EIS-GB Sub Committee Members:"]);
     footerHeader.font = { bold: true, size: 13 };
     footerHeader.alignment = { horizontal: "left" };
-    sheet.addRow([]); sheet.addRow([]); sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
 
     const signatureBlocks = [
       ["President-BAWF &\nExecutive Member,\nIBC\nMember\nEIS-GB Sub\nCommittee"],
@@ -534,11 +552,16 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
 
     const underlineRow = sheet.addRow(signatureBlocks.map(() => "__________________"));
     underlineRow.height = 20;
-    underlineRow.eachCell((cell) => { cell.font = { bold: true }; cell.alignment = { horizontal: "left", vertical: "bottom" }; });
+    underlineRow.eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "left", vertical: "bottom" };
+    });
 
     const textRow = sheet.addRow(signatureBlocks.map((sig) => sig[0]));
     textRow.height = 70;
-    textRow.eachCell((cell) => { cell.alignment = { horizontal: "left", vertical: "top", wrapText: true }; });
+    textRow.eachCell((cell) => {
+      cell.alignment = { horizontal: "left", vertical: "top", wrapText: true };
+    });
 
     sheet.addRow([]);
 
@@ -546,7 +569,6 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
     saveAs(blob, "Benefit Approval Note-Disability.xlsx");
   };
-
 
   const exportDeathExcel = async (eisPayments) => {
     const workbook = new ExcelJS.Workbook();
@@ -607,9 +629,9 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     // ==========================
     const data = eisPayments?.[0] || {};
     const parsingAccidentInfo = JSON.parse(data.workforceApplication?.employeeAccidentInfo || "{}");
-    const parsedAccidentInfo = typeof parsingAccidentInfo === 'string' ? JSON.parse(parsingAccidentInfo) : parsingAccidentInfo;
+    const parsedAccidentInfo = typeof parsingAccidentInfo === "string" ? JSON.parse(parsingAccidentInfo) : parsingAccidentInfo;
     const parsingDoctorEntry = JSON.parse(data.workforceApplication?.doctorsEntry || "{}");
-    const parsedDoctorEntry = typeof parsingDoctorEntry === 'string' ? JSON.parse(parsingDoctorEntry) : parsingDoctorEntry;
+    const parsedDoctorEntry = typeof parsingDoctorEntry === "string" ? JSON.parse(parsingDoctorEntry) : parsingDoctorEntry;
 
     // We keep all variable extractions here as requested (don't remove fields)
     const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
@@ -636,7 +658,14 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
       ["Name of Association", data.workforceApplication?.associationType || ""],
       ["Gross Salary (BDT)", data.workforceApplication?.lastBaseSalary || ""],
       // Removed: ["Percentage of Disability", parsedDoctorEntry?.disabilityPerSchedule || ""],
-      ["Type of Accident", (parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace" ? "Workplace Accident" : parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA" ? "On Duty RTA" : "Commuting") || ""],
+      [
+        "Type of Accident",
+        (parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.workplace"
+          ? "Workplace Accident"
+          : parsedAccidentInfo?.accidentMainType === "workforce.accident.mainType.onDutyRTA"
+            ? "On Duty RTA"
+            : "Commuting") || "",
+      ],
     ];
 
     // Section Title
@@ -664,10 +693,10 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
         const cell = sheet.getCell(`${col}${row.number}`);
 
         // Only draw borders if content exists for this side
-        if (i < leftItems.length && (col === 'A' || col === 'B')) {
+        if (i < leftItems.length && (col === "A" || col === "B")) {
           cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, right: { style: "thin" } };
         }
-        if (i < rightItems.length && (col === 'D' || col === 'E')) {
+        if (i < rightItems.length && (col === "D" || col === "E")) {
           cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, right: { style: "thin" } };
         }
 
@@ -686,10 +715,17 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     sheet.addRow([]);
 
     const tableHeader = [
-      "Sl #", "EIS Beneficiary ID", "NID/Birth Certificate of Worker", "Relationship with worker",
-      "Benefit Rate (%) of Gross Salary", "Monthly Payable Benefit (BDT)", "Net Monthly Payable After Adjustment (BDT)",
+      "Sl #",
+      "EIS Beneficiary ID",
+      "NID/Birth Certificate of Worker",
+      "Relationship with worker",
+      "Benefit Rate (%) of Gross Salary",
+      "Monthly Payable Benefit (BDT)",
+      "Net Monthly Payable After Adjustment (BDT)",
       // "Total time amount (individual)", "After adjustment (individual)",
-      "Type of Payment", "Approval Status", "Remarks",
+      "Type of Payment",
+      "Approval Status",
+      "Remarks",
     ];
 
     const headerRow = sheet.addRow(tableHeader);
@@ -706,14 +742,20 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
 
     eisPayments.forEach((row, index) => {
       const benefitRate = Number(row?.eisInitialReplacementRate) || 0;
-      if (benefitRateTotal === null) { benefitRateTotal = benefitRate; }
+      if (benefitRateTotal === null) {
+        benefitRateTotal = benefitRate;
+      }
 
       const excelRow = sheet.addRow([
         index + 1,
         row?.beneficiaryId,
-        row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid || "",
+        row?.workforceApplication?.applicationType === "financialAssistance"
+          ? row?.workforceEmployeeDependent?.[0]?.nid
+          : row?.workforceApplication?.workforceEmployee?.nid || "",
         // Note: Ensure RELATION_LABEL_MAP is defined in your component scope
-        (typeof RELATION_LABEL_MAP !== 'undefined' ? RELATION_LABEL_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker] : row?.workforceEmployeeDependent?.[0]?.relationWithWorker) || "",
+        (typeof RELATION_LABEL_MAP !== "undefined"
+          ? RELATION_LABEL_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker]
+          : row?.workforceEmployeeDependent?.[0]?.relationWithWorker) || "",
         `${benefitRate * 100}%`,
         Number(row?.eisInitialMonthlyAmount || 0).toFixed(2),
         Number(row?.eisMonthlyAmount || 0).toFixed(2),
@@ -743,11 +785,15 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     // ==========================
     // Footer
     // ==========================
-    sheet.addRow([]); sheet.addRow([]); sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
     const footerHeader = sheet.addRow(["Signature of EIS-GB Sub Committee Members:"]);
     footerHeader.font = { bold: true, size: 13 };
     footerHeader.alignment = { horizontal: "left" };
-    sheet.addRow([]); sheet.addRow([]); sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
+    sheet.addRow([]);
 
     const signatureBlocks = [
       ["Executive Member\nIBC\nMember.\nEIS-GB Sub Committee"],
@@ -756,16 +802,21 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
       ["Chairman,\nLabour & ILO Standing Committee\nBGMEA\nMember.\nEIS-GB Sub Committee"],
       ["Director General,\nDepartment of Labour\nMember Secretary.\nEIS-GB Sub Committee"],
       ["Director General,\nCentral Fund\nMember Secretary.\nEIS-GB Sub Committee"],
-      ["Additional Secretary,\nI.O. Wing, MoLE\nChairman.\nEIS-GB Sub Committee"]
+      ["Additional Secretary,\nI.O. Wing, MoLE\nChairman.\nEIS-GB Sub Committee"],
     ];
 
     const underlineRow = sheet.addRow(signatureBlocks.map(() => "__________________"));
     underlineRow.height = 20;
-    underlineRow.eachCell((cell) => { cell.font = { bold: true }; cell.alignment = { horizontal: "left", vertical: "bottom" }; });
+    underlineRow.eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: "left", vertical: "bottom" };
+    });
 
     const textRow = sheet.addRow(signatureBlocks.map((sig) => sig[0]));
     textRow.height = 70;
-    textRow.eachCell((cell) => { cell.alignment = { horizontal: "left", vertical: "top", wrapText: true }; });
+    textRow.eachCell((cell) => {
+      cell.alignment = { horizontal: "left", vertical: "top", wrapText: true };
+    });
 
     sheet.addRow([]);
 
@@ -779,7 +830,6 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
   const appType = firstData?.workforceApplication?.applicationType;
   const isDeathCase = appType === "financialAssistance";
 
-
   // Parse JSONs for UI
   let parsedAccidentInfo = {};
   let parsedDoctorEntry = {};
@@ -788,7 +838,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     if (rawAccident) parsedAccidentInfo = JSON.parse(JSON.parse(rawAccident));
     const rawDoctor = firstData?.workforceApplication?.doctorsEntry;
     if (rawDoctor) parsedDoctorEntry = JSON.parse(JSON.parse(rawDoctor));
-  } catch (e) { }
+  } catch (e) {}
 
   const dateOfRejoining = parsedAccidentInfo?.dateOfRejoining || "";
   const dateOfAssessment = parsedDoctorEntry?.dateOfAssessment || "";
@@ -805,13 +855,16 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     "Director General, \n Central Fund \n Member Secretary \n EIS-GB Sub Committee",
     "Additional Secretary, \n I.O. Wing, MoLE \n Chairman \n EIS-GB Sub Committee",
   ];
+  console.log({ eisPayments });
+  console.log({ eisApprovalSignature });
 
   // --- RENDER ---
   return (
     <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth classes={{ paper: classes.dialogPaper }}>
       <DialogTitle disableTypography className={classes.noPrint}>
         <Typography variant="h6">
-          <FormattedMessage id="Preview & Print Approval Note" />
+          <FormattedMessage id={"Preview & Print Approval Note"} />
+          {/* <FormattedMessage id={eisPayments[0]?.workforceApplication?.eisApplicationSummary?.name} /> */}
         </Typography>
       </DialogTitle>
 
@@ -832,7 +885,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
             <Box mt={3} mb={1}>
               <Grid container justify="space-between">
                 <Grid item>
-                  <Typography style={{ fontWeight: "bold", fontSize: "12px", fontFamily: "Arial" }}>EIS-GB Sub Committee Meeting No: 16</Typography>
+                  <Typography style={{ fontWeight: "bold", fontSize: "12px", fontFamily: "Arial" }}>{eisApprovalSignature[0]?.role?.name} : {eisPayments[0]?.workforceApplication?.eisApplicationSummary?.name}</Typography>
                 </Grid>
                 <Grid item>
                   <Typography style={{ fontWeight: "bold", fontSize: "12px", fontFamily: "Arial" }}>Date: {new Date().toLocaleDateString()}</Typography>
@@ -878,7 +931,11 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                 )}
                 <tr>
                   <td style={{ fontWeight: "bold" }}>Effective date of Benefit</td>
-                  <td>{firstData?.workforceApplication?.applicationType === "financialAssistance" ? parsedAccidentInfo?.dateOfDeath : dateOfRejoining || dateOfAssessment || parsedAccidentInfo?.accidentDate || ""}</td>
+                  <td>
+                    {firstData?.workforceApplication?.applicationType === "financialAssistance"
+                      ? parsedAccidentInfo?.dateOfDeath
+                      : dateOfRejoining || dateOfAssessment || parsedAccidentInfo?.accidentDate || ""}
+                  </td>
                   <td style={{ border: "none" }}></td>
                   <td style={{ fontWeight: "bold" }}>Type of Accident</td>
                   <td>
@@ -903,17 +960,13 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                   <th>NID/Birth Certificate of {isDeathCase ? " Beneficiary" : " Worker"}</th>
                   {isDeathCase ? <th>Relation with worker</th> : null}
                   <th>Benefit Rate (%)</th>
-                  {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
-                    ? null
-                    :
-                    (
-                      firstData?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee" ? (
-                        <>
-                          <th>Total Time Amount</th>
-                          <th>After Adjustment</th>
-                        </>
-                      ) : null
-                    )}
+                  {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type) ? null : firstData
+                      ?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee" ? (
+                    <>
+                      <th>Total Time Amount</th>
+                      <th>After Adjustment</th>
+                    </>
+                  ) : null}
                   <th>Monthly Payable (BDT)</th>
                   <th>Net Payable (BDT)</th>
                   <th>Payment Type</th>
@@ -932,33 +985,33 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                       <td style={{ textAlign: "center" }}>{index + 1}</td>
                       <td>{row?.beneficiaryId}</td>
                       {/* <td>{row?.workforceApplication?.workforceEmployee?.firstNameEn}</td> */}
-                      <td>{row?.workforceApplication?.applicationType === 'financialAssistance' ? row?.workforceEmployeeDependent?.[0]?.nid : row?.workforceApplication?.workforceEmployee?.nid}</td>
+                      <td>
+                        {row?.workforceApplication?.applicationType === "financialAssistance"
+                          ? row?.workforceEmployeeDependent?.[0]?.nid
+                          : row?.workforceApplication?.workforceEmployee?.nid}
+                      </td>
                       {/* <td>
                         {row?.workforceEmployeeDependent?.length > 0
                           ? `${row.workforceEmployeeDependent[0].nameEn} (${RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker] || ""})`
                           : "N/A"}
                       </td> */}
-                      {
-                        isDeathCase ? (
-                          <td>
-                            {row?.workforceEmployeeDependent?.length > 0
-                              ? (RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker] || row.workforceEmployeeDependent[0].relationWithWorker || "N/A")
-                              : "N/A"}
-                          </td>
-                        ) : null
-                      }
+                      {isDeathCase ? (
+                        <td>
+                          {row?.workforceEmployeeDependent?.length > 0
+                            ? RELATION_LABEL_MAP[row.workforceEmployeeDependent[0].relationWithWorker] ||
+                              row.workforceEmployeeDependent[0].relationWithWorker ||
+                              "N/A"
+                            : "N/A"}
+                        </td>
+                      ) : null}
                       <td style={{ textAlign: "center" }}>{benefitRate}%</td>
-                      {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
-                        ? null
-                        : (
-                          firstData?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee" ? (
-                            <>
-                              <td style={{ textAlign: "right" }}>{row?.eisCalculatedAmount}</td>
-                              <td style={{ textAlign: "right" }}>{row?.eisApprovedAmount}</td>
-                            </>
-                          ) : null
-                        )
-                      }
+                      {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type) ? null : firstData
+                          ?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee" ? (
+                        <>
+                          <td style={{ textAlign: "right" }}>{row?.eisCalculatedAmount}</td>
+                          <td style={{ textAlign: "right" }}>{row?.eisApprovedAmount}</td>
+                        </>
+                      ) : null}
                       <td style={{ textAlign: "right" }}>{Number(row?.eisInitialMonthlyAmount || 0).toFixed(2)}</td>
                       <td style={{ textAlign: "right" }}>{Number(row?.eisMonthlyAmount || 0).toFixed(2)}</td>
 
@@ -989,17 +1042,22 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                 })}
                 {/* Totals */}
                 <tr>
-                  <td colSpan={[
-                    WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
-                    ?
-                    (isDeathCase ? 5 : 4)
-                    :
-                    firstData?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee"
-                      ?
-                      (isDeathCase ? 7 : 6)
-                      :
-                      (isDeathCase ? 5 : 4)
-                  } style={{ textAlign: "right", fontWeight: "bold" }}>
+                  <td
+                    colSpan={
+                      [WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type)
+                        ? isDeathCase
+                          ? 5
+                          : 4
+                        : firstData?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee"
+                          ? isDeathCase
+                            ? 7
+                            : 6
+                          : isDeathCase
+                            ? 5
+                            : 4
+                    }
+                    style={{ textAlign: "right", fontWeight: "bold" }}
+                  >
                     Total:
                   </td>
                   <td style={{ textAlign: "right", fontWeight: "bold" }}>{Number(getMonthlyTotalAmount() || 0).toFixed(2)}</td>
@@ -1011,32 +1069,26 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
 
             {/* 4. FOOTER */}
             <Box mt={4}>
-              <Typography style={{ fontWeight: "bold", textDecoration: "underline", color: "#000" }}>Signature of EIS-GB Sub Committee Members:</Typography>
+              <Typography style={{ fontWeight: "bold", textDecoration: "underline", color: "#000" }}>Signature of {eisApprovalSignature[0]?.role?.name} Members:</Typography>
               <Grid container spacing={2} className={classes.signatureContainer}>
-                {eisApprovalSignature
-                  ?.filter((sig) => ["eis committee", "eis association committee"].includes(sig?.role?.name?.toLowerCase()))
-                  .map((sig, i) => {
-                    const approvedByUserIds = safeParse(eisPayments[0]?.workforceApplication?.eisApprovedByIds)
-                    const isSignatureAvailable = approvedByUserIds?.includes(Number(sig?.user_id));
-                    if (isSignatureAvailable) {
-                      return (
-                        <Grid item xs={3} key={i}>
-                          {sig?.workforce_document?.url ? (
-                            <img src={sig.workforce_document.url} alt="signature" style={{ width: "100%", maxHeight: 80, objectFit: "contain" }} />
-                          ) : (
-                            <Typography variant="caption" style={{ fontStyle: "italic", color: "#999" }}>
-                              Signature not available
-                            </Typography>
-                          )}
+                {eisApprovalSignature?.map((sig, i) => (
+                  <Grid item xs={3} key={sig?.user_id || i}>
+                    {/* Signature Image */}
+                    {sig?.workforce_document?.url ? (
+                      <img src={sig.workforce_document.url} alt="signature" style={{ width: "100%", maxHeight: 80, objectFit: "contain" }} />
+                    ) : (
+                      <Typography variant="caption" style={{ fontStyle: "italic", color: "#999" }}>
+                        Signature not available
+                      </Typography>
+                    )}
 
-                          <div className={classes.signatureBlock}>
-                            <p>{sig?.last_name}</p>
-                            <p>{sig?.role?.name}</p>
-                          </div>
-                        </Grid>
-                      )
-                    }
-                  })}
+                    {/* Name and Role */}
+                    <div className={classes.signatureBlock}>
+                      <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.last_name}</p>
+                      <p style={{ margin: 0 }}>{sig?.role?.name}</p>
+                    </div>
+                  </Grid>
+                ))}
               </Grid>
             </Box>
           </div>

@@ -75,11 +75,11 @@ export const headerChecker = (component) => [
   "workforce.employee.application.status",
   "view",
   // ✅ Conditionally add verify & revert (when buttons are enabled)
-  ...(component.props.disableButtons !== 1 
+  ...(component.props.disableButtons !== 1 && !component?.props?.forwardedApplications
     ? ["verify", "revert"]
     : []),
   // ✅ Conditionally add resend (when reverted applications exist)
-  ...(component.props.revertedApplication
+  ...(component.props.revertedApplication && !component?.props?.forwardedApplications
     ? ["resend"]
     : []),
   // ✅ Conditionally add version column
@@ -136,7 +136,7 @@ export const headerSectionAdmin = (component) => [
   "view",
 
   // ✅ Conditionally add "verify", "revert", "reject" when buttons enabled and not reverted
-  ...(component.props.disableButtons !== 1 && !component.props.revertedApplication 
+  ...(component.props.disableButtons !== 1 && !component.props.revertedApplication && !component?.props?.sentForVerificationApplications
     ? ["verify", "revert", "reject"]
     : []),
 
@@ -240,11 +240,11 @@ export const headerAssociation = (component) => [
   "workforce.employee.application.status",
   "view",
   // ✅ Conditionally add verify & revert
-  ...(component.props.disableButtons !== 1 && !component.props.revertedApplication
+  ...(component.props.disableButtons !== 1 && !component.props.revertedApplication && !component?.props?.forwardedApplications
     ? ["verify", "revert"]
     : []),
   // ✅ Conditionally add resend
-  ...(component.props.disableButtons !== 1 && component.props.revertedApplication
+  ...(component.props.disableButtons !== 1 && component.props.revertedApplication && !component?.props?.forwardedApplications
     ? ["resend"]
     : []),
   // ✅ Conditionally add version column
