@@ -624,6 +624,7 @@ export function fetchApplicationsSummary(mm, filters) {
     "deceasedWorkerInfo",
     "eisApprovalIds",
     "eisApprovedByIds",
+    "lastMovementDate",
   ];
   const payload = formatPageQueryWithCount("workforceApplication", filters, projections);
   return graphql(payload, "WORKFORCE_APPLICATIONS");

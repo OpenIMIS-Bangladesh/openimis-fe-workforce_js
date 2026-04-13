@@ -425,8 +425,8 @@ export const itemFormattersChecker = (
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
     // (application) => conditionalEnToBn(application?.grantAmount, locale),
-    (application) => application?.applicationReceiveDate
-      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.lastMovementDate
+      ? conditionalEnToBn(application.lastMovementDate.split("T")[0], locale) : "N/A",
     (application) => application?.applicationForwardDate
       ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
@@ -459,41 +459,46 @@ export const itemFormattersChecker = (
   ));
 
   // --- VERIFY BUTTON ---
-  formatters.push((application) => (
-    <div className={component.props.classes.horizontalButtonContainer}>
-      <Tooltip title="Verify">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.verify",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <VerifiedUserIcon style={{ color: "green" }} />
-        </IconButton>
-      </Tooltip>
-    </div>
-  ));
+  
+    formatters.push((application) => (
+      <div className={component.props.classes.horizontalButtonContainer}>
+        <Tooltip title="Verify">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(
+                modulesManager,
+                history,
+                "workforce.route.applications.application.verify",
+                [decodeId(application?.id)],
+                false
+              );
+            }}
+          >
+            <VerifiedUserIcon style={{ color: "green" }} />
+          </IconButton>
+        </Tooltip>
+      </div>
+    ))
+  
 
   // --- REVERT BUTTON ---
-  formatters.push((application) => (
-    <div className={component.props.classes.horizontalButtonContainer}>
-      <Tooltip title="Revert">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => component.handleOpenRevertModal(application)}
-        >
-          <UndoIcon style={{ color: "red" }} />
-        </IconButton>
-      </Tooltip>
-    </div>
-  ));
+  
+    formatters.push((application) => (
+      <div className={component.props.classes.horizontalButtonContainer}>
+        <Tooltip title="Revert">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => component.handleOpenRevertModal(application)}
+          >
+            <UndoIcon style={{ color: "red" }} />
+          </IconButton>
+        </Tooltip>
+      </div>
+    ))
+  
   ///---RESEND BUTTON ---
+  
     formatters.push((application) =>
     component.props.disableButtons !== 1 && component.props.revertedApplication ? (
       <div className={component.props.classes.horizontalButtonContainer}>
@@ -515,7 +520,8 @@ export const itemFormattersChecker = (
         </Tooltip>
       </div>
     ) : null
-  );
+    )
+
 
   return formatters;
 };
@@ -831,8 +837,8 @@ export const itemFormattersSectionAdmin = (
         : application?.grantMoney?.applicationTypeNameBn,
     (application) => application?.associationType,
     (application) => application?.workforceEmployee?.nid,
-    (application) => application?.applicationReceiveDate
-      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.lastMovementDate
+      ? conditionalEnToBn(application.lastMovementDate.split("T")[0], locale) : "N/A",
     (application) => application?.applicationForwardDate
       ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
@@ -1413,8 +1419,8 @@ export const itemFormattersAssociation = (
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
         : application?.grantMoney?.applicationTypeNameBn,
-    (application) => application?.applicationReceiveDate
-      ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A",
+    (application) => application?.lastMovementDate
+      ? conditionalEnToBn(application.lastMovementDate.split("T")[0], locale) : "N/A",
     (application) => application?.applicationForwardDate
       ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A",
     (application) => {
