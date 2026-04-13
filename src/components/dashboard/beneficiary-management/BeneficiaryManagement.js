@@ -118,7 +118,7 @@ const BeneficiaryManagement = () => {
       dispatch(fetchWorkforceFactoriesSummary(modulesManager, [])).then(factoryRes => {
         setFactories(factoryRes?.payload?.data?.workforceEmployerFactories?.edges || []);
       });
-      dispatch(fetchWorkforceAllAssociationSummary(modulesManager, [])).then(assocRes => {
+      dispatch(fetchWorkforceAllAssociationSummary([])).then(assocRes => {
         setAssociations(assocRes?.payload?.data?.workforceAllAssociation?.edges || []);
       });
       const [processRes] = await Promise.all([

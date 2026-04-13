@@ -63,7 +63,7 @@ const BeneficiaryPaymentProcess = () => {
     setLoading(true);
     try {
       dispatch(fetchWorkforceFactoriesSummary(modulesManager, [])).then(res => setFactories(res?.payload?.data?.workforceEmployerFactories?.edges|| []));
-      dispatch(fetchWorkforceAllAssociationSummary(modulesManager, [])).then(res => setAssociations(res?.payload?.data?.workforceAllAssociation?.edges || []));
+      dispatch(fetchWorkforceAllAssociationSummary([])).then(res => setAssociations(res?.payload?.data?.workforceAllAssociation?.edges || []));
       const [processRes] = await Promise.all([
         dispatch(fetchEisPaymentProcessWithFilters({
           month: filters.month,

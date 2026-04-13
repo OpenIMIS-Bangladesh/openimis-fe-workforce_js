@@ -92,7 +92,7 @@ class WorkforceAssociationSearcher extends Component {
     const { showHistoryFilter } = this.state;
     this.setState({ displayVersion: showHistoryFilter });
     this.props.fetchWorkforceAllAssociationSummary(
-      this.props.modulesManager,
+      // this.props.modulesManager,
       prms
     );
   };

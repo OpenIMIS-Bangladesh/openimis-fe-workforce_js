@@ -456,7 +456,8 @@ export function fetchWorkforceEmployeesSummary(mm, filters) {
   const payload = formatPageQueryWithCount("workforceEmployerEmployees", filters, projections);
   return graphql(payload, "WORKFORCE_EMPLOYEES");
 }
-export function fetchWorkforceAllAssociationSummary(filters) {
+export function fetchWorkforceAllAssociationSummary(filters=[]) {
+  filters.push(`status: "active"`);
   const projections = [
     "id",
     "nameEn",
@@ -474,7 +475,8 @@ export function fetchWorkforceAllAssociationSummary(filters) {
   const payload = formatPageQueryWithCount("workforceAllAssociation", filters, projections);
   return graphql(payload, "WORKFORCE_ALL_ASSOCIATIONS");
 }
-export function fetchWorkforceAllAssociation(mm, filters) {
+export function fetchWorkforceAllAssociation(mm, filters=[]) {
+  filters.push(`status: "active"`);
   const projections = ["id", "nameEn", "nameBn", "shortNameEn", "shortNameBn", "phone", "email", "address", "webAddress", "status", "minimumSalary"];
   const payload = formatPageQueryWithCount("workforceAllAssociation", filters, projections);
   return graphql(payload, "WORKFORCE_ALL_ASSOCIATIONS");
