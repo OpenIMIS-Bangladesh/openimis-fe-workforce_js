@@ -121,7 +121,10 @@ export const itemAdminFormatters = (
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) => application?.applicationType === "financialAssistance" ||
+                        application?.applicationType === "deadlyGrant"
+                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
+                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
     (application) =>
       locale === "en"
         ? application?.employeeFactory?.nameEn
@@ -222,7 +225,12 @@ export const itemFormattersDirector = (
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) => {
+      if (application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant") {
+        return locale === "en" ? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn;
+      }
+      return locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn;
+    },
     (application) =>
       locale === "en"
         ? application?.employeeFactory?.nameEn
@@ -415,7 +423,12 @@ export const itemFormattersChecker = (
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) => {
+      if (application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant") {
+        return locale === "en" ? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn;
+      }
+      return locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn;
+    },
     (application) =>
       locale === "en"
         ? application?.employeeFactory?.nameEn
@@ -537,7 +550,12 @@ export const itemFormattersCheckerTwo = (
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) => {
+      if (application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant") {
+        return locale === "en" ? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn;
+      }
+      return locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn;
+    },
     (application) =>
       locale === "en"
         ? application?.employeeFactory?.nameEn
@@ -645,7 +663,12 @@ export const itemFormattersDeputyAsstDirector = (
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) => {
+      if (application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant") {
+        return locale === "en" ? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn;
+      }
+      return locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn;
+    },
     (application) =>
       locale === "en"
         ? application?.employeeFactory?.nameEn
@@ -752,7 +775,12 @@ export const itemFormattersS2DeputyAsstDirector = (
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) => {
+      if (application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant") {
+        return locale === "en" ? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn;
+      }
+      return locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn;
+    },
     (application) =>
       locale === "en"
         ? application?.employeeFactory?.nameEn
@@ -826,7 +854,12 @@ export const itemFormattersSectionAdmin = (
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) => {
+      if (application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant") {
+        return locale === "en" ? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn;
+      }
+      return locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn;
+    },
     (application) =>
       locale === "en"
         ? application?.employeeFactory?.nameEn
@@ -966,7 +999,10 @@ export const itemFormattersSectionTwoAdmin = (
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) => application?.applicationType === "financialAssistance" ||
+                        application?.applicationType === "deadlyGrant"
+                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
+                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
     (application) =>
       locale === "en"
         ? application?.employeeFactory?.nameEn
@@ -1104,7 +1140,10 @@ export const itemFormattersBlwfSectionAdmin = (
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) => application?.applicationType === "financialAssistance" ||
+                        application?.applicationType === "deadlyGrant"
+                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
+                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
     (application) =>
       locale === "en"
         ? application?.grantMoney?.applicationTypeNameEn
@@ -1256,7 +1295,10 @@ export const itemFormattersDoctor = (
     (application) => application?.trackingNumber,
     (application) =>
       conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.workforceEmployee?.firstNameBn,
+    (application) => application?.applicationType === "financialAssistance" ||
+                        application?.applicationType === "deadlyGrant"
+                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
+                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
     (application) =>
       locale === "en"
         ? application?.employeeFactory?.nameEn
