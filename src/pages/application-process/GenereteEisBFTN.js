@@ -790,7 +790,7 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount, noaSig
                 </tr>
                 <tr>
                   <td className="noa-label">স্থায়ী অক্ষমতার (উপার্জনক্ষমতা হ্রাস) হার:</td>
-                  <td className="noa-value">{doctorEntryInfo?.disabilityPerSchedule || ""}</td>
+                  <td className="noa-value">{Number(doctorEntryInfo?.disabilityPerSchedule).toLocaleString("bn-BD") || "0"}{"%"}</td>
                 </tr>
                 <tr>
                   <td className="noa-label">স্থায়ী অক্ষমতা নিরীক্ষণের তারিখ:</td>
