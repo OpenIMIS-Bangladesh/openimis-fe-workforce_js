@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import FileUploader from "../../pickers/FileUploader";
 import { fetchDocumentType } from "../../actions";
+import { conditionalEnToBn } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -45,7 +46,8 @@ const EmployeeDetailsForm2 = ({
   const history = useHistory();
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
+  const locale = useSelector(state => state.core?.user?.i_user?.language);
 
   useEffect(() => {
     if (formData.applicationType && formData.organizationType) {
@@ -343,7 +345,7 @@ const EmployeeDetailsForm2 = ({
                   <Grid container spacing={2} alignItems="center" style={{ marginBottom: "12px", border: "1px solid #006273" }} key={document.fieldId}>
                     <Grid item xs={5}>
                       <Typography style={{ color: hasError ? "red" : "inherit" }}>
-                        {index + 1}. {document.nameBn} {document?.mandatoryForApplicant && <sup style={{ color: "red" }}>*</sup>}
+                        {conditionalEnToBn(index + 1,locale)}. {locale ==="en"?document?.nameEn:document?.nameBn} {document?.mandatoryForApplicant && <sup style={{ color: "red" }}>*</sup>}
                       </Typography>
                     </Grid>
                     <Grid item xs={6}>

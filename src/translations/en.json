@@ -356,6 +356,8 @@
   "workforce.employee.accident.info.disAbilityEffect": "Limitations in Occupation and Activities of Daily Living?",
   "workforce.employee.accident.info.presentInjuryBLASchedule1": "Present Injury Matching BLA Schedule 1 Serial no",
   "workforce.employee.accident.info.disabilityPerSchedule": "Disability (Loss of Earning) % as Per BLA Schedule",
+  "workforce.employee.accident.info.joiningDate": "Worker's joining date",
+
 
     "workforce.tracking.notfound": "No applications found",
 
@@ -831,7 +833,8 @@
   "core.error.phoneNumberLength":"Phone number must be exactly 11 digits",
   "core.error.nidLength":"NID/Birth Certificate number must be 10, 13 or 17 digits.",
   "core.error.nid.repeat":"The same NID number cannot be used for multiple dependents.",
-  "core.error.workerAge":"A worker’s age must be a minimum of 18 years.",
+  "core.error.workerAge":"A worker’s age must be a minimum of 16 years.",
+  "core.error.applicantAge":"A applicant’s age must be a minimum of 12 years.",
   "core.error.deathTime":"Death date is not valid",
   "core.error.dateTime":"Date is not valid",
   "core.error.accidentDate":"Accident date is not valid",

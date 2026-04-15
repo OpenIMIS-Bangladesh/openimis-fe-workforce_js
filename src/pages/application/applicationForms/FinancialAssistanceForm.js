@@ -493,8 +493,8 @@ const FinancialAssistanceForm = ({
     }
     if (Object.keys(newErrors).length === 0 || newErrors?.documents === null) {
       const nextStep = activeStep + 1;
-      if (nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
-        let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
+      if ((nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate))|| (nextStep === 2 && !isAtLeast18YearsOld(formData?.workforceApplicant?.birthDate,12))) {
+        let fakeErrors = nextStep===2 ?{...newErrors,rdmp:"core.error.applicantAge"}:{ ...newErrors, rdmp:"core.error.workerAge"};
         setErrors(fakeErrors);
         return false;
       } else {
@@ -865,6 +865,7 @@ const FinancialAssistanceForm = ({
   console.log({ uploadFile: uploadFile });
   console.log({ uploadBankFile: uploadBankFile });
   console.log({ uploadDependentFile: uploadDependentFile });
+  console.log({ errors: errors });
 
   return (
     <div className={classes.container}>

@@ -79,8 +79,8 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
   const savedFiles = useSelector((state) => state.workforce.uploadedFilesByField?.[fieldKey] || []);
   const [files, setFiles] = useState([]);
   const globalUploadFile = useSelector(state => state.workforce.uploadFile || []);
-const globalDependentFile = useSelector(state => state.workforce.uploadDependentFile || []);
-const globalBankFile = useSelector(state => state.workforce.uploadBankFile || []);
+  const globalDependentFile = useSelector(state => state.workforce.uploadDependentFile || []);
+  const globalBankFile = useSelector(state => state.workforce.uploadBankFile || []);
 
   // Sync local state when Redux updates
   useEffect(() => {

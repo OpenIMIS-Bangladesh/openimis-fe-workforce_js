@@ -887,7 +887,7 @@ const ApplicationViewPage = ({
             <>
               {filteredDocumentTypes?.map((document, index) => (
                 <Box style={{ marginTop: "10px" }}>
-                  <Typography>{document.nameBn}</Typography>
+                  <Typography>{language ==="en"?document?.nameEn:document?.nameBn}</Typography>
                   <FileUploader
                     fieldKey={document.fieldId}
                     applicationId={application?.id}

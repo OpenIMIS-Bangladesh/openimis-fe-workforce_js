@@ -240,7 +240,7 @@ export const handleBulkSelectedByAssociationLogic = async ({
         const documents = res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
         const allVerified = documents
-          ?.filter((doc) => doc?.workforceDocumentType?.mandatoryForApplicant === false)
+          ?.filter((doc) => doc?.workforceDocumentType?.mandatoryForApplicant === false && doc?.documentType === "Copy of online database of deceased workers")
           ?.every((doc) => {
             const documentMapData = parseData(doc?.workforceDocumentMapDocumentId);
             console.log({ documentMapData }); // Keep for debugging
