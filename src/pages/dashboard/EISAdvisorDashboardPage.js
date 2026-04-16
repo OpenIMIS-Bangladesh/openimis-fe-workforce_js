@@ -803,11 +803,11 @@ const Dashboard = () => {
               </Typography>
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />}
-                count={`৳ ${disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0)}`}
+                count={`৳ ${disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0).toFixed(2)}`}
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />}
-                count={`৳ ${disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0)}`}
+                count={`৳ ${disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0).toFixed(2)}`}
               />
             </Grid>
           </Grid>

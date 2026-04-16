@@ -450,24 +450,41 @@ export const validateRequiredFields = (containerRef, formatMessage, formdata) =>
   return errors;
 };
 
-export const isAtLeast18YearsOld = (birthDateString) => {
+// export const isAtLeast18YearsOld = (birthDateString) => {
+//   if (!birthDateString) return false;
+
+//   const birthDate = new Date(birthDateString);
+//   const today = new Date();
+
+//   // Calculate the difference in years
+//   let age = today.getFullYear() - birthDate.getFullYear();
+
+//   // Adjust if the birthday hasn’t occurred yet this year
+//   const hasHadBirthdayThisYear =
+//     today.getMonth() > birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+
+//   if (!hasHadBirthdayThisYear) {
+//     age -= 1;
+//   }
+
+//   return age >= 16;
+// };
+export const isAtLeast18YearsOld = (birthDateString, ageLimit = 16) => {
   if (!birthDateString) return false;
 
   const birthDate = new Date(birthDateString);
-  const today = new Date();
+  if (isNaN(birthDate.getTime())) return false;
 
-  // Calculate the difference in years
+  const today = new Date();
   let age = today.getFullYear() - birthDate.getFullYear();
 
-  // Adjust if the birthday hasn’t occurred yet this year
-  const hasHadBirthdayThisYear =
-    today.getMonth() > birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+  const hasHadBirthdayThisYear = 
+    today.getMonth() > birthDate.getMonth() ||
+    (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
 
-  if (!hasHadBirthdayThisYear) {
-    age -= 1;
-  }
+  if (!hasHadBirthdayThisYear) age--;
 
-  return age >= 18;
+  return age >= ageLimit;
 };
 
 export function extractId(item) {

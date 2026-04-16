@@ -280,7 +280,7 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                         label="workforce.employee.application.moneyAmount"
                         type="number"
                         fullWidth
-                        value={entry.amount}
+                        value={Number(parseFloat(entry.amount).toFixed(2))}
                         onChange={handleChange(index, "amount")}
                       />
                     </Grid>

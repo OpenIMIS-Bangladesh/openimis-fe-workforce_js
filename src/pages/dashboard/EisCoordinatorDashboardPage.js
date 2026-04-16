@@ -1048,11 +1048,11 @@ const Dashboard = ({selectedMenu}) => {
               </Typography>
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />}
-                count={`৳ ${ disbursedApplication!==null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0): 0}`}
+                count={`৳ ${disbursedApplication !== null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0).toFixed(2) : "0.00"}`}
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />}
-                count={`৳ ${disbursedApplication!==null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "disabilityAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0): 0}`}
+                count={`৳ ${disbursedApplication !== null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "disabilityAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0).toFixed(2) : "0.00"}`}
               />
             </Grid>
             <Grid item xs={6}>
@@ -1061,11 +1061,11 @@ const Dashboard = ({selectedMenu}) => {
               </Typography>
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />}
-                count={`৳ ${disbursedApplication!==null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0):0}`}
+                count={`৳ ${disbursedApplication !== null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0).toFixed(2) : "0.00"}`}
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />}
-                count={`৳ ${disbursedApplication!==null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0): 0}`}
+                count={`৳ ${disbursedApplication !== null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0).toFixed(2) : "0.00"}`}
               />
             </Grid>
           </Grid>
