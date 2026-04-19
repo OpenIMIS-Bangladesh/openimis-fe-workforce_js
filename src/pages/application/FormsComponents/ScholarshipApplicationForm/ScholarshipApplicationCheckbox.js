@@ -247,7 +247,7 @@ const ScholarshipApplicationCheckbox = ({
         </Grid>
       </Grid>
     </FormControl>
-      <EmployeeDetailsForm2 handleChange={()=>{}} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"educations"} />
+      <EmployeeDetailsForm2 handleChange={()=>{}} formData={formData} selectedApplicationType={formData.applicationType} errors={errors} formStepNo={"educations"} />
 
   </>
   );

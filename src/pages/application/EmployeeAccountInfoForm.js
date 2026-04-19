@@ -62,7 +62,12 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
   useEffect(() => {
     if (dependent?.length > 0) {
       setExpanded(0);
-      dependent?.map((dep, index) => {handleChange(index, "accountHolderName", dep?.nameBn);handleChange(index, "dependentId", dep?.id);handleChange(index, "dependentNid", dep?.nid);handleChange(index, "accountHolderType", "self")});
+      dependent?.map((dep, index) => {
+        handleChange(index, "accountHolderName", dep?.nameBn);
+        handleChange(index, "dependentId", dep?.id);
+        handleChange(index, "dependentNid", dep?.nid);
+        handleChange(index, "accountHolderType", "self");
+      });
     } else {
       handleChange(0, "accountHolderName", formdata?.workforceEmployee?.nameBn);
     }
@@ -101,31 +106,36 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
     (index, fieldKey, value) => {
       const currentAttachments = accounts?.[index]?.attachments || [];
 
-      const updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
-        ? currentAttachments.map((att) =>
-            att.fieldKey === fieldKey
-              ? {
-                  ...att,
-                  fieldKey,
-                  files: value.files, // [{ file, uploadInfo }]
-                  documentType: value.documentType,
-                  documentPropId: value.documentPropId,
-                }
-              : att
-          )
-        : [
-            ...currentAttachments,
-            {
-              fieldKey,
-              files: value.files, // [{ file, uploadInfo }]
-              documentType: value.documentType,
-              documentPropId: value.documentPropId,
-            },
-          ];
+      let updatedAttachments = currentAttachments;
+      if (!value?.files?.length) {
+        updatedAttachments = currentAttachments.filter((att) => att.fieldKey !== fieldKey);
+      } else {
+        updatedAttachments = currentAttachments.some((att) => att.fieldKey === fieldKey)
+          ? currentAttachments.map((att) =>
+              att.fieldKey === fieldKey
+                ? {
+                    ...att,
+                    fieldKey,
+                    files: value.files, // [{ file, uploadInfo }]
+                    documentType: value.documentType,
+                    documentPropId: value.documentPropId,
+                  }
+                : att,
+            )
+          : [
+              ...currentAttachments,
+              {
+                fieldKey,
+                files: value.files, // [{ file, uploadInfo }]
+                documentType: value.documentType,
+                documentPropId: value.documentPropId,
+              },
+            ];
+      }
 
       handleChange(index, "attachments", updatedAttachments);
     },
-    [accounts, handleChange]
+    [accounts, handleChange],
   );
   console.log({ applicationId });
   console.log({ dependent });

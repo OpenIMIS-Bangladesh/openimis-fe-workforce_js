@@ -24,12 +24,13 @@ import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getParsedApplication, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateMandatoryDocuments, validateRequiredFields } from "../../../utils/utils";
+import { getParsedApplication, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateMandatoryBankDocumentsForAccounts, validateMandatoryDocuments, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
 import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
+import CustomSnackbar from "../../../components/shared/CustomSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -66,6 +67,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
   const reduxState = useSelector((state) => state);
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
   const documentType = useSelector((state) => state.workforce.documentType);
@@ -205,7 +207,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
       });
     }
-  }, [employeeData?.id, parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.
+  }, [employeeData?.id, parsedApplicationData,user_type]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {
@@ -230,12 +232,26 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
     const isBankStep = (organizationType === "eis" && activeStep === 2) || (organizationType !== "eis" && activeStep === 2);
     
     const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
+     let documentValidation = { isValid: true, errors: null };
+    const files = isBankStep ? uploadBankFile : uploadFile;
+    const BANK_DOC = "applicants bank check copy";
 
-    // 3. Run the document validation with the correctly selected array
-    const documentValidation = validateMandatoryDocuments(documentType, filesToValidate);
+    if(isBankStep){
+      const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
+            documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
+    }else{
+      // 3. Run the document validation with the correctly selected array
+       documentValidation = validateMandatoryDocuments(documentType, filesToValidate);
+    }
     if (!documentValidation.isValid) {
       // Attaches document errors to newErrors, ensuring Object.keys(newErrors).length > 0
       newErrors.documents = documentValidation.errors;
+    }
+
+    if (Object.keys(newErrors).length > 0 && !newErrors?.documents) {
+      setShowErrorSnackbar(true);
+    } else {
+      setShowErrorSnackbar(false);
     }
     setErrors(newErrors);
 
@@ -245,8 +261,11 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
         console.log({ fakeErrors });
+        return false
       } else {
-        setActiveStep(nextStep);
+        if (nextStep < steps.length) {
+          setActiveStep(nextStep);
+        }
         if (nextStep === 1 || nextStep === 2) {
           // const nidValue = formData?.workforceEmployee?.nid;
           const workforceEmployeeData = {
@@ -339,7 +358,9 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
           dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
         }
       }
+      return true
     }
+    return false
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -581,12 +602,23 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
+            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={async () => {
+                const isSuccess = await handleNext();
+                if (isSuccess) setShowPreview(true);
+              }}
+              >
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
         </div>
       </Paper>
+      <CustomSnackbar
+        open={showErrorSnackbar} // Use the new state
+        onClose={() => setShowErrorSnackbar(false)} // Allow it to close
+        type="error"
+        message={<FormattedMessage id="core.error.generel" module="workforce" />}
+        duration={4000}
+      />
     </div>
   );
 };

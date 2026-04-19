@@ -21,11 +21,12 @@ import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getInfoId, getParsedApplication, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
+import { getInfoId, getParsedApplication, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateMandatoryBankDocumentsForAccounts, validateMandatoryDocuments, validateMandatoryDocumentsForDependents, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
+import CustomSnackbar from "../../../components/shared/CustomSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -54,6 +55,7 @@ const MedicalAssistanceForm = ({
   parsedApplicationData,
 }) => {
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
+  const documentType = useSelector((state) => state.workforce.documentType);
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("workforce");
   const stepRef = useRef(null);
@@ -67,6 +69,7 @@ const MedicalAssistanceForm = ({
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
+  const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -206,7 +209,7 @@ const MedicalAssistanceForm = ({
         applicantInfo: parsedApplicationData?.applicantInfo || employeeData?.metadata || {},
       });
     }
-  }, [employeeData?.id, parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.
+  }, [employeeData?.id, parsedApplicationData,user_type]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {
@@ -227,17 +230,51 @@ const MedicalAssistanceForm = ({
 
   const handleNext = async () => {
     console.log(activeStep);
-    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
-    setErrors(newErrors);
+    const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
+    delete newErrors.documents;
 
+    const isBankStep = (formData?.applicationForSelf === "yes" && activeStep === 3) || (formData?.applicationForSelf === "yes" && activeStep === 4);
+    const isDependentStep = formData?.applicationForSelf === "no" && activeStep === 2
+
+    const files = isBankStep ? uploadBankFile : uploadFile;
+    let documentValidation = { isValid: true, errors: null };
+    const BANK_DOC = "applicants bank check copy";
+
+    if (isDependentStep) {
+      // Specialized validation for the Dependent Step
+      documentValidation = validateMandatoryDocumentsForDependents(documentType, uploadDependentFile || [], formData.dependents || []);
+    } else if (isBankStep) {
+      // Filter only for Bank Documents
+      const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
+      documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
+    } else {
+      // Filter out Bank Documents for general info steps
+      const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC);
+      documentValidation = validateMandatoryDocuments(generalDocsConfig, uploadFile || []);
+    }
+
+    if (!documentValidation.isValid) {
+      newErrors.documents = documentValidation.errors;
+    }
+    setErrors(newErrors);
+    console.log({ newErrors });
+    console.log({ documentValidation });
+    if (Object.keys(newErrors).length > 0 && !newErrors?.documents) {
+      setShowErrorSnackbar(true);
+    } else {
+      setShowErrorSnackbar(false);
+    }
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
       if (nextStep === 1 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
         console.log({ fakeErrors });
+        return false;
       } else {
-        setActiveStep(nextStep);
+        if (nextStep < steps.length) {
+          setActiveStep(nextStep);
+        }
         if (nextStep === 1 || nextStep === 2) {
           // const nidValue = formData?.workforceEmployee?.nid;
           const workforceEmployeeData = {
@@ -289,7 +326,7 @@ const MedicalAssistanceForm = ({
             const applicationMutation = await formatMutation(
               "createWorkforceApplication",
               formatApplicationeGQL(createApplicationData),
-              `Created application `
+              `Created application `,
             );
             const applicationClientMutationId = applicationMutation.clientMutationId;
             console.log("applicationClientMutationId", applicationClientMutationId);
@@ -297,7 +334,7 @@ const MedicalAssistanceForm = ({
 
             // await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
             const fetchRes = await dispatch(
-              fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
+              fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID"),
             );
             let applicationgetId = getInfoId(fetchRes, "workforceApplication");
             console.log("hello there", applicationgetId);
@@ -311,14 +348,13 @@ const MedicalAssistanceForm = ({
                   dispatch(
                     createWorkforceDocument(
                       { ...file, workforceApplicationId: applicationgetId, workforceDependentId: safeDecodeId(dependentId) },
-                      `Created workforce document `
-                    )
+                      `Created workforce document `,
+                    ),
                   );
                 });
               });
             }
             dispatch(updateApplication(createApplicationData, `update workforce application ${formData.firstNameEn}`));
-            
           } else {
             const updateApplicationData = { id: parsedApplicationData?.id, ...createApplicationData };
             console.log("i am from update", updateApplicationData);
@@ -330,10 +366,10 @@ const MedicalAssistanceForm = ({
                   dispatch(
                     createWorkforceDocument(
                       { ...file, workforceApplicationId: parsedApplicationData?.id, workforceDependentId: safeDecodeId(dependentId) },
-                      `Created workforce document `
-                    )
+                      `Created workforce document `,
+                    ),
                   );
-                })
+                });
               });
             }
             dispatch(updateApplication(updateApplicationData, `update workforce application `));
@@ -360,8 +396,10 @@ const MedicalAssistanceForm = ({
           console.log("i am from accident info", updateApplicationData);
           dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
         }
+        return true;
       }
     }
+    return false;
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -396,7 +434,7 @@ const MedicalAssistanceForm = ({
     if (uploadBankFile) {
       await uploadBankFile.map((file) => {
         return dispatch(
-          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`)
+          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
         );
       });
     }
@@ -623,12 +661,22 @@ const MedicalAssistanceForm = ({
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
+            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={async () => {
+                const isSuccess = await handleNext();
+                if (isSuccess) setShowPreview(true);
+              }}>
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
         </div>
       </Paper>
+      <CustomSnackbar
+        open={showErrorSnackbar} // Use the new state
+        onClose={() => setShowErrorSnackbar(false)} // Allow it to close
+        type="error"
+        message={<FormattedMessage id="core.error.generel" module="workforce" />}
+        duration={4000}
+      />
     </div>
   );
 };

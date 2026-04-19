@@ -33,6 +33,7 @@ import {
   isNotFutureDate,
   safeApplicationId,
   safeDecodeId,
+  validateMandatoryBankDocumentsForAccounts,
   validateMandatoryDocuments,
   validateMandatoryDocumentsForDependents,
   validateRequiredFields,
@@ -412,38 +413,7 @@ const FinancialAssistanceForm = ({
     });
   };
 
-  const validateMandatoryBankDocumentsForAccounts = (docsConfig, uploadedBankFiles, bankAccounts) => {
-    const errors = [];
-    const accounts = Array.isArray(bankAccounts) ? bankAccounts : [];
-
-    accounts.forEach((account, accountIndex) => {
-      const accountPrefix = `account_${accountIndex}_`;
-      const pending = (uploadedBankFiles || []).filter((file) => file.fieldKey?.startsWith(accountPrefix));
-      const saved = ((account?.attachments && typeof account.attachments === "string") ? JSON.parse(account.attachments) : account?.attachments || []).filter(
-        (att) => att.fieldKey?.startsWith(accountPrefix),
-      );
-      const allFilesForAccount = [...pending, ...saved];
-
-      docsConfig.forEach((docConfig) => {
-        const hasFile = allFilesForAccount.some((item) => {
-          const typeMatches = item.documentType === docConfig.documentType;
-          if (!typeMatches) return false;
-          if (Array.isArray(item.files)) return item.files.length > 0;
-          return !!(item.path || item.url || item.name);
-        });
-
-        if (!hasFile) {
-          errors.push({
-            accountIndex,
-            documentType: docConfig.documentType,
-            message: `Missing mandatory bank document for account ${accountIndex + 1}: ${docConfig.nameEn} (${docConfig.nameBn})`,
-          });
-        }
-      });
-    });
-
-    return errors.length > 0 ? { isValid: false, errors } : { isValid: true, errors: null };
-  };
+  
 
   const handleNext = async () => {
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
