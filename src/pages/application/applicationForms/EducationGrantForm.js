@@ -35,12 +35,15 @@ import {
   isAtLeast18YearsOld,
   safeApplicationId,
   safeDecodeId,
+  validateMandatoryBankDocumentsForAccounts,
+  validateMandatoryDocuments,
   validateRequiredFields,
 } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 import EducationInfoForm from "../FormsComponents/EducationGrantFrom.js/EducationInfoForm";
 import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
 import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
+import CustomSnackbar from "../../../components/shared/CustomSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -84,6 +87,7 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
   const [expanded, setExpanded] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
+  const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
   const [nidOrBcn, setNidOrBcn] = useState({
@@ -92,6 +96,7 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
   });
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const uploadBankFile = useSelector((state) => state.workforce.uploadBankFile);
+  const documentType = useSelector((state) => state.workforce.documentType);
 
   const user_type = getUserType();
   const reduxState = useSelector((state) => state);
@@ -143,7 +148,6 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
     organizationType: "",
     applicationType: "",
     applicationForSelf: applicationForSelf,
-    dependents: [{}],
     employeeBankInfo: [{}],
     id: "",
   });
@@ -209,7 +213,6 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
         workforceFactoryId: workforceFactoryId || "",
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
-        dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || {},
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         employeeChildrenInfo: parsedApplicationData?.employeeChildrenInfo || employeeData.employeeChildrenInfo || {},
@@ -217,7 +220,7 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
         otherInfo: employeeData.otherInfo || {},
       });
     }
-  }, [employeeData?.id, parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.
+  }, [employeeData?.id, parsedApplicationData,user_type]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {
@@ -238,7 +241,30 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
 
   const handleNext = async () => {
     console.log({ formData });
-    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
+    const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
+    const isBankStep = activeStep === 5;
+
+    const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
+    let documentValidation = { isValid: true, errors: null };
+    const BANK_DOC = "applicants bank check copy";
+
+    if (isBankStep) {
+      const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
+      documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
+    } else {
+      documentValidation = validateMandatoryDocuments(documentType, filesToValidate);
+    }
+    if (!documentValidation.isValid) {
+      newErrors.documents = documentValidation.errors;
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setShowErrorSnackbar(true);
+    } else {
+      setShowErrorSnackbar(false);
+    }
+    console.log({ newErrors });
+    console.log({ documentValidation });
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
@@ -247,8 +273,11 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
         console.log({ fakeErrors });
+        return false
       } else {
-        setActiveStep(nextStep);
+        if (nextStep < steps.length) {
+          setActiveStep(nextStep);
+        }
         if (nextStep === 1 || nextStep === 2) {
           const workforceEmployeeData = {
             nameEn: formData?.workforceEmployee?.nameEn,
@@ -292,7 +321,6 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
             factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
             employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
             employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
-            employeeDependentInfo: JSON.stringify(formData.dependents),
             employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo),
             institutionInfo: JSON.stringify(formData.institutionInfo),
             metadata: JSON.stringify(formData.metadata),
@@ -303,7 +331,7 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
             const applicationMutation = await formatMutation(
               "createWorkforceApplication",
               formatApplicationeGQL(createApplicationData),
-              `Created application ${formData.workforceEmployee.nameEn}`
+              `Created application ${formData.workforceEmployee.nameEn}`,
             );
             const applicationClientMutationId = applicationMutation.clientMutationId;
             console.log("applicationClientMutationId", applicationClientMutationId);
@@ -311,7 +339,7 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
 
             // await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
             const fetchRes = await dispatch(
-              fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
+              fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID"),
             );
             let applicationgetId = getInfoId(fetchRes, "workforceApplication");
             console.log("hello there", applicationgetId);
@@ -352,7 +380,6 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
             applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
             institutionInfo: JSON.stringify(formData.institutionInfo),
             employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
-            employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
             employeeChildrenInfo: JSON.stringify(formData.employeeChildrenInfo) || JSON.stringify(parsedApplicationData?.employeeChildrenInfo),
             metadata: JSON.stringify(formData.metadata),
             status: WORKFORCE_STATUS.DRAFT,
@@ -360,8 +387,10 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
           };
           dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
         }
+        return true
       }
     }
+    return false
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -396,7 +425,7 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
     if (uploadBankFile) {
       await uploadBankFile.map((file) => {
         return dispatch(
-          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`)
+          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
         );
       });
     }
@@ -415,21 +444,12 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
       applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
       institutionInfo: JSON.stringify(formData.institutionInfo),
       employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
-      employeeDependentInfo: JSON.stringify(formData.dependents) || JSON.stringify(parsedApplicationData?.employeeDependentInfo),
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),
       status: WORKFORCE_STATUS.NEW,
       applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
       submittedBy,
     };
-    // const createApplicationMovementData = {
-    //   applicationId: safeApplicationId(applicationId, parsedApplicationData),
-    //   status: WORKFORCE_STATUS.NEW,
-    //   note: "একটি নতুন আবেদন করা হয়েছে",
-    //   applicationFromId: reduxState.core?.user?.i_user?.id,
-    //   applicationToId: 210,
-    //   toRoleId: 51,
-    // };
     console.log("hello i am from submit", updateApplicationData);
     dispatch(updateApplication(updateApplicationData, `update workforce application `));
     // dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
@@ -440,20 +460,6 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
       label: "workforce.application.steps.employeeDetails",
       content: <EmployeeDetailsForm errors={errors} handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />,
     },
-    // ...(applicationForSelf === "yes"
-    //   ? [
-    //       {
-    //         label: "workforce.application.steps.education.details",
-    //         content: (
-    //           <EducationInfoForm
-    //             handleChange={(key, value) => handleChange(key, value, "employeeChildrenInfo")}
-    //             formData={formData}
-    //             applicationForSelf={applicationForSelf}
-    //           />
-    //         ),
-    //       },
-    //     ]
-    //   : []),
     {
       label: "workforce.application.steps.location",
       content: <EmployeeLocationForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />,
@@ -472,6 +478,10 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
           applicationForSelf={applicationForSelf}
         />
       ),
+    },
+    {
+      label: "workforce.application.steps.previousGrantInfo",
+      content: <PreviousGrantInfoForm errors={errors} handleChange={(key, value) => handleChange(key, value, "metadata")} formData={formData} />,
     },
     {
       label: "workforce.application.steps.account.info",
@@ -495,10 +505,7 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
         />
       ),
     },
-    {
-      label: "workforce.application.steps.previousGrantInfo",
-      content: <PreviousGrantInfoForm errors={errors} handleChange={(key, value) => handleChange(key, value, "metadata")} formData={formData} />,
-    },
+    
   ];
 
   if (showPreview) {
@@ -591,12 +598,22 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
+            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={async () => {
+                const isSuccess = await handleNext();
+                if (isSuccess) setShowPreview(true);
+              }}>
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
         </div>
       </Paper>
+      <CustomSnackbar
+        open={showErrorSnackbar} // Use the new state
+        onClose={() => setShowErrorSnackbar(false)} // Allow it to close
+        type="error"
+        message={<FormattedMessage id="core.error.generel" module="workforce" />}
+        duration={4000}
+      />
     </div>
   );
 };

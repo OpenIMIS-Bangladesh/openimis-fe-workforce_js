@@ -24,11 +24,12 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReasonForDisability from "../FormsComponents/Disability/ApplicationReasonForDisability";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
-import { isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateMandatoryDocuments, validateRequiredFields } from "../../../utils/utils";
+import { isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateMandatoryBankDocumentsForAccounts, validateMandatoryDocuments, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
+import CustomSnackbar from "../../../components/shared/CustomSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -60,6 +61,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
   const [activeStep, setActiveStep] = useState(0);
   const [expanded, setExpanded] = useState(0);
   const [acknowledged, setAcknowledged] = useState(false);
+  const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
@@ -232,24 +234,36 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
   const handleNext = async () => {
     console.log({ activeStep });
     console.log({ handleNext: formData });
-    console.log({uploadFile})
-    let newErrors = validateRequiredFields(stepRef, formatMessage, formData);
+    console.log({ uploadFile });
+    const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
 
     // 2. ALWAYS clear previous document errors first (this prevents the "sticky" error after back/forth)
     delete newErrors.documents;
 
     // 3. Identify current step type
-    const isBankStep = (formData?.organizationType === "eis" && activeStep === 2) || (formData?.organizationType !== "eis" && activeStep === 3);
+    const isBankStep = (formData?.organizationType === "eis" && activeStep === 2) || (formData?.organizationType !== "eis" && activeStep === 4);
 
     const files = isBankStep ? uploadBankFile : uploadFile;
+    let documentValidation = { isValid: true, errors: null };
     const BANK_DOC = "applicants bank check copy";
 
-    const docs = (documentType || []).filter((doc) => (isBankStep ? doc.documentType === BANK_DOC : doc.documentType !== BANK_DOC));
-
-    const val = validateMandatoryDocuments(docs, files);
-    if (!val.isValid && docs.length) {
-      newErrors.documents = val.errors;
+    if (isBankStep) {
+      const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
+      documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
+    } else {
+      documentValidation = validateMandatoryDocuments(documentType, files);
     }
+    if (!documentValidation.isValid ) {
+      newErrors.documents = documentValidation.errors;
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setShowErrorSnackbar(true);
+    } else {
+      setShowErrorSnackbar(false);
+    }
+    console.log({ newErrors });
+    console.log({ documentValidation });
     setErrors(newErrors);
     console.log({ newErrors });
     console.log({ uploadFile });
@@ -298,13 +312,14 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
             maritalStatus: formData?.workforceEmployee?.maritalStatus,
             presentLocation: formData?.workforceEmployee?.presentLocation,
             permanentLocation: formData?.workforceEmployee?.permanentLocation,
-            id: safeDecodeId(employeeData?.id)|| safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(reduxState.core.user.id),
+            id: safeDecodeId(employeeData?.id) || safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(reduxState.core.user.id),
           };
           console.log("Update Submitting formData:", formData);
           await dispatch(updateWorkforceEmployee(workforceEmployeeData, `Update Workforce Employee ${workforceEmployeeData.nameEn}`));
           if (organizationType === "eis" && nextStep === 1) {
             const createApplicationData = {
-              workforceEmployeeId:safeDecodeId(employeeData?.id)|| safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
+              workforceEmployeeId:
+                safeDecodeId(employeeData?.id) || safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
               organizationType: formData.organizationType,
               applicationType: formData.applicationType,
               company: formData?.workforceEmployee?.company?.id,
@@ -334,7 +349,8 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
           console.log("Create application formData:", formData);
           const updateApplicationData = {
             id: safeApplicationId(applicationId, parsedApplicationData),
-            workforceEmployeeId:safeDecodeId(employeeData?.id)|| safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
+            workforceEmployeeId:
+              safeDecodeId(employeeData?.id) || safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
             company: formData?.workforceEmployee?.company?.id,
             factory: resolvedFactoryId,
             organizationType: formData.organizationType,
@@ -351,7 +367,8 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
           dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
         } else if ((nextStep === 1 && organizationType !== "eis") || (nextStep === 3 && organizationType === "eis")) {
           const createApplicationData = {
-            workforceEmployeeId:safeDecodeId(employeeData?.id)|| safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
+            workforceEmployeeId:
+              safeDecodeId(employeeData?.id) || safeDecodeId(formData?.workforceEmployee?.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id),
             organizationType: formData.organizationType,
             applicationType: formData.applicationType,
             company: formData?.workforceEmployee?.company?.id,
@@ -380,7 +397,8 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
           const updateApplicationData = {
             // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
             id: safeApplicationId(applicationId, parsedApplicationData),
-            workforceEmployeeId: safeDecodeId(formData?.workforceEmployee.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id)||safeDecodeId(employeeData?.id),
+            workforceEmployeeId:
+              safeDecodeId(formData?.workforceEmployee.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id) || safeDecodeId(employeeData?.id),
             company: formData?.workforceEmployee?.company?.id,
             factory: resolvedFactoryId,
             organizationType: organizationType || parsedApplicationData?.organizationType,
@@ -425,7 +443,8 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
     const updateApplicationData = {
       // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
       id: safeApplicationId(applicationId, parsedApplicationData),
-      workforceEmployeeId: safeDecodeId(formData?.workforceEmployee.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id)||safeDecodeId(employeeData?.id),
+      workforceEmployeeId:
+        safeDecodeId(formData?.workforceEmployee.id) || safeDecodeId(parsedApplicationData?.workforceEmployee?.id) || safeDecodeId(employeeData?.id),
       company: formData?.workforceEmployee?.company?.id,
       factory: resolvedFactoryId,
       organizationType: organizationType || parsedApplicationData?.organizationType,
@@ -540,8 +559,8 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
     "workforce.application.steps.aidReason",
     "workforce.application.steps.employeeDetails",
     "workforce.application.steps.location",
-    "workforce.application.steps.account.info",
     "workforce.application.disabilityInfo",
+    "workforce.application.steps.account.info",
     // "workforce.application.steps.upload.documents",
   ];
   const eisSteps = [
@@ -646,7 +665,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
                 );
               case 2:
                 return <EmployeeLocationForm handleChange={(key, value) => handleChange(key, value, "workforceEmployee")} formData={formData} />;
-              case 3:
+              case 4:
                 return (
                   <EmployeeAccountInfoForm
                     accounts={formData.employeeBankInfo}
@@ -666,7 +685,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
                     errors={errors}
                   />
                 );
-              case 4:
+              case 3:
                 return (
                   <EmployeeAccidentInfoForm
                     handleChange={(key, value) => handleChange(key, value, "employeeAccidentInfo")}
@@ -705,10 +724,10 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
               </Button>
             ) : (
               // 👇 Cleaned up Submit Button for ALL cases
-              <Button 
-                variant="contained" 
-                color="primary" 
-                disabled={!acknowledged} 
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={!acknowledged}
                 onClick={async () => {
                   const isSuccess = await handleNext();
                   if (isSuccess) {
@@ -722,6 +741,13 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
           </div>
         </Box>
       </Paper>
+      <CustomSnackbar
+        open={showErrorSnackbar} // Use the new state
+        onClose={() => setShowErrorSnackbar(false)} // Allow it to close
+        type="error"
+        message={<FormattedMessage id="core.error.generel" module="workforce" />}
+        duration={4000}
+      />
     </div>
   );
 };

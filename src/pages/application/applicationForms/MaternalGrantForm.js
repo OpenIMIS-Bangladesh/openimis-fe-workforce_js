@@ -115,7 +115,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
     organizationType: "",
     applicationType: "",
     applicationForSelf: applicationForSelf,
-    dependents: {},
+
     employeeBankInfo: [{}],
     employeeAccidentInfo: {},
     id: "",
@@ -201,7 +201,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
         institutionInfo: parsedApplicationData?.institutionInfo || employeeData?.institutionInfo || {},
-        dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || [{}],
+        dependents: parsedApplicationData?.employeeDependentInfo || employeeData?.dependents || [{}],
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
@@ -229,7 +229,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
   const handleNext = async () => {
     console.log(activeStep);
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
-    const isBankStep = (organizationType === "eis" && activeStep === 2) || (organizationType !== "eis" && activeStep === 2);
+    const isBankStep = (organizationType === "eis" && activeStep === 2) || (organizationType !== "eis" && activeStep === 3);
     
     const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
      let documentValidation = { isValid: true, errors: null };
@@ -309,7 +309,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
             institutionInfo: JSON.stringify(formData.institutionInfo),
             employeeDesignationInfo: JSON.stringify(formData.employeeDesignationInfo),
             employeeBankInfo: JSON.stringify(formData.employeeBankInfo),
-            employeeDependentInfo: JSON.stringify(formData.dependents),
+            employeeDependentInfo: JSON.stringify(formData?.dependents),
             employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
             metadata: JSON.stringify(formData.metadata),
             status: WORKFORCE_STATUS.DRAFT,
@@ -345,7 +345,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
             grantAmount: formData?.employeeAccidentInfo.grantAmount,
             employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
             employeeDependentInfo:
-              JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") ||
+              JSON.stringify(formData?.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") ||
               JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
             employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
             metadata: JSON.stringify(formData.metadata),
@@ -415,7 +415,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
       institutionInfo: JSON.stringify(formData.institutionInfo),
       employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
       employeeDependentInfo:
-        JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") ||
+        JSON.stringify(formData?.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") ||
         JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
       employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
       metadata: JSON.stringify(formData.metadata),

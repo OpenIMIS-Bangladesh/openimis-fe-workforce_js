@@ -27,11 +27,12 @@ import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
-import { getInfoId, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
+import { getInfoId, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateMandatoryBankDocumentsForAccounts, validateMandatoryDocuments, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
 import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
+import CustomSnackbar from "../../../components/shared/CustomSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -75,9 +76,11 @@ const ScholarshipApplicationForm = ({
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedScholarshipOption, setSelectedScholarshipOption] = useState("");
+  const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const reduxState = useSelector((state) => state);
+  const documentType = useSelector((state) => state.workforce.documentType);
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
   const [nidOrBcn, setNidOrBcn] = useState({
     nid: formData?.workforceEmployee?.nid || "",
@@ -130,7 +133,6 @@ const ScholarshipApplicationForm = ({
     organizationType: "",
     applicationType: "",
     applicationForSelf: applicationForSelf,
-    dependent: {},
     employeeBankInfo: [{}],
     employeeChildrenInfo: {},
     metadata: {},
@@ -213,13 +215,12 @@ const ScholarshipApplicationForm = ({
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
-        dependents: parsedApplicationData?.employeeDependentInfo || employeeData.dependents || {},
         employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         employeeChildrenInfo: parsedApplicationData?.employeeChildrenInfo || employeeData.employeeChildrenInfo || {},
       });
     }
-  }, [employeeData?.id, parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.
+  }, [employeeData?.id, parsedApplicationData,user_type]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {
@@ -240,7 +241,33 @@ const ScholarshipApplicationForm = ({
 
   const handleNext = async () => {
     console.log({ formData });
-    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
+    const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
+    const isBankStep = activeStep ===3;
+    
+    const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
+    let documentValidation = { isValid: true, errors: null };
+    const files = isBankStep ? uploadBankFile : uploadFile;
+    const BANK_DOC = "applicants bank check copy";
+
+    if (isBankStep) {
+      const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
+      documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
+    } else {
+      // 3. Run the document validation with the correctly selected array
+      documentValidation = validateMandatoryDocuments(documentType, filesToValidate);
+    }
+    if (!documentValidation.isValid) {
+      // Attaches document errors to newErrors, ensuring Object.keys(newErrors).length > 0
+      newErrors.documents = documentValidation.errors;
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setShowErrorSnackbar(true);
+    } else {
+      setShowErrorSnackbar(false);
+    }
+    console.log({ newErrors });
+    console.log({ documentValidation });
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
@@ -249,8 +276,11 @@ const ScholarshipApplicationForm = ({
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
         console.log({ fakeErrors });
+        return false
       } else {
-        setActiveStep(nextStep);
+        if (nextStep < steps.length) {
+          setActiveStep(nextStep);
+        }
         if (nextStep === 1 || (nextStep === 2 && applicationForSelf === "no") || (nextStep === 3 && applicationForSelf === "yes")) {
           const workforceEmployeeData = {
             nameEn: formData?.workforceEmployee?.nameEn,
@@ -325,7 +355,7 @@ const ScholarshipApplicationForm = ({
             const applicationMutation = await formatMutation(
               "createWorkforceApplication",
               formatApplicationeGQL(createApplicationData),
-              `Created application ${formData.workforceEmployee.nameEn}`
+              `Created application ${formData.workforceEmployee.nameEn}`,
             );
             const applicationClientMutationId = applicationMutation.clientMutationId;
             console.log("applicationClientMutationId", applicationClientMutationId);
@@ -333,7 +363,7 @@ const ScholarshipApplicationForm = ({
 
             // await dispatch(fetchApplicationId(modulesManager, applicationClientMutationId));
             const fetchRes = await dispatch(
-              fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
+              fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID"),
             );
             let applicationgetId = getInfoId(fetchRes, "workforceApplication");
             console.log("hello there", applicationgetId);
@@ -383,9 +413,10 @@ const ScholarshipApplicationForm = ({
           };
           dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
         }
+        return true
       }
     }
-    // setActiveStep((prevStep) => prevStep + 1);
+    return false
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -419,7 +450,7 @@ const ScholarshipApplicationForm = ({
     if (uploadBankFile) {
       await uploadBankFile.map((file) => {
         return dispatch(
-          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`)
+          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
         );
       });
     }
@@ -577,32 +608,6 @@ const ScholarshipApplicationForm = ({
           </Button>
         </div>
       </div>
-      // <div className={classes.container}>
-      //   <Paper className={classes.paper} elevation={0}>
-      //     <PreviewDetails formData={formData} language={reduxState.core?.user?.i_user?.language} />
-      //     <div className={classes.buttonContainer}>
-      //       <Button
-      //         variant="outlined"
-      //         color="error"
-      //         onClick={() => {
-      //           setShowPreview(false);
-      //         }}
-      //       >
-      //         <FormattedMessage module="workforce" id="workforce.back" />
-      //       </Button>
-      //       <Button
-      //         variant="contained"
-      //         color="primary"
-      //         onClick={() => {
-      //           setShowPreview(false);
-      //           setShowVerifyNid(true);
-      //         }}
-      //       >
-      //         <FormattedMessage module="workforce" id="workforce.submit" />
-      //       </Button>
-      //     </div>
-      //   </Paper>
-      // </div>
     );
   }
 
@@ -670,12 +675,22 @@ const ScholarshipApplicationForm = ({
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
+            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={async () => {
+                const isSuccess = await handleNext();
+                if (isSuccess) setShowPreview(true);
+              }}>
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
         </div>
       </Paper>
+      <CustomSnackbar
+        open={showErrorSnackbar} // Use the new state
+        onClose={() => setShowErrorSnackbar(false)} // Allow it to close
+        type="error"
+        message={<FormattedMessage id="core.error.generel" module="workforce" />}
+        duration={4000}
+      />
     </div>
   );
 };

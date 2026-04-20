@@ -177,7 +177,7 @@ const EducationInfoForm = ({ modulesManager, handleChange, formData, application
         </Grid>
       </Grid>
     </FormControl>
-      <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"educations"} />
+      <EmployeeDetailsForm2 handleChange={handleChange} formData={formData} selectedApplicationType={formData.applicationType}  formStepNo={"educations"} errors={errors}/>
 
     </>
   );

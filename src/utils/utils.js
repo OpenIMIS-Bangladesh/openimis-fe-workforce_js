@@ -376,7 +376,7 @@ export const validateRequiredFields = (containerRef, formatMessage, formdata) =>
 
     if (!value && field.tagName !== "DIV") {
       if (
-        (!field.id|| field.id === "rdmp") &&
+        (!field.id || field.id === "rdmp") &&
         field.parentElement.previousElementSibling?.classList &&
         Array.from(field.parentElement.previousElementSibling.classList).some((c) => c.startsWith("openIMISDatePicker-label"))
       ) {
@@ -398,7 +398,7 @@ export const validateRequiredFields = (containerRef, formatMessage, formdata) =>
 
     if (value && field.tagName !== "DIV") {
       if (
-        (!field.id || field.id === "rdmp")&&
+        (!field.id || field.id === "rdmp") &&
         field.parentElement.previousElementSibling?.classList &&
         Array.from(field.parentElement.previousElementSibling.classList).some((c) => c.startsWith("openIMISDatePicker-label")) &&
         !isNotFutureDateBangla(value)
@@ -478,9 +478,8 @@ export const isAtLeast18YearsOld = (birthDateString, ageLimit = 16) => {
   const today = new Date();
   let age = today.getFullYear() - birthDate.getFullYear();
 
-  const hasHadBirthdayThisYear = 
-    today.getMonth() > birthDate.getMonth() ||
-    (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+  const hasHadBirthdayThisYear =
+    today.getMonth() > birthDate.getMonth() || (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
 
   if (!hasHadBirthdayThisYear) age--;
 
@@ -1242,7 +1241,7 @@ export function getRelationForApi(depObj, workerBirthDate) {
 // Reusable Wrapper
 // -----------------------------
 const FooterWrapper = ({ children }) => (
-  <div style={{ marginTop: "15px"}}>
+  <div style={{ marginTop: "15px" }}>
     <strong>মাসিক টপ-আপ বেনিফিট ও ই.আই.এস পাইলট সম্পর্কে গুরুত্বপূর্ণ তথ্য:</strong>
     <ol style={{ marginTop: "5px", paddingLeft: "20px" }}>{children}</ol>
   </div>
@@ -1325,15 +1324,12 @@ export const getRelationString = (depObj) => {
   return null;
 };
 
-
 export function validateMandatoryDocuments(type1Array, type2Array) {
   let errors = [];
 
   for (const docConfig of type1Array) {
     if (docConfig.mandatoryForApplicant === true) {
-      const isUploaded = type2Array.some(
-        (uploadedDoc) => uploadedDoc.documentType === docConfig.documentType
-      );
+      const isUploaded = type2Array.some((uploadedDoc) => uploadedDoc.documentType === docConfig.documentType);
 
       if (!isUploaded) {
         errors.push({
@@ -1344,22 +1340,20 @@ export function validateMandatoryDocuments(type1Array, type2Array) {
     }
   }
 
-  return errors.length > 0
-    ? { isValid: false, errors }
-    : { isValid: true, errors: null };
+  return errors.length > 0 ? { isValid: false, errors } : { isValid: true, errors: null };
 }
 
 export function validateMandatoryDocumentsForDependents(
-  documentConfigs,     // documentType from Redux (type1Array)
-  uploadedFiles,       // uploadDependentFile (pending uploads)
-  dependents           // formData.dependents (contains attachments when saved/loaded)
+  documentConfigs, // documentType from Redux (type1Array)
+  uploadedFiles, // uploadDependentFile (pending uploads)
+  dependents, // formData.dependents (contains attachments when saved/loaded)
 ) {
   const allErrors = [];
 
   dependents.forEach((dep, index) => {
     if (!dep) return;
 
-    const isDisabled = dep.isDisabled === "yes";   // key missing or "no" → false
+    const isDisabled = dep.isDisabled === "yes"; // key missing or "no" → false
 
     // Build required documents for THIS dependent
     const requiredConfigs = documentConfigs.filter((doc) => {
@@ -1371,18 +1365,14 @@ export function validateMandatoryDocumentsForDependents(
     const depPrefix = `dependent_${index}_`;
 
     // 1. Pending uploads (newly selected files)
-    const pending = (uploadedFiles || []).filter(
-      (f) => f.fieldKey?.startsWith(depPrefix)
-    );
+    const pending = (uploadedFiles || []).filter((f) => f.fieldKey?.startsWith(depPrefix));
 
     // 2. Already saved attachments (from your JSON)
-    const saved = (dep.attachments || []).filter(
-      (att) => att.fieldKey?.startsWith(depPrefix)
-    );
+    const saved = (dep.attachments || []).filter((att) => att.fieldKey?.startsWith(depPrefix));
 
     // Combine both sources
     const allFilesForThisDep = [...pending, ...saved];
-    
+
     // Check every required document
     requiredConfigs.forEach((docConfig) => {
       const hasFile = allFilesForThisDep.some((item) => {
@@ -1409,10 +1399,41 @@ export function validateMandatoryDocumentsForDependents(
     });
   });
 
-  return allErrors.length > 0
-    ? { isValid: false, errors: allErrors }
-    : { isValid: true, errors: null };
+  return allErrors.length > 0 ? { isValid: false, errors: allErrors } : { isValid: true, errors: null };
 }
+
+export const validateMandatoryBankDocumentsForAccounts = (docsConfig, uploadedBankFiles, bankAccounts) => {
+  const errors = [];
+  const accounts = Array.isArray(bankAccounts) ? bankAccounts : [];
+
+  accounts.forEach((account, accountIndex) => {
+    const accountPrefix = `account_${accountIndex}_`;
+    const pending = (uploadedBankFiles || []).filter((file) => file.fieldKey?.startsWith(accountPrefix));
+    const saved = (account?.attachments && typeof account.attachments === "string" ? JSON.parse(account.attachments) : account?.attachments || []).filter(
+      (att) => att.fieldKey?.startsWith(accountPrefix),
+    );
+    const allFilesForAccount = [...pending, ...saved];
+
+    docsConfig.forEach((docConfig) => {
+      const hasFile = allFilesForAccount.some((item) => {
+        const typeMatches = item.documentType === docConfig.documentType;
+        if (!typeMatches) return false;
+        if (Array.isArray(item.files)) return item.files.length > 0;
+        return !!(item.path || item.url || item.name);
+      });
+
+      if (!hasFile) {
+        errors.push({
+          accountIndex,
+          documentType: docConfig.documentType,
+          message: `Missing mandatory bank document for account ${accountIndex + 1}: ${docConfig.nameEn} (${docConfig.nameBn})`,
+        });
+      }
+    });
+  });
+
+  return errors.length > 0 ? { isValid: false, errors } : { isValid: true, errors: null };
+};
 
 export const toBanglaNumber = (str) => {
   const banglaDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
@@ -1420,21 +1441,19 @@ export const toBanglaNumber = (str) => {
   return str.toString().replace(/\d/g, (d) => banglaDigits[d]);
 };
 
-
 export const fixBrokenUnicode = (text) => {
-    if (typeof text !== "string") return text;
+  if (typeof text !== "string") return text;
 
-    // Add missing backslash before uXXXX patterns
-    const fixed = text.replace(/u([0-9a-fA-F]{4})/g, "\\u$1");
+  // Add missing backslash before uXXXX patterns
+  const fixed = text.replace(/u([0-9a-fA-F]{4})/g, "\\u$1");
 
-    try {
-      return JSON.parse(`"${fixed}"`);
-    } catch {
-      return text;
-    }
-  };
+  try {
+    return JSON.parse(`"${fixed}"`);
+  } catch {
+    return text;
+  }
+};
 
-  
 export const isVerify = () => {
   if (typeof window !== "undefined") {
     return window.location.href.includes("verify");
@@ -1442,13 +1461,11 @@ export const isVerify = () => {
   return false; // fallback if window is not defined
 };
 
-
 export const formatLabel = (str) => {
   return str
-    .replace(/_/g, ' ')                 // replace underscores with spaces
-    .replace(/\b\w/g, c => c.toUpperCase()); // capitalize each word
+    .replace(/_/g, " ") // replace underscores with spaces
+    .replace(/\b\w/g, (c) => c.toUpperCase()); // capitalize each word
 };
-
 
 export const isEisPath = () => {
   if (typeof window !== "undefined") {

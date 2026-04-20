@@ -26,10 +26,21 @@ import NidVerification from "../../../components/application-forms/NidVerificati
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
-import { getInfoId, getUserType, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
+import {
+  getInfoId,
+  getUserType,
+  isAtLeast18YearsOld,
+  safeApplicationId,
+  safeDecodeId,
+  validateMandatoryBankDocumentsForAccounts,
+  validateMandatoryDocuments,
+  validateMandatoryDocumentsForDependents,
+  validateRequiredFields,
+} from "../../../utils/utils";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
 import ApplicationViewPage from "../../../components/application-forms/ApplicationViewPage";
+import CustomSnackbar from "../../../components/shared/CustomSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -61,10 +72,12 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
   const uploadFile = useSelector((state) => state.workforce.uploadFile);
   const uploadBankFile = useSelector((state) => state.workforce.uploadBankFile);
   const uploadDependentFile = useSelector((state) => state.workforce.uploadDependentFile);
+  const documentType = useSelector((state) => state.workforce.documentType);
   const classes = useStyles();
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
+  const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
@@ -229,7 +242,37 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
 
   const handleNext = async () => {
     console.log({ formData });
-    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
+    const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
+    const isBankStep = applicationForSelf === "yes" ? activeStep === 5 : activeStep === 6;
+    const isDependentStep = applicationForSelf === "no" && activeStep === 4
+
+    const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
+    let documentValidation = { isValid: true, errors: null };
+    const files = isBankStep ? uploadBankFile : uploadFile;
+    const BANK_DOC = "applicants bank check copy";
+
+    if (isDependentStep) {
+      documentValidation = validateMandatoryDocumentsForDependents(documentType, uploadDependentFile || [], formData.dependents || []);
+    } else if (isBankStep) {
+      // Filter only for Bank Documents
+      const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
+      documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
+    } else {
+      // Filter out Bank Documents for general info steps
+      const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC);
+      documentValidation = validateMandatoryDocuments(generalDocsConfig, uploadFile || []);
+    }
+    if (!documentValidation.isValid) {
+      newErrors.documents = documentValidation.errors;
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setShowErrorSnackbar(true);
+    } else {
+      setShowErrorSnackbar(false);
+    }
+    console.log({ newErrors });
+    console.log({ documentValidation });
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
@@ -238,8 +281,11 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
         console.log({ fakeErrors });
+        return false
       } else {
-        setActiveStep(nextStep);
+         if (nextStep < steps.length) {
+          setActiveStep(nextStep);
+        }
         if (nextStep === 2 || nextStep === 3) {
           const workforceEmployeeData = {
             nameEn: formData?.workforceEmployee?.nameEn,
@@ -299,14 +345,14 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
             const applicationMutation = await formatMutation(
               "createWorkforceApplication",
               formatApplicationeGQL(createApplicationData),
-              `Created application `
+              `Created application `,
             );
             const applicationClientMutationId = applicationMutation.clientMutationId;
             console.log("applicationClientMutationId", applicationClientMutationId);
             await dispatch(createApplication(applicationMutation, `Created workforce application `));
 
             const fetchRes = await dispatch(
-              fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID")
+              fetchInfoIdByClientMutationId(modulesManager, "workforceApplication", applicationClientMutationId, "WORKFORCE_APPLICATION_BY_CLIENT_MUTATION_ID"),
             );
             let applicationgetId = getInfoId(fetchRes, "workforceApplication");
             console.log("hello there", applicationgetId);
@@ -321,8 +367,8 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
                   dispatch(
                     createWorkforceDocument(
                       { ...file, workforceApplicationId: applicationgetId, workforceDependentId: safeDecodeId(dependentId) },
-                      `Created workforce document `
-                    )
+                      `Created workforce document `,
+                    ),
                   );
                 });
               });
@@ -339,8 +385,8 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
                   dispatch(
                     createWorkforceDocument(
                       { ...file, workforceApplicationId: parsedApplicationData?.id, workforceDependentId: safeDecodeId(dependentId) },
-                      `Created workforce document `
-                    )
+                      `Created workforce document `,
+                    ),
                   );
                 });
               });
@@ -370,8 +416,10 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
           console.log("i am from accident info", updateApplicationData);
           dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
         }
+        return true
       }
     }
+    return false
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -406,7 +454,7 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
     if (uploadBankFile) {
       await uploadBankFile.map((file) => {
         return dispatch(
-          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`)
+          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
         );
       });
     }
@@ -529,17 +577,6 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
         />
       ),
     },
-    {
-      label: "workforce.application.steps.upload.documents",
-      content: (
-        <EmployeeDetailsForm2
-          handleChange={handleChange}
-          formData={formData}
-          selectedApplicationType={selectedApplicationType}
-          formStepNo={"workforceDocument"}
-        />
-      ),
-    },
   ];
 
   console.log({ tazwer: formData });
@@ -570,33 +607,6 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
           </Button>
         </div>
       </div>
-      // <div >
-      //     <ApplicationViewPage application={formData} language={"fr"} />
-      //   <Paper className={classes.paper} elevation={0}>
-      //     <PreviewDetails formData={formData} />
-      //     <div className={classes.buttonContainer}>
-      //       <Button
-      //         variant="outlined"
-      //         color="error"
-      //         onClick={() => {
-      //           setShowPreview(false);
-      //         }}
-      //       >
-      //         <FormattedMessage module="workforce" id="workforce.back" />
-      //       </Button>
-      //       <Button
-      //         variant="contained"
-      //         color="primary"
-      //         onClick={() => {
-      //           setShowPreview(false);
-      //           setShowVerifyNid(true);
-      //         }}
-      //       >
-      //         <FormattedMessage module="workforce" id="workforce.submit" />
-      //       </Button>
-      //     </div>
-      //   </Paper>
-      // </div>
     );
   }
 
@@ -664,12 +674,22 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={() => setShowPreview(true)}>
+            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={async () => {
+                const isSuccess = await handleNext();
+                if (isSuccess) setShowPreview(true);
+              }}>
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
         </div>
       </Paper>
+      <CustomSnackbar
+        open={showErrorSnackbar} // Use the new state
+        onClose={() => setShowErrorSnackbar(false)} // Allow it to close
+        type="error"
+        message={<FormattedMessage id="core.error.generel" module="workforce" />}
+        duration={4000}
+      />
     </div>
   );
 };
