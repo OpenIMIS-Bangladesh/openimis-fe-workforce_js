@@ -188,6 +188,7 @@ export const handleBulkSelectedByAssociationLogic = async ({
   fetchWorkforceDocument,
   updateApplication,
   createApplicationMovement,
+  fetchUsersByRoleId,
   roles,
   setServerResponse,
   setConfirmModalOpen,
@@ -233,6 +234,7 @@ export const handleBulkSelectedByAssociationLogic = async ({
 
     try {
       for (const selectedItem of selectedApplicationIds) {
+        console.log({applicationFormActions:selectedItem})
         const decodedId = safeDecodeId(selectedItem?.id);
 
         const res = await fetchWorkforceDocument(modulesManager, [`workforceApplication_Id: "${decodedId}"`]);
@@ -277,7 +279,8 @@ export const handleBulkSelectedByAssociationLogic = async ({
         }
 
         console.log("documents porjnto aise");
-        const applicationToResp = await fetchUsersByRoleId([isEisPath() ? "46" : "32"]);
+        const applicationToResp = await fetchUsersByRoleId([isEisPath() ? "46" :(selectedItem?.applicationType ==="disabilityAssistance" ||selectedItem?.applicationType ==="financialAssistance")?"35":"32"]);
+        console.log({applicationToResp})
         const applicationToUser = safeDecodeId(applicationToResp?.payload?.data?.workforceUserRole[0]?.userId);
 
         const updateApplicationData = {
@@ -347,9 +350,9 @@ export const handleBulkSelectedByAssociationLogic = async ({
         message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
       });
     } finally {
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 200);
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
     }

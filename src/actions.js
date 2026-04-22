@@ -2799,7 +2799,6 @@ export function fetchUsersByRoleId(roleIdsArray) {
   const payload = `query
       {
         workforceUserRole(roleIdIn:[${roleIds}]) {
-        {
         userId
         }
       }`;
