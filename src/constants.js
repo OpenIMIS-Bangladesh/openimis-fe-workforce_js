@@ -333,26 +333,32 @@ export const WORKFORCE_DOCUMENT_STATUS = {
   FACTORY_ADMIN_VERIFIED:"verified_by_factoryAdmin",
   ASSOCIATION_VERIFIED:"verified_by_association",
   EIS_OFFICER_VERIFIED:"verified_by_eis_officer",
+  SECTION_OFFICER_VERIFIED:"verified_by_section_officer",
   FACTORY_ADMIN_REJECTED:"rejected_by_factoryAdmin",
   ASSOCIATION_REJECTED:"rejected_by_association",
-  EIS_OFFICER_REJECTED:"rejected_by_eis_officer"
+  EIS_OFFICER_REJECTED:"rejected_by_eis_officer",
+  SECTION_OFFICER_REJECTED:"rejected_by_section_officer"
 }
 
 export const WORKFORCE_DOCUMENT_MAP_EN={
   verified_by_factoryAdmin:"Verified by Factory Admin",
   verified_by_association:"Verified by Association",
   verified_by_eis_officer:"Verified by Eis Officer",
+  verified_by_section_officer:"Verified by Section Officer",
   rejected_by_factoryAdmin:"Rejected by Factory Admin",
   rejected_by_association:"Rejected by Association",
-  rejected_by_eis_officer:"Rejected by Eis Officer"
+  rejected_by_eis_officer:"Rejected by Eis Officer",
+  rejected_by_section_officer:"Rejected by Section Officer"
 }
 export const WORKFORCE_DOCUMENT_MAP_BN={
   verified_by_factoryAdmin:"কারখানা প্রশাসক দ্বারা যাচাইকৃত",
   verified_by_association:"এসোসিয়েশন দ্বারা যাচাইকৃত",
   verified_by_eis_officer:"ইআইএস অফিসার দ্বারা যাচাইকৃত",
+  verified_by_section_officer:"সেকশন অফিসার দ্বারা যাচাইকৃত",
   rejected_by_factoryAdmin:"কারখানা প্রশাসক দ্বারা বাতিলকৃত",
   rejected_by_association:"এসোসিয়েশন দ্বারা বাতিলকৃত",
-  rejected_by_eis_officer:"ইআইএস অফিসার দ্বারা বাতিলকৃত"
+  rejected_by_eis_officer:"ইআইএস অফিসার দ্বারা বাতিলকৃত",
+  rejected_by_section_officer:"সেকশন অফিসার দ্বারা বাতিলকৃত"
 }
 
 export const cfStatusOptions = [

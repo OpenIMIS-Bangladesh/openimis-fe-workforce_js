@@ -254,7 +254,7 @@ class VerifyApplicationPage extends Component {
             ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_VERIFIED
             : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
               ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
-              : "",
+              :( WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO)?WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED :"",
       note: file.note,
       verifierId: loggedInUserId,
       verificationDate: today,
@@ -273,7 +273,7 @@ class VerifyApplicationPage extends Component {
               ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_VERIFIED
               : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
                 ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
-                : "",
+                :( WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO)?WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED :"",
         note: file.note,
         verifiedById: loggedInUserId,
         verifiedByRoleId: roles[0]?.roleId,
@@ -291,7 +291,7 @@ class VerifyApplicationPage extends Component {
             ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_VERIFIED
             : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
               ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
-              : "";
+              : ( WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO)?WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED :"";
       return { fileStates: updated };
     });
   };
@@ -312,7 +312,7 @@ class VerifyApplicationPage extends Component {
             ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_REJECTED
             : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
               ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_REJECTED
-              : "",
+              : ( WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO)?WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_REJECTED :"",
       note: file.note,
       verifierId: loggedInUserId,
       verificationDate: today,
@@ -331,7 +331,7 @@ class VerifyApplicationPage extends Component {
               ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_REJECTED
               : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
                 ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_REJECTED
-                : "",
+                : ( WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO)?WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_REJECTED :"",
         note: file.note,
         verifiedById: loggedInUserId,
         verifiedByRoleId: roles[0]?.roleId,
@@ -348,7 +348,7 @@ class VerifyApplicationPage extends Component {
             ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_REJECTED
             : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
               ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_REJECTED
-              : "";
+              : ( WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO)?WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_REJECTED :"";
       return { fileStates: updated };
     });
   };
