@@ -220,7 +220,13 @@ export const headerDoctor = (component) => [
 
   // ✅ Conditionally show verify, approve & revert (only if not reverted)
   ...(component.props.disableButtons !== 1 && !component.props.revertedApplication
-    ? ["verify", "approve", "revert"]
+    ? ["verify"]
+    : []),
+    ...(component.props.disableButtons !== 1 && !component.props.revertedApplication && !isEisPath()
+    ? ["approve"]
+    : []),
+    ...(component.props.disableButtons !== 1 && !component.props.revertedApplication && !isEisPath()
+    ? ["revert"]
     : []),
 
   // ✅ Conditionally show resend (only if reverted)

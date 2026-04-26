@@ -627,6 +627,9 @@ export function fetchApplicationsSummary(mm, filters) {
     "eisApprovalIds",
     "eisApprovedByIds",
     "lastMovementDate",
+    "doctorsFlag",
+    "doctorsRecommendedDonation",
+    "doctorsDiagnosis"
   ];
   const payload = formatPageQueryWithCount("workforceApplication", filters, projections);
   return graphql(payload, "WORKFORCE_APPLICATIONS");
@@ -758,6 +761,9 @@ export function fetchApplication(mm, filters) {
     "workforceEmployeeVerificationRemarks",
     "eisApprovalIds",
     "eisApprovedByIds",
+    "doctorsFlag",
+    "doctorsRecommendedDonation",
+    "doctorsDiagnosis"
   ];
   // const filterArray = filters
   //   ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)

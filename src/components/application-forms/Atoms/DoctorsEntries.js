@@ -22,7 +22,7 @@ const isEmpty = (value) => {
 const DoctorsEntries = ({ application }) => {
   const dispatch = useDispatch();
   const user_type = getUserType();
-  const [proposedAmount, setProposedAmount] = useState(application?.grantAmount || "");
+  const [proposedAmount, setProposedAmount] = useState("");
   const [doctorDiagnosis, setDoctorDiagnosis] = useState("");
   const [doctorComment, setDoctorComment] = useState("");
   const [doctorsActions, setDoctorsActions] = useState("");
@@ -41,7 +41,7 @@ const DoctorsEntries = ({ application }) => {
     const updateApplicationData = {
       id: application?.id,
       doctorsRecommendedDonation: proposedAmount,
-      doctorDiagnosis: doctorDiagnosis || null,
+      doctorsDiagnosis: doctorDiagnosis || null,
       doctorComment: doctorComment || null,
       doctorsFlag: doctorsActions,
     };
@@ -57,13 +57,17 @@ const DoctorsEntries = ({ application }) => {
 
   const isNotEmpty = (value) => !isEmpty(value);
 
+  console.log({fromCFdoctor:application})
+  console.log({doctorComment})
+  console.log({doctorDiagnosis})
+  console.log({doctorsActions})
   return (
     <>
       <Grid container spacing={2} style={{ marginTop: "10px" }}>
         {/* Proposed Amount */}
         {user_type !== WORKFORCE_USER_TYPE.EIS_COORDINATOR && user_type !== WORKFORCE_USER_TYPE.EIS_DOCTOR && (
           <Grid item xs={12}>
-            <TextInput label="workforce.application.proposedAmount.byDoctor" value={proposedAmount || ""} onChange={(v) => setProposedAmount(v)} />
+            <TextInput label="workforce.application.proposedAmount.byDoctor" value={proposedAmount ||application?.doctorsRecommendedDonation|| ""} onChange={(v) => setProposedAmount(v)} />
           </Grid>
         )}
 
@@ -71,7 +75,7 @@ const DoctorsEntries = ({ application }) => {
         {application.organizationType != "eis" && (
           <>
             <Grid item xs={12}>
-              <RadioGroup value={doctorsActions} onChange={handleSelectCheckbox}>
+              <RadioGroup value={doctorsActions ||application?.doctorsFlag} onChange={handleSelectCheckbox}>
                 <FormControlLabel
                   value="recommend"
                   control={<Radio color="primary" />}
@@ -93,13 +97,13 @@ const DoctorsEntries = ({ application }) => {
             {/* Conditional Fields */}
             {doctorsActions === "recommend" && (
               <Grid item xs={12}>
-                <TextInput label="workforce.application.diagnosis.byDoctor" value={doctorDiagnosis} onChange={(v) => setDoctorDiagnosis(v)} />
+                <TextInput label="workforce.application.diagnosis.byDoctor" value={doctorDiagnosis|| application?.doctorsDiagnosis} onChange={(v) => setDoctorDiagnosis(v)} />
               </Grid>
             )}
 
             {(doctorsActions === "discussion_required" || doctorsActions === "reject_request") && (
               <Grid item xs={12}>
-                <TextInput label="workforce.application.reasons.addComment" value={doctorComment} onChange={(v) => setDoctorComment(v)} multiline rows={3} />
+                <TextInput label="workforce.application.reasons.addComment" value={doctorComment||application?.doctorsFlagNote} onChange={(v) => setDoctorComment(v)} multiline rows={3} />
               </Grid>
             )}
           </>

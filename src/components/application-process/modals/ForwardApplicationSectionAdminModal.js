@@ -21,7 +21,7 @@ import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchApplication, updateApplication, createApplicationMovement, fetchWorkforceUserRoleWiseUser } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
-import { getUserTypeFromRights } from "../../../utils/utils";
+import { getUserType, getUserTypeFromRights, safeDecodeId } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -72,8 +72,9 @@ const ForwardApplicationSectionAdminModal = ({ open, onClose, selectedApplicatio
   const [serverResponse, setServerResponse] = useState(null);
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState(null);
-  const userType = getUserTypeFromRights(userRights);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const rights = useSelector((state) => state.core?.user?.i_user?.rights);
+  const userType = getUserType();
 
   const officers = useSelector((state) => state.workforce.roleWiseUsers || []);
   console.log("jjjjjjjjj", officers);
@@ -124,13 +125,13 @@ const ForwardApplicationSectionAdminModal = ({ open, onClose, selectedApplicatio
 
       for (const encodedId of selectedApplicationIds) {
         const updateApplicationData = {
-          id: decodeId(encodedId?.id),
+          id: safeDecodeId(encodedId?.id),
           status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,
         };
 
         await dispatch(updateApplication(updateApplicationData, `update workforce application`));
         const createApplicationMovementData = {
-          applicationId: decodeId(encodedId?.id),
+          applicationId: safeDecodeId(encodedId?.id),
           applicationFromId: loggedInUserId,
           applicationToId: formData.userId,
           status: WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION,

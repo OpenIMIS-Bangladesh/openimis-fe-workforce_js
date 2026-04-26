@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'visible',
   },
   sidebar: {
-    position: "fixed",
+    position: "sticky",
     top: "100px",
     height: "70vh",
     backgroundColor: theme.palette.background.paper,

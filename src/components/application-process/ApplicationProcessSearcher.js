@@ -1965,76 +1965,78 @@ class ApplicationProcessSearcher extends Component {
       }
     });
   };
-  // handleApprovalByDoctor = async (application) => {
-  //   const { selectedApplication } = this.state;
-  //   const { loggedInUserId } = this.props;
-  //   const userType = getUserTypeFromRights(this.props.userRights);
+  
+  handleApprovalByDoctor = async (application) => {
+    const { selectedApplication } = this.state;
+    const { loggedInUserId } = this.props;
+    const userType = getUserTypeFromRights(this.props.userRights);
 
-  //   this.setState({
-  //     confirmModalOpen: true,
-  //     confirmModalMessage: "workforce.application.doctor.approve.message",
-  //     confirmModalCallback: async (confirmed) => {
-  //       if (confirmed) {
-  //         this.setState({
-  //           selectedApplication: {
-  //             ...selectedApplication,
-  //             isHistory: true,
-  //           },
-  //         }, async () => {
-  //           const updateApplicationData = {
-  //             id: decodeId(application.id),
-  //             status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
-  //             grantAmount: this.state.editedGrantMoney,
-  //           };
-  //           const createApplicationMovementData = {
-  //             applicationId: decodeId(application.id),
-  //             status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
-  //             note: "আবেদন ডাক্তার দ্বারা অনুমোদন করা হয়েছে",
-  //             action: "approved_by_doctor",
-  //             applicationFromId: loggedInUserId,
-  //             applicationToId:
-  //               userType === WORKFORCE_USER_TYPE.DOCTOR
-  //                 ? 139
-  //                 : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
-  //                   ? 187
-  //                   : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
-  //                     ? 173
-  //                     : null,
-  //             toRoleId:
-  //               userType === WORKFORCE_USER_TYPE.DOCTOR
-  //                 ? 32
-  //                 : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
-  //                   ? 40
-  //                   : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
-  //                     ? 42
-  //                     : null,
-  //           };
-  //           try {
-  //             await this.props.updateApplication(updateApplicationData, "update workforce application");
-  //             await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
+    this.setState({
+      confirmModalOpen: true,
+      confirmModalMessage: "workforce.application.doctor.approve.message",
+      confirmModalCallback: async (confirmed) => {
+        if (confirmed) {
+          this.setState({
+            selectedApplication: {
+              ...selectedApplication,
+              isHistory: true,
+            },
+          }, async () => {
+            const updateApplicationData = {
+              id: decodeId(application.id),
+              status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
+              grantAmount: this.state.editedGrantMoney,
+            };
+            const createApplicationMovementData = {
+              applicationId: decodeId(application.id),
+              status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
+              note: "আবেদন ডাক্তার দ্বারা অনুমোদন করা হয়েছে",
+              action: "approved_by_doctor",
+              applicationFromId: loggedInUserId,
+              applicationToId:
+                userType === WORKFORCE_USER_TYPE.DOCTOR
+                  ? 139
+                  : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
+                    ? 187
+                    : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+                      ? 173
+                      : null,
+              toRoleId:
+                userType === WORKFORCE_USER_TYPE.DOCTOR
+                  ? 32
+                  : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR
+                    ? 40
+                    : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
+                      ? 42
+                      : null,
+            };
+            try {
+              await this.props.updateApplication(updateApplicationData, "update workforce application");
+              await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
 
-  //             this.setState({
-  //               serverResponse: {
-  //                 status: "SUCCESS",
-  //                 message: "আবেদন অনুমোদন করা হয়েছে!",
-  //               },
-  //             });
-  //             window.location.reload();
-  //           } catch (error) {
-  //             console.error("Approval failed:", error);
-  //             this.setState({
-  //               serverResponse: {
-  //                 status: "ERROR",
-  //                 message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
-  //               },
-  //             });
-  //           }
-  //         });
-  //       }
-  //       this.setState({ confirmModalOpen: false, confirmModalCallback: null });
-  //     }
-  //   });
-  // };
+              this.setState({
+                serverResponse: {
+                  status: "SUCCESS",
+                  message: "আবেদন অনুমোদন করা হয়েছে!",
+                },
+              });
+              window.location.reload();
+            } catch (error) {
+              console.error("Approval failed:", error);
+              this.setState({
+                serverResponse: {
+                  status: "ERROR",
+                  message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
+                },
+              });
+            }
+          });
+        }
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+      }
+    });
+  };
+  
   handleSelected = async (application) => {
     const { selectedApplication } = this.state;
     this.setState({

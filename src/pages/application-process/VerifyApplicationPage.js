@@ -386,7 +386,7 @@ class VerifyApplicationPage extends Component {
 
     if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
       this.setState({ forwardModalOpenFA: true });
-    } else if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+    } else if (user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN||user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO||user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
       this.setState({ forwardModalOpenSA: true });
     } else if (
       user_type === WORKFORCE_USER_TYPE.CHECKER ||

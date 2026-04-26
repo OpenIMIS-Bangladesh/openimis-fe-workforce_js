@@ -342,6 +342,7 @@ export function formatApplicationeGQL(application) {
   ${application?.doctorsDiagnosis ? `doctorsDiagnosis: "${(application?.doctorsDiagnosis)}"` : ""}
   ${application?.doctorsFlag ? `doctorsFlag: "${(application?.doctorsFlag)}"` : ""}
   ${application?.doctorsRecommendedDonation ? `doctorsRecommendedDonation: "${(application?.doctorsRecommendedDonation)}"` : ""}
+  ${application?.doctorComment ? `doctorsFlagNote: "${(application?.doctorComment)}"` : ""}
   ${application?.lastBaseSalary ? `lastBaseSalary: "${(application?.lastBaseSalary)}"` : ""}
   ${application?.deceasedWorkerInfo ? `deceasedWorkerInfo: ${escapeQuotes(application?.deceasedWorkerInfo)}` : ""}
    ${application?.eisApprovedAmount ? `eisApprovedAmount: "${(application?.eisApprovedAmount)}"` : ""}
