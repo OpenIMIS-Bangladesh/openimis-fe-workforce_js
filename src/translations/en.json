@@ -1151,6 +1151,8 @@
   "workforce.application.beneficiaryBankAdviceList": "Generated Bank Advice List",
   "menu.workforce.committee.management": "Committee Management",
 
+  "workforce.generateBFTN.beneficiary.payment.calculation":"Beneficiary Payment Calculation",
+
   "workforce.factory.edit.title": "Edit Factory",
   "workforce.factory.basicInfo": "Basic Information",
   "workforce.factory.contactInfo": "Contact Information",

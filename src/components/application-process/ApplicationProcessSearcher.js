@@ -3295,9 +3295,12 @@ class ApplicationProcessSearcher extends Component {
                 </Button>
               )
             )}
-            <IconButton onClick={this.handleOpenBFTN}>
+            <Button variant="contained" color="primary" onClick={this.handleOpenBFTN}>
+            <IconButton>
               <PrintIcon />
+              <FormattedMessage id="workforce.generateBFTN.beneficiary.payment.calculation"/>
             </IconButton>
+            </Button>
           </Box>
         ) : null}
         {userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR
@@ -3440,9 +3443,12 @@ class ApplicationProcessSearcher extends Component {
               <Button variant="contained" color="primary" onClick={this.handleBulkApproveByDirector}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
               </Button>
-              <IconButton onClick={this.handleOpenBFTN}>
+              <Button variant="contained" color="primary" onClick={this.handleOpenBFTN}>
+              <IconButton>
                 <PrintIcon />
               </IconButton>
+              <FormattedMessage id="workforce.generateBFTN.beneficiary.payment.calculation"/>
+              </Button>
               <GenerateBFTN
                 open={openGenerateBFTN}
                 onClose={this.handleCloseBFTN}

@@ -1063,6 +1063,9 @@
   "workforce.application.beneficiaryBankAdviceList": "জেনারেটকৃত ব্যাংক এডভাইস-সমূহ",
   "menu.workforce.committee.management": "কমিটি ব্যবস্থাপনা",
 
+  "workforce.generateBFTN.beneficiary.payment.calculation":"উপকারভোগীর অর্থ প্রদানের হিসাব",
+
+
   "workforce.factory.edit.title": "ফ্যাক্টরি সম্পাদনা করুন",
   "workforce.factory.basicInfo": "মৌলিক তথ্য",
   "workforce.factory.contactInfo": "যোগাযোগ তথ্য",

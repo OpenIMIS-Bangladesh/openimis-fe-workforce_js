@@ -344,6 +344,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                   {formdata?.organizationType === "cf" && formdata?.applicationType === "financialAssistance" && (
                     <Grid item xs={6}>
                       <TextInput
+                        id="percentage_of_grant"
                         label={
                           formdata?.organizationType === "eis"
                             ? formatMessage("workforce.employee.eis.percentage_of_cf_grant")
@@ -351,6 +352,9 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                         }
                         value={dependent.percentage_of_grant || ""}
                         onChange={(v) => handleChange(index, "percentage_of_grant", v)}
+                        required
+                        error={!!errors.percentage_of_grant}
+                        helperText={errors.percentage_of_grant}
                       />
                     </Grid>
                   )}
