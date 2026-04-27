@@ -418,7 +418,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       </TableHead>
       <TableBody>
         {dependentData.map((dep, index) => {
-          const totalGrant =getTotalAmount()|| 200000;
+          const totalGrant =getTotalAmount();
           const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * totalGrant;
 
           return (
