@@ -418,7 +418,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       </TableHead>
       <TableBody>
         {dependentData.map((dep, index) => {
-          const totalGrant = 200000;
+          const totalGrant =getTotalAmount()|| 200000;
           const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * totalGrant;
 
           return (
@@ -435,7 +435,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
         })}
 
         <TableRow>
-          <TableCell colSpan={2}><strong>TOtal Grant</strong></TableCell>
+          <TableCell colSpan={2}><strong>Total Grant</strong></TableCell>
           <TableCell align="right"><strong>{getTotalAmount()}</strong></TableCell>
           <TableCell colSpan={3} />
         </TableRow>
