@@ -3295,11 +3295,11 @@ class ApplicationProcessSearcher extends Component {
                 </Button>
               )
             )}
-            <Button variant="contained" color="primary" onClick={this.handleOpenBFTN}>
-            <IconButton>
+            <Button variant="contained" color="primary" onClick={this.handleOpenBFTN} style={{color:"white",paddingX:0.25,fontSize:"small"}}>
+            <IconButton style={{color:"white"}}>
               <PrintIcon />
-              <FormattedMessage id="workforce.generateBFTN.beneficiary.payment.calculation"/>
             </IconButton>
+              <FormattedMessage id="workforce.generateBFTN.beneficiary.payment.calculation"/>
             </Button>
           </Box>
         ) : null}
@@ -3443,8 +3443,8 @@ class ApplicationProcessSearcher extends Component {
               <Button variant="contained" color="primary" onClick={this.handleBulkApproveByDirector}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
               </Button>
-              <Button variant="contained" color="primary" onClick={this.handleOpenBFTN}>
-              <IconButton>
+              <Button variant="contained" color="primary" onClick={this.handleOpenBFTN} style={{color:"white",paddingX:0.25,fontSize:"small"}}>
+              <IconButton  style={{color:"white"}}>
                 <PrintIcon />
               </IconButton>
               <FormattedMessage id="workforce.generateBFTN.beneficiary.payment.calculation"/>
