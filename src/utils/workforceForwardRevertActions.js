@@ -439,7 +439,7 @@ export const handleBulkSelectedByCheckerLogic = async ({
             const status = documentMapData?.find((mapdata) => {
               const decodedRoleId = safeDecodeId(mapdata?.verifiedByRole?.id);
               const roleMatch = decodedRoleId === roles[0]?.roleId;
-              const statusMatch =isEisPath()? mapdata?.status ===  WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED: mapdata?.status === WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED;
+              const statusMatch =isEisPath()? mapdata?.status ===  WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED:userType===WORKFORCE_USER_TYPE.BLWF_DOL_DIFE? mapdata?.status === WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_VERIFIED:mapdata?.status === WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED;
               console.log("Decoded verifiedByRole.id:", decodedRoleId);
               console.log("roles[0]?.id:", roles[0]?.roleId);
               console.log("Role match:", roleMatch);
