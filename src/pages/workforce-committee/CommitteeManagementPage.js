@@ -35,6 +35,7 @@ import { createWorkforceCommittee, createWorkforceCommitteeUserMap, fetchWorkfor
 import { fixBrokenUnicode, safeDecodeId } from '../../utils/utils';
 import AddCommitteeDialog from './AddCommitteeDialog';
 import AddUserDialog from './AddUserDialog';
+import BankAdviceEditModal from './BankAdviceEditModal';
 
 const useStyles = makeStyles((theme) => ({
     pageContainer: {
@@ -111,6 +112,7 @@ const CommitteeManagementPage = () => {
     const [mappings, setMappings] = useState([]);
     const [committeeUsers, setCommitteeUsers] = useState([]); // For Map User to Committee dropdown
     const [associations, setAssociations] = useState([]); // For Included Sectors
+    const [openAdviceEditModal,setOpenAdviceEditModal] = useState(false)
 
     const [selectedCommittee, setSelectedCommittee] = useState('');
     const [selectedUser, setSelectedUser] = useState('');
@@ -715,6 +717,7 @@ const CommitteeManagementPage = () => {
                                     id={`panel-${committee.id}-header`}
                                 >
                                     <Typography style={{ flex: 1 }}>{locale === 'fr' ? committee.nameBn : committee.nameEn}</Typography>
+                                    <Button variant="contained" color="primary" onClick={()=>setOpenAdviceEditModal(true)} style={{marginRight:5}}>Edit Bank Advice Template</Button>
                                     <IconButton 
                                         color="error"
                                         size="small"
@@ -853,6 +856,7 @@ const CommitteeManagementPage = () => {
                     )}
                 </CardContent>
             </Card>
+            <BankAdviceEditModal open={openAdviceEditModal} onClose={()=>setOpenAdviceEditModal(false)} />
         </div>
     );
 };
