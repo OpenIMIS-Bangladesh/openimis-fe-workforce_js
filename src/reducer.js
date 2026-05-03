@@ -36,7 +36,7 @@ function reducer(
     errorNotificationData: null,
     fetchedNotificationData: false,
     notificationData: [],
-    notificationDataPageInfo:null,
+    notificationDataPageInfo: null,
 
     fetchingDocumentType: false,
     errorDocumentType: null,
@@ -107,6 +107,12 @@ function reducer(
     fetchedEmployeeDependent: false,
     employeeDependent: null,
     employeeDependentPageInfo: { totalCount: 0 },
+
+    ///committee bank advice map///
+    fetchingCommitteeBankAdviceMap: true,
+    fetchedCommitteeBankAdviceMap: false,
+    committeeBankAdviceMap: [],
+    errorCommitteeBankAdviceMap: null,
 
     ////employee services states
     fetchingEmployeeServices: false,
@@ -398,7 +404,6 @@ function reducer(
     workforceAllAssociations: [],
     workforceAllAssociationsPageInfo: { totalCount: 0 },
 
-
     ////workforce committees state
     fetchingWorkforceCommittees: false,
     errorWorkforceCommittees: null,
@@ -432,7 +437,7 @@ function reducer(
     uploadDependentFile: [],
     uploadBankFile: [],
 
-    roles:[],
+    roles: [],
 
     workforceApplicationStatusCount: {},
   },
@@ -498,13 +503,13 @@ function reducer(
         ...state,
         uploadBankFile: (state.uploadBankFile || []).filter((item) => item.path !== action.payload),
       };
-      
+
     case "SET_SELECTED_EMPLOYEE":
       return {
         ...state,
         selectedEmployee: action.payload,
       };
-    
+
     case "REPLACE_UPLOAD_FILE_DATA":
       return { ...state, uploadFile: action.payload };
     case "REPLACE_UPLOAD_DEPENDENT_FILE_DATA":
@@ -555,13 +560,12 @@ function reducer(
         error: formatServerError(action.payload),
       };
 
-
     //workforce committee
 
     case "WORKFORCE_COMMITTEES_REQ":
       return {
         ...state,
-        
+
         fetchingWorkforceCommittees: true,
         fetchedWorkforceCommittees: false,
         workforceCommittees: [],
@@ -584,7 +588,6 @@ function reducer(
         error: formatServerError(action.payload),
       };
 
-
     // workforce committee user map
 
     //workforce committee
@@ -592,7 +595,7 @@ function reducer(
     case "WORKFORCE_COMMITTEE_USER_MAP_REQ":
       return {
         ...state,
-        
+
         fetchingWorkforceCommitteeUserMap: true,
         fetchedWorkforceCommitteeUserMap: false,
         workforceCommitteeUserMap: [],
@@ -698,9 +701,9 @@ function reducer(
         ...state,
         fetchingDocument: false,
         fetchedDocument: true,
-        document: parseData(action.payload.data.workforceDocuments).map((doc)=>({
+        document: parseData(action.payload.data.workforceDocuments).map((doc) => ({
           ...doc,
-          worforceDocumentMap:parseData(doc?.workforceDocumentMapDocumentId)
+          worforceDocumentMap: parseData(doc?.workforceDocumentMapDocumentId),
         })),
         errorDocument: formatGraphQLError(action.payload),
       };
@@ -811,6 +814,29 @@ function reducer(
         errorDocumentType: formatGraphQLError(action.payload),
       };
     case "WORKFORCE_DOCUMENT_TYPE_ERR":
+      return {
+        ...state,
+        fetching: false,
+        errorDocumentType: formatServerError(action.payload),
+      };
+
+    case "WORKFORCE_COMMITTEE_BANK_ADVICE_REQ":
+      return {
+        ...state,
+        fetchingCommitteeBankAdviceMap: true,
+        fetchedCommitteeBankAdviceMap: false,
+        committeeBankAdviceMap: [],
+        errorCommitteeBankAdviceMap: null,
+      };
+    case "WORKFORCE_COMMITTEE_BANK_ADVICE_RESP":
+      return {
+        ...state,
+        fetchingCommitteeBankAdviceMap: false,
+        fetchedCommitteeBankAdviceMap: true,
+        committeeBankAdviceMap: parseData(action.payload.data.workforceCommitteeBankAdviceMaps),
+        errorCommitteeBankAdviceMap: formatGraphQLError(action.payload),
+      };
+    case "WORKFORCE_COMMITTEE_BANK_ADVICE_ERR":
       return {
         ...state,
         fetching: false,

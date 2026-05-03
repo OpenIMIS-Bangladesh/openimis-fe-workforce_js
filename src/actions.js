@@ -33,7 +33,8 @@ import {
   formatWorkforceCommitteeUserMapGQL,
   formatWorkforceDocumentMapGQL,
   formatWorkforceCommitteeUserGQL,
-  formatWorkforceNotificationGQL
+  formatWorkforceNotificationGQL,
+  formatWorkforceCommitteeBankAdviceMapGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 import { safeDecodeId } from "./utils/utils";
@@ -3236,6 +3237,59 @@ export function updateNotification(payload, clientMutationLabel) {
       "WORKFORCE_WORKFORCE_NOTIFICATION_REQ",
       "WORKFORCE_WORKFORCE_NOTIFICATION_RESP",
       "WORKFORCE_WORKFORCE_NOTIFICATION_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+
+export function fetchCommitteeBankAdviceMap(filters) {
+  const projections = [
+    "id",
+    "advice_template",
+    "committee{id}"
+  ];
+  const payload = formatPageQueryWithCount("workforceCommitteeBankAdviceMaps", filters, projections);
+  return graphql(payload, "WORKFORCE_COMMITTEE_BANK_ADVICE");
+}
+
+export function createWorkforceCommitteeBankAdviceMap(payload, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWorkforceCommitteeBankAdviceMap",
+    formatWorkforceCommitteeBankAdviceMapGQL(payload),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_COMMITTEE_BANK_ADVICE_MAP_REQ",
+      "WORKFORCE_COMMITTEE_BANK_ADVICE_MAP_RESP",
+      "WORKFORCE_COMMITTEE_BANK_ADVICE_MAP_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+export function updateWorkforceCommitteeBankAdviceMap(payload, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWorkforceCommitteeBankAdviceMap",
+    formatWorkforceCommitteeBankAdviceMapGQL(payload),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_COMMITTEE_BANK_ADVICE_MAP_REQ",
+      "WORKFORCE_COMMITTEE_BANK_ADVICE_MAP_RESP",
+      "WORKFORCE_COMMITTEE_BANK_ADVICE_MAP_ERR",
     ],
     {
       clientMutationId: mutation.clientMutationId,

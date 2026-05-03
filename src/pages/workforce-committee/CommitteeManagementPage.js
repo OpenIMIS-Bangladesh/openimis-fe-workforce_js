@@ -146,6 +146,7 @@ const CommitteeManagementPage = () => {
     const [editingCommittee, setEditingCommittee] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
     const [mainDataLoaded, setMainDataLoaded] = useState(false);
+    const [committee, setCommittee] = useState(null);
 
     const currentUserId = useSelector((state) => state.core?.user?.i_user?.id);
     const userRights = useSelector((state) => state.core?.user?.i_user?.rights || []);
@@ -715,9 +716,10 @@ const CommitteeManagementPage = () => {
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls={`panel-${committee.id}-content`}
                                     id={`panel-${committee.id}-header`}
+                                    style={{justifyContent:"space-around"}}
                                 >
                                     <Typography style={{ flex: 1 }}>{locale === 'fr' ? committee.nameBn : committee.nameEn}</Typography>
-                                    <Button variant="contained" color="primary" onClick={()=>setOpenAdviceEditModal(true)} style={{marginRight:5}}>Edit Bank Advice Template</Button>
+                                    <Button variant="contained" color="primary" onClick={()=>{setOpenAdviceEditModal(true);setCommittee(committee)}} style={{marginRight:5}}>Edit Bank Advice Template</Button>
                                     <IconButton 
                                         color="error"
                                         size="small"
@@ -856,7 +858,7 @@ const CommitteeManagementPage = () => {
                     )}
                 </CardContent>
             </Card>
-            <BankAdviceEditModal open={openAdviceEditModal} onClose={()=>setOpenAdviceEditModal(false)} />
+            <BankAdviceEditModal open={openAdviceEditModal} onClose={()=>setOpenAdviceEditModal(false)} committee={committee}/>
         </div>
     );
 };

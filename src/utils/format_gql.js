@@ -659,6 +659,13 @@ export function formatWorkforceCommitteeUserGQL(user) {
     ${user?.currentAddress ? `currentAddress: "${user.currentAddress}"` : ""}
   `;
 }
+export function formatWorkforceCommitteeBankAdviceMapGQL(bankAdvice) {
+  return `
+    ${bankAdvice?.id ? `id: "${bankAdvice.id}"` : ""}
+    ${bankAdvice?.adviceTemplate ? `adviceTemplate: ${escapeQuotes(bankAdvice.adviceTemplate)}` : ""}
+    ${bankAdvice?.committeeId ? `committeeId: "${bankAdvice.committeeId}"` : ""}
+  `;
+}
 export function formatWorkforceNotificationGQL(user) {
   return `
     ${user?.id ? `id: "${user.id}"` : ""}

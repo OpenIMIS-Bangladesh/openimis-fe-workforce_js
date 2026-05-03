@@ -11,7 +11,10 @@ import { FormattedMessage } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { useDispatch, useSelector } from 'react-redux';
 import { generateBankAdviceContent } from '../../utils/bankAdviceContent';
+import { safeDecodeId } from '../../utils/utils';
+import { createWorkforceCommitteeBankAdviceMap } from '../../actions';
 
 const useStyles = makeStyles((theme) => ({
   dialogPaper: {
@@ -22,9 +25,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BankAdviceEditModal = ({ open, onClose, paymentData, month, year }) => {
+const BankAdviceEditModal = ({ open, onClose, paymentData, month, year,committee }) => {
   const classes = useStyles();
   const [editorContent, setEditorContent] = useState("");
+  const dispatch = useDispatch();
+  
 
   useEffect(() => {
     if (open) {
@@ -43,10 +48,17 @@ const BankAdviceEditModal = ({ open, onClose, paymentData, month, year }) => {
     ]
   };
 
-  const handleSave = () => {
+  const handleSave =async() => {
     console.log(editorContent);
     // TODO: Handle save logic, e.g., dispatch action or update state
-    onClose();
+    const payload = {
+      adviceTemplate:editorContent,
+      committeeId:safeDecodeId(committee?.id)
+    }
+    dispatch(createWorkforceCommitteeBankAdviceMap(payload,"bank advice template created"))
+    .then((res)=>onClose())
+
+    // onClose();
   };
 
   return (
