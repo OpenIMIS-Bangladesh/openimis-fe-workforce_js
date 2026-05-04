@@ -230,6 +230,7 @@ const renderDetails = (
   user_type,
   remarksMap, // <--- NEW ARGUMENT
   handleRemarksChange,
+  viewedFromFlag
 ) => {
   if (!data) return null;
 
@@ -980,6 +981,7 @@ const ApplicationViewPage = ({
                     user_type,
                     remarksMap,
                     handleRemarksChange,
+                    viewedFromFlag
                   )}
 
                   {/* ----- NEW: BULK SAVE BUTTON FOR DEPENDENTS ----- */}

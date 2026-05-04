@@ -99,7 +99,7 @@ const DocumentReviewAccordion = ({ file, index, documentId, onCommentChange, onV
               WORKFORCE_USER_TYPE.EIS_ADVISOR,
               WORKFORCE_USER_TYPE.EIS_COMMITTEE,
               WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE,
-            ].includes(user_type)) && viewedFromFlag==="verify" && (
+            ].includes(user_type)) && viewedFromFlag && viewedFromFlag === "verify" && (
               <Grid item xs={12} style={{ display: "flex", gap: 8 }}>
                 <Button variant="contained" color="primary" onClick={() => onVerify(index)} fullWidth>
                   <FormattedMessage module="workforce" id="workforce.application.recommended" />
