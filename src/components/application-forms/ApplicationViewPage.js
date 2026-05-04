@@ -363,6 +363,7 @@ const renderDetails = (
                     onVerify={handleFileVerify}
                     onReject={handleFileReject}
                     locale={language}
+                    viewedFromFlag={viewedFromFlag}
                   />
                 ))}
               </Box>
@@ -1015,6 +1016,7 @@ const ApplicationViewPage = ({
                             onVerify={handleFileVerify}
                             onReject={handleFileReject}
                             locale={language}
+                            viewedFromFlag={viewedFromFlag}
                           />
                         ))}
                     </>
@@ -1114,6 +1116,7 @@ const ApplicationViewPage = ({
                     onVerify={handleFileVerify}
                     onReject={handleFileReject}
                     locale={language}
+                    viewedFromFlag={viewedFromFlag}
                   />
                 ))}
             </>
