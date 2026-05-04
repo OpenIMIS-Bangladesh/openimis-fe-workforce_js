@@ -613,7 +613,18 @@ class VerifyApplicationPage extends Component {
                 viewedFromFlag={"verify"}
               />
             ) : (
-              <ApplicationViewPage application={formData} language={locale} fileStates={fileStates} viewedFromFlag={"verify"} />
+              <ApplicationViewPage
+                application={formData}
+                language={locale}
+                filteredDocumentTypes={filteredDocumentTypes}
+                applicationUuid={applicationUuid}
+                onFileChange={this.handleFileChange}
+                fileStates={fileStates}
+                handleCommentChange={this.handleFileCommentChange}
+                handleFileVerify={this.handleFileVerify}
+                handleFileReject={this.handleFileReject}
+                viewedFromFlag={"verify"}
+              />
             )}
           </Grid>
         </Grid>
