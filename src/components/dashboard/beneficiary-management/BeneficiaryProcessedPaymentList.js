@@ -18,7 +18,8 @@ import {
   createWorkforceEisPaymentDisbursement,
   deleteWorkforceEisPaymentStage,
   fetchWorkforceFactoriesSummary,
-  fetchWorkforceAllAssociationSummary
+  fetchWorkforceAllAssociationSummary,
+  fetchWorkforceCommittees,
 } from "../../../actions";
 import { useModulesManager, PublishedComponent } from "@openimis/fe-core";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
@@ -45,6 +46,7 @@ const BeneficiaryProcessedPaymentList = () => {
   const [pendingApproveIds, setPendingApproveIds] = useState([]);
   const [factories, setFactories] = useState([]);
   const [associations, setAssociations] = useState([]);
+  const [committees, setCommittees] = useState([]);
 
 
   const openApproveConfirm = (ids) => {
@@ -65,6 +67,7 @@ const BeneficiaryProcessedPaymentList = () => {
     isDisbursed: "all",
     factory: "",
     association: "",
+    committee: "",
   });
 
 
@@ -82,10 +85,16 @@ const BeneficiaryProcessedPaymentList = () => {
           allAssociationId: safeDecodeId(filters.association) ?? "",
           // notInDisburse: "yes"
         }, modulesManager)),
-
       ]);
 
-      setData(processRes?.payload?.data?.workforceEisPaymentDisbursementStage || []);
+      const allData = processRes?.payload?.data?.workforceEisPaymentDisbursementStage || [];
+      const filteredData = filters.committee
+        ? allData.filter((row) =>
+            safeDecodeId(row?.workforceApplication?.committeeId) === safeDecodeId(filters.committee)
+          )
+        : allData;
+
+      setData(filteredData);
 
     } catch (err) {
       console.error("Data Load Error:", err);
@@ -93,6 +102,12 @@ const BeneficiaryProcessedPaymentList = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    dispatch(fetchWorkforceCommittees()).then((res) => {
+      setCommittees(res?.payload?.data?.workforceCommittees || []);
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     loadData();
@@ -173,6 +188,19 @@ const BeneficiaryProcessedPaymentList = () => {
               <MenuItem value=""><em>All Associations</em></MenuItem>
               {associations.map(a => (
                 <MenuItem key={a.node.id} value={a.node.id}>{a.node.shortNameBn || a.node.nameEn}</MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <TextField
+              fullWidth select label="Committee" name="committee" variant="outlined" size="small"
+              value={filters.committee} onChange={handleFilterChange}
+            >
+              <MenuItem value=""><em>All Committees</em></MenuItem>
+              {committees.map((committee) => (
+                <MenuItem key={committee.id} value={committee.id}>
+                  {committee.nameBn || committee.nameEn || committee.id}
+                </MenuItem>
               ))}
             </TextField>
           </Grid>
@@ -437,6 +465,7 @@ const BeneficiaryProcessedPaymentList = () => {
         paymentData={data.filter(d => selectedIds.includes(d.id))}
         month= {filters.month}
         year= {filters.year}
+        committeeId={filters?.committee}
       />
     </Box>
 

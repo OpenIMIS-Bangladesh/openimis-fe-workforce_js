@@ -15,12 +15,7 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-import {
-  useModulesManager,
-  formatMutation,
-  decodeId,
-  FormattedMessage,
-} from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
@@ -94,12 +89,13 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
   const [officeType, setOfficeType] = useState("");
   const [formData, setFormData] = useState({
     roleIds: [],
+    committeeIds: "",
     userIds: [],
   });
   const userType = getUserTypeFromRights(userRights);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
   const [committees, setCommittees] = useState([]);
-  
+
   // Separated raw redux data to reliably trigger our auto-select effect
   const officersRaw = useSelector((state) => state.workforce.roleWiseUsers);
   const officers = officersRaw || [];
@@ -132,16 +128,13 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
       });
     }
     if (selectedApplication) {
-      return dispatch(
-        fetchApplication(modulesManager, [
-          `id: "${decodeId(selectedApplication?.id)}"`,
-        ])
-      );
+      return dispatch(fetchApplication(modulesManager, [`id: "${decodeId(selectedApplication?.id)}"`]));
     }
   }, [open, dispatch, modulesManager, selectedApplication]);
 
   const ROLE_OPTIONS = committees.map((committee) => ({
     id: safeDecodeId(committee.assignedRole.id),
+    committeeId: committee?.id,
     name: committee.nameEn || committee.nameBn || committee.id,
   }));
 
@@ -157,11 +150,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
     }
 
     if (selectedApplication) {
-      dispatch(
-        fetchApplication(modulesManager, [
-          `id: "${decodeId(selectedApplication?.id)}"`,
-        ])
-      );
+      dispatch(fetchApplication(modulesManager, [`id: "${decodeId(selectedApplication?.id)}"`]));
     }
   }, [open, selectedApplication, dispatch, modulesManager]);
 
@@ -183,7 +172,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
       fetchWorkforceUserRoleWiseUser(modulesManager, {
         roleIds: formData.roleIds,
         orderBy: "id",
-      })
+      }),
     );
   }, [formData?.roleIds, dispatch, modulesManager]);
 
@@ -234,15 +223,11 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
         const updateApplicationData = {
           id: decodeId(encodedId?.id),
           status: forwardStatus,
-          eisApprovalIds: JSON.stringify(formData.userIds)
+          eisApprovalIds: JSON.stringify(formData.userIds),
+          committeeId:safeDecodeId(formData?.committeeIds)
         };
 
-        await dispatch(
-          updateApplication(
-            updateApplicationData,
-            `update workforce application`
-          )
-        );
+        await dispatch(updateApplication(updateApplicationData, `update workforce application`));
 
         for (const userId of formData.userIds) {
           const createApplicationMovementData = {
@@ -252,29 +237,22 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
             status: forwardStatus,
             action: forwardAction,
           };
-  
-          await dispatch(
-            createApplicationMovement(
-              createApplicationMovementData,
-              "create workforce movement"
-            )
-          );
-  
+
+          await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
+
           // summary update for committee
           if (summaryId && numericRoleIds.includes(49)) {
             const updateApplicationSummaryData = {
               id: decodeId(summaryId),
               status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
-              userIds: JSON.stringify(formData.userIds)
+              userIds: JSON.stringify(formData.userIds),
             };
-  
-            await dispatch(
-              updateApplicationSummary(updateApplicationSummaryData, "update summary")
-            );
+
+            await dispatch(updateApplicationSummary(updateApplicationSummaryData, "update summary"));
           }
         }
       }
-  
+
       setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
       setTimeout(() => {
         window.location.reload();
@@ -284,7 +262,6 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
       setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
     }
   };
-  
 
   useEffect(() => {
     if (serverResponse?.status === "SUCCESS") {
@@ -294,7 +271,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
     }
   }, [serverResponse]);
 
-  console.log({ newwwwwwwww: selectedApplicationIds });
+  console.log({ newwwwwwwww: formData });
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -305,20 +282,11 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
         </Button>
 
         {/* Title */}
-        <Typography
-          variant="h5"
-          gutterBottom
-          style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
-        >
+        <Typography variant="h5" gutterBottom style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}>
           কর্মবন্টন
         </Typography>
 
-        <Typography
-          variant="body1"
-          color="textSecondary"
-          gutterBottom
-          style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}
-        ></Typography>
+        <Typography variant="body1" color="textSecondary" gutterBottom style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}></Typography>
 
         {/* Response message */}
         {serverResponse?.status && (
@@ -328,8 +296,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
               color: serverResponse.status === "SUCCESS" ? "green" : "red",
             }}
           >
-            {serverResponse.status === "SUCCESS" ? "✅" : "⚠️"}{" "}
-            {serverResponse.message}
+            {serverResponse.status === "SUCCESS" ? "✅" : "⚠️"} {serverResponse.message}
           </Typography>
         )}
 
@@ -348,13 +315,17 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
                 <Select
                   multiple
                   value={formData?.roleIds || []}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const selectedRoleIds = e.target.value;
+                    const selectedCommitteeIds = selectedRoleIds.map((roleId) => ROLE_OPTIONS.find((r) => r.id === roleId)?.committeeId)?.[0];
+
                     setFormData({
                       ...formData,
-                      roleIds: e.target.value,
-                      userIds: [], // Changing roles correctly resets previously loaded explicit users before the new fetch populates them automatically
-                    })
-                  }
+                      roleIds: selectedRoleIds,
+                      committeeIds: selectedCommitteeIds,
+                      userIds: [],
+                    });
+                  }}
                   renderValue={(selected) =>
                     ROLE_OPTIONS.filter((r) => selected.includes(r.id))
                       .map((r) => r.name)
@@ -372,10 +343,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
                 >
                   {ROLE_OPTIONS.map((role) => (
                     <MenuItem key={role.id} value={role.id}>
-                      <Checkbox
-                        checked={formData?.roleIds?.includes(role.id) || false}
-                        style={{ color: "#000" }}
-                      />
+                      <Checkbox checked={formData?.roleIds?.includes(role.id) || false} style={{ color: "#000" }} />
                       <Typography>{role.name}</Typography>
                     </MenuItem>
                   ))}
@@ -385,11 +353,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
 
             {/* Member Select */}
             <Grid item xs={12}>
-              <Typography
-                variant="subtitle1"
-                gutterBottom
-                style={{ fontWeight: "bold" }}
-              >
+              <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold" }}>
                 কমিটির মেম্বার নির্বাচন করুন
               </Typography>
 
@@ -421,10 +385,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
                 >
                   {officers.map((officer) => (
                     <MenuItem key={officer.id} value={officer.userId}>
-                      <Checkbox
-                        checked={formData?.userIds?.includes(officer.userId) || false}
-                        style={{ color: "#000" }}
-                      />
+                      <Checkbox checked={formData?.userIds?.includes(officer.userId) || false} style={{ color: "#000" }} />
                       <Typography>{officer.otherNames}</Typography>
                     </MenuItem>
                   ))}

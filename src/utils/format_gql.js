@@ -374,6 +374,7 @@ export function formatApplicationeGQL(application) {
   ${application?.workforceEmployeeVerificationRemarks ? `workforceEmployeeVerificationRemarks: "${(application?.workforceEmployeeVerificationRemarks)}"` : ""}
   ${application?.eisApprovalIds ? `eisApprovalIds: ${escapeQuotes(application?.eisApprovalIds)}` : ""}
   ${application?.eisApprovedByIds ? `eisApprovedByIds: ${escapeQuotes(application?.eisApprovedByIds)}` : ""}
+  ${application?.committeeId ? `committeeId: "${(application?.committeeId)}"` : ""}
 `;
 }
 ///application movement ////

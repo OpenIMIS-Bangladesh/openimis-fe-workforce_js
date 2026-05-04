@@ -18,10 +18,15 @@ import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import {
   FormattedMessage,
-  useModulesManager
+  useModulesManager,
+  parseData
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
-import { createWorkforceEisBankAdvice, fetchWorkforceEisPaymentDisbursementStage } from '../../../actions';
+import { 
+  createWorkforceEisBankAdvice, 
+  fetchWorkforceEisPaymentDisbursementStage,
+  fetchCommitteeBankAdviceMap // Added import
+} from '../../../actions';
 import { useDispatch } from "react-redux";
 import { safeDecodeId } from '../../../utils/utils';
 
@@ -71,11 +76,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fromAdviceList=false}) => {
-  const dispatch= useDispatch();
-  const modulesManager= useModulesManager();
+const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fromAdviceList = false, committeeId }) => {
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
   const classes = useStyles();
   const [eisPayments, setEisPayments] = useState([]);
+  const [topHtml, setTopHtml] = useState("");
+  const [bottomHtml, setBottomHtml] = useState("");
 
   const getTotalAmount = () => {
     return eisPayments
@@ -84,40 +91,42 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
   };
 
   useEffect(() => {
-    const loadData= async ()=>{
+    const loadData = async () => {
       setEisPayments(paymentData);
     };
-
     loadData();
-  }, [open]);
+  }, [open, paymentData]);
 
-  // -----------------------------
-  // Date values for ref (same as Excel)
-  // -----------------------------
+  useEffect(() => {
+    if (committeeId && open) {
+      dispatch(fetchCommitteeBankAdviceMap([`committeeId:"${committeeId}"`])).then((response) => {
+        const parsedData = parseData(response?.payload?.data?.workforceCommitteeBankAdviceMaps);
+        
+        const templateString = Array.isArray(parsedData) 
+          ? parsedData[0]?.adviceTemplate 
+          : parsedData?.adviceTemplate;
+
+        if (typeof templateString === "string") {
+          const [top, bottom] = templateString.split("[DYNAMIC_TABLE]");
+          setTopHtml(top || "");
+          setBottomHtml(bottom || "");
+        }
+      });
+    }
+  }, [committeeId, open, dispatch]);
+
   const printYear = new Date().getFullYear();
   const printMonth = new Date().getMonth();
   const excelmonthFormatted = String(printMonth + 1).padStart(2, "0");
   const excelyear = printYear;
 
-  // -----------------------------
-  // Excel generator (unchanged)
-  // -----------------------------
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("Bank Advice", {});
 
     sheet.columns = [
-      { width: 5 },
-      { width: 20 },
-      { width: 20 },
-      { width: 20 },
-      { width: 20 },
-      { width: 20 },
-      { width: 20 },
-      { width: 20 },
-      { width: 20 },
-      { width: 15 },
-      { width: 15 },
+      { width: 5 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 },
+      { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 15 }, { width: 15 },
     ];
 
     sheet.mergeCells("A1:K1");
@@ -161,57 +170,30 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
     sheet.addRow([]);
 
     const tableHeader = [
-      "Sl #",
-      "Account Title",
-      "Bank Account Number",
-      "Bank",
-      "Branch",
-      "District",
-      "Routing No.",
-      "Amount (BDT)",
-      "Beneficiary ID",
-      "Pay From",
-      "Pay To",
+      "Sl #", "Account Title", "Bank Account Number", "Bank", "Branch",
+      "District", "Routing No.", "Amount (BDT)", "Beneficiary ID", "Pay From", "Pay To",
     ];
 
     const headerRow = sheet.addRow(tableHeader);
     headerRow.eachCell((cell) => {
-      cell.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "92D050" },
-      };
+      cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "92D050" } };
       cell.font = { bold: true };
       cell.alignment = { horizontal: "center", vertical: "middle" };
-      cell.border = {
-        top: { style: "thin" },
-        left: { style: "thin" },
-        bottom: { style: "thin" },
-        right: { style: "thin" },
-      };
+      cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, right: { style: "thin" } };
     });
 
     eisPayments.forEach((row, index) => {
-      let year = row?.year || "";
+      let rowYear = row?.year || "";
       let monthIndex = row?.monthIndex || "";
       let monthFormatted = String(monthIndex).padStart(2, "0");
-
-      let payFrom = `01.${monthFormatted}.${year}`;
-      let lastDay = new Date(year, monthIndex, 0).getDate();
-      let payTo = `${lastDay}.${monthFormatted}.${year}`;
+      let payFrom = `01.${monthFormatted}.${rowYear}`;
+      let lastDay = new Date(rowYear, monthIndex, 0).getDate();
+      let payTo = `${lastDay}.${monthFormatted}.${rowYear}`;
 
       sheet.addRow([
-        index + 1,
-        row?.bankAccountHolderName || "",
-        row?.bankAccountNo || "",
-        row?.bank?.parent?.nameEn || "",
-        row?.bank?.nameEn || "",
-        row?.bank?.districtNameEn || "",
-        row?.bank?.routingNumber || "",
-        row?.paidAmount || 0,
-        row?.beneficiaryId || "",
-        payFrom,
-        payTo,
+        index + 1, row?.bankAccountHolderName || "", row?.bankAccountNo || "", row?.bank?.parent?.nameEn || "",
+        row?.bank?.nameEn || "", row?.bank?.districtNameEn || "", row?.bank?.routingNumber || "",
+        row?.paidAmount || 0, row?.beneficiaryId || "", payFrom, payTo,
       ]);
     });
 
@@ -221,17 +203,8 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
     for (let i = firstDataRow; i <= lastDataRow; i++) {
       const row = sheet.getRow(i);
       row.eachCell((cell) => {
-        cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
-          right: { style: "thin" },
-        };
-        cell.alignment = {
-          vertical: "middle",
-          horizontal: "left",
-          wrapText: true,
-        };
+        cell.border = { top: { style: "thin" }, left: { style: "thin" }, bottom: { style: "thin" }, right: { style: "thin" } };
+        cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
       });
     }
 
@@ -239,16 +212,9 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
     sheet.addRow([]);
 
     const closingLines = [
-      "Your prompt necessary steps in this matter will be highly appreciated.",
-      "",
-      "With warm regards",
-      "",
-      "Director General,",
-      "Central Fund, Ministry of Labor and Employment &",
-      "Member Secretary, EIS Pilot Governance Board",
-      "Bangladesh Secretariat, Dhaka-1000",
-      "",
-      "Copy to (Not in order of seniority):",
+      "Your prompt necessary steps in this matter will be highly appreciated.", "", "With warm regards", "",
+      "Director General,", "Central Fund, Ministry of Labor and Employment &", "Member Secretary, EIS Pilot Governance Board",
+      "Bangladesh Secretariat, Dhaka-1000", "", "Copy to (Not in order of seniority):",
       "1. PS to State Minister, Ministry of Labour and Employment, Bangladesh Secretariat, Dhaka-1000.",
       "2. PS to Secretary, Ministry of Labour and Employment, Bangladesh Secretariat, Dhaka-1000.",
       "3. Special Advisor, EIS Pilot Special Unit, 196, Sromo Bhaban (9th Floor), Bijoynagar, Dhaka-1000.",
@@ -260,18 +226,11 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
     closingLines.forEach((line) => {
       const row = sheet.addRow([line]);
       sheet.mergeCells(`A${row.number}:J${row.number}`);
-      row.getCell(1).alignment = {
-        horizontal: "left",
-        vertical: "top",
-        wrapText: true,
-      };
+      row.getCell(1).alignment = { horizontal: "left", vertical: "top", wrapText: true };
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-
+    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
     saveAs(blob, "BA-Advice.xlsx");
   };
 
@@ -279,26 +238,19 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
     window.print();
   };
 
-
   const handleSaveAdvice = () => {
-    if(window.confirm("Are You sure you want to save this Bank Advice?"))
-    {
-      let ids= [];
-      paymentData.forEach(data =>{
-        ids.push(data.id);
-      })
-      try{
-        dispatch(createWorkforceEisBankAdvice(ids, month, year)).then((response) => {
+    if (window.confirm("Are You sure you want to save this Bank Advice?")) {
+      let ids = [];
+      paymentData.forEach(data => { ids.push(data.id); });
+      try {
+        dispatch(createWorkforceEisBankAdvice(ids, month, year)).then(() => {
           onClose();
         });
+      } catch (e) {
+        alert("Bank Advice Creation Failed!");
       }
-      catch(e) {
-        alert("Bank Advice Creation Failed!")
-      }
-    }
-    else
-    {
-      alert("Bank Advice Creation Failed!")
+    } else {
+      alert("Bank Advice Creation Failed!");
     }
   };
 
@@ -317,36 +269,34 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
         </Typography>
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
-        {/* Letter Header */}
-        <Typography align="right" paragraph>
-          Ref No: EIS.Bank Advice.Benefit.{excelyear}.{excelmonthFormatted}
-        </Typography>
+        
+        {/* Render Top HTML if available, otherwise show fallback */}
+        {topHtml ? (
+          <div dangerouslySetInnerHTML={{ __html: topHtml }} />
+        ) : (
+          <>
+            <Typography align="right" paragraph>
+              Ref No: EIS.Bank Advice.Benefit.{excelyear}.{excelmonthFormatted}
+            </Typography>
+            <Typography align="left" variant="subtitle1" paragraph>Manager</Typography>
+            <Typography align="left" paragraph>Sonali Bank Limited</Typography>
+            <Typography align="left" paragraph>Ramna Corporate Branch</Typography>
+            <Typography align="left" paragraph>1, Topkhana Road, Ramna, Dhaka, 1000</Typography>
+            <Typography variant="subtitle1" style={{ fontWeight: "bold", textDecoration: "underline" }} paragraph>
+              <strong>Subject:</strong> Bank Advice Letter (EIS Top-up Benefit)
+            </Typography>
+            <Typography paragraph>Dear Sir:</Typography>
+            <Typography paragraph>Greetings from EIS Pilot!</Typography>
+            <Typography paragraph>
+              EIS Pilot top-up benefits are required to be disbursed to the beneficiaries through bank transfer from your branch of EIS Pilot bank account,{" "}
+              <strong>Account Title: EMPLOYMENT INJURY SCHEME EIS</strong>,{" "}
+              <strong>Account Number: 4426302003729</strong>.
+              {" "}The validated list of account holders with their respective Account Titles, Bank Account Numbers, Bank Names, Branch info, Routing Numbers including Payment amounts have been mentioned below.
+            </Typography>
+          </>
+        )}
 
-        <Typography align="left" variant="subtitle1" paragraph>Manager</Typography>
-        <Typography align="left" paragraph>Sonali Bank Limited</Typography>
-        <Typography align="left" paragraph>Ramna Corporate Branch</Typography>
-        <Typography align="left" paragraph>1, Topkhana Road, Ramna, Dhaka, 1000</Typography>
-
-        <Typography
-          variant="subtitle1"
-          style={{ fontWeight: "bold", textDecoration: "underline" }}
-          paragraph
-        >
-          <strong>Subject:</strong> Bank Advice Letter (EIS Top-up Benefit)
-        </Typography>
-
-        <Typography paragraph>Dear Sir:</Typography>
-
-        <Typography paragraph>Greetings from EIS Pilot!</Typography>
-
-        <Typography paragraph>
-          EIS Pilot top-up benefits are required to be disbursed to the beneficiaries through bank transfer from your branch of EIS Pilot bank account,{" "}
-          <strong>Account Title: EMPLOYMENT INJURY SCHEME EIS</strong>,{" "}
-          <strong>Account Number: 4426302003729</strong>.
-          {" "}The validated list of account holders with their respective Account Titles, Bank Account Numbers, Bank Names, Branch info, Routing Numbers including Payment amounts have been mentioned below.
-        </Typography>
-
-        {/* Table */}
+        {/* Dynamic Table */}
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -365,10 +315,10 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
           </TableHead>
           <TableBody>
             {eisPayments.map((row, index) => {
-              const year = row?.year || "";
+              const rowYear = row?.year || "";
               const monthIndex = row?.monthIndex || "";
               const monthFormatted = String(monthIndex).padStart(2, "0");
-              const lastDay = new Date(year, monthIndex, 0).getDate();
+              const lastDay = new Date(rowYear, monthIndex, 0).getDate();
 
               return (
                 <TableRow key={index}>
@@ -381,8 +331,8 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
                   <TableCell>{row?.bank?.routingNumber}</TableCell>
                   <TableCell align="right">{row?.paidAmount}</TableCell>
                   <TableCell align="right">{row?.beneficiaryId}</TableCell>
-                  <TableCell align="right">01.{monthFormatted}.{year}</TableCell>
-                  <TableCell align="right">{lastDay}.{monthFormatted}.{year}</TableCell>
+                  <TableCell align="right">01.{monthFormatted}.{rowYear}</TableCell>
+                  <TableCell align="right">{lastDay}.{monthFormatted}.{rowYear}</TableCell>
                 </TableRow>
               );
             })}
@@ -394,31 +344,34 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
           Total Amount (BDT): {getTotalAmount()}
         </Typography>
 
-        {/* Closing */}
-        <Typography paragraph>
-          Your prompt necessary steps in this matter will be highly appreciated.
-        </Typography>
-
-        <Typography paragraph>With warm regards</Typography>
-
-        <Typography paragraph>
-          <strong>Director General,</strong><br />
-          Central Fund, Ministry of Labor and Employment &<br />
-          Member Secretary, EIS Pilot Governance Board<br />
-          Bangladesh Secretariat, Dhaka-1000
-        </Typography>
-
-        <Typography paragraph>
-          Copy to (Not in order of seniority):
-        </Typography>
-        <Typography paragraph style={{ marginLeft: "20px" }}>
-          1. PS to State Minister, Ministry of Labour and Employment, Bangladesh Secretariat, Dhaka-1000.<br />
-          2. PS to Secretary, Ministry of Labour and Employment, Bangladesh Secretariat, Dhaka-1000.<br />
-          3. Special Advisor, EIS Pilot Special Unit, 196, Sromo Bhaban (9th Floor), Bijoynagar, Dhaka-1000.<br />
-          4. PA to Director General, Central Fund, Bangladesh Secretariat, Dhaka-1000.<br />
-          5. Assistant Director, Welfare-2 and Development, Central Fund, Bangladesh Secretariat, Dhaka-1000.<br />
-          6. Assistant Director, Finance Department, Central Fund, Bangladesh Secretariat, Dhaka-1000.
-        </Typography>
+        {/* Render Bottom HTML if available, otherwise show fallback */}
+        {bottomHtml ? (
+          <div dangerouslySetInnerHTML={{ __html: bottomHtml }} />
+        ) : (
+          <>
+            <Typography paragraph>
+              Your prompt necessary steps in this matter will be highly appreciated.
+            </Typography>
+            <Typography paragraph>With warm regards</Typography>
+            <Typography paragraph>
+              <strong>Director General,</strong><br />
+              Central Fund, Ministry of Labor and Employment &<br />
+              Member Secretary, EIS Pilot Governance Board<br />
+              Bangladesh Secretariat, Dhaka-1000
+            </Typography>
+            <Typography paragraph>
+              Copy to (Not in order of seniority):
+            </Typography>
+            <Typography paragraph style={{ marginLeft: "20px" }}>
+              1. PS to State Minister, Ministry of Labour and Employment, Bangladesh Secretariat, Dhaka-1000.<br />
+              2. PS to Secretary, Ministry of Labour and Employment, Bangladesh Secretariat, Dhaka-1000.<br />
+              3. Special Advisor, EIS Pilot Special Unit, 196, Sromo Bhaban (9th Floor), Bijoynagar, Dhaka-1000.<br />
+              4. PA to Director General, Central Fund, Bangladesh Secretariat, Dhaka-1000.<br />
+              5. Assistant Director, Welfare-2 and Development, Central Fund, Bangladesh Secretariat, Dhaka-1000.<br />
+              6. Assistant Director, Finance Department, Central Fund, Bangladesh Secretariat, Dhaka-1000.
+            </Typography>
+          </>
+        )}
       </DialogContent>
 
       <Divider className={classes.noPrint} />
@@ -427,7 +380,7 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
         <Button onClick={onClose} variant="outlined" color="primary">
           <FormattedMessage id="workforce.modal.close" />
         </Button>
-        {fromAdviceList? (
+        {fromAdviceList ? (
           <>
             <Button onClick={handleDialogPrint} variant="contained" color="primary">
               <FormattedMessage id="workforce.modal.print.advice" />
@@ -436,8 +389,7 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
               <FormattedMessage id="workforce.modal.excel" />
             </Button>
           </>
-        ):
-        (
+        ) : (
           <Button onClick={handleSaveAdvice} variant="contained" color="primary">
             <FormattedMessage id="workforce.modal.save.advice" />
           </Button>

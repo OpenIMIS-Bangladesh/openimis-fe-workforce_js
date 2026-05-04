@@ -764,7 +764,8 @@ export function fetchApplication(mm, filters) {
     "eisApprovedByIds",
     "doctorsFlag",
     "doctorsRecommendedDonation",
-    "doctorsDiagnosis"
+    "doctorsDiagnosis",
+    "committeeId"
   ];
   // const filterArray = filters
   //   ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)
@@ -2699,6 +2700,7 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
           doctorsEntry
           dateCreated
           trackingNumber
+          committeeId
           workforceEmployee {         
             id
             firstNameBn
@@ -3249,7 +3251,7 @@ export function updateNotification(payload, clientMutationLabel) {
 export function fetchCommitteeBankAdviceMap(filters) {
   const projections = [
     "id",
-    "advice_template",
+    "adviceTemplate",
     "committee{id}"
   ];
   const payload = formatPageQueryWithCount("workforceCommitteeBankAdviceMaps", filters, projections);
