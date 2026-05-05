@@ -714,7 +714,12 @@ export const banglaLabels = {
   admitTime:"ভর্তি সময়",
   hospitalAddress:"হাসপাতালের ঠিকানা",
   isEligible:"যোগ্য",
-  lastGrossSalary:"সর্বশেষ মোট (গ্রস) বেতন"
+  lastGrossSalary:"সর্বশেষ মোট (গ্রস) বেতন",
+  doctorsEntry:"ডাক্তার প্রদত্ত তথ্য",
+  doctorsAssesment:"ডাক্তারদের মূল্যায়ন",
+  doctorAssesmentComment:"ডাক্তার মূল্যায়ন মন্তব্য",
+  doctorsProposedDonation:"ডাক্তার প্রস্তাবিত অনুদান",
+  doctorsActionFlag:"ডাক্তারদের কার্যক্রমের পতাকা"
 };
 
 export const roleMaxDayCount = {

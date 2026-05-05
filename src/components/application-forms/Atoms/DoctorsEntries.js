@@ -22,10 +22,19 @@ const isEmpty = (value) => {
 const DoctorsEntries = ({ application }) => {
   const dispatch = useDispatch();
   const user_type = getUserType();
-  const [proposedAmount, setProposedAmount] = useState("");
-  const [doctorDiagnosis, setDoctorDiagnosis] = useState("");
-  const [doctorComment, setDoctorComment] = useState("");
-  const [doctorsActions, setDoctorsActions] = useState("");
+
+  // Parse doctorEntries JSON if it exists
+  let doctorEntriesData = {};
+  try {
+    doctorEntriesData = application?.doctorEntries ? JSON.parse(application.doctorEntries) : {};
+  } catch (error) {
+    console.error("Error parsing doctorEntries JSON:", error);
+  }
+
+  const [proposedAmount, setProposedAmount] = useState(doctorEntriesData.doctorsProposedDonation || application?.doctorsRecommendedDonation || "");
+  const [doctorDiagnosis, setDoctorDiagnosis] = useState(doctorEntriesData.doctorsAssesment || application?.doctorsDiagnosis || "");
+  const [doctorComment, setDoctorComment] = useState(doctorEntriesData.doctorAssesmentComment || application?.doctorComment || "");
+  const [doctorsActions, setDoctorsActions] = useState(doctorEntriesData.doctorsActionFlag || application?.doctorsFlag || "");
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
   const [modalViewType, setModalViewType] = useState("")
   const [openSnackBar, setOpenSnackBar] = useState({ openResponseBar: false, status: "workforce.success.message.doctor", type: "success" });
@@ -44,6 +53,12 @@ const DoctorsEntries = ({ application }) => {
       doctorsDiagnosis: doctorDiagnosis || null,
       doctorComment: doctorComment || null,
       doctorsFlag: doctorsActions,
+      doctorEntries:JSON.stringify({
+        doctorsAssesment: doctorDiagnosis || null,
+        doctorAssesmentComment: doctorComment || null,
+        doctorsProposedDonation: proposedAmount,
+        doctorsActionFlag: doctorsActions,
+      })
     };
     try {
       console.log("Doctor Update Payload:", updateApplicationData);
@@ -67,7 +82,7 @@ const DoctorsEntries = ({ application }) => {
         {/* Proposed Amount */}
         {user_type !== WORKFORCE_USER_TYPE.EIS_COORDINATOR && user_type !== WORKFORCE_USER_TYPE.EIS_DOCTOR && (
           <Grid item xs={12}>
-            <TextInput label="workforce.application.proposedAmount.byDoctor" value={proposedAmount ||application?.doctorsRecommendedDonation|| ""} onChange={(v) => setProposedAmount(v)} />
+            <TextInput label="workforce.application.proposedAmount.byDoctor" value={proposedAmount} onChange={(v) => setProposedAmount(v)} />
           </Grid>
         )}
 
@@ -75,7 +90,7 @@ const DoctorsEntries = ({ application }) => {
         {application.organizationType != "eis" && (
           <>
             <Grid item xs={12}>
-              <RadioGroup value={doctorsActions ||application?.doctorsFlag} onChange={handleSelectCheckbox}>
+              <RadioGroup value={doctorsActions} onChange={handleSelectCheckbox}>
                 <FormControlLabel
                   value="recommend"
                   control={<Radio color="primary" />}
@@ -97,13 +112,13 @@ const DoctorsEntries = ({ application }) => {
             {/* Conditional Fields */}
             {doctorsActions === "recommend" && (
               <Grid item xs={12}>
-                <TextInput label="workforce.application.diagnosis.byDoctor" value={doctorDiagnosis|| application?.doctorsDiagnosis} onChange={(v) => setDoctorDiagnosis(v)} />
+                <TextInput label="workforce.application.diagnosis.byDoctor" value={doctorDiagnosis} onChange={(v) => setDoctorDiagnosis(v)} />
               </Grid>
             )}
 
             {(doctorsActions === "discussion_required" || doctorsActions === "reject_request") && (
               <Grid item xs={12}>
-                <TextInput label="workforce.application.reasons.addComment" value={doctorComment||application?.doctorsFlagNote} onChange={(v) => setDoctorComment(v)} multiline rows={3} />
+                <TextInput label="workforce.application.reasons.addComment" value={doctorComment} onChange={(v) => setDoctorComment(v)} multiline rows={3} />
               </Grid>
             )}
           </>

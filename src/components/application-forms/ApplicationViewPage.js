@@ -125,7 +125,7 @@ const hiddenKeys = [
   "dependentId",
   "attachments",
   "dateCreated",
-  "doctorsEntry",
+  // "doctorsEntry",
   "wCode",
   "applicantInfoVerification",
   "applicantInfoVerificationRemarks",

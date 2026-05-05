@@ -13,7 +13,7 @@ import {
   Divider,
 } from '@material-ui/core';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import {
@@ -25,10 +25,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import { 
   createWorkforceEisBankAdvice, 
   fetchWorkforceEisPaymentDisbursementStage,
-  fetchCommitteeBankAdviceMap // Added import
+  fetchCommitteeBankAdviceMap 
 } from '../../../actions';
 import { useDispatch } from "react-redux";
 import { safeDecodeId } from '../../../utils/utils';
+import { 
+  generateBankAdviceTemplate, 
+  generateBankAdviceContent 
+} from '../../../utils/bankAdviceContent';
 
 const useStyles = makeStyles((theme) => ({
   noPrint: {
@@ -83,23 +87,34 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
   const [eisPayments, setEisPayments] = useState([]);
   const [topHtml, setTopHtml] = useState("");
   const [bottomHtml, setBottomHtml] = useState("");
+  const [rawTemplate, setRawTemplate] = useState("");
 
-  const getTotalAmount = () => {
+  function getTotalAmount() {
     return eisPayments
       .reduce((sum, item) => sum + (parseFloat(item.paidAmount) || 0), 0)
       .toFixed(2);
-  };
+  }
 
   useEffect(() => {
     const loadData = async () => {
-      setEisPayments(paymentData);
+      // Only update if paymentData actually changed (deep compare)
+      if (JSON.stringify(paymentData) !== JSON.stringify(eisPayments)) {
+        setEisPayments(paymentData);
+      }
     };
     loadData();
   }, [open, paymentData]);
 
+  // Derive stable committeeId from paymentData to avoid unnecessary effect triggers
+  const derivedCommitteeId = React.useMemo(() => {
+    return paymentData?.[0]?.workforceApplication?.committeeId;
+  }, [paymentData?.[0]?.workforceApplication?.committeeId]);
+
+  const effectiveCommitteeId = committeeId || derivedCommitteeId;
+
   useEffect(() => {
-    if (committeeId && open) {
-      dispatch(fetchCommitteeBankAdviceMap([`committeeId:"${committeeId}"`])).then((response) => {
+    if (open && effectiveCommitteeId) {
+      dispatch(fetchCommitteeBankAdviceMap([`committeeId:"${effectiveCommitteeId}"`])).then((response) => {
         const parsedData = parseData(response?.payload?.data?.workforceCommitteeBankAdviceMaps);
         
         const templateString = Array.isArray(parsedData) 
@@ -107,13 +122,134 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
           : parsedData?.adviceTemplate;
 
         if (typeof templateString === "string") {
-          const [top, bottom] = templateString.split("[DYNAMIC_TABLE]");
-          setTopHtml(top || "");
-          setBottomHtml(bottom || "");
+          setRawTemplate(templateString);
+        } else {
+          setRawTemplate("");
         }
       });
+    } else {
+      setRawTemplate("");
     }
-  }, [committeeId, open, dispatch]);
+  }, [open, effectiveCommitteeId, dispatch]);
+
+  // Use refs to track previous values and prevent infinite loops
+  const prevRawTemplateRef = useRef('');
+  const prevEisPaymentsRef = useRef([]);
+
+  useEffect(() => {
+    // Case 1: We have a template but no payment data yet - just display the template
+    if (rawTemplate && eisPayments.length === 0) {
+      if (topHtml !== rawTemplate) {
+        setTopHtml(rawTemplate);
+      }
+      return;
+    }
+
+    // Case 2: We have both template and payment data - merge them
+    if (rawTemplate && eisPayments.length > 0) {
+      // Guard: skip if rawTemplate and eisPayments content haven't changed
+      if (rawTemplate === prevRawTemplateRef.current && 
+          JSON.stringify(eisPayments) === JSON.stringify(prevEisPaymentsRef.current)) {
+        return;
+      }
+
+      prevRawTemplateRef.current = rawTemplate;
+      prevEisPaymentsRef.current = eisPayments;
+
+    let modifiedTemplate = rawTemplate;
+
+    // Generate data rows
+    let dataRowsHTML = '';
+    eisPayments.forEach((row, index) => {
+      const rowYear = row?.year || "";
+      const monthIndex = row?.monthIndex || "";
+      const monthFormatted = String(monthIndex).padStart(2, "0");
+      const lastDay = new Date(rowYear, monthIndex, 0).getDate();
+
+      dataRowsHTML += `<tr>
+      <td style="border: 1px solid #000; padding: 8px; text-align: center;">${index + 1}</td>
+      <td style="border: 1px solid #000; padding: 8px;">${row?.bankAccountHolderName || ""}</td>
+      <td style="border: 1px solid #000; padding: 8px;">${row?.bankAccountNo || ""}</td>
+      <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.parent?.nameEn || ""}</td>
+      <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.nameEn || ""}</td>
+      <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.districtNameEn || ""}</td>
+      <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.routingNumber || ""}</td>
+      <td style="border: 1px solid #000; padding: 8px; text-align: right;">${row?.paidAmount || 0}</td>
+      <td style="border: 1px solid #000; padding: 8px; text-align: right;">${row?.beneficiaryId || ""}</td>
+      <td style="border: 1px solid #000; padding: 8px; text-align: right;">01.${monthFormatted}.${rowYear}</td>
+      <td style="border: 1px solid #000; padding: 8px; text-align: right;">${lastDay}.${monthFormatted}.${rowYear}</td>
+    </tr>`;
+    });
+
+    const hasTable = modifiedTemplate.includes('<table');
+    const hasTbody = modifiedTemplate.includes('<tbody');
+
+    if (hasTable) {
+      const tbodyPattern = /<tbody>[\s\S]*?<\/tbody>/;
+      if (modifiedTemplate.match(tbodyPattern)) {
+        const newTbody = `<tbody>${dataRowsHTML}</tbody>`;
+        modifiedTemplate = modifiedTemplate.replace(tbodyPattern, newTbody);
+      } else {
+        const theadPattern = /(<thead>[\s\S]*?<\/thead>)/;
+        if (modifiedTemplate.match(theadPattern)) {
+          modifiedTemplate = modifiedTemplate.replace(theadPattern, (match) => match + `<tbody>${dataRowsHTML}</tbody>`);
+        } else {
+          const tablePattern = /(<table[\s\S]*?>)([\s\S]*?)(<\/table>)/;
+          if (modifiedTemplate.match(tablePattern)) {
+            modifiedTemplate = modifiedTemplate.replace(tablePattern, (match, p1, p2, p3) => {
+              return `${p1}<tbody>${dataRowsHTML}</tbody>${p3}`;
+            });
+          }
+        }
+      }
+    } else {
+      // Build full table
+      const headerRow = `<tr style="background-color: #92D050;">
+      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">SL</th>
+      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Account Title</th>
+      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Account No</th>
+      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Bank</th>
+      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Branch</th>
+      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">District</th>
+      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Routing</th>
+      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Amount</th>
+      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Beneficiary ID</th>
+      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Pay From</th>
+      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Pay To</th>
+    </tr>`;
+
+      const fullTable = `<table style="width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid #000;">
+          <thead>${headerRow}</thead>
+          <tbody>${dataRowsHTML}</tbody>
+        </table>`;
+
+      // Insert table after the total amount paragraph (after </p> that follows "Total Amount")
+      const totalAmountParaPattern = /(<p[^>]*>[\s\S]*?Total Amount[\s\S]*?<\/p>)/i;
+      if (totalAmountParaPattern.test(modifiedTemplate)) {
+        modifiedTemplate = modifiedTemplate.replace(totalAmountParaPattern, '$1\n' + fullTable);
+      } else {
+        // Fallback: insert at end
+        modifiedTemplate = modifiedTemplate + fullTable;
+      }
+    }
+
+    // First, update the total amount value
+    // Try to replace inside <span id="total-amount">...</span>
+    const totalSpanPattern = /<span id="total-amount">[\d.,]*<\/span>/;
+    const newTotalSpan = `<span id="total-amount">${getTotalAmount()}</span>`;
+    if (totalSpanPattern.test(modifiedTemplate)) {
+      modifiedTemplate = modifiedTemplate.replace(totalSpanPattern, newTotalSpan);
+    } else {
+      // Fallback: replace number after "Total Amount (BDT):" text
+      const totalTextPattern = /(Total Amount\s*\(BDT\):\s*)([\d.,]+)/i;
+      if (totalTextPattern.test(modifiedTemplate)) {
+        modifiedTemplate = modifiedTemplate.replace(totalTextPattern, `$1${getTotalAmount()}`);
+      }
+    }
+
+    setTopHtml(modifiedTemplate);
+  }
+  }, [rawTemplate, eisPayments, topHtml]);
 
   const printYear = new Date().getFullYear();
   const printMonth = new Date().getMonth();
@@ -270,7 +406,6 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
         
-        {/* Render Top HTML if available, otherwise show fallback */}
         {topHtml ? (
           <div dangerouslySetInnerHTML={{ __html: topHtml }} />
         ) : (
@@ -293,62 +428,55 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
               <strong>Account Number: 4426302003729</strong>.
               {" "}The validated list of account holders with their respective Account Titles, Bank Account Numbers, Bank Names, Branch info, Routing Numbers including Payment amounts have been mentioned below.
             </Typography>
-          </>
-        )}
 
-        {/* Dynamic Table */}
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>SL</TableCell>
-              <TableCell>Account Title</TableCell>
-              <TableCell>Account No</TableCell>
-              <TableCell>Bank</TableCell>
-              <TableCell>Branch</TableCell>
-              <TableCell>District</TableCell>
-              <TableCell>Routing</TableCell>
-              <TableCell align="right">Amount</TableCell>
-              <TableCell align="right">Beneficiary ID</TableCell>
-              <TableCell align="right">Pay From</TableCell>
-              <TableCell align="right">Pay To</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {eisPayments.map((row, index) => {
-              const rowYear = row?.year || "";
-              const monthIndex = row?.monthIndex || "";
-              const monthFormatted = String(monthIndex).padStart(2, "0");
-              const lastDay = new Date(rowYear, monthIndex, 0).getDate();
-
-              return (
-                <TableRow key={index}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{row?.bankAccountHolderName}</TableCell>
-                  <TableCell>{row?.bankAccountNo}</TableCell>
-                  <TableCell>{row?.bank?.parent?.nameEn}</TableCell>
-                  <TableCell>{row?.bank?.nameEn}</TableCell>
-                  <TableCell>{row?.bank?.districtNameEn}</TableCell>
-                  <TableCell>{row?.bank?.routingNumber}</TableCell>
-                  <TableCell align="right">{row?.paidAmount}</TableCell>
-                  <TableCell align="right">{row?.beneficiaryId}</TableCell>
-                  <TableCell align="right">01.{monthFormatted}.{rowYear}</TableCell>
-                  <TableCell align="right">{lastDay}.{monthFormatted}.{rowYear}</TableCell>
+            {/* Dynamic Table */}
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>SL</TableCell>
+                  <TableCell>Account Title</TableCell>
+                  <TableCell>Account No</TableCell>
+                  <TableCell>Bank</TableCell>
+                  <TableCell>Branch</TableCell>
+                  <TableCell>District</TableCell>
+                  <TableCell>Routing</TableCell>
+                  <TableCell align="right">Amount</TableCell>
+                  <TableCell align="right">Beneficiary ID</TableCell>
+                  <TableCell align="right">Pay From</TableCell>
+                  <TableCell align="right">Pay To</TableCell>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+              </TableHead>
+              <TableBody>
+                {eisPayments.map((row, index) => {
+                  const rowYear = row?.year || "";
+                  const monthIndex = row?.monthIndex || "";
+                  const monthFormatted = String(monthIndex).padStart(2, "0");
+                  const lastDay = new Date(rowYear, monthIndex, 0).getDate();
 
-        {/* Total Amount */}
-        <Typography align="right" variant="subtitle1" style={{ fontWeight: "bold", marginTop: "20px" }} paragraph>
-          Total Amount (BDT): {getTotalAmount()}
-        </Typography>
+                  return (
+                    <TableRow key={index}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{row?.bankAccountHolderName}</TableCell>
+                      <TableCell>{row?.bankAccountNo}</TableCell>
+                      <TableCell>{row?.bank?.parent?.nameEn}</TableCell>
+                      <TableCell>{row?.bank?.nameEn}</TableCell>
+                      <TableCell>{row?.bank?.districtNameEn}</TableCell>
+                      <TableCell>{row?.bank?.routingNumber}</TableCell>
+                      <TableCell align="right">{row?.paidAmount}</TableCell>
+                      <TableCell align="right">{row?.beneficiaryId}</TableCell>
+                      <TableCell align="right">01.{monthFormatted}.{rowYear}</TableCell>
+                      <TableCell align="right">{lastDay}.{monthFormatted}.{rowYear}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
 
-        {/* Render Bottom HTML if available, otherwise show fallback */}
-        {bottomHtml ? (
-          <div dangerouslySetInnerHTML={{ __html: bottomHtml }} />
-        ) : (
-          <>
+            {/* Total Amount */}
+            <Typography align="right" variant="subtitle1" style={{ fontWeight: "bold", marginTop: "20px" }} paragraph>
+              Total Amount (BDT): {getTotalAmount()}
+            </Typography>
+
             <Typography paragraph>
               Your prompt necessary steps in this matter will be highly appreciated.
             </Typography>

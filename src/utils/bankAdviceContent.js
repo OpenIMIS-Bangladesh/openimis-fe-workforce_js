@@ -40,6 +40,55 @@ export const generateBottomText = () => {
   `;
 };
 
+export const generateEmptyTableHTML = () => {
+   return `<table style="width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid #000;">
+   <thead>
+     <tr style="background-color: #92D050;">
+       <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">SL</th>
+       <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Account Title</th>
+       <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Account No</th>
+       <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Bank</th>
+       <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Branch</th>
+       <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">District</th>
+       <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Routing</th>
+       <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Amount</th>
+       <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Beneficiary ID</th>
+       <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Pay From</th>
+       <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Pay To</th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <td style="border: 1px solid #000; padding: 8px; text-align: center;"></td>
+       <td style="border: 1px solid #000; padding: 8px;"></td>
+       <td style="border: 1px solid #000; padding: 8px;"></td>
+       <td style="border: 1px solid #000; padding: 8px;"></td>
+       <td style="border: 1px solid #000; padding: 8px;"></td>
+       <td style="border: 1px solid #000; padding: 8px;"></td>
+       <td style="border: 1px solid #000; padding: 8px;"></td>
+       <td style="border: 1px solid #000; padding: 8px;"></td>
+       <td style="border: 1px solid #000; padding: 8px;"></td>
+       <td style="border: 1px solid #000; padding: 8px;"></td>
+       <td style="border: 1px solid #000; padding: 8px;"></td>
+     </tr>
+   </tbody>
+ </table>`;
+};  
+
+export const generateBankAdviceTemplate = () => {
+  const topText = generateTopText();
+  const emptyTable = generateEmptyTableHTML();
+  const totalHTML = `<p style="text-align: right; font-weight: bold;">Total Amount (BDT): <span id="total-amount">0.00</span></p>`;
+  const bottomText = generateBottomText();
+
+  return `
+    ${topText}
+    ${emptyTable}
+    ${totalHTML}
+    ${bottomText}
+  `;
+};
+
 export const generateBankAdviceContent = (paymentData, month, year) => {
   const eisPayments = paymentData || [];
 
@@ -51,7 +100,7 @@ export const generateBankAdviceContent = (paymentData, month, year) => {
 
   const generateTableHTML = () => {
     let tableHTML = `
-      <table style="width: 100%; border-collapse: collapse; margin: 20px 0; color:"black";">
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0; color: black;">
         <thead>
           <tr style="background-color: #92D050;">
             <th style="border: 1px solid #000; padding: 8px; text-align: center;">SL</th>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Box, Grid, LinearProgress, InputLabel } from "@material-ui/core";
+import { Button, Box, Grid, LinearProgress, InputLabel, Paper,Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { TextInput } from "@openimis/fe-core";
 import { useAuthentication, useHistory } from "@openimis/fe-core";
@@ -8,6 +8,18 @@ import OtpInput from "react-otp-input";
 const RECAPTCHA_SITE_KEY = "6LetjAAsAAAAANxUe7M2ePfj_2Nxgkgn9xzlPFqd";
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: "auto",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  paper: theme.paper.paper,
   otpInput: {
     width: "100% !important",
     height: "2.2rem",
@@ -51,12 +63,12 @@ export default function LoginForm() {
   const auth = useAuthentication();
   const history = useHistory();
 
-    useEffect(() => {
+  useEffect(() => {
     const userType = getMyCookie("userType");
     if (userType === "administrative") history.push("/administrative/login");
 
     const loadRecaptcha = () =>
-        new Promise((resolve) => {
+      new Promise((resolve) => {
         if (window.grecaptcha) return resolve(window.grecaptcha);
         const script = document.createElement("script");
         script.src = "https://www.google.com/recaptcha/api.js?render=explicit";
@@ -64,95 +76,94 @@ export default function LoginForm() {
         script.defer = true;
         script.onload = () => resolve(window.grecaptcha);
         document.body.appendChild(script);
-        });
+      });
 
     loadRecaptcha().then((grecaptcha) => {
-        grecaptcha.ready(() => {
+      grecaptcha.ready(() => {
         const container = document.getElementById("recaptcha-container");
         if (!container) return;
 
         if (window.__recaptchaWidgetId !== undefined) {
-            try {
+          try {
             grecaptcha.reset(window.__recaptchaWidgetId);
-            } catch (e) {
+          } catch (e) {
             console.warn("Error resetting reCAPTCHA:", e);
-            }
-            return;
+          }
+          return;
         }
 
         const widgetId = grecaptcha.render("recaptcha-container", {
-            sitekey: RECAPTCHA_SITE_KEY,
-            size: "normal",
-            callback: (token) => setRecaptchaToken(token),
-            "expired-callback": () => setRecaptchaToken(null),
+          sitekey: RECAPTCHA_SITE_KEY,
+          size: "normal",
+          callback: (token) => setRecaptchaToken(token),
+          "expired-callback": () => setRecaptchaToken(null),
         });
         window.__recaptchaWidgetId = widgetId;
-        });
+      });
     });
-    }, [history]);
+  }, [history]);
 
+  const handleLoginError = (msg) => {
+    setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: msg });
+    setAuthenticating(false);
+  };
 
-    const handleLoginError = (msg) => {
-        setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: msg });
-        setAuthenticating(false);
-    };
+  const onSubmit = async () => {
+    setAuthenticating(true);
+    try {
+      const cookieexpires = `; expires=${-1}`;
+      document.cookie = `userType=${encodeURIComponent("")}${cookieexpires}; path=/`;
 
-    const onSubmit = async () => {
-        setAuthenticating(true);
-        try {
-        const cookieexpires = `; expires=${-1}`;
-        document.cookie = `userType=${encodeURIComponent("")}${cookieexpires}; path=/`;
-
-        const response = await auth.login(credentials);
-        if (response.payload?.errors?.length) {
-            handleLoginError(response.payload.errors[0].message);
-            return;
-        }
-
-        const { loginStatus, message } = response;
-        setServerResponse({ loginStatus, message });
-
-        if (loginStatus === "CORE_AUTH_ERR") setAuthenticating(false);
-        else history.push("/");
-        } catch (error) {
-        setAuthenticating(false);
-        }
-    };
-
-    // ✅ Only send OTP if user verified reCAPTCHA
-    const sendOtp = async () => {
-        if (!recaptchaToken) {
-        alert(lang === "bn" ? "অনুগ্রহ করে 'আমি রোবট নই' চেকবক্সটি টিক দিন।" : "Please tick the 'I am not a robot' checkbox.");
+      const response = await auth.login(credentials);
+      if (response.payload?.errors?.length) {
+        handleLoginError(response.payload.errors[0].message);
         return;
-        }
+      }
 
-        const formData = new FormData();
-        formData.append("phone_number", mobileNumber);
-        formData.append("recaptcha_token", recaptchaToken);
+      const { loginStatus, message } = response;
+      setServerResponse({ loginStatus, message });
 
-        try {
-        const response = await fetch("/api/workforce/send/otp", {
-            method: "POST",
-            body: formData,
-        });
-        const data = await response.json();
+      if (loginStatus === "CORE_AUTH_ERR") setAuthenticating(false);
+      else history.push("/");
+    } catch (error) {
+      setAuthenticating(false);
+    }
+  };
 
-        if (!response.ok || data.status !== "success") {
-            setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: data.message });
-        } else {
-            setCredentials({ ...credentials, username: data.username });
-            setIsOtpSent(true);
-        }
-        } catch (err) {
-        console.error(err);
-        setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: errorMessages.GENERAL });
-        }
-    };
+  // ✅ Only send OTP if user verified reCAPTCHA
+  const sendOtp = async () => {
+    if (!recaptchaToken) {
+      alert(lang === "bn" ? "অনুগ্রহ করে 'আমি রোবট নই' চেকবক্সটি টিক দিন।" : "Please tick the 'I am not a robot' checkbox.");
+      return;
+    }
 
-    const setInput = (type, value) => {
-        if (type === "mobile_number") setMobileNumber(value);
-        if (type === "otp") setCredentials({ ...credentials, password: value });
-    };
+    const formData = new FormData();
+    formData.append("phone_number", mobileNumber);
+    formData.append("recaptcha_token", recaptchaToken);
+
+    try {
+      const response = await fetch("/api/workforce/send/otp", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (!response.ok || data.status !== "success") {
+        setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: data.message });
+      } else {
+        setCredentials({ ...credentials, username: data.username });
+        setIsOtpSent(true);
+      }
+    } catch (err) {
+      console.error(err);
+      setServerResponse({ loginStatus: "CORE_AUTH_ERR", message: errorMessages.GENERAL });
+    }
+  };
+
+  const setInput = (type, value) => {
+    if (type === "mobile_number") setMobileNumber(value);
+    if (type === "otp") setCredentials({ ...credentials, password: value });
+  };
 
   return (
     <>
@@ -163,8 +174,6 @@ export default function LoginForm() {
       )}
 
       <div>
-        
-
         <Grid item style={{ marginTop: "1rem" }}>
           <TextInput
             required
@@ -200,30 +209,19 @@ export default function LoginForm() {
             </Grid>
 
             <Grid item style={{ marginTop: "1rem" }}>
-              <Button
-                fullWidth
-                disabled={!(credentials.username && credentials.password)}
-                color="primary"
-                variant="contained"
-                onClick={onSubmit}
-              >
+              <Button fullWidth disabled={!(credentials.username && credentials.password)} color="primary" variant="contained" onClick={onSubmit}>
                 {lang === "bn" ? "লগইন করুন" : "Login"}
               </Button>
             </Grid>
           </>
         ) : (
           <Grid item style={{ marginTop: "1rem" }}>
-            <Button
-              fullWidth
-              disabled={mobileNumber.length !== 11}
-              color="primary"
-              variant="contained"
-              onClick={sendOtp}
-            >
+            <Button fullWidth disabled={mobileNumber.length !== 11} color="primary" variant="contained" onClick={sendOtp}>
               {lang === "bn" ? "ওটিপি পাঠান" : "Send OTP"}
             </Button>
           </Grid>
         )}
+        
       </div>
     </>
   );

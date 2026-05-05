@@ -43,10 +43,31 @@ const RegistrationButton = () => {
   };
 
   return (
+    <>
     <Box className={classes.container}>
       <Typography varient="p" className={classes.title}><FormattedMessage module="workforce" id={lang === "bn" ? "workforce.registration.desclaimer" : "New here? Register today!"} /></Typography>
       <Button className={classes.inlineButton}  onClick={redirectToRegistrationPage}><FormattedMessage module="workforce" id={lang === "bn" ? "workforce.register.button" : "Register"} /></Button>
     </Box>
+    <Grid item style={{ marginTop: 2 }}>
+          <Typography variant="body2" align="center" style={{ color: "grey", fontWeight: "bold" }}>
+            {lang === "bn" ? "সহযোগিতায়" : "Powered by"}
+          </Typography>
+          <Box style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}>
+            <img
+              src={window.location.origin + "/front/workforce_assets/German_Cooperation-removebg-preview.png"}
+              alt="German Cooperation Logo"
+              style={{ width: "85px" }}
+            />
+            <img
+              src={window.location.origin + "/front/workforce_assets/giz-uganda-logo-png_seeklogo-571721-removebg-preview.png"}
+              alt="GIZ Logo"
+              style={{ width: "85px" }}
+            />
+            <img src={window.location.origin + "/front/workforce_assets/europeanUnion-removebg-preview.png"} alt="Eu Logo" style={{ width: "85px" }} />
+            <img src={window.location.origin + "/front/workforce_assets/OpenIMIS-removebg-preview.png"} alt="openIMIS Logo" style={{ width: "85px" }} />
+          </Box>
+        </Grid>
+    </>
   );
 };
 

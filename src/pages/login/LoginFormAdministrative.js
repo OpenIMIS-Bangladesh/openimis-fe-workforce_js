@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Box, Grid, LinearProgress, Paper } from "@material-ui/core";
+import { Button, Box, Grid, LinearProgress, Paper,Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { TextInput } from "@openimis/fe-core";
 import { useAuthentication, useHistory, Helmet, useModulesManager, useTranslations } from "@openimis/fe-core";
@@ -128,7 +128,7 @@ export default function LoginFormAdministrative() {
                 <Helmet title={formatMessage("pageTitle")} />
                 <Paper className={classes.paper} elevation={2}>
                     <form onSubmit={onSubmit}>
-                        <Box p={6} width={380}>
+                        <Box p={6} width={500}>
                             <Grid container spacing={2} direction="column" alignItems="stretch">
                                 <LoginHeader />
                                 <>
@@ -172,6 +172,17 @@ export default function LoginFormAdministrative() {
 
                                     <Grid item>
                                         <Button onClick={redirectToForgotPassword}>{lang === "bn" ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot Password?"}</Button>
+                                    </Grid>
+                                    <Grid item style={{marginTop:2}}>
+                                        <Typography variant="body2" align="center" style={{color:"grey",fontWeight:"bold"}}>
+                                            {lang === "bn" ? "সহযোগিতায়" : "Powered by"}
+                                        </Typography>
+                                        <Box style={{display:"flex",justifyContent:"space-between",marginTop:2}}>
+                                            <img src={window.location.origin + "/front/workforce_assets/German_Cooperation-removebg-preview.png"} alt="German Cooperation Logo" style={{ width: "85px"}} />
+                                            <img src={window.location.origin + "/front/workforce_assets/giz-uganda-logo-png_seeklogo-571721-removebg-preview.png"} alt="GIZ Logo" style={{ width: "85px"}} />
+                                            <img src={window.location.origin + "/front/workforce_assets/europeanUnion-removebg-preview.png"} alt="Eu Logo" style={{ width: "85px"}} />
+                                            <img src={window.location.origin + "/front/workforce_assets/OpenIMIS-removebg-preview.png"} alt="openIMIS Logo" style={{ width: "85px"}} />
+                                        </Box>
                                     </Grid>
                                 </>
                             </Grid>

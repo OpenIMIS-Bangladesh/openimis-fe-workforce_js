@@ -12,7 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useDispatch, useSelector } from 'react-redux';
-import { generateBankAdviceContent } from '../../utils/bankAdviceContent';
+import { generateBankAdviceTemplate } from '../../utils/bankAdviceContent';
 import { safeDecodeId } from '../../utils/utils';
 import { createWorkforceCommitteeBankAdviceMap } from '../../actions';
 
@@ -22,6 +22,15 @@ const useStyles = makeStyles((theme) => ({
   },
   dialogContent: {
     padding: theme.spacing(4),
+  },
+  quillEditor: {
+    "& .ql-editor table": {
+      pointerEvents: "none",
+      userSelect: "none",
+    },
+    "& .ql-editor table td, & .ql-editor table th": {
+      pointerEvents: "none",
+    },
   },
 }));
 
@@ -33,10 +42,10 @@ const BankAdviceEditModal = ({ open, onClose, paymentData, month, year,committee
 
   useEffect(() => {
     if (open) {
-      const fullContent = generateBankAdviceContent(paymentData || [], month, year);
+      const fullContent = generateBankAdviceTemplate();
       setEditorContent(fullContent);
     }
-  }, [open, paymentData, month, year]);
+  }, [open]);
 
   const quillModules = {
     toolbar: [
@@ -45,8 +54,43 @@ const BankAdviceEditModal = ({ open, onClose, paymentData, month, year,committee
       [{ 'list': 'ordered' }, { 'list': 'bullet' }],
       [{ 'align': [] }],
       ['clean']
-    ]
+    ],
+    clipboard: {
+      matchVisual: false,
+    },
+    // Disable table editing - make tables read-only
+    table: false,
   };
+
+  const quillFormats = [
+    'header', 'bold', 'italic', 'underline', 'list', 'bullet', 'align'
+  ];
+
+  // Custom handler to prevent table modification
+  useEffect(() => {
+    const editor = document.querySelector('.ql-editor');
+    if (editor) {
+      editor.addEventListener('keydown', (e) => {
+        // Check if cursor is inside a table
+        const isInTable = e.target.closest('table') || e.target.closest('td') || e.target.closest('th');
+        if (isInTable) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      });
+      
+      // Prevent paste in tables
+      editor.addEventListener('paste', (e) => {
+        const isInTable = e.target.closest('table') || e.target.closest('td') || e.target.closest('th');
+        if (isInTable) {
+          e.preventDefault();
+          return false;
+        }
+      });
+    }
+  }, []);
+
 
   const handleSave =async() => {
     console.log(editorContent);
@@ -75,13 +119,15 @@ const BankAdviceEditModal = ({ open, onClose, paymentData, month, year,committee
         </Typography>
       </DialogTitle>
       <DialogContent className={classes.dialogContent}>
-        <ReactQuill
-          theme="snow"
-          value={editorContent}
-          onChange={setEditorContent}
-          modules={quillModules}
-          style={{ color: '#000' }}
-        />
+        <div className={classes.quillEditor}>
+          <ReactQuill
+            theme="snow"
+            value={editorContent}
+            onChange={setEditorContent}
+            modules={quillModules}
+            style={{ color: '#000' }}
+          />
+        </div>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} variant="outlined" color="primary">
