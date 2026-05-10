@@ -177,6 +177,18 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
               />
             </Grid>
 
+            <Grid item xs={6} className={classes.item}>
+              <PublishedComponent
+                pubRef="workforce.DatePicker"
+                label={"workforce.application.accident.dateOfLastCheckup"}
+                value={formData?.employeeAccidentInfo?.lastCheckupDate || ""}
+                onChange={(v) => handleChange("lastCheckupDate", v)}
+                readOnly={false}
+                required
+              />
+              {errors?.rdmp && <FormHelperText error><FormattedMessage id={errors?.rdmp}/></FormHelperText>}
+            </Grid>
+
             <Grid item xs={12} className={classes.item}>
               <FormControl component="fieldset">
                 <FormLabel>

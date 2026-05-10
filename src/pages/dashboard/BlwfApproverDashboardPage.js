@@ -169,9 +169,13 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   return (
     <div className={classes.accordionPadding}>
       <Typography variant="h5" gutterBottom>
-        <FormattedMessage
+        {/* <FormattedMessage
           module="workforce"
           id="workforce.blwf.approver.dashboard"
+        /> */}
+        <FormattedMessage
+          module="workforce"
+          id="workforce.dashboard"
         />
       </Typography>
 

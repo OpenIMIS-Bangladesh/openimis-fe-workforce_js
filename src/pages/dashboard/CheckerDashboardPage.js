@@ -306,10 +306,12 @@ const CheckerDashboard = () => {
         <Grid item xs={12} md={9} className={classes.content}>
           <Typography variant="h5" gutterBottom>
             {user_type === WORKFORCE_USER_TYPE.CHECKER && (         
-            <FormattedMessage module="workforce" id="workforce.checker1.dashboard" />
+            // <FormattedMessage module="workforce" id="workforce.checker1.dashboard" />
+            <FormattedMessage module="workforce" id="workforce.dashboard" />
             )}
             {user_type === WORKFORCE_USER_TYPE.CHECKER_TWO && (         
-            <FormattedMessage module="workforce" id="workforce.checker2.dashboard" />
+            // <FormattedMessage module="workforce" id="workforce.checker2.dashboard" />
+            <FormattedMessage module="workforce" id="workforce.dashboard" />
             )}
              {user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER && (    
             <FormattedMessage module="workforce" id="workforce.blwf.checker.dashboard" />

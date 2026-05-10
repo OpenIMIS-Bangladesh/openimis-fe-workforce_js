@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, Box, Paper, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, FormattedMessage, historyPush, useHistory } from "@openimis/fe-core";
-import { getUserType } from "../../utils/utils";
+import { getUserType, isBlwfPath } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import WorkforceEmployeePicker from "../../pickers/WorkforceEmployeePicker";
 import FactoryPicker from "../../pickers/FactoryPicker";
@@ -107,7 +107,7 @@ const ApplicationTypeSelector = ({
         </Box>
       )}
 
-      <Box mt={3}>
+      {!isBlwfPath() &&(<Box mt={3}>
         <FactoryPicker
           id="application-type-factory"
           // FIX: Pass the ID directly from the object (fallback to nested only if necessary)
@@ -121,7 +121,7 @@ const ApplicationTypeSelector = ({
           }}
           readOnly={false}
         />
-      </Box>
+      </Box>)}
 
       <FormControl component="fieldset" className={classes.section}>
         {/* We use the state 'isExportOriented' which is now automatically driven by the FactoryPicker */}

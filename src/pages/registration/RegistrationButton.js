@@ -70,7 +70,7 @@ const RegistrationButton = () => {
           <FormattedMessage module="workforce" id={lang === "bn" ? "workforce.register.button" : "Register"} />
         </Button>
       </Box>
-      <Grid item className={classes.footerContainer}>
+      {/* <Grid item className={classes.footerContainer}>
         <Typography variant="body2" style={{ color: "grey", fontWeight: "bold", marginBottom: 12 }}>
           {lang === "bn" ? "সহযোগিতায়" : "Powered by"}
         </Typography>
@@ -89,7 +89,7 @@ const RegistrationButton = () => {
           <img src={window.location.origin + "/front/workforce_assets/europeanUnion-removebg-preview.png"} alt="EU" className={classes.footerLogo} />
           <img src={window.location.origin + "/front/workforce_assets/OpenIMIS-removebg-preview.png"} alt="openIMIS" className={classes.footerLogo} />
         </Box>
-      </Grid>
+      </Grid> */}
     </>
   );
 };

@@ -227,7 +227,8 @@ const FiledApplications = () =>{
   return (
   <>
     <Typography variant="h5" gutterBottom>
-      <FormattedMessage module="workforce" id="workforce.section1.admin.dashboard" />
+      {/* <FormattedMessage module="workforce" id="workforce.section1.admin.dashboard" /> */}
+      <FormattedMessage module="workforce" id="workforce.dashboard" />
     </Typography>
       <Card className={classes.tableContainer}>
         <CardContent>

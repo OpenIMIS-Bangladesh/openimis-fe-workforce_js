@@ -36,6 +36,7 @@ import {
   validateMandatoryDocuments,
   validateMandatoryDocumentsForDependents,
   validateRequiredFields,
+  isDateDifference150Days
 } from "../../../utils/utils";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
@@ -279,6 +280,12 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
       const nextStep = activeStep + 1;
       if (nextStep === 2 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
+        setErrors(fakeErrors);
+        console.log({ fakeErrors });
+        return false
+      }else if (applicationForSelf === "yes" ?nextStep === 5 :nextStep===6) {
+        const is150days = isDateDifference150Days(formData?.employeeAccidentInfo?.diagnosisDate,formData?.employeeAccidentInfo?.lastCheckupDate,150)
+        let fakeErrors = { ...newErrors, rdmp: "core.error.lastCheckup.between150days"};
         setErrors(fakeErrors);
         console.log({ fakeErrors });
         return false

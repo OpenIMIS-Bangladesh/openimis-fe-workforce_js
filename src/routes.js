@@ -56,6 +56,10 @@ export const ROUTE_WORKFORCE_ASSOCIATION_USER_MAP = "workforce/associations/user
 export const ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT = "workforce/committee-management";
 
 
+export const ROUTE_WORKFORCE_VERIFY_CONFIRMATION = "workforce/confirmation";
+
+
+
 
 
 // export const ROUTE_WORKFORCE_ORGANIZATIONS_EMPLOYEES_DESIGNATION_EMPLOYEE = "workforce/organizations/employees/employee";

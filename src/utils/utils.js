@@ -1166,6 +1166,27 @@ export function getFooterContentNew(depObj, workerBirthDate, applicationType, pa
   }
 }
 
+export const isDateDifference150Days = (date1, date2, days = 150) => {
+  if (!date1 || !date2) return false;
+
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+
+  // Check if dates are valid
+  if (isNaN(d1.getTime()) || isNaN(d2.getTime())) {
+    console.warn("Invalid date provided");
+    return false;
+  }
+
+  // Calculate difference in milliseconds
+  const diffTime = Math.abs(d2 - d1);
+  
+  // Convert to days
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  return diffDays >= days;   // Change to === if you want exactly 150 days
+};
+
 export function calculateAge(birthDate) {
   if (!birthDate) return 0;
 
@@ -1467,6 +1488,13 @@ export const formatLabel = (str) => {
     .replace(/\b\w/g, (c) => c.toUpperCase()); // capitalize each word
 };
 
+export const isBlwfPath = () => {
+  if (typeof window !== "undefined") {
+    return window.location.href.includes("blwf");
+  }
+  return false; // fallback if window is not defined
+  // return true;
+};
 export const isEisPath = () => {
   if (typeof window !== "undefined") {
     return window.location.href.includes("eis");

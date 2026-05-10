@@ -53,7 +53,8 @@ import {
   ROUTE_WORKFORCE_ASSOCIATIONS,
   ROUTE_WORKFORCE_ASSOCIATIONS_ASSOCIATION,
   ROUTE_WORKFORCE_ASSOCIATION_USER_MAP,
-  ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT
+  ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT,
+  ROUTE_WORKFORCE_VERIFY_CONFIRMATION
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -116,6 +117,7 @@ import WorkforceAsociationPage from "./pages/workforce-association/WorkforceAsso
 import AssociationUserMappingPage from "./pages/workforce-association/AssociationUserMappingPage";
 import CommitteeManagementPage from "./pages/workforce-committee/CommitteeManagementPage";
 import PushNotification from "./components/app-bar/PushNotification";
+import VerifyConfirmationLink from "./components/SmsVerificationComponents/VerifyConfirmationLink";
 
 // import DependentsPage from "./pages/workforce-employee/dependent/DependentsPage";
 
@@ -164,6 +166,7 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.factories.factory", ref: ROUTE_WORKFORCE_FACTORIES_FACTORY },
     { key: "workforce.route.factories.factory.view", ref: ROUTE_WORKFORCE_FACTORIES_FACTORY_VIEW },
     { key: "workforce.route.factories", ref: ROUTE_WORKFORCE_FACTORIES },
+    { key: "workforce.route.verify.confirmation", ref: ROUTE_WORKFORCE_VERIFY_CONFIRMATION },
 
     { key: "workforce.route.employees.employee", ref: ROUTE_WORKFORCE_EMPLOYEES_EMPLOYEE },
     { key: "workforce.route.employees", ref: ROUTE_WORKFORCE_EMPLOYEES },
@@ -333,6 +336,7 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_WORKFORCE_REGISTRATION, component: RegistrationPage },
     { path: ROUTE_ADMINISTRATIVE_LOGIN, component: LoginFormAdministrative },
     { path: ROUTE_WORKFORCE_FACTORIES_FACTORY, component: OrganizationFactoryPage },
+    { path: `${ROUTE_WORKFORCE_VERIFY_CONFIRMATION}/:application_id`, component: VerifyConfirmationLink },
 
   ],
 
