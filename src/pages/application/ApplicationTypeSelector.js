@@ -126,7 +126,7 @@ const ApplicationTypeSelector = ({
       <FormControl component="fieldset" className={classes.section}>
         {/* We use the state 'isExportOriented' which is now automatically driven by the FactoryPicker */}
         
-        {isExportOriented === "yes" ? (
+        {!isBlwfPath()|| isExportOriented === "yes" ? (
           <>
             <Typography variant="h6" className={classes.title}>
               {<FormattedMessage id="workforce.application.type.title" module="workforce" />}

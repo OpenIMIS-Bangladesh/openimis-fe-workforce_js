@@ -270,10 +270,10 @@ const renderDetails = (
       if (typeof item !== "object" || !item) return null;
 
       const scalars = Object.entries(item).filter(
-        ([key, value]) => typeof value !== "object" && ![...hiddenKeys].includes(key) && value !== null && value !== undefined && value !== "",
+        ([key, value]) => typeof value !== "object" && ![...hiddenKeys,...((user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type !=WORKFORCE_USER_TYPE.DOCTOR) ? ["status", "grade","diseaseNo","diseaseType","minimumDonationAmount","maximumDonationAmount"] : [])].includes(key) && value !== null && value !== undefined && value !== "",
       );
       const objects = Object.entries(item).filter(
-        ([key, value]) => typeof value === "object" && value && ![...hiddenKeys, "attachments", "employeeBankingDependents"].includes(key),
+        ([key, value]) => typeof value === "object" && value && ![...hiddenKeys,...((user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type !=WORKFORCE_USER_TYPE.DOCTOR) ? ["status", "grade","diseaseNo","diseaseType","minimumDonationAmount","maximumDonationAmount"] : []), "attachments", "employeeBankingDependents"].includes(key),
       );
 
       let matchingFiles = [];
@@ -459,11 +459,11 @@ const renderDetails = (
       );
     }
     const scalars = Object.entries(mergedData).filter(
-      ([key, value]) => typeof value !== "object" && !hiddenKeys.includes(key) && value !== null && value !== undefined && value !== "",
+      ([key, value]) => typeof value !== "object" && ![...hiddenKeys,...((user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type !=WORKFORCE_USER_TYPE.DOCTOR) ? ["status", "grade","diseaseNo","diseaseType","minimumDonationAmount","maximumDonationAmount"] : [])].includes(key) && value !== null && value !== undefined && value !== "",
     );
     const objects = Object.entries(mergedData).filter(([key, value]) => {
       const parsed = tryParse(value);
-      return typeof parsed === "object" && parsed && !hiddenKeys.includes(key);
+      return typeof parsed === "object" && parsed && ![...hiddenKeys,...((user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type !=WORKFORCE_USER_TYPE.DOCTOR) ? ["status", "grade","diseaseNo","diseaseType","minimumDonationAmount","maximumDonationAmount"] : [])].includes(key);
     });
 
     return (
