@@ -283,8 +283,7 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
         setErrors(fakeErrors);
         console.log({ fakeErrors });
         return false
-      }else if (applicationForSelf === "yes" ?nextStep === 5 :nextStep===6) {
-        const is150days = isDateDifference150Days(formData?.employeeAccidentInfo?.diagnosisDate,formData?.employeeAccidentInfo?.lastCheckupDate,150)
+      }else if (applicationForSelf === "yes" ?(nextStep === 5 &&isDateDifference150Days(formData?.employeeAccidentInfo?.diagnosisDate,formData?.employeeAccidentInfo?.lastCheckupDate,150)) :nextStep === 6 &&isDateDifference150Days(formData?.employeeAccidentInfo?.diagnosisDate,formData?.employeeAccidentInfo?.lastCheckupDate,150)) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.lastCheckup.between150days"};
         setErrors(fakeErrors);
         console.log({ fakeErrors });

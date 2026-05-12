@@ -136,6 +136,9 @@ const workforceTheme = createTheme({
           fontSize: "1.35em !important", // High priority to override default 14px
           color: "#006273",
         },
+        '.MuiFormLabel-root, .MuiInputLabel-root, .MuiFormLabel-root.Mui-focused': {
+          color: "#006273 !important",
+        },
         // 2. Explicitly target Autocomplete elements (labels, options, underlines)
         '.MuiAutocomplete-option, .MuiAutocomplete-input, .MuiInputLabel-root, .MuiInput-underline:before': {
           fontFamily: '"Nikosh", sans-serif !important',
@@ -148,9 +151,48 @@ const workforceTheme = createTheme({
         // 4. Catch-all for any text inside the system
         'div, span, p, label, input,h1, h2, h3, h4, h5, h6,tbody,td': {
           fontFamily: '"Nikosh", sans-serif !important',
+        },
+        'label':{
+          fontFamily: '"Nikosh", sans-serif !important',
+          fontSize:"1rem !important",
+          lineHeight:1
+        },
+        '.rmdp-container': {
+          width: '100%',
+          padding:'0px',
+          lineHeight:1
+        },
+        '.rmdp-container input': {
+          border: 'none !important',
+          borderBottom: '1px solid #006273 !important',
+          borderRadius: '0 !important',
+          padding: '0px 0 0px !important',
+          backgroundColor: 'transparent !important',
+          boxShadow: 'none !important',
+          color: '#006273 !important',
+          fontFamily: '"Nikosh", sans-serif !important',
+          fontSize: '1rem !important',
+          outline: 'none !important',
+          width: '100%',
+        },
+        '.rmdp-container input:focus': {
+          borderBottom: '2px solid #006273 !important',
         }
       },
     },
+    MuiInput: {
+      underline: {
+        '&:before': {
+          borderBottomColor: "#006273",
+        },
+        '&:after': {
+          borderBottomColor: "#006273",
+        },
+        '&:hover:not($disabled):before': {
+          borderBottomColor: "#006273",
+        },
+      },
+    }
   },
 });
 

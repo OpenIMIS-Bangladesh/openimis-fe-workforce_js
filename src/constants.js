@@ -719,7 +719,10 @@ export const banglaLabels = {
   doctorsAssesment:"ডাক্তারদের মূল্যায়ন",
   doctorAssesmentComment:"ডাক্তার মূল্যায়ন মন্তব্য",
   doctorsProposedDonation:"ডাক্তার প্রস্তাবিত অনুদান",
-  doctorsActionFlag:"ডাক্তারদের কার্যক্রমের পতাকা"
+  doctorsActionFlag:"ডাক্তারদের কার্যক্রমের পতাকা",
+  accountNo:"অ্যাকাউন্ট নম্বর",
+  branchCode:"শাখা কোড",
+  lastCheckupData:"শেষ চেকআপের তারিখ"
 };
 
 export const roleMaxDayCount = {

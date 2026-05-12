@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Box, Grid, Paper, LinearProgress, Divider, Link, Typography } from "@material-ui/core";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { makeStyles } from "@material-ui/styles";
-import { isEisPath } from "../../utils/utils";
+import { isBlwfPath, isEisPath } from "../../utils/utils";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -39,7 +39,7 @@ export default function LoginHeader() {
                 </Button>
             </Box>
             <Grid item container direction="row" alignItems="center" justifyContent="center">
-                <img className={classes.logo} src={"/api/workforce/logo"} />
+                <img className={classes.logo} src={isBlwfPath() &&!isEisPath()?"workforce_assets/blwf.png":!isBlwfPath() &&!isEisPath()?"workforce_assets/centralfund.png":"/api/workforce/logo"} />
                 <>
                     <div>
                         <Box
