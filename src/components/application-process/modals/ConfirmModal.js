@@ -35,7 +35,7 @@ const ConfirmModal = ({ open, message, onClose }) => {
 
         <Box sx={{ mt: 3, display: "flex", justifyContent: "space-around" }}>
           <Button
-            variant="contained"
+            variant="outlined"
             color="secondary"
             onClick={() => onClose(0)} // cancel
           >

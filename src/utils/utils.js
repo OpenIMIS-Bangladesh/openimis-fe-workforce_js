@@ -281,6 +281,26 @@ export const conditionalEnToBn = (num, locale, type = "") => {
   }
 };
 
+export const formatDynamicValue = (value, language) => {
+  if (value === null || value === undefined || value === "") return "—";
+
+  const strValue = String(value);
+
+  // Skip formatting if it's a translation key (contains a dot)
+  if (strValue.includes(".")) {
+    return strValue;
+  }
+
+  // Format snake_case and camelCase
+  const formattedValue = strValue
+    .replace(/_/g, " ")
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+
+  // Convert numbers to Bangla
+  return conditionalEnToBn(formattedValue, language);
+};
+
 export const getInfoId = (resp, dataKey) => {
   let id = null;
   if (resp?.payload?.data) {

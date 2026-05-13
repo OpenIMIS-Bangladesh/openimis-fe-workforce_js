@@ -503,7 +503,8 @@
     "workforce.application.steps.reasonsforSeekingFinancialAssistance":"Reasons for seeking financial assistance (must be within the last 105 days)",
     "workforce.application.steps.previousGrantInfo":"Previous Donation Info",
     "workforce.application.steps.otherInfo":"Other Info",
-    "workforce.application.reasons.addComment": "মন্তব্য যোগ করুন",
+    "workforce.application.reasons.addComment": "Add Comment",
+    "workforce.application.diseaseGrade": "Disease Grade",
     "workforce.application.revert.reasons.addComment": "Reason for revert",
     "workforce.application.reasons.selectedOfficer": "বাছাইকৃত কর্মকর্তা:",
 

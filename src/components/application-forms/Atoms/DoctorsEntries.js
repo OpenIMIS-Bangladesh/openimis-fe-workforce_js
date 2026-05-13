@@ -34,9 +34,10 @@ const DoctorsEntries = ({ application }) => {
   const [proposedAmount, setProposedAmount] = useState(doctorEntriesData.doctorsProposedDonation || application?.doctorsRecommendedDonation || "");
   const [doctorDiagnosis, setDoctorDiagnosis] = useState(doctorEntriesData.doctorsAssesment || application?.doctorsDiagnosis || "");
   const [doctorComment, setDoctorComment] = useState(doctorEntriesData.doctorAssesmentComment || application?.doctorComment || "");
+  const [diseaseGrade, setDiseaseGrade] = useState("");
   const [doctorsActions, setDoctorsActions] = useState(doctorEntriesData.doctorsActionFlag || application?.doctorsFlag || "");
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
-  const [modalViewType, setModalViewType] = useState("")
+  const [modalViewType, setModalViewType] = useState("");
   const [openSnackBar, setOpenSnackBar] = useState({ openResponseBar: false, status: "workforce.success.message.doctor", type: "success" });
 
   const handleSelectCheckbox = (event) => {
@@ -53,12 +54,13 @@ const DoctorsEntries = ({ application }) => {
       doctorsDiagnosis: doctorDiagnosis || null,
       doctorComment: doctorComment || null,
       doctorsFlag: doctorsActions,
-      doctorEntries:JSON.stringify({
+      diseaseGrade:diseaseGrade,
+      doctorEntries: JSON.stringify({
         doctorsAssesment: doctorDiagnosis || null,
         doctorAssesmentComment: doctorComment || null,
         doctorsProposedDonation: proposedAmount,
         doctorsActionFlag: doctorsActions,
-      })
+      }),
     };
     try {
       console.log("Doctor Update Payload:", updateApplicationData);
@@ -72,10 +74,10 @@ const DoctorsEntries = ({ application }) => {
 
   const isNotEmpty = (value) => !isEmpty(value);
 
-  console.log({fromCFdoctor:application})
-  console.log({doctorComment})
-  console.log({doctorDiagnosis})
-  console.log({doctorsActions})
+  console.log({ fromCFdoctor: application });
+  console.log({ doctorComment });
+  console.log({ doctorDiagnosis });
+  console.log({ doctorsActions });
   return (
     <>
       <Grid container spacing={2} style={{ marginTop: "10px" }}>
@@ -112,7 +114,7 @@ const DoctorsEntries = ({ application }) => {
             {/* Conditional Fields */}
             {doctorsActions === "recommend" && (
               <Grid item xs={12}>
-                <TextInput label="workforce.application.diagnosis.byDoctor" value={doctorDiagnosis} onChange={(v) => setDoctorDiagnosis(v)} />
+                <TextInput label="workforce.application.diagnosis.byDoctor" value={doctorDiagnosis} onChange={(v) => setDoctorDiagnosis(v)} multiline rows={3}/>
               </Grid>
             )}
 
@@ -121,20 +123,23 @@ const DoctorsEntries = ({ application }) => {
                 <TextInput label="workforce.application.reasons.addComment" value={doctorComment} onChange={(v) => setDoctorComment(v)} multiline rows={3} />
               </Grid>
             )}
+            <Grid item xs={12}>
+              <TextInput label="workforce.application.diseaseGrade" value={diseaseGrade} onChange={(v) => setDiseaseGrade(v)} />
+            </Grid>
           </>
         )}
 
         {/* Submit Button */}
         {user_type !== WORKFORCE_USER_TYPE.EIS_COORDINATOR && user_type !== WORKFORCE_USER_TYPE.EIS_DOCTOR && (
           <Grid item xs={3}>
-            <Button variant="contained" color="primary" onClick={handleUpdateGrantAmount} disabled={!doctorsActions || !proposedAmount}>
+            <Button variant="contained" color="primary" onClick={handleUpdateGrantAmount} disabled={!doctorsActions && !proposedAmount}>
               <FormattedMessage id="workforce.submit" module="workforce" />
             </Button>
           </Grid>
         )}
 
         {application?.organizationType === "eis" && (
-          <Grid item xs={12} style={{ display: 'flex', gap: '16px' }}>
+          <Grid item xs={12} style={{ display: "flex", gap: "16px" }}>
             {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.applicationType === "disabilityAssistance" ? (
               <>
                 {/* Button 1: Disability (Opens Doctor Entries) */}
@@ -177,7 +182,9 @@ const DoctorsEntries = ({ application }) => {
           </Grid>
         )}
       </Grid>
-      {openAccidentInfoModal && <EisFactoryAdminModal open={openAccidentInfoModal} viewType={modalViewType} onClose={() => setOpenAccidentInfoModal(false)} application={application} />}
+      {openAccidentInfoModal && (
+        <EisFactoryAdminModal open={openAccidentInfoModal} viewType={modalViewType} onClose={() => setOpenAccidentInfoModal(false)} application={application} />
+      )}
       <CustomSnackbar
         open={openSnackBar?.openResponseBar}
         onClose={() => setOpenSnackBar({ ...openSnackBar, openResponseBar: false })}

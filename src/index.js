@@ -125,7 +125,8 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 const workforceTheme = createTheme({
   palette: {
     primary: { main: "#006273" },
-    text: { primary: "#006273" },
+    secondary: { main: "#006273" },
+    text: { primary: "#006273"},
   },
   overrides: {
     MuiCssBaseline: {

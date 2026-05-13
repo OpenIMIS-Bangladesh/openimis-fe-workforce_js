@@ -569,7 +569,8 @@ export const banglaLabels = {
   accountHolderName: "হোল্ডারের নাম",
   routingNumber: "রাউটিং নম্বর",
   branch: "শাখা",
-  cronicDiseaseType: "জটিল রোগের ধরন",
+  // cronicDiseaseType: "জটিল রোগের ধরন",
+  cronicDiseaseType: "রোগের ধরন",
   grantAmount: "অনুদানের পরিমাণ",
   diagnosisDate: "রোগ নির্ণয়ের তারিখ",
   doctorName: "ডাক্তারের নাম",
@@ -722,7 +723,8 @@ export const banglaLabels = {
   doctorsActionFlag:"ডাক্তারদের কার্যক্রমের পতাকা",
   accountNo:"অ্যাকাউন্ট নম্বর",
   branchCode:"শাখা কোড",
-  lastCheckupData:"শেষ চেকআপের তারিখ"
+  lastCheckupData:"শেষ চেকআপের তারিখ",
+  donationReason:"অনুদানের  কারণ"
 };
 
 export const roleMaxDayCount = {

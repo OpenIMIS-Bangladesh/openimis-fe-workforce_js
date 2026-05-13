@@ -24,7 +24,7 @@ import FileUploader from "../../pickers/FileUploader";
 import DocumentReviewAccordion from "../application-process/DocumentReviewAccordion";
 import { banglaLabels, ORGANIZATION_TYPE_NAME_BN, ORGANIZATION_TYPE_NAME_EN, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
-import { conditionalEnToBn, enToBn, fixBrokenUnicode, getUserType, safeDecodeId } from "../../utils/utils";
+import { conditionalEnToBn, enToBn, fixBrokenUnicode, formatDynamicValue, getUserType, safeDecodeId } from "../../utils/utils";
 import { updateApplication } from "../../actions";
 import DoctorsEntries from "./Atoms/DoctorsEntries";
 import EisFactoryAdminModal from "./EisFactoryAdminModal";
@@ -302,7 +302,7 @@ const renderDetails = (
                     <span className={classes.label} style={{ fontWeight: "bold" }}>
                       {formatKey(key, language)}:
                     </span>{" "}
-                    <FormattedMessage id={value} module={"workforce"} />
+                    <FormattedMessage id={formatDynamicValue(value,language)} module={"workforce"} />
                   </Typography>
                 </Grid>
               ))}
@@ -475,7 +475,7 @@ const renderDetails = (
               <span className={classes.label} style={{ fontWeight: "bold" }}>
                 {formatKey(key, language)}:
               </span>{" "}
-              <FormattedMessage id={value} module={"workforce"} />
+              <FormattedMessage id={formatDynamicValue(value,language)} module={"workforce"} />
             </Typography>
           </Grid>
         ))}
