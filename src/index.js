@@ -432,8 +432,8 @@ const DEFAULT_CONFIG = {
   "core.MainMenu": [WorkforceMainMenu],
 
   "core.LoginPage": RegistrationButton,
-  "core.LoginPageLogo": LoginHeader,
-  "core.LoginPageForm": LoginForm,
+  "core.LoginPageLogo": withNikoshFont(LoginHeader),
+  "core.LoginPageForm": withNikoshFont(LoginForm),
   "core.AppBar": PushNotification,
   "core.userInfo": UserInfo,
   "home.HomePage.Blocks": withNikoshFont(DashboardRelay),

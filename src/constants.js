@@ -724,7 +724,8 @@ export const banglaLabels = {
   accountNo:"অ্যাকাউন্ট নম্বর",
   branchCode:"শাখা কোড",
   lastCheckupData:"শেষ চেকআপের তারিখ",
-  donationReason:"অনুদানের  কারণ"
+  donationReason:"অনুদানের  কারণ",
+  otherDisease:"অন্যান্য রোগ"
 };
 
 export const roleMaxDayCount = {

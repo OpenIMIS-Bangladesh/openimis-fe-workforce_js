@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
     logo: {
         width: "45%",
         padding: theme.spacing(2),
+        display:"block"
     },
 }));
 export default function LoginHeader() {
@@ -38,10 +39,10 @@ export default function LoginHeader() {
                     {lang == "bn" ? "বাংলা" : "English"}
                 </Button>
             </Box>
-            <Grid item container direction="row" alignItems="center" justifyContent="center">
+            <Grid item container direction="column" alignItems="center" justifyContent="center">
                 <img className={classes.logo} src={isBlwfPath() &&!isEisPath()?"workforce_assets/blwf.png":!isBlwfPath() &&!isEisPath()?"workforce_assets/centralfund.png":"/api/workforce/logo"} />
                 <>
-                    <div>
+                    {isEisPath() ? (<div>
                         <Box
                             pl={2}
                             fontWeight="fontWeightBold"
@@ -54,8 +55,8 @@ export default function LoginHeader() {
                         <Divider
                             style={{
                                 flex: '1 1 0%', // Shorthand for flex-grow, flex-shrink, flex-basis
-                                marginTop: '1rem',
-                                marginBottom: '1rem',
+                                marginTop: '3px',
+                                marginBottom: '3px',
                                 background: '#006273'
                             }}
                         />
@@ -74,7 +75,33 @@ export default function LoginHeader() {
                             }
 
                         </Box>
+                    </div>):!isBlwfPath() &&!isEisPath()?(
+                        <div>
+                        <Typography
+                            pl={2}
+                            variant="h6"
+                            style={{marginTop:2}}
+                            // fontWeight="fontWeightBold"
+                            // fontSize="h6.fontSize"
+                            textAlign="center"
+                        >
+                            {lang === "bn" ? "কেন্দ্রীয় তহবিল" : "Central Fund"}
+                        </Typography>
                     </div>
+                    ):(
+                        <div>
+                        <Typography
+                            pl={2}
+                            variant="h6"
+                            style={{marginTop:2,fontWeight:"bold"}}
+                            // fontWeight="fontWeightBold"
+                            // fontSize="h6.fontSize"
+                            textAlign="center"
+                        >
+                            {lang === "bn" ? "বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন" : "Bangladesh Labour Welfare Foundation"}
+                        </Typography>
+                    </div>
+                    )}
                 </>
             </Grid>
         </>

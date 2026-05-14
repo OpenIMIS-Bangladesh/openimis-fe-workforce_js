@@ -1509,11 +1509,11 @@ export const formatLabel = (str) => {
 };
 
 export const isBlwfPath = () => {
-  // if (typeof window !== "undefined") {
-  //   return window.location.href.includes("blwf");
-  // }
-  // return false; // fallback if window is not defined
-  return true;
+  if (typeof window !== "undefined") {
+    return window.location.href.includes("blwf");
+  }
+  return false; // fallback if window is not defined
+  // return true;
 };
 export const isEisPath = () => {
   if (typeof window !== "undefined") {
