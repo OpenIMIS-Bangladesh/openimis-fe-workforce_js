@@ -155,7 +155,8 @@ const hiddenKeys = [
   "educationGrant_last_educational_marksheet_copy",
   "educationGrant_scholarship_dependent_labour_foundation_grant_information",
   "educationGrant_certification_letter_from_the_department_head_of_the_organization",
-  "workerType"
+  "workerType",
+  "status","diseaseNo","minimumDonationAmount","maximumDonationAmount"
 ];
 
 const formatKey = (key, language) => {
@@ -274,7 +275,7 @@ const renderDetails = (
         ([key, value]) => typeof value !== "object" && ![...hiddenKeys,...((user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type !=WORKFORCE_USER_TYPE.DOCTOR) ? ["status", "grade","diseaseNo","diseaseType","minimumDonationAmount","maximumDonationAmount"] : [])].includes(key) && value !== null && value !== undefined && value !== "",
       );
       const objects = Object.entries(item).filter(
-        ([key, value]) => typeof value === "object" && value && ![...hiddenKeys,...((user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type !=WORKFORCE_USER_TYPE.DOCTOR) ? ["status", "grade","diseaseNo","diseaseType","minimumDonationAmount","maximumDonationAmount"] : ["status","diseaseNo","minimumDonationAmount","maximumDonationAmount"]), "attachments", "employeeBankingDependents"].includes(key),
+        ([key, value]) => typeof value === "object" && value && ![...hiddenKeys,...((user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type !=WORKFORCE_USER_TYPE.DOCTOR) ? ["status", "grade","diseaseNo","diseaseType","minimumDonationAmount","maximumDonationAmount"] : []), "attachments", "employeeBankingDependents"].includes(key),
       );
 
       let matchingFiles = [];
