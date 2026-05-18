@@ -11,6 +11,7 @@ import {
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from '@material-ui/icons/Close';
+import { isBlwfPath } from '../../utils/utils';
 
 const useStyles = makeStyles((theme) => ({
     dialogForm: {
@@ -79,6 +80,7 @@ const AddCommitteeDialog = ({
                     multiline
                     rows={3}
                 />
+                {!isBlwfPath() && (
                 <Autocomplete
                     multiple
                     id="included-sectors-autocomplete"
@@ -98,6 +100,7 @@ const AddCommitteeDialog = ({
                         />
                     )}
                 />
+                )}
             </DialogContent>
             <DialogActions className={classes.dialogActions}>
                 <Button onClick={onClose} color="default">

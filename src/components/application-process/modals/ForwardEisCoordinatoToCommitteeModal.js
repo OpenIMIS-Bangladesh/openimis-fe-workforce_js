@@ -224,7 +224,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
           id: decodeId(encodedId?.id),
           status: forwardStatus,
           eisApprovalIds: JSON.stringify(formData.userIds),
-          committeeId:safeDecodeId(formData?.committeeIds)
+          committeeId: safeDecodeId(formData?.committeeIds),
         };
 
         await dispatch(updateApplication(updateApplicationData, `update workforce application`));

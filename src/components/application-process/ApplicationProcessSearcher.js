@@ -3147,19 +3147,6 @@ class ApplicationProcessSearcher extends Component {
                     </Button>
                   </>
                 )}
-
-                {/* <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => this.setState({ forwardModalOpenSummarySA: true })}
-                >
-                  <FormattedMessage
-                    module="workforce"
-                    id="workforce.employee.application.disburse"
-                  />
-                </Button> */}
-
-
               </>
             ) : (
               <>
@@ -3177,9 +3164,6 @@ class ApplicationProcessSearcher extends Component {
                     </Button>
                     {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
                       <>
-                        {/* <IconButton onClick={this.handleOpenEisDependentBFTN}>
-                          <PrintIcon />
-                        </IconButton> */}
                         <Button
                           variant="contained"
                           color="primary"
@@ -3190,16 +3174,6 @@ class ApplicationProcessSearcher extends Component {
                             id="workforce.employee.application.paymentProcess"
                           />
                         </Button>
-                        {/* <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => this.setState({ forwardPaymentModalOpen: true })}
-                        >
-                          <FormattedMessage
-                            module="workforce"
-                            id="workforce.employee.application.paymentProcess"
-                          />
-                        </Button> */}
                       </>
                     )}
                     {![WORKFORCE_USER_TYPE.EIS_ADVISOR, WORKFORCE_USER_TYPE.EIS_COORDINATOR].includes(userType) && (

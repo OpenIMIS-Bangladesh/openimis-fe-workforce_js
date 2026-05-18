@@ -2977,6 +2977,16 @@ export function createWorkforceCommittee(payload, clientMutationLabel) {
   });
 }
 
+export function updateWorkforceCommittee(payload, clientMutationLabel) {
+  const mutation = formatMutation("updateWorkforceCommittee", formatWorkforceCommitteeGQL(payload), clientMutationLabel);
+  const requestedDateTime = new Date();
+  return graphql(mutation.payload, ["WORKFORCE_COMMITTEES_REQ", "WORKFORCE_COMMITTEES_RESP", "WORKFORCE_COMMITTEES_ERR"], {
+    clientMutationId: mutation.clientMutationId,
+    clientMutationLabel,
+    requestedDateTime,
+  });
+}
+
 export function fetchWorkforceCommittees() {
   const payload = `
     {
@@ -2984,6 +2994,8 @@ export function fetchWorkforceCommittees() {
         id
         nameEn
         nameBn
+        approvalType
+        organizationType
         assignedRole{
         id
         name
@@ -2997,6 +3009,15 @@ export function fetchWorkforceCommittees() {
 
 export function createWorkforceCommitteeUserMap(payload, clientMutationLabel) {
   const mutation = formatMutation("createWorkforceCommitteeUserMap", formatWorkforceCommitteeUserMapGQL(payload), clientMutationLabel);
+  const requestedDateTime = new Date();
+  return graphql(mutation.payload, ["WORKFORCE_COMMITTEE_USER_MAP_REQ", "WORKFORCE_COMMITTEE_USER_MAP_RESP", "WORKFORCE_COMMITTEE_USER_MAP_ERR"], {
+    clientMutationId: mutation.clientMutationId,
+    clientMutationLabel,
+    requestedDateTime,
+  });
+}
+export function updateWorkforceCommitteeUserMap(payload, clientMutationLabel) {
+  const mutation = formatMutation("updateWorkforceCommitteeUserMap", formatWorkforceCommitteeUserMapGQL(payload), clientMutationLabel);
   const requestedDateTime = new Date();
   return graphql(mutation.payload, ["WORKFORCE_COMMITTEE_USER_MAP_REQ", "WORKFORCE_COMMITTEE_USER_MAP_RESP", "WORKFORCE_COMMITTEE_USER_MAP_ERR"], {
     clientMutationId: mutation.clientMutationId,
@@ -3028,6 +3049,7 @@ export function fetchWorkforceCommitteeUserMap(filters) {
           }
         isNoaSignatureUser
         roleInCommittee
+        isRepresentative
         workforceCommitteeUser{
             representativeName
             representativeNameBn

@@ -6,6 +6,7 @@ import {
   Typography,
   Button,
 } from "@material-ui/core";
+import { isEisPath } from "../../utils/utils";
 
 
 
@@ -46,7 +47,7 @@ const CustomConfirmModal = ({ open, message, onClose,onConfirm }) => {
             color="primary"
             onClick={() => {onClose();onConfirm()}} // ok
           >
-            {<FormattedMessage id="workforce.confirm.modal.ok" module="workforce" /> || "Are you sure?"}
+            {<FormattedMessage id={isEisPath()?"workforce.confirm.modal.ok":"workforce.confirm.modal.ok.notEis"} module="workforce" /> || "Are you sure?"}
           </Button>
         </Box>
       </Box>

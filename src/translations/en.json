@@ -682,7 +682,7 @@
     "workforce.application.accident.hospitalized": "Was admitted to the hospital?",
     "workforce.application.accident.accidentPlace": "Accident Place",
     "workforce.application.accident.dateOfDiagnosis": "Date of diagnosis",
-    "workforce.application.accident.dateOfLastCheckup": "Date of last checkup from doctor",
+    "workforce.application.accident.dateOfLastCheckup": "Date of last prescription given by doctor",
     "workforce.application.otherDieses.": "Mention other diseases",
     "workforce.application.disease.name": "Disease name",
     "workforce.application.disease.timeOfAccident": "Accident Time",

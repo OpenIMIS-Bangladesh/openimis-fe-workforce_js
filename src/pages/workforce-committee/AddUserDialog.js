@@ -10,6 +10,7 @@ import {
     makeStyles
 } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
+import { isBlwfPath } from '../../utils/utils';
 
 const useStyles = makeStyles((theme) => ({
     dialogForm: {
@@ -53,7 +54,7 @@ const AddUserDialog = ({
             </DialogTitle>
             <DialogContent className={classes.dialogForm}>
                 <TextField
-                    label={locale === 'fr' ? "লগইন আইডি *" : "Login ID *"}
+                    label={locale === 'fr' ? "লগইন আইডি" : "Login ID"}
                     value={user.loginName}
                     onChange={(e) => setUser({ ...user, loginName: e.target.value })}
                     fullWidth
@@ -61,7 +62,7 @@ const AddUserDialog = ({
                     required
                 />
                 <TextField
-                    label={locale === 'fr' ? "প্রতিনিধির নাম (ইংরেজিতে) *" : "Name of the Representative (English) *"}
+                    label={locale === 'fr' ? "প্রতিনিধির নাম (ইংরেজিতে)" : "Name of the Representative (English)"}
                     value={user.representativeName}
                     onChange={(e) => setUser({ ...user, representativeName: e.target.value })}
                     fullWidth
@@ -69,7 +70,7 @@ const AddUserDialog = ({
                     required
                 />
                 <TextField
-                    label={locale === 'fr' ? "প্রতিনিধির নাম (বাংলায়) *" : "Name of the Representative (Bengali) *"}
+                    label={locale === 'fr' ? "প্রতিনিধির নাম (বাংলায়)" : "Name of the Representative (Bengali)"}
                     value={user.representativeNameBn}
                     onChange={(e) => setUser({ ...user, representativeNameBn: e.target.value })}
                     fullWidth
@@ -77,7 +78,7 @@ const AddUserDialog = ({
                     required
                 />
                 <TextField
-                    label={locale === 'fr' ? "সংস্থার নাম *" : "Name of the Organization *"}
+                    label={locale === 'fr' ? "সংস্থার নাম" : "Name of the Organization"}
                     value={user.organizationName}
                     onChange={(e) => setUser({ ...user, organizationName: e.target.value })}
                     fullWidth
@@ -93,7 +94,7 @@ const AddUserDialog = ({
                 />
                 <TextField
                     select
-                    label={locale === 'fr' ? "প্রতিনিধির ধরন *" : "Type of Representative *"}
+                    label={locale === 'fr' ? "প্রতিনিধির ধরন" : "Type of Representative"}
                     value={user.representativeType}
                     onChange={(e) => setUser({ ...user, representativeType: e.target.value })}
                     fullWidth
@@ -103,9 +104,15 @@ const AddUserDialog = ({
                     <MenuItem value="">
                         {locale === 'fr' ? "নির্বাচন করুন" : "Select"}
                     </MenuItem>
+                    {isBlwfPath()?(
+                        <MenuItem value="Employer">
+                        {locale === 'fr' ? "মালিক" : "Employer"}
+                    </MenuItem>
+                    ):(
                     <MenuItem value="Employer">
                         {locale === 'fr' ? "নিয়োগকর্তা" : "Employer"}
                     </MenuItem>
+                    )}
                     <MenuItem value="Worker">
                         {locale === 'fr' ? "শ্রমিক" : "Worker"}
                     </MenuItem>

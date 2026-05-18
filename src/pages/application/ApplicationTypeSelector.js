@@ -133,10 +133,10 @@ const ApplicationTypeSelector = ({
             </Typography>
             <RadioGroup value={selectedApplicationType} onChange={handleApplicationTypeChange}>
               <FormControlLabel value="medicalAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.donation" module="workforce" />} />
-              <FormControlLabel value="scholarship" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce" />} />
-              <FormControlLabel value="financialAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce" />} />
               <FormControlLabel value="maternityGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce" />} />
+              <FormControlLabel value="scholarship" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce" />} />
               <FormControlLabel value="disabilityAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.disability" module="workforce" />} />
+              <FormControlLabel value="financialAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce" />} />
             </RadioGroup>
           </>
         ) : (
@@ -146,9 +146,9 @@ const ApplicationTypeSelector = ({
             </Typography>
             <RadioGroup value={selectedApplicationType} onChange={handleApplicationTypeChange}>
               <FormControlLabel value="medicalDonation" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.donation" module="workforce" />} />
+              <FormControlLabel value="maternityGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce" />} />
               <FormControlLabel value="educationGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce" />} />
               <FormControlLabel value="deadlyGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce" />} />
-              <FormControlLabel value="maternityGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce" />} />
             </RadioGroup>
           </>
         )}

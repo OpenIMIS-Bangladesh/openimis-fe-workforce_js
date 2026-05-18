@@ -630,6 +630,8 @@ export function formatWorkforceCommitteeGQL(committee) {
     ${committee.nameBn ? `nameBn: "${committee.nameBn}"` : ""}
     ${committee.nameEn ? `nameEn: "${committee.nameEn}"` : ""}  
     ${committee.associations ? `associations: ${escapeQuotes(committee.associations)}` : ""}
+    ${committee.organizationType ? `organizationType: "${(committee.organizationType)}"` : ""}
+    ${committee.approvalType ? `approvalType: "${(committee.approvalType)}"` : ""}
   `;
 }
 
@@ -641,6 +643,7 @@ export function formatWorkforceCommitteeUserMapGQL(usermap) {
     ${usermap.userId ? `userId: ${usermap.userId}` : ""}
     ${usermap?.isNoaSignatureUser !== undefined ? `isNoaSignatureUser: ${usermap.isNoaSignatureUser}` : ""}  
     ${usermap?.roleInCommittee ? `roleInCommittee: "${usermap.roleInCommittee}"` : ""}  
+    ${usermap?.isRepresentative ? `isRepresentative: ${usermap.isRepresentative}` : ""}  
   `;
 }
 
