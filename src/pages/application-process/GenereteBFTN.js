@@ -13,7 +13,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import { WORKFORCE_USER_TYPE, RELATION_LABEL_MAP } from "../../constants";
-import { getUserTypeFromRights, safeDecodeId } from "../../utils/utils";
+import { getUserTypeFromRights, safeDecodeId, safeParse } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import { WORKFORCE_STATUS } from "../../constants";
 import {
@@ -22,6 +22,7 @@ import {
   updateApplication,
   updateApplicationSummary,
   fetchWorkforceEmployeeDependent,
+  fetchWorkforceCommitteeUserMap,
 } from "../../actions";
 import { useDispatch } from "react-redux";
 import React, { Component, useEffect, useState } from "react";
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, summary_Id }) => {
+const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, summary_Id, summaryData }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
@@ -59,6 +60,8 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   const [revertNotes, setRevertNotes] = useState([]);
   const [serverResponse, setServerResponse] = useState(null);
   const [dependentData, setDependentData] = useState([]);
+  const [mappings, setMappings] = useState([]);
+  const userIds = safeParse(summaryData?.userIds);
 
   const getTotalAmount = () => {
     return applications
@@ -68,44 +71,69 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   };
 
   console.log({ fromBFTN: applications });
+  console.log({ summary_Id: userIds });
 
   const handleForward = async () => {
-    if (!window.confirm("আবেদনগুলো মহাপরিচালক কাছে অগ্রায়ন নিশ্চিত করছেন?")) {
-      return;
-    }
+    if (!window.confirm("আবেদনগুলো মহাপরিচালক কাছে অগ্রায়ন নিশ্চিত করছেন?")) return;
+
     const filteredApplications = applications.filter((item) => String(item.status) === String(status));
-    console.clear;
+
     if (filteredApplications.length === 0) {
-      setServerResponse({ status: "ERROR", message: "কোনো উপযুক্ত আবেদন পাওয়া যায়নি।" });
-      return;
+      return setServerResponse({ status: "ERROR", message: "কোনো উপযুক্ত আবেদন পাওয়া যায়নি।" });
     }
 
-    for (const item of filteredApplications) {
-      console.log(item);
+    const isQuorum = mappings?.[0]?.committee?.approvalProcess === "qurom";
+    const totalApprovers = mappings?.length || 1;
 
-      const updateApplicationData = {
-        id: decodeId(item.id),
-        status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
-      };
+    try {
+      let allMajorityApproved = true;
 
-      await dispatch(updateApplication(updateApplicationData, "update workforce application"));
+      for (const item of filteredApplications) {
+        const decodedId = safeDecodeId(item.id);
+        let targetStatus = WORKFORCE_STATUS.FORWARD_TO_DIRECTOR;
+        let updatePayload = { id: decodedId };
+
+        if (isQuorum) {
+          let approvedUserIds = item.eisApprovedByIds ? safeParse(item.eisApprovedByIds) : [];
+
+          if (approvedUserIds.includes(loggedInUserId)) {
+            return setServerResponse({ status: "ERROR", message: "আপনি ইতিমধ্যে অনুমোদন করেছেন!" });
+          }
+
+          approvedUserIds.push(loggedInUserId);
+          const majorityApproved = approvedUserIds.length / totalApprovers >= 0.5;
+
+          targetStatus = majorityApproved ? WORKFORCE_STATUS.FORWARD_TO_DIRECTOR : WORKFORCE_STATUS.FORWARD_TO_COMIITEE;
+
+          updatePayload.eisApprovedByIds = JSON.stringify(approvedUserIds);
+
+          if (!majorityApproved) {
+            allMajorityApproved = false;
+          }
+        }
+
+        updatePayload.status = targetStatus;
+        await dispatch(updateApplication(updatePayload, "update workforce application"));
+      }
+
+      if (!isQuorum || allMajorityApproved) {
+        await dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR }, "update workforce application summary"));
+      }
+
+      setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+    } catch (error) {
+      setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
+    } finally {
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     }
-    const updateApplicationSummaryData = {
-      id: summary_Id,
-      status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
-    };
-
-    await dispatch(updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary"));
-
-    setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
-
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
   };
 
   const fetchApplicationMovement = async () => {
     try {
+      const mappingsData = await dispatch(fetchWorkforceCommitteeUserMap({ userIds: userIds }));
+      setMappings(mappingsData?.payload?.data?.workforceCommitteeUserMaps || []);
       const response = await dispatch(fetchApplicationWiseMovementList(modulesManager, { applicationId: applications?.[0]?.id }));
       console.log("movement response", response);
       const movementsData = parseData(response?.payload?.data?.workforceApplicationMovement) || [];
@@ -377,6 +405,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       alert("Failed to export data to Excel. Please try again.");
     }
   };
+  console.log({ mappingsData: mappings });
 
   if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.APPROVER || getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
     return (

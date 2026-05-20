@@ -272,6 +272,7 @@ const ForwardApplicationEisCoordinatorToCommitteeModal = ({
   }, [serverResponse]);
 
   console.log({ newwwwwwwww: formData });
+  console.log({ roleIds: roleIds });
 
   return (
     <Modal open={open} onClose={onClose}>

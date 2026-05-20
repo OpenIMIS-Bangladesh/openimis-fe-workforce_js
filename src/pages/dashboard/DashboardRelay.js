@@ -51,7 +51,7 @@ console.log("userTpe",user_type)
     return <FactoryAdminDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
     return <EisCoordinatorDashboardPage />;
-  } else if (user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE) {
+  } else if (user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ) {
     return <EisCommitteeDashboardPage />;
   } else if (user_type === WORKFORCE_USER_TYPE.EIS_FINANCIAL_OFFICER) {
     return <EisFinancialOfficerDashboard />;

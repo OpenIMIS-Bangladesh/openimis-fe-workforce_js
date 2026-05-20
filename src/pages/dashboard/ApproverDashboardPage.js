@@ -262,6 +262,7 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
                     disableButtons={disableButtons}
                     loggedInUserId={loggedInUserId}
                     coloredRow={true}
+                    summaryData={item}
                   />
                 )}
               </CardContent>
@@ -292,8 +293,8 @@ const ApproverDashboard = () => {
     (state) => state.workforce[`applicationsSummary`] ?? []
   );
 
-  const pendingSummaryData = data.filter(d => d.status === "meeting_created");
-  const sentSummaryData = data.filter(d => d.status === "forward_to_dg" || d.status ==='forward_to_director');
+  const pendingSummaryData = data.filter(d => (d.status === "meeting_created"||d.status === "forward_to_comiitee"));
+  const sentSummaryData = data.filter(d => d.status === "forward_to_dg" || d.status ==='forward_to_director' || d.status ==='approved_by_committee' );
 
   const renderContent = () => {
     switch (selectedMenu) {

@@ -434,6 +434,7 @@ const VerifiedApplications = () =>{
               verifiedApplications={true}
               meetingForwardButton={1}
               loggedInUserId={loggedInUserId}
+              roleIds={["49"]}
             />
           </CardContent>
       </Card>

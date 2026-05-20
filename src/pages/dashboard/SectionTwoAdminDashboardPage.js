@@ -387,6 +387,7 @@ const VerifiedApplications = () =>{
             <ApplicationProcessSearcher
               verifiedApplications={true}
               meetingForwardButton={1}
+              roleIds={["49"]}
             />
           </CardContent>
       </Card>

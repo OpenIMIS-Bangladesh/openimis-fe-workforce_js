@@ -3039,6 +3039,8 @@ export function fetchWorkforceCommitteeUserMap(filters) {
           id
           nameEn
           nameBn
+          approvalType
+          organizationType
           }
         user{
           id

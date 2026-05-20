@@ -3385,15 +3385,11 @@ class ApplicationProcessSearcher extends Component {
               justifyContent: "space-between",
             }}
           >
-            {/* <Button variant="contained" color="primary" onClick={this.handleBulkSelectedbyEisCommittee}>
-              <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
-            </Button> */}
+           
             <Button variant="contained" color="primary" onClick={this.handleOpenEisDependentBFTN}>
               <FormattedMessage module="workforce" id="workforce.employee.application.eisApproval" />
             </Button>
-            {/* <IconButton onClick={this.handleOpenEisDependentBFTN}>
-              <PrintIcon />
-            </IconButton> */}
+           
             <GenereteEisDependentBFTN
               open={openGenerateEisDependentBFTN}
               onClose={this.handleCloseEisDependentBFTN}
@@ -3604,6 +3600,7 @@ class ApplicationProcessSearcher extends Component {
                   selectedApplication={this.state.selectedApplication}
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   userRights={userRights}
+                  roleIds={this.props.roleIds}
                 />
                 <ForwardEisPaymentProcessModal
                   open={forwardPaymentModalOpen}
@@ -3701,6 +3698,7 @@ class ApplicationProcessSearcher extends Component {
                   selectedApplication={this.state.selectedApplication}
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   userRights={userRights}
+                  roleIds={this.props.roleIds}
                 />
                 <GenerateBFTN
                   open={openGenerateBFTN}
@@ -3741,6 +3739,7 @@ class ApplicationProcessSearcher extends Component {
                     applications={applications}
                     status={"selected"}
                     summary_Id={decodeId(this.props.summaryId)}
+                    summaryData={this.props.summaryData}
                     userRights={userRights}
                   />
                 </>

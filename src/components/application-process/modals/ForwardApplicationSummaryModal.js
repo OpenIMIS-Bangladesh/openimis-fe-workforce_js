@@ -16,13 +16,7 @@ import {
   Checkbox,
   Select,
 } from "@material-ui/core";
-import {
-  useModulesManager,
-  formatMutation,
-  decodeId,
-  FormattedMessage,
-  PublishedComponent
-} from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import DistrictOfficePicker from "../../../pickers/DistrictOfficePicker";
 import EmployeePicker from "../../../pickers/EmployeePicker";
@@ -85,14 +79,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ForwardApplicationSummaryModal = ({
-  open,
-  onClose,
-  selectedApplication,
-  selectedApplicationIds,
-  onSubmitForward,
-  userRights,
-}) => {
+const ForwardApplicationSummaryModal = ({ open, onClose, selectedApplication, selectedApplicationIds, onSubmitForward, userRights,roleIds }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   let applicationSummaryId = "";
@@ -131,9 +118,7 @@ const ForwardApplicationSummaryModal = ({
       }
     }
     if (selectedApplication) {
-      return dispatch(
-        fetchApplication(modulesManager, [`id: "${decodeId(selectedApplication?.id)}"`])
-      );
+      return dispatch(fetchApplication(modulesManager, [`id: "${decodeId(selectedApplication?.id)}"`]));
     }
   }, [open, dispatch, modulesManager, selectedApplication, userType]);
 
@@ -152,19 +137,14 @@ const ForwardApplicationSummaryModal = ({
       fetchWorkforceUserRoleWiseUser(modulesManager, {
         roleIds: formData.roleIds,
         orderBy: "id",
-      })
+      }),
     );
-  }, [formData?.roleIds, dispatch, modulesManager, userType]);
+  }, [formData.roleIds, dispatch, modulesManager, userType]);
 
   useEffect(() => {
     if (!open) return;
 
-    dispatch(
-      fetchApplicationPackage(modulesManager, [
-        `organizationType: "eis"`,
-        'orderBy: ["-meetingDate"]'
-      ])
-    ).then((response) => {
+    dispatch(fetchApplicationPackage(modulesManager, [`organizationType: "eis"`, 'orderBy: ["-meetingDate"]'])).then((response) => {
       const meetings = response?.payload?.data?.workforceApplicationSummary?.edges || [];
       const formattedMeetings = meetings.map((item) => item.node);
       const today = new Date();
@@ -190,11 +170,7 @@ const ForwardApplicationSummaryModal = ({
   };
 
   const handleForward = async () => {
-    const invalidApplication = selectedApplicationIds?.find(
-      (app) =>
-        app?.applicationType === "disabilityAssistance" &&
-        app?.status !== "approved_by_doctor"
-    );
+    const invalidApplication = selectedApplicationIds?.find((app) => app?.applicationType === "disabilityAssistance" && app?.status !== "approved_by_doctor");
 
     if (invalidApplication) {
       alert("ডাক্তার দ্বারা সুপারিশকৃত ছাড়া স্থায়ী ও আংশিক অক্ষমতা জনিত আর্থিক সহায়তা আবেদন মিটিং এ পাঠানো যাবে না।");
@@ -206,34 +182,62 @@ const ForwardApplicationSummaryModal = ({
       return;
     }
 
-    if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN && (!formData?.userIds || formData.userIds.length === 0)) {
-      setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
-      return;
+    let forwardStatus =
+      userType === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
+      userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ||
+      userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+        ? WORKFORCE_STATUS.MEETING_CREATED
+        : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR;
+    let forwardAction = "forward_to_comiitee";
+
+    if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
+      if (!formData?.userIds || formData.userIds.length === 0) {
+        setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
+        return;
+      }
+      const numericRoleIds = roleIds.map((id) => Number(id));
+      if (numericRoleIds.includes(47)) {
+        forwardStatus = WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION;
+        forwardAction = "forward_for_verification";
+      } else if (numericRoleIds.includes(49)) {
+        forwardStatus = WORKFORCE_STATUS.FORWARD_TO_COMIITEE;
+        forwardAction = "forward_to_committee";
+      } else {
+        setServerResponse({ status: "ERROR", message: "সঠিক রোল আইডি পাওয়া যায়নি!" });
+        return;
+      }
     }
 
     setSubmitting(true);
-    const ids = selectedApplicationIds.map(obj => obj.id);
+    const ids = selectedApplicationIds.map((obj) => obj.id);
     const createApplicationSummaryData = {
-      status: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-        ? WORKFORCE_STATUS.MEETING_CREATED
-        : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
+      status: forwardStatus,
       name: formData?.meetingName,
       meetingDate: formData?.meetingDate,
       year: formData?.year,
       month: formData?.month,
-      organizationType: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ? "cf" : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ? "blwf" : "eis",
+      organizationType:
+        userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
+          ? "cf"
+          : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+            ? "blwf"
+            : "eis",
       sectionType: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN ? "section_one" : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ? "section_two" : null,
       applicationData: JSON.stringify(ids),
+      userIds: JSON.stringify(formData.userIds),
     };
 
-    const applicationSummeryMutation = formatMutation("createWorkforceApplicationSummary", formatApplicationSummaryGQL(createApplicationSummaryData), "create workforce application summary");
+    const applicationSummeryMutation = formatMutation(
+      "createWorkforceApplicationSummary",
+      formatApplicationSummaryGQL(createApplicationSummaryData),
+      "create workforce application summary",
+    );
     const applicationSummeryClientMutationId = applicationSummeryMutation.clientMutationId;
-    
+
     await dispatch(createApplicationSummary(applicationSummeryMutation, "create workforce application summary"));
-    await dispatch(fetchApplicationSummaryByClientMutationId(modulesManager, applicationSummeryClientMutationId))
-      .then((response) => {
-        applicationSummaryId = response?.payload?.data?.workforceApplicationSummary?.edges?.[0]?.node?.id;
-      });
+    await dispatch(fetchApplicationSummaryByClientMutationId(modulesManager, applicationSummeryClientMutationId)).then((response) => {
+      applicationSummaryId = response?.payload?.data?.workforceApplicationSummary?.edges?.[0]?.node?.id;
+    });
 
     if (!applicationSummaryId) {
       setServerResponse({ status: "ERROR", message: "সারাংশ তৈরি ব্যর্থ হয়েছে!" });
@@ -247,15 +251,13 @@ const ForwardApplicationSummaryModal = ({
         ...(userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
           ? { cfApplicationSummaryId: decodeId(applicationSummaryId) }
           : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-          ? { blwfApplicationSummaryId: decodeId(applicationSummaryId) }
-          : { eisApplicationSummaryId: decodeId(applicationSummaryId) }),
-        status: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-          ? WORKFORCE_STATUS.MEETING_CREATED
-          : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
+            ? { blwfApplicationSummaryId: decodeId(applicationSummaryId) }
+            : { eisApplicationSummaryId: decodeId(applicationSummaryId) }),
+        status: forwardStatus,
         ...(userType === WORKFORCE_USER_TYPE.SECTION_ADMIN && {
           eisApprovalIds: JSON.stringify(formData.userIds),
           committeeId: safeDecodeId(formData?.committeeIds),
-        })
+        }),
       };
 
       await dispatch(updateApplication(updateApplicationData, "update workforce application"));
@@ -266,19 +268,17 @@ const ForwardApplicationSummaryModal = ({
             applicationId: decodeId(encodedId?.id),
             applicationFromId: loggedInUserId,
             applicationToId: userId,
-            status: WORKFORCE_STATUS.MEETING_CREATED,
-            action: "forward_to_committee",
+            status: forwardStatus,
+            action: forwardAction,
           };
           await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
         }
       } else {
         const createApplicationMovementData = {
           applicationId: decodeId(encodedId?.id),
-          status: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-            ? WORKFORCE_STATUS.MEETING_CREATED
-            : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
+          status: forwardStatus,
           note: "আবেদন কমিটির কাছে প্রেরণ হয়েছে",
-          action: "forward_to_comiitee",
+          action: forwardAction,
           applicationFromId: loggedInUserId,
           applicationToId: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ? 69 : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ? 198 : 196,
           toRoleId: userType === WORKFORCE_USER_TYPE.CHECKER ? 23 : 48,
@@ -296,11 +296,12 @@ const ForwardApplicationSummaryModal = ({
       return;
     }
     setSubmitting(true);
-    const ids = selectedApplicationIds.map(obj => obj.id);
+    const ids = selectedApplicationIds.map((obj) => obj.id);
     const createApplicationSummarySheetData = {
-      status: userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-        ? WORKFORCE_STATUS.MEETING_CREATED
-        : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
+      status:
+        userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+          ? WORKFORCE_STATUS.MEETING_CREATED
+          : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
       name: formData?.meetingName,
       meetingDate: formData?.meetingDate,
       year: Number(formData?.year),
@@ -310,14 +311,17 @@ const ForwardApplicationSummaryModal = ({
       applicationData: JSON.stringify(ids),
     };
 
-    const applicationSummeryMutation = formatMutation("createWorkforceApplicationSummary", formatApplicationSummaryGQL(createApplicationSummarySheetData), "create workforce application summary");
+    const applicationSummeryMutation = formatMutation(
+      "createWorkforceApplicationSummary",
+      formatApplicationSummaryGQL(createApplicationSummarySheetData),
+      "create workforce application summary",
+    );
     const applicationSummeryClientMutationId = applicationSummeryMutation.clientMutationId;
 
     await dispatch(createApplicationSummary(applicationSummeryMutation, "create workforce application summary sheet"));
-    await dispatch(fetchApplicationSummaryByClientMutationId(modulesManager, applicationSummeryClientMutationId))
-      .then((response) => {
-        applicationSummaryId = response?.payload?.data?.workforceApplicationSummary?.edges?.[0]?.node?.id;
-      });
+    await dispatch(fetchApplicationSummaryByClientMutationId(modulesManager, applicationSummeryClientMutationId)).then((response) => {
+      applicationSummaryId = response?.payload?.data?.workforceApplicationSummary?.edges?.[0]?.node?.id;
+    });
 
     if (!applicationSummaryId) {
       setServerResponse({ status: "ERROR", message: "সারাংশ তৈরি ব্যর্থ হয়েছে!" });
@@ -331,8 +335,8 @@ const ForwardApplicationSummaryModal = ({
         ...(userType === WORKFORCE_USER_TYPE.SECTION_ADMIN
           ? { cfApplicationSummaryId: decodeId(applicationSummaryId) }
           : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
-          ? { blwfApplicationSummaryId: decodeId(applicationSummaryId) }
-          : { eisApplicationSummaryId: decodeId(applicationSummaryId) }),
+            ? { blwfApplicationSummaryId: decodeId(applicationSummaryId) }
+            : { eisApplicationSummaryId: decodeId(applicationSummaryId) }),
         status: WORKFORCE_STATUS.MEETING_CREATED,
       };
       await dispatch(updateApplication(updateApplicationData, "update workforce application"));
@@ -357,7 +361,9 @@ const ForwardApplicationSummaryModal = ({
         await dispatch(updateApplication(updateData, "Update application summary"));
       }
       setServerResponse({ status: "SUCCESS", message: "আবেদন সফলভাবে মিটিং এর সাথে যুক্ত হয়েছে।" });
-      setTimeout(() => { window.location.reload(); }, 2000);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error(error);
       setServerResponse({ status: "ERROR", message: "আবেদন মিটিং এর সাথে যুক্ত করতে ব্যর্থ হয়েছে।" });
@@ -373,24 +379,28 @@ const ForwardApplicationSummaryModal = ({
 
   useEffect(() => {
     if (serverResponse?.status === "SUCCESS") {
-      setTimeout(() => { window.location.reload(); }, 2000);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     }
   }, [serverResponse]);
+
+  console.log({ newwwwwwwww: formData });
+  console.log({ roleIds: roleIds });
 
   return (
     <Modal open={open} onClose={onClose}>
       <form className={classes.modalContainer} onSubmit={handleSubmit}>
-        <Button onClick={onClose} className={classes.closeButton}>✕</Button>
+        <Button onClick={onClose} className={classes.closeButton}>
+          ✕
+        </Button>
 
         <Typography variant="h5" gutterBottom style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}>
           <FormattedMessage module="workforce" id="workforce.employee.application.forwardToSelectionOffice" />
         </Typography>
 
         {serverResponse?.status && (
-          <Typography
-            className={classes.responseMessage}
-            style={{ color: serverResponse.status === "SUCCESS" ? "green" : "red" }}
-          >
+          <Typography className={classes.responseMessage} style={{ color: serverResponse.status === "SUCCESS" ? "green" : "red" }}>
             {serverResponse.status === "SUCCESS" ? "✅" : "⚠️"} {serverResponse.message}
           </Typography>
         )}
@@ -450,39 +460,60 @@ const ForwardApplicationSummaryModal = ({
 
             <Grid item xs={12} sm={6}>
               <TextField
-                fullWidth select label="বছর" variant="outlined" required
+                fullWidth
+                select
+                label="বছর"
+                variant="outlined"
+                required
                 value={formData?.year || ""}
                 onChange={(e) => setFormData({ ...formData, year: e.target.value })}
               >
                 {[...Array(21)].map((_, index) => {
                   const year = 2020 + index;
-                  return <MenuItem key={year} value={year}>{year}</MenuItem>;
+                  return (
+                    <MenuItem key={year} value={year}>
+                      {year}
+                    </MenuItem>
+                  );
                 })}
               </TextField>
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <TextField
-                fullWidth select label="মাস" variant="outlined" required
+                fullWidth
+                select
+                label="মাস"
+                variant="outlined"
+                required
                 value={formData?.month || ""}
                 onChange={(e) => setFormData({ ...formData, month: e.target.value })}
               >
-                {["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"].map((month, index) => (
-                  <MenuItem key={index} value={month}>{month}</MenuItem>
-                ))}
+                {["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"].map(
+                  (month, index) => (
+                    <MenuItem key={index} value={month}>
+                      {month}
+                    </MenuItem>
+                  ),
+                )}
               </TextField>
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <TextField
-                fullWidth label="মিটিং এর নাম" variant="outlined"
+                fullWidth
+                label="মিটিং এর নাম"
+                variant="outlined"
                 value={formData?.meetingName || ""}
                 onChange={(e) => setFormData({ ...formData, meetingName: e.target.value })}
               />
             </Grid>
             <Grid item xs={6} className={classes.item}>
               <PublishedComponent
-                pubRef="workforce.DatePicker" label="মিটিং এর তারিখ" readOnly={false} style={{ fontSize: "1.5rem" }}
+                pubRef="workforce.DatePicker"
+                label="মিটিং এর তারিখ"
+                readOnly={false}
+                style={{ fontSize: "1.5rem" }}
                 value={formData?.meetingDate || ""}
                 onChange={(v) => setFormData({ ...formData, meetingDate: v })}
               />
@@ -495,16 +526,23 @@ const ForwardApplicationSummaryModal = ({
             <Grid container spacing={3} style={{ marginTop: 3 }}>
               <Grid item xs={12} style={{ marginBottom: 16 }}>
                 <FormControl fullWidth>
-                  <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>কমিটি নির্বাচন করুন</Typography>
+                  <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
+                    কমিটি নির্বাচন করুন
+                  </Typography>
                   <Select
-                    multiple displayEmpty
+                    multiple
+                    displayEmpty
                     value={formData?.roleIds || []}
                     onChange={(e) => {
                       const selectedRoleIds = e.target.value;
                       const selectedCommitteeIds = selectedRoleIds.map((roleId) => ROLE_OPTIONS.find((r) => r.id === roleId)?.committeeId)?.[0];
                       setFormData({ ...formData, roleIds: selectedRoleIds, committeeIds: selectedCommitteeIds, userIds: [] });
                     }}
-                    renderValue={(selected) => ROLE_OPTIONS.filter((r) => selected.includes(r.id)).map((r) => r.name).join(", ")}
+                    renderValue={(selected) =>
+                      ROLE_OPTIONS.filter((r) => selected.includes(r.id))
+                        .map((r) => r.name)
+                        .join(", ")
+                    }
                     MenuProps={{ PaperProps: { style: { backgroundColor: "#fff", color: "#000" } } }}
                   >
                     {ROLE_OPTIONS.map((role) => (
@@ -518,13 +556,21 @@ const ForwardApplicationSummaryModal = ({
               </Grid>
 
               <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold" }}>কমিটির মেম্বার নির্বাচন করুন</Typography>
+                <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold" }}>
+                  কমিটির মেম্বার নির্বাচন করুন
+                </Typography>
                 <FormControl fullWidth>
                   <Select
-                    multiple displayEmpty
+                    multiple
+                    displayEmpty
                     value={formData?.userIds || []}
                     onChange={(e) => setFormData({ ...formData, userIds: e.target.value })}
-                    renderValue={(selected) => officers.filter((o) => selected.includes(o.userId)).map((o) => o.otherNames).join(", ")}
+                    renderValue={(selected) =>
+                      officers
+                        .filter((o) => selected.includes(o.userId))
+                        .map((o) => o.otherNames)
+                        .join(", ")
+                    }
                     MenuProps={{ PaperProps: { style: { backgroundColor: "#fff", color: "#000" } } }}
                   >
                     {officers.map((officer) => (
