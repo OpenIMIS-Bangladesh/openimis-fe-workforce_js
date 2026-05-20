@@ -57,6 +57,7 @@ import {
   ROUTE_WORKFORCE_ASSOCIATION_USER_MAP,
   ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT,
   ROUTE_WORKFORCE_VERIFY_CONFIRMATION,
+  ROUTE_WEBSITE_LEGAL_GUIDELINES
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -120,6 +121,7 @@ import CommitteeManagementPage from "./pages/workforce-committee/CommitteeManage
 import PushNotification from "./components/app-bar/PushNotification";
 import VerifyConfirmationLink from "./components/SmsVerificationComponents/VerifyConfirmationLink";
 import CssBaseline from '@material-ui/core/CssBaseline';
+import LegalGuidelines from './pages/websiteCms/LegalGuidelines';
 
 
 const workforceTheme = createTheme({
@@ -310,6 +312,9 @@ const baseRouter = [
   { path: ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY, component: ApplicationProcessPage },
   { path: `${ROUTE_WORKFORCE_APPLICATIONS_APPLICATION_VERIFY}/:application_uuid`, component: VerifyApplicationPage },
   { path: ROUTE_WORKFORCE_REPORTS_BENEFICIARY_REPORT, component: BeneficiaryReport },
+
+  //WEBSITE CMS ROUTES
+  { path: ROUTE_WEBSITE_LEGAL_GUIDELINES, component: LegalGuidelines },
 ];
 
 const baseUnauthenticatedRouter = [
@@ -410,6 +415,11 @@ const DEFAULT_CONFIG = {
     { key: "workforce.route.associations.association.user.map", ref: ROUTE_WORKFORCE_ASSOCIATION_USER_MAP },
     { key: "workforce.route.committee.management", ref: ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT },
     { key: "workforce.route.reports.beneficiaryReport", ref: ROUTE_WORKFORCE_REPORTS_BENEFICIARY_REPORT },
+
+
+    //WEBSITE CMS ROUTES
+    { key: "workforce.route.website.legal.guidelines", ref: ROUTE_WEBSITE_LEGAL_GUIDELINES },
+    //WBSITE CMS ROUTES END
 
     { key: "workforceOrganization.OrganizationPicker", ref: OrganizationPicker },
     { key: "workforce.BanksPicker", ref: BanksPicker },

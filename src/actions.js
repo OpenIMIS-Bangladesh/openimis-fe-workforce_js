@@ -34,7 +34,8 @@ import {
   formatWorkforceDocumentMapGQL,
   formatWorkforceCommitteeUserGQL,
   formatWorkforceNotificationGQL,
-  formatWorkforceCommitteeBankAdviceMapGQL
+  formatWorkforceCommitteeBankAdviceMapGQL,
+  formatWebsiteLegalGuidelineGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 import { safeDecodeId } from "./utils/utils";
@@ -3324,3 +3325,66 @@ export function updateWorkforceCommitteeBankAdviceMap(payload, clientMutationLab
     }
   );
 }
+
+export function createWebsiteLegalGuideline(payload, clientMutationLabel) {
+  const mutation = formatMutation(
+    "createWebsiteLegalGuideline",
+    formatWebsiteLegalGuidelineGQL(payload),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_WEBSITE_LEGAL_GUIDELINE_REQ",
+      "WORKFORCE_WEBSITE_LEGAL_GUIDELINE_RESP",
+      "WORKFORCE_WEBSITE_LEGAL_GUIDELINE_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+export function updateWebsiteLegalGuideline(payload, clientMutationLabel) {
+  const mutation = formatMutation(
+    "updateWebsiteLegalGuideline",
+    formatWebsiteLegalGuidelineGQL(payload),
+    clientMutationLabel
+  );
+  const requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    [
+      "WORKFORCE_WEBSITE_LEGAL_GUIDELINE_REQ",
+      "WORKFORCE_WEBSITE_LEGAL_GUIDELINE_RESP",
+      "WORKFORCE_WEBSITE_LEGAL_GUIDELINE_ERR",
+    ],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+    }
+  );
+}
+
+
+
+  export function fetchWebsiteLegalGuidelines(userIds) {
+    const payload = `
+    {
+      websiteLegalGuidelines
+        {
+          id
+          description
+          documentPath
+          documentUrl
+
+        }
+    
+    }
+      `;
+
+    return graphql(payload, "WORKFORCE_WEBSITE_LEGAL_GUIDELINES");
+  }

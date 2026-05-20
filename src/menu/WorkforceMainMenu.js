@@ -26,7 +26,8 @@ import {
   ROUTE_WORKFORCE_FACTORY_EMPLOYEE_DESIGNATION,
   ROUTE_WORKFORCE_ASSOCIATIONS,
   ROUTE_WORKFORCE_ASSOCIATION_USER_MAP,
-  ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT
+  ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT,
+  ROUTE_WEBSITE_LEGAL_GUIDELINES
 } from "../routes";
 import { RIGHT_WORKFORCE_EMPLOYER_APPROVE } from "../permission-rights";
 import { getUserType, isEmptyObject } from "../utils/utils";
@@ -221,6 +222,16 @@ function WorkforceMainMenu(props) {
 
   ];
   if (user_type === WORKFORCE_USER_TYPE.ADMIN || user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR||user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN||user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO||user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
+    if (user_type === WORKFORCE_USER_TYPE.ADMIN)
+    {
+      entries.push({
+        text: <FormattedMessage module={MODULE_NAME} id="menu.website.legal.guidelines" />,
+        icon: <ListAlt />,
+        route: `/${ROUTE_WEBSITE_LEGAL_GUIDELINES}`,
+        id: `workforce.route.website.legal.guidelines`,
+        // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+      });
+    }
     return (
       <MainMenuContribution
         {...props}

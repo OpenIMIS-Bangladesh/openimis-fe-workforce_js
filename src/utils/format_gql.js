@@ -681,3 +681,13 @@ export function formatWorkforceNotificationGQL(user) {
     ${user?.workforceApplicationId ? `workforceApplicationId: "${user.workforceApplicationId}"` : ""}
   `;
 }
+
+export function formatWebsiteLegalGuidelineGQL(legalGuideline) {
+  return `
+    ${legalGuideline?.id ? `id: "${legalGuideline.id}"` : ""}
+    ${legalGuideline?.description ? `description: ${escapeQuotes(legalGuideline.description)}` : ""}
+    ${legalGuideline?.documentUrl ? `documentUrl: "${legalGuideline.documentUrl}"` : ""}
+    ${legalGuideline?.documentPath ? `documentPath: "${legalGuideline.documentPath}"` : ""}
+  `;
+
+}

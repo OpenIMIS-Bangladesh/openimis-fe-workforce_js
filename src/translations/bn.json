@@ -1110,6 +1110,7 @@
   "workforce.factory.uploaded": "আপলোড করা হয়েছে",
   "workforce.factory.downloadDocument": "নথি ডাউনলোড করুন",
   "workforce.factory.currentDocuments": "বর্তমান নথিসমূহ",
-  "workforce.factory.uploadDocumentsHelp": "এই ফ্যাক্টরির জন্য নতুন নথি আপলোড করুন। আপলোড করার আগে নথির ধরন নির্বাচন করুন।"
+  "workforce.factory.uploadDocumentsHelp": "এই ফ্যাক্টরির জন্য নতুন নথি আপলোড করুন। আপলোড করার আগে নথির ধরন নির্বাচন করুন।",
+  "menu.website.legal.guidelines": "ওয়েবসাইটের জন্য আইনী নির্দেশিকা ম্যানেজমেন্ট"
 
 }
