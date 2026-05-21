@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import FileUploader from "../../pickers/FileUploader";
-import { Button, TextField, Typography, Box, Paper, Grid } from "@material-ui/core";
+import { Button, TextField, Typography, Box, Paper, Grid, Snackbar } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 import { createWebsiteLegalGuideline, createWorkforceDocument, fetchWebsiteLegalGuidelines, updateWebsiteLegalGuideline } from "../../actions";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -20,6 +21,7 @@ const LegalGuidelines = () => {
   const [description, setDescription] = useState("");
   const [uploadedFile, setUploadedFile] = useState(null);
   const [existingRecord, setExistingRecord] = useState(null);
+  const [openSuccess, setOpenSuccess] = useState(false);
 
   // Fetch existing legal guideline record on component mount
   useEffect(() => {
@@ -52,7 +54,12 @@ const LegalGuidelines = () => {
           documentUrl: uploadedFile?.url,
           documentPath: uploadedFile?.path,
         }, "updateWebsiteLegalGuideline"
-      ));
+      )).then(() => {
+        setOpenSuccess(true);
+        setTimeout(() => {
+          window.location.href= '/'; // Reload the page to reflect changes
+        }, 1500);
+      });
     } else {
       // Create new record
       dispatch(createWebsiteLegalGuideline(
@@ -61,7 +68,12 @@ const LegalGuidelines = () => {
           documentUrl: uploadedFile?.url,
           documentPath: uploadedFile?.path,
         }, "createWebsiteLegalGuideline"
-      ));
+      )).then(() => {
+        setOpenSuccess(true);
+        setTimeout(() => {
+          window.location.href= '/'; // Reload the page to reflect changes
+        }, 1500);
+      });
     }
   };
 
@@ -112,11 +124,22 @@ const LegalGuidelines = () => {
             color="primary"
             onClick={handleSave}
             disabled={!uploadedFile || !description}
+            style= {{ marginTop: "20px" }}
           >
             {existingRecord ? "Update Record" : "Save Record"}
           </Button>
         </Grid>
       </Grid>
+      <Snackbar
+        open={openSuccess}
+        autoHideDuration={6000}
+        onClose={() => setOpenSuccess(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert onClose={() => setOpenSuccess(false)} severity="success" sx={{ width: "100%" }}>
+          {existingRecord ? "Record updated successfully!" : "Record saved successfully!"}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
