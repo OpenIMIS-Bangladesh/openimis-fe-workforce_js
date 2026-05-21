@@ -98,11 +98,11 @@ const DoctorsEntries = ({ application }) => {
                   control={<Radio color="primary" />}
                   label={<FormattedMessage id="workforce.doctor.recommend" module="workforce" />}
                 />
-                <FormControlLabel
+                {/* <FormControlLabel
                   value="discussion_required"
                   control={<Radio color="primary" />}
                   label={<FormattedMessage id="workforce.doctor.discussionRequired" module="workforce" />}
-                />
+                /> */}
                 <FormControlLabel
                   value="reject_request"
                   control={<Radio color="primary" />}

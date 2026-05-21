@@ -1330,22 +1330,7 @@ export const itemFormattersApprover = (isShowHistory, modulesManager, history, c
         </IconButton>
       </Tooltip>
 
-      {/* <Tooltip title="Veify">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(
-              modulesManager,
-              history,
-              "workforce.route.applications.application.verify",
-              [decodeId(application?.id)],
-              false
-            );
-          }}
-        >
-          <VerifiedUserIcon />
-        </IconButton>
-      </Tooltip> */}
+      
       {component.props.disableButtons !== 1 && (
         <>
           {/* {!safeParse(application?.eisApprovedByIds)?.includes(component.props.loggedInUserId)?

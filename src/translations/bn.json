@@ -818,8 +818,8 @@
 
 
   "workforce.doctor.discussionRequired":"সিদ্ধান্তের প্রয়োজন",
-  "workforce.doctor.rejectRequest":"বাতিলের সুপারিশ",
-  "workforce.doctor.recommend":"সুপারিশ",
+  "workforce.doctor.rejectRequest":"সুপারিশ (অগ্রহণযোগ্য)",
+  "workforce.doctor.recommend":"সুপারিশ (গ্রহণযোগ্য)",
 
   "workforce.accident.mainType.workplace": "কর্মস্থলে দুর্ঘটনা",
   "workforce.accident.mainType.onDutyRTA": "কর্মস্থলের কাজে যাওয়ার পথে সড়ক দুর্ঘটনা",
