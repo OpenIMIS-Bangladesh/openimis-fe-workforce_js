@@ -129,6 +129,7 @@ const workforceTheme = createTheme({
     primary: { main: "#006273" },
     secondary: { main: "#006273" },
     text: { primary: "#006273"},
+    typography: {fontFamily: '"Nikosh", sans-serif !important'},
   },
   overrides: {
     MuiCssBaseline: {
@@ -136,7 +137,7 @@ const workforceTheme = createTheme({
         // 1. Force the font and color on the root levels
         'html, body, #root': {
           fontFamily: '"Nikosh", sans-serif !important',
-          fontSize: "1.35em !important", // High priority to override default 14px
+          // fontSize: "1.35em !important", // High priority to override default 14px
           color: "#006273",
         },
         '.MuiFormLabel-root, .MuiInputLabel-root, .MuiFormLabel-root.Mui-focused': {
@@ -157,7 +158,7 @@ const workforceTheme = createTheme({
         },
         'label':{
           fontFamily: '"Nikosh", sans-serif !important',
-          fontSize:"1rem !important",
+          // fontSize:"1rem !important",
           lineHeight:1
         },
         '.rmdp-container': {
@@ -174,7 +175,7 @@ const workforceTheme = createTheme({
           boxShadow: 'none !important',
           color: '#006273 !important',
           fontFamily: '"Nikosh", sans-serif !important',
-          fontSize: '1rem !important',
+          // fontSize: '1rem !important',
           outline: 'none !important',
           width: '100%',
         },
