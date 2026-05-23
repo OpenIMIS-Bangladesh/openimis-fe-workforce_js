@@ -1522,3 +1522,14 @@ export const isEisPath = () => {
   return false; // fallback if window is not defined
   // return true;
 };
+
+
+export const getReturnUrl = () => {
+  if (window.location.href.includes("skydigitalbd.com") || window.location.href.includes("localhost")) {
+    return "https://cf-site-stage.skydigitalbd.com"
+  }
+  else{
+    return "https://labourwelfare.gov.bd"
+  }
+    
+};

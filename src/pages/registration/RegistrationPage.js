@@ -7,7 +7,7 @@ import OtpInput from "react-otp-input";
 import { createWorkforceOtp, createWorkforceUser, fetchWorkforceOtp } from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
-import { isEisPath } from "../../utils/utils";
+import { getReturnUrl, isBlwfPath, isEisPath } from "../../utils/utils";
 // import { REGISTRATION_ERROR_BN } from "../../constants";
 
 
@@ -186,7 +186,7 @@ const RegistrationPage = () => {
       password: formData.password,
     };
     await dispatch(createWorkforceUser(payload)).then(() => {
-      window.location.href = "/";
+      window.location.href = getReturnUrl() || '/';
     });
   };
 
@@ -197,9 +197,12 @@ const RegistrationPage = () => {
         <Paper className={classes.paper} elevation={3}>
           {/* Original Back Button Layout */}
           <Box display="flex" justifyContent="flex-start">
-            <Button startIcon={<ArrowBackIcon />} href={isEisPath()? "https://mis.eis-pilot-bd.org" : "https://labourwelfare.gov.bd"} variant="text" color="primary" style={{ padding: "3px" }}>
+            <Button startIcon={<ArrowBackIcon />} href={getReturnUrl()} variant="text" color="primary" style={{ padding: "3px" }}>
               Back
             </Button>
+            {/* <Button startIcon={<ArrowBackIcon />} href={isEisPath()? "https://mis.eis-pilot-bd.org" : "https://labourwelfare.gov.bd"} variant="text" color="primary" style={{ padding: "3px" }}>
+              Back
+            </Button> */}
           </Box>
           <Box display="flex" justifyContent="flex-end" mt={-4}>
             <Button variant="primary" color="primary" style={{ padding: "3px" }} onClick={() => setLang(lang=="bn" ? "en" : "bn")}>
@@ -296,19 +299,21 @@ const RegistrationPage = () => {
                 {step === 1 ? (lang=="bn" ? "পরবর্তী" : "Next") : (lang=="bn" ? "সাবমিট করুন" : "Submit")}
               </Button>
 
-              <Button
-                fullWidth
-                onClick={() => {
-                  step==1? window.location.href='/': setStep(step - 1);
-                  setServerResponse({ status: "", message: null });
-                }}
-                startIcon={<ArrowBackIcon />}
-                color="primary"
-                variant="text"
-                style={{ marginTop: 8 }}
-              >
-                {lang=="bn" ? "পিছনে" : "Back"}
-              </Button>
+              {step!==1 && (
+                <Button
+                  fullWidth
+                  onClick={() => {
+                    step==1? window.location.href=getReturnUrl(): setStep(step - 1);
+                    setServerResponse({ status: "", message: null });
+                  }}
+                  startIcon={<ArrowBackIcon />}
+                  color="primary"
+                  variant="text"
+                  style={{ marginTop: 8 }}
+                >
+                  {lang=="bn" ? "পিছনে" : "Back"}
+                </Button>
+              )}
             </Box>
           </form>
         </Paper>
