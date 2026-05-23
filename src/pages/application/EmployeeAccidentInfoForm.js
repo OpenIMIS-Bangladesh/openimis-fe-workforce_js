@@ -28,6 +28,7 @@ import { useTranslations, useModulesManager, TextInput, useHistory, FormattedMes
 // import CustomDateTimePicker from "../../pickers/CustomDateTimePicker";
 import CustomTimePicker from "../../pickers/CustomTimePicker";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
+import { isBlwfPath } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -340,6 +341,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
               />
               {errors?.inOutsideFactory && <FormHelperText error>{errors?.inOutsideFactory}</FormHelperText>}
             </Grid>
+            {!isBlwfPath()&& 
             <Grid item xs={12} className={classes.item}>
               <FormControl component="fieldset">
                 <FormLabel>
@@ -363,6 +365,7 @@ const EmployeeAccidentInfoForm = ({ handleChange, formData, setFormData, applica
                 </RadioGroup>
               </FormControl>
             </Grid>
+            }
 
             {hasRejoined === "yes" && (
               <Grid item xs={6} className={classes.item}>

@@ -13,7 +13,7 @@ import DisabilityForm from "./applicationForms/DisabilityForm";
 import EducationGrantForm from "./applicationForms/EducationGrantForm";
 import FinancialAssistanceForm from "./applicationForms/FinancialAssistanceForm";
 import ScholarshipApplicationForm from "./applicationForms/ScholarshipApplicationForm";
-import { getParsedApplication } from "../../utils/utils";
+import { getParsedApplication, isBlwfPath, isEisPath } from "../../utils/utils";
 import DeadlyGrantForm from "./applicationForms/DeadlyGrantForm";
 import { fetchApplicationsSummary } from "../../actions";
 import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
@@ -145,7 +145,9 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
           type="error"
           message={<FormattedMessage id="workforce.financialAssistance.error.message" module="workforce" />}
         />
-
+        {!isEisPath()&& !isBlwfPath() &&(
+          <Typography style={{color:"#990F02",textAlign:"center",fontWeight:800,fontSize:"large" }}><FormattedMessage id="workforce.application.company.type" module="workforce" /></Typography>
+        )}
         {!showForm ? (
           <>
             <ApplicationTypeSelector

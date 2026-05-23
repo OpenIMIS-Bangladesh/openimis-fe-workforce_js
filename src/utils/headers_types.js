@@ -1,4 +1,4 @@
-import { isEisPath } from "./utils";
+import { isBlwfPath, isEisPath } from "./utils";
 
 export const headersAdmin = (component) => [
   "workforce.application.tracking.number",
@@ -37,7 +37,8 @@ export const headerApplicant = (component) => [
   "workforce.application.tracking.number",
   "workforce.employee.application.applicationDate",
   "workforce.employee.name",
-  "workforce.employee.application.factoryName",
+  // "workforce.employee.application.factoryName",
+  ...(!isBlwfPath()?["workforce.employee.application.factoryName"]:[]),
   "workforce.employee.application.serviceProviderName",
   "workforce.employee.application.applicationType",
   "workforce.employee.application.status",

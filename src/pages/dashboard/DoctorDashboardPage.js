@@ -38,7 +38,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
 import { WORKFORCE_USER_TYPE } from "../../constants";
-import { getUserType, getUserTypeFromRights } from "../../utils/utils";
+import { getUserType, getUserTypeFromRights, isBlwfPath, isEisPath } from "../../utils/utils";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
@@ -472,14 +472,18 @@ const DoctorDashboard = () => {
   const user_type = getUserType();
   const SidebarMenu = useMemo(() => getSidebarMenu(user_type), [user_type]);
   const [selectedMenu, setSelectedMenu] = useState(user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR ? "dashboard" : "dashboard");
-
+   const organizationType = isEisPath()
+    ? "eis"
+    : !isEisPath() && !isBlwfPath()
+      ? "cf"
+      : "blwf";
   useEffect(() => {
-    return dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"eis"']));
+    return dispatch(fetchSummaryApplications(modulesManager, [`organizationType:"${organizationType}"`]));
   }, []);
   const data = useSelector((state) => state.workforce[`applicationsSummary`] ?? []);
 
-  const pendingSummaryData = data.filter((d) => d.status === "forward_to_doctor" && d.organizationType === "eis");
-  const forwardedSummaryData = data.filter((d) => d.status === "approved_by_doctor" && d.organizationType === "eis");
+  const pendingSummaryData = data.filter((d) => d.status === "forward_to_doctor" && organizationType);
+  const forwardedSummaryData = data.filter((d) => d.status === "approved_by_doctor" && organizationType);
 
   const renderContent = () => {
     const user_type = getUserType();
@@ -502,7 +506,8 @@ const DoctorDashboard = () => {
         case "dashboard":
           return <Dashboard />;
         case "pendingApplications":
-          return <FiledApplications />;
+          // return <FiledApplications />;
+          return <MeetingSheet summaryData={pendingSummaryData} disableButtons={1} />;
 
         case "forwardedApplications":
           return <ForwardedApplications />;

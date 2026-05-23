@@ -17,7 +17,7 @@ import {
   ORGANIZATION_TYPE_NAME_EN,
   ORGANIZATION_TYPE_NAME_BN,
 } from "../constants";
-import { conditionalEnToBn, isEisPath, safeParse } from "./utils";
+import { conditionalEnToBn, isBlwfPath, isEisPath, safeParse } from "./utils";
 import { useSelector } from "react-redux";
 
 // export const itemAdminFormatters = (
@@ -108,28 +108,18 @@ import { useSelector } from "react-redux";
 export const itemAdminFormatters = (isShowHistory, modulesManager, history, component, locale = "en") => {
   const formatters = [
     (application) => application?.trackingNumber,
+    (application) => conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
     (application) =>
-      conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
-    (application) =>
-      locale === "en"
-        ? application?.employeeFactory?.nameEn
-        : application?.employeeFactory?.nameBn,
-    (application) =>
-      locale === "en"
-        ? application?.grantMoney?.applicationTypeNameEn
-        : application?.grantMoney?.applicationTypeNameBn,
-    ...(isEisPath()?[]:[
-      (application) => (
-        <TextInput
-          value={application?.grantAmount}
-          onChange={(v) => component.setState({ editedGrantMoney: v })}
-        />
-      ),
-    ]),
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
+    (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
+    (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
+    ...(isEisPath() ? [] : [(application) => <TextInput value={application?.grantAmount} onChange={(v) => component.setState({ editedGrantMoney: v })} />]),
 
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
@@ -198,10 +188,14 @@ export const itemFormattersDirector = (isShowHistory, modulesManager, history, c
   const formatters = [
     (application) => application?.trackingNumber,
     (application) => conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
 
@@ -257,11 +251,18 @@ export const itemFormattersApplicant = (isShowHistory, modulesManager, history, 
   const formatters = [
     (application) => application.trackingNumber,
     (application) => conditionalEnToBn(application.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
-    (application) => (locale === "en" ? (application?.employeeFactory?.nameEn ?? "N/A") : (application?.employeeFactory?.nameBn ?? "প্রযোজ্য নয়")),
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
+    // (application) => (locale === "en" ? (application?.employeeFactory?.nameEn ?? "N/A") : (application?.employeeFactory?.nameBn ?? "প্রযোজ্য নয়")),
+    ...(!isBlwfPath()
+      ? [(application) => (locale === "en" ? (application?.employeeFactory?.nameEn ?? "N/A") : (application?.employeeFactory?.nameBn ?? "প্রযোজ্য নয়"))]
+      : []),
     (application) => (locale === "en" ? ORGANIZATION_TYPE_NAME_EN[application?.organizationType] : ORGANIZATION_TYPE_NAME_BN[application?.organizationType]),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     (application) => {
@@ -324,10 +325,14 @@ export const itemFormattersChecker = (isShowHistory, modulesManager, history, co
   const formatters = [
     (application) => application?.trackingNumber,
     (application) => conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     // (application) => conditionalEnToBn(application?.grantAmount, locale),
@@ -417,10 +422,14 @@ export const itemFormattersCheckerTwo = (isShowHistory, modulesManager, history,
   const formatters = [
     (application) => application?.trackingNumber,
     (application) => conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     (application) => conditionalEnToBn(application?.grantAmount, locale),
@@ -500,10 +509,14 @@ export const itemFormattersDeputyAsstDirector = (isShowHistory, modulesManager, 
   const formatters = [
     (application) => application?.trackingNumber,
     (application) => conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     // (application) => conditionalEnToBn(application?.grantAmount, locale),
@@ -583,10 +596,14 @@ export const itemFormattersS2DeputyAsstDirector = (isShowHistory, modulesManager
   const formatters = [
     (application) => application?.trackingNumber,
     (application) => conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     (application) => conditionalEnToBn(application?.grantAmount, locale),
@@ -633,10 +650,14 @@ export const itemFormattersSectionAdmin = (isShowHistory, modulesManager, histor
   const formatters = [
     (application) => application?.trackingNumber,
     (application) => conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     (application) => application?.associationType,
@@ -756,10 +777,14 @@ export const itemFormattersSectionTwoAdmin = (isShowHistory, modulesManager, his
   const formatters = [
     (application) => application?.trackingNumber,
     (application) => conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     // (application) => conditionalEnToBn(application?.grantAmount, locale),
@@ -858,10 +883,14 @@ export const itemFormattersBlwfSectionAdmin = (isShowHistory, modulesManager, hi
   const formatters = [
     (application) => application?.trackingNumber,
     (application) => conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     ...(isEisPath() ? [] : [(application) => conditionalEnToBn(application?.grantAmount, locale)]),
     (application) => application?.workforceEmployee?.nid,
@@ -977,10 +1006,14 @@ export const itemFormattersDoctor = (isShowHistory, modulesManager, history, com
   const formatters = [
     (application) => application?.trackingNumber,
     (application) => conditionalEnToBn(application?.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     ...(isEisPath() ? [] : [(application) => <TextInput value={application?.grantAmount} onChange={(v) => component.setState({ editedGrantMoney: v })} />]),
@@ -1035,10 +1068,7 @@ export const itemFormattersDoctor = (isShowHistory, modulesManager, history, com
       return (
         <div className={component.props.classes.horizontalButtonContainer}>
           <Tooltip title="Approve">
-            <IconButton
-              disabled={application?.isHistory}
-              onClick={() => component.handleApprovalByDoctor(application)}
-            >
+            <IconButton disabled={application?.isHistory} onClick={() => component.handleApprovalByDoctor(application)}>
               <CheckIcon style={{ color: "#006273" }} />
             </IconButton>
           </Tooltip>
@@ -1093,10 +1123,14 @@ export const itemFormattersAssociation = (isShowHistory, modulesManager, history
   const formatters = [
     (application) => application.trackingNumber,
     (application) => conditionalEnToBn(application.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     (application) => (application?.lastMovementDate ? conditionalEnToBn(application.lastMovementDate.split("T")[0], locale) : "N/A"),
@@ -1144,7 +1178,7 @@ export const itemFormattersAssociation = (isShowHistory, modulesManager, history
             </>
           )}
         </div>
-      ))
+      ));
 
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
@@ -1162,7 +1196,7 @@ export const itemFormattersAssociation = (isShowHistory, modulesManager, history
           </Tooltip>
         )}
       </div>
-    ))
+    ));
     // --- RESEND BUTTON ---
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
@@ -1179,7 +1213,7 @@ export const itemFormattersAssociation = (isShowHistory, modulesManager, history
           </Tooltip>
         )}
       </div>
-    ))
+    ));
   }
 
   return formatters;
@@ -1189,10 +1223,14 @@ export const itemFormattersFactoryAdmin = (isShowHistory, modulesManager, histor
   const formatters = [
     (application) => application.trackingNumber,
     (application) => conditionalEnToBn(application.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     (application) => (application?.applicationReceiveDate ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A"),
@@ -1303,10 +1341,14 @@ export const itemFormattersApprover = (isShowHistory, modulesManager, history, c
   const formatters = [
     (application) => application.trackingNumber,
     (application) => conditionalEnToBn(application.dateCreated.split("T")[0], locale),
-    (application) => application?.applicationType === "financialAssistance" ||
-                        application?.applicationType === "deadlyGrant"
-                        ? locale === "en"? safeParse(application?.deceasedWorkerInfo)?.nameEn : safeParse(application?.deceasedWorkerInfo)?.nameBn
-                        : locale === "en" ? application?.workforceEmployee?.firstNameEn : application?.workforceEmployee?.firstNameBn,
+    (application) =>
+      application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? locale === "en"
+          ? safeParse(application?.deceasedWorkerInfo)?.nameEn
+          : safeParse(application?.deceasedWorkerInfo)?.nameBn
+        : locale === "en"
+          ? application?.workforceEmployee?.firstNameEn
+          : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     ...(isEisPath() ? [] : [(application) => conditionalEnToBn(application?.grantAmount, locale)]),
     (application) => (application?.applicationReceiveDate ? conditionalEnToBn(application.applicationReceiveDate.split("T")[0], locale) : "N/A"),
@@ -1330,7 +1372,6 @@ export const itemFormattersApprover = (isShowHistory, modulesManager, history, c
         </IconButton>
       </Tooltip>
 
-      
       {component.props.disableButtons !== 1 && (
         <>
           {/* {!safeParse(application?.eisApprovedByIds)?.includes(component.props.loggedInUserId)?
