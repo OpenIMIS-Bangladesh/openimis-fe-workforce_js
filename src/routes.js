@@ -58,6 +58,7 @@ export const ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT = "workforce/committee-managem
 
 export const ROUTE_WORKFORCE_VERIFY_CONFIRMATION = "workforce/confirmation";
 export const ROUTE_WEBSITE_LEGAL_GUIDELINES = "workforce/website/legal-guidelines";
+export const ROUTE_WEBSITE_VISITOR_MESSAGES = "workforce/website/visitor-messages";
 
 
 

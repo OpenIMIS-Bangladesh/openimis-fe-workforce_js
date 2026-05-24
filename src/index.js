@@ -57,7 +57,8 @@ import {
   ROUTE_WORKFORCE_ASSOCIATION_USER_MAP,
   ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT,
   ROUTE_WORKFORCE_VERIFY_CONFIRMATION,
-  ROUTE_WEBSITE_LEGAL_GUIDELINES
+  ROUTE_WEBSITE_LEGAL_GUIDELINES,
+  ROUTE_WEBSITE_VISITOR_MESSAGES
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -122,6 +123,7 @@ import PushNotification from "./components/app-bar/PushNotification";
 import VerifyConfirmationLink from "./components/SmsVerificationComponents/VerifyConfirmationLink";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import LegalGuidelines from './pages/websiteCms/LegalGuidelines';
+import VisitorMessages from './pages/websiteCms/VisitorMessages';
 
 
 const workforceTheme = createTheme({
@@ -316,6 +318,7 @@ const baseRouter = [
 
   //WEBSITE CMS ROUTES
   { path: ROUTE_WEBSITE_LEGAL_GUIDELINES, component: LegalGuidelines },
+  { path: ROUTE_WEBSITE_VISITOR_MESSAGES, component: VisitorMessages },
 ];
 
 const baseUnauthenticatedRouter = [
@@ -420,6 +423,7 @@ const DEFAULT_CONFIG = {
 
     //WEBSITE CMS ROUTES
     { key: "workforce.route.website.legal.guidelines", ref: ROUTE_WEBSITE_LEGAL_GUIDELINES },
+    { key: "workforce.route.website.visitor.messages", ref: ROUTE_WEBSITE_VISITOR_MESSAGES },
     //WBSITE CMS ROUTES END
 
     { key: "workforceOrganization.OrganizationPicker", ref: OrganizationPicker },

@@ -3388,3 +3388,23 @@ export function updateWebsiteLegalGuideline(payload, clientMutationLabel) {
 
     return graphql(payload, "WORKFORCE_WEBSITE_LEGAL_GUIDELINES");
   }
+
+
+  export function fetchWebsiteVisitorMessages() {
+    const payload = `
+    {
+      websiteVisitorMessages
+        {
+          id
+          visitorName
+          visitorEmail
+          visitorNumber
+          visitorMessage
+          dateCreated
+        }
+    
+    }
+      `;
+
+    return graphql(payload, "WORKFORCE_WEBSITE_VISITOR_MESSAGES");
+  }

@@ -27,7 +27,8 @@ import {
   ROUTE_WORKFORCE_ASSOCIATIONS,
   ROUTE_WORKFORCE_ASSOCIATION_USER_MAP,
   ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT,
-  ROUTE_WEBSITE_LEGAL_GUIDELINES
+  ROUTE_WEBSITE_LEGAL_GUIDELINES,
+  ROUTE_WEBSITE_VISITOR_MESSAGES
 } from "../routes";
 import { RIGHT_WORKFORCE_EMPLOYER_APPROVE } from "../permission-rights";
 import { getUserType, isEmptyObject } from "../utils/utils";
@@ -229,6 +230,13 @@ function WorkforceMainMenu(props) {
         icon: <ListAlt />,
         route: `/${ROUTE_WEBSITE_LEGAL_GUIDELINES}`,
         id: `workforce.route.website.legal.guidelines`,
+        // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
+      });
+      entries.push({
+        text: <FormattedMessage module={MODULE_NAME} id="menu.website.visitor.messages" />,
+        icon: <ListAlt />,
+        route: `/${ROUTE_WEBSITE_VISITOR_MESSAGES}`,
+        id: `workforce.route.website.visitor.messages`,
         // filter: (rights) => rights.includes(RIGHT_TICKET_SEARCH),
       });
     }
