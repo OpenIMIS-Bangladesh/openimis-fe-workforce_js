@@ -181,8 +181,7 @@ const VisitorMessages = () => {
                 </Typography>
 
                 <Typography className={classes.subtitle}>
-                Manage and review all visitor inquiries, contact requests, and
-                communication history from your website.
+                Reply to your website visitors with email and contact number from here (Latest Records are at the top).
                 </Typography>
             </Grid>
                   {/* Stats */}
