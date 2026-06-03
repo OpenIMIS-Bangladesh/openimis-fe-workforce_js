@@ -268,7 +268,7 @@ const EmployeeDetailsForm2 = ({
         );
       }
     }
-  }, [selectedApplicationType, formData?.organizationType, formStepNo, formData?.institutionInfo?.workerType, formData?.metadata?.disabilityType, isDisabled]);
+  }, [selectedApplicationType, formData?.organizationType, formStepNo, formData?.institutionInfo?.workerType, formData?.metadata?.disabilityType, isDisabled,formData?.employeeAccidentInfo?.admitted]);
 
   const isLoading = useSelector((state) => state.workforce[`fetchingDocumentType`]);
   const data = useSelector((state) => state.workforce[`documentType`] ?? []);
@@ -322,6 +322,9 @@ const EmployeeDetailsForm2 = ({
                 console.log({ isDisabled });
 
                 if (document?.documentType === "disability_certificate" && (isDisabled === "no" || isDisabled === undefined)) {
+                  return null;
+                }
+                if (document?.documentType === "discharge certificate" && (formData?.employeeAccidentInfo?.admitted === "no" || formData?.employeeAccidentInfo?.admitted === undefined)) {
                   return null;
                 }
                 const fieldKey = document.fieldId;

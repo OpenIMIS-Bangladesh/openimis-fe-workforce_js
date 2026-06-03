@@ -1508,12 +1508,22 @@ export const formatLabel = (str) => {
     .replace(/\b\w/g, (c) => c.toUpperCase()); // capitalize each word
 };
 
-export const isBlwfPath = () => {
-  if (typeof window !== "undefined") {
-    return window.location.href.includes("blwf");
+export const getReturnUrl = () => {
+  if (window.location.href.includes("skydigitalbd.com") || window.location.href.includes("localhost")) {
+    return "https://cf-site-stage.skydigitalbd.com"
   }
-  return false; // fallback if window is not defined
-  // return true;
+  else{
+    return "https://labourwelfare.gov.bd"
+  }
+    
+};
+
+export const isBlwfPath = () => {
+  // if (typeof window !== "undefined") {
+  //   return window.location.href.includes("blwf");
+  // }
+  // return false; // fallback if window is not defined
+  return true;
 };
 export const isEisPath = () => {
   if (typeof window !== "undefined") {
@@ -1524,12 +1534,4 @@ export const isEisPath = () => {
 };
 
 
-export const getReturnUrl = () => {
-  if (window.location.href.includes("skydigitalbd.com") || window.location.href.includes("localhost")) {
-    return "https://cf-site-stage.skydigitalbd.com"
-  }
-  else{
-    return "https://labourwelfare.gov.bd"
-  }
-    
-};
+
