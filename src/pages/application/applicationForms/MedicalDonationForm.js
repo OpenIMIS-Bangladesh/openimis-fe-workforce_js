@@ -243,6 +243,7 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
 
   const handleNext = async () => {
     console.log({ formData });
+    delete newErrors.documents;
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
     const isBankStep = applicationForSelf === "yes" ? activeStep === 5 : activeStep === 6;
     const isDependentStep = applicationForSelf === "no" && activeStep === 4

@@ -228,6 +228,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
 
   const handleNext = async () => {
     console.log(activeStep);
+    delete newErrors.documents;
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
     const isBankStep = (organizationType === "eis" && activeStep === 2) || (organizationType !== "eis" && activeStep === 3);
     

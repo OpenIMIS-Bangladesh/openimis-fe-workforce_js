@@ -241,6 +241,7 @@ const ScholarshipApplicationForm = ({
 
   const handleNext = async () => {
     console.log({ formData });
+    delete newErrors.documents;
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
     const isBankStep = activeStep ===3;
     
