@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Box, Grid, Paper, LinearProgress, Divider, Link, Typography } from "@material-ui/core";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { makeStyles } from "@material-ui/styles";
-import {getReturnUrl, isBlwfPath, isEisPath } from "../../utils/utils";
+import {getReturnUrl, isBlwfPath, isCfPath, isEisPath } from "../../utils/utils";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +27,16 @@ const useStyles = makeStyles((theme) => ({
 export default function LoginHeader() {
     const [lang, setLang] = useState("bn");
     const classes = useStyles();
+    let logo= "/api/workforce/logo";
+    if(isBlwfPath()){
+        logo= window.location.origin+"/front/workforce_assets/blwf.png";
+    }
+    else if(isEisPath()){
+        logo= window.location.origin+"/front/workforce_assets/eis.png";
+    }
+    else{
+        logo= window.location.origin+"/front/workforce_assets/centralfund.png";
+    }
     return (
         <>
             <Box display="flex" justifyContent="flex-start" >
@@ -43,7 +53,7 @@ export default function LoginHeader() {
                 </Button>
             </Box>
             <Grid item container direction="column" alignItems="center" justifyContent="center">
-                <img className={classes.logo} src={isBlwfPath() &&!isEisPath()?"workforce_assets/blwf.png":!isBlwfPath() &&!isEisPath()?"workforce_assets/centralfund.png":"/api/workforce/logo"} />
+                <img className={classes.logo} src={logo} />
                 <>
                     {isEisPath() ? (
                     <div>
