@@ -243,36 +243,31 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
 
   const handleNext = async () => {
     console.log({ formData });
-    delete newErrors.documents;
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
+    delete newErrors?.documents;
     const isBankStep = applicationForSelf === "yes" ? activeStep === 5 : activeStep === 6;
-    const isDependentStep = applicationForSelf === "no" && activeStep === 4
+    const isDependentStep = applicationForSelf === "no" && activeStep === 4;
+    const isTreatmentStep = applicationForSelf === "yes" ? activeStep === 4 : activeStep === 5;
 
-    const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
     let documentValidation = { isValid: true, errors: null };
-    const files = isBankStep ? uploadBankFile : uploadFile;
     const BANK_DOC = "applicants bank check copy";
 
     if (isDependentStep) {
       documentValidation = validateMandatoryDocumentsForDependents(documentType, uploadDependentFile || [], formData.dependents || []);
-    } else if (isBankStep) {
-      // Filter only for Bank Documents
-      const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
-      documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
-    } else {
-      // Filter out Bank Documents for general info steps
+    } else if (isTreatmentStep) {
       const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC);
       documentValidation = validateMandatoryDocuments(generalDocsConfig, uploadFile || []);
+    } else if (isBankStep) {
+      const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
+      documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
     }
-    if (!documentValidation.isValid) {
+
+    if ((isDependentStep || isTreatmentStep || isBankStep) && !documentValidation.isValid) {
       newErrors.documents = documentValidation.errors;
     }
 
-    if (Object.keys(newErrors).length > 0) {
-      setShowErrorSnackbar(true);
-    } else {
-      setShowErrorSnackbar(false);
-    }
+    const hasErrors = Object.keys(newErrors).length > 0;
+    setShowErrorSnackbar(hasErrors);
     console.log({ newErrors });
     console.log({ documentValidation });
     setErrors(newErrors);

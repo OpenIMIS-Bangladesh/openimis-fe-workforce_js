@@ -294,7 +294,7 @@ const DeadlyGrantForm = ({ workforceFactoryId, organizationType, selectedApplica
   const handleNext = async () => {
     console.log({ formData });
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
-    delete newErrors.documents;
+    delete newErrors?.documents;
 
     const isBankStep = activeStep === 6;
     const isDependentStep = activeStep === 5;

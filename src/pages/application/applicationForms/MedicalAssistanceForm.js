@@ -231,7 +231,7 @@ const MedicalAssistanceForm = ({
   const handleNext = async () => {
     console.log(activeStep);
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
-    delete newErrors.documents;
+    delete newErrors?.documents;
 
     const isBankStep = (formData?.applicationForSelf === "yes" && activeStep === 3) || (formData?.applicationForSelf === "yes" && activeStep === 4);
     const isDependentStep = formData?.applicationForSelf === "no" && activeStep === 2

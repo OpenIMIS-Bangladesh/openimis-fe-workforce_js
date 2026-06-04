@@ -114,7 +114,7 @@ const WorkerExtraInfo = ({ handleChange, formData, errors }) => {
                 }}
                 onChange={handleSelection}
                 loading={loading}
-                value={formData.instituteName || ""}
+                value={formData?.institutionInfo?.instituteName || ""}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -131,7 +131,7 @@ const WorkerExtraInfo = ({ handleChange, formData, errors }) => {
               <TextInput
                 id="instituteAddress"
                 label={formatMessage("workforce.applicant.workInfo.formal.institution_address")}
-                value={formData.instituteAddress || ""}
+                value={formData?.institutionInfo?.instituteAddress || ""}
                 required
                 onChange={(e) => handleChange("instituteAddress", e)}
                 error={!!errors.instituteAddress}
@@ -147,7 +147,7 @@ const WorkerExtraInfo = ({ handleChange, formData, errors }) => {
               <TextInput
                 id="aboutWork"
                 label={formatMessage("workforce.applicant.workInfo.informal.current_occupation")}
-                value={formData.aboutWork || ""}
+                value={formData?.institutionInfo?.aboutWork || ""}
                 required
                 onChange={(e) => handleChange("aboutWork", e)}
                 error={!!errors.aboutWork}
@@ -158,7 +158,7 @@ const WorkerExtraInfo = ({ handleChange, formData, errors }) => {
               <TextInput
                 id="workingPlace"
                 label={formatMessage("workforce.applicant.workInfo.informal.workplace")}
-                value={formData.workingPlace || ""}
+                value={formData?.institutionInfo?.workingPlace || ""}
                 required
                 onChange={(e) => handleChange("workingPlace", e)}
                 error={!!errors.workingPlace}

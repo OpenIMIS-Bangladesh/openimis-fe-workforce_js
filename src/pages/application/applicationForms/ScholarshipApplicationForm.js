@@ -241,32 +241,28 @@ const ScholarshipApplicationForm = ({
 
   const handleNext = async () => {
     console.log({ formData });
-    delete newErrors.documents;
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
-    const isBankStep = activeStep ===3;
-    
-    const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
+    delete newErrors?.documents;
+    const isBankStep = activeStep === 3;
+    const isDetailsStep = activeStep === 0;
+    const isDocumentStep = isDetailsStep || isBankStep;
+
     let documentValidation = { isValid: true, errors: null };
-    const files = isBankStep ? uploadBankFile : uploadFile;
     const BANK_DOC = "applicants bank check copy";
 
     if (isBankStep) {
       const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
       documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
-    } else {
-      // 3. Run the document validation with the correctly selected array
-      documentValidation = validateMandatoryDocuments(documentType, filesToValidate);
+    } else if (isDetailsStep) {
+      const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC);
+      documentValidation = validateMandatoryDocuments(generalDocsConfig, uploadFile || []);
     }
-    if (!documentValidation.isValid) {
-      // Attaches document errors to newErrors, ensuring Object.keys(newErrors).length > 0
+    if (isDocumentStep && !documentValidation.isValid) {
       newErrors.documents = documentValidation.errors;
     }
 
-    if (Object.keys(newErrors).length > 0) {
-      setShowErrorSnackbar(true);
-    } else {
-      setShowErrorSnackbar(false);
-    }
+    const hasErrors = Object.keys(newErrors).length > 0;
+    setShowErrorSnackbar(hasErrors);
     console.log({ newErrors });
     console.log({ documentValidation });
     setErrors(newErrors);

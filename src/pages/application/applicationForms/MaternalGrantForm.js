@@ -228,32 +228,31 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
 
   const handleNext = async () => {
     console.log(activeStep);
-    delete newErrors.documents;
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
+    delete newErrors?.documents;
     const isBankStep = (organizationType === "eis" && activeStep === 2) || (organizationType !== "eis" && activeStep === 3);
-    
-    const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
-     let documentValidation = { isValid: true, errors: null };
-    const files = isBankStep ? uploadBankFile : uploadFile;
+    const isDetailsStep = activeStep === 0;
+    const isTreatmentStep = (organizationType === "eis" && activeStep === 3) || (organizationType !== "eis" && activeStep === 4);
+    const isDocumentStep = isDetailsStep || isBankStep || isTreatmentStep;
+
+    let documentValidation = { isValid: true, errors: null };
     const BANK_DOC = "applicants bank check copy";
 
-    if(isBankStep){
+    if (isBankStep) {
       const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
-            documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
-    }else{
-      // 3. Run the document validation with the correctly selected array
-       documentValidation = validateMandatoryDocuments(documentType, filesToValidate);
+      documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
+    } else if (isDetailsStep || isTreatmentStep) {
+      const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC);
+      documentValidation = validateMandatoryDocuments(generalDocsConfig, uploadFile || []);
     }
-    if (!documentValidation.isValid) {
-      // Attaches document errors to newErrors, ensuring Object.keys(newErrors).length > 0
+
+    if (isDocumentStep && !documentValidation.isValid) {
       newErrors.documents = documentValidation.errors;
     }
 
-    if (Object.keys(newErrors).length > 0 && !newErrors?.documents) {
-      setShowErrorSnackbar(true);
-    } else {
-      setShowErrorSnackbar(false);
-    }
+    const hasErrors = Object.keys(newErrors).length > 0;
+    setShowErrorSnackbar(hasErrors);
+    console.log({ newErrors });
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {

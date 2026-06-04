@@ -241,29 +241,31 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
 
   const handleNext = async () => {
     console.log({ formData });
-    delete newErrors.documents;
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
+    delete newErrors?.documents;
     const isBankStep = activeStep === 5;
+    const isChildStep = activeStep === 3;
+    const isDetailsStep = activeStep === 0;
+    const isDocumentStep = isDetailsStep || isChildStep || isBankStep;
 
-    const filesToValidate = isBankStep ? uploadBankFile : uploadFile;
     let documentValidation = { isValid: true, errors: null };
     const BANK_DOC = "applicants bank check copy";
 
     if (isBankStep) {
       const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
       documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
-    } else {
-      documentValidation = validateMandatoryDocuments(documentType, filesToValidate);
+    } else if (isDetailsStep || isChildStep) {
+      // Validate general documents (exclude bank docs)
+      const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC);
+      documentValidation = validateMandatoryDocuments(generalDocsConfig, uploadFile || []);
     }
-    if (!documentValidation.isValid) {
+
+    if (isDocumentStep && !documentValidation.isValid) {
       newErrors.documents = documentValidation.errors;
     }
 
-    if (Object.keys(newErrors).length > 0) {
-      setShowErrorSnackbar(true);
-    } else {
-      setShowErrorSnackbar(false);
-    }
+    const hasErrors = Object.keys(newErrors).length > 0;
+    setShowErrorSnackbar(hasErrors);
     console.log({ newErrors });
     console.log({ documentValidation });
     setErrors(newErrors);

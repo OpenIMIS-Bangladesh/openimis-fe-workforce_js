@@ -56,8 +56,8 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData,errors }) =
                 <PublishedComponent
                   pubRef="workforce.DatePicker"
                   label={"workforce.application.dateofReceipt"}
-                  value={formData?.previousGrantInfo?.dateofReceipt || ""}
-                  onChange={(v) => handleChange("dateofReceipt", v,"metadata")}
+                  value={formData?.metadata?.dateofReceipt || ""}
+                  onChange={(v) => handleChange("dateofReceipt", v)}
                   readOnly={false}
                   
                 />
@@ -67,8 +67,8 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData,errors }) =
                 <TextInput
                 id="grantAmount"
                   label="workforce.application.grantAmount"
-                  value={formData?.previousGrantInfo?.grantAmount || ""}
-                  onChange={(v) => handleChange("grantAmount", v,"metadata")}
+                  value={formData?.metadata?.grantAmount || ""}
+                  onChange={(v) => handleChange("grantAmount", v)}
                   readOnly={false}
                   required
                   error={!!errors.grantAmount}
@@ -79,8 +79,8 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData,errors }) =
                 <TextInput
                 id="reasonforReceipt"
                   label="workforce.application.reasonforReceipt"
-                  value={formData?.previousGrantInfo?.reasonforReceipt || ""}
-                  onChange={(v) => handleChange("reasonforReceipt", v,"metadata")}
+                  value={formData?.metadata?.reasonforReceipt || ""}
+                  onChange={(v) => handleChange("reasonforReceipt", v)}
                   readOnly={false}
                   error={!!errors.reasonforReceipt}
             helperText={errors.reasonforReceipt}

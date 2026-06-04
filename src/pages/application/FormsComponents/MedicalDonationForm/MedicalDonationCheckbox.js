@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 const MedicalDonationCheckbox = ({ handleChange,formData,errors }) => {
   const modulesManager = useModulesManager()
   const [selectedDonationOption, setselectedDonationOption] = useState("");
-  const [isExportOriented, setIsExportOriented] = useState("");
+  const [donationReason, setDonationReason] = useState("");
   const { formatMessage } = useTranslations(
       "core.RegistrationPage",
       modulesManager,
@@ -35,7 +35,7 @@ const MedicalDonationCheckbox = ({ handleChange,formData,errors }) => {
 
   const handleDonationReason = (event) => {
     const value = event.target.value;
-    setIsExportOriented(value);
+    setDonationReason(value);
     handleChange("donationReason",value)
   };
 
@@ -48,7 +48,7 @@ const MedicalDonationCheckbox = ({ handleChange,formData,errors }) => {
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
           <FormattedMessage module="workforce" id="workforce.application.steps.reasonsforSeekingFinancialAssistance" />
         </Typography>
-        <RadioGroup value={isExportOriented} onChange={handleDonationReason}>
+        <RadioGroup value={donationReason|| formData?.metadata?.donationReason} onChange={handleDonationReason}>
           <FormControlLabel
             value="physicalMentalDisability"
             control={<Radio color="primary" />}
