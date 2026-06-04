@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Box, Grid, Paper, LinearProgress, Divider, Link, Typography } from "@material-ui/core";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { makeStyles } from "@material-ui/styles";
-import { isBlwfPath, isEisPath } from "../../utils/utils";
+import {getReturnUrl, isBlwfPath, isEisPath } from "../../utils/utils";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -30,9 +30,12 @@ export default function LoginHeader() {
     return (
         <>
             <Box display="flex" justifyContent="flex-start" >
-                <Button startIcon={<ArrowBackIcon />} href={isEisPath() ? "https://mis.eis-pilot-bd.org" : "https://labourwelfare.gov.bd"} variant="text" color="primary" style={{ padding: "3px" }}>
+                <Button startIcon={<ArrowBackIcon />} href={getReturnUrl()} variant="text" color="primary" style={{ padding: "3px" }}>
                     {lang === "bn" ? "পেছনে যান" : "Back"}
                 </Button>
+                {/* <Button startIcon={<ArrowBackIcon />} href={isEisPath() ? "https://mis.eis-pilot-bd.org" : "https://labourwelfare.gov.bd"} variant="text" color="primary" style={{ padding: "3px" }}>
+                    {lang === "bn" ? "পেছনে যান" : "Back"}
+                </Button> */}
             </Box>
             <Box display="flex" justifyContent="flex-end" mt={-4}>
                 <Button variant="primary" color="primary" style={{ padding: "3px" }} onClick={() => setLang(lang == "bn" ? "en" : "bn")}>
@@ -42,7 +45,8 @@ export default function LoginHeader() {
             <Grid item container direction="column" alignItems="center" justifyContent="center">
                 <img className={classes.logo} src={isBlwfPath() &&!isEisPath()?"workforce_assets/blwf.png":!isBlwfPath() &&!isEisPath()?"workforce_assets/centralfund.png":"/api/workforce/logo"} />
                 <>
-                    {isEisPath() ? (<div>
+                    {isEisPath() ? (
+                    <div>
                         <Box
                             pl={2}
                             fontWeight="fontWeightBold"
