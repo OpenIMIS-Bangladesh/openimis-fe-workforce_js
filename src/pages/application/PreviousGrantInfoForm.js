@@ -1,22 +1,15 @@
-import React from "react";
-import {
-  Grid,
-  Box,
-  Paper,
-  Typography,
-  Divider,
-  IconButton,
-} from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { Grid, Box, Paper, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
-  useTranslations,
   useModulesManager,
   TextInput,
-  useHistory,
   FormattedMessage,
   PublishedComponent,
+  parseData
 } from "@openimis/fe-core";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+import { fetchApplication } from "../../actions";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -27,21 +20,41 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
   },
-  buttonContainer: {
-    marginTop: theme.spacing(2),
-    display: "flex",
-    justifyContent: "space-between",
-  },
+  item: {
+    marginTop: theme.spacing(1),
+  }
 }));
 
-const PreviousGrantInfoForm = ({ handleChange, formData, setFormData,errors }) => {
+const PreviousGrantInfoForm = ({ handleChange, formData, setFormData, errors }) => {
   const classes = useStyles();
-  const history = useHistory();
+  const dispatch = useDispatch();
   const modulesManager = useModulesManager();
-  const { formatMessage } = useTranslations(
-    "core.RegistrationPage",
-    modulesManager,
-  );
+  const [previousApplicationData, setPreviousApplicationData] = useState([]);
+
+  useEffect(() => {
+    dispatch(fetchApplication(modulesManager, [`workforceEmployee_Nid: "${formData?.workforceEmployee?.nid}",application_Status:"new"`]))
+      .then((res) => {
+        const response = parseData(res?.payload?.data?.workforceApplication);
+        const firstItem = response?.[0];
+
+        if (firstItem) {
+          setPreviousApplicationData([firstItem]);
+          const prefillData = firstItem.metadata || firstItem;
+          
+          setFormData((prev) => ({
+            ...prev,
+            metadata: {
+              ...prev?.metadata,
+              dateofReceipt: firstItem?.workforceApplicationMovements?.find(item => item?.status === "new")?.dateCreated?.split("T")[0] || "",
+              grantAmount: firstItem.grantAmount || "",
+              // reasonforReceipt: prefillData.reasonforReceipt || "",
+            },
+          }));
+        } else {
+          setPreviousApplicationData([]);
+        }
+      });
+  }, []);
 
   return (
     <Box mt={1}>
@@ -59,31 +72,30 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData,errors }) =
                   value={formData?.metadata?.dateofReceipt || ""}
                   onChange={(v) => handleChange("dateofReceipt", v)}
                   readOnly={false}
-                  
                 />
               </Grid>
             
               <Grid item xs={6} className={classes.item}>
                 <TextInput
-                id="grantAmount"
+                  id="grantAmount"
                   label="workforce.application.grantAmount"
                   value={formData?.metadata?.grantAmount || ""}
                   onChange={(v) => handleChange("grantAmount", v)}
                   readOnly={false}
                   required
                   error={!!errors.grantAmount}
-            helperText={errors.grantAmount}
+                  helperText={errors.grantAmount}
                 />
               </Grid>
               <Grid item xs={12} className={classes.item}>
                 <TextInput
-                id="reasonforReceipt"
+                  id="reasonforReceipt"
                   label="workforce.application.reasonforReceipt"
                   value={formData?.metadata?.reasonforReceipt || ""}
                   onChange={(v) => handleChange("reasonforReceipt", v)}
                   readOnly={false}
                   error={!!errors.reasonforReceipt}
-            helperText={errors.reasonforReceipt}
+                  helperText={errors.reasonforReceipt}
                 />
               </Grid>
             </Grid>

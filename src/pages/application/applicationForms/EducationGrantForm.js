@@ -484,7 +484,7 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
     },
     {
       label: "workforce.application.steps.previousGrantInfo",
-      content: <PreviousGrantInfoForm errors={errors} handleChange={(key, value) => handleChange(key, value, "metadata")} formData={formData} />,
+      content: <PreviousGrantInfoForm errors={errors} handleChange={(key, value) => handleChange(key, value, "metadata")} formData={formData} setFormData={setFormData}/>,
     },
     {
       label: "workforce.application.steps.account.info",
