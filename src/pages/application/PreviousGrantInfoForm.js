@@ -32,7 +32,7 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData, errors }) 
   const [previousApplicationData, setPreviousApplicationData] = useState([]);
 
   useEffect(() => {
-    dispatch(fetchApplication(modulesManager, [`workforceEmployee_Nid: "${formData?.workforceEmployee?.nid}",application_Status:"new"`]))
+    dispatch(fetchApplication(modulesManager, [`workforceEmployee_Nid: "${formData?.workforceEmployee?.nid}",application_Status:"approved_by_director"`]))
       .then((res) => {
         const response = parseData(res?.payload?.data?.workforceApplication);
         const firstItem = response?.[0];
@@ -45,7 +45,7 @@ const PreviousGrantInfoForm = ({ handleChange, formData, setFormData, errors }) 
             ...prev,
             metadata: {
               ...prev?.metadata,
-              dateofReceipt: firstItem?.workforceApplicationMovements?.find(item => item?.status === "new")?.dateCreated?.split("T")[0] || "",
+              dateofReceipt: firstItem?.workforceApplicationMovements?.find(item => item?.status === "approved_by_director")?.dateCreated?.split("T")[0] || "",
               grantAmount: firstItem.grantAmount || "",
               // reasonforReceipt: prefillData.reasonforReceipt || "",
             },
