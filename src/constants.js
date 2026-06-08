@@ -349,11 +349,13 @@ export const WORKFORCE_DOCUMENT_MAP_EN={
   verified_by_association:"Verified by Association",
   verified_by_eis_officer:"Verified by Eis Officer",
   verified_by_section_officer:"Verified by Section Officer",
+  verified_by_data_entry_officer:"Verified by Data Entry Officer",
   verified_by_dol_dife: "Verified by DOL/DIFE",
   rejected_by_factoryAdmin:"Rejected by Factory Admin",
   rejected_by_association:"Rejected by Association",
   rejected_by_eis_officer:"Rejected by Eis Officer",
   rejected_by_section_officer:"Rejected by Section Officer",
+  rejected_by_data_entry_officer:"Rejected by Data Entry Officer",
   rejected_by_dol_dife: "Rejected by DOL/DIFE",
 }
 export const WORKFORCE_DOCUMENT_MAP_BN={
@@ -361,11 +363,13 @@ export const WORKFORCE_DOCUMENT_MAP_BN={
   verified_by_association:"এসোসিয়েশন দ্বারা যাচাইকৃত",
   verified_by_eis_officer:"ইআইএস অফিসার দ্বারা যাচাইকৃত",
   verified_by_section_officer:"সেকশন অফিসার দ্বারা যাচাইকৃত",
+  verified_by_data_entry_officer:"ডাটা এন্ট্রি অপারেটর দ্বারা যাচাইকৃত",
   verified_by_dol_dife: "ডল/ডাইফি দ্বারা যাচাইকৃত",
   rejected_by_factoryAdmin:"কারখানা প্রশাসক দ্বারা বাতিলকৃত",
   rejected_by_association:"এসোসিয়েশন দ্বারা বাতিলকৃত",
   rejected_by_eis_officer:"ইআইএস অফিসার দ্বারা বাতিলকৃত",
   rejected_by_section_officer:"সেকশন অফিসার দ্বারা বাতিলকৃত",
+  rejected_by_data_entry_officer:"ডাটা এন্ট্রি অপারেটর দ্বারা বাতিলকৃত",
   rejected_by_dol_dife: "ডল/ডাইফি দ্বারা বাতিলকৃত",
 }
 
