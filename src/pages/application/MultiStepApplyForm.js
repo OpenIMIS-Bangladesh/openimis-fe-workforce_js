@@ -145,11 +145,11 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
           type="error"
           message={<FormattedMessage id="workforce.financialAssistance.error.message" module="workforce" />}
         />
-        {!isEisPath()&& !isBlwfPath() &&(
-          <Typography style={{color:"#990F02",textAlign:"center",fontWeight:800,fontSize:"large" }}><FormattedMessage id="workforce.application.company.type" module="workforce" /></Typography>
-        )}
         {!showForm ? (
           <>
+            {!isEisPath()&& !isBlwfPath() &&(
+              <Typography style={{color:"#990F02",textAlign:"center",fontWeight:800,fontSize:"large" }}><FormattedMessage id="workforce.application.company.type" module="workforce" /></Typography>
+            )}
             <ApplicationTypeSelector
               workforceFactoryId={workforceFactoryId}
               modulesManager={modulesManager}
