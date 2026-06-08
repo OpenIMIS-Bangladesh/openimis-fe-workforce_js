@@ -1536,6 +1536,14 @@ export const getReturnUrl = () => {
   } 
 };
 
+export const isCfPath = () => {
+  if (typeof window !== "undefined") {
+    return window.location.href.includes("cf");
+  }
+  return false; // fallback if window is not defined
+  // return true;
+};
+
 export const isBlwfPath = () => {
   if (typeof window !== "undefined") {
     return window.location.href.includes("blwf");
@@ -1550,13 +1558,7 @@ export const isEisPath = () => {
   return false; // fallback if window is not defined
   // return true;
 };
-export const isCfPath = () => {
-  if (typeof window !== "undefined") {
-    return window.location.href.includes("cf");
-  }
-  return false; // fallback if window is not defined
-  // return true;
-};
+
 
 
 

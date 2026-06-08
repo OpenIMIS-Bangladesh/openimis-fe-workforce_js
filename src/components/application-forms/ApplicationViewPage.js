@@ -156,6 +156,7 @@ const hiddenKeys = [
   "educationGrant_scholarship_dependent_labour_foundation_grant_information",
   "educationGrant_certification_letter_from_the_department_head_of_the_organization",
   "workerType",
+  "workforceApplicationMovements",
   "status","diseaseNo","minimumDonationAmount","maximumDonationAmount"
 ];
 
