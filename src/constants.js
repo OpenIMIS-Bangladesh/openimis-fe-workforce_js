@@ -333,12 +333,15 @@ export const WORKFORCE_DOCUMENT_STATUS = {
   ASSOCIATION_VERIFIED:"verified_by_association",
   EIS_OFFICER_VERIFIED:"verified_by_eis_officer",
   SECTION_OFFICER_VERIFIED:"verified_by_section_officer",
+  BLWF_SECTION_OFFICER_VERIFIED:"verified_by_data_entry_officer",
   DOL_DIFE_VERIFIED:"verified_by_dol_dife",
   FACTORY_ADMIN_REJECTED:"rejected_by_factoryAdmin",
   ASSOCIATION_REJECTED:"rejected_by_association",
   EIS_OFFICER_REJECTED:"rejected_by_eis_officer",
   SECTION_OFFICER_REJECTED:"rejected_by_section_officer",
   DOL_DIFE_REJECTED:"rejected_by_dol_dife",
+  BLWF_SECTION_OFFICER_REJECTED:"rejected_by_data_entry_officer",
+
 }
 
 export const WORKFORCE_DOCUMENT_MAP_EN={

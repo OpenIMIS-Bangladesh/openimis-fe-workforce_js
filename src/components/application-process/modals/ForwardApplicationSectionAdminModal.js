@@ -21,7 +21,7 @@ import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchApplication, updateApplication, createApplicationMovement, fetchWorkforceUserRoleWiseUser } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
-import { getUserType, getUserTypeFromRights, safeDecodeId } from "../../../utils/utils";
+import { getUserType, getUserTypeFromRights, isBlwfPath, safeDecodeId } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -204,13 +204,13 @@ const ForwardApplicationSectionAdminModal = ({ open, onClose, selectedApplicatio
                 textAlign: "center",
               }}
             >
-              অফিসার নির্বাচন করুন
+              {isBlwfPath()? "ডাটা এন্ট্রি অপারেটর নির্বাচন করুন":"অফিসার নির্বাচন করুন"}
             </Typography>
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
                 <Select value={formData?.userId || ""} onChange={(e) => setFormData({ ...formData, userId: e.target.value })} displayEmpty>
                   <MenuItem value="">
-                    <em>অফিসার নির্বাচন করুন</em>
+                    <em>{isBlwfPath()? "ডাটা এন্ট্রি অপারেটর নির্বাচন করুন":"অফিসার নির্বাচন করুন"}</em>
                   </MenuItem>
                   {officers.map((officer) => (
                     <MenuItem key={officer.id} value={officer.userId}>

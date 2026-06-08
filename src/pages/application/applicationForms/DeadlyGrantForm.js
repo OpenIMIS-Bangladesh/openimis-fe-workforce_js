@@ -531,17 +531,17 @@ const DeadlyGrantForm = ({ workforceFactoryId, organizationType, selectedApplica
             status: WORKFORCE_STATUS.DRAFT,
             applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
           };
-          if (uploadBankFile) {
-            await uploadBankFile.map((file) => {
-              const appId = applicationId || formData?.id;
-              return dispatch(
-                createWorkforceDocument(
-                  { ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) },
-                  `Created workforce document`,
-                ),
-              );
-            });
-          }
+          // if (uploadBankFile) {
+          //   await uploadBankFile.map((file) => {
+          //     const appId = applicationId || formData?.id;
+          //     return dispatch(
+          //       createWorkforceDocument(
+          //         { ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) },
+          //         `Created workforce document`,
+          //       ),
+          //     );
+          //   });
+          // }
           dispatch(updateApplication(updateApplicationData, `update workforce application`));
         }
         return true
