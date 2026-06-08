@@ -325,7 +325,7 @@ const baseUnauthenticatedRouter = [
   { path: ROUTE_WORKFORCE_REGISTRATION, component: RegistrationPage },
   { path: ROUTE_ADMINISTRATIVE_LOGIN, component: LoginFormAdministrative },
   { path: ROUTE_WORKFORCE_FACTORIES_FACTORY, component: OrganizationFactoryPage },
-  { path: `${ROUTE_WORKFORCE_VERIFY_CONFIRMATION}/:application_id`, component: VerifyConfirmationLink },
+  { path: `${ROUTE_WORKFORCE_VERIFY_CONFIRMATION}`, component: VerifyConfirmationLink },
 ];
 const DEFAULT_CONFIG = {
   translations: [

@@ -53,6 +53,8 @@ import BeneficiaryManagement from "../../components/dashboard/beneficiary-manage
 import BeneficiaryPaymentProcess from "../../components/dashboard/beneficiary-management/BeneficiaryPaymentProcess";
 import BeneficiaryProcessedPaymentList from "../../components/dashboard/beneficiary-management/BeneficiaryProcessedPaymentList";
 import BeneficiaryBankAdviceList from "../../components/dashboard/beneficiary-management/BeneficiaryBankAdviceList";
+import BeneficiaryDisbursedPayments from "../../components/dashboard/beneficiary-management/BeneficiaryDisbursedPayments";
+import BeneficiaryNoaConfirmation from "../../components/dashboard/beneficiary-management/BeneficiaryNoaConfirmation";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -199,6 +201,16 @@ const SidebarMenu = [
   {
     id: "beneficiaryBankAdviceList",
     text: <FormattedMessage module="workforce" id="workforce.application.beneficiaryBankAdviceList" />,
+    icon: <AssignmentIcon />,
+  },
+  {
+    id: "beneficiaryDisbursedPayments",
+    text: <FormattedMessage module="workforce" id="workforce.application.beneficiaryDisbursedPayments" />,
+    icon: <AssignmentIcon />,
+  },
+  {
+    id: "beneficiaryNoaConfirmation",
+    text: <FormattedMessage module="workforce" id="workforce.application.beneficiaryNoaConfirmation" />,
     icon: <AssignmentIcon />,
   },
 ];
@@ -1348,6 +1360,10 @@ const EisCoordinatorDashboardPage = () => {
         return <BeneficiaryProcessedPaymentList />;
       case "beneficiaryBankAdviceList":
         return <BeneficiaryBankAdviceList />;
+      case "beneficiaryDisbursedPayments":
+        return <BeneficiaryDisbursedPayments />;
+      case "beneficiaryNoaConfirmation":
+        return <BeneficiaryNoaConfirmation />;
       default:
         return <Dashboard selectedMenu={selectedMenu}/>;
     }

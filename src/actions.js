@@ -275,8 +275,8 @@ export function fetchWorkforceFactory(mm, filters) {
     office_location_projection,
     "workforceEmployer{id}",
     "workforceRepresentative { id,nameBn,nameEn,position,email,phoneNumber,nid,birthDate, passportNo, address, " +
-      location_projection +
-      "}",
+    location_projection +
+    "}",
   ];
   const payload = formatPageQueryWithCount("workforceEmployerFactories", filters, projections);
   return graphql(payload, "WORKFORCE_FACTORY");
@@ -458,7 +458,7 @@ export function fetchWorkforceEmployeesSummary(mm, filters) {
   const payload = formatPageQueryWithCount("workforceEmployerEmployees", filters, projections);
   return graphql(payload, "WORKFORCE_EMPLOYEES");
 }
-export function fetchWorkforceAllAssociationSummary(filters=[]) {
+export function fetchWorkforceAllAssociationSummary(filters = []) {
   filters.push(`status: "active"`);
   const projections = [
     "id",
@@ -477,7 +477,7 @@ export function fetchWorkforceAllAssociationSummary(filters=[]) {
   const payload = formatPageQueryWithCount("workforceAllAssociation", filters, projections);
   return graphql(payload, "WORKFORCE_ALL_ASSOCIATIONS");
 }
-export function fetchWorkforceAllAssociation(mm, filters=[]) {
+export function fetchWorkforceAllAssociation(mm, filters = []) {
   filters.push(`status: "active"`);
   const projections = ["id", "nameEn", "nameBn", "shortNameEn", "shortNameBn", "phone", "email", "address", "webAddress", "status", "minimumSalary"];
   const payload = formatPageQueryWithCount("workforceAllAssociation", filters, projections);
@@ -588,9 +588,9 @@ export function fetchApplicationsSummary(mm, filters) {
   const projections = [
     "id",
     "workforceEmployee{" +
-      present_location_projection +
-      permanent_location_projection +
-      "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate,relatedUser{id}}",
+    present_location_projection +
+    permanent_location_projection +
+    "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate,relatedUser{id}}",
     "applicantInfo",
     "dateCreated",
     "dateUpdated",
@@ -643,9 +643,9 @@ export function fetchApplicationsSummaryDashboard(mm, filters) {
   const projections = [
     "id",
     "workforceEmployee{" +
-      present_location_projection +
-      permanent_location_projection +
-      "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate,relatedUser{id}}",
+    present_location_projection +
+    permanent_location_projection +
+    "id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate,relatedUser{id}}",
     "applicantInfo",
     "dateCreated",
     "dateUpdated",
@@ -700,9 +700,9 @@ export function fetchApplication(mm, filters) {
   const projections = [
     "id",
     "workforceEmployee{" +
-      present_location_projection +
-      permanent_location_projection +
-      ",id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate,relatedUser{id}}",
+    present_location_projection +
+    permanent_location_projection +
+    ",id,firstNameBn,lastNameBn,firstNameEn,lastNameEn,otherName,phoneNumber,email,status,gender,birthCertificateNo,nid,passportNo,permanentAddress,presentAddress,position,monthlyEarning,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,spouseNameBn,spouseNameEn,maritalStatus,citizenship,privacyLaw,insuranceNumber,birthDate,employeeType,lifeStatus,deathDate,relatedUser{id}}",
     "applicantInfo",
     "organizationType",
     "dateCreated",
@@ -718,9 +718,9 @@ export function fetchApplication(mm, filters) {
     "educations{edges{node{id,childNameEn,childNameBn,childBirthDate,childBirthCertificateNo,childNidNo,studyClass,institution,educationLevel,educationBoard,passingYear,rollNumber,registrationNumber,result}}}",
     // "workforceEmployeeDependentApplication{edges{node{id,nameBn,nameEn,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,nid,birthDate,percentageOfCfGrant,phoneNumber,presentLocation {id},presentAddress,permanentLocation {id},permanentAddress}}}",
     "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,occupation,email,phoneNumber,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,relationWithWorker,attachments,isEligible,remarks,status,employeeBankingDependents{edges{node{id}}},presentAddress,permanentAddress," +
-      present_location_projection +
-      permanent_location_projection +
-      ",bankingInfo{id}}}}",
+    present_location_projection +
+    permanent_location_projection +
+    ",bankingInfo{id}}}}",
     "employeeBankingInfoApplication{edges{node{id,dateCreated,nameBn,nameEn,accountNo,accountHolderName,accountHolderType,status,branch{id,nameBn,nameEn,bankCode,branchCode,routingNumber,districtNameEn,districtNameBn,parent{id,nameBn,nameEn}},dependant{id},relationWithDependent}}}",
     "metadata",
     "employeeFactory{id, nameBn, nameEn,membershipNo,registrationDate,registrationExpiryDate,allAssociation{id,nameBn,nameEn,startDate}}",
@@ -2269,6 +2269,8 @@ export function fetchEisPaymentProcess(applicationIds, mm) {
         trimonthlyAmount
         payableAmount
         phoneNumber
+        noaSmsSent
+        noaConfirmed
         bank {
           id
           nameEn
@@ -2464,6 +2466,9 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
         arrearAmount
         arrearPaymentMonth
         arrearPaymentYear
+        noaSmsSent
+        noaConfirmed
+        noaBlocked
         bank {
           id
           nameEn
@@ -2645,6 +2650,7 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
         beneficiaryId
         isDisbursed
         phoneNumber
+        userConfirmed
         workforceEisBankAdvice{
         id
         isConfirmed
@@ -3029,7 +3035,7 @@ export function updateWorkforceCommitteeUserMap(payload, clientMutationLabel) {
 }
 
 export function fetchWorkforceCommitteeUserMap(filters) {
-  const userIds= Array.isArray(filters?.userIds) ? filters.userIds.map((id) => `"${id}"`).join(",") : "";
+  const userIds = Array.isArray(filters?.userIds) ? filters.userIds.map((id) => `"${id}"`).join(",") : "";
   const payload = `
     {
       workforceCommitteeUserMaps(
@@ -3181,12 +3187,12 @@ export function fetchWorkforceCommitteeUser(filters) {
     }
     `;
 
-    return graphql(payload, "WORKFORCE_COMMITTEE_USERS");
-  }
+  return graphql(payload, "WORKFORCE_COMMITTEE_USERS");
+}
 
 
-  export function fetchWorkforceNoaSignatureByApprovers(userIds) {
-  const passUserIds= Array.isArray(userIds) ? userIds.map((id) => `"${id}"`).join(",") : "";
+export function fetchWorkforceNoaSignatureByApprovers(userIds) {
+  const passUserIds = Array.isArray(userIds) ? userIds.map((id) => `"${id}"`).join(",") : "";
   const payload = `
   {
     fetchNoaSignatureByApprovers(
@@ -3202,11 +3208,11 @@ export function fetchWorkforceCommitteeUser(filters) {
     `;
 
   return graphql(payload, "WORKFORCE_NOA_SIGNATURE_BY_APPROVERS");
-  }
+}
 
 
-  export function fetchWorkforceNoaSignerUserByApprovers(userIds) {
-  const passUserIds= Array.isArray(userIds) ? userIds.map((id) => `"${id}"`).join(",") : "";
+export function fetchWorkforceNoaSignerUserByApprovers(userIds) {
+  const passUserIds = Array.isArray(userIds) ? userIds.map((id) => `"${id}"`).join(",") : "";
   const payload = `
   {
     fetchWorkforceNoaSignerUserByApprovers(
@@ -3372,8 +3378,8 @@ export function updateWebsiteLegalGuideline(payload, clientMutationLabel) {
 
 
 
-  export function fetchWebsiteLegalGuidelines(userIds) {
-    const payload = `
+export function fetchWebsiteLegalGuidelines(userIds) {
+  const payload = `
     {
       websiteLegalGuidelines
         {
@@ -3387,12 +3393,12 @@ export function updateWebsiteLegalGuideline(payload, clientMutationLabel) {
     }
       `;
 
-    return graphql(payload, "WORKFORCE_WEBSITE_LEGAL_GUIDELINES");
-  }
+  return graphql(payload, "WORKFORCE_WEBSITE_LEGAL_GUIDELINES");
+}
 
 
-  export function fetchWebsiteVisitorMessages() {
-    const payload = `
+export function fetchWebsiteVisitorMessages() {
+  const payload = `
     {
       websiteVisitorMessages
         {
@@ -3407,5 +3413,71 @@ export function updateWebsiteLegalGuideline(payload, clientMutationLabel) {
     }
       `;
 
-    return graphql(payload, "WORKFORCE_WEBSITE_VISITOR_MESSAGES");
-  }
+  return graphql(payload, "WORKFORCE_WEBSITE_VISITOR_MESSAGES");
+}
+
+
+
+export function userPaymentConfirmation(disbursementId, isConfirmed) {
+  const mutation = `
+    mutation {
+      userPaymentConfirmation(
+        workforceEisPaymentDisbursementStageId: "${disbursementId}"
+        confirmation: ${isConfirmed}
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "USER_PAYMENT_CONFIRMATION");
+}
+
+
+export function sendSmsNotification(phoneNumber, message) {
+  const mutation = `
+    mutation {
+      sendSmsNotification(
+        phoneNumber: "${phoneNumber}"
+        message: "${message}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "SEND_SMS_NOTIFICATION");
+}
+
+
+export function confirmNoa(paymentProcessId, isSmsSent=false, isConfirmed=false) {
+  const mutation = `
+    mutation {
+      confirmNoa(
+        workforceEisPaymentProcessId: "${paymentProcessId}"
+        confirmation: ${isConfirmed}
+        isSmsSent: ${isSmsSent}
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "CONFIRM_NOA");
+}
+
+
+export function blockNoa(paymentProcessId, isBlocked=false) {
+  const mutation = `
+    mutation {
+      blockNoa(
+        workforceEisPaymentProcessId: "${paymentProcessId}"
+        isBlocked: ${isBlocked}
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "BLOCK_NOA");
+}

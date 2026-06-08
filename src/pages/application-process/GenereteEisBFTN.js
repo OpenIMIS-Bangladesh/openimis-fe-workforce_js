@@ -699,10 +699,10 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount, noaSig
   console.log("noa signature", noaSignature)
 
 
-  let noaSignatureLogo= <img src={window.location.origin + (noaSignature?.url??"")} alt="Central Fund Logo" style={{ height: "70px" }} />;
+  let noaSignatureLogo = <img src={window.location.origin + (noaSignature?.url ?? "")} alt="Central Fund Logo" style={{ height: "70px" }} />;
 
 
-  
+
 
   return (
     <div className="noa-page">
@@ -979,9 +979,9 @@ const NOAPrintTemplate = ({ row, payFrom, payTo, OtherCompensationAmount, noaSig
             )}
           </tbody>
         </table>
-          <div className="noa-additional-info">
-            {getFooterContentNew(row?.workforceEmployeeDependent?.[0], workerBirthDate, applicationType, paymentType)}
-          </div>
+        <div className="noa-additional-info">
+          {getFooterContentNew(row?.workforceEmployeeDependent?.[0], workerBirthDate, applicationType, paymentType)}
+        </div>
       </div>
 
       <div className="noa-footer">
