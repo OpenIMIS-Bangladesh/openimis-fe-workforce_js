@@ -58,7 +58,8 @@ import {
   ROUTE_WORKFORCE_COMMITTEE_MANAGEMENT,
   ROUTE_WORKFORCE_VERIFY_CONFIRMATION,
   ROUTE_WEBSITE_LEGAL_GUIDELINES,
-  ROUTE_WEBSITE_VISITOR_MESSAGES
+  ROUTE_WEBSITE_VISITOR_MESSAGES,
+  ROUTE_WORKFORCE_NOA_CONFIRMATION
 } from "./routes";
 import WorkforceOrganizationsPage from "./pages/organization/WorkforceOranigzationsPage";
 import WorkforceOrganizationPage from "./pages/organization/WorkforceOrganizationPage";
@@ -124,6 +125,7 @@ import VerifyConfirmationLink from "./components/SmsVerificationComponents/Verif
 import CssBaseline from '@material-ui/core/CssBaseline';
 import LegalGuidelines from './pages/websiteCms/LegalGuidelines';
 import VisitorMessages from './pages/websiteCms/VisitorMessages';
+import NoaVerificationLink from "./components/SmsVerificationComponents/NoaVerificationLink";
 
 
 const workforceTheme = createTheme({
@@ -326,6 +328,7 @@ const baseUnauthenticatedRouter = [
   { path: ROUTE_ADMINISTRATIVE_LOGIN, component: LoginFormAdministrative },
   { path: ROUTE_WORKFORCE_FACTORIES_FACTORY, component: OrganizationFactoryPage },
   { path: `${ROUTE_WORKFORCE_VERIFY_CONFIRMATION}`, component: VerifyConfirmationLink },
+  { path: `${ROUTE_WORKFORCE_NOA_CONFIRMATION}`, component: NoaVerificationLink },
 ];
 const DEFAULT_CONFIG = {
   translations: [

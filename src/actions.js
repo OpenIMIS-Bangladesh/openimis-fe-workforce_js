@@ -2416,6 +2416,7 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
   const payload = `
     {
       workforceEisPaymentProcess(
+        processId: "${filters?.processId?? ""}"
         workforceApplicationId: "${filters?.workforceApplicationId ?? ""}"
         workforceApplicationTrackingNumber: "${filters?.workforceApplicationTrackingNumber ?? ""}"
         workforceFactoryId: "${filters?.workforceFactoryId ?? ""}"

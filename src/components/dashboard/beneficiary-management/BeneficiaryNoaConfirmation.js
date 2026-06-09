@@ -29,6 +29,7 @@ import BeneficiaryEditModal from "../modals/BeneficiaryEditModal";
 import AssociationManageModal from "../modals/AssociationManageModal";
 import IncrementDecrementModal from "../modals/IncrementDecrementModal";
 import GenerateNoaView from "./GenerateNoaView";
+import { shortenUrl } from "../../../utils/verificationHelper";
 
 
 const BeneficiaryNoaConfirmation = () => {
@@ -57,14 +58,26 @@ const BeneficiaryNoaConfirmation = () => {
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
   const [selectedAssiciation, setSelectedAssociation] = useState(null);
 
-  const handleSendSms = (row, name) => {
-    const message = `Hi, ${name}, Please Download NOA`;
-    dispatch(sendSmsNotification(row.phoneNumber, message)).then(response => {
-      dispatch(confirmNoa(safeDecodeId(row.id), true, false)).then(response => {
-        alert("Message Sent!");
-        loadData();
-      });
-    });
+
+
+  const handleSendSms = async (row, name) => {
+    try {
+      const longUrl= window.location.origin+`/front/noa/confirmation?process_id=${safeDecodeId(row.id)}`;
+      console.log(longUrl);
+      const link = await shortenUrl(longUrl);
+
+      const message = `Hi, ${name}, Please Download EIS NOA From ${link}`;
+
+      await dispatch(sendSmsNotification(row.phoneNumber, message));
+
+      await dispatch(confirmNoa(safeDecodeId(row.id), true, false));
+
+      alert("Message Sent!");
+      loadData();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to send SMS");
+    }
   };
 
   const handleOpenNoaModal = (row) => {
