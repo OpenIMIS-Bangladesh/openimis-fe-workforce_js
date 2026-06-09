@@ -939,9 +939,12 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["new","resubmitted_application"]',
           `organizationTypeIn: ${organizationTypeIn}`
         );
-        if (loggedInUserId) {
-          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        if (this.props.factoryId) {
+          defaultStatusFilters.push(`employeeFactoryId: "${this.props.factoryId}"`);
         }
+        // if (loggedInUserId) {
+        //   defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        // }
       }
 
       const orderByFilter = 'orderBy: ["-dateCreated"]';
