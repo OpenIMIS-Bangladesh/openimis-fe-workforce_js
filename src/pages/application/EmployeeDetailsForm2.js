@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import FileUploader from "../../pickers/FileUploader";
 import { fetchDocumentType } from "../../actions";
-import { conditionalEnToBn } from "../../utils/utils";
+import { conditionalEnToBn, isEisPath } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -324,7 +324,7 @@ const EmployeeDetailsForm2 = ({
                 if (document?.documentType === "disability_certificate" && (isDisabled === "no" || isDisabled === undefined)) {
                   return null;
                 }
-                if (document?.documentType === "discharge certificate" && (formData?.employeeAccidentInfo?.admitted === "no" || formData?.employeeAccidentInfo?.admitted === undefined)) {
+                if (!isEisPath()&& document?.documentType === "discharge certificate" && (formData?.employeeAccidentInfo?.admitted === "no" || formData?.employeeAccidentInfo?.admitted === undefined)) {
                   return null;
                 }
                 const fieldKey = document.fieldId;

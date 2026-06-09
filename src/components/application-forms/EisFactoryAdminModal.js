@@ -171,6 +171,8 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
       newErrors.documents = documentValidation?.errors
     }
     setErrors(newErrors);
+    console.log({newErrors})
+    console.log({documentValidation})
     if (Object.keys(newErrors).length > 0) return;
 
     // 3. Date Validation (Only for Factory Admin)
