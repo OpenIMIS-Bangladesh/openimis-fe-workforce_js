@@ -111,7 +111,7 @@ const ForwardApplicationSummaryModal = ({ open, onClose, selectedApplication, se
       setServerResponse(null);
       setFormData({ roleIds: [], userIds: [], year: "", month: "", meetingName: "", meetingDate: null, committeeIds: "" });
     } else {
-      if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
+      if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN ||userType===WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
         dispatch(fetchWorkforceCommittees()).then((response) => {
           setCommittees(response?.payload?.data?.workforceCommittees || []);
         });
@@ -123,7 +123,7 @@ const ForwardApplicationSummaryModal = ({ open, onClose, selectedApplication, se
   }, [open, dispatch, modulesManager, selectedApplication, userType]);
 
   useEffect(() => {
-    if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN && officersRaw && Array.isArray(officersRaw)) {
+    if ((userType === WORKFORCE_USER_TYPE.SECTION_ADMIN|| userType===WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) && officersRaw && Array.isArray(officersRaw)) {
       setFormData((prevData) => ({
         ...prevData,
         userIds: officersRaw.map((o) => o.userId),
@@ -132,7 +132,7 @@ const ForwardApplicationSummaryModal = ({ open, onClose, selectedApplication, se
   }, [officersRaw, userType]);
 
   useEffect(() => {
-    if (userType !== WORKFORCE_USER_TYPE.SECTION_ADMIN || !formData?.roleIds || formData.roleIds.length === 0) return;
+    if ((userType !== WORKFORCE_USER_TYPE.SECTION_ADMIN && userType !== WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) || !formData?.roleIds || formData.roleIds.length === 0) return;
     dispatch(
       fetchWorkforceUserRoleWiseUser(modulesManager, {
         roleIds: formData.roleIds,
@@ -190,7 +190,7 @@ const ForwardApplicationSummaryModal = ({ open, onClose, selectedApplication, se
         : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR;
     let forwardAction = "forward_to_comiitee";
 
-    if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
+    if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN||userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
       if (!formData?.userIds || formData.userIds.length === 0) {
         setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
         return;
@@ -254,7 +254,7 @@ const ForwardApplicationSummaryModal = ({ open, onClose, selectedApplication, se
             ? { blwfApplicationSummaryId: decodeId(applicationSummaryId) }
             : { eisApplicationSummaryId: decodeId(applicationSummaryId) }),
         status: forwardStatus,
-        ...(userType === WORKFORCE_USER_TYPE.SECTION_ADMIN && {
+        ...((userType === WORKFORCE_USER_TYPE.SECTION_ADMIN||userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) && {
           eisApprovalIds: JSON.stringify(formData.userIds),
           committeeId: safeDecodeId(formData?.committeeIds),
         }),
@@ -262,7 +262,7 @@ const ForwardApplicationSummaryModal = ({ open, onClose, selectedApplication, se
 
       await dispatch(updateApplication(updateApplicationData, "update workforce application"));
 
-      if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN) {
+      if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN||userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
         for (const userId of formData.userIds) {
           const createApplicationMovementData = {
             applicationId: decodeId(encodedId?.id),
@@ -521,7 +521,7 @@ const ForwardApplicationSummaryModal = ({ open, onClose, selectedApplication, se
           </Grid>
         </Paper>
 
-        {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN && (
+        {(userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType=== WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) && (
           <Paper className={classes.sectionPaper} elevation={1}>
             <Grid container spacing={3} style={{ marginTop: 3 }}>
               <Grid item xs={12} style={{ marginBottom: 16 }}>

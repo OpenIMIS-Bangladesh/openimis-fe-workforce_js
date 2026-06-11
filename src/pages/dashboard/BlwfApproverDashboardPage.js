@@ -161,6 +161,7 @@ const ReturnedApplications = () => {
 const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   const handleChange = (panelId) => (event, isExpanded) => {
     setExpanded(isExpanded ? panelId : null);
@@ -205,7 +206,7 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
                 <Card style={{ width: "100%" }}>
                   <CardContent>
                     {expanded === item.id && (
-                      <ApplicationProcessSearcher coloredRow={true} summaryId={item.id} disableButtons={disableButtons} />
+                      <ApplicationProcessSearcher coloredRow={true} summaryId={item.id} loggedInUserId={loggedInUserId} disableButtons={disableButtons} />
                     )}
                   </CardContent>
                 </Card>
@@ -234,7 +235,8 @@ const BlwfApproverDashboard = () => {
     (state) => state.workforce[`applicationsSummary`] ?? []
   );
 
-  const pendingSummaryData = data.filter(d => d.status === "meeting_created");
+  // const pendingSummaryData = data.filter(d => d.status === "meeting_created"|| d.status ==="forward_to_comiitee");
+  const pendingSummaryData = data.filter(d =>d.status ==="forward_to_comiitee");
   const sentSummaryData = data.filter(d => d.status === "forward_to_dg" || d.status ==='forward_to_director');
 
   const renderContent = () => {
