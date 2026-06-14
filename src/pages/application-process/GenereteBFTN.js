@@ -357,8 +357,8 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
           .filter((item) => item.status === status)
           .forEach((row, index) => {
             let bankInfo = {};
-            const totalGrant = getTotalAmount() || 200000;
-            const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * totalGrant;
+            const approvedAmount = row?.grantAmount || 0;
+            
             try {
               bankInfo = JSON.parse(JSON.parse(row.employeeBankInfo))[0];
             } catch (e) {
