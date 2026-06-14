@@ -57,8 +57,8 @@ const BeneficiaryDisbursedPayments = () => {
     const handleSendSms = async (row, name) => {
       try {
         const longUrl= window.location.origin+`/front/workforce/confirmation?disbursement_id=${safeDecodeId(row.id)}`;
-        console.log(longUrl);
-        const link = await shortenUrl(longUrl);
+        const link = longUrl;
+        // const link = await shortenUrl(longUrl);
         const month= monthNames[Number(row?.monthIndex)-1];
         const year= row?.year;
   

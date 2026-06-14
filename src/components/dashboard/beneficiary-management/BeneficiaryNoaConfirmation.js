@@ -63,8 +63,8 @@ const BeneficiaryNoaConfirmation = () => {
   const handleSendSms = async (row, name) => {
     try {
       const longUrl= window.location.origin+`/front/noa/confirmation?process_id=${safeDecodeId(row.id)}`;
-      console.log(longUrl);
-      const link = await shortenUrl(longUrl);
+      const link = longUrl;
+      // const link = await shortenUrl(longUrl);
 
       const message = `Hi, ${name}, Please Download EIS NOA From ${link}`;
 
