@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 import SearchIcon from '@material-ui/icons/Search';
+import EmailIcon from '@material-ui/icons/Email';
 
 import {
   fetchWorkforceEisPaymentDisbursementStage,
@@ -21,10 +22,13 @@ import {
   fetchWorkforceAllAssociationSummary,
   fetchWorkforceCommittees,
   userPaymentConfirmation,
+  sendSmsNotification,
 } from "../../../actions";
 import { useModulesManager, PublishedComponent } from "@openimis/fe-core";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
 import GenerateBeneficiaryAdvice from "./GenerateBeneficiaryAdvice";
+import { shortenUrl } from "../../../utils/verificationHelper";
+
 
 
 const BeneficiaryDisbursedPayments = () => {
@@ -48,6 +52,26 @@ const BeneficiaryDisbursedPayments = () => {
   const [factories, setFactories] = useState([]);
   const [associations, setAssociations] = useState([]);
   const [committees, setCommittees] = useState([]);
+
+
+    const handleSendSms = async (row, name) => {
+      try {
+        const longUrl= window.location.origin+`/front/workforce/confirmation?disbursement_id=${safeDecodeId(row.id)}`;
+        console.log(longUrl);
+        const link = await shortenUrl(longUrl);
+        const month= monthNames[Number(row?.monthIndex)-1];
+        const year= row?.year;
+  
+        const message = `Dear beneficiary, Please confirm your payment of ${month}, ${year} From EIS-PILOT With the following link. Please Contact: 01886921030 For any query. ${link}`;
+  
+        await dispatch(sendSmsNotification(row.phoneNumber, message));
+        alert("Message Sent!");
+        loadData();
+      } catch (error) {
+        console.error(error);
+        alert("Failed to send SMS");
+      }
+    };
 
 
   const openApproveConfirm = (ids) => {
@@ -91,8 +115,8 @@ const BeneficiaryDisbursedPayments = () => {
       const allData = processRes?.payload?.data?.workforceEisPaymentDisbursementStage || [];
       const filteredData = filters.committee
         ? allData.filter((row) =>
-            safeDecodeId(row?.workforceApplication?.committeeId) === safeDecodeId(filters.committee)
-          )
+          safeDecodeId(row?.workforceApplication?.committeeId) === safeDecodeId(filters.committee)
+        )
         : allData;
 
       setData(filteredData);
@@ -357,6 +381,24 @@ const BeneficiaryDisbursedPayments = () => {
                             style={{ marginLeft: 6 }}
                           >
                             Confirm Manually
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            startIcon={<EmailIcon />}
+                            onClick={() =>
+                              handleSendSms(
+                                row,
+                                dep?.nameEn ||
+                                dep?.nameBn ||
+                                row?.workforceApplication?.workforceEmployee?.firstNameBn ||
+                                "—"
+                              )
+                            }
+                            style={{ margin: "5px" }}
+                          >
+                            Send SMS Again
                           </Button>
                         </>
                       )}
