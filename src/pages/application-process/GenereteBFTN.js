@@ -24,7 +24,7 @@ import {
   fetchWorkforceEmployeeDependent,
   fetchWorkforceCommitteeUserMap,
 } from "../../actions";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import React, { Component, useEffect, useState } from "react";
 import { enToBn } from "../../utils/utils";
 import ExcelJS from "exceljs";
@@ -55,6 +55,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
   const [movements, setMovements] = useState([]);
   const [lastRevertMovement, setLastRevertMovement] = useState(null);
   const [revertNotes, setRevertNotes] = useState([]);
@@ -132,7 +133,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
 
   const fetchApplicationMovement = async () => {
     try {
-      const mappingsData = await dispatch(fetchWorkforceCommitteeUserMap({ userIds: userIds }));
+      const mappingsData = await dispatch(fetchWorkforceCommitteeUserMap({ userIds: userIds || [`${loggedInUserId}`] }));
       setMappings(mappingsData?.payload?.data?.workforceCommitteeUserMaps || []);
       const response = await dispatch(fetchApplicationWiseMovementList(modulesManager, { applicationId: applications?.[0]?.id }));
       console.log("movement response", response);
@@ -356,8 +357,8 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
           .filter((item) => item.status === status)
           .forEach((row, index) => {
             let bankInfo = {};
-            const totalGrant = getTotalAmount() || 200000;
-            const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * totalGrant;
+            const approvedAmount = row?.grantAmount || 0;
+            
             try {
               bankInfo = JSON.parse(JSON.parse(row.employeeBankInfo))[0];
             } catch (e) {

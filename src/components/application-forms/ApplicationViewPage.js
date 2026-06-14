@@ -157,6 +157,8 @@ const hiddenKeys = [
   "educationGrant_certification_letter_from_the_department_head_of_the_organization",
   "workerType",
   "workforceApplicationMovements",
+  "committeeId",
+  "isSubmitted",
   "status","diseaseNo","minimumDonationAmount","maximumDonationAmount"
 ];
 

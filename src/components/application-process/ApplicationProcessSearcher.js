@@ -1052,6 +1052,9 @@ class ApplicationProcessSearcher extends Component {
 
       if (this.props.summaryId) {
         filters.push(`blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`);
+        if (loggedInUserId) {
+          filters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       }
 
       if (this.props.returnedApplications) {
