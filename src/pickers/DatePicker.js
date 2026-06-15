@@ -7,13 +7,30 @@ const useStyles = makeStyles(() => ({
   modernWrapper: {
     "& .MuiFormControl-root": {
       marginTop: 4,
+      width: "100%",
     },
 
     "& .MuiInputBase-root": {
       borderRadius: 12,
-      // backgroundColor: "#f9fafb",
       transition: "all 0.3s ease",
       boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+      minHeight: 56,
+      fontSize: "16px",
+      lineHeight: "33px",
+      fontFamily: "'Nikosh', sans-serif",
+    },
+
+    "& .MuiOutlinedInput-root": {
+      minHeight: 56,
+      fontFamily: "'Nikosh', sans-serif",
+    },
+
+    "& .MuiInputBase-input": {
+      padding: "16.5px 14px",
+      fontSize: "16px",
+      lineHeight: "33px",
+      fontFamily: "'Nikosh', sans-serif",
+      boxSizing: "border-box",
     },
 
     "& .MuiOutlinedInput-notchedOutline": {
@@ -31,10 +48,20 @@ const useStyles = makeStyles(() => ({
 
     "& .MuiInputLabel-root": {
       fontWeight: 500,
+      fontSize: "16px",
+      fontFamily: "'Nikosh', sans-serif",
     },
 
     "& .MuiInputLabel-root.Mui-focused": {
       color: "#4f46e5",
+    },
+
+    "& .MuiSvgIcon-root": {
+      fontSize: "1.5rem",
+    },
+
+    "& .MuiIconButton-root": {
+      padding: 8,
     },
   },
 }));
@@ -96,6 +123,7 @@ const DatePicker = ({
                 onChange(val);
             }
         }}
+        
         readOnly={readOnly}
         required={required}
         fullWidth={fullWidth}
