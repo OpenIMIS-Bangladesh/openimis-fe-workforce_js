@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslations, Autocomplete } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchBanksPick, fetchBranchPick } from "../actions";
+import { TextField } from "@material-ui/core";
 
 const useDebounce = (callback, delay) => {
   const timer = useRef(null);
@@ -13,14 +14,14 @@ const useDebounce = (callback, delay) => {
         callback(...args);
       }, delay);
     },
-    [callback, delay]
+    [callback, delay],
   );
 
   return debouncedFn;
 };
 
 const BranchPicker = ({
-  id="branch",
+  id = "branch",
   modulesManager,
   onChange,
   readOnly,
@@ -34,7 +35,7 @@ const BranchPicker = ({
   filterSelectedOptions,
   multiple,
   bankId, // Receiving selected bank ID
-  districtName
+  districtName,
 }) => {
   const { formatMessage } = useTranslations("workforce");
   const dispatch = useDispatch();
@@ -45,68 +46,45 @@ const BranchPicker = ({
     if (bankId && districtName) {
       dispatch(fetchBranchPick(modulesManager, [`type:"branch",bankCode: "${bankId}",orderBy: "districtNameBn", districtNameBn: "${districtName}"`])); // Fetching branches
     }
-  }, [bankId,districtName]); // Runs only when bankId changes
+  }, [bankId, districtName]); // Runs only when bankId changes
 
-  const isLoading = useSelector(
-    (state) => state.workforce[`fetchingBranchPick`]
-  );
-  const allData = useSelector(
-    (state) => state.workforce[`branchPick`] ?? []
-  );
-  const error = useSelector(
-    (state) => state.workforce["errorBranchPick"]
-  );
+  const isLoading = useSelector((state) => state.workforce[`fetchingBranchPick`]);
+  const allData = useSelector((state) => state.workforce[`branchPick`] ?? []);
+  const error = useSelector((state) => state.workforce["errorBranchPick"]);
 
   // Filtering branches that belong to the selected bank
   // const branches = useMemo(() => {
   //   return allData.filter((branch) => branch?.parent?.id === bankId); // Assuming `parentBankId` links branches to banks
   // }, [allData, bankId]);
 
-  const selectedOption = useMemo(
-    () => {
-      if (!value) return null;
-      if (typeof value === "string") {
-      return allData.find((option) => option.id === value) || null
-      }
-      return value
-    },
-    [value, allData]
-  );
+  const selectedOption = useMemo(() => {
+    if (!value) return null;
+    if (typeof value === "string") {
+      return allData.find((option) => option.id === value) || null;
+    }
+    return value;
+  }, [value, allData]);
 
-  console.log({allData})
-  
+  console.log({ allData });
+
   const options = useMemo(() => {
-      let opts = [...allData];
-  
-      if (selectedOption && !opts.find((o) => o.id === selectedOption.id)) {
-        opts = [...opts, selectedOption];
-      }
-  
-      if (
-        searchString &&
-        !opts.find(
-          (o) =>
-            o.nameEn?.toLowerCase() === searchString.toLowerCase() ||
-            o.nameBn?.toLowerCase() === searchString.toLowerCase()
-        )
-      ) {
-        opts = [
-          ...opts,
-          { id: null, nameEn: searchString, nameBn: searchString },
-        ];
-      }
-  
-      return opts;
-    }, [allData, selectedOption, searchString]);
+    let opts = [...allData];
 
-    const debouncedHandleType = useDebounce((name) => {
+    if (selectedOption && !opts.find((o) => o.id === selectedOption.id)) {
+      opts = [...opts, selectedOption];
+    }
+
+    if (searchString && !opts.find((o) => o.nameEn?.toLowerCase() === searchString.toLowerCase() || o.nameBn?.toLowerCase() === searchString.toLowerCase())) {
+      opts = [...opts, { id: null, nameEn: searchString, nameBn: searchString }];
+    }
+
+    return opts;
+  }, [allData, selectedOption, searchString]);
+
+  const debouncedHandleType = useDebounce((name) => {
     if (!name) return;
 
-    const exists =
-      allData.find(
-        (d) => d.nameEn?.toLowerCase() === name.toLowerCase() ||
-               d.nameBn?.toLowerCase() === name.toLowerCase()
-      ) || null;
+    const exists = allData.find((d) => d.nameEn?.toLowerCase() === name.toLowerCase() || d.nameBn?.toLowerCase() === name.toLowerCase()) || null;
 
     if (exists) {
       if (!selectedOption || selectedOption.id !== exists.id) {
@@ -121,14 +99,14 @@ const BranchPicker = ({
   }, 800);
 
   useEffect(() => {
-      if (searchString) {
-        debouncedHandleType(searchString);
-      }
-    }, [searchString, debouncedHandleType]);
+    if (searchString) {
+      debouncedHandleType(searchString);
+    }
+  }, [searchString, debouncedHandleType]);
 
   return (
     <Autocomplete
-    id={id}
+      id={id}
       multiple={multiple}
       required={required}
       placeholder={placeholder ?? ""}
@@ -140,8 +118,22 @@ const BranchPicker = ({
       options={options} // Using filtered branches
       isLoading={isLoading}
       value={selectedOption}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={label ?? formatMessage("workforce.branch.picker")}
+          placeholder={placeholder ?? ""}
+          required={required}
+          error={!!error}
+          inputProps={{
+            ...params.inputProps,
+            readOnly: true,
+            style: { cursor: "pointer" },
+          }}
+        />
+      )}
       // getOptionLabel={(option) => `${option.nameEn}`}
-      getOptionLabel={(option) => locale === "en" ? option?.nameEn : option?.nameBn }
+      getOptionLabel={(option) => (locale === "en" ? option?.nameEn : option?.nameBn)}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}

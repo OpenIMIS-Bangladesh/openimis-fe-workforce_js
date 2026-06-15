@@ -123,7 +123,7 @@ const DatePicker = ({
                 onChange(val);
             }
         }}
-        
+        editable={false}
         readOnly={readOnly}
         required={required}
         fullWidth={fullWidth}
@@ -133,6 +133,7 @@ const DatePicker = ({
         secondaryCalendarEnabled={isSecondaryCalendarEnabled}
         secondCalendarType={secondaryCalendarType}
         secondCalendarLocale={secondaryCalendarLocale}
+        inputProps={{ readOnly: true }}
       />
     </div>
   );
