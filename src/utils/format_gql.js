@@ -55,16 +55,19 @@ export function formatUnitGQL(unit) {
 export function formatBankGQL(bank) {
   console.log({ bank });
   return `
-    ${bank?.id ? `id: "${formatGQLString(bank?.id)}"` : ""}
+    ${bank?.id ? `id: "${decodeId(bank?.id)}"` : ""}
     ${bank?.nameEn ? `nameEn: "${formatGQLString(bank.nameEn)}"` : ""}
     ${bank?.nameBn ? `nameBn: "${formatGQLString(bank.nameBn)}"` : ""}
-    ${bank?.contactNumber ? `contactNumber: "${formatGQLString(bank.contactNumber)}"` : ""}
+    ${bank?.bankCode ? `bankCode: "${formatGQLString(bank.bankCode)}"` : ""}
+    ${bank?.branchCode ? `branchCode: "${formatGQLString(bank.branchCode)}"` : ""}
+    ${bank?.districtCode ? `districtCode: "${formatGQLString(bank.districtCode)}"` : ""}
+    ${bank?.districtNameEn ? `districtNameEn: "${formatGQLString(bank.districtNameEn)}"` : ""}
+    ${bank?.districtNameBn ? `districtNameBn: "${formatGQLString(bank.districtNameBn)}"` : ""}
     ${bank?.routingNumber ? `routingNumber: "${formatGQLString(bank.routingNumber)}"` : ""}
-    ${bank?.locationId ? `locationId: "${decodeId(bank.locationId.id)}"` : ""}
-    ${bank?.address ? `headquarterAddress: "${formatGQLString(bank.address)}"` : ""}
-    ${bank?.status ? `status: "${formatGQLString(bank.status)}"` : ""}
     ${bank?.parentId ? `parentId: "${decodeId(bank.parentId)}"` : ""}
+    ${bank?.contactNumber ? `contactNumber: "${formatGQLString(bank.contactNumber)}"` : ""}
     ${bank?.type ? `type: "${formatGQLString(bank.type)}"` : ""}
+    ${bank?.status ? `status: "${formatGQLString(bank.status)}"` : ""}
   `;
 }
 export function formatEducationInfoGQL(education) {

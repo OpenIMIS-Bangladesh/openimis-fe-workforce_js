@@ -1679,7 +1679,7 @@ export function fetchBanksBranchSummary(mm, filters) {
 }
 
 export function createBank(bank, clientMutationLabel) {
-  const mutation = formatMutation("createBank", formatBankGQL(bank), clientMutationLabel);
+  const mutation = formatMutation("createWorkforceBank", formatBankGQL(bank), clientMutationLabel);
 
   console.log({ mutation });
   const requestedDateTime = new Date();
@@ -2416,7 +2416,7 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
   const payload = `
     {
       workforceEisPaymentProcess(
-        processId: "${filters?.processId?? ""}"
+        processId: "${filters?.processId ?? ""}"
         workforceApplicationId: "${filters?.workforceApplicationId ?? ""}"
         workforceApplicationTrackingNumber: "${filters?.workforceApplicationTrackingNumber ?? ""}"
         workforceFactoryId: "${filters?.workforceFactoryId ?? ""}"
@@ -3437,23 +3437,23 @@ export function userPaymentConfirmation(disbursementId, isConfirmed) {
 
 export function sendSmsNotification(phoneNumber, message) {
   const mutation = `
-    mutation {
+  mutation {
       sendSmsNotification(
         phoneNumber: "${phoneNumber}"
         message: "${message}"
-      ) {
+        ) {
         success
         errors
       }
-    }
+      }
   `;
   return graphql(mutation, "SEND_SMS_NOTIFICATION");
 }
 
 
-export function confirmNoa(paymentProcessId, isSmsSent=false, isConfirmed=false) {
+export function confirmNoa(paymentProcessId, isSmsSent = false, isConfirmed = false) {
   const mutation = `
-    mutation {
+  mutation {
       confirmNoa(
         workforceEisPaymentProcessId: "${paymentProcessId}"
         confirmation: ${isConfirmed}
@@ -3461,16 +3461,16 @@ export function confirmNoa(paymentProcessId, isSmsSent=false, isConfirmed=false)
       ) {
         success
         errors
-      }
+        }
     }
   `;
   return graphql(mutation, "CONFIRM_NOA");
 }
 
 
-export function blockNoa(paymentProcessId, isBlocked=false) {
+export function blockNoa(paymentProcessId, isBlocked = false) {
   const mutation = `
-    mutation {
+  mutation {
       blockNoa(
         workforceEisPaymentProcessId: "${paymentProcessId}"
         isBlocked: ${isBlocked}
@@ -3481,4 +3481,38 @@ export function blockNoa(paymentProcessId, isBlocked=false) {
     }
   `;
   return graphql(mutation, "BLOCK_NOA");
+}
+
+
+export function fetchWorkforceBankManagement(filters) {
+  const payload = `
+    {
+      workforceBankManagement(
+        districtsOnly: ${filters?.districtsOnly ?? false}
+        banksOnly: ${filters?.banksOnly ?? false}
+        bankId: "${filters?.bankId ?? ""}"
+        districtCode: "${filters?.districtCode ?? ""}"
+      ) {
+          id
+          nameBn
+          nameEn
+          bankCode
+          branchCode
+          districtCode
+          districtNameEn
+          districtNameBn
+          routingNumber
+          parent{
+            id
+          }
+          contactNumber
+          type
+          status
+        }
+      }
+    `;
+  return graphql(payload, ["WORKFORCE_BANK_MANAGEMENT_REQ", "WORKFORCE_BANK_MANAGEMENT_RESP", "WORKFORCE_BANK_MANAGEMENT_ERR"], {
+    banksOnly: filters?.banksOnly,
+    districtsOnly: filters?.districtsOnly,
+  });
 }
