@@ -31,6 +31,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { useModulesManager, decodeId, FormattedMessage, parseData } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
+import FormattedBankPaymentAdvice from "../../components/BFTN-components/FormattedBankPaymentAdvice";
 const useStyles = makeStyles((theme) => ({
   noPrint: {
     "@media print": {
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     "@media print": {
       boxShadow: "none",
       border: "none",
-      maxWidth: "95vw",
+      maxWidth: "100vw",
     },
   },
   dialogContent: {
@@ -103,8 +104,9 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
 
           approvedUserIds.push(loggedInUserId);
           const majorityApproved = approvedUserIds.length / totalApprovers >= 0.5;
+          console.log({majorityApproved})
 
-          targetStatus = majorityApproved ? WORKFORCE_STATUS.FORWARD_TO_DIRECTOR : WORKFORCE_STATUS.FORWARD_TO_COMIITEE;
+          targetStatus = majorityApproved ? WORKFORCE_STATUS.APPROVED_BY_DG : WORKFORCE_STATUS.FORWARD_TO_COMIITEE;
 
           updatePayload.eisApprovedByIds = JSON.stringify(approvedUserIds);
 
@@ -556,15 +558,15 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     //   logo= <img src={`workforce_assets/eis.png`} alt="Logo" style={{ width: "120px" }} />;
     // }
     return (
-      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
         <DialogTitle disableTypography>
           <Typography variant="h6">
             {" "}
             <FormattedMessage id="Bank Payment Advice (BFTN)" />
           </Typography>
         </DialogTitle>
-        <DialogContent dividers>
-          <Table>
+        <DialogContent dividers className={classes.dialogContent}>
+          {/* <Table>
             <TableHead style={{ fontWeight: "bold" }}>
               <TableRow>
                 <TableCell colSpan={2} style={{ textAlign: "left" }}>
@@ -598,7 +600,6 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
             </TableHead>
             {applications[0]?.applicationType === "financialAssistance" ? (
               <>
-                {/* ===== FINANCIAL ASSISTANCE (for now same block) ===== */}
                 <TableHead>
                   <TableRow>
                     <TableCell style={{ fontWeight: "700" }}>
@@ -665,7 +666,6 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
               </>
             ) : (
               <>
-                {/* ===== ELSE: SAME BLOCK FOR NOW ===== */}
                 <TableHead>
                   <TableRow>
                     <TableCell style={{ fontWeight: "700" }}>
@@ -739,7 +739,15 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
                 </TableBody>
               </>
             )}
-          </Table>
+          </Table> */}
+          <FormattedBankPaymentAdvice 
+             applications={applications}
+             dependentData={dependentData}
+             getTotalAmount={getTotalAmount}
+             userRights={userRights}
+             status={status}
+             movements={movements}
+          />
         </DialogContent>
         <Divider />
         <DialogActions className={classes.noPrint}>

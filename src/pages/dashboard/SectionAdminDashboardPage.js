@@ -632,7 +632,7 @@ const SectionAdminDashboard = () => {
     );
 
   const pendingSummaryData = data.filter(d => d.status !== "approved_by_dg");
-  const approvedSummaryData = data.filter(d => d.status === "approved_by_dg");
+  const approvedSummaryData = data.filter(d => d.status === "approved_by_dg"|| d.status==="approved_by_director");
   const sentSummaryData = data.filter(d => d.status === "forward_to_comiitee");
 
  

@@ -1016,7 +1016,9 @@ export function fetchWorkforceEmployeeDependent(mm, filters) {
     "status",
     "percentageOfCfGrant",
     "bankAccountNo",
-    "bank{id,nameBn,routingNumber,parent{id,nameBn}}",
+    "nid",
+    'phoneNumber',
+    "bank{id,nameEn,nameBn,routingNumber,parent{id,nameBn}}",
     "bankAccountHolderName",
     "dateCreated",
   ];
