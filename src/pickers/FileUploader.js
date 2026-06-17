@@ -354,9 +354,9 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
                     <DeleteIcon color="secondary" className={classes.deleteIcon} />
                   </IconButton>
 
-                  <IconButton size="small" onClick={() => document.getElementById(`additionalFileInput-${fieldKey}-${index}`).click()}>
+                  {/* <IconButton size="small" onClick={() => document.getElementById(`additionalFileInput-${fieldKey}-${index}`).click()}>
                     <AddIcon style={{ fontSize: "1.2rem", color: "#005f67" }} />
-                  </IconButton>
+                  </IconButton> */}
 
                   <input
                     id={`additionalFileInput-${fieldKey}-${index}`}

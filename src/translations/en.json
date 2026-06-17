@@ -322,6 +322,11 @@
     "workforce.banks.status": "Bank Headquarter status",
     "workforce.banks.routingNumber": "Bank Routing Number",
     "workforce.banks.contactNumber": "Bank Contact Number",
+    "workforce.banks.title": "Banks",
+    "workforce.banks.branches.title": "Branches",
+    "workforce.banks.addNewTooltip": "Add Bank/Branch",
+    "workforce.banks.bankCode": "Bank Code",
+    "workforce.banks.district": "District",
 
     "workforce.employee.dependent.name.en": "First Name En",
     "workforce.employee.dependent.name.bn": "First Name Bn",
