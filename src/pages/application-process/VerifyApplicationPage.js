@@ -32,7 +32,9 @@ import {
   fetchApplication,
   fetchDocumentType,
   fetchRoles,
+  fetchUsersByRoleId,
   fetchWorkforceDocument,
+  testWorkforcePayment,
   updateApplication,
   updateApplicationSummary,
   updateWorkforceDocument,
@@ -468,6 +470,12 @@ class VerifyApplicationPage extends Component {
         loggedInUserId,
         updateApplication: this.props.updateApplication,
         createApplicationMovement: this.props.createApplicationMovement,
+        userRights:this.props.user_rights,
+        fetchWorkforceDocument:this.props.fetchWorkforceDocument,
+        testWorkforcePayment:this.props.testWorkforcePayment,
+        fetchUsersByRoleId:this.props.fetchUsersByRoleId,
+        modulesManager:this.props.modulesManager,
+        roles,
         setServerResponse: (res) => this.setState({ serverResponse: res }),
         setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
         setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
@@ -545,6 +553,7 @@ class VerifyApplicationPage extends Component {
           user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ||
           user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
           user_type === WORKFORCE_USER_TYPE.EIS_OFFICER ||
+          user_type=== WORKFORCE_USER_TYPE.ASSOCIATION||
           user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
           <Grid container spacing={2} className={classes.gridRightPad} style={{ marginTop: "16px", padding: 4, display: "flex", justifyContent: "flex-end" }}>
             {/* <Grid item xs={6}></Grid> */}
@@ -791,6 +800,8 @@ const mapDispatchToProps = (dispatch) => ({
       createApplicationMovement,
       createWorkforceDocumentMap,
       fetchRoles,
+      testWorkforcePayment,
+      fetchUsersByRoleId,
     },
     dispatch,
   ),

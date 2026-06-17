@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Modal,
   Button,
@@ -21,11 +21,12 @@ import {
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import CloseIcon from "@material-ui/icons/Close";
-import { TextInput, PublishedComponent, FormattedMessage, useModulesManager, parseData } from "@openimis/fe-core";
-import { getUserType, safeDecodeId } from "../../utils/utils";
+import { TextInput, PublishedComponent, FormattedMessage, useModulesManager, parseData, useTranslations } from "@openimis/fe-core";
+import { getUserType, safeDecodeId, validateRequiredFields } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
 import { createWorkforceOtherCompensation, fetchWorkforceOtherCompensation, updateWorkforceOtherCompensation } from "../../actions";
+import CustomSnackbar from "../shared/CustomSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -97,7 +98,11 @@ const initialEntry = {
 
 const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType = "factory" }) => {
   const classes = useStyles();
+  const { formatMessage } = useTranslations("workforce");
+  const formRef = useRef(null);
   const [formData, setFormData] = useState([initialEntry]);
+  const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
+  const [errors, setErrors] = useState({});
   const [loader, setLoader] = useState(false);
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
@@ -158,6 +163,30 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
   };
 
   const handleFormSubmit = () => {
+    const validationErrors = validateRequiredFields(formRef, formatMessage, formData);
+    if (user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) {
+      formData?.forEach((item, index) => {
+        const isSelected =
+          item.eisBenefitAdjustment === true ||
+          item.eisBenefitAdjustment === false ||
+          item.isEisBenefitAdjustmentEligible === true ||
+          item.isEisBenefitAdjustmentEligible === false;
+
+        if (!isSelected) {
+          // Track the error using a dynamic key unique to this row item
+          validationErrors[`eisBenefitAdjustment-${index}`] = formatMessage("core.error.required");
+        }
+      });
+    }
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors); // Save to state if you want to display them
+      setShowErrorSnackbar(true);
+      console.error("Validation failed:", validationErrors);
+      return; // STOP SUBMISSION HERE
+    }
+
+    // Clear previous errors if validation passes
+    setErrors({});
     formData?.forEach((item) => {
       const payload = {
         workforceApplicationId: safeDecodeId(application?.id),
@@ -179,11 +208,11 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
         // UPDATE: Include the ID in the payload for the update action
         const updatePayload = { ...payload, id: safeDecodeId(item.id) };
         console.log("Updating Payload:", updatePayload);
-        dispatch(updateWorkforceOtherCompensation(updatePayload, "update other compensation info"));
+        // dispatch(updateWorkforceOtherCompensation(updatePayload, "update other compensation info"));
       } else {
         // CREATE
         console.log("Creating Payload:", payload);
-        dispatch(createWorkforceOtherCompensation(payload, "create other compensation info"));
+        // dispatch(createWorkforceOtherCompensation(payload, "create other compensation info"));
       }
     });
 
@@ -239,7 +268,7 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
             </IconButton>
           </div>
 
-          <div className={classes.modalBody}>
+          <div className={classes.modalBody} ref={formRef}>
             {Array.isArray(formData) &&
               formData.map((entry, index) => (
                 <div key={index} className={classes.entryBox}>
@@ -306,8 +335,8 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                     {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && (
                       <>
                         <Grid item xs={12}>
-                          <FormControl component="fieldset">
-                            <FormLabel component="legend">
+                          <FormControl component="fieldset" error={!!errors[`eisBenefitAdjustment-${index}`]}>
+                            <FormLabel component="legend" required={user_type === WORKFORCE_USER_TYPE.EIS_OFFICER}>
                               <FormattedMessage id="workforce.compensation.eligible.ForEISAdjustment" />
                             </FormLabel>
                             <RadioGroup
@@ -324,6 +353,15 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                                 // Convert the string "true"/"false" from the radio back into a real boolean immediately
                                 const val = e.target.value === "true";
                                 handleChange(index, "eisBenefitAdjustment")(val);
+
+                                // Optional: Clear this field's error immediately when a user clicks an option
+                                if (errors[`eisBenefitAdjustment-${index}`]) {
+                                  setErrors((prev) => {
+                                    const updated = { ...prev };
+                                    delete updated[`eisBenefitAdjustment-${index}`];
+                                    return updated;
+                                  });
+                                }
                               }}
                             >
                               <FormControlLabel value="true" control={<Radio color="primary" />} label="Yes" />
@@ -354,6 +392,13 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
               <FormattedMessage id="workforce.submit" />
             </Button>
           </div>
+          <CustomSnackbar
+            open={showErrorSnackbar} // Use the new state
+            onClose={() => setShowErrorSnackbar(false)} // Allow it to close
+            type="error"
+            message={<FormattedMessage id="core.error.generel" module="workforce" />}
+            duration={4000}
+          />
         </Paper>
       </Fade>
     </Modal>

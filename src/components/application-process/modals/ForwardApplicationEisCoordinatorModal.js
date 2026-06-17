@@ -15,22 +15,11 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-import {
-  useModulesManager,
-  formatMutation,
-  decodeId,
-  FormattedMessage,
-} from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  fetchApplication,
-  updateApplication,
-  createApplicationMovement,
-  fetchWorkforceUserRoleWiseUser,
-  updateApplicationSummary
-} from "../../../actions";
+import { fetchApplication, updateApplication, createApplicationMovement, fetchWorkforceUserRoleWiseUser, updateApplicationSummary } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
 import { getUserTypeFromRights } from "../../../utils/utils";
 
@@ -82,7 +71,7 @@ const ForwardApplicationEisCoordinatorModal = ({
   onSubmitForward,
   userRights,
   summaryId,
-  roleIds
+  roleIds,
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -105,18 +94,14 @@ const ForwardApplicationEisCoordinatorModal = ({
       setFormData(null);
     }
     if (selectedApplication) {
-      return dispatch(
-        fetchApplication(modulesManager, [
-          `id: "${decodeId(selectedApplication?.id)}"`,
-        ])
-      );
+      return dispatch(fetchApplication(modulesManager, [`id: "${decodeId(selectedApplication?.id)}"`]));
     }
   }, [open]);
 
   useEffect(() => {
     if (open) {
       setFormData({});
-      console.log("role id pathaisi",roleIds)
+      console.log("role id pathaisi", roleIds);
 
       if (userType === "eis_coordinator") {
         roleIds = roleIds;
@@ -127,7 +112,7 @@ const ForwardApplicationEisCoordinatorModal = ({
           fetchWorkforceUserRoleWiseUser(modulesManager, {
             roleIds,
             orderBy: "id",
-          })
+          }),
         );
       }
     }
@@ -144,52 +129,48 @@ const ForwardApplicationEisCoordinatorModal = ({
       destinationOffice: formData,
     };
   };
-  console.log("commitsummaryId",summaryId)
+  console.log("commitsummaryId", summaryId);
 
   const handleForward = async () => {
-    const numericRoleIds = roleIds.map(id => Number(id));
+    const numericRoleIds = roleIds.map((id) => Number(id));
 
     try {
-      if (!formData?.userIds || formData.userIds.length === 0) {
+      if (!formData?.userId){
         setServerResponse({
           status: "ERROR",
           message: "অফিসার নির্বাচন করুন!",
         });
         return;
       }
-  
+
       // Determine status + action from roleIds
       let forwardStatus = "";
       let forwardAction = "";
-  
+
       if (numericRoleIds.includes(47)) {
         forwardStatus = WORKFORCE_STATUS.FORWARD_FOR_VERIFICATION;
         forwardAction = "forward_for_verification";
-      }
-      else if (numericRoleIds.includes(49)) {
+      } else if (numericRoleIds.includes(49)) {
         forwardStatus = WORKFORCE_STATUS.FORWARD_TO_COMIITTEE;
         forwardAction = "forward_to_committee";
-      }
-      
-      else {
+      } else {
         setServerResponse({
           status: "ERROR",
           message: "সঠিক রোল আইডি পাওয়া যায়নি!",
         });
         return;
       }
-  
+
       for (const encodedId of selectedApplicationIds) {
         const updateApplicationData = {
           id: decodeId(encodedId?.id),
           status: forwardStatus,
         };
-  
-        await dispatch(
-          updateApplication(updateApplicationData, `update workforce application`)
-        );
-  
-        for (const userId of formData.userIds) {
+
+        await dispatch(updateApplication(updateApplicationData, `update workforce application`));
+
+        // for (const userId of formData.userIds) {
+        const userId = formData?.userId;
           const createApplicationMovementData = {
             applicationId: decodeId(encodedId?.id),
             applicationFromId: loggedInUserId,
@@ -197,35 +178,27 @@ const ForwardApplicationEisCoordinatorModal = ({
             status: forwardStatus,
             action: forwardAction,
           };
-  
-          await dispatch(
-            createApplicationMovement(
-              createApplicationMovementData,
-              "create workforce movement"
-            )
-          );
-  
+
+          await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
+
           // summary update for committee
           if (summaryId && numericRoleIds.includes(49)) {
             const updateApplicationSummaryData = {
               id: decodeId(summaryId),
               status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
             };
-  
-            await dispatch(
-              updateApplicationSummary(updateApplicationSummaryData, "update summary")
-            );
+
+            await dispatch(updateApplicationSummary(updateApplicationSummaryData, "update summary"));
           }
-        }
+        // }
       }
-  
+
       setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
     } catch (error) {
       console.error("Forwarding error:", error);
       setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
     }
   };
-  
 
   useEffect(() => {
     if (serverResponse?.status === "SUCCESS") {
@@ -246,21 +219,11 @@ const ForwardApplicationEisCoordinatorModal = ({
         </Button>
 
         {/* Title */}
-        <Typography
-          variant="h5"
-          gutterBottom
-          style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}
-        >
+        <Typography variant="h5" gutterBottom style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}>
           কর্মবন্টন
         </Typography>
 
-        <Typography
-          variant="body1"
-          color="textSecondary"
-          gutterBottom
-          style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}
-        >
-        </Typography>
+        <Typography variant="body1" color="textSecondary" gutterBottom style={{ fontWeight: 600, marginTop: 3, textAlign: "center" }}></Typography>
 
         {/* Response message */}
         {serverResponse?.status && (
@@ -270,8 +233,7 @@ const ForwardApplicationEisCoordinatorModal = ({
               color: serverResponse.status === "SUCCESS" ? "green" : "red",
             }}
           >
-            {serverResponse.status === "SUCCESS" ? "✅" : "⚠️"}{" "}
-            {serverResponse.message}
+            {serverResponse.status === "SUCCESS" ? "✅" : "⚠️"} {serverResponse.message}
           </Typography>
         )}
 
@@ -294,11 +256,9 @@ const ForwardApplicationEisCoordinatorModal = ({
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
                 <Select
-                  multiple
-                  value={formData?.userIds || []}
-                  onChange={(e) =>
-                    setFormData({ ...formData, userIds: e.target.value })
-                  }
+                  // multiple
+                  value={formData?.userId || ""}
+                  onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
                   renderValue={(selected) =>
                     officers
                       .filter((officer) => selected.includes(officer.userId))
@@ -309,21 +269,24 @@ const ForwardApplicationEisCoordinatorModal = ({
                   MenuProps={{
                     PaperProps: {
                       style: {
-                        backgroundColor: "#fff", 
+                        backgroundColor: "#fff",
                         color: "#000",
                       },
                     },
                   }}
                 >
                   {officers.map((officer) => (
+                    // <MenuItem key={officer.id} value={officer.userId}>
+                    //   <Checkbox
+                    //     checked={formData?.userIds?.includes(officer.userId)}
+                    //     style={{ color: "#000" }} // checkbox tick color
+                    //   />
+                    //   <Typography style={{ color: "#000" }}>
+                    //     {officer.otherNames}
+                    //   </Typography>
+                    // </MenuItem>
                     <MenuItem key={officer.id} value={officer.userId}>
-                      <Checkbox
-                        checked={formData?.userIds?.includes(officer.userId)}
-                        style={{ color: "#000" }} // checkbox tick color
-                      />
-                      <Typography style={{ color: "#000" }}>
-                        {officer.otherNames}
-                      </Typography>
+                      <Typography style={{ color: "#000" }}>{officer.otherNames}</Typography>
                     </MenuItem>
                   ))}
                 </Select>
