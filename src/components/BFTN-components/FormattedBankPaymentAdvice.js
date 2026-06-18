@@ -205,7 +205,7 @@ const FormattedBankPaymentAdvice = ({ applications, dependentData, getTotalAmoun
   const appType = applications?.[0]?.applicationType;
   console.log({fromBankAdvice:appType})
 
-  const isMedicalOrMaternity = ["medicalAssistance", "maternityGrant"]?.includes(appType);
+  const isMedicalOrMaternity = ["medicalAssistance", "maternityGrant","medicalDonation"]?.includes(appType);
   const isEducationOrScholarship = ["scholarship", "educationGrant"].includes(appType);
   console.log({fromBankAdvice:isMedicalOrMaternity})
 
