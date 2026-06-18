@@ -1536,6 +1536,21 @@ export const getReturnUrl = () => {
   } 
 };
 
+export const formatAddress = (locationData, addressData) => {
+    const address = tryParse(addressData) || {};
+    const location = tryParse(locationData) || {};
+
+    const postOffice = address?.postOffice?.nameBn || address?.postOffice;
+    const village = [address.houseName, address.paraMahalla, address.villageRoad]
+      .filter(Boolean)
+      .join(", ");
+
+    const thana = location?.parent?.name || location?.name;
+    const district = location?.parent?.parent?.name || location?.parent?.name;
+
+    return { village, postOffice, thana, district };
+  };
+
 export const isCfPath = () => {
   if (typeof window !== "undefined") {
     return window.location.href.includes("cf");

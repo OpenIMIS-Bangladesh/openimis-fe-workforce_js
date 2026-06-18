@@ -65,6 +65,8 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   const [mappings, setMappings] = useState([]);
   const userIds = safeParse(summaryData?.userIds);
 
+  console.log({applications})
+
   const getTotalAmount = () => {
     return applications
       .filter((item) => String(item.status) === String(status))
@@ -84,9 +86,10 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       return setServerResponse({ status: "ERROR", message: "কোনো উপযুক্ত আবেদন পাওয়া যায়নি।" });
     }
 
-    const isQuorum = mappings?.[0]?.committee?.approvalProcess === "qurom";
+    const isQuorum = mappings?.[0]?.committee?.approvalType === "quorum";
     const totalApprovers = mappings?.length || 1;
-
+          console.log({filteredApplications})
+    
     try {
       let allMajorityApproved = true;
 
@@ -117,9 +120,11 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
 
         updatePayload.status = targetStatus;
         await dispatch(updateApplication(updatePayload, "update workforce application"));
+        await dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.APPROVED_BY_DG }, "update workforce application summary"));
       }
 
       if (!isQuorum || allMajorityApproved) {
+        await dispatch(updateApplication(updatePayload, "update workforce application"));
         await dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR }, "update workforce application summary"));
       }
 
@@ -127,9 +132,9 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     } catch (error) {
       setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
     } finally {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1500);
     }
   };
 
