@@ -2,6 +2,7 @@ import React from "react";
 import { safeParse, isBlwfPath, formatAddress } from "../../../utils/utils";
 
 const MedicalMaternityView = ({ classes, applications, getTotalAmount }) => {
+  console.log({applications})
   const stats = { TA: 0, MA: 0, Total: applications.length };
 
   applications.forEach((app) => {
@@ -38,12 +39,12 @@ const MedicalMaternityView = ({ classes, applications, getTotalAmount }) => {
           fatherName: app.workforceEmployee?.fatherNameBn || app.workforceEmployee?.fatherNameEn || "",
           factoryName: app.employeeFactory?.nameBn || app.employeeFactory?.nameEn || "",
           workerNid: app.workforceEmployee?.nid || "",
-          workerMobile: app.workforceEmployee?.mobile || app.workforceEmployee?.phoneNumber || "",
+          workerMobile:  app.workforceEmployee?.phoneNumber || "",
           address: `গ্রাম-${formattedAddress.village || ""}\nডাক-${formattedAddress.postOffice || ""}\nউপজেলা-${formattedAddress.thana || ""}\nজেলা-${formattedAddress.district || ""}`,
           district: formattedAddress.district || "",
           nomineeName: bankInfo?.accountHolderName || app.workforceEmployee?.firstNameBn || app.workforceEmployee?.firstNameEn || "",
           nomineeNid: app.workforceEmployee?.nid || "",
-          nomineeMobile: app.workforceEmployee?.mobile || app.workforceEmployee?.phoneNumber || "",
+          nomineeMobile:  app.workforceEmployee?.phoneNumber || "",
           relation: "নিজ",
           disease: diseaseType,
           details: `আবেদনকারী ${diseaseType} এর জন্য চিকিৎসা সহায়তা চেয়েছেন।`,

@@ -248,13 +248,13 @@ const FormattedBankPaymentAdvice = ({ applications, dependentData, getTotalAmoun
       ) : isMedicalOrMaternity ? (
         <MedicalMaternityView 
           classes={classes} 
-          applications={filteredApplications} 
+          applications={applications} 
           getTotalAmount={getTotalAmount} 
         />
       ) : (
         <DeathDisabilityView 
           classes={classes} 
-          applications={filteredApplications} 
+          applications={applications} 
           dependentData={dependentData} 
           getTotalAmount={getTotalAmount} 
         />
