@@ -17,6 +17,7 @@ export const headersAdmin = (component) => [
 
   // 3️⃣ Reject header — visible only when disableButtons !== 1
   component.props.disableButtons !== 1 && "reject",
+  ""
 ];
 
 export const headerDirector = (component) => [
@@ -30,6 +31,7 @@ export const headerDirector = (component) => [
   "workforce.employee.application.receivedDate",
   "workforce.employee.application.sentDate",
   "workforce.employee.application.status",
+  "",
   component.isShowHistory() ? "workforce.version" : "",
 ];
 

@@ -2881,6 +2881,15 @@ class ApplicationProcessSearcher extends Component {
     });
   };
 
+  handleUpdateGrantMoney=async(application)=>{
+    const { updateApplication} = this.props;
+    const decodedId = safeDecodeId(application?.id);
+    const updateApplicationData = {
+                  id: decodedId,
+                  grantAmount: this.state.editedGrantMoney,
+                };
+    await updateApplication(updateApplicationData, "update workforce application");
+  }
 
   handleApprovalByEisCommittee = (selectedItem) => {
     const { loggedInUserId } = this.props;

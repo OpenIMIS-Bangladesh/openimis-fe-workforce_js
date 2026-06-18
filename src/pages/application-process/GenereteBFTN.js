@@ -75,7 +75,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   };
 
   console.log({ fromBFTN: applications });
-  console.log({ summary_Id: userIds });
+  // console.log({ summary_Id: userIds });
 
   const handleForward = async () => {
     if (!window.confirm("আবেদনগুলো মহাপরিচালক কাছে অগ্রায়ন নিশ্চিত করছেন?")) return;

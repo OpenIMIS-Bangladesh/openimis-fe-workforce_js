@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
+import SaveIcon from '@material-ui/icons/Save';
 import ForwardIcon from "@material-ui/icons/Forward";
 import UndoIcon from "@material-ui/icons/Undo";
 import CloseIcon from "@material-ui/icons/Close";
@@ -182,6 +183,19 @@ export const itemAdminFormatters = (isShowHistory, modulesManager, history, comp
     ) : null,
   );
 
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      <Tooltip title="save">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => component.handleUpdateGrantMoney(application)}
+        >
+          <SaveIcon style={{ color: "primary" }} />
+        </IconButton>
+      </Tooltip>
+    </div>
+  ));
+
   return formatters;
 };
 export const itemFormattersDirector = (isShowHistory, modulesManager, history, component, locale = "en") => {
@@ -242,6 +256,14 @@ export const itemFormattersDirector = (isShowHistory, modulesManager, history, c
           </Tooltip>
         </>
       )}
+      <Tooltip title="save">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => component.handleUpdateGrantMoney(application)}
+        >
+          <SaveIcon style={{ color: "primary" }} />
+        </IconButton>
+      </Tooltip>
     </div>
   ));
   return formatters;
