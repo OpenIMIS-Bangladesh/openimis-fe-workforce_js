@@ -260,6 +260,7 @@ export const WORKFORCE_USER_TYPE = {
   LFMEAB_ASSOCIATION: "lfmeab_association",
   SECRETARY: "secretary",
   EIS_ASSOCIATION_COMMITTEE: "eis_association_committee",
+  MINISTER:"minister"
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
   admin: "Admin",

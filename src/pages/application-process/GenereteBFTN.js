@@ -927,6 +927,9 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       </Dialog>
     );
   }
+  
+  // Fallback for unhandled user types (e.g., MINISTER)
+  return null;
 };
 
 export default GenerateBFTN;

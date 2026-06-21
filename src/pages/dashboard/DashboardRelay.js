@@ -57,7 +57,7 @@ console.log("userTpe",user_type)
     return <EisFinancialOfficerDashboard />;
   } else if (user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
     return <EISAdvisorDashboard />;
-  } else if (user_type === WORKFORCE_USER_TYPE.SECRETARY) {
+  } else if (user_type === WORKFORCE_USER_TYPE.SECRETARY||user_type === WORKFORCE_USER_TYPE.MINISTER) {
     return <SecretaryDashboardPage />;
   } 
   else {

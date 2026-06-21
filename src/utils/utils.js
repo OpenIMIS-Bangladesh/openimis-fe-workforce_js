@@ -94,7 +94,9 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.SECRETARY;
   } else if (user_rights.includes(836001)) {
     user_type = WORKFORCE_USER_TYPE.ASSOCIATION;
-  } else if (!isEmptyObject(user_rights)) {
+  } else if (user_rights.includes(818000)) {
+    user_type = WORKFORCE_USER_TYPE.MINISTER;
+  }else if (!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }
 
