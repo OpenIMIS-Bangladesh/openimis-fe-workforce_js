@@ -21,7 +21,7 @@ import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
 import { WORKFORCE_STATUS } from "../../../constants";
 import NidVerification from "../../../components/application-forms/NidVerification";
-import { getInfoId, getParsedApplication, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateMandatoryBankDocumentsForAccounts, validateMandatoryDocuments, validateMandatoryDocumentsForDependents, validateRequiredFields } from "../../../utils/utils";
+import { getInfoId, getParsedApplication, isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateMandatoryBankDocumentsForAccounts, validateMandatoryDocuments, validateMandatoryDocumentsForDependents, validateRequiredFields, isEisPath } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -249,7 +249,18 @@ const MedicalAssistanceForm = ({
       documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
     } else {
       // Filter out Bank Documents for general info steps
-      const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC);
+      const generalDocsConfig = (documentType || [])
+        .filter((doc) => doc.documentType !== BANK_DOC)
+        .filter((doc) => {
+          if (
+            !isEisPath() &&
+            doc.documentType === "discharge certificate" &&
+            (formData?.employeeAccidentInfo?.admitted === "no" || formData?.employeeAccidentInfo?.admitted === undefined)
+          ) {
+            return false;
+          }
+          return true;
+        });
       documentValidation = validateMandatoryDocuments(generalDocsConfig, uploadFile || []);
     }
 

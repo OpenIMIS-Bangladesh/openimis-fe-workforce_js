@@ -24,7 +24,7 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReasonForDisability from "../FormsComponents/Disability/ApplicationReasonForDisability";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
-import { isAtLeast18YearsOld, safeApplicationId, safeDecodeId, validateMandatoryBankDocumentsForAccounts, validateMandatoryDocuments, validateRequiredFields } from "../../../utils/utils";
+import { isAtLeast18YearsOld, isEisPath, safeApplicationId, safeDecodeId, validateMandatoryBankDocumentsForAccounts, validateMandatoryDocuments, validateRequiredFields } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -251,7 +251,19 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
       const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
       documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
     } else {
-      documentValidation = validateMandatoryDocuments(documentType, files);
+      const generalDocsConfig = (documentType || [])
+              .filter((doc) => doc.documentType !== BANK_DOC)
+              .filter((doc) => {
+                if (
+                  !isEisPath() &&
+                  doc.documentType === "discharge certificate" &&
+                  (formData?.employeeAccidentInfo?.admitted === "no" || formData?.employeeAccidentInfo?.admitted === undefined)
+                ) {
+                  return false;
+                }
+                return true;
+              });
+      documentValidation = validateMandatoryDocuments(generalDocsConfig, files);
     }
     if (!documentValidation.isValid ) {
       newErrors.documents = documentValidation.errors;

@@ -36,7 +36,8 @@ import {
   validateMandatoryDocuments,
   validateMandatoryDocumentsForDependents,
   validateRequiredFields,
-  isDateDifference150Days
+  isDateDifference150Days,
+  isEisPath,
 } from "../../../utils/utils";
 import EmployeeAccidentInfoForm from "../EmployeeAccidentInfoForm";
 import WorkerExtraInfo from "../FormsComponents/MedicalDonationForm/WorkerExtraInfo";
@@ -255,7 +256,18 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
     if (isDependentStep) {
       documentValidation = validateMandatoryDocumentsForDependents(documentType, uploadDependentFile || [], formData.dependents || []);
     } else if (isTreatmentStep) {
-      const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC);
+      const generalDocsConfig = (documentType || [])
+        .filter((doc) => doc.documentType !== BANK_DOC)
+        .filter((doc) => {
+          if (
+            !isEisPath() &&
+            doc.documentType === "discharge certificate" &&
+            (formData?.employeeAccidentInfo?.admitted === "no" || formData?.employeeAccidentInfo?.admitted === undefined)
+          ) {
+            return false;
+          }
+          return true;
+        });
       documentValidation = validateMandatoryDocuments(generalDocsConfig, uploadFile || []);
     } else if (isBankStep) {
       const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
@@ -278,14 +290,18 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
         console.log({ fakeErrors });
-        return false
-      }else if (applicationForSelf === "yes" ?(nextStep === 5 &&isDateDifference150Days(formData?.employeeAccidentInfo?.diagnosisDate,formData?.employeeAccidentInfo?.lastCheckupDate,150)) :nextStep === 6 &&isDateDifference150Days(formData?.employeeAccidentInfo?.diagnosisDate,formData?.employeeAccidentInfo?.lastCheckupDate,150)) {
-        let fakeErrors = { ...newErrors, rdmp: "core.error.lastCheckup.between150days"};
+        return false;
+      } else if (
+        applicationForSelf === "yes"
+          ? nextStep === 5 && isDateDifference150Days(formData?.employeeAccidentInfo?.diagnosisDate, formData?.employeeAccidentInfo?.lastCheckupDate, 150)
+          : nextStep === 6 && isDateDifference150Days(formData?.employeeAccidentInfo?.diagnosisDate, formData?.employeeAccidentInfo?.lastCheckupDate, 150)
+      ) {
+        let fakeErrors = { ...newErrors, rdmp: "core.error.lastCheckup.between150days" };
         setErrors(fakeErrors);
         console.log({ fakeErrors });
-        return false
+        return false;
       } else {
-         if (nextStep < steps.length) {
+        if (nextStep < steps.length) {
           setActiveStep(nextStep);
         }
         if (nextStep === 2 || nextStep === 3) {
@@ -418,10 +434,10 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
           console.log("i am from accident info", updateApplicationData);
           dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
         }
-        return true
+        return true;
       }
     }
-    return false
+    return false;
   };
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
@@ -676,10 +692,15 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
               <FormattedMessage module="workforce" id="workforce.save.next" />
             </Button>
           ) : (
-            <Button variant="contained" color="primary" disabled={!acknowledged} onClick={async () => {
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={!acknowledged}
+              onClick={async () => {
                 const isSuccess = await handleNext();
                 if (isSuccess) setShowPreview(true);
-              }}>
+              }}
+            >
               <FormattedMessage module="workforce" id="workforce.submit" />
             </Button>
           )}
