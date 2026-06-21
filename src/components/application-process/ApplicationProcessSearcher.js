@@ -1668,9 +1668,9 @@ class ApplicationProcessSearcher extends Component {
       if (summaryId) {
         console.log("summaryId", summaryId);
         if (isBlwfPath()) {
-          additionalFilters.push(`blwfApplicationSummary_Id:"${summaryId}"`);
+          defaultStatusFilters.push(`blwfApplicationSummary_Id:"${summaryId}"`);
         }else{
-          additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+          defaultStatusFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
         }
       }
       const organizationType =
