@@ -62,6 +62,7 @@ import ForwardEisPaymentProcessModal from "./modals/ForwardEisPaymentProcessModa
 import GenerateEisBFTN from "../../pages/application-process/GenereteEisBFTN";
 import GenereteEisDependentBFTN from "../../pages/application-process/GenereteEisDependentBFTN";
 import EisApprovalSignature from "../../pages/application-process/EisApprovalSignature";
+import GenerateCommitteeReport from "../../pages/application-process/GenerateCommitteeReport";
 
 
 const styles = (theme) => ({
@@ -2983,6 +2984,9 @@ class ApplicationProcessSearcher extends Component {
   handleCloseBFTN = () => {
     this.setState({ openGenerateBFTN: false });
   };
+  handleCloseCommitteeReport = () => {
+    this.setState({ openGenerateCommitteeReport: false });
+  };
   handleCloseEisBFTN = () => {
     this.setState({ openGenerateEisBFTN: false });
   };
@@ -2991,6 +2995,9 @@ class ApplicationProcessSearcher extends Component {
   };
   handleOpenBFTN = () => {
     this.setState({ openGenerateBFTN: true });
+  };
+  handleOpenGenerateCommitteeReport = () => {
+    this.setState({ openGenerateCommitteeReport: true });
   };
   handleOpenEisBFTN = () => {
     this.setState({ openGenerateEisBFTN: true });
@@ -3030,6 +3037,7 @@ class ApplicationProcessSearcher extends Component {
       revertByFactoryAdmin,
       selectedApplication,
       openGenerateBFTN,
+      openGenerateCommitteeReport,
       openGenerateEisBFTN,
       openGenerateEisDependentBFTN,
       openEisApprovalSignature,
@@ -3155,9 +3163,15 @@ class ApplicationProcessSearcher extends Component {
             {disableButtons == 1 ? (
               <>
                 {userType !== WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+                  <>
                   <IconButton onClick={this.handleOpenBFTN}>
                     <PrintIcon />
                   </IconButton>
+                  <IconButton onClick={this.handleOpenGenerateCommitteeReport}>
+                    <PrintIcon />
+                    Generate Committee Report
+                  </IconButton>
+                  </>
                 )}
                 {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
                   <>
@@ -3297,6 +3311,12 @@ class ApplicationProcessSearcher extends Component {
               <PrintIcon />
             </IconButton>
               <FormattedMessage id="workforce.generateBFTN.beneficiary.payment.calculation"/>
+            </Button>
+            <Button variant="contained" color="primary" onClick={this.handleOpenGenerateCommitteeReport} style={{color:"white",paddingX:0.25,fontSize:"small"}}>
+            <IconButton style={{color:"white"}}>
+              <PrintIcon />
+            </IconButton>
+              Generate Committee Report
             </Button>
           </Box>
         ) : null}
@@ -3633,6 +3653,7 @@ class ApplicationProcessSearcher extends Component {
                   userRights={userRights}
                 />
                 {userType !== WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+                  <>
                   <GenerateBFTN
                     open={openGenerateBFTN}
                     onClose={this.handleCloseBFTN}
@@ -3640,6 +3661,14 @@ class ApplicationProcessSearcher extends Component {
                     status={"approved_by_dg"}
                     userRights={userRights}
                   />
+                  <GenerateCommitteeReport
+                    open={openGenerateCommitteeReport}
+                    onClose={this.handleCloseCommitteeReport}
+                    applications={applications}
+                    status={"approved_by_dg"}
+                    userRights={userRights}
+                  />
+                  </>
                 )}
                 {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
                   <>
@@ -3730,6 +3759,13 @@ class ApplicationProcessSearcher extends Component {
                   status={"approved_by_dg"}
                   userRights={userRights}
                 />
+                <GenerateCommitteeReport
+                    open={openGenerateCommitteeReport}
+                    onClose={this.handleCloseCommitteeReport}
+                    applications={applications}
+                    status={"approved_by_dg"}
+                    userRights={userRights}
+                  />
               </>
             );
           } else if (userType === WORKFORCE_USER_TYPE.APPROVER || userType === WORKFORCE_USER_TYPE.BLWF_APPROVER) {
