@@ -641,6 +641,7 @@ class VerifyApplicationPage extends Component {
         {!isEisPath()&&(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
           user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
           user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ||
+          user_type === WORKFORCE_USER_TYPE.ASSOCIATION ||
           user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
           user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
           user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
