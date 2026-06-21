@@ -212,7 +212,7 @@ export const handleBulkSelectedByAssociationLogic = async ({
     // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
     // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
   ) {
-    confirmModalMessage = "workforce.application.forward.message.toEisCoordinator";
+    confirmModalMessage = "workforce.application.forward.message.new.toEisCoordinator";
   }
 
   if (!selectedApplicationIds?.length) {
