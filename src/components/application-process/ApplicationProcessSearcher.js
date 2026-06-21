@@ -19,7 +19,7 @@ import {
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardApplicationModal from "./modals/ForwardApplicationModal";
-import { getUserTypeFromRights, isEisPath, isEmptyObject, safeDecodeId, safeParse } from "../../utils/utils";
+import { getUserTypeFromRights, isBlwfPath, isEisPath, isEmptyObject, safeDecodeId, safeParse } from "../../utils/utils";
 import PrintIcon from "@material-ui/icons/Print";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
@@ -1649,7 +1649,7 @@ class ApplicationProcessSearcher extends Component {
       (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DOCTOR)
     ) {
       this.setState({ displayVersion: showHistoryFilter });
-
+      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
       let defaultStatusFilters = [];
 
       if (this.props.returnedApplications) {
@@ -1665,7 +1665,14 @@ class ApplicationProcessSearcher extends Component {
         defaultStatusFilters = ['statusIn: ["forward_to_doctor"]'];
         defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
       }
-
+      if (summaryId) {
+        console.log("summaryId", summaryId);
+        if (isBlwfPath()) {
+          additionalFilters.push(`blwfApplicationSummary_Id:"${summaryId}"`);
+        }else{
+          additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
+        }
+      }
       const organizationType =
         (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DOCTOR) ? "blwf" : "cf";
 
