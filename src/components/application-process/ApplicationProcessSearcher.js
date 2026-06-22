@@ -3167,10 +3167,12 @@ class ApplicationProcessSearcher extends Component {
                   <IconButton onClick={this.handleOpenBFTN}>
                     <PrintIcon />
                   </IconButton>
-                  <IconButton onClick={this.handleOpenGenerateCommitteeReport}>
-                    <PrintIcon />
-                    Generate Committee Report
-                  </IconButton>
+                  <Button variant="contained" color="primary" onClick={this.handleOpenGenerateCommitteeReport} style={{color:"white",paddingX:0.1,fontSize:"small"}}>
+                    <IconButton style={{color:"white"}}>
+                      <PrintIcon />
+                    </IconButton>
+                    <FormattedMessage id="workforce.generate.committee.report" />
+                  </Button>
                   </>
                 )}
                 {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
@@ -3312,11 +3314,11 @@ class ApplicationProcessSearcher extends Component {
             </IconButton>
               <FormattedMessage id="workforce.generateBFTN.beneficiary.payment.calculation"/>
             </Button>
-            <Button variant="contained" color="primary" onClick={this.handleOpenGenerateCommitteeReport} style={{color:"white",paddingX:0.25,fontSize:"small"}}>
+            <Button variant="contained" color="primary" onClick={this.handleOpenGenerateCommitteeReport} style={{color:"white",paddingX:0.1,fontSize:"small"}}>
             <IconButton style={{color:"white"}}>
               <PrintIcon />
             </IconButton>
-              Generate Committee Report
+              <FormattedMessage id="workforce.generate.committee.report" />
             </Button>
           </Box>
         ) : null}

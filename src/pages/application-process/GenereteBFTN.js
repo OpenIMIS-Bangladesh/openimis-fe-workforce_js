@@ -12,15 +12,8 @@ import {
   Button,
   Divider,
 } from "@material-ui/core";
-import { WORKFORCE_USER_TYPE, RELATION_LABEL_MAP,WORKFORCE_STATUS } from "../../constants";
-import { 
-  getUserTypeFromRights, 
-  safeDecodeId, 
-  safeParse, 
-  enToBn, 
-  isBlwfPath, 
-  formatAddress 
-} from "../../utils/utils";
+import { WORKFORCE_USER_TYPE, RELATION_LABEL_MAP, WORKFORCE_STATUS } from "../../constants";
+import { getUserTypeFromRights, safeDecodeId, safeParse, enToBn, isBlwfPath, formatAddress } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
 import {
   createApplicationSummary,
@@ -30,7 +23,7 @@ import {
   fetchWorkforceEmployeeDependent,
   fetchWorkforceCommitteeUserMap,
 } from "../../actions";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import React, { Component, useEffect, useState } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
@@ -86,13 +79,15 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   const [mappings, setMappings] = useState([]);
   const userIds = safeParse(summaryData?.userIds);
 
-  console.log({applications})
+  console.log({ applications });
 
   const getTotalAmount = () => {
-    return applications
-      .filter((item) => String(item.status) === String(status))
-      .reduce((sum, item) => sum + (parseFloat(item.grantAmount) || 0), 0)
-      .toFixed(2);
+    return (
+      applications
+        // .filter((item) => String(item.status) === String(status))
+        .reduce((sum, item) => sum + (parseFloat(item.grantAmount) || 0), 0)
+        .toFixed(2)
+    );
   };
 
   console.log({ fromBFTN: applications });
@@ -109,8 +104,8 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
 
     const isQuorum = mappings?.[0]?.committee?.approvalType === "quorum";
     const totalApprovers = mappings?.length || 1;
-          console.log({filteredApplications})
-    
+    console.log({ filteredApplications });
+
     try {
       let allMajorityApproved = true;
 
@@ -128,7 +123,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
 
           approvedUserIds.push(loggedInUserId);
           const majorityApproved = approvedUserIds.length / totalApprovers >= 0.5;
-          console.log({majorityApproved})
+          console.log({ majorityApproved });
 
           targetStatus = majorityApproved ? WORKFORCE_STATUS.APPROVED_BY_DG : WORKFORCE_STATUS.FORWARD_TO_COMIITEE;
 
@@ -382,27 +377,29 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
         worksheet.getRow(13).alignment = { horizontal: "center" };
 
         applications
-          .filter((item) => item.status === status)
-          .forEach((row, index) => {
-            let bankInfo = {};
-            const approvedAmount = row?.grantAmount || 0;
-            
+          .flatMap((row) => {
+            let bankInfos = [];
             try {
-              bankInfo = JSON.parse(JSON.parse(row.employeeBankInfo))[0];
+              const parsed = JSON.parse(row.employeeBankInfo);
+              const finalParsed = typeof parsed === "string" ? JSON.parse(parsed) : parsed;
+              bankInfos = Array.isArray(finalParsed) ? finalParsed : [finalParsed];
             } catch (e) {
-              console.error("Failed to parse bankInfo for row", index, e);
+              console.error("Bank info parse error", e);
+              return [];
             }
-
+            return bankInfos.map((bankInfo) => ({ row, bankInfo }));
+          })
+          .forEach(({ row, bankInfo }, index) => {
             worksheet.addRow([
               index + 1,
               row?.dateCreated?.split("T")[0] || "",
               "4426336001034",
               bankInfo?.branch?.routingNumber || "",
               "200275714",
-              row?.workforceEmployee?.firstNameBn || "",
+              bankInfo?.accountHolderName || row?.workforceEmployee?.firstNameBn || "",
               bankInfo?.accountNumber || "",
               "",
-              approvedAmount,
+              row?.grantAmount || 0,
             ]);
           });
       }
@@ -725,32 +722,31 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
                 </TableHead>
 
                 <TableBody>
-                  {applications
-                    .filter((item) => item.status === status)
-                    .flatMap((row) => {
-                      let bankInfos = [];
-                      try {
-                        const parsed = JSON.parse(row.employeeBankInfo);
-                        bankInfos = Array.isArray(parsed) ? parsed : JSON.parse(parsed);
-                      } catch (e) {
-                        console.error("Bank info parse error", e);
-                        return [];
-                      }
+                  {applications.flatMap((row) => {
+                    let bankInfos = [];
+                    try {
+                      const parsed = JSON.parse(row.employeeBankInfo);
+                      const finalParsed = typeof parsed === "string" ? JSON.parse(parsed) : parsed;
+                      bankInfos = Array.isArray(finalParsed) ? finalParsed : [finalParsed];
+                    } catch (e) {
+                      console.error("Bank info parse error", e);
+                      return [];
+                    }
 
-                      return bankInfos.map((bankInfo, bankIndex) => (
-                        <TableRow key={`${row.id}-${bankIndex}`}>
-                          <TableCell>{bankIndex + 1}</TableCell>
-                          <TableCell>{row?.dateCreated?.split("T")[0]}</TableCell>
-                          <TableCell>4426336001034</TableCell>
-                          <TableCell>{bankInfo?.branch?.routingNumber}</TableCell>
-                          <TableCell>200275714</TableCell>
-                          <TableCell>{bankInfo?.accountHolderName}</TableCell>
-                          <TableCell>{bankInfo?.accountNumber}</TableCell>
-                          <TableCell></TableCell>
-                          <TableCell align="right">{row?.grantAmount}</TableCell>
-                        </TableRow>
-                      ));
-                    })}
+                    return bankInfos.map((bankInfo, bankIndex) => (
+                      <TableRow key={`${row.id}-${bankIndex}`}>
+                        <TableCell>{bankIndex + 1}</TableCell>
+                        <TableCell>{row?.dateCreated?.split("T")[0]}</TableCell>
+                        <TableCell>4426336001034</TableCell>
+                        <TableCell>{bankInfo?.branch?.routingNumber}</TableCell>
+                        <TableCell>200275714</TableCell>
+                        <TableCell>{bankInfo?.accountHolderName}</TableCell>
+                        <TableCell>{bankInfo?.accountNumber}</TableCell>
+                        <TableCell></TableCell>
+                        <TableCell align="right">{row?.grantAmount}</TableCell>
+                      </TableRow>
+                    ));
+                  })}
 
                   <TableRow>
                     <TableCell colSpan={8}>
@@ -905,7 +901,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       </Dialog>
     );
   }
-  
+
   // Fallback for unhandled user types (e.g., MINISTER)
   return null;
 };
