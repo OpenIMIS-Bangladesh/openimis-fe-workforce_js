@@ -150,12 +150,12 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
               const decodedId = safeDecodeId(app.id);
               let targetStatus = WORKFORCE_STATUS.FORWARD_TO_DIRECTOR;
               let updatePayload = { id: decodedId };
-              let approvedUserIds = app.eisApprovedByIds ? safeParse(app.eisApprovedByIds) : [];
+              let approvedUserIds = app?.eisApprovedByIds ? safeParse(app?.eisApprovedByIds) : [];
 
-              // if (approvedUserIds.includes(loggedInUserId)) {
-              //   setServerResponse({ status: "ERROR", message: "আপনি ইতিমধ্যে অনুমোদন করেছেন!" });
-              //   return;
-              // }
+              if (approvedUserIds?.includes(loggedInUserId)) {
+                setServerResponse({ status: "ERROR", message: "আপনি ইতিমধ্যে অনুমোদন করেছেন!" });
+                return;
+              }
               console.log(approvedUserIds.includes(loggedInUserId))
               approvedUserIds.push(loggedInUserId);
               updatePayload.eisApprovedByIds = JSON.stringify(approvedUserIds);
