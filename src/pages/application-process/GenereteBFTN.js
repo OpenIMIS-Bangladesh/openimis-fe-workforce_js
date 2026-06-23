@@ -94,27 +94,27 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   // console.log({ summary_Id: userIds });
 
   const handleForward = async () => {
-    if (!window.confirm("আবেদনগুলো মহাপরিচালক কাছে অগ্রায়ন নিশ্চিত করছেন?")) return;
+    // if (!window.confirm("আবেদনগুলো মহাপরিচালক কাছে অগ্রায়ন নিশ্চিত করছেন?")) return;
 
-    const filteredApplications = applications.filter((item) => String(item.status) === String(status));
+    const filteredApplications = applications;
 
-    if (filteredApplications.length === 0) {
-      return setServerResponse({ status: "ERROR", message: "কোনো উপযুক্ত আবেদন পাওয়া যায়নি।" });
-    }
+    // if (filteredApplications.length === 0) {
+    //   return setServerResponse({ status: "ERROR", message: "কোনো উপযুক্ত আবেদন পাওয়া যায়নি।" });
+    // }
 
     const isQuorum = mappings?.[0]?.committee?.approvalType === "quorum";
+    const isRepresentative = mappings?.find(item=>item?.committee?.approvalType === "representative" ||item?.committee?.approvalType === null||item?.committee?.approvalType === "");
     const totalApprovers = mappings?.length || 1;
-    console.log({ filteredApplications });
 
     try {
       let allMajorityApproved = true;
 
-      for (const item of filteredApplications) {
-        const decodedId = safeDecodeId(item.id);
-        let targetStatus = WORKFORCE_STATUS.FORWARD_TO_DIRECTOR;
-        let updatePayload = { id: decodedId };
+      if (isQuorum) {
+        for (const item of filteredApplications) {
+          const decodedId = safeDecodeId(item.id);
+          let targetStatus = WORKFORCE_STATUS.FORWARD_TO_DIRECTOR;
+          let updatePayload = { id: decodedId };
 
-        if (isQuorum) {
           let approvedUserIds = item.eisApprovedByIds ? safeParse(item.eisApprovedByIds) : [];
 
           if (approvedUserIds.includes(loggedInUserId)) {
@@ -123,34 +123,54 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
 
           approvedUserIds.push(loggedInUserId);
           const majorityApproved = approvedUserIds.length / totalApprovers >= 0.5;
-          console.log({ majorityApproved });
 
-          targetStatus = majorityApproved ? WORKFORCE_STATUS.APPROVED_BY_DG : WORKFORCE_STATUS.FORWARD_TO_COMIITEE;
+          targetStatus = majorityApproved ? WORKFORCE_STATUS.FORWARD_TO_DIRECTOR : WORKFORCE_STATUS.FORWARD_TO_COMIITEE;
 
           updatePayload.eisApprovedByIds = JSON.stringify(approvedUserIds);
 
           if (!majorityApproved) {
             allMajorityApproved = false;
           }
+
+          updatePayload.status = targetStatus;
+          await dispatch(updateApplication(updatePayload, "update workforce application"));
         }
-
-        updatePayload.status = targetStatus;
-        await dispatch(updateApplication(updatePayload, "update workforce application"));
-        await dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.APPROVED_BY_DG }, "update workforce application summary"));
-      }
-
-      if (!isQuorum || allMajorityApproved) {
-        await dispatch(updateApplication(updatePayload, "update workforce application"));
         await dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR }, "update workforce application summary"));
+      }
+        console.log("hello",isRepresentative)
+        console.log("hello2",isQuorum)
+
+      if (isRepresentative) {
+        console.log("hello")
+        for (const mapItem of mappings || []) {
+          if (mapItem?.isRepresentative && String(safeDecodeId(mapItem?.user?.id)) === String(loggedInUserId)) {
+            console.log("hello3")
+            for (const app of filteredApplications) {
+            console.log("hello4")
+              const decodedId = safeDecodeId(app.id);
+              let targetStatus = WORKFORCE_STATUS.FORWARD_TO_DIRECTOR;
+              let updatePayload = { id: decodedId };
+              let approvedUserIds = app.eisApprovedByIds ? safeParse(app.eisApprovedByIds) : [];
+
+              // if (approvedUserIds.includes(loggedInUserId)) {
+              //   setServerResponse({ status: "ERROR", message: "আপনি ইতিমধ্যে অনুমোদন করেছেন!" });
+              //   return;
+              // }
+              console.log(approvedUserIds.includes(loggedInUserId))
+              approvedUserIds.push(loggedInUserId);
+              updatePayload.eisApprovedByIds = JSON.stringify(approvedUserIds);
+              updatePayload.status = targetStatus;
+
+              await dispatch(updateApplication(updatePayload, "update workforce application"));
+            }
+            await dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR }, "update workforce application summary"));
+          }
+        }
       }
 
       setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
     } catch (error) {
       setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
-    } finally {
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 1500);
     }
   };
 
@@ -443,12 +463,10 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
         </DialogTitle>
 
         <DialogContent dividers>
-          {applications[0]?.applicationType === "financialAssistance" ? (
-            /* ===== NEW BLOCK FOR FINANCIAL ASSISTANCE ===== */
+          {/* {applications[0]?.applicationType === "financialAssistance" ? (
+           
             <div>
               <Typography variant="h6">Death grant</Typography>
-
-              {/* OLD BLOCK INSIDE NEW BLOCK */}
               <Table>
                 <TableHead>
                   <TableRow style={{ fontWeight: "bold" }}>
@@ -492,7 +510,6 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
               </Table>
             </div>
           ) : (
-            /* ===== OLD BLOCK ===== */
             <Table>
               <TableHead>
                 <TableRow style={{ fontWeight: "bold" }}>
@@ -533,7 +550,15 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
                 </TableRow>
               </TableBody>
             </Table>
-          )}
+          )} */}
+          <FormattedBankPaymentAdvice
+            applications={applications}
+            dependentData={dependentData}
+            getTotalAmount={getTotalAmount}
+            userRights={userRights}
+            status={status}
+            movements={movements}
+          />
         </DialogContent>
 
         <Divider />
